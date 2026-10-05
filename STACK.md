@@ -4,7 +4,27 @@ Research date: **2026-10-05**. This document surveys the current options for bui
 
 **How the evidence was gathered.** Versions and release dates come from the npm registry, queried directly on 2026-10-05, or from official project pages. Many web search results were SEO aggregator blogs; claims that rely only on such secondary sources are marked *(secondary)*. Two small experiments were executed; everything else is documentation-based and was not built or run.
 
-## The starting stack at a glance
+## Current stack: Godot (Gate 1, 2026-10-05)
+
+The bake-off ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) scored three.js 73 and Godot 57 of 80. **The owner chose Godot** for native desktop, SDL3 joystick input for real radios, and the editor. The simulator lives in [`app/`](app/); the three.js build is archived in `prototypes/stage0/three/`.
+
+| Layer | Choice | Version | Notes |
+| --- | --- | --- | --- |
+| Engine | Godot, official build | 4.7.2-stable, pinned and SHA-512 verified by `app/get-godot.sh` | Not installed system-wide; lives in `.tools/` |
+| Renderer | Compatibility (OpenGL 3.3 / WebGL 2 class) | — | Runs everywhere, including software GL; the only renderer Godot can export to the web |
+| Language | GDScript | — | `float` is 64-bit; `Vector3`/`Basis`/`Quaternion`/`Transform3D` are **32-bit** |
+| Physics | Our own GDScript module on 64-bit floats | — | **Guarded:** `app/test.sh` fails if 32-bit math types appear in `sim/` or `physics/` |
+| Tests | Plain `extends SceneTree` scripts, headless | — | Float64 guard, parse check of every script, unit tests, end-to-end input tests |
+| Captures | `xvfb-run` + Mesa llvmpipe, `--rendering-driver opengl3` | — | 60 s timeout per capture, so a script error fails fast |
+| CI | GitHub Actions on `ubuntu-24.04` | — | Installs Xvfb and X11 libraries; caches the Godot binary |
+| Input | Keyboard; then SDL3 joysticks, raw axes | — | Bypass the input-action deadzone (0.5 by default) |
+| Distribution | Native desktop exports; web export possible later (~42 MB) | — | Needs the export templates download; not done yet |
+
+**Escape hatch:** if GDScript physics is too slow or too awkward (checked at ROADMAP C3), the physics core moves to a C++ GDExtension with `double`. That costs a separate web build.
+
+The rest of this document is the pre-Gate-1 survey, kept as research history.
+
+## The starting stack at a glance (pre-Gate-1, superseded)
 
 | Layer | Starting choice | Version on 2026-10-05 | Why | We change it if… |
 | --- | --- | --- | --- | --- |
@@ -152,24 +172,27 @@ In float32, small force imbalances, the kind that decide trim and slow drift, va
 - **Tweakpane** (4.0.5) has had no npm release since 2024-11; **lil-gui** (0.21, 2025-10) is the more active small option. **uPlot** (1.6.32) is a lean candidate for live plots later.
 - **React Three Fiber** (9.8) adds React on top of three.js. Not needed: our UI is a few panels, and a simulation loop is easier to reason about without a UI framework's render cycle.
 
-## Code layout we start with
+## Code layout (Godot app)
 
 ```text
-src/
-  physics/   pure TypeScript, float64, no imports from render/ or three
-  aircraft/  JSON parameter files with units and provenance
-  input/     keyboard, gamepad, raw→mapped channels
-  render/    the only folder that imports three
-  app/       main loop: fixed-step physics, interpolated rendering
-test/        Vitest, headless physics checks
-research/    standalone scripts (Python stdlib / Node), unchanged role
+app/
+  spec.gd        every number, once (moves into aircraft data files at D1)
+  sim/           simulation: 64-bit floats only (guarded), no nodes
+  physics/       (Phase C) rigid body, integrator, aerodynamics: 64-bit floats only (guarded)
+  input/         commands.gd (pure: raw → limiter → surfaces), keyboard.gd (the only file reading keys)
+  render/        frames.gd (the only NED → render conversion), airplane.gd, panel.gd
+  main.gd        main loop; capture mode via user arguments after `--`
+  tests/         test_*.gd, headless `extends SceneTree` scripts
+  test.sh        float64 guard + parse check + all tests
+  capture.sh     headless captures → captures/
+research/        standalone scripts (Python stdlib / Node), unchanged role
 ```
 
 ## Upgrade policy
 
-- Exact versions in `package.json`, lockfile committed.
-- Upgrade one dependency per change, run type check + tests + screenshot, and read the release notes (three.js publishes a migration guide per release).
-- At each roadmap stage's end, run `npm outdated` and decide deliberately. Staying one version behind is fine.
+- Godot is pinned by version and SHA-512 in `app/get-godot.sh`. Upgrade deliberately: change the version and hash, then run `app/test.sh`, `app/capture.sh` and CI.
+- Read the Godot release notes for breaking changes before an upgrade; staying one minor version behind is fine.
+- The archived three.js build keeps its exact npm pins and lockfile; it is not upgraded.
 
 ## New investigations opened by this pass
 

@@ -8,20 +8,20 @@
 
 Plan: [ROADMAP.md](ROADMAP.md) · Stack: [STACK.md](STACK.md) · Decisions: [DECISIONS.md](DECISIONS.md) · Lessons: [LEARNINGS.md](LEARNINGS.md)
 
-Commands (Node 24, see `.nvmrc`):
+The simulator is the **Godot 4.7 app in `app/`** (Gate 1, 2026-10-05). `prototypes/stage0/three/` is the archived three.js bake-off build.
 
 | What | Command |
 | --- | --- |
-| three.js prototype: install | `cd prototypes/stage0/three && npm ci` |
-| three.js: dev server | `npm run dev` |
-| three.js: type check | `npm run typecheck` |
-| three.js: unit tests | `npm test` |
-| three.js: keyboard end-to-end test (headless browser) | `npm run e2e` |
-| three.js: headless captures | `npm run capture` → `prototypes/stage0/capture-three*.png` |
-| Godot prototype: get pinned Godot | `prototypes/stage0/godot/get-godot.sh` → `.tools/` |
-| Godot: parse check + unit + end-to-end tests (headless) | `prototypes/stage0/godot/test.sh` |
-| Godot: headless captures (needs `xvfb-run`) | `prototypes/stage0/godot/capture.sh` → `prototypes/stage0/capture-godot*.png` |
-| CI locally (needs Docker) | `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j three` (or `-j godot`) |
+| Get the pinned Godot (verified SHA-512) | `app/get-godot.sh` → `.tools/` |
+| Run the app (needs a display) | `$(app/get-godot.sh) --path app` |
+| All checks: float64 guard, parse check, unit + end-to-end tests (headless) | `app/test.sh` |
+| Captures (needs `xvfb-run`) | `app/capture.sh` → `app/captures/*.png` |
+| CI locally (needs Docker) | `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app` |
+| Archived three.js build (Node 24, see `.nvmrc`) | `cd prototypes/stage0/three && npm ci && npm test && npm run capture && npm run e2e` |
+
+Rules for the Godot app:
+- Simulation code (`sim/`, `physics/`) keeps state in 64-bit GDScript `float`s, never `Vector3`/`Basis`/`Quaternion`/`Transform3D` (32-bit). `app/test.sh` enforces this.
+- Don't name constants after built-in classes (`Panel`, `Label`, …): it causes parse errors, which hang headless runs.
 
 Working agreement:
 - One small step per change, following the step IDs in ROADMAP.md.

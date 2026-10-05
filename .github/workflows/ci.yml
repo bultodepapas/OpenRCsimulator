@@ -6,7 +6,7 @@ on:
 
 jobs:
   three:
-    name: three.js prototype
+    name: three.js prototype (archived bake-off build)
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -29,8 +29,8 @@ jobs:
           name: captures-three
           path: prototypes/stage0/capture-three*.png
 
-  godot:
-    name: Godot prototype
+  app:
+    name: Godot app
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -38,10 +38,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .tools
-          key: godot-${{ hashFiles('prototypes/stage0/godot/get-godot.sh') }}
-      - run: prototypes/stage0/godot/test.sh
-      - run: prototypes/stage0/godot/capture.sh
+          key: godot-${{ hashFiles('app/get-godot.sh') }}
+      - run: app/test.sh
+      - run: app/capture.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: captures-godot
-          path: prototypes/stage0/capture-godot*.png
+          name: captures-app
+          path: app/captures/*.png

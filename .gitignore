@@ -3,3 +3,5 @@ dist/
 # Godot editor cache and downloaded tool binaries
 .godot/
 .tools/
+# Third-party plans, scans and CAD files: reference only, licenses unknown. Never commit.
+references/

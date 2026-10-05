@@ -54,6 +54,38 @@ Both builds implement the same [SPEC.md](SPEC.md). **The criteria and weights be
 | CI (A3), local `act` run | Green. apt dependencies 30 s, Godot binary cached, tests + capture ~13 s |
 | Web export size | Not measured yet (needs the export templates download); documented ~42 MB default, see STACK.md |
 
-## Scores
+## Stage 1 results (B5)
 
-*Filled at B6, after Stage 1 in both.*
+Same spec ([SPEC.md](SPEC.md), Stage 1): Mode 2 keyboard, rate-limited self-centering commands, throttle hold, surface throws, input panel, reset, and a close-up camera fixed to the airplane.
+
+| Measure | three.js | Godot |
+| --- | --- | --- |
+| Visual result | Deflected close-up and panel correct | Identical framing, deflections and panel text |
+| Unit tests | 17 Vitest tests (frames + controls), surface signs checked on the real three.js objects | 32 headless checks (frames + controls), signs checked on the real nodes |
+| End-to-end input test | Playwright: real key events in headless Chromium → panel; 4 checks | Real main scene, headless, `Input.parse_input_event` → panel; 4 checks; **no browser or display needed** |
+| Incidents | The first e2e check compared a panel row one frame too early (test bug, fixed) | **A parse error hung the capture forever at 400% CPU:** a constant named `Panel` shadowed Godot's built-in class, the script failed to load, and nothing called quit. Unit tests passed because they never load `main.gd`. Fixed with a parse check of every script plus a 60 s timeout per capture |
+| CI (local `act`) | Green: type check, 17 tests, 3 captures, e2e | Green: parse check, 32 checks, e2e, 3 captures |
+
+## Scores (B6)
+
+Scored with the criteria and weights fixed before the Godot build. 1–5 per criterion, × weight; maximum 80.
+
+| # | Criterion | Weight | three.js | Godot | Reason |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Float64 physics ergonomics | 3 | 5 | 2 | JS numbers are 64-bit everywhere. Godot's `Vector3`/`Basis`/`Transform3D` are 32-bit; 64-bit needs plain-float arrays, a self-compiled double-precision engine (editor + every export template), or C++ GDExtension |
+| 2 | Automated evidence | 3 | 5 | 4 | Both: zero manual steps, fast tests, captures, e2e. Godot needs Xvfb + X11 libraries for captures, and silently hangs on a script parse error unless guarded |
+| 3 | Edit → see loop | 2 | 5 | 4 | Vite hot reload is instant in the browser. Godot outside the editor restarts the game (≈1 s); fine but not live |
+| 4 | Clean setup | 2 | 4 | 4 | three.js: `npm ci` 5 s, but captures need Playwright's Chromium (1.5 min). Godot: 78 MB verified binary in 9 s, but captures need system X11 libraries |
+| 5 | Transmitter input path | 2 | 3 | 4 | Not yet tested on hardware. Documented: Godot desktop uses SDL3 joysticks (10 axes); browsers expose 16 axes but hide devices until a button press and map them inconsistently |
+| 6 | Distribution | 1 | 5 | 3 | three.js: a 132 KB gzip page, shared by link. Godot: excellent native builds, but web export ~42 MB by default |
+| 7 | Readability for humans and AI | 1 | 4 | 4 | Same size (~300 lines each). TypeScript has typed records; GDScript needed workarounds (two-box wings, untyped dictionaries) |
+| 8 | Stage 1 effort | 2 | 5 | 4 | Both quick. Godot had the hang incident |
+| | **Total** | **16** | **73** | **57** | |
+
+**Result:** three.js leads by 16 points (20% of the maximum), which is above the 10% tie threshold.
+
+**Sensitivity check:** if Godot scored a full 5 on float64 ergonomics (criterion 1), the totals would be 73 vs 66. That gap (8.75%) counts as a tie, and the tie-break ("whichever makes Phase C physics easiest") also favors three.js, because of float64. If transmitter input (criterion 5) carried weight 3 instead of 2, the totals would be 76 vs 61. The ranking holds under these changes.
+
+**What three.js loses by winning:** Godot's native SDL3 joystick input and its visual editor. Both stay reachable later. Electron or a native wrapper can add native input if the browser Gamepad API fails on real radios (ROADMAP F1). The physics core stays portable plain TypeScript.
+
+**Gate 1 recommendation: three.js.** The owner decides.

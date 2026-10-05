@@ -2,13 +2,15 @@
 
 Fecha: 2026-10-05. Estado: **propuesta basada en inspección del repo y referencias; todavía no se ha construido un modelo nuevo**.
 
+> **Actualización 2026-10-05 (desarrollo principal):** Gate 1 eligió **Godot**. El constructor del avión vive ahora en [`app/render/airplane.gd`](../app/render/airplane.gd), con las mismas interfaces (`airplane`, `propeller`, `*_hinge`). Las pruebas de `app/test.sh` comprueban signos de superficies sobre los nodos reales. Por decisión del propietario, los planos y CAD se movieron a `references/` (ignorado por git, solo local); las rutas de este documento ya apuntan allí. `assets/aircraft/ugly-stik-60/` sigue libre.
+
 La siguiente entrega útil es un Ugly Stik sencillo y reconocible, con superficies articuladas y dimensiones trazables. Se puede preparar fuera del simulador mientras el otro desarrollador completa los controles y la comparación de motores. Primero corregir la silueta; después añadir los detalles que realmente se vean.
 
 Este documento desarrolla el trabajo de referencias de **D1**, el contrato visual necesario para **B5**, la futura integración de **B7** y la legibilidad de **D7/Gate 2** de [ROADMAP.md](../ROADMAP.md). No cambia sus prioridades ni decide Gate 1.
 
 ## Punto de partida
 
-- Hay dos modelos procedurales equivalentes, construidos con cajas y cilindros, en [three.js](../prototypes/stage0/three/src/render/airplane.ts) y [Godot](../prototypes/stage0/godot/render/airplane.gd). Ya separan las superficies mediante pivotes. Conviene conservar esa inversión.
+- Hay dos modelos procedurales equivalentes, construidos con cajas y cilindros, en [three.js](../prototypes/stage0/three/src/render/airplane.ts) y [Godot](../app/render/airplane.gd). Ya separan las superficies mediante pivotes. Conviene conservar esa inversión.
 - La geometría del modelo inicial vive en un archivo de especificación por motor. Las medidas de cola, fuselaje y superficies son aproximaciones visuales declaradas en [SPEC.md](../prototypes/stage0/SPEC.md).
 - Al comenzar esta revisión, el roadmap llegaba a B4. Durante la revisión aparecieron código y capturas de B5 del otro desarrollador. Esto es una lectura de un espacio de trabajo activo, no una certificación de su estado final.
 - [DECISIONS.md](../DECISIONS.md) usa provisionalmente **Jensen Das Ugly Stik 60**, con tren triciclo. Las referencias locales incluyen también Grid Leaks/BNPS, RCM, un redibujo CAD y Great Big Stik: su parentesco no hace intercambiables sus medidas.

@@ -6,7 +6,7 @@ Inspección: 2026-10-05. Relacionada con **ROADMAP D1**, preparación de geometr
 
 Se abrieron las **14 imágenes** PNG/JPG de `ugly stick ` y se renderizó la página completa del PDF Grid Leaks con `pdftoppm`. Se leyeron encabezados y tipos de entidades de los seis DXF, y el encabezado binario de los dos `.3dm`. No se cargó la geometría 3DM/DWG en un programa CAD, no se validó su escala y no se midió un avión físico.
 
-El directorio se llama literalmente `ugly stick `, con un espacio al final. El inventario registra 38 archivos allí y la copia adicional del PDF en `prototypes/stage0/`: **39 entradas**. Se conservaron las rutas. Los hashes identifican los bytes inspeccionados; no establecen autoría ni permiso de reutilización.
+El directorio se llama literalmente `ugly stick `, con un espacio al final. El inventario registra 38 archivos allí y la copia adicional del PDF en `references/from-prototypes/`: **39 entradas**. Se conservaron las rutas. Los hashes identifican los bytes inspeccionados; no establecen autoría ni permiso de reutilización.
 
 ## Qué muestra cada imagen
 
@@ -14,30 +14,30 @@ Todas las descripciones siguientes son observaciones visuales de los archivos de
 
 | ID | Archivo local | Contenido observado | Uso propuesto / límite |
 | --- | --- | --- | --- |
-| JEN-01 | [image.png](../../ugly%20stick%20/image.png), 720×566 | Plano titulado Das Ugly Stick 60, cartucho Jensen; planta/perfil de fuselaje, empenaje, motor y tren triciclo | Referencia principal coherente con DECISIONS; resolución insuficiente para todas las cotas. Verificar el área impresa frente a 723 in² en la spec |
-| CAD-01 | [image2.png](../../ugly%20stick%20/image2.png), 566×353 | Redibujo Classic Ugly Stick; atribución CAD Guy Fuller 1997, hoja 1 de 2; fuselaje y tren triciclo | Identificación y organización de vistas; no se verificó que el DWG homónimo corresponda exactamente a esta captura |
-| GL-IMG | [image copy.png](../../ugly%20stick%20/image%20copy.png), 640×480 | Plano Grid Leaks/BNPS con cartucho V133, ala, fuselaje y cola | Es la misma composición general que el PDF; usar el PDF para leer detalles, no esta miniatura |
-| RCM-01 | [image copy 2.png](../../ugly%20stick%20/image%20copy%202.png), 800×534 | Collage con cartuchos RCM plan 939 y fotos del avión rojo/blanco | Apariencia y comparación de variantes; no medir sobre el collage ni asumir que sus piezas son Jensen |
-| KIT-01 | [image copy 3.png](../../ugly%20stick%20/image%20copy%203.png), 328×214 | Componentes separados: ala roja/blanca, fuselaje, cola redondeada, hélice y tren | Reconocimiento de piezas y decoración; fabricante/configuración exactos sin verificar |
-| KIT-01-DUP | [image copy 4.png](../../ugly%20stick%20/image%20copy%204.png), 328×214 | Duplicado byte por byte de KIT-01 | No aporta evidencia independiente |
-| GBS-01 | [great big stik 3d.jpg](../../ugly%20stick%20/great%20big%20styk%20full/great%20big%20stik%203d.jpg) | Perspectiva de estructura abierta, costillas, largueros y tren principal | Construcción y forma general; no se identifica la configuración completa del tren por esta vista aislada |
-| GBS-02 | [great big stik triciclo.jpg](../../ugly%20stick%20/great%20big%20styk%20full/great%20big%20stik%20triciclo.jpg) | Perspectiva con tren triciclo y hélice | Relación entre patas y fuselaje; dimensiones no transferidas al Jensen |
-| GBS-03 | [ala sup.jpg](../../ugly%20stick%20/great%20big%20styk%20full/ala%20sup.jpg) | Semiala superior, costillas, largueros, punta y borde de salida | Comprender planta y separación de piezas |
-| GBS-04 | [ala inf.jpg](../../ugly%20stick%20/great%20big%20styk%20full/ala%20inf.jpg) | Vista inferior de semiala y zona de servo/mando | Referencia de montaje, no dato de aerodinámica |
-| GBS-05 | [ala enc.jpg](../../ugly%20stick%20/great%20big%20styk%20full/ala%20enc.jpg) | Sección alar con borde de ataque redondeado y afilamiento posterior | Justifica una sección visual con espesor; no identifica una familia NACA ni una polar |
-| GBS-06 | [ala marg.jpg](../../ugly%20stick%20/great%20big%20styk%20full/ala%20marg.jpg) | Otra sección alar y montaje del mando | Comparar estructura y contorno; no asumir misma escala de pantalla que GBS-05 |
-| GBS-07 | [porta serb aler.jpg](../../ugly%20stick%20/great%20big%20styk%20full/porta%20serb%20aler.jpg) | Detalle del soporte de servo de alerón entre costillas | Detalle opcional para inspección futura, innecesario para primera silueta |
-| GBS-08 | [registro.jpg](../../ugly%20stick%20/great%20big%20styk%20full/registro.jpg) | Acceso delantero y motor con dos cilindros opuestos visibles | Evidencia de que la instalación de esta referencia difiere de una representación nitro monocilíndrica provisional |
+| JEN-01 | [image.png](../../references/ugly-stick/image.png), 720×566 | Plano titulado Das Ugly Stick 60, cartucho Jensen; planta/perfil de fuselaje, empenaje, motor y tren triciclo | Referencia principal coherente con DECISIONS; resolución insuficiente para todas las cotas. Verificar el área impresa frente a 723 in² en la spec |
+| CAD-01 | [image2.png](../../references/ugly-stick/image2.png), 566×353 | Redibujo Classic Ugly Stick; atribución CAD Guy Fuller 1997, hoja 1 de 2; fuselaje y tren triciclo | Identificación y organización de vistas; no se verificó que el DWG homónimo corresponda exactamente a esta captura |
+| GL-IMG | [image copy.png](../../references/ugly-stick/image%20copy.png), 640×480 | Plano Grid Leaks/BNPS con cartucho V133, ala, fuselaje y cola | Es la misma composición general que el PDF; usar el PDF para leer detalles, no esta miniatura |
+| RCM-01 | [image copy 2.png](../../references/ugly-stick/image%20copy%202.png), 800×534 | Collage con cartuchos RCM plan 939 y fotos del avión rojo/blanco | Apariencia y comparación de variantes; no medir sobre el collage ni asumir que sus piezas son Jensen |
+| KIT-01 | [image copy 3.png](../../references/ugly-stick/image%20copy%203.png), 328×214 | Componentes separados: ala roja/blanca, fuselaje, cola redondeada, hélice y tren | Reconocimiento de piezas y decoración; fabricante/configuración exactos sin verificar |
+| KIT-01-DUP | [image copy 4.png](../../references/ugly-stick/image%20copy%204.png), 328×214 | Duplicado byte por byte de KIT-01 | No aporta evidencia independiente |
+| GBS-01 | [great big stik 3d.jpg](../../references/ugly-stick/great%20big%20styk%20full/great%20big%20stik%203d.jpg) | Perspectiva de estructura abierta, costillas, largueros y tren principal | Construcción y forma general; no se identifica la configuración completa del tren por esta vista aislada |
+| GBS-02 | [great big stik triciclo.jpg](../../references/ugly-stick/great%20big%20styk%20full/great%20big%20stik%20triciclo.jpg) | Perspectiva con tren triciclo y hélice | Relación entre patas y fuselaje; dimensiones no transferidas al Jensen |
+| GBS-03 | [ala sup.jpg](../../references/ugly-stick/great%20big%20styk%20full/ala%20sup.jpg) | Semiala superior, costillas, largueros, punta y borde de salida | Comprender planta y separación de piezas |
+| GBS-04 | [ala inf.jpg](../../references/ugly-stick/great%20big%20styk%20full/ala%20inf.jpg) | Vista inferior de semiala y zona de servo/mando | Referencia de montaje, no dato de aerodinámica |
+| GBS-05 | [ala enc.jpg](../../references/ugly-stick/great%20big%20styk%20full/ala%20enc.jpg) | Sección alar con borde de ataque redondeado y afilamiento posterior | Justifica una sección visual con espesor; no identifica una familia NACA ni una polar |
+| GBS-06 | [ala marg.jpg](../../references/ugly-stick/great%20big%20styk%20full/ala%20marg.jpg) | Otra sección alar y montaje del mando | Comparar estructura y contorno; no asumir misma escala de pantalla que GBS-05 |
+| GBS-07 | [porta serb aler.jpg](../../references/ugly-stick/great%20big%20styk%20full/porta%20serb%20aler.jpg) | Detalle del soporte de servo de alerón entre costillas | Detalle opcional para inspección futura, innecesario para primera silueta |
+| GBS-08 | [registro.jpg](../../references/ugly-stick/great%20big%20styk%20full/registro.jpg) | Acceso delantero y motor con dos cilindros opuestos visibles | Evidencia de que la instalación de esta referencia difiere de una representación nitro monocilíndrica provisional |
 
 Los ocho JPG de Great Big Stik son de 1533×673 píxeles. Las imágenes de estructura no establecen que el CAD esté listo para el simulador.
 
 ## PDF: qué sí pudimos leer
 
-[Ugly_Stik_Grid_Leaks_oz5175.pdf](../../prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf) es una página rasterizada: `pdftotext` produjo únicamente un salto de página. Su cartucho identifica Das Ugly Stick, Phil Kraft, dibujo Geo. Walker, Grid Leaks Plan Service y BNPS V133. La página muestra ala, perfil de costilla, estabilizador, fuselaje en planta/perfil y componentes del tren. Se distinguen las etiquetas VECO 45, JENSEN NOSEGEAR y una escala gráfica 0–6.
+[Ugly_Stik_Grid_Leaks_oz5175.pdf](../../references/from-prototypes/Ugly_Stik_Grid_Leaks_oz5175.pdf) es una página rasterizada: `pdftotext` produjo únicamente un salto de página. Su cartucho identifica Das Ugly Stick, Phil Kraft, dibujo Geo. Walker, Grid Leaks Plan Service y BNPS V133. La página muestra ala, perfil de costilla, estabilizador, fuselaje en planta/perfil y componentes del tren. Se distinguen las etiquetas VECO 45, JENSEN NOSEGEAR y una escala gráfica 0–6.
 
 La regla y las cotas de piezas ofrecen una vía para calibrar futuras mediciones. El tamaño físico de página del PDF no debe usarse directamente como tamaño del avión: primero contrastar la escala gráfica y una segunda dimensión legible. Para medir contornos hay que guardar los puntos elegidos, la escala de cada vista y el error de lectura. Una captura en perspectiva no sirve como plano métrico.
 
-La copia en `ugly stick /` es idéntica a la de `prototypes/stage0/`:
+La copia en `references/ugly-stick/` es idéntica a la de `references/from-prototypes/`:
 
 ```text
 SHA-256 78a869d91fe15d961e691a549f4c53a28d9461458e0592de4959c6be2f865353
@@ -100,12 +100,12 @@ Para incorporar posteriormente a `LEARNINGS.md`, sin editar el archivo mientras 
 Desde la raíz del repo, estos comandos son de lectura excepto por la imagen temporal:
 
 ```bash
-sha256sum 'ugly stick /Ugly_Stik_Grid_Leaks_oz5175.pdf' prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf
-sha256sum 'ugly stick /image copy 3.png' 'ugly stick /image copy 4.png'
-pdfinfo prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf
-pdftotext prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf -
+sha256sum 'references/ugly-stick/Ugly_Stik_Grid_Leaks_oz5175.pdf' references/from-prototypes/Ugly_Stik_Grid_Leaks_oz5175.pdf
+sha256sum 'references/ugly-stick/image copy 3.png' 'references/ugly-stick/image copy 4.png'
+pdfinfo references/from-prototypes/Ugly_Stik_Grid_Leaks_oz5175.pdf
+pdftotext references/from-prototypes/Ugly_Stik_Grid_Leaks_oz5175.pdf -
 review_dir=$(mktemp -d /tmp/openrc-ugly-review-XXXXXX)
-pdftoppm -scale-to 2600 -png -singlefile prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf "$review_dir/grid-leaks"
+pdftoppm -scale-to 2600 -png -singlefile references/from-prototypes/Ugly_Stik_Grid_Leaks_oz5175.pdf "$review_dir/grid-leaks"
 ```
 
 El manifiesto usa SHA-256 sobre los bytes, dimensiones de imagen y pares código/valor del encabezado DXF. La comprobación de entidades recorre exclusivamente la sección `ENTITIES`; no suma definiciones de `BLOCKS`. No se añadieron copias de planos ni imágenes de terceros a esta entrega documental.

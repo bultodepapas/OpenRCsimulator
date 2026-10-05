@@ -16,7 +16,8 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 
 - **Done:** research (RESEARCH.md), stack survey (STACK.md), the Stage 0 spec ([prototypes/stage0/SPEC.md](prototypes/stage0/SPEC.md)), and the **three.js Stage 0 build**, with pilot-view and close-up captures.
 - **Done since:** Phase A (MIT license, repo hygiene, CI green locally), B3 (Godot Stage 0, matching the three.js build), B4 (frame tests in both; a deliberately broken sign is caught).
-- **Next:** B5, Stage 1 controls in both builds.
+- **Done since:** B5 (Stage 1 controls in both, with unit and end-to-end input tests; CI green) and B6 (scored: **three.js 73, Godot 57 of 80**, see COMPARISON.md).
+- **Next:** **Gate 1**: the owner confirms the platform; then B7 promotes the winner into `app/`.
 
 ## Phase A — Ground base
 
@@ -26,7 +27,7 @@ The project foundation, before more code piles up.
 | --- | --- | --- |
 | A1 | Choose and add a license ✅ **MIT** (owner decision, 2026-10-05) | `LICENSE` file; GitHub shows it after the next push |
 | A2 ✅ | Repo hygiene: pin the Node version (`.nvmrc` + `engines`), add `.editorconfig` and `.gitignore` entries for `node_modules`, `dist` and `.godot`, and document dev commands in AGENTS.md | A clean clone + the documented commands reproduce the captures |
-| A3 ✅ | CI on GitHub Actions: install, type check, tests, headless capture for both prototypes; screenshots uploaded as artifacts | ✅ Green in a local `act` run; GitHub green check after the next push |
+| A3 ✅ | CI on GitHub Actions: install, type check, tests, headless capture for both prototypes; screenshots uploaded as artifacts | ✅ Green locally (`act`) and on GitHub (run 37330100172, 41 s, 2026-10-05) |
 | A4 ✅ | Working agreement: small commits; each commit message states its proof | Written in AGENTS.md |
 
 ## Phase B — Bake-off: the same small scene in three.js and Godot
@@ -37,8 +38,8 @@ The project foundation, before more code piles up.
 | B2 | three.js Stage 0 ✅ | `capture-three.png` (pilot view) and `capture-three-inspect.png` (close-up) |
 | B3 ✅ | Godot 4.7 Stage 0 with the same capture mode (under Xvfb) | `capture-godot.png` and `capture-godot-inspect.png` |
 | B4 ✅ | Frame-conversion tests in both: heading 0° puts the nose at −z; heading 90° puts it at +x; bank right puts the right wing down | Automated test passes in each build |
-| B5 | Stage 1 in both: keyboard moves the surfaces through **rate-limited, self-centering** commands; an input panel shows raw → mapped values; a reset key | Captures of neutral and deflected surfaces; panel visible |
-| B6 | Score both against the **criteria fixed in advance** ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) | Filled comparison table |
+| B5 ✅ | Stage 1 in both: keyboard moves the surfaces through **rate-limited, self-centering** commands; an input panel shows raw → mapped values; a reset key | Captures of neutral and deflected surfaces; panel visible |
+| B6 ✅ | Score both against the **criteria fixed in advance** ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) | Filled comparison table |
 | **Gate 1** | **Choose the platform.** No physics code before this gate, because the physics language follows the platform | Decision recorded in DECISIONS.md |
 | B7 | Promote the winner into `app/`; keep the other build as an archived reference | `app/` builds and captures in CI |
 

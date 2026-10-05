@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Headless checks (no display needed). Fails if any script fails to parse or any test fails.
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"
+GODOT="$("$HERE/get-godot.sh")"
+run() { timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
+
+echo "== float64 guard: no 32-bit math types in simulation code"
+# Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
+# Comment lines are ignored. Rendering code (render/) may use them at the boundary.
+SIM_DIRS=()
+for d in sim physics; do [ -d "$HERE/$d" ] && SIM_DIRS+=("$HERE/$d"); done
+if [ ${#SIM_DIRS[@]} -gt 0 ] && grep -rnE '^\s*[^#[:space:]].*\b(Vector2|Vector3|Vector4|Basis|Quaternion|Transform3D)\b' "${SIM_DIRS[@]}"; then
+  echo "32-bit math type found in simulation code (see lines above)"; exit 1
+fi
+
+echo "== parse check: every script"
+(cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' | sort) | while read -r f; do
+  run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
+done
+
+for t in "$HERE"/tests/test_*.gd; do
+  echo "== $(basename "$t")"
+  run --script "res://tests/$(basename "$t")"
+done
