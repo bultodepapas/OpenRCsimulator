@@ -3,6 +3,7 @@
 extends SceneTree
 
 const RcInput := preload("res://input/rc_input.gd")
+const DT := 1.0 / 240.0
 const INFO := { guid = "03000000091200004f54000000000000", name = "EdgeTX RadioMaster TX16S", vendor_id = 0x1209, product_id = 0x4f54 }
 
 var _failures := 0
@@ -22,7 +23,7 @@ func _radio(values: Dictionary, moved: Array) -> RcInput:
 	r.connect_device(3, INFO)
 	for axis in moved:
 		r.on_motion(3, axis, values.get(axis, 0.0))
-	r.poll(func(_device: int, axis: int) -> float: return values.get(axis, 0.0))
+	r.poll(func(_device: int, axis: int) -> float: return values.get(axis, 0.0), DT)
 	return r
 
 
@@ -53,7 +54,7 @@ func _initialize() -> void:
 	_check("throttle seen at 60 %: still SAFE", not r.armed and r.sticks().throttle == 0.0)
 	r = _radio({ 2: -1.0 }, [2])
 	_check("throttle seen low: armed", r.armed)
-	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0)
+	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
 	_check("armed: throttle follows the stick", r.sticks().throttle == 1.0)
 	r = _radio({ 2: -0.92 }, [2])
 	_check("4 % arms (limit 5 %)", r.armed)
@@ -62,13 +63,13 @@ func _initialize() -> void:
 	r = _radio({ 2: -1.0 }, [0, 1, 3])
 	_check("a low reading without a throttle event does not arm", not r.armed)
 
-	# Unipolar throttle (an SDL gamepad trigger: 0 at rest … 1 full).
+	# Unipolar throttle (an SDL gamepad trigger: 0 at rest … 1 full) = a calibration with endpoints 0…1.
 	r = _radio({ 2: 0.0 }, [2])
-	r.profile.throttle_unipolar = true
+	r.profile.throttle.min = 0.0
 	_check("unipolar: 0 → 0 %", r.throttle_position() == 0.0)
-	r.poll(func(_d: int, axis: int) -> float: return 0.0)
+	r.poll(func(_d: int, axis: int) -> float: return 0.0, DT)
 	_check("unipolar trigger at rest arms", r.armed)
-	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0)
+	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
 	_check("unipolar: 1 → 100 %", r.sticks().throttle == 1.0)
 	var bipolar := _radio({ 2: 0.0 }, [2])
 	_check("the same trigger read as bipolar never arms (safe failure)", not bipolar.armed and bipolar.sticks().throttle == 0.0)
@@ -78,19 +79,60 @@ func _initialize() -> void:
 	r.disconnect_device()
 	_check("disconnect: disarmed, axes zeroed", not r.connected and not r.armed and r.axes[2] == 0.0)
 	r.connect_device(3, INFO)
-	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0)
+	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
 	_check("reconnect with the throttle high: SAFE until seen low again", not r.armed and r.sticks().throttle == 0.0)
 
 	# Robustness: other devices and out-of-range axes are ignored; values clamp to ±1.
 	r = _radio({}, [])
 	r.on_motion(7, 2, -1.0)
-	r.poll(func(_d: int, _a: int) -> float: return -1.0)
+	r.poll(func(_d: int, _a: int) -> float: return -1.0, DT)
 	_check("events from another device do not arm", not r.armed)
 	r.on_motion(3, 12, 1.0)
 	_check("axis ≥ 10 ignored (Godot's JoyAxis.MAX)", r.axes.size() == RcInput.AXES)
 	r = _radio({ 0: 3.0 }, [0])
 	_check("clamped to ±1", r.sticks().roll == 1.0)
 	_check("panel: SAFE explains how to arm", "SAFE" in _radio({}, []).describe() and "low" in _radio({}, []).describe())
+
+	# D6b: calibrated endpoints, piecewise per side of the centre.
+	var ch := { axis = 0, invert = false, min = -0.9, center = 0.1, max = 0.95 }
+	_check("calibrated: max → +1", RcInput.normalize(0.95, ch) == 1.0)
+	_check("calibrated: min → −1", RcInput.normalize(-0.9, ch) == -1.0)
+	_check("calibrated: centre → 0", RcInput.normalize(0.1, ch) == 0.0)
+	_check("calibrated: half way up → +0.5", absf(RcInput.normalize(0.525, ch) - 0.5) < 1e-12)
+	_check("calibrated: half way down → −0.5", absf(RcInput.normalize(-0.4, ch) + 0.5) < 1e-12)
+	_check("calibrated: beyond the endpoint clamps", RcInput.normalize(1.0, ch) == 1.0)
+	var th := { axis = 2, invert = true, min = -0.8, center = -0.8, max = 0.9 }
+	_check("inverted throttle: the min end is full", RcInput.normalize_throttle(-0.8, th) == 1.0 and RcInput.normalize_throttle(0.9, th) == 0.0)
+
+	# Profile choice on connection: saved calibration > known gamepad > default radio.
+	r = RcInput.new()
+	r.connect_device(0, { name = "Xbox Wireless Controller", known = true })
+	_check("an SDL-known gamepad gets the gamepad profile", r.profile_source == "gamepad" and r.profile.kind == "gamepad")
+	r.connect_device(0, { name = "EdgeTX RadioMaster Boxer Joystick", known = true })
+	_check("a radio SDL maps as a gamepad (Linux, EdgeTX Classic) stays a radio", r.profile_source == "default" and r.profile.kind == "radio")
+	var saved := RcInput.DEFAULT_PROFILE.duplicate(true)
+	saved.roll.axis = 5
+	r.connect_device(0, INFO, saved)
+	_check("a saved calibration wins", r.profile_source == "calibrated" and r.profile.roll.axis == 5)
+
+	# Gamepad: deadzone, expo, throttle as a rate from the spring-centred left stick (up = −1 in SDL).
+	r = RcInput.new()
+	r.connect_device(0, { name = "pad", known = true })
+	r.poll(func(_d: int, axis: int) -> float: return 0.05 if axis == 2 else 0.0, DT)
+	_check("gamepad: inside the deadzone → 0", r.sticks().roll == 0.0)
+	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
+	_check("gamepad: full stick → 1", absf(r.sticks().roll - 1.0) < 1e-12)
+	var dz := 0.08
+	var m := (0.5 - dz) / (1.0 - dz)
+	r.poll(func(_d: int, axis: int) -> float: return 0.5 if axis == 2 else 0.0, DT)
+	_check("gamepad: half stick → deadzone + expo curve", absf(r.sticks().roll - (0.7 * m + 0.3 * m * m * m)) < 1e-12, str(r.sticks().roll))
+	_check("gamepad: armed from the start, throttle idle", r.armed and r.sticks().throttle == 0.0)
+	for i in 240:
+		r.poll(func(_d: int, axis: int) -> float: return -1.0 if axis == 1 else 0.0, DT)
+	_check("gamepad: left stick up for 1 s → throttle +0.5 (rate 0.5/s)", absf(r.sticks().throttle - 0.5) < 1e-9, str(r.sticks().throttle))
+	for i in 240:
+		r.poll(func(_d: int, axis: int) -> float: return 0.0, DT)
+	_check("gamepad: released stick holds the throttle", absf(r.sticks().throttle - 0.5) < 1e-9)
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

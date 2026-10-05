@@ -5,6 +5,7 @@
 extends SceneTree
 
 const ID := 15 # a real radio on the dev machine would take id 0
+const PROFILES := "user://test_e2e_rc_calibration.cfg"
 
 var _failures := 0
 var _main: Node
@@ -59,6 +60,8 @@ func _run() -> void:
 	_session = _main.session
 	_session.device_info = func(_device: int) -> Dictionary:
 		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
+	_session.profiles_path = PROFILES # never the pilot's real calibration file
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
 	_check("starts on the keyboard", not _session.radio.connected and _panel_has("input: keyboard"))
 
 	Input.joy_connection_changed.emit(ID, true)
@@ -102,6 +105,42 @@ func _run() -> void:
 	Input.joy_connection_changed.emit(ID, true)
 	await _settle()
 	_check("replug with the throttle stick high: SAFE, idle", not _session.radio.armed and _session.commands.throttle == 0.0, "position %.2f" % _session.radio.throttle_position())
+
+	# D6b: calibrate a radio whose aileron is on axis 3 and rudder on axis 0 (swapped from the default).
+	for a in [0, 1, 3]:
+		_motion(a, 0.0)
+	_motion(2, -1.0)
+	await _settle()
+	_key(KEY_K)
+	await _settle()
+	_check("K starts the calibration (paused, step 1)", _panel_has("CALIBRATION 1/5") and _session.sim.paused, (_main._panel as Label).text)
+	_key(KEY_ENTER) # rest
+	await _settle()
+	for move in [[2, [1.0, -1.0]], [3, [1.0, -1.0, 0.0]], [1, [-1.0, 1.0, 0.0]], [0, [1.0, -1.0, 0.0]]]:
+		for v in move[1]:
+			_motion(move[0], v)
+			await _settle()
+		_key(KEY_ENTER)
+		await _settle()
+	var p: Dictionary = _session.radio.profile
+	_check("calibrated: aileron axis 3, rudder axis 0, elevator inverted", p.roll.axis == 3 and p.yaw.axis == 0 and p.pitch.invert and p.throttle.axis == 2, str(p))
+	_check("calibration saved for this device", FileAccess.file_exists(PROFILES) and _panel_has("radio calibrated"))
+	_key(KEY_P)
+	await _settle()
+	_motion(3, 1.0)
+	await _settle()
+	_check("after calibration: axis 3 flies the ailerons; armed by the low throttle", _session.commands.roll == 1.0 and _session.radio.armed, str(_session.commands))
+	Input.joy_connection_changed.emit(ID, false)
+	await _settle()
+	Input.joy_connection_changed.emit(ID, true)
+	await _settle()
+	_check("replug loads the saved calibration", _session.radio.profile_source == "calibrated" and _session.radio.profile.roll.axis == 3)
+	_key(KEY_K)
+	await _settle()
+	_key(KEY_ESCAPE)
+	await _settle()
+	_check("Esc cancels; the calibration stays", _session.calibration == null and _session.radio.profile.roll.axis == 3)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
 
 	print("all e2e radio checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

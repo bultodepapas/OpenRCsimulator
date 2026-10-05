@@ -4,7 +4,8 @@
 # model: mass_kg, inertia (PackedFloat64Array [Jxx Jyy Jzz Jxy Jxz Jyz], body FRD, about the inventory's own
 #        centre of mass: the honest estimate of the mass distribution; flight uses the plan CG, see warnings),
 #        cg_le / cg_inventory_le (PackedFloat64Array [x_aft, y_right, z_up], m), reference {S, b, c, arp_le},
-#        aero {name: float}, conventions {…}, controls {throw_deg, throw_rad: {aileron, elevator, rudder}}, id.
+#        aero {name: float}, conventions {…}, controls {throw_deg, throw_rad: {aileron, elevator, rudder},
+#        servo_rate (full throws per second)}, id.
 extends RefCounted
 
 const FORMAT := "openrc-aircraft v1"
@@ -248,4 +249,5 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 		if x != null:
 			deg[surface] = x
 			rad[surface] = deg_to_rad(x)
-	return { throw_deg = deg, throw_rad = rad }
+	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
+	return { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }

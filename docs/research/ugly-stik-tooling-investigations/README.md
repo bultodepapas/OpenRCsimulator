@@ -28,3 +28,5 @@ Las herramientas aplazadas no se convierten en requisitos del modelo: Blender, r
 El repositorio fija **Godot 4.7.2** y Compatibility; las páginas Godot consultadas corresponden a **4.7**. La documentación de una API no demuestra su resultado en nuestras mallas. Las pruebas propuestas no se ejecutaron en esta ronda, ni se midió rendimiento. Las cifras y pruebas v3 citadas son antecedentes registrados, no una nueva validación del árbol compartido.
 
 Los enlaces primarios están junto a cada hallazgo. [sources.json](sources.json) recoge URLs, informes y hashes para recuperar esta revisión; no copia los sitios ni concede derechos de redistribución. La documentación del otro desarrollador sobre simulación y cámaras queda fuera del alcance.
+
+Comprobación documental de esta entrega: diez informes numerados, 64 URLs citadas, 115 enlaces locales revisados entre informes/índice/planes/lecciones sin destinos ausentes, diez hashes verificados y `git diff --check` sin errores en el alcance documental. No se ejecutó la suite de simulación por este cambio de documentación.

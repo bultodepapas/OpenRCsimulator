@@ -1,0 +1,437 @@
+{
+  "schema": "openrc-tooling-research-index-v1",
+  "consulted_on": "2026-10-05",
+  "scope": "Ten new internet investigations for Ugly Stik .61 visual plan revision 4",
+  "method": "Official documentation, first-party repositories and specifications researched on the web, with read-only inspection of current model and validation code. Per-report citations distinguish documented capabilities, local observations, recommendations and pending trials.",
+  "implementation_tests_run": false,
+  "dependencies_installed": false,
+  "reports": [
+    {
+      "path": "01-polygons-and-meshes.md",
+      "sha256": "4c6937ca162cba6646731caf5c79efa22012447f010632572b8196101b3ff6f3"
+    },
+    {
+      "path": "02-material-resources.md",
+      "sha256": "f94693db2fdc2e1ed200b5a7159b7079e087a2c69d47a7b179035caf974bd1b5"
+    },
+    {
+      "path": "03-curves-and-articulation.md",
+      "sha256": "37c6fd2a0a00631953c518e5f0a6141a133c4bbc2f0caffba5be41723c9b2f56"
+    },
+    {
+      "path": "04-svg-toolchain.md",
+      "sha256": "317ea19cd03608ead2b9f630595a160fb689519df02f95eb02e60101170c65a3"
+    },
+    {
+      "path": "05-blender-gltf.md",
+      "sha256": "512501796ce95c0a3279852c2f6c5df29508e58d34e1eb03a58c3f2cb4582f5c"
+    },
+    {
+      "path": "06-gltf-validation.md",
+      "sha256": "c56b114ba4899e773ee52a15015f2f21608a4dbd0a657eb4568b8f219917610f"
+    },
+    {
+      "path": "07-mesh-audit-libraries.md",
+      "sha256": "db70048c17639a9db0f81b606724af7ef36680b3c163911b16383323fdf53a84"
+    },
+    {
+      "path": "08-image-regression.md",
+      "sha256": "270ac33ff708fede1d02725bf9dd7dc2eeb057425910b8f954e60d467f60c81a"
+    },
+    {
+      "path": "09-import-ci-tests.md",
+      "sha256": "4c140c56f90ff2cf57ff3bc494fdd30bf71cc48632cdc1791934fe4ec45c84b3"
+    },
+    {
+      "path": "10-gpu-profiling.md",
+      "sha256": "86f74010def67926dc3a1b2baf14c7160a82fd18bc051b6bfc33ae68873fde3a"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://docs.blender.org/manual/en/5.0/addons/import_export/scene_gltf2.html",
+      "reports": [
+        "05-blender-gltf.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/about/complying_with_licenses.html",
+      "reports": [
+        "05-blender-gltf.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_arraymesh.html",
+      "reports": [
+        "01-polygons-and-meshes.md",
+        "03-curves-and-articulation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_curve3d.html",
+      "reports": [
+        "03-curves-and-articulation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_geometry2d.html",
+      "reports": [
+        "01-polygons-and-meshes.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_json.html",
+      "reports": [
+        "02-material-resources.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_mesh.html",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_meshinstance3d.html",
+      "reports": [
+        "02-material-resources.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_multimesh.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_node3d.html",
+      "reports": [
+        "03-curves-and-articulation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_pathfollow3d.html",
+      "reports": [
+        "03-curves-and-articulation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_resource.html",
+      "reports": [
+        "02-material-resources.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_skeleton3d.html",
+      "reports": [
+        "03-curves-and-articulation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_standardmaterial3d.html",
+      "reports": [
+        "02-material-resources.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_surfacetool.html",
+      "reports": [
+        "01-polygons-and-meshes.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/architecture/internal_rendering_architecture.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/development/profiling/tracy.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+      "reports": [
+        "05-blender-gltf.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/model_export_considerations.html",
+      "reports": [
+        "05-blender-gltf.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html",
+      "reports": [
+        "04-svg-toolchain.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/best_practices/version_control_systems.html",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/performance/gpu_optimization.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/debugger_panel.html",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/scripting/resources.html",
+      "reports": [
+        "02-material-resources.md"
+      ]
+    },
+    {
+      "url": "https://github.com/KhronosGroup/glTF-Validator",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://github.com/baldurk/renderdoc",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://github.com/baldurk/renderdoc/blob/v1.x/LICENSE.md",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://github.com/baldurk/renderdoc/releases",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://github.com/bitwes/Gut",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://github.com/bitwes/Gut/releases/tag/v9.7.1",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godot-gdunit-labs/gdUnit4",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godot-gdunit-labs/gdUnit4/blob/master/LICENSE",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/modules/gltf/gltf_document.cpp#L6619-L6647",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/modules/gltf/gltf_document.cpp#L7013-L7020",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://github.com/linebender/resvg",
+      "reports": [
+        "04-svg-toolchain.md"
+      ]
+    },
+    {
+      "url": "https://github.com/linebender/resvg/blob/main/crates/resvg/src/main.rs",
+      "reports": [
+        "04-svg-toolchain.md"
+      ]
+    },
+    {
+      "url": "https://github.com/mapbox/pixelmatch",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://github.com/mapbox/pixelmatch/blob/main/package.json",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://github.com/mikedh/trimesh/blob/5.1.1/LICENSE.md",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://github.com/scikit-image/scikit-image/blob/main/LICENSE.txt",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://github.com/scikit-image/scikit-image/blob/main/pyproject.toml",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://github.com/wolfpld/tracy/blob/master/LICENSE",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://github.com/wolfpld/tracy/releases",
+      "reports": [
+        "10-gpu-profiling.md"
+      ]
+    },
+    {
+      "url": "https://github.com/zeux/meshoptimizer",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/inkscape/inkscape/-/blob/master/COPYING",
+      "reports": [
+        "04-svg-toolchain.md"
+      ]
+    },
+    {
+      "url": "https://gltf-transform.dev/cli",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://gltf-transform.dev/modules/functions/functions/join",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://gltf-transform.dev/modules/functions/functions/meshopt",
+      "reports": [
+        "06-gltf-validation.md"
+      ]
+    },
+    {
+      "url": "https://godotengine.org/article/uid-changes-coming-to-godot-4-4/",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://gut.readthedocs.io/en/v9.7.1/",
+      "reports": [
+        "09-import-ci-tests.md"
+      ]
+    },
+    {
+      "url": "https://pillow.readthedocs.io/en/stable/about.html",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://pillow.readthedocs.io/en/stable/about.html#license",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://pillow.readthedocs.io/en/stable/reference/ImageChops.html",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://pillow.readthedocs.io/en/stable/reference/ImageStat.html",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://pypi.org/project/trimesh/5.1.1/",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://scikit-image.org/docs/stable/api/skimage.metrics.html",
+      "reports": [
+        "08-image-regression.md"
+      ]
+    },
+    {
+      "url": "https://trimesh.org/install.html",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://trimesh.org/install.html#dependency-overview",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://trimesh.org/trimesh.collision.html",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://trimesh.org/trimesh.html",
+      "reports": [
+        "07-mesh-audit-libraries.md"
+      ]
+    },
+    {
+      "url": "https://wiki.inkscape.org/wiki/Using_the_Command_Line",
+      "reports": [
+        "04-svg-toolchain.md"
+      ]
+    },
+    {
+      "url": "https://www.blender.org/about/license/",
+      "reports": [
+        "05-blender-gltf.md"
+      ]
+    }
+  ]
+}

@@ -9,6 +9,7 @@ extends Node
 const Commands := preload("res://input/commands.gd")
 const Keyboard := preload("res://input/keyboard.gd")
 const RcInput := preload("res://input/rc_input.gd")
+const RcCalibration := preload("res://input/rc_calibration.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -19,6 +20,11 @@ const Propulsion := preload("res://physics/propulsion.gd")
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
+
+## Auxiliary simulation state (advanced once per tick in _pre_step): engine rpm, then the servos' actual positions
+## (roll, pitch, yaw in command units, −1…1 of each surface's throw, trims included).
+const AUX_RPM := 0
+const AUX_SERVO := 1
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
 var sim: Node
@@ -39,7 +45,11 @@ var read_axis: Callable = func(device: int, axis: int) -> float: return Input.ge
 var device_info: Callable = func(device: int) -> Dictionary:
 	var info := Input.get_joy_info(device)
 	return { guid = Input.get_joy_guid(device), name = Input.get_joy_name(device),
-		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0) }
+		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0), known = Input.is_joy_known(device) }
+## Saved radio calibrations, one per device key.
+var profiles_path := "user://rc_calibration.cfg"
+## The calibration wizard while it runs, else null.
+var calibration: RefCounted = null
 ## Why the session paused the simulation ("" = it did not), for the panel.
 var pause_reason := ""
 ## false: commands hold still (captures, headless traces).
@@ -63,7 +73,7 @@ func setup(path := Scenarios.AIRCRAFT) -> void:
 		sim.mass = m.mass_kg
 		sim.inertia = m.inertia
 		sim.loads = _loads
-		sim.pre_step = _engine_pre_step
+		sim.pre_step = _pre_step
 		start = Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad)
 		if start.ok:
 			trims = { roll = start.roll_command, pitch = start.pitch_command, yaw = start.yaw_command }
@@ -91,11 +101,41 @@ func _input(event: InputEvent) -> void:
 
 func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 	if is_connected and not radio.connected:
-		radio.connect_device(device, device_info.call(device))
-		print("radio connected: ", radio.device_key)
+		var info: Dictionary = device_info.call(device)
+		radio.connect_device(device, info, RcCalibration.load_profile(profiles_path, RcInput.key_for(device, info)))
+		print("radio connected: %s (%s profile)" % [radio.device_key, radio.profile_source])
 	elif not is_connected and radio.connected and device == radio.device_id:
+		calibration = null
 		radio.disconnect_device()
 		_failsafe("radio disconnected")
+
+
+## [K]: start the radio calibration wizard. The simulation pauses and the engine idles until it is done.
+func start_calibration() -> bool:
+	if not radio.connected:
+		return false
+	calibration = RcCalibration.new()
+	_failsafe("calibrating radio")
+	return true
+
+
+## [Enter]: next calibration step. When the wizard finishes, the profile is used and saved for this device.
+func advance_calibration() -> void:
+	if calibration == null:
+		return
+	if calibration.advance(radio.axes):
+		radio.use_profile(calibration.profile, "calibrated")
+		var err := RcCalibration.save_profile(profiles_path, radio.device_key, calibration.profile)
+		calibration = null
+		pause_reason = "radio calibrated%s" % ("" if err == OK else ", NOT saved (error %d)" % err)
+		print(pause_reason, ": ", radio.device_key)
+
+
+## [Esc]: abandon the wizard; the previous profile stays.
+func cancel_calibration() -> void:
+	if calibration != null:
+		calibration = null
+		pause_reason = "calibration cancelled"
 
 
 ## Engine to idle, sticks centred (trims stay, like a hands-off airplane), simulation paused until resume().
@@ -117,8 +157,11 @@ func resume() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if input_enabled:
-		if radio.connected:
-			radio.poll(read_axis)
+		if radio.connected and calibration != null:
+			radio.poll(read_axis, sim.dt())
+			calibration.sample(radio.axes)
+		elif radio.connected:
+			radio.poll(read_axis, sim.dt())
 			commands = radio.sticks()
 			raw = commands.duplicate()
 			raw.throttle = radio.throttle_position() # the stick, even while the throttle is held at idle
@@ -136,9 +179,10 @@ func reset() -> void:
 	commands = Commands.neutral_commands()
 	if start.get("ok", false):
 		commands.throttle = start.throttle
-		sim.aux = PackedFloat64Array([start.rpm])
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()
+	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
+	sim.aux = PackedFloat64Array([start.get("rpm", 0.0), sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	sim.reset(start.state if start.get("ok", false) else Scenarios.throw_across_view())
 	# Never fly on invalid aircraft data: stay paused and show why.
 	sim.set_paused(not aircraft.ok)
@@ -153,6 +197,15 @@ func flown_commands() -> Dictionary:
 	return c
 
 
+## The surfaces' actual positions (servo outputs) as commands { roll, pitch, yaw, throttle }: what the airplane flies
+## with and what the renderer should draw. Without physics (scripted mode): the flown commands.
+func surfaces() -> Dictionary:
+	if not physics_enabled or not aircraft.get("ok", false):
+		return flown_commands()
+	var a: PackedFloat64Array = sim.aux
+	return { roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2], throttle = sim.inputs[3] }
+
+
 ## Maximum surface throws in degrees from the loaded aircraft ({} without valid data: Commands' default).
 func throws_deg() -> Dictionary:
 	return aircraft.model.controls.throw_deg if aircraft.get("ok", false) else {}
@@ -163,21 +216,26 @@ func _inputs() -> PackedFloat64Array:
 	return PackedFloat64Array([f.roll, f.pitch, f.yaw, f.throttle])
 
 
-## Simulation loads: aerodynamics (D3) + propulsion (D5) from the flown commands, in calm air.
+## Simulation loads: aerodynamics (D3) + propulsion (D5) from the servos' actual positions, in calm air.
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
-	var i: PackedFloat64Array = sim.inputs
-	var surfaces := Commands.surface_deflections_deg({ roll = i[0], pitch = i[1], yaw = i[2], throttle = i[3] }, throws_deg())
+	var a: PackedFloat64Array = sim.aux
+	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
 	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]))
 	var l := Aero.loads(s, air, Aero.deflections_from_surfaces(surfaces), aircraft.model, Air.RHO_SEA_LEVEL)
-	var p := Propulsion.loads(air.v_air, sim.aux[0], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
+	var p := Propulsion.loads(air.v_air, a[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
 	for k in 6:
 		l[k] += p[k]
 	return l
 
 
-## Engine rpm follows the throttle with its lag, once per physics tick (deterministic).
-func _engine_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
-	return PackedFloat64Array([Propulsion.rpm_step(aux[0], inputs[3], dt, aircraft.model.propulsion)])
+## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5);
+## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
+func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	var out := PackedFloat64Array([Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, aircraft.model.propulsion), 0.0, 0.0, 0.0])
+	var rate: float = aircraft.model.controls.servo_rate
+	for k in 3:
+		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)
+	return out
 
 
 ## Header lines for a flight trace of this session.

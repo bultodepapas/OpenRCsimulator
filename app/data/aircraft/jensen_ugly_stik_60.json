@@ -548,6 +548,12 @@
         "kind": "estimated",
         "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
       }
+    },
+    "servo_full_throw_time": {
+      "value": 0.14,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface"
     }
   },
   "aero": {

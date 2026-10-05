@@ -59,7 +59,7 @@ func _initialize() -> void:
 
 	# CSV: metadata first, one header, units on physical columns, same width on every row.
 	var lines := trace.to_csv().strip_edges().split("\n")
-	_check("first line names the format", lines[0] == "# format: openrc-trace v2", lines[0])
+	_check("first line names the format", lines[0] == "# format: openrc-trace v3", lines[0])
 	var header := ""
 	var data := 0
 	var widths_ok := true
@@ -75,7 +75,7 @@ func _initialize() -> void:
 	_check("every data row has every column", widths_ok and data == 361, "%d rows" % data)
 	var unitless := []
 	for c in Trace.COLUMNS:
-		var dimensionless: bool = c in ["tick", "qw", "qx", "qy", "qz"] or c.begins_with("cmd_")
+		var dimensionless: bool = c in ["tick", "qw", "qx", "qy", "qz"] or c.begins_with("cmd_") or c.begins_with("srv_")
 		if c.ends_with("_rpm"):
 			continue # rpm is its own unit
 		if not dimensionless and not (c.ends_with("_m") or c.ends_with("_s") or c.ends_with("_mps") or c.ends_with("_deg") or c.ends_with("_radps") or c.ends_with("_N") or c.ends_with("_Nm")):

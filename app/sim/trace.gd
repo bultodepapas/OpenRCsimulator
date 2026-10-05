@@ -5,7 +5,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const FORMAT := "openrc-trace v2" # v2: + engine_rpm
+const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
 const COLUMNS := [
 	"tick", "t_s",
 	"north_m", "east_m", "down_m", "alt_m",
@@ -15,6 +15,7 @@ const COLUMNS := [
 	"Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm",
 	"cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle",
 	"engine_rpm",
+	"srv_roll", "srv_pitch", "srv_yaw",
 ]
 
 var meta := {} # written as "# key: value" lines above the header
@@ -47,7 +48,8 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	]))
 	_rows.append_array(loads)
 	_rows.append_array(inputs)
-	_rows.append(aux[0] if aux.size() > 0 else 0.0)
+	for i in 4: # [engine_rpm, srv_roll, srv_pitch, srv_yaw]; missing entries record as 0
+		_rows.append(aux[i] if aux.size() > i else 0.0)
 
 
 ## Ticks that are missing between consecutive rows (a recorder that drops samples must be visible).

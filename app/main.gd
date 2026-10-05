@@ -74,9 +74,9 @@ func _process(delta: float) -> void:
 	_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
 	if _engine_audio != null:
 		_engine_phase = EngineSound.update(_engine_audio, _engine_phase, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
-	var flown: Dictionary = session.flown_commands()
-	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), flown, session.throws_deg())
-	_render_pose(_current_pose(), flown, _prop_angle)
+	var surfaces: Dictionary = session.surfaces()
+	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
+	_render_pose(_current_pose(), surfaces, _prop_angle)
 
 
 func _status() -> String:
@@ -91,6 +91,11 @@ func _status() -> String:
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
 	line += "\n" + session.radio.describe()
+	if session.calibration != null:
+		line += "\nCALIBRATION %s  [Esc] cancel" % session.calibration.prompt()
+		if session.calibration.error != "":
+			line += "\n  " + session.calibration.error
+		line += "\n  axes " + " ".join(Array(session.radio.axes).map(func(v): return "%+.2f" % v))
 	if sim.paused:
 		line += "\nPAUSED%s  [P] resume" % ("" if session.pause_reason == "" else " (%s)" % session.pause_reason)
 	if recorder.recording:
@@ -128,6 +133,12 @@ func _unhandled_input(event: InputEvent) -> void:
 					recorder.start(session.trace_meta())
 			KEY_C:
 				_inspect = not _inspect
+			KEY_K:
+				session.start_calibration()
+			KEY_ENTER, KEY_KP_ENTER:
+				session.advance_calibration()
+			KEY_ESCAPE:
+				session.cancel_calibration()
 
 
 ## One file never mixes two flights.
@@ -214,11 +225,12 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 		for i in roundi(t / sim.dt()):
 			sim.step()
 		sim.set_paused(true)
-		c = session.commands # physics captures show the real (trimmed) commands, not capture arguments
-	var flown: Dictionary = c if _scripted else session.flown_commands()
-	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), flown, session.throws_deg())
+		c = session.commands # physics captures show the real commands, not capture arguments
+	# Surfaces as flown: physics captures draw the servos' actual positions (trims included), like live rendering.
+	var surfaces: Dictionary = c if _scripted else session.surfaces()
+	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
-	_render_pose(pose, c, TAU * Commands.prop_rev_per_sec(c) * t)
+	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())

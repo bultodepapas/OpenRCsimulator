@@ -64,6 +64,7 @@ func _initialize() -> void:
 	# Control throws are aircraft data with provenance (D5.9), in degrees in the file.
 	_check("throws loaded (aileron 20°, elevator 20°, rudder 25°)", m.controls.throw_deg.aileron == 20.0 and m.controls.throw_deg.elevator == 20.0 and m.controls.throw_deg.rudder == 25.0, str(m.controls))
 	_check("throws also in radians", absf(m.controls.throw_rad.rudder - deg_to_rad(25.0)) < 1e-15)
+	_check("servo rate = 1 / full-throw time (D6c)", absf(m.controls.servo_rate - 1.0 / 0.14) < 1e-12, str(m.controls.servo_rate))
 
 	# Aero conventions are present, so D3+ cannot guess them.
 	for key in ["rates", "elevator", "aileron", "rudder", "drag", "axes"]:
@@ -86,6 +87,7 @@ func _initialize() -> void:
 	_rejects("throw in radians", func(d): d.controls.max_throw.rudder.unit = "rad", "unit 'rad'")
 	_rejects("missing elevator throw", func(d): d.controls.max_throw.erase("elevator"), "controls.max_throw.elevator")
 	_rejects("implausible throw", func(d): d.controls.max_throw.aileron.value = 90.0, "outside")
+	_rejects("servo time in milliseconds", func(d): d.controls.servo_full_throw_time.unit = "ms", "unit 'ms'")
 	var bad := AD.validate_and_derive({ format = "nope" })
 	_check("rejects garbage", not bad.ok)
 

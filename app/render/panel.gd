@@ -32,7 +32,7 @@ static func _f(v: float, decimals := 2) -> String:
 	return ("+" if v >= 0 else "") + String.num(v, decimals).pad_decimals(decimals)
 
 
-## c: stick commands; flown: commands actually applied (stick + trims). Surfaces show what the airplane really does.
+## c: stick commands; flown: the surfaces' actual positions as commands (servo outputs, trims included).
 ## throws_deg: the aircraft's maximum throws ({} = the data file's).
 static func update(label: Label, raw: Dictionary, c: Dictionary, view: String, status := "", flown := {}, throws_deg := {}) -> void:
 	var s := Commands.surface_deflections_deg(flown if not flown.is_empty() else c, throws_deg)
