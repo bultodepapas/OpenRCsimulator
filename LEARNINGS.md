@@ -4,6 +4,9 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **Verification is not validation.** Every handling check so far compared the sim with numbers computed from its own borrowed coefficients, so all of them could pass while the airplane feels wrong. Linearizing the real equations took ~80 lines and a few seconds (`research/flight-modes/`). It gave the first independent comparison: against a flight-identified Ultra Stick 120, the sim is 1.45× faster in pitch and 1.9× faster in roll. *Now:* each physics milestone needs one check against data we did not derive (ROADMAP rule 6). (2026-10-05)
+- **Compare like with like before concluding.** At the same airspeed the sim's modes looked 1.6–2.9× faster than the Ultra Stick 120's; at the same lift coefficient (our wing loading is half theirs) the gap was 1.16–1.9×. The scaling choice changed the conclusion. *Now:* comparisons between airplanes state their scaling (Froude, same CL). (2026-10-05)
+
 - **Prop torque decides whether "hands-off" means anything.** With a longitudinal-only trim, the 0.1 N·m cruise torque rolled the airplane into a spiral: 26 m lost in 30 s. Six-axis trim needs only 2.2 % right aileron, like a real nitro Stik. Physics that pilots *feel* (torque, trim) belongs in the first flyable version. (2026-10-05)
 - **The panel must show what the airplane actually does.** The capture panel showed a capture argument (throttle 50 %) and stick-only surfaces while the engine ran at 28 % with trims applied. *Now:* surfaces show stick plus trims, and physics captures show the real commands. (2026-10-05)
 
@@ -57,6 +60,15 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **three.js is one ~530 KB chunk (132 KB gzip).** Vite warns about chunks over 500 KB; harmless for now. (2026-10-05)
 
 ## Godot specifics
+
+- **Read the engine source when the docs are thin; Godot's docs can be out of date.** Reading the 4.7.2-stable tag found facts no doc page states:
+  - a universal macOS export fails without `import_etc2_astc`;
+  - `.json` files are exported only through an include filter;
+  - joystick axes read 0 until moved;
+  - accumulated input delays joypads one frame on Linux/macOS;
+  - `agile_event_flushing` works on every platform, although the docs say Android only.
+
+  Godot's macOS page still recommends right-click → Open, which macOS 15 removed. *Now:* risky platform steps (input, export) start with a source read of the pinned tag. (2026-10-05)
 
 - **Aerodynamics and propulsion doubled the physics cost:** 85 → ~185 µs per RK4 step (four derivative evaluations, each doing Dictionary lookups of coefficients), still 21–24× real time at 240 Hz on this VM. If headroom is ever needed, flattening the coefficient Dictionaries into arrays is the cheap first move. (2026-10-05)
 

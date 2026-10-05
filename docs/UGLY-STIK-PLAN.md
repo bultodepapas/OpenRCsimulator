@@ -13,7 +13,7 @@ El objetivo es un avión reconocible, articulado y legible para el primer playte
 | US-03 · D1 | Estaciones posteriores y unión de cola corregidas; comparación de perfil/planta; asiento alar conservado | Cota reservada fuera del ajuste: residuos absolutos 0,032 mm techo, 0,020 mm vientre, 1,266 mm ancho, dentro de 3/3/6 mm declarados. **Implementación cerrada**, no precisión física certificada |
 | US-04 · D1/B5 | Empenaje trazado, bisagras reubicadas, alivios, recorte del elevador y piezas ventrales | 99 pares/poses de cola sin fallo; prueba de penetración y contención, mutación detectada. **Implementación cerrada** para poses muestreadas |
 | US-05 · D1/B5 | Puntas y alerones según planta, sección normalizada desde costilla, sombreado suave | 30 pares/poses alares sin fallo; signos y cotas del contrato conservados. [Límites del ala](research/ugly-stik-model-v3-wing.md). **Implementación cerrada**; incidencia y diedro continúan estimados |
-| US-06 · D7/Gate 2 | Ensayo de orientación 20/50/100 m, seis actitudes y dos fondos; formulario local y clave oculta | [36 casos listos](../research/ugly-stik/model-v3/captures/review.html). **Preparación completa; respuestas del piloto pendientes**. No se decide otra decoración sin esos datos |
+| US-06 · D7/Gate 2 | Ensayo de orientación 20/50/100 m, seis actitudes y dos fondos; formulario local y clave oculta | [36 casos listos](../research/ugly-stik/model-v3/captures/review.html). **Preparación completa; respuestas del piloto pendientes**. La nueva decoración roja con cruces fue elegida después por el propietario; estos datos servirán para ajustar su lectura |
 | US-07 · E1/E2 | Motor .61 genérico, escape, anclajes, pivotes de rueda/dirección, contactos y conversión de marcos | [Entrega a física](research/ugly-stik-model-v3-installation.md). **Preparación completa**; contacto/taxi pertenecen a E1/E2 y la marca del motor sigue abierta |
 | US-08 · Gate 2/M5 | Sujeción del ala, accesorios visibles y materiales; presupuesto geométrico registrado | 54 mallas, 4.816 triángulos, 5 materiales. **Detalle inicial completo; medición en hardware pendiente**. No se justifica LOD con llvmpipe |
 
@@ -21,7 +21,7 @@ El contrato integrado pasa **510 comprobaciones**, y `app/test.sh` pasa en el á
 
 ## Siguiente entrega visual
 
-El propietario ha elegido rojo clásico con cruces y mayor detalle de motor, servos y herrajes. El [plan visual específico](UGLY-STIK-VISUAL-PLAN.md) organiza US-V01–08 y continúa US-06/07/08. Esta elección autoriza avanzar en el acabado; el ensayo humano pendiente servirá para ajustar su legibilidad. La implementación visual todavía está pendiente.
+El propietario ha elegido rojo clásico con cruces y mayor detalle de motor, servos y herrajes. El [plan visual específico](UGLY-STIK-VISUAL-PLAN.md) organiza US-V01–08 y continúa US-06/07/08. La revisión 2 del plan visual incorpora las [dos fotografías aportadas](research/ugly-stik-visual-photo-brief.md): campos blancos exteriores con cruces negras, puntas rojas, filetes oscuros y cola vertical blanca. Esta elección autoriza avanzar en el acabado; el ensayo humano pendiente servirá para ajustar su legibilidad. La implementación visual todavía está pendiente.
 
 ## Siguiente ciclo de aceptación
 

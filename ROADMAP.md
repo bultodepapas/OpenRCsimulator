@@ -1,6 +1,6 @@
 # Roadmap
 
-Revised **2026-10-05** after two self-reviews (the second, "from infrastructure to a game", is at the end) of the first plan (weak points and fixes are [at the end](#review-weak-points-found-and-how-the-plan-fixes-them)). It builds on [RESEARCH.md](RESEARCH.md), [STACK.md](STACK.md) and [DECISIONS.md](DECISIONS.md).
+Revised **2026-10-05** after three reviews (the second, "from infrastructure to a game", and the third, a senior review before D6, are at the end) of the first plan (weak points and fixes are [at the end](#review-weak-points-found-and-how-the-plan-fixes-them)). It builds on [RESEARCH.md](RESEARCH.md), [STACK.md](STACK.md) and [DECISIONS.md](DECISIONS.md).
 
 **Be water, but on solid ground:** each step is small, has one objective proof, and leaves the project working. Steps go from basic to advanced; nothing advanced starts before its foundation is proven. If a step teaches us the route is wrong, we change the route and record why.
 
@@ -11,6 +11,9 @@ Revised **2026-10-05** after two self-reviews (the second, "from infrastructure 
 3. **Known answers before unknown answers:** test the math and integrator against exact solutions before adding aerodynamics, whose answers we don't know.
 4. **Guesses are labeled:** every parameter carries its source and evidence kind (`manual`, `borrowed`, `estimated`, `measured`).
 5. **Gates are real stops:** at a gate we decide with the evidence collected, and record the decision.
+6. **Verification is not validation.** A check against numbers computed from our own data proves the code; only independent data (flight tests, real-airplane measurements, pilots) proves realism. Each physics milestone needs at least one of each.
+7. **Budgets are measured:** physics ≤ 0.5 ms per 240 Hz tick (≤ 2 ms per 60 fps frame) on the owner's slowest machine. Every aero step reports µs/tick before and after. Over budget after the cheap fixes (flat arrays instead of Dictionaries, fewer allocations) → the C++ GDExtension escape hatch (DECISIONS).
+8. **One team per commit.** Stage your own paths (never `git add -A` while the other team has work in progress) and state the proof in the message. Each step ends with a ready-to-paste commit message.
 
 ## Where we are
 
@@ -24,11 +27,22 @@ Revised **2026-10-05** after two self-reviews (the second, "from infrastructure 
   Each step's proof is in its table row below; the lessons are in LEARNINGS.md.
 - **State:** 211 physics/input checks, 453 model-contract checks and an app-level trimmed-flight check; full suite ~30 s.
   - **The Ugly Stik flies trimmed level flight with its engine running:** six-axis aero; .61 glow engine with APC 12×6 thrust and torque; six-axis trim (throttle, elevator, aileron, rudder) applied like radio trims; positional engine sound.
-- **Next:** D6, flying with keyboard and radio (raw joystick axes, calibration).
-- **Alpha (v0.1 = PT1) readiness, about 60 %:**
+- **Next:** D5.9 (seams before input: split `main.gd`, controls data into the aircraft file, commands stepped per physics tick), then D6 radio input. Plan review #3 (end of this file) rewrote D6–D9 and PT1 with researched risks.
+- **Alpha (v0.1 = PT1) readiness, about 45 % (plan review #3 found more work than the previous 60 % counted):**
   - **Done:** D1–D5.
-  - **Left:** D6 radio input, D7 pilot aids (ground shadow, HUD, zoom, FPS), D9 stall and crash, PT1 release builds, and D8, a cheap handling check. That is roughly 4–5 working sessions.
-  - **Risks:** the owner's radio on their OS (this VM has no USB devices), export templates and the unsigned macOS build, and whether the borrowed aero *feels* like a Stik (Gate 2).
+  - **Left:**
+    - D5.9 seams;
+    - D6a–d radio (arming safety, calibration, servo model);
+    - D7 pilot aids (shadow, HUD, auto-zoom, hot reload);
+    - D8a–b verification, flight modes, golden flights, independent validation;
+    - D9a–d full-envelope stall, asymmetric stall, gyro, crash;
+    - PT1a–g release builds.
+  - **Estimate:** roughly 7–9 working sessions (a guess).
+  - **Risks (researched, see RESEARCH.md plan review #3):**
+    - On Linux an EdgeTX radio in Classic USB mode probably becomes an SDL *gamepad* (throttle as a 0..1 trigger, Ch7/8 lost).
+    - Joystick axes read 0 until moved, so a resting throttle reads as mid-throttle.
+    - The macOS universal export fails without `import_etc2_astc`.
+    - Whether the borrowed aero *feels* like a Stik: its flight modes are 1.45× (pitch) and 1.9× (roll) faster than a flight-identified Ultra Stick 120 (Gate 2).
   - **Alpha will not have:** runway takeoff and landing (M2), wind, a radio setup screen, a realistic engine response, or menus. It starts in the air.
 - **M1 so far, measured against the predicted-handling table:**
   - trim α 3.71° at 15 m/s (predicted 3.6°); thrust needed 3.00 N (predicted 2.93);
@@ -82,7 +96,7 @@ Every milestone keeps the small-step rule (one proof per step) and ends with a *
 
 ### Predicted handling: targets the sim must reproduce
 
-Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`, 2.601 kg, 720 in², borrowed UltraStick25e aero). These are **predictions to check, not measurements**; a big miss means a bug or bad data, a small one is a tuning question.
+Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`, 2.601 kg, 720 in², borrowed UltraStick25e aero). These are **predictions to check, not measurements**; a big miss means a bug or bad data, a small one is a tuning question. **They come from the same coefficients the simulation uses, so matching them verifies the code, not the realism** (rule 6). Independent targets are in D8b.
 
 | Quantity | Predicted | Notes |
 | --- | --- | --- |
@@ -102,29 +116,46 @@ Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`,
 | D3 ✅ | **Full linear aero model, all six axes in one function** (the coefficients already exist), plus the mapping from our command conventions to the data's surface conventions (elevator +TE down, rudder +TE left…) | Hand-computed loads at three states. Sign tests: +pitch command → nose-up moment, +roll → right roll, +yaw → nose right, sideslip → weathervane, rates → damping. A power-off glide trace shows L/D ≈ 8.7 at 15 m/s |
 | D4 ✅ | Trim solver (α, elevator, throttle) at a requested speed; failure is reported, never hidden | 15 m/s trims at α 3.6° ± 0.5°; an impossible request fails visibly |
 | D5 ✅ | Thrust v0: static thrust from the APC 12×6 data at a labeled rpm, falling with airspeed, first-order lag; **placeholder engine sound** whose pitch follows throttle | Level flight holds ±1 m for 30 s at trim; climb at full throttle is plausible; sound changes with throttle |
-| D6 | Flying from an air start at trim, with keyboard **and radio/gamepad raw axes**: channel mapping, center/endpoint calibration and inversion saved to `user://`, no deadzone (former F1 + F2, moved up because the owner has EdgeTX radios) | End-to-end test with injected joystick events; owner flies with the radio |
-| D7 | Pilot aids: **ground shadow** (the main height cue in RC), textured grass, HUD (airspeed, altitude, α), performance overlay (fps, physics µs/step), view zoom key | Captures show the shadow; perf overlay numbers recorded on the owner's machine |
-| D8 | Handling check against the predictions table: scripted roll, glide and slow-flight maneuvers through the real loop | Each predicted number reproduced within its band, recorded from traces |
-| D9 | Crude stall (lift cap + drag rise) and ground hit → crash → reset | High-α trace stays finite; recovery possible; crashing at any attitude resets cleanly |
-| PT1 | **Playtest kit v0.1:** Windows, Linux and macOS exports built by CI on a git tag (cached export templates, only these platforms), published as a GitHub release. macOS is unsigned: first launch via right-click → Open | The owner downloads, runs and flies it on each OS |
-| **Gate 2** | **"Is it flyable, readable and fun?"** The owner (and ideally 1–2 RC pilots) fly v0.1: readability at distance, feel versus a real Stik, radio setup friction, frame time | Notes recorded; M2 reordered if needed |
-| D10 | Sensitivity sweep (mass, CG, Cmα, CD0, inertia ±20 %) on the D8 maneuvers | A table ranking which unknowns matter; decides what to measure next |
+| D5.9 | **Seams before input and HUD.** Split `main.gd` (336 lines, nine jobs) into `flight_session.gd` (aircraft load, trim, reset, crash), `pilot_camera.gd` and `recorder.gd`. Move control throws (now estimates in `spec.gd`) into the aircraft data with provenance, and step the command shaping once per physics tick (`pre_step`) instead of per rendered frame | No behavior change: `--trace` output identical before and after (hash of the rows); captures identical; `test.sh` green. The 30/60/144 fps hash test now drives **the real app with injected key events**, not synthetic loads; a deliberate "shape with the frame delta" bug changes the hashes |
+| D6a | **Radio reader with safety rules.** `rc_input.gd` reads raw axes 0–9 once per physics tick into 64-bit floats. Device key = GUID + VID:PID + name. Set `Input.use_accumulated_input = false` (one frame of latency on Linux/macOS otherwise). **Arming:** the engine follows the stick only after the throttle has been *seen* at or below 5 % (axes read 0 = mid-throttle until moved). **Unplug:** throttle idle, surfaces neutral, visible pause (core of former F3) | Headless tests inject `InputEventJoypadMotion` on fake id 15: mapping, inversion, 0..1 trigger axes, arming, unplug failsafe. Never call `get_joy_guid` on a fake id. Removing the arming rule in a scratch copy fails a test |
+| D6b | **Calibration:** assign channels by "move the stick"; min/center/max per side (piecewise, handles 0..1 triggers); inversion; saved per device key in `user://rc_calibration.cfg`. Radios get no deadzone or expo; gamepads get a profile with both | Unit tests for the calibration math and the config round trip. The owner calibrates their radio without editing files |
+| D6c | **Servo model** between stick and surface, at the physics tick: slew rate in the aircraft data (labeled estimate, e.g. 0.12–0.20 s/60°). The keyboard keeps its rate limiter as an input-device profile, not as servo physics | Step test: full stick reaches full throw in the servo time. The trace shows the lag. The frame-rate hash test stays identical |
+| D6d | **Owner flies with the radio.** Recommended setup: EdgeTX Advanced mode, Interface = Joystick, ≤ 8 axes, RF modules off (1 ms reports). First compatibility rows (start of F4) | Owner session note; one F4 row per OS tried (device, firmware, USB mode, axes seen, gamepad or joystick) |
+| D7 | **Pilot aids:** ground shadow (the main RC height cue), textured grass, HUD (airspeed, altitude, α), performance overlay (fps, frame time p95, physics µs/tick). **Auto-zoom:** FOV narrows with distance, clamped, toggleable (a 720p screen at 50° resolves ~4× worse than the eye). **Hot reload:** a key reloads the aircraft JSON, re-trims and resets; invalid data keeps the old aircraft and shows why | Captures show the shadow. Pure-function test: with auto-zoom the projected span is ≥ 30 px from 20 to 150 m (≈ 12 px at 100 m today). Hot-reload test: an edited coefficient changes the trim, a broken file keeps the old aircraft with a message. Perf numbers recorded on the owner's machine |
+| D8a | **Verification and the first golden flights.** Scripted roll, glide and slow-flight maneuvers through the real loop reproduce the predicted-handling table. Flight modes (`research/flight-modes/`) become a test with bands at 10/15/25 m/s. The maneuver traces become **golden flights** (record per-tick inputs, replay, compare within tolerance; moved up from E4 because D9 changes the aero) | Each number within its band. The modes test fails on a deliberate Clp sign flip. A golden replay matches; a deliberate CD0 change is detected |
+| D8b | **Validation against independent data:** Froude-scaled UMN Ultra Stick 120 flight-identified modes (RESEARCH.md plan review #3); Dorobantu 2013 for the 25e if obtainable; real-Stik video measurements (roll rate, stall speed by frame counting) | A sim-vs-reference table with ratios. The 1.45× short-period and 1.9× roll gaps are either explained or become D10's first parameters |
+| D9a | **Full-envelope blend** (whole aircraft): sigmoid from the linear model to a flat plate (CL, CD with CD90 ≈ 1.2, CY in β for knife edge); α0 and blend sharpness labeled estimates. The linear model stays as the **test oracle** | Below 8° α, loads equal the linear model to 1e-9. Sweeps over α −180…180° and β −90…90° are finite and continuous (bounded jump per 0.1°); CL peaks at the labeled CLmax. **1-g slow flight with full up elevator stalls at 8.6–9.5 m/s** instead of parachuting at 7.0 m/s (α 21°, CL 1.77 today) |
+| D9b | **Asymmetric stall:** CRRCSim-style local CL at three spanwise stations (from p̂); a stalled station loses lift, giving roll and yaw | Traces: a cross-controlled stall drops a wing and autorotates; a symmetric stall at zero rates drops the nose without rolling; neutral controls recover |
+| D9c | **Gyroscopic precession** of propeller and crank (`−ω × H`, J_p labeled estimate ≈ 3e-4 kg·m²) | Sign test: clockwise prop (seen from behind), pull up → nose yaws right. Torque-free spin conserves total angular momentum with the term |
+| D9d | Ground hit → crash → reset | Crashing at any attitude resets cleanly; high-α traces stay finite |
+| PT1a | `app/get-templates.sh`: download the 1.28 GB `.tpz`, check its SHA-512 against `SHA512-SUMS.txt`, extract only the Linux, Windows and macOS templates into `export_templates/4.7.2.stable/` | First run prints the hash OK; second run is a no-op |
+| PT1b | `export_presets.cfg` (Windows x86_64 with embedded pck, Linux x86_64, macOS universal with built-in ad-hoc signing), `include_filter="data/*.json"`, `exclude_filter="tests/*"`; `import_etc2_astc=true` in `project.godot` (the macOS export fails without it) | Headless export of all three exits 0 with no `ERROR` lines; `test.sh` green |
+| PT1c | **Smoke-test the exported Linux binary:** `--headless -- --trace` passes `check_trimmed_flight.py` | Proves the JSON is inside the pack; dropping the include filter in a scratch copy fails it |
+| PT1d | macOS artifact check from Linux | `unzip -l` shows the executable with mode 0755; `rcodesign verify` (or `codesign -dv` on a Mac) reports an ad-hoc signature |
+| PT1e | CI `export` job on `main` and `workflow_dispatch`; template cache warmed on `main` (tag runs cannot see other tags' caches); third-party actions pinned by commit SHA | The second run logs a cache hit; artifacts downloadable |
+| PT1f | CI `release` job on `v*` tags: `gh release create` with three zips and `SHA256SUMS` | A `v0.1.0-rc1` tag produces a release with three assets |
+| PT1g | README "First launch": **macOS 15+ no longer accepts right-click → Open**; use System Settings → Privacy & Security → Open Anyway, or `xattr -dr com.apple.quarantine`. Windows: More info → Run anyway (Smart App Control blocks unsigned apps with no override) | The owner downloads, runs and flies v0.1 on each OS; notes in LEARNINGS.md |
+| **Gate 2** | **"Is it flyable, readable and fun?"** The owner (and ideally 1–2 RC pilots) fly v0.1 with a radio. **Measured in one session:** three circuits, a loop, a roll, a stall and recovery. Each axis (roll, pitch, yaw, throttle) rated −2 (sluggish) … +2 (twitchy) against a real Stik. Orientation read correctly at 100 m with and without auto-zoom. Radio setup time. Frame time p95 and physics µs/tick | Notes and ratings recorded. Any rating beyond ±1 sets the D10 order; M2 reordered if needed |
+| D10 | Sensitivity sweep on the D8 maneuvers and flight modes, in this order: Clp, Cmq, Ixx, Iyy (inventory is 1.7× a Roskam-typical value), servo lag, CLmax/α0, CD0, CG, mass | A table ranking which unknowns matter; decides what to measure next |
+| **Gate F** | **Flight-model architecture before M2.** Keep the whole-aircraft model with fixes, or grow a component buildup (tail surfaces → propwash → wing panels)? Evidence: the D8b table, D9 behavior, Gate 2 ratings, physics µs/tick. Default proposal: grow the buildup one surface group at a time, each matching the linear oracle at small α | Decision recorded in DECISIONS.md with the evidence |
 
 ### M2 — Takeoff and landing
 
 | # | Step | Proof |
 | --- | --- | --- |
+| E0a | Horizontal and vertical tail as separate surfaces (local α from q·l and r·l, downwash lag), geometry read from the model team's `ugly_stik_geometry.gd`; the whole-aircraft derivatives lose their tail share | Linearized Cmα, Cmq, Cnβ and Cnr within ±10 % of the oracle at trim; the modes test stays within its bands; µs/tick reported |
+| E0b | **Propwash on the tail** (momentum theory with contraction, washed fraction of each surface, labeled lag). Moved up from M5: at 5 m/s and full throttle the washed tail sees ≈ 35× the freestream dynamic pressure | At V = 0 and full throttle, elevator and rudder produce moments; at cruise the factor is ≤ 1.3× (the computed bound) |
 | E1 | Tricycle gear contact points as spring-dampers; stiffness from a natural-frequency rule (`ω·dt < 0.1`) | Drop test: no energy gain; agrees across `h` and `h/2` |
 | E2 | Rolling friction (labeled guess), nosewheel steering, brakes off | Taxi a figure-eight |
 | E3 | Start on the runway: takeoff, circuit, landing, nose-over | Trace of a full circuit |
-| E4 | **Golden flights:** record the inputs of a flight, replay them, and compare the traces within tolerance; this becomes the regression test for every later physics change | A replayed circuit matches its recording; a deliberate physics change is detected |
+| E4 | Golden flight of a full circuit (the mechanism exists since D8a) | A replayed circuit matches its recording; a deliberate physics change is detected |
 | PT2 | Playtest v0.2 | Owner flies takeoffs and landings |
 
 ### M3 — The radio, done properly
 
 | # | Step | Proof |
 | --- | --- | --- |
-| F3 | Disconnect and focus-loss policy: visible pause; resuming needs an explicit action and low throttle | Scripted unplug/replug log |
+| F3 | Replug and focus-loss polish on top of D6a's failsafe: `ignore_joypad_on_unfocused_application`, reconnect to the same device key, the Windows disconnect hang in 4.7 ([#121539](https://github.com/godotengine/godot/issues/121539)) checked on 4.8 | Scripted unplug/replug log |
 | F4 | Compatibility table: device, firmware, OS, Godot version, usable channels | One row per tested device |
 | F5 | Setup screen: pick device, move sticks to assign channels, see raw → mapped live | Owner sets up a new radio without editing files |
 
@@ -142,7 +173,7 @@ Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`,
 
 Chosen by what the playtests ask for:
 - wind, then gusts
-- propwash on the tail (matters for Stik takeoffs and rudder authority)
+- swirl and wing-wash effects of the propeller (tail propwash moved to E0b)
 - stall hysteresis and a post-stall extension
 - ground effect
 - camera options
@@ -163,6 +194,9 @@ Each track is time-boxed and attached to the step that needs it:
 | Real-Stik handling references (roll rate, stall speed, glide) from pilots or videos, to check the predicted-handling table | D8 | 1 session |
 | Owner's flying computer for the playtest builds | PT1 | ✅ Windows, Linux and macOS |
 | License compatibility for bundled data (UIUC "GPL'd data") | Before bundling any airfoil data | 1 session |
+| Dorobantu et al. 2013 (Ultra Stick 25e flight-identified model, [doi:10.2514/1.C032065](https://doi.org/10.2514/1.C032065), paywalled): obtain via a library | D8b | 1 session |
+| Owner's radio over USB on each OS: Classic vs Advanced mode, joystick vs gamepad detection, axes seen | D6d | 1 session with the radio |
+| Real-Stik videos: roll rate and stall speed by frame counting | D8b | 1 session |
 
 ## Review: weak points found and how the plan fixes them
 
@@ -203,3 +237,45 @@ Measured state before this review: 25 commits in one day; Phases A–C and D1 do
 | 8 | Performance only measured on a software-rendering VM | Perf overlay (D7) and frame-time notes at every playtest |
 | 9 | Visual model nose ≈ 1.85× the plan (found by the D1 hand balance) | Reported to the model team; physics is unaffected (it uses the plan CG and LE) |
 | 10 | Godot `.uid` files will appear once anyone opens the editor | Commit them when they appear (Godot's recommendation); don't delete |
+
+## Plan review #3 (2026-10-05): senior review before D6
+
+A senior game/Godot review of the plan and the code before input, HUD and stall work start. Method:
+- read all simulation code;
+- ran the suite (green, 24 s);
+- measured the app;
+- linearized the real equations ([`research/flight-modes/`](research/flight-modes/));
+- three research tracks that read Godot 4.7.2, EdgeTX, CRRCSim, PicaSim and YASim source plus the UMN and McGill theses.
+
+Details and sources: [RESEARCH.md, plan review #3](RESEARCH.md#plan-review-3-radio-input-full-envelope-flight-release-and-measured-flight-modes).
+
+**What is already strong (keep it):**
+- 64-bit physics with an enforced guard;
+- RK4 with known-answer and convergence tests;
+- a bit-identical fixed step across frame rates;
+- provenance on every number;
+- a trim solver on the real equations;
+- app-level trace checks;
+- mutation checks on the guards themselves.
+
+Few indie simulators start this well. The weak points are about what comes next.
+
+| # | Finding (evidence) | Change |
+| --- | --- | --- |
+| 1 | **The handling check is circular.** The predicted-handling table uses the same borrowed coefficients as the sim, so D8 could only verify code. The first independent comparison (UMN Ultra Stick 120 flight-identified modes, Froude-scaled, same CL) shows the sim **1.45× faster in pitch and 1.9× faster in roll**, more damped, dutch roll close | Rule 6; D8 split into D8a (verification, modes test, golden flights) and D8b (independent validation); D10 order starts with Clp, Cmq, inertia, servo lag |
+| 2 | **No stall at all.** With full up elevator at 1 g the linear model trims at α 21°, CL 1.77, and parachutes at 7.0 m/s; the predicted stall is 8.6–9.5 m/s. Slow flight near landing is where pilots meet the stall | D9a full-envelope blend with the linear model as oracle, with a measured slow-flight target |
+| 3 | **A lift cap cannot spin or snap.** The Stik's signature maneuvers and tip stalls (the classic RC landing crash) need asymmetric stall. CRRCSim gets it with three spanwise stations at small cost (source read) | D9b three-station asymmetric stall |
+| 4 | **Propwash was "polish" (M5),** but at 5 m/s and full throttle the washed tail sees ≈ 35× freestream dynamic pressure (momentum theory). Takeoff and ground handling depend on it | E0a (separate tail surfaces) and E0b (propwash) before the gear steps |
+| 5 | **Gyroscopic precession is missing.** At full rpm a 3 rad/s pitch rate gives ≈ 1 N·m of yaw: 14 % of full rudder at 15 m/s, ~50 % at 8 m/s; snaps far more. It costs one cross product | D9c |
+| 6 | **Radio risks were unknown; now they are concrete** (Godot 4.7.2 and EdgeTX source read). On Linux, Classic mode probably becomes an SDL gamepad (throttle as a 0..1 trigger, Ch7/8 lost). Axes read 0 until moved, so a resting throttle reads as **mid-throttle** at startup and after an unplug. Accumulated input adds one frame of latency on Linux/macOS | D6 split into D6a (reader with arming and unplug failsafe, accumulated input off), D6b (calibration), D6c (servo model), D6d (owner flight, recommended EdgeTX setup) |
+| 7 | **Device behavior is mixed with physics.** The keyboard rate limiter (4/s, applied per *rendered frame*) stands in for servo dynamics, and the control throws live in `spec.gd` as unlabeled estimates, outside the data rules. Only scripted loads, never the input path, are tested for frame-rate independence | D5.9 moves throws into the aircraft data and steps commands per physics tick; D6c adds a servo model; the hash test drives the real input path |
+| 8 | **`main.gd` is becoming a god object:** 336 lines, nine jobs (world, input, sim wiring, trims, trace, capture, camera, sound, panel). D6 and D7 would each add more | D5.9 splits it before D6, with "identical trace bytes" as the proof |
+| 9 | **The release plan had three blockers** (source read). The macOS universal export fails without `import_etc2_astc=true`. The aircraft JSON is not exported without an include filter, so the shipped app would refuse to fly. **macOS 15+ removed right-click → Open** | PT1 rewritten as PT1a–g; PT1c smoke-tests the exported binary with the real trace check |
+| 10 | **The pilot sees ~12–15 px of airplane at 100 m.** A 720p screen at 50° resolves ~4× worse than the eye; RC sims (SeligSIM) offer auto-zoom | D7 auto-zoom with a pixel target; Gate 2 rates readability with and without it |
+| 11 | **Tuning iteration is slow:** every coefficient change needs a restart. Gate 2 is a tuning session | D7 hot reload of the aircraft JSON (invalid data keeps the old aircraft) |
+| 12 | **Golden flights came after the aero changes** (E4, in M2), but D9 rewrites the aero first | Golden flight mechanism moved into D8a |
+| 13 | **No performance budget.** Measured ≈ 313 µs per tick end to end on this VM; a component buildup could triple it | Rule 7 (≤ 0.5 ms per tick on the owner's slowest machine) with a defined trigger for GDExtension |
+| 14 | **"Fun" was not measurable** at Gate 2 | Gate 2 gets a maneuver list, −2…+2 ratings per axis against a real Stik, readability, setup time and frame time |
+| 15 | **Inventory Iyy is 1.7× a Roskam-typical value** (Ry 0.438 vs 0.338) | Labeled; D10 parameter |
+| 16 | **Commits don't state proofs and mix teams:** several commits named "Refactor code structure for improved readability" add physics and model files together. Bisecting a regression becomes hard | Rule 8 (one team per commit, proof in the message, the assistant supplies the message) |
+| 17 | **The flight-model architecture decision was implicit.** The derivative model cannot express propwash, asymmetric stall or damage, and the model team's geometry could feed a component buildup | Gate F before M2, with a default proposal: grow the buildup one surface group at a time, each matching the linear oracle |

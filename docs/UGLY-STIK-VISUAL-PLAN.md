@@ -1,16 +1,16 @@
 # Ugly Stik .61 — plan visual: rojo clásico, cruces y mecánica
 
-2026-10-05 · Revisión 1 · **Plan pendiente de implementación.** Continúa [US-06/07/08 del plan general](UGLY-STIK-PLAN.md), sobre el [modelo v3](research/ugly-stik-model-v3.md). Dirección solicitada por el propietario: rojo con cruces, mayor detalle del motor, servos y equipamiento.
+2026-10-05 · Revisión 2 · **Plan pendiente de implementación.** Continúa [US-06/07/08 del plan general](UGLY-STIK-PLAN.md), sobre el [modelo v3](research/ugly-stik-model-v3.md). Dirección solicitada por el propietario: rojo con cruces, mayor detalle del motor, servos y equipamiento.
 
 ## Resultado buscado
 
-Un Ugly Stik .61 rojo reconocible desde tierra, con cruces negras sobre campos blancos y una instalación mecánica convincente al acercarse. La presentación debe transmitir un aeromodelo de madera recubierto: superficies ligeras, motor glow expuesto, fijaciones, neumáticos y mandos visibles. El acabado inicial será cuidado, con uso leve localizado.
+Un Ugly Stik .61 rojo reconocible desde tierra, con cruces negras sobre campos blancos y una instalación mecánica convincente al acercarse. La presentación debe transmitir un aeromodelo de madera recubierto: superficies ligeras, motor glow expuesto, fijaciones, neumáticos y mandos visibles. El acabado inicial será limpio y cuidado, siguiendo las dos fotografías aportadas; el desgaste queda como detalle opcional posterior.
 
 La elección roja con cruces ya está definida por el propietario. Se puede avanzar con ella sin esperar el ensayo humano pendiente de v3; ese ensayo servirá para ajustar su lectura. Se conserva el Jensen de 60 pulgadas con tren triciclo. Este documento planifica la siguiente entrega visual; no modifica todavía la malla.
 
 ## Punto de partida comprobado
 
-Se revisaron el constructor, el adaptador, la captura neutra v3, la hoja 2 del Jensen y la fotografía local 013. El estado actual contiene:
+Se revisaron el constructor, el adaptador, la captura neutra v3, la hoja 2 del Jensen, la fotografía local 013 y las dos nuevas imágenes del propietario. Estas últimas pasan a ser la referencia principal del acabado. [Lectura de las fotos A/B y límites](research/ugly-stik-visual-photo-brief.md). El estado actual contiene:
 
 | Área | V3 existente | Mejora que aporta más |
 | --- | --- | --- |
@@ -25,14 +25,17 @@ Referencia cuantitativa v3: **54 mallas, 4.816 triángulos y cinco materiales**.
 
 ## Dirección artística y referencias
 
-**Decoración.** Adoptar fondo rojo, cruces de brazos ensanchados negras sobre campos blancos, y detalles blancos suficientes para ordenar la silueta. Dibujar las cruces como vectores propios a partir del contorno de referencia. Sustituir las bandas actuales donde compitan con las insignias. Empezar con el rojo existente y un blanco cálido; ajustar bajo iluminación neutra y después bajo la luz de la aplicación. La captura v3 se percibe rosada en sus reflejos: revisar conjuntamente luz y material antes de cambiar el color base.
+**Decoración fijada por las fotos.** Ala con centro rojo continuo; un campo blanco ancho hacia el extremo de cada semiala, cruz negra centrada y punta roja exterior. Los límites transversales rojo/blanco llevan filetes negros finos. La cruz tiene cuatro brazos ensanchados y cintura estrecha, con margen blanco visible; dibujar su contorno como vector propio. La deriva y el timón forman un conjunto blanco con cruz negra; el estabilizador y el elevador quedan rojos. El fuselaje es rojo, con una pequeña marca blanca con cruz negra sobre el lomo detrás del ala. Retirar las bandas crema y la franja lateral actuales. Esta composición reemplaza la propuesta genérica de la revisión 1.
 
-**Distribución propuesta, todavía artística:** una cruz en cada semiala superior e inferior y una marca lateral en cada cara de la deriva/timón. Contrastar un campo blanco amplio arriba con un marco blanco más estrecho abajo, conservando el rojo como base. Registrar esta diferencia como ayuda visual propuesta; no atribuirla al plano. Revisar primero la deriva para decidir si la marca cabe en la pieza fija o debe dividirse entre fija y móvil. Los distintivos no deben atravesar una bisagra como una sola superficie rígida. El fuselaje mantiene una franja blanca sencilla; cualquier rótulo «Das Ugly Stik» será discreto y secundario.
+**Distribución todavía por resolver.** Las fotos no documentan un intradós completo. La primera propuesta extenderá el mismo lenguaje rojo/blanco/negro a la cara inferior, identificado como decisión artística. Se elimina la decisión previa de imponer campos inferiores más estrechos: solo se probará una diferenciación si el ensayo de lectura la justifica. Completar la cara no visible de la deriva por simetría es también una decisión de diseño. No añadir rótulos ni marcas comerciales en esta pasada.
 
-**Materiales.** Recubrimiento rojo/blanco satinado con reflejo amplio; aluminio del cárter más mate que arandelas y eje; caucho oscuro rugoso; plástico de servos y cuernos con brillo moderado. Pliegues y juntas solo donde la construcción los justifique. El entelado puede insinuar costillas en zonas abiertas sin convertir cada costilla en una ondulación exagerada. Añadir suciedad mínima junto al escape después de conseguir una buena versión limpia.
+**Ajuste de composición.** V01 guardará centro y tamaño de cada campo y cruz en coordenadas normalizadas de su superficie, junto con el ancho de filete y margen blanco. Primero comparar proporciones en planta y lateral; después en vistas oblicuas semejantes a las fotos. Los valores serán estimaciones artísticas: no usar longitudes aparentes de las fotos como cotas del avión. Si una marca alcanza una bisagra, dividir sus UV entre pieza fija y móvil para conservar continuidad en neutro y articulación durante el mando.
+
+**Materiales.** Recubrimiento rojo/blanco satinado a brillante moderado, con reflejo amplio como en las fotos; aluminio del cárter más mate que arandelas y eje; caucho oscuro rugoso; plástico de servos y cuernos con brillo moderado. Empezar con el rojo actual como candidato y un blanco cercano al neutro; no fijar un RGB «medido» desde fotografías iluminadas. La captura v3 se percibe rosada en sus reflejos: comparar luz y material bajo iluminación neutra y bajo la de aplicación antes de cambiar el albedo. Pliegues, juntas e indicios de costillas deben ser sutiles. El festoneado documentado del borde de salida es un rasgo de silueta prioritario, por delante de manchas y tornillos diminutos.
 
 | Referencia disponible | Uso en esta entrega | Límite |
 | --- | --- | --- |
+| [Fotos A/B aportadas por el propietario](research/ugly-stik-visual-photo-brief.md) | Referencia principal: masas de color, cruces, filetes, cola blanca y marca dorsal | Adjuntos de la conversación, sin ruta local verificada; no establecen intradós, escala ni motor .61 |
 | [Jensen firmado, hojas 1–2](../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf) | Cruces, campos gráficos, servos, reenvíos, cuernos y montaje | La hoja 2 rotula **ambas** alas como vistas inferiores; cruz y escarapela son opciones gráficas. No deducir extradós/intradós de izquierda/derecha |
 | [Notas del kit](../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253_insert_notes.pdf) | Interpretar montaje de ala y mando de alerones | Conservar el contexto de cada detalle |
 | [Manual O.S. MAX-61FX](../references/ugly-stik/downloads/components/os-max-61fx-40-91fx-manual.pdf) | Proporciones y piezas identificables de un .61 glow | Referencia provisional; el motor sigue genérico y sin marca elegida. Separar cotas del 61FX de otros motores del manual |
@@ -47,16 +50,16 @@ Todos los pasos siguientes están pendientes. Los IDs US-V continúan el frente 
 
 | Paso | Trabajo concreto | Entrega y comprobación |
 | --- | --- | --- |
-| **US-V01 · Composición** | Preparar una lámina propia de planta, intradós y laterales: ubicación de cruces, campos blancos y franja. Registrar fuente y decisión artística por superficie | Lámina y ficha de acabado; verificar simetría, orientación de vistas y separación de bisagras. Primer resultado visible: avión rojo con cruces en las capturas generales |
-| **US-V02 · Recubrimiento y marcas** | Aplicar composición, ajustar rojo/blanco/negro, separar materiales por función, mejorar continuidad del sombreado y juntas del recubrimiento | Comparativa v3/nuevo acabado con cámara y luz fijas; capturas con luz neutra y luz de aplicación. Sin parpadeo de marcas, reflejos quemados ni costuras de UV visibles |
+| **US-V01 · Composición** | Preparar una lámina propia de planta, intradós y laterales: campos exteriores, puntas rojas, filetes negros, cruces, cola vertical blanca y pequeña marca dorsal. Guardar coordenadas normalizadas y separar zonas observadas de zonas propuestas | Lámina y ficha de acabado; verificar simetría, orientación de vistas y separación de bisagras. Primer resultado visible: composición reconocible de las fotos A/B; añadir dos encuadres oblicuos aproximados y conservar las vistas ortográficas |
+| **US-V02 · Recubrimiento y marcas** | Aplicar composición, ajustar rojo/blanco/negro, separar materiales por función, mejorar continuidad del sombreado y juntas del recubrimiento; recuperar el festoneado del borde de salida desde el plano con comprobación de silueta y holguras | Comparativa v3/nuevo acabado con cámara y luz fijas; capturas con luz neutra y luz de aplicación. Sin parpadeo de marcas, rojo lavado, filetes desproporcionados ni costuras de UV visibles; blanco de cola continuo en neutro |
 | **US-V03 · Motor .61** | Refinar cárter, base y orejas de montaje, cilindro/culata, aletas, bujía con hexágono, carburador con garganta y brazo, aguja, silenciador con juntas y salida hueca visual; arandela y tuerca de hélice | Primeros planos de ambos costados, frontal y superior; comprobar apoyos, conexiones, eje de hélice y holgura con el morro. Sin motor flotante ni tubos que terminen en el aire |
 | **US-V04 · Mandos exteriores** | Cuernos de elevador, timón y alerones; clevis, varillas, salidas de guía y reenvíos identificados en el plano. Actualizar extremos según las bisagras existentes | Capturas y secuencia neutro/extremos/combinaciones; uniones continuas, sin varillas que atraviesen fuselaje o superficies. Documentar contactos intencionales |
 | **US-V05 · Servos e instalación interna** | Servos de alerones según el montaje documentado y servos de fuselaje para elevador/timón/gas: carcasa, tapa, orejas, gomas, tornillos, brazo y cable corto. Bandeja y conducciones suficientes para explicar el montaje | Vista de mantenimiento con ala/tapa ocultables y mandos animados. Los componentes interiores conservan su posición real; no se sacan al exterior para hacerlos visibles |
 | **US-V06 · Herrajes y terminación** | Bandas de sujeción planas, espigas, asiento alar, collarines del tren, fijaciones, llantas, flancos de rueda, tornillos seleccionados, mangueras de combustible/presión y cableado visible | Macro de raíz alar, tren y motor. Cada pieza tiene soporte o conexión; ausencia de solapes accidentales. Las cantidades y rutas no confirmadas quedan estimadas |
-| **US-V07 · Acabado fino y presentación** | Insinuar estructura bajo recubrimiento, pequeñas juntas, festoneado documentado y desgaste leve del escape. Mejorar sección visual de pala y borde sin alterar diámetro/eje | Galería final con avión montado, detalle mecánico y mantenimiento. Evaluar silueta del festoneado y holguras después de cualquier cambio de contorno |
+| **US-V07 · Acabado fino y presentación** | Insinuar estructura bajo recubrimiento, pequeñas juntas y desgaste opcional leve del escape, después de cerrar el festoneado de V02. Mejorar sección visual de pala y borde sin alterar diámetro/eje; ensayar el tono claro visible en las fotos como opción artística de pala | Galería final con avión montado, detalle mecánico y mantenimiento. Evaluar silueta del festoneado y holguras después de cualquier cambio de contorno |
 | **US-V08 · Lectura y coste** | Repetir inspección y 36 casos 20/50/100 m; comparar antes/después; medir mallas, triángulos, materiales y llamadas de dibujo. Perfilar CPU/GPU en equipo disponible | Manifiestos y reporte de diferencias; pruebas de contrato pasan. Respuestas del piloto y rendimiento en hardware identificados por separado, pendientes si todavía no se dispone de ellos |
 
-Orden: **V01 → V02 → V03 → V04 → V05 → V06 → V07 → V08**. Revisar lectura y coste tras cada entrega, no únicamente al final. Si un microdetalle degrada la imagen a distancia o consume coste desproporcionado, simplificar su representación conservando la apariencia importante.
+Orden: **V01 → V02 → V03 → V04 → V05 → V06 → V07 → V08**. La primera entrega prioriza la semejanza con las fotos: composición, materiales y borde festoneado. Motor y mandos siguen después; los servos no son visibles con suficiente detalle en estas imágenes y mantienen su referencia documental Jensen. Revisar lectura y coste tras cada entrega, no únicamente al final. Si un microdetalle degrada la imagen a distancia o consume coste desproporcionado, simplificar su representación conservando la apariencia importante.
 
 ## Servos y movimiento: alcance concreto
 
@@ -82,11 +85,13 @@ Los detalles de motor, mandos y tren pueden extraerse a funciones o archivos esp
 
 Guardar la siguiente revisión bajo `research/ugly-stik/model-v4/`, con ID de geometría/acabado y hashes del atlas, materiales, constructor, cámaras y poses. El inspector y el wrapper actuales tienen rutas de v3: adaptar su destino explícitamente antes de generar v4 y comprobar que las series v1/v2/v3 quedan preservadas.
 
-La galería debe incluir las nueve vistas generales, macros del motor por ambos lados, raíz alar, tren, cuernos de cola y servos con acceso abierto. Repetir las 36 vistas a distancia para el acabado elegido. Añadir una secuencia breve de mandos que permita ver continuidad entre brazo, varilla y cuerno; una imagen neutra sola no prueba el montaje animado.
+La galería debe incluir dos vistas oblicuas aproximadas a A/B —una de inspección y otra sobre cielo azul—, las nueve vistas generales, macros del motor por ambos lados, raíz alar, tren, cuernos de cola y servos con acceso abierto. Repetir las 36 vistas a distancia para el acabado elegido. Añadir una secuencia breve de mandos que permita ver continuidad entre brazo, varilla y cuerno; una imagen neutra sola no prueba el montaje animado.
 
 Criterios de cierre del trabajo local:
 
-- Rojo y cruces coherentes en el avión completo; marcas legibles y sin errores al reflejar islas de UV o separar superficies móviles.
+- Composición acorde con A/B: centro alar rojo, campos blancos exteriores, puntas rojas, filetes negros finos, cruces de brazos ensanchados, conjunto vertical blanco, cola horizontal roja y marca dorsal pequeña.
+- Marcas con márgenes suficientes, sin errores al reflejar islas de UV o separar superficies móviles; intradós propuesto identificado como tal.
+- Comparación con A/B por apariencia, sin afirmar coincidencia dimensional ni trasladar la motorización o el tren de una fotografía al Jensen .61.
 - Materiales distinguibles por iluminación y acabado; malla sin normales invertidas ni piezas sin apoyo.
 - Mandos conectados en las poses comprobadas; los nuevos herrajes relevantes se incluyen en la revisión de interferencias, sin ampliar indiscriminadamente la lista de solapes permitidos.
 - `compile_geometry.py --check` y `app/test.sh` pasan tras cambios integrados. Añadir pruebas solo para nuevos contratos de movimiento o defectos concretos; el color se comprueba visualmente.
@@ -101,4 +106,4 @@ Este frente trabaja en `app/aircraft/`, `app/render/airplane.gd`, `assets/aircra
 
 Quedan fuera de esta pasada: mini/gigante, réplica certificada de un motor comercial, estructura interior completa, simulación mecánica de servos, humo/partículas, sonido y LOD automático sin una necesidad medida. Desenfoque de hélice y efectos de motor pueden evaluarse después de cerrar la apariencia estática y conocer la señal de RPM disponible.
 
-**Primer paso ejecutable:** lámina de decoración y aplicación de rojo/cruces al modelo actual, con captura comparable de planta, intradós y tres cuartos. Después, primer plano del motor; luego transmisión y servos.
+**Primer paso ejecutable:** lámina con la composición de A/B y aplicación al modelo actual, con captura comparable de planta, intradós, lateral y dos vistas oblicuas. Corregir cola blanca, puntas rojas y filetes antes del microdetalle. Después, primer plano del motor; luego transmisión y servos.
