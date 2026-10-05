@@ -58,6 +58,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Godot specifics
 
+- **Aerodynamics and propulsion doubled the physics cost:** 85 → ~185 µs per RK4 step (four derivative evaluations, each doing Dictionary lookups of coefficients), still 21–24× real time at 240 Hz on this VM. If headroom is ever needed, flattening the coefficient Dictionaries into arrays is the cheap first move. (2026-10-05)
+
 - **`:=` cannot infer types from Dictionary values** (they are Variants). I hit it in `aero.gd` right after warning the model team about it. Use explicit types (`var x: float = d.key`) whenever the right side reads a Dictionary or an untyped Array. (2026-10-05)
 
 - **Godot's `--fixed-fps N` makes frame-rate independence testable.** Running the same scripted flight with `--fixed-fps 30/60/144` and hashing the final state (SHA-256 of the `PackedFloat64Array` bytes) proves physics doesn't depend on rendering: identical hashes. A deliberate "step with the frame delta" bug changes the hashes at once. Runs must end at an exact tick (`stop_at_tick`), because at 144 fps a frame can contain two ticks. (2026-10-05)

@@ -54,7 +54,9 @@ func _run() -> void:
 	_key(KEY_RIGHT, false)
 	await create_timer(0.5).timeout
 	r = _row("roll")
-	_check("release -> re-centers", "+0.00" in r and "+0.0°" in r, r)
+	# The stick re-centers; the aileron returns to its TRIM position (like a trimmed real airplane), not to 0°.
+	var trim_deg: float = _main._trims.roll * 20.0
+	_check("release -> stick re-centers, aileron back to trim", "+0.00" in r and ("%+.1f°" % trim_deg) in r, "%s (trim %+.1f°)" % [r, trim_deg])
 
 	_key(KEY_W, true)
 	await create_timer(0.6).timeout

@@ -49,7 +49,8 @@ A small record of what we choose and why. The two guiding principles remain esta
 
 ## Open (deliberately not decided yet)
 
-- **Exact engine and propeller.** O.S. MAX-65AX and APC 12×6 Sport are reference candidates for Stage 5.
+- **Measured engine and propeller data.** v0 uses the O.S. MAX-61FX catalog power and UIUC-measured APC Sport 11×6 coefficients applied to the 12×6. Open: APC's own 12×6 data, a measured rpm or thrust on a real installation, and the throttle response time.
+- **Control throws, tail areas, airfoil and a weighed build** for the Das Ugly Stik 60 (the borrowed UltraStick25e aero stands in; D8/D10 decide what matters).
 - Native/desktop packaging, mobile, VR, multiplayer, and a second aircraft.
 
 The researched electric Ultra Stick 25e remains a comparison specimen. Only its nondimensional aerodynamic derivatives are borrowed, as labeled starting estimates. Its dimensions, mass properties and electric propulsion do not define the .60 nitro model.

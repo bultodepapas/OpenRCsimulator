@@ -63,11 +63,11 @@ run_capture() {
 	local output_dir="$1"
 	local log_file="$2"
 	set +e
-	timeout 180 xvfb-run -a -s "-screen 0 1280x720x24" \
+		timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
 		env OPENRC_CAPTURE_RENDER_DRIVER=opengl3 \
 		"$GODOT" --path "$ROOT/app" --script res://aircraft/inspect_model.gd \
 		--rendering-driver opengl3 --audio-driver Dummy -- \
-		"--output-dir=$output_dir" 2>&1 | tee "$log_file"
+		"--output-dir=$output_dir" --suite=readability36 2>&1 | tee "$log_file"
 	local run_status=${PIPESTATUS[0]}
 	set -e
 	if [[ "$run_status" != 0 ]]; then

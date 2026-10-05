@@ -49,10 +49,11 @@ def render_card(capture: dict[str, Any]) -> str:
 	)
 	return f"""
 <article class="card" data-distance="{float(capture['distance_m']):g}" data-background="{html.escape(str(capture['background']))}">
-  <div class="image-wrap"><img src="{filename}" alt="{case} airplane orientation capture" loading="lazy"></div>
+  <div class="image-wrap"><a href="{filename}" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="{filename}" width="1280" height="720" alt="{case} airplane orientation capture" loading="lazy"></a></div>
   <div class="card-body">
     <h2>{case}</h2>
-    <p class="condition">{condition} · case pose {html.escape(str(capture['attitude_id']))}</p>
+    <p class="condition">{condition}</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
     <div class="responses">
       {select_html("Visible wing face", "surface", SURFACE_CHOICES, case_id)}
       {select_html("Bank", "bank", BANK_CHOICES, case_id)}
@@ -84,27 +85,28 @@ def render_page(manifest: dict[str, Any]) -> str:
     input[type="text"] {{ padding: 7px; }}
     button {{ padding: 8px 12px; border: 1px solid #718391; border-radius: 5px; background: white; cursor: pointer; }}
     .status {{ font-weight: 650; }}
-    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 590px), 1fr)); gap: 16px; }}
-    .card {{ overflow: hidden; border: 1px solid #ccd6dc; border-radius: 8px; background: white; box-shadow: 0 2px 8px #17232c12; }}
+    .grid {{ display: grid; grid-template-columns: 1fr; gap: 16px; }}
+    .card {{ width: 1280px; overflow: hidden; border: 1px solid #ccd6dc; border-radius: 8px; background: white; box-shadow: 0 2px 8px #17232c12; }}
     .image-wrap {{ background: #9bcef0; }}
-    img {{ display: block; width: 100%; height: auto; }}
+    .image-wrap img {{ display: block; width: 1280px; height: 720px; object-fit: none; }}
     .card-body {{ padding: 12px 16px 16px; }}
     h2 {{ display: inline; margin: 0; font-size: 1.05rem; }}
     .condition {{ margin: 3px 0 12px; color: #536671; }}
+    .scale-note {{ margin: 0 0 10px; color: #536671; font-size: .9rem; }}
     .responses {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }}
     .responses label {{ display: grid; gap: 4px; font-size: .83rem; font-weight: 650; }}
     select {{ width: 100%; min-width: 0; padding: 6px; }}
     details {{ margin-top: 12px; color: #455863; }}
     details p {{ margin: 6px 0 0; }}
     .note {{ width: min(100%, 520px); min-height: 64px; }}
-    @media print {{ header {{ position: static; }} .toolbar button {{ display: none; }} .grid {{ grid-template-columns: 1fr 1fr; }} .card {{ break-inside: avoid; box-shadow: none; }} }}
+    @media print {{ header {{ position: static; }} .toolbar button {{ display: none; }} .card {{ break-inside: avoid; box-shadow: none; }} }}
   </style>
 </head>
 <body>
 <header>
   <h1>US-06 · Orientation readability review</h1>
   <p>36 fixed captures · 20, 50 and 100 m · sky and ground · geometry and neutral hinges held constant.</p>
-  <p>Responses are blank. Open each “Reference answer” only after recording the pilot response.</p>
+  <p>Responses are blank. Images retain native 1280×720 resolution. Open each “Reference answer” only after recording the pilot response.</p>
 </header>
 <main>
   <div class="toolbar">
@@ -163,6 +165,10 @@ def main() -> int:
 	if not manifest_path.is_file():
 		parser.error(f"missing manifest: {manifest_path}")
 	manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+	if manifest.get("capture_suite") != "readability36":
+		parser.error("review kit only accepts the readability36 capture suite")
+	if len(manifest.get("captures", [])) != 36:
+		parser.error("readability36 manifest must contain exactly 36 captures")
 	first_hashes = png_hashes(captures_dir)
 	repeat_hashes = png_hashes(repeat_dir)
 	if not first_hashes:
@@ -171,6 +177,8 @@ def main() -> int:
 		missing = sorted(set(first_hashes) ^ set(repeat_hashes))
 		different = sorted(name for name in set(first_hashes) & set(repeat_hashes) if first_hashes[name] != repeat_hashes[name])
 		parser.error(f"repeat PNG hashes differ; missing={missing}, changed={different}")
+	if set(first_hashes) != {str(capture["file"]) for capture in manifest["captures"]}:
+		parser.error("PNG filenames do not exactly match the manifest capture list")
 	for record in manifest["captures"]:
 		filename = str(record["file"])
 		if filename not in first_hashes:

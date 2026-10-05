@@ -4,6 +4,8 @@ Research date: **2026-10-05**. This is a growing collection of evidence, possibi
 
 Latest focused follow-up: [propeller comparison, mass properties, and low-speed evidence](#testing-the-evidence-behind-the-first-aircraft). This pass includes an executed numerical comparison; physical aircraft measurements and the [earlier prototype and pilot experiments](#focused-follow-up-on-the-three-priority-research-gaps) remain open.
 
+**Update — 2026-10-05, later:** the variant is now the **Jensen Das Ugly Stik 60** (owner's plan images). CG (4.76 in aft of LE, 39 % chord), nose length and chord were measured on the full-size Outerzone oz1253 plan (`research/d1/jensen_plan_cg.py`); see DECISIONS.md. The paragraph below is the earlier direction, kept as history.
+
 **Current aircraft direction — 2026-10-05:** the project owner selected an **Ultra Stick / Ugly Stick-style .60 nitro airplane** as the first model. The exact variant, geometry, engine/propeller combination, mass properties, and aerodynamic parameters remain open. Begin with a simple representation and refine it through research. This supersedes earlier statements that no first-aircraft direction had been selected; those dated entries remain research history. See [DECISIONS.md](DECISIONS.md).
 
 ## Contents
@@ -1638,3 +1640,10 @@ As research continues, add findings beside their topic with the date, original s
 **Research log — 2026-10-05, ninth pass:** executed a 16-point static comparison of APC Sport 11×6 predicted and measured coefficients, preserved a standalone reproduction script, investigated mass/inertia estimation and measurement uncertainty, and examined low-Re control, stall hysteresis and propwash experiments. Checked the measured-data transcription and interpolation behavior. No simulator, physical aircraft test, renderer comparison or pilot session was run; no exact variant or technology was selected.
 
 **Research log — 2026-10-05, tenth pass (development stack):** surveyed current versions and stability of browser renderers (three.js, Babylon.js, PlayCanvas), engines (Godot 4.7, Bevy 0.19, raylib 6), WebGPU support per browser/OS, TypeScript 7 and its missing API, Vite 8, Vitest 5, desktop wrappers (Electron, Tauri), physics libraries and input limits. Executed a float32-vs-float64 integration experiment ([script](research/float32_vs_float64_integration.mjs)) and inspected the default array types of gl-matrix and wgpu-matrix. Findings and the provisional starting stack are in [STACK.md](STACK.md).
+
+**Research log — 2026-10-05, eleventh pass (data for flight, D1–D5):**
+- **Plan:** measured the full-size Jensen oz1253 plan at 100 dpi (1 px = 0.01 in; chord check 12.07 vs 12.00 in): CG 4.76 in aft of LE (39.4 % chord), firewall to LE 6.94 in. This found the visual model's nose ≈ 1.85× too long.
+- **Aero:** fetched the pinned OpenFlightSim UltraStick25e aero, metrics, mass and effector files (sha256 recorded) and decoded the sign and normalization conventions: elevator and ailerons +TE down; rudder +TE left; p̂ = p·b/2V; drag CD0 + k(CL − CL_minD)².
+- **Propeller:** APC's PER3_12x6.dat is blocked by Cloudflare for scripts and the web reader. Used UIUC's measured APC Sport 11×6 static and 6,000 rpm runs (sha256 recorded) for Ct(J) and Cp(J).
+- **Engine:** derived the max static rpm (≈ 11,150) from the O.S. 61FX catalog power and the measured static Cp. Results feed `app/data/aircraft/jensen_ugly_stik_60.json`; every value carries its evidence kind.
+

@@ -1,6 +1,6 @@
 # Roadmap
 
-Revised **2026-10-05** after a self-review of the first plan (weak points and fixes are [at the end](#review-weak-points-found-and-how-the-plan-fixes-them)). It builds on [RESEARCH.md](RESEARCH.md), [STACK.md](STACK.md) and [DECISIONS.md](DECISIONS.md).
+Revised **2026-10-05** after two self-reviews (the second, "from infrastructure to a game", is at the end) of the first plan (weak points and fixes are [at the end](#review-weak-points-found-and-how-the-plan-fixes-them)). It builds on [RESEARCH.md](RESEARCH.md), [STACK.md](STACK.md) and [DECISIONS.md](DECISIONS.md).
 
 **Be water, but on solid ground:** each step is small, has one objective proof, and leaves the project working. Steps go from basic to advanced; nothing advanced starts before its foundation is proven. If a step teaches us the route is wrong, we change the route and record why.
 
@@ -25,6 +25,11 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 - **State:** 211 physics/input checks, 453 model-contract checks and an app-level trimmed-flight check; full suite ~30 s.
   - **The Ugly Stik flies trimmed level flight with its engine running:** six-axis aero; .61 glow engine with APC 12×6 thrust and torque; six-axis trim (throttle, elevator, aileron, rudder) applied like radio trims; positional engine sound.
 - **Next:** D6, flying with keyboard and radio (raw joystick axes, calibration).
+- **Alpha (v0.1 = PT1) readiness, about 60 %:**
+  - **Done:** D1–D5.
+  - **Left:** D6 radio input, D7 pilot aids (ground shadow, HUD, zoom, FPS), D9 stall and crash, PT1 release builds, and D8, a cheap handling check. That is roughly 4–5 working sessions.
+  - **Risks:** the owner's radio on their OS (this VM has no USB devices), export templates and the unsigned macOS build, and whether the borrowed aero *feels* like a Stik (Gate 2).
+  - **Alpha will not have:** runway takeoff and landing (M2), wind, a radio setup screen, a realistic engine response, or menus. It starts in the air.
 - **M1 so far, measured against the predicted-handling table:**
   - trim α 3.71° at 15 m/s (predicted 3.6°); thrust needed 3.00 N (predicted 2.93);
   - glide L/D 8.46 (predicted 8.7; the hand estimate ignored trim drag); α 1.51° at 20 m/s (predicted 1.5°);

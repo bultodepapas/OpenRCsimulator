@@ -13,14 +13,20 @@ The bake-off ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) scored three.js 
 | Engine | Godot, official build | 4.7.2-stable, pinned and SHA-512 verified by `app/get-godot.sh` | Not installed system-wide; lives in `.tools/` |
 | Renderer | Compatibility (OpenGL 3.3 / WebGL 2 class) | — | Runs everywhere, including software GL; the only renderer Godot can export to the web |
 | Language | GDScript | — | `float` is 64-bit; `Vector3`/`Basis`/`Quaternion`/`Transform3D` are **32-bit** |
-| Physics | Our own GDScript module on 64-bit floats | — | **Guarded:** `app/test.sh` fails if 32-bit math types appear in `sim/` or `physics/` |
-| Tests | Plain `extends SceneTree` scripts, headless | — | Float64 guard, parse check of every script, unit tests, end-to-end input tests |
+| Physics | Our own GDScript modules on 64-bit floats: rigid body + RK4, air data, six-axis linear aero, propulsion, six-axis trim | — | **Guarded:** `app/test.sh` fails if 32-bit math types appear in `sim/` or `physics/` |
+| Aircraft data | JSON `openrc-aircraft v1` (`app/data/aircraft/`) with per-value provenance, validated by `physics/aircraft_data.gd` | — | Mass and inertia derived from a component inventory |
+| Tests | Plain `extends SceneTree` scripts, headless; one Python 3 check of the app's own trace | — | Float64 guard, parse check, unit, end-to-end, model contract, app-level trimmed flight, frame-rate independence; any engine `ERROR:` fails the run |
 | Captures | `xvfb-run` + Mesa llvmpipe, `--rendering-driver opengl3` | — | 60 s timeout per capture, so a script error fails fast |
 | CI | GitHub Actions on `ubuntu-24.04` | — | Installs Xvfb and X11 libraries; caches the Godot binary |
-| Input | Keyboard; then SDL3 joysticks, raw axes | — | Bypass the input-action deadzone (0.5 by default) |
-| Distribution | Native desktop exports; web export possible later (~42 MB) | — | Needs the export templates download; not done yet |
+| Input | Keyboard; then SDL3 joysticks, raw axes (D6) | — | Bypass the input-action deadzone (0.5 by default) |
+| Audio | `AudioStreamGenerator` on a positional `AudioStreamPlayer3D` attached to the airplane | — | Synthesized two-stroke buzz following rpm (D5 placeholder); recordings come with G3 |
+| Distribution | Native desktop exports for Windows, Linux and macOS (PT1); web export possible later (~42 MB) | — | Export templates: 1.28 GB for all platforms (cache in CI, extract only the needed ones); macOS unsigned at first |
 
-**Escape hatch:** if GDScript physics is too slow or too awkward, the physics core moves to a C++ GDExtension with `double`. That costs a separate web build. **C3 result (2026-10-05):** the RK4 rigid body runs 47–51× faster than real time at 240 Hz (81–88 µs/step on this VM), so it stays in GDScript. Aerodynamics will add cost per step; re-measure at D7 and keep ≥ 10× as the floor.
+**Escape hatch:** if GDScript physics is too slow or too awkward, the physics core moves to a C++ GDExtension with `double`. That costs a separate web build. **Measured cost on this VM (software rendering, 2026-10-05):**
+- **C3, rigid body + RK4:** 81–88 µs/step (47–51× real time at 240 Hz).
+- **D5, full physics** (air data + six-axis aero + propulsion + rigid body, RK4): **177–196 µs/step (21–24× real time)**, about 0.75 ms per 60 fps frame.
+
+The floor is ≥ 10× real time. Re-measure on the owner's hardware at PT1. Cheap headroom if needed: flatten the coefficient Dictionary lookups into arrays.
 
 The rest of this document is the pre-Gate-1 survey, kept as research history.
 
