@@ -20,6 +20,15 @@ static func material(color: Color, profile: String = "skin") -> StandardMaterial
 		"aluminum":
 			mat.metallic = 0.72
 			mat.roughness = 0.48
+		"cast_aluminum":
+			mat.metallic = 0.70
+			mat.roughness = 0.46
+		"machined_aluminum":
+			mat.metallic = 0.85
+			mat.roughness = 0.28
+		"anodized_gold":
+			mat.metallic = 0.82
+			mat.roughness = 0.26
 		"steel":
 			mat.metallic = 0.82
 			mat.roughness = 0.28

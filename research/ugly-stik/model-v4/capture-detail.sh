@@ -19,6 +19,7 @@ fi
 OUTPUT_ARG=""
 OUTPUT_SET=0
 HELP=0
+SUITE="showcase"
 while (($#)); do
 	case "$1" in
 		--output-dir)
@@ -46,6 +47,7 @@ while (($#)); do
 			fi
 			OUTPUT_SET=1
 			;;
+		--engine) SUITE="engine" ;;
 		-h|--help) HELP=1 ;;
 		*)
 			echo "Unknown argument: $1" >&2
@@ -57,10 +59,11 @@ done
 
 if ((HELP)); then
 	cat <<'EOF'
-Usage: research/ugly-stik/model-v4/capture-detail.sh [--output-dir PATH]
+Usage: research/ugly-stik/model-v4/capture-detail.sh [--engine] [--output-dir PATH]
 
 Capture the model-v4 showcase suite at 2560x1440 and build an offline review
-gallery. With no arguments, creates a unique directory under app/captures/.
+gallery. Add --engine for only the eleven engine/exhaust closeups.
+With no arguments, creates a unique directory under app/captures/.
 The optional output directory must not already exist. model-v1 through
 model-v4 are protected historical research destinations.
 EOF
@@ -113,21 +116,21 @@ fi
 
 LOG_FILE="$OUTPUT_DIR/capture.log"
 : > "$LOG_FILE"
-echo "Capturing showcase into $OUTPUT_DIR"
+echo "Capturing $SUITE into $OUTPUT_DIR"
 set +e
 timeout 180 xvfb-run -a -s "-screen 0 2560x1440x24" \
 	env OPENRC_CAPTURE_RENDER_DRIVER=opengl3 \
 	"$GODOT" --path "$ROOT/app" --script res://aircraft/inspect_model.gd \
 	--rendering-driver opengl3 --audio-driver Dummy -- \
-	"--output-dir=$OUTPUT_DIR" --suite=showcase 2>&1 | tee -a "$LOG_FILE"
+	"--output-dir=$OUTPUT_DIR" "--suite=$SUITE" 2>&1 | tee -a "$LOG_FILE"
 CAPTURE_STATUS=${PIPESTATUS[0]}
 set -e
 if ((CAPTURE_STATUS != 0)); then
-	echo "Godot showcase capture exited with status $CAPTURE_STATUS; log: $LOG_FILE" >&2
+	echo "Godot $SUITE capture exited with status $CAPTURE_STATUS; log: $LOG_FILE" >&2
 	exit "$CAPTURE_STATUS"
 fi
 if grep -Eq '^(SCRIPT )?ERROR:' "$LOG_FILE"; then
-	echo "Godot logged an error during the showcase capture; log: $LOG_FILE" >&2
+	echo "Godot logged an error during the $SUITE capture; log: $LOG_FILE" >&2
 	exit 1
 fi
 

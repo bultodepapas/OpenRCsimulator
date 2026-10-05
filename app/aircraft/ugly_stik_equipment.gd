@@ -313,14 +313,106 @@ static func _cubic(a: Vector3, b: Vector3, c: Vector3, d: Vector3, steps: int = 
 	return result
 
 
+# Engine-only tooling. (axial distance, radius) profiles preserve sharp machined
+# shoulders while sharing radial normals; counterbores run back down the inside.
+static func _turned(st: SurfaceTool, center: Vector3, axis: Vector3, profile: Array, segments := 48, smooth_profile := false) -> void:
+	var frame := _frame(axis)
+	var u: Vector3 = frame[0]
+	var v: Vector3 = frame[1]
+	var direction := axis.normalized()
+	for k in range(profile.size() - 1):
+		var a: Vector2 = profile[k]
+		var b: Vector2 = profile[k + 1]
+		var tangent := b - a
+		if tangent.length_squared() < 1e-16: continue
+		for i in range(segments):
+			var phi0 := TAU * i / segments
+			var phi1 := TAU * (i + 1) / segments
+			var r0 := u * cos(phi0) + v * sin(phi0)
+			var r1 := u * cos(phi1) + v * sin(phi1)
+			var ta := tangent.normalized()
+			var tb := ta
+			if smooth_profile and k > 0: ta = (ta + (a - Vector2(profile[k - 1])).normalized()).normalized()
+			if smooth_profile and k + 2 < profile.size(): tb = (tb + (Vector2(profile[k + 2]) - b).normalized()).normalized()
+			var na0 := (r0 * ta.x - direction * ta.y).normalized()
+			var na1 := (r1 * ta.x - direction * ta.y).normalized()
+			var nb0 := (r0 * tb.x - direction * tb.y).normalized()
+			var nb1 := (r1 * tb.x - direction * tb.y).normalized()
+			_smooth_quad(st, center + direction * a.x + r0 * a.y, center + direction * b.x + r0 * b.y, center + direction * b.x + r1 * b.y, center + direction * a.x + r1 * a.y, na0, nb0, nb1, na1)
+
+
+static func _engine_cylinder(st: SurfaceTool, a: Vector3, b: Vector3, ra: float, rb: float, segments: int, caps := true) -> void:
+	# Hex fasteners keep six flat faces. Circular engine parts receive smooth normals.
+	if segments < 12:
+		_cylinder(st, a, b, ra, rb, segments, caps)
+		return
+	var length := a.distance_to(b)
+	var profile: Array = [Vector2(0, ra), Vector2(length, rb)]
+	if caps:
+		profile.push_front(Vector2.ZERO)
+		profile.append(Vector2(length, 0))
+	_turned(st, a, b - a, profile, maxi(48, segments))
+
+
+static func _rounded_cast(st: SurfaceTool, center: Vector3, size: Vector3, radius: float) -> void:
+	# Project a subdivided box onto its inner box + spherical corner radius.
+	# The face centres remain flat, with continuous normals across the rounded edges.
+	var half := size * 0.5
+	var inner := half - Vector3.ONE * radius
+	for axis_index in range(3):
+		var u_index := (axis_index + 1) % 3
+		var v_index := (axis_index + 2) % 3
+		var us := [-half[u_index], -inner[u_index] - radius * 0.5, -inner[u_index], inner[u_index], inner[u_index] + radius * 0.5, half[u_index]]
+		var vs := [-half[v_index], -inner[v_index] - radius * 0.5, -inner[v_index], inner[v_index], inner[v_index] + radius * 0.5, half[v_index]]
+		for side in [-1.0, 1.0]:
+			for i in range(us.size() - 1):
+				for j in range(vs.size() - 1):
+					var vertices: Array[Vector3] = []
+					var normals: Array[Vector3] = []
+					for corner in [Vector2i(i, j), Vector2i(i + 1, j), Vector2i(i + 1, j + 1), Vector2i(i, j + 1)]:
+						var point := Vector3.ZERO
+						point[axis_index] = side * half[axis_index]
+						point[u_index] = us[corner.x]
+						point[v_index] = vs[corner.y]
+						var core := point.clamp(-inner, inner)
+						var normal := (point - core).normalized()
+						vertices.append(center + core + normal * radius)
+						normals.append(normal)
+					_smooth_quad(st, vertices[0], vertices[1], vertices[2], vertices[3], normals[0], normals[1], normals[2], normals[3])
+
+
+static func _crown(st: SurfaceTool, center: Vector3) -> void:
+	# Twelve open slots cut the top rim. Counts/depths are visual estimates from D/F.
+	_turned(st, center, Vector3.UP, [Vector2(0, 0), Vector2(0, 0.019), Vector2(0.001, 0.020), Vector2(0.004, 0.020), Vector2(0.004, 0.016), Vector2(0.006, 0.015), Vector2(0.006, 0)])
+	var ri := 0.016
+	var ro := 0.020
+	for tooth in range(12):
+		var start := TAU * tooth / 12.0 + deg_to_rad(2.5)
+		var end := TAU * (tooth + 1) / 12.0 - deg_to_rad(2.5)
+		for i in range(8):
+			var a := lerpf(start, end, i / 8.0)
+			var b := lerpf(start, end, (i + 1) / 8.0)
+			var r0 := Vector3(cos(a), 0, sin(a))
+			var r1 := Vector3(cos(b), 0, sin(b))
+			var low := center + Vector3.UP * 0.004
+			var high := center + Vector3.UP * 0.0075
+			_smooth_quad(st, low + r0 * ro, high + r0 * ro, high + r1 * ro, low + r1 * ro, r0, r0, r1, r1)
+			_smooth_quad(st, high + r0 * ri, low + r0 * ri, low + r1 * ri, high + r1 * ri, -r0, -r0, -r1, -r1)
+			_quad(st, high + r0 * ri, high + r0 * ro, high + r1 * ro, high + r1 * ri, Vector3.UP)
+		for angle in [start, end]:
+			var radial := Vector3(cos(angle), 0, sin(angle))
+			var tangent := Vector3(-sin(angle), 0, cos(angle)) * (-1.0 if angle == start else 1.0)
+			_quad(st, center + radial * ri + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.004, center + radial * ro + Vector3.UP * 0.0075, center + radial * ri + Vector3.UP * 0.0075, tangent)
+
+
 static func _add_engine(root: Node3D) -> void:
 	var e: Dictionary = D.equipment
 	var engine_z: float = (float(e.firewall_z) + float(e.prop_z)) * 0.5
 	var shaft_y: float = float(e.shaft_y)
 	var blocks: Dictionary = _buckets([
-		["cast", CASE_COLOR, "aluminum"],
-		["bright", FIN_COLOR, "aluminum"],
-		["gold", Color("b88742"), "aluminum"],
+		["cast", Color("a4aaae"), "cast_aluminum"],
+		["bright", Color("bdc2c5"), "machined_aluminum"],
+		["gold", Color("c69a47"), "anodized_gold"],
 		["steel", STEEL_COLOR, "steel"],
 		["dark", DARK_METAL_COLOR, "aluminum"],
 		["black", BLACK_COLOR, "plastic"],
@@ -346,91 +438,98 @@ static func _add_engine(root: Node3D) -> void:
 	for side in [-1.0, 1.0]:
 		_box(mount, Vector3(side * 0.024, shaft_y - 0.025, rail_center_z), Vector3(0.009, 0.012, rail_length))
 		_box(steel, Vector3(side * 0.024, shaft_y - 0.018, rail_center_z), Vector3(0.011, 0.003, rail_length + 0.002))
-		for z_offset in [-0.031, 0.031]:
-			_cylinder(steel, Vector3(side * 0.024, shaft_y - 0.0155, engine_z + z_offset), Vector3(side * 0.024, shaft_y - 0.010, engine_z + z_offset), 0.0025, 0.0025, 6)
-			_washer(bright, Vector3(side * 0.024, shaft_y - 0.0145, engine_z + z_offset), Vector3.UP, 0.0042, 0.0021, 0.0008, 10)
-		# Rear rail bolts pass into the firewall so the mount has a visible support datum.
-		var firewall_bolt: Vector3 = Vector3(side * 0.024, shaft_y - 0.015, float(e.firewall_z) + 0.001)
-		_cylinder(steel, firewall_bolt - Vector3(0, 0, 0.004), firewall_bolt + Vector3(0, 0, 0.003), 0.0028, 0.0028, 6)
-		_washer(bright, firewall_bolt - Vector3(0, 0, 0.0005), Vector3.FORWARD, 0.0046, 0.0024, 0.0008, 10)
-		# Side mounting ear with a visible through-hole, matching the photo's mounting form.
-		var ear: Vector3 = Vector3(side * 0.024, shaft_y - 0.011, engine_z + 0.018)
-		_box(cast, ear, Vector3(0.014, 0.009, 0.020))
-		var hole_axis_start: Vector3 = Vector3(side * 0.024, ear.y, ear.z)
-		var hole_axis_end: Vector3 = Vector3(side * 0.032, ear.y, ear.z)
-		_cylinder(black, hole_axis_start, hole_axis_end, 0.0022, 0.0022, 10)
-		_washer(bright, Vector3(side * 0.0315, ear.y, ear.z), Vector3.RIGHT, 0.0048, 0.0021, 0.001, 12)
+		# Rounded mounting ledges with vertical bores and bolts through the rails.
+		_rounded_cast(cast, Vector3(side * 0.024, shaft_y - 0.012, engine_z), Vector3(0.012, 0.006, 0.038), 0.001)
+		for z_offset in [-0.025, 0.025]:
+			var lug := Vector3(side * 0.024, shaft_y - 0.012, engine_z + z_offset)
+			_turned(cast, lug, Vector3.UP, [Vector2(-0.003, 0.002), Vector2(-0.003, 0.006), Vector2(-0.002, 0.007), Vector2(0.002, 0.007), Vector2(0.003, 0.006), Vector2(0.003, 0.002), Vector2(-0.003, 0.002)], 32)
+			_engine_cylinder(steel, lug - Vector3.UP * 0.01, lug + Vector3.UP * 0.005, 0.0018, 0.0018, 12)
+			_washer(bright, lug + Vector3.UP * 0.0035, Vector3.UP, 0.0042, 0.002, 0.001, 24)
+			_engine_cylinder(dark, lug + Vector3.UP * 0.004, lug + Vector3.UP * 0.006, 0.003, 0.003, 6)
+		var firewall_bolt := Vector3(side * 0.024, shaft_y - 0.015, float(e.firewall_z) + 0.001)
+		_engine_cylinder(steel, firewall_bolt - Vector3(0, 0, 0.004), firewall_bolt + Vector3(0, 0, 0.003), 0.0028, 0.0028, 6)
+		_washer(bright, firewall_bolt - Vector3(0, 0, 0.002), Vector3.FORWARD, 0.0046, 0.0029, 0.001, 24)
 
-	# Rounded cast crankcase, covers and stepped front/rear bearing bosses.
-	_ellipsoid(cast, Vector3(0, shaft_y - 0.003, engine_z + 0.003), Vector3(0.0215, 0.0165, 0.031), 12, 24)
-	_ellipsoid(dark, Vector3(0.0207, shaft_y - 0.002, engine_z + 0.012), Vector3(0.0022, 0.0115, 0.017), 10, 18)
-	_cylinder(bright, Vector3(0, shaft_y, engine_z - 0.040), Vector3(0, shaft_y, engine_z - 0.031), 0.0118, 0.0112, 20)
-	_cylinder(cast, Vector3(0, shaft_y, engine_z + 0.028), Vector3(0, shaft_y, engine_z + 0.037), 0.014, 0.012, 20)
-	_cylinder(steel, Vector3(0, shaft_y, engine_z - 0.039), Vector3(0, shaft_y, float(e.prop_z) + 0.010), 0.0046, 0.0046, 12)
-	_washer(bright, Vector3(0, shaft_y, engine_z + 0.031), Vector3.FORWARD, 0.0145, 0.005, 0.0012, 20)
+	# Long crankcase, a stepped front bearing housing and a bolted rear cover.
+	var case_center := Vector3(0, shaft_y - 0.002, engine_z)
+	_turned(cast, case_center, Vector3.BACK, [Vector2(-0.025, 0), Vector2(-0.025, 0.014), Vector2(-0.022, 0.018), Vector2(-0.017, 0.0195), Vector2(0.026, 0.0195), Vector2(0.030, 0.018), Vector2(0.030, 0)])
+	_turned(cast, Vector3(0, shaft_y, engine_z), Vector3.BACK, [Vector2(-0.045, 0), Vector2(-0.045, 0.0105), Vector2(-0.042, 0.012), Vector2(-0.032, 0.013), Vector2(-0.025, 0.0165), Vector2(-0.018, 0.0175), Vector2(-0.018, 0)])
+	_turned(bright, Vector3(0, shaft_y, engine_z), Vector3.BACK, [Vector2(-0.046, 0), Vector2(-0.046, 0.010), Vector2(-0.0455, 0.0122), Vector2(-0.0425, 0.0122), Vector2(-0.042, 0.0115), Vector2(-0.042, 0)])
+	_engine_cylinder(steel, Vector3(0, shaft_y, engine_z - 0.045), Vector3(0, shaft_y, float(e.prop_z) + 0.010), 0.0046, 0.0046, 32)
+	_turned(dark, case_center, Vector3.BACK, [Vector2(0.030, 0), Vector2(0.030, 0.0182), Vector2(0.0308, 0.0182), Vector2(0.0308, 0)])
+	_turned(cast, case_center, Vector3.BACK, [Vector2(0.0308, 0), Vector2(0.0308, 0.0184), Vector2(0.033, 0.0184), Vector2(0.035, 0.0165), Vector2(0.035, 0)])
 	for side in [-1.0, 1.0]:
-		for z_offset in [-0.014, 0.025]:
-			_cylinder(steel, Vector3(side * 0.0208, shaft_y - 0.003, engine_z + z_offset), Vector3(side * 0.0232, shaft_y - 0.003, engine_z + z_offset), 0.0022, 0.0022, 6)
+		for upper in [-1.0, 1.0]:
+			var boss := case_center + Vector3(side * 0.014, upper * 0.011, 0)
+			for z_lug in [-0.020, 0.024]:
+				_turned(cast, boss + Vector3(0, 0, z_lug), Vector3.BACK, [Vector2(-0.007, 0), Vector2(-0.006, 0.0025), Vector2(-0.004, 0.004), Vector2(0.004, 0.004), Vector2(0.007, 0.0035), Vector2(0.008, 0)], 32, true)
+			_engine_cylinder(dark, boss + Vector3(0, 0, 0.032), boss + Vector3(0, 0, 0.035), 0.0028, 0.0028, 6)
 
-	# Single-cylinder barrel, nine fine silver fins and a flat anodized-gold crown.
-	_cylinder(cast, Vector3(0, shaft_y + 0.006, engine_z + 0.010), Vector3(0, shaft_y + 0.035, engine_z + 0.010), 0.0105, 0.0105, 18)
+	# Exposed cylinder casting below the cooling stack, as in owner photos D/F.
+	var cylinder := Vector3(0, shaft_y, engine_z + 0.010)
+	_turned(cast, cylinder, Vector3.UP, [Vector2(0.006, 0), Vector2(0.006, 0.0155), Vector2(0.012, 0.014), Vector2(0.027, 0.013), Vector2(0.031, 0.0135), Vector2(0.060, 0.011), Vector2(0.060, 0)])
+	for side in [-1.0, 1.0]:
+		_rounded_cast(cast, cylinder + Vector3(side * 0.012, 0.021, 0), Vector3(0.004, 0.026, 0.013), 0.0015)
 	for i in range(9):
-		var fin_y: float = shaft_y + 0.008 + float(i) * 0.00335
-		_cylinder(bright, Vector3(0, fin_y - 0.00055, engine_z + 0.010), Vector3(0, fin_y + 0.00055, engine_z + 0.010), 0.0195, 0.0195, 24)
-	_cylinder(gold, Vector3(0, shaft_y + 0.037, engine_z + 0.010), Vector3(0, shaft_y + 0.044, engine_z + 0.010), 0.020, 0.020, 24)
-	# Short dark reliefs read as axial slots in the finned crown; count and spacing are artistic.
-	for i in range(10):
-		var angle: float = TAU * float(i) / 10.0
-		var slot_x: float = 0.0196 * cos(angle)
-		var slot_z: float = engine_z + 0.010 + 0.0196 * sin(angle)
-		_cylinder(black, Vector3(slot_x, shaft_y + 0.038, slot_z), Vector3(slot_x, shaft_y + 0.043, slot_z), 0.00045, 0.00045, 6)
-	_cylinder(steel, Vector3(0, shaft_y + 0.044, engine_z + 0.010), Vector3(0, shaft_y + 0.049, engine_z + 0.010), 0.0061, 0.0061, 6)
-	_cylinder(bright, Vector3(0, shaft_y + 0.049, engine_z + 0.010), Vector3(0, shaft_y + 0.053, engine_z + 0.010), 0.0033, 0.0033, 10)
-	_cylinder(black, Vector3(0, shaft_y + 0.053, engine_z + 0.010), Vector3(0, shaft_y + 0.054, engine_z + 0.010), 0.0021, 0.0021, 10)
+		var fin_y := 0.030 + i * 0.0032
+		var radius := 0.0186 + 0.0010 * sin(PI * (i + 1) / 10.0)
+		_turned(bright, cylinder + Vector3.UP * fin_y, Vector3.UP, [Vector2(-0.0007, 0.011), Vector2(-0.0007, radius - 0.0005), Vector2(-0.00025, radius), Vector2(0.00025, radius), Vector2(0.0007, radius - 0.0005), Vector2(0.0007, 0.011)], 48)
+	_crown(gold, cylinder + Vector3.UP * 0.058)
+	# Four recessed fasteners and the small glowplug terminal; no permanent cable.
+	for i in range(4):
+		var angle := PI * 0.25 + TAU * i / 4.0
+		var bolt := cylinder + Vector3(cos(angle) * 0.010, 0.064, sin(angle) * 0.010)
+		_washer(dark, bolt, Vector3.UP, 0.0022, 0.0013, 0.0005, 20)
+		_turned(steel, bolt, Vector3.UP, [Vector2(0, 0.0008), Vector2(0, 0.0017), Vector2(0.0007, 0.0017), Vector2(0.0007, 0.0008), Vector2(0.0002, 0.0008)], 24)
+		_engine_cylinder(black, bolt, bolt + Vector3.UP * 0.0002, 0.0008, 0.0008, 6)
+	_washer(bright, cylinder + Vector3.UP * 0.0645, Vector3.UP, 0.0047, 0.003, 0.001, 24)
+	_engine_cylinder(steel, cylinder + Vector3.UP * 0.065, cylinder + Vector3.UP * 0.068, 0.004, 0.004, 6)
+	_engine_cylinder(bright, cylinder + Vector3.UP * 0.068, cylinder + Vector3.UP * 0.071, 0.0022, 0.0022, 24)
+	_engine_cylinder(dark, cylinder + Vector3.UP * 0.071, cylinder + Vector3.UP * 0.072, 0.0013, 0.0013, 16)
 
 	# Carburettor rises ahead of the crankcase; its throat tilts toward the propeller and upward.
 	var carb_lower := Vector3(0, shaft_y + 0.012, engine_z - 0.010)
 	var carb_upper := Vector3(0, shaft_y + 0.027, engine_z - 0.026)
 	var intake_axis: Vector3 = (carb_upper - carb_lower).normalized()
-	_cylinder(cast, carb_lower, carb_upper, 0.0067, 0.0067, 14)
-	var intake_end: Vector3 = carb_upper + intake_axis * 0.005
-	_cylinder(bright, carb_upper, intake_end, 0.0067, 0.008, 16)
-	_washer(bright, intake_end, intake_axis, 0.008, 0.0045, 0.001, 16)
-	_cylinder(black, intake_end - intake_axis * 0.0015, intake_end - intake_axis * 0.0008, 0.0044, 0.0044, 14)
+	var intake_end := carb_upper + intake_axis * 0.005
+	var intake_length := carb_lower.distance_to(intake_end)
+	# The housing ends below the throat: no solid end cap is allowed across the bore.
+	_engine_cylinder(cast, carb_lower, carb_lower + intake_axis * 0.010, 0.0072, 0.0072, 32)
+	_turned(bright, carb_lower, intake_axis, [Vector2(0.008, 0.0067), Vector2(intake_length - 0.004, 0.0070), Vector2(intake_length - 0.001, 0.008), Vector2(intake_length, 0.008), Vector2(intake_length, 0.0055), Vector2(intake_length - 0.003, 0.0048), Vector2(0.011, 0.0042)], 48)
+	_engine_cylinder(black, carb_lower + intake_axis * 0.0105, carb_lower + intake_axis * 0.011, 0.0043, 0.0043, 32)
+	_engine_cylinder(cast, Vector3(-0.009, shaft_y + 0.017, engine_z - 0.013), Vector3(0.009, shaft_y + 0.017, engine_z - 0.013), 0.006, 0.006, 32)
 	# Throttle lever tip is exposed for the separate control-linkage pass.
 	var throttle_pivot := Vector3(0.006, shaft_y + 0.017, engine_z - 0.013)
 	var throttle_tip := Vector3(0.019, shaft_y + 0.031, engine_z - 0.030)
-	_cylinder(steel, throttle_pivot - Vector3(0.003, 0, 0), throttle_pivot + Vector3(0.003, 0, 0), 0.0034, 0.0034, 8)
+	_engine_cylinder(steel, throttle_pivot - Vector3(0.003, 0, 0), throttle_pivot + Vector3(0.003, 0, 0), 0.0034, 0.0034, 8)
 	_bar(bright, throttle_pivot, throttle_tip, 0.003, 0.0018)
-	_cylinder(steel, throttle_tip - Vector3(0.0015, 0, 0), throttle_tip + Vector3(0.0015, 0, 0), 0.0018, 0.0018, 6)
+	_engine_cylinder(steel, throttle_tip - Vector3(0.0015, 0, 0), throttle_tip + Vector3(0.0015, 0, 0), 0.0018, 0.0018, 6)
 	var needle := Vector3(0.029, shaft_y - 0.025, engine_z + 0.044)
 	_box(dark, needle, Vector3(0.009, 0.007, 0.014))
-	_cylinder(steel, needle + Vector3(0.004, 0, 0), needle + Vector3(0.010, 0, 0), 0.0021, 0.0021, 6)
-	_cylinder(black, needle + Vector3(0.010, 0, 0), needle + Vector3(0.013, 0, 0), 0.003, 0.003, 8)
-	_cylinder(bright, Vector3(0.008, shaft_y - 0.031, engine_z + 0.022), Vector3(0.010, shaft_y - 0.031, engine_z + 0.022), 0.0022, 0.0022, 10)
+	_engine_cylinder(steel, needle + Vector3(0.004, 0, 0), needle + Vector3(0.010, 0, 0), 0.0021, 0.0021, 6)
+	_engine_cylinder(black, needle + Vector3(0.010, 0, 0), needle + Vector3(0.013, 0, 0), 0.003, 0.003, 8)
+	_engine_cylinder(bright, Vector3(0.008, shaft_y - 0.031, engine_z + 0.022), Vector3(0.010, shaft_y - 0.031, engine_z + 0.022), 0.0022, 0.0022, 10)
 
 	# Longitudinal cast silencer: rounded front cap, ribbed barrel, seam and tapered rear cone.
 	var muffler_center := Vector3(0.049, shaft_y - 0.004, engine_z)
-	var muffler_nose := Vector3(0.049, shaft_y - 0.004, engine_z - 0.016)
 	var muffler_seam_z: float = engine_z + 0.012
-	_ellipsoid(cast, muffler_nose, Vector3(0.0105, 0.0105, 0.010), 10, 20)
-	_cylinder(cast, Vector3(0.049, shaft_y - 0.004, engine_z - 0.016), Vector3(0.049, shaft_y - 0.004, muffler_seam_z), 0.0105, 0.0105, 22, false)
-	_torus(bright, Vector3(0.049, shaft_y - 0.004, muffler_seam_z), Vector3.FORWARD, 0.0105, 0.00065, 28, 6)
+	_turned(cast, muffler_center, Vector3.BACK, [Vector2(-0.030, 0), Vector2(-0.029, 0.004), Vector2(-0.026, 0.008), Vector2(-0.022, 0.010), Vector2(-0.016, 0.0105), Vector2(0.012, 0.0105)], 48, true)
+	_torus(bright, Vector3(0.049, shaft_y - 0.004, muffler_seam_z), Vector3.FORWARD, 0.0105, 0.00035, 48, 6)
 	# Six shallow raised ribs run along the exposed barrel, rather than around it as ring bands.
 	for rib_index in range(6):
 		var rib_y: float = -0.0075 + float(rib_index) * 0.003
 		var rib_x_offset: float = sqrt(maxf(0.00011025 - rib_y * rib_y, 0.000001)) + 0.00035
 		var rib_a := Vector3(muffler_center.x + rib_x_offset, muffler_center.y + rib_y, engine_z - 0.012)
 		var rib_b := Vector3(muffler_center.x + rib_x_offset, muffler_center.y + rib_y, muffler_seam_z - 0.002)
-		_bar(bright, rib_a, rib_b, 0.00115, 0.0009, Vector3.RIGHT)
+		_engine_cylinder(cast, rib_a, rib_b, 0.00065, 0.00065, 16)
 
 	# A broad rectangular cast neck meets the engine port; the plate carries two visible screws.
 	var neck_center := Vector3(0.034, shaft_y + 0.004, engine_z + 0.009)
-	_box(cast, neck_center, Vector3(0.024, 0.022, 0.022))
-	_box(cast, Vector3(0.021, shaft_y + 0.004, engine_z + 0.009), Vector3(0.004, 0.028, 0.028))
+	_rounded_cast(cast, neck_center, Vector3(0.024, 0.022, 0.022), 0.003)
+	_rounded_cast(cast, Vector3(0.021, shaft_y + 0.004, engine_z + 0.009), Vector3(0.004, 0.028, 0.028), 0.001)
 	for bolt_z in [engine_z + 0.001, engine_z + 0.017]:
 		var flange_bolt := Vector3(0.0232, shaft_y + 0.004, bolt_z)
-		_cylinder(steel, flange_bolt, flange_bolt + Vector3(0.0028, 0, 0), 0.0021, 0.0021, 6)
+		_engine_cylinder(steel, flange_bolt, flange_bolt + Vector3(0.0028, 0, 0), 0.0021, 0.0021, 6)
 		_washer(bright, flange_bolt + Vector3(0.002, 0, 0), Vector3.RIGHT, 0.004, 0.0018, 0.0007, 10)
 	# Fine transverse ribs mark the raised rectangular neck while leaving the pressure port clear.
 	for rib_index in range(5):
@@ -440,18 +539,20 @@ static func _add_engine(root: Node3D) -> void:
 	# Tapered rear cone and hollow outlet; the outlet endpoint remains at the established gas exit.
 	var outlet_start := Vector3(0.056, shaft_y - 0.009, engine_z + 0.030)
 	var outlet_end := Vector3(0.064, shaft_y - 0.018, engine_z + 0.041)
-	_cylinder(cast, Vector3(0.049, shaft_y - 0.004, muffler_seam_z), outlet_start, 0.0105, 0.0044, 18, false)
-	_cylinder(bright, outlet_start - Vector3(0.001, -0.0005, -0.001), outlet_start, 0.0048, 0.0044, 12, false)
+	var cone_start := Vector3(0.049, shaft_y - 0.004, muffler_seam_z)
+	var cone_length := cone_start.distance_to(outlet_start)
+	_turned(cast, cone_start, outlet_start - cone_start, [Vector2(0, 0.0105), Vector2(cone_length * 0.28, 0.0098), Vector2(cone_length * 0.60, 0.0078), Vector2(cone_length, 0.0044)], 48, true)
+	_engine_cylinder(bright, outlet_start - Vector3(0.001, -0.0005, -0.001), outlet_start, 0.0048, 0.0044, 12, false)
 	_add_hollow_outlet(bright, black, outlet_start, outlet_end, 0.0042, 0.0029)
 	# Pressure fitting is kept at its existing connection point and raised off the shell by its boss.
-	_cylinder(bright, Vector3(0.052, shaft_y + 0.006, engine_z + 0.011), Vector3(0.052, shaft_y + 0.010, engine_z + 0.011), 0.0032, 0.0032, 8)
+	_engine_cylinder(bright, Vector3(0.052, shaft_y + 0.006, engine_z + 0.011), Vector3(0.052, shaft_y + 0.010, engine_z + 0.011), 0.0032, 0.0032, 8)
 	_washer(steel, Vector3(0.052, shaft_y + 0.008, engine_z + 0.011), Vector3.UP, 0.0045, 0.0026, 0.0012, 10)
 
 	# Two visible, distinct circuits meet fittings at the firewall-facing end of the installation.
 	var fuel_firewall := Vector3(0.035, shaft_y - 0.031, float(e.firewall_z) - 0.007)
 	var pressure_firewall := Vector3(0.039, shaft_y + 0.002, float(e.firewall_z) - 0.007)
 	for fitting in [fuel_firewall, pressure_firewall]:
-		_cylinder(bright, fitting - Vector3(0, 0, 0.004), fitting + Vector3(0, 0, 0.008), 0.003, 0.003, 8)
+		_engine_cylinder(bright, fitting - Vector3(0, 0, 0.004), fitting + Vector3(0, 0, 0.008), 0.003, 0.003, 8)
 		_washer(steel, fitting - Vector3(0, 0, 0.001), Vector3.FORWARD, 0.0046, 0.0029, 0.001, 8)
 	var fuel_to_needle: Array[Vector3] = _cubic(
 		fuel_firewall + Vector3(0, 0, -0.001),
@@ -465,7 +566,7 @@ static func _add_engine(root: Node3D) -> void:
 		Vector3(0.030, shaft_y + 0.013, engine_z - 0.020),
 		Vector3(0.008, shaft_y + 0.017, engine_z - 0.013), 12
 	)
-	_cylinder(bright, Vector3(0.004, shaft_y + 0.017, engine_z - 0.013), Vector3(0.010, shaft_y + 0.017, engine_z - 0.013), 0.0019, 0.0019, 8)
+	_engine_cylinder(bright, Vector3(0.004, shaft_y + 0.017, engine_z - 0.013), Vector3(0.010, shaft_y + 0.017, engine_z - 0.013), 0.0019, 0.0019, 8)
 	_sweep_tube(fuel, fuel_to_needle, 0.00115, 7)
 	_sweep_tube(fuel, fuel_to_carb, 0.00115, 7)
 	var pressure_path: Array[Vector3] = _cubic(
@@ -475,19 +576,18 @@ static func _add_engine(root: Node3D) -> void:
 		pressure_firewall, 12
 	)
 	_sweep_tube(pressure, pressure_path, 0.00105, 7)
-	_flush(root, "engine_assembly", blocks)
+	var assembly := _flush(root, "engine_assembly", blocks)
+	assembly.set_meta("intake_mouth", intake_end)
+	assembly.set_meta("intake_axis", intake_axis)
+	root.set_meta("engine_revision", "glow-61-detail-v5")
 
 
 static func _add_hollow_outlet(outer: SurfaceTool, inner: SurfaceTool, a: Vector3, b: Vector3, outer_radius: float, inner_radius: float) -> void:
-	var delta: Vector3 = b - a
-	if delta.length() <= 0.0000001:
-		return
-	var axis: Vector3 = delta.normalized()
-	var end_inner: Vector3 = b - axis * 0.009
-	_cylinder(outer, a, b, outer_radius, outer_radius * 0.92, 12, false)
-	_cylinder(inner, a + axis * 0.0004, end_inner, inner_radius, inner_radius * 0.82, 12, false)
-	_washer(outer, b, axis, outer_radius * 0.92, inner_radius * 0.82, 0.001, 12)
-	_cylinder(inner, end_inner - axis * 0.0002, end_inner + axis * 0.0003, inner_radius * 0.80, inner_radius * 0.80, 12)
+	var length := a.distance_to(b)
+	if length <= 0.0000001: return
+	var axis := (b - a).normalized()
+	_turned(outer, a, axis, [Vector2(0, outer_radius), Vector2(length - 0.0006, outer_radius * 0.92), Vector2(length, outer_radius * 0.88), Vector2(length, inner_radius * 0.82)], 48)
+	_turned(inner, a, axis, [Vector2(length, inner_radius * 0.82), Vector2(length - 0.009, inner_radius * 0.80), Vector2(length - 0.009, 0)], 48)
 
 
 static func _prop_blades(st: SurfaceTool, radius: float) -> void:
@@ -718,12 +818,12 @@ static func build(root: Node3D, gear: Dictionary) -> Node3D:
 	var hub_aluminum: SurfaceTool = hub_buckets.aluminum
 	var hub_steel: SurfaceTool = hub_buckets.steel
 	var hub_dark: SurfaceTool = hub_buckets.dark
-	_cylinder(hub_aluminum, Vector3(0, 0, -0.014), Vector3(0, 0, 0.012), 0.0105, 0.0105, 20)
-	_cylinder(hub_aluminum, Vector3(0, 0, 0.008), Vector3(0, 0, 0.012), 0.015, 0.014, 20)
+	_engine_cylinder(hub_aluminum, Vector3(0, 0, -0.014), Vector3(0, 0, 0.012), 0.0105, 0.0105, 20)
+	_engine_cylinder(hub_aluminum, Vector3(0, 0, 0.008), Vector3(0, 0, 0.012), 0.015, 0.014, 20)
 	_washer(hub_steel, Vector3(0, 0, 0.012), Vector3.FORWARD, 0.018, 0.0052, 0.0015, 24)
 	_washer(hub_steel, Vector3(0, 0, -0.007), Vector3.FORWARD, 0.017, 0.0052, 0.0012, 24)
-	_cylinder(hub_steel, Vector3(0, 0, -0.009), Vector3(0, 0, -0.017), 0.0064, 0.0061, 6)
-	_cylinder(hub_dark, Vector3(0, 0, -0.017), Vector3(0, 0, -0.020), 0.0035, 0.0035, 8)
+	_engine_cylinder(hub_steel, Vector3(0, 0, -0.009), Vector3(0, 0, -0.017), 0.0064, 0.0061, 6)
+	_engine_cylinder(hub_dark, Vector3(0, 0, -0.017), Vector3(0, 0, -0.020), 0.0035, 0.0035, 8)
 	_flush(propeller, "propeller_hub_washers_nut", hub_buckets)
 
 	_add_engine(root)

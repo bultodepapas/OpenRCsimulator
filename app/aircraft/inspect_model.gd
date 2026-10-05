@@ -108,7 +108,7 @@ func _run() -> void:
 		push_error("Could not create output directory %s (Error %d)" % [_out_dir, mkdir_error])
 		quit(1)
 		return
-	_image_size = SHOWCASE_IMAGE_SIZE if _suite == "showcase" else DEFAULT_IMAGE_SIZE
+	_image_size = SHOWCASE_IMAGE_SIZE if _suite in ["showcase", "engine"] else DEFAULT_IMAGE_SIZE
 	get_root().size = _image_size
 	get_root().title = "Ugly Stik model %s inspection" % _suite
 	_geometry_data = _load_geometry_data()
@@ -184,9 +184,9 @@ func _capture_suite() -> String:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--suite="):
 			var requested_suite := argument.trim_prefix("--suite=")
-			if requested_suite in ["inspection", "readability36", "details", "motion", "beauty", "showcase"]:
+			if requested_suite in ["inspection", "readability36", "details", "motion", "beauty", "showcase", "engine"]:
 				return requested_suite
-			push_error("Unknown capture suite '%s'; expected inspection, readability36, details, motion, beauty, or showcase" % requested_suite)
+			push_error("Unknown capture suite '%s'; expected inspection, readability36, details, motion, beauty, showcase, or engine" % requested_suite)
 			return ""
 	return "inspection"
 
@@ -198,58 +198,58 @@ func _load_geometry_data() -> Dictionary:
 func _add_lighting() -> void:
 	var environment_node := WorldEnvironment.new()
 	_environment = Environment.new()
-	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase"]
-	var neutral_studio := _suite in ["details", "motion", "beauty", "showcase"]
+	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase", "engine"]
+	var neutral_studio := _suite in ["details", "motion", "beauty", "showcase", "engine"]
 	_environment.background_mode = Environment.BG_COLOR
 	_environment.background_color = Color("#111820") if dark_studio else SKY_COLOR
 	_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	_environment.ambient_light_color = Color("#c8c8c8") if neutral_studio else (Color("#b8c3d1") if dark_studio else Color("#c5d3df"))
-	_environment.ambient_light_energy = 0.45 if _suite == "showcase" else (0.30 if neutral_studio else (0.55 if dark_studio else 0.7))
+	_environment.ambient_light_energy = 0.45 if _suite in ["showcase", "engine"] else (0.30 if neutral_studio else (0.55 if dark_studio else 0.7))
 	environment_node.environment = _environment
 	_world_root.add_child(environment_node)
 
 	var key_light := DirectionalLight3D.new()
 	key_light.name = "KeyLight"
 	key_light.rotation_degrees = Vector3(-47.0, -32.0, -9.0)
-	key_light.light_color = Color.WHITE if _suite in ["details", "motion", "beauty", "showcase"] else Color("#fff3e1")
+	key_light.light_color = Color.WHITE if _suite in ["details", "motion", "beauty", "showcase", "engine"] else Color("#fff3e1")
 	key_light.light_energy = 0.90 if neutral_studio else 1.45
 	key_light.shadow_enabled = true
 	_world_root.add_child(key_light)
 
-	if _suite in ["inspection", "details", "motion", "beauty", "showcase"]:
+	if _suite in ["inspection", "details", "motion", "beauty", "showcase", "engine"]:
 		var fill_light := DirectionalLight3D.new()
 		fill_light.name = "FillLight"
 		fill_light.rotation_degrees = Vector3(-24.0, 145.0, 12.0)
 		fill_light.light_color = Color("#ffffff") if neutral_studio else Color("#c9d9ff")
-		fill_light.light_energy = 0.38 if _suite == "showcase" else (0.16 if neutral_studio else 0.35)
+		fill_light.light_energy = 0.38 if _suite in ["showcase", "engine"] else (0.16 if neutral_studio else 0.35)
 		_world_root.add_child(fill_light)
 
 	var underside_fill := DirectionalLight3D.new()
 	underside_fill.name = "UndersideFill"
 	underside_fill.rotation_degrees = Vector3(48.0, -28.0, 0.0)
 	underside_fill.light_color = Color("#e0e0e0") if neutral_studio else Color("#becbe0")
-	underside_fill.light_energy = 0.40 if _suite == "showcase" else (0.25 if neutral_studio else 0.7)
+	underside_fill.light_energy = 0.40 if _suite in ["showcase", "engine"] else (0.25 if neutral_studio else 0.7)
 	_world_root.add_child(underside_fill)
 
 
 func _lighting_information() -> Dictionary:
-	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase"]
-	var neutral_key := _suite in ["details", "motion", "beauty", "showcase"]
+	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase", "engine"]
+	var neutral_key := _suite in ["details", "motion", "beauty", "showcase", "engine"]
 	var ambient_color := "#c8c8c8" if neutral_key else ("#b8c3d1" if dark_studio else "#c5d3df")
 	var underside_color := "#e0e0e0" if neutral_key else "#becbe0"
 	var fill_color := "#ffffff" if neutral_key else "#c9d9ff"
 	var lights: Array[Dictionary] = [
 		{"name": "KeyLight", "rotation_degrees": [-47.0, -32.0, -9.0], "color_srgb_hex": "#ffffff" if neutral_key else "#fff3e1", "energy": 0.90 if neutral_key else 1.45, "shadows": true},
-		{"name": "UndersideFill", "rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": underside_color, "energy": 0.40 if _suite == "showcase" else (0.25 if neutral_key else 0.7), "shadows": false},
+		{"name": "UndersideFill", "rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": underside_color, "energy": 0.40 if _suite in ["showcase", "engine"] else (0.25 if neutral_key else 0.7), "shadows": false},
 	]
 	if dark_studio:
-		lights.insert(1, {"name": "FillLight", "rotation_degrees": [-24.0, 145.0, 12.0], "color_srgb_hex": fill_color, "energy": 0.38 if _suite == "showcase" else (0.16 if neutral_key else 0.35), "shadows": false})
+		lights.insert(1, {"name": "FillLight", "rotation_degrees": [-24.0, 145.0, 12.0], "color_srgb_hex": fill_color, "energy": 0.38 if _suite in ["showcase", "engine"] else (0.16 if neutral_key else 0.35), "shadows": false})
 	return {
 		"environment_background": "solid color",
 		"background_color_srgb_hex": "#111820" if dark_studio else "#9bcef0",
 		"ambient_source": "color",
 		"ambient_color_srgb_hex": ambient_color,
-		"ambient_energy": 0.45 if _suite == "showcase" else (0.30 if neutral_key else (0.55 if dark_studio else 0.7)),
+		"ambient_energy": 0.45 if _suite in ["showcase", "engine"] else (0.30 if neutral_key else (0.55 if dark_studio else 0.7)),
 		"neutral_key_light": neutral_key,
 		"directional_lights": lights,
 	}
@@ -341,6 +341,11 @@ func _capture_definitions() -> Array[Dictionary]:
 			return _beauty_capture_definitions()
 		"showcase":
 			return _showcase_capture_definitions()
+		"engine":
+			var captures: Array[Dictionary] = []
+			for capture in _showcase_capture_definitions():
+				if capture.category == "Motor": captures.append(capture)
+			return captures
 		_:
 			return _inspection_capture_definitions()
 
@@ -530,8 +535,8 @@ func _showcase_capture_definitions() -> Array[Dictionary]:
 		["engine-three-quarter-right", "MOTOR · TRES CUARTOS DERECHO", "Culata, carburador y escape montados", Vector3(0.19, 0.12, -0.19), Vector3(0.015, 0.01, 0.005), 31.0],
 		["engine-three-quarter-left", "MOTOR · TRES CUARTOS IZQUIERDO", "Cárter, aletas y bancada · instalación completa", Vector3(-0.18, 0.10, -0.17), Vector3(0.0, 0.01, 0.005), 31.0],
 		["engine-overhead", "MOTOR · VISTA SUPERIOR", "Culata dorada, bujía y circuitos visibles", Vector3(0.025, 0.24, -0.04), Vector3(0.02, 0.0, 0.005), 32.0],
-		["engine-head", "CULATA · BUJÍA Y ALETAS", "Primer plano de la corona y refrigeración", Vector3(-0.09, 0.13, -0.09), Vector3(0, 0.032, 0.01), 27.0],
-		["engine-carburetor", "CARBURADOR · ADMISIÓN Y BRAZO", "Hélice oculta para inspeccionar la garganta y su mando", Vector3(0.10, 0.10, -0.14), Vector3(0.005, 0.022, -0.023), 26.0],
+		["engine-head", "CULATA · BUJÍA Y ALETAS", "Primer plano de la corona y refrigeración", Vector3(-0.09, 0.16, -0.09), Vector3(0, 0.053, 0.01), 30.0],
+		["engine-carburetor", "CARBURADOR · ADMISIÓN Y BRAZO", "Hélice oculta para inspeccionar la garganta y su mando", Vector3(0.07, 0.14, -0.17), Vector3(0.003, 0.026, -0.022), 26.0],
 		["engine-exhaust", "ESCAPE · NERVADURAS Y RACOR", "Costado exterior del silenciador y conexión de presión", Vector3(0.22, 0.065, 0.07), Vector3(0.046, 0, 0.015), 27.0],
 		["engine-outlet", "ESCAPE · BOQUILLA Y CONO", "Vista posterior oblicua de la salida hueca", Vector3(0.17, -0.07, 0.14), Vector3(0.06, -0.015, 0.033), 25.0],
 		["engine-mount", "MOTOR · BANCADA Y ALIMENTACIÓN", "Vista inferior de apoyos, fijaciones y manguera de combustible", Vector3(-0.14, -0.15, -0.065), Vector3(0.0, -0.01, 0.015), 34.0],
@@ -732,6 +737,7 @@ func _capture_record(capture: Dictionary, output_path: String) -> Dictionary:
 		"pose": capture.pose_name,
 		"commands": actual_commands,
 		"visual_revision": String(_airplane.root.get_meta("visual_revision", "unknown")),
+		"engine_revision": String(_airplane.root.get_meta("engine_revision", "v4")),
 		"appearance_atlas_runtime_path": String(_airplane.root.get_meta("appearance_atlas_runtime_path", "unknown")),
 		"root_pose": {
 			"position_m": _vector_array(capture.model_position),
@@ -982,6 +988,7 @@ func _source_manifest() -> Dictionary:
 	return {
 		"geometry_id": compiled_id,
 		"visual_revision": String(_airplane.root.get_meta("visual_revision", "unknown")),
+		"engine_revision": String(_airplane.root.get_meta("engine_revision", "v4")),
 		"appearance_atlas_runtime_path": String(_airplane.root.get_meta("appearance_atlas_runtime_path", "unknown")),
 		"appearance_source_paths": {
 			"appearance_json": "res://../assets/aircraft/ugly-stik-60/appearance.json",
@@ -1043,12 +1050,12 @@ func _capture_design() -> Dictionary:
 		design["camera_sweep_total_translation_m"] = 0.06
 		design["expected_crop_policy"] = "Control poses show the complete airplane; close material sweep frames explicitly declare expected_crop=true."
 		design["neutral_key_light"] = true
-	elif _suite == "showcase":
+	elif _suite in ["showcase", "engine"]:
 		design["purpose"] = "High-resolution model tour, engine macros and installed control details."
 		design["macro_crop_policy"] = "Closeups crop surrounding aircraft; full-aircraft views require every visible vertex in frame."
 		design["maintenance_transform_policy"] = "Only skin visibility changes; equipment stays in its installed position."
 		design["view_names"] = []
-		for capture in _showcase_capture_definitions():
+		for capture in _capture_definitions():
 			design["view_names"].append(capture.case_id)
 	elif _suite == "beauty":
 		design["view_names"] = ["beauty-a-dark", "beauty-b-sky"]
@@ -1061,6 +1068,7 @@ func _write_manifest() -> void:
 	var manifest := {
 		"schema": "openrc-model-capture-v4",
 		"visual_revision": String(_airplane.root.get_meta("visual_revision", "unknown")),
+		"engine_revision": String(_airplane.root.get_meta("engine_revision", "v4")),
 		"appearance_atlas_runtime_path": String(_airplane.root.get_meta("appearance_atlas_runtime_path", "unknown")),
 		"appearance_source_paths": {
 			"appearance_json": String(_airplane.root.get_meta("appearance_data_path", "")),
