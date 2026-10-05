@@ -15,6 +15,8 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+const EngineSound := preload("res://render/engine_sound.gd")
 
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -28,10 +30,13 @@ var _commands := Commands.neutral_commands()
 var _scripted := false
 var _sim: Node
 var _trace := Trace.new()
+var _engine_audio: AudioStreamPlayer3D
+var _engine_phase := 0.0
 var _aircraft: Dictionary # AircraftData result: { ok, errors, warnings, model }
 var _cg_model := Vector3.ZERO
 var _start: Dictionary # trimmed starting condition (Trim result)
-var _trim_pitch := 0.0 # elevator trim, pilot units (−1…1), like a radio trim tab
+## Trims in pilot units (−1…1), like radio trim tabs: solved at the start, added to the sticks.
+var _trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
 var _recording := false
 var _trace_note := ""
 
@@ -50,9 +55,12 @@ func _ready() -> void:
 		_sim.inertia = _aircraft.model.inertia
 		_cg_model = Frames.cg_in_model_frame(_aircraft.model.cg_le, Geometry.DATA.wing.leading_z, Geometry.DATA.equipment.shaft_y)
 		_sim.loads = _aero_loads
-		_start = Scenarios.trimmed_glide_across_view(_aircraft.model, _sim.gravity, deg_to_rad(Spec.CONTROLS.max_throw_deg.elevator))
+		var c: Dictionary = Spec.CONTROLS.max_throw_deg
+		var throws := { elevator = deg_to_rad(c.elevator), aileron = deg_to_rad(c.aileron), rudder = deg_to_rad(c.rudder) }
+		_start = Scenarios.trimmed_level_across_view(_aircraft.model, _sim.gravity, throws)
+		_sim.pre_step = _engine_pre_step
 		if _start.ok:
-			_trim_pitch = _start.pitch_command
+			_trims = { roll = _start.roll_command, pitch = _start.pitch_command, yaw = _start.yaw_command }
 		else:
 			push_error("trim: " + _start.message)
 	else:
@@ -60,6 +68,8 @@ func _ready() -> void:
 			push_error("aircraft data: " + e)
 	add_child(_sim)
 	_sim.stepped.connect(_on_sim_stepped)
+	if _aircraft.ok and not _scripted:
+		_engine_audio = EngineSound.create(_airplane.root)
 	if _scripted:
 		_sim.process_mode = Node.PROCESS_MODE_DISABLED
 	_reset()
@@ -87,11 +97,13 @@ func _process(delta: float) -> void:
 	var flown := _flown_commands()
 	_sim.inputs = PackedFloat64Array([flown.roll, flown.pitch, flown.yaw, flown.throttle])
 	_t += dt
-	_prop_angle += TAU * Commands.prop_rev_per_sec(_commands) * dt
+	_prop_angle += TAU * (_sim.aux[0] / 60.0) * dt
 	# Temporary ground until crash detection (ROADMAP D9): below the ground, start over.
 	if not _scripted and _sim.state[RB.POS + 2] > 0.0:
 		_reset()
-	InputPanel.update(_panel, raw, _commands, _view_name(), _status())
+	if _engine_audio != null:
+		_engine_phase = EngineSound.update(_engine_audio, _engine_phase, _sim.aux[0], _aircraft.model.propulsion.max_rpm)
+	InputPanel.update(_panel, raw, _commands, _view_name(), _status(), _flown_commands())
 	_render_pose(_current_pose(), _flown_commands(), _prop_angle)
 
 
@@ -100,6 +112,9 @@ func _reset() -> void:
 		_stop_recording() # one file never mixes two flights
 	_t = 0.0
 	_commands = Commands.neutral_commands()
+	if _start.get("ok", false):
+		_commands.throttle = _start.throttle
+		_sim.aux = PackedFloat64Array([_start.rpm])
 	# Inputs first: synchronous paths (capture, --trace) never run _process, so they must start trimmed too.
 	var flown := _flown_commands()
 	_sim.inputs = PackedFloat64Array([flown.roll, flown.pitch, flown.yaw, flown.throttle])
@@ -111,7 +126,9 @@ func _reset() -> void:
 ## Stick commands plus trim: what the surfaces actually do (and what the physics sees).
 func _flown_commands() -> Dictionary:
 	var c := _commands.duplicate()
-	c.pitch = clampf(c.pitch + _trim_pitch, -1.0, 1.0)
+	c.roll = clampf(c.roll + _trims.roll, -1.0, 1.0)
+	c.pitch = clampf(c.pitch + _trims.pitch, -1.0, 1.0)
+	c.yaw = clampf(c.yaw + _trims.yaw, -1.0, 1.0)
 	return c
 
 
@@ -122,7 +139,8 @@ func _status() -> String:
 		return "AIRCRAFT DATA INVALID: %s" % _aircraft.errors[0]
 	var s: PackedFloat64Array = _sim.state
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
-	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  trim elev %+.2f" % [_sim.time(), -s[RB.POS + 2], speed, _trim_pitch]
+	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [_sim.time(), -s[RB.POS + 2], speed, _sim.aux[0]]
+	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [_trims.roll, _trims.pitch, _trims.yaw]
 	if _sim.paused:
 		line += "\nPAUSED  [P] resume"
 	if _recording:
@@ -230,24 +248,33 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_camera.look_at(pose.pos, Vector3.UP)
 
 
-## Simulation loads (D3): aerodynamics from the pilot's current commands. No thrust until D5; calm air.
+## Simulation loads: aerodynamics (D3) + propulsion (D5) from the pilot's current commands, in calm air.
 func _aero_loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var i: PackedFloat64Array = _sim.inputs
 	var surfaces := Commands.surface_deflections_deg({ roll = i[0], pitch = i[1], yaw = i[2], throttle = i[3] })
 	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]))
-	return Aero.loads(s, air, Aero.deflections_from_surfaces(surfaces), _aircraft.model, Air.RHO_SEA_LEVEL)
+	var l := Aero.loads(s, air, Aero.deflections_from_surfaces(surfaces), _aircraft.model, Air.RHO_SEA_LEVEL)
+	var p := Propulsion.loads(air.v_air, _sim.aux[0], _aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
+	for k in 6:
+		l[k] += p[k]
+	return l
 
 
-func _on_sim_stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array) -> void:
+## Engine rpm follows the throttle with its lag, once per physics tick (deterministic).
+func _engine_pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	return PackedFloat64Array([Propulsion.rpm_step(aux[0], inputs[3], dt, _aircraft.model.propulsion)])
+
+
+func _on_sim_stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
 	if _recording:
-		_trace.record(tick, t, state, loads, inputs)
+		_trace.record(tick, t, state, loads, inputs, aux)
 
 
 func _start_recording() -> void:
 	_trace.clear()
 	_trace.meta = _trace_meta()
 	_recording = true
-	_trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs)
+	_trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux)
 
 
 ## Saves to user://traces/ (on Linux: ~/.local/share/godot/app_userdata/OpenRC Simulator/traces/).
@@ -263,7 +290,7 @@ func _stop_recording(path := "") -> Error:
 
 func _trace_meta() -> Dictionary:
 	return {
-		scenario = "trimmed glide across view at 15 m/s (D4; no thrust, calm air)",
+		scenario = "trimmed level flight across view at 15 m/s (D5: engine, six-axis trim, calm air)",
 		aircraft = "%s (%s)" % [_aircraft.model.get("id", "?"), Scenarios.AIRCRAFT],
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
@@ -293,7 +320,9 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 		for i in roundi(t / _sim.dt()):
 			_sim.step()
 		_sim.set_paused(true)
-	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status())
+	if not _scripted:
+		c = _commands # physics captures show the real (trimmed) commands, not capture arguments
+	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), _flown_commands() if not _scripted else c)
 	var pose := _current_pose()
 	if not _scripted:
 		var s: PackedFloat64Array = _sim.state
@@ -301,6 +330,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_render_pose(pose, c, TAU * Commands.prop_rev_per_sec(c) * t)
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	print("saved %s (error %d)" % [out, err])
 	get_tree().quit(err)

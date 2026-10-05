@@ -739,5 +739,151 @@
         "source": "OpenFlightSim UltraStick25e"
       }
     }
+  },
+  "propulsion": {
+    "description": "D5 thrust v0: engine rpm follows throttle with a first-order lag; thrust and torque from propeller coefficients at the current advance ratio. In-flight prop unloading (rpm rising with airspeed) waits for the shaft model (G2).",
+    "engine": {
+      "name": "O.S. MAX-61FX (two-stroke glow)",
+      "peak_power": {
+        "value": 1397.4,
+        "unit": "W",
+        "kind": "manual",
+        "source": "O.S. catalog 17750: 1.9 PS at 16,000 rpm"
+      },
+      "peak_power_rpm": {
+        "value": 16000.0,
+        "unit": "rpm",
+        "kind": "manual",
+        "source": "O.S. catalog 17750"
+      },
+      "max_rpm_static": {
+        "value": 11149.0,
+        "unit": "rpm",
+        "kind": "derived",
+        "source": "power balance: engine power assumed linear in rpm below the peak (estimated) = static prop power Cp·ρ·n³·D⁵ with Cp 0.0471 → n = sqrt(P_peak/n_peak / (Cp·ρ·D⁵))"
+      },
+      "idle_rpm": {
+        "value": 2800.0,
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "typical .61 two-stroke idle 2,500-3,000 rpm"
+      },
+      "lag_time_constant": {
+        "value": 0.25,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "first-order throttle response of a glow engine; replace with a throttle-step measurement"
+      }
+    },
+    "propeller": {
+      "name": "APC 12x6 Sport (LP12060)",
+      "diameter": {
+        "value": 0.3048,
+        "unit": "m",
+        "kind": "manual",
+        "source": "12 in nominal"
+      },
+      "rotation": "clockwise seen from behind (standard tractor): the reaction torque rolls the airplane left",
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.113
+          ],
+          [
+            0.373,
+            0.0796
+          ],
+          [
+            0.414,
+            0.0725
+          ],
+          [
+            0.457,
+            0.0633
+          ],
+          [
+            0.504,
+            0.0537
+          ],
+          [
+            0.55,
+            0.0437
+          ],
+          [
+            0.592,
+            0.0351
+          ],
+          [
+            0.634,
+            0.0271
+          ],
+          [
+            0.679,
+            0.018
+          ],
+          [
+            0.724,
+            0.0095
+          ],
+          [
+            0.767,
+            0.001
+          ],
+          [
+            0.788,
+            -0.0034
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here); J = 0 row from the static run at 5,954 rpm, linear between J = 0 and 0.373 (no measurements there)"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0471
+          ],
+          [
+            0.373,
+            0.0489
+          ],
+          [
+            0.457,
+            0.0442
+          ],
+          [
+            0.55,
+            0.036
+          ],
+          [
+            0.634,
+            0.0278
+          ],
+          [
+            0.724,
+            0.0176
+          ],
+          [
+            0.788,
+            0.0092
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here)"
+      },
+      "thrust_line_offset": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "thrust line through the CG height (plan: thrust line close to the fuselage centre); [x_aft, y_right, z_up] from the CG"
+      }
+    }
   }
 }

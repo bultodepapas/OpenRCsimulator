@@ -9,7 +9,7 @@ const RK := preload("res://physics/integrator.gd")
 
 signal paused_changed(paused: bool)
 ## Emitted after every physics step (and once on reset, with tick 0), for recorders and telemetry.
-signal stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array)
+signal stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array)
 
 var mass := 1.0
 var inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
@@ -22,6 +22,11 @@ var loads: Callable = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Ar
 var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 ## Loads at the start of the latest step (the RK4 k1 evaluation), for traces.
 var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+## Auxiliary states advanced once per tick, before integration (e.g. [engine_rpm]). Held constant during RK4.
+var aux := PackedFloat64Array([0.0])
+## pre_step(aux, inputs, dt) -> PackedFloat64Array: new aux values. Runs at the fixed tick, so it stays deterministic.
+var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	return a
 
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
@@ -38,7 +43,7 @@ func reset(initial: PackedFloat64Array) -> void:
 	tick = 0
 	_inertia_inv = RB.inertia_inverse(inertia)
 	last_loads = loads.call(state, 0.0)
-	stepped.emit(tick, time(), state, last_loads, inputs)
+	stepped.emit(tick, time(), state, last_loads, inputs, aux)
 
 
 func dt() -> float:
@@ -63,6 +68,7 @@ func _notification(what: int) -> void:
 
 func step() -> void:
 	var t := time()
+	aux = pre_step.call(aux, inputs, dt())
 	last_loads = loads.call(state, t)
 	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
 		var l: PackedFloat64Array = loads.call(s, t)
@@ -70,7 +76,7 @@ func step() -> void:
 	previous = state
 	state = RK.rk4_step(state, dt(), f)
 	tick += 1
-	stepped.emit(tick, time(), state, last_loads, inputs)
+	stepped.emit(tick, time(), state, last_loads, inputs, aux)
 
 
 func _physics_process(_delta: float) -> void:

@@ -4,6 +4,13 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **Prop torque decides whether "hands-off" means anything.** With a longitudinal-only trim, the 0.1 N·m cruise torque rolled the airplane into a spiral: 26 m lost in 30 s. Six-axis trim needs only 2.2 % right aileron, like a real nitro Stik. Physics that pilots *feel* (torque, trim) belongs in the first flyable version. (2026-10-05)
+- **The panel must show what the airplane actually does.** The capture panel showed a capture argument (throttle 50 %) and stick-only surfaces while the engine ran at 28 % with trims applied. *Now:* surfaces show stick plus trims, and physics captures show the real commands. (2026-10-05)
+
+- **A test's expectation can be the bug.** "Right rudder → side force to the right" was my intuition; physics says the fin is pushed **left** (it deflects air right), which swings the nose right. The model and the borrowed data agreed; the test was wrong. *Now:* every sign test states the physical reason in its name. (2026-10-05)
+- **Compare the live app's trace with the solver.** All unit tests passed while the app's headless `--trace` path flew with zero elevator trim and dived (sink 4.6 m/s instead of 1.76). Only comparing the app's own trace with the trim solver exposed it: synchronous paths never run `_process`, where inputs were set. *Now:* `test.sh` runs the real app headless and checks the glide (`tests/check_trimmed_glide.py`). (2026-10-05)
+- **Layered guards catch what a single test misses.** A trim mutation (pitch moment ignored) was caught first by the app's `push_error` plus the engine-error guard, before the dedicated trim test even ran. (2026-10-05)
+
 - **Measure the project before re-planning it.** Plan review #2 started from numbers: suite time 21 s, 25 commits with 65 generated-file changes, 1343 lines of visual code vs 425 of physics, no export presets, zero human flights. The numbers made the gap obvious: excellent foundations, nothing playable. *Now:* remaining work is organized as milestones that each end in a build the owner flies, with acceptance targets computed from the data (the predicted-handling table). (2026-10-05)
 
 - **A hand balance is a cheap cross-check of someone else's geometry.** Plausible component masses on the visual model put the CG ahead of the wing's leading edge, which is impossible for a flying airplane. The full-size plan then showed the nose (firewall to LE) is 6.94 in, while the provisional visual model has ~12.8 in. One physics sanity check found a visual-geometry error that no screenshot showed. (2026-10-05)
@@ -51,10 +58,12 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Godot specifics
 
+- **`:=` cannot infer types from Dictionary values** (they are Variants). I hit it in `aero.gd` right after warning the model team about it. Use explicit types (`var x: float = d.key`) whenever the right side reads a Dictionary or an untyped Array. (2026-10-05)
+
 - **Godot's `--fixed-fps N` makes frame-rate independence testable.** Running the same scripted flight with `--fixed-fps 30/60/144` and hashing the final state (SHA-256 of the `PackedFloat64Array` bytes) proves physics doesn't depend on rendering: identical hashes. A deliberate "step with the frame delta" bug changes the hashes at once. Runs must end at an exact tick (`stop_at_tick`), because at 144 fps a frame can contain two ticks. (2026-10-05)
 
 - **Godot runtime script errors do not fail a run.** A bad format string printed `ERROR:` while the test reported success and exited 0. *Now:* `test.sh` fails if any `ERROR:` / `SCRIPT ERROR:` line appears, verified with a deliberate runtime error. Errors Godot can see at parse time are caught earlier by the parse check. (2026-10-05)
-- **GDScript's `%` formatting has no `%e`;** use `String.num_scientific()`. (2026-10-05)
+- **GDScript's `%` formatting has no `%e` or `%g`;** use `String.num_scientific()`. The engine-error guard catches it. (2026-10-05)
 - **GDScript is fast enough for one airplane's rigid body:** RK4 with a `Callable` derivative and `PackedFloat64Array` state takes ~85 µs per 240 Hz step, about 50× real time, roughly 2% of a 60 fps frame. (2026-10-05)
 
 - **The float32 problem is real inside Godot too.** A test adds a 1e-4 m/s² acceleration for 60 s at 240 Hz: `Vector3` ends with exactly 0 change; the `PackedFloat64Array` helpers give 0.006 m/s (exact). The contrast now lives in `tests/test_math3d.gd`. (2026-10-05)
@@ -70,6 +79,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **A script-only project needs no editor and no import step.** Godot ran straight from text files; the pinned binary is 78 MB to download (146 MB unpacked) and is verified by SHA-512. (2026-10-05)
 
 ## CI
+
+- **`act` is not a clean checkout.** It copies the working directory, including ignored and untracked folders. After `app/captures/` was untracked, GitHub's fresh checkout lacked the folder, Godot could not save the PNG (error 7), and CI went red; locally and in `act` it passed. *Now:* `capture.sh` and the app create their output folders. Changes to `.gitignore`, paths or generated files are verified from a fresh `git clone` (with `.tools/` linked in). (2026-10-05)
 
 - **Run CI locally before pushing.** `act` with the cached `catthehacker/ubuntu:act-latest` image caught that a clean Ubuntu runner lacks the X11 libraries Godot needs (`libXcursor`, …); my machine happened to have them. *Now:* the workflow installs them explicitly. (2026-10-05)
 - **Local `act` predicted GitHub correctly:** the first real GitHub run (both jobs) passed in 41 s, as the local run did. (2026-10-05)
@@ -90,3 +101,5 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 - **A local dimensional check can improve the mesh before every scan is calibrated.** The Jensen chord reads 12.07 in against 12 in nominal, supporting the nearby F1-to-wing reading of 6.94 in. Correcting the nose from 325 to 176.276 mm also required translating its engine, propeller and nose gear. The new checks measure built mesh nodes; restoring the old firewall in a temporary copy triggers three failures. [v2 evidence](docs/research/ugly-stik-model-v2.md). (2026-10-05)
 - **Organize references by aircraft identity and verify the move by hash.** All 31 owner-supplied files retained their bytes after relocation; Ultra Stick 120 and the unidentified MoJo drawing have separate folders and updated manifests, so their dimensions cannot silently replace Jensen .61 data. [Reference index](docs/research/aircraft-reference-index.md). (2026-10-05)
+
+- **A model plan needs separate acceptance for playability and dimensional fidelity.** The v2 checks prove articulation and a few dimensions, while the tail and aft fuselage remain estimated. The revised plan keeps v2 available for M1, measures those pieces before detail work, and runs distance-readability trials in parallel. Combined control clearances and capture provenance are explicit next checks. [Review and revised plan](docs/research/ugly-stik-model-review-v2.md). (2026-10-05)

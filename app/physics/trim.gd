@@ -1,99 +1,155 @@
-# Trim solver (D4): steady, wings-level, straight flight on the REAL simulation equations.
-# Newton–Raphson with a finite-difference Jacobian on the rigid-body accelerations (u̇, ẇ, q̇), so the trim
-# is consistent with the simulation by construction. 64-bit floats only (guarded).
-#   level: unknowns [alpha, elevator, thrust] at flight-path angle 0
-#   glide: unknowns [alpha, elevator, gamma] with zero thrust
-# Elevator is in the data convention (rad, +TE down); pitch_command is the pilot-side value (−1…1).
+# Trim solver: steady, wings-level, straight flight on the REAL simulation equations (D4, six-axis since D5).
+# Newton–Raphson, finite-difference Jacobian, Gaussian elimination with partial pivoting. 64-bit only (guarded).
+# Unknowns x = [alpha, elevator, X, beta, aileron, rudder] with residuals = all six accelerations
+#   level: X = throttle (0…1); engine rpm = its steady target; the prop's torque is trimmed out by aileron/rudder.
+#   glide: X = flight-path angle gamma; engine stopped.
+# Surfaces in the data conventions (rad; elevator and ailerons +TE down, rudder +TE left; aileron is antisymmetric:
+# right = +aileron, left = −aileron). Results also give the pilot-side trims (−1…1), as on a radio.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+
+const N := 6
 
 
-## The trimmed state: heading `yaw`, airspeed V along a path `gamma` above the horizon, at position pos_ned.
-static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned: PackedFloat64Array) -> PackedFloat64Array:
-	return RB.make_state(pos_ned, M.v3(V * cos(alpha), 0.0, V * sin(alpha)), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
+## Trimmed state: airspeed V, angle of attack alpha, sideslip beta, path angle gamma, heading yaw, wings level.
+static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned: PackedFloat64Array, beta := 0.0) -> PackedFloat64Array:
+	var u := V * cos(alpha) * cos(beta)
+	var v := V * sin(beta)
+	var w := V * sin(alpha) * cos(beta)
+	return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
 
 
-## Accelerations [u̇, ẇ, q̇] for unknowns x in the given mode.
-static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, j_inv: PackedFloat64Array) -> PackedFloat64Array:
-	var alpha := x[0]
+static func _deflections(x: PackedFloat64Array) -> Dictionary:
+	return { elevator = x[1], aileron_right = x[4], aileron_left = -x[4], rudder = x[5] }
+
+
+## Body loads (aero + propulsion) and the state for unknowns x.
+static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary) -> Array:
 	var gamma := 0.0 if mode == "level" else x[2]
-	var thrust := x[2] if mode == "level" else 0.0
-	var s := state_for(V, alpha, gamma, 0.0, M.v3(0, 0, -100))
-	var d := { elevator = x[1], aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
-	var l := Aero.loads(s, Air.compute(s, M.v3(0, 0, 0)), d, model, Air.RHO_SEA_LEVEL)
-	var dot := RB.derivative(s, model.mass_kg, model.inertia, j_inv, M.v3(l[0] + thrust, l[1], l[2]), M.v3(l[3], l[4], l[5]), g)
-	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1]])
+	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
+	var air := Air.compute(s, M.v3(0, 0, 0))
+	var l := Aero.loads(s, air, _deflections(x), model, Air.RHO_SEA_LEVEL)
+	if mode == "level":
+		var rpm := Propulsion.target_rpm(x[2], model.propulsion)
+		var pl := Propulsion.loads(air.v_air, rpm, model.propulsion, Air.RHO_SEA_LEVEL)
+		for i in 6:
+			l[i] += pl[i]
+	return [s, l]
 
 
-## Returns { ok, message, alpha, elevator, pitch_command, thrust, gamma, state, residual, iterations }.
-## max_elevator_rad: the elevator throw available; a trim needing more fails.
-static func solve(mode: String, V: float, model: Dictionary, g: float, max_elevator_rad: float) -> Dictionary:
+static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, j_inv: PackedFloat64Array) -> PackedFloat64Array:
+	var e := _evaluate(x, mode, V, model)
+	var s: PackedFloat64Array = e[0]
+	var l: PackedFloat64Array = e[1]
+	var dot := RB.derivative(s, model.mass_kg, model.inertia, j_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), g)
+	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
+
+
+## throws: { elevator, aileron, rudder } maximum deflections in radians.
+## Returns { ok, message, mode, V, alpha, beta, gamma, throttle, thrust, rpm, elevator, aileron, rudder,
+##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
+static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary) -> Dictionary:
 	assert(mode == "level" or mode == "glide")
 	var j_inv := RB.inertia_inverse(model.inertia)
-	var x := PackedFloat64Array([0.05, -0.05, 2.0 if mode == "level" else -0.1])
+	var x := PackedFloat64Array([0.05, -0.05, 0.4 if mode == "level" else -0.1, 0.0, 0.0, 0.0])
 	var r := _residual(x, mode, V, model, g, j_inv)
 	var iterations := 0
 	while iterations < 50 and _norm(r) > 1e-10:
 		iterations += 1
-		var jac := []
-		for k in 3:
+		var jac := [] # jac[i][k] = ∂r_i/∂x_k
+		for i in N:
+			jac.append(PackedFloat64Array([0, 0, 0, 0, 0, 0]))
+		for k in N:
 			var h := 1e-7 * maxf(1.0, absf(x[k]))
 			var xp := x.duplicate()
 			xp[k] += h
 			var rp := _residual(xp, mode, V, model, g, j_inv)
-			jac.append(PackedFloat64Array([(rp[0] - r[0]) / h, (rp[1] - r[1]) / h, (rp[2] - r[2]) / h]))
-		var dx := _solve3(jac, PackedFloat64Array([-r[0], -r[1], -r[2]]))
+			for i in N:
+				jac[i][k] = (rp[i] - r[i]) / h
+		var neg := PackedFloat64Array()
+		for i in N:
+			neg.append(-r[i])
+		var dx := solve_linear(jac, neg)
 		if dx.is_empty():
-			return _result(false, "singular Jacobian (no trim near this condition)", x, mode, V, r, iterations, max_elevator_rad)
-		for k in 3:
+			return _result(false, "singular Jacobian (no trim near this condition)", x, mode, V, r, iterations, throws, model)
+		for k in N:
 			x[k] += dx[k]
 		r = _residual(x, mode, V, model, g, j_inv)
 	if _norm(r) > 1e-8:
-		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(_norm(r)), x, mode, V, r, iterations, max_elevator_rad)
-	if absf(x[1]) > max_elevator_rad:
-		return _result(false, "needs %.1f° of elevator, more than the %.1f° throw" % [rad_to_deg(absf(x[1])), rad_to_deg(max_elevator_rad)], x, mode, V, r, iterations, max_elevator_rad)
-	if mode == "level" and x[2] < 0.0:
-		return _result(false, "needs negative thrust (%.2f N)" % x[2], x, mode, V, r, iterations, max_elevator_rad)
-	return _result(true, "trimmed", x, mode, V, r, iterations, max_elevator_rad)
+		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(_norm(r)), x, mode, V, r, iterations, throws, model)
+	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
+		if absf(check[0]) > check[1]:
+			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model)
+	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
+		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model)
+	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model)
 
 
-static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, max_elevator_rad: float) -> Dictionary:
+static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
+	var throttle := x[2] if mode == "level" else 0.0
+	var e := _evaluate(x, mode, V, model)
+	var rpm := Propulsion.target_rpm(throttle, model.propulsion) if mode == "level" else 0.0
+	var thrust := 0.0
+	if mode == "level":
+		thrust = Propulsion.loads(Air.compute(e[0], M.v3(0, 0, 0)).v_air, rpm, model.propulsion, Air.RHO_SEA_LEVEL)[0]
 	return {
 		ok = ok, message = message, mode = mode, V = V,
-		alpha = x[0], elevator = x[1],
-		pitch_command = -x[1] / max_elevator_rad, # pilot side: +1 = full up (TE up)
-		thrust = x[2] if mode == "level" else 0.0,
-		gamma = gamma,
-		state = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100)),
+		alpha = x[0], beta = x[3], gamma = gamma, throttle = throttle, thrust = thrust, rpm = rpm,
+		elevator = x[1], aileron = x[4], rudder = x[5],
+		# Pilot side (input/commands.gd): +pitch = elevator TE up; +roll = right aileron TE up; +yaw = rudder TE right.
+		pitch_command = -x[1] / throws.elevator,
+		roll_command = -x[4] / throws.aileron,
+		yaw_command = -x[5] / throws.rudder,
+		state = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3]),
 		residual = _norm(r), iterations = iterations,
 	}
 
 
 static func _norm(v: PackedFloat64Array) -> float:
-	return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+	var acc := 0.0
+	for x in v:
+		acc += x * x
+	return sqrt(acc)
 
 
-## Solve a 3×3 system (rows = Jacobian columns as computed: jac[k][i] = ∂r_i/∂x_k) by Cramer's rule.
-static func _solve3(jac: Array, b: PackedFloat64Array) -> PackedFloat64Array:
-	# A[i][k] = jac[k][i]
-	var a00: float = jac[0][0]
-	var a01: float = jac[1][0]
-	var a02: float = jac[2][0]
-	var a10: float = jac[0][1]
-	var a11: float = jac[1][1]
-	var a12: float = jac[2][1]
-	var a20: float = jac[0][2]
-	var a21: float = jac[1][2]
-	var a22: float = jac[2][2]
-	var det := a00 * (a11 * a22 - a12 * a21) - a01 * (a10 * a22 - a12 * a20) + a02 * (a10 * a21 - a11 * a20)
-	if absf(det) < 1e-14:
-		return PackedFloat64Array()
-	var x0 := (b[0] * (a11 * a22 - a12 * a21) - a01 * (b[1] * a22 - a12 * b[2]) + a02 * (b[1] * a21 - a11 * b[2])) / det
-	var x1 := (a00 * (b[1] * a22 - a12 * b[2]) - b[0] * (a10 * a22 - a12 * a20) + a02 * (a10 * b[2] - b[1] * a20)) / det
-	var x2 := (a00 * (a11 * b[2] - b[1] * a21) - a01 * (a10 * b[2] - b[1] * a20) + b[0] * (a10 * a21 - a11 * a20)) / det
-	return PackedFloat64Array([x0, x1, x2])
+## Solve A·x = b (A as an Array of PackedFloat64Array rows) by Gaussian elimination with partial pivoting.
+## Returns an empty array when A is singular.
+static func solve_linear(a_in: Array, b_in: PackedFloat64Array) -> PackedFloat64Array:
+	var n := b_in.size()
+	var a := []
+	for row in a_in:
+		a.append((row as PackedFloat64Array).duplicate())
+	var b := b_in.duplicate()
+	for col in n:
+		var pivot := col
+		for row in range(col + 1, n):
+			if absf(a[row][col]) > absf(a[pivot][col]):
+				pivot = row
+		if absf(a[pivot][col]) < 1e-14:
+			return PackedFloat64Array()
+		if pivot != col:
+			var tmp = a[col]
+			a[col] = a[pivot]
+			a[pivot] = tmp
+			var tb := b[col]
+			b[col] = b[pivot]
+			b[pivot] = tb
+		for row in range(col + 1, n):
+			var f: float = a[row][col] / a[col][col]
+			for k in range(col, n):
+				a[row][k] -= f * a[col][k]
+			b[row] -= f * b[col]
+	var x := PackedFloat64Array()
+	x.resize(n)
+	for i in range(n - 1, -1, -1):
+		var acc := b[i]
+		for k in range(i + 1, n):
+			acc -= a[i][k] * x[k]
+		x[i] = acc / a[i][i]
+	return x

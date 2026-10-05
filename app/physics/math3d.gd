@@ -2,7 +2,7 @@
 # Godot's Vector3/Basis/Quaternion are 32-bit, so physics uses PackedFloat64Array instead:
 #   vector     = [x, y, z]
 #   quaternion = [w, x, y, z], unit length, rotates body-frame vectors into the world frame.
-# All trigonometry goes through this file (sin_/cos_/atan2_/asin_), so a deterministic
+# All transcendental math goes through this file (sin_/cos_/atan2_/asin_/exp_), so a deterministic
 # implementation can be swapped in later without touching callers.
 extends RefCounted
 
@@ -23,6 +23,10 @@ static func atan2_(y: float, x: float) -> float:
 
 static func asin_(a: float) -> float:
 	return asin(clampf(a, -1.0, 1.0))
+
+
+static func exp_(a: float) -> float:
+	return exp(a)
 
 
 # --- vectors ---

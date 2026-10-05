@@ -67,9 +67,11 @@ func _run() -> void:
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await create_timer(0.1).timeout
-	_check("reset -> throttle 50%", _pct() == 50, _row("throttle"))
+	var trim_pct := roundi(float(_main._start.throttle) * 100.0)
+	_check("reset -> throttle back to its trimmed setting", _pct() == trim_pct, "%s (trim %d%%)" % [_row("throttle"), trim_pct])
 
-	# C6: physics mode is live: the airplane descends, R restarts it, and it restarts by itself below ground.
+	# D5: the live airplane starts trimmed in level flight with the engine running: hands-off it holds altitude;
+	# pulling the throttle back makes it descend.
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await process_frame
@@ -77,25 +79,26 @@ func _run() -> void:
 	var a0 := _alt()
 	await create_timer(1.0).timeout
 	var a1 := _alt()
-	# With aerodynamics (D3) and no thrust it descends, but lift makes it clearly slower than free fall (4.9 m in 1 s).
-	_check("physics: descends without power, slower than free fall", a0 > 29.5 and a1 < a0 - 0.5 and a1 > a0 - 4.0, "%.1f → %.1f m" % [a0, a1])
+	_check("physics: trimmed level flight holds altitude hands-off", a0 > 29.5 and absf(a1 - a0) < 0.2, "%.2f → %.2f m" % [a0, a1])
+	_key(KEY_S, true)
+	await create_timer(2.0).timeout
+	_key(KEY_S, false)
+	var a2 := _alt()
+	_check("physics: throttle back → descends", a2 < a1 - 0.5, "%.2f → %.2f m" % [a1, a2])
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await process_frame
 	await process_frame
 	_check("physics: R restarts at 30 m", _alt() > 29.5, "%.1f m" % _alt())
-	# A trimmed glide from 30 m takes ~17 s to land, so put it just above the ground and watch it restart.
+	# Push the airplane just below the ground and check it restarts (temporary ground until D9).
 	var near: PackedFloat64Array = _main._sim.state
-	near[2] = -0.3
+	near[2] = 0.1
 	_main._sim.state = near
 	_main._sim.previous = near
-	var lowest := 100.0
-	var restarted := false
-	for i in 20: # 2 s
-		await create_timer(0.1).timeout
-		var a := _alt()
-		restarted = restarted or (lowest < 5.0 and a > 25.0)
-		lowest = minf(lowest, a)
+	await process_frame
+	await process_frame
+	var restarted := _alt() > 29.5
+	var lowest := 0.0
 	_check("physics: restarts by itself below ground", restarted, "lowest %.1f m" % lowest)
 
 	# C7: T records a trace in the live scene and saves it on the second press.

@@ -3,6 +3,7 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GODOT="$("$HERE/get-godot.sh")"
+mkdir -p "$HERE/captures" # untracked in git: a fresh clone does not have it
 shot() { # shot <file suffix> <user args...>
   local out="$HERE/captures/capture$1.png"; shift
   # timeout: a script error must fail the capture, never hang it.

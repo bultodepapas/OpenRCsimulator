@@ -5,7 +5,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const FORMAT := "openrc-trace v1"
+const FORMAT := "openrc-trace v2" # v2: + engine_rpm
 const COLUMNS := [
 	"tick", "t_s",
 	"north_m", "east_m", "down_m", "alt_m",
@@ -14,6 +14,7 @@ const COLUMNS := [
 	"p_radps", "q_radps", "r_radps",
 	"Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm",
 	"cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle",
+	"engine_rpm",
 ]
 
 var meta := {} # written as "# key: value" lines above the header
@@ -33,7 +34,7 @@ func value(row: int, column: String) -> float:
 
 
 ## Signature matches Simulation.stepped, so it can be connected directly.
-func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array) -> void:
+func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0])) -> void:
 	var q := M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var e := M.q_to_euler(q)
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
@@ -46,6 +47,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	]))
 	_rows.append_array(loads)
 	_rows.append_array(inputs)
+	_rows.append(aux[0] if aux.size() > 0 else 0.0)
 
 
 ## Ticks that are missing between consecutive rows (a recorder that drops samples must be visible).

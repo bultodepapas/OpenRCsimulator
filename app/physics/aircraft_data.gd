@@ -116,6 +116,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		if not COEFFICIENTS.has(name):
 			warnings.append("aero.coefficients.%s: unknown coefficient, ignored" % name)
 
+	var prop := _propulsion(errors, raw.get("propulsion"))
+
 	if not errors.is_empty():
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
 
@@ -150,6 +152,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		reference = { S = area, b = span, c = chord, arp_le = arp },
 		aero = aero,
 		conventions = raw.get("aero", {}).get("conventions", {}),
+		propulsion = prop,
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
 
@@ -173,3 +176,58 @@ static func inertia_about(parts: Array, point: PackedFloat64Array) -> PackedFloa
 		j[4] -= m * x * z
 		j[5] -= m * y * z
 	return j
+
+
+## A coefficient table: [[J, value], …] with J strictly increasing from 0. Returns [J0, v0, J1, v1, …].
+static func _table(errors: PackedStringArray, path: String, node: Variant, lo: float, hi: float) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	if typeof(node) != TYPE_DICTIONARY or not node.has("value") or typeof(node.value) != TYPE_ARRAY:
+		errors.append("%s: missing table" % path)
+		return out
+	for key in ["unit", "kind", "source"]:
+		if not node.has(key):
+			errors.append("%s: missing '%s'" % [path, key])
+	if node.get("unit") != "1":
+		errors.append("%s: unit '%s', expected '1'" % [path, node.get("unit")])
+	if not (node.get("kind") in KINDS):
+		errors.append("%s: kind '%s' is not one of %s" % [path, node.get("kind"), KINDS])
+	var rows: Array = node.value
+	if rows.size() < 2:
+		errors.append("%s: needs at least 2 rows" % path)
+		return out
+	for i in rows.size():
+		var row = rows[i]
+		if typeof(row) != TYPE_ARRAY or row.size() != 2 or not is_finite(float(row[0])) or not is_finite(float(row[1])):
+			errors.append("%s[%d]: expected [J, value]" % [path, i])
+			return PackedFloat64Array()
+		if i == 0 and float(row[0]) != 0.0:
+			errors.append("%s: first row must be J = 0" % path)
+		if i > 0 and float(row[0]) <= float(rows[i - 1][0]):
+			errors.append("%s[%d]: J must increase" % [path, i])
+		if float(row[1]) < lo or float(row[1]) > hi:
+			errors.append("%s[%d]: %s outside [%s, %s]" % [path, i, row[1], lo, hi])
+		out.append(float(row[0]))
+		out.append(float(row[1]))
+	return out
+
+
+static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("propulsion: missing")
+		return {}
+	var e: Dictionary = node.get("engine", {})
+	var pr: Dictionary = node.get("propeller", {})
+	var max_rpm = _q(errors, "propulsion.engine.max_rpm_static", e.get("max_rpm_static"), "rpm", 1000.0, 50000.0)
+	var idle = _q(errors, "propulsion.engine.idle_rpm", e.get("idle_rpm"), "rpm", 0.0, 20000.0)
+	var lag = _q(errors, "propulsion.engine.lag_time_constant", e.get("lag_time_constant"), "s", 0.01, 5.0)
+	_q(errors, "propulsion.engine.peak_power", e.get("peak_power"), "W", 10.0, 20000.0)
+	_q(errors, "propulsion.engine.peak_power_rpm", e.get("peak_power_rpm"), "rpm", 1000.0, 50000.0)
+	var diameter = _q(errors, "propulsion.propeller.diameter", pr.get("diameter"), "m", 0.05, 2.0)
+	var offset = _q(errors, "propulsion.propeller.thrust_line_offset", pr.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
+	var ct := _table(errors, "propulsion.propeller.ct_table", pr.get("ct_table"), -0.5, 0.5)
+	var cp := _table(errors, "propulsion.propeller.cp_table", pr.get("cp_table"), 0.0, 0.5)
+	if max_rpm != null and idle != null and idle >= max_rpm:
+		errors.append("propulsion.engine: idle_rpm %s must be below max_rpm_static %s" % [idle, max_rpm])
+	if not ct.is_empty() and ct[1] <= 0.0:
+		errors.append("propulsion.propeller.ct_table: static Ct must be positive (a propeller that pushes)")
+	return { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp }

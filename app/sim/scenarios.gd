@@ -17,7 +17,15 @@ static func throw_across_view() -> PackedFloat64Array:
 
 ## D4: trimmed power-off glide across the pilot's view (no engine until D5). Same place and heading as the throw.
 ## Returns the Trim result; its pitch_command is the elevator trim the pilot needs (like a radio trim tab).
-static func trimmed_glide_across_view(model: Dictionary, g: float, max_elevator_rad: float, speed := 15.0) -> Dictionary:
-	var t := Trim.solve("glide", speed, model, g, max_elevator_rad)
+static func trimmed_glide_across_view(model: Dictionary, g: float, throws: Dictionary, speed := 15.0) -> Dictionary:
+	var t := Trim.solve("glide", speed, model, g, throws)
 	t.state = Trim.state_for(speed, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0))
+	return t
+
+
+## D5: trimmed LEVEL flight across the pilot's view with the engine running (throttle, elevator, aileron and rudder
+## trims solved on six axes, like a well-trimmed real airplane). Same place and heading as the throw.
+static func trimmed_level_across_view(model: Dictionary, g: float, throws: Dictionary, speed := 15.0) -> Dictionary:
+	var t := Trim.solve("level", speed, model, g, throws)
+	t.state = Trim.state_for(speed, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
 	return t

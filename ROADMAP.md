@@ -22,8 +22,16 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
   - **Visual model v1** (model team).
 
   Each step's proof is in its table row below; the lessons are in LEARNINGS.md.
-- **State:** 130 physics/input checks + 449 model-contract checks, ~21 s for the full suite. The airplane **does not fly yet**: gravity only, no aerodynamics.
-- **Next:** milestone **M1 "First flight"**, starting with D2 (air data). Plan review #2 (end of file) explains why the plan is now organized by playable milestones.
+- **State:** 211 physics/input checks, 453 model-contract checks and an app-level trimmed-flight check; full suite ~30 s.
+  - **The Ugly Stik flies trimmed level flight with its engine running:** six-axis aero; .61 glow engine with APC 12×6 thrust and torque; six-axis trim (throttle, elevator, aileron, rudder) applied like radio trims; positional engine sound.
+- **Next:** D6, flying with keyboard and radio (raw joystick axes, calibration).
+- **M1 so far, measured against the predicted-handling table:**
+  - trim α 3.71° at 15 m/s (predicted 3.6°); thrust needed 3.00 N (predicted 2.93);
+  - glide L/D 8.46 (predicted 8.7; the hand estimate ignored trim drag); α 1.51° at 20 m/s (predicted 1.5°);
+  - full-aileron roll rate 192°/s at 20 m/s (predicted 192);
+  - the live app glides at 1.7599 m/s sink against the solver's 1.760;
+  - D5 (engine): static thrust 41.2 N (T/W 1.6); cruise at 15 m/s needs 28 % throttle (5,139 rpm, 3.02 N); torque trimmed with 2.2 % right aileron;
+  - hands-off trimmed level flight holds altitude and heading to 1e-4 for 30 s (ignoring torque in the trim gives a 26 m spiral dive).
 
 ## Phase A — Ground base
 
@@ -85,10 +93,10 @@ Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`,
 | # | Step | Proof |
 | --- | --- | --- |
 | D1 ✅ | Aircraft data file v0 (Das Ugly Stik 60): plan geometry, plan CG, inventory mass and inertia, borrowed aero with conventions, a validating loader | 30 checks, including 12 broken-data cases; the app refuses to fly on invalid data |
-| D2 | Air data: air-relative velocity, α, β, dynamic pressure; **safe at zero and very low airspeed** (no NaN, no divide-by-zero) | Hand-computed values; V → 0 stays finite |
-| D3 | **Full linear aero model, all six axes in one function** (the coefficients already exist), plus the mapping from our command conventions to the data's surface conventions (elevator +TE down, rudder +TE left…) | Hand-computed loads at three states. Sign tests: +pitch command → nose-up moment, +roll → right roll, +yaw → nose right, sideslip → weathervane, rates → damping. A power-off glide trace shows L/D ≈ 8.7 at 15 m/s |
-| D4 | Trim solver (α, elevator, throttle) at a requested speed; failure is reported, never hidden | 15 m/s trims at α 3.6° ± 0.5°; an impossible request fails visibly |
-| D5 | Thrust v0: static thrust from the APC 12×6 data at a labeled rpm, falling with airspeed, first-order lag; **placeholder engine sound** whose pitch follows throttle | Level flight holds ±1 m for 30 s at trim; climb at full throttle is plausible; sound changes with throttle |
+| D2 ✅ | Air data: air-relative velocity, α, β, dynamic pressure; **safe at zero and very low airspeed** (no NaN, no divide-by-zero) | Hand-computed values; V → 0 stays finite |
+| D3 ✅ | **Full linear aero model, all six axes in one function** (the coefficients already exist), plus the mapping from our command conventions to the data's surface conventions (elevator +TE down, rudder +TE left…) | Hand-computed loads at three states. Sign tests: +pitch command → nose-up moment, +roll → right roll, +yaw → nose right, sideslip → weathervane, rates → damping. A power-off glide trace shows L/D ≈ 8.7 at 15 m/s |
+| D4 ✅ | Trim solver (α, elevator, throttle) at a requested speed; failure is reported, never hidden | 15 m/s trims at α 3.6° ± 0.5°; an impossible request fails visibly |
+| D5 ✅ | Thrust v0: static thrust from the APC 12×6 data at a labeled rpm, falling with airspeed, first-order lag; **placeholder engine sound** whose pitch follows throttle | Level flight holds ±1 m for 30 s at trim; climb at full throttle is plausible; sound changes with throttle |
 | D6 | Flying from an air start at trim, with keyboard **and radio/gamepad raw axes**: channel mapping, center/endpoint calibration and inversion saved to `user://`, no deadzone (former F1 + F2, moved up because the owner has EdgeTX radios) | End-to-end test with injected joystick events; owner flies with the radio |
 | D7 | Pilot aids: **ground shadow** (the main height cue in RC), textured grass, HUD (airspeed, altitude, α), performance overlay (fps, physics µs/step), view zoom key | Captures show the shadow; perf overlay numbers recorded on the owner's machine |
 | D8 | Handling check against the predictions table: scripted roll, glide and slow-flight maneuvers through the real loop | Each predicted number reproduced within its band, recorded from traces |

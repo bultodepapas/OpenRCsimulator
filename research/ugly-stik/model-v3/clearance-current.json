@@ -1,0 +1,2079 @@
+{
+  "aircraft_id": "jensen-60-nitro-61-v2",
+  "approximate_detection_limit_m": 0.0018,
+  "elevator_poses_deg": [
+    -20.0,
+    0.0,
+    20.0
+  ],
+  "grid_step_m": 0.001,
+  "limits": [
+    "Sampled overlap volume is approximate; it is not a penetration-depth estimate.",
+    "A zero sample count means no overlap at this grid resolution; triangle distance still reports the nearest surfaces.",
+    "The unsigned minimum surface gap is zero for both surface contact and intersecting surfaces; consult the interior probes to distinguish them.",
+    "The probe reads the currently built visual triangle meshes and makes no claim about a physical aircraft."
+  ],
+  "method": "actual transformed mesh triangles; interior overlap from inside-both regular-grid probes, unsigned minimum surface distance from triangle-pair distances",
+  "moving_clearance_pairs": [
+    [
+      "fuselage",
+      "elevator"
+    ],
+    [
+      "fuselage",
+      "rudder"
+    ],
+    [
+      "stab",
+      "elevator"
+    ],
+    [
+      "stab",
+      "rudder"
+    ],
+    [
+      "elevator",
+      "fin"
+    ],
+    [
+      "elevator",
+      "rudder"
+    ],
+    [
+      "fin",
+      "rudder"
+    ]
+  ],
+  "overlap_pair_pose_count": 39,
+  "results": [
+    {
+      "elevator_deg": -20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              -0.0189061854034662,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 110,
+          "region_root_m": {
+            "max": [
+              0.0104798041284084,
+              0.0108607988804579,
+              0.679615259170532
+            ],
+            "min": [
+              -0.0104798078536987,
+              0.00793289765715599,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.00097596668638289,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0824577829328114
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00750000029802322,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0108944615349174,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.00798492319881916,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.000969846034422517,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978122350596
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.000845722854137421,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.0162286143749952,
+              0.75483512878418
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 324,
+          "region_root_m": {
+            "max": [
+              0.00357994064688683,
+              0.0158057529479265,
+              0.691851198673248
+            ],
+            "min": [
+              -0.0103764683008194,
+              0.0124228615313768,
+              0.680940568447113
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000845722854137421,
+            0.000991873210296035
+          ],
+          "sampled_volume_cm3": 0.270941144370167
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              -0.00116396136581898,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00402342295274138,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000953153823502362,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.1691998620688
+        }
+      ],
+      "rudder_deg": -25.0
+    },
+    {
+      "elevator_deg": -20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              -0.0189061854034662,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 110,
+          "region_root_m": {
+            "max": [
+              0.0104798041284084,
+              0.0108607988804579,
+              0.679615259170532
+            ],
+            "min": [
+              -0.0104798078536987,
+              0.00793289765715599,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.00097596668638289,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0824577829328114
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00750000029802322,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0108944615349174,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.00798492319881916,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.000969846034422517,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978122350596
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.000845722854137421,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0162286143749952,
+              0.75483512878418
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.680000007152557
+            ]
+          },
+          "overlap_samples": 306,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.0158057529479265,
+              0.691474735736847
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0124228615313768,
+              0.680498898029327
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.000845722854137421,
+            0.000997801660560071
+          ],
+          "sampled_volume_cm3": 0.258222264682838
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        }
+      ],
+      "rudder_deg": 0.0
+    },
+    {
+      "elevator_deg": -20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              -0.0189061854034662,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 110,
+          "region_root_m": {
+            "max": [
+              0.0104798041284084,
+              0.0108607988804579,
+              0.679615259170532
+            ],
+            "min": [
+              -0.0104798078536987,
+              0.00793289765715599,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.00097596668638289,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0824577829328114
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00750000029802322,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0108944615349174,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.00798492319881916,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.000969846034422517,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978122350596
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0162286143749952,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.000845722854137421,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.0162286143749952,
+              0.75483512878418
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 324,
+          "region_root_m": {
+            "max": [
+              0.0103764701634645,
+              0.0158057529479265,
+              0.691851198673248
+            ],
+            "min": [
+              -0.0035799415782094,
+              0.0124228615313768,
+              0.680940568447113
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000845722854137421,
+            0.000991873210296035
+          ],
+          "sampled_volume_cm3": 0.270941144370167
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": -20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              0.00402342295274138,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              0.00116396136581898,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000953153881710023,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.16919993347007
+        }
+      ],
+      "rudder_deg": 25.0
+    },
+    {
+      "elevator_deg": 0.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": -25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": -25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": -25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.016499999910593,
+              0.758000016212463
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.680000007152557
+            ]
+          },
+          "overlap_samples": 2560,
+          "region_root_m": {
+            "max": [
+              0.00357994064688683,
+              0.0160499997437,
+              0.733810126781464
+            ],
+            "min": [
+              -0.0273235403001308,
+              0.0124500002712011,
+              0.680493652820587
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000987341860309243
+          ],
+          "sampled_volume_cm3": 2.26775295126217
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              -0.00116396136581898,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00402342295274138,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000953153823502362,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.1691998620688
+        }
+      ],
+      "rudder_deg": -25.0
+    },
+    {
+      "elevator_deg": 0.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.016499999910593,
+              0.758000016212463
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.680000007152557
+            ]
+          },
+          "overlap_samples": 2583,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.0160499997437,
+              0.737759530544281
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0124500002712011,
+              0.680493652820587
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.000899999984540045,
+            0.000987341860309243
+          ],
+          "sampled_volume_cm3": 2.29527342504795
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        }
+      ],
+      "rudder_deg": 0.0
+    },
+    {
+      "elevator_deg": 0.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 25.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.016499999910593,
+              0.758000016212463
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.680000007152557
+            ]
+          },
+          "overlap_samples": 2560,
+          "region_root_m": {
+            "max": [
+              0.0273235403001308,
+              0.0160499997437,
+              0.733810126781464
+            ],
+            "min": [
+              -0.0035799415782094,
+              0.0124500002712011,
+              0.680493652820587
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000987341860309243
+          ],
+          "sampled_volume_cm3": 2.26775295126217
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 0.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              0.00402342295274138,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              0.00116396136581898,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000953153881710023,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.16919993347007
+        }
+      ],
+      "rudder_deg": 25.0
+    },
+    {
+      "elevator_deg": 20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.000975966802798212,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0160150770097971,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.0131055377423763,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.00096984626725316,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978172519911
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              -0.00140449032187462,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00439514964818954,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 45,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.016486382111907,
+              0.679615259170532
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0134954610839486,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.00099697383120656,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0345252019847684
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.0429061874747276,
+              0.75483512878418
+            ],
+            "min": [
+              -0.046762827783823,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 5965,
+          "region_root_m": {
+            "max": [
+              0.00357994064688683,
+              0.0424077026546001,
+              0.751363575458527
+            ],
+            "min": [
+              -0.0352986305952072,
+              0.0124984867870808,
+              0.678956806659698
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.00099697383120656,
+            0.000991873210296035
+          ],
+          "sampled_volume_cm3": 5.88025406513278
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.00407838448882103,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              -0.00116396136581898,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              -0.00402342295274138,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": -25.0,
+          "sample_spacing_m": [
+            0.000953153823502362,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.1691998620688
+        }
+      ],
+      "rudder_deg": -25.0
+    },
+    {
+      "elevator_deg": 20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.000975966802798212,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0160150770097971,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.0131055377423763,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.00096984626725316,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978172519911
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 45,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.016486382111907,
+              0.679615259170532
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0134954610839486,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.00099697383120656,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0345252019847684
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0429061874747276,
+              0.75483512878418
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.680000007152557
+            ]
+          },
+          "overlap_samples": 5967,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.0424077026546001,
+              0.75333845615387
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0124984867870808,
+              0.680498898029327
+            ]
+          },
+          "rudder_deg": 0.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.00099697383120656,
+            0.000997801660560071
+          ],
+          "sampled_volume_cm3": 5.93586464602755
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": null,
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 0.0,
+          "sampled_volume_cm3": 0.0
+        }
+      ],
+      "rudder_deg": 0.0
+    },
+    {
+      "elevator_deg": 20.0,
+      "pairs": [
+        {
+          "a": "fuselage",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0518999993801117,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0518999993801117,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 0,
+          "region_root_m": null,
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099807686638087,
+            0.000975966802798212,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0
+        },
+        {
+          "a": "fuselage",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.0560000017285347,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 5,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0124888885766268,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124888885766268,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000977777759544551,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.00463438343346875
+        },
+        {
+          "a": "stab",
+          "b": "elevator",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.280000001192093,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.280000001192093,
+              0.00777138350531459,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 2805,
+          "region_root_m": {
+            "max": [
+              0.279500901699066,
+              0.0160150770097971,
+              0.679615259170532
+            ],
+            "min": [
+              -0.279500901699066,
+              0.0131055377423763,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000998217496089637,
+            0.00096984626725316,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 2.08978172519911
+        },
+        {
+          "a": "stab",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.016499999910593,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 25,
+          "region_root_m": {
+            "max": [
+              0.00439515011385083,
+              0.0160499997437,
+              0.679524540901184
+            ],
+            "min": [
+              0.00140449078753591,
+              0.0124500002712011,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.000899999984540045,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 0.0213286965149286
+        },
+        {
+          "a": "elevator",
+          "b": "fin",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.0429061874747276,
+              0.680000007152557
+            ],
+            "min": [
+              -0.0044999998062849,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 45,
+          "region_root_m": {
+            "max": [
+              0.00399999972432852,
+              0.016486382111907,
+              0.679615259170532
+            ],
+            "min": [
+              -0.00399999972432852,
+              0.0134954610839486,
+              0.678845643997192
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000999999931082129,
+            0.00099697383120656,
+            0.000769555568695068
+          ],
+          "sampled_volume_cm3": 0.0345252019847684
+        },
+        {
+          "a": "elevator",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.046762827783823,
+              0.0429061874747276,
+              0.75483512878418
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678460896015167
+            ]
+          },
+          "overlap_samples": 5965,
+          "region_root_m": {
+            "max": [
+              0.0352986343204975,
+              0.0424077026546001,
+              0.751363575458527
+            ],
+            "min": [
+              -0.0035799415782094,
+              0.0124984867870808,
+              0.678956806659698
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.00099688651971519,
+            0.00099697383120656,
+            0.000991873210296035
+          ],
+          "sampled_volume_cm3": 5.88025406513278
+        },
+        {
+          "a": "fin",
+          "b": "rudder",
+          "elevator_deg": 20.0,
+          "minimum_surface_gap_m": 0.0,
+          "overlap_aabb_root_m": {
+            "max": [
+              0.0044999998062849,
+              0.22699998319149,
+              0.680000007152557
+            ],
+            "min": [
+              -0.00407838495448232,
+              0.0120000001043081,
+              0.678098201751709
+            ]
+          },
+          "overlap_samples": 1290,
+          "region_root_m": {
+            "max": [
+              0.00402342295274138,
+              0.226499974727631,
+              0.679524540901184
+            ],
+            "min": [
+              0.00116396136581898,
+              0.0125000001862645,
+              0.678573668003082
+            ]
+          },
+          "rudder_deg": 25.0,
+          "sample_spacing_m": [
+            0.000953153881710023,
+            0.000999999931082129,
+            0.000950902700424194
+          ],
+          "sampled_volume_cm3": 1.16919993347007
+        }
+      ],
+      "rudder_deg": 25.0
+    }
+  ],
+  "rudder_poses_deg": [
+    -25.0,
+    0.0,
+    25.0
+  ],
+  "schema": "openrc-model-clearance-probe-v1",
+  "structural_union_pairs": [
+    [
+      "fuselage",
+      "stab"
+    ],
+    [
+      "fuselage",
+      "fin"
+    ],
+    [
+      "stab",
+      "fin"
+    ]
+  ],
+  "structural_union_results": [
+    {
+      "a": "fuselage",
+      "b": "stab",
+      "classification": "allowed fixed structural union; measured, not asserted clear",
+      "minimum_surface_gap_m": 0.0,
+      "overlap_aabb_root_m": {
+        "max": [
+          0.0518999993801117,
+          0.016499999910593,
+          0.680000007152557
+        ],
+        "min": [
+          -0.0518999993801117,
+          0.00750000029802322,
+          0.550000011920929
+        ]
+      },
+      "overlap_samples": 33502,
+      "region_root_m": {
+        "max": [
+          0.0264490321278572,
+          0.0149999996647239,
+          0.679499983787537
+        ],
+        "min": [
+          -0.0264490395784378,
+          0.00800000037997961,
+          0.55050003528595
+        ]
+      },
+      "sample_spacing_m": [
+        0.00099807686638087,
+        0.000999999931082129,
+        0.000999999931082129
+      ],
+      "sampled_volume_cm3": 33.4375665685997
+    },
+    {
+      "a": "fuselage",
+      "b": "fin",
+      "classification": "allowed fixed structural union; measured, not asserted clear",
+      "minimum_surface_gap_m": 0.0,
+      "overlap_aabb_root_m": {
+        "max": [
+          0.0044999998062849,
+          0.0560000017285347,
+          0.680000007152557
+        ],
+        "min": [
+          -0.0044999998062849,
+          0.0120000001043081,
+          0.470000028610229
+        ]
+      },
+      "overlap_samples": 5967,
+      "region_root_m": {
+        "max": [
+          0.00399999972432852,
+          0.018355555832386,
+          0.679499983787537
+        ],
+        "min": [
+          -0.00399999972432852,
+          0.0124888885766268,
+          0.479500025510788
+        ]
+      },
+      "sample_spacing_m": [
+        0.000999999931082129,
+        0.000977777759544551,
+        0.000999999931082129
+      ],
+      "sampled_volume_cm3": 5.83439908701353
+    },
+    {
+      "a": "stab",
+      "b": "fin",
+      "classification": "allowed fixed structural union; measured, not asserted clear",
+      "minimum_surface_gap_m": 0.0,
+      "overlap_aabb_root_m": {
+        "max": [
+          0.0044999998062849,
+          0.016499999910593,
+          0.680000007152557
+        ],
+        "min": [
+          -0.0044999998062849,
+          0.0120000001043081,
+          0.550000011920929
+        ]
+      },
+      "overlap_samples": 5850,
+      "region_root_m": {
+        "max": [
+          0.00399999972432852,
+          0.0160499997437,
+          0.679499983787537
+        ],
+        "min": [
+          -0.00399999972432852,
+          0.0124500002712011,
+          0.55050003528595
+        ]
+      },
+      "sample_spacing_m": [
+        0.000999999931082129,
+        0.000899999984540045,
+        0.000999999931082129
+      ],
+      "sampled_volume_cm3": 5.26499918385413
+    }
+  ]
+}
