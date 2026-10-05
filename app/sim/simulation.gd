@@ -8,6 +8,8 @@ const RB := preload("res://physics/rigid_body.gd")
 const RK := preload("res://physics/integrator.gd")
 
 signal paused_changed(paused: bool)
+## Emitted after every physics step (and once on reset, with tick 0), for recorders and telemetry.
+signal stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array)
 
 var mass := 1.0
 var inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
@@ -15,6 +17,11 @@ var gravity := 9.80665
 ## loads(state, t) -> PackedFloat64Array [Fx, Fy, Fz, Mx, My, Mz], body axes, gravity excluded.
 var loads: Callable = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
+## Pilot commands, set by the game each frame: [roll, pitch, yaw, throttle] (−1…1, throttle 0…1).
+var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+## Loads at the start of the latest step (the RK4 k1 evaluation), for traces.
+var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
@@ -30,6 +37,8 @@ func reset(initial: PackedFloat64Array) -> void:
 	previous = initial.duplicate()
 	tick = 0
 	_inertia_inv = RB.inertia_inverse(inertia)
+	last_loads = loads.call(state, 0.0)
+	stepped.emit(tick, time(), state, last_loads, inputs)
 
 
 func dt() -> float:
@@ -54,12 +63,14 @@ func _notification(what: int) -> void:
 
 func step() -> void:
 	var t := time()
+	last_loads = loads.call(state, t)
 	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
 		var l: PackedFloat64Array = loads.call(s, t)
 		return RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity)
 	previous = state
 	state = RK.rk4_step(state, dt(), f)
 	tick += 1
+	stepped.emit(tick, time(), state, last_loads, inputs)
 
 
 func _physics_process(_delta: float) -> void:

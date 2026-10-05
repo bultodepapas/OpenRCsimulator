@@ -1,0 +1,319 @@
+# V1 geometry and hinge contract checks for the in-app Ugly Stik.
+# Run: godot --headless --path app --script res://aircraft/verify_model.gd
+extends SceneTree
+
+const Commands := preload("res://input/commands.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
+
+const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
+const EXPECTED_SPAN_M := 1.524 # Jensen oz1253 drawing: 60 in, converted to metres.
+const SPAN_TOLERANCE_M := 0.006 # allows scan/edge tessellation and the 1.5 in tip rise.
+const NUMERIC_EPSILON := 0.00001
+
+var _checks := 0
+var _failures := 0
+var _root: Node3D
+var _airplane: Dictionary
+
+
+func _check(label: String, passed: bool, detail: String = "") -> void:
+	_checks += 1
+	if not passed:
+		_failures += 1
+		printerr("FAIL %s %s" % [label, detail])
+
+
+func _finite_vector(value: Vector3) -> bool:
+	return is_finite(value.x) and is_finite(value.y) and is_finite(value.z)
+
+
+func _finite_transform(value: Transform3D) -> bool:
+	return _finite_vector(value.origin) and _finite_vector(value.basis.x) and _finite_vector(value.basis.y) and _finite_vector(value.basis.z)
+
+
+func _transform_close(a: Transform3D, b: Transform3D, tolerance: float = NUMERIC_EPSILON) -> bool:
+	return (
+		a.origin.distance_to(b.origin) <= tolerance
+		and a.basis.x.distance_to(b.basis.x) <= tolerance
+		and a.basis.y.distance_to(b.basis.y) <= tolerance
+		and a.basis.z.distance_to(b.basis.z) <= tolerance
+	)
+
+
+func _aabb_corners(bounds: AABB) -> Array[Vector3]:
+	var result: Array[Vector3] = []
+	for x in [bounds.position.x, bounds.end.x]:
+		for y in [bounds.position.y, bounds.end.y]:
+			for z in [bounds.position.z, bounds.end.z]:
+				result.append(Vector3(x, y, z))
+	return result
+
+
+func _collect_nodes(node: Node, output: Array[Node]) -> void:
+	output.append(node)
+	for child in node.get_children():
+		_collect_nodes(child, output)
+
+
+func _collect_meshes(node: Node, output: Array[MeshInstance3D]) -> void:
+	if node is MeshInstance3D:
+		output.append(node as MeshInstance3D)
+	for child in node.get_children():
+		_collect_meshes(child, output)
+
+
+func _find_named_meshes(node: Node, target_name: String, output: Array[MeshInstance3D]) -> void:
+	if node is MeshInstance3D and node.name == target_name:
+		output.append(node as MeshInstance3D)
+	for child in node.get_children():
+		_find_named_meshes(child, target_name, output)
+
+
+func _surface_probe_local(surface_name: String) -> Vector3:
+	if surface_name == "rudder":
+		return Vector3(0.0, 0.04, 0.04)
+	if surface_name == "elevator" or surface_name.begins_with("aileron_"):
+		return Vector3(0.0, 0.0, 0.04)
+	return Vector3.ZERO
+
+
+func _surface_point(surface_name: String) -> Vector3:
+	var hinge: Node3D = _airplane.hinges[surface_name]
+	return hinge.to_global(_surface_probe_local(surface_name))
+
+
+func _hinge_origins() -> Dictionary:
+	var result := {}
+	for surface_name in SURFACE_NAMES:
+		var hinge: Node3D = _airplane.hinges[surface_name]
+		result[surface_name] = hinge.global_position
+	return result
+
+
+func _parent_transforms() -> Dictionary:
+	var result := {}
+	for surface_name in SURFACE_NAMES:
+		var hinge: Node3D = _airplane.hinges[surface_name]
+		result[surface_name] = hinge.get_parent().global_transform
+	return result
+
+
+func _check_tree_and_meshes() -> bool:
+	var nodes: Array[Node] = []
+	var meshes: Array[MeshInstance3D] = []
+	_collect_nodes(_root, nodes)
+	_collect_meshes(_root, meshes)
+	_check("root is named airplane", _root.name == "airplane", str(_root.name))
+	_check("model has mesh geometry", not meshes.is_empty())
+
+	var names := {}
+	for node in nodes:
+		var node_name := String(node.name)
+		names[node_name] = int(names.get(node_name, 0)) + 1
+		if node is Node3D:
+			_check("finite transform %s" % node_name, _finite_transform((node as Node3D).transform))
+	for node_name in names:
+		_check("unique node name %s" % node_name, names[node_name] == 1, "count=%d" % names[node_name])
+
+	var all_geometry_valid := true
+	for mesh_node in meshes:
+		var mesh: Mesh = mesh_node.mesh
+		var valid := mesh != null
+		if valid:
+			var faces := mesh.get_faces()
+			valid = mesh.get_surface_count() > 0 and faces.size() >= 3
+			for vertex in faces:
+				if not _finite_vector(vertex):
+					valid = false
+					break
+			var bounds := mesh.get_aabb()
+			valid = valid and _finite_vector(bounds.position) and _finite_vector(bounds.size)
+			valid = valid and bounds.size.length_squared() > 1e-12
+		_check("nonempty finite mesh %s" % mesh_node.name, valid)
+		all_geometry_valid = all_geometry_valid and valid
+
+	for surface_name in SURFACE_NAMES:
+		var found: Array[MeshInstance3D] = []
+		_find_named_meshes(_root, surface_name, found)
+		_check("one mesh named %s" % surface_name, found.size() == 1, "count=%d" % found.size())
+		if found.size() == 1:
+			var hinge: Node3D = _airplane.hinges[surface_name]
+			var named_mesh := found[0]
+			_check("%s mesh belongs to its hinge" % surface_name, hinge.is_ancestor_of(named_mesh))
+			if named_mesh.mesh == null:
+				continue
+			var relative_bounds := AABB()
+			var first := true
+			for corner in _aabb_corners(named_mesh.mesh.get_aabb()):
+				var in_hinge := hinge.to_local(named_mesh.to_global(corner))
+				if first:
+					relative_bounds = AABB(in_hinge, Vector3.ZERO)
+					first = false
+				else:
+					relative_bounds = relative_bounds.expand(in_hinge)
+			_check(
+				"%s mesh extends aft from its hinge" % surface_name,
+				not first and relative_bounds.position.z >= -0.01 and relative_bounds.end.z > 0.04,
+				str(relative_bounds)
+			)
+
+	var span_bounds := AABB()
+	var first_span_vertex := true
+	for mesh_node in meshes:
+		if mesh_node.mesh == null:
+			continue
+		var transformed_vertices_finite := true
+		for vertex in mesh_node.mesh.get_faces():
+			var point := _root.to_local(mesh_node.to_global(vertex))
+			if not _finite_vector(point):
+				transformed_vertices_finite = false
+				continue
+			if first_span_vertex:
+				span_bounds = AABB(point, Vector3.ZERO)
+				first_span_vertex = false
+			else:
+				span_bounds = span_bounds.expand(point)
+		_check("finite transformed vertices %s" % mesh_node.name, transformed_vertices_finite)
+	var span := span_bounds.size.x if not first_span_vertex else 0.0
+	_check(
+		"Jensen span 1.524 m within 6 mm",
+		absf(span - EXPECTED_SPAN_M) <= SPAN_TOLERANCE_M,
+		"measured=%.6f m expected=%.6f m" % [span, EXPECTED_SPAN_M]
+	)
+	return all_geometry_valid
+
+
+func _check_interface() -> bool:
+	var ok := true
+	_check("builder returns root, propeller, hinges", _airplane.has_all(["root", "propeller", "hinges"]))
+	if not _airplane.has_all(["root", "propeller", "hinges"]):
+		return false
+	_check("root is Node3D", _airplane.root is Node3D)
+	_check("propeller is Node3D", _airplane.propeller is Node3D)
+	_check("hinges is Dictionary", _airplane.hinges is Dictionary)
+	if not (_airplane.root is Node3D and _airplane.propeller is Node3D and _airplane.hinges is Dictionary):
+		return false
+	_root = _airplane.root as Node3D
+	for surface_name in SURFACE_NAMES:
+		var valid_hinge: bool = _airplane.hinges.has(surface_name) and _airplane.hinges[surface_name] is Node3D
+		_check("hinge interface %s" % surface_name, valid_hinge)
+		ok = ok and valid_hinge
+	return ok
+
+
+func _check_dihedral_frames() -> void:
+	var left_hinge: Node3D = _airplane.hinges["aileron_left"]
+	var right_hinge: Node3D = _airplane.hinges["aileron_right"]
+	var left_parent := left_hinge.get_parent() as Node3D
+	var right_parent := right_hinge.get_parent() as Node3D
+	_check("ailerons are under wing rest frames", left_parent != _root and right_parent != _root)
+	if left_parent == _root or right_parent == _root:
+		return
+	var left_y := _root.global_basis.inverse() * left_parent.global_basis.y
+	var right_y := _root.global_basis.inverse() * right_parent.global_basis.y
+	_check(
+		"wing rest frames carry opposite dihedral",
+		absf(left_y.x) > 0.001 and absf(right_y.x) > 0.001 and left_y.x * right_y.x < 0.0,
+		"left local up=%s right local up=%s" % [left_y, right_y]
+	)
+	for surface_name in ["aileron_left", "aileron_right"]:
+		var hinge: Node3D = _airplane.hinges[surface_name]
+		_check("%s dynamic hinge rests at local neutral" % surface_name, hinge.rotation.length() <= NUMERIC_EPSILON, str(hinge.rotation))
+
+
+func _check_control_direction(axis_control: String, surface_expected_signs: Dictionary, pose_index: int) -> void:
+	var root_position := Vector3(2.3, -0.7, 4.1) if pose_index == 1 else Vector3.ZERO
+	var root_rotation := Vector3(0.31, -0.47, 0.23) if pose_index == 1 else Vector3.ZERO
+	_root.transform = Transform3D(Basis.from_euler(root_rotation), root_position)
+	var neutral := Commands.neutral_commands()
+	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(neutral))
+	var neutral_points := {}
+	for surface_name in SURFACE_NAMES:
+		neutral_points[surface_name] = _surface_point(surface_name)
+	var neutral_hinges := _hinge_origins()
+	var neutral_parents := _parent_transforms()
+	var up_axis := _root.global_basis.y.normalized()
+	var right_axis := _root.global_basis.x.normalized()
+
+	for direction in [-1.0, 1.0]:
+		var command := Commands.neutral_commands()
+		command[axis_control] = direction
+		var hinge_rotations := Commands.hinge_rotations(command)
+		AirplaneBuilder.apply_surfaces(_airplane, hinge_rotations)
+		for surface_name in SURFACE_NAMES:
+			var hinge: Node3D = _airplane.hinges[surface_name]
+			var origin_delta: float = hinge.global_position.distance_to(neutral_hinges[surface_name])
+			_check("%s %+.0f keeps %s pivot fixed" % [axis_control, direction, surface_name], origin_delta <= NUMERIC_EPSILON, "delta=%.9f" % origin_delta)
+			var parent: Node3D = hinge.get_parent() as Node3D
+			_check("%s %+.0f keeps %s rest frame fixed" % [axis_control, direction, surface_name], _transform_close(parent.global_transform, neutral_parents[surface_name]))
+		var root_local_axis := right_axis if surface_expected_signs.values().has("right") else up_axis
+		for surface_name in surface_expected_signs:
+			var movement: Vector3 = _surface_point(surface_name) - neutral_points[surface_name]
+			var projection: float = movement.dot(root_local_axis)
+			var sign_name: String = surface_expected_signs[surface_name]
+			var expected_sign := 1.0 if sign_name == "up" or sign_name == "right" else -1.0
+			_check(
+				"%s %+.0f sends %s TE %s" % [axis_control, direction, surface_name, sign_name],
+				projection * expected_sign * direction > 0.0001,
+				"movement=%s projection=%.6f" % [movement, projection]
+			)
+
+		AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(Commands.neutral_commands()))
+		for surface_name in SURFACE_NAMES:
+			var hinge: Node3D = _airplane.hinges[surface_name]
+			_check("%s returns %s hinge angle to neutral" % [axis_control, surface_name], hinge.rotation.length() <= NUMERIC_EPSILON, str(hinge.rotation))
+			_check("%s returns %s TE to neutral" % [axis_control, surface_name], _surface_point(surface_name).distance_to(neutral_points[surface_name]) <= NUMERIC_EPSILON)
+
+
+func _check_root_poses_and_propeller() -> void:
+	var root_local_hinges := {}
+	for surface_name in SURFACE_NAMES:
+		var hinge: Node3D = _airplane.hinges[surface_name]
+		root_local_hinges[surface_name] = _root.to_local(hinge.global_position)
+	var pose := Transform3D(Basis.from_euler(Vector3(-0.22, 0.52, 0.37)), Vector3(-6.0, 3.2, 1.7))
+	_root.transform = pose
+	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(Commands.neutral_commands()))
+	for surface_name in SURFACE_NAMES:
+		var hinge: Node3D = _airplane.hinges[surface_name]
+		var expected := _root.to_global(root_local_hinges[surface_name])
+		_check("root pose carries %s hinge with model" % surface_name, hinge.global_position.distance_to(expected) <= NUMERIC_EPSILON)
+	var hub_position := (_airplane.propeller as Node3D).global_position
+	for angle in [0.0, PI / 3.0, PI, TAU]:
+		(_airplane.propeller as Node3D).rotation.z = angle
+		_check("propeller spin %.2f keeps hub fixed" % angle, (_airplane.propeller as Node3D).global_position.distance_to(hub_position) <= NUMERIC_EPSILON)
+
+
+func _initialize() -> void:
+	call_deferred("_run_model_checks")
+
+
+func _run_model_checks() -> void:
+	_airplane = AirplaneBuilder.build()
+	if not _airplane.has_all(["root", "propeller", "hinges"]):
+		_check("builder interface keys", false, str(_airplane.keys()))
+		printerr("%d checks, %d failed" % [_checks, _failures])
+		quit(1)
+		return
+	_root = _airplane.root as Node3D
+	root.add_child(_root)
+	if not _check_interface():
+		_root.free()
+		printerr("%d checks, %d failed" % [_checks, _failures])
+		quit(1)
+		return
+	if not _check_tree_and_meshes():
+		_root.free()
+		printerr("%d checks, %d failed" % [_checks, _failures])
+		quit(1)
+		return
+	_check_dihedral_frames()
+	_check_root_poses_and_propeller()
+	_check_control_direction("roll", { "aileron_left": "down", "aileron_right": "up" }, 1)
+	_check_control_direction("pitch", { "elevator": "up" }, 1)
+	_check_control_direction("yaw", { "rudder": "right" }, 1)
+	_check_control_direction("roll", { "aileron_left": "down", "aileron_right": "up" }, 0)
+	_check_control_direction("pitch", { "elevator": "up" }, 0)
+	_check_control_direction("yaw", { "rudder": "right" }, 0)
+	_root.free()
+	print("%d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)

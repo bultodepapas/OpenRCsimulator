@@ -92,5 +92,23 @@ func _run() -> void:
 		lowest = minf(lowest, a)
 	_check("physics: restarts by itself below ground", restarted, "lowest %.1f m" % lowest)
 
+	# C7: T records a trace in the live scene and saves it on the second press.
+	_key(KEY_R, true)
+	_key(KEY_R, false)
+	await process_frame
+	_key(KEY_T, true)
+	_key(KEY_T, false)
+	await create_timer(0.5).timeout
+	_check("T: recording shows in the panel", "REC" in _row("REC"), _row("REC"))
+	_key(KEY_T, true)
+	_key(KEY_T, false)
+	await process_frame
+	var note: String = _main._trace_note
+	var path := note.get_slice("trace saved: ", 1).get_slice(" (", 0)
+	var rows := int(note.get_slice("(", 1).get_slice(" rows", 0))
+	_check("T again: trace saved with ~0.5 s of ticks", FileAccess.file_exists(path) and rows > 60, note)
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+
 	print("all e2e checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

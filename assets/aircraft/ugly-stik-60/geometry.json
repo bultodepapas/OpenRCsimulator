@@ -1,0 +1,309 @@
+{
+  "id": "jensen-60-nitro-61-v1",
+  "units": "m",
+  "axes": {
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "datum": "Visual assembly origin near wing quarter chord; NOT a measured CG",
+  "engine_class": ".61 nitro",
+  "deferred_variants": [
+    "mini",
+    "giant"
+  ],
+  "wing": {
+    "span": 1.524,
+    "chord": 0.3048,
+    "root_y": 0.048,
+    "leading_z": -0.115,
+    "dihedral_deg": 2.86,
+    "hinge_fraction": 0.78,
+    "aileron_inner": 0.075,
+    "aileron_outer": 0.728,
+    "tip_start": 0.66,
+    "section": [
+      [
+        0,
+        0
+      ],
+      [
+        0.025,
+        0.045
+      ],
+      [
+        0.08,
+        0.078
+      ],
+      [
+        0.2,
+        0.092
+      ],
+      [
+        0.35,
+        0.078
+      ],
+      [
+        0.55,
+        0.05
+      ],
+      [
+        0.78,
+        0.021
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0.78,
+        -0.008
+      ],
+      [
+        0.35,
+        -0.008
+      ],
+      [
+        0.18,
+        -0.021
+      ],
+      [
+        0.06,
+        -0.024
+      ],
+      [
+        0.015,
+        -0.016
+      ]
+    ]
+  },
+  "fuselage_stations": [
+    [
+      -0.44,
+      0.044,
+      0.048,
+      -0.06
+    ],
+    [
+      -0.32,
+      0.048,
+      0.056,
+      -0.064
+    ],
+    [
+      -0.16,
+      0.051,
+      0.05,
+      -0.069
+    ],
+    [
+      0.17,
+      0.05,
+      0.045,
+      -0.068
+    ],
+    [
+      0.31,
+      0.04,
+      0.028,
+      -0.052
+    ],
+    [
+      0.53,
+      0.021,
+      0.016,
+      -0.028
+    ],
+    [
+      0.68,
+      0.009,
+      0.013,
+      -0.013
+    ]
+  ],
+  "tail": {
+    "y": 0.012,
+    "hinge_z": 0.68,
+    "span": 0.56,
+    "stab_outline": [
+      [
+        -0.28,
+        0
+      ],
+      [
+        -0.28,
+        -0.07
+      ],
+      [
+        -0.25,
+        -0.105
+      ],
+      [
+        -0.18,
+        -0.13
+      ],
+      [
+        0.18,
+        -0.13
+      ],
+      [
+        0.25,
+        -0.105
+      ],
+      [
+        0.28,
+        -0.07
+      ],
+      [
+        0.28,
+        0
+      ]
+    ],
+    "elevator_outline": [
+      [
+        -0.28,
+        0
+      ],
+      [
+        -0.265,
+        0.056
+      ],
+      [
+        -0.22,
+        0.078
+      ],
+      [
+        0.22,
+        0.078
+      ],
+      [
+        0.265,
+        0.056
+      ],
+      [
+        0.28,
+        0
+      ]
+    ],
+    "fin_outline": [
+      [
+        0,
+        -0.155
+      ],
+      [
+        0.065,
+        -0.135
+      ],
+      [
+        0.16,
+        -0.108
+      ],
+      [
+        0.21,
+        -0.08
+      ],
+      [
+        0.231,
+        -0.046
+      ],
+      [
+        0.231,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "rudder_outline": [
+      [
+        0,
+        0
+      ],
+      [
+        0.231,
+        0
+      ],
+      [
+        0.229,
+        0.026
+      ],
+      [
+        0.209,
+        0.056
+      ],
+      [
+        0.17,
+        0.075
+      ],
+      [
+        0.065,
+        0.076
+      ],
+      [
+        0,
+        0.06
+      ]
+    ],
+    "thickness": 0.009
+  },
+  "equipment": {
+    "firewall_z": -0.44,
+    "shaft_y": -0.005,
+    "prop_z": -0.557,
+    "prop_diameter": 0.3048,
+    "main_wheel_diameter": 0.0762,
+    "nose_wheel_diameter": 0.06985,
+    "wheel_y": -0.22,
+    "main_axle_z": 0.1,
+    "main_track": 0.36,
+    "nose_axle_z": -0.4
+  },
+  "evidence": {
+    "wing.span": {
+      "kind": "manual",
+      "source": "signed Jensen oz1253 title block, 60 in",
+      "uncertainty_m": null
+    },
+    "wing.chord": {
+      "kind": "estimated",
+      "source": "720 in² / 60 in = 12 in representative chord; rectangular visual simplification"
+    },
+    "wing.section": {
+      "kind": "estimated",
+      "source": "Jensen qualitative semisymmetric section, flat aft underside; coordinates chosen for visual mesh, NOT NACA or aerodynamic polar"
+    },
+    "wing.dihedral_deg": {
+      "kind": "estimated",
+      "source": "visual angle initially atan(1.5/30); plan tip-rise callout is not a published angle; installed angle awaits calibration"
+    },
+    "wing.other": {
+      "kind": "estimated",
+      "source": "visual arrangement pending trace"
+    },
+    "fuselage_stations": {
+      "kind": "estimated",
+      "source": "provisional visual envelope pending trace; rows z/halfwidth/top/bottom"
+    },
+    "tail": {
+      "kind": "estimated",
+      "source": "rounded Jensen-like outline pending trace; coordinates relative to hinge"
+    },
+    "equipment.wheels": {
+      "kind": "manual",
+      "source": "Jensen plan 2.75 in nose, selected 3 in main from 3 or 3.25 in callout"
+    },
+    "equipment.engine": {
+      "kind": "estimated",
+      "source": "visual .61 single cylinder, provisional envelope informed by O.S. MAX-61FX manual p40; accessories simplified; brand not selected"
+    },
+    "equipment.other": {
+      "kind": "estimated",
+      "source": "12 in prop and gear arrangement for visual clearance trial; installation not verified"
+    },
+    "decoration": {
+      "kind": "estimated",
+      "source": "red/cream top and charcoal underside selected for readability; not claimed as a canonical livery"
+    }
+  }
+}

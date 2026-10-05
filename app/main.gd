@@ -10,6 +10,7 @@ const InputPanel := preload("res://render/panel.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Trace := preload("res://sim/trace.gd")
 
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -22,6 +23,9 @@ var _commands := Commands.neutral_commands()
 ## --scripted: the Stage 0/1 scripted circle instead of the physics simulation.
 var _scripted := false
 var _sim: Node
+var _trace := Trace.new()
+var _recording := false
+var _trace_note := ""
 
 
 func _ready() -> void:
@@ -33,9 +37,14 @@ func _ready() -> void:
 	_sim.mass = Scenarios.MASS_KG
 	_sim.inertia = Scenarios.inertia()
 	add_child(_sim)
+	_sim.stepped.connect(_on_sim_stepped)
 	if _scripted:
 		_sim.process_mode = Node.PROCESS_MODE_DISABLED
 	_reset()
+	if args.has("trace"):
+		# Headless trace: record from the start to t, save, quit. No window needed.
+		_write_trace_and_quit(float(args.get("t", Spec.CAPTURE.time)), args.trace)
+		return
 	if args.has("capture"):
 		_capturing = true
 		# Settled commands from arguments (the limiter is skipped), so captures are deterministic.
@@ -53,6 +62,7 @@ func _process(delta: float) -> void:
 	var dt := minf(delta, 0.1) # a stalled window must not jump the controls
 	var raw := Keyboard.read_raw()
 	_commands = Commands.step_commands(_commands, raw, dt)
+	_sim.inputs = PackedFloat64Array([_commands.roll, _commands.pitch, _commands.yaw, _commands.throttle])
 	_t += dt
 	_prop_angle += TAU * Commands.prop_rev_per_sec(_commands) * dt
 	# Temporary ground until crash detection (ROADMAP D9): below the ground, start over.
@@ -63,6 +73,8 @@ func _process(delta: float) -> void:
 
 
 func _reset() -> void:
+	if _recording:
+		_stop_recording() # one file never mixes two flights
 	_t = 0.0
 	_commands = Commands.neutral_commands()
 	_sim.reset(Scenarios.throw_across_view())
@@ -77,6 +89,12 @@ func _status() -> String:
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s" % [_sim.time(), -s[RB.POS + 2], speed]
 	if _sim.paused:
 		line += "\nPAUSED  [P] resume"
+	if _recording:
+		line += "\nREC %.1f s  [T] stop and save" % (_trace.row_count() * _sim.dt())
+	elif _trace_note != "":
+		line += "\n" + _trace_note
+	else:
+		line += "\n[T] record trace"
 	return line
 
 
@@ -96,11 +114,16 @@ func _unhandled_input(event: InputEvent) -> void:
 				_reset()
 			KEY_P:
 				_sim.set_paused(false)
+			KEY_T:
+				if _recording:
+					_stop_recording()
+				elif not _scripted:
+					_start_recording()
 			KEY_C:
 				_inspect = not _inspect
 
 
-## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png
+## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
@@ -169,6 +192,52 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	else:
 		_camera.position = Frames.ned_to_render([0.0, 0.0, -Spec.CAMERA.eye_height])
 	_camera.look_at(pose.pos, Vector3.UP)
+
+
+func _on_sim_stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array) -> void:
+	if _recording:
+		_trace.record(tick, t, state, loads, inputs)
+
+
+func _start_recording() -> void:
+	_trace.clear()
+	_trace.meta = _trace_meta()
+	_recording = true
+	_trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs)
+
+
+## Saves to user://traces/ (on Linux: ~/.local/share/godot/app_userdata/OpenRC Simulator/traces/).
+func _stop_recording(path := "") -> Error:
+	_recording = false
+	if path == "":
+		path = "user://traces/trace-%s.csv" % Time.get_datetime_string_from_system(true).replace(":", "-")
+	var err := _trace.save(path)
+	_trace_note = "trace saved: %s (%d rows)" % [ProjectSettings.globalize_path(path), _trace.row_count()] if err == OK else "trace save failed: error %d" % err
+	print(_trace_note)
+	return err
+
+
+func _trace_meta() -> Dictionary:
+	return {
+		scenario = "throw_across_view (gravity only, C6)",
+		created_utc = Time.get_datetime_string_from_system(true),
+		engine = "Godot " + Engine.get_version_info().string,
+		dt_s = _sim.dt(),
+		mass_kg = _sim.mass,
+		inertia_kgm2 = "Jxx Jyy Jzz Jxy Jxz Jyz = %s" % " ".join(Array(_sim.inertia).map(func(v): return str(v))),
+		gravity_mps2 = _sim.gravity,
+		frames = "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+		loads = "Fx..Mz are body-axis loads at the start of each step, excluding gravity",
+	}
+
+
+func _write_trace_and_quit(t: float, path: String) -> void:
+	_sim.process_mode = Node.PROCESS_MODE_DISABLED
+	_start_recording()
+	for i in roundi(t / _sim.dt()):
+		_sim.step()
+	var err := _stop_recording(path)
+	get_tree().quit(err)
 
 
 func _capture(t: float, c: Dictionary, out: String) -> void:

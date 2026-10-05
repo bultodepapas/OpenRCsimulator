@@ -22,7 +22,8 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 - **Done since:** C3 + C4 (`app/physics/integrator.gd`, RK4). Free fall error 5e-12 m after 10 s. A 60 s tumbling middle-axis spin conserves energy to 3.5e-12 and world angular momentum to 9.5e-11 (relative). Convergence ratios 15.9 / 15.9 (4th order). **Speed 47–51× real time at 240 Hz** (81–88 µs/step), so physics stays in GDScript. `test.sh` now also fails on any engine error printed during tests.
 - **Done since:** C5 (`app/sim/simulation.gd`): 240 Hz physics tick, up to 12 catch-up steps per frame (slow motion below 20 fps instead of a spiral), position lerp + attitude nlerp for rendering, pause on focus loss with explicit resume only. **The same scripted 2 s flight gives a bit-identical final state (same SHA-256) at 30, 60 and 144 fps.**
 - **Done since:** C6. The app now runs on physics by default (`--scripted` keeps the Stage 0/1 circle). A ballistic throw (15 m/s east, 30 m up, gravity only) renders from the interpolated 240 Hz state. R restarts, P resumes after a focus-loss pause, and a temporary below-ground restart holds until D9. The capture at 1.5 s shows alt 19.0 m and speed 21.0 m/s, matching hand calculation (18.97 m, 21.0 m/s). End-to-end tests cover the live physics scene.
-- **Next:** C7, flight trace export (CSV with units), the debugging tool for every step after.
+- **Done since:** C7 (`app/sim/trace.gd`): one CSV row per 240 Hz tick, 30 columns with units, `#` metadata (format, dt, mass, inertia, frames, load convention). Press T in the app (saved to `user://traces/`), or run `-- --trace=file.csv --t=1.5` headless; CI uploads `app/captures/trace-physics.csv`. Every row matches the hand calculation against its own timestamp to 1e-9. **Phase C is complete.**
+- **Next:** Phase D. D1 is the physics data file for the Das Ugly Stik 60, coordinated with the aircraft-model developer (geometry measurements are their lane; mass, inertia and aero coefficients are D1).
 
 ## Phase A — Ground base
 
@@ -60,7 +61,7 @@ In GDScript, on 64-bit `float`s only. `app/test.sh` rejects `Vector3`/`Basis`/`Q
 | C4 ✅ | Convergence check at steps `h`, `h/2`, `h/4` | Error ratio ≈ 16 per halving (fourth order) |
 | C5 ✅ | Fixed-step loop: Godot's physics tick at 240 Hz (`_physics_process`) calls our integrator; cap catch-up steps; interpolate rendering; pause when the window loses focus | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
 | C6 ✅ | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
-| C7 | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
+| C7 ✅ | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
 
 ## Phase D — First flight, in thin slices
 

@@ -16,3 +16,5 @@ shot "-inspect-deflected" --scripted --inspect --roll=1 --pitch=1 --yaw=1
 # C6: physics (gravity only) at t = 1.5 s, pilot view and close-up.
 shot "-physics" --t=1.5
 shot "-physics-inspect" --t=1.5 --inspect
+# C7: flight trace of the same throw, headless (no display needed).
+timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5
