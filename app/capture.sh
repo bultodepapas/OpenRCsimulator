@@ -4,6 +4,9 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 GODOT="$("$HERE/get-godot.sh")"
 mkdir -p "$HERE/captures" # untracked in git: a fresh clone does not have it
+# L0b: llvmpipe thread count pinned. 1 and 12 threads gave byte-identical captures on Mesa 25.2.8 (2026-10-05), so
+# this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
+export LP_NUM_THREADS="${LP_NUM_THREADS:-1}"
 COUNTERS="$HERE/captures/landscape-counters.txt"
 : > "$COUNTERS"
 LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
@@ -37,8 +40,17 @@ done
 shot "-land-30m" --t=1.5 --autozoom=0
 shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0
 shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
+# L0c: the airplane-in-view landscape shots again without the airplane: the background for the readability metric.
+shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane
+shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane
+# L0b: straight down from 30 m over the pilot station: ground tiling must be judged from above (investigation 06).
+shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 python3 "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
+# L0c: airplane readability against its background (pinned, hashed Python environment in .tools/visual-venv).
+# L1b thresholds (investigation 09): the low pass keeps the airplane readable against the sky.
+"$("$HERE/tests/visual-env.sh")" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
+  --require "capture-land-low3m.png:-0.40:0.15:30:25"
 # C7: flight trace of the same throw, headless (no display needed).
 timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5

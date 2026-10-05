@@ -102,6 +102,17 @@ func _run() -> void:
 	await create_timer(1.6).timeout
 	_check("physics: restarts by itself after the crash", _alt() > 29.5 and not ("CRASH" in (_main._panel as Label).text), "%.1f m" % _alt())
 
+	# L0d: every frame, shaders get the session's simulation time wrapped to [0, 1024) s (checked at three ticks).
+	var ShaderClock := load("res://render/shader_clock.gd")
+	var clock_ok := true
+	for i in 3:
+		await process_frame # resumes before main._process of this frame, after its physics ticks
+		var t: float = _main.session.sim.time()
+		await process_frame # by now main._process of the previous frame has sent t to the shaders
+		clock_ok = clock_ok and ShaderClock.last_clock == fposmod(t, 1024.0) and t > 0.0
+		await create_timer(0.1).timeout
+	_check("L0d: sim_clock = simulation time mod 1024 at three ticks", clock_ok)
+
 	# C7: T records a trace in the live scene and saves it on the second press.
 	_key(KEY_R, true)
 	_key(KEY_R, false)

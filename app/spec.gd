@@ -30,6 +30,7 @@ const ATMOSPHERE := {
 	sun_azimuth_deg = 225.0, sun_elevation_deg = 45.0,
 	zenith = Color("#4e6893"), horizon = Color("#c9e3ed"), below_horizon = Color("#8a9a80"),
 	gradient_curve = 2.6, sun_diameter_deg = 0.53,
+	exposure = 0.6, white = 1.0, # L1b: ACES tonemap, from a measured sweep against the readability thresholds
 }
 
 const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 3000.0 }

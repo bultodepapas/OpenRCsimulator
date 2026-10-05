@@ -43,6 +43,11 @@ static func perf_line(frame_times: PackedFloat64Array, physics_usec: float) -> S
 
 ## 95th percentile (nearest rank) of a sample.
 static func p95(values: PackedFloat64Array) -> float:
+	return percentile(values, 0.95)
+
+
+## Percentile q (0…1, nearest rank) of a sample.
+static func percentile(values: PackedFloat64Array, q: float) -> float:
 	var s := values.duplicate()
 	s.sort()
-	return s[clampi(ceili(0.95 * s.size()) - 1, 0, s.size() - 1)]
+	return s[clampi(ceili(q * s.size()) - 1, 0, s.size() - 1)]

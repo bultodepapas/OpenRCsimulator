@@ -77,6 +77,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Godot specifics
 
+- **Global shader parameters can be set at runtime, but not read back.** `RenderingServer.global_shader_parameter_get` and `_get_list` print "should never be used outside the editor" and return null under a real renderer, while headless they quietly seem to work. `capture.sh`'s new engine-error guard caught it the first time it ran. *Now:* code remembers the values it sends (`ShaderClock.last_clock`). (2026-10-05)
+
 - **A source-read claim is still a claim until a build tests it.** The export research said `.json` files are left out without an include filter, and that the app would refuse to fly. Exporting without the filter showed the opposite in 4.7.2: the JSON is a recognised resource and `all_resources` ships it. The smoke test of the exported binary decided it, and a mutation that really removes the data (`exclude_filter="data/*"`) showed the test has teeth. The same smoke test exposed that `--trace` on invalid data recorded a ballistic fall instead of failing; it now exits 1. (2026-10-05)
 - **A macOS export from Linux can be checked without a Mac.** Parsing the zip's Mach-O (fat header → each slice's `LC_CODE_SIGNATURE` → the CodeDirectory's `CS_ADHOC` flag) verifies "universal and ad-hoc signed" in 60 lines of Python. Even an export with signing disabled carries a (non-ad-hoc) signature from the template, so checking only for "signed" would pass the wrong build. (2026-10-05)
 

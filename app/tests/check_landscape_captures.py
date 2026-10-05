@@ -29,8 +29,8 @@ def band(px, x0, x1, y0, y1):
 
 
 views = sorted(f for f in os.listdir(d) if f.startswith("capture-land-") and f.endswith(".png"))
-if len(views) < 11:
-    problems.append(f"expected 11 landscape views, found {len(views)}")
+if len(views) < 12:
+    problems.append(f"expected 12 landscape views, found {len(views)}")
 for f in views:
     im = Image.open(os.path.join(d, f)).convert("RGB")
     px = im.load()
@@ -52,6 +52,13 @@ for f in views:
     if best > 3:
         problems.append(f"{f}: banding, {best} identical pixels in a row down the sky")
     print(f"{f}: sky top {top:.1f} < near horizon {low:.1f} (horizon row {horizon}), longest equal run {best} px")
+
+# L0d: the shader clock sent during the capture equals its simulation time (t = 1.5 s).
+for name, c in counters.items():
+    if name.startswith("capture-land-"):
+        if c.get("sim_clock") != "1.5":
+            problems.append(f"{name}: sim_clock {c.get('sim_clock')} instead of 1.5 (the capture's simulation time)")
+print("sim_clock sent in every landscape view: " + ", ".join(sorted({c.get("sim_clock", "?") for n, c in counters.items() if n.startswith("capture-land-")})))
 
 sun = counters.get("capture-land-sun", {}).get("sun_px")
 if sun is None or sun == "behind":

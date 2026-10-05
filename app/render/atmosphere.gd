@@ -27,7 +27,9 @@ static func sky_material() -> ShaderMaterial:
 
 
 ## The world environment: the sky drawn per pixel as background; its radiance (rendered once, QUALITY) lights the
-## scene as ambient light and reflections. Tonemap and exposure are L1b.
+## scene as ambient light and reflections (L1a). L1b: ACES at exposure 0.6, glow off. Chosen by L1b's own proof in the
+## real harness: Filmic 0.8 (the plan's pick from a spike) gave the 3 m airplane contrast −0.36 and ΔE 29.6; ACES 0.6
+## was the only setting swept that passes all thresholds (contrast −0.43, ΔE 30.7, sky saturation 55).
 static func environment() -> Environment:
 	var sky := Sky.new()
 	sky.sky_material = sky_material()
@@ -37,7 +39,10 @@ static func environment() -> Environment:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
-	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = Spec.ATMOSPHERE.exposure
+	env.tonemap_white = Spec.ATMOSPHERE.white
+	env.glow_enabled = false
 	return env
 
 

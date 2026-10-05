@@ -76,7 +76,19 @@ A crash freezes the scene for 1.5 s, showing the impact speed, then the flight r
 - menus;
 - real engine response or engine sound recordings.
 
-## 5. Tell us
+## 5. Measure frame times (for the landscape work)
+
+Builds from v0.1.0-rc2 on can write a frame-time report. Open a terminal in the folder with the app and run one of these:
+
+- **Windows:** `"OpenRC Simulator.exe" -- --frametimes=frametimes.json --t=20`
+- **Linux:** `./openrc-simulator.x86_64 -- --frametimes=frametimes.json --t=20`
+- **macOS:** `"OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator" -- --frametimes=frametimes.json --t=20`
+
+It flies for 21 seconds, writes `frametimes.json` and closes. Please send that file.
+
+To measure beyond your screen's refresh rate, add `--disable-vsync` before the `--`.
+
+## 6. Tell us
 
 1. Fly three circuits, a loop, a roll, a stall and a spin recovery.
 2. For roll, pitch, yaw and throttle, rate each one from **−2 (sluggish) to +2 (twitchy)** compared with a real Stik.

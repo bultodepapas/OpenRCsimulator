@@ -15,6 +15,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd")
 const Hud := preload("res://render/hud.gd")
@@ -37,12 +38,19 @@ var _engine_phase := 0.0
 var _cg_model := Vector3.ZERO
 ## Landscape review view (L0): (azimuth, elevation) in degrees from the pilot's eye, or (NAN, NAN) to follow the airplane.
 var _look := Vector2(NAN, NAN)
+var _look_height := 1.7 # m above the pilot station (L0b top-down view: 30)
 var _shadow: MeshInstance3D
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _auto_zoom := true
 var _show_perf := true
 var _frame_times := PackedFloat64Array()
+## L0e frame-time logger: --frametimes=<file.json> --t=<seconds>. Frame deltas after a 1 s warm-up.
+const FRAMETIME_WARMUP_S := 1.0
+var _frametimes_path := ""
+var _frametimes_duration := 20.0
+var _frametimes := PackedFloat64Array()
+var _frametimes_elapsed := 0.0
 ## Last one-off message (reload result), shown in the panel.
 var _note := ""
 
@@ -56,7 +64,13 @@ func _ready() -> void:
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
+		_look_height = float(args.get("look_alt", Spec.CAMERA.eye_height))
+	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
 	_build_world()
+	if args.has("hide_airplane"):
+		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
+		_airplane.root.visible = false
+		_shadow.visible = false
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
 	session.setup()
@@ -78,6 +92,9 @@ func _ready() -> void:
 		# Headless trace: record from the start to t, save, quit. No window needed.
 		_write_trace_and_quit(float(args.get("t", Spec.CAPTURE.time)), args.trace)
 		return
+	if args.has("frametimes"):
+		_frametimes_path = str(args.frametimes)
+		_frametimes_duration = float(args.get("t", 20.0))
 	if args.has("capture"):
 		_capturing = true
 		_show_perf = false # wall-clock numbers would make captures differ run to run
@@ -95,6 +112,9 @@ func _process(delta: float) -> void:
 	if _capturing:
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
+	if _frametimes_path != "":
+		_log_frame_time(delta)
+	ShaderClock.update(session.sim.time())
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -208,7 +228,8 @@ func _on_resetting() -> void:
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
-## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 (fixed landscape review view, degrees)
+## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
+## --hide_airplane (readability reference), --frametimes=<file.json>
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
@@ -260,7 +281,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	if is_nan(_look.x):
 		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
 	else:
-		PilotCamera.look(_camera, _look.x, _look.y)
+		PilotCamera.look(_camera, _look.x, _look.y, _look_height)
 
 
 func _write_trace_and_quit(t: float, path: String) -> void:
@@ -287,15 +308,79 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
+	ShaderClock.update(t if _scripted else sim.time())
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
+	_write_manifest(out, err)
 	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
 	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
-	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s" % [out, err,
+	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s sim_clock=%s" % [out, err,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
-		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind"])
+		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind", str(ShaderClock.last_clock)])
 	get_tree().quit(err)
+
+
+## L0b determinism manifest next to each capture (<name>.json): image hash, per-pass render counters, renderer,
+## Mesa and Godot versions, llvmpipe thread count. Two runs must give identical manifests with non-zero counters.
+func _write_manifest(png_path: String, err: Error) -> void:
+	var vp := get_viewport().get_viewport_rid()
+	var info := func(type: int, what: int) -> int: return RenderingServer.viewport_get_render_info(vp, type, what)
+	var visible := RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE
+	var shadow := RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW
+	var m := {
+		image = png_path.get_file(),
+		sha256 = FileAccess.get_sha256(png_path) if err == OK else "",
+		draw_calls = { visible = info.call(visible, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME), shadow = info.call(shadow, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME) },
+		primitives = { visible = info.call(visible, RenderingServer.VIEWPORT_RENDER_INFO_PRIMITIVES_IN_FRAME), shadow = info.call(shadow, RenderingServer.VIEWPORT_RENDER_INFO_PRIMITIVES_IN_FRAME) },
+		objects = { visible = info.call(visible, RenderingServer.VIEWPORT_RENDER_INFO_OBJECTS_IN_FRAME), shadow = info.call(shadow, RenderingServer.VIEWPORT_RENDER_INFO_OBJECTS_IN_FRAME) },
+		video_memory_bytes = int(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)),
+		adapter = RenderingServer.get_video_adapter_name(),
+		api = RenderingServer.get_video_adapter_api_version(),
+		godot = Engine.get_version_info().string,
+		lp_num_threads = OS.get_environment("LP_NUM_THREADS"),
+		args = " ".join(OS.get_cmdline_user_args()).replace(png_path, png_path.get_file()),
+	}
+	var f := FileAccess.open(png_path.get_basename() + ".json", FileAccess.WRITE)
+	if f != null:
+		f.store_string(JSON.stringify(m, "  ", true) + "\n")
+		f.close()
+
+
+## L0e: records frame deltas of the normal app (trimmed start, pilot camera) and writes percentiles for Gate L.
+## On the owner's machine: `"OpenRC Simulator.exe" -- --frametimes=frametimes.json --t=20` (add Godot's
+## `--disable-vsync` before `--` to measure beyond the refresh rate).
+func _log_frame_time(delta: float) -> void:
+	_frametimes_elapsed += delta
+	if _frametimes_elapsed > FRAMETIME_WARMUP_S:
+		_frametimes.append(delta)
+	if _frametimes_elapsed < FRAMETIME_WARMUP_S + _frametimes_duration:
+		return
+	var ms := func(q: float) -> float: return Hud.percentile(_frametimes, q) * 1000.0
+	var total := 0.0
+	for d in _frametimes:
+		total += d
+	var report := {
+		frames = _frametimes.size(),
+		seconds = total,
+		fps_mean = _frametimes.size() / maxf(total, 1e-9),
+		frame_ms = { p50 = ms.call(0.50), p95 = ms.call(0.95), p99 = ms.call(0.99), max = ms.call(1.0) },
+		physics_us_per_tick = session.sim.step_usec,
+		adapter = RenderingServer.get_video_adapter_name(),
+		api = RenderingServer.get_video_adapter_api_version(),
+		godot = Engine.get_version_info().string,
+		os = OS.get_name(),
+		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
+		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
+		note = "Frame time over the trimmed start with the pilot camera, after a %.0f s warm-up. Software renderers (llvmpipe) are not performance numbers." % FRAMETIME_WARMUP_S,
+	}
+	var f := FileAccess.open(_frametimes_path, FileAccess.WRITE)
+	if f != null:
+		f.store_string(JSON.stringify(report, "  ", true) + "\n")
+		f.close()
+	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames → %s" % [ms.call(0.50), ms.call(0.95), ms.call(0.99), _frametimes.size(), _frametimes_path])
+	_frametimes_path = ""
+	get_tree().quit(OK if f != null else ERR_CANT_CREATE)

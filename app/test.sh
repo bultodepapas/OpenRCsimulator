@@ -14,6 +14,13 @@ if [ ${#SIM_DIRS[@]} -gt 0 ] && grep -rnE '^\s*[^#[:space:]].*\b(Vector2|Vector3
   echo "32-bit math type found in simulation code (see lines above)"; exit 1
 fi
 
+echo "== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)"
+# Shader files, plus any script that embeds shader code. Comment lines (// or #) are ignored.
+SHADER_FILES=$(cd "$HERE" && { find . \( -name '*.gdshader' -o -name '*.gdshaderinc' \) -not -path './.godot/*'; grep -rl --include='*.gd' 'shader_type' . 2>/dev/null | grep -v '^./.godot/' || true; } | sort -u)
+for f in $SHADER_FILES; do
+  if grep -nE '^\s*[^/#[:space:]].*\bTIME\b' "$HERE/$f"; then echo "TIME used in $f (use the sim_clock global uniform)"; exit 1; fi
+done
+
 echo "== parse check: every script"
 (cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' | sort) | while read -r f; do
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
@@ -35,6 +42,20 @@ echo "== app: headless --trace starts in trimmed level flight"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+
+echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
+FT="$(mktemp --suffix=.json)"
+run -- --frametimes="$FT" --t=1.5 > /dev/null 2>&1
+python3 - "$FT" <<'PY'
+import json, sys
+r = json.load(open(sys.argv[1]))
+ms = r["frame_ms"]
+assert r["frames"] > 10 and r["seconds"] >= 1.5, r
+assert 0 < ms["p50"] <= ms["p95"] <= ms["p99"] <= ms["max"], ms
+assert all(k in r for k in ("adapter", "api", "godot", "os", "vsync", "physics_us_per_tick")), sorted(r)
+print(f"frame-time report: {r['frames']} frames, p50 {ms['p50']:.2f} <= p95 {ms['p95']:.2f} <= p99 {ms['p99']:.2f} ms")
+PY
+rm -f "$FT"
 
 echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
 HASHES=""
