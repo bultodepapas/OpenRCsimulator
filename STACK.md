@@ -40,10 +40,43 @@ Total runtime dependencies to start: **three** and **lil-gui**. Everything else 
 | Route | Current state | License | Web | Native | Stability signal | Fit for us now |
 | --- | --- | --- | --- | --- | --- | --- |
 | **Browser library**: three.js / Babylon.js / PlayCanvas + TypeScript | three r186 (2026-09-08); Babylon 9.29 (9.0 on 2026-03-26); PlayCanvas 2.23 | MIT / Apache-2.0 / MIT | Native target | PWA, Electron | three breaks APIs between releases; Babylon promises backward compatibility | **Chosen.** Fastest path to a shareable airplane |
-| **Integrated engine**: Godot | 4.7 stable (2026-06-18), 4.7.2 (2026-08-18), 4.8 at feature freeze (dev 7, 2026-09-29) | MIT | GDScript exports to web (Compatibility renderer); **C# cannot export to web** | Excellent | Mature, regular releases | Strong alternative if scene authoring becomes the bottleneck |
+| **Integrated engine**: Godot | 4.7 stable (2026-06-18), 4.7.2 (2026-08-18), 4.8 at feature freeze (dev 7, 2026-09-29) | MIT | GDScript exports to web (Compatibility renderer); **C# cannot export to web** | Excellent | Mature, regular releases | Strongest alternative; see the in-depth section below |
 | **Rust engine**: Bevy | 0.19 (2026-06-19); still pre-1.0 | MIT / Apache-2.0 | WebGL 2 or WebGPU builds, no automatic fallback | Excellent | Breaking changes every release (~every 3–6 months) | Not now: churn plus a slower learning loop |
 | **Small native C**: raylib / sokol / SDL3 | raylib 6.0 (2026-04-23, adds a CPU software renderer) *(secondary)*; sokol gained a Vulkan backend (Dec 2025) *(secondary)* | zlib | Via Emscripten | Excellent | Simple, stable APIs | Good for a native port of the physics core later; more to build ourselves |
 | **Proprietary**: Unity / Unreal | — | Proprietary terms (see RESEARCH.md) | Yes | Yes | — | Excluded: conflicts with an open-source project we fully control |
+
+### Godot and other integrated engines, in depth
+
+Godot is the strongest alternative to the browser route, so it gets a closer look. Facts below come from the Godot 4.7 documentation unless marked.
+
+**Where Godot is better for an RC simulator:**
+- **Native transmitter input.** Desktop builds use **SDL 3** for controllers (since 4.5), the same layer most PC games use. Native apps read joysticks directly, without the browser's "press a button first" gesture rule. Godot exposes up to **10 axes** (`JOY_AXIS_MAX`), enough for an 8-axis EdgeTX radio. The docs do say specialized peripherals (HOTAS, pedals) are "less tested."
+- **A visual editor** for scenes, lighting, cameras, materials and importing aircraft models. With three.js, we would build every tool ourselves.
+- **Native desktop builds** for Windows, macOS and Linux with no webview, plus Android and iOS later.
+- **Physics included.** Jolt is the default 3D physics from 4.6 *(secondary)*, useful later for scenery collisions.
+- **Maturity.** MIT license, large community, regular stable releases (4.7.2 in August 2026; 4.8 at feature freeze).
+
+**Where Godot costs us:**
+- **Math precision.** "float is 64-bit in GDScript, but Vector2, Vector3 and Vector4 are 32-bit." Our experiment shows 32-bit vectors lose small accelerations. Double-precision vectors require **recompiling the editor and every export template** with `precision=double`; no official double builds exist. The workarounds are physics state in plain 64-bit floats or `PackedFloat64Array` (clumsy), or C++ GDExtension physics (which must be compiled separately for the web).
+- **Web export is a second-class target.** It is WebGL 2 only (Compatibility renderer). **C# cannot export to the web.** Gamepads are not detected until a button is pressed, and mappings may be wrong per browser/OS. The default audio mode has **no procedural audio**, which matters for an rpm-driven engine sound; the full-featured mode adds latency.
+- **Download size.** A default 4.x web export is about **42 MB**. One author reached 2.7 MB brotli only by compiling custom templates *(secondary: [popcar](https://popcar.bearblog.dev/how-to-minify-godots-build-size/))*. A three.js page starts well under 1 MB.
+- **Input defaults fight RC.** Input actions have a default deadzone of 0.5. We would read raw axes and bypass the action system.
+- **Feedback loop for AI and tests.** Scenes are text (`.tscn`), and the CLI can run headless, import and export. But tests need an add-on (e.g. GUT or gdUnit4), and some work needs editor clicks. The browser route has plain `npm test` plus screenshots.
+
+**The other "engines like that":**
+
+| Engine | State | License | Why not first |
+| --- | --- | --- | --- |
+| **O3DE** | 26.05 (2026-05-27); Windows and Ubuntu binaries; PhysX 5 by default *(secondary)* | Apache-2.0 | Heavy AAA-style engine; large install; no web target |
+| **Stride** | 4.3 stable (2025-11); 4.4 in beta *(secondary)* | MIT | C#/.NET; editor is Windows-centric; no web target |
+| **Flax** | Active, source-available | **4% royalty** above $250k per quarter *(secondary)* | Not open source |
+| **Defold** | Active; strong in 2D, 3D possible | Free, own license (not OSI) | 3D is not its focus |
+| **Panda3D** | 1.10.16 (2025-12-25); 1.11 not released *(secondary)* | BSD | Old and robust, Python/C++, but desktop only and a slow release pace |
+| **Bevy**, **raylib**, **Unity/Unreal** | See the routes table above | — | — |
+
+**Bottom line.** Godot is the best choice if we want a **native desktop app with an editor**. The browser is the best choice if we want **zero install, a shareable link, small downloads, plain-text tooling, and float64 physics without custom engine builds**. The project principle "start small, show a little airplane" fits the browser slightly better. Godot's native input and editor become more valuable later, when transmitters and scenery matter.
+
+These routes are not exclusive. The physics core is plain functions over plain data, so it can be ported to GDScript or C++ later. **The cheapest way to decide is to build Stage 0 in both** (the comparison planned in RESEARCH.md) and compare real setup time, edit/run loop, screenshot capture and radio input.
 
 ### Browser renderers compared
 
@@ -156,6 +189,8 @@ Primary and registry sources:
 - [three.js releases](https://github.com/mrdoob/three.js/releases)
 - [gpuweb implementation status](https://github.com/gpuweb/gpuweb/wiki/Implementation-Status)
 - [Godot blog](https://godotengine.org/blog/)
+- Godot 4.7 docs: [large world coordinates](https://docs.godotengine.org/en/stable/tutorials/physics/large_world_coordinates.html), [web export](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html), [controllers](https://docs.godotengine.org/en/stable/tutorials/inputs/controllers_gamepads_joysticks.html), [`JoyAxis`](https://docs.godotengine.org/en/stable/classes/class_%40globalscope.html)
+- [O3DE release notes](https://www.docs.o3de.org/docs/release-notes/), [Flax FAQ](https://flaxengine.com/faq/), [Defold](https://defold.com/), [Panda3D downloads](https://www.panda3d.org/download/)
 - [Bevy news](https://bevy.org/news/)
 - [Babylon.js 9.0 announcement](https://blogs.windows.com/windowsdeveloper/2026/03/26/announcing-babylon-js-9-0)
 - [Babylon.js contributing rules](https://github.com/kzhsw/Babylon.js/blob/master/contributing.md) (mirror of the upstream rules)
