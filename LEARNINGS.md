@@ -59,6 +59,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Rendering and evidence
 
+- **Count before you budget.** The landscape plan's first budget was ≤ 150 draw calls in the pilot view. The L0 counters (`Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME`, deterministic under llvmpipe) showed the airplane alone uses ~100 of them, while the empty landscape uses 4–6. A budget that ignores its biggest consumer means nothing. (2026-10-05)
+
 - **Gravity alone makes the airplane fall flat** (wings level, nose not following the path), because nothing turns it into the airflow until aerodynamics exist. Correct for C6, and a useful visual baseline: once weathervane stability is added in Phase D, the nose should follow the flight path. (2026-10-05)
 
 - **Attach the inspection camera to the airplane, not the world.** A world-fixed close-up often saw the airplane from the front, so deflections were barely visible. A camera fixed at a model offset (left, above, behind) shows the surfaces the same way in every pose. (2026-10-05)
@@ -172,3 +174,5 @@ Prueba y archivos: [reporte v4](docs/research/ugly-stik-model-v4.md), [validaci�
 - **US-V01–08, revalidación:** un plan con estado de entrega actualizado puede conservar instrucciones antiguas que declaran los mismos pasos pendientes. Antes de volver a implementar, contrastar el adaptador real, fuentes generadas, contratos y capturas: en esta pasada v4 ya estaba integrada, 807 + 289 comprobaciones pasaron y ambas vistas de presentación conservaron sus hashes. Se corrigieron los estados documentales; lectura humana y GPU objetivo siguen abiertas. [Evidencia](docs/research/ugly-stik-model-v4.md#revalidación-del-árbol-integrado). (2026-10-05)
 
 - **US-V07, capturas automáticas HD:** duplicar resolución conserva el encuadre angular y no corrige una rueda cortada; se revisaron las miniaturas y se abrió la cámara del tren principal. Una suite separada permite añadir macros, relleno y 2560 × 1440 sin cambiar las comparaciones históricas. El wrapper recreó carpeta y galería desde clon limpio, con 28/28 PNG idénticos. En GDScript, una expresión condicional con arrays literales puede perder el tipo `Array[String]` en ejecución aunque pase el parseo; inicializar el array tipado y añadir sus elementos evitó ese fallo. [Prueba](docs/research/ugly-stik-showcase-validation.json). (2026-10-05)
+
+- **US-V03/V06/V07, motor v5:** un disco oscuro no garantiza una admisión hueca; hay que terminar la carcasa antes de la boca y construir labio, pared interior y fondo. Los perfiles de revolución suavizan piezas circulares conservando cabezas hexagonales. Unir conos de ejes distintos por su centro deja huecos: sus anillos extremos deben coincidir en plano y radio. Once macros con la misma cámara y luz permiten descubrir esas uniones; las once imágenes finales se reprodujeron por hash desde un clon limpio. [Análisis y pruebas](docs/research/ugly-stik-engine-v5.md). (2026-10-05)

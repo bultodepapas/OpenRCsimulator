@@ -2,7 +2,7 @@
 
 **Question:** how do we turn the flat 2 km grass plane and solid-blue sky into a landscape that looks good *and* helps the pilot read attitude, distance, height and speed, while staying on Godot 4.7's **Compatibility** renderer (web export, software-GL captures)?
 
-The plan built on this research is [docs/LANDSCAPE-PLAN.md](../LANDSCAPE-PLAN.md).
+The plan built on this research is [docs/LANDSCAPE-PLAN.md](../LANDSCAPE-PLAN.md). Eleven deeper follow-up investigations (with spikes) are in [landscape-investigations/](landscape-investigations/README.md); where they correct this summary (aerial perspective is a no-op in 4.7.2 Compatibility, alpha-to-coverage does nothing, render counters read 0 headless), they take precedence.
 
 **Evidence labels:** **[doc]** official documentation · **[rel]** release notes · **[src]** engine or plugin source read at a pinned tag · **[iss]** GitHub issue/PR · **[OM]** official product manual · **[AP]** academic paper · **[F]** forum (community opinion) · **[sec]** secondary source · **[measured]** run on this repo · **[inference]** our reasoning, not sourced.
 

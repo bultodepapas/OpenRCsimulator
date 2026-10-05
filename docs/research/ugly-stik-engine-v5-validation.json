@@ -1,0 +1,172 @@
+{
+  "schema": "openrc-engine-visual-validation-v1",
+  "date": "2026-10-05",
+  "step_ids": [
+    "US-V03",
+    "US-V06",
+    "US-V07"
+  ],
+  "engine_revision": "glow-61-detail-v5",
+  "reference_kind": "owner photos D/F; all new engine dimensions visual estimates",
+  "baseline_commit": "baeae36",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "complete_suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "log": "ugly-stik-engine-v5-evidence/app-test.txt",
+    "model_contract_checks": 807,
+    "model_contract_failures": 0,
+    "fixed_fps": [
+      30,
+      60,
+      144
+    ],
+    "fixed_fps_state_sha256": "b9a764f53d4632a2256b63a46b712a670efca567be0351d12e80a2d9ccbf7360"
+  },
+  "counters_before": {
+    "triangle_count": 27040,
+    "mesh_instances": 74,
+    "material_count": 23,
+    "engine_left_frame_draw_calls": 75,
+    "scope": "whole airplane geometry; whole frame draw calls; software renderer"
+  },
+  "counters_after": {
+    "triangle_count": 46840,
+    "mesh_instances": 74,
+    "material_count": 25,
+    "engine_left_frame_draw_calls": 75,
+    "scope": "whole airplane geometry; whole frame draw calls; software renderer"
+  },
+  "captures": {
+    "count_each": 11,
+    "resolution_px": [
+      2560,
+      1440
+    ],
+    "same_camera_lighting_pose_and_commands": true,
+    "before_manifest": "app/captures/ugly-stik-engine-v5/before/manifest.json",
+    "after_manifest": "app/captures/ugly-stik-engine-v5/release/manifest.json",
+    "comparison": "app/captures/ugly-stik-engine-v5/comparison.html",
+    "files": [
+      {
+        "file": "engine-left.png",
+        "before_sha256": "6790f15afc638cdae7a75ff724babbd0625abb906e8f323f6259182dee9d14e2",
+        "after_sha256": "dfa23e2ae954fdf38d6c24020910a75d9016a6063ac49c9051170b88d25ac063"
+      },
+      {
+        "file": "engine-right.png",
+        "before_sha256": "ad0d94d0171da433025146ed3efc396515ad7fec7947c5d0d7b4aa98dd99b760",
+        "after_sha256": "66151b0c594daad307c856cbb71e06f8363204ffd35f83ac79375e93102740bd"
+      },
+      {
+        "file": "engine-front.png",
+        "before_sha256": "6fe9646b126a6e062ac598eaae0f7f1dd0078c2bc583388e5c6ceeb5face5b7f",
+        "after_sha256": "791deb159d13499f608e93c8e026535126145972c46d28a4a350a76e4d777178"
+      },
+      {
+        "file": "engine-three-quarter-right.png",
+        "before_sha256": "13fecfbab62a8a891399b8503e78020cb99425314fe408a4d50d44f7a53c9168",
+        "after_sha256": "e2ce482b3ccc53d989e64bce2ea56b4ff5d0bd6f6459a261a9b7dbd3f4d69efd"
+      },
+      {
+        "file": "engine-three-quarter-left.png",
+        "before_sha256": "cb3b3afca4273f1ec7023a644a5dcd29e556796ae4814d0e07cabc01752cc225",
+        "after_sha256": "ea615b0ee3ec497c066d4970191868b486cf01e675646438a30b767f5489f01c"
+      },
+      {
+        "file": "engine-overhead.png",
+        "before_sha256": "d285a00ba154e2f2c3a5c5e3b45942de84afb5c36e0561d677cc3c8c7c4a6681",
+        "after_sha256": "16a0574211ff996afa2359495f7d56eb03c34f6011b3533b66135f27dd2c00b2"
+      },
+      {
+        "file": "engine-head.png",
+        "before_sha256": "ebc8ba3b09fe0756ac40a42d7400c2385515de1c3fcc95fff228bc5081b33764",
+        "after_sha256": "33bd0bc13c04a01d2087ae0e284629e614db124ebed8d24e30076aebe50fbde9"
+      },
+      {
+        "file": "engine-carburetor.png",
+        "before_sha256": "d270ba8892550f2240b15285e394eafb9fbcf604e457089f573fe5c16c48d345",
+        "after_sha256": "57862834f30a92394922fccb9de4f787b5b9c7ed7c4f8abf1e96ad229fa32cbb"
+      },
+      {
+        "file": "engine-exhaust.png",
+        "before_sha256": "884aee40c415cef0cfae6ba9e2dfbfe154028fba4bcbd3f9cd9fdd1f0b878cc3",
+        "after_sha256": "45acfcc88567427aa2ddcb98c84f40447613d3d6711acdb10397e8e086d0cebe"
+      },
+      {
+        "file": "engine-outlet.png",
+        "before_sha256": "ec988860c448a77fbbcfecf1e3bde4e2fe2ec73b108b9bf084c6a055abc48064",
+        "after_sha256": "170cb7a00c03db98013ce1650e6404950faf6313b355fcc5402475e2d4f26305"
+      },
+      {
+        "file": "engine-mount.png",
+        "before_sha256": "2bc598b648d0d9f24a3831389f6202c1223b8afb2e7e65845939171b124fa830",
+        "after_sha256": "b4f24245f204d542e455b791d64a959e2c06fbf1bc1329d3e22519c642b1167a"
+      }
+    ]
+  },
+  "clean_clone": {
+    "png_hashes_match": 11,
+    "capture_count": 11,
+    "ok": true,
+    "method": "tracked snapshot committed in temporary repository then fresh git clone; no .godot or captures copied; pinned .tools binary reused"
+  },
+  "browser": {
+    "desktop": {
+      "count": 22,
+      "loaded": true
+    },
+    "mobile": {
+      "noHorizontalOverflow": true
+    },
+    "errors": []
+  },
+  "limitations": [
+    "Engine geometry estimated from photos, not manufacturer dimensional certification",
+    "No target GPU performance benchmark"
+  ],
+  "source_sha256": {
+    "app/aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+    "app/aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+    "app/aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+    "app/aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+    "research/ugly-stik/model-v4/capture-detail.sh": "8addb878ae53eb04869c8b4f6e9b720112a5fb32e47135c6cbc471862ad78521",
+    "research/ugly-stik/model-v4/compare_engine.py": "a3f07dcfe76c7785f00ffe7d28d6debd4fcab350ad0fbf3195ef4601000336a0",
+    "research/ugly-stik/model-v4/check_engine_mutations.gd": "a62d1c8672b274a8518e74323034fbc8e5a4d80704604d82164dacf1117d6ba7"
+  },
+  "mesh_probes": {
+    "intake_depths_m": [
+      0.01555083226413,
+      0.01536940410733,
+      0.01534714642912,
+      0.0155508313328,
+      0.0155508313328
+    ],
+    "crown_gaps_m": [
+      0.00349999964237,
+      0.00350000336766,
+      0.00349999964237,
+      0.00349999591708,
+      0.00350000336766,
+      0.00350000336766,
+      0.00350000336766,
+      0.00349999591708,
+      0.00349999964237,
+      0.00349999964237,
+      0.00349999219179,
+      0.00349999964237
+    ],
+    "outlet_depth_m": 0.009,
+    "outlet_probe_radial_offset_m": 0.0004,
+    "minimum_prop_plane_clearance_check_m": 0.005,
+    "log": "ugly-stik-engine-v5-evidence/model-contract.txt"
+  },
+  "mutations": {
+    "method": "in-memory mesh copies created by the builder; shared source never broken",
+    "capped_intake_detected_by_rays": 5,
+    "closed_crown_slots_detected": 12,
+    "exit_code": 0,
+    "log": "ugly-stik-engine-v5-evidence/mutations.txt",
+    "script": "research/ugly-stik/model-v4/check_engine_mutations.gd"
+  }
+}

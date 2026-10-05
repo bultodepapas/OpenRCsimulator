@@ -451,9 +451,8 @@ static func _add_engine(root: Node3D) -> void:
 		_washer(bright, firewall_bolt - Vector3(0, 0, 0.002), Vector3.FORWARD, 0.0046, 0.0029, 0.001, 24)
 
 	# Long crankcase, a stepped front bearing housing and a bolted rear cover.
-	var case_center := Vector3(0, shaft_y - 0.002, engine_z)
-	_turned(cast, case_center, Vector3.BACK, [Vector2(-0.025, 0), Vector2(-0.025, 0.014), Vector2(-0.022, 0.018), Vector2(-0.017, 0.0195), Vector2(0.026, 0.0195), Vector2(0.030, 0.018), Vector2(0.030, 0)])
-	_turned(cast, Vector3(0, shaft_y, engine_z), Vector3.BACK, [Vector2(-0.045, 0), Vector2(-0.045, 0.0105), Vector2(-0.042, 0.012), Vector2(-0.032, 0.013), Vector2(-0.025, 0.0165), Vector2(-0.018, 0.0175), Vector2(-0.018, 0)])
+	var case_center := Vector3(0, shaft_y, engine_z)
+	_turned(cast, case_center, Vector3.BACK, [Vector2(-0.045, 0), Vector2(-0.045, 0.0105), Vector2(-0.042, 0.012), Vector2(-0.032, 0.013), Vector2(-0.025, 0.0165), Vector2(-0.017, 0.0195), Vector2(0.026, 0.0195), Vector2(0.030, 0.018), Vector2(0.030, 0)])
 	_turned(bright, Vector3(0, shaft_y, engine_z), Vector3.BACK, [Vector2(-0.046, 0), Vector2(-0.046, 0.010), Vector2(-0.0455, 0.0122), Vector2(-0.0425, 0.0122), Vector2(-0.042, 0.0115), Vector2(-0.042, 0)])
 	_engine_cylinder(steel, Vector3(0, shaft_y, engine_z - 0.045), Vector3(0, shaft_y, float(e.prop_z) + 0.010), 0.0046, 0.0046, 32)
 	_turned(dark, case_center, Vector3.BACK, [Vector2(0.030, 0), Vector2(0.030, 0.0182), Vector2(0.0308, 0.0182), Vector2(0.0308, 0)])
@@ -540,9 +539,7 @@ static func _add_engine(root: Node3D) -> void:
 	var outlet_start := Vector3(0.056, shaft_y - 0.009, engine_z + 0.030)
 	var outlet_end := Vector3(0.064, shaft_y - 0.018, engine_z + 0.041)
 	var cone_start := Vector3(0.049, shaft_y - 0.004, muffler_seam_z)
-	var cone_length := cone_start.distance_to(outlet_start)
-	_turned(cast, cone_start, outlet_start - cone_start, [Vector2(0, 0.0105), Vector2(cone_length * 0.28, 0.0098), Vector2(cone_length * 0.60, 0.0078), Vector2(cone_length, 0.0044)], 48, true)
-	_engine_cylinder(bright, outlet_start - Vector3(0.001, -0.0005, -0.001), outlet_start, 0.0048, 0.0044, 12, false)
+	_exhaust_transition(cast, cone_start, outlet_start, (outlet_end - outlet_start).normalized())
 	_add_hollow_outlet(bright, black, outlet_start, outlet_end, 0.0042, 0.0029)
 	# Pressure fitting is kept at its existing connection point and raised off the shell by its boss.
 	_engine_cylinder(bright, Vector3(0.052, shaft_y + 0.006, engine_z + 0.011), Vector3(0.052, shaft_y + 0.010, engine_z + 0.011), 0.0032, 0.0032, 8)
@@ -580,6 +577,31 @@ static func _add_engine(root: Node3D) -> void:
 	assembly.set_meta("intake_mouth", intake_end)
 	assembly.set_meta("intake_axis", intake_axis)
 	root.set_meta("engine_revision", "glow-61-detail-v5")
+
+
+# Matching ring planes close both ends of the bent exhaust taper.
+static func _exhaust_transition(st: SurfaceTool, a: Vector3, b: Vector3, outlet_axis: Vector3) -> void:
+	var rings: Array = []
+	var normals: Array = []
+	for i in range(9):
+		var t := i / 8.0
+		var axis := Vector3.BACK.slerp(outlet_axis, t).normalized()
+		var frame := _frame(axis)
+		var radius := lerpf(0.0105, 0.0042, t * t * (3.0 - 2.0 * t))
+		var slope := (0.0105 - 0.0042) * 6.0 * t * (1.0 - t) / a.distance_to(b)
+		var ring: Array[Vector3] = []
+		var normal_ring: Array[Vector3] = []
+		for j in range(48):
+			var angle := TAU * j / 48.0
+			var radial: Vector3 = frame[0] * cos(angle) + frame[1] * sin(angle)
+			ring.append(a.lerp(b, t) + radial * radius)
+			normal_ring.append((radial + axis * slope).normalized())
+		rings.append(ring)
+		normals.append(normal_ring)
+	for i in range(8):
+		for j in range(48):
+			var k := (j + 1) % 48
+			_smooth_quad(st, rings[i][j], rings[i + 1][j], rings[i + 1][k], rings[i][k], normals[i][j], normals[i + 1][j], normals[i + 1][k], normals[i][k])
 
 
 static func _add_hollow_outlet(outer: SurfaceTool, inner: SurfaceTool, a: Vector3, b: Vector3, outer_radius: float, inner_radius: float) -> void:

@@ -23,7 +23,14 @@ const SKY := Color("#9cc9ef")
 const GROUND_SIZE := 2000.0
 const RUNWAY := { length_east_west = 100.0, width_north_south = 12.0, center_north = 15.0 }
 
-const SUN := { azimuth_from_north_deg = 225.0, elevation_deg = 45.0 } # south-west
+## Atmosphere (LANDSCAPE-PLAN L1a; one source for sky, light and, from L2, haze). Zenith and horizon from Hosek-Wilkie
+## at a 45° sun with a pow(1 − y, 2.6) fit (investigation 02, computed); the real sun's 0.53° disc (investigation 01);
+## below the horizon a muted green-grey (estimated, mostly hidden by the ground).
+const ATMOSPHERE := {
+	sun_azimuth_deg = 225.0, sun_elevation_deg = 45.0,
+	zenith = Color("#4e6893"), horizon = Color("#c9e3ed"), below_horizon = Color("#8a9a80"),
+	gradient_curve = 2.6, sun_diameter_deg = 0.53,
+}
 
 const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 3000.0 }
 # Close-up camera, fixed to the airplane: model offset (left, above, behind).

@@ -1,6 +1,6 @@
-# Evidencia de mecánica y herrajes — helper v4
+# Evidencia de mecánica y herrajes — v4 y revisión de motor v5
 
-Estado: integrado en el constructor v4. Verificación y capturas finales en [el reporte de entrega](ugly-stik-model-v4.md).
+Estado: integrado en el constructor v4, con revisión mecánica `glow-61-detail-v5`. [Análisis, comparación y pruebas del motor v5](ugly-stik-engine-v5.md). El registro siguiente describe la entrega v4; la revisión v5 sustituye su geometría de motor y conserva la instalación. [Reporte de entrega v4](ugly-stik-model-v4.md).
 
 ## Procedencia y límites
 

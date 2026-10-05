@@ -29,6 +29,17 @@ static func auto_fov(span: float, distance: float, viewport_h: float, target_px 
 	return clampf(fov, min_fov, base_fov)
 
 
+## Landscape review views (L0): from the pilot's eye, looking at an azimuth (deg from north, clockwise) and an
+## elevation (deg above the horizon), base FOV. Independent of the airplane.
+static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float) -> void:
+	camera.fov = Spec.CAMERA.fov_deg
+	camera.position = Frames.ned_to_render([0.0, 0.0, -Spec.CAMERA.eye_height])
+	var az := deg_to_rad(azimuth_deg)
+	var el := deg_to_rad(elevation_deg)
+	var dir := Frames.ned_to_render([cos(az) * cos(el), sin(az) * cos(el), -sin(el)])
+	camera.look_at(camera.position + dir * 100.0, Vector3.UP)
+
+
 ## target: airplane position (render axes); airplane: its root transform (for the inspect offset).
 ## auto_zoom_span > 0: the pilot view narrows its FOV for an airplane of that span.
 static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspect: bool, auto_zoom_span := 0.0) -> void:

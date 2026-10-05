@@ -14,6 +14,7 @@ const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd")
 const Hud := preload("res://render/hud.gd")
@@ -34,6 +35,8 @@ var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
 var _engine_phase := 0.0
 var _cg_model := Vector3.ZERO
+## Landscape review view (L0): (azimuth, elevation) in degrees from the pilot's eye, or (NAN, NAN) to follow the airplane.
+var _look := Vector2(NAN, NAN)
 var _shadow: MeshInstance3D
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
@@ -51,6 +54,8 @@ func _ready() -> void:
 	_inspect = args.has("inspect")
 	_scripted = args.has("scripted")
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
+	if args.has("look_az"):
+		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 	_build_world()
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
@@ -203,7 +208,7 @@ func _on_resetting() -> void:
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
-## --alt=4 (start altitude, m), --autozoom=0
+## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 (fixed landscape review view, degrees)
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
@@ -217,14 +222,8 @@ func _view_name() -> String:
 
 
 func _build_world() -> void:
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Spec.SKY
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Spec.SKY
-	env.ambient_light_energy = 0.6
 	var world_env := WorldEnvironment.new()
-	world_env.environment = env
+	world_env.environment = Atmosphere.environment()
 	add_child(world_env)
 
 	var ground := MeshInstance3D.new()
@@ -238,16 +237,11 @@ func _build_world() -> void:
 	var strip := PlaneMesh.new()
 	strip.size = Vector2(Spec.RUNWAY.length_east_west, Spec.RUNWAY.width_north_south)
 	runway.mesh = strip
-	runway.material_override = AirplaneBuilder._mat(Spec.RUNWAY_COLOR)
+	runway.material_override = Ground.runway_material()
 	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.01])
 	add_child(runway)
 
-	var sun := DirectionalLight3D.new()
-	add_child(sun)
-	var az := deg_to_rad(Spec.SUN.azimuth_from_north_deg)
-	var el := deg_to_rad(Spec.SUN.elevation_deg)
-	var to_sun := Frames.ned_to_render([cos(az) * cos(el), sin(az) * cos(el), -sin(el)])
-	sun.look_at_from_position(to_sun * 100.0, Vector3.ZERO, Vector3.UP)
+	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light
 
 	_airplane = AirplaneBuilder.build()
 	add_child(_airplane.root)
@@ -263,7 +257,10 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y)
-	PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
+	if is_nan(_look.x):
+		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
+	else:
+		PilotCamera.look(_camera, _look.x, _look.y)
 
 
 func _write_trace_and_quit(t: float, path: String) -> void:
@@ -295,5 +292,10 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	await RenderingServer.frame_post_draw
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
 	var err := get_viewport().get_texture().get_image().save_png(out)
-	print("saved %s (error %d)" % [out, err])
+	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
+	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
+	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
+	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s" % [out, err,
+		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
+		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind"])
 	get_tree().quit(err)

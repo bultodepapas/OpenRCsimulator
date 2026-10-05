@@ -27,13 +27,15 @@ For an automatic **28-image tour at 2560 × 1440**, including eleven engine view
 
 ```bash
 research/ugly-stik/model-v4/capture-detail.sh
+# Only the eleven engine/exhaust closeups:
+research/ugly-stik/model-v4/capture-detail.sh --engine
 ```
 
 It renders the current Godot model and writes PNGs, `manifest.json`, `capture.log`, and an offline `review.html` gallery into a new timestamped directory under `app/captures/`. Each run prints its gallery path. Use `--output-dir PATH` to choose a new destination; existing directories are rejected. Requires Python 3 and `xvfb-run`, with no gallery package installation. Categories cover the complete airplane, engine/exhaust, mounting hardware, servos, and controls. The `showcase` suite uses closer cameras and brighter fill lighting; the original comparison suites retain their cameras and resolution.
 
 The compiler writes [ugly_stik_geometry.gd](../../../app/aircraft/ugly_stik_geometry.gd); do not edit the generated copy. The [native builder](../../../app/aircraft/ugly_stik_model.gd) creates meshes and preserves `build()` → `{root, propeller, hinges}` with optional gear pivots. The [render adapter](../../../app/render/airplane.gd) retains surface commands and adds optional `apply_gear()` using raw local rotation radians. Static wing frames carry dihedral; child hinges carry commanded deflection.
 
-The [v3 report](../../../docs/research/ugly-stik-model-v3.md) records the fuselage holdout, wing/tail traces, movement clearances, mutation proof and captures. [Installation handoff](../../../docs/research/ugly-stik-model-v3-installation.md) documents wheel contacts and axis/sign conversion; it does not implement ground forces. Equipment remains a generic .61 installation. Human readability and target-hardware performance are pending.
+The [v3 report](../../../docs/research/ugly-stik-model-v3.md) records the fuselage holdout, wing/tail traces, movement clearances, mutation proof and captures. [Installation handoff](../../../docs/research/ugly-stik-model-v3-installation.md) documents wheel contacts and axis/sign conversion; it does not implement ground forces. Equipment remains a generic .61 installation. The [engine v5 revision](../../../docs/research/ugly-stik-engine-v5.md) adds open bores, a notched head, smoother castings and a reproducible before/after comparison. Human readability and target-hardware performance are pending.
 
 The [v4 report](../../../docs/research/ugly-stik-model-v4.md) documents the atlas, scalloped trailing edge, gold-head engine and silencer, fixed-length control links, generic servos and mounting hardware. `apply_surfaces()` updates the mechanisms from existing hinge poses. `set_maintenance(airplane, true)` exposes the internal equipment; the inspector separately hides skin meshes and restores visibility per capture. It does not relocate installed components. Throttle hardware is static until the render interface receives a throttle signal.
 

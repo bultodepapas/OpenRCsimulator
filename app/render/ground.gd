@@ -48,10 +48,21 @@ static func _value_noise(grid: PackedFloat32Array, cells: int, u: float, v: floa
 	return lerpf(lerpf(a, b, fx), lerpf(c, d, fx), fy)
 
 
+## The mown runway strip: flat colour, matte like the grass.
+static func runway_material() -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Spec.RUNWAY_COLOR
+	mat.metallic_specular = 0.0
+	mat.roughness = 1.0
+	return mat
+
+
 static func grass_material() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_texture = ImageTexture.create_from_image(grass_image())
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mat.metallic_specular = 0.0 # grass is matte: no sky reflection at grazing angles
+	mat.roughness = 1.0
 	var tiles := Spec.GROUND_SIZE / Spec.GROUND.tile_m
 	mat.uv1_scale = Vector3(tiles, tiles, 1.0)
 	return mat
