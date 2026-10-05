@@ -15,6 +15,8 @@ We will research options, try small experiments, and adapt as we learn. Keep cho
 
 [ROADMAP.md](ROADMAP.md) lays out the route in small stages, from a scripted little airplane to a nitro Stick flown with a real transmitter.
 
+[STACK.md](STACK.md) surveys the development stack options (engines, renderers, toolchain, libraries) and explains the starting choice.
+
 [DECISIONS.md](DECISIONS.md) records our current direction and the reasoning behind it as research progresses.
 
 [RESEARCH.md](RESEARCH.md) collects exploratory findings, original sources, and open questions across simulators, physics, controls, and development approaches.

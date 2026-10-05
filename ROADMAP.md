@@ -13,15 +13,17 @@ Started **2026-10-05**. This is the route we plan to follow, built from the find
 
 ## Starting stack (provisional)
 
-| Area | Starting choice | Why this first | We change it if… |
-| --- | --- | --- | --- |
-| Platform | Browser | Zero install, easy to share a link, works on all desktop OSes, HTML panels for tuning, screenshots for AI review | Gamepad API cannot deliver transmitter channels we need, or performance/latency is poor |
-| Rendering | Three.js (WebGL 2 renderer) | Small, MIT, we assemble only what we need; research found clear docs and a game-structure tutorial | Authoring/scene work becomes the bottleneck → run the planned Godot comparison (RESEARCH: "A common task for comparing development approaches") |
-| Language / build | TypeScript + Vite, npm | Types catch unit/shape mistakes; fast edit/run loop; good fit for AI-assisted work | Build friction outweighs the type benefit |
-| Flight physics | Our own small module, independent of the renderer | No dependency fits a 2-stroke glow RC plane out of the box (JSBSim `FGPiston` is four-stroke only); a small model is easy to read and change | We spend more effort re-inventing trim/gear/tables than integrating a library → re-evaluate JSBSim (e.g. as WASM or a headless reference) |
-| Tests | Vitest, running the physics headless in Node | Physics checks without a browser; AI agents get concrete pass/fail feedback | — |
+The full survey of options, versions and evidence is in [STACK.md](STACK.md). In short:
 
-The physics module must not import Three.js. That boundary keeps the core portable if we move to another renderer or a native build later.
+| Area | Starting choice | We change it if… |
+| --- | --- | --- |
+| Platform | Desktop browser | The Gamepad API cannot deliver transmitter channels, or latency is poor |
+| Rendering | three.js r186, `WebGLRenderer`, isolated in `src/render/` | Upgrade churn hurts → Babylon.js. Scene authoring is the bottleneck → Godot 4.7 comparison |
+| Language / build | TypeScript 7, Vite 8, Node 24 LTS, npm, Biome | — |
+| Flight physics | Our own float64 module, never imports three | Rebuilding mature features costs too much → JSBSim |
+| Tests | Vitest 5 (headless physics), Playwright (screenshots) | — |
+
+The physics module must not import three.js. That boundary keeps the core portable if we move to another renderer or a native build later.
 
 ## The route
 
