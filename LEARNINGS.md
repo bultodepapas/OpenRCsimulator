@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A correct rudder sign and a passing golden can preserve excessive authority.** The current Ugly Stik reaches 42.41° sideslip and 462.14°/s body yaw rate in a 0.5 s rudder pulse; keyboard, fake radio and engine-off cases reproduce the problem. Changing only `Cndr` to 30% in memory reduces the doublet peaks to 21.73° and 88.24°/s, but does not independently validate that coefficient. The servo returns to trim while autorotation persists. Handling needs magnitude and recovery checks with independent evidence, not only direction or replay. [Diagnosis](docs/research/ugly-stik-rudder-audit.md) and [repair plan](docs/RUDDER-REPAIR-PLAN.md). (2026-10-05, D8b/D10 investigation; production physics unchanged)
+
 - **A metric's mask must contain only what it claims to measure.** The airplane-readability metric took the airplane as "pixels that change when the airplane is hidden", which also caught the D7 ground shadow (and, once, the panel text that names the shadow mode). That contamination made L1b look unreachable after L2, and I reported a threshold recalibration that was wrong. Measured cleanly, the original thresholds pass. Now the readability views turn the shadow off in both images of a pair. (2026-10-05)
 - **A mutation that does not fail finds bugs in the code it was meant to test.** Turning engine shadows on "by mutation" changed nothing, because `--engine_shadows` was applied after the sun had been built. The Gate L comparison option had never worked. (2026-10-05)
 

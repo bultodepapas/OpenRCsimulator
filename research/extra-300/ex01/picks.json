@@ -1,0 +1,113 @@
+{
+  "format": "openrc-picks v1",
+  "step": "EX-01",
+  "date": "2026-10-05",
+  "sources": {
+    "plan": {
+      "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977.pdf",
+      "sha256": "dd4c785dcc270f6e32391f7a05b0cd21f0a781182467a123e05abd1c3fe23a78",
+      "note": "Two 1-bit CCITT scans, 18471 x 14400 px each, declared 400 ppi. Pixel coordinates below are image pixels from `pdfimages -png`: sheet-000 = EXT6P02 fuselage, sheet-001 = EXT6P01 wing."
+    },
+    "manual": {
+      "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_manual.pdf",
+      "sha256": "607e2b98441b539e9adae300b340e5bb44d685a13c47fce936a834e3a5ba3dbb",
+      "note": "Page 47 two-view is vector; coordinates are PDF points from `pdftocairo -svg` (y down). Page 43 throws/CG, page 32 spinner-to-firewall."
+    }
+  },
+  "method": "Manual picks read from 1:1 to 1:8 crops with a printed pixel grid; uncertainty_px is the reading half-range, not the accuracy of the paper plan. Automatic measurements (ruler, wing edges, airfoil, bottom-view widths) are recomputed by measure.py.",
+  "wing_sheet": {
+    "scale_source": "printed 36 in ruler along the bottom of sheet-001 (auto)",
+    "centerline_x": {"px": 1965, "uncertainty_px": 6, "what": "vertical line labelled with the centreline symbol, left wing panel (bottom view)"},
+    "rib_2D_x": {"px": 3320, "uncertainty_px": 30, "what": "target of the '2D' leader at the fuselage-side root rib"},
+    "cg_marker_y": {"px": 8990, "uncertainty_px": 15, "what": "centre of the 'CG Range' balance symbol drawn at the root"},
+    "tip_x": {"px": 14745, "uncertainty_px": 6, "what": "outer edge of the tip block, left panel"},
+    "aileron_inner_x": {"px": 6090, "uncertainty_px": 10, "what": "inboard end of aileron at AR4"},
+    "aileron_outer_x": {"px": 14625, "uncertainty_px": 15, "what": "outboard end of aileron next to the tip block"},
+    "le_anchor": {"px": [[3700, 7363], [14100, 7853]], "uncertainty_px": 30, "what": "approximate heavy leading-edge line; only selects runs for the automatic fit"},
+    "te_anchor": {"px": [[3700, 13083], [14100, 11202]], "uncertainty_px": 30, "what": "approximate heavy trailing-edge line; only selects runs for the automatic fit"},
+    "hinge_offset_anchor_px": {"px": 829, "uncertainty_px": 40, "what": "approximate aileron hinge line distance ahead of the TE; selects runs for the automatic fit"},
+    "te_flat_inboard_y": {"px": 13169.5, "uncertainty_px": 4, "what": "straight TE inside the fuselage, x < 3225"}
+  },
+  "stab_full_size": {
+    "sheet": "sheet-001 (stab/elevator drawn at full size beside the wing)",
+    "centerline_y": {"px": 6296, "uncertainty_px": 16},
+    "upper_tip_y": {"px": 1384, "uncertainty_px": 16},
+    "lower_tip_y": {"px": 11224, "uncertainty_px": 16},
+    "root_le_x": {"px": 14904, "uncertainty_px": 16},
+    "tip_le_x": {"px": 15544, "uncertainty_px": 16},
+    "hinge_x": {"px": 16744, "uncertainty_px": 16},
+    "elevator_tip_te_x": {"px": 17680, "uncertainty_px": 16},
+    "elevator_root_corner": {"px": [17976, 5480], "uncertainty_px": 16, "what": "inboard TE corner of the upper elevator"},
+    "elevator_inner_hinge": {"px": [16920, 5960], "uncertainty_px": 24, "what": "inboard end of the diagonal relief cut, near the hinge"}
+  },
+  "fuselage_side": {
+    "sheet": "sheet-000, FUSELAGE SIDE VIEW (reduced scale; calibrated in measure.py from the root rib chord)",
+    "spinner_tip": {"px": [985, 4890], "uncertainty_px": 10},
+    "spinner_back_x": {"px": 1848, "uncertainty_px": 8},
+    "spinner_back_top_bottom_y": {"px": [4500, 5270], "uncertainty_px": 10},
+    "firewall_front_x": {"px": 3705, "uncertainty_px": 10},
+    "cowl_rear_x": {"px": 4620, "uncertainty_px": 15},
+    "root_airfoil_le": {"px": [4995, 5510], "uncertainty_px": 8},
+    "root_airfoil_te": {"px": [9360, 5512], "uncertainty_px": 12},
+    "rudder_te_max": {"px": [17400, 4925], "uncertainty_px": 15},
+    "rudder_hinge_x": {"px": 15870, "uncertainty_px": 30, "what": "between fin post and rudder LE strips"},
+    "fin_root_le": {"px": [14300, 4020], "uncertainty_px": 40},
+    "fin_top_y": {"px": 1540, "uncertainty_px": 12},
+    "fin_le_top_x": {"px": 15240, "uncertainty_px": 15},
+    "rudder_top_te_x": {"px": 16520, "uncertainty_px": 15},
+    "balance_bottom_y": {"px": 2040, "uncertainty_px": 20, "what": "lower edge of the rudder air balance"},
+    "balance_front_x": {"px": 15050, "uncertainty_px": 25},
+    "rudder_te_low": {"px": [17372, 4900], "uncertainty_px": 15},
+    "rudder_bottom_corner": {"px": [17320, 5080], "uncertainty_px": 15},
+    "rudder_bottom_hinge": {"px": [15870, 5380], "uncertainty_px": 20},
+    "stab_le_x": {"px": 14140, "uncertainty_px": 40},
+    "stab_te_x": {"px": 16460, "uncertainty_px": 20},
+    "stab_center_y": {"px": 4580, "uncertainty_px": 15},
+    "tailwheel_axle": {"px": [16220, 5800], "uncertainty_px": 10},
+    "main_axle": {"px": [5167, 7658], "uncertainty_px": 10},
+    "main_leg_root": {"px": [5420, 6150], "uncertainty_px": 40},
+    "wheel_pant_x": {"px": [4255, 6475], "uncertainty_px": 20},
+    "wheel_pant_y": {"px": [7160, 7760], "uncertainty_px": 20},
+    "top_profile": {
+      "uncertainty_px": 20,
+      "what": "upper outline; under the canopy this is the canopy sill (the canopy is a separate shell)",
+      "px": [[1880, 4492], [2500, 4332], [3300, 4240], [4100, 4180], [4900, 4140], [6200, 4072], [7200, 4008], [7760, 4344], [8500, 4442], [10225, 4442], [10850, 3512], [12100, 3688], [13700, 3980], [15000, 4330], [15870, 4500]]
+    },
+    "bottom_profile": {
+      "uncertainty_px": 20,
+      "what": "lower outline (cowl chin, belly, tail cone)",
+      "px": [[1880, 5268], [2340, 5780], [2620, 5940], [3300, 6120], [4100, 6180], [4900, 6200], [5650, 6150], [6200, 6111], [7200, 6036], [8500, 5939], [9300, 5850], [10850, 5740], [12100, 5660], [13700, 5540], [15000, 5470], [15870, 5390]]
+    },
+    "root_airfoil_outline": {
+      "uncertainty_px": 8,
+      "what": "outer edge of the double outline line of the root rib drawn at 0 deg in the side view, read from single-column run scans (upper = run start, lower = run end)",
+      "x_upper_lower_px": [[5120, 5405, 5626], [5250, 5355, 5675], [5500, 5286, 5744], [6000, 5229, 5799], [6500, 5237, 5792], [7000, 5270, 5758], [7500, 5316, 5709], [8000, 5365, 5660], [8500, 5414, 5614], [9200, 5479, 5547], [9300, 5488, 5538]]
+    },
+    "canopy_top": {
+      "uncertainty_px": 25,
+      "px": [[7200, 4008], [7800, 3640], [8400, 3460], [9000, 3390], [9600, 3370], [10200, 3442], [10850, 3512]]
+    }
+  },
+  "fuselage_bottom": {
+    "sheet": "sheet-000, FUSELAGE BOTTOM VIEW (same reduced scale as the side view)",
+    "centerline_y": {"px": 11600, "uncertainty_px": 15},
+    "x_offset_to_side_px": {"px": 32, "uncertainty_px": 10, "what": "side x = bottom x + offset; spinner tip 950 vs 985, tail post 15790 vs 15820"},
+    "cowl_half_width": {"px": 900, "uncertainty_px": 15, "what": "cowl outline y 10675..12475, front face to cowl joint"},
+    "auto_width_columns_px": [6200, 7300, 8500, 9300, 10300, 11000, 12100, 13000, 13700],
+    "tail_post_half_width": {"px": 75, "uncertainty_px": 10, "what": "at x 15700"}
+  },
+  "two_view_p47": {
+    "units": "PDF points, y down",
+    "fuselage_width_at_wing_pt": {"value": [277.69, 318.72], "what": "wing root lines on both sides, top view"},
+    "canopy_top_view_y_pt": {"value": [280.88, 315.60], "what": "canopy outline extent, top view"},
+    "spinner_tip_x_pt": 110.34,
+    "rudder_te_x_pt": 502.30,
+    "span_y_pt": [73.88, 522.60],
+    "holdout_side_points_pt": {
+      "cowl_joint_x": 198.71,
+      "main_axle": [206.93, 706.57],
+      "tailwheel_axle": [482.81, 662.25],
+      "rudder_hinge_x": 471.05
+    }
+  }
+}
