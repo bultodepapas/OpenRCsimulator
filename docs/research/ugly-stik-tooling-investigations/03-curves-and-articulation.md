@@ -1,0 +1,21 @@
+# 03 · Curvas, pivotes y geometría articulada
+
+Fecha: 2026-10-05. **Pregunta:** ¿qué geometría visual conviene mover con `Node3D`, qué se beneficia de `Curve3D`, y cuándo tendría sentido una malla dinámica o un esqueleto?
+
+## Alcance y código observado
+
+Esta nota complementa la continuidad mecánica de [07 · Transmisiones](../ugly-stik-visual-investigations/07-control-linkages.md) y la decisión de crear los nodos articulados una sola vez de [10 · Lectura y coste](../ugly-stik-visual-investigations/10-readability-performance.md). El modelo crea nodos `*_hinge` locales bajo marcos de ala/cola; el adaptador aplica ángulos a sus rotaciones. Las varillas rectas existentes usan cilindros orientados entre extremos. No hay `Curve3D`, `Skeleton3D` ni plugin IK en este frente. El repo fija Godot 4.7.2-stable; se consultaron APIs 4.7, sin ejecutar prototipos.
+
+## Hallazgos y decisión
+
+Las transformaciones `position`, `rotation` y `scale` de `Node3D` se expresan respecto al padre. En consecuencia, los puntos de la bisagra del alerón están en el marco local de ala, mientras que medidas recogidas desde escena pueden estar en mundo. Convertir ambos extremos de una varilla al espacio del mismo padre antes de calcular su centro, longitud y orientación evita desplazamientos cuando gira el marco alar. La rotación y pivote existentes son suficientes para superficies rígidas cuyos ángulos ya entrega el adaptador. [`Node3D` 4.7](https://docs.godotengine.org/en/4.7/classes/class_node3d.html)
+
+`Curve3D` almacena puntos relativos a su curva y ofrece `sample_baked()` por distancia, con una cache cuya densidad depende de `bake_interval`. `sample_baked_with_rotation()` define sus ejes como X lateral, Y arriba y Z hacia delante. La rotación de una curva de longitud cero no tiene orientación válida; si no hay vectores arriba, el muestreo de arriba informa error y devuelve el eje global Y. La documentación de `PathFollow3D` avisa que curvas con giros cerrados pueden quedar mal representadas por pocos puntos cacheados. Estos detalles importan al barrer mangueras, cables o un bucle de banda plana. [`Curve3D` 4.7](https://docs.godotengine.org/en/4.7/classes/class_curve3d.html) · [`PathFollow3D` 4.7](https://docs.godotengine.org/en/4.7/classes/class_pathfollow3d.html)
+
+`Curve3D` describe y muestrea la trayectoria; no genera por sí sola un tubo para renderizar. Un tubo o banda necesita barrer una sección 2D por los puntos muestreados y asignar normales. Si la trayectoria cambia mientras la malla conserva número y orden de vértices, `ArrayMesh` permite crear una superficie con `ARRAY_FLAG_USE_DYNAMIC_UPDATE` y cambiar el bloque de posiciones mediante `surface_update_vertex_region()`. Esa vía exige respetar stride y offsets en bytes; también hay que recalcular normales si cambia la curvatura. Cambios de número de muestras o topología requieren reconstruir la superficie. [`ArrayMesh` 4.7](https://docs.godotengine.org/en/4.7/classes/class_arraymesh.html)
+
+Para las varillas rígidas, adoptar nodos/mallas creados una vez y actualizados por extremos transformados. Para el primer modelo, dejar mangueras y bandas como mallas curvas estáticas; introducir `Curve3D` cuando ayude a editar rutas o a mostrar movimiento. Diferir la escritura de buffers dinámicos hasta que el barrido de poses muestre una necesidad. No incorporar `Skeleton3D`/IK: Godot describe `Skeleton3D` como jerarquía de huesos para animar una malla, pero las bisagras independientes y conexiones rígidas actuales no requieren deformación ponderada ni solver. [`Skeleton3D` 4.7](https://docs.godotengine.org/en/4.7/classes/class_skeleton3d.html)
+
+## Prueba propuesta para US-V04/V06
+
+En una pieza de prueba, barrer una bisagra y comprobar posición de dos uniones desde marcos locales y globales; la longitud de la varilla debe permanecer constante. Añadir una manguera en curva cerrada y un bucle plano, inspeccionando torsión, cierre entre primer/último tramo y resolución en curvas cerradas. Sólo si el caso animado requiere malla variable, medir el mismo recorrido con una superficie fija actualizada y con reconstrucción por frame. Las rutas usan API nativa; no se recomienda instalar complementos ni asumir su licencia o compatibilidad.

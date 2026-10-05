@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A safety rule needs a mutation that shows the danger.** Removing the arming rule in a scratch copy made six checks fail, and the failure message itself showed the hazard: engine at 50 % with every axis reading 0, i.e. a radio that was plugged in but never touched. Keep that kind of message in the test detail, because it explains why the rule exists. (2026-10-05)
+
 - **A refactor's proof is "nothing changed", measured in bytes.** D5.9 moved half of `main.gd` and the control throws into new homes. The proof was the `--trace` file hashing identical (SHA-256 `97c4e73c…`) and five captures byte-identical. That needed a baseline taken *before* editing, and a check that captures repeat run to run (they do). The byte comparison also froze a real defect in place (physics captures draw surfaces without trims); it is recorded and fixed in its own step. (2026-10-05)
 
 - **Verification is not validation.** Every handling check so far compared the sim with numbers computed from its own borrowed coefficients, so all of them could pass while the airplane feels wrong. Linearizing the real equations took ~80 lines and a few seconds (`research/flight-modes/`). It gave the first independent comparison: against a flight-identified Ultra Stick 120, the sim is 1.45× faster in pitch and 1.9× faster in roll. *Now:* each physics milestone needs one check against data we did not derive (ROADMAP rule 6). (2026-10-05)
@@ -62,6 +64,9 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **three.js is one ~530 KB chunk (132 KB gzip).** Vite warns about chunks over 500 KB; harmless for now. (2026-10-05)
 
 ## Godot specifics
+
+- **Wait for ticks, not seconds, in end-to-end tests.** A first radio test waited `create_timer(0.05)` after a connection and once read the old keyboard throttle: no physics tick had run yet (most likely a slow first frame consumed the timer). `await physics_frame` fires *before* a tick, so four awaits guarantee three complete ticks; two `process_frame` awaits then let the panel update. Five repeated runs passed after the change. (2026-10-05)
+- **A fake joypad works headless:** emit `Input.joy_connection_changed` with id 15 and inject `InputEventJoypadMotion` events; `Input.get_joy_axis(15, axis)` then returns the injected values. Replace anything that calls `get_joy_guid`/`get_joy_info` on the fake id, because those print engine errors that fail `test.sh`. Godot keeps the fake device's last axis values after an unplug, which made "replug with the throttle high stays safe" testable. (2026-10-05)
 
 - **A scene added from a test's `_initialize` becomes ready only after the first physics tick.** The simulation's tick counter therefore lags the global tick by one. Frames end on global ticks 40k at 30, 60 and 144 fps alike, so frame-aligned key injection uses simulation ticks 40k − 1 (119, 239, 359). The harness fails loudly if a scheduled tick is not a frame end, instead of silently sampling at different ticks. (2026-10-05)
 - **`process_physics_priority` makes the order of fixed-step work explicit.** The flight session (priority −1) shapes the pilot's commands before the simulation (its child, priority 0) steps, in the same tick. Tree order would give the same result today, but it is an implicit rule that a scene move could break. (2026-10-05)
