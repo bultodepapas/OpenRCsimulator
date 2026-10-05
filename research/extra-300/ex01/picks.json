@@ -94,7 +94,8 @@
     "x_offset_to_side_px": {"px": 32, "uncertainty_px": 10, "what": "side x = bottom x + offset; spinner tip 950 vs 985, tail post 15790 vs 15820"},
     "cowl_half_width": {"px": 900, "uncertainty_px": 15, "what": "cowl outline y 10675..12475, front face to cowl joint"},
     "auto_width_columns_px": [6200, 7300, 8500, 9300, 10300, 11000, 12100, 13000, 13700],
-    "tail_post_half_width": {"px": 75, "uncertainty_px": 10, "what": "at x 15700"}
+    "tail_post_half_width": {"px": 75, "uncertainty_px": 10, "what": "at x 15700"},
+    "tail_post_end_x": {"px": 15790, "uncertainty_px": 15, "what": "aft end of the fuselage at the tail post, bottom view"}
   },
   "two_view_p47": {
     "units": "PDF points, y down",

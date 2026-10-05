@@ -243,7 +243,7 @@ Identidad sobria de campo de aeromodelismo: cielo y vegetación reales de la app
 | **Club y línea de vuelo** | Evolución del paisaje, contexto de pits y actividad de club | Esperar a que esos elementos existan en el campo; no prometerlos con una foto ajena |
 | **Banco de trabajo** | Fichas y preparación: imagen, características breves y selección | Metáfora de organización; no requiere construir un taller 3D |
 
-La [investigación 07](research/menu-investigations/07-visual-direction-assets.md) documenta imágenes oficiales inspeccionadas de RealFlight y un club AMA, con sus límites. Las fotos e interfaces de referencia no se empaquetan. Usar `StyleBox`/Theme nativos y capturas originales; un pack CC0 puede servir para un prototipo si hace falta, pero no es dependencia de esta entrega. Cualquier recurso externo adoptado debe registrar archivo, fuente, licencia y revisión/hash.
+La [investigación 07](research/menu-investigations/07-visual-direction-assets.md) documenta imágenes oficiales inspeccionadas de RealFlight y un club AMA, con sus límites. Las fotos e interfaces de referencia no se empaquetan. Usar `StyleBox`/Theme nativos y capturas originales; un pack CC0 puede servir para un prototipo si hace falta, pero no es dependencia de esta entrega. Cualquier recurso externo adoptado debe registrar archivo, fuente, licencia y revisión/hash; lo mismo vale para un fragmento de código copiado de una demo o plantilla MIT, que conserva su aviso.
 
 - Construir con controles nativos Godot, `Container`, márgenes y un `Theme` compartido; no colocar cada botón con coordenadas absolutas.
 - Base de composición: los 1280 × 720 actuales. Revisar también 1920 × 1080, ventana pequeña y formato ancho; son casos propuestos de validación, no soporte ya comprobado.
@@ -299,7 +299,7 @@ app/
     pause_menu.tscn
     settings.tscn
     radio_setup.tscn
-    theme.tres
+    ui_theme.gd                 # paleta en hex y medidas al 100 %; static func build() -> Theme
   app_state/
     preferences.gd              # cargar, validar, aplicar y guardar preferencias
     catalog.gd                  # entradas instaladas y selección válida
@@ -307,7 +307,9 @@ app/
   sim/flight_session.gd          # sigue siendo dueño del vuelo
 ```
 
-No crear todos estos archivos en el primer paso. `app_root` empieza con Inicio/Volar/Salir; las demás escenas se añaden con su funcionalidad. No hacen falta un bus global, un framework de pantallas, múltiples autoloads ni un sistema de plugins.
+No crear todos estos archivos en el primer paso. `app_root` empieza con Inicio/Volar/Salir; las demás escenas se añaden con su funcionalidad. No hacen falta un bus global, un framework de pantallas, múltiples autoloads ni un sistema de plugins. **No se adoptan plantillas ni addons de menús de terceros** ([13](research/menu-investigations/13-plantillas-menus-godot.md)): Maaack Menus/Game Template y GGT pausan con `SceneTree.paused`, añaden autoloads y botones joypad a `ui_*`, y al ejecutarse headless con el Godot fijado escribieron preferencias (una ventana de 64 × 64 o pantalla completa por defecto). Se aprende de sus patrones y de las demos oficiales en el commit `6ad6167` ([14](research/menu-investigations/14-demos-oficiales-godot.md)): devolver el foco al control que abrió una pantalla, copiar los ajustes al entrar y restaurarlos al cancelar.
+
+**Theme:** generado por código, no guardado como `.tres`: dos guardados del mismo Theme difieren en 16 líneas por ids aleatorios sin cambiar ningún valor, y el `.tres` pierde los colores en hex. Botón Volar como variación de tipo `PrimaryButton` de `Button`, que hereda el foco. El Theme se asigna al `Control` superior de cada pantalla o capa: `Window.theme` no atraviesa un `CanvasLayer`. Las consultas al Theme necesitan un frame tras entrar al árbol ([17](research/menu-investigations/17-theme-autoria.md), ejecutado).
 
 El **module** de navegación mantiene una **interface** pequeña: iniciar un vuelo validado, abrir/cerrar una pantalla y terminar la sesión. `FlightSession` conserva datos, trim, mandos y simulación. Los controles emiten intenciones; no editan posiciones, fuerzas ni arrays del integrador. La **seam** entre UI y vuelo está en esa sesión, no dentro de RK4.
 
@@ -351,7 +353,8 @@ Propuesta para la primera implementación:
 - Canalizar Esc, P, R y cierre de pantallas por una política común. `resume()` hoy despausa sin comprobar todas esas condiciones; el menú no debe usarlo como permiso incondicional.
 - Suspender el reinicio automático por accidente mientras haya una pantalla o pérdida de foco que deba impedirlo.
 - Reanudar por acción explícita, sin recuperar el tiempo transcurrido en pausa. Liberar entradas de navegación antes de volver a aplicar teclas de vuelo; conservar la regla de armado de radio y probar cambios de dispositivo/perfil.
-- Congelar también hélice, reloj visual y sonido cuando corresponda. Hoy `main.gd._process()` puede seguir avanzando presentación aunque la simulación esté pausada; silenciar el generador sin drenar o limpiar correctamente su cola puede dejar audio pendiente.
+- Congelar también hélice, reloj visual y sonido. Hoy `main.gd._process()` **sigue** avanzando la hélice y alimentando el motor a las rpm de vuelo durante cualquier pausa (medido; ver revisión 3). Al pausar: `stream_paused = true` (Godot baja a 0 en un bloque de mezcla y deja de vaciar la cola) y `_prop_angle` quieto. Al reanudar sin cambios de estado: `stream_paused = false`. Si el estado cambió durante la pausa (R, reinicio tras accidente, F5 recarga, calibración): `stop()` + `play()`, que crea una cola vacía, y fase del motor a 0. `clear_buffer()` falla mientras suena. La cola real es de 4095 frames (~0,19 s), así que el sonido va ese tiempo por detrás de las rpm ([19](research/menu-investigations/19-audio-ajustes-pausa.md)).
+- Volar ignora una segunda pulsación mientras arranca la sesión; si Volar está desactivado, el texto dice por qué (FlightGear, [20](research/menu-investigations/20-simuladores-abiertos-ui.md)).
 
 Godot ofrece pausa global y modos de procesamiento; son una alternativa válida, pero adoptarlos aquí exigiría comprobar también lector de radio, calibración y audio. La elección anterior es una inferencia del código existente, no una limitación del motor. [Pausa y process mode](https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html).
 
@@ -365,7 +368,9 @@ Godot ofrece pausa global y modos de procesamiento; son una alternativa válida,
 | Vuelo activo | Configuración resuelta al iniciar | Cambiar una selección del catálogo no muta un vuelo en curso |
 | Datos físicos | JSON actual y futuros archivos de campo/terreno | Mantener procedencia, validación y propiedad de cada frente |
 
-`ConfigFile` ya encaja con almacenamiento local por secciones/claves y errores de carga/guardado. La propuesta añade validación y migración propias; la clase no las proporciona automáticamente. Conservar un archivo ilegible como respaldo antes de reemplazarlo y no sobrescribir silenciosamente un esquema más nuevo. [ConfigFile](https://docs.godotengine.org/en/stable/classes/class_configfile.html).
+`ConfigFile` ya encaja con almacenamiento local por secciones/claves y errores de carga/guardado. La propuesta añade validación y migración propias; la clase no las proporciona automáticamente. Conservar un archivo ilegible como respaldo antes de reemplazarlo y no sobrescribir silenciosamente un esquema más nuevo. `get_value()` devuelve el tipo que haya en el archivo, no el del valor por defecto: validar tipo y rango por clave. Comprobar el `Error` de `save()`. Prohibido `store_var`/`get_var(true)`, que la documentación de 4.7.2 señala como vía de ejecución de código; el remapeo futuro guarda `physical_keycode` como entero, no objetos `InputEvent` ([14](research/menu-investigations/14-demos-oficiales-godot.md)). El volumen se guarda como valor lineal 0–100 más `muted`, nunca en dB (`set_bus_volume_linear(0)` da −inf, que no cabe en JSON).
+
+La selección válida se guarda al pulsar Volar, no solo al salir. Si `--quick-flight` u otro argumento fija la selección, Inicio lo indica y no la guarda como preferencia. [ConfigFile](https://docs.godotengine.org/en/stable/classes/class_configfile.html).
 
 El catálogo inicial puede ser una lista pequeña de entradas en código. No duplicar masa, envergadura ni geometría en tarjetas: leerlas de la fuente válida. Con una sola entrada no hace falta diseñar instaladores de paquetes. Al crecer, los IDs separan nombre visible, presentación, referencia a datos y constructor compatible.
 
@@ -384,7 +389,7 @@ La nueva escena de entrada decide la ruta **antes** de cargar menús o preferenc
 | `--inspect`, `--look_az` y demás parámetros de vistas actuales | Mantener compatibilidad con los usos existentes; verificar consumidores en scripts antes de cambiar el enrutado |
 | `-- --quick-flight` | Nuevo atajo propuesto para vuelo directo con defaults; documentarlo cuando exista |
 
-Las pruebas que instancian `main.tscn` siguen pudiendo hacerlo sin navegar menús. Añadir pruebas separadas sobre la nueva raíz, para que conservar esas pruebas no oculte un inicio roto del producto. La automatización ignora preferencias personales y utiliza rutas de prueba aisladas para perfiles; ninguna configuración local puede cambiar un golden o una captura de referencia.
+Las pruebas que instancian `main.tscn` siguen pudiendo hacerlo sin navegar menús. Añadir pruebas separadas sobre la nueva raíz, para que conservar esas pruebas no oculte un inicio roto del producto. La automatización ignora preferencias personales **y no las escribe**, y utiliza rutas de prueba aisladas para perfiles; ninguna configuración local puede cambiar un golden o una captura de referencia. Una ventana headless mide 64 × 64: si la ruta técnica guardara el tamaño de ventana, estropearía la configuración del piloto (lo hizo la plantilla de Maaack, [13](research/menu-investigations/13-plantillas-menus-godot.md)).
 
 El formato de traza sigue siendo v3 mientras no cambien sus columnas/semántica. Al introducir inicios o aviones seleccionables, corregir `FlightSession.trace_meta()`, que hoy describe siempre vuelo nivelado y referencia el avión fijo. No permitir que un planeo se grabe como vuelo a motor. Comparar datos deterministas de traza normalizando solo metadatos volátiles declarados, como fecha de creación.
 
@@ -405,7 +410,18 @@ No crear ediciones Free/Pro, «realismo premium» ni un launcher de versiones. U
 
 Separar cuatro números: **versión de app**, **versión de Godot**, **revisión del avión** y **versión de cada esquema** (`openrc-aircraft v1`, `openrc-trace v3`, preferencias, etc.). Mostrar solo versión de app y estado alpha en Inicio; el detalle vive en Acerca de/Diagnóstico.
 
-Hoy `export.sh` obtiene `git describe` para los paquetes, pero `project.godot` no declara versión de producto y el preset macOS conserva `0.1.0`. Proponer una única información de build generada al exportar, con SHA y estado de desarrollo, empaquetada también en el binario. Probar consistencia entre Inicio, diagnóstico y nombre de ZIP; mapear el prerelease a los campos de plataforma que admitan formatos distintos. El ejecutable no debe necesitar Git instalado.
+Hoy `export.sh` usa `git describe` solo cuando se ejecuta a mano: en CI recibe `${GITHUB_REF_NAME}`, así que los ZIP de `main` se llaman `…-main-…` sin SHA, y el job hace checkout sin tags. `project.godot` no declara versión de producto, el preset macOS conserva `0.1.0` y el `.exe` de Windows se presenta como `1.0.0.0`.
+
+Propuesta verificada con una [sonda de export](research/menu-investigations/probes/21-build-info-probe.sh) en el Godot fijado ([21](research/menu-investigations/21-version-build-export.md)): `export.sh` calcula una vez `describe`, SHA, estado sucio y fecha del commit y los pasa como `OPENRC_BUILD_*`; un `EditorExportPlugin` pequeño en `app/addons/build_info/`, excluido del paquete, añade `res://build_info.json` con `add_file()`, sin escribirlo en el árbol y sin `include_filter`. `application/config/version` queda numérico (`0.1.0`) como fuente de los campos de Windows (cuatro enteros) y macOS (tres). La app identifica la build por `build_info.json`; sin él (`--path app`) muestra «desarrollo». `export.sh` falla si la base del tag no coincide con `config/version`.
+
+| Dónde | Formato |
+| --- | --- |
+| Inicio | `0.1.0-rc2 · alpha` |
+| Diagnóstico | `describe` completo, SHA, Godot |
+| SemVer | `0.1.0-rc2+5.gabc1234.dirty` |
+| Windows / macOS | `0.1.0.0` / `0.1.0` |
+
+**Decisiones pendientes:** usar `rc.N` en tags futuros (en SemVer `rc10` ordena antes que `rc2`) y dar a CI el historial con tags. El ejecutable no necesita Git instalado.
 
 ## 10. Implementación en pasos pequeños
 
@@ -413,27 +429,31 @@ IDs propuestos para incorporar a ROADMAP cuando empiece la ejecución. Ninguno s
 
 | ID | Cambio acotado | Dependencia | Prueba de aceptación |
 | --- | --- | --- | --- |
-| UI-00 | Registrar baseline de vuelo, entrada, capturas y consumidores CLI | Antes de cambiar arranque | Suite actual y traza/captura de referencia; registrar fallos previos sin atribuirlos al menú |
-| UI-01 | Añadir raíz con Inicio, Volar y Salir; conservar escena de vuelo | UI-00 | Inicio sin física; Volar crea una sesión; foco visible; radio no navega con mappings implícitos; captura del Inicio |
-| UI-02 | Habilitar pausa voluntaria y resolver causas junto a foco/failsafe | UI-01 | Estado/tick no avanzan; cerrar menú no elimina otra causa; datos inválidos nunca reanudan |
-| UI-03 | Volver al inicio y cerrar sesión/registro correctamente | UI-02 | Repetir cinco ciclos, sin nodos/señales/audio duplicados; fallo de guardado conserva opción de recuperar |
-| UI-04 | Añadir Ayuda y versión de build consistente | UI-01 | Acerca de coincide con paquete y controles reales en un export |
-| UI-05 | Ficha Aviones con el Ugly Stik y selección estable | UI-01 | Selección crea el mismo avión/datos; captura y ausencia de copias de parámetros físicos |
-| UI-06 | Ficha Escenarios con campo actual y Configurar vuelo | UI-05 | Misma escena/posición inicial tras elegir; campo inválido se rechaza; ninguna promesa de aterrizaje |
-| UI-07 | Preferencias versionadas y autozoom persistente | UI-02 | Reiniciar conserva ajuste; archivo roto/futuro y error de escritura tienen salida definida; CLI no cambia |
-| UI-08 | Ajustes de HUD/métricas y volumen | UI-07 | Efecto observable y restauración; el estado físico coincide para mismas entradas |
-| UI-09a | Escala de interfaz, reflujo y pseudolocalización | UI-07 | Matriz de resoluciones/escala hasta 200 %, texto expandido, sin acciones inaccesibles ni pérdida de foco |
-| UI-09b | Ventana/pantalla completa con confirmación y reversión | UI-09a | Confirmar/revertir/timeout/pérdida de foco en plataformas objetivo, también con vuelo pausado |
-| UI-10a | Extraer coordinación de dispositivo/calibración compartida | UI-02, UI-07 | Tests de radio siguen pasando; muestreo funciona sin escena de vuelo y solo hay un dueño del dispositivo |
-| UI-10b | Presentar calibración existente y monitor de mandos | UI-10a | Radio falsa: avance/cancelación/desconexión/guardado/rearmado; prueba con radio real D6d |
-| UI-11 | Cerrar integración y distribuir UI-B para playtest | UI-03–10b | Suite completa, capturas UI, smoke de export y prueba humana del recorrido |
-| UI-12 | Selección explícita de dispositivo/teclado | UI-10b, coordinación F5 | Dos dispositivos: solo controla el elegido, incluso tras desconexión; preferencias por identidad estable |
+| UI-00 | Registrar baseline de vuelo, entrada, capturas y consumidores CLI; añadir `tests/ui_driver.gd` (`tap(key)` con evento nuevo que lleva `keycode` y `physical_keycode` y espera dos `process_frame`; `joy(axis, value)`; `focus_name()`; `settle()`) | Antes de cambiar arranque | Suite actual y traza/captura de referencia; registrar fallos previos sin atribuirlos al menú; el driver mueve el foco entre dos botones en headless |
+| UI-01a | Añadir raíz con Inicio, Volar y Salir; conservar escena de vuelo y rutas CLI; Theme en código con fuente predeterminada; imagen de Inicio versionada con su comando y SHA | UI-00 | Inicio sin física; Volar crea **una** sesión aunque reciba dos pulsaciones; foco de teclado visible (`has_focus(true)`) en Volar al abrir; test de contraste sobre el Theme resuelto; `--trace`/`--capture` sin cambios; captura del Inicio |
+| UI-01b | Retirar de `ui_*` todos los eventos joypad (ejes 0/1, botones 11–14 y 3) | UI-01a | Con el `InputMap` del proyecto (`--path app`; sin proyecto la prueba pasaría en falso): `JoypadMotion` ±1,0 en ejes 0/1 y esos botones no mueven el foco; `get_joy_axis` sigue leyendo; teclado y ratón navegan; `project.godot` sin `override.cfg` ni eventos joypad en `ui_*` |
+| UI-02 | Habilitar pausa voluntaria y resolver causas junto a foco/failsafe; congelar hélice y sonido | UI-01b | Estado/tick no avanzan; cerrar menú no elimina otra causa; datos inválidos nunca reanudan; durante la pausa `_prop_angle` no cambia y el pico del bus Master ≤ −150 dB (`--audio-driver Dummy`); la pantalla de debajo no recibe foco ni ratón |
+| UI-03 | Volver al inicio y cerrar sesión/registro correctamente | UI-02 | Cinco ciclos sin nodos/señales duplicados; exactamente un `AudioStreamPlayer3D` y `get_skips() == 0`; fallo de guardado conserva opción de recuperar |
+| UI-04a | Identidad de build: `OPENRC_BUILD_*` desde `export.sh`, plugin `build_info` excluido del paquete, `config/version` numérico, CI con historial y tags | UI-01a | Test del parser (`v0.1.0-rc2`, `…-5-gabc1234-dirty`, SHA suelto, `main`); el binario Linux exportado escribe `app_version` en la cabecera de traza del smoke y coincide con el ZIP; `Info.plist` y versión del `.exe` comprobados; sin `build_info.json` muestra «desarrollo»; goldens intactos |
+| UI-04b | Ayuda con las teclas reales (todas, incluidas Z/V/F3/F5) rotuladas según la distribución del teclado, y pista optativa en el primer vuelo (≤ 3 elementos, se recuerda al descartarla) | UI-01a | Ayuda generada desde la misma tabla que usa la entrada; prueba con distribución no QWERTY donde sea posible; la pista no reaparece tras descartarla |
+| UI-05 | Ficha Aviones con el Ugly Stik y selección estable | UI-01a | Selección crea el mismo avión/datos; captura y ausencia de copias de parámetros físicos |
+| UI-06 | Ficha Escenarios con campo actual y Configurar vuelo | UI-05 | Misma escena/posición inicial tras elegir; campo inválido se rechaza; ninguna promesa de aterrizaje; la selección se guarda al pulsar Volar |
+| UI-07 | Preferencias versionadas y autozoom persistente | UI-02 | Reiniciar conserva ajuste; archivo roto/futuro y error de escritura tienen salida definida; tipo y rango validados por clave; una ejecución `--trace`/headless no crea ni modifica `settings.cfg`; CLI no cambia |
+| UI-08 | Ajustes de HUD/métricas y volumen | UI-07 | Efecto observable y restauración; volumen lineal 0–100 con curva de 60 dB y silencio aparte; cambiar en pausa → efecto inmediato al continuar → se conserva tras relanzar; el estado físico coincide para mismas entradas |
+| UI-09c | Fuente de interfaz: Atkinson Hyperlegible Next (`wght` 400/700, sin MSDF, `allow_system_fallback=false`) con su `OFL.txt` dentro del PCK, visible en Acerca de y copiado a los ZIP | UI-04a | `has_char()` sobre todas las cadenas traducibles; archivo, URL, versión, licencia y SHA-256 registrados; capturas 100/150/200 % frente a la fuente predeterminada evaluadas por el propietario |
+| UI-09a | Escala de interfaz con `content_scale_factor`, reflujo y pseudolocalización; formato de traducción decidido | UI-07, UI-09c | Matriz de resoluciones/escala hasta 200 % (más Retina 2,0 y Windows 125/150 % cuando haya equipo); ≥ 17 px de ascendente a descendente a 720p; las flechas alcanzan el último ajuste al 200 %; texto expandido sin acciones inaccesibles ni pérdida de foco |
+| UI-09b | Ventana/pantalla completa (no exclusiva) con confirmación y reversión | UI-09a | Confirmar/revertir/timeout en plataformas objetivo, también con vuelo pausado; Alt+Tab, Cmd+Tab, multimonitor y Wayland nativo (`--display-driver wayland`) además de XWayland; la pérdida de foco durante la transición no revierte por error |
+| UI-10a | Extraer coordinación de dispositivo/calibración compartida, con identidad en tres niveles | UI-02, UI-07 | Tests de radio siguen pasando; muestreo funciona sin escena de vuelo y solo hay un dueño del dispositivo; VID/PID normalizados a entero en un solo sitio; detección por `1209:4F54` antes que por nombre |
+| UI-10b | Presentar calibración existente y monitor de mandos | UI-10a | Radio falsa: avance/Atrás/cancelación/desconexión/guardado/rearmado; incompleta no se guarda sin confirmar; perfil de la misma familia solo con confirmación; prueba con radio real D6d (GUID antes y después de actualizar firmware, `raw_name`, número de ejes) |
+| UI-11 | Cerrar integración y distribuir UI-B para playtest | UI-03–10b | Suite completa, capturas UI comparadas con el `compare_captures.py` existente, smoke de export del Inicio y prueba humana del recorrido |
+| UI-15 | Remapeo de teclado | UI-11 | Solo `InputEventKey`; `physical_keycode` como entero en `settings.cfg`; Esc reservado; conflicto detectado; restaurar teclas no borra calibraciones |
+| UI-12 | Selección explícita de dispositivo/teclado | UI-10b, coordinación del paso F5 | Dos dispositivos: solo controla el elegido, incluso tras desconexión; preferencia por familia + nombre visible, nunca índice; dos radios idénticas → preguntar; nunca otra radio cuando falta la guardada |
 | UI-13 | Planeo como preset de inicio | UI-06, decisión de prioridad | Motor parado, reset correcto y traza con identidad de escenario/inicio correcta |
 | UI-14 | Vista 3D de ficha, si el playtest la justifica | UI-05, coordinación modelo | Sin física activa ni cambios al contrato de articulación; medir coste al abrir/cerrar |
 
-UI-05/06 exponen el contenido actual y **no dependen de terminar L5 ni de fabricar un segundo avión**. El registro se migra a los datos del campo cuando ese trabajo esté listo. UI-12 adelanta o satisface parte de F5 y debe registrarse como tal, evitando dos asistentes de radio diferentes.
+UI-05/06 exponen el contenido actual y **no dependen de terminar L5 ni de fabricar un segundo avión**. El registro se migra a los datos del campo cuando ese trabajo esté listo. UI-12 adelanta o satisface parte del paso F5 y debe registrarse como tal, evitando dos asistentes de radio diferentes. UI-15 sube de prioridad porque las guías de accesibilidad de juegos tratan el remapeo de teclado como requisito básico ([22](research/menu-investigations/22-referencias-ux-juegos.md)). Los IDs son identificadores, no orden: UI-09c va antes que UI-09a.
 
-**Primer cambio recomendado:** UI-00 → UI-01. Ver un Inicio con nuestro avión y poder entrar al vuelo actual prueba el rumbo antes de construir el resto de pantallas.
+**Primer cambio recomendado:** UI-00 → UI-01a → UI-01b. Si la línea principal no lo corrige antes, el defecto de sonido y hélice en pausa se resuelve en UI-02. Ver un Inicio con nuestro avión y poder entrar al vuelo actual prueba el rumbo antes de construir el resto de pantallas.
 
 ## 11. Qué significa terminar la primera entrega
 
@@ -445,20 +465,24 @@ No basta con capturas de botones. UI-B está lista cuando:
 - Navegar con teclado no aplica mandos al vuelo. Con radio, se mantiene el armado y el cambio de perfil no produce aceleración inesperada.
 - Los ajustes visibles producen efectos y sobreviven al reinicio, con errores de archivos tratados sin impedir el acceso al menú.
 - Terminar vuelo guarda una traza activa o comunica su fallo; iniciar de nuevo no deja una sesión o un sonido anterior.
-- El export contiene imágenes, fuentes y datos nuevos. Revisar filtros y recursos desde clon limpio; no depender de `.godot/` ni capturas ignoradas en `app/captures/`.
+- El export contiene imágenes, fuentes y datos nuevos, y los textos de licencia que exigen (una fuente OFL obliga a incluir su copyright y su `OFL.txt`; hoy los ZIP solo llevan el binario). Revisar filtros y recursos desde clon limpio; no depender de `.godot/` ni capturas ignoradas en `app/captures/`.
 - Pasan `app/test.sh`, las rutas CLI actuales y el smoke test exportado. No regrabar golden flights para hacer pasar un cambio exclusivamente de interfaz.
-- Capturas bajo Xvfb verifican distribución/foco y tamaños; el propietario evalúa legibilidad y coste en su equipo. El render dummy headless no demuestra calidad visual ni rendimiento GPU.
+- Foco, navegación por teclado y aislamiento de la radio se verifican en headless (ejecutado en la revisión 3). Capturas bajo Xvfb verifican distribución, tamaños y ratón; el propietario evalúa legibilidad y coste en su equipo. El render dummy headless no demuestra calidad visual ni rendimiento GPU.
 - El propietario completa: abrir → volar → pausar → cambiar autozoom → continuar → terminar → reiniciar app. Con radio: conectar → comprobar → calibrar si hace falta → armar → volar. Registrar confusiones y tiempo observado, sin inventar un objetivo de segundos antes de medir.
 
 El presupuesto de física del roadmap sigue intacto. Medir arranque hasta Inicio, Inicio hasta vuelo, p95 de frame y memoria tras varios ciclos. Empezar con fondo estático y recursos pequeños; una escena de hangar no debe consumir el presupuesto destinado a leer el avión en vuelo.
 
 **Pruebas precisadas por la investigación [10](research/menu-investigations/10-testing-performance-export.md):** enviar pulsación y liberación mediante `Input.parse_input_event`, sin sustituir la navegación por emitir señales de botones. La prueba de Alt-Tab real y cambio de modo de pantalla pertenece al sistema operativo/equipo del piloto. Esperar a `frame_post_draw` para capturas y estabilizar recuentos tras el calentamiento; no interpretar contadores exclusivos de debug que devuelven cero en release como evidencia de ausencia de fugas. Probar Inicio en el export además del vuelo por `--trace`, porque son rutas distintas.
 
+**Precisado en la revisión 3 ([15](research/menu-investigations/15-herramientas-pruebas-ui.md)):** tras `parse_input_event`, esperar al menos un `process_frame` (no `physics_frame`); sin esa espera el evento se aplica dentro de la prueba siguiente. Crear un evento nuevo por envío. `Input.action_press()` no mueve el foco. **Sin framework de pruebas por ahora:** gdUnit4 v6.2.1 entrega cada evento dos veces al nodo raíz (P alterna la pausa dos veces) e imprime errores de fuga que `test.sh` cuenta como fallo; GUT v9.7.1 crea teclas sin `physical_keycode`, que es lo que lee OpenRC; y ambos añadirían 22–118 s al parse-check. Revisar la decisión si aparecen más de unas 20 pruebas UI o CI necesita JUnit; entonces GUT con teclas físicas, nunca SceneRunner tal cual. Las capturas reutilizan [compare_captures.py](../app/tests/compare_captures.py) (SHA-256 con el mismo renderer, FLIP entre renderers).
+
 ## 12. Fuentes y límites de esta propuesta
 
 **Del repositorio:** [README](../README.md), [ROADMAP](../ROADMAP.md), [STACK](../STACK.md), [DECISIONS](../DECISIONS.md), [LEARNINGS](../LEARNINGS.md), [LANDSCAPE-PLAN](LANDSCAPE-PLAN.md), [plan visual](UGLY-STIK-VISUAL-PLAN.md) y código enlazado. Puntos especialmente sensibles: [lector RC](../app/input/rc_input.gd), [calibración](../app/input/rc_calibration.gd), [grabador](../app/sim/recorder.gd), [traza](../app/sim/trace.gd), [simulación y foco](../app/sim/simulation.gd), [pruebas de entrada](../app/tests/test_e2e_input.gd), [radio](../app/tests/test_e2e_radio.gd), [ayudas](../app/tests/test_pilot_aids.gd), [exportación](../app/export.sh).
 
-**Ampliación de revisión 2:** [índice de diez investigaciones](research/menu-investigations/README.md), con fuentes primarias enlazadas junto a cada hallazgo. Incluye documentación Godot 4.7/stable, inspección del `InputMap` del tag exacto 4.7.2, manuales de simuladores RC, EdgeTX, XAG y W3C; las referencias visuales distinguen imágenes de producto, fotos de campo y capturas de interfaces históricas. El único experimento ejecutado en esta ronda es el cálculo sRGB de la paleta; no es una prueba del menú en Godot.
+**Ampliación de revisión 2:** [índice de diez investigaciones](research/menu-investigations/README.md), con fuentes primarias enlazadas junto a cada hallazgo. Incluye documentación Godot 4.7/stable, inspección del `InputMap` del tag exacto 4.7.2, manuales de simuladores RC, EdgeTX, XAG y W3C; las referencias visuales distinguen imágenes de producto, fotos de campo y capturas de interfaces históricas. El único experimento ejecutado en esa ronda fue el cálculo sRGB de la paleta.
+
+**Ampliación de revisión 3:** [doce investigaciones más](research/menu-investigations/README.md#ronda-3-doce-preguntas-más-motor-herramientas-librerías-ejemplos) sobre motor, herramientas, librerías y ejemplos: novedades GUI 4.4–4.7, SDL3 y radios, plantillas de menús, demos oficiales, gdUnit4/GUT, fuentes OFL, Theme, pantalla por plataforma, audio, FlightGear/CRRCsim/PicaSim/EdgeTX Companion, versión de build y guías UX de juegos. [sources.json](research/menu-investigations/sources.json) indexa 242 páginas citadas por los 22 informes. Sondas ejecutadas con el Godot 4.7.2 fijado (headless, Xvfb sin gestor de ventanas, audio Dummy), guardadas en [probes/](research/menu-investigations/probes/) fuera de `app/`; esta revisión reprodujo las sondas 11, 12 y 19. Código de terceros leído en commits fijos. **Sigue pendiente con hardware:** radio real (GUID antes y después de actualizar firmware, Classic frente a Advanced en Linux, `raw_name`, número de ejes), Windows, macOS, Wayland nativo, lector de pantalla, escucha humana de clics al pausar y legibilidad en el monitor del propietario.
 
 **Documentación primaria consultada el 2026-10-05:** navegación/foco, InputEvent, pausa y ConfigFile de Godot, enlazadas en las secciones correspondientes. Las páginas `stable` son móviles: sirven para fundamentar el diseño, no para afirmar que se ejecutó cada comportamiento en el Godot 4.7.2 fijado por este proyecto. Cada implementación deberá verificarse con ese binario y sin actualizar el motor como requisito del menú.
 

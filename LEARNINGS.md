@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A full-envelope test at zero angular rates does not validate rotating flight.** A 925-state probe found positive total aerodynamic power in 46 states and a ~1,842 N force discontinuity across reverse flow with p=5 rad/s; the existing envelope and spin checks still pass. None of the 26 ordinary pulse flights sampled positive aerodynamic power, so this is a separate defect, not an established cause of the rudder pulse failure. Reducing Cndr to 30% also breaks the existing spin-recovery sequence. Test coupled maneuvers and local-flow consistency before accepting a tuning change. [Audit](docs/research/flight-model-robustness-audit.md), [plan](docs/FLIGHT-MODEL-ROBUSTNESS-PLAN.md). (2026-10-05; research, production physics unchanged)
+
 - **A correct rudder sign and a passing golden can preserve excessive authority.** The current Ugly Stik reaches 42.41° sideslip and 462.14°/s body yaw rate in a 0.5 s rudder pulse; keyboard, fake radio and engine-off cases reproduce the problem. Changing only `Cndr` to 30% in memory reduces the doublet peaks to 21.73° and 88.24°/s, but does not independently validate that coefficient. The servo returns to trim while autorotation persists. Handling needs magnitude and recovery checks with independent evidence, not only direction or replay. [Diagnosis](docs/research/ugly-stik-rudder-audit.md) and [repair plan](docs/RUDDER-REPAIR-PLAN.md). (2026-10-05, D8b/D10 investigation; production physics unchanged)
 
 - **A metric's mask must contain only what it claims to measure.** The airplane-readability metric took the airplane as "pixels that change when the airplane is hidden", which also caught the D7 ground shadow (and, once, the panel text that names the shadow mode). That contamination made L1b look unreachable after L2, and I reported a threshold recalibration that was wrong. Measured cleanly, the original thresholds pass. Now the readability views turn the shadow off in both images of a pair. (2026-10-05)
@@ -251,3 +253,24 @@ Fuentes, doce preguntas y mejoras compartidas con el Stik: [investigaciones de h
 - El bloque AUX debe validarse aparte de AETR, revalidarse al cambiar calibración y borrar su historial de eventos vistos al cambiar perfil. OFF corta nuevos nacimientos; la nube residual procede de partículas que ya existían.
 
 Evidencia: [doce investigaciones y catálogo](docs/research/smoke-investigations/README.md), [ensayo reproducible](docs/research/smoke-investigations/godot-evidence/README.md), [plan revisado](docs/SMOKE-PLAN.md). La entrega modifica documentación y un experimento aislado; no implementa el efecto en `app/`.
+
+
+## 2026-10-05 · AV-00 — referencia Avanti S de turbina
+
+- El manual A200 coincide con su ficha histórica en 200 cm de ala y 222 cm de largo; el catálogo reciente usa “2.3m”. Fijar la revisión evita convertir una etiqueta comercial en una nueva medida. No se encontraron ventas comparables que permitan afirmar cuál turbina Avanti es la más popular.
+- La fotoinstrucción descargada tiene 91 páginas y muestra el datum del CG en la página 91. Se inspeccionaron fotos y una muestra del montaje; no se encontró un plano completo calibrado del avión. Los planos acotados recuperados son del P100-RX y su soporte.
+- Las fuentes oficiales P100-RX discrepan entre revisiones en ralentí y longitud. Se eligió tabla de catálogo 2017 sin BL; la ficha RX-BL y manual 2011 se conservan como comparación. RPM máximas y dos puntos de empuje no identifican el retardo ni la curva de throttle.
+- La auditoría de código encontró dependencias de hélice en loader, trim, sesión, render y sonido. Una turbina necesita cargas y estados propios, preservando el caso glow; un nodo propeller vacío solo sirve como adaptación visual temporal. El inicio trimado necesita spool estacionario correspondiente al throttle resuelto, no ralentí fijo.
+- La masa A200 de manual es RTF seca: inventario, combustible y CG de vuelo siguen pendientes. La primera vista previa puede avanzar con forma aproximada, mientras esos datos condicionan la aceptación física.
+
+Prueba de esta entrega: archivos abiertos/inspeccionados, hashes y exclusión Git en [validación local](docs/research/avanti-s-validation.json); código y fuentes revisados en el [plan Avanti S](docs/AVANTI-S-PLAN.md). Sin cambios de app ni ensayos de vuelo nuevos.
+
+## 2026-10-05 · UI-PLAN revisión 3 — análisis del menú y doce investigaciones
+
+- Medir la app real encontró un defecto que la inspección solo sospechaba: durante cualquier pausa (failsafe, accidente, calibración) `main.gd._process()` sigue girando la hélice y alimentando el motor a las rpm de vuelo; con el tick congelado en 144, el bus Master siguió a −34 dB. `stream_paused` lo silencia en un bloque de mezcla; `clear_buffer()` falla mientras suena. El driver de audio Dummy mezcla en tiempo real, así que el medidor de pico permite probar volumen y pausa sin tarjeta de sonido.
+- La GUID de SDL3 incluye `bcdDevice`, donde EdgeTX escribe su versión de firmware: una clave de calibración con GUID se rompería al actualizar la radio. Todas las radios EdgeTX comparten `1209:4F54` y su cadena USB dice «OpenTX». Deducido del código de SDL y EdgeTX; falta confirmarlo con la radio del propietario.
+- Un eje de radio AETR mueve el foco de un menú Godot en headless, y deja de hacerlo al retirar los eventos joypad de `ui_*`, sin perder `get_joy_axis`. Una sonda **sin** `project.godot` o sin `InputMap.load_from_project_settings()` no ve esos eventos y pasaría en falso.
+- Tras `Input.parse_input_event` hay que esperar al menos un `process_frame`; `action_press` no mueve el foco. gdUnit4 entrega cada evento dos veces al nodo raíz y GUT crea teclas sin `physical_keycode`: el arnés propio sigue siendo más fiable para este proyecto.
+- Godot 4.6+ no dibuja el foco ganado con ratón, `ScrollContainer.follow_focus` es falso por defecto, un `.tres` guardado dos veces cambia 16 líneas por ids aleatorios y `Window.theme` no atraviesa un `CanvasLayer`. Las plantillas de menús revisadas escribieron preferencias (ventana 64 × 64) al ejecutarse headless.
+
+Fuentes, sondas y límites: [doce investigaciones de la ronda 3](docs/research/menu-investigations/README.md#ronda-3-doce-preguntas-más-motor-herramientas-librerías-ejemplos), [plan revisado](docs/MENU-PLAN.md). Documentación y sondas fuera de `app/`; no se implementó ninguna pantalla ni se corrigió el defecto de audio.

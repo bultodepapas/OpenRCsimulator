@@ -43,7 +43,12 @@ func _initialize() -> void:
 	var isolated := []
 	for conditions in [[150, -10, -5], [150, -10, 0], [150, 0, -5], [150, 0, 0], [-179.999, 0, 0], [179.999, 0, 0], [-179.999, 5, 0], [179.999, 5, 0]]:
 		isolated.append(evaluate(model, conditions[0], conditions[1], conditions[2]))
-	var result := {count = count, negative_drag_count = negative_drag, positive_power_count = positive_power, positive_forward = positive_forward, min_drag = min_drag, max_power = max_power, isolated = isolated}
+	var seam := []
+	for epsilon in [0.1, 0.01, 0.001]:
+		var left := evaluate(model, -180.0 + epsilon, 5.0, 0.0)
+		var right := evaluate(model, 180.0 - epsilon, 5.0, 0.0)
+		seam.append({epsilon_deg = epsilon, delta_Fz_N = right.loads[2] - left.loads[2]})
+	var result := {count = count, negative_drag_count = negative_drag, positive_power_count = positive_power, positive_forward = positive_forward, min_drag = min_drag, max_power = max_power, isolated = isolated, reverse_flow_seam = seam}
 	print("ENVELOPE_PROBE ", JSON.stringify(result))
 	var out := OS.get_environment("FLIGHT_AUDIT_OUT")
 	if not out.is_empty():
