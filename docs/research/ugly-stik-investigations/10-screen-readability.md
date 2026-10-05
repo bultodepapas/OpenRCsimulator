@@ -4,7 +4,7 @@ Fecha: 2026-10-05. Paso: D7/Gate 2 y prioridades de modelado. **Pregunta:** ¿co
 
 ## Fuente y método
 
-La cámara del proyecto usa FOV vertical de 50° y capturas de 1280×720. La documentación de [PerspectiveCamera](https://threejs.org/docs/pages/PerspectiveCamera.html) confirma que `fov` es vertical y se expresa en grados. Con píxeles cuadrados y zoom 1, la distancia focal en píxeles es `f = H / (2 tan(FOV/2))`. Un segmento paralelo al plano de imagen, de longitud `L` y profundidad `d`, ocupa `p = f L / d` píxeles.
+La cámara del proyecto usa FOV vertical de 50° y capturas de 1280×720. Durante esta investigación el proyecto eligió Godot y promovió la escena a `app/`. Su `Camera3D` conserva por defecto `KEEP_HEIGHT`; conviene fijar ese valor explícitamente en la futura escena de inspección para que el ensayo siga usando FOV vertical. [Camera3D](https://docs.godotengine.org/en/stable/classes/class_camera3d.html). El comparador archivado [PerspectiveCamera de three.js](https://threejs.org/docs/pages/PerspectiveCamera.html) también usa FOV vertical en grados. Con píxeles cuadrados y zoom 1, la distancia focal en píxeles es `f = H / (2 tan(FOV/2))`. Un segmento paralelo al plano de imagen, de longitud `L` y profundidad `d`, ocupa `p = f L / d` píxeles.
 
 Se implementó el cálculo y la proyección de los dos extremos a distinta profundidad en [screen_size.py](../../../research/ugly-stik/screen_size.py), independiente del código activo. Envergadura: 1.524 m, conversión del rótulo Jensen 60 in. Se eligieron una mancha de 200 mm y una junta de 2 mm como tamaños de ensayo **estimados**, no como mediciones de una decoración o construcción real.
 
@@ -30,7 +30,7 @@ Priorizar proporción global, cola, tren y bloques grandes de color. La geometr�
 
 Mantener el tamaño físico del modelo. Comparar cualquier ayuda de zoom como opción explícita de cámara y registrar su FOV efectivo. El intradós oscuro es una variante visual de prueba, no decoración histórica confirmada.
 
-Para una futura simplificación, elegir umbrales por tamaño proyectado y medir el coste real antes de hacer varias mallas. Three.js dispone de cambios de LOD por distancia e histéresis para evitar cambios repetidos en el límite, pero no resuelve por sí mismo la orientación perceptual. [Documentación de LOD](https://threejs.org/docs/pages/LOD.html).
+Para una futura simplificación, medir el coste real antes de hacer varias mallas. Godot ofrece LOD automático de malla al importar y evalúa cuánto ocupa en pantalla; esa capacidad no resuelve por sí misma la orientación perceptual. Su documentación explica la relación con FOV/resolución y la diferencia frente a ocultar objetos completos. [LOD de malla en Godot](https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html). La decisión de generar LOD se pospone hasta tener la malla sencilla y una medición: no hace falta crear tres recursos hoy.
 
 **Prueba siguiente:** capturas con la misma cámara a 20/50/100 m, frente/costado/arriba/abajo y virajes, comparando decoraciones sobre la misma malla; registrar si el usuario distingue morro/cola y arriba/abajo. Añadir una vista a 1080p para separar limitaciones de resolución y de diseño. No fijar un presupuesto arbitrario de polígonos como sustituto de esa prueba.
 

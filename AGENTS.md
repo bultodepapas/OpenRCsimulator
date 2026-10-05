@@ -24,6 +24,11 @@ Rules for the Godot app:
 - Simulation code (`sim/`, `physics/`) keeps state in 64-bit GDScript `float`s, never `Vector3`/`Basis`/`Quaternion`/`Transform3D` (32-bit). `app/test.sh` enforces this.
 - Don't name constants after built-in classes (`Panel`, `Label`, …): it causes parse errors, which hang headless runs.
 
+Parallel work (2026-10-05): several developers/assistants work in this repo at the same time.
+- **Aircraft model** (another developer): `app/render/airplane.gd`, the geometry tables in `app/spec.gd`, `assets/aircraft/`, `docs/UGLY-STIK-PLAN.md`, `docs/research/`. Keep its node names and hinge interface (`airplane`, `propeller`, `*_hinge`) stable.
+- **Physics and simulation** (main line): `app/physics/`, `app/sim/`, `app/tests/`, the ROADMAP Phase C/D steps.
+- Before moving or renaming files, grep the whole repo for the old paths. Never leave a deliberately broken file in the working tree: run mutation checks on a copy.
+
 Working agreement:
 - One small step per change, following the step IDs in ROADMAP.md.
 - Every change states its proof (test, capture, trace or measurement) in the commit message.

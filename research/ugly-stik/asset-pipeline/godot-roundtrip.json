@@ -1,0 +1,39 @@
+{
+  "artifact": "res://hinge-roundtrip.glb",
+  "checks": {
+    "airplane_root_transform": {
+      "position": "(0.0, 0.0, 0.0)",
+      "rotation_radians": "(0.0, 0.0, 0.0)",
+      "scale": "(1.0, 1.0, 1.0)"
+    },
+    "dimensions_meters": {
+      "after_import": "(0.8, 0.02, 0.25)",
+      "expected": "(0.8, 0.02, 0.25)",
+      "preserved": true
+    },
+    "hinge_at_leading_edge": {
+      "hinge_global": "(0.0, 0.0, 0.0)",
+      "leading_edge_global": "(0.0, 0.0, 0.0)",
+      "preserved": true
+    },
+    "pivot_hierarchy_preserved": true,
+    "positive_pitch_raises_elevator_trailing_edge": {
+      "command_rotation_about_local_x_radians": -0.523598775598299,
+      "commanded_global": "(0.0, 0.125, 0.216506)",
+      "neutral_global": "(0.0, 0.0, 0.25)",
+      "passed": true
+    },
+    "required_names_unique": true,
+    "required_nodes_present": true
+  },
+  "conversion_applied": false,
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "result": "pass",
+  "scene_root_class": "Node3D",
+  "scene_root_name": "AuxScene",
+  "source_convention": {
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  }
+}

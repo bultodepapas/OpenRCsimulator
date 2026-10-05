@@ -1,0 +1,12 @@
+; Isolated GLB import experiment. This is not the application project.
+config_version=5
+
+[application]
+
+config/name="Ugly Stik GLB contract probe"
+config/features=PackedStringArray("4.7")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
