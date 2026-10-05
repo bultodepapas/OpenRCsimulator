@@ -65,6 +65,11 @@ func _ready() -> void:
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
 	if args.has("trace"):
+		if not session.aircraft.ok:
+			# Never record a "flight" on invalid data (it would be a ballistic throw): fail the run instead.
+			push_error("--trace refused: aircraft data invalid")
+			get_tree().quit(1)
+			return
 		# Headless trace: record from the start to t, save, quit. No window needed.
 		_write_trace_and_quit(float(args.get("t", Spec.CAPTURE.time)), args.trace)
 		return

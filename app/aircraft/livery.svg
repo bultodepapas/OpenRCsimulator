@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<rect width="1024" height="1024" fill="#c8102e"/>
+<rect x="49.1843" y="0" width="193.4715" height="272" fill="#111216"/>
+<rect x="51.2000" y="0" width="189.4400" height="272" fill="#f7f6f1"/>
+<path d="M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z" transform="translate(145.9200 130.2400) scale(131.0236 143.3071)" fill="#111216"/>
+<rect x="781.3443" y="0" width="193.4715" height="272" fill="#111216"/>
+<rect x="783.3600" y="0" width="189.4400" height="272" fill="#f7f6f1"/>
+<path d="M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z" transform="translate(878.0800 130.2400) scale(131.0236 143.3071)" fill="#111216"/>
+<path d="M 34.1333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 68.2667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 102.4000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 136.5333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 170.6667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 204.8000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 238.9333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 273.0667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 307.2000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 341.3333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 375.4667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 409.6000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 443.7333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 477.8667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 512.0000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 546.1333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 580.2667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 614.4000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 648.5333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 682.6667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 716.8000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 750.9333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 785.0667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 819.2000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 853.3333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 887.4667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 921.6000,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 955.7333,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<path d="M 989.8667,0 V 272" stroke="#111216" stroke-width="0.8" opacity="0.035"/>
+<rect x="16" y="528" width="480" height="464" fill="#f7f6f1"/>
+<path d="M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z" transform="translate(270.4516 765.0233) scale(171.9742 239.1070)" fill="#111216"/>
+<rect x="647.3455" y="640.6667" width="257.3091" height="270.6667" fill="#f7f6f1"/>
+<path d="M -.30,-.5 L .30,-.5 Q .12,-.23 .085,-.085 Q .23,-.12 .5,-.30 L .5,.30 Q .23,.12 .085,.085 Q .12,.23 .30,.5 L -.30,.5 Q -.12,.23 -.085,.085 Q -.23,.12 -.5,.30 L -.5,-.30 Q -.23,-.12 -.085,-.085 Q -.12,-.23 -.30,-.5 Z" transform="translate(776.0000 776.0000) scale(194.0364 177.8667)" fill="#111216"/>
+</svg>

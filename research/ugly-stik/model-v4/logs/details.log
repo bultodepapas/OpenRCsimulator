@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/engine-left.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/engine-right.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/engine-front.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/wing-root.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/gear-main.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/gear-nose.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/tail-controls.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/elevator-linkage.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/aileron-linkage.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/maintenance.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/maintenance-servos.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/maintenance-wing.png
+Wrote /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/details/manifest.json

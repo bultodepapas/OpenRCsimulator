@@ -122,8 +122,21 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 
 	var envelope := _envelope(errors, raw.get("aero", {}).get("envelope"), aero) if errors.is_empty() else {}
 	if not envelope.is_empty():
-		envelope.station_y = span / 4.0 # half-wing stations for the asymmetric stall (D9b)
+		# Equal-area wing strips for the asymmetric stall (D9b): centres at ±(k + ½)/n of the semi-span.
+		var n: int = Aero.WING_STATIONS_PER_SIDE
+		var ys := PackedFloat64Array()
+		var c := 0.0
+		for side in [-1.0, 1.0]:
+			for k in n:
+				var y: float = side * (k + 0.5) / n * span / 2.0
+				ys.append(y)
+				c += (y / span) * (y / span)
+		# Strip damping in attached flow is −CLα·(2/2n)·Σ(y_i/b)²·… = −CLα·c/n per p̂; κ scales it to the data's Clp.
+		envelope.station_ys = ys
+		envelope.span = span
+		envelope.station_kappa = absf(aero.Clp) / (aero.CLa * 2.0 * c / (2 * n))
 	var prop := _propulsion(errors, raw.get("propulsion"))
+	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
 
 	if not errors.is_empty():
@@ -163,6 +176,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		conventions = raw.get("aero", {}).get("conventions", {}),
 		propulsion = prop,
 		controls = controls,
+		crash_hull = _hull_body(hull, plan_cg),
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
 
@@ -234,13 +248,14 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	_q(errors, "propulsion.engine.peak_power_rpm", e.get("peak_power_rpm"), "rpm", 1000.0, 50000.0)
 	var diameter = _q(errors, "propulsion.propeller.diameter", pr.get("diameter"), "m", 0.05, 2.0)
 	var offset = _q(errors, "propulsion.propeller.thrust_line_offset", pr.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
+	var rotor = _q(errors, "propulsion.propeller.rotating_inertia", pr.get("rotating_inertia"), "kg·m2", 0.0, 0.1)
 	var ct := _table(errors, "propulsion.propeller.ct_table", pr.get("ct_table"), -0.5, 0.5)
 	var cp := _table(errors, "propulsion.propeller.cp_table", pr.get("cp_table"), 0.0, 0.5)
 	if max_rpm != null and idle != null and idle >= max_rpm:
 		errors.append("propulsion.engine: idle_rpm %s must be below max_rpm_static %s" % [idle, max_rpm])
 	if not ct.is_empty() and ct[1] <= 0.0:
 		errors.append("propulsion.propeller.ct_table: static Ct must be positive (a propeller that pushes)")
-	return { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp }
+	return { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp, rotor_inertia = rotor }
 
 
 ## Maximum surface throws (each surface's deflection at full stick), degrees in the file.
@@ -310,3 +325,36 @@ static func _blend_extreme(aero: Dictionary, cd90: float, width: float, start: f
 		if cl * sign > best * sign:
 			best = cl
 	return best
+
+
+## Crash hull (D9d): points [x_aft, y_right, z_up] (le frame) that touch the ground first. Returns them flattened.
+static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	if typeof(node) != TYPE_DICTIONARY or typeof(node.get("value")) != TYPE_ARRAY or (node.value as Array).size() < 4:
+		errors.append("crash_hull: missing or fewer than 4 points")
+		return out
+	for key in ["unit", "kind", "source"]:
+		if not node.has(key):
+			errors.append("crash_hull: missing '%s'" % key)
+	if node.get("unit") != "m":
+		errors.append("crash_hull: unit '%s', expected 'm'" % node.get("unit"))
+	for p in node.value:
+		if typeof(p) != TYPE_ARRAY or p.size() != 3:
+			errors.append("crash_hull: each point needs 3 numbers")
+			return PackedFloat64Array()
+		for x in p:
+			if not (typeof(x) in [TYPE_INT, TYPE_FLOAT]) or absf(x) > 3.0:
+				errors.append("crash_hull: %s is not a point within 3 m" % [p])
+				return PackedFloat64Array()
+			out.append(float(x))
+	return out
+
+
+## Hull points converted to body FRD about the CG: [x fwd, y right, z down], flattened.
+static func _hull_body(hull: PackedFloat64Array, cg: Variant) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	if cg == null:
+		return out
+	for i in range(0, hull.size(), 3):
+		out.append_array(PackedFloat64Array([-(hull[i] - cg[0]), hull[i + 1] - cg[1], -(hull[i + 2] - cg[2])]))
+	return out

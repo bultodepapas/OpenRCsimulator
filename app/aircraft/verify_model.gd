@@ -5,6 +5,7 @@ extends SceneTree
 const Commands := preload("res://input/commands.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const VisualChecks := preload("res://aircraft/visual_checks.gd")
 const Clearance := preload("res://aircraft/model_clearance.gd")
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
@@ -435,6 +436,8 @@ func _run_model_checks() -> void:
 		printerr("%d checks, %d failed" % [_checks, _failures])
 		quit(1)
 		return
+	var visual: Dictionary = VisualChecks.new().run(_airplane)
+	_check("visual atlas and shared materials", visual.ok, str(visual.failures))
 	_check_nose_assembly()
 	_check_gear_animation()
 	_check_measured_fuselage_holdout()
@@ -450,6 +453,44 @@ func _run_model_checks() -> void:
 	_root.transform = Transform3D.IDENTITY
 	var clearance_report: Dictionary = Clearance.new().run(_airplane)
 	_check("moving surfaces retain geometric clearance", clearance_report.ok, str(clearance_report.get("failures", [])))
+	_check_visual_controls()
 	_root.free()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+func _check_visual_controls() -> void:
+	var controller = AirplaneBuilder.Controls
+	_check("visual controls present", _airplane.has("controls"))
+	if not _airplane.has("controls"): return
+	var controls: Dictionary = _airplane.controls
+	var maximum_gap := 0.0
+	var maximum_length := 0.0
+	var poses: Array[Dictionary] = []
+	for axis in ["roll", "pitch", "yaw"]:
+		for i in range(21):
+			var commands := {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}
+			commands[axis] = float(i) / 10.0 - 1.0
+			poses.append(commands)
+	for roll in [-1.0, 1.0]:
+		for pitch in [-1.0, 1.0]:
+			for yaw in [-1.0, 1.0]: poses.append({"roll": roll, "pitch": pitch, "yaw": yaw, "throttle": 0.0})
+	for commands in poses:
+		AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(commands))
+		var report: Dictionary = controller.audit(controls)
+		_check("control mechanism closes " + str(commands), bool(report.ok), str(report.failures))
+		if not report.ok: continue
+		for mechanism in controls.mechanisms.values():
+			for rod in mechanism.rods:
+				var node: MeshInstance3D = rod.node
+				var cylinder := node.mesh as CylinderMesh
+				var a := _root.to_local(node.to_global(Vector3(0, -cylinder.height / 2, 0)))
+				var b := _root.to_local(node.to_global(Vector3(0, cylinder.height / 2, 0)))
+				var start := _root.to_local(rod.start_joint.global_position)
+				var finish := _root.to_local(rod.end_joint.global_position)
+				var gap := maxf(a.distance_to(start), b.distance_to(finish))
+				maximum_gap = maxf(maximum_gap, gap)
+				maximum_length = maxf(maximum_length, absf(a.distance_to(b) - float(rod.target_length_m)))
+	_check("built rod endpoints meet their joints over 71 command poses", maximum_gap <= 0.00025, str(maximum_gap))
+	_check("built rod lengths remain constant over 71 command poses", maximum_length <= 0.00025, str(maximum_length))
+	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations({"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}))
+	print("Visual linkage sweep: 71 poses; max built endpoint gap=%.9f m; max built rod length error=%.9f m" % [maximum_gap, maximum_length])

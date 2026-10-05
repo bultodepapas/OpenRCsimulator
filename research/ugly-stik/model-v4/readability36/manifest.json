@@ -1,0 +1,6200 @@
+{
+  "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+  "appearance_source_paths": {
+    "appearance_json": "res://../assets/aircraft/ugly-stik-60/appearance.json",
+    "generated_appearance_gd": "res://aircraft/ugly_stik_appearance.gd",
+    "livery_svg": "res://aircraft/livery.svg"
+  },
+  "axes": {
+    "forward": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "builder": "res://render/airplane.gd",
+  "builder_contract": [
+    "root",
+    "propeller",
+    "hinges"
+  ],
+  "capture_count": 36,
+  "capture_design": {
+    "attitude_cases": [
+      {
+        "bank": "level",
+        "blind_code": "K7",
+        "direction": "away",
+        "id": "P01",
+        "rotation_degrees": "(0.0, 0.0, 0.0)",
+        "surface": "underside",
+        "title": "Lower wing face"
+      },
+      {
+        "bank": "level",
+        "blind_code": "M2",
+        "direction": "away",
+        "id": "P02",
+        "rotation_degrees": "(0.0, 0.0, 180.0)",
+        "surface": "upper side",
+        "title": "Upper wing face"
+      },
+      {
+        "bank": "left",
+        "blind_code": "R5",
+        "direction": "away",
+        "id": "P03",
+        "rotation_degrees": "(0.0, 0.0, 35.0)",
+        "surface": "underside",
+        "title": "Left bank"
+      },
+      {
+        "bank": "right",
+        "blind_code": "A9",
+        "direction": "away",
+        "id": "P04",
+        "rotation_degrees": "(0.0, 0.0, -35.0)",
+        "surface": "underside",
+        "title": "Right bank"
+      },
+      {
+        "bank": "level",
+        "blind_code": "C3",
+        "direction": "toward",
+        "id": "P05",
+        "rotation_degrees": "(0.0, 180.0, 0.0)",
+        "surface": "underside",
+        "title": "Nose toward pilot"
+      },
+      {
+        "bank": "level",
+        "blind_code": "T8",
+        "direction": "toward",
+        "id": "P06",
+        "rotation_degrees": "(0.0, 180.0, 180.0)",
+        "surface": "upper side",
+        "title": "Upper wing face, nose toward pilot"
+      }
+    ],
+    "backgrounds": [
+      "sky",
+      "ground"
+    ],
+    "blind_id_assignment": "Fixed opaque code per attitude, permuted independently of answer labels; stable across runs.",
+    "direction_prompt": "Nose toward/away is a static heading cue, not measured motion.",
+    "distances_m": [
+      20.0,
+      50.0,
+      100.0
+    ],
+    "frame_elapsed_samples_per_capture": 3,
+    "frame_elapsed_scope": "Host-side wall interval through frame_post_draw; reported as a diagnostic, not a GPU benchmark.",
+    "ground_height_m": 0.0,
+    "hinges": "Neutral for every image; roll/pitch/yaw commands are 0.0.",
+    "keep_aspect": "KEEP_HEIGHT",
+    "lighting": {
+      "ambient_color_srgb_hex": "#c5d3df",
+      "ambient_energy": 0.7,
+      "ambient_source": "color",
+      "background_color_srgb_hex": "#9bcef0",
+      "directional_lights": [
+        {
+          "color_srgb_hex": "#fff3e1",
+          "energy": 1.45,
+          "name": "KeyLight",
+          "rotation_degrees": [
+            -47.0,
+            -32.0,
+            -9.0
+          ],
+          "shadows": true
+        },
+        {
+          "color_srgb_hex": "#becbe0",
+          "energy": 0.7,
+          "name": "UndersideFill",
+          "rotation_degrees": [
+            48.0,
+            -28.0,
+            0.0
+          ],
+          "shadows": false
+        }
+      ],
+      "environment_background": "solid color",
+      "neutral_key_light": false
+    },
+    "model_height_m": 5.0,
+    "pilot_eye_height_m": 1.6,
+    "resolution_px": [
+      1280,
+      720
+    ],
+    "suite": "readability36",
+    "warmup_frames_before_samples": 2
+  },
+  "capture_suite": "readability36",
+  "captures": [
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-k7.png",
+      "frame_elapsed_samples_ms": [
+        33.602,
+        40.8,
+        31.068
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "16b050f6de88156f3e9a36b736f32448ab85c4a3dd5e7b4934a435702de5986b",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          669.209838867188,
+          371.067230224609
+        ],
+        "min": [
+          610.790161132812,
+          347.803619384766
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 348.932769775391,
+        "left": 610.790161132812,
+        "right": 610.790161132812,
+        "top": 347.803619384766
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 225,
+        "primitives_in_frame": 56734,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43228097,
+        "video_memory_bytes": 51342577
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-m2.png",
+      "frame_elapsed_samples_ms": [
+        43.524,
+        34.663,
+        28.629
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "72667ad69fd4d6fe994de9e6e73cde547b9a998581c30467a38e012d98b371f2",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          669.253234863281,
+          367.987152099609
+        ],
+        "min": [
+          610.746765136719,
+          349.628234863281
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 352.012847900391,
+        "left": 610.746765136719,
+        "right": 610.746765136719,
+        "top": 349.628234863281
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 225,
+        "primitives_in_frame": 56734,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-r5.png",
+      "frame_elapsed_samples_ms": [
+        38.58,
+        29.608,
+        26.783
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "0ddd39593bd978756566249cad2ec04fc959ef20744a60044817b82fb7323871",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          661.890869140625,
+          373.642639160156
+        ],
+        "min": [
+          614.014953613281,
+          339.574371337891
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 346.357360839844,
+        "left": 614.014953613281,
+        "right": 618.109130859375,
+        "top": 339.574371337891
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 225,
+        "primitives_in_frame": 56734,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-a9.png",
+      "frame_elapsed_samples_ms": [
+        28.321,
+        27.306,
+        32.505
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "9d122fcd81b9c157089890848a5e70ec0ab9b24c07ad159d1da9b577eec83ba1",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          665.985046386719,
+          373.642639160156
+        ],
+        "min": [
+          618.109130859375,
+          339.574371337891
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 346.357360839844,
+        "left": 618.109130859375,
+        "right": 614.014953613281,
+        "top": 339.574371337891
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 225,
+        "primitives_in_frame": 56734,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-c3.png",
+      "frame_elapsed_samples_ms": [
+        25.85,
+        27.45,
+        29.138
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "72214aeec01c8f3ffaccb27733f1e3493ac431593bcae4647392e823d695883f",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          668.676330566406,
+          370.306701660156
+        ],
+        "min": [
+          611.323669433594,
+          351.709442138672
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 349.693298339844,
+        "left": 611.323669433594,
+        "right": 611.323669433594,
+        "top": 351.709442138672
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 232,
+        "primitives_in_frame": 64422,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-SKY-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · sky",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-sky-t8.png",
+      "frame_elapsed_samples_ms": [
+        27.347,
+        27.133,
+        30.273
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "26e6791180d9b282cd8a6ea64fd6f3be5f39c7ae185b335b9b73fce9bcd349ee",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          668.718139648438,
+          371.309906005859
+        ],
+        "min": [
+          611.281860351562,
+          348.698150634766
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 348.690093994141,
+        "left": 611.281860351562,
+        "right": 611.281860351562,
+        "top": 348.698150634766
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 222,
+        "primitives_in_frame": 62446,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-k7.png",
+      "frame_elapsed_samples_ms": [
+        45.118,
+        50.371,
+        43.821
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "0d75379a58c29d51c86f29c98143e8ba8cf1192f7e762a44aee84cb012e2a789",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          669.209838867188,
+          371.067230224609
+        ],
+        "min": [
+          610.790161132812,
+          347.803619384766
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 348.932769775391,
+        "left": 610.790161132812,
+        "right": 610.790161132812,
+        "top": 347.803619384766
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 230,
+        "primitives_in_frame": 56780,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-m2.png",
+      "frame_elapsed_samples_ms": [
+        62.856,
+        49.573,
+        57.741
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "c49d9a3fe702e1fd88563f8e9bfa346f73b3d1913a64944483ad7adfa4570e4c",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          669.253234863281,
+          367.987152099609
+        ],
+        "min": [
+          610.746765136719,
+          349.628234863281
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 352.012847900391,
+        "left": 610.746765136719,
+        "right": 610.746765136719,
+        "top": 349.628234863281
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 230,
+        "primitives_in_frame": 56780,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-r5.png",
+      "frame_elapsed_samples_ms": [
+        33.154,
+        44.445,
+        46.256
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "b760580731f3afe9cb7472a385f00ed5f6796cb8bfe50fc5a93726fce33f525a",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          661.890869140625,
+          373.642639160156
+        ],
+        "min": [
+          614.014953613281,
+          339.574371337891
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 346.357360839844,
+        "left": 614.014953613281,
+        "right": 618.109130859375,
+        "top": 339.574371337891
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 230,
+        "primitives_in_frame": 56780,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-a9.png",
+      "frame_elapsed_samples_ms": [
+        47.32,
+        42.835,
+        38.459
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "12f84d8040f0b5e5c2aa0863564b18a5c04d84a7c8f4cc04427fbfa0ce82d926",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          665.985046386719,
+          373.642639160156
+        ],
+        "min": [
+          618.109130859375,
+          339.574371337891
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 346.357360839844,
+        "left": 618.109130859375,
+        "right": 614.014953613281,
+        "top": 339.574371337891
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 230,
+        "primitives_in_frame": 56780,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-c3.png",
+      "frame_elapsed_samples_ms": [
+        32.17,
+        36.748,
+        39.549
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "ead97213a239e307ee450659e621975b645c0d34b1d6f046ba3e064116dba628",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          668.676330566406,
+          370.306701660156
+        ],
+        "min": [
+          611.323669433594,
+          351.709442138672
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 349.693298339844,
+        "left": 611.323669433594,
+        "right": 611.323669433594,
+        "top": 351.709442138672
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 237,
+        "primitives_in_frame": 64468,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          20.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.985855877399445,
+          0.167595505714417
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 18.9199123903969
+      },
+      "case_id": "D020-GROUND-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "20 m · ground",
+      "crop_check_required": true,
+      "distance_m": 20.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d020m-ground-t8.png",
+      "frame_elapsed_samples_ms": [
+        42.432,
+        57.147,
+        41.728
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "96302fd8929554e2ff547d7489d5a738cda46f88d10d210cd4c7065961cbb6a8",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          668.718139648438,
+          371.309906005859
+        ],
+        "min": [
+          611.281860351562,
+          348.698150634766
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 348.690093994141,
+        "left": 611.281860351562,
+        "right": 611.281860351562,
+        "top": 348.698150634766
+      },
+      "range_slant_m": 20.2869415283203,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 227,
+        "primitives_in_frame": 62492,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-k7.png",
+      "frame_elapsed_samples_ms": [
+        44.638,
+        29.431,
+        31.461
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "d5417378c8131a83cbc930a238fa0399874d9a3ec2fe5d3d09a1eff30e23b456",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.766906738281,
+          364.161254882812
+        ],
+        "min": [
+          628.233093261719,
+          356.383544921875
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 355.838745117188,
+        "left": 628.233093261719,
+        "right": 628.233093261719,
+        "top": 356.383544921875
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 263,
+        "primitives_in_frame": 70142,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-m2.png",
+      "frame_elapsed_samples_ms": [
+        25.381,
+        26.599,
+        29.736
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "92dc1d0efe49a70f1d51e809af39d19efda5f16d9688628c87afc1e32be5adab",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.769775390625,
+          362.671295166016
+        ],
+        "min": [
+          628.230224609375,
+          355.921966552734
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.328704833984,
+        "left": 628.230224609375,
+        "right": 628.230224609375,
+        "top": 355.921966552734
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 260,
+        "primitives_in_frame": 69486,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-r5.png",
+      "frame_elapsed_samples_ms": [
+        26.071,
+        31.701,
+        29.508
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "e0a7545fb9f6a0a8d4548760dc275d241666e48fcc759f7e1c07d7bf772e033a",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          648.844421386719,
+          365.513793945312
+        ],
+        "min": [
+          629.565185546875,
+          351.946929931641
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 354.486206054688,
+        "left": 629.565185546875,
+        "right": 631.155578613281,
+        "top": 351.946929931641
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 263,
+        "primitives_in_frame": 70142,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-a9.png",
+      "frame_elapsed_samples_ms": [
+        31.682,
+        31.453,
+        37.421
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "30243ad82ff39777a330ac2472ab45356cd40b5cf25f13caedb40740443dda1c",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          650.434814453125,
+          365.513793945312
+        ],
+        "min": [
+          631.155578613281,
+          351.946929931641
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 354.486206054688,
+        "left": 631.155578613281,
+        "right": 629.565185546875,
+        "top": 351.946929931641
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 263,
+        "primitives_in_frame": 70142,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-c3.png",
+      "frame_elapsed_samples_ms": [
+        33.819,
+        35.135,
+        34.278
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "61c2f2cf4f0c8c37ee239fa5152b6598fa52648497aa036961b166ae56f16c97",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.678344726562,
+          364.064666748047
+        ],
+        "min": [
+          628.321655273438,
+          357.285980224609
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 355.935333251953,
+        "left": 628.321655273438,
+        "right": 628.321655273438,
+        "top": 357.285980224609
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 237,
+        "primitives_in_frame": 71662,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-SKY-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · sky",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-sky-t8.png",
+      "frame_elapsed_samples_ms": [
+        32.388,
+        35.65,
+        29.382
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "4792d0fc1869a72cd2d4b138b107f0df436a474125c5b957e2e338b16a7baa1d",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.68115234375,
+          363.505523681641
+        ],
+        "min": [
+          628.31884765625,
+          355.799774169922
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 356.494476318359,
+        "left": 628.31884765625,
+        "right": 628.31884765625,
+        "top": 355.799774169922
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 245,
+        "primitives_in_frame": 72526,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-k7.png",
+      "frame_elapsed_samples_ms": [
+        49.553,
+        56.025,
+        59.623
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "8a2c33a4de9b2d9ea4fd5ada4ff519bdec15d2acbc1a8d2425e6ba2ff536727f",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.766906738281,
+          364.161254882812
+        ],
+        "min": [
+          628.233093261719,
+          356.383544921875
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 355.838745117188,
+        "left": 628.233093261719,
+        "right": 628.233093261719,
+        "top": 356.383544921875
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 268,
+        "primitives_in_frame": 70188,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-m2.png",
+      "frame_elapsed_samples_ms": [
+        57.401,
+        47.009,
+        37.383
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "6429be73f7344ebdc2a9bb91a931db07372b3ffbdaeae1e653b60522c17604d4",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.769775390625,
+          362.671295166016
+        ],
+        "min": [
+          628.230224609375,
+          355.921966552734
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.328704833984,
+        "left": 628.230224609375,
+        "right": 628.230224609375,
+        "top": 355.921966552734
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 265,
+        "primitives_in_frame": 69532,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-r5.png",
+      "frame_elapsed_samples_ms": [
+        42.827,
+        43.38,
+        51.654
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "e6f4568d70f13afcd2112d1da1ccdd86fb5cf03b8a8039380ac981211b982f22",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          648.844421386719,
+          365.513793945312
+        ],
+        "min": [
+          629.565185546875,
+          351.946929931641
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 354.486206054688,
+        "left": 629.565185546875,
+        "right": 631.155578613281,
+        "top": 351.946929931641
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 268,
+        "primitives_in_frame": 70188,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-a9.png",
+      "frame_elapsed_samples_ms": [
+        48.789,
+        45.809,
+        35.436
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "6b0f3e04fdbe6e0108950ab5eddbf1a2e321c3ac3f6f692740a46a4c61feb09b",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          650.434814453125,
+          365.513793945312
+        ],
+        "min": [
+          631.155578613281,
+          351.946929931641
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 354.486206054688,
+        "left": 631.155578613281,
+        "right": 629.565185546875,
+        "top": 351.946929931641
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 268,
+        "primitives_in_frame": 70188,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-c3.png",
+      "frame_elapsed_samples_ms": [
+        36.931,
+        57.902,
+        46.819
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "ed55277b41fb63469808591c55097e7125e631256964211549c31c935a24c2ec",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.678344726562,
+          364.064666748047
+        ],
+        "min": [
+          628.321655273438,
+          357.285980224609
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 355.935333251953,
+        "left": 628.321655273438,
+        "right": 628.321655273438,
+        "top": 357.285980224609
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 242,
+        "primitives_in_frame": 71708,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          50.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.997695982456207,
+          0.0678433179855347
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 46.7384521749412
+      },
+      "case_id": "D050-GROUND-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "50 m · ground",
+      "crop_check_required": true,
+      "distance_m": 50.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d050m-ground-t8.png",
+      "frame_elapsed_samples_ms": [
+        42.786,
+        66.598,
+        63.405
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "80f61437bad0f49776f38c08f4b796ce99565e94d5840cdbbebb382332230c3c",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          651.68115234375,
+          363.505523681641
+        ],
+        "min": [
+          628.31884765625,
+          355.799774169922
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 356.494476318359,
+        "left": 628.31884765625,
+        "right": 628.31884765625,
+        "top": 355.799774169922
+      },
+      "range_slant_m": 50.1154670715332,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 250,
+        "primitives_in_frame": 72572,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-k7.png",
+      "frame_elapsed_samples_ms": [
+        26.727,
+        31.835,
+        37.506
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "fe347f869139f109bb3f2740c8c261a39cf9926afebed3c3aa2f92867d4029ea",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.883056640625,
+          362.026763916016
+        ],
+        "min": [
+          634.116943359375,
+          358.409515380859
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.973236083984,
+        "left": 634.116943359375,
+        "right": 634.116943359375,
+        "top": 358.409515380859
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 163,
+        "primitives_in_frame": 43108,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-m2.png",
+      "frame_elapsed_samples_ms": [
+        31.064,
+        28.535,
+        29.924
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "1297e5fc0105d11262dfe76966f234ae6fd28ab0fe1f335428a3d556edb5b78b",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.883422851562,
+          361.238800048828
+        ],
+        "min": [
+          634.116577148438,
+          357.981658935547
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 358.761199951172,
+        "left": 634.116577148438,
+        "right": 634.116577148438,
+        "top": 357.981658935547
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 163,
+        "primitives_in_frame": 43108,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-r5.png",
+      "frame_elapsed_samples_ms": [
+        28.591,
+        28.622,
+        28.524
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "41510134b8bb5ea840e9075c85e1ee6b9344b1e204e44c813e5e2f5702b1d891",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          644.423767089844,
+          362.763397216797
+        ],
+        "min": [
+          634.785339355469,
+          356.014923095703
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.236602783203,
+        "left": 634.785339355469,
+        "right": 635.576232910156,
+        "top": 356.014923095703
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 163,
+        "primitives_in_frame": 43108,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-a9.png",
+      "frame_elapsed_samples_ms": [
+        29.326,
+        32.954,
+        40.78
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "43f15266ab3adfd08efe5ba20eabe7f676a866a39373c0ab7f3b364720b8b856",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.214660644531,
+          362.763397216797
+        ],
+        "min": [
+          635.576232910156,
+          356.014923095703
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.236602783203,
+        "left": 635.576232910156,
+        "right": 634.785339355469,
+        "top": 356.014923095703
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 163,
+        "primitives_in_frame": 43108,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-c3.png",
+      "frame_elapsed_samples_ms": [
+        31.371,
+        37.934,
+        37.957
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "556c7f7badbfa4db10636be1d2e2836db462ce850836f801353a44bc424e7acd",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.860778808594,
+          362.014678955078
+        ],
+        "min": [
+          634.139221191406,
+          358.751190185547
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.985321044922,
+        "left": 634.139221191406,
+        "right": 634.139221191406,
+        "top": 358.751190185547
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 145,
+        "primitives_in_frame": 45492,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "sky",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-SKY-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · sky",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-sky-t8.png",
+      "frame_elapsed_samples_ms": [
+        36.611,
+        28.322,
+        26.62
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": false
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "4187ae7543a440d06d144569345148ac780eb2bdaa779f50110c4d418e8147e1",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.861145019531,
+          361.565948486328
+        ],
+        "min": [
+          634.138854980469,
+          357.96337890625
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 358.434051513672,
+        "left": 634.138854980469,
+        "right": 634.138854980469,
+        "top": 357.96337890625
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 145,
+        "primitives_in_frame": 45492,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P01",
+      "attitude_title": "Lower wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-K7",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-k7.png",
+      "frame_elapsed_samples_ms": [
+        40.798,
+        59.649,
+        64.848
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "46e29cfb23c395ca0fe947b8652c8d7be9a0fdf3dfb39dbf0f2b77ea10182d26",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.883056640625,
+          362.026763916016
+        ],
+        "min": [
+          634.116943359375,
+          358.409515380859
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.973236083984,
+        "left": 634.116943359375,
+        "right": 634.116943359375,
+        "top": 358.409515380859
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 168,
+        "primitives_in_frame": 43154,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P02",
+      "attitude_title": "Upper wing face",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-M2",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-m2.png",
+      "frame_elapsed_samples_ms": [
+        38.655,
+        35.1,
+        34.164
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "9bba90c5027e18ee7a5d2a0c7dbcc0e59272d49a45cc2e2178c53555ce9d2de9",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.883422851562,
+          361.238800048828
+        ],
+        "min": [
+          634.116577148438,
+          357.981658935547
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 358.761199951172,
+        "left": 634.116577148438,
+        "right": 634.116577148438,
+        "top": 357.981658935547
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "away",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 168,
+        "primitives_in_frame": 43154,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P03",
+      "attitude_title": "Left bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-R5",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-r5.png",
+      "frame_elapsed_samples_ms": [
+        31.249,
+        34.801,
+        40.594
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171817779541,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171579360962,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "e7097ec5b4b7acfdbf0d4d97e242069bbfc978590948bbc34b10352df8c25f7c",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          644.423767089844,
+          362.763397216797
+        ],
+        "min": [
+          634.785339355469,
+          356.014923095703
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.236602783203,
+        "left": 634.785339355469,
+        "right": 635.576232910156,
+        "top": 356.014923095703
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "left",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 168,
+        "primitives_in_frame": 43154,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P04",
+      "attitude_title": "Right bank",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-A9",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-a9.png",
+      "frame_elapsed_samples_ms": [
+        49.935,
+        53.256,
+        34.477
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436234712600708,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171579360962,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171817779541,
+          -0.258100271224976,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "5aca2e5ed80dac6276b4af67b034d6e9e0d7c805b34327e4f2ceffbc6d2b23b9",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.214660644531,
+          362.763397216797
+        ],
+        "min": [
+          635.576232910156,
+          356.014923095703
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.236602783203,
+        "left": 635.576232910156,
+        "right": 634.785339355469,
+        "top": 356.014923095703
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "right",
+        "direction": "away",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 168,
+        "primitives_in_frame": 43154,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          0.0,
+          -35.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P05",
+      "attitude_title": "Nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-C3",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-c3.png",
+      "frame_elapsed_samples_ms": [
+        48.498,
+        43.239,
+        49.738
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171758174896,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171698570251,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "ea6f0aa295ade98f588fb3447014a74371e83fcc56a08e5f18e54a46995f0f7a",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.860778808594,
+          362.014678955078
+        ],
+        "min": [
+          634.139221191406,
+          358.751190185547
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 357.985321044922,
+        "left": 634.139221191406,
+        "right": 634.139221191406,
+        "top": 358.751190185547
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "underside"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 150,
+        "primitives_in_frame": 45538,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          0.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    },
+    {
+      "actual_visible_geometry_crop_detected": false,
+      "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+      "attitude_id": "P06",
+      "attitude_title": "Upper wing face, nose toward pilot",
+      "background": "ground",
+      "camera": {
+        "aspect_ratio": 1.77777777777778,
+        "far_m": 500.0,
+        "fov_vertical_deg": 50.0,
+        "keep_aspect": "KEEP_HEIGHT",
+        "near_m": 0.0199999995529652,
+        "position_world_m": [
+          0.0,
+          1.60000002384186,
+          100.0
+        ],
+        "projection": "perspective",
+        "requested_up_world": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "result_up_world": [
+          0.0,
+          0.999422490596771,
+          0.0339803695678711
+        ],
+        "size": 1.0,
+        "target_world_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "viewport_px": [
+          1280,
+          720
+        ],
+        "visible_vertical_m_at_target": 93.315415723639
+      },
+      "case_id": "D100-GROUND-T8",
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.5,
+        "yaw": 0.0
+      },
+      "component_transforms_unchanged": false,
+      "condition": "100 m · ground",
+      "crop_check_required": true,
+      "distance_m": 100.0,
+      "expected_crop": false,
+      "expected_crop_reason": "",
+      "file": "d100m-ground-t8.png",
+      "frame_elapsed_samples_ms": [
+        37.341,
+        49.916,
+        35.142
+      ],
+      "geometry_vertices_inside_viewport": true,
+      "ground_plane": {
+        "center_y_m": 0.0,
+        "color_srgb_hex": "#58654f",
+        "material_shading": "unshaded",
+        "plane_size_m": [
+          1000.0,
+          1000.0
+        ],
+        "visible": true
+      },
+      "maintenance_view": false,
+      "material_count": 23,
+      "mesh_instances": 74,
+      "model_bounds_m": {
+        "extent": [
+          1.5223433971405,
+          0.436233997344971,
+          1.32597398757935
+        ],
+        "max": [
+          0.761171698570251,
+          0.178134441375732,
+          0.897697985172272
+        ],
+        "min": [
+          -0.761171758174896,
+          -0.258099555969238,
+          -0.428276002407074
+        ]
+      },
+      "png_sha256": "f5659bc76090aaab67f4f52a85ff5fa32ec6a1bd18bc3314060d1daa2267627a",
+      "pose": "neutral_hinges",
+      "projected_geometry_bounds_px": {
+        "max": [
+          645.861145019531,
+          361.565948486328
+        ],
+        "min": [
+          634.138854980469,
+          357.96337890625
+        ]
+      },
+      "projected_geometry_margins_px": {
+        "bottom": 358.434051513672,
+        "left": 634.138854980469,
+        "right": 634.138854980469,
+        "top": 357.96337890625
+      },
+      "range_slant_m": 100.057777404785,
+      "reference_answer": {
+        "bank": "level",
+        "direction": "toward",
+        "surface": "upper side"
+      },
+      "render": {
+        "anti_aliasing_msaa_3d": 2,
+        "caption_layer": "CanvasLayer",
+        "display_driver": "X11",
+        "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+        "godot_version": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "hardware_benchmark": false,
+        "os_name": "Linux",
+        "performance_classification": "software_renderer_no_hardware_benchmark",
+        "rendering_method": "gl_compatibility",
+        "requested_rendering_driver": "opengl3",
+        "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "video_adapter_vendor": "Mesa",
+        "viewport_height_px": 720,
+        "viewport_width_px": 1280
+      },
+      "render_counters": {
+        "buffer_memory_bytes": 8114480,
+        "draw_calls_in_frame": 150,
+        "primitives_in_frame": 45538,
+        "scope": "whole rendered frame including model, captions, lighting, and optional ground plane",
+        "texture_memory_bytes": 43184407,
+        "video_memory_bytes": 51298887
+      },
+      "root_pose": {
+        "position_m": [
+          0.0,
+          5.0,
+          0.0
+        ],
+        "rotation_degrees": [
+          0.0,
+          180.0,
+          180.0
+        ]
+      },
+      "suite": "readability36",
+      "temporarily_hidden_mesh_name_rules": [],
+      "triangle_count": 27040,
+      "visual_revision": "jensen-61-classic-red-v4"
+    }
+  ],
+  "created_utc_unix": 1791230117,
+  "geometry": {
+    "appearance_atlas_runtime_path": "runtime://ImageTexture from ugly_stik_appearance.gd::SVG_SOURCE via ugly_stik_finish.gd::atlas",
+    "appearance_source_paths": {
+      "appearance_json": "res://../assets/aircraft/ugly-stik-60/appearance.json",
+      "generated_appearance_gd": "res://aircraft/ugly_stik_appearance.gd",
+      "livery_svg": "res://aircraft/livery.svg"
+    },
+    "compiled_geometry_sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+    "files": {
+      "appearance_json": {
+        "path_from_app": "res://../assets/aircraft/ugly-stik-60/appearance.json",
+        "present": true,
+        "sha256": "d1dfe1265172533b65136b998d9bec4e4cf6e4ecd72d4dcf83bfb5cb2addeafa"
+      },
+      "capture_harness_gd": {
+        "path_from_app": "res://aircraft/inspect_model.gd",
+        "present": true,
+        "sha256": "76022a6d1d4c000a7ee5854b4cd0f186f1d7c35efb9618062d0fb420aa7b1b72"
+      },
+      "capture_orchestration_sh": {
+        "path_from_app": "res://../research/ugly-stik/model-v3/capture.sh",
+        "present": true,
+        "sha256": "b20c414caef61c082f4ad2a3157e8fb786145a76650fd30a75ca567500af1434"
+      },
+      "generated_appearance_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_appearance.gd",
+        "present": true,
+        "sha256": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce"
+      },
+      "generated_geometry_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_geometry.gd",
+        "present": true,
+        "sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a"
+      },
+      "geometry_json": {
+        "path_from_app": "res://../assets/aircraft/ugly-stik-60/geometry.json",
+        "present": true,
+        "sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
+      },
+      "livery_svg": {
+        "path_from_app": "res://aircraft/livery.svg",
+        "present": true,
+        "sha256": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec"
+      },
+      "model_builder_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_model.gd",
+        "present": true,
+        "sha256": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc"
+      },
+      "render_adapter_gd": {
+        "path_from_app": "res://render/airplane.gd",
+        "present": true,
+        "sha256": "d65c1818d966e75145f23e966aac455e22c25bb50def03613f8a2cf8c0087abf"
+      },
+      "review_kit_py": {
+        "path_from_app": "res://../research/ugly-stik/model-v3/make_review_kit.py",
+        "present": true,
+        "sha256": "46cfd0bb246deb3de0446e6acecb5ef09324c52282914b834ff20a543cefdf36"
+      },
+      "visual_controls_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_controls.gd",
+        "present": true,
+        "sha256": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480"
+      },
+      "visual_equipment_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_equipment.gd",
+        "present": true,
+        "sha256": "736f1a5f10a2285ae4149de6bda4b4c4d067e14aa07d13bcc91c0a286cc1467a"
+      },
+      "visual_finish_gd": {
+        "path_from_app": "res://aircraft/ugly_stik_finish.gd",
+        "present": true,
+        "sha256": "daa4c30ccffbb4020483409609e1c9985c7f2dcc6022b6fc923590ab5fc5e345"
+      }
+    },
+    "geometry_id": "jensen-60-nitro-61-v3",
+    "geometry_json_id": "jensen-60-nitro-61-v3",
+    "geometry_json_id_matches_compiled": true,
+    "geometry_json_present": true,
+    "geometry_revision_note": "Geometry.id remains the v3 source identity; v4 changes are visual and do not rename geometry.",
+    "source_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+    "visual_revision": "jensen-61-classic-red-v4"
+  },
+  "model": "Jensen Ugly Stik 60 / nitro .61",
+  "renderer": {
+    "anti_aliasing_msaa_3d": 2,
+    "caption_layer": "CanvasLayer",
+    "display_driver": "X11",
+    "frame_elapsed_sample_method": "host wall time around process_frame through frame_post_draw; diagnostic only, not GPU time",
+    "godot_version": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "hardware_benchmark": false,
+    "os_name": "Linux",
+    "performance_classification": "software_renderer_no_hardware_benchmark",
+    "rendering_method": "gl_compatibility",
+    "requested_rendering_driver": "opengl3",
+    "video_adapter_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "video_adapter_vendor": "Mesa",
+    "viewport_height_px": 720,
+    "viewport_width_px": 1280
+  },
+  "resolution_px": [
+    1280,
+    720
+  ],
+  "schema": "openrc-model-capture-v4",
+  "total_elapsed_ms": 9946.233,
+  "visual_revision": "jensen-61-classic-red-v4",
+  "human_review": {
+    "status": "pending",
+    "pilot_response_count": 0,
+    "response_kit": "review.html"
+  }
+}

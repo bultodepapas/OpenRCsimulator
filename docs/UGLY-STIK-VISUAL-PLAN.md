@@ -1,18 +1,35 @@
 # Ugly Stik .61 — plan visual: rojo clásico, cruces y mecánica
 
-2026-10-05 · Revisión 4 · **Plan pendiente de implementación.** Continúa [US-06/07/08 del plan general](UGLY-STIK-PLAN.md), sobre el [modelo v3](research/ugly-stik-model-v3.md). Dirección solicitada por el propietario: rojo con cruces, mayor detalle del motor, servos y equipamiento.
+2026-10-05 · Revisión 5 · **Implementación visual v4 integrada; ensayo humano y rendimiento en hardware pendientes.** Continúa [US-06/07/08 del plan general](UGLY-STIK-PLAN.md), sobre el [modelo v3](research/ugly-stik-model-v3.md). Dirección solicitada por el propietario: rojo con cruces, mayor detalle del motor, servos y equipamiento.
 
-[Diez investigaciones de apariencia y montaje](research/ugly-stik-visual-investigations/README.md) y [diez investigaciones nuevas de Godot, herramientas y bibliotecas](research/ugly-stik-tooling-investigations/README.md) respaldan esta revisión. La segunda ronda concreta la ruta de construcción y verificación; no añade dependencias ni constituye implementación del modelo.
+[Diez investigaciones de apariencia y montaje](research/ugly-stik-visual-investigations/README.md) y [diez investigaciones nuevas de Godot, herramientas y bibliotecas](research/ugly-stik-tooling-investigations/README.md) respaldan esta revisión. La segunda ronda orientó la construcción y verificación. La entrega usa Godot nativo y Python estándar; solo la galería y las diferencias de imagen añaden Pillow 11.3.0 como herramienta offline.
+
+## Estado de ejecución
+
+| ID | Implementado y comprobado |
+| --- | --- |
+| US-V01 | Apariencia JSON, vector original, atlas 1024² reproducible y rasterización verificada |
+| US-V02 | UV de superficies fijas/móviles, cola blanca, rojo clásico, perfiles de materiales y festoneado |
+| US-V03 | Cárter, culata dorada ranurada, carburador inclinado y mofle con cuello ancho/nervaduras según las fotos D/E/F |
+| US-V04 | Cuernos de latón, horquillas metálicas, guías y seis varillas rígidas; 71 poses con comandos reales |
+| US-V05 | Cinco servos genéricos, apoyos, brazos y cables; vistas de mantenimiento y secuencia abierta |
+| US-V06 | Catorce bucles planos, bancada, llantas, collarines, fijaciones y circuitos visibles conectados |
+| US-V07 | Indicios sutiles de costilla, pala con sección/torsión y 95 capturas con galería offline |
+| US-V08 | Coste geométrico registrado; 36/36 PNG repetidos idénticos; formulario de orientación v4. Aceptación humana/GPU pendiente |
+
+[Galería](../research/ugly-stik/model-v4/review.html) · [Pruebas y limitaciones](research/ugly-stik-model-v4.md) · [Fotos A–F](research/ugly-stik-visual-photo-brief.md). Los contratos del modelo y la última suite completa `app/test.sh` pasan. Se conserva en el reporte el diagnóstico de fallos anteriores durante trabajo paralelo, incluido uno reproducido en el commit base sin cambios visuales.
+
+La foto C aporta anatomía de horquillas y apoyos; no convierte el recubrimiento en transparente. Las fotos D/F fijan la culata dorada y el mofle separado; E aclara el montaje. Dimensiones y variante comercial del motor continúan estimadas.
 
 ## Resultado buscado
 
 Un Ugly Stik .61 rojo reconocible desde tierra, con cruces negras sobre campos blancos y una instalación mecánica convincente al acercarse. La presentación debe transmitir un aeromodelo de madera recubierto: superficies ligeras, motor glow expuesto, fijaciones, neumáticos y mandos visibles. El acabado inicial será limpio y cuidado, siguiendo las dos fotografías aportadas; el desgaste queda como detalle opcional posterior.
 
-La elección roja con cruces ya está definida por el propietario. Se puede avanzar con ella sin esperar el ensayo humano pendiente de v3; ese ensayo servirá para ajustar su lectura. Se conserva el Jensen de 60 pulgadas con tren triciclo. Este documento planifica la siguiente entrega visual; no modifica todavía la malla.
+La elección roja con cruces ya está definida por el propietario. Se puede avanzar con ella sin esperar el ensayo humano pendiente de v3; ese ensayo servirá para ajustar su lectura. Se conserva el Jensen de 60 pulgadas con tren triciclo. La [entrega v4](research/ugly-stik-model-v4.md) ejecuta esta dirección sobre las cotas v3.
 
-## Punto de partida comprobado
+## Punto de partida v3 conservado para comparación
 
-Se revisaron el constructor, el adaptador, la captura neutra v3, la hoja 2 del Jensen, la fotografía local 013 y las dos nuevas imágenes del propietario. Estas últimas pasan a ser la referencia principal del acabado. [Lectura de las fotos A/B y límites](research/ugly-stik-visual-photo-brief.md). El estado actual contiene:
+Se revisaron el constructor, el adaptador, la captura neutra v3, la hoja 2 del Jensen, la fotografía local 013 y las dos nuevas imágenes del propietario. Estas últimas pasan a ser la referencia principal del acabado. [Lectura de las fotos A/B y límites](research/ugly-stik-visual-photo-brief.md). El estado anterior contenía:
 
 | Área | V3 existente | Mejora que aporta más |
 | --- | --- | --- |
@@ -103,11 +120,11 @@ La vista de mantenimiento pertenece al inspector del modelo: permite ocultar tem
 
 Antes del trazado, guardar un esquema de conexiones. Si se usa el ejemplo de aguja remota del 61FX, separar tanque → entrada/aguja, aguja → carburador y racor de silenciador → venteo del tanque. Cada tramo visible termina en su conexión. El glowplug no lleva un cable de chispa permanente inventado. [04 · Circuitos](research/ugly-stik-visual-investigations/04-exhaust-fuel.md). Las rutas ocultas se pueden simplificar; las conexiones visibles deben resultar coherentes. La animación del gas se añade únicamente si el adaptador recibe esa señal; el mecanismo no modifica el control del motor del otro desarrollador.
 
-## Implementación propuesta
+## Ruta de implementación y decisiones finales
 
 Mantener el constructor nativo Godot. Separar el acabado y los detalles visuales de las cotas compartidas: una ficha de apariencia junto a `geometry.json` puede guardar paleta, distribución gráfica, materiales y procedencia; el dato geométrico mantiene dimensiones y pivotes. No abrir una arquitectura de variantes para esta entrega.
 
-Para las cruces, crear un SVG propio como fuente editable y añadir UV a las mallas que lo necesiten. Usar un atlas opaco pequeño para marcas/recubrimiento, con UV explícitas en las mallas, márgenes de color entre islas y filtrado que no produzca halos. Asignar los atributos antes de emitir vértices. Tangentes solo si se introduce mapa normal; no son necesarias para albedo. Registrar configuración de importación y comparar inicialmente compresión sin pérdidas frente a VRAM comprimida. [09 · Evidencia técnica](research/ugly-stik-visual-investigations/09-materials-atlas.md). Empezar con una resolución de ensayo de 1.024 px, etiquetada como decisión artística; aumentar solo si falla la inspección cercana. El resultado debe ser reproducible desde los archivos fuente. Evitar depender de planos superpuestos casi coplanares que puedan parpadear. Cualquier técnica elegida debe funcionar en el renderizador Compatibility usado por la aplicación.
+Para las cruces, crear un SVG propio como fuente editable y añadir UV a las mallas que lo necesiten. Usar un atlas opaco pequeño para marcas/recubrimiento, con UV explícitas en las mallas, márgenes de color entre islas y filtrado que no produzca halos. Asignar los atributos antes de emitir vértices. Tangentes solo si se introduce mapa normal; no son necesarias para albedo. La implementación rasteriza una vez el SVG embebido, genera mipmaps y usa ImageTexture sin compresión VRAM. Se comprobó coincidencia byte a byte con la importación SVG sin pérdidas en un proyecto limpio. Esta elección elimina la dependencia de caché/importación en ejecución; la comparación entre modos de compresión VRAM queda fuera de esta ruta y requeriría una necesidad medida. [09 · Evidencia técnica](research/ugly-stik-visual-investigations/09-materials-atlas.md). Empezar con una resolución de ensayo de 1.024 px, etiquetada como decisión artística; aumentar solo si falla la inspección cercana. El resultado debe ser reproducible desde los archivos fuente. Evitar depender de planos superpuestos casi coplanares que puedan parpadear. Cualquier técnica elegida debe funcionar en el renderizador Compatibility usado por la aplicación.
 
 El material actualmente se cachea solo por color. Cambiar esa clave para incluir función/acabado cuando dos piezas compartan color pero necesiten rugosidad distinta; revisar los usos de `material()` y conservar la interfaz del adaptador. Tratar los materiales compartidos como inmutables; si una instancia necesita una variación, aislar ese recurso antes de editarlo. No suponer que `resource_local_to_scene` resuelve automáticamente los objetos creados por el builder. Como interpretación inicial del inserto Jensen, ensayar 14 bucles de banda #64 en una malla agrupada; su ruta y anchura siguen estimadas hasta contrastar el montaje. [08 · Evidencia e interpretación del conteo](research/ugly-stik-visual-investigations/08-gear-fasteners.md).
 
@@ -142,4 +159,4 @@ Este frente trabaja en `app/aircraft/`, `app/render/airplane.gd`, `assets/aircra
 
 Quedan fuera de esta pasada: mini/gigante, réplica certificada de un motor comercial, estructura interior completa, simulación mecánica de servos, humo/partículas, sonido y LOD automático sin una necesidad medida. Desenfoque de hélice y efectos de motor pueden evaluarse después de cerrar la apariencia estática y conocer la señal de RPM disponible.
 
-**Primer paso ejecutable:** lámina con la composición de A/B y aplicación al modelo actual, con captura comparable de planta, intradós, lateral y dos vistas oblicuas. Corregir cola blanca, puntas rojas y filetes antes del microdetalle. Después, primer plano del motor; luego transmisión y servos.
+**Siguiente paso de aceptación:** responder el [ensayo de orientación v4](../research/ugly-stik/model-v4/readability36/review.html) y medir la aplicación en la GPU objetivo. La réplica comercial, transparencia de film y variantes mini/gigante siguen fuera de esta entrega.

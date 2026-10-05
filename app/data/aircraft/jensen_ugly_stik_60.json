@@ -507,6 +507,23 @@
       }
     }
   ],
+  "crash_hull": {
+    "value": [
+      [0.15, -0.762, 0.05],
+      [0.15, 0.762, 0.05],
+      [-0.33, 0.0, 0.0],
+      [0.99, 0.0, 0.02],
+      [0.93, -0.28, 0.02],
+      [0.93, 0.28, 0.02],
+      [0.97, 0.0, 0.26],
+      [0.215, -0.18, -0.253],
+      [0.215, 0.18, -0.253],
+      [-0.136, 0.0, -0.25]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, main and nose wheel bottoms (wheels from the visual model's equipment table: axle 0.215 m below the thrust line, 0.038 m wheel radius, 0.36 m track). Read from the Jensen plan and the visual model; replaced by measured gear contact points in E1"
+  },
   "plausibility": {
     "mass_range": {
       "value": [
@@ -933,6 +950,12 @@
         "unit": "1",
         "kind": "borrowed",
         "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here)"
+      },
+      "rotating_inertia": {
+        "value": 0.00035,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "Propeller + spinner + crankshaft about the shaft, for gyroscopic precession: APC Sport 12x6 about 37 g as a rod (m L^2 / 12 = 2.9e-4) plus spinner, nut and crankshaft (about 0.6e-4). Turns clockwise seen from behind (+x)"
       },
       "thrust_line_offset": {
         "value": [

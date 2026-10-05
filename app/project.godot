@@ -25,3 +25,5 @@ common/max_physics_steps_per_frame=12
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 anti_aliasing/quality/msaa_3d=2
+; Required by Godot's macOS exporter for universal/arm64 builds (PT1); the app imports no textures, so nothing else changes.
+textures/vram_compression/import_etc2_astc=true

@@ -55,6 +55,10 @@ var calibration: RefCounted = null
 ## false: the engine is stopped (dead stick: no thrust, no torque, rpm 0) until restarted. A power-off glide start
 ## stops it; every other start runs it. (Starting and stopping in flight: ROADMAP G2.)
 var engine_running := true
+## After a crash the scene freezes this long (s, counted in physics ticks), showing the impact, then restarts.
+const CRASH_HOLD_S := 1.5
+## The last crash while it is shown: { speed, sink (m/s), ticks_left }; empty when flying.
+var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
 var pause_reason := ""
 ## false: commands hold still (captures, headless traces).
@@ -164,6 +168,7 @@ func _apply(data: Dictionary) -> void:
 	sim.inertia = m.inertia
 	sim.loads = _loads
 	sim.pre_step = _pre_step
+	sim.rotor_momentum = rotor_momentum
 	start = Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad)
 	if start.ok:
 		trims = { roll = start.roll_command, pitch = start.pitch_command, yaw = start.yaw_command }
@@ -214,13 +219,45 @@ func _physics_process(_delta: float) -> void:
 			raw = read_raw.call()
 			commands = Commands.step_commands(commands, raw, sim.dt())
 		sim.inputs = _inputs()
-	# Temporary ground until crash detection (ROADMAP D9d): below the ground, start over.
-	if physics_enabled and not sim.paused and sim.state.size() == RB.SIZE and sim.state[RB.POS + 2] > 0.0:
-		reset()
+	# D9d: any crash-hull point at or below the ground is a crash (no landing gear physics until M2).
+	if not crash.is_empty():
+		crash.ticks_left -= 1
+		if crash.ticks_left <= 0:
+			reset()
+		return
+	if physics_enabled and not sim.paused and aircraft.get("ok", false) and touches_ground(sim.state):
+		_crash()
+
+
+## True when any crash-hull point of the airplane at state `s` is at or below the ground (NED down ≥ 0).
+func touches_ground(s: PackedFloat64Array) -> bool:
+	var hull: PackedFloat64Array = aircraft.model.crash_hull
+	var q := PackedFloat64Array([s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3]])
+	for i in range(0, hull.size(), 3):
+		# down component of R(q)·p: third row of the body→NED rotation matrix
+		var down := 2.0 * (q[1] * q[3] - q[0] * q[2]) * hull[i] + 2.0 * (q[2] * q[3] + q[0] * q[1]) * hull[i + 1] \
+			+ (1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2])) * hull[i + 2]
+		if s[RB.POS + 2] + down >= 0.0:
+			return true
+	return false
+
+
+func _crash() -> void:
+	var s: PackedFloat64Array = sim.state
+	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
+	var prev: PackedFloat64Array = sim.previous
+	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
+	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()) }
+	sim.set_paused(true)
+	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s) - restarting" % [speed, sink]
+	print(pause_reason)
 
 
 func reset() -> void:
 	resetting.emit()
+	crash = {}
+	if pause_reason.begins_with("CRASH"):
+		pause_reason = ""
 	commands = Commands.neutral_commands()
 	if start.get("ok", false):
 		commands.throttle = start.throttle
@@ -272,6 +309,11 @@ func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	for k in 6:
 		l[k] += p[k]
 	return l
+
+
+## Propeller angular momentum (D9c): J_p·ω along body +x (clockwise seen from behind).
+func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
+	return PackedFloat64Array([float(aircraft.model.propulsion.rotor_inertia) * aux[AUX_RPM] * TAU / 60.0, 0.0, 0.0])
 
 
 ## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5);

@@ -1,0 +1,3 @@
+Unmodified temporary copy: PASS
+inverted_faces: rejected by clockwise faces agree with normals; exit=1
+stretched_rod: rejected by built rod; exit=1

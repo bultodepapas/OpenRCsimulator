@@ -1641,6 +1641,42 @@ Interpretation (inference): the sim is the right class of airplane but **crisper
 - **Headless app:** 20 s of flight in 1.51 s, including trace recording. That is ≈ 313 µs per 240 Hz tick, ≈ 7.5 % of one core on this VM (software rendering, shared machine, not representative).
 - **Integrator benchmark alone:** 78.5 µs per step.
 
+### D8b and D10 results (after D9, from `research/sensitivity/sensitivity.gd`)
+
+Measured on the simulator. Each unknown was varied in the aircraft data, then analysed (flight modes at 15 m/s) and flown (coordinated full-aileron roll at 15 m/s, slow-flight stall, dead-stick glide).
+
+#### D8b validation: sim at 13.8 m/s (same CL as the US120 trim) vs Froude-scaled US120 flight identification
+| Mode | US120 band | Ugly Stik sim | Ratio |
+| --- | --- | --- | --- |
+| Short period | 1.30 Hz, ζ 0.55 | 1.88 Hz, ζ 0.78 | 1.45× |
+| Roll τ | 0.116 s | 0.056 s | 2.09× faster |
+| Dutch roll | 0.57 Hz, ζ 0.31 | 0.66 Hz, ζ 0.39 | 1.16× |
+| Spiral | stable, τ 4.3 s | stable, τ 9.7 s | — |
+Full-rudder steady sideslip (linear): β = Cnδr·δr / Cnβ = 63°
+#### D10 sensitivity: % change of each output for the parameter at −20 % / +20 %
+Baseline: SP Hz 2.033, SP ζ 0.784, roll τ s 0.051, DR Hz 0.710, DR ζ 0.394, spiral τ s 9.535, roll °/s 148.579, stall m/s 8.880, glide L/D 8.464
+| Parameter | SP Hz | SP ζ | roll τ s | DR Hz | DR ζ | spiral τ s | roll °/s | stall m/s | glide L/D | largest |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Cnr | +0 / +0 | +0 / +0 | -0 / +0 | -1 / +1 | -14 / +14 | +162 / -38 | +0 / -0 | +0 / -0 | -0 / -0 | 162 % |
+| Cnb | -0 / +0 | -0 / +0 | +0 / -0 | -13 / +11 | +11 / -8 | -47 / +124 | -0 / +0 | -1 / +0 | -0 / -0 | 124 % |
+| Clp | +0 / +0 | +0 / +0 | +25 / -17 | -3 / +2 | +3 / -1 | -31 / +38 | +27 / -18 | -0 / +0 | +0 / -0 | 38 % |
+| CG (±0.02 m) | +8 / -9 | -6 / +7 | +0 / -0 | +5 / -6 | -4 / +4 | +37 / -25 | +0 / -0 | +1 / -1 | -1 / +1 | 37 % |
+| CD0 | -0 / +0 | -0 / +0 | -0 / +0 | -0 / +0 | -0 / +0 | +2 / -2 | +0 / -0 | +0 / -0 | +23 / -16 | 23 % |
+| mass (all parts) | refused / -12 | refused / -5 | refused / +21 | refused / -8 | refused / -6 | refused / +10 | refused / +1 | refused / +9 | refused / +13 | 21 % |
+| Ixx | +0 / -0 | +0 / -0 | -20 / +20 | +0 / -0 | -1 / +1 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / +0 | 20 % |
+| Iyy | +12 / -9 | +3 / -2 | -0 / +0 | +0 / -0 | -0 / +0 | +0 / -0 | +0 / -0 | -0 / -0 | +0 / +0 | 12 % |
+| CL_max | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +11 / -9 | +0 / +0 | 11 % |
+| Izz | +0 / -0 | +0 / -0 | +0 / -0 | +11 / -8 | +7 / -5 | -2 / +2 | +0 / +0 | +0 / -0 | -0 / +0 | 11 % |
+| Cmq | -6 / +6 | -7 / +6 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | -0 / +0 | +0 / +0 | +0 / -0 | 7 % |
+| Cma | -4 / +4 | +4 / -3 | -0 / +0 | -0 / +0 | -0 / +0 | -0 / +0 | +0 / -0 | -0 / +0 | +0 / -0 | 4 % |
+| servo time | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / +0 | +0 / -0 | +0 / +0 | +0 / +0 | 0 % |
+
+**Reading.**
+- **The gaps are not explained by any single unknown.** No ±20 % variation of one parameter closes the 2× faster roll or the 1.45× faster short period found against the flight-identified Ultra Stick 120; closing them would take, for example, Ixx doubled or Clp halved.
+- **The table therefore points at measurement:** a weighed, balanced build and a swing test for Ixx.
+- **Rudder authority:** 63° of sideslip at full rudder is implausible for a sport plane and drives the doublet behaviour (D9a log).
+- **Spiral:** extremely sensitive to Cnr and Cnβ, which is normal, so the spiral should not be tuned before rudder data exists.
+
 ### Radio and gamepad input in Godot 4.7.2
 
 - **Backend:** SDL3 since Godot 4.5 on Windows, Linux and macOS ([PR #106218](https://github.com/godotengine/godot/pull/106218)). 4.7.2 bundles SDL 3.2.28 (source read).

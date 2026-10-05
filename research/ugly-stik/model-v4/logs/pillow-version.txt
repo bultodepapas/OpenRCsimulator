@@ -1,0 +1,3 @@
+Pillow==11.3.0 exact version check: PASS
+Installed Pillow: 11.3.0
+Python 3.12.3

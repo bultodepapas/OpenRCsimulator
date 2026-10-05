@@ -1,0 +1,5 @@
+config_version=5
+[application]
+config/name="Ugly Stik SVG import fixture"
+[rendering]
+renderer/rendering_method="gl_compatibility"

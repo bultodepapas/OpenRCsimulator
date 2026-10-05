@@ -67,8 +67,9 @@ static func inertia_inverse(j: PackedFloat64Array) -> PackedFloat64Array:
 ## Time derivative of the state.
 ## force_body and moment_body exclude gravity; gravity (g, m/s², along NED +D) is added here.
 ## j_inv is inertia_inverse(j), passed in so it is computed once per aircraft, not per step.
+## h_rotor: angular momentum of spinning parts in body axes (N·m·s; e.g. the propeller, D9c), or empty for none.
 static func derivative(s: PackedFloat64Array, mass: float, j: PackedFloat64Array, j_inv: PackedFloat64Array,
-		force_body: PackedFloat64Array, moment_body: PackedFloat64Array, g: float) -> PackedFloat64Array:
+		force_body: PackedFloat64Array, moment_body: PackedFloat64Array, g: float, h_rotor := PackedFloat64Array()) -> PackedFloat64Array:
 	var vel := _slice3(s, VEL)
 	var q := _att(s)
 	var w := _slice3(s, RATE)
@@ -85,7 +86,9 @@ static func derivative(s: PackedFloat64Array, mass: float, j: PackedFloat64Array
 	for i in 4:
 		q_dot[i] *= 0.5
 
-	# Rotation: ω̇ = J⁻¹ (M - ω × Jω).
-	var rate_dot := inertia_mul(j_inv, M.sub(moment_body, M.cross(w, inertia_mul(j, w))))
+	# Rotation: ω̇ = J⁻¹ (M − ω × (Jω + h)). The rotor term is gyroscopic precession: pitching a clockwise
+	# (from behind) propeller nose-up yaws the airplane right.
+	var jw := inertia_mul(j, w)
+	var rate_dot := inertia_mul(j_inv, M.sub(moment_body, M.cross(w, jw if h_rotor.is_empty() else M.add(jw, h_rotor))))
 
 	return make_state(pos_dot, vel_dot, q_dot, rate_dot)

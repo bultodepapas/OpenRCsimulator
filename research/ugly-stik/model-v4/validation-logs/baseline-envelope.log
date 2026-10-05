@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL oracle: |α| < 8°, |β| < 15° → loads identical to the linear model (500 states)  
+ok   every α and β: finite coefficients  
+ok   continuous: largest change per 0.1° < 0.05  0.0213
+ok   lift peaks at CL_max 1.10 inside the blend  1.0999 at 12.7°
+ok   negative lift bottoms at CL_min -0.80  -0.8000
+ok   stall starts outside the ±8° oracle region  +12.1° / −10.9°
+ok   α 90°: flat-plate drag CD0 + CD90, ~no lift, strong nose-down moment  { &"CL": 0.0, &"CD": 1.2434, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.7508, &"Cn": 0.0 }
+ok   tail first (α 180°): pitch equilibrium is unstable (Cm grows with α)  -0.0423 → -0.0278
+ok   knife edge (β 90°): weathervane and side force still there  { &"CL": 0.1068, &"CD": 0.04463692638362, &"CY": -0.4889, &"Cl": -0.0545, &"Cm": -0.0278, &"Cn": 0.0723 }
+ok   refused: CL_max 0.6 would stall inside the oracle region  ["aero.envelope.CD90 = 1.2: the flat plate (peak CD90/2) must lift less than the stall limits", "aero.envelope: the stall blend would start at +5.6° / -10.9°, inside the ±8° linear-oracle region (raise CL_max / CL_min or narrow the blend)"]
+ok   refused: no envelope  
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   full envelope: slow flight stalls at 8.6–9.5 m/s (1-g CL_max speed 9.03)  9.02 m/s
+ok   linear oracle: holds altitude below 8 m/s (no stall: the D9a motivation)  7.62 m/s
+ok   tail slide at −8 m/s: 3 s of flight stay finite  [-5.64367336629153, 0.41506933994686, -23.1332954262705, 20.6520874708359, -0.19285563158066, 0.94793534532504, 0.83433053107023, -0.02237902711695, -0.5493608716931, -0.03992964715543, 0.13361396115507, 0.58697603894697, 0.02174834457681]
+14 checks, 1 failed

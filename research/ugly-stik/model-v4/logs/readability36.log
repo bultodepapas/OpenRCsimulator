@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-sky-t8.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d020m-ground-t8.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-sky-t8.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d050m-ground-t8.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-sky-t8.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-k7.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-m2.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-r5.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-a9.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-c3.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/d100m-ground-t8.png
+Wrote /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/readability36/manifest.json

@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-01-neutral.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-02-roll-left-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-03-roll-left-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-04-roll-right-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-05-roll-right-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-06-pitch-down-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-07-pitch-down-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-08-pitch-up-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-09-pitch-up-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-10-yaw-left-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-11-yaw-right-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/controls-12-combined.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-01-neutral.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-02-roll-left-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-03-roll-left-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-04-roll-right-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-05-roll-right-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-06-pitch-down-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-07-pitch-down-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-08-pitch-up-half.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-09-pitch-up-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-10-yaw-left-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-11-yaw-right-full.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/maintenance-12-combined.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-01.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-02.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-03.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-04.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-05.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-06.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-07.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-08.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-09.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-10.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-11.png
+Captured /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/camera-sweep-12.png
+Wrote /home/bulto/OpenRCsimulator/research/ugly-stik/model-v4/.capture-work.yMcw0s/primary/motion/manifest.json

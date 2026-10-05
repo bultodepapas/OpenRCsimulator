@@ -1,6 +1,6 @@
 # Ugly Stik .61: plan de modelado en paralelo
 
-Revisión 6 · 2026-10-05 · **V3 implementada e integrada; aceptación humana y rendimiento en hardware pendientes.** Variante: Jensen Ugly Stik 60 in / nitro .61. [Entrega y pruebas v3](research/ugly-stik-model-v3.md) · [Plan revisado antes de ejecutar](UGLY-STIK-PLAN-v5.md) · [Entrega v2](research/ugly-stik-model-v2.md).
+Revisión 7 · 2026-10-05 · **Geometría v3 y acabado visual v4 integrados; aceptación humana y rendimiento en hardware pendientes.** Variante: Jensen Ugly Stik 60 in / nitro .61. [Entrega y pruebas v3](research/ugly-stik-model-v3.md) · [Plan revisado antes de ejecutar](UGLY-STIK-PLAN-v5.md) · [Entrega v2](research/ugly-stik-model-v2.md).
 
 El objetivo es un avión reconocible, articulado y legible para el primer playtest. La ejecución ha completado el trabajo de código, medición y preparación que podía comprobarse en este entorno. No convierte las medidas del escaneo en certificación de un avión real ni sustituye la evaluación del piloto. Mini y gigante siguen para después.
 
@@ -19,13 +19,17 @@ El objetivo es un avión reconocible, articulado y legible para el primer playte
 
 El contrato integrado pasa **510 comprobaciones**, y `app/test.sh` pasa en el árbol compartido. La prueba desde clon limpio también pasa: suite completa, contrato y nueve capturas con la geometría final. [Evidencia reproducible](../research/ugly-stik/model-v3/validation.json).
 
-## Siguiente entrega visual
+## Entrega visual v4 integrada
 
-El propietario ha elegido rojo clásico con cruces y mayor detalle de motor, servos y herrajes. El [plan visual específico, revisión 4](UGLY-STIK-VISUAL-PLAN.md) organiza US-V01–08 y continúa US-06/07/08. Incorpora las [dos fotografías aportadas](research/ugly-stik-visual-photo-brief.md): campos blancos exteriores con cruces negras, puntas rojas, filetes oscuros y cola vertical blanca. Esta elección autoriza avanzar en el acabado; el ensayo humano pendiente servirá para ajustar su legibilidad. Las [diez investigaciones web de detalle y render](research/ugly-stik-visual-investigations/README.md) concretan materiales y montaje; las [diez nuevas sobre Godot y herramientas](research/ugly-stik-tooling-investigations/README.md) añaden decisiones sobre mallas, recursos, SVG, importación, comparación de imágenes y perfilado. La implementación visual todavía está pendiente.
+El [plan visual, revisión 5](UGLY-STIK-VISUAL-PLAN.md) se ejecutó sobre v3: rojo clásico con cruces, festoneado, motor con culata dorada y mofle con nervaduras según las nuevas fotos, servos genéricos, varillas de longitud constante y herrajes. [Reporte y límites](research/ugly-stik-model-v4.md) · [Galería de 95 capturas](../research/ugly-stik/model-v4/review.html).
+
+Los contratos integrados pasan **807 + 289 comprobaciones**, y el barrido incluye 71 poses con órdenes de vuelo reales. Las 36 vistas de orientación se reprodujeron con hashes idénticos; un clon limpio reprodujo las dos vistas finales. La última suite completa `app/test.sh` también pasa; el reporte conserva por separado los fallos anteriores durante trabajo paralelo y la comprobación del commit base. La ejecución no modifica física ni cámaras del otro frente.
+
+La evidencia cuantitativa v3 anterior permanece como línea base histórica. V4 montada registra **74 mallas visibles, 27.040 triángulos y 23 materiales**. Sigue pendiente medir rendimiento en la GPU objetivo. La lectura humana usa ahora el [formulario v4](../research/ugly-stik/model-v4/readability36/review.html), con revisión y hash de manifiesto en las respuestas.
 
 ## Siguiente ciclo de aceptación
 
-1. Abrir el [ensayo de lectura](../research/ugly-stik/model-v3/captures/review.html), registrar las respuestas antes de desplegar cada clave y descargar el JSON. Revisar errores y dudas por distancia/fondo. Priorizar los que impidan reconocer la orientación; comparar cualquier cambio de acabado con idéntica cámara y geometría.
+1. Abrir el [ensayo de lectura v4](../research/ugly-stik/model-v4/readability36/review.html), registrar las respuestas antes de desplegar cada clave y descargar el JSON. Revisar errores y dudas por distancia/fondo. Priorizar los que impidan reconocer la orientación; comparar cualquier cambio de acabado con idéntica cámara y geometría.
 2. Probar la aplicación en el equipo del propietario y registrar dispositivo, resolución, cámara y coste de CPU/GPU. Optimizar únicamente donde esa medición lo justifique; guardar otra captura y repetir el contrato tras cambiar mallas.
 3. Entregar los contactos y convenciones de giro a E1/E2. La API visual ya está lista; la simulación debe proporcionar ángulos y fuerzas. Una elección de motor comercial abre una tarea dimensional concreta, no una sustitución automática del Jensen por otro Stick.
 4. Si se necesita fidelidad de réplica, resolver datum de empuje, zonas ocultas del fuselaje y escalas contradictorias con una fuente adicional o medidas de una construcción. Mantener las estimaciones actuales identificadas hasta entonces.

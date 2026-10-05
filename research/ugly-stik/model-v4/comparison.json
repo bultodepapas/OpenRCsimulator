@@ -1,0 +1,91 @@
+{
+  "baseline_root": "/home/bulto/OpenRCsimulator/research/ugly-stik/model-v3",
+  "caption_rows_excluded": 90,
+  "difference_metrics_use_unamplified_pixels": true,
+  "comparisons": [
+    {
+      "file": "top.png",
+      "baseline_file": "inspection/top.png",
+      "current_file": "inspection/top.png",
+      "status": "compared",
+      "difference_file": "differences/top-diff-x4.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "region_px": {
+        "left": 0,
+        "top": 90,
+        "right": 1280,
+        "bottom": 720
+      },
+      "mean_absolute_channel_difference": 6.16927414021164,
+      "rms_channel_difference": 30.043329540706413,
+      "changed_pixel_count": 85316,
+      "changed_pixel_fraction": 0.10579861111111111,
+      "difference_display_gain": 4.0
+    },
+    {
+      "file": "side.png",
+      "baseline_file": "inspection/side.png",
+      "current_file": "inspection/side.png",
+      "status": "compared",
+      "difference_file": "differences/side-diff-x4.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "region_px": {
+        "left": 0,
+        "top": 90,
+        "right": 1280,
+        "bottom": 720
+      },
+      "mean_absolute_channel_difference": 4.807615327380953,
+      "rms_channel_difference": 23.567863102893728,
+      "changed_pixel_count": 84110,
+      "changed_pixel_fraction": 0.1043030753968254,
+      "difference_display_gain": 4.0
+    },
+    {
+      "file": "three-quarter-neutral.png",
+      "baseline_file": "inspection/three-quarter-neutral.png",
+      "current_file": "inspection/three-quarter-neutral.png",
+      "status": "compared",
+      "difference_file": "differences/three-quarter-neutral-diff-x4.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "region_px": {
+        "left": 0,
+        "top": 90,
+        "right": 1280,
+        "bottom": 720
+      },
+      "mean_absolute_channel_difference": 6.893914103835979,
+      "rms_channel_difference": 32.057691255746015,
+      "changed_pixel_count": 82188,
+      "changed_pixel_fraction": 0.10191964285714286,
+      "difference_display_gain": 4.0
+    }
+  ],
+  "repeat_readability36": {
+    "expected_png_count": 36,
+    "primary_png_count": 36,
+    "repeat_png_count": 36,
+    "exact_png_hashes_match": true,
+    "missing_primary": [],
+    "missing_repeat": [],
+    "hash_mismatches": [],
+    "comparison_method": "SHA-256 over each PNG byte stream; the repeated readability36 run is temporary."
+  },
+  "dependency": {
+    "name": "Pillow",
+    "required_version": "11.3.0",
+    "installed_version": "11.3.0",
+    "exact_version_match": true
+  },
+  "approval_threshold_used": false,
+  "interpretation": "Image differences and summary metrics are diagnostic only; no approval threshold is applied."
+}

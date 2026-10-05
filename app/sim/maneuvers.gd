@@ -24,6 +24,15 @@ static func all() -> Dictionary:
 		glide_15 = { mode = "glide", speed = 15.0, duration = 5.0, sticks = func(_t: float, _s: PackedFloat64Array) -> Dictionary: return _hands_off() },
 		pull_throttle = { mode = "level", speed = 15.0, duration = 3.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary: return _pulse(t, 0.25, 1.75, { pitch = 0.5, throttle_delta = 0.7 }) },
 		slow_flight = { mode = "level", speed = 12.0, duration = 10.0, sticks = func(_t: float, s: PackedFloat64Array) -> Dictionary: return _altitude_hold(s) },
+		symmetric_stall = { mode = "glide", speed = 12.0, duration = 4.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary: return _pulse(t, 0.25, 4.0, { pitch = 1.0 }) },
+		# Power-off spin entry (full up elevator + full right rudder), then the standard recovery (opposite rudder,
+		# stick forward) held until the rotation stops (0.9 s), then neutral.
+		spin_right = { mode = "level", speed = 12.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
+			var c := _pulse(t, 0.25, 4.0, { pitch = 1.0, yaw = 1.0 })
+			if t >= 4.0 and t < 4.9:
+				c = { roll = 0.0, pitch = -0.5, yaw = -1.0, throttle_delta = 0.0 }
+			c.throttle_delta = -1.0
+			return c },
 		rudder_doublet = { mode = "level", speed = 15.0, duration = 3.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
 			return _pulse(t, 0.5, 1.0, { yaw = 1.0 }) if t < 1.0 else _pulse(t, 1.0, 1.5, { yaw = -1.0 }) },
 	}

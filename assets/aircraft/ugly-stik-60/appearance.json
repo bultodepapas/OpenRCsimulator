@@ -1,0 +1,53 @@
+{
+  "id": "jensen-61-classic-red-v4",
+  "kind": "artistic_estimate",
+  "source": "Owner reference photos A/B; docs/research/ugly-stik-visual-photo-brief.md",
+  "palette": {
+    "red": "#c8102e",
+    "white": "#f7f6f1",
+    "black": "#111216"
+  },
+  "atlas_size_px": 1024,
+  "wing": {
+    "field_semispan_fraction": [
+      0.53,
+      0.9
+    ],
+    "cross_center_semispan_fraction": 0.715,
+    "cross_center_chord_fraction": 0.51,
+    "cross_size_m": 0.195,
+    "border_width_m": 0.003
+  },
+  "fin": {
+    "cross_center_height_m": 0.105,
+    "cross_center_chord_z_m": -0.035,
+    "cross_size_m": 0.119
+  },
+  "dorsal": {
+    "center_z_m": 0.275,
+    "field_width_m": 0.061,
+    "field_length_m": 0.07,
+    "cross_size_m": 0.046
+  },
+  "underside": {
+    "kind": "artistic_proposal",
+    "description": "Same composition as upper wing; not documented in the owner's photographs"
+  },
+  "scallops": {
+    "kind": "artistic_estimate",
+    "source": "Jensen plan trailing-edge silhouette; depth and regular spacing simplified",
+    "pitch_m": 0.0508,
+    "depth_m": 0.0028
+  },
+  "materials": {
+    "kind": "artistic_estimate",
+    "note": "Profiles in ugly_stik_finish.gd; roughness chosen by comparable captures, not measured BRDF"
+  },
+  "rasterization": "Godot SVG Image.load_svg_from_string from compiled source at 1024px, mipmaps, linear anisotropic; same SVG checked in for editing/import comparison; no editor cache required at runtime",
+  "rib_hints": {
+    "kind": "artistic_estimate",
+    "pitch_m": 0.0508,
+    "opacity": 0.035,
+    "note": "Faint film-over-rib lines only; no claim of measured internal structure"
+  }
+}

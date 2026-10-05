@@ -36,17 +36,28 @@ func _initialize() -> void:
 	var linear := model.duplicate()
 	linear.erase("envelope")
 
-	# 1. Oracle: inside |α| < 8°, |β| < 15° the loads are EXACTLY the linear model's (500 seeded random states).
+	# 1. Oracle: where the flow is attached at every wing strip (|α_i| < 8°) and |β| < 15°, the loads are
+	#    EXACTLY the linear model's (500 seeded random states; samples with a station beyond 8° are skipped).
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 9
 	var exact := true
-	for i in 500:
+	var tested := 0
+	while tested < 500:
 		var s := _state(rng.randf_range(3.0, 40.0), deg_to_rad(rng.randf_range(-8.0, 8.0)), deg_to_rad(rng.randf_range(-15.0, 15.0)),
 			M.v3(rng.randf_range(-4, 4), rng.randf_range(-2, 2), rng.randf_range(-2, 2)))
-		var d := { elevator = rng.randf_range(-0.35, 0.35), aileron_right = rng.randf_range(-0.35, 0.35), aileron_left = rng.randf_range(-0.35, 0.35), rudder = rng.randf_range(-0.44, 0.44) }
 		var air := Air.compute(s, M.v3(0, 0, 0))
+		var tip_y: float = env.station_ys[env.station_ys.size() - 1] # outermost strip: the largest local α change
+		if absf(_station_alpha(air, s, tip_y, -1.0)) >= deg_to_rad(8.0) or absf(_station_alpha(air, s, tip_y, 1.0)) >= deg_to_rad(8.0):
+			continue
+		tested += 1
+		var d := { elevator = rng.randf_range(-0.35, 0.35), aileron_right = rng.randf_range(-0.35, 0.35), aileron_left = rng.randf_range(-0.35, 0.35), rudder = rng.randf_range(-0.44, 0.44) }
 		exact = exact and Aero.loads(s, air, d, model, 1.225) == Aero.loads(s, air, d, linear, 1.225)
-	_check("oracle: |α| < 8°, |β| < 15° → loads identical to the linear model (500 states)", exact)
+	_check("oracle: attached flow at every strip, |β| < 15° → loads identical to the linear model (500 states)", exact)
+	# A fast roll at low speed stalls the down-going tip even though the body α is moderate (D9b): not the oracle.
+	var tip := _state(9.0, deg_to_rad(7.0), 0.0, M.v3(3.0, 0.0, 0.0))
+	var tip_air := Air.compute(tip, M.v3(0, 0, 0))
+	_check("tip stall: 9 m/s, α 7°, rolling 3 rad/s → the right tip is past the stall (loads differ)", rad_to_deg(_station_alpha(tip_air, tip, env.station_ys[env.station_ys.size() - 1], 1.0)) > 12.1
+		and Aero.loads(tip, tip_air, zero_d(), model, 1.225) != Aero.loads(tip, tip_air, zero_d(), linear, 1.225))
 
 	# 2. Every attitude: finite and continuous coefficients (α −180…180°, β −90…90°, steps of 0.1°).
 	var zero := { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
@@ -123,6 +134,16 @@ func _initialize() -> void:
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func zero_d() -> Dictionary:
+	return { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
+
+
+## Local α of a half-wing station (side −1 left, +1 right), as physics/aero.gd computes it.
+func _station_alpha(air: Dictionary, s: PackedFloat64Array, y: float, side: float) -> float:
+	var v: PackedFloat64Array = air.v_air
+	return atan2(v[2] + side * s[RB.RATE] * y, v[0] - side * s[RB.RATE + 2] * y)
 
 
 ## Airspeed when the altitude-holding airplane first sinks 0.5 m below its start (the wing can no longer hold it).

@@ -27,6 +27,9 @@ var aux := PackedFloat64Array([0.0])
 ## pre_step(aux, inputs, dt) -> PackedFloat64Array: new aux values. Runs at the fixed tick, so it stays deterministic.
 var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 	return a
+## rotor_momentum(aux) -> PackedFloat64Array: angular momentum of spinning parts in body axes (N·m·s), or empty.
+var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Array:
+	return PackedFloat64Array()
 
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
@@ -73,9 +76,10 @@ func step() -> void:
 	var t := time()
 	aux = pre_step.call(aux, inputs, dt())
 	last_loads = loads.call(state, t)
+	var h: PackedFloat64Array = rotor_momentum.call(aux) # held constant during RK4, like aux
 	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
 		var l: PackedFloat64Array = loads.call(s, t)
-		return RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity)
+		return RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, h)
 	previous = state
 	state = RK.rk4_step(state, dt(), f)
 	tick += 1

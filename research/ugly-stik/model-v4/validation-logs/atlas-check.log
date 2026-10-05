@@ -1,0 +1,61 @@
+Atlas verification: compile, clean import byte match, stale-source mutation
+repository root: /tmp/openrc-visual-v4.fxc0mV
+== Generated appearance is current ==
+$ /usr/bin/python3 /tmp/openrc-visual-v4.fxc0mV/assets/aircraft/ugly-stik-60/compile_appearance.py --check
+Appearance source, generated data and SVG match
+exit code: 0
+== Import SVG in a clean temporary Godot project ==
+$ /tmp/openrc-visual-v4.fxc0mV/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --editor --path /tmp/openrc-atlas-godot-y5hmefx_/godot-project --import
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (2 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | livery.svg[39m[0m
+[  50% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+exit code: 0
+imported texture: 9978 bytes
+== Compare imported texture bytes with Image.load_svg_from_string ==
+$ /tmp/openrc-visual-v4.fxc0mV/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /tmp/openrc-atlas-godot-y5hmefx_/godot-project --script res://compare_import.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SVG editor/runtime raster match: true size=(1024, 1024)
+exit code: 0
+== Mutation check rejects a changed SVG in the disposable source tree ==
+$ /usr/bin/python3 /tmp/openrc-atlas-mutation-zk3qxklp/assets/aircraft/ugly-stik-60/compile_appearance.py --check
+Traceback (most recent call last):
+  File "/tmp/openrc-atlas-mutation-zk3qxklp/assets/aircraft/ugly-stik-60/compile_appearance.py", line 49, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/openrc-atlas-mutation-zk3qxklp/assets/aircraft/ugly-stik-60/compile_appearance.py", line 46, in main
+    assert path.read_text()==text,f'Stale {path.name}; rerun compile_appearance.py'
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Stale livery.svg; rerun compile_appearance.py
+exit code: 1
+mutation rejected as expected
+RESULT: PASS — source current; imported/runtime bytes match; stale SVG rejected
