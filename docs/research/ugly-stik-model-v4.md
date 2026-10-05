@@ -73,3 +73,17 @@ Los logs anteriores se conservan para distinguir desarrollo paralelo de regresi�
 La inspección tres cuartos registra 314 draw calls del fotograma completo; el primer plano de servos registra 171. Las cámaras y objetos visibles difieren, así que no son presupuestos intercambiables del modelo. Las tres muestras de pared de tres cuartos fueron 51,054 / 45,634 / 73,201 ms. Se capturó con Godot 4.7.2, Compatibility/OpenGL, 1280 × 720, `msaa_3d=2`, Mesa llvmpipe LLVM 20.1.2. Son diagnósticos en renderizado por software, con otras validaciones activas en el host; **no constituyen un benchmark GPU**. Los manifiestos conservan luces, cámara, contadores y hashes por fuente.
 
 El incremento geométrico se concentra en siluetas, motor y montaje. Quedan pendientes el ensayo del piloto, perfilado CPU/GPU en el equipo objetivo y decisiones de simplificación basadas en esa medición. No se declara fidelidad comercial exacta, aceptación humana ni rendimiento objetivo por generar capturas. Mini/gigante, interior completo, transparencia, efectos de hélice y simulación mecánica continúan como trabajo posterior.
+
+## Revalidación del árbol integrado
+
+2026-10-05 · Base `dbe0cb2`, árbol compartido con trabajo paralelo ajeno al modelo. Al retomar la solicitud de aplicar el plan se comprobó que la implementación v4 ya estaba integrada en el constructor usado por el simulador. Esta pasada no modifica geometría, acabado ni código de ejecución: corrige estados documentales obsoletos y registra comprobaciones nuevas.
+
+[Evidencia y hashes de las fuentes](ugly-stik-revalidation-2026-10-05/validation.json):
+
+- `compile_geometry.py --check` y `compile_appearance.py --check`: fuentes y salidas coincidentes.
+- [`app/test.sh`](ugly-stik-revalidation-2026-10-05/app-tests.log): pasa, incluido el contrato del modelo **807/0**, vuelo trimado y estado físico idéntico a 30/60/144 FPS. El log conserva un aviso de fuga ObjectDB del ensayo de radio; no hubo errores de motor ni comprobaciones fallidas.
+- [`verify_controls.gd`](ugly-stik-revalidation-2026-10-05/controls.log): **289/0**, error máximo de cierre y longitud 0,000000060 m.
+- [Atlas en proyecto temporal limpio](ugly-stik-revalidation-2026-10-05/atlas.log): importación y rasterización runtime idénticas; la mutación de SVG desactualizado se rechaza.
+- [Capturas nuevas de presentación](ugly-stik-revalidation-2026-10-05/beauty.log): `beauty-a-dark.png` y `beauty-b-sky.png` coinciden por SHA-256 con ambas imágenes de la entrega. Se revisó visualmente la vista general y el perfil; los PNG repetidos quedaron temporales para evitar duplicar evidencia idéntica. No se repitió toda la galería de 95 imágenes.
+
+La auditoría del plan y del constructor no encontró una mejora de código pendiente dentro del alcance visual solicitado. Se corrigieron la frase que aún declaraba todos los pasos pendientes, las descripciones antiguas de caché/destino y la identificación del plan v5 como archivo histórico. Continúan pendientes las respuestas humanas de orientación y las medidas de rendimiento en la GPU del propietario.

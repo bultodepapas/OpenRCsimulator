@@ -16,8 +16,11 @@ The simulator is the **Godot 4.7 app in `app/`** (Gate 1, 2026-10-05). `prototyp
 | Get the pinned Godot (verified SHA-512) | `app/get-godot.sh` → `.tools/` |
 | Run the app (needs a display) | `$(app/get-godot.sh) --path app`: starts in trimmed level flight, engine running. Add `-- --scripted` for the Stage 0/1 circle. Keys: arrows/A/D fly, W/S throttle, R restart, P resume, C camera, T record trace. A USB radio/joystick flies instead while connected (EdgeTX: AETR order; the throttle stays at idle until moved to low = armed; unplugging pauses; K calibrates, Enter per step, Esc cancels) |
 | Headless flight trace | `$(app/get-godot.sh) --headless --path app -- --trace=/tmp/t.csv --t=3` (CSV `openrc-trace v2`, one row per 240 Hz tick) |
-| All checks, headless (~30 s): float64 guard, parse check of every script, unit tests, end-to-end input tests, the model team's contract (`aircraft/verify_model.gd`), the real app's trimmed flight (`--trace` + `tests/check_trimmed_flight.py`), frame-rate independence (30/60/144 fps), and failure on any engine error | `app/test.sh` |
+| All checks, headless (~45 s): float64 guard, parse check of every script, unit tests, end-to-end input tests (keyboard and a fake radio), flight modes, flown handling/stall/spin/crash checks, golden flights (`tests/golden/`, re-record only for a deliberate physics change with `tests/record_golden.gd`), the model team's contract (`aircraft/verify_model.gd`), the real app's trimmed flight (`--trace` + `tests/check_trimmed_flight.py`), frame-rate independence with injected keys (30/60/144 fps), and failure on any engine error | `app/test.sh` |
 | Captures (needs `xvfb-run`) | `app/capture.sh` → `app/captures/*.png` (not tracked in git; CI uploads them as artifacts) |
+| Release builds (Windows, Linux, macOS) with smoke tests, zips and `SHA256SUMS` | `app/export.sh` → `dist/` (downloads the 1.28 GB export templates once, SHA-512 verified). CI runs it on `main` and `v*` tags; a `v*` tag also publishes a GitHub prerelease |
+| Physics cost per tick | `$(app/get-godot.sh) --headless --path app --script res://tests/bench_physics.gd` |
+| Sensitivity sweep and validation table | `$(app/get-godot.sh) --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"` |
 | CI locally (needs Docker) | `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app` |
 | Archived three.js build (Node 24, see `.nvmrc`) | `cd prototypes/stage0/three && npm ci && npm test && npm run capture && npm run e2e` |
 

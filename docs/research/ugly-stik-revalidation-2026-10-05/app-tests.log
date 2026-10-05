@@ -1,0 +1,368 @@
+== float64 guard: no 32-bit math types in simulation code
+== parse check: every script
+== test_aero.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+22 checks, 0 failed
+== test_air_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_aircraft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+38 checks, 0 failed
+== test_controls.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+17 checks, 0 failed
+== test_crash.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   level at 0.30 m: clear of the ground  
+ok   level at 0.20 m: the wheels touch  
+ok   inverted at 0.35 m: clear  
+ok   inverted at 0.20 m: the fin touches  
+ok   knife edge at 0.70 m: the down wing tip touches  
+ok   knife edge at 0.85 m: clear  
+ok   vertical dive at 0.30 m: the spinner touches  
+CRASH at 15.0 m/s (sink 13.7 m/s) - restarting
+CRASH at 16.4 m/s (sink 10.9 m/s) - restarting
+CRASH at 21.1 m/s (sink 14.1 m/s) - restarting
+CRASH at 17.9 m/s (sink 11.2 m/s) - restarting
+CRASH at 22.4 m/s (sink 7.0 m/s) - restarting
+CRASH at 16.4 m/s (sink 13.1 m/s) - restarting
+CRASH at 13.1 m/s (sink 7.7 m/s) - restarting
+CRASH at 16.7 m/s (sink 2.5 m/s) - restarting
+CRASH at 8.9 m/s (sink 8.6 m/s) - restarting
+CRASH at 23.2 m/s (sink 10.4 m/s) - restarting
+CRASH at 15.7 m/s (sink 9.9 m/s) - restarting
+CRASH at 15.4 m/s (sink 4.4 m/s) - restarting
+CRASH at 17.2 m/s (sink 13.7 m/s) - restarting
+CRASH at 18.4 m/s (sink 13.3 m/s) - restarting
+CRASH at 13.8 m/s (sink 8.0 m/s) - restarting
+CRASH at 14.2 m/s (sink 5.6 m/s) - restarting
+CRASH at 18.0 m/s (sink 4.6 m/s) - restarting
+CRASH at 13.3 m/s (sink 8.8 m/s) - restarting
+CRASH at 11.2 m/s (sink 6.5 m/s) - restarting
+CRASH at 22.8 m/s (sink 8.5 m/s) - restarting
+CRASH at 17.6 m/s (sink 12.8 m/s) - restarting
+CRASH at 9.1 m/s (sink 5.4 m/s) - restarting
+CRASH at 11.4 m/s (sink 9.6 m/s) - restarting
+CRASH at 15.8 m/s (sink 7.1 m/s) - restarting
+CRASH at 16.2 m/s (sink 11.2 m/s) - restarting
+CRASH at 25.1 m/s (sink 13.6 m/s) - restarting
+CRASH at 23.2 m/s (sink 13.1 m/s) - restarting
+CRASH at 21.6 m/s (sink 9.3 m/s) - restarting
+CRASH at 22.0 m/s (sink 4.9 m/s) - restarting
+CRASH at 21.9 m/s (sink 15.3 m/s) - restarting
+CRASH at 21.8 m/s (sink 18.2 m/s) - restarting
+CRASH at 16.3 m/s (sink 7.3 m/s) - restarting
+CRASH at 12.5 m/s (sink 10.9 m/s) - restarting
+CRASH at 15.1 m/s (sink 8.9 m/s) - restarting
+CRASH at 14.5 m/s (sink 13.1 m/s) - restarting
+CRASH at 13.8 m/s (sink 12.8 m/s) - restarting
+CRASH at 15.6 m/s (sink 11.9 m/s) - restarting
+CRASH at 12.4 m/s (sink 11.1 m/s) - restarting
+CRASH at 15.0 m/s (sink 10.8 m/s) - restarting
+CRASH at 14.9 m/s (sink 12.3 m/s) - restarting
+CRASH at 14.3 m/s (sink 7.9 m/s) - restarting
+CRASH at 20.6 m/s (sink 10.4 m/s) - restarting
+CRASH at 17.4 m/s (sink 13.5 m/s) - restarting
+CRASH at 15.3 m/s (sink 14.0 m/s) - restarting
+CRASH at 18.2 m/s (sink 8.1 m/s) - restarting
+CRASH at 17.2 m/s (sink 4.9 m/s) - restarting
+CRASH at 16.3 m/s (sink 10.4 m/s) - restarting
+CRASH at 18.6 m/s (sink 9.3 m/s) - restarting
+CRASH at 19.9 m/s (sink 14.5 m/s) - restarting
+CRASH at 21.4 m/s (sink 6.5 m/s) - restarting
+CRASH at 16.3 m/s (sink 13.3 m/s) - restarting
+CRASH at 21.5 m/s (sink 10.5 m/s) - restarting
+CRASH at 21.1 m/s (sink 11.6 m/s) - restarting
+CRASH at 14.1 m/s (sink 9.8 m/s) - restarting
+CRASH at 15.1 m/s (sink 15.1 m/s) - restarting
+CRASH at 24.5 m/s (sink 11.2 m/s) - restarting
+CRASH at 23.9 m/s (sink 9.4 m/s) - restarting
+CRASH at 9.5 m/s (sink 7.5 m/s) - restarting
+CRASH at 18.6 m/s (sink 10.2 m/s) - restarting
+CRASH at 14.8 m/s (sink 14.3 m/s) - restarting
+CRASH at 15.5 m/s (sink 10.9 m/s) - restarting
+CRASH at 15.3 m/s (sink 8.6 m/s) - restarting
+CRASH at 21.7 m/s (sink 12.5 m/s) - restarting
+CRASH at 17.7 m/s (sink 12.0 m/s) - restarting
+CRASH at 17.0 m/s (sink 8.2 m/s) - restarting
+CRASH at 11.5 m/s (sink 11.2 m/s) - restarting
+CRASH at 13.6 m/s (sink 9.9 m/s) - restarting
+CRASH at 10.4 m/s (sink 6.8 m/s) - restarting
+CRASH at 7.6 m/s (sink 4.2 m/s) - restarting
+CRASH at 9.5 m/s (sink 7.3 m/s) - restarting
+CRASH at 18.2 m/s (sink 8.6 m/s) - restarting
+CRASH at 17.5 m/s (sink 10.7 m/s) - restarting
+CRASH at 10.1 m/s (sink 6.1 m/s) - restarting
+CRASH at 22.3 m/s (sink 15.4 m/s) - restarting
+CRASH at 10.6 m/s (sink 5.4 m/s) - restarting
+CRASH at 9.4 m/s (sink 7.9 m/s) - restarting
+CRASH at 19.9 m/s (sink 14.4 m/s) - restarting
+CRASH at 21.7 m/s (sink 7.9 m/s) - restarting
+CRASH at 13.1 m/s (sink 9.8 m/s) - restarting
+CRASH at 13.9 m/s (sink 8.7 m/s) - restarting
+CRASH at 23.1 m/s (sink 9.0 m/s) - restarting
+CRASH at 15.5 m/s (sink 9.7 m/s) - restarting
+CRASH at 17.8 m/s (sink 8.5 m/s) - restarting
+CRASH at 8.6 m/s (sink 7.2 m/s) - restarting
+CRASH at 18.8 m/s (sink 15.7 m/s) - restarting
+CRASH at 11.2 m/s (sink 9.8 m/s) - restarting
+CRASH at 14.6 m/s (sink 8.1 m/s) - restarting
+CRASH at 21.9 m/s (sink 8.3 m/s) - restarting
+CRASH at 27.0 m/s (sink 18.2 m/s) - restarting
+CRASH at 19.5 m/s (sink 11.5 m/s) - restarting
+CRASH at 12.4 m/s (sink 5.4 m/s) - restarting
+CRASH at 13.9 m/s (sink 6.9 m/s) - restarting
+CRASH at 12.5 m/s (sink 8.4 m/s) - restarting
+CRASH at 20.2 m/s (sink 8.4 m/s) - restarting
+CRASH at 20.4 m/s (sink 11.6 m/s) - restarting
+CRASH at 11.1 m/s (sink 9.9 m/s) - restarting
+CRASH at 12.6 m/s (sink 6.3 m/s) - restarting
+CRASH at 15.7 m/s (sink 11.9 m/s) - restarting
+CRASH at 19.0 m/s (sink 14.1 m/s) - restarting
+CRASH at 15.1 m/s (sink 11.7 m/s) - restarting
+ok   100 random crashes: detected, impact finite and shown, then restart at the trimmed start  
+CRASH at 10.0 m/s (sink 0.0 m/s) - restarting
+ok   crash freeze = 1.5 s (360 ticks)  360 ticks
+CRASH at 10.0 m/s (sink 0.0 m/s) - restarting
+ok   R during the freeze restarts at once  
+10 checks, 0 failed
+== test_e2e_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   hold -> roll +1, aileron +20°
+ok   release -> stick re-centers, aileron back to trim
+ok   throttle rose and holds after release
+ok   reset -> throttle back to its trimmed setting
+ok   physics: trimmed level flight holds altitude hands-off
+ok   physics: throttle back → descends
+ok   physics: R restarts at 30 m
+CRASH at 15.0 m/s (sink 0.0 m/s) - restarting
+ok   physics: ground contact → CRASH shown
+ok   physics: restarts by itself after the crash
+ok   T: recording shows in the panel
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-05T20-17-35.csv (120 rows)
+ok   T again: trace saved with ~0.5 s of ticks
+all e2e checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_e2e_radio.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   starts on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   radio connected with its device key
+ok   untouched throttle (reads mid-stick) keeps the engine at idle
+ok   panel says SAFE
+ok   throttle moved to 60 %: still SAFE
+ok   throttle low: ARMED
+ok   armed: full throttle
+ok   roll stick full right → +1 at once (radio positions are not rate-limited)
+ok   the simulation flies it (stick + trim, clamped)
+ok   elevator stick forward → pitch −1 (nose down)
+failsafe: radio disconnected
+ok   unplug: simulation paused
+ok   unplug: engine idle, sticks centred
+ok   unplug: panel says why
+ok   unplug: stays paused (no automatic resume)
+ok   P resumes on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   replug with the throttle stick high: SAFE, idle
+failsafe: calibrating radio
+ok   K starts the calibration (paused, step 1)
+radio calibrated: fake|1209:4f54|Fake EdgeTX
+ok   calibrated: aileron axis 3, rudder axis 0, elevator inverted
+ok   calibration saved for this device
+ok   after calibration: axis 3 flies the ailerons; armed by the low throttle
+failsafe: radio disconnected
+radio connected: fake|1209:4f54|Fake EdgeTX (calibrated profile)
+ok   replug loads the saved calibration
+failsafe: calibrating radio
+ok   Esc cancels; the calibration stays
+all e2e radio checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_engine_sound.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+7 checks, 0 failed
+== test_envelope.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   oracle: attached flow at every strip, |β| < 15° → loads identical to the linear model (500 states)  
+ok   tip stall: 9 m/s, α 7°, rolling 3 rad/s → the right tip is past the stall (loads differ)  
+ok   every α and β: finite coefficients  
+ok   continuous: largest change per 0.1° < 0.05  0.0213
+ok   lift peaks at CL_max 1.10 inside the blend  1.0999 at 12.7°
+ok   negative lift bottoms at CL_min -0.80  -0.8000
+ok   stall starts outside the ±8° oracle region  +12.1° / −10.9°
+ok   α 90°: flat-plate drag CD0 + CD90, ~no lift, strong nose-down moment  { &"CL": -0.0, &"CD": 1.2434, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.7508, &"Cn": 0.0 }
+ok   tail first (α 180°): pitch equilibrium is unstable (Cm grows with α)  -0.0423 → -0.0278
+ok   knife edge (β 90°): weathervane and side force still there  { &"CL": 0.1068, &"CD": 0.04463692638362, &"CY": -0.4889, &"Cl": -0.0545, &"Cm": -0.0278, &"Cn": 0.0723 }
+ok   refused: CL_max 0.6 would stall inside the oracle region  ["aero.envelope.CD90 = 1.2: the flat plate (peak CD90/2) must lift less than the stall limits", "aero.envelope: the stall blend would start at +5.6° / -10.9°, inside the ±8° linear-oracle region (raise CL_max / CL_min or narrow the blend)"]
+ok   refused: no envelope  
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   full envelope: slow flight stalls at 8.6–9.5 m/s (1-g CL_max speed 9.03)  8.88 m/s
+ok   linear oracle: holds altitude below 8 m/s (no stall: the D9a motivation)  7.68 m/s
+ok   tail slide at −8 m/s: 3 s of flight stay finite  [1.35236541689886, -7.67324114931413, -21.7881738846552, 9.23564731408087, 1.01950476080993, 9.39283096444128, -0.51413105469583, -0.32894739502684, 0.25335578909015, -0.75051563210696, -5.31469909508056, 0.29911792871392, -5.89172119890579]
+15 checks, 0 failed
+== test_frames.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+18 checks, 0 failed
+== test_golden.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   golden roll_15 replays (600 ticks): worst error: position 2.1316282072803006e-14 m, velocity 3.552713678800501e-15 m/s, attitude 5.551115123125783e-16, rate 2.7755575615628914e-16 rad/s
+ok   golden pull_throttle replays (720 ticks): worst error: position 1.4210854715202004e-14 m, velocity 3.552713678800501e-15 m/s, attitude 6.106226635438361e-16, rate 3.885780586188048e-16 rad/s
+ok   golden rudder_doublet replays (720 ticks): worst error: position 7.105427357601002e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 2.7755575615628914e-17, rate 1.7763568394002505e-15 rad/s
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 6.938893903907228e-18, rate 1.262177448353619e-29 rad/s
+4 golden flights, 0 failed
+== test_gyro.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   rotor angular momentum at full rpm ≈ 0.41 N·m·s  0.4086
+ok   pull up (q > 0), clockwise prop → nose yaws RIGHT (ṙ > 0)  Δṙ 1.295 rad/s²
+ok   size: Δω̇ = J⁻¹·(0, 0, q·h)  
+ok   yaw right (r > 0), clockwise prop → nose pitches DOWN (q̇ < 0)  Δq̇ -1.875 rad/s²
+ok   torque-free tumble with the rotor: total angular momentum conserved to 1e-6 over 60 s  2.1890325876759904e-11
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   flown pull-up at full throttle: yaw rate more to the right with the gyro  r -0.009 vs -0.137 rad/s
+6 checks, 0 failed
+== test_handling.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   trim α at 15 m/s within 3.6° ± 0.5  3.71°
+ok   hands-off 5 s: altitude and speed hold  Δalt 0 m
+ok   roll_15 coordinated: roll rate 144°/s ± 7 % (single-axis prediction)  148.6°/s
+ok   roll_15 feet still: adverse yaw slows the roll 10–20 %  123.0°/s (83 % of coordinated)
+ok   roll_20 coordinated: roll rate 192°/s ± 7 % (single-axis prediction)  189.4°/s
+ok   roll_20 feet still: adverse yaw slows the roll 10–20 %  165.9°/s (88 % of coordinated)
+ok   glide L/D at 15 m/s = 8.46 ± 2 %  L/D 8.46
+ok   pull + throttle: climbs  30.8 m
+ok   right rudder first: yaw rate goes right first  8.07 rad/s
+9 checks, 0 failed
+== test_integrator.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   free fall: ½gt² after 10 s err 5.286437954055145e-12 m
+ok   tilted fall stays vertical drift 3.2376299394153163e-12 m
+ok   constant force: ½at² err -3.836930773104541e-13 m
+ok   spin 60 s: energy conserved worst rel 3.480865527503368e-12
+ok   spin 60 s: world angular momentum conserved worst rel 9.50327010917384e-11
+ok   quaternion stays unit 
+ok   stress case really flips 
+ok   4th-order convergence errors 5.236970999078494e-07 3.3002987009922435e-08 2.0708714743022938e-09, ratios 15.9 15.9
+ok   speed ≥ 20× real time at 240 Hz 41× (2400 steps in 0.244 s, 101.5 µs/step)
+9 checks, 0 failed
+== test_math3d.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_modes.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+34 checks, 0 failed
+== test_pilot_aids.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+20 checks, 0 failed
+== test_propulsion.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data with propulsion loads []
+ok   static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N 41.25 N
+ok   T/W ≈ 1.6 (vertical capable) 1.62
+ok   static power balance closes 974 W
+ok   Ct at a knot 
+ok   Ct between knots 
+ok   Ct for J < 0 = static 
+ok   Ct beyond the data goes negative (windmill drag), floored -0.04781904761905
+ok   thrust falls with airspeed 41.3 > 32.6 > 4.7 N
+ok   past zero-thrust speed the prop drags -8.49 N at 50 m/s
+ok   power rolls the airplane left (Mx < 0) -0.834 N·m
+ok   stopped engine: no loads 
+ok   63.2 % of the step after τ 0.6321
+ok   lag is exact: 60 small steps = 1 big step 8077.574546 vs 8077.574546
+ok   throttle 0 → idle, throttle clamps 
+ok   finite at any airspeed 
+16 checks, 0 failed
+== test_rc_calibration.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+18 checks, 0 failed
+== test_rc_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+41 checks, 0 failed
+== test_rigid_body.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+14 checks, 0 failed
+== test_servo.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+6 checks, 0 failed
+== test_simulation.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_spin.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stalled (α 16°), no rotation: no stall roll or yaw moment  { &"CL": 0.61681504435107, &"CD": 0.14002031093278, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.22833887603416, &"Cn": 0.0 }
+ok   α 5°: roll damping = the linear oracle's (attached flow at every strip)  -0.451322 vs -0.451322 (Clp -0.4496)
+ok   κ: the strips reproduce |Clp| in attached flow  
+ok   α 13.5° (stall break): roll damping turns positive → autorotation  0.448
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   symmetric airplane: stalls (α > 20°) without rolling (< 0.5°)  α max 45°, roll max 0.00°
+ok   inventory airplane (Jxy -0.0023): the stall drops a wing  roll max 76°
+ok   cross-controlled stall → right spin: mean yaw rate 3–10 rad/s over 2.5–4 s (about 1 turn/s)  6.96 rad/s
+ok   spin sink rate 6–14 m/s  9.4 m/s
+ok   standard recovery (opposite rudder, forward stick, 0.9 s): rotation stopped and stays stopped from 6 s  
+9 checks, 0 failed
+CRASH at 22.3 m/s (sink -1.5 m/s) - restarting
+== test_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+19 checks, 0 failed
+== test_trim.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Gaussian elimination solves a known system 8.881784197001252e-16
+ok   level 15 m/s trims (six axes, with throttle) trimmed
+ok   trim alpha 3.6° ± 0.5° 3.71°
+ok   thrust ≈ drag ≈ 3 N 3.019 N at throttle 0.280 (5139 rpm)
+ok   up elevator trim (borrowed Cm0 < 0) pitch trim 0.235
+ok   prop torque trimmed out with small aileron/rudder roll trim 0.0222, yaw trim 0.0066, beta -0.059°
+ok   converged tightly residual 1.201199766213212e-13 in 4 iterations
+ok   level flight holds ±1 m for 30 s Δalt -0.0000 m
+ok   no spiral: heading holds within 1° for 30 s Δheading -0.0000°
+ok   25 m/s: less alpha, more throttle alpha 0.49°, throttle 0.681
+ok   glide 15 m/s trims trimmed
+ok   glide ratio ≈ 8.5 L/D 8.46, glide angle -6.74°
+ok   glide: no lateral trim needed 
+ok   5 m/s is impossible and says why needs 46.5° of elevator, more than the 20.0° throw
+14 checks, 0 failed
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== app: headless --trace starts in trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.280, 5139 rpm, trims ail +0.0222 elev +0.2353
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+ticks=480 frames=61 throttle=0.5302 state_sha256=b9a764f53d4632a2256b63a46b712a670efca567be0351d12e80a2d9ccbf7360
+ticks=480 frames=121 throttle=0.5302 state_sha256=b9a764f53d4632a2256b63a46b712a670efca567be0351d12e80a2d9ccbf7360
+ticks=480 frames=289 throttle=0.5302 state_sha256=b9a764f53d4632a2256b63a46b712a670efca567be0351d12e80a2d9ccbf7360
+identical

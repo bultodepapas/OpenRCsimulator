@@ -75,6 +75,9 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Godot specifics
 
+- **A source-read claim is still a claim until a build tests it.** The export research said `.json` files are left out without an include filter, and that the app would refuse to fly. Exporting without the filter showed the opposite in 4.7.2: the JSON is a recognised resource and `all_resources` ships it. The smoke test of the exported binary decided it, and a mutation that really removes the data (`exclude_filter="data/*"`) showed the test has teeth. The same smoke test exposed that `--trace` on invalid data recorded a ballistic fall instead of failing; it now exits 1. (2026-10-05)
+- **A macOS export from Linux can be checked without a Mac.** Parsing the zip's Mach-O (fat header → each slice's `LC_CODE_SIGNATURE` → the CodeDirectory's `CS_ADHOC` flag) verifies "universal and ad-hoc signed" in 60 lines of Python. Even an export with signing disabled carries a (non-ad-hoc) signature from the template, so checking only for "signed" would pass the wrong build. (2026-10-05)
+
 - **Wait for ticks, not seconds, in end-to-end tests.** A first radio test waited `create_timer(0.05)` after a connection and once read the old keyboard throttle: no physics tick had run yet (most likely a slow first frame consumed the timer). `await physics_frame` fires *before* a tick, so four awaits guarantee three complete ticks; two `process_frame` awaits then let the panel update. Five repeated runs passed after the change. (2026-10-05)
 - **A fake joypad works headless:** emit `Input.joy_connection_changed` with id 15 and inject `InputEventJoypadMotion` events; `Input.get_joy_axis(15, axis)` then returns the injected values. Replace anything that calls `get_joy_guid`/`get_joy_info` on the fake id, because those print engine errors that fail `test.sh`. Godot keeps the fake device's last axis values after an unplug, which made "replug with the throttle high stays safe" testable. (2026-10-05)
 
@@ -113,6 +116,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **A script-only project needs no editor and no import step.** Godot ran straight from text files; the pinned binary is 78 MB to download (146 MB unpacked) and is verified by SHA-512. (2026-10-05)
 
 ## CI
+
+- **`act` needs `--artifact-server-path` for `upload-artifact` v4.** Without it the step fails locally while the job is fine; with it, `act -j export` ran the whole release job in a clean container (template download, three exports, smoke test, signature check, artifact upload). (2026-10-05)
 
 - **`act` is not a clean checkout.** It copies the working directory, including ignored and untracked folders. After `app/captures/` was untracked, GitHub's fresh checkout lacked the folder, Godot could not save the PNG (error 7), and CI went red; locally and in `act` it passed. *Now:* `capture.sh` and the app create their output folders. Changes to `.gitignore`, paths or generated files are verified from a fresh `git clone` (with `.tools/` linked in). (2026-10-05)
 
@@ -163,3 +168,5 @@ Practical lessons from **actually building and running** things, as opposed to r
 - Con desarrollo paralelo hay que distinguir un fallo del cambio y uno de la base: el `oracle` de aerodinámica falló también al extraer el commit confirmado sin el modelo v4. Los contratos visuales y dos capturas sí se reprodujeron en clon limpio. No se reparó física ajena para hacer pasar la entrega del modelo; la última suite integrada pasó tras los cambios del otro frente, con vuelo trimado y estado idéntico a 30/60/144 fps.
 
 Prueba y archivos: [reporte v4](docs/research/ugly-stik-model-v4.md), [validación](research/ugly-stik/model-v4/validation.json), [galería](research/ugly-stik/model-v4/review.html).
+
+- **US-V01–08, revalidación:** un plan con estado de entrega actualizado puede conservar instrucciones antiguas que declaran los mismos pasos pendientes. Antes de volver a implementar, contrastar el adaptador real, fuentes generadas, contratos y capturas: en esta pasada v4 ya estaba integrada, 807 + 289 comprobaciones pasaron y ambas vistas de presentación conservaron sus hashes. Se corrigieron los estados documentales; lectura humana y GPU objetivo siguen abiertas. [Evidencia](docs/research/ugly-stik-model-v4.md#revalidación-del-árbol-integrado). (2026-10-05)

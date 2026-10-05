@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-05",
+  "base_commit": "dbe0cb269e5ed3b3e6d8510ac21c29653d3f53be",
+  "scope": "Revalidation of existing v4 implementation; no new model geometry or runtime code. Shared working tree has unrelated changes.",
+  "checks": {
+    "app_test_sh": "pass",
+    "model_contract": {
+      "checks": 807,
+      "failed": 0
+    },
+    "controls": {
+      "checks": 289,
+      "failed": 0
+    },
+    "geometry_compiler": "pass",
+    "appearance_compiler": "pass",
+    "atlas_clean_import_and_stale_source_mutation": "pass",
+    "fixed_fps": [
+      30,
+      60,
+      144
+    ],
+    "identical_physics_state": true
+  },
+  "captures": [
+    {
+      "reference": "research/ugly-stik/model-v4/beauty/beauty-a-dark.png",
+      "sha256": "40a44bdd409e896ba8f768b0d7126e8ed36e0433a27825c2ef60d1cc525181df",
+      "matches_reference": true
+    },
+    {
+      "reference": "research/ugly-stik/model-v4/beauty/beauty-b-sky.png",
+      "sha256": "1bae06994e43326152ff2778801d1b9407b64f8ee89a224b7ee7fb2a87e3f9b9",
+      "matches_reference": true
+    }
+  ],
+  "source_sha256": {
+    "app/aircraft/inspect_model.gd": "76022a6d1d4c000a7ee5854b4cd0f186f1d7c35efb9618062d0fb420aa7b1b72",
+    "app/aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+    "app/aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+    "app/aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+    "app/aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+    "app/aircraft/ugly_stik_equipment.gd": "736f1a5f10a2285ae4149de6bda4b4c4d067e14aa07d13bcc91c0a286cc1467a",
+    "app/aircraft/ugly_stik_finish.gd": "daa4c30ccffbb4020483409609e1c9985c7f2dcc6022b6fc923590ab5fc5e345",
+    "app/aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+    "app/aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+    "app/aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+    "app/aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+    "app/aircraft/visual_checks.gd": "010d967f4e9d34be97a16ca263b4dedbd51b08b243b11106a65ec29e6d647e11",
+    "app/render/airplane.gd": "d65c1818d966e75145f23e966aac455e22c25bb50def03613f8a2cf8c0087abf",
+    "assets/aircraft/ugly-stik-60/appearance.json": "d1dfe1265172533b65136b998d9bec4e4cf6e4ecd72d4dcf83bfb5cb2addeafa",
+    "assets/aircraft/ugly-stik-60/geometry.json": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
+  },
+  "logs_sha256": {
+    "app-tests.log": "244921cea47e1c7c8fd1501161175a58c802b10b46058a12cc449cadb161aa82",
+    "controls.log": "37ae14622ca2079823009e0657956c828c42aff954b1baf4f332d8104f2c9d46",
+    "atlas.log": "1dc68c9443a44ea3184d3f7e8e9473121f8520abaaf6017455c452ed6cb8a1f1",
+    "beauty.log": "38ab8ea78c2205e054247379efe2973ace7535dada21e8e5589bddbb9a762896"
+  },
+  "limitations": [
+    "Two beauty captures repeated; full 95-image suite not rerun.",
+    "Pilot orientation responses and target GPU performance remain pending.",
+    "Existing ObjectDB leak warning in radio e2e log; no engine errors or failed checks."
+  ]
+}

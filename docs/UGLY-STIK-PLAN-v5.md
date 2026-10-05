@@ -1,3 +1,5 @@
+> Archivo histórico de la revisión 5, anterior a la ejecución. La pausa descrita aquí terminó: el [plan vigente](UGLY-STIK-PLAN.md) registra la geometría v3 y el [plan visual](UGLY-STIK-VISUAL-PLAN.md) registra el acabado v4 integrado.
+
 # Ugly Stik .61: plan de modelado en paralelo
 
 Revisión 5 · 2026-10-05 · **Pausa de implementación solicitada por el propietario; revisión y planificación completadas.** Base actual: Jensen Ugly Stik 60 in / nitro .61, modelo v2. [Revisión crítica y evidencia](research/ugly-stik-model-review-v2.md) · [Entrega v2](research/ugly-stik-model-v2.md) · [Plan anterior y notas de integración](UGLY-STIK-PLAN-v4.md).

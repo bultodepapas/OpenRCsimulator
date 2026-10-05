@@ -5,7 +5,9 @@ extends SceneTree
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Commands := preload("res://input/commands.gd")
 const GeneratedGeometry := preload("res://aircraft/ugly_stik_geometry.gd")
-const IMAGE_SIZE := Vector2i(1280, 720)
+const DEFAULT_IMAGE_SIZE := Vector2i(1280, 720)
+const SHOWCASE_IMAGE_SIZE := Vector2i(2560, 1440)
+var _image_size := DEFAULT_IMAGE_SIZE
 const FLIGHT_FOV_DEG := 50.0
 const FLIGHT_DISTANCES_M := [20.0, 50.0, 100.0]
 const MOTION_SAMPLE_DT_S := 1.0 / 60.0
@@ -106,7 +108,8 @@ func _run() -> void:
 		push_error("Could not create output directory %s (Error %d)" % [_out_dir, mkdir_error])
 		quit(1)
 		return
-	get_root().size = IMAGE_SIZE
+	_image_size = SHOWCASE_IMAGE_SIZE if _suite == "showcase" else DEFAULT_IMAGE_SIZE
+	get_root().size = _image_size
 	get_root().title = "Ugly Stik model %s inspection" % _suite
 	_geometry_data = _load_geometry_data()
 	if _geometry_data.is_empty():
@@ -181,9 +184,9 @@ func _capture_suite() -> String:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--suite="):
 			var requested_suite := argument.trim_prefix("--suite=")
-			if requested_suite in ["inspection", "readability36", "details", "motion", "beauty"]:
+			if requested_suite in ["inspection", "readability36", "details", "motion", "beauty", "showcase"]:
 				return requested_suite
-			push_error("Unknown capture suite '%s'; expected inspection, readability36, details, motion, or beauty" % requested_suite)
+			push_error("Unknown capture suite '%s'; expected inspection, readability36, details, motion, beauty, or showcase" % requested_suite)
 			return ""
 	return "inspection"
 
@@ -195,58 +198,58 @@ func _load_geometry_data() -> Dictionary:
 func _add_lighting() -> void:
 	var environment_node := WorldEnvironment.new()
 	_environment = Environment.new()
-	var dark_studio := _suite in ["inspection", "details", "motion", "beauty"]
-	var neutral_studio := _suite in ["details", "motion", "beauty"]
+	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase"]
+	var neutral_studio := _suite in ["details", "motion", "beauty", "showcase"]
 	_environment.background_mode = Environment.BG_COLOR
 	_environment.background_color = Color("#111820") if dark_studio else SKY_COLOR
 	_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	_environment.ambient_light_color = Color("#c8c8c8") if neutral_studio else (Color("#b8c3d1") if dark_studio else Color("#c5d3df"))
-	_environment.ambient_light_energy = 0.30 if neutral_studio else (0.55 if dark_studio else 0.7)
+	_environment.ambient_light_energy = 0.45 if _suite == "showcase" else (0.30 if neutral_studio else (0.55 if dark_studio else 0.7))
 	environment_node.environment = _environment
 	_world_root.add_child(environment_node)
 
 	var key_light := DirectionalLight3D.new()
 	key_light.name = "KeyLight"
 	key_light.rotation_degrees = Vector3(-47.0, -32.0, -9.0)
-	key_light.light_color = Color.WHITE if _suite in ["details", "motion", "beauty"] else Color("#fff3e1")
+	key_light.light_color = Color.WHITE if _suite in ["details", "motion", "beauty", "showcase"] else Color("#fff3e1")
 	key_light.light_energy = 0.90 if neutral_studio else 1.45
 	key_light.shadow_enabled = true
 	_world_root.add_child(key_light)
 
-	if _suite in ["inspection", "details", "motion", "beauty"]:
+	if _suite in ["inspection", "details", "motion", "beauty", "showcase"]:
 		var fill_light := DirectionalLight3D.new()
 		fill_light.name = "FillLight"
 		fill_light.rotation_degrees = Vector3(-24.0, 145.0, 12.0)
 		fill_light.light_color = Color("#ffffff") if neutral_studio else Color("#c9d9ff")
-		fill_light.light_energy = 0.16 if neutral_studio else 0.35
+		fill_light.light_energy = 0.38 if _suite == "showcase" else (0.16 if neutral_studio else 0.35)
 		_world_root.add_child(fill_light)
 
 	var underside_fill := DirectionalLight3D.new()
 	underside_fill.name = "UndersideFill"
 	underside_fill.rotation_degrees = Vector3(48.0, -28.0, 0.0)
 	underside_fill.light_color = Color("#e0e0e0") if neutral_studio else Color("#becbe0")
-	underside_fill.light_energy = 0.25 if neutral_studio else 0.7
+	underside_fill.light_energy = 0.40 if _suite == "showcase" else (0.25 if neutral_studio else 0.7)
 	_world_root.add_child(underside_fill)
 
 
 func _lighting_information() -> Dictionary:
-	var dark_studio := _suite in ["inspection", "details", "motion", "beauty"]
-	var neutral_key := _suite in ["details", "motion", "beauty"]
+	var dark_studio := _suite in ["inspection", "details", "motion", "beauty", "showcase"]
+	var neutral_key := _suite in ["details", "motion", "beauty", "showcase"]
 	var ambient_color := "#c8c8c8" if neutral_key else ("#b8c3d1" if dark_studio else "#c5d3df")
 	var underside_color := "#e0e0e0" if neutral_key else "#becbe0"
 	var fill_color := "#ffffff" if neutral_key else "#c9d9ff"
 	var lights: Array[Dictionary] = [
 		{"name": "KeyLight", "rotation_degrees": [-47.0, -32.0, -9.0], "color_srgb_hex": "#ffffff" if neutral_key else "#fff3e1", "energy": 0.90 if neutral_key else 1.45, "shadows": true},
-		{"name": "UndersideFill", "rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": underside_color, "energy": 0.25 if neutral_key else 0.7, "shadows": false},
+		{"name": "UndersideFill", "rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": underside_color, "energy": 0.40 if _suite == "showcase" else (0.25 if neutral_key else 0.7), "shadows": false},
 	]
 	if dark_studio:
-		lights.insert(1, {"name": "FillLight", "rotation_degrees": [-24.0, 145.0, 12.0], "color_srgb_hex": fill_color, "energy": 0.16 if neutral_key else 0.35, "shadows": false})
+		lights.insert(1, {"name": "FillLight", "rotation_degrees": [-24.0, 145.0, 12.0], "color_srgb_hex": fill_color, "energy": 0.38 if _suite == "showcase" else (0.16 if neutral_key else 0.35), "shadows": false})
 	return {
 		"environment_background": "solid color",
 		"background_color_srgb_hex": "#111820" if dark_studio else "#9bcef0",
 		"ambient_source": "color",
 		"ambient_color_srgb_hex": ambient_color,
-		"ambient_energy": 0.30 if neutral_key else (0.55 if dark_studio else 0.7),
+		"ambient_energy": 0.45 if _suite == "showcase" else (0.30 if neutral_key else (0.55 if dark_studio else 0.7)),
 		"neutral_key_light": neutral_key,
 		"directional_lights": lights,
 	}
@@ -297,13 +300,14 @@ func _add_ground() -> void:
 
 
 func _add_caption() -> void:
+	var caption_scale := float(_image_size.y) / DEFAULT_IMAGE_SIZE.y
 	var layer := CanvasLayer.new()
 	layer.name = "Caption"
 	get_root().add_child(layer)
 
 	_caption_title = Label.new()
-	_caption_title.position = Vector2(22.0, 18.0)
-	_caption_title.add_theme_font_size_override("font_size", 21)
+	_caption_title.position = Vector2(22.0, 18.0) * caption_scale
+	_caption_title.add_theme_font_size_override("font_size", int(21 * caption_scale))
 	_caption_title.add_theme_color_override("font_color", Color("#ffffff"))
 	_caption_title.add_theme_color_override("font_shadow_color", Color("#101820"))
 	_caption_title.add_theme_constant_override("shadow_offset_x", 2)
@@ -311,8 +315,8 @@ func _add_caption() -> void:
 	layer.add_child(_caption_title)
 
 	_caption_detail = Label.new()
-	_caption_detail.position = Vector2(22.0, 49.0)
-	_caption_detail.add_theme_font_size_override("font_size", 14)
+	_caption_detail.position = Vector2(22.0, 49.0) * caption_scale
+	_caption_detail.add_theme_font_size_override("font_size", int(14 * caption_scale))
 	_caption_detail.add_theme_color_override("font_color", Color("#f0f3f5"))
 	_caption_detail.add_theme_color_override("font_shadow_color", Color("#101820"))
 	_caption_detail.add_theme_constant_override("shadow_offset_x", 1)
@@ -335,6 +339,8 @@ func _capture_definitions() -> Array[Dictionary]:
 			return _motion_capture_definitions()
 		"beauty":
 			return _beauty_capture_definitions()
+		"showcase":
+			return _showcase_capture_definitions()
 		_:
 			return _inspection_capture_definitions()
 
@@ -482,6 +488,60 @@ func _motion_capture_definitions() -> Array[Dictionary]:
 			"expected_crop": true,
 			"expected_crop_reason": "Close surface-detail sweep; the remainder of the airplane is intentionally outside frame.",
 		})
+	return captures
+
+
+# US-V07: an automatic high-resolution tour; legacy comparison cameras stay fixed.
+func _showcase_capture_definitions() -> Array[Dictionary]:
+	var captures: Array[Dictionary] = []
+	var target := Vector3(0, 0, 0.19)
+	var angles := [
+		["front-left", "TRES CUARTOS · FRENTE IZQUIERDO", Vector3(-1.55, 0.9, -1.55)],
+		["front-right", "TRES CUARTOS · FRENTE DERECHO", Vector3(1.55, 0.8, -1.55)],
+		["rear-left", "TRES CUARTOS · COLA IZQUIERDA", Vector3(-1.55, 1.08, 1.9)],
+		["rear-right", "TRES CUARTOS · COLA DERECHA", Vector3(1.55, 0.75, 1.9)],
+		["underside", "INTRADÓS · TREN Y TRANSMISIONES", Vector3(1.30, -1.15, -1.4)],
+		["overhead", "PLANTA · DECORACIÓN Y MONTAJE", Vector3(0, 2.35, 0.19)],
+		["nose-level", "FRENTE · DIEDRO Y TREN", Vector3(0, 0.10, -2.35)],
+		["tail-level", "COLA · EMPENAJE Y MANDOS", Vector3(0.95, 0.32, 2.40)],
+	]
+	for angle in angles:
+		var capture := _macro_capture("aircraft-" + angle[0] + ".png", "aircraft-" + angle[0], angle[1], "Avión completo · modelo real de Godot · 2560 × 1440", angle[2], target, 43.0 if angle[0] == "overhead" else 34.0)
+		capture["category"] = "General"
+		capture["expected_crop"] = false
+		capture["expected_crop_reason"] = ""
+		if angle[0] == "overhead": capture["camera_up"] = Vector3.FORWARD
+		captures.append(capture)
+
+	# Keep the twelve installed-equipment views, now rendered at twice the width/height.
+	for capture in _details_capture_definitions():
+		var id: String = capture.case_id
+		capture["category"] = "Motor" if id.begins_with("engine") else ("Servos" if id.begins_with("maintenance") else ("Mandos" if id.contains("linkage") or id == "tail-controls" else "Montaje"))
+		if id == "gear-main":
+			capture["camera_position"] = Vector3(0.44, -0.14, 0.36)
+			capture["camera_target"] = Vector3(0.08, -0.16, 0.10)
+			capture["fov_vertical_deg"] = 44.0
+		captures.append(capture)
+
+	# Camera offsets are artistic inspection choices relative to the actual engine datum.
+	var equipment: Dictionary = GeneratedGeometry.DATA.equipment
+	var center := Vector3(0, float(equipment.shaft_y), (float(equipment.firewall_z) + float(equipment.prop_z)) * 0.5)
+	var engine_angles := [
+		["engine-three-quarter-right", "MOTOR · TRES CUARTOS DERECHO", "Culata, carburador y escape montados", Vector3(0.19, 0.12, -0.19), Vector3(0.015, 0.01, 0.005), 31.0],
+		["engine-three-quarter-left", "MOTOR · TRES CUARTOS IZQUIERDO", "Cárter, aletas y bancada · instalación completa", Vector3(-0.18, 0.10, -0.17), Vector3(0.0, 0.01, 0.005), 31.0],
+		["engine-overhead", "MOTOR · VISTA SUPERIOR", "Culata dorada, bujía y circuitos visibles", Vector3(0.025, 0.24, -0.04), Vector3(0.02, 0.0, 0.005), 32.0],
+		["engine-head", "CULATA · BUJÍA Y ALETAS", "Primer plano de la corona y refrigeración", Vector3(-0.09, 0.13, -0.09), Vector3(0, 0.032, 0.01), 27.0],
+		["engine-carburetor", "CARBURADOR · ADMISIÓN Y BRAZO", "Hélice oculta para inspeccionar la garganta y su mando", Vector3(0.10, 0.10, -0.14), Vector3(0.005, 0.022, -0.023), 26.0],
+		["engine-exhaust", "ESCAPE · NERVADURAS Y RACOR", "Costado exterior del silenciador y conexión de presión", Vector3(0.22, 0.065, 0.07), Vector3(0.046, 0, 0.015), 27.0],
+		["engine-outlet", "ESCAPE · BOQUILLA Y CONO", "Vista posterior oblicua de la salida hueca", Vector3(0.17, -0.07, 0.14), Vector3(0.06, -0.015, 0.033), 25.0],
+		["engine-mount", "MOTOR · BANCADA Y ALIMENTACIÓN", "Vista inferior de apoyos, fijaciones y manguera de combustible", Vector3(-0.14, -0.15, -0.065), Vector3(0.0, -0.01, 0.015), 34.0],
+	]
+	for angle in engine_angles:
+		var hidden: Array[String] = []
+		if angle[0] == "engine-carburetor": hidden.append("propeller_*")
+		var capture := _macro_capture(angle[0] + ".png", angle[0], angle[1], angle[2], center + angle[3], center + angle[4], angle[5], hidden)
+		capture["category"] = "Motor"
+		captures.append(capture)
 	return captures
 
 
@@ -662,6 +722,8 @@ func _capture_record(capture: Dictionary, output_path: String) -> Dictionary:
 		"suite": _suite,
 		"case_id": capture.case_id,
 		"file": output_path.get_file(),
+		"category": capture.get("category", "General"),
+		"detail": capture.get("detail", ""),
 		"condition": capture.get("condition", capture.get("title", "")),
 		"range_slant_m": actual_range,
 		"background": capture.background,
@@ -684,8 +746,8 @@ func _capture_record(capture: Dictionary, output_path: String) -> Dictionary:
 			"fov_vertical_deg": fov_vertical_deg if is_perspective else null,
 			"size": _camera.size,
 			"keep_aspect": "KEEP_HEIGHT",
-			"viewport_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
-			"aspect_ratio": float(IMAGE_SIZE.x) / float(IMAGE_SIZE.y),
+			"viewport_px": [_image_size.x, _image_size.y],
+			"aspect_ratio": float(_image_size.x) / float(_image_size.y),
 			"near_m": _camera.near,
 			"far_m": _camera.far,
 			"visible_vertical_m_at_target": visible_vertical,
@@ -735,8 +797,8 @@ func _render_information() -> Dictionary:
 		"video_adapter_name": adapter_name,
 		"video_adapter_vendor": adapter_vendor,
 		"anti_aliasing_msaa_3d": int(ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d")),
-		"viewport_width_px": IMAGE_SIZE.x,
-		"viewport_height_px": IMAGE_SIZE.y,
+		"viewport_width_px": _image_size.x,
+		"viewport_height_px": _image_size.y,
 		"caption_layer": "CanvasLayer",
 		"performance_classification": "software_renderer_no_hardware_benchmark" if software_adapter else "single_run_diagnostic_no_hardware_benchmark",
 		"hardware_benchmark": false,
@@ -787,7 +849,7 @@ func _camera_bounds_check() -> Dictionary:
 				min_screen = min_screen.min(screen_point)
 				max_screen = max_screen.max(screen_point)
 				vertex_count += 1
-	var margins := Vector4(min_screen.x, min_screen.y, float(IMAGE_SIZE.x) - max_screen.x, float(IMAGE_SIZE.y) - max_screen.y)
+	var margins := Vector4(min_screen.x, min_screen.y, float(_image_size.x) - max_screen.x, float(_image_size.y) - max_screen.y)
 	var inside := vertex_count > 0 and not behind_camera and margins.x >= 0.0 and margins.y >= 0.0 and margins.z >= 0.0 and margins.w >= 0.0
 	return {
 		"inside_viewport": inside,
@@ -939,7 +1001,7 @@ func _source_manifest() -> Dictionary:
 func _capture_design() -> Dictionary:
 	var design := {
 		"suite": _suite,
-		"resolution_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
+		"resolution_px": [_image_size.x, _image_size.y],
 		"keep_aspect": "KEEP_HEIGHT",
 		"lighting": _lighting_information(),
 		"warmup_frames_before_samples": PERF_WARMUP_FRAMES,
@@ -981,6 +1043,13 @@ func _capture_design() -> Dictionary:
 		design["camera_sweep_total_translation_m"] = 0.06
 		design["expected_crop_policy"] = "Control poses show the complete airplane; close material sweep frames explicitly declare expected_crop=true."
 		design["neutral_key_light"] = true
+	elif _suite == "showcase":
+		design["purpose"] = "High-resolution model tour, engine macros and installed control details."
+		design["macro_crop_policy"] = "Closeups crop surrounding aircraft; full-aircraft views require every visible vertex in frame."
+		design["maintenance_transform_policy"] = "Only skin visibility changes; equipment stays in its installed position."
+		design["view_names"] = []
+		for capture in _showcase_capture_definitions():
+			design["view_names"].append(capture.case_id)
 	elif _suite == "beauty":
 		design["view_names"] = ["beauty-a-dark", "beauty-b-sky"]
 		design["backgrounds"] = {"beauty-a-dark": "#111820", "beauty-b-sky": "#9bcef0"}
@@ -1006,7 +1075,7 @@ func _write_manifest() -> void:
 		"builder_contract": ["root", "propeller", "hinges"],
 		"axes": {"forward": "-Z", "right": "+X", "up": "+Y"},
 		"capture_design": _capture_design(),
-		"resolution_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
+		"resolution_px": [_image_size.x, _image_size.y],
 		"renderer": _render_information(),
 		"captures": _records,
 		"capture_count": _records.size(),
