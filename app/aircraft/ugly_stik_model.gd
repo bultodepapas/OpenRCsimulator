@@ -9,12 +9,17 @@ const CREAM := Color("f7eedb")
 const UNDER := Color("242b35")
 const METAL := Color("878e95")
 const TIRE := Color("191b20")
+static var _materials: Dictionary = {}
 
 
 static func material(color: Color) -> StandardMaterial3D:
+	var key := color.to_html()
+	if _materials.has(key):
+		return _materials[key]
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
 	mat.roughness = 0.72
+	_materials[key] = mat
 	return mat
 
 
