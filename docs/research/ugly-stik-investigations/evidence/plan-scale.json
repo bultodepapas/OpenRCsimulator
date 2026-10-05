@@ -1,0 +1,15 @@
+{
+  "source_check": "SHA-256 verified",
+  "measured_object": "raster representation, not built aircraft",
+  "diameter_x_px": 131.0,
+  "diameter_y_px": 131.0,
+  "conditional_mm_per_pixel_x": 0.533206106870229,
+  "conditional_mm_per_pixel_y": 0.533206106870229,
+  "conditional_x_scale_interval_mm_per_pixel": [
+    0.5174074074074073,
+    0.5499999999999999
+  ],
+  "pdf_page_mm_per_pixel": 0.5110691666666666,
+  "conditional_scale_difference_from_pdf_percent": 4.331495939765961,
+  "conclusion": "A single wheel annotation does not establish whole-sheet scale. Check a second long dimension and both axes before accepting contours."
+}

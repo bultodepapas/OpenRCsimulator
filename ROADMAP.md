@@ -16,8 +16,8 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 
 - **Done:** research (RESEARCH.md), stack survey (STACK.md), the Stage 0 spec ([prototypes/stage0/SPEC.md](prototypes/stage0/SPEC.md)), and the **three.js Stage 0 build**, with pilot-view and close-up captures.
 - **Done since:** Phase A (MIT license, repo hygiene, CI green locally), B3 (Godot Stage 0, matching the three.js build), B4 (frame tests in both; a deliberately broken sign is caught).
-- **Done since:** B5 (Stage 1 controls in both, with unit and end-to-end input tests; CI green) and B6 (scored: **three.js 73, Godot 57 of 80**, see COMPARISON.md).
-- **Next:** **Gate 1**: the owner confirms the platform; then B7 promotes the winner into `app/`.
+- **Done since:** B5 (Stage 1 controls in both, unit + end-to-end input tests), B6 (scored: three.js 73, Godot 57 of 80), **Gate 1 → Godot** (owner's decision), B7 (Godot promoted into `app/` with a float64 guard).
+- **Next:** C1, float64 vector/quaternion helpers in `app/physics/`.
 
 ## Phase A — Ground base
 
@@ -36,22 +36,24 @@ The project foundation, before more code piles up.
 | --- | --- | --- |
 | B1 | Shared Stage 0 spec ✅ | [SPEC.md](prototypes/stage0/SPEC.md) |
 | B2 | three.js Stage 0 ✅ | `capture-three.png` (pilot view) and `capture-three-inspect.png` (close-up) |
-| B3 ✅ | Godot 4.7 Stage 0 with the same capture mode (under Xvfb) | `capture-godot.png` and `capture-godot-inspect.png` |
+| B3 ✅ | Godot 4.7 Stage 0 with the same capture mode (under Xvfb) | `app/captures/capture.png` and `capture-inspect.png` (formerly `capture-godot*.png`) |
 | B4 ✅ | Frame-conversion tests in both: heading 0° puts the nose at −z; heading 90° puts it at +x; bank right puts the right wing down | Automated test passes in each build |
 | B5 ✅ | Stage 1 in both: keyboard moves the surfaces through **rate-limited, self-centering** commands; an input panel shows raw → mapped values; a reset key | Captures of neutral and deflected surfaces; panel visible |
 | B6 ✅ | Score both against the **criteria fixed in advance** ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) | Filled comparison table |
-| **Gate 1** | **Choose the platform.** No physics code before this gate, because the physics language follows the platform | Decision recorded in DECISIONS.md |
-| B7 | Promote the winner into `app/`; keep the other build as an archived reference | `app/` builds and captures in CI |
+| **Gate 1** ✅ | **Choose the platform.** No physics code before this gate, because the physics language follows the platform | ✅ **Godot** (owner's decision; scores three.js 73 / Godot 57), recorded in DECISIONS.md |
+| B7 ✅ | Promote the winner into `app/`; keep the other build as an archived reference | ✅ `app/` with a float64 guard (verified to fail on a `Vector3` in `sim/`); tests and captures green |
 
 ## Phase C — Physics foundations (headless, no aerodynamics yet)
 
+In GDScript, on 64-bit `float`s only. `app/test.sh` rejects `Vector3`/`Basis`/`Quaternion`/`Transform3D` in `sim/` and `physics/`.
+
 | # | Step | Proof |
 | --- | --- | --- |
-| C1 | Float64 vector/quaternion module. All trig goes through one `math` module | Property tests: rotation preserves length; Euler ↔ quaternion round trip; composition |
+| C1 | Float64 vector/quaternion helpers in `app/physics/` (plain floats or `PackedFloat64Array`, never `Vector3`). All trig goes through one module | Property tests: rotation preserves length; Euler ↔ quaternion round trip; composition. The guard stays green |
 | C2 | Rigid-body state and its derivative: 6 degrees of freedom, full inertia tensor including `Ixz`, body-frame Euler equations | Unit tests on hand-computed derivatives |
-| C3 | RK4 integrator with quaternion renormalization | Free fall matches `½gt²` to 1e-9 m after 10 s. Torque-free spin conserves energy and angular momentum to 1e-6 relative over 60 s |
+| C3 | RK4 integrator with quaternion renormalization, plus a **GDScript performance check** | Free fall matches `½gt²` to 1e-9 m after 10 s. Torque-free spin conserves energy and angular momentum to 1e-6 relative over 60 s. **The integrator runs ≥ 20× faster than real time at 240 Hz** in GDScript; if not, the escape hatch is C++ GDExtension (DECISIONS) |
 | C4 | Convergence check at steps `h`, `h/2`, `h/4` | Error ratio ≈ 16 per halving (fourth order) |
-| C5 | Fixed-step loop: accumulator, cap on catch-up steps, render interpolation, pause when the tab is hidden | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
+| C5 | Fixed-step loop: Godot's physics tick at 240 Hz (`_physics_process`) calls our integrator; cap catch-up steps; interpolate rendering; pause when the window loses focus | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
 | C6 | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
 | C7 | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
 
@@ -83,7 +85,7 @@ The project foundation, before more code piles up.
 
 | # | Step | Proof |
 | --- | --- | --- |
-| F1 | Raw input inspector: all axes and buttons, update rate, reconnect | Screenshot with the owner's EdgeTX radio and gamepad |
+| F1 | Raw joystick inspector (Godot SDL3): all axes and buttons, update rate, reconnect; raw axes, no action deadzone | Screenshot with the owner's EdgeTX radio and gamepad |
 | F2 | Mapping and calibration (center, endpoints, inversion), saved and exportable | Survives a restart |
 | F3 | Disconnect and focus-loss policy: visible pause; resuming needs an explicit action | Scripted unplug/replug log |
 | F4 | Compatibility table: device, firmware, OS, browser/engine, usable channels | One row per tested device |
@@ -107,7 +109,7 @@ Chosen by what Gate 2 and playtests ask for:
 - replay
 - camera zoom options
 - pilot observation sessions
-- installable app (PWA or Electron)
+- native desktop exports (Windows, macOS, Linux); web export later
 
 ## Research tracks
 

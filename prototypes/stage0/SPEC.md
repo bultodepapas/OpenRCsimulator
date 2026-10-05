@@ -1,6 +1,6 @@
 # Stage 0 spec: hello, little airplane
 
-One scene, built twice: in **three.js** ([three/](three/)) and in **Godot** ([godot/](godot/)). Both builds follow this spec exactly, so the comparison measures the tools rather than different scenes. Results go in [COMPARISON.md](COMPARISON.md). See [ROADMAP.md](../../ROADMAP.md) (Phase B) and [STACK.md](../../STACK.md).
+One scene, built twice: in **three.js** ([three/](three/)) and in **Godot** (now promoted to [app/](../../app/) after Gate 1). Both builds follow this spec exactly, so the comparison measures the tools rather than different scenes. Results go in [COMPARISON.md](COMPARISON.md). See [ROADMAP.md](../../ROADMAP.md) (Phase B) and [STACK.md](../../STACK.md).
 
 No physics yet: the airplane follows a scripted circle.
 

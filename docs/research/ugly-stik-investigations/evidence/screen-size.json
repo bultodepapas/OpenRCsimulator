@@ -1,0 +1,190 @@
+{
+  "evidence_kind": "analytical_experiment",
+  "inputs": {
+    "span_m": 1.524,
+    "span_source": "Jensen printed 60 in; exact SI conversion",
+    "patch_m": 0.2,
+    "seam_m": 0.002,
+    "feature_source": "chosen diagnostic sizes, not measured details"
+  },
+  "assumptions": [
+    "pinhole projection",
+    "square pixels",
+    "zoom 1",
+    "depth along camera axis",
+    "centered segment",
+    "no postprocessing"
+  ],
+  "checks": "inverse distance at zero angle; linear resolution scaling; foreshortening: PASS",
+  "rows": [
+    {
+      "depth_m": 20,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 58.828113843418215,
+      "patch_200mm_px": 7.720224913834412,
+      "seam_2mm_px": 0.07720224913834411
+    },
+    {
+      "depth_m": 20,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 29.446115128094934,
+      "patch_200mm_px": 3.86018483538287,
+      "seam_2mm_px": 0.03860112464154917
+    },
+    {
+      "depth_m": 20,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 10.22979666713734,
+      "patch_200mm_px": 1.3406354927258355,
+      "seam_2mm_px": 0.013406029907166276
+    },
+    {
+      "depth_m": 20,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 88.24217076512734,
+      "patch_200mm_px": 11.58033737075162,
+      "seam_2mm_px": 0.1158033737075162
+    },
+    {
+      "depth_m": 20,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 44.16917269214241,
+      "patch_200mm_px": 5.790277253074306,
+      "seam_2mm_px": 0.05790168696232376
+    },
+    {
+      "depth_m": 20,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 15.344695000706013,
+      "patch_200mm_px": 2.0109532390887535,
+      "seam_2mm_px": 0.020109044860749416
+    },
+    {
+      "depth_m": 50,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 23.531245537367287,
+      "patch_200mm_px": 3.0880899655337646,
+      "seam_2mm_px": 0.030880899655337645
+    },
+    {
+      "depth_m": 50,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 11.767672617233394,
+      "patch_200mm_px": 1.5440496149157275,
+      "seam_2mm_px": 0.01544044983230096
+    },
+    {
+      "depth_m": 50,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 4.087078537306806,
+      "patch_200mm_px": 0.5362432752807202,
+      "seam_2mm_px": 0.005362411951945007
+    },
+    {
+      "depth_m": 50,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 35.29686830605093,
+      "patch_200mm_px": 4.6321349483006475,
+      "seam_2mm_px": 0.04632134948300647
+    },
+    {
+      "depth_m": 50,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 17.651508925850095,
+      "patch_200mm_px": 2.3160744223735916,
+      "seam_2mm_px": 0.023160674748451442
+    },
+    {
+      "depth_m": 50,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 6.13061780596021,
+      "patch_200mm_px": 0.8043649129210805,
+      "seam_2mm_px": 0.008043617927917511
+    },
+    {
+      "depth_m": 100,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 11.765622768683643,
+      "patch_200mm_px": 1.5440449827668823,
+      "seam_2mm_px": 0.015440449827668823
+    },
+    {
+      "depth_m": 100,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 5.883067581933801,
+      "patch_200mm_px": 0.7720230704007441,
+      "seam_2mm_px": 0.007720224914413429
+    },
+    {
+      "depth_m": 100,
+      "height_px": 720,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 2.0431940123945913,
+      "patch_200mm_px": 0.2681208575292605,
+      "seam_2mm_px": 0.0026812059751923963
+    },
+    {
+      "depth_m": 100,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 0,
+      "span_px": 17.648434153025466,
+      "patch_200mm_px": 2.3160674741503238,
+      "seam_2mm_px": 0.023160674741503236
+    },
+    {
+      "depth_m": 100,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 60,
+      "span_px": 8.824601372900704,
+      "patch_200mm_px": 1.1580346056011164,
+      "seam_2mm_px": 0.011580337371620146
+    },
+    {
+      "depth_m": 100,
+      "height_px": 1080,
+      "fov_vertical_deg": 50,
+      "span_angle_to_image_plane_deg": 80,
+      "span_px": 3.064791018591887,
+      "patch_200mm_px": 0.4021812862938908,
+      "seam_2mm_px": 0.004021808962788595
+    }
+  ],
+  "scripted_capture": {
+    "time_s": 3.0,
+    "distance_to_center_m": 87.2039980771157,
+    "wingtip_distance_px": 8.774877056012672,
+    "broadside_span_at_same_distance_px": 13.492068056649352,
+    "scope": "wingtip line through model origin; no chord, fuselage, rasterization or antialiasing"
+  }
+}

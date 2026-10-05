@@ -9,7 +9,7 @@ Two principles guide the project:
 
 Our first aircraft will be an **Ultra Stick / Ugly Stick-style .60 nitro airplane**. The exact airframe variant, dimensions, engine, and flight-model parameters remain under research. We will start with a simple representation and refine it gradually.
 
-We have a provisional starting route: a browser prototype (Three.js, TypeScript, Vite) with our own small, renderer-independent flight-physics module. Each choice records what would make us change it. Platforms, environments, physics depth, controls, compatibility, and later aircraft remain open to research. Supporting multiple platforms is still an aspiration.
+The simulator is built with **Godot 4.7** (GDScript) in [`app/`](app/), chosen after building the same small scene in three.js and Godot ([bake-off](prototypes/stage0/COMPARISON.md)). Physics stays in 64-bit floats, enforced by the test script. Platforms, physics depth, controls, compatibility and later aircraft remain open to research.
 
 We will research options, try small experiments, and adapt as we learn. Keep choices easy to revisit and technologies easy to adopt or change. Open questions are invitations to explore.
 

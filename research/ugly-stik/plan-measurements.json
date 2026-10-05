@@ -1,0 +1,36 @@
+{
+  "source_path": "references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf",
+  "source_sha256": "d5a79f156901fd6ed2c7948a186d0c17e66b99b7d1e84eb8732e8e533fd056bc",
+  "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+  "page_one_based": 1,
+  "raster_command": "pdftoppm -scale-to 2400 -png <source_pdf> <temporary_prefix>",
+  "raster_width_px": 2400,
+  "raster_height_px": 1790,
+  "pdf_page_width_pt": 3476.88,
+  "feature": "nosewheel outer silhouette, labelled 2-3/4 inches; may be schematic",
+  "labelled_diameter_in": 2.75,
+  "x_endpoints_px": [
+    [
+      39,
+      1575
+    ],
+    [
+      170,
+      1575
+    ]
+  ],
+  "y_endpoints_px": [
+    [
+      104,
+      1509
+    ],
+    [
+      104,
+      1640
+    ]
+  ],
+  "endpoint_uncertainty_px": 2,
+  "uncertainty_source": "estimated endpoint-picking allowance, not statistical confidence",
+  "selection_method": "visual selection plus dark-pixel extents below grayscale 64; inspect that border and gear leg are excluded",
+  "status": "diagnostic reference only; not an accepted global drawing calibration"
+}
