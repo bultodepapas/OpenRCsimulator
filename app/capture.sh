@@ -37,6 +37,8 @@ shot "-physics-low-inspect" --t=1.5 --alt=0.8 --inspect
 for az in 0 90 180 270; do
   for el in 0 10; do shot "-land-az${az}-el${el}" --t=1.5 --look_az=$az --look_el=$el; done
 done
+# L2: the horizon from 100 m up (the ground's rim is 0.3° below the horizon there), including toward the sun.
+for az in 0 90 180 225 270; do shot "-land-az${az}-el0-100m" --t=1.5 --look_az=$az --look_el=0 --look_alt=100; done
 shot "-land-30m" --t=1.5 --autozoom=0
 shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0
 shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
@@ -49,8 +51,9 @@ echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 python3 "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
 # L0c: airplane readability against its background (pinned, hashed Python environment in .tools/visual-venv).
-# L1b thresholds (investigation 09): the low pass keeps the airplane readable against the sky.
+# Readability regression guard at the L2 baseline (the L1b thresholds were calibrated on a mis-encoded, too dark
+# sky; with the correct sky no setting reaches them: LANDSCAPE-PLAN L1b/L2 log). Absolute targets: Gate L.
 "$("$HERE/tests/visual-env.sh")" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
-  --require "capture-land-low3m.png:-0.40:0.15:30:25"
+  --require "capture-land-low3m.png:-0.30:0.15:28:25" --require "capture-land-30m.png:-0.40:0.15:35:25"
 # C7: flight trace of the same throw, headless (no display needed).
 timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5

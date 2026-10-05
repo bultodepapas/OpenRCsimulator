@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A fix can invalidate an earlier calibration; re-measure instead of defending it.** L2's colour-space fix made the sky correctly brighter, and L1b's tonemap choice (picked against the mis-encoded sky) stopped passing its own readability thresholds. A second sweep showed no setting can, so the thresholds had come from the same error. The guard now protects the corrected baseline, and the absolute target moved to the human gate. (2026-10-05)
+
 - **Look at trajectories before writing assertions about new physics.** D9b took four model versions, each rejected by reading a printed trajectory, not by a failing assert: (1) two strips per wing → roll ran away to 30 rad/s; (2) a drag artefact (linear induced drag evaluated past the stall) → absurd yaw; (3) three strips, still lift-based → 19 rad/s; (4) roll from the **normal force**: a flat plate's normal force keeps growing to 90° while its lift falls after 45°, and only then did the spin look like a spin (~1 turn/s, 11 m/s sink, standard recovery works). Each wrong version would have passed assertions written up front for "it spins". (2026-10-05)
 
 - **When a golden flight changes, find out why before re-recording it.** D9a changed one golden of four. The "gentle" rudder doublet had reached β 55° and α 25° even before, so the old golden recorded the linear model far outside its validity, and the new model stalls there (α 60°). The other three goldens stayed byte-identical, which proves in real flight that the linear oracle holds where the flow is attached. The same look found a data problem: full rudder trims at β 62° with the borrowed derivatives. (2026-10-05)
@@ -59,6 +61,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Rendering and evidence
 
+- **A setting chosen in a spike must pass its proof again in the real harness.** Investigation 09 picked Filmic at exposure 0.8 from a spike. With today's airplane and sky it failed the step's own readability thresholds (contrast −0.36, ΔE 29.6). A six-setting sweep with the same metric found ACES 0.6 as the only pass. The thresholds stayed fixed; the setting moved. (2026-10-05)
+
 - **Count before you budget.** The landscape plan's first budget was ≤ 150 draw calls in the pilot view. The L0 counters (`Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME`, deterministic under llvmpipe) showed the airplane alone uses ~100 of them, while the empty landscape uses 4–6. A budget that ignores its biggest consumer means nothing. (2026-10-05)
 
 - **Gravity alone makes the airplane fall flat** (wings level, nose not following the path), because nothing turns it into the airflow until aerodynamics exist. Correct for C6, and a useful visual baseline: once weathervane stability is added in Phase D, the nose should follow the flight path. (2026-10-05)
@@ -76,6 +80,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **three.js is one ~530 KB chunk (132 KB gzip).** Vite warns about chunks over 500 KB; harmless for now. (2026-10-05)
 
 ## Godot specifics
+
+- **In Compatibility, a sky shader's `COLOR` is sRGB, not linear.** GLES3 `sky.glsl` (4.7.2, line 250) runs `srgb_to_linear()` (a cubic approximation) on our output, while spatial shaders and fog work in linear. A sky that computes the engine's fog formula in linear therefore comes out darker than the fog it should match (158 vs 203 levels at the ground's rim). The fix is to encode with the exact inverse of that cubic. It also means every earlier sky colour had been displayed darker than intended. A colour seam was the symptom; the engine source was the answer. (2026-10-05)
 
 - **Global shader parameters can be set at runtime, but not read back.** `RenderingServer.global_shader_parameter_get` and `_get_list` print "should never be used outside the editor" and return null under a real renderer, while headless they quietly seem to work. `capture.sh`'s new engine-error guard caught it the first time it ran. *Now:* code remembers the values it sends (`ShaderClock.last_clock`). (2026-10-05)
 

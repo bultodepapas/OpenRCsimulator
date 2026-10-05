@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Spec := preload("res://spec.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
 
 const SIZE := 256
 
@@ -57,12 +58,6 @@ static func runway_material() -> StandardMaterial3D:
 	return mat
 
 
-static func grass_material() -> StandardMaterial3D:
-	var mat := StandardMaterial3D.new()
-	mat.albedo_texture = ImageTexture.create_from_image(grass_image())
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
-	mat.metallic_specular = 0.0 # grass is matte: no sky reflection at grazing angles
-	mat.roughness = 1.0
-	var tiles := Spec.GROUND_SIZE / Spec.GROUND.tile_m
-	mat.uv1_scale = Vector3(tiles, tiles, 1.0)
-	return mat
+## The grass: texture in world space, matte, with the haze and the rim fade as custom fog (render/ground.gdshader).
+static func grass_material() -> ShaderMaterial:
+	return Atmosphere.ground_material(ImageTexture.create_from_image(grass_image()))

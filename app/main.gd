@@ -259,7 +259,7 @@ func _build_world() -> void:
 	strip.size = Vector2(Spec.RUNWAY.length_east_west, Spec.RUNWAY.width_north_south)
 	runway.mesh = strip
 	runway.material_override = Ground.runway_material()
-	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.01])
+	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.03]) # 3 cm up: no z-fighting with a 21 km far plane
 	add_child(runway)
 
 	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light

@@ -5,6 +5,7 @@ gradient says which way is up); no 8-bit banding (the longest run of identical p
 in the sun view the sun disc sits where the light direction projects (≤ 2 px).
 Usage: python3 check_landscape_captures.py <captures dir>
 """
+import math
 import os
 import re
 import sys
@@ -29,15 +30,21 @@ def band(px, x0, x1, y0, y1):
 
 
 views = sorted(f for f in os.listdir(d) if f.startswith("capture-land-") and f.endswith(".png"))
-if len(views) < 12:
-    problems.append(f"expected 12 landscape views, found {len(views)}")
+if len(views) < 19:
+    problems.append(f"expected 19 landscape views, found {len(views)}")
 for f in views:
     im = Image.open(os.path.join(d, f)).convert("RGB")
     px = im.load()
     w, h = im.size
     x0, x1 = w - 280, w - 10  # right edge: away from the panel, the HUD and the sun
-    # Horizon = first row (from the top) where this strip turns green (ground: g clearly above b).
-    horizon = next((y for y in range(h) if all(px[x, y][1] > px[x, y][2] + 10 for x in range(x0, x1, 30))), h)
+    # Horizon: geometric for the fixed views (el 0 → row 360, el 10 → row 496 at 50° vertical FOV); otherwise the
+    # first row where this strip turns green (ground: g clearly above b).
+    if "-el0" in f:
+        horizon = h // 2
+    elif "-el10" in f:
+        horizon = h // 2 + round((h / 2) / math.tan(math.radians(25)) * math.tan(math.radians(10)))
+    else:
+        horizon = next((y for y in range(h) if all(px[x, y][1] > px[x, y][2] + 10 for x in range(x0, x1, 30))), h)
     if horizon < 40:
         continue  # no sky in this strip
     top = band(px, x0, x1, 2, 12)
@@ -59,6 +66,45 @@ for name, c in counters.items():
         if c.get("sim_clock") != "1.5":
             problems.append(f"{name}: sim_clock {c.get('sim_clock')} instead of 1.5 (the capture's simulation time)")
 print("sim_clock sent in every landscape view: " + ", ".join(sorted({c.get("sim_clock", "?") for n, c in counters.items() if n.startswith("capture-land-")})))
+
+# L2 haze and horizon. Row means over a right-hand strip (no panel, HUD, airplane or sun there).
+def row_means(png):
+    im = Image.open(os.path.join(d, png)).convert("RGB")
+    px = im.load()
+    w, h = im.size
+    out = []
+    for y in range(h):
+        acc = [0.0, 0.0, 0.0]
+        for x in range(w - 300, w - 10, 2):
+            p = px[x, y]
+            acc = [acc[0] + p[0], acc[1] + p[1], acc[2] + p[2]]
+        out.append([v / len(range(w - 300, w - 10, 2)) for v in acc])
+    return out
+
+
+def max_step(rows, y0, y1):
+    return max(max(abs(rows[y + 1][c] - rows[y][c]) for c in range(3)) for y in range(y0, y1))
+
+
+for az in (0, 90, 180, 225, 270):
+    f = f"capture-land-az{az}-el0-100m.png"
+    if f in views:
+        step = max_step(row_means(f), 340, 400)
+        print(f"{f}: largest step across the ground rim {step:.1f} levels")
+        if step > 4.0:  # natural haze gradient ~3 levels/row here; a visible ground edge measured 13-21
+            problems.append(f"{f}: a {step:.1f}-level step at the ground's rim (limit 4)")
+for az in (0, 90, 180, 270):
+    f = f"capture-land-az{az}-el0.png"
+    if f in views:
+        rows = row_means(f)
+        sky_step = max_step(rows, 300, 359)
+        lum = lambda r: 0.2126 * r[0] + 0.7152 * r[1] + 0.0722 * r[2]
+        far, near = lum(rows[361]), lum(rows[650])  # ~1.4 km vs ~4.7 m away (row 650 stays off the runway)
+        print(f"{f}: sky above the horizon steps ≤ {sky_step:.1f} levels; far ground {far:.0f} vs near ground {near:.0f}")
+        if sky_step > 2.0:
+            problems.append(f"{f}: a line in the sky above the horizon ({sky_step:.1f} levels)")
+        if not far > near + 10.0:
+            problems.append(f"{f}: no aerial perspective (far ground {far:.0f} not hazier than near ground {near:.0f})")
 
 sun = counters.get("capture-land-sun", {}).get("sun_px")
 if sun is None or sun == "behind":

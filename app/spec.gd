@@ -20,7 +20,10 @@ const SKY := Color("#9cc9ef")
 
 # Aircraft geometry is generated from assets/aircraft/ugly-stik-60/geometry.json.
 
-const GROUND_SIZE := 2000.0
+## Ground plane edge length (m): half-size 20 km (L2). At 23 km visibility the haze leaves 3 % contrast there, so the
+## rim fade (ATMOSPHERE.rim_*) only removes the last few levels. A 6 km ground left 36 % contrast, ~21 levels in 3
+## screen rows seen from 100 m up (L2 log). One quad either way; float32 is ~2 mm at 20 km.
+const GROUND_SIZE := 40000.0
 const RUNWAY := { length_east_west = 100.0, width_north_south = 12.0, center_north = 15.0 }
 
 ## Atmosphere (LANDSCAPE-PLAN L1a; one source for sky, light and, from L2, haze). Zenith and horizon from Hosek-Wilkie
@@ -28,12 +31,17 @@ const RUNWAY := { length_east_west = 100.0, width_north_south = 12.0, center_nor
 ## below the horizon a muted green-grey (estimated, mostly hidden by the ground).
 const ATMOSPHERE := {
 	sun_azimuth_deg = 225.0, sun_elevation_deg = 45.0,
-	zenith = Color("#4e6893"), horizon = Color("#c9e3ed"), below_horizon = Color("#8a9a80"),
-	gradient_curve = 2.6, sun_diameter_deg = 0.53,
-	exposure = 0.6, white = 1.0, # L1b: ACES tonemap, from a measured sweep against the readability thresholds
+	zenith = Color("#4e6893"), gradient_curve = 2.6, sun_diameter_deg = 0.53,
+	exposure = 0.6, white = 1.0, # L1b: ACES tonemap, the best readability in a measured sweep (atmosphere.gd)
+	# L2 haze (investigation 02). Koschmieder: distant objects tend to the horizon sky, so haze = the Hosek anti-sun
+	# horizon. Visibility 23 km = MODTRAN rural "clear". sun_scatter fitted (estimated) so the horizon toward the sun
+	# is ~1.2× the anti-sun horizon (Hosek T = 2.5). Rim fade over the outer 20 % of the ground (estimated).
+	haze = Color("#c9e3ed"), haze_energy = 1.0, visibility_m = 23000.0, sun_scatter = 0.785,
+	sun_color = Color(1, 1, 1), sun_energy = 1.0,
+	rim_start_m = 16000.0, rim_end_m = 20000.0,
 }
 
-const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 3000.0 }
+const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 21000.0 } # far ≥ 1.05 × the ground's rim (L2)
 # Close-up camera, fixed to the airplane: model offset (left, above, behind).
 const INSPECT_OFFSET := Vector3(-1.2, 0.9, 2.0)
 
