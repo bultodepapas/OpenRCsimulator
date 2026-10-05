@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "research_handoff_not_runtime_data",
+  "variant": "Jensen Das Ugly Stik, signed oz1253 scan",
+  "source_pdf": "references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf",
+  "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+  "parameters": [
+    {
+      "quantity": "wingspan",
+      "original_value": 60,
+      "original_unit": "in",
+      "si_value": 1.524,
+      "si_unit": "m",
+      "evidence_kind": "manual",
+      "source_location": "page 1 title block",
+      "method": "original_value * 0.0254"
+    },
+    {
+      "quantity": "wing_area",
+      "original_value": 720,
+      "original_unit": "in^2",
+      "si_value": 0.4645152,
+      "si_unit": "m^2",
+      "evidence_kind": "manual",
+      "source_location": "page 1 title block",
+      "method": "original_value * 0.0254^2"
+    },
+    {
+      "quantity": "representative_chord_S_over_b",
+      "si_value": 0.3048,
+      "si_unit": "m",
+      "evidence_kind": "manual",
+      "source_location": "calculated from title block area and span",
+      "method": "0.4645152 / 1.524",
+      "limitation": "Not a measured root chord or a traced planform"
+    },
+    {
+      "quantity": "engine_displacement_range",
+      "original_value": [
+        0.45,
+        0.61
+      ],
+      "original_unit": "in^3",
+      "si_value": [
+        7.3741788e-06,
+        9.99610904e-06
+      ],
+      "si_unit": "m^3",
+      "evidence_kind": "manual",
+      "source_location": "page 1 title block",
+      "limitation": "Historical installation range, not selected engine or power curve"
+    },
+    {
+      "quantity": "fuselage_or_overall_length",
+      "si_value": null,
+      "si_unit": "m",
+      "evidence_kind": null,
+      "status": "Need identified endpoints and calibration; 52 in from earlier reference not promoted here"
+    },
+    {
+      "quantity": "cg_position",
+      "si_value": null,
+      "si_unit": "m",
+      "evidence_kind": null,
+      "status": "CG arrow is a drawing landmark; depends on installed equipment and fuel state"
+    },
+    {
+      "quantity": "mass",
+      "si_value": null,
+      "si_unit": "kg",
+      "evidence_kind": null,
+      "status": "No measured configured Jensen aircraft"
+    },
+    {
+      "quantity": "control_throw_angles",
+      "si_value": null,
+      "si_unit": "rad",
+      "evidence_kind": null,
+      "status": "Stage 1 limits remain explicit estimates"
+    },
+    {
+      "quantity": "airfoil_coordinates",
+      "value": null,
+      "status": "Digitize identified Jensen section; do not assign a NACA polar by appearance"
+    }
+  ]
+}

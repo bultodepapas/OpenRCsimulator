@@ -19,7 +19,10 @@ echo "== parse check: every script"
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
 done
 
+LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
 for t in "$HERE"/tests/test_*.gd; do
   echo "== $(basename "$t")"
-  run --script "res://tests/$(basename "$t")"
+  run --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
+  # Godot reports runtime script errors without failing the run; treat any as a failure.
+  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done

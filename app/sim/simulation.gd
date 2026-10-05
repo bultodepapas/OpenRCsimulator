@@ -1,0 +1,83 @@
+# Fixed-step owner of the rigid-body state. 64-bit floats only (guarded by test.sh).
+# Steps in _physics_process at the project's fixed tick (240 Hz), independent of rendering.
+# Rendering reads interpolated() with Engine.get_physics_interpolation_fraction().
+extends Node
+
+const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
+const RK := preload("res://physics/integrator.gd")
+
+signal paused_changed(paused: bool)
+
+var mass := 1.0
+var inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+var gravity := 9.80665
+## loads(state, t) -> PackedFloat64Array [Fx, Fy, Fz, Mx, My, Mz], body axes, gravity excluded.
+var loads: Callable = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
+var state := PackedFloat64Array()
+var previous := PackedFloat64Array()
+var tick := 0
+var paused := false
+## Stop stepping at this tick (-1 = never). Makes runs end at an exact tick, e.g. for replays.
+var stop_at_tick := -1
+var _inertia_inv := PackedFloat64Array()
+
+
+func reset(initial: PackedFloat64Array) -> void:
+	state = initial.duplicate()
+	previous = initial.duplicate()
+	tick = 0
+	_inertia_inv = RB.inertia_inverse(inertia)
+
+
+func dt() -> float:
+	return 1.0 / Engine.physics_ticks_per_second
+
+
+func time() -> float:
+	return tick * dt()
+
+
+func set_paused(value: bool) -> void:
+	if value != paused:
+		paused = value
+		paused_changed.emit(paused)
+
+
+func _notification(what: int) -> void:
+	# Losing focus pauses; resuming is an explicit action (set_paused(false)), never automatic.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		set_paused(true)
+
+
+func step() -> void:
+	var t := time()
+	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
+		var l: PackedFloat64Array = loads.call(s, t)
+		return RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity)
+	previous = state
+	state = RK.rk4_step(state, dt(), f)
+	tick += 1
+
+
+func _physics_process(_delta: float) -> void:
+	if paused or state.size() != RB.SIZE or (stop_at_tick >= 0 and tick >= stop_at_tick):
+		return
+	step()
+
+
+## State between the previous and current step: position lerp, attitude nlerp (shortest path).
+## Only position and attitude are interpolated; rates are taken from the current state.
+func interpolated(fraction: float) -> PackedFloat64Array:
+	var out := state.duplicate()
+	for i in 3:
+		out[RB.POS + i] = lerpf(previous[RB.POS + i], state[RB.POS + i], fraction)
+	var a := RB.ATT
+	var sign := 1.0
+	if previous[a] * state[a] + previous[a + 1] * state[a + 1] + previous[a + 2] * state[a + 2] + previous[a + 3] * state[a + 3] < 0.0:
+		sign = -1.0
+	for i in 4:
+		out[a + i] = lerpf(previous[a + i], sign * state[a + i], fraction)
+	return RK.normalize_attitude(out)

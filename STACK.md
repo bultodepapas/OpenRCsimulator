@@ -20,7 +20,7 @@ The bake-off ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) scored three.js 
 | Input | Keyboard; then SDL3 joysticks, raw axes | — | Bypass the input-action deadzone (0.5 by default) |
 | Distribution | Native desktop exports; web export possible later (~42 MB) | — | Needs the export templates download; not done yet |
 
-**Escape hatch:** if GDScript physics is too slow or too awkward (checked at ROADMAP C3), the physics core moves to a C++ GDExtension with `double`. That costs a separate web build.
+**Escape hatch:** if GDScript physics is too slow or too awkward, the physics core moves to a C++ GDExtension with `double`. That costs a separate web build. **C3 result (2026-10-05):** the RK4 rigid body runs 47–51× faster than real time at 240 Hz (81–88 µs/step on this VM), so it stays in GDScript. Aerodynamics will add cost per step; re-measure at D7 and keep ≥ 10× as the floor.
 
 The rest of this document is the pre-Gate-1 survey, kept as research history.
 

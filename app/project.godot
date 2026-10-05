@@ -12,6 +12,13 @@ config/features=PackedStringArray("4.7")
 window/size/viewport_width=1280
 window/size/viewport_height=720
 
+[physics]
+
+; Simulation steps at a fixed 240 Hz. Up to 12 catch-up steps per frame keeps real time down to 20 fps;
+; slower than that, the simulation runs in slow motion instead of spiraling.
+common/physics_ticks_per_second=240
+common/max_physics_steps_per_frame=12
+
 [rendering]
 
 ; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
