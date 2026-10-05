@@ -23,7 +23,10 @@ func _init() -> void:
 		ProjectSettings.get_setting("input_devices/joypads/ignore_joypad_on_unfocused_application", "<missing>"))
 	print("connected joypads (this VM has none): ", Input.get_connected_joypads())
 
-	# 2. Default ui_* actions that react to joypad events.
+	# 2. Default ui_* actions that react to joypad events. In --script mode the InputMap starts with key events only;
+	#    a project run loads input/* from ProjectSettings (app/project.godot has no [input] overrides), so do the same.
+	print("ui_left at _init: ", InputMap.action_get_events("ui_left").size(), " events")
+	InputMap.load_from_project_settings()
 	for action in InputMap.get_actions():
 		if not String(action).begins_with("ui_"):
 			continue

@@ -20,11 +20,21 @@ func _run() -> void:
 	_p("version", Engine.get_version_info().string)
 
 	# 1. gui/pseudolocalization: activar en ejecución, sin archivos de traducción.
+	# Observado 2026-10-05: en modo --script (sin project.godot) tr() sí cambia, pero los Label
+	# no se retraducen (ancho igual a la referencia sin traducir). En un proyecto mínimo con
+	# run/main_scene, el mismo toggle en ejecución cambió un Label existente 41 -> 51 -> 41 px
+	# (activar, crear otro, desactivar), y también con `--path <proyecto> --script` (41 -> 51 px),
+	# que es como app/test.sh lanza sus pruebas. Para medir layout hace falta un project.godot.
 	var label := Label.new()
 	label.text = "Volar"
 	root.add_child(label)
+	var ref := Label.new() # referencia sin traducir
+	ref.text = "Volar"
+	ref.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	root.add_child(ref)
 	await _frames(2)
 	var w0 := label.get_minimum_size().x
+	_p("pseudo.ref_untranslated_width", ref.get_minimum_size().x)
 	_p("pseudo.tr_before", tr("Volar"))
 	ProjectSettings.set_setting("internationalization/pseudolocalization/expansion_ratio", 0.3)
 	ProjectSettings.set_setting("internationalization/pseudolocalization/replace_with_accents", true)
