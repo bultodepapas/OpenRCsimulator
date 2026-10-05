@@ -19,6 +19,8 @@ Research date: **2026-10-05**. This is a growing collection of evidence, possibi
 - [Ten additional investigations](#ten-additional-investigations)
 - [Ten investigations into development and 3D tools](#ten-investigations-into-development-and-3d-tools)
 - [Ten investigations into codebase libraries and runtime tools](#ten-investigations-into-codebase-libraries-and-runtime-tools)
+- [Ten open-source projects to study for code inspiration](#ten-open-source-projects-to-study-for-code-inspiration)
+- [Ten investigations to guide early prototype experiments](#ten-investigations-to-guide-early-prototype-experiments)
 - [Continuing the research](#continuing-the-research)
 
 ## Reading the evidence
@@ -1000,6 +1002,280 @@ The upstream repository provides source and examples for the C library. This mak
 
 **Small experiment, unperformed.** Measure a noticeable asset-preparation pause in a serial prototype, then move only that preparation into one job. Keep GPU resource creation on the appropriate thread. Compare frame stalls and total loading time, test closing the scene while the job is unfinished, and verify that the flight-state trace remains unchanged. Retain concurrency only if its measured benefit justifies the added lifetime and synchronization logic.
 
+## Ten open-source projects to study for code inspiration
+
+Fifth research pass, **2026-10-05**: ten additional projects selected for specific, readable implementation ideas. This pass follows source files and functions as well as project documentation. Source inspection confirms the described code exists; it does not establish runtime behavior, performance, or suitability for RC flight. No project was built or run. Lessons and experiments are possibilities, not dependencies or architecture decisions. Branch links can change; commit-pinned links preserve the inspected revisions where recorded.
+
+- [1. SuperTuxKart: recorded ghosts and a camera with its own state](#1-supertuxkart-recorded-ghosts-and-a-camera-with-its-own-state)
+- [2. Neverball: a compact input-to-simulation-to-presentation reading exercise](#2-neverball-a-compact-input-to-simulation-to-presentation-reading-exercise)
+- [3. Pioneer: explicit coordinate frames and terrain relative to the camera](#3-pioneer-explicit-coordinate-frames-and-terrain-relative-to-the-camera)
+- [4. Rigs of Rods: tracing an editable vehicle definition into physics and graphics](#4-rigs-of-rods-tracing-an-editable-vehicle-definition-into-physics-and-graphics)
+- [5. VDrift: inspectable input processing and vehicle force state](#5-vdrift-inspectable-input-processing-and-vehicle-force-state)
+- [6. OpenRocket: editable component trees and transparent mass properties](#6-openrocket-editable-component-trees-and-transparent-mass-properties)
+- [7. Godot TPS demo: traceable input, camera, and settings code](#7-godot-tps-demo-traceable-input-camera-and-settings-code)
+- [8. Endless Sky: readable vehicle definitions and helpful loading diagnostics](#8-endless-sky-readable-vehicle-definitions-and-helpful-loading-diagnostics)
+- [9. OpenTTD: saved-state evolution and rebuilding derived state](#9-openttd-saved-state-evolution-and-rebuilding-derived-state)
+- [10. TinyRenderer: a small codebase for understanding the first visible airplane](#10-tinyrenderer-a-small-codebase-for-understanding-the-first-visible-airplane)
+
+### 1. SuperTuxKart: recorded ghosts and a camera with its own state
+
+**Source-inspected finding.** SuperTuxKart provides a concrete replay-reading trail: start with [`ReplayRecorder::update()`](https://github.com/supertuxkart/stk-code/blob/master/src/replay/replay_recorder.cpp), which stores timestamps, positions, visual rotations, and additional kart state; follow [`ReplayPlay`](https://github.com/supertuxkart/stk-code/blob/master/src/replay/replay_play.cpp) into ghost creation and reset; then inspect [`GhostKart::update()`](https://github.com/supertuxkart/stk-code/blob/master/src/karts/ghost_kart.cpp). The ghost interpolates positions between recorded samples and uses quaternion spherical interpolation for rotation. Playback handles the final sample explicitly. This is implemented state playback, not evidence that rerunning old control inputs reproduces identical physics.
+
+A separate reading trail is [`CameraNormal::moveCamera()` and `update()`](https://github.com/supertuxkart/stk-code/blob/master/src/graphics/camera/camera_normal.cpp). The camera has configurable position/rotation smoothing, mode-dependent settings, and its own transition state. These functions show why resetting a vehicle and resetting its view deserve separate attention.
+
+**How this could help.** A translucent recorded airplane could illustrate a landing approach or make two tuning runs visually comparable. Recording poses would keep that visualization useful while the flight model changes. For diagnosing physics, the trace could additionally retain controls, wind, parameter versions, and simulation state; the kart implementation does not establish which aircraft quantities are sufficient.
+
+**Limits and reuse.** Chase-camera behavior designed for a road vehicle will not automatically suit an observer standing on an RC field. The inspected replay source headers specify GPL-3.0-or-later; assets and other dependencies need their own inspection before reuse. Reading its separation of responsibilities does not require adopting its renderer or race framework.
+
+**Small experiment, not performed.** Record a short synthetic airplane circuit as time/position/orientation samples, play it at several rendering rates, and reset halfway through. Observe ghost continuity and camera settling separately before adding any replay UI.
+
+### 2. Neverball: a compact input-to-simulation-to-presentation reading exercise
+
+**Source-inspected finding.** Neverball is a useful non-flight example because its core interaction is small enough to trace. In [`ball/game_server.c`](https://github.com/Neverball/neverball/blob/master/ball/game_server.c), a single input structure stores tilt, response, view rotation, and camera selection. Public setters lead into that structure; `game_step()` advances gameplay, while `game_update_view()` handles the view. This is a concrete place to inspect how a mouse or stick becomes game intent without making every caller manipulate world state.
+
+The other side is [`ball/game_client.c`](https://github.com/Neverball/neverball/blob/master/ball/game_client.c). `game_client_sync()` consumes queued commands, optionally writes them to a demo file, and applies them through `game_run_cmd()`. Rendering uses interpolation data through `game_client_blend()` and `game_client_draw()`. The names “server” and “client” describe a useful implementation boundary here; the inspected path by itself does not establish online multiplayer support.
+
+**How this could help.** We could trace a future RC stick sample through normalized command, aircraft update, and visible pose just as explicitly. Camera selection and camera motion could be observable inputs of their own. This makes a small program easier for humans and coding agents to inspect: a symptom such as “moving the view changes the aircraft” has a short set of functions to examine.
+
+**Limits and reuse.** Neverball's floor-tilting mechanics, response smoothing, and camera-relative behavior are gameplay choices, not RC control laws. Its global state is also something to evaluate rather than automatically copy. The project's [licensing file](https://github.com/Neverball/neverball/blob/master/LICENSE.md) states GPL-2.0-or-later generally and lists component exceptions, including GPLv3 easings and separately licensed libraries/fonts.
+
+**Small experiment, not performed.** Sketch an equally short control-to-pose trace in any candidate prototype. Feed identical airplane commands while changing the camera, then compare aircraft state. Add a command queue only if recording or separating updates makes it useful.
+
+### 3. Pioneer: explicit coordinate frames and terrain relative to the camera
+
+**Source-inspected finding.** Pioneer's [`src/Frame.h`](https://github.com/pioneerspacesim/pioneer/blob/master/src/Frame.h) makes reference frames explicit: parent/child relationships, position, orientation, velocity, rotating-frame state, and transforms relative to another frame. It separately exposes interpolated transforms for drawing between physics ticks. [`Body::SwitchToFrame()`](https://github.com/pioneerspacesim/pioneer/blob/master/src/Body.cpp) converts velocity, position, and orientation during a frame change rather than merely changing a parent identifier. These are useful code entry points for examining what a coordinate conversion actually must preserve.
+
+A complementary graphics example is [`GeoPatch::RenderImmediate()`](https://github.com/pioneerspacesim/pioneer/blob/master/src/GeoPatch.cpp): it subtracts camera position from the patch centroid in `vector3d`, builds a double-precision transform, then converts the result to `matrix4x4f` for rendering. [`vector3.h`](https://github.com/pioneerspacesim/pioneer/blob/master/src/vector3.h) confirms that `vector3d` stores doubles. The source demonstrates a particular precision boundary; it does not prove all distant-scene artifacts are eliminated.
+
+**How this could help.** Even a small field has aircraft-local, world, and camera coordinates. Naming those relationships explicitly can prevent force-direction and visual-orientation mistakes. If scenery eventually expands, Pioneer's camera-relative rendering is a concrete alternative to blindly using enormous single-precision world coordinates.
+
+**Limits and collaboration.** Hierarchical astronomical frames and planetary terrain would be substantial extra machinery for one RC field. The [project README](https://github.com/pioneerspacesim/pioneer) identifies GPLv3 and explicitly rejects materially AI-generated contributions. That is an upstream contribution policy to respect if approaching its maintainers, not a rule for this repository; its stated legal reasoning is not independently evaluated here.
+
+**Small experiment, not performed.** Draw the same small aircraft/field arrangement near the origin and at a large translated coordinate, comparing ordinary and camera-relative transforms. Keep a simple local origin unless the experiment reveals an actual precision problem.
+
+### 4. Rigs of Rods: tracing an editable vehicle definition into physics and graphics
+
+**Evidence: source and official developer documentation inspected; no simulator run.** Rigs of Rods is especially interesting as a worked example of user-authored vehicle data. Its aircraft guide describes wing segments bounded by eight structural nodes, with airfoil data and control-surface behavior. This makes it possible to follow a concrete aircraft part from a text definition into a simulated object. [Aircraft and aerodynamics guide](https://docs.rigsofrods.org/vehicle-creation/aircraft-and-aerodynamics/)
+
+**Code worth reading.** In `source/main/resources/rig_def_fileformat/RigDef_Parser.cpp`, `ProcessCurrentLine()` dispatches the wings section to `ParseWing()`. That function reads node references, texture coordinates, surface type, hinge-related chord position, deflection limits, airfoil name and an optional efficacy coefficient into a `Wing` record. `GetArgWingSurface()` recognizes ailerons, elevators, rudders, elevons and other combinations. This is a useful example of expressing physical and visual relationships explicitly in content data. [Parser implementation](https://github.com/RigsOfRods/rigs-of-rods/blob/master/source/main/resources/rig_def_fileformat/RigDef_Parser.cpp)
+
+The developer overview also points to `GfxScene::BufferSimulationData()` and actor simulation buffers. It describes separating simulation updates from visual mesh updates, while explicitly acknowledging legacy coupling and incomplete separation. That honesty makes the architecture useful to study as an evolving codebase. [Codebase overview](https://developer.rigsofrods.org/d4/d38/_codebase_overview_page.html)
+
+**Potential use and limits.** We could borrow the idea of tracing each visible control surface back to its physical definition and exposing that relationship in a debug view. The node-and-beam model itself is substantially more elaborate than our first airplane needs; this research does not establish its accuracy for small RC aircraft. The inspected parser carries a GPL-3.0 notice; that is relevant if considering code reuse, independently of learning from its organization.
+
+**Small experiment, not performed:** sketch a single wing record and trace which values a simple physics model and a hinge animation would each consume. Start with a rigid airplane; investigate structural deformation only if a later question warrants it.
+
+### 5. VDrift: inspectable input processing and vehicle force state
+
+**Evidence: source inspected; no driving session or controller test.** VDrift offers code inspiration outside aviation: a driving simulator must translate imperfect physical controls into continuous commands and make complicated vehicle forces understandable. Its README identifies it as an open-source driving simulation under GPL v3. [Project repository](https://github.com/VDrift/vdrift)
+
+**Code worth reading.** `src/carcontrolmap.cpp` keeps configuration loading and saving alongside an explicit processing path. `HandleAxis()` applies inversion, deadzone, gain and exponent shaping; `HandleButton()` distinguishes edge-triggered actions from values ramped over time. `ProcessInput()` receives joystick, keyboard and mouse inputs before applying driving-specific steering processing. These are concrete examples of where to inspect a transformation when a controller feels wrong. They are not evidence that a particular RC transmitter works. [Input implementation](https://github.com/VDrift/vdrift/blob/master/src/carcontrolmap.cpp)
+
+`src/physics/cartirebase.h` defines `CarTireState` with friction, camber, slip, slip angle and force/moment fields. `cartire1.h` documents a force-model interface in terms of normal load and wheel/surface velocities. The interesting design is the inspectable intermediate state: a physics result can retain explanatory quantities instead of returning only one opaque force vector. [Tire state](https://github.com/VDrift/vdrift/blob/master/src/physics/cartirebase.h), [tire interface](https://github.com/VDrift/vdrift/blob/master/src/physics/cartire1.h)
+
+**Potential use and limits.** An equivalent airplane debug record might preserve local airspeed, angle of attack, coefficient lookup results and resulting forces for each surface. VDrift's car-specific steering and tire coefficients do not establish suitable RC behavior. Some mapped actions use separate positive channels clamped to 0–1, so signed elevator/aileron commands would need deliberate treatment. The inspected tire interface carries a GPL-3.0-or-later notice.
+
+**Small experiment, not performed:** draw the raw-axis-to-elevator transformation and a surface-force diagnostic record. Check where transmitter expo could combine with simulator expo, and whether a surprising force can be explained from the recorded values.
+
+### 6. OpenRocket: editable component trees and transparent mass properties
+
+**Evidence: source and project documentation inspected; no model built or simulated.** OpenRocket is a model-rocket design and simulation application. Its useful connection to RC airplanes is the relationship between an editable assembly, measured component properties and computed mass behavior. The project also provides 3D visualization and simulation plots, according to its own documentation. [Project repository](https://github.com/openrocket/openrocket)
+
+**Code worth reading.** `core/src/main/java/info/openrocket/core/rocketcomponent/RocketComponent.java` implements a component tree, including child insertion checks and change events. Its mass and center-of-gravity override setters distinguish a specified override value from whether that override is active. Changes can emit mass-specific events, separating their meaning from purely visual edits. This is a concrete reference for representing measured values alongside geometric estimates. [Component implementation](https://github.com/openrocket/openrocket/blob/unstable/core/src/main/java/info/openrocket/core/rocketcomponent/RocketComponent.java)
+
+`core/.../masscalc/MassCalculator.java` exposes separate structural, launch, burnout and motor mass calculations. The main calculation path assembles components and computes moments of inertia. One particularly useful caution appears in the same file: the `getCMAnalysis()` documentation warns that its component-map approach mishandles instancing. Repeated parts need identities that distinguish individual instances from shared component definitions. [Mass calculator](https://github.com/openrocket/openrocket/blob/unstable/core/src/main/java/info/openrocket/core/masscalc/MassCalculator.java)
+
+**Potential use and limits.** Moving an RC battery or adding ballast could update total mass and center of gravity through a small assembly model. This could begin as a few named masses rather than a full aircraft editor. Rocket-specific aerodynamics and propellant behavior do not validate airplane physics, and the inspected `unstable` branch can change. OpenRocket's license is GPL-3.0-or-later with an additional permission concerning packaged non-compilable data files. [License](https://github.com/openrocket/openrocket/blob/unstable/LICENSE.TXT)
+
+**Small experiment, not performed:** describe a fuselage, battery and two identical wing-mounted masses; move only one mass. Hand-check total mass and center of gravity, and confirm that the two instances remain distinguishable.
+
+### 7. Godot TPS demo: traceable input, camera, and settings code
+
+**Question.** What can a complete playable demonstration teach us about connecting input, camera behavior, and user settings without inventing an editor framework?
+
+**Source inspected.** In the Godot third-person shooter demo, `player/player_input.gd` collects movement actions separately from camera actions. Gamepad camera movement is scaled by frame time, while mouse motion uses relative event displacement. `rotate_camera` applies yaw, orthonormalizes the camera base, and clamps pitch. Local multiplayer authority determines whether a player's camera and input processing are active. These are concrete implementation choices in a shooter, not established RC input conventions. [Input and camera implementation](https://github.com/godotengine/tps-demo/blob/a82f15448e9b015440d3bbdf5e10801b260c4e9f/player/player_input.gd).
+
+`menu/settings.gd` loads a user configuration file, fills missing entries from a defaults dictionary, and applies graphics settings separately. It also contains a documented limitation around re-enabling shadows in the menu: useful examples can include imperfect behavior worth investigating. [Settings implementation](https://github.com/godotengine/tps-demo/blob/a82f15448e9b015440d3bbdf5e10801b260c4e9f/menu/settings.gd).
+
+**Possible project lesson.** A small RC prototype could make its input-to-camera path similarly easy to trace while keeping airplane control channels separate. A settings defaults table could let experimental options appear gradually without requiring users to discard old settings. These ideas can transfer even if we never choose Godot.
+
+**Limits.** Chase-camera aiming differs substantially from a stationary RC pilot following a distant aircraft. Mouse displacement and transmitter stick deflection also have different semantics. The repository identifies engine-version branches and warns about a large first import. Its license file separates MIT-style code terms from CC-BY 3.0 assets/music and records additional material provenance; it is not a single uniform asset license. [Demo README](https://github.com/godotengine/tps-demo), [license record](https://github.com/godotengine/tps-demo/blob/a82f15448e9b015440d3bbdf5e10801b260c4e9f/LICENSE.md).
+
+**Small experiment, unperformed.** In a disposable tiny scene, trace keyboard, gamepad, and mouse events to camera changes. Replace the avatar with an airplane blockout, fix the camera at a pilot position, and compare the amount of code that remains useful.
+
+### 8. Endless Sky: readable vehicle definitions and helpful loading diagnostics
+
+**Question.** How does an established content-rich game turn editable vehicle descriptions into runtime objects?
+
+**Source inspected.** Endless Sky's ship-authoring guide describes its text-based ship definitions and editing workflow. In `source/Ship.cpp`, `Ship::Load` reads attributes and variant relationships; `FinishLoading` fills unspecified values from base models. The code also emits diagnostics for unsupported or unrecognized attributes. This provides an actual implementation to study alongside the contributor-facing guide, rather than inferring the loader from screenshots or modding claims. [Ship-authoring guide](https://github.com/endless-sky/endless-sky/wiki/CreatingShips), [ship loading and finalization](https://github.com/endless-sky/endless-sky/blob/aa2f75faa74da55bd6689822cc0592cdba10bd70/source/Ship.cpp).
+
+`DataNode::PrintTrace` walks parent nodes to explain context. `DataNode::Value(int)` reports missing or nonnumeric tokens but returns zero after failure. That fallback is important to notice: convenient recovery in one game's data pipeline would need careful reconsideration for aircraft mass or dimensions. [DataNode diagnostics and conversion](https://github.com/endless-sky/endless-sky/blob/aa2f75faa74da55bd6689822cc0592cdba10bd70/source/DataNode.cpp).
+
+**Possible project lesson.** Follow one definition from a human-readable document through parsing, reference resolution, and final runtime construction. A trainer variant could eventually inherit visual settings while explicitly changing its propulsion data. Good errors could identify both the parameter and the containing aircraft/component, helping contributors and AI-generated edits alike.
+
+**Limits.** Space-game movement and balance values are not aerodynamic references. Inheritance can obscure the effective value and its origin; readable source files alone do not make a complex override system understandable. We need not adopt this custom text syntax. The repository copyright inventory identifies GPL-3+ as the general license and lists separate asset terms and exceptions. [Copyright inventory](https://github.com/endless-sky/endless-sky/blob/aa2f75faa74da55bd6689822cc0592cdba10bd70/copyright).
+
+**Small experiment, unperformed.** Trace one base ship and variant on paper, then sketch a minimal aircraft loader with explicit errors for missing mass. Compare flat data with inheritance using only two aircraft before deciding whether shared defaults actually simplify authoring.
+
+### 9. OpenTTD: saved-state evolution and rebuilding derived state
+
+**Question.** What can a long-lived simulation game's loading code teach us about changing a model without confusing persisted state and runtime caches?
+
+**Source inspected.** OpenTTD's `src/saveload/afterload.cpp` has an explicit `AfterLoadGame` phase containing version-dependent conversions. A separate `InitializeWindowsAndCaches` function resets windows and refreshes derived data. Its comment explains that this separation followed bugs caused by initializing those systems before conversions were complete. There are also deliberate early rebuilds for structures needed during conversion, illustrating that the dependency order matters more than an absolute rule to rebuild everything last. [Post-load conversion and initialization source](https://github.com/OpenTTD/OpenTTD/blob/5fcaa0982deb5fa1fb2afea1312bd79cea255a96/src/saveload/afterload.cpp).
+
+The official source reference exposes the broader save/load machinery and its callers, giving a navigation path from this concrete example into serialization and error handling. These are mature game systems to read selectively; their size is not a target for our first prototype. [Official save/load source reference](https://docs.openttd.org/source/d0/d47/saveload_8cpp).
+
+**Possible project lesson.** If saved flights eventually become useful, an aircraft pose, a user setting, and a renderer's cached transform might deserve different treatment. A load operation could first restore and interpret persistent values, then construct the runtime resources needed to display and continue the flight. The same question can help clarify a reset operation even before file saving exists.
+
+**Limits.** Loading an old file does not guarantee that a changed flight model will continue the same trajectory. Compatibility for data, simulation behavior, and replay are distinct questions. We have no reason to commit to long-term saved-flight compatibility now. OpenTTD publishes GPL version 2 license text with stated exceptions for some third-party modules; consult the actual files if code reuse becomes a concrete proposal. [License file](https://github.com/OpenTTD/OpenTTD/blob/5fcaa0982deb5fa1fb2afea1312bd79cea255a96/COPYING.md).
+
+**Small experiment, unperformed.** Define two toy versions of a saved aircraft state, add one field with an explicit default, and rebuild a visual transform after loading. Compare the result with a fresh initialization and document which quantities are saved versus recomputed.
+
+### 10. TinyRenderer: a small codebase for understanding the first visible airplane
+
+**Question.** Can a compact educational renderer make graphics failures easier to reason about without committing us to building our own rendering engine?
+
+**Documented scope.** TinyRenderer is a software-rendering course. Its README explicitly describes producing an image from a triangulated model and textures, with no graphical interface. The author's objective is to explain graphics-pipeline ideas, not to supply a GPU application framework. [TinyRenderer course and repository](https://github.com/ssloy/tinyrenderer).
+
+**Source inspected.** `main.cpp` loads models, constructs a shader, processes face vertices, calls the rasterizer, and saves a framebuffer image. `our_gl.cpp` contains camera/view/projection setup and rasterization in a short file: perspective division, screen-space bounds, barycentric coordinates, depth testing, and fragment shading are visible together. It also discards triangles using an area/direction test. These are concrete reading entry points for tracing why a mesh is invisible or incorrectly oriented. [Main rendering path](https://github.com/ssloy/tinyrenderer/blob/97eb7a480e762285899a93c5d21e70a79e60782e/main.cpp), [transform and rasterization code](https://github.com/ssloy/tinyrenderer/blob/97eb7a480e762285899a93c5d21e70a79e60782e/our_gl.cpp).
+
+**Possible project lesson.** A handful of triangles forming an airplane could be a useful teaching asset for contributors: trace a wing vertex from model space to its pixel and explain the camera convention. This could make later AI-generated graphics changes easier to review regardless of which renderer we ultimately use.
+
+**Limits.** A static software-rendered image does not satisfy the interactive simulator goal by itself. This implementation's simplified projection and clipping behavior should not become a reference for every production graphics API. Its compactness is educational, not evidence of adequate real-time performance. The source carries permissive zlib-style terms; bundled sample-model provenance would need separate attention before reuse. [Source license](https://github.com/ssloy/tinyrenderer/blob/97eb7a480e762285899a93c5d21e70a79e60782e/LICENSE.txt).
+
+**Small experiment, unperformed.** Use an original low-detail airplane mesh, render a few known poses, then deliberately reverse triangle winding or change a transform. Explain the resulting image from the inspected code. Keep this as a learning exercise if an existing engine already serves the interactive prototype better.
+
+## Ten investigations to guide early prototype experiments
+
+Sixth research pass, **2026-10-05**: ten questions chosen to connect the growing knowledge base to small, informative prototype experiments. The emphasis is on understandable starting conditions, behavior at model boundaries, player-visible response, and evidence we can compare. Some questions deepen earlier broad topics; each investigates a specific unresolved mechanism. None of the experiments was performed, and no feature, tool, accuracy target, or implementation approach is required by this section.
+
+- [1. Trimmed starting states and resets that reveal the aircraft model](#1-trimmed-starting-states-and-resets-that-reveal-the-aircraft-model)
+- [2. What happens when flight leaves the available airfoil polar?](#2-what-happens-when-flight-leaves-the-available-airfoil-polar)
+- [3. Ground effect as an aerodynamic question separate from wheel contact](#3-ground-effect-as-an-aerodynamic-question-separate-from-wheel-contact)
+- [4. Stick-to-photon latency: measure the whole response path](#4-stick-to-photon-latency-measure-the-whole-response-path)
+- [5. Lost focus and disconnected controls: what should the flight do?](#5-lost-focus-and-disconnected-controls-what-should-the-flight-do)
+- [6. Distant-aircraft rendering: preserve a tiny moving silhouette](#6-distant-aircraft-rendering-preserve-a-tiny-moving-silhouette)
+- [7. Numerical convergence: separating integration error from flight-model error](#7-numerical-convergence-separating-integration-error-from-flight-model-error)
+- [8. Self-describing experiment traces with MCAP](#8-self-describing-experiment-traces-with-mcap)
+- [9. Repeatable visual evidence for human and AI code review](#9-repeatable-visual-evidence-for-human-and-ai-code-review)
+- [10. Sensitivity analysis to decide what is worth researching next](#10-sensitivity-analysis-to-decide-what-is-worth-researching-next)
+
+### 1. Trimmed starting states and resets that reveal the aircraft model
+
+**Evidence — documented solver and implementation inspected.** JSBSim's `FGTrim` searches for attitude and control settings that satisfy a requested steady flight condition. It iteratively reduces selected acceleration residuals; its longitudinal implementation adjusts angle of attack, throttle, and pitch trim. The API exposes tolerances, iteration limits, reports, and failure status. Its documentation explicitly warns that the requested speed, configuration, mass, or center of gravity can make a trim impossible. A configurable fallback changes flight-path angle when available thrust cannot satisfy the original request. [JSBSim FGTrim documentation and source](https://jsbsim-team.github.io/jsbsim/classJSBSim_1_1FGTrim.html).
+
+**How this could help — inference.** A reset in midair could begin at a reproducible operating point instead of an arbitrary combination of speed, attitude, and throttle. That would make initial control experiments easier to interpret: immediate acceleration might otherwise come from the spawn condition rather than a change in the model. This idea does not require adopting JSBSim; a small longitudinal force-and-moment balance could answer the initial question.
+
+There are useful distinctions to preserve. Numerical equilibrium does not demonstrate that the airplane returns to it after a disturbance, nor validate the aerodynamic coefficients. Initialization also differs from continuously applying an autopilot. If the user starts moving the controls, the ordinary flight equations should determine what follows. A solver's fallback glide should be reported as a different starting condition, not presented as successful level flight. Radio trim and a simulator's initialization offset also need an explicit relationship before both are applied.
+
+**Small experiment — not performed.** For one candidate airplane, compare a hand-chosen spawn with three solved starting speeds. Record residual accelerations, control limits, and ten seconds of motion with controls held fixed. Change the center of gravity and repeat. Include an intentionally impossible condition and check that failure remains visible.
+
+### 2. What happens when flight leaves the available airfoil polar?
+
+**Evidence — documentation and source inspected.** AirfoilPreppy provides a concrete offline example of extending limited airfoil data to ±180 degrees with the Viterna method. Its documentation separately describes rotational corrections intended for wind-turbine analysis. These are distinct operations, not a general guarantee of stalled-aircraft accuracy. [AirfoilPreppy documentation](https://github.com/NLRWindSystems/AirfoilPreppy/blob/master/docs/documentation.rst).
+
+The `Polar.extrapolate` implementation accepts maximum drag, a minimum drag floor, and the number of additional samples. Its optional `AR` argument is defined as rotor radius divided by chord at 75% radius; supplying it estimates maximum drag. That definition must not be silently replaced with the familiar fixed-wing aspect ratio. The source also contains separate angle intervals and an asymmetry adjustment, useful reminders that a complete-looking curve can contain explicit modeling assumptions. [Extrapolation implementation](https://github.com/NLRWindSystems/AirfoilPreppy/blob/master/airfoilprep/airfoilprep.py).
+
+**How this could help — inference.** Earlier research established that XFOIL and measured polars have limited envelopes. This investigation addresses the runtime boundary: an RC airplane can encounter angles outside that envelope during launch mistakes, inverted flight, or recovery. We could keep measured, computed, and extrapolated intervals distinguishable in the data and diagnostics. Simply holding the last coefficient constant is also an assumption; drawing a smooth extension does not make it measured evidence.
+
+**Limits.** An angle-indexed static extension alone cannot encode history-dependent stall, spin dynamics, changing local flow across a finite wing, or propwash effects. Wind-turbine corrections are not automatically suitable for a fixed RC wing. Pitching moment needs its own scrutiny rather than being inferred from plausible lift and drag.
+
+**Small experiment — not performed.** Extend one documented polar using two explicit assumptions, sweep the entire angle range, and plot coefficients and boundary continuity. Feed the alternatives into the same scripted recovery and mark every timestep outside the original data envelope. Compare sensitivity without declaring either result validated.
+
+### 3. Ground effect as an aerodynamic question separate from wheel contact
+
+**Evidence — instructional reference and measured research.** The FAA describes the nearby surface changing wing upwash, downwash, and vortices. Its explanation distinguishes increased lift at fixed angle of attack from reduced induced drag at fixed lift coefficient. It relates the magnitude to wing height relative to span. These are useful qualitative checks; the handbook's example percentages are not a calibrated lookup table for every RC airplane. [FAA Pilot's Handbook, ground-effect discussion in Chapter 5](https://www.faa.gov/sites/faa.gov/files/uas/recreational_fliers/where_can_i_fly/airspace_101/pilot_handbook.pdf).
+
+NASA's 1961 wind-tunnel investigation tested thick, highly cambered rectangular wings with aspect ratios 1, 2, 4, and 6. It found increasing lift-curve slope and decreasing induced drag near the ground, along with configuration-dependent stability observations. This is experimental evidence for those wings, not evidence that their coefficients transfer directly to a lightweight trainer at another Reynolds number. [NASA TN D-926 and report download](https://ntrs.nasa.gov/citations/19980231058).
+
+**How this could help — inference.** Landing float and changes during liftoff could be investigated independently of tire friction, suspension, and collision response. A candidate model could vary an aerodynamic correction with wing height while leaving the ground-contact model separate. Using the aircraft origin or wheel clearance as the aerodynamic height without considering wing placement would confound a high-wing/low-wing comparison. A universal upward spring above the runway would conceal which aerodynamic effect it approximates.
+
+**Limits.** Any first correction would need a declared scope, such as approximately level wings over a flat surface. Banks, slopes, rough terrain, wingtip proximity, tail interaction, and separated flow raise further questions. No source here establishes an RC-specific implementation.
+
+**Small experiment — not performed.** Evaluate fixed-angle and fixed-lift cases separately across several height/span ratios, checking convergence toward the free-air model. Then compare identical landing approaches with the correction enabled and disabled while logging aerodynamic and contact forces separately.
+
+### 4. Stick-to-photon latency: measure the whole response path
+
+**Documented finding.** NVIDIA's LDAT uses a luminance sensor to measure input-to-visible-response latency. Its page describes vendor-independent GPU compatibility, but lists Windows 10 and a particular driver under requirements; that is not evidence that its software runs on every platform. More accessible for source inspection, **OSLTT** publishes desktop software, device firmware, and circuit diagrams. Its README describes Windows installation and Visual Studio builds. These are external measurement approaches, unlike timings that end when the application submits a frame. Neither source establishes direct support for an RC transmitter's analog-stick signal. [LDAT documentation](https://developer.nvidia.com/nvidia-latency-display-analysis-tool), [OSLTT repository](https://github.com/OSRTT/OSLTT).
+
+**Why investigate this separately from profiling?** Our inference is that a responsive-looking frame counter can hide delay across transmitter sampling, USB delivery, application polling, physics scheduling, rendering queues, display scanout, and pixel response. A diagnostic square that changes when the application receives input measures a different endpoint from an elevator moving, and both differ from the aircraft beginning to rotate under aerodynamic forces. Those distinctions could prevent us from “fixing” a realistic aircraft response by changing unrelated rendering code.
+
+**Possible measurement design.** Begin with a high-frame-rate video containing both a visibly marked physical stick and the display. Define a repeatable stick-position threshold and visible-response threshold, then record many trials. A later electrical trigger plus light sensor could narrow measurement uncertainty. Record camera frame interval, display refresh setting, input device, rendering settings, sample count, and latency distribution; a camera recording provides a bounded estimate, not arbitrary millisecond precision. Software event timestamps could help locate delay without replacing the external measurement.
+
+**Small experiment, not performed.** Compare an input-indicator patch, direct control-surface animation, and aircraft roll response in the same minimal scene. Change only one timing setting between runs. This could identify where further investigation is useful without imposing a latency target or purchasing specialized hardware.
+
+### 5. Lost focus and disconnected controls: what should the flight do?
+
+**Documented finding.** SDL distinguishes keyboard-focus loss, window hiding/minimizing, joystick removal, and gamepad removal as separate events. Its background-joystick hint disables joystick/gamecontroller input events while the application is in the background by default, with an option to enable them. An application therefore needs to understand event delivery independently from whether its simulation continues. [SDL event types](https://wiki.libsdl.org/SDL3/SDL_EventType), [background-input hint](https://wiki.libsdl.org/SDL3/SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS).
+
+The browser introduces another distinction: focus loss does not necessarily mean that a page is hidden. MDN documents `visibilitychange`, widespread suspension of `requestAnimationFrame()` in hidden tabs, and background timer throttling. These are browser scheduling behaviors; they do not define the correct flight state when the player returns. [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API).
+
+**Possible project value.** This is a small interaction question with consequences for early prototypes. If a transmitter disappears while the elevator is held back, retaining the last input, centering the surfaces, cutting throttle, pausing the flight, and resetting the airplane produce very different experiences. Centered elevator and zero throttle also have different meanings: “neutralize all axes” is ambiguous for a throttle channel. No single behavior is established here, and a future shared session might need a different policy from solo practice.
+
+**Open implementation questions.** Could input availability and flight state be represented separately, so reconnecting does not silently resume flight? Would a visible paused state plus an explicit resume action be understandable? Should resuming require low throttle, or merely display the current channel positions? These are alternatives to compare, not new requirements. Any elapsed-time accumulator also needs examination after a long suspension, so returning to a tab does not accidentally simulate the whole absence in one burst.
+
+**Small experiment, not performed.** Hold a nonzero command, switch windows, hide the tab if applicable, unplug, reconnect with throttle high, and resume. Log each transition and resulting control values. Repeat with keyboard input and record which behavior feels predictable.
+
+### 6. Distant-aircraft rendering: preserve a tiny moving silhouette
+
+**Documented finding.** Godot's antialiasing guide makes a useful distinction: MSAA addresses geometric edges but does not solve specular aliasing; TAA combines information across frames and can blur or leave trails behind moving objects. Supersampling addresses several aliasing sources at a much higher rendering cost. These are documented properties of the described techniques and implementation, not measured results for our aircraft. Renderer availability also varies: in the inspected Godot 4.5 documentation, TAA requires Forward+, while MSAA is available across renderers. [Godot 4.5 antialiasing guide](https://docs.godotengine.org/en/4.5/tutorials/3d/3d_antialiasing.html).
+
+**A concrete scale question.** Perspective projection relates field of view, depth, and screen size; Microsoft's projection documentation provides the matrix construction. For a centered, broadside span `b`, camera depth `d`, horizontal field of view `f`, and image width `W`, our geometric derivation is `pixels = W × b / (2 × d × tan(f/2))`. A 1.2 m span at 100 m occupies about 20 pixels in a 1920-pixel image with a 60-degree horizontal field of view; at 300 m, about 6.7 pixels. This assumes the span is parallel to the image plane and ignores perspective variation across it. Banking can make the relevant silhouette thinner still. [Perspective projection matrix](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/bb281728%28v%3Dvs.85%29).
+
+**Possible project value.** A beautiful close-up model may be difficult to follow in normal RC ground-view flight. At these sizes, marking detail, specular highlights, thin wing geometry, and temporal history deserve separate evaluation. A still screenshot cannot reveal flicker or trails. Enlarging the aircraft visually would change apparent scale, so that would be a separate experiment rather than an invisible rendering correction.
+
+**Small experiment, not performed.** Render one scripted fly-by at several distances, bank angles, backgrounds, and native resolutions. Compare no antialiasing, MSAA, and an available temporal method with identical geometry and camera motion. Inspect moving silhouette continuity and orientation recognition alongside frame time; do not select a winner from close-up image quality alone.
+
+### 7. Numerical convergence: separating integration error from flight-model error
+
+**Question.** If an airplane oscillates or gains energy unexpectedly, is the cause in the equations, their implementation, or the timestep?
+
+**Documented capabilities.** SciPy's `solve_ivp` exposes several ordinary-differential-equation solvers, including explicit Runge–Kutta methods and implicit methods intended for stiff problems. Its error control combines absolute and relative tolerances; absolute tolerances can differ between state components. Output times requested through `t_eval` are separate from the solver's internal steps. Event detection searches for sign changes over a step and can miss multiple crossings inside that step. These details matter when using an offline solver as a comparison tool rather than assuming its output is exact. [SciPy integration reference](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html).
+
+**Possible project value.** A small offline version of a flight equation could provide a comparison for a future fixed-step implementation. This investigates numerical accuracy, extending the earlier discussion of separating rendering and physics rates. A constant-force translation or a deliberately simple oscillator has an analytical solution; it could reveal basic integration errors before aerodynamic coefficients complicate the diagnosis.
+
+**Limits and inference.** Agreement between two solvers establishes neither realistic aerodynamics nor correct parameter values. Both can integrate the same mistaken equations. Tight local error tolerance also does not guarantee a chosen global trajectory error. Discontinuous control changes and collisions need explicit treatment; simply tightening tolerances is not a substitute for handling their timing. Comparing angle representations also requires care around wrapping and quaternion sign equivalence.
+
+**Small experiment, unperformed.** Run one smooth, short scenario at step sizes `h`, `h/2`, and `h/4`, sampling results at common times. Compare position, velocity, and orientation against an analytical case first, then against a tightly controlled offline calculation. Record runtime and the error trend. If refinement stops helping, investigate equations, discontinuities, and floating-point effects before increasing the simulation rate again. No integrator, timestep, or Python runtime dependency is selected by this research.
+
+### 8. Self-describing experiment traces with MCAP
+
+**Question.** What should an exported flight trace preserve so that another contributor can understand an experiment without the original developer present?
+
+**Documented capabilities.** MCAP organizes messages into channels with optional schemas describing their payloads. The format specifies separate publication and recording timestamps, an optional sequence counter, channel metadata, attachments, and optional chunk compression/indexing. Messages written outside chunks cannot use the chunk message indexes. These are storage facilities; they do not supply an aircraft telemetry schema or automatically synchronize clocks. [MCAP concepts](https://mcap.dev/guides/concepts), [format specification](https://mcap.dev/spec).
+
+**Possible project value.** A trace could combine control commands, aircraft state, per-surface force diagnostics, and configuration metadata without forcing all signals into the same sampling rate. An attached parameter snapshot could help explain why two runs differ. A file with named channels and explicit units could also give AI-assisted investigations more reliable evidence than a screenshot of a plot.
+
+**Limits and inference.** Simulation time, input-event time, and wall-clock recording time need an explicit mapping. A timestamp field alone cannot tell us whether a command was applied before or after a physics step. A useful candidate message might therefore carry a simulation step index as well as time. The format does not guarantee lossless capture, deterministic replay, or complete state restoration. Recording every value may introduce overhead and large files; a plain CSV remains a useful baseline for the first few signals.
+
+**Small experiment, unperformed.** Export the same short elevator step as CSV and as a few MCAP channels. Include parameter/version identifiers and document timestamp meanings. Ask a second script to locate the applied command, the resulting force, and the first changed pose. Deliberately omit a sample and check whether the gap is visible. Compare the effort and diagnostic benefit before adopting a richer format. This is about portable experimental evidence, distinct from a player-facing replay feature or saved flight.
+
+### 9. Repeatable visual evidence for human and AI code review
+
+**Question.** How could a change demonstrate that the airplane still appears correctly and its control surfaces still move as intended?
+
+**Documented capabilities.** Playwright supports screenshot comparisons against stored baselines. Its documentation warns that browser rendering varies with the OS, hardware, settings, and headless mode, among other factors. It recommends matching the environment used for baseline generation. Its comparison workflow waits for consecutive screenshots to match; an actively moving flight scene therefore needs a deliberately controlled capture state. [Playwright visual comparisons](https://playwright.dev/docs/test-snapshots).
+
+For an engine-based example, Godot's Movie Maker mode produces non-real-time frame output, including PNG sequences. The documentation explicitly distinguishes this from recording actual gameplay in real time. It could produce inspectable frames at known points in a scripted sequence, but smooth exported footage would not establish smooth interactive performance. [Godot movie capture documentation](https://docs.godotengine.org/en/stable/tutorials/animation/creating_movies.html).
+
+**Possible project value.** A small visual scenario could show the aircraft from a fixed camera, command elevator and aileron deflections, and capture neutral and deflected states. A numerical record of actual surface angles would complement the images. That would let reviewers assess what an AI-generated code change actually rendered, while still using ordinary source review to understand why.
+
+**Limits and inference.** Pixel equality is sensitive to rendering variation; generous image thresholds can also hide a missing thin wing or reversed surface. A baseline may itself be wrong. A few stable views plus explicit scene-state checks could be more informative than an enormous screenshot suite. Neither browser automation nor offline movie capture exercises a physical RC transmitter by itself.
+
+**Small experiment, unperformed.** Capture three known poses in one candidate prototype, introduce a reversed aileron or missing material, and check whether the evidence makes the error obvious. Record renderer, resolution, camera, capture step, and tool versions. Choose browser or engine-native capture only after a prototype exists; do not add both merely for coverage.
+
+### 10. Sensitivity analysis to decide what is worth researching next
+
+**Question.** Which uncertain aircraft parameters materially affect the behavior we want to improve?
+
+**Documented capabilities.** SALib separates input sampling from model execution and analysis: it generates parameter sets, the user runs a model, then SALib analyzes the outputs. Its documented methods include Sobol, Morris, and FAST. The guide distinguishes first-order effects from interactions and total-order contributions. Its example also shows how evaluating second-order interactions increases the required number of model runs. This could support offline investigation without embedding Python into the interactive simulator. [SALib workflow and sensitivity indices](https://salib.readthedocs.io/en/latest/user_guide/basics.html).
+
+**Possible project value.** For a simple trainer, uncertain mass, drag parameters, thrust scaling, or control effectiveness could be varied while observing a defined outcome such as glide distance or pitch response. The result could help decide whether another hour is better spent measuring a mass, refining propulsion data, or improving control-surface geometry. This asks how uncertainty affects predictions; it does not estimate the best parameters from recorded flights, the subject of an earlier investigation.
+
+**Limits and inference.** A ranking depends on the chosen scenario, output, parameter ranges, and sampling assumptions. It is not a universal importance ranking for airplanes. Inputs that are physically coupled need a sampling scheme that respects that relationship; arbitrary combinations could describe impossible aircraft. Failed or unstable simulations need explicit reporting instead of being silently removed. Sensitivity within a simplified model cannot reveal effects that the model omits entirely.
+
+**Small experiment, unperformed.** Begin with only three uncertain parameters and one short deterministic maneuver. Justify each range from a measurement or label it as exploratory. Plot outputs from a small preliminary sweep, then use a suitable sensitivity method only if the extra runs answer a real question. Repeat for a different maneuver to see whether the ranking changes. Preserve the model revision, parameter ranges, sampling method, and failures with the result; no parameter-accuracy budget is fixed here.
+
 ## Continuing the research
 
 ### Small experiments suggested by these findings
@@ -1044,3 +1320,7 @@ As research continues, add findings beside their topic with the date, original s
 **Research log — 2026-10-05, third pass:** added ten investigations into Geometry Nodes, aircraft rigging, generative 3D, RenderDoc, Tracy, asset optimization, repository-aware coding tools, editor MCP bridges, reproducible development environments, and asset source versioning. Preserved upstream capability claims, access limitations, and unperformed experiments separately. No tools were installed and no additional project decisions were made.
 
 **Research log — 2026-10-05, fourth pass:** added ten investigations into entity-component libraries, math and quantity types, Lua embedding, developer inspection panels, sanitizers, generated-input testing, virtual file access, library dependency resolution, audio implementation, and task scheduling. Recorded original sources, capability boundaries, and possible experiments without selecting a language, architecture, or dependency. No libraries were installed or runtime tests performed.
+
+**Research log — 2026-10-05, fifth pass:** investigated SuperTuxKart, Neverball, Pioneer, Rigs of Rods, VDrift, OpenRocket, the Godot TPS demo, Endless Sky, OpenTTD, and TinyRenderer. Added concrete source-reading paths, implementation observations, limitations, and small possible experiments. No upstream code or assets were imported, and no architecture or technology was selected.
+
+**Research log — 2026-10-05, sixth pass:** investigated trimmed initialization, airfoil extrapolation, ground effect, end-to-end latency, interrupted input, distant-aircraft rendering, numerical convergence, structured experiment traces, repeatable visual evidence, and parameter sensitivity. Added original-source findings and small proposed experiments, keeping numerical correctness, physical validity, and player experience distinct. No experiments were run or new project decisions made.
