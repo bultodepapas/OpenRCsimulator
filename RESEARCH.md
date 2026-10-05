@@ -17,6 +17,7 @@ Research date: **2026-10-05**. This is a growing collection of evidence, possibi
 - [Adjacent robotics and autopilot ecosystems](#adjacent-robotics-and-autopilot-ecosystems)
 - [AI-assisted development as an experiment we can observe](#ai-assisted-development-as-an-experiment-we-can-observe)
 - [Ten additional investigations](#ten-additional-investigations)
+- [Ten investigations into development and 3D tools](#ten-investigations-into-development-and-3d-tools)
 - [Continuing the research](#continuing-the-research)
 
 ## Reading the evidence
@@ -696,6 +697,167 @@ ArduPilot Plane documents frequency-sweep input excitation for collecting model-
 
 **Small experiment.** Generate synthetic input/output traces from a deliberately simple known model, add controlled noise and delay, then see whether an estimator recovers its parameters and predicts a different maneuver. This would test the identification procedure only; it would not validate a real airplane. Later, existing consented flight logs could reveal whether sufficient excitation and measurements are available before considering any new physical data collection.
 
+## Ten investigations into development and 3D tools
+
+Third research pass, **2026-10-05**: ten new investigations focused on coding workflows, AI tooling, game development, Blender, and 3D assets. These extend the earlier survey with specific authoring and diagnostic tools. Capabilities below are documented upstream; none of these tools was installed or exercised for this pass. Suggested experiments remain possibilities, with no stack or workflow selected.
+
+- [1. Parameterized airplane modeling with Blender Geometry Nodes](#1-parameterized-airplane-modeling-with-blender-geometry-nodes)
+- [2. Hard-surface aircraft rigging: editable parts, hinge pivots and export behavior](#2-hard-surface-aircraft-rigging-editable-parts-hinge-pivots-and-export-behavior)
+- [3. AI-generated 3D assets: TRELLIS, Hunyuan3D and the cleanup boundary](#3-ai-generated-3d-assets-trellis-hunyuan3d-and-the-cleanup-boundary)
+- [4. RenderDoc: investigating an invisible or incorrectly rendered airplane](#4-renderdoc-investigating-an-invisible-or-incorrectly-rendered-airplane)
+- [5. Tracy: measuring simulation stutter across CPU, GPU, and allocations](#5-tracy-measuring-simulation-stutter-across-cpu-gpu-and-allocations)
+- [6. Asset optimization tooling: glTF Transform, meshoptimizer, and KTX2](#6-asset-optimization-tooling-gltf-transform-meshoptimizer-and-ktx2)
+- [7. Repository-aware coding tools: Aider and Continue](#7-repository-aware-coding-tools-aider-and-continue)
+- [8. AI access to Blender and game editors through MCP](#8-ai-access-to-blender-and-game-editors-through-mcp)
+- [9. Repeatable development environments and build commands](#9-repeatable-development-environments-and-build-commands)
+- [10. Versioning editable 3D sources and generated assets](#10-versioning-editable-3d-sources-and-generated-assets)
+
+### 1. Parameterized airplane modeling with Blender Geometry Nodes
+
+**Question:** Could a small editable generator produce several recognizable airplane shapes while preserving the freedom to replace the asset workflow?
+
+**Documented capabilities.** Blender 4.5's Geometry Nodes modifier uses a reusable node group whose exposed inputs can differ between objects sharing that group. Inputs may also be fields evaluated across geometry. This supplies the building blocks for a proposed wing generator with span, chord, taper and dihedral controls; Blender does not supply a verified RC-aircraft generator in the material inspected. The documented mechanism is general procedural geometry, not an aerodynamic design system. [Geometry Nodes modifier, Blender 4.5](https://docs.blender.org/manual/en/4.5/modeling/modifiers/generate/geometry_nodes.html).
+
+Instances provide another useful distinction: a repeated wheel or rib need not duplicate its underlying geometry. Realize Instances converts instances into actual geometry for individual processing, but Blender warns that realizing many complex instances can substantially worsen performance. For an export workflow, realization is therefore a deliberate conversion step to investigate, not something to add indiscriminately. [Realize Instances, Blender 4.5](https://docs.blender.org/manual/en/4.5/modeling/geometry_nodes/instances/realize_instances.html).
+
+A separate operation, **Visual Geometry to Objects**, extracts evaluated geometry into objects and collections while preserving shared geometry and instancing hierarchy. It leaves the original object intact. However, the documentation explicitly says instance attributes are not preserved. That matters if hypothetical identifiers such as `left_aileron` or material labels are carried as attributes: their survival would need checking rather than assumption. [Apply operations, Blender 4.5](https://docs.blender.org/manual/en/4.5/scene_layout/object/editing/apply.html).
+
+**Project relevance and limits.** A modest generator could make distinct trainer, glider and sport-plane silhouettes from one understandable source. Parameters could also make AI-authored modifications easier to inspect than arbitrary vertex edits. These are potential benefits, not measured results. A visual wing's dimensions do not establish its airfoil polar, mass distribution or flight behavior; generated geometry should not quietly become authoritative physics data. Increasing generator complexity could also cost more than hand-modeling a few simple aircraft.
+
+**Small experiment.** Expose only span, chord and tail length; create three variants; extract editable objects; inspect dimensions and separation of control surfaces after export/reimport. Compare editing effort with three manually modeled blockouts. Retain the generator only if it makes this tiny exercise simpler. No generator or export has been executed during this research.
+
+### 2. Hard-surface aircraft rigging: editable parts, hinge pivots and export behavior
+
+**Question:** What is the smallest modeling convention that allows an airplane to move its control surfaces without making every asset a complex character rig?
+
+**Documented capabilities.** Blender supports ordinary object parenting and parenting objects to armature bones. Its manual describes object parenting as the general mechanism; bone parenting attaches objects to a selected bone. This gives two candidate representations: a hierarchy of separate rigid objects, or an armature coordinating those objects. The parenting reference inspected is Blender 3.6, so UI details should be rechecked against the eventual authoring version. [Parenting objects, Blender 3.6](https://docs.blender.org/manual/en/3.6/scene_layout/object/editing/parent.html).
+
+Object origins affect rotation and scaling, and can be moved independently of geometry, including to the 3D cursor. Consequently, placing a separate elevator's origin on its hinge is a plausible implementation technique. Blender's origin-to-center-of-mass option assumes uniform mesh density; that convenience is not a measured RC aircraft center of gravity. [Object origin, Blender 4.5](https://docs.blender.org/UATEST/manual/en/4.5/scene_layout/object/origin.html).
+
+Non-destructive modifiers preserve the editable base geometry until applied. Their stack order affects the result, so an editable symmetric fuselage and its baked export should be treated as related artifacts rather than interchangeable sources. [Modifier introduction, Blender 4.5](https://docs.blender.org/manual/en/4.5/modeling/modifiers/introduction.html).
+
+Blender's glTF documentation supports object transforms, pose-bone animation and shape-key values. It does not imply that arbitrary Blender behavior transfers: other animated properties can be ignored, and animation organization/export mode matters. This makes a simple object-rotation test valuable before adopting an elaborate rig. [glTF animation documentation, Blender 4.5](https://docs.blender.org/manual/es/4.5/addons/import_export/scene_gltf2.html).
+
+**Project relevance and limits.** A proposed first aircraft could contain a fuselage, two ailerons, elevator, rudder and propeller as named parts, with live simulator commands driving rotations. An armature remains worth exploring for coordinated mechanisms or deformation, but is not a prerequisite established by these sources. Neither representation establishes the physical effect of deflection; that remains a separate simulation question.
+
+**Small experiment.** Model one wing and aileron using an object hinge, then reproduce it with a bone. Export/reimport neutral and deflected poses; inspect rotation axis, part names and attachment. Compare contributor effort and runtime control before standardizing either convention. Also measure whether a low-detail model remains readable from the pilot's viewing distance.
+
+### 3. AI-generated 3D assets: TRELLIS, Hunyuan3D and the cleanup boundary
+
+**Question:** Can generative 3D tools reduce asset work once cleanup, editability and redistribution are counted?
+
+**Documented capabilities and limits.** Microsoft's original **TRELLIS** repository provides text/image-conditioned generation, mesh output and a textured GLB example with simplification and texture-size controls. Its authors recommend image conditioning; they report weaker creativity/detail for text models and caution that their tuning-free multiview implementation may not work best for every input. The documented environment is Linux with an NVIDIA GPU of at least 16 GB; Windows setup is not fully tested. Those are upstream requirements, not a local benchmark or a claim about later TRELLIS versions. [TRELLIS repository](https://github.com/microsoft/TRELLIS).
+
+**Hunyuan3D-2** supplies separate shape-generation and texture-generation pipelines, including multiview variants. This separation suggests an experiment using generated appearance with manually controlled geometry, rather than assuming generation must replace the whole modeling process. No aircraft-quality claim was verified. [Hunyuan3D-2 repository](https://github.com/Tencent-Hunyuan/Hunyuan3D-2).
+
+**Licensing evidence.** TRELLIS says its models and most code use MIT, while identifying differently licensed submodules. A top-level license therefore does not settle every dependency. Hunyuan3D-2's inspected Community License covers model code and weights, excludes the EU, UK and South Korea from its territory, and explicitly restricts use/distribution of outputs outside that territory. Although Tencent says it claims no rights in outputs, this is not an unrestricted-output promise. Exact revisions and generated-asset redistribution terms need checking before adopting a workflow. The linked Hugging Face `LICENSE.txt` returned 404 in this pass; it was not independently verified. [TRELLIS licensing section](https://github.com/microsoft/TRELLIS#%EF%B8%8F-license), [Hunyuan3D-2 license](https://github.com/Tencent-Hunyuan/Hunyuan3D-2/blob/main/LICENSE).
+
+**Project relevance and uncertainty.** Decorative airfield objects are a plausible first target. Aircraft need separate hinges, trustworthy dimensions and deliberate collision shapes; those properties were not verified in generated output. Blender offers remeshing and manual retopology, but explicitly warns that automatic remeshing does not generally produce suitable deformation topology. [Blender 4.5 remeshing](https://docs.blender.org/manual/en/4.5/modeling/meshes/retopology.html).
+
+**Small experiment.** Where the chosen model's terms permit, compare one generated windsock stand and one hand-built version: count cleanup minutes, triangles, material complexity and silhouette errors. For a subsequent airplane trial, test symmetry, thin trailing edges, scale and independently editable ailerons. Compare total effort, not attractive preview renders. No model was installed or run.
+
+*Source-access note for these three topics: several direct Blender page opens returned 402/403. The cited findings were checked against the official manual content returned by indexed search, including substantial page text, rather than treating failed fetches as evidence. Runtime/export behavior remains untested.*
+
+### 4. RenderDoc: investigating an invisible or incorrectly rendered airplane
+
+**Question.** When an airplane disappears, looks inside out, or has the wrong material, what evidence can developers inspect beyond a screenshot?
+
+**Documented capabilities.** RenderDoc captures graphics frames for inspection and is MIT-licensed. Its official support table lists Vulkan, OpenGL ES, and desktop core OpenGL on applicable Windows/Linux/Android targets, plus D3D11/12 on Windows. It explicitly excludes old OpenGL compatibility APIs and D3D9/10. Metal is unsupported; macOS is absent from the supported platforms. Consequently, a cross-platform simulator cannot assume this single debugger covers every eventual renderer. Nintendo Switch support is separately distributed through Nintendo's SDK, not part of an unrestricted desktop workflow. [RenderDoc repository and API/platform matrix](https://github.com/baldurk/renderdoc/blob/v1.x/README.md).
+
+The mesh viewer exposes vertex data in tables and a 3D preview at different stages of the graphics pipeline. This makes it possible to inspect geometry entering and leaving vertex processing, rather than only the final image. The pipeline-state viewer exposes the active shaders, resource bindings, and graphics state, with links into detailed resource inspection. [Mesh-viewer documentation](https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/mesh_viewer.rst), [pipeline-state documentation](https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/pipeline_state.rst).
+
+RenderDoc also offers an optional application API for controlled capture triggering. Its documentation recommends detecting the injected library at runtime; the ordinary application can continue without it. This leaves room for an eventual “capture the next aircraft-rendering failure” developer action without making the debugger a normal runtime dependency. [In-application API](https://github.com/baldurk/renderdoc/blob/v1.x/docs/in_application_api.rst).
+
+**Possible project value.** A future investigation could ask, in order: was the aircraft draw submitted; were the expected vertices supplied; did the transform place them within the camera volume; were the intended material resources bound; and did depth or culling state suppress the result? These are proposed diagnostic questions, not claims that RenderDoc automatically identifies the cause. They could also give AI-generated rendering fixes concrete evidence to explain.
+
+**Small experiment, unperformed.** On one supported prototype, deliberately reverse face winding or corrupt a transform, save a frame, and try to identify the change from capture evidence. Record the engine, graphics API, GPU, driver, and debugger version. Successful capture on that configuration would not establish support on every target. Frame inspection answers rendering-correctness questions; timing a long flight requires a separate profiling approach.
+
+### 5. Tracy: measuring simulation stutter across CPU, GPU, and allocations
+
+**Question.** Could a profiler explain why controls feel uneven even when average frame rate appears acceptable?
+
+**Documented capabilities.** Tracy's repository describes CPU instrumentation, GPU profiling, allocations, locks, context switches, and frame-associated screenshots. Direct language integrations and third-party bindings are distinguished: finding a Rust or C# binding is not evidence that it has identical maintenance or functionality to the C/C++ integration. The advertised GPU backends include OpenGL, Vulkan, Direct3D, Metal, and WebGPU. [Tracy repository](https://github.com/wolfpld/tracy).
+
+The manual documents scoped CPU zones, frame markers, allocation/free events, and application plots. GPU profiling uses backend-specific instrumentation and event collection. Its WebGPU path names **Dawn and wgpu-native**, with pass-level timing; this should not be read as a promise of ordinary browser JavaScript integration. D3D11 command lists are explicitly unsupported. [Tracy user manual source](https://github.com/wolfpld/tracy/blob/master/manual/tracy.tex).
+
+**Integration limits.** Profiling is enabled with `TRACY_ENABLE`; manually defining it as `0` still defines the macro and does not disable it. Optimized builds better represent normal execution than debug builds. Instrumentation, call stacks, and event collection have costs; detailed wait-stack collection can be expensive on weaker hardware. Platform and graphics-backend support must be checked for the exact feature being investigated. [Build and instrumentation guidance](https://github.com/wolfpld/tracy/blob/master/manual/tracy.tex).
+
+**Possible project value.** A useful initial trace could name just four CPU activities: input polling, physics stepping, rendering preparation, and asset loading. A plot of physics substeps per displayed frame could reveal whether stutter coincides with simulation catch-up. Allocation events could expose repeated temporary objects during flight. GPU zones could help distinguish rendering cost from a CPU-side pause. Those interpretations would remain hypotheses until the timeline and a controlled change support them; tracing alone does not prove causality or input-to-display latency.
+
+**Small experiment, unperformed.** Run a repeatable camera-and-aircraft movement sequence, introduce one deliberate loading pause, then compare traces before and after removing it. Examine long frames and their frequency, not only averages. Compare an instrumented build with a matching uninstrumented build to estimate measurement disturbance. Keep the capture short and the zone set small before adding detail. Pin the client and viewer versions used for any saved result. RenderDoc would help explain a wrong image; Tracy would help explain when and where execution time accumulated. Neither tool verifies aerodynamic realism.
+
+### 6. Asset optimization tooling: glTF Transform, meshoptimizer, and KTX2
+
+**Question.** How could an editable Blender airplane become a lighter runtime asset without losing the ability to revise it or change engines?
+
+**Documented capabilities.** glTF Transform provides inspection, validation, mesh joining, vertex quantization, geometry/animation compression, simplification, and texture operations. Its documentation warns that the broad `optimize` command's defaults are not ideal for every scene, making inspection and selected transforms worth investigating before adopting a blanket preset. [glTF Transform CLI](https://gltf-transform.dev/cli).
+
+meshoptimizer distinguishes reordering/compression from triangle simplification. Its simplifier has an error limit and may stop before the requested triangle target because of topology or attribute seams. It supports building levels of detail, but producing a smaller mesh does not itself supply an engine's runtime LOD selection or transition behavior. Thin wings, control-surface gaps, and silhouettes therefore deserve inspection at flight viewing distances. [meshoptimizer algorithms and simplification guidance](https://github.com/zeux/meshoptimizer).
+
+Khronos's `KHR_texture_basisu` extension carries Basis Universal textures in KTX2, with runtime transcoding into a block-compressed format supported by the target platform. It supports ETC1S and UASTC and can carry mip levels. A fallback PNG/JPEG may be supplied; without one the extension must be marked required. Thus smaller delivery files and reduced GPU texture memory are related but distinct benefits, contingent on actual loader/transcoder support. [Ratified texture-extension specification](https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_basisu/README.md).
+
+**Practical dependency.** The currently inspected glTF Transform KTX encoding implementation invokes KTX-Software and checks its installed version. This is an additional offline tool dependency, not something implied merely by installing an engine or accepting `.glb` files. [KTX encoding implementation](https://github.com/donmccurdy/glTF-Transform/blob/main/packages/cli/src/transforms/toktx.ts).
+
+**Possible project value.** Keep an original `.blend`, original textures, and an uncompressed export; generate optimized derivatives with recorded tool versions and settings. This would make compression reversible and let future renderer experiments choose compatible outputs. Mesh compression requires the corresponding decoder in the target loading path. Automatic joining or hierarchy changes deserve special attention if ailerons, elevator, and propeller need separate transforms.
+
+**Small experiment, unperformed.** Compare original, simplified, and texture-compressed variants of one aircraft. Measure download size, load time, runtime memory, and frame timing separately. Inspect markings, normal maps, control surfaces, and distant silhouette. Retain a plain export as the compatibility baseline; no compression format or asset budget is selected here.
+
+### 7. Repository-aware coding tools: Aider and Continue
+
+**Question.** Which concrete mechanisms help an AI tool work on an unfamiliar simulator repository and check its changes?
+
+**Documented capabilities.** Aider builds a repository map containing selected symbols and signatures, ranks relevant material using a dependency graph, and fits that map into a token budget. This is a context-selection mechanism; it does not mean every file is read in full or every architectural relationship is understood. It could help an agent locate the relationship between input handling, aircraft state, and rendering as the project grows. [Aider repository map](https://aider.chat/docs/repomap.html).
+
+Aider can invoke configured lint and test commands, receive their diagnostics, and attempt repairs. Automatic testing after changes is configurable; it should not be assumed to run merely because a command exists. A command returning a failure status supplies a stronger signal than prose saying the code looks correct. These hooks could eventually run a build, a small numerical check, or an asset validator, depending on the prototype. Built-in language linting does not establish support for every future engine scripting language. [Aider linting and testing](https://aider.chat/docs/usage/lint-test.html).
+
+Continue's agent documentation describes file reading, searching, editing, and terminal execution from the workspace root. Its Ollama provider documentation gives model configuration and distinguishes tool-use and image-input capabilities; it also records context-related memory failures and configuration adjustments. This supplies a local-model research path, but says nothing about whether a particular model can reliably repair our simulator. Capability flags and a successful connection are not quality benchmarks. [Continue agent operation](https://docs.continue.dev/ide-extensions/agent/how-it-works), [Ollama configuration](https://docs.continue.dev/customize/model-providers/top-level/ollama).
+
+**Possible project value and limits.** Comparing the surrounding workflow separately from the model could reveal whether better file selection and diagnostics matter more than changing providers. Our inference is that compact, runnable experiments would make both human review and AI feedback more concrete. Passing code checks would still leave visual readability, controller feel, and aerodynamic plausibility unresolved.
+
+**Small experiment, unperformed.** Give two candidate workflows the same tiny project and one known defect, such as an inverted elevator visual. Record files inspected, commands actually run, unintended edits, total time, and whether the rendered correction matches the intended motion. Keep the starting revision and acceptance check identical. Do not rank tools from their feature lists alone.
+
+### 8. AI access to Blender and game editors through MCP
+
+**Question.** Could an agent inspect and modify a live 3D scene while receiving evidence about what happened?
+
+**Upstream-documented capabilities.** The community project formerly linked as `ahujasid/blender-mcp` now redirects to **mcp-for-blender**. It explicitly disclaims affiliation with the Blender Foundation. Its architecture combines a Blender add-on that receives socket commands with a Python MCP server connecting those commands to an AI client. The README describes object/material editing, Blender Python execution, and multiple visual inspection modes, including camera and wireframe views. These are upstream capability descriptions, not functionality tested here. The repository also describes optional external asset/generation integrations; their existence does not establish redistribution rights for resulting assets. [MCP for Blender repository](https://github.com/ahujasid/mcp-for-blender).
+
+**Godot MCP**, maintained by Coding-Solo, documents editor launching, project execution, debug output, and scene operations such as creating scenes, adding nodes, changing properties, and saving. Its 3D operations include MeshLibrary export. Some UID operations explicitly target Godot 4.4 or later. This is a particular community server's interface, not a universal promise about Godot or all MCP servers. Debug output alone does not demonstrate that an airplane is visibly correct. [Godot MCP repository](https://github.com/Coding-Solo/godot-mcp).
+
+**Possible project value.** A promising loop is: inspect the scene, modify one named component, run or render, then compare the result. For example, an agent could investigate whether an aileron's hinge is misplaced by checking both object transforms and a deflected view. This could complement ordinary script generation when scene state is difficult to infer from files alone.
+
+**Limits.** The Blender bridge can execute arbitrary Python inside Blender, so it is an execution interface with the process's available access. Trying it in a disposable scene and retaining a saved baseline would make changes recoverable. Versioning the bridge, editor, and client together would help interpret failures. A successful tool response is only evidence that a command completed; visual correctness and exported behavior still need independent inspection. These are proposed experiment boundaries, not new repository rules.
+
+**Small experiment, unperformed.** Ask a candidate bridge to create one wing and hinged aileron, inspect the neutral and deflected states, save, reopen, and export. Compare the result and effort with a short explicit Blender Python script. Keep the simpler workflow if the live bridge adds little value.
+
+### 9. Repeatable development environments and build commands
+
+**Question.** How could contributors and AI tools reproduce a small experiment without prematurely standardizing the whole technology stack?
+
+**Documented capabilities.** The Development Container specification describes development metadata around container environments. Its reference supports an image or Dockerfile, workspace mounts, environment variables, optional Features, and lifecycle commands. A significant detail is that `initializeCommand` runs on the host, while later container setup commands run inside the container. Tool-specific customizations also exist, so a configuration file is not proof that every editor implements every behavior identically. [Development Containers](https://containers.dev/), [official metadata reference](https://github.com/devcontainers/spec/blob/main/docs/specs/devcontainerjson-reference.md).
+
+For a potential C/C++ experiment, CMake presets can describe configuration, build, test, package, and workflow operations. `CMakePresets.json` is intended for shared settings; `CMakeUserPresets.json` is intended for personal settings. Presets can capture generator choices, build directories, cache variables, environments, and toolchain references. Available fields depend on the supported preset schema and CMake version. A preset refers to a build environment; it does not by itself install or freeze every compiler and dependency. [CMake presets manual](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html).
+
+**Possible project value.** A small documented command sequence could give a human contributor and an AI agent the same way to build and check an experiment. A container might help reproduce numerical or asset-processing work even if the interactive simulator runs natively. If another language or engine proves easier, its native project and dependency mechanisms remain equally open alternatives. Introducing CMake or a container now would provide no evidence that either is the right choice.
+
+**Limits and inference.** Reproducing user-space tools would not reproduce every GPU driver, display system, USB transmitter, or host scheduling behavior. A successful headless run inside one container cannot certify interactive compatibility across operating systems. Image tags and unpinned downloads may also change; recording actual tool versions would make experimental results easier to revisit.
+
+**Small experiment, unperformed.** Once one tiny prototype exists, ask a fresh environment to build it and generate a short repeatable numerical trace using only documented commands. Separately launch the native graphical build and exercise a real controller. Compare setup time and failure diagnosis with and without a container before accepting its maintenance cost.
+
+### 10. Versioning editable 3D sources and generated assets
+
+**Question.** How can contributors recover an older aircraft and understand how its exported assets were produced?
+
+**Documented capabilities.** Git LFS stores small pointers in Git while placing large content in separate storage; file patterns are tracked through repository attributes. This addresses storage and transfer of large binaries, not semantic merging of a Blender scene. Its locking command records a lock on the server, and push verification has configuration and server-support considerations. Locking should not be described as a universal guarantee that competing edits are impossible. [Git LFS](https://git-lfs.com/), [lock command documentation](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-lock.adoc).
+
+DVC offers another research direction: its pipeline stages wrap commands with declared file dependencies and outputs in `dvc.yaml`. Dependencies between stages form a directed acyclic graph, and data may be cached separately from the small metadata tracked in Git. Although its examples often concern machine learning, the documented command/dependency/output mechanism suggests an asset-generation experiment. [DVC pipeline definition](https://doc.dvc.org/user-guide/pipelines/defining-pipelines).
+
+**Possible project value.** A proposed chain could start with an editable `.blend` and original textures, run an export script, then generate optimized GLB/KTX2 derivatives. Recording the source revision, tool versions, and processing settings could explain which editable scene produced a particular in-game airplane. LFS would primarily address storing large revisions; a pipeline tool would address how outputs depend on inputs. They solve different problems and need not be adopted together.
+
+**Limits.** This tooling would not make binary scene conflicts easy to merge, establish asset ownership, or guarantee bit-for-bit regeneration when exporter versions or nondeterministic operations change. Remote storage availability, quotas, and collaborator access would need evaluation against an actual hosting arrangement. For the first tiny aircraft, ordinary Git plus a small export script might be easier than maintaining either system. This topic concerns contributor source history, distinct from the earlier research on distributing aircraft packages to players.
+
+**Small experiment, unperformed.** Save two visibly different revisions of one source aircraft and their exports. From a clean checkout, recover the older editable version and regenerate its derivative. Record storage downloaded, manual steps, missing tools, and any output differences. Separately try concurrent edits to the same source file to learn whether object-level separation, communication, or locking helps the actual modeling workflow.
+
 ## Continuing the research
 
 ### Small experiments suggested by these findings
@@ -736,3 +898,5 @@ As research continues, add findings beside their topic with the date, original s
 **Research log — 2026-10-05:** initial broad survey completed across existing simulators, aerodynamics, electric propulsion, engines, input, portability, assets, communities, validation, and AI-assisted development. No stack, platform, dependency, aircraft specification, or additional project requirement was selected.
 
 **Research log — 2026-10-05, second pass:** added ten investigations covering ground handling, launches, servos, floatplanes, training transfer, accessibility, shared control, aircraft packages, offline distribution, and parameter identification. Added original-source findings and possible experiments while preserving the distinction between documented behavior and untested project ideas.
+
+**Research log — 2026-10-05, third pass:** added ten investigations into Geometry Nodes, aircraft rigging, generative 3D, RenderDoc, Tracy, asset optimization, repository-aware coding tools, editor MCP bridges, reproducible development environments, and asset source versioning. Preserved upstream capability claims, access limitations, and unperformed experiments separately. No tools were installed and no additional project decisions were made.
