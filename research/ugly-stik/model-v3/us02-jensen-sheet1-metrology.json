@@ -14,7 +14,11 @@
     "raster_px_per_in_nominal": 100,
     "metres_per_px_nominal": 0.000254,
     "scale_check": "sheet wing chord read 1207 px = 12.07 in versus title-block 720 sq in / 60 in = 12.00 in",
-    "scale_residual_percent": 0.58,
+    "scale_check_readings": {
+      "observed_chord_in": 12.07,
+      "title_block_chord_in": 12.0
+    },
+    "scale_residual_percent": 0.583333,
     "uncertainty": "linear dimensions from scan carry at least +/-0.6% scale uncertainty, plus the per-pick pixel uncertainty below",
     "shared_model_mapping": {
       "longitudinal_z_m": "-0.115 + (page_x_px - 808) * 0.000254",
@@ -22,19 +26,29 @@
       "lateral_halfspan_m_proxy": "(plan_centerline_page_y_px - plan_page_y_px) * 0.000254",
       "warning": "The plan does not draw a shaft/thrust datum; side-view y conversion is a proxy calibrated to the visible F1 side-face midpoint, not a measured engine centerline."
     },
+    "shared_model_mapping_inputs": {
+      "wing_le_page_x_px": 808,
+      "F1_page_x_px": 114,
+      "side_view_vertical_proxy_page_y_px": 2596
+    },
     "shared_anchors_preserved": {
       "wing_le_z_m": -0.115,
       "shaft_y_m": -0.005,
       "F1_z_m": -0.291276,
       "wing_span_m": 1.524,
       "wing_chord_m": 0.3048
-    }
+    },
+    "shared_anchor_formula_check_F1_z_m": -0.291276
   },
   "fuselage_sections": [
     {
       "id": "F4",
       "evidence": "measured sheet1 pixels; station and edges visually picked from side and top views",
-      "pixel_uncertainty": {"page_x": 8, "side_y": 4, "plan_edge_y": 5},
+      "pixel_uncertainty": {
+        "page_x": 8,
+        "side_y": 4,
+        "plan_edge_y": 5
+      },
       "page_x_px": 2020,
       "candidate_z_m": 0.192848,
       "side_view": {
@@ -54,7 +68,11 @@
     {
       "id": "F5",
       "evidence": "measured sheet1 pixels; station and edges visually picked from side and top views",
-      "pixel_uncertainty": {"page_x": 8, "side_y": 4, "plan_edge_y": 5},
+      "pixel_uncertainty": {
+        "page_x": 8,
+        "side_y": 4,
+        "plan_edge_y": 5
+      },
       "page_x_px": 2510,
       "candidate_z_m": 0.317308,
       "side_view": {
@@ -62,7 +80,7 @@
         "bottom_page_y_px": 2782,
         "roof_candidate_y_m_proxy": 0.035386,
         "bottom_candidate_y_m_proxy": -0.052244,
-        "height_m_scan_scale": 0.087630
+        "height_m_scan_scale": 0.08763
       },
       "top_view": {
         "near_edge_page_y_px": 1378,
@@ -74,9 +92,13 @@
     {
       "id": "F6",
       "evidence": "measured sheet1 pixels; station and edges visually picked from side and top views",
-      "pixel_uncertainty": {"page_x": 8, "side_y": 4, "plan_edge_y": 8},
+      "pixel_uncertainty": {
+        "page_x": 8,
+        "side_y": 4,
+        "plan_edge_y": 8
+      },
       "page_x_px": 3140,
-      "candidate_z_m": 0.477128,
+      "candidate_z_m": 0.477328,
       "side_view": {
         "roof_page_y_px": 2522,
         "bottom_page_y_px": 2780,
@@ -88,14 +110,15 @@
         "near_edge_page_y_px": 1420,
         "far_edge_page_y_px": 1720,
         "width_px": 300,
-        "width_m_scan_scale": 0.076200
+        "width_m_scan_scale": 0.0762
       }
     }
   ],
   "holdout_check": {
     "purpose": "reserved station, not used to fit the F4-F6 linear interpolation",
+    "pixel_uncertainty_estimate": {"page_x": 8, "side_edge_y": 4, "top_each_edge_y": 5},
     "page_x_px": 2800,
-    "candidate_z_m": 0.391968,
+    "candidate_z_m": 0.390968,
     "observed": {
       "side_roof_page_y_px": 2476,
       "side_bottom_page_y_px": 2781,
@@ -113,28 +136,39 @@
       "side_bottom": -0.1,
       "top_width": 5.0
     },
-    "interpretation": "side contour residual is below pick uncertainty; top width is about 1.3 mm wider than linear interpolation, a small but resolved scan reading."
+    "interpretation": "side-contour residual is below pick resolution; top-width residual is 5 px (1.27 mm), below combined uncertainty from edge picks and interpolation, so this holdout does not resolve departure from linear taper.",
+    "top_width_residual_m_scan_scale": 0.00127
   },
   "wing_root_vertical_reading": {
     "evidence": "measured side-view page pixels; shaft-relative coordinate remains a proxy",
     "wing_le_page_x_px": 808,
-    "wing_le_side_top_page_y_px_range": [2367, 2386],
+    "wing_le_side_top_page_y_px_range": [
+      2367,
+      2386
+    ],
     "wing_le_side_mid_page_y_px": 2377,
     "wing_le_candidate_y_m_proxy": 0.050626,
     "wing_seat_probe_page_x_px": 880,
-    "wing_seat_roof_side_page_y_px_range": [2420, 2422],
+    "wing_seat_roof_side_page_y_px_range": [
+      2420,
+      2422
+    ],
     "wing_seat_roof_side_mid_page_y_px": 2421,
-    "wing_seat_roof_candidate_y_m_proxy": 0.039450
+    "wing_seat_roof_candidate_y_m_proxy": 0.03945
   },
   "horizontal_tail": {
     "plan_view": {
       "evidence": "measured from the explicit sheet1 stabilizer/elevator structure view, at the same nominal page scale",
-      "pixel_uncertainty": {"longitudinal_edge": 8, "span_tip": 15, "root_centerline": 10},
+      "pixel_uncertainty": {
+        "longitudinal_edge": 8,
+        "span_tip": 15,
+        "root_centerline": 10
+      },
       "plan_root_centerline_page_y_px": 1550,
       "plan_outboard_tip_page_y_px": 450,
       "semi_span_px": 1100,
-      "semi_span_m_scan_scale": 0.279400,
-      "full_span_m_scan_scale": 0.558800,
+      "semi_span_m_scan_scale": 0.2794,
+      "full_span_m_scan_scale": 0.5588,
       "leading_edge_page_x_px": 3838,
       "hinge_line_page_x_px": 4412,
       "elevator_trailing_edge_page_x_px_nominal": 4562,
@@ -143,17 +177,206 @@
       "chord_m_scan_scale": 0.183896,
       "hinge_fraction_chord_nominal": 0.7928,
       "elevator_width_px_nominal": 150,
-      "elevator_width_m_scan_scale": 0.038100,
+      "elevator_width_m_scan_scale": 0.0381,
       "candidate_z_m": {
-        "leading_edge": 0.654620,
+        "leading_edge": 0.65462,
         "hinge": 0.800416,
         "elevator_trailing_edge": 0.838516
       },
-      "leading_edge_trace_page_xy_px": [[3838, 1530], [3838, 700], [3856, 600]],
-      "outboard_edge_trace_page_xy_px": [[3856, 600], [4077, 550], [4297, 500], [4412, 475], [4517, 450], [4535, 450]],
-      "hinge_line_trace_page_xy_px": [[4412, 475], [4412, 1530]],
-      "elevator_te_trace_page_xy_px": [[4594, 600], [4584, 700], [4564, 800], [4563, 900], [4561, 1000], [4568, 1100], [4560, 1200], [4577, 1300], [4561, 1400], [4571, 1500]],
-      "outline_note": "Approximate half-plan trace in scan page coordinates; the sampled scalloped TE is lower-confidence than the straight hinge and nominal chordwise coordinates. Root closure is omitted because it merges into the fuselage."
+      "leading_edge_trace_page_xy_px": [
+        [
+          3838,
+          1530
+        ],
+        [
+          3838,
+          700
+        ],
+        [
+          3856,
+          600
+        ]
+      ],
+      "outboard_edge_trace_page_xy_px": [
+        [
+          3856,
+          600
+        ],
+        [
+          4077,
+          550
+        ],
+        [
+          4297,
+          500
+        ],
+        [
+          4412,
+          475
+        ],
+        [
+          4517,
+          450
+        ],
+        [
+          4535,
+          450
+        ]
+      ],
+      "hinge_line_trace_page_xy_px": [
+        [
+          4412,
+          475
+        ],
+        [
+          4412,
+          1530
+        ]
+      ],
+      "elevator_te_trace_page_xy_px": [
+        [
+          4594,
+          600
+        ],
+        [
+          4584,
+          700
+        ],
+        [
+          4564,
+          800
+        ],
+        [
+          4563,
+          900
+        ],
+        [
+          4561,
+          1000
+        ],
+        [
+          4568,
+          1100
+        ],
+        [
+          4560,
+          1200
+        ],
+        [
+          4577,
+          1300
+        ],
+        [
+          4561,
+          1400
+        ],
+        [
+          4571,
+          1500
+        ]
+      ],
+      "outline_note": "Approximate half-plan trace in scan page coordinates; the sampled scalloped TE is lower-confidence than the straight hinge and nominal chordwise coordinates. Root closure is omitted because it merges into the fuselage.",
+      "converted_trace_candidate_coordinates_m": {
+        "coordinate_order": [
+          "z_m_from_page_x",
+          "lateral_m_from_page_y"
+        ],
+        "plan_centerline_page_y_px": 1550,
+        "traces": {
+          "leading_edge": [
+            [
+              0.65462,
+              0.00508
+            ],
+            [
+              0.65462,
+              0.2159
+            ],
+            [
+              0.659192,
+              0.2413
+            ]
+          ],
+          "outboard_edge": [
+            [
+              0.659192,
+              0.2413
+            ],
+            [
+              0.715326,
+              0.254
+            ],
+            [
+              0.771206,
+              0.2667
+            ],
+            [
+              0.800416,
+              0.27305
+            ],
+            [
+              0.827086,
+              0.2794
+            ],
+            [
+              0.831658,
+              0.2794
+            ]
+          ],
+          "hinge_line": [
+            [
+              0.800416,
+              0.27305
+            ],
+            [
+              0.800416,
+              0.00508
+            ]
+          ],
+          "elevator_te": [
+            [
+              0.846644,
+              0.2413
+            ],
+            [
+              0.844104,
+              0.2159
+            ],
+            [
+              0.839024,
+              0.1905
+            ],
+            [
+              0.83877,
+              0.1651
+            ],
+            [
+              0.838262,
+              0.1397
+            ],
+            [
+              0.84004,
+              0.1143
+            ],
+            [
+              0.838008,
+              0.0889
+            ],
+            [
+              0.842326,
+              0.0635
+            ],
+            [
+              0.838262,
+              0.0381
+            ],
+            [
+              0.840802,
+              0.0127
+            ]
+          ]
+        }
+      }
     },
     "side_view_placement": {
       "evidence": "measured rounded side projection; do not force its rounded end into the planform trace",
@@ -163,9 +386,13 @@
       "end_uncertainty_px": 10,
       "tailplane_center_page_y_px": 2755,
       "centerline_uncertainty_px": 8,
-      "candidate_z_m": {"hinge": 0.801178, "rounded_end": 0.849438},
+      "candidate_z_m": {
+        "hinge": 0.801178,
+        "rounded_end": 0.849438
+      },
       "candidate_y_m_proxy": -0.045386,
-      "view_disagreement_note": "Side projection's rounded end lies about 45 px aft of the plan-view scalloped TE. Keep both readings as view-specific evidence; use explicit plan-view trace for planform and side view for vertical placement."
+      "view_disagreement_note": "Side projection's rounded end lies about 45 px aft of the plan-view scalloped TE. Keep both readings as view-specific evidence; use explicit plan-view trace for planform and side view for vertical placement.",
+      "plan_te_vs_side_end_difference_px": 43
     }
   },
   "other_tail_elements": {
@@ -173,7 +400,20 @@
       "evidence": "rough measured side silhouette, text label on sheet says 3/16-inch sheet sub-rudder",
       "thickness_source_kind": "literal plan annotation",
       "thickness_in": 0.1875,
-      "approximate_page_xy_px_corners": [[3450, 2765], [4370, 2790], [4370, 2925]],
+      "approximate_page_xy_px_corners": [
+        [
+          3450,
+          2765
+        ],
+        [
+          4370,
+          2790
+        ],
+        [
+          4370,
+          2925
+        ]
+      ],
       "pixel_uncertainty": 25,
       "status": "coarse triangle proxy only; curved aft edge and front lower boundary are not adequately separated from fuselage/tail-skid lines in the scan"
     },
@@ -181,5 +421,10 @@
       "status": "not included in this trace; parent independently traced the assembled side-view silhouette and its hinge from the uncropped page view",
       "rejected_reading": "A page inset/callout profile was not used for absolute fin dimensions because its enlargement factor is unlabelled."
     }
+  },
+  "arithmetic_audit": {
+    "script": "research/ugly-stik/model-v3/recompute_us02_metrology.py",
+    "method": "derived metric fields recomputed from saved source pixel picks; source point arrays unchanged",
+    "source_coordinate_arrays_modified": false
   }
 }

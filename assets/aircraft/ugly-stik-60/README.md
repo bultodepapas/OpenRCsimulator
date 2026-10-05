@@ -1,21 +1,24 @@
-# Jensen Ugly Stik .61 — visual model v2
+# Jensen Ugly Stik .61 — visual model v3
 
-`60` in this directory means the nominal 60-inch Jensen wing, not engine displacement. The owner's target is a .61 nitro first; mini and giant are deferred.
+`60` means the nominal 60-inch Jensen wing, not engine displacement. The target is a .61 nitro first; mini and giant are deferred.
 
-The editable visual record is [geometry.json](geometry.json). Each parameter group carries its evidence and limitations. Coordinates are metres, +X right, +Y up, −Z nose. The origin is an assembly datum near the wing, not a measured center of gravity. Mass, inertia, thrust and aerodynamic coefficients are deliberately outside this visual record.
+Edit [geometry.json](geometry.json). Each parameter group records evidence and limitations. Coordinates are metres, +X right, +Y up, −Z nose. The assembly datum is not a measured center of gravity. Mass, inertia, thrust and aerodynamic coefficients belong to physics data.
+
+From the repository root:
 
 ```bash
 python3 assets/aircraft/ugly-stik-60/compile_geometry.py
 python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
-python3 research/ugly-stik/model-v1/measure_assembly.py
-$(app/get-godot.sh) --headless --path app --script res://aircraft/verify_model.gd
-bash research/ugly-stik/model-v2/capture.sh
+python3 research/ugly-stik/model-v3/check_dimensions.py
+app/test.sh
+bash research/ugly-stik/model-v3/capture.sh \
+  --output-dir research/ugly-stik/model-v3/review-new
 ```
 
-The compiler writes [ugly_stik_geometry.gd](../../../app/aircraft/ugly_stik_geometry.gd); do not edit that generated copy. The [native Godot builder](../../../app/aircraft/ugly_stik_model.gd) creates the exterior geometry. The [render adapter](../../../app/render/airplane.gd) preserves the original `build()` / `apply_surfaces()` interface. Static wing frames carry dihedral while their child hinges carry only commanded rotation.
+Choose a new capture output directory. The wrapper generates 36 orientation images twice and checks identical PNG hashes before publishing. `--overwrite` preserves an existing destination as a dated backup. Historical v1/v2 directories are protected. See [capture documentation](../../../docs/research/ugly-stik-model-v3-readability.md) for the separate nine-view inspection command, which also requires an explicit output directory.
 
-The [v2 report](../../../docs/research/ugly-stik-model-v2.md) records the corrected firewall-to-wing distance and its scan evidence. The assembly measurement command writes `model-assembly-current.json`; pass `--output` to save evidence for a particular revision. Historical v1 measurements and captures remain unchanged.
+The compiler writes [ugly_stik_geometry.gd](../../../app/aircraft/ugly_stik_geometry.gd); do not edit the generated copy. The [native builder](../../../app/aircraft/ugly_stik_model.gd) creates meshes and preserves `build()` → `{root, propeller, hinges}` with optional gear pivots. The [render adapter](../../../app/render/airplane.gd) retains surface commands and adds optional `apply_gear()` using raw local rotation radians. Static wing frames carry dihedral; child hinges carry commanded deflection.
 
-This first model uses Godot's native mesh primitives and `SurfaceTool`, which keeps it editable without adding an import dependency. The earlier GLB fixture remains a verified option for future exchange; its axis conversion is not applied to this native model.
+The [v3 report](../../../docs/research/ugly-stik-model-v3.md) records the fuselage holdout, wing/tail traces, movement clearances, mutation proof and captures. [Installation handoff](../../../docs/research/ugly-stik-model-v3-installation.md) documents wheel contacts and axis/sign conversion; it does not implement ground forces. Equipment remains a generic .61 installation. Human readability and target-hardware performance are pending.
 
-Third-party PDFs and derived scan images remain under ignored `references/`. Our measurement coordinates, source hashes, code and captures are in the repository. See the [execution report](../../../docs/research/ugly-stik-model-v1.md), [calibration record](../../../docs/research/ugly-stik-model-v1-calibration.md), [rig checks](../../../docs/research/ugly-stik-model-v1-rig.md) and [visual inspection](../../../docs/research/ugly-stik-model-v1-visual.md).
+Godot primitives and `SurfaceTool` keep the model editable without an import dependency. The earlier GLB fixture remains an exchange experiment; its axis conversion does not apply to this native model. Third-party PDFs and derived scans stay in ignored `references/`; measured coordinates, hashes, code and selected model captures are in the repo. [Reference index](../../../docs/research/aircraft-reference-index.md).

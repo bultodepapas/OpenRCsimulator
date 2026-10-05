@@ -158,6 +158,7 @@ def make_handoff(geometry: dict[str, Any], physics: dict[str, Any], builder_path
             "visual_engine_evidence": engine_evidence,
             "physics_engine_inventory_entry": inventory["engine"]["name"] if inventory["engine"] else None,
             "physics_engine_entry_role": "provisional mass/inertia inventory entry; it does not identify the visual engine as this exact product",
+            "physics_engine_inventory_mass": inventory["engine"]["mass"] if inventory["engine"] else None,
             "engine_visual_crank_center_model_m": engine_crank_model,
             "engine_visual_crank_center_le_m": engine_crank_le,
             "engine_physics_inventory_position_le_m": inventory["engine"]["position"]["value"] if inventory["engine"] else None,
@@ -197,7 +198,7 @@ def make_handoff(geometry: dict[str, Any], physics: dict[str, Any], builder_path
                 "propeller_disk_clearance_to_ground_m": prop_low_y - ground_y,
                 "assumptions": ["undeformed circular tires", "parallel axles", "no suspension, tire compliance, steering scrub, or contact dynamics"],
             },
-            "planned_render_api": {
+            "gear_render_contract": {
                 "status": "implemented visual contract; no physics-to-render hookup",
                 "builder_result": "build() returns gear dictionary keys left, right, nose, steering; left/right/nose are wheel pivots and steering is the nose steering pivot",
                 "adapter": "app/render/airplane.gd: apply_gear(airplane, wheel_angles: Dictionary, steering_rad: float)",

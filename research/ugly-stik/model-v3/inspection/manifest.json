@@ -172,7 +172,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "b5f7d974d271460caee26cdbef3ee9c6418455111d8993768d8299b55ac624bc",
+			"png_sha256": "faa06443e6ce7d3de0d9d3ee3f1d71676340976542cca0abb1a4db0e2fed9187",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -228,7 +228,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -307,7 +307,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "d68e33ed48c8469870fa820578132b4e541784507578c8458b36ed4c7bf2d152",
+			"png_sha256": "bdca3e94a6e9959c53ceb53e9d50f9905904c6ad9a1e3dede4a7efddea0ae939",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -363,7 +363,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -442,7 +442,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "e788d1d46249e87b402dadccf90871c403187771571743aec344a4d946973e84",
+			"png_sha256": "d958c4dc51c25957424bee65d606c7c044ba2fa317d5a55adde985b7718984db",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -498,7 +498,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -633,7 +633,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -712,7 +712,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "6996d475f46c3d888aa4c8bbeb6cf41db49cfb046e5fc7c83c0be5acea7491f0",
+			"png_sha256": "a8747b0f03993911809b2c219902100759041d8efd1646d69779e34d90e80643",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -768,7 +768,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -847,7 +847,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "d457a0e056956bb9112efcfede6f06db87f8b7a8d09ff6a799567b1118ce5bd7",
+			"png_sha256": "1fc83ca838ba0377ab49dad63fe3ae752a5ede076d17c59cddc7ea8b88991366",
 			"pose": "deflected",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -903,7 +903,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -983,7 +983,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "0e4e62cc4e3f99c551ae1a2f39dbadd5523c5e341218076c791da24a80036ce0",
+			"png_sha256": "333abbed7bac2d8c99a4af4a8ef9fb125136df707eb2ccebe6d87e200d913f5d",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -1039,7 +1039,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -1175,7 +1175,7 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		},
 		{
 			"attitude_id": "",
@@ -1255,7 +1255,7 @@
 					-0.417775988578796
 				]
 			},
-			"png_sha256": "528cb207c7dddb0a928c34c21cc756a9d32bcbfc6d88ba91c285002aba27d16d",
+			"png_sha256": "173440fb325b5450ed0a3eb87ea1f5c2ebf0c4d0debdd9eb911895a36f1722ae",
 			"pose": "neutral",
 			"projected_geometry_bounds_px": {
 				"max": [
@@ -1311,12 +1311,12 @@
 				]
 			},
 			"suite": "inspection",
-			"triangle_count": 4812
+			"triangle_count": 4816
 		}
 	],
-	"created_utc_unix": 1791225541,
+	"created_utc_unix": 1791225660,
 	"geometry": {
-		"compiled_geometry_sha256": "764faf699b997628de7e54bca769dc49b34ffaef55f57c7a6aad2cbac5907f88",
+		"compiled_geometry_sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
 		"files": {
 			"capture_harness_gd": {
 				"path_from_app": "res://aircraft/inspect_model.gd",
@@ -1328,15 +1328,15 @@
 			},
 			"generated_geometry_gd": {
 				"path_from_app": "res://aircraft/ugly_stik_geometry.gd",
-				"sha256": "764faf699b997628de7e54bca769dc49b34ffaef55f57c7a6aad2cbac5907f88"
+				"sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a"
 			},
 			"geometry_json": {
 				"path_from_app": "res://../assets/aircraft/ugly-stik-60/geometry.json",
-				"sha256": "b3a2c3588b05cd85f5a593c723a66e7a9cc3f6dac573971d751224977bd5594a"
+				"sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
 			},
 			"model_builder_gd": {
 				"path_from_app": "res://aircraft/ugly_stik_model.gd",
-				"sha256": "37d5a334ec441270d08fa951edead5669847994295494c4adad5f91de2e72927"
+				"sha256": "7c24196b2174aeb2443ea47c9dd746b1f46b6329907b1f6491acd456c06e93c1"
 			},
 			"render_adapter_gd": {
 				"path_from_app": "res://render/airplane.gd",
@@ -1351,7 +1351,7 @@
 		"geometry_json_id": "jensen-60-nitro-61-v3",
 		"geometry_json_id_matches_compiled": true,
 		"geometry_json_present": true,
-		"source_sha256": "b3a2c3588b05cd85f5a593c723a66e7a9cc3f6dac573971d751224977bd5594a"
+		"source_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
 	},
 	"model": "Jensen Ugly Stik 60 / nitro .61",
 	"renderer": {
@@ -1382,5 +1382,5 @@
 		720
 	],
 	"schema": "openrc-model-capture-v3",
-	"total_elapsed_ms": 903.913
+	"total_elapsed_ms": 997.044
 }

@@ -5,7 +5,7 @@
   "sources": {
     "geometry": {
       "path": "assets/aircraft/ugly-stik-60/geometry.json",
-      "sha256": "b3a2c3588b05cd85f5a593c723a66e7a9cc3f6dac573971d751224977bd5594a"
+      "sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
     },
     "physics": {
       "path": "app/data/aircraft/jensen_ugly_stik_60.json",
@@ -13,7 +13,11 @@
     },
     "visual_builder": {
       "path": "app/aircraft/ugly_stik_model.gd",
-      "sha256": "37d5a334ec441270d08fa951edead5669847994295494c4adad5f91de2e72927"
+      "sha256": "7c24196b2174aeb2443ea47c9dd746b1f46b6329907b1f6491acd456c06e93c1"
+    },
+    "render_adapter": {
+      "path": "app/render/airplane.gd",
+      "sha256": "7caedbab16ff7bf9eee5cb6c8cb19a8c793c6a788c3cfb70494e9a355baa2009"
     }
   },
   "frames": {
@@ -59,8 +63,18 @@
   "engine_and_propeller": {
     "visual_engine_class": ".61 nitro",
     "visual_engine_identity": "generic single-cylinder .61 envelope; brand/model not selected",
+    "visual_engine_evidence": {
+      "kind": "estimated",
+      "source": "visual .61 single cylinder, provisional envelope informed by O.S. MAX-61FX manual p40; accessories simplified; brand not selected"
+    },
     "physics_engine_inventory_entry": "engine O.S. MAX-61FX",
     "physics_engine_entry_role": "provisional mass/inertia inventory entry; it does not identify the visual engine as this exact product",
+    "physics_engine_inventory_mass": {
+      "value": 0.55,
+      "unit": "kg",
+      "kind": "manual",
+      "source": "O.S. catalog 17750 (RESEARCH.md)"
+    },
     "engine_visual_crank_center_model_m": [
       0.0,
       -0.005,
@@ -106,6 +120,10 @@
       0.0,
       0.0
     ],
+    "propeller_placement_evidence": {
+      "kind": "estimated",
+      "source": "12in prop and gear placement remain estimated. V2 moves prop and nose axle with F1 by +0.148724m, preserving installation offsets; shaft height and main gear unchanged."
+    },
     "propeller_diameter_visual_m": 0.3048,
     "propeller_diameter_physics_m": 0.3048,
     "prop_swept_disk": {
@@ -239,6 +257,14 @@
       }
     },
     "main_track_m": 0.36,
+    "wheel_size_evidence": {
+      "kind": "manual",
+      "source": "Jensen plan 2.75 in nose, selected 3 in main from 3 or 3.25 in callout"
+    },
+    "wheel_position_evidence": {
+      "kind": "estimated",
+      "source": "12in prop and gear placement remain estimated. V2 moves prop and nose axle with F1 by +0.148724m, preserving installation offsets; shaft height and main gear unchanged."
+    },
     "wheel_spin_axis": "parallel to visual +X for all three wheels; axis line is unoriented geometrically",
     "nose_steering_axis": {
       "model_point_m": [
@@ -268,7 +294,18 @@
         0.0,
         -0.1
       ],
-      "main_gear_note": "physics inventory point is a component mass centroid on centerline, not a wheel axle; do not move the visual wheels to match it"
+      "visual_main_axle_midpoint_le_m": [
+        0.21500000000000002,
+        0.0,
+        -0.215
+      ],
+      "main_gear_inventory_minus_visual_axle_midpoint_le_m": [
+        -0.07800000000000001,
+        0.0,
+        0.11499999999999999
+      ],
+      "main_gear_lateral_envelope_physics_m": 0.36,
+      "main_gear_note": "physics inventory point is a component mass centroid on centerline, not a wheel axle; its lateral size is an envelope. Do not move the visual wheels to match its centroid."
     },
     "rigid_three_wheel_rest_pose": {
       "root_rotation_x_rad": -0.009038599936701863,
@@ -282,12 +319,14 @@
         "no suspension, tire compliance, steering scrub, or contact dynamics"
       ]
     },
-    "planned_render_api": {
-      "builder_result": "build() returns a gear dictionary with left, right, and nose wheel pivots plus a nose steering pivot",
-      "adapter": "apply_gear(airplane, wheel_angles: Dictionary, steering_rad: float)",
-      "wheel_angles_unit": "radians",
+    "gear_render_contract": {
+      "status": "implemented visual contract; no physics-to-render hookup",
+      "builder_result": "build() returns gear dictionary keys left, right, nose, steering; left/right/nose are wheel pivots and steering is the nose steering pivot",
+      "adapter": "app/render/airplane.gd: apply_gear(airplane, wheel_angles: Dictionary, steering_rad: float)",
+      "input_units": "radians",
       "physics_integration": "caller supplies wheel angle and steering angle; model adapter does not create contact forces or infer wheel speed",
-      "sign_convention": "If wheel_angles encode positive forward travel, apply negative local rotation.x for wheels rolling along -Z. If steering_rad is physics-positive yaw-right, apply negative local rotation.y because the model nose points -Z; document any raw-Godot-angle API instead.",
+      "raw_angle_convention": "adapter assigns wheel_angles directly to local rotation.x and steering_rad directly to local rotation.y",
+      "mapping_from_physics_convention": "If wheel angle is defined positive for forward travel along nose -Z, send -angle to rotation.x. If steering is positive for yaw right, send -steering_rad to rotation.y because +Y rotates nose -Z toward -X (left).",
       "mesh_contract": "preserve gear_left, gear_right, nosewheel names and current wheel centers; pivots are for visual articulation only"
     }
   },

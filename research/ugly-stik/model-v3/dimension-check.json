@@ -1,0 +1,29 @@
+{
+  "geometry_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+  "holdout_z_m": 0.390968,
+  "expected_m": {
+    "roof": 0.025226,
+    "bottom": -0.052244,
+    "width": 0.087884
+  },
+  "model_m": {
+    "roof": 0.02519374603174603,
+    "bottom": -0.05226415873015873,
+    "width": 0.08661803174603175
+  },
+  "residual_model_minus_source_m": {
+    "roof": -3.2253968253969506e-05,
+    "bottom": -2.0158730158731375e-05,
+    "width": -0.0012659682539682554
+  },
+  "allowance_m": {
+    "roof": 0.003,
+    "bottom": 0.003,
+    "width": 0.006
+  },
+  "ok": true,
+  "limits": [
+    "Compares visual stations against a reserved raster reading; not real-airframe accuracy",
+    "Nominal page scale and estimated vertical proxy are recorded in source evidence"
+  ]
+}

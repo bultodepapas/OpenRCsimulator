@@ -1,0 +1,177 @@
+{
+  "schema": "openrc-model-validation-v3",
+  "created_utc": "2026-10-05T18:49:47.018044+00:00",
+  "aircraft_id": "jensen-60-nitro-61-v3",
+  "files_sha256": {
+    "app/aircraft/inspect_model.gd": "b29a17bbbd1cc99306f890845a6ce44a2f1c39cc4c1ab6ee4afb8405ac8d79ed",
+    "app/aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+    "app/aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+    "app/aircraft/ugly_stik_model.gd": "7c24196b2174aeb2443ea47c9dd746b1f46b6329907b1f6491acd456c06e93c1",
+    "app/aircraft/verify_model.gd": "da71b29870f2fe02499305134fb0da75d05b08a0c31d2ca1eb4a2442c63b8b3d",
+    "app/render/airplane.gd": "7caedbab16ff7bf9eee5cb6c8cb19a8c793c6a788c3cfb70494e9a355baa2009",
+    "assets/aircraft/ugly-stik-60/geometry.json": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+    "assets/aircraft/ugly-stik-60/compile_geometry.py": "34f6d778349d3176b96c8a677e3891ea19ab91cdf6ec52832deeb9165f44e730",
+    "research/ugly-stik/model-v3/check_dimensions.py": "68983b686ebe3477b5288bd4588a7f39d3c3fe61467c231e768043cb1b6f8cf3",
+    "research/ugly-stik/model-v3/recompute_us02_metrology.py": "5cd808fa5e99a663819c88fac48fc2c6955528de1222c1f49a2bf8c47ed53121",
+    "research/ugly-stik/model-v3/capture.sh": "b20c414caef61c082f4ad2a3157e8fb786145a76650fd30a75ca567500af1434",
+    "research/ugly-stik/model-v3/make_review_kit.py": "46cfd0bb246deb3de0446e6acecb5ef09324c52282914b834ff20a543cefdf36"
+  },
+  "checks": {
+    "compiler_check": "pass",
+    "metrology_arithmetic_audit": "pass",
+    "reserved_dimension_check": {
+      "geometry_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+      "holdout_z_m": 0.390968,
+      "expected_m": {
+        "roof": 0.025226,
+        "bottom": -0.052244,
+        "width": 0.087884
+      },
+      "model_m": {
+        "roof": 0.02519374603174603,
+        "bottom": -0.05226415873015873,
+        "width": 0.08661803174603175
+      },
+      "residual_model_minus_source_m": {
+        "roof": -3.2253968253969506e-05,
+        "bottom": -2.0158730158731375e-05,
+        "width": -0.0012659682539682554
+      },
+      "allowance_m": {
+        "roof": 0.003,
+        "bottom": 0.003,
+        "width": 0.006
+      },
+      "ok": true,
+      "limits": [
+        "Compares visual stations against a reserved raster reading; not real-airframe accuracy",
+        "Nominal page scale and estimated vertical proxy are recorded in source evidence"
+      ]
+    },
+    "model_contract": {
+      "checks": 510,
+      "failed": 0
+    },
+    "application_suite": {
+      "command": "app/test.sh",
+      "exit_code": 0,
+      "log": "logs/app-tests.log",
+      "fixed_fps": [
+        30,
+        60,
+        144
+      ],
+      "same_final_state_sha256": "28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f"
+    },
+    "clean_checkout": {
+      "method": "git clone --no-hardlinks plus explicit overlay of proposed model-owned files; pinned tools symlinked; no local references or initial Godot cache copied",
+      "base_commit": "4880ee60cb0365da361eaa62cd9b601ebafdd6c7",
+      "final_full_application_suite_exit_code": 0,
+      "full_suite_log": "logs/clean-app-tests.log",
+      "final_compiler_model_capture_exit_code": 0,
+      "model_capture_log": "logs/clean-model-capture.log",
+      "inspection_captures": 9,
+      "physics_data_sha256": "499e842a0b2d4d65f1cd71ac2ea4ab9534d12bf62175b6d609053f6764a28377"
+    },
+    "clearance": {
+      "report": "clearance-current.json",
+      "tail_pair_poses": 99,
+      "aileron_pair_poses": 30,
+      "failures": 0,
+      "threshold_m": 0.00025,
+      "mutation_report": "clearance-mutation-hinge-gap.json",
+      "mutation_failed_pair_poses": 24,
+      "mutation_contract_failed_checks": 1
+    }
+  },
+  "captures": {
+    "inspection_manifest": "inspection/manifest.json",
+    "readability_manifest": "captures/manifest.json",
+    "all_vertices_inside_frame": 45,
+    "repeat_determinism": {
+      "independent_runs": 2,
+      "compared_png_count": 36,
+      "identical_png_sha256": true,
+      "manifest_and_timing_compared": false,
+      "png_sha256": {
+        "d020m-ground-a9.png": "5cd384383712f0cc8235395f71fa8ad0140e340f63dece15ebe62d00941c2892",
+        "d020m-ground-c3.png": "b90fdcc49fb982f2c27dd51d22a7c66d33eb631fc8e21decc2aa8787ce8d5114",
+        "d020m-ground-k7.png": "8a5fad6ce98ae26700421b642413a2288cdf48a7181f57c50e87d974e65ff046",
+        "d020m-ground-m2.png": "537c75382f7d7a0cdc2c62bdd318d0bbb985b0cc49d34826772f1e1e07917685",
+        "d020m-ground-r5.png": "077af771431c6659067d2ac942d9527eff34811d3b6c8f0b54a8471617a777f6",
+        "d020m-ground-t8.png": "b1cfdffedfd78d7530ba8fe272f9026a79f685b46db43b8b07868a628b3d469f",
+        "d020m-sky-a9.png": "f83e67272d7a7b15cb28a28700a9965f3db1f2d9a0126ca85348e361c379c092",
+        "d020m-sky-c3.png": "426ef956a43d10b40d7d68a77f0f7ee8378070153b55d962273e42cf9643ca86",
+        "d020m-sky-k7.png": "f84d51da1d5864f2163a18d6039ee88504b5e803967fa40e3f0e77606344eaaf",
+        "d020m-sky-m2.png": "126d5adedc73abee977559cd66cf5d848348a99b6a971786656f299a0ecbe5ec",
+        "d020m-sky-r5.png": "06316bd976f5c0958d60b00349820f50ad06a160e21fd98d8145a95a1b646e99",
+        "d020m-sky-t8.png": "4e3ca30de6b0ffa41afe10c17d83dc9e8b3a788cdeab9fae20edaf436a8c697f",
+        "d050m-ground-a9.png": "ccc0a6c227040eb8607c66bb28b0c913258dd53dcecb54cd763ada63154201fa",
+        "d050m-ground-c3.png": "b876a1a703139ce46d5589e66e4ed8b679b2f286fc9eb3d8784086bd5b75d040",
+        "d050m-ground-k7.png": "34fb4754437e07962d3cf7984b8ae85467c7c210fc2338781a26882624e7cea4",
+        "d050m-ground-m2.png": "89c19285a379a7ac57ed3dad18fe9f9c87801d17ac135aa4197c892c6006f3f2",
+        "d050m-ground-r5.png": "42bee78ce4528d3f5fe2911a4fa7691540aaa6307f25bb2b3795e49c93f3fa43",
+        "d050m-ground-t8.png": "a3613e3a9b55a86c5ea62704722e02b334b0187323f82316a409e4181e0691d1",
+        "d050m-sky-a9.png": "15dfb317e4a0c2c2189e0beb00f9218afe54bf89062b7e0b2d66cdc787c77c02",
+        "d050m-sky-c3.png": "ec647b381ed79c4ae1ca1d04fad88cb6bafdb86cc42e1f3cd8dba42e30f949e6",
+        "d050m-sky-k7.png": "dcf7d92397dc027cd703ed66877b80b3d640e8bc39e1874af4d6131ca6da5297",
+        "d050m-sky-m2.png": "e251f6732a7b792cc9fd666b195fda07feadb0a8370c0d26a3e17e18beaf20b8",
+        "d050m-sky-r5.png": "d15abfb0c61c3dac43a1879c4170dc3f8eca891ce370918dad1d7dce8f92ea76",
+        "d050m-sky-t8.png": "5115285a68bfc1cb3e73428b84835967097d2d5d3aa6051607d45aff0f9daae3",
+        "d100m-ground-a9.png": "ccfe4c93037701357432b13dc67289f60996e98c2dbeaf7ab5874cb5cd5890c0",
+        "d100m-ground-c3.png": "fdebe63f98c5a13f205479c833a31334138f0893632d1b8c0604d11afa202e6c",
+        "d100m-ground-k7.png": "4b49079ab2be3635ab5d5a8423038696efe5db790905070c52900e6c6d9d8246",
+        "d100m-ground-m2.png": "555bf355b96f752a91225a83e0c43406607d0eb8a9c52a736fe2b0beaacf4d17",
+        "d100m-ground-r5.png": "830542418041d2083beb3d36b6908c1fc07074a8a0ddafb9aaea869cd932dec0",
+        "d100m-ground-t8.png": "1590fc6947cd98af81c10922a51d8ea6f1e882887063daeb9ef8e99ce0886683",
+        "d100m-sky-a9.png": "7514e8b0325e780a038d02a93965e5fb5be7055bbaf6eeba8871687af4251b11",
+        "d100m-sky-c3.png": "a918c7dd743a0048b97f484e5dafed5173462697a0a811a917144ae79d2defd4",
+        "d100m-sky-k7.png": "5bbf51938f13af85306db36eab91fe7d5e6ebb50f0d1b763cfc9b9b022054d9a",
+        "d100m-sky-m2.png": "a5b3fa676ae7b276f9971c0509e4a326d3e81db89cfa9a3a7a0e5b54769951c0",
+        "d100m-sky-r5.png": "89a02cc52af9ce94898bf6528002e7c8be25089cd22ec85d2860af868c0e9a5c",
+        "d100m-sky-t8.png": "2dff5ed45ce4200a158b0e9dd8217aa7090a07200f88a5169dd7d8d719a68707"
+      }
+    },
+    "human_review": "pending",
+    "in_application_png": "in-app.png",
+    "in_application_mode": "physics"
+  },
+  "geometry_cost": {
+    "mesh_instances": 54,
+    "triangle_count": 4816,
+    "material_count": 5,
+    "model_bounds_m": {
+      "extent": [
+        1.5223433971405,
+        0.436233997344971,
+        1.31547403335571
+      ],
+      "max": [
+        0.761171698570251,
+        0.178134009242058,
+        0.897697985172272
+      ],
+      "min": [
+        -0.761171698570251,
+        -0.258100003004074,
+        -0.417775988578796
+      ]
+    }
+  },
+  "warnings": [
+    "Application suite and in-app capture report inventory/plan CG discrepancy and one ObjectDB instance leaked at exit; isolated model contract does not reproduce ObjectDB warning; cause not assigned.",
+    "llvmpipe software render is not a target GPU performance measurement."
+  ],
+  "pending_external_acceptance": [
+    "Pilot orientation answers (US-06)",
+    "Target-hardware frame cost (US-08)",
+    "Ground contact/taxi integration by physics owner (E1/E2)",
+    "Commercial engine selection and additional dimensional evidence for an exact replica"
+  ],
+  "evidence_sha256": {
+    "logs/app-tests.log": "380533e3a87aba3bb7dd941270110fe51fa9f2b75995e9547ca7e54b8f6f89e3",
+    "logs/clean-app-tests.log": "0bf271ae938b486210b083715d8045f89beda4b078f08b983112d7cbbd46f0db",
+    "logs/clean-model-capture.log": "9bfe5cc96cb6340e2cbc0d565984cb2bbaab69a47d7c1c534a5cdf27df31f43e",
+    "logs/in-app-capture.log": "4bf9ad915a1077686d12d23f5930433aa98cf858b2bb7d287d7ab22388cbea64"
+  }
+}

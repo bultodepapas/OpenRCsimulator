@@ -2,7 +2,7 @@
 
 Research date: **2026-10-05**. This is a growing collection of evidence, possibilities, and questions, not a stack selection or a requirements document. The only established principles remain those in [AGENTS.md](AGENTS.md). [DECISIONS.md](DECISIONS.md) records decisions when we actually make them.
 
-Latest focused follow-up: [propeller comparison, mass properties, and low-speed evidence](#testing-the-evidence-behind-the-first-aircraft). This pass includes an executed numerical comparison; physical aircraft measurements and the [earlier prototype and pilot experiments](#focused-follow-up-on-the-three-priority-research-gaps) remain open.
+Latest: [plan review #3 research](#plan-review-3-radio-input-full-envelope-flight-release-and-measured-flight-modes) (radio input in Godot 4.7.2, full-envelope aero, release builds, measured flight modes). Earlier focused follow-up: [propeller comparison, mass properties, and low-speed evidence](#testing-the-evidence-behind-the-first-aircraft). This pass includes an executed numerical comparison; physical aircraft measurements and the [earlier prototype and pilot experiments](#focused-follow-up-on-the-three-priority-research-gaps) remain open.
 
 **Update — 2026-10-05, later:** the variant is now the **Jensen Das Ugly Stik 60** (owner's plan images). CG (4.76 in aft of LE, 39 % chord), nose length and chord were measured on the full-size Outerzone oz1253 plan (`research/d1/jensen_plan_cg.py`); see DECISIONS.md. The paragraph below is the earlier direction, kept as history.
 
@@ -30,6 +30,7 @@ Latest focused follow-up: [propeller comparison, mass properties, and low-speed 
 - [Focused follow-up on the three priority research gaps](#focused-follow-up-on-the-three-priority-research-gaps)
 - [Closing the .60 nitro Stick research gaps](#closing-the-60-nitro-stick-research-gaps)
 - [Testing the evidence behind the first aircraft](#testing-the-evidence-behind-the-first-aircraft)
+- [Plan review #3: radio input, full-envelope flight, release, and measured flight modes](#plan-review-3-radio-input-full-envelope-flight-release-and-measured-flight-modes)
 - [Continuing the research](#continuing-the-research)
 
 ## Reading the evidence
@@ -1584,6 +1585,137 @@ If later experiments justify more detail, candidates include Reynolds-indexed li
 
 The most useful next software experiment remains a small visible airplane with inspectable controls and forces. A provisional physical model can accompany it, with assumptions labeled. More literature alone will not resolve edit/run friction, device compatibility, readability from the ground, or pilot preferences; those questions need executed prototypes and observations. This is a suggested direction for further investigation, not a new stack decision or implementation requirement.
 
+## Plan review #3: radio input, full-envelope flight, release, and measured flight modes
+
+Research and measurements for [plan review #3](ROADMAP.md#plan-review-3-2026-10-05-senior-review-before-d6) (2026-10-05). Evidence tags as above. **Source read** means the Godot 4.7.2-stable source tag, an official document, or a paper was opened. **Measured** means we ran it on the simulator here. Short names: G = `https://github.com/godotengine/godot/blob/4.7.2-stable/`, E = `https://github.com/EdgeTX/edgetx/blob/main/radio/src/`.
+
+### Measured on our simulator
+
+**Flight modes, linearized on the real equations** ([`research/flight-modes/`](research/flight-modes/), `python3 research/flight-modes/modes.py 10 15 25`).
+- **Method:** central-difference Jacobian of the real aero + propulsion + rigid-body derivative at the level trim (controls and rpm frozen). Eigenvalues of the longitudinal [u w q θ] and lateral [v p r φ] blocks.
+- **Hand check:** roll subsidence λ = ρVSb²Clp/(4Ixx) = −19.6 1/s at 15 m/s, against an eigenvalue of −19.60.
+
+| V (m/s) | Short period | Phugoid | Roll τ | Dutch roll | Spiral |
+| --- | --- | --- | --- | --- | --- |
+| 10 | 1.42 Hz, ζ 0.76 | 0.15 Hz, ζ 0.14 | 0.08 s | 0.51 Hz, ζ 0.40 | stable, τ 14.3 s |
+| 13.8 (same CL as the US120 below) | 1.88 Hz, ζ 0.78 | 0.11 Hz, ζ 0.26 | 0.06 s | 0.66 Hz, ζ 0.39 | stable, τ 9.7 s |
+| 15 | 2.03 Hz, ζ 0.78 | 0.10 Hz, ζ 0.31 | 0.05 s | 0.71 Hz, ζ 0.39 | stable, τ 9.5 s |
+| 25 | 3.32 Hz, ζ 0.80 | 0.06 Hz, ζ 0.86 | 0.03 s | 1.14 Hz, ζ 0.40 | stable, τ 11.6 s |
+
+**Independent comparison (first non-circular check).** The predicted-handling table is computed from the same borrowed coefficients the simulation uses, so D8 against it only *verifies* code.
+- **Reference:** the University of Minnesota identified a dimensional A-matrix for the Ultra Stick 120 "Ibis" from flight-test doublets (output error). Trim 19.2 m/s, α 4.5°, CL ≈ 0.47; 8.34 kg, 1.92 m span. Source: Lie's thesis, Appendix D ([UMN conservancy](https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content); source read). We computed its eigenvalues ourselves (inference).
+- **Scaling:** Froude-scaled to the Ugly Stik (lengths × 0.79 → frequencies × 1.12) and compared at the same CL (13.8 m/s for us).
+
+| Mode | US120 band | Ugly Stik sim | Reading |
+| --- | --- | --- | --- |
+| Short period | 1.30 Hz, ζ 0.55 | 1.88 Hz, ζ 0.78 | 1.45× faster, more damped |
+| Roll τ | 0.116 s | 0.06 s | 1.9× faster |
+| Dutch roll | 0.57 Hz, ζ 0.31 | 0.66 Hz, ζ 0.39 | close |
+| Spiral | stable, τ 4.3 s | stable, τ 9.7 s | same sign |
+
+Interpretation (inference): the sim is the right class of airplane but **crisper and better damped in pitch and roll** than a flight-identified Stik.
+- **Suspects:** the UltraStick25e's strong Cmq (−13.6) and Clp (−0.45), the inventory inertia (below), and **no servo lag** (identified responses include actuators).
+- **What this is not:** a band for a different airframe, not a target. It decides what D10 varies first.
+- **Better target:** Dorobantu et al. 2013 identified the Ultra Stick 25e itself ([doi:10.2514/1.C032065](https://doi.org/10.2514/1.C032065)). It is paywalled and was not obtained; it would compare like with like with our borrowed coefficients.
+
+**No stall at all in slow flight.**
+- **Full up elevator at 1 g, linear model:** α = −(Cm0 + Cmδe·δe)/Cmα = 21°, CL 1.77, so the airplane "parachutes" at 7.0 m/s. The predicted stall is 8.6–9.5 m/s at CLmax 1.0–1.2.
+- **Steady pull-ups:** pitch damping limits CL to 0.99 at 15 m/s (2.5 g) and 0.84 at 25 m/s (5.9 g).
+- **Consequence:** stall is reached only in slow flight, which is exactly where pilots meet it (landing). Measured with the data-file coefficients and 20° elevator throw.
+
+**Propwash on the tail (momentum theory; inference).**
+- **Slipstream:** V_far = √(V² + 2T/(ρA)), with A = 0.073 m² for the 12-in disk.
+- **At 5 m/s and 38 N:** the slipstream is 29.6 m/s, so the dynamic pressure in the washed part of the tail is **≈ 35× freestream**. At 10 m/s it is 7.7×; at cruise (15 m/s, 3 N) 1.3×.
+- **Consequence:** ground handling and takeoff authority (M2) depend on propwash first. It cannot wait for M5 polish.
+
+**Gyroscopic precession (inference; I_prop ≈ 3e-4 kg·m² estimated for a ~37 g 12×6).**
+- **Angular momentum:** H = 0.16 N·m·s at cruise rpm and 0.35 N·m·s at full rpm.
+- **Moments:** a 3 rad/s pitch rate gives 0.5–1.05 N·m of yaw, against full rudder at 7.7 N·m at 15 m/s and 2.2 N·m at 8 m/s. A 10 rad/s snap gives ≈ 3.5–5 N·m.
+- **Verdict:** negligible in gentle flight, significant in snaps, tumbles and slow flight. Cost: one cross product.
+
+**Inertia plausibility.**
+- **Nondimensional radii of gyration** of the inventory inertia: Rx 0.274, Ry 0.438, Rz 0.490. Roskam's single-engine propeller values are 0.248, 0.338, 0.462 (borrowed reference).
+- **Iyy** is 0.218 kg·m² against 0.130 at Roskam's Ry, i.e. **1.7× high**. That would *slow* the short period, so it does not explain the crisp pitch. It is still a D10 priority.
+
+**Physics cost, end to end.**
+- **Headless app:** 20 s of flight in 1.51 s, including trace recording. That is ≈ 313 µs per 240 Hz tick, ≈ 7.5 % of one core on this VM (software rendering, shared machine, not representative).
+- **Integrator benchmark alone:** 78.5 µs per step.
+
+### Radio and gamepad input in Godot 4.7.2
+
+- **Backend:** SDL3 since Godot 4.5 on Windows, Linux and macOS ([PR #106218](https://github.com/godotengine/godot/pull/106218)). 4.7.2 bundles SDL 3.2.28 (source read).
+- **Devices that are not gamepads are raw joysticks.** Axes pass through unmapped as `JoyAxis(index)`.
+  - `JoyAxis::MAX = 10`, so an 8-axis radio is fully readable (G`core/input/input_enums.h`; source read).
+  - Axis indices ≥ 10 flood the console with `ERR_FAIL_INDEX` ([#82080](https://github.com/godotengine/godot/issues/82080)).
+- **Biggest risk: on Linux an EdgeTX radio in Classic mode probably becomes an SDL *gamepad*.** SDL auto-generates a mapping for any device with `BTN_GAMEPAD` (G`thirdparty/sdl/joystick/linux/SDL_sysjoystick.c`; source read). EdgeTX Classic declares HID usage Game Pad ([EdgeTX developer mapping page](https://manual.edgetx.org/edgetx-how-to/joystick-mapping-information-for-game-developers)). The result (inference):
+  - throttle (Ch3) arrives as a 0..1 trigger;
+  - Ch7 and Ch8 are lost;
+  - neither `SDL_GAMECONTROLLER_IGNORE_DEVICES` nor `Input.add_joy_mapping` fixes it (source read).
+  - **Radio-side fix:** EdgeTX Advanced mode, Interface = Joystick, sends HID usage 0x04 (E`usb_joystick.cpp`; source read).
+- **Axes read 0.0 until moved.** SDL sends no event until an axis moves more than 1/80 of half-range, and disconnect sets every axis to 0 (source read). A throttle resting at low therefore reads as **mid-throttle** at startup and after an unplug. This is a safety rule for the sim: arm only after the throttle has been *seen* low.
+- **Range and filtering:** −1..+1, no deadzone or filtering at `get_joy_axis` (deadzones exist only on input actions). EdgeTX sends 11-bit values, so one step ≈ 0.001.
+- **EdgeTX report rate:** 1 ms with RF modules off, otherwise the mixer period (4 ms by default) ([EdgeTX USB joystick manual](https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick)).
+- **Device identity:** `Input.get_joy_guid()` plus `get_joy_info()` (`raw_name`, `vendor_id`, `product_id`); EdgeTX is VID:PID 1209:4F54. The connection signal is `joy_connection_changed`.
+- **Latency:**
+  - SDL is polled once per frame, so all 240 Hz ticks in a frame see the same value. Polling `get_joy_axis` in `_physics_process` is valid (source read).
+  - With accumulated input on (the default), joypad events reach the game **one frame late on Linux and macOS**, because the queue is flushed before SDL polling. Code order source read; the delay itself inferred.
+  - Fix: `Input.use_accumulated_input = false`, or `input_devices/buffering/agile_event_flushing = true` (honored on every platform despite the docs).
+  - The Compatibility renderer supports only V-Sync on or off.
+- **Known issues:**
+  - Windows hang on disconnect in 4.7 ([#121539](https://github.com/godotengine/godot/issues/121539), milestone 4.8).
+  - EdgeTX 2.11 hides the USB Joystick menu ([#6254](https://github.com/EdgeTX/edgetx/issues/6254)).
+  - EdgeTX center is not exactly 0 ([#4881](https://github.com/EdgeTX/edgetx/issues/4881)).
+- **Headless tests:** `Input.parse_input_event(InputEventJoypadMotion)` with a fake device id works; call `Input.flush_buffered_events()`. Don't call `get_joy_guid` on a fake id: it prints an engine error, which fails `app/test.sh`. Use id 15, because a real radio on the dev machine takes id 0.
+
+### Full-envelope flight models in RC simulators
+
+| Simulator / work | Structure | Stall and post-stall | Propwash / gyro | Evidence |
+| --- | --- | --- | --- | --- |
+| CRRCSim 0.9.13 (`fdm_larcsim.cpp`) | Whole-aircraft linear derivatives, like ours | Local CL checked at **3 spanwise stations** (`CL ± CLα·p̂·η`); above CLmax clipped to `CLmax − CL_drop`; extra drag `CD_stall·(1−e^(−4|ΔCL|/0.4))`. Left/right difference → roll/yaw: snaps and spin autorotation in 3 evaluations | Propwash only scales torque; no gyro | Source read ([SourceForge](https://sourceforge.net/projects/crrcsim/files/crrcsim/crrcsim-0.9.13/)) |
+| PicaSim (Rowlhouse/PicaSim, noncommercial licence: read, don't copy) | 1–3 sections per wing, per-surface tables | `CL = f·CL_table + (1−f)·CL45·sin2α`, CL45 = 1.1/(1+1/AR), cosine ramp over ~10°; control effectiveness 30 % when stalled | Momentum-theory wash with lag, swirl, radial falloff; gyro via extra angular momentum | Source read ([GitHub](https://github.com/Rowlhouse/PicaSim)) |
+| YASim (FlightGear) | Tens of strips | Flat-plate-like at all angles; cubic smoothstep through stall; separate stall angles per flow direction | — | Source read ([Surface.cpp](https://github.com/FlightGear/flightgear/blob/next/src/FDM/YASim/Surface.cpp)) |
+| JSBSim | Whole-aircraft tables | Only as wide as the tables supplied (c172x: α −0.09…0.36 rad) | — | Source read |
+| Selig 2014, J. Aircraft 51(6) ([doi](https://doi.org/10.2514/1.C032370)) | Component buildup over ±180° α and β (drives FS One / SeligSIM) | ±180° airfoil data, shadowing, downwash | Slipstream swirl, prop-wake lag | Abstract and secondary review read; many tuning factors |
+| Khan & Nahon, McGill ([thesis](https://mcgill.scholaris.ca/items/56b70b0e-1f76-48ba-b973-d3b841d659ed)) | ~30 segments on a 0.82 m YAK54 | Goman–Khrabrov separation at low α; Hoerner/Lindenburg normal force at high α | Fitted propwash model; gyro included; real time with a pilot | Source read |
+| RealFlight, Aerofly | "Element-based" or several airfoils per wing | — | — | Press and vendor claims only |
+
+**Formulas for the next aero steps** (source read unless marked):
+- **Flat plate:** `CL = (CD90/2)·sin2α`, `CD = CD0 + CD90·sin²α`. CD90 ≈ 1.98 in 2D; Viterna's finite-wing `CDmax = 1.11 + 0.018·AR` gives ≈ 1.2 at AR 5 ([NASA CR-1983](https://ntrs.nasa.gov/api/citations/19830010962/downloads/19830010962.pdf)).
+- **Beard & McLain sigmoid** ([code](https://github.com/shalabymhd/uav-simulator/blob/master/forces_moments.m)):
+  - `σ = (1 + e^(−M(α−α0)) + e^(M(α+α0))) / ((1 + e^(−M(α−α0)))(1 + e^(M(α+α0))))`
+  - `CL = (1−σ)(CL0 + CLα·α) + σ·2·sign(α)·sin²α·cosα`
+  - Aerosonde uses M = 50, α0 = 0.47 rad. For the Stik, α0 ≈ 0.24 rad (inference), and add `σ·CD90·sin²α` to drag (the book's drag lacks it).
+- **Hoerner/Lindenburg:** `CN = CD90·sinα·[1/(0.56 + 0.44 sinα) − 0.41(1 − e^(−17/AR))]`, `CA = 0.5·CD0·cosα`.
+- **Viterna for stall…90°:** `CL = A1·sin2α + A2·cos²α/sinα`, `CD = B1·sin²α + B2·cosα`. Check A2 against the 1982 report before coding it.
+- **Propwash:** `vi = ½(−V + √(V² + 2T/(ρA)))`; far wake V + 2vi; contracted radius `Rp·√((V+vi)/(V+2vi))` (Rp/√2 static). Measured efflux is lower because of diffusion (Khan: `a0·nD·√CT`, a0 < 1.59).
+- **Gyroscopic moment:** `M = −ω_body × (J_p·ω_p·x̂)`.
+
+**Not usable as validation:** the fdfpv project lists a "measured" Ugly Stik stall of 10.34 m/s and roll pb/2V 0.0735 ([PR #158](https://github.com/fdflabs/fdfpv/pull/158)). It is most likely measured in their own simulator (inference). No primary flight-test numbers for an Ugly Stik were found.
+
+### Release builds (PT1) with Godot 4.7.2
+
+- **Templates:** 4.7.2 is the current stable (2026-08-18). `Godot_v4.7.2-stable_export_templates.tpz` is **1.28 GB**. Its SHA-512 is in the release's `SHA512-SUMS.txt`, the file `get-godot.sh` already uses (source read).
+- **Files PT1 needs:** `linux_release.x86_64` (73.5 MB), `windows_release_x86_64.exe` (109.3 MB) and `macos.zip` (123.6 MB, universal). They install into `~/.local/share/godot/export_templates/4.7.2.stable/`, with a **dot**, not `-stable`.
+- **Export CLI:** `godot --headless --path app --export-release "<preset>" <out>`; the output path is relative to `project.godot`. Run `--import` first on a fresh clone.
+- **Blocker: universal/arm64 macOS export fails unless `rendering/textures/vram_compression/import_etc2_astc=true`** (`platform/macos/export/export_plugin.cpp`; source read). `app/project.godot` does not set it.
+- **Data blocker: `.json` is a non-resource file.** Without `include_filter="data/*.json"` the aircraft file is missing from the pack and the exported app refuses to fly (source read). Add `exclude_filter="tests/*"`.
+- **macOS from Linux:** built-in ad-hoc codesign is the default and is enough for Apple Silicon. Export to `.zip`; `.dmg` needs a macOS host.
+- **Gatekeeper: Control-click → Open no longer bypasses it since macOS 15 Sequoia** ([Apple developer news](https://developer.apple.com/news/?id=saqachfa)). Godot's own "running on macOS" page is out of date. The user steps on macOS 15/26 ([Apple support 102445](https://support.apple.com/en-us/102445)):
+  1. Open the app once; the "Not Opened" dialog appears. Click Done.
+  2. Go to System Settings → Privacy & Security → **Open Anyway**.
+  3. Enter the admin password and confirm.
+  - Alternative: `xattr -dr com.apple.quarantine "/Applications/OpenRC Simulator.app"`, which is also the fix for an app reported as "damaged".
+- **Windows:**
+  - An unsigned .exe triggers SmartScreen; the user clicks More info → Run anyway.
+  - **Smart App Control blocks unsigned apps with no per-app override** ([Microsoft](https://support.microsoft.com/en-us/topic/what-is-smart-app-control-285ea03d-fa88-4d56-882e-6698afdb7003)).
+  - Since 4.5 Godot sets the Windows icon itself; rcedit and wine are no longer needed.
+- **CI:**
+  - Caches created on a tag are invisible to other tags; tag runs restore caches from `main`. So warm the template cache on `main`.
+  - Eviction after 7 days unused; 10 GB per repository ([GitHub docs](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)).
+  - The ready-made actions (firebelley/godot-export v8, chickensoft setup-godot, abarichello/godot-ci) don't verify SHA-512. A hand-written job reusing `get-godot.sh` keeps the pin-by-hash rule.
+  - Pin third-party actions by commit SHA.
+- **Size:** the app itself is ≈ 392 KB, so each export ≈ template size (Linux ≈ 74 MB, Windows ≈ 110 MB). Inference.
+
 ## Continuing the research
 
 ### Small experiments suggested by these findings
@@ -1647,3 +1779,4 @@ As research continues, add findings beside their topic with the date, original s
 - **Propeller:** APC's PER3_12x6.dat is blocked by Cloudflare for scripts and the web reader. Used UIUC's measured APC Sport 11×6 static and 6,000 rpm runs (sha256 recorded) for Ct(J) and Cp(J).
 - **Engine:** derived the max static rpm (≈ 11,150) from the O.S. 61FX catalog power and the measured static Cp. Results feed `app/data/aircraft/jensen_ugly_stik_60.json`; every value carries its evidence kind.
 
+**Research log — 2026-10-05, twelfth pass (plan review #3):** read the Godot 4.7.2 input and export source, EdgeTX's USB joystick source, CRRCSim, PicaSim and YASim aero source, and the Khan and UMN theses. Measured the simulator's flight modes, its slow-flight stall gap, propwash and gyroscopic magnitudes, inertia plausibility and end-to-end physics cost. The changes they caused are in ROADMAP plan review #3 and DECISIONS.

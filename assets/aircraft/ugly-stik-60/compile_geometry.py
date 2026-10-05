@@ -25,6 +25,7 @@ def main():
     assert 0 < w['aileron_inner'] < w['aileron_outer'] <= w['span'] / 2
     assert 0 < w['tip_start'] < w['tip_le_span'] <= w['span'] / 2
     assert 0 < w['hinge_gap'] < 0.01
+    assert 0 < w['inboard_gap'] < 0.01
     assert 0 < w['hinge_fraction'] < 1
     assert sum(abs(p[0] - w['hinge_fraction']) < 1e-8 for p in w['section']) == 2
     assert all(len(p) == 2 and all(math.isfinite(v) for v in p) for p in w['section'])
@@ -32,6 +33,7 @@ def main():
     tail = data['tail']
     assert 0 < tail['hinge_gap'] < 0.01
     assert 0 < tail['elevator_cutout_half_width'] < tail['span'] / 2
+    assert 0 < tail['elevator_cutout_start'] < max(point[1] for point in tail['elevator_outline'])
     for key in ['stab_outline', 'elevator_outline', 'fin_outline', 'rudder_outline']:
         points = tail[key]
         assert len(points) >= 3 and all(len(p) == 2 and all(math.isfinite(v) for v in p) for p in points), key

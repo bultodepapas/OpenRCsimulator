@@ -1,0 +1,120 @@
+== float64 guard: no 32-bit math types in simulation code
+== parse check: every script
+== test_aero.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+22 checks, 0 failed
+== test_air_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_aircraft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+30 checks, 0 failed
+== test_controls.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+17 checks, 0 failed
+== test_e2e_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+ok   hold -> roll +1, aileron +20°
+ok   release -> stick re-centers, aileron back to trim
+ok   throttle rose and holds after release
+ok   reset -> throttle back to its trimmed setting
+ok   physics: trimmed level flight holds altitude hands-off
+ok   physics: throttle back → descends
+ok   physics: R restarts at 30 m
+ok   physics: restarts by itself below ground
+ok   T: recording shows in the panel
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-05T18-40-44.csv (120 rows)
+ok   T again: trace saved with ~0.5 s of ticks
+all e2e checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_engine_sound.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+7 checks, 0 failed
+== test_frames.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+18 checks, 0 failed
+== test_integrator.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   free fall: ½gt² after 10 s err 5.286437954055145e-12 m
+ok   tilted fall stays vertical drift 3.2376299394153163e-12 m
+ok   constant force: ½at² err -3.836930773104541e-13 m
+ok   spin 60 s: energy conserved worst rel 3.480865527503368e-12
+ok   spin 60 s: world angular momentum conserved worst rel 9.50327010917384e-11
+ok   quaternion stays unit 
+ok   stress case really flips 
+ok   4th-order convergence errors 5.236970999078494e-07 3.3002987009922435e-08 2.0708714743022938e-09, ratios 15.9 15.9
+ok   speed ≥ 20× real time at 240 Hz 46× (2400 steps in 0.217 s, 90.5 µs/step)
+9 checks, 0 failed
+== test_math3d.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_propulsion.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data with propulsion loads []
+ok   static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N 41.25 N
+ok   T/W ≈ 1.6 (vertical capable) 1.62
+ok   static power balance closes 974 W
+ok   Ct at a knot 
+ok   Ct between knots 
+ok   Ct for J < 0 = static 
+ok   Ct beyond the data goes negative (windmill drag), floored -0.04781904761905
+ok   thrust falls with airspeed 41.3 > 32.6 > 4.7 N
+ok   past zero-thrust speed the prop drags -8.49 N at 50 m/s
+ok   power rolls the airplane left (Mx < 0) -0.834 N·m
+ok   stopped engine: no loads 
+ok   63.2 % of the step after τ 0.6321
+ok   lag is exact: 60 small steps = 1 big step 8077.574546 vs 8077.574546
+ok   throttle 0 → idle, throttle clamps 
+ok   finite at any airspeed 
+16 checks, 0 failed
+== test_rigid_body.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+14 checks, 0 failed
+== test_simulation.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+19 checks, 0 failed
+== test_trim.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Gaussian elimination solves a known system 8.881784197001252e-16
+ok   level 15 m/s trims (six axes, with throttle) trimmed
+ok   trim alpha 3.6° ± 0.5° 3.71°
+ok   thrust ≈ drag ≈ 3 N 3.019 N at throttle 0.280 (5139 rpm)
+ok   up elevator trim (borrowed Cm0 < 0) pitch trim 0.235
+ok   prop torque trimmed out with small aileron/rudder roll trim 0.0222, yaw trim 0.0066, beta -0.059°
+ok   converged tightly residual 1.201199766213212e-13 in 4 iterations
+ok   level flight holds ±1 m for 30 s Δalt -0.0000 m
+ok   no spiral: heading holds within 1° for 30 s Δheading -0.0000°
+ok   25 m/s: less alpha, more throttle alpha 0.49°, throttle 0.681
+ok   glide 15 m/s trims trimmed
+ok   glide ratio ≈ 8.5 L/D 8.46, glide angle -6.74°
+ok   glide: no lateral trim needed 
+ok   5 m/s is impossible and says why needs 54.4° of elevator, more than the 20.0° throw
+14 checks, 0 failed
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+510 checks, 0 failed
+== app: headless --trace starts in trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.280, 5139 rpm, trims ail +0.0222 elev +0.2353
+== fixed step: same final state at 30, 60 and 144 fps rendering
+ticks=480 frames=61 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f
+ticks=480 frames=121 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f
+ticks=480 frames=289 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f
+identical

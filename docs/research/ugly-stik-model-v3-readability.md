@@ -4,17 +4,18 @@
 
 ## Estado
 
-La captura completa se generó el 2026-10-05 con el modelo `jensen-60-nitro-61-v3`. La serie `readability36` contiene 36 PNG; una segunda ejecución independiente produjo los mismos 36 hashes SHA-256. La inspección contiene las nueve vistas y todas las comprobaciones de vértices proyectados quedaron dentro del viewport. La revisión humana sigue **pendiente**: no se han registrado respuestas, dudas ni porcentajes.
+La captura completa se generó el 2026-10-05 con el modelo `jensen-60-nitro-61-v3`. La serie `readability36` contiene 36 PNG; una segunda ejecución independiente produjo los mismos 36 hashes SHA-256. La inspección contiene las nueve vistas y todas las comprobaciones de vértices proyectados quedaron dentro del viewport. Se pueden abrir la [página de revisión](../../research/ugly-stik/model-v3/captures/review.html), el [manifiesto readability](../../research/ugly-stik/model-v3/captures/manifest.json) y el [manifiesto de inspección](../../research/ugly-stik/model-v3/inspection/manifest.json). La revisión humana sigue **pendiente**: no se han registrado respuestas, dudas ni porcentajes.
 
 ## Reproducción y protección de la evidencia
 
 Desde la raíz del repositorio:
 
 ```bash
-bash research/ugly-stik/model-v3/capture.sh
+bash research/ugly-stik/model-v3/capture.sh \
+  --output-dir research/ugly-stik/model-v3/review-new
 ```
 
-El destino predeterminado es `research/ugly-stik/model-v3/captures/`. En un clon limpio no existe todavía; en este árbol ya está ocupado por la evidencia descrita abajo. El script rehúsa directorios externos a `model-v3`; si el destino existe, se detiene. Con `--overwrite`, mueve el directorio anterior a un nombre de respaldo fechado antes de instalar la nueva captura. El script y el visor rechazan además cualquier destino dentro de `model-v1` o `model-v2`. Las carpetas, imágenes y scripts v1/v2 se conservan como historia.
+El destino predeterminado es `research/ugly-stik/model-v3/captures/`, ya ocupado por la evidencia versionada también en un clon limpio. El ejemplo elige un destino nuevo. El script rehúsa directorios externos a `model-v3`; si el destino existe, se detiene. Con `--overwrite`, mueve el directorio anterior a un nombre de respaldo fechado antes de instalar la nueva captura. El script y el visor rechazan además cualquier destino dentro de `model-v1` o `model-v2`. Las carpetas, imágenes y scripts v1/v2 se conservan como historia.
 
 El wrapper usa Godot 4.7.2 fijado por `app/get-godot.sh`, `xvfb-run`, OpenGL 3, audio dummy y una ventana de 1280×720. Hace dos ejecuciones en directorios temporales distintos. Antes de publicar la primera, compara por SHA-256 los bytes de cada PNG y exige los mismos nombres. No compara manifiestos ni tiempos de ejecución. Si alguna imagen difiere, falla sin sustituir el destino. El manifiesto final lleva cada hash PNG y el resultado de esta comparación.
 
@@ -56,8 +57,8 @@ Las nueve cámaras fijas de la serie `inspection` conservan posición, objetivo 
 | Evidencia | Resultado |
 | --- | --- |
 | ID de geometría | `jensen-60-nitro-61-v3`; el ID JSON coincide con el ID compilado |
-| SHA-256 de `geometry.json` | `b3a2c3588b05cd85f5a593c723a66e7a9cc3f6dac573971d751224977bd5594a` |
-| SHA-256 de `ugly_stik_geometry.gd` | `764faf699b997628de7e54bca769dc49b34ffaef55f57c7a6aad2cbac5907f88` |
+| SHA-256 de `geometry.json` | `89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108` |
+| SHA-256 de `ugly_stik_geometry.gd` | `aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a` |
 | Límites locales de la malla | X: −0.7612 a +0.7612 m; Y: −0.2581 a +0.1781 m; Z: −0.4178 a +0.8977 m |
 | Serie `readability36` | 36 PNG de 1280×720; cada hash está guardado en `captures/manifest.json` |
 | Repetición independiente | 36 de 36 hashes PNG coinciden; el manifiesto registra `identical_png_sha256: true` |

@@ -1,0 +1,19 @@
+Visual geometry source/runtime: identical
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+510 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/top.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/bottom.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/side.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/front.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/three-quarter-neutral.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/three-quarter-deflected.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/flight-20m.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/flight-50m.png
+Captured /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/flight-100m.png
+Wrote /tmp/stik-v3-clean-fok2n89c/repo/research/ugly-stik/model-v3/clean-inspection/manifest.json

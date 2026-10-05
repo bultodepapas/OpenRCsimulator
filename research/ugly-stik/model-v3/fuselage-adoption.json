@@ -67,7 +67,7 @@
   ],
   "holdout": {
     "x_px": 2800,
-    "z_m": 0.391968,
+    "z_m": 0.390968,
     "observed_source": {
       "roof_y_px": 2476,
       "bottom_y_px": 2781,
