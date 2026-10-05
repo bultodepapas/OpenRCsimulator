@@ -2,6 +2,8 @@
 
 Inspección: 2026-10-05. Relacionada con **ROADMAP D1**, preparación de geometría y **B5**, superficies articuladas. [Plan de trabajo](../UGLY-STIK-PLAN.md) · [Fuentes por variante](ugly-stik-sources.md) · [Inventario con hashes](ugly-stik-local-inventory.json).
 
+> **Alcance histórico:** esta es la inspección inicial. La ronda posterior de [diez investigaciones](ugly-stik-investigations/README.md) consiguió el plano Jensen legible (60 in, 720 in², .45–.61) y [leyó los dos 3DM](ugly-stik-investigations/07-cad.md), incluyendo las mallas almacenadas. Esos resultados actualizan los pendientes descritos abajo. El directorio original `ugly stick ` se trasladó posteriormente a `references/ugly-stick/`; las descripciones de la primera inspección se conservan como registro. El objetivo del propietario es .61 primero; mini y gigante después.
+
 ## Método y alcance
 
 Se abrieron las **14 imágenes** PNG/JPG de `ugly stick ` y se renderizó la página completa del PDF Grid Leaks con `pdftoppm`. Se leyeron encabezados y tipos de entidades de los seis DXF, y el encabezado binario de los dos `.3dm`. No se cargó la geometría 3DM/DWG en un programa CAD, no se validó su escala y no se midió un avión físico.

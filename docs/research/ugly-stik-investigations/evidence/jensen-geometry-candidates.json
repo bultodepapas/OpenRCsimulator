@@ -2,6 +2,14 @@
   "schema_version": 1,
   "status": "research_handoff_not_runtime_data",
   "variant": "Jensen Das Ugly Stik, signed oz1253 scan",
+  "user_requirements": {
+    "selected_engine_class": ".61 nitro",
+    "engine_brand_and_model": null,
+    "documentary_engine_candidate": "O.S. MAX-61FX; dimensional reference only, not user-selected brand",
+    "first_variant": "Jensen 60-inch airframe / .61 nitro",
+    "deferred_variants": ["mini", "giant"],
+    "source": "Explicit owner instructions in this session, 2026-10-05"
+  },
   "source_pdf": "references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf",
   "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
   "parameters": [

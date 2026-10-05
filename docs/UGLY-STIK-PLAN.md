@@ -4,7 +4,7 @@ Revisión 2 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik
 
 > **Actualización 2026-10-05 (desarrollo principal):** Gate 1 eligió **Godot**. El constructor del avión vive ahora en [`app/render/airplane.gd`](../app/render/airplane.gd), con las mismas interfaces (`airplane`, `propeller`, `*_hinge`). Las pruebas de `app/test.sh` comprueban signos de superficies sobre los nodos reales. Por decisión del propietario, los planos y CAD se movieron a `references/` (ignorado por git, solo local); las rutas de este documento ya apuntan allí. `assets/aircraft/ugly-stik-60/` sigue libre.
 
-La siguiente entrega será un **Jensen Ugly Stik sencillo y articulado para Godot**, preparado fuera de `app/`. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
+La siguiente entrega será un **Jensen Ugly Stik .61 sencillo y articulado para Godot**, preparado fuera de `app/`. El propietario fijó primero el motor nitro de clase .61; **mini y gigante quedan para después**. La marca y el modelo concreto del motor siguen abiertos. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
 
 ## Decisiones que cambian el plan inicial
 
@@ -13,7 +13,7 @@ La siguiente entrega será un **Jensen Ugly Stik sencillo y articulado para Godo
 | 01 · Fuente principal | El plano Jensen firmado y su escaneo anterior rotulan 60 in, **720 in²** y motor **.45–.61**. Usar esa fuente; conservar las discrepancias con la miniatura local por separado |
 | 02 · Ala | La nota Jensen describe sección semisimétrica y el dibujo incluye diedro. Trazar la sección de esa variante; no elegir un NACA por apariencia ni copiar el ala plana Grid Leaks |
 | 03 · Datos físicos | El CG es una referencia gráfica; masa y recorridos Jensen siguen sin establecer. El origen de la malla y sus límites visuales no sustituyen estos datos |
-| 04 · Instalación | Las dimensiones del fabricante permiten representar el candidato 65AX, pero su selección sigue abierta y excede el rango histórico rotulado. Definir conjunto motor/escape/hélice antes de cerrar morro y altura del tren |
+| 04 · Instalación | El objetivo es clase .61. El manual oficial del O.S. 61FX aporta una referencia dimensional provisional; no selecciona la marca. El 65AX queda como comparación histórica. Definir conjunto motor/escape/hélice antes de cerrar morro y altura del tren |
 | 05 · Reutilización | Hay un modelo REFLEX del Ugly Stik y documentación de su autor. Su ejecutable no se ejecutó ni se validó como malla importable; usar el documento como referencia comparativa |
 | 06 · Apariencia | Las fotos corresponden a construcciones concretas, algunas modificadas. Identificar configuración y vista; una decoración no define geometría ni prueba superioridad visual |
 | 07 · CAD | El Great Big Stik tiene estructura interna y mallas de renderizado almacenadas muy detalladas. Consultarlo por piezas; construir una superficie exterior ligera propia |
@@ -46,7 +46,7 @@ Son subtareas de **D1**, conservación de **B5**, integración tras **B7** y leg
 | 4 · D1 | Fuselaje de pocas secciones, afinado hacia la cola, con morro provisional | Vistas ortográficas y cotas comparables al contorno; distinguir fuselaje de longitud total instalada |
 | 5 · D1 | Ala basada en la sección Jensen; puntas y alerones separados; diedro con referencia identificada | Planta, sección y vista frontal; comprobar envergadura y límites móviles; toda simplificación etiquetada |
 | 6 · D1 | Contornos del estabilizador y conjunto vertical redondeado | Vistas superior/lateral y recorrido libre de elevador/timón; respetar la separación fija/móvil del plano |
-| 7 · D1/E1 | Equipo visible de una instalación explícita: motor, escape, hélice, ruedas y patas | Vista lateral con cotas y holgura hélice/suelo; sin atribuir masa, empuje o rigidez a la malla |
+| 7 · D1/E1 | Equipo visible de una instalación .61 explícita: motor, escape, hélice, ruedas y patas | Vista lateral con cotas y holgura hélice/suelo; sin atribuir masa, empuje o rigidez a la malla |
 | 8 · D7/Gate 2 | Decoración y lectura desde tierra sobre la misma geometría | Serie a 20/50/100 m, misma cámara, ambas caras y virajes; identificar orientación con el usuario |
 | 9 · D1, después de B7 | Conectar el recurso terminado al constructor Godot | Pruebas existentes de superficies/ejes y nuevas capturas neutra/deflectada; comprobar importación y escala |
 
@@ -57,6 +57,8 @@ Antes de integrar, releer [app/spec.gd](../app/spec.gd) y [el constructor](../ap
 ## Modelo y contrato de entrega
 
 La fuente editable será pequeña y paramétrica: secciones del fuselaje, contorno alar extruido y contornos de cola con espesor. Los datos de geometría llevarán variante, fuente, unidad original, conversión SI, método, evidencia e incertidumbre. Empezar por superficies externas; los detalles de construcción quedan como referencias o una futura vista educativa.
+
+La primera configuración es **Jensen 60 in / nitro .61**: `60` en la carpeta propuesta describe envergadura, no cilindrada. Una vez validada, mini y gigante podrán reutilizar el generador geométrico, la jerarquía de mandos y la escena de inspección. Cada variante necesitará sus propios datos de equipo, masa, inercia y aerodinámica; cambiar la escala de la malla no valida su vuelo. No se implementan esas variantes ni una arquitectura de familias en esta entrega.
 
 La salida para Godot debe conservar raíz, hélice y mapa de bisagras de la interfaz existente. GLB es una ruta comprobada para un recurso mínimo; si se adopta para el avión, acompañarlo de su fuente editable y del procedimiento de exportación. La prueba no obliga a introducir Blender ni una nueva dependencia en la aplicación.
 
@@ -79,7 +81,7 @@ Registrar triángulos, materiales, tamaño de archivo y tiempo de render de la p
 
 - Longitud y posiciones de superficies calibradas sobre una referencia Jensen consistente.
 - Coordenadas de perfil, incidencia y ángulo de diedro instalado; la elevación dibujada no es un ángulo publicado.
-- Configuración final motor/escape/hélice y equipo instalado; masa, CG numérico, inercia y recorridos reales.
+- Marca/modelo e instalación final del motor .61, escape/hélice y equipo; masa, CG numérico, inercia y recorridos reales.
 - Reutilización de recursos REFLEX y equivalencia dimensional del Great Big Stik con Jensen.
 - Aspecto del avión completo importado, rendimiento y lectura con pilotos.
 

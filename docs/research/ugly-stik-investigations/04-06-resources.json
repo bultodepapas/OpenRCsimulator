@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-05",
+  "scope": "Investigations 04–06: powerplant/gear references, prior digital models, decoration and build photographs",
+  "resources": [
+    {
+      "filename": "os-max-65ax-product.html",
+      "path": "references/ugly-stik/downloads/components/os-max-65ax-product.html",
+      "role": "alternate",
+      "source_page_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/Responsive/65la_16520_16521/index.html",
+      "download_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/Responsive/65la_16520_16521/index.html",
+      "date": "2026-10-05",
+      "sha256": "7ea6ae40f4db52a2975b3e11dba229eb4f014213a01bf1719a0b7c9533201146",
+      "bytes": 7954,
+      "author": "O.S. Engines Mfg. Co., Ltd.",
+      "inspection": "Snapshot HTML inspected; Japanese specifications list 10.63 cc / 0.649 cu in, mass, two muffler options, sport propeller range and discontinued status.",
+      "rights_note": "Manufacturer page; retained as a local research snapshot only. Keep attribution; do not republish the page or product imagery."
+    },
+    {
+      "filename": "os-max-65ax-dimension-drawing.jpg",
+      "path": "references/ugly-stik/downloads/components/os-max-65ax-dimension-drawing.jpg",
+      "role": "alternate",
+      "source_page_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/Responsive/65la_16520_16521/index.html",
+      "download_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/Responsive/65la_16520_16521/img/3d_980.jpg",
+      "date": "2026-10-05",
+      "sha256": "cd4209f30a7babc689c02eaaa044135f91c2f4cc56d5d137e76f2c627fa0b4e6",
+      "bytes": 352968,
+      "author": "O.S. Engines Mfg. Co., Ltd.",
+      "inspection": "JPEG 980x1473 visually inspected; shows dimensioned E-4010A and E-4050 assemblies in mm, mounting dimensions and UNF 5/16-24 shaft thread.",
+      "rights_note": "Manufacturer drawing; local research reference only, not a reusable model or drawing license."
+    },
+    {
+      "filename": "os-max-65ax-e4010a-manual.pdf",
+      "path": "references/ugly-stik/downloads/components/os-max-65ax-e4010a-manual.pdf",
+      "role": "alternate",
+      "source_page_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/Responsive/65la_16520_16521/index.html",
+      "download_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/manual/65AX_E4010A_IM.pdf",
+      "date": "2026-10-05",
+      "sha256": "8bad19a668055e25b985309a20e4b9afdb966570f7cea862aec27050a25d50b7",
+      "bytes": 1847232,
+      "author": "O.S. Engines Mfg. Co., Ltd.",
+      "inspection": "Two-page A3 manual rendered with pdftoppm and visually inspected; includes propeller-safety guidance, reference sizes and engine-use instructions.",
+      "rights_note": "Manufacturer manual retained locally for research; preserve attribution and do not republish the PDF."
+    },
+    {
+      "filename": "os-max-61fx-40-91fx-manual.pdf",
+      "path": "references/ugly-stik/downloads/components/os-max-61fx-40-91fx-manual.pdf",
+      "role": "primary_candidate",
+      "source_page_url": "https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/17750.htm",
+      "download_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/manual/50sx_40-91fx.pdf",
+      "date": "2026-10-05",
+      "sha256": "c7562fb37bfcc5d082a0c1322d0f303d89968e5042aebd8de976ae846313198e",
+      "bytes": 1146155,
+      "author": "O.S. Engines Mfg. Co., Ltd.",
+      "inspection": "Official 22-page combined manual downloaded and text-checked; page PDF 21 (printed page 40) rendered with pdftoppm and visually inspected. MAX-61FX specifications and three-view drawing show 9.95 cc / 0.607 cu in, 550 g, dimensions in mm, four Ø4.2 holes and UNF 5/16-24 prop shaft. Does not include airframe installation or the E-4010 silencer in the dimensioned engine view.",
+      "rights_note": "Manufacturer manual retained as a local research reference only. Preserve attribution and do not republish the PDF. The .61FX documents an engine class example; it does not select O.S. as the final brand."
+    },
+    {
+      "filename": "outerzone-oz1253-plan-page.html",
+      "path": "references/ugly-stik/downloads/components/outerzone-oz1253-plan-page.html",
+      "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "download_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "date": "2026-10-05",
+      "sha256": "3860ff75f19c6641673d151e59a9196bd281bb64f7ad97ec16f2bf9e5b053bfc",
+      "bytes": 42540,
+      "author": "Outerzone; page credits the plan and contributors individually",
+      "inspection": "HTML snapshot inspected for plan credits, source updates, image gallery links and builder comments for photos 008-017.",
+      "rights_note": "Third-party catalog snapshot; locally retained for research only. Attribute the credited plan/photo authors and do not republish page content."
+    },
+    {
+      "filename": "outerzone-1253-photo-008-thumb.jpg",
+      "path": "references/ugly-stik/downloads/components/outerzone-1253-photo-008-thumb.jpg",
+      "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "download_url": "https://outerzone.co.uk/images/_thumbs/models_more/1253/008.jpg",
+      "date": "2026-10-05",
+      "sha256": "919e8da59094c1d29abd415721b4fdab51bc75724ecb489ae14bd375fc3f0610",
+      "bytes": 79959,
+      "author": "Anthony Frackowiak (as credited by Outerzone)",
+      "inspection": "JPEG 640x480 visually inspected; red/yellow checker scheme and tricycle gear are legible at thumbnail resolution.",
+      "rights_note": "Third-party build photograph; thumbnail retained for local research only. Credit Anthony Frackowiak; do not republish."
+    },
+    {
+      "filename": "outerzone-1253-photo-012-thumb.jpg",
+      "path": "references/ugly-stik/downloads/components/outerzone-1253-photo-012-thumb.jpg",
+      "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "download_url": "https://outerzone.co.uk/images/_thumbs/models_more/1253/012.jpg",
+      "date": "2026-10-05",
+      "sha256": "24eb5c8d21cfb1edab21f3ca34235130a507535b68deb637c444722b70912075",
+      "bytes": 58911,
+      "author": "Bernard and Petro Odendaal (as credited by Outerzone)",
+      "inspection": "JPEG 640x480 visually inspected; low front view shows a taildragger build variant.",
+      "rights_note": "Third-party build photograph; thumbnail retained for local research only. Credit Bernard and Petro Odendaal; do not republish."
+    },
+    {
+      "filename": "outerzone-1253-photo-013-thumb.jpg",
+      "path": "references/ugly-stik/downloads/components/outerzone-1253-photo-013-thumb.jpg",
+      "source_page_url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "download_url": "https://outerzone.co.uk/images/_thumbs/models_more/1253/013.jpg",
+      "date": "2026-10-05",
+      "sha256": "ccc1b23bbcbfd903077c3cca50f8561927e9488dafa014d0b38eaa21b117a6d0",
+      "bytes": 61294,
+      "author": "Bernard and Petro Odendaal (as credited by Outerzone)",
+      "inspection": "JPEG 640x480 visually inspected; rear/top view shows planform and blue/white covering on the taildragger variant.",
+      "rights_note": "Third-party build photograph; thumbnail retained for local research only. Credit Bernard and Petro Odendaal; do not republish."
+    },
+    {
+      "filename": "ustik-author-download-page.html",
+      "path": "references/ugly-stik/downloads/components/ustik-author-download-page.html",
+      "source_page_url": "https://erdlenbruch.de/Burkhard/Modellflug/textDownloads.en.php",
+      "download_url": "https://erdlenbruch.de/Burkhard/Modellflug/textDownloads.en.php",
+      "date": "2026-10-05",
+      "sha256": "bc7d267f4df8c520415d6ca92d91d15d1baa8fd2c1023d5104bc275e0acf80f3",
+      "bytes": 170097,
+      "author": "Burkhard Erdlenbruch",
+      "inspection": "Author download-page snapshot inspected for REFLEX XTR2 package link, variant descriptions, file size/date and companion paper link.",
+      "rights_note": "Author's page and images remain third-party material; local research snapshot only. No general license for reuse of simulator assets was found."
+    },
+    {
+      "filename": "ustik-das-ugly-stik-paper.pdf",
+      "path": "references/ugly-stik/downloads/components/ustik-das-ugly-stik-paper.pdf",
+      "source_page_url": "https://erdlenbruch.de/Burkhard/Modellflug/textDownloads.en.php",
+      "download_url": "https://erdlenbruch.de/Burkhard/dl.php?id=DasUglyStik.pdf",
+      "date": "2026-10-05",
+      "sha256": "be7f3b994c4e4525fe86ba99f09c900f01b37d69c7f30e7a80a10c1439233576",
+      "bytes": 8248689,
+      "author": "Burkhard Erdlenbruch; historical design and kit credits name Phil Kraft, George Walker and Jim Jensen",
+      "inspection": "76-page PDF text was examined and its title page rendered with pdftoppm; the text discusses REFLEX variants, design history, and limits of simulator representations.",
+      "rights_note": "Copyrighted third-party paper; retained locally for research only. Summarize findings and do not copy or redistribute the PDF."
+    },
+    {
+      "filename": "ustik-ugly-stik-reflex-installer.exe",
+      "path": "references/ugly-stik/downloads/components/ustik-ugly-stik-reflex-installer.exe",
+      "source_page_url": "https://erdlenbruch.de/Burkhard/Modellflug/textDownloads.en.php",
+      "download_url": "https://erdlenbruch.de/Burkhard/dl.php?id=UglyStikReflex.exe",
+      "date": "2026-10-05",
+      "sha256": "6605d53765a68995e249dc34db21fc168e3edd834e259375888c761a44d810c6",
+      "bytes": 14607877,
+      "author": "Burkhard Erdlenbruch (download provider; payload asset credits not independently inspected)",
+      "inspection": "Static only: PE32 executable; innoextract 1.9 --list detects Inno Setup 6.3.0 but fails parsing headers because it supports only through 6.0.5. Not executed; no payload listing or mesh inspection was possible.",
+      "rights_note": "Original third-party REFLEX installer retained locally as research evidence only. It was not executed; payload compatibility and redistribution rights are not established. No additional permission was requested."
+    }
+  ]
+}

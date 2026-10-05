@@ -26,3 +26,17 @@ for t in "$HERE"/tests/test_*.gd; do
   # Godot reports runtime script errors without failing the run; treat any as a failure.
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done
+
+echo "== fixed step: same final state at 30, 60 and 144 fps rendering"
+HASHES=""
+for fps in 30 60 144; do
+  out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd 2>&1)"
+  echo "$out" | grep -E "ticks=|ERROR"
+  if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "engine error at $fps fps"; exit 1; fi
+  HASHES="$HASHES $(echo "$out" | sed -n 's/.*state_sha256=\([0-9a-f]*\).*/\1/p')"
+done
+if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
+  echo "final state depends on the rendering frame rate:$HASHES"; exit 1
+fi
+echo "identical"
+

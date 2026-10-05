@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-05",
+  "date_semantics": "Fecha de inspección y ejecución. La fecha de publicación del paquete se registra por separado.",
+  "resources": [
+    {
+      "filename": "rhino3dm-8.35.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "source_page_url": "https://pypi.org/project/rhino3dm/8.35.0/",
+      "download_url": "https://files.pythonhosted.org/packages/2f/c8/e3fd00b70a6e36d0334fec9c5180a8d73dd661714476495d2c1f4438ed0f/rhino3dm-8.35.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "date": "2026-10-05",
+      "date_basis": "Instalado mediante pip en /tmp/openrc-rhino3dm-venv; PyPI publica esta versión el 2026-09-15.",
+      "sha256": "498cc0e12ff2f521591e3e2b8e481daa3d131b768a1d00059ae72ecbc4615f02",
+      "bytes": null,
+      "author": "McNeel; publicado como rhino3dm 8.35.0 en PyPI",
+      "local_path": "/tmp/openrc-rhino3dm-venv (entorno aislado, no guardado en el repositorio)",
+      "retained_local_only": false,
+      "inspection": "Versión Python 3.12.3 y rhino3dm 8.35.0. PyPI publica el SHA-256 de este wheel y el nombre exacto del archivo; el ejecutable instalado se usó para leer los dos .3dm sin escribir conversiones.",
+      "rights_note": "Paquete de terceros; no se copia el wheel al repositorio. Consultar la licencia indicada por PyPI/proyecto antes de redistribuirlo."
+    },
+    {
+      "filename": "glTF 2.0 Specification",
+      "source_page_url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+      "download_url": null,
+      "date": "2026-10-05",
+      "date_basis": "Consultado en línea; no descargado como archivo local.",
+      "sha256": null,
+      "bytes": null,
+      "author": "Khronos 3D Formats Working Group",
+      "local_path": null,
+      "retained_local_only": false,
+      "inspection": "Se consultaron las secciones de nombres, nodos/jerarquía, transformaciones y coordinate system and units.",
+      "rights_note": "Referencia web citada; no se retuvo copia."
+    },
+    {
+      "filename": "Godot 4.7 Model export considerations",
+      "source_page_url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/model_export_considerations.html",
+      "download_url": null,
+      "date": "2026-10-05",
+      "date_basis": "Consultado en línea; no descargado como archivo local.",
+      "sha256": null,
+      "bytes": null,
+      "author": "Godot Engine documentation",
+      "local_path": null,
+      "retained_local_only": false,
+      "inspection": "Se consultó la convención de ejes para activos orientados.",
+      "rights_note": "Referencia web citada; no se retuvo copia."
+    },
+    {
+      "filename": "Godot 4.7 GLTFDocument class reference",
+      "source_page_url": "https://docs.godotengine.org/en/4.7/classes/class_gltfdocument.html",
+      "download_url": null,
+      "date": "2026-10-05",
+      "date_basis": "Consultado en línea; no descargado como archivo local.",
+      "sha256": null,
+      "bytes": null,
+      "author": "Godot Engine documentation",
+      "local_path": null,
+      "retained_local_only": false,
+      "inspection": "Se consultaron GLTFDocument, importación y opciones del root de escena.",
+      "rights_note": "Referencia web citada; no se retuvo copia."
+    },
+    {
+      "filename": "Three.js GLTFExporter and GLTFLoader documentation",
+      "source_page_url": "https://threejs.org/docs/pages/GLTFExporter.html",
+      "download_url": null,
+      "date": "2026-10-05",
+      "date_basis": "Consultado en línea; no descargado como archivo local.",
+      "sha256": null,
+      "bytes": null,
+      "author": "Three.js documentation",
+      "local_path": null,
+      "retained_local_only": false,
+      "inspection": "Se verificaron opciones de GLB binario y TRS; el loader se documenta en https://threejs.org/docs/pages/GLTFLoader.html.",
+      "rights_note": "Referencia web citada; no se retuvo copia."
+    },
+    {
+      "filename": "rhino3dm BrepFace reference and openNURBS render mesh guide",
+      "source_page_url": "https://mcneel.github.io/rhino3dm/python/api/BrepFace.html",
+      "download_url": null,
+      "date": "2026-10-05",
+      "date_basis": "Consultado en línea; no descargado como archivo local.",
+      "sha256": null,
+      "bytes": null,
+      "author": "McNeel",
+      "local_path": null,
+      "retained_local_only": false,
+      "inspection": "Se verificó el método BrepFace.GetMesh(meshType); la guía openNURBS enlazada en 07-cad.md explica los render meshes asociados a B-reps.",
+      "rights_note": "Referencia web citada; no se retuvo copia."
+    }
+  ],
+  "original_experiment_artifacts": [
+    {
+      "path": "research/ugly-stik/asset-pipeline/hinge-roundtrip.glb",
+      "bytes": 2420,
+      "sha256": "00892bdeab124fe70e262f86dc082601a6a25087d3f7f419ec6eb563a61414c5",
+      "note": "GLB sintético creado para estos roundtrips; dimensiones sin relación con el avión real."
+    },
+    {
+      "path": "research/ugly-stik/asset-pipeline/export_hinge_roundtrip.mjs",
+      "note": "Script propio de exportación/reimportación Three.js; usa módulos ya presentes, no instala dependencias."
+    },
+    {
+      "path": "research/ugly-stik/asset-pipeline/godot_roundtrip.gd",
+      "note": "Script propio de comprobación de PackedScene importada en un proyecto Godot aislado."
+    },
+    {
+      "path": "research/ugly-stik/asset-pipeline/inspect_3dm_readonly.py",
+      "note": "Script propio que lee unidades, capas, tipos, AABB y meshes cacheados del 3DM; no convierte ni escribe el CAD."
+    }
+  ]
+}

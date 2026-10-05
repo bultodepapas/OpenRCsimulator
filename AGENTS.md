@@ -14,7 +14,7 @@ The simulator is the **Godot 4.7 app in `app/`** (Gate 1, 2026-10-05). `prototyp
 | What | Command |
 | --- | --- |
 | Get the pinned Godot (verified SHA-512) | `app/get-godot.sh` → `.tools/` |
-| Run the app (needs a display) | `$(app/get-godot.sh) --path app` |
+| Run the app (needs a display) | `$(app/get-godot.sh) --path app` (physics); add `-- --scripted` for the Stage 0/1 circle. Keys: arrows/A/D/W/S fly, R restart, P resume, C camera |
 | All checks: float64 guard, parse check, unit + end-to-end tests (headless) | `app/test.sh` |
 | Captures (needs `xvfb-run`) | `app/capture.sh` → `app/captures/*.png` |
 | CI locally (needs Docker) | `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app` |

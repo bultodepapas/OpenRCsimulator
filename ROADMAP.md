@@ -20,7 +20,9 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 - **Done since:** C1 (`app/physics/math3d.gd`: 64-bit vectors and quaternions, 11 checks over 500 random samples; two deliberate bugs caught).
 - **Done since:** C2 (`app/physics/rigid_body.gd`: 13-value float64 state, full inertia tensor with cross term; 14 hand-computed checks; three deliberate bugs each caught, run on a scratch copy).
 - **Done since:** C3 + C4 (`app/physics/integrator.gd`, RK4). Free fall error 5e-12 m after 10 s. A 60 s tumbling middle-axis spin conserves energy to 3.5e-12 and world angular momentum to 9.5e-11 (relative). Convergence ratios 15.9 / 15.9 (4th order). **Speed 47–51× real time at 240 Hz** (81–88 µs/step), so physics stays in GDScript. `test.sh` now also fails on any engine error printed during tests.
-- **Next:** C5, the fixed-step loop (240 Hz physics tick, render interpolation, pause on focus loss).
+- **Done since:** C5 (`app/sim/simulation.gd`): 240 Hz physics tick, up to 12 catch-up steps per frame (slow motion below 20 fps instead of a spiral), position lerp + attitude nlerp for rendering, pause on focus loss with explicit resume only. **The same scripted 2 s flight gives a bit-identical final state (same SHA-256) at 30, 60 and 144 fps.**
+- **Done since:** C6. The app now runs on physics by default (`--scripted` keeps the Stage 0/1 circle). A ballistic throw (15 m/s east, 30 m up, gravity only) renders from the interpolated 240 Hz state. R restarts, P resumes after a focus-loss pause, and a temporary below-ground restart holds until D9. The capture at 1.5 s shows alt 19.0 m and speed 21.0 m/s, matching hand calculation (18.97 m, 21.0 m/s). End-to-end tests cover the live physics scene.
+- **Next:** C7, flight trace export (CSV with units), the debugging tool for every step after.
 
 ## Phase A — Ground base
 
@@ -56,8 +58,8 @@ In GDScript, on 64-bit `float`s only. `app/test.sh` rejects `Vector3`/`Basis`/`Q
 | C2 ✅ | Rigid-body state and its derivative: 6 degrees of freedom, full inertia tensor including `Ixz`, body-frame Euler equations | Unit tests on hand-computed derivatives |
 | C3 ✅ | RK4 integrator with quaternion renormalization, plus a **GDScript performance check** | Free fall matches `½gt²` to 1e-9 m after 10 s. Torque-free spin conserves energy and angular momentum to 1e-6 relative over 60 s. **The integrator runs ≥ 20× faster than real time at 240 Hz** in GDScript; if not, the escape hatch is C++ GDExtension (DECISIONS) |
 | C4 ✅ | Convergence check at steps `h`, `h/2`, `h/4` | Error ratio ≈ 16 per halving (fourth order) |
-| C5 | Fixed-step loop: Godot's physics tick at 240 Hz (`_physics_process`) calls our integrator; cap catch-up steps; interpolate rendering; pause when the window loses focus | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
-| C6 | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
+| C5 ✅ | Fixed-step loop: Godot's physics tick at 240 Hz (`_physics_process`) calls our integrator; cap catch-up steps; interpolate rendering; pause when the window loses focus | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
+| C6 ✅ | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
 | C7 | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
 
 ## Phase D — First flight, in thin slices

@@ -4,6 +4,7 @@ extends SceneTree
 
 const Frames := preload("res://render/frames.gd")
 const Scripted := preload("res://sim/scripted.gd")
+const M3 := preload("res://physics/math3d.gd")
 
 const NOSE := Vector3(0, 0, -1) # model forward
 const RIGHT_WING := Vector3(1, 0, 0) # model right
@@ -35,6 +36,15 @@ func _initialize() -> void:
 	_close("pitch up 30: nose rises", Frames.attitude_to_render(0, p30, 0) * NOSE, Vector3(0, sin(p30), -cos(p30)))
 	_close("bank right 30: right wing down", Frames.attitude_to_render(0, 0, p30) * RIGHT_WING, Vector3(cos(p30), -sin(p30), 0))
 	_check("proper rotation", absf(Frames.attitude_to_render(1.1, -0.4, 2.3).determinant() - 1.0) < EPS)
+
+	# Quaternion path agrees with the Euler path (C6 renders the simulation's quaternion).
+	var worst := 0.0
+	for e in [[0.0, 0.0, 0.0], [1.2, 0.3, -0.7], [-2.5, -1.1, 2.9], [PI / 2, 0.0, PI / 2]]:
+		var from_q := Frames.quat_to_render(M3.q_from_euler(e[0], e[1], e[2]))
+		var from_e := Frames.attitude_to_render(e[0], e[1], e[2])
+		for c in 3:
+			worst = maxf(worst, (from_q[c] - from_e[c]).length())
+	_check("quat_to_render = attitude_to_render", worst < 1e-6, str(worst))
 
 	var pose := Scripted.pose_at(0.0)
 	_check("t=0 north 100", absf(pose.ned[0] - 100.0) < 1e-12)

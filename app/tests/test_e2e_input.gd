@@ -29,6 +29,11 @@ func _row(prefix: String) -> String:
 	return ""
 
 
+func _alt() -> float:
+	var r := _row("sim")
+	return float(r.get_slice("alt", 1).strip_edges().get_slice(" ", 0))
+
+
 func _pct() -> int:
 	return int(_row("throttle").get_slice("%", 0).split(" ", false)[-1])
 
@@ -63,6 +68,29 @@ func _run() -> void:
 	_key(KEY_R, false)
 	await create_timer(0.1).timeout
 	_check("reset -> throttle 50%", _pct() == 50, _row("throttle"))
+
+	# C6: physics mode is live: the airplane descends, R restarts it, and it restarts by itself below ground.
+	_key(KEY_R, true)
+	_key(KEY_R, false)
+	await process_frame
+	await process_frame
+	var a0 := _alt()
+	await create_timer(1.0).timeout
+	var a1 := _alt()
+	_check("physics: falls under gravity (30 m start)", a0 > 29.5 and a1 < a0 - 3.0, "%.1f → %.1f m" % [a0, a1])
+	_key(KEY_R, true)
+	_key(KEY_R, false)
+	await process_frame
+	await process_frame
+	_check("physics: R restarts at 30 m", _alt() > 29.5, "%.1f m" % _alt())
+	var lowest := 100.0
+	var restarted := false
+	for i in 40: # ~4 s: hits the ground after ~2.5 s
+		await create_timer(0.1).timeout
+		var a := _alt()
+		restarted = restarted or (lowest < 5.0 and a > 25.0)
+		lowest = minf(lowest, a)
+	_check("physics: restarts by itself below ground", restarted, "lowest %.1f m" % lowest)
 
 	print("all e2e checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

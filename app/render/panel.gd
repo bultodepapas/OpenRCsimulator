@@ -32,7 +32,7 @@ static func _f(v: float, decimals := 2) -> String:
 	return ("+" if v >= 0 else "") + String.num(v, decimals).pad_decimals(decimals)
 
 
-static func update(label: Label, raw: Dictionary, c: Dictionary, view: String) -> void:
+static func update(label: Label, raw: Dictionary, c: Dictionary, view: String, status := "") -> void:
 	var s := Commands.surface_deflections_deg(c)
 	label.text = "\n".join([
 		"channel   raw   command  surface",
@@ -41,4 +41,4 @@ static func update(label: Label, raw: Dictionary, c: Dictionary, view: String) -
 		"yaw      %s    %s   rud   %s°" % [_f(raw.yaw, 0), _f(c.yaw), _f(s.rudder, 1)],
 		"throttle %s    %s%%" % [_f(raw.throttle, 0), str(roundi(c.throttle * 100)).lpad(4)],
 		"view: %s   [C] view  [R] reset" % view,
-	])
+	]) + ("\n" + status if status != "" else "")

@@ -22,18 +22,35 @@ static func attitude_to_render(yaw: float, pitch: float, roll: float) -> Basis:
 		[sy * cp, sy * sp * sr + cy * cr, sy * sp * cr - cy * sr],
 		[-sp, cp * sr, cp * cr],
 	]
-	# r = M * r_ned * M^T
+	return _ned_matrix_to_basis(r_ned)
+
+
+## Body-to-NED attitude quaternion [w, x, y, z] (64-bit) → render Basis. Same mapping as attitude_to_render.
+static func quat_to_render(q: PackedFloat64Array) -> Basis:
+	var w := q[0]
+	var x := q[1]
+	var y := q[2]
+	var z := q[3]
+	var r_ned := [
+		[1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+		[2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+		[2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+	]
+	return _ned_matrix_to_basis(r_ned)
+
+
+## r_render = M · r_ned · Mᵀ, returned as a Basis (columns).
+static func _ned_matrix_to_basis(r_ned: Array) -> Basis:
 	var r := []
 	for i in 3:
 		var row := []
 		for j in 3:
-			var s := 0.0
+			var acc := 0.0
 			for k in 3:
 				for l in 3:
-					s += M[i][k] * r_ned[k][l] * M[j][l]
-			row.append(s)
+					acc += M[i][k] * r_ned[k][l] * M[j][l]
+			row.append(acc)
 		r.append(row)
-	# Basis takes columns.
 	return Basis(
 		Vector3(r[0][0], r[1][0], r[2][0]),
 		Vector3(r[0][1], r[1][1], r[2][1]),
