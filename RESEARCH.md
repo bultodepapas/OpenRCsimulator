@@ -18,6 +18,7 @@ Research date: **2026-10-05**. This is a growing collection of evidence, possibi
 - [AI-assisted development as an experiment we can observe](#ai-assisted-development-as-an-experiment-we-can-observe)
 - [Ten additional investigations](#ten-additional-investigations)
 - [Ten investigations into development and 3D tools](#ten-investigations-into-development-and-3d-tools)
+- [Ten investigations into codebase libraries and runtime tools](#ten-investigations-into-codebase-libraries-and-runtime-tools)
 - [Continuing the research](#continuing-the-research)
 
 ## Reading the evidence
@@ -858,6 +859,147 @@ DVC offers another research direction: its pipeline stages wrap commands with de
 
 **Small experiment, unperformed.** Save two visibly different revisions of one source aircraft and their exports. From a clean checkout, recover the older editable version and regenerate its derivative. Record storage downloaded, manual steps, missing tools, and any output differences. Separately try concurrent edits to the same source file to learn whether object-level separation, communication, or locking helps the actual modeling workflow.
 
+## Ten investigations into codebase libraries and runtime tools
+
+Fourth research pass, **2026-10-05**: ten new investigations into code organization, reusable libraries, diagnostics, and runtime services. These are candidate building blocks, not a proposed dependency list. Several examples concern C/C++ because their libraries expose useful implementation details; no language, engine, or architecture is selected. All capabilities are documented upstream, and all project experiments below remain unperformed.
+
+- [1. Entity-component libraries: EnTT and Flecs alongside plain aircraft state](#1-entity-component-libraries-entt-and-flecs-alongside-plain-aircraft-state)
+- [2. Numerical building blocks: GLM and physical quantity types](#2-numerical-building-blocks-glm-and-physical-quantity-types)
+- [3. Runtime scripting: Lua and sol2 for behaviors that exceed configuration](#3-runtime-scripting-lua-and-sol2-for-behaviors-that-exceed-configuration)
+- [4. Dear ImGui and ImPlot: inspecting the airplane's internal state](#4-dear-imgui-and-implot-inspecting-the-airplanes-internal-state)
+- [5. Clang sanitizers: finding memory, arithmetic, and concurrency defects](#5-clang-sanitizers-finding-memory-arithmetic-and-concurrency-defects)
+- [6. libFuzzer and Hypothesis: exploring inputs beyond hand-written examples](#6-libfuzzer-and-hypothesis-exploring-inputs-beyond-hand-written-examples)
+- [7. Virtual file access with PhysicsFS](#7-virtual-file-access-with-physicsfs)
+- [8. Library dependency resolution with vcpkg and Conan](#8-library-dependency-resolution-with-vcpkg-and-conan)
+- [9. Audio implementation with miniaudio](#9-audio-implementation-with-miniaudio)
+- [10. Background jobs and task scheduling with enkiTS](#10-background-jobs-and-task-scheduling-with-enkits)
+
+### 1. Entity-component libraries: EnTT and Flecs alongside plain aircraft state
+
+**Question.** At what point would separating entities, components, and systems make the simulator easier to change than an ordinary aircraft-state structure and explicit update functions?
+
+**Documented/source inspected.** EnTT is a header-only C++ library whose registry stores components and exposes views over entities with selected component types. Its example combines position and velocity components without requiring a base-class hierarchy. The ECS header can be included separately from the broader library, which also offers events, resource handling, and reflection. The inspected `main` README requires C++20; older discussions describing different compiler requirements should not substitute for checking a chosen release. The source is MIT-licensed. [EnTT repository and integration documentation](https://github.com/skypjack/entt)
+
+Flecs documents prefabs with default component values, entity names and parent scopes, and stable entity handles that still need validity checks after deletion. Its design guide distinguishes cached queries, which cost more to create but are cheaper to iterate, from uncached queries suited to occasional searches. It explicitly warns against repeatedly creating and destroying cached queries. The guide recommends small components but acknowledges that many components become harder to discover; these are the author's design recommendations, not universal requirements. [Flecs design guide](https://www.flecs.dev/flecs/DesignWithFlecs.html)
+
+**How this could help; inference.** Components might eventually let a powered airplane, glider, and scenery windsock share only the state they need. However, one aircraft does not establish a need for an ECS. Splitting its tightly coupled flight state across many components could make the equations harder to follow. An ordinary `AircraftState` plus a function receiving controls, wind, and a timestep remains a useful comparison. An ECS also does not decide the physically correct ordering of force calculation and integration, or establish deterministic execution.
+
+**Small experiment, not performed.** Implement the same toy update with plain structures and one library. Compare how easily a contributor can trace one control input to a force and resulting pose, add a glider, reset the scene, and detect stale references. Measure actual work only if entity counts become relevant; repository performance claims alone do not predict this workload.
+
+### 2. Numerical building blocks: GLM and physical quantity types
+
+**Question.** Which library responsibilities belong to geometric mathematics, and which belong to preventing unit and coordinate mistakes?
+
+**Documented/source inspected.** GLM provides C++ graphics-oriented vectors, matrices, and quaternion facilities. Its manual documents configuration switches affecting coordinate conventions: `GLM_FORCE_LEFT_HANDED` changes the handedness used by relevant functions, while `GLM_FORCE_DEPTH_ZERO_TO_ONE` changes the projection depth range from the default negative-one-to-one convention. These settings concern the math API; they are not a complete definition of an aircraft's body axes or the simulator's world frame. [GLM source](https://github.com/g-truc/glm), [GLM configuration manual](https://github.com/g-truc/glm/blob/master/manual.md)
+
+mp-units documents compile-time dimensional analysis, unit conversion, and quantity-kind checking for C++ physical quantities. Its introductory example defines a custom length unit and converts the resulting quantity into feet and metres. The project describes C++20 as sufficient for its functionality and links a separate compiler-support chapter; it is MIT-licensed. Its proposed standardization is an ongoing project direction, not evidence that these facilities already belong to the C++ standard library. [mp-units documentation](https://mpusz.github.io/mp-units/latest/)
+
+**How this could help; inference.** A geometry library could handle attitude and camera transformations; a quantity library could help distinguish mass, force, time, and length when importing aircraft parameters. Those are separate protections. Correct dimensions do not catch a force pointing along the wrong body axis, an incorrect aerodynamic coefficient, or the use of a world-frame velocity where an air-relative velocity was intended. Explicit frame names and conversions would remain useful even with quantity types.
+
+The interesting boundary is where typed simulation quantities become the plain numbers expected by a renderer, engine, file format, or foreign-function interface. No seamless GLM/mp-units combination was tested here. Adapters, compiler diagnostics, compile times, and compatibility with a future engine deserve observation before assuming the combination is convenient.
+
+**Small experiment, not performed.** Express one force calculation with ordinary scalars and with quantity types. Deliberately substitute a mass for a force, then transform a known body-axis vector into world coordinates. Check which mistakes compilation catches and which require an expected-value check. Keep this independent of a language or engine decision.
+
+### 3. Runtime scripting: Lua and sol2 for behaviors that exceed configuration
+
+**Question.** When would changing behavior without recompiling be useful enough to justify embedding a scripting runtime?
+
+**Documented/source inspected.** Lua 5.4 defines a host C API, protected calls, garbage collection, and standard libraries that include filesystem and operating-system operations. The host can open libraries individually rather than using `luaL_openlibs` to open all of them. Its instruction-count hook runs after a configured number of Lua instructions, but the manual explicitly limits this event to Lua execution: it is not a general timeout for a native function called from a script. These are documented embedding mechanisms, not a ready-made isolation policy. [Lua 5.4 reference manual](https://www.lua.org/manual/5.4/manual.html)
+
+sol2 supplies a C++ binding layer with examples for exposing functions, tables, and user-defined types. Its safety documentation recommends protected function calls when errors must be inspected, describes object-lifetime issues across Lua and C++, and documents explicit safety configuration macros. The inspected documentation labels itself sol 3.2.3 despite the repository/library name “sol2”; examples and build configuration should be matched to the release actually evaluated. Type checks and protected calls do not impose a script time budget or make arbitrary host bindings harmless. [sol tutorial](https://sol2.readthedocs.io/en/latest/tutorial/all-the-things.html), [sol safety and configuration](https://sol2.readthedocs.io/en/latest/safety.html)
+
+**How this could help; inference.** Scriptable lesson triggers, launch sequences, or changing wind scenarios might accelerate research. Aircraft mass and a table of propeller coefficients can remain ordinary validated data: an interpreter adds little when only values vary. A narrow behavioral API could expose simulation time and specific actions without exposing every internal object. Live replacement would still require a policy for existing script state, errors, references, and repeatability; adding Lua does not automatically provide usable hot reload.
+
+**Small experiment, not performed.** Express a timed training prompt first as data and then as a script. Change it during a session and deliberately return the wrong value or raise an error. Observe whether the previous behavior remains usable, whether diagnostics identify the script location, and whether resetting reproduces the same scenario. Only then investigate callbacks inside the flight-physics loop, where allocation and execution-time variation have different consequences.
+
+### 4. Dear ImGui and ImPlot: inspecting the airplane's internal state
+
+**Documented capabilities.** Dear ImGui is an MIT-licensed C++ library for developer interfaces. Its core emits vertex buffers and drawing commands; platform and renderer backends connect input and graphics APIs. The project supplies backends including SDL, GLFW, OpenGL, Vulkan, Metal, and WebGPU. A simulator could therefore experiment with inspection panels without first building a complete editor. Integration still depends on the chosen host application and backend; bindings to other languages are separate integrations. The README explicitly prioritizes development tools and states that full internationalization and accessibility features are unsupported. This makes its suitability for a developer console a different question from its suitability for the eventual pilot-facing interface. [Dear ImGui repository and integration overview](https://github.com/ocornut/imgui)
+
+ImPlot extends ImGui with interactive line, scatter, histogram, heatmap, and other plots, including zooming, panning, multiple axes, and custom data access. Its own documentation favors interactive application data over publication-quality export. Dense plots also expose concrete integration limits: default 16-bit drawing indices may require renderer vertex-offset support or 32-bit indices. Claims about handling large datasets are project guidance, not measurements on our simulator. [ImPlot features, integration, and limitations](https://github.com/epezent/implot)
+
+**How this could help — inference.** A panel showing raw transmitter input, calibrated command, actual surface angle, airspeed, and individual force terms could make an unexpected turn understandable. A plot could reveal whether oscillation starts in the input path, an actuator approximation, or the flight equations. Human developers and AI-assisted debugging would share the same visible evidence. We could initially expose read-only values and add parameter controls only when a particular experiment needs them.
+
+**Small experiment, not performed.** In a future compatible prototype, add one panel and a short rolling trace for an elevator step. Record simulation timestamps separately from display frames, label units, and compare the trace with the saved numerical output. Check input focus so typing in a diagnostic field does not also command the airplane. Compare frame time with the panel hidden and visible before treating the integration as lightweight.
+
+### 5. Clang sanitizers: finding memory, arithmetic, and concurrency defects
+
+**Documented capabilities.** AddressSanitizer instruments native code to detect errors including out-of-bounds access, use-after-free, and invalid frees. It requires compiler instrumentation and its runtime; Clang documents a typical slowdown around 2×, with additional memory costs. This is an upstream estimate, not a project benchmark. Debug information and symbolization help turn a runtime failure into a useful source-level report. [Clang AddressSanitizer documentation](https://clang.llvm.org/docs/AddressSanitizer.html)
+
+UndefinedBehaviorSanitizer checks selected language-level faults such as signed integer overflow, misaligned access, and integer division by zero. Its default `undefined` group does **not** include every available check: floating-point division by zero and unsigned overflow are notable exclusions. Consequently, enabling UBSan does not establish that numerical simulation state remains finite or physically meaningful. [Clang UBSan checks and configuration](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
+
+ThreadSanitizer detects data races. Its documentation reports typical slowdowns of 5–15× and memory overhead of 5–10×, and lists specific supported operating systems and architectures. Those constraints make it a separate investigation if threaded input, loading, or simulation appears; they are not a reason to introduce concurrency now. [Clang ThreadSanitizer documentation](https://clang.llvm.org/docs/ThreadSanitizer.html)
+
+**How this could help — inference.** If we explore C or C++, these tools could distinguish a damaged object or stale pointer from an aerodynamic bug. Aircraft replacement, resetting a flight, and controller disconnects are plausible places to exercise resource lifetimes. A race detector could later inspect handoffs between input and simulation. A clean run only tells us about the instrumented execution exercised: it does not prove correctness, replace checks on units and finite values, or validate lift and drag.
+
+**Small experiment, not performed.** Run a short scripted load/reset/unload sequence in an instrumented native prototype, retaining the compiler version, command, input sequence, and symbolized diagnostics. Start with ASan/UBSan; consider a distinct TSan run only if there are threads to investigate. Compare ordinary and instrumented builds without interpreting sanitizer timing as normal flight performance. No sanitizer toolchain or implementation language is selected here.
+
+### 6. libFuzzer and Hypothesis: exploring inputs beyond hand-written examples
+
+**Documented capabilities.** LLVM's libFuzzer repeatedly calls a native target function with byte arrays, uses instrumented coverage to guide mutations, and retains interesting inputs in a corpus. Targets should tolerate malformed input, run quickly, and be as deterministic as possible. It can combine with sanitizers. A maintenance detail matters: its original authors have moved active development to Centipede; the documentation promises important bug fixes but asks users not to expect major new features. This is a useful established option to compare, rather than evidence that it is the only future fuzzing route. [LLVM libFuzzer documentation](https://llvm.org/docs/LibFuzzer.html)
+
+Hypothesis supplies a different entry point for Python experiments: describe input strategies and properties with `@given`, then let the library generate cases. Strategies can generate dependent values, and tests work with pytest or unittest. This could suit an early Python numerical model or tooling layer without assuming the final simulator uses Python. [Hypothesis introduction](https://hypothesis.readthedocs.io/en/latest/), [quickstart and strategies](https://hypothesis.readthedocs.io/en/latest/quickstart.html)
+
+**How this could help — inference.** Byte-oriented fuzzing could explore a future aircraft configuration reader with truncated files, unusual numbers, or malformed nesting. Property tests could explore calibration and rotation helpers with generated valid inputs. Candidate properties include preserving a vector's length under a normalized rotation within a tolerance, and keeping calibrated outputs within their documented limits. Preconditions matter: a zero-length quaternion needs an explicit policy, and arbitrary nonfinite numbers do not represent ordinary flight states.
+
+The main research question is the quality of the property being checked. A parser that never crashes may still accept impossible mass, and a consistently incorrect formula can satisfy weak assertions. Physical reference cases and example-based regressions would remain useful alongside generated cases. Neither tool demonstrates realistic RC flight by itself.
+
+**Small experiment, not performed.** Choose one small parser or calibration helper when it exists, define valid and invalid inputs, and introduce a deliberate defect in a disposable copy. Observe whether the generated cases expose it, then retain a readable regression example. Track which branches and numeric boundaries were actually exercised before expanding to whole-flight scenarios.
+
+### 7. Virtual file access with PhysicsFS
+
+**Question.** Could the same aircraft-loading code read a development folder and an archive without knowing how the content is stored?
+
+**Documented capabilities.** PhysicsFS provides a virtual search path made from directories and archives, including ZIP files. Multiple sources appear as one hierarchy, with search order deciding which matching file is opened. Writes through its API are restricted to a designated write directory; `.` and `..` path elements are forbidden, and symbolic-link handling is configurable. These are library-level I/O rules, not restrictions on every other API in the process. Despite its name, PhysicsFS is a file-access library, not a physics engine. [PhysicsFS project overview](https://icculus.org/physfs/).
+
+The API includes `PHYSFS_getRealDir`, which identifies the search-path directory or archive supplying a file. When several sources contain the same virtual path, it reports the first match, consistent with opening that path. This could help explain why a local aircraft texture overrides a bundled one. [PhysicsFS API reference](https://icculus.org/physfs/docs/html/physfs_8h.html).
+
+**Possible project value.** A prototype could load `aircraft/trainer/model.glb` from loose files during editing and from an archive during distribution. An optional developer panel could display the resolved source, avoiding confusing override behavior. This investigates the implementation beneath asset loading; it does not choose the community package format discussed earlier.
+
+**Limits and inference.** Rendering or audio libraries expecting native filenames might need custom read callbacks or memory-buffer loading to participate. A virtual path is not necessarily an operating-system path. Archive access does not validate the contents of an aircraft model or establish compatible units and coefficients. An engine's existing resource system may already solve the problem more simply. The overview mixes historical release information with platform listings; no current platform matrix was tested here.
+
+**Small experiment, unperformed.** Load the same tiny asset from a directory and ZIP, then mount two different versions of its texture. Check precedence, reported provenance, missing-file diagnostics, and where settings are written. Compare integration effort with direct filesystem access before adding a virtual layer.
+
+### 8. Library dependency resolution with vcpkg and Conan
+
+**Question.** If a native prototype uses several libraries, how could contributors reproduce their versions and understand platform-specific build settings?
+
+**Documented capabilities.** vcpkg's manifest mode records project dependencies and enables versioning and registries. Its versioning reference distinguishes baseline versions, minimum constraints, and explicit overrides. An override forces a particular version for a package already in the dependency graph. The reference also warns that a manifest without configured registries or a built-in baseline uses classic resolution and ignores versioning information. Merely having a manifest therefore does not establish the intended version behavior. [Manifest mode](https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode), [versioning reference](https://learn.microsoft.com/en-us/vcpkg/users/versioning).
+
+Conan profiles capture settings, options, tool requirements, and environment configuration. The documented automatic profile detector explicitly describes its output as a guess and advises maintaining one's own profiles for stability. Conan lockfiles capture dependency versions and recipe revisions; its tutorial shows that a lock created for one configuration can omit a dependency needed by another architecture. A strict lock then fails until the additional configuration is handled. [Conan profiles](https://docs.conan.io/2/reference/config_files/profiles.html), [Conan lockfiles](https://docs.conan.io/2/tutorial/versioning/lockfiles.html).
+
+**Possible project value.** These tools could make a specific C/C++ library experiment easier to reproduce and upgrade deliberately. They address dependency resolution, complementing the earlier research on build commands and development containers. They do not select C++ for this project; an eventual language or engine may provide its own simpler dependency mechanism.
+
+**Limits and inference.** Resolved source versions do not by themselves demonstrate identical binaries, ABI compatibility, working graphics drivers, or successful cross-compilation. Package recipes and upstream libraries are separate maintenance surfaces. A tiny vendored library may initially cost less effort than a package manager.
+
+**Small experiment, unperformed.** Build one minimal program using a math and an audio library from two clean environments. Record resolved versions, compiler settings, download/build time, and any patches. Try one controlled dependency upgrade and restore the previous setup before judging either manager.
+
+### 9. Audio implementation with miniaudio
+
+**Question.** What code-level facilities would support a moving airplane's sound without requiring a full audio middleware stack?
+
+**Documented capabilities.** miniaudio supplies low-level device callbacks and a higher-level engine. Its manual documents pitch control, spatialization, distance attenuation, and Doppler settings. Device initialization and shutdown belong outside the audio callback: starting or stopping the device from that callback can deadlock. Objects also have lifetime constraints: their addresses must remain stable, and copying the structures is not a supported ownership strategy. The manual explicitly does not guarantee ABI compatibility between releases, including bug fixes. [miniaudio programming manual](https://miniaud.io/docs/manual/index.html).
+
+The upstream repository provides source and examples for the C library. This makes a small standalone sound experiment possible before integrating with a renderer; the repository's portability claims remain upstream claims until a selected backend runs on our hardware. [miniaudio repository](https://github.com/mackron/miniaudio).
+
+**Possible project value.** A first implementation might feed aircraft position and velocity into spatialization while controlling a looping sound's pitch and volume from an approximate motor state. Audio code could consume a compact snapshot of simulation state rather than directly traversing mutable aircraft objects. That is a design possibility to test, not a chosen interface. An engine's built-in sound system remains an alternative with potentially less integration work.
+
+**Limits and inference.** Pitch-shifting one recording does not establish a realistic propeller sound model, and throttle alone need not equal RPM. Real-time callback constraints make file loading, unpredictable work, and unsynchronized simulation reads poor candidates for the audio path. The exact threading and buffering arrangement would depend on the chosen API and prototype. Audio-device latency would require measurement separately from physics timing.
+
+**Small experiment, unperformed.** Move one looping source past a stationary listener, varying RPM independently from speed. Listen for discontinuities during parameter changes and pause/resume; record backend, buffer settings, and CPU cost. Compare built-in engine audio with standalone miniaudio only if both paths remain plausible.
+
+### 10. Background jobs and task scheduling with enkiTS
+
+**Question.** When would moving work off the main thread help a small simulator, and what machinery would that introduce?
+
+**Documented capabilities.** enkiTS is a task scheduler with C and C++ interfaces and a C++11 implementation requirement. Its examples cover partitioned task sets, dependencies, priorities, and tasks pinned to particular threads. A main-thread pinned task still needs that thread to service it; adding it to a queue does not independently execute main-thread work. The README distinguishes frequently tested Windows/Linux configurations from less frequently tested macOS and ARM Android, while describing iOS support as an expectation. These are upstream support statements, not local results. [enkiTS repository and examples](https://github.com/dougbinks/enkiTS).
+
+**Possible project value.** Independent jobs such as decoding an image or preparing a terrain chunk could be candidates before parallelizing flight dynamics. A completed job might hand an immutable result to the main thread, which then creates the engine resource using its permitted thread. Whether a particular renderer allows this must be checked in that renderer's documentation; the scheduler supplies no such guarantee.
+
+**Limits and inference.** A dependency graph expresses ordering only where dependencies are actually declared. It does not eliminate data races, manage arbitrary object lifetimes, or guarantee deterministic simulation. Small jobs can cost more to schedule and synchronize than to execute directly. For one airplane and a simple field, a serial update may remain the clearest and fastest adequate approach. If an engine already has worker jobs, a second scheduler could add competing threads and debugging work.
+
+**Small experiment, unperformed.** Measure a noticeable asset-preparation pause in a serial prototype, then move only that preparation into one job. Keep GPU resource creation on the appropriate thread. Compare frame stalls and total loading time, test closing the scene while the job is unfinished, and verify that the flight-state trace remains unchanged. Retain concurrency only if its measured benefit justifies the added lifetime and synchronization logic.
+
 ## Continuing the research
 
 ### Small experiments suggested by these findings
@@ -900,3 +1042,5 @@ As research continues, add findings beside their topic with the date, original s
 **Research log — 2026-10-05, second pass:** added ten investigations covering ground handling, launches, servos, floatplanes, training transfer, accessibility, shared control, aircraft packages, offline distribution, and parameter identification. Added original-source findings and possible experiments while preserving the distinction between documented behavior and untested project ideas.
 
 **Research log — 2026-10-05, third pass:** added ten investigations into Geometry Nodes, aircraft rigging, generative 3D, RenderDoc, Tracy, asset optimization, repository-aware coding tools, editor MCP bridges, reproducible development environments, and asset source versioning. Preserved upstream capability claims, access limitations, and unperformed experiments separately. No tools were installed and no additional project decisions were made.
+
+**Research log — 2026-10-05, fourth pass:** added ten investigations into entity-component libraries, math and quantity types, Lua embedding, developer inspection panels, sanitizers, generated-input testing, virtual file access, library dependency resolution, audio implementation, and task scheduling. Recorded original sources, capability boundaries, and possible experiments without selecting a language, architecture, or dependency. No libraries were installed or runtime tests performed.
