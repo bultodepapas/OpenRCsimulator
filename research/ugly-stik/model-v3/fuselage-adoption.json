@@ -1,0 +1,83 @@
+{
+  "kind": "mixed_measured_and_estimated_visual_geometry",
+  "measured_primary_station_ids": [
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "front_station_status": "F1/F2/wingseat/F3 widths and hidden roof are visual estimates guided by source; not promoted to measured dimensions",
+  "aft_terminal_status": "Tailpost x4375 and width64px estimate; roof2698 from parent fin attachment trace. Intermediate fin-root width interpolated.",
+  "scale_m_per_px": 0.000254,
+  "y_proxy_px": 2595,
+  "stations": [
+    [
+      -0.291276,
+      0.039116,
+      0.037926,
+      -0.049958
+    ],
+    [
+      -0.153862,
+      0.048514,
+      0.0458,
+      -0.051482
+    ],
+    [
+      -0.096712,
+      0.050292,
+      0.038942,
+      -0.05199
+    ],
+    [
+      0.016318,
+      0.05207,
+      0.03183,
+      -0.052752
+    ],
+    [
+      0.192848,
+      0.051689,
+      0.043514,
+      -0.052752
+    ],
+    [
+      0.317308,
+      0.047752,
+      0.035132,
+      -0.052498
+    ],
+    [
+      0.477328,
+      0.0381,
+      0.013542,
+      -0.05199
+    ],
+    [
+      0.600518,
+      0.02633,
+      -0.002206,
+      -0.051482
+    ],
+    [
+      0.791018,
+      0.008128,
+      -0.031162,
+      -0.051228
+    ]
+  ],
+  "holdout": {
+    "x_px": 2800,
+    "z_m": 0.391968,
+    "observed_source": {
+      "roof_y_px": 2476,
+      "bottom_y_px": 2781,
+      "width_px": 346
+    },
+    "acceptance_m": {
+      "roof": 0.003,
+      "bottom": 0.003,
+      "width": 0.006
+    },
+    "acceptance_basis": "visual engineering allowance from 4-8px primary picks, two width endpoints and local 0.6% scale discrepancy; not metrology confidence intervals"
+  }
+}

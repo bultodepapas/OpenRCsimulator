@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>US-06 · Ugly Stik orientation review</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.45 system-ui, sans-serif; color: #17232c; background: #edf2f5; }
+    body { margin: 0; }
+    header { position: sticky; top: 0; z-index: 2; padding: 18px max(20px, calc((100vw - 1440px) / 2)); background: #17232c; color: white; box-shadow: 0 2px 10px #0003; }
+    header h1 { margin: 0 0 4px; font-size: 1.35rem; }
+    header p { margin: 3px 0; color: #d6e0e6; }
+    main { max-width: 1440px; margin: 22px auto; padding: 0 20px 48px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 12px 0 20px; }
+    .toolbar label { display: flex; gap: 8px; align-items: center; }
+    input, select, textarea, button { font: inherit; }
+    input[type="text"] { padding: 7px; }
+    button { padding: 8px 12px; border: 1px solid #718391; border-radius: 5px; background: white; cursor: pointer; }
+    .status { font-weight: 650; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .card { width: 1280px; overflow: hidden; border: 1px solid #ccd6dc; border-radius: 8px; background: white; box-shadow: 0 2px 8px #17232c12; }
+    .image-wrap { background: #9bcef0; }
+    .image-wrap img { display: block; width: 1280px; height: 720px; object-fit: none; }
+    .card-body { padding: 12px 16px 16px; }
+    h2 { display: inline; margin: 0; font-size: 1.05rem; }
+    .condition { margin: 3px 0 12px; color: #536671; }
+    .scale-note { margin: 0 0 10px; color: #536671; font-size: .9rem; }
+    .responses { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .responses label { display: grid; gap: 4px; font-size: .83rem; font-weight: 650; }
+    select { width: 100%; min-width: 0; padding: 6px; }
+    details { margin-top: 12px; color: #455863; }
+    details p { margin: 6px 0 0; }
+    .note { width: min(100%, 520px); min-height: 64px; }
+    @media print { header { position: static; } .toolbar button { display: none; } .card { break-inside: avoid; box-shadow: none; } }
+  </style>
+</head>
+<body>
+<header>
+  <h1>US-06 · Orientation readability review</h1>
+  <p>36 fixed captures · 20, 50 and 100 m · sky and ground · geometry and neutral hinges held constant.</p>
+  <p>Responses are blank. Images retain native 1280×720 resolution. Open each “Reference answer” only after recording the pilot response.</p>
+</header>
+<main>
+  <div class="toolbar">
+    <label>Pilot / session ID <input id="pilot" type="text" autocomplete="off"></label>
+    <label>Notes <textarea id="notes" class="note" placeholder="Doubts, missed cues, or viewing conditions"></textarea></label>
+    <button id="download" type="button">Download blank/filled responses JSON</button>
+    <button type="button" onclick="window.print()">Print review sheet</button>
+    <span class="status" id="status">No pilot responses recorded · pending</span>
+  </div>
+  <p><strong>Prompt:</strong> For each still, choose the visible wing face, bank direction, and whether the nose points toward or away from the observer. Direction is a static heading cue, not a test of actual motion perception.</p>
+  <section class="grid">
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-k7.png" width="1280" height="720" alt="D020-SKY-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-K7</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-m2.png" width="1280" height="720" alt="D020-SKY-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-M2</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-r5.png" width="1280" height="720" alt="D020-SKY-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-R5</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-a9.png" width="1280" height="720" alt="D020-SKY-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-A9</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-c3.png" width="1280" height="720" alt="D020-SKY-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-C3</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="sky">
+  <div class="image-wrap"><a href="d020m-sky-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-sky-t8.png" width="1280" height="720" alt="D020-SKY-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-SKY-T8</h2>
+    <p class="condition">20 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-SKY-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-SKY-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-SKY-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-k7.png" width="1280" height="720" alt="D020-GROUND-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-K7</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-m2.png" width="1280" height="720" alt="D020-GROUND-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-M2</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-r5.png" width="1280" height="720" alt="D020-GROUND-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-R5</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-a9.png" width="1280" height="720" alt="D020-GROUND-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-A9</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-c3.png" width="1280" height="720" alt="D020-GROUND-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-C3</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="20" data-background="ground">
+  <div class="image-wrap"><a href="d020m-ground-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d020m-ground-t8.png" width="1280" height="720" alt="D020-GROUND-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D020-GROUND-T8</h2>
+    <p class="condition">20 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D020-GROUND-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D020-GROUND-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D020-GROUND-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-k7.png" width="1280" height="720" alt="D050-SKY-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-K7</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-m2.png" width="1280" height="720" alt="D050-SKY-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-M2</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-r5.png" width="1280" height="720" alt="D050-SKY-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-R5</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-a9.png" width="1280" height="720" alt="D050-SKY-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-A9</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-c3.png" width="1280" height="720" alt="D050-SKY-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-C3</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="sky">
+  <div class="image-wrap"><a href="d050m-sky-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-sky-t8.png" width="1280" height="720" alt="D050-SKY-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-SKY-T8</h2>
+    <p class="condition">50 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-SKY-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-SKY-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-SKY-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-k7.png" width="1280" height="720" alt="D050-GROUND-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-K7</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-m2.png" width="1280" height="720" alt="D050-GROUND-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-M2</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-r5.png" width="1280" height="720" alt="D050-GROUND-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-R5</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-a9.png" width="1280" height="720" alt="D050-GROUND-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-A9</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-c3.png" width="1280" height="720" alt="D050-GROUND-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-C3</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="50" data-background="ground">
+  <div class="image-wrap"><a href="d050m-ground-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d050m-ground-t8.png" width="1280" height="720" alt="D050-GROUND-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D050-GROUND-T8</h2>
+    <p class="condition">50 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D050-GROUND-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D050-GROUND-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D050-GROUND-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-k7.png" width="1280" height="720" alt="D100-SKY-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-K7</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-m2.png" width="1280" height="720" alt="D100-SKY-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-M2</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-r5.png" width="1280" height="720" alt="D100-SKY-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-R5</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-a9.png" width="1280" height="720" alt="D100-SKY-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-A9</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-c3.png" width="1280" height="720" alt="D100-SKY-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-C3</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="sky">
+  <div class="image-wrap"><a href="d100m-sky-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-sky-t8.png" width="1280" height="720" alt="D100-SKY-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-SKY-T8</h2>
+    <p class="condition">100 m · sky</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-SKY-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-SKY-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-SKY-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-k7.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-k7.png" width="1280" height="720" alt="D100-GROUND-K7 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-K7</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-K7"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-K7"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-K7"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-m2.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-m2.png" width="1280" height="720" alt="D100-GROUND-M2 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-M2</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-M2"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-M2"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-M2"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-r5.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-r5.png" width="1280" height="720" alt="D100-GROUND-R5 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-R5</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-R5"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-R5"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-R5"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: left · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-a9.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-a9.png" width="1280" height="720" alt="D100-GROUND-A9 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-A9</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-A9"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-A9"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-A9"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: right · Direction: away</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-c3.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-c3.png" width="1280" height="720" alt="D100-GROUND-C3 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-C3</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-C3"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-C3"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-C3"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: underside · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+
+<article class="card" data-distance="100" data-background="ground">
+  <div class="image-wrap"><a href="d100m-ground-t8.png" target="_blank" rel="noopener" aria-label="Open native 1280 by 720 PNG"><img src="d100m-ground-t8.png" width="1280" height="720" alt="D100-GROUND-T8 airplane orientation capture" loading="lazy"></a></div>
+  <div class="card-body">
+    <h2>D100-GROUND-T8</h2>
+    <p class="condition">100 m · ground</p>
+    <p class="scale-note">Image shown at native 1280×720 CSS-pixel size. Click the image to open its PNG; use 100% browser zoom when answering.</p>
+    <div class="responses">
+      <label>Visible wing face<select name="surface" data-case="D100-GROUND-T8"><option value="">Choose…</option><option value="upper side">upper side</option><option value="underside">underside</option><option value="unclear">unclear</option></select></label>
+      <label>Bank<select name="bank" data-case="D100-GROUND-T8"><option value="">Choose…</option><option value="left">left</option><option value="right">right</option><option value="level">level</option><option value="unclear">unclear</option></select></label>
+      <label>Nose direction<select name="direction" data-case="D100-GROUND-T8"><option value="">Choose…</option><option value="toward">toward</option><option value="away">away</option><option value="unclear">unclear</option></select></label>
+    </div>
+    <details><summary>Reference answer</summary><p>Surface: upper side · Bank: level · Direction: toward</p></details>
+  </div>
+</article>
+  </section>
+</main>
+<script>
+  const fields = [...document.querySelectorAll('select[data-case]')];
+  const status = document.getElementById('status');
+  function updateStatus() {
+    const recorded = fields.filter(field => field.value !== '').length;
+    status.textContent = recorded === 0 ? 'No pilot responses recorded · pending' : `${recorded} pilot responses recorded · human review pending`;
+  }
+  fields.forEach(field => field.addEventListener('change', updateStatus));
+  document.getElementById('download').addEventListener('click', () => {
+    const byCase = {};
+    for (const field of fields) {
+      byCase[field.dataset.case] ??= {};
+      byCase[field.dataset.case][field.name] = field.value || null;
+    }
+    const data = {
+      status: 'pending_until_reviewed_by_owner',
+      pilot_or_session_id: document.getElementById('pilot').value || null,
+      notes: document.getElementById('notes').value || null,
+      responses: byCase,
+      prompt_scope: 'static orientation; direction means nose toward/away, not measured motion',
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], {type: 'application/json'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'us06-pilot-responses.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+</script>
+</body>
+</html>

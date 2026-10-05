@@ -51,6 +51,7 @@ if [[ -e "$OUT" && "$ALLOW_REPLACE" != 1 ]]; then
 	echo "Output exists; choose a fresh model-v3 directory or pass --overwrite: $OUT" >&2
 	exit 2
 fi
+mkdir -p "$(dirname "$OUT")"
 
 GODOT="$("$ROOT/app/get-godot.sh")"
 WORK_ROOT="$(mktemp -d "$MODEL_V3_ROOT/.capture-work.XXXXXX")"
@@ -63,7 +64,7 @@ run_capture() {
 	local output_dir="$1"
 	local log_file="$2"
 	set +e
-		timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
+	timeout 90 xvfb-run -a -s "-screen 0 1280x720x24" \
 		env OPENRC_CAPTURE_RENDER_DRIVER=opengl3 \
 		"$GODOT" --path "$ROOT/app" --script res://aircraft/inspect_model.gd \
 		--rendering-driver opengl3 --audio-driver Dummy -- \

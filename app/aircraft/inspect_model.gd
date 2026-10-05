@@ -15,6 +15,7 @@ const SKY_COLOR := Color("#9bcef0")
 const ATTITUDE_CASES := [
 	{
 		"id": "P01",
+		"blind_code": "K7",
 		"title": "Lower wing face",
 		"rotation_degrees": Vector3.ZERO,
 		"surface": "underside",
@@ -23,6 +24,7 @@ const ATTITUDE_CASES := [
 	},
 	{
 		"id": "P02",
+		"blind_code": "M2",
 		"title": "Upper wing face",
 		"rotation_degrees": Vector3(0.0, 0.0, 180.0),
 		"surface": "upper side",
@@ -31,6 +33,7 @@ const ATTITUDE_CASES := [
 	},
 	{
 		"id": "P03",
+		"blind_code": "R5",
 		"title": "Left bank",
 		"rotation_degrees": Vector3(0.0, 0.0, 35.0),
 		"surface": "underside",
@@ -39,6 +42,7 @@ const ATTITUDE_CASES := [
 	},
 	{
 		"id": "P04",
+		"blind_code": "A9",
 		"title": "Right bank",
 		"rotation_degrees": Vector3(0.0, 0.0, -35.0),
 		"surface": "underside",
@@ -47,6 +51,7 @@ const ATTITUDE_CASES := [
 	},
 	{
 		"id": "P05",
+		"blind_code": "C3",
 		"title": "Nose toward pilot",
 		"rotation_degrees": Vector3(0.0, 180.0, 0.0),
 		"surface": "underside",
@@ -55,11 +60,12 @@ const ATTITUDE_CASES := [
 	},
 	{
 		"id": "P06",
-		"title": "Tail toward pilot",
-		"rotation_degrees": Vector3.ZERO,
-		"surface": "underside",
+		"blind_code": "T8",
+		"title": "Upper wing face, nose toward pilot",
+		"rotation_degrees": Vector3(0.0, 180.0, 180.0),
+		"surface": "upper side",
 		"bank": "level",
-		"direction": "away",
+		"direction": "toward",
 	},
 ]
 
@@ -73,6 +79,7 @@ var _out_dir := ""
 var _records: Array[Dictionary] = []
 var _run_started_usec := 0
 var _geometry_data: Dictionary = {}
+var _suite := "inspection"
 
 
 func _initialize() -> void:
@@ -85,13 +92,17 @@ func _run() -> void:
 	if _out_dir.is_empty():
 		quit(2)
 		return
+	_suite = _capture_suite()
+	if _suite.is_empty():
+		quit(2)
+		return
 	var mkdir_error := DirAccess.make_dir_recursive_absolute(_out_dir)
 	if mkdir_error != OK:
 		push_error("Could not create output directory %s (Error %d)" % [_out_dir, mkdir_error])
 		quit(1)
 		return
 	get_root().size = IMAGE_SIZE
-	get_root().title = "Ugly Stik model v3 orientation review"
+	get_root().title = "Ugly Stik model %s inspection" % _suite
 	_geometry_data = _load_geometry_data()
 	if _geometry_data.is_empty():
 		push_error("Could not read geometry source JSON")
@@ -120,7 +131,13 @@ func _run() -> void:
 			push_error("Could not write capture %s (Error %d)" % [output_path, error])
 			quit(1)
 			return
-		_records.append(_capture_record(capture, output_path))
+		var record := _capture_record(capture, output_path)
+		record["png_sha256"] = _sha256_file(output_path)
+		if not bool(record.geometry_vertices_inside_viewport):
+			push_error("Model geometry is cropped in capture %s; inspect its manifest crop check" % capture.filename)
+			quit(1)
+			return
+		_records.append(record)
 		print("Captured %s" % output_path)
 
 	_write_manifest()
@@ -143,6 +160,17 @@ func _output_directory() -> String:
 	return ""
 
 
+func _capture_suite() -> String:
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--suite="):
+			var requested_suite := argument.trim_prefix("--suite=")
+			if requested_suite == "inspection" or requested_suite == "readability36":
+				return requested_suite
+			push_error("Unknown capture suite '%s'; expected inspection or readability36" % requested_suite)
+			return ""
+	return "inspection"
+
+
 func _load_geometry_data() -> Dictionary:
 	return GeneratedGeometry.DATA
 
@@ -151,10 +179,10 @@ func _add_lighting() -> void:
 	var environment_node := WorldEnvironment.new()
 	var environment := Environment.new()
 	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = SKY_COLOR
+	environment.background_color = Color("#111820") if _suite == "inspection" else SKY_COLOR
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color("#c5d3df")
-	environment.ambient_light_energy = 0.7
+	environment.ambient_light_color = Color("#b8c3d1") if _suite == "inspection" else Color("#c5d3df")
+	environment.ambient_light_energy = 0.55 if _suite == "inspection" else 0.7
 	environment_node.environment = environment
 	_world_root.add_child(environment_node)
 
@@ -166,12 +194,38 @@ func _add_lighting() -> void:
 	key_light.shadow_enabled = true
 	_world_root.add_child(key_light)
 
+	if _suite == "inspection":
+		var fill_light := DirectionalLight3D.new()
+		fill_light.name = "FillLight"
+		fill_light.rotation_degrees = Vector3(-24.0, 145.0, 12.0)
+		fill_light.light_color = Color("#c9d9ff")
+		fill_light.light_energy = 0.35
+		_world_root.add_child(fill_light)
+
 	var fill_light := DirectionalLight3D.new()
 	fill_light.name = "UndersideFill"
 	fill_light.rotation_degrees = Vector3(48.0, -28.0, 0.0)
 	fill_light.light_color = Color("#becbe0")
 	fill_light.light_energy = 0.7
 	_world_root.add_child(fill_light)
+
+
+func _lighting_information() -> Dictionary:
+	var inspection := _suite == "inspection"
+	var lights: Array[Dictionary] = [
+		{"name": "KeyLight", "rotation_degrees": [-47.0, -32.0, -9.0], "color_srgb_hex": "#fff3e1", "energy": 1.45, "shadows": true},
+		{"name": "UndersideFill", "rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": "#becbe0", "energy": 0.7, "shadows": false},
+	]
+	if inspection:
+		lights.insert(1, {"name": "FillLight", "rotation_degrees": [-24.0, 145.0, 12.0], "color_srgb_hex": "#c9d9ff", "energy": 0.35, "shadows": false})
+	return {
+		"environment_background": "solid color",
+		"background_color_srgb_hex": "#111820" if inspection else "#9bcef0",
+		"ambient_source": "color",
+		"ambient_color_srgb_hex": "#b8c3d1" if inspection else "#c5d3df",
+		"ambient_energy": 0.55 if inspection else 0.7,
+		"directional_lights": lights,
+	}
 
 
 func _add_airplane() -> void:
@@ -242,26 +296,115 @@ func _add_caption() -> void:
 	layer.add_child(_caption_detail)
 
 
+func _neutral_capture_commands() -> Dictionary:
+	var neutral: Dictionary = Commands.neutral_commands()
+	return {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": float(neutral.throttle)}
+
+
 func _capture_definitions() -> Array[Dictionary]:
+	return _inspection_capture_definitions() if _suite == "inspection" else _readability_capture_definitions()
+
+
+func _inspection_capture_definitions() -> Array[Dictionary]:
+	var neutral := _neutral_capture_commands()
+	var deflected: Dictionary = neutral.duplicate()
+	deflected.roll = 0.75
+	deflected.pitch = 0.75
+	deflected.yaw = 0.75
+	var views: Array[Dictionary] = [
+		{
+			"filename": "top.png", "case_id": "top", "title": "PLANTA · NEUTRO",
+			"detail": "Ortográfica superior · coordenadas de modelo en metros · Jensen Ugly Stik 60 / .61",
+			"projection": Camera3D.PROJECTION_ORTHOGONAL, "size": 1.90,
+			"camera_position": Vector3(0.0, 5.0, 0.0), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3(0.0, 0.0, -1.0), "pose_name": "neutral",
+			"commands": neutral.duplicate(),
+		},
+		{
+			"filename": "bottom.png", "case_id": "bottom", "title": "INTRADÓS · NEUTRO",
+			"detail": "Ortográfica inferior · misma geometría y encuadre que la planta",
+			"projection": Camera3D.PROJECTION_ORTHOGONAL, "size": 1.90,
+			"camera_position": Vector3(0.0, -5.0, 0.0), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3(0.0, 0.0, -1.0), "pose_name": "neutral",
+			"commands": neutral.duplicate(),
+		},
+		{
+			"filename": "side.png", "case_id": "side", "title": "PERFIL · NEUTRO",
+			"detail": "Ortográfica desde el costado derecho · morro hacia la derecha de imagen",
+			"projection": Camera3D.PROJECTION_ORTHOGONAL, "size": 1.05,
+			"camera_position": Vector3(4.0, 0.0, 0.0), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3.UP, "pose_name": "neutral",
+			"commands": neutral.duplicate(),
+		},
+		{
+			"filename": "front.png", "case_id": "front", "title": "FRENTE · NEUTRO",
+			"detail": "Ortográfica · desde el morro · envergadura horizontal",
+			"projection": Camera3D.PROJECTION_ORTHOGONAL, "size": 0.92,
+			"camera_position": Vector3(0.0, 0.0, -4.0), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3.UP, "pose_name": "neutral",
+			"commands": neutral.duplicate(),
+		},
+		{
+			"filename": "three-quarter-neutral.png", "case_id": "three-quarter-neutral", "title": "TRES CUARTOS · NEUTRO",
+			"detail": "Perspectiva de inspección · sin deflexiones de mandos",
+			"projection": Camera3D.PROJECTION_PERSPECTIVE, "fov_vertical_deg": 38.0, "size": 1.0,
+			"camera_position": Vector3(-1.29, 0.99, 1.65), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3.UP, "pose_name": "neutral",
+			"commands": neutral.duplicate(),
+		},
+		{
+			"filename": "three-quarter-deflected.png", "case_id": "three-quarter-deflected", "title": "TRES CUARTOS · MANDOS DESVIADOS",
+			"detail": "Pose demostrativa fija · alerones, elevador y timón articulados",
+			"projection": Camera3D.PROJECTION_PERSPECTIVE, "fov_vertical_deg": 38.0, "size": 1.0,
+			"camera_position": Vector3(-1.29, 0.99, 1.65), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3.UP, "pose_name": "deflected",
+			"commands": deflected,
+		},
+	]
+	for distance in FLIGHT_DISTANCES_M:
+		views.append({
+			"filename": "flight-%dm.png" % int(distance),
+			"case_id": "flight-%dm" % int(distance),
+			"title": "LECTURA EN VUELO · %d m" % int(distance),
+			"detail": "1280×720 · FOV vertical 50° · KEEP_HEIGHT · geometría idéntica",
+			"projection": Camera3D.PROJECTION_PERSPECTIVE, "fov_vertical_deg": FLIGHT_FOV_DEG, "size": 1.0,
+			"camera_position": Vector3(0.0, 0.0, distance), "camera_target": Vector3.ZERO,
+			"camera_up": Vector3.UP, "pose_name": "neutral",
+			"commands": neutral.duplicate(), "distance_m": distance,
+		})
+	for capture in views:
+		capture["model_position"] = Vector3.ZERO
+		capture["model_rotation_degrees"] = Vector3.ZERO
+		capture["background"] = "inspection"
+	return views
+
+
+func _readability_capture_definitions() -> Array[Dictionary]:
 	var captures: Array[Dictionary] = []
 	for distance in FLIGHT_DISTANCES_M:
 		for background_name in ["sky", "ground"]:
 			for attitude in ATTITUDE_CASES:
-				var case_id := String(attitude.id)
-				var filename := "d%03dm-%s-%s.png" % [int(distance), background_name, case_id.to_lower()]
+				var blind_code := String(attitude.blind_code)
 				captures.append({
-					"filename": filename,
-					"case_id": "D%03d-%s-%s" % [int(distance), background_name.to_upper(), case_id],
-					"condition": "%d m · %s" % [int(distance), "cielo" if background_name == "sky" else "suelo"],
+					"filename": "d%03dm-%s-%s.png" % [int(distance), background_name, blind_code.to_lower()],
+					"case_id": "D%03d-%s-%s" % [int(distance), background_name.to_upper(), blind_code],
+					"condition": "%d m · %s" % [int(distance), "sky" if background_name == "sky" else "ground"],
+					"title": "D%03d-%s-%s" % [int(distance), background_name.to_upper(), blind_code],
+					"detail": "%d m · %s · neutral control hinges" % [int(distance), background_name],
 					"distance_m": distance,
 					"background": background_name,
-					"attitude_id": case_id,
+					"attitude_id": attitude.id,
 					"attitude_title": attitude.title,
 					"projection": Camera3D.PROJECTION_PERSPECTIVE,
 					"fov_vertical_deg": FLIGHT_FOV_DEG,
+					"size": 1.0,
 					"model_position": Vector3(0.0, MODEL_HEIGHT_M, 0.0),
 					"model_rotation_degrees": attitude.rotation_degrees,
-					"commands": {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0},
+					"camera_position": Vector3(0.0, PILOT_EYE_HEIGHT_M, distance),
+					"camera_target": Vector3(0.0, MODEL_HEIGHT_M, 0.0),
+					"camera_up": Vector3.UP,
+					"pose_name": "neutral_hinges",
+					"commands": _neutral_capture_commands(),
 					"reference_answer": {"surface": attitude.surface, "bank": attitude.bank, "direction": attitude.direction},
 				})
 	return captures
@@ -275,33 +418,37 @@ func _apply_capture(capture: Dictionary) -> void:
 	_ground.visible = String(capture.background) == "ground"
 	_camera.projection = int(capture.projection)
 	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
-	_camera.fov = float(capture.fov_vertical_deg)
-	_camera.size = 1.0
-	_camera.position = Vector3(0.0, PILOT_EYE_HEIGHT_M, float(capture.distance_m))
-	_camera.look_at(capture.model_position, Vector3.UP)
+	_camera.fov = float(capture.get("fov_vertical_deg", FLIGHT_FOV_DEG))
+	_camera.size = float(capture.get("size", 1.0))
+	_camera.position = capture.camera_position
+	_camera.look_at(capture.camera_target, capture.camera_up)
 	_camera.force_update_transform()
-	_caption_title.text = "%s  ·  %s" % [String(capture.case_id), String(capture.condition)]
-	_caption_detail.text = "Revisión de orientación · no cambiar la geometría ni la cámara · mandos neutros"
+	_caption_title.text = String(capture.get("title", capture.get("case_id", "")))
+	_caption_detail.text = String(capture.get("detail", ""))
 
 
 func _capture_record(capture: Dictionary, output_path: String) -> Dictionary:
 	var camera_position: Vector3 = _camera.global_position
-	var camera_target: Vector3 = capture.model_position
+	var camera_target: Vector3 = capture.camera_target
 	var camera_up := _camera.global_transform.basis.y.normalized()
 	var actual_range := camera_position.distance_to(camera_target)
-	var vertical_fov := deg_to_rad(float(capture.fov_vertical_deg))
+	var is_perspective := int(capture.projection) == Camera3D.PROJECTION_PERSPECTIVE
+	var fov_vertical_deg := float(capture.get("fov_vertical_deg", 0.0))
+	var vertical_fov := deg_to_rad(fov_vertical_deg)
+	var visible_vertical := 2.0 * actual_range * tan(vertical_fov / 2.0) if is_perspective else _camera.size
 	var bounds := _model_bounds()
+	var crop_check := _camera_bounds_check()
 	var actual_commands: Dictionary = capture.commands
 	var record := {
+		"suite": _suite,
 		"case_id": capture.case_id,
 		"file": output_path.get_file(),
-		"condition": capture.condition,
-		"distance_m": float(capture.distance_m),
+		"condition": capture.get("condition", capture.get("title", "")),
 		"range_slant_m": actual_range,
 		"background": capture.background,
-		"attitude_id": capture.attitude_id,
-		"attitude_title": capture.attitude_title,
-		"pose": "neutral_hinges",
+		"attitude_id": capture.get("attitude_id", ""),
+		"attitude_title": capture.get("attitude_title", ""),
+		"pose": capture.pose_name,
 		"commands": actual_commands,
 		"root_pose": {
 			"position_m": _vector_array(capture.model_position),
@@ -310,32 +457,37 @@ func _capture_record(capture: Dictionary, output_path: String) -> Dictionary:
 		"camera": {
 			"position_world_m": _vector_array(camera_position),
 			"target_world_m": _vector_array(camera_target),
-			"requested_up_world": [0.0, 1.0, 0.0],
+			"requested_up_world": _vector_array(capture.camera_up),
 			"result_up_world": _vector_array(camera_up),
-			"projection": "perspective",
-			"fov_vertical_deg": float(capture.fov_vertical_deg),
+			"projection": "perspective" if is_perspective else "orthographic",
+			"fov_vertical_deg": fov_vertical_deg if is_perspective else null,
 			"size": _camera.size,
 			"keep_aspect": "KEEP_HEIGHT",
 			"viewport_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
 			"aspect_ratio": float(IMAGE_SIZE.x) / float(IMAGE_SIZE.y),
 			"near_m": _camera.near,
 			"far_m": _camera.far,
-			"visible_vertical_m_at_target": 2.0 * actual_range * tan(vertical_fov / 2.0),
+			"visible_vertical_m_at_target": visible_vertical,
 		},
 		"render": _render_information(),
 		"model_bounds_m": bounds,
+		"geometry_vertices_inside_viewport": bool(crop_check.inside_viewport),
+		"projected_geometry_bounds_px": crop_check.bounds_px,
+		"projected_geometry_margins_px": crop_check.margins_px,
 		"mesh_instances": _mesh_instances().size(),
 		"triangle_count": _triangle_count(),
 		"material_count": _material_count(),
 		"ground_plane": {
 			"visible": String(capture.background) == "ground",
 			"center_y_m": GROUND_Y_M,
-		"color_srgb_hex": "#58654f",
-		"material_shading": "unshaded",
+			"color_srgb_hex": "#58654f",
+			"material_shading": "unshaded",
 			"plane_size_m": [1000.0, 1000.0],
 		},
-		"reference_answer": capture.reference_answer,
+		"reference_answer": capture.get("reference_answer", {}),
 	}
+	if capture.has("distance_m"):
+		record["distance_m"] = float(capture.distance_m)
 	return record
 
 
@@ -373,6 +525,39 @@ func _model_bounds() -> Dictionary:
 		"min": _vector_array(min_corner),
 		"max": _vector_array(max_corner),
 		"extent": _vector_array(max_corner - min_corner),
+	}
+
+
+func _camera_bounds_check() -> Dictionary:
+	var min_screen := Vector2(INF, INF)
+	var max_screen := Vector2(-INF, -INF)
+	var behind_camera := false
+	var vertex_count := 0
+	for instance in _mesh_instances():
+		if instance.mesh == null:
+			continue
+		for surface_index in range(instance.mesh.get_surface_count()):
+			var arrays := instance.mesh.surface_get_arrays(surface_index)
+			var vertex_data: Variant = arrays[Mesh.ARRAY_VERTEX]
+			if not vertex_data is PackedVector3Array:
+				continue
+			for local_point in vertex_data:
+				var world_point: Vector3 = instance.global_transform * local_point
+				if _camera.is_position_behind(world_point):
+					behind_camera = true
+					continue
+				var screen_point: Vector2 = _camera.unproject_position(world_point)
+				min_screen = min_screen.min(screen_point)
+				max_screen = max_screen.max(screen_point)
+				vertex_count += 1
+	var margins := Vector4(min_screen.x, min_screen.y, float(IMAGE_SIZE.x) - max_screen.x, float(IMAGE_SIZE.y) - max_screen.y)
+	var inside := vertex_count > 0 and not behind_camera and margins.x >= 0.0 and margins.y >= 0.0 and margins.z >= 0.0 and margins.w >= 0.0
+	return {
+		"inside_viewport": inside,
+		"vertex_count": vertex_count,
+		"bounds_px": {"min": [min_screen.x, min_screen.y], "max": [max_screen.x, max_screen.y]},
+		"margins_px": {"left": margins.x, "top": margins.y, "right": margins.z, "bottom": margins.w},
+		"behind_camera": behind_camera,
 	}
 
 
@@ -464,34 +649,47 @@ func _source_manifest() -> Dictionary:
 	}
 
 
+func _capture_design() -> Dictionary:
+	var design := {
+		"suite": _suite,
+		"resolution_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
+		"keep_aspect": "KEEP_HEIGHT",
+		"lighting": _lighting_information(),
+	}
+	if _suite == "inspection":
+		design["compatibility_note"] = "Nine original fixed views and filenames retained; framing updates are listed explicitly."
+		design["camera_framing_revision"] = {
+			"comparison_baseline": "model-v2 camera sizes",
+			"changes": {"top": {"old_size_m": 1.58, "new_size_m": 1.90}, "bottom": {"old_size_m": 1.58, "new_size_m": 1.90}, "side": {"old_size_m": 0.92, "new_size_m": 1.05}},
+			"reason": "Keep the measured aft tail/elevator extent inside the frame.",
+			"target_and_camera_positions_changed": false,
+			"pixel_identical_to_model_v2": false,
+		}
+		design["view_names"] = ["top", "bottom", "side", "front", "three-quarter-neutral", "three-quarter-deflected", "flight-20m", "flight-50m", "flight-100m"]
+	else:
+		design["distances_m"] = FLIGHT_DISTANCES_M
+		design["backgrounds"] = ["sky", "ground"]
+		design["attitude_cases"] = ATTITUDE_CASES
+		design["blind_id_assignment"] = "Fixed opaque code per attitude, permuted independently of answer labels; stable across runs."
+		design["hinges"] = "Neutral for every image; roll/pitch/yaw commands are 0.0."
+		design["model_height_m"] = MODEL_HEIGHT_M
+		design["pilot_eye_height_m"] = PILOT_EYE_HEIGHT_M
+		design["ground_height_m"] = GROUND_Y_M
+		design["direction_prompt"] = "Nose toward/away is a static heading cue, not measured motion."
+	return design
+
+
 func _write_manifest() -> void:
 	var manifest := {
 		"schema": "openrc-model-capture-v3",
 		"created_utc_unix": int(Time.get_unix_time_from_system()),
 		"model": "Jensen Ugly Stik 60 / nitro .61",
+		"capture_suite": _suite,
 		"geometry": _source_manifest(),
 		"builder": "res://render/airplane.gd",
 		"builder_contract": ["root", "propeller", "hinges"],
 		"axes": {"forward": "-Z", "right": "+X", "up": "+Y"},
-		"capture_design": {
-			"distances_m": FLIGHT_DISTANCES_M,
-			"backgrounds": ["sky", "ground"],
-			"attitude_cases": ATTITUDE_CASES,
-			"hinges": "neutral for every image; roll/pitch/yaw commands 0.0",
-			"lighting": {
-				"environment_background": "solid color",
-				"sky_color_srgb_hex": "#9bcef0",
-				"ambient_source": "color",
-				"ambient_color_srgb_hex": "#c5d3df",
-				"ambient_energy": 0.7,
-				"key_light": {"rotation_degrees": [-47.0, -32.0, -9.0], "color_srgb_hex": "#fff3e1", "energy": 1.45, "shadows": true},
-				"underside_fill": {"rotation_degrees": [48.0, -28.0, 0.0], "color_srgb_hex": "#becbe0", "energy": 0.7, "shadows": false},
-			},
-			"sky_color_srgb_hex": "#9bcef0",
-			"camera_model_height_m": MODEL_HEIGHT_M,
-			"camera_eye_height_m": PILOT_EYE_HEIGHT_M,
-			"ground_height_m": GROUND_Y_M,
-		},
+		"capture_design": _capture_design(),
 		"resolution_px": [IMAGE_SIZE.x, IMAGE_SIZE.y],
 		"renderer": _render_information(),
 		"captures": _records,

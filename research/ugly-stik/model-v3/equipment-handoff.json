@@ -1,0 +1,301 @@
+{
+  "schema": "openrc-ugly-stik-equipment-handoff-v1",
+  "aircraft_id": "jensen-60-nitro-61-v3",
+  "evidence_kind": "coordinate audit of estimated visual placements and current physics reference data",
+  "sources": {
+    "geometry": {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "b3a2c3588b05cd85f5a593c723a66e7a9cc3f6dac573971d751224977bd5594a"
+    },
+    "physics": {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "499e842a0b2d4d65f1cd71ac2ea4ab9534d12bf62175b6d609053f6764a28377"
+    },
+    "visual_builder": {
+      "path": "app/aircraft/ugly_stik_model.gd",
+      "sha256": "37d5a334ec441270d08fa951edead5669847994295494c4adad5f91de2e72927"
+    }
+  },
+  "frames": {
+    "visual_model": {
+      "axes": {
+        "right": "+X",
+        "up": "+Y",
+        "nose": "-Z"
+      },
+      "origin": "Visual assembly origin near wing quarter chord; NOT a measured CG"
+    },
+    "physics_le": {
+      "axes": [
+        "x_aft",
+        "y_right",
+        "z_up"
+      ],
+      "origin": "wing leading edge at fuselage centerline; z=0 on thrust line"
+    },
+    "physics_body_cg_frd": {
+      "axes": [
+        "x_forward",
+        "y_right",
+        "z_down"
+      ],
+      "origin": "plan CG"
+    },
+    "model_to_le_formula": "[z_model - wing.leading_z, x_model, y_model - equipment.shaft_y]",
+    "le_to_body_formula": "[cg_x_aft - x_aft, y_right - cg_y, cg_z_up - z_up]",
+    "le_to_model_formula": "[y_right, equipment.shaft_y + z_up, wing.leading_z + x_aft]",
+    "cg_le_m": [
+      0.1209,
+      0.0,
+      0.0
+    ],
+    "cg_visual_model_m": [
+      0.0,
+      -0.005,
+      0.005899999999999989
+    ],
+    "runtime_transform": "app/render/frames.gd: cg_in_model_frame() and root_transform(); root origin is translated so cg_visual_model lands on the physics CG position"
+  },
+  "engine_and_propeller": {
+    "visual_engine_class": ".61 nitro",
+    "visual_engine_identity": "generic single-cylinder .61 envelope; brand/model not selected",
+    "physics_engine_inventory_entry": "engine O.S. MAX-61FX",
+    "physics_engine_entry_role": "provisional mass/inertia inventory entry; it does not identify the visual engine as this exact product",
+    "engine_visual_crank_center_model_m": [
+      0.0,
+      -0.005,
+      -0.349776
+    ],
+    "engine_visual_crank_center_le_m": [
+      -0.23477599999999998,
+      0.0,
+      0.0
+    ],
+    "engine_physics_inventory_position_le_m": [
+      -0.226,
+      0.0,
+      0.0
+    ],
+    "engine_crank_minus_inventory_center_le_m": [
+      -0.008775999999999978,
+      0.0,
+      0.0
+    ],
+    "mount": {
+      "visual_envelope": "simplified beam mount and fasteners; see builder source",
+      "firewall_to_prop_plane_m": 0.11699999999999999
+    },
+    "muffler": "simplified side-mounted visual muffler/header; clearance is not checked against a selected commercial engine installation",
+    "propeller_visual_center_model_m": [
+      0.0,
+      -0.005,
+      -0.408276
+    ],
+    "propeller_visual_center_le_m": [
+      -0.293276,
+      0.0,
+      0.0
+    ],
+    "propeller_physics_inventory_position_le_m": [
+      -0.286,
+      0.0,
+      0.0
+    ],
+    "propeller_visual_minus_inventory_center_le_m": [
+      -0.007276000000000005,
+      0.0,
+      0.0
+    ],
+    "propeller_diameter_visual_m": 0.3048,
+    "propeller_diameter_physics_m": 0.3048,
+    "prop_swept_disk": {
+      "axis_model_unit": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "normal": "parallel to visual Z; thrust points along -Z",
+      "ground_clearance_three_wheel_pose_m": 0.0961034020554195
+    }
+  },
+  "landing_gear": {
+    "wheels": {
+      "main_left": {
+        "axle_center_model_m": [
+          -0.18,
+          -0.22,
+          0.1
+        ],
+        "nominal_ground_contact_model_m": [
+          -0.18,
+          -0.2581,
+          0.1
+        ],
+        "radius_m": 0.0381,
+        "axle_center_le_m": [
+          0.21500000000000002,
+          -0.18,
+          -0.215
+        ],
+        "nominal_ground_contact_le_m": [
+          0.21500000000000002,
+          -0.18,
+          -0.2531
+        ],
+        "axle_center_body_cg_frd_m": [
+          -0.09410000000000003,
+          -0.18,
+          0.215
+        ],
+        "nominal_ground_contact_body_cg_frd_m": [
+          -0.09410000000000003,
+          -0.18,
+          0.2531
+        ],
+        "spin_axis_model_unit": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "placement_evidence": "estimated visual placement; wheel size is selected from Jensen plan callouts"
+      },
+      "main_right": {
+        "axle_center_model_m": [
+          0.18,
+          -0.22,
+          0.1
+        ],
+        "nominal_ground_contact_model_m": [
+          0.18,
+          -0.2581,
+          0.1
+        ],
+        "radius_m": 0.0381,
+        "axle_center_le_m": [
+          0.21500000000000002,
+          0.18,
+          -0.215
+        ],
+        "nominal_ground_contact_le_m": [
+          0.21500000000000002,
+          0.18,
+          -0.2531
+        ],
+        "axle_center_body_cg_frd_m": [
+          -0.09410000000000003,
+          0.18,
+          0.215
+        ],
+        "nominal_ground_contact_body_cg_frd_m": [
+          -0.09410000000000003,
+          0.18,
+          0.2531
+        ],
+        "spin_axis_model_unit": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "placement_evidence": "estimated visual placement; wheel size is selected from Jensen plan callouts"
+      },
+      "nose": {
+        "axle_center_model_m": [
+          0.0,
+          -0.22,
+          -0.251276
+        ],
+        "nominal_ground_contact_model_m": [
+          0.0,
+          -0.254925,
+          -0.251276
+        ],
+        "radius_m": 0.034925,
+        "axle_center_le_m": [
+          -0.136276,
+          0.0,
+          -0.215
+        ],
+        "nominal_ground_contact_le_m": [
+          -0.136276,
+          0.0,
+          -0.249925
+        ],
+        "axle_center_body_cg_frd_m": [
+          0.257176,
+          0.0,
+          0.215
+        ],
+        "nominal_ground_contact_body_cg_frd_m": [
+          0.257176,
+          0.0,
+          0.249925
+        ],
+        "spin_axis_model_unit": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "placement_evidence": "estimated visual placement; wheel size is selected from Jensen plan callouts"
+      }
+    },
+    "main_track_m": 0.36,
+    "wheel_spin_axis": "parallel to visual +X for all three wheels; axis line is unoriented geometrically",
+    "nose_steering_axis": {
+      "model_point_m": [
+        0.0,
+        -0.22,
+        -0.251276
+      ],
+      "model_direction_unit": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    "physics_inventory_centroid_comparison": {
+      "nose_gear_position_le_m": [
+        -0.17,
+        0.0,
+        -0.12
+      ],
+      "nose_gear_inventory_minus_visual_axle_le_m": [
+        -0.033724000000000004,
+        0.0,
+        0.095
+      ],
+      "main_gear_position_le_m": [
+        0.137,
+        0.0,
+        -0.1
+      ],
+      "main_gear_note": "physics inventory point is a component mass centroid on centerline, not a wheel axle; do not move the visual wheels to match it"
+    },
+    "rigid_three_wheel_rest_pose": {
+      "root_rotation_x_rad": -0.009038599936701863,
+      "root_rotation_x_deg": -0.5178736290802298,
+      "local_ground_plane_y_m": -0.25718716578269174,
+      "nose_contact_residual_m": 0.0,
+      "propeller_disk_clearance_to_ground_m": 0.0961034020554195,
+      "assumptions": [
+        "undeformed circular tires",
+        "parallel axles",
+        "no suspension, tire compliance, steering scrub, or contact dynamics"
+      ]
+    },
+    "planned_render_api": {
+      "builder_result": "build() returns a gear dictionary with left, right, and nose wheel pivots plus a nose steering pivot",
+      "adapter": "apply_gear(airplane, wheel_angles: Dictionary, steering_rad: float)",
+      "wheel_angles_unit": "radians",
+      "physics_integration": "caller supplies wheel angle and steering angle; model adapter does not create contact forces or infer wheel speed",
+      "sign_convention": "If wheel_angles encode positive forward travel, apply negative local rotation.x for wheels rolling along -Z. If steering_rad is physics-positive yaw-right, apply negative local rotation.y because the model nose points -Z; document any raw-Godot-angle API instead.",
+      "mesh_contract": "preserve gear_left, gear_right, nosewheel names and current wheel centers; pivots are for visual articulation only"
+    }
+  },
+  "limits": [
+    "All coordinates are the current visual model's local frame until app/render/frames.gd applies the root transform.",
+    "Wheel sizes are selected from drawing callouts; axle/gear locations and propeller placement are estimated visual geometry.",
+    "The generic .61 engine, mount, muffler and 12-inch swept disk are not checked against a chosen engine, mount, fuel tank, cowl or firewall hardware drawing.",
+    "Ground contact and propeller clearance are rigid-body calculations on the rendered dimensions, not physical validation or taxi dynamics.",
+    "Physics inventory positions are mass centroids; they are not automatically visual hardpoints."
+  ]
+}

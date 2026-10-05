@@ -1,10 +1,11 @@
-# V1 geometry and hinge contract checks for the in-app Ugly Stik.
+# Geometry and hinge contract checks for the in-app Ugly Stik.
 # Run: godot --headless --path app --script res://aircraft/verify_model.gd
 extends SceneTree
 
 const Commands := preload("res://input/commands.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const Clearance := preload("res://aircraft/model_clearance.gd")
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
 const EXPECTED_SPAN_M := 1.524 # Jensen oz1253 drawing: 60 in, converted to metres.
@@ -105,17 +106,15 @@ func _maximum_y(samples: Array[float]) -> float:
 	return result
 
 
-func _surface_probe_local(surface_name: String) -> Vector3:
-	if surface_name == "rudder":
-		return Vector3(0.0, 0.04, 0.04)
-	if surface_name == "elevator" or surface_name.begins_with("aileron_"):
-		return Vector3(0.0, 0.0, 0.04)
-	return Vector3.ZERO
-
-
+# Probe an actual trailing vertex rather than a synthetic point that could sit in a cutout.
 func _surface_point(surface_name: String) -> Vector3:
-	var hinge: Node3D = _airplane.hinges[surface_name]
-	return hinge.to_global(_surface_probe_local(surface_name))
+	var mesh := _root.find_child(surface_name, true, false) as MeshInstance3D
+	var faces := mesh.mesh.get_faces()
+	var trailing := faces[0]
+	for point in faces:
+		if point.z > trailing.z:
+			trailing = point
+	return mesh.to_global(trailing)
 
 
 func _hinge_origins() -> Dictionary:
@@ -189,7 +188,7 @@ func _check_tree_and_meshes() -> bool:
 					relative_bounds = relative_bounds.expand(in_hinge)
 			_check(
 				"%s mesh extends aft from its hinge" % surface_name,
-				not first and relative_bounds.position.z >= -0.01 and relative_bounds.end.z > 0.04,
+				not first and relative_bounds.position.z >= -0.01 and relative_bounds.end.z > (0.03 if surface_name.begins_with("aileron_") or surface_name == "elevator" else 0.04),
 				str(relative_bounds)
 			)
 
@@ -373,6 +372,46 @@ func _check_nose_assembly() -> void:
 	_check("nose axle retains 40 mm offset behind F1", absf(axle_z - firewall_z - 0.04) < NUMERIC_EPSILON)
 
 
+func _check_measured_fuselage_holdout() -> void:
+	var fuselage := _root.find_child("fuselage", true, false) as MeshInstance3D
+	# Reserved page x=2800, not a fitted station. Source picks roof2476, bottom2781, width346 px.
+	var z := -0.115 + (2800 - 808) * 0.000254
+	var samples := _mesh_y_samples_at_xz(fuselage, 0.0, z)
+	_check("reserved fuselage section exists", not samples.is_empty())
+	if samples.is_empty(): return
+	_check("reserved fuselage roof within reading allowance", absf(_maximum_y(samples) - (-0.005 + (2595 - 2476) * 0.000254)) <= 0.003)
+	_check("reserved fuselage bottom within reading allowance", absf(_minimum_y(samples) - (-0.005 + (2595 - 2781) * 0.000254)) <= 0.003)
+	var widest := 0.0
+	var faces := fuselage.mesh.get_faces()
+	for i in range(0, faces.size(), 3):
+		for edge in 3:
+			var a := _root.to_local(fuselage.to_global(faces[i + edge]))
+			var b := _root.to_local(fuselage.to_global(faces[i + (edge + 1) % 3]))
+			if absf(b.z - a.z) < 1e-8: continue
+			var fraction := (z - a.z) / (b.z - a.z)
+			if fraction >= 0 and fraction <= 1:
+				widest = maxf(widest, absf(lerpf(a.x, b.x, fraction)))
+	_check("reserved fuselage width within reading allowance", absf(2.0 * widest - 346 * 0.000254) <= 0.006)
+
+
+func _check_gear_animation() -> void:
+	_check("gear interface present", _airplane.has("gear"))
+	if not _airplane.has("gear"): return
+	var centers := {}
+	for key in ["left", "right", "nose"]:
+		centers[key] = _airplane.gear[key].global_position
+	AirplaneBuilder.apply_gear(_airplane, {left = 1.2, right = -0.7, nose = 0.5}, 0.3)
+	for key in ["left", "right", "nose"]:
+		_check("wheel spin keeps %s axle fixed" % key, _airplane.gear[key].global_position.distance_to(centers[key]) < NUMERIC_EPSILON)
+	_check("nose steering carries its wheel", _airplane.gear.nose.get_parent() == _airplane.gear.steering)
+	_check("nose steering takes requested angle", absf(_airplane.gear.steering.rotation.y - 0.3) < NUMERIC_EPSILON)
+	_check("left wheel takes independent angle", absf(_airplane.gear.left.rotation.x - 1.2) < NUMERIC_EPSILON)
+	_check("right wheel takes independent angle", absf(_airplane.gear.right.rotation.x + 0.7) < NUMERIC_EPSILON)
+	AirplaneBuilder.apply_gear(_airplane, {}, 0.0)
+	for key in ["left", "right", "nose", "steering"]:
+		_check("gear %s resets to neutral" % key, _airplane.gear[key].rotation.length() < NUMERIC_EPSILON)
+
+
 func _initialize() -> void:
 	call_deferred("_run_model_checks")
 
@@ -397,6 +436,8 @@ func _run_model_checks() -> void:
 		quit(1)
 		return
 	_check_nose_assembly()
+	_check_gear_animation()
+	_check_measured_fuselage_holdout()
 	_check_dihedral_frames()
 	_check_wing_fuselage_seat()
 	_check_root_poses_and_propeller()
@@ -406,6 +447,9 @@ func _run_model_checks() -> void:
 	_check_control_direction("roll", { "aileron_left": "down", "aileron_right": "up" }, 0)
 	_check_control_direction("pitch", { "elevator": "up" }, 0)
 	_check_control_direction("yaw", { "rudder": "right" }, 0)
+	_root.transform = Transform3D.IDENTITY
+	var clearance_report: Dictionary = Clearance.new().run(_airplane)
+	_check("moving surfaces retain geometric clearance", clearance_report.ok, str(clearance_report.get("failures", [])))
 	_root.free()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

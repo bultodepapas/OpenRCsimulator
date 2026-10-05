@@ -4,15 +4,21 @@
 extends RefCounted
 
 const GRID_STEP_M := 0.001
+const MAX_GRID_CELLS := 150000
 const RAY_DIRECTION := Vector3(1.0, 0.37139067, 0.69474659)
 const INSIDE_EPSILON := 0.0000001
-const MINIMUM_ACCEPTED_TAIL_GAP_M := 0.00025
+const MINIMUM_ACCEPTED_MOVING_GAP_M := 0.00025
+const CONTAINMENT_FIXTURE_SIZE_M := 0.001
 const ELEVATOR_POSES_DEG := [-20.0, 0.0, 20.0]
 const RUDDER_POSES_DEG := [-25.0, 0.0, 25.0]
 const STRUCTURAL_UNION_PAIRS := [
 	["fuselage", "stab"],
 	["fuselage", "fin"],
 	["stab", "fin"],
+]
+const OPTIONAL_STRUCTURAL_UNION_PAIRS := [
+	["fuselage", "ventral_fin"],
+	["fuselage", "tail_skid"],
 ]
 const MOVING_PAIRS := [
 	["fuselage", "elevator"],
@@ -22,6 +28,12 @@ const MOVING_PAIRS := [
 	["elevator", "fin"],
 	["elevator", "rudder"],
 	["fin", "rudder"],
+]
+const OPTIONAL_MOVING_PAIRS := [
+	["elevator", "ventral_fin"],
+	["rudder", "ventral_fin"],
+	["elevator", "tail_skid"],
+	["rudder", "tail_skid"],
 ]
 const AILERON_POSES_DEG := [-20.0, 0.0, 20.0]
 
@@ -33,7 +45,7 @@ var _root: Node3D
 ## an approximate overlap volume/region for research; normal verification stops
 ## at the first intersecting sample in a pair. Zero surface gap alone is seam
 ## contact or a crossing; the inside-both result distinguishes penetration.
-func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_ACCEPTED_TAIL_GAP_M) -> Dictionary:
+func run(airplane: Dictionary, detailed := false, minimum_moving_gap_m := MINIMUM_ACCEPTED_MOVING_GAP_M) -> Dictionary:
 	_airplane = airplane
 	if not _airplane.has("root") or not (_airplane.root is Node3D):
 		return {"ok": false, "failures": ["airplane.root must be Node3D"]}
@@ -46,6 +58,14 @@ func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_
 	for hinge_name in ["aileron_left", "aileron_right", "elevator", "rudder"]:
 		if not _airplane.has("hinges") or not _airplane.hinges.has(hinge_name):
 			return {"ok": false, "failures": ["missing required hinge: %s" % hinge_name]}
+	var structural_pairs: Array = STRUCTURAL_UNION_PAIRS.duplicate(true)
+	for pair in OPTIONAL_STRUCTURAL_UNION_PAIRS:
+		if named_meshes.has(pair[1]):
+			structural_pairs.append(pair)
+	var moving_pairs: Array = MOVING_PAIRS.duplicate(true)
+	for pair in OPTIONAL_MOVING_PAIRS:
+		if named_meshes.has(pair[1]):
+			moving_pairs.append(pair)
 	var original_rotations := {}
 	for hinge_name in ["aileron_left", "aileron_right", "elevator", "rudder"]:
 		original_rotations[hinge_name] = _airplane.hinges[hinge_name].rotation
@@ -54,11 +74,14 @@ func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_
 		solid_cache[mesh_name] = _solid_from_mesh(named_meshes[mesh_name])
 	if not _validate_inside_probe(solid_cache):
 		return {"ok": false, "failures": ["point-in-mesh sanity probes failed"]}
+	var containment_fixture: Dictionary = _run_containment_fixture(solid_cache["fuselage"])
+	if not containment_fixture["ok"]:
+		return {"ok": false, "failures": ["contained-mesh sanity fixture failed"], "containment_fixture": containment_fixture}
 	var structural_union_results: Array[Dictionary] = []
-	for pair in STRUCTURAL_UNION_PAIRS:
+	for pair in structural_pairs:
 		var a_name: String = pair[0]
 		var b_name: String = pair[1]
-		var result := _pair_metrics(solid_cache[a_name], solid_cache[b_name], detailed, 0.0)
+		var result: Dictionary = _pair_metrics(solid_cache[a_name], solid_cache[b_name], true, 0.0) if detailed else {"metrics_omitted_in_fast_mode": true}
 		result["a"] = a_name
 		result["b"] = b_name
 		result["classification"] = "allowed fixed structural union; measured, not asserted clear"
@@ -75,20 +98,20 @@ func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_
 			var pose_solids := {}
 			for mesh_name in named_meshes:
 				pose_solids[mesh_name] = _solid_from_mesh(named_meshes[mesh_name])
-			for pair in MOVING_PAIRS:
+			for pair in moving_pairs:
 				var a_name: String = pair[0]
 				var b_name: String = pair[1]
-				var result := _pair_metrics(pose_solids[a_name], pose_solids[b_name], detailed, minimum_tail_gap_m)
+				var result := _pair_metrics(pose_solids[a_name], pose_solids[b_name], detailed, minimum_moving_gap_m)
 				result["a"] = a_name
 				result["b"] = b_name
 				result["elevator_deg"] = elevator_deg
 				result["rudder_deg"] = rudder_deg
 				pose_results.append(result)
-				if result["overlap_samples"] > 0:
+				if result["overlap_samples"] > 0 or result["probe_status"] == "unresolved_surface_contact":
 					overlap_total += 1
-					failures.append("tail %s/%s penetrates at elevator=%+.0f rudder=%+.0f" % [a_name, b_name, elevator_deg, rudder_deg])
-				elif result["minimum_surface_gap_m"] < minimum_tail_gap_m:
-					failures.append("tail %s/%s gap %.6f m is below %.6f m at elevator=%+.0f rudder=%+.0f" % [a_name, b_name, result["minimum_surface_gap_m"], minimum_tail_gap_m, elevator_deg, rudder_deg])
+					failures.append("tail %s/%s penetrates or has unresolved surface contact at elevator=%+.0f rudder=%+.0f" % [a_name, b_name, elevator_deg, rudder_deg])
+				elif result["minimum_surface_gap_m"] < minimum_moving_gap_m:
+					failures.append("tail %s/%s gap %.6f m is below %.6f m at elevator=%+.0f rudder=%+.0f" % [a_name, b_name, result["minimum_surface_gap_m"], minimum_moving_gap_m, elevator_deg, rudder_deg])
 			all_results.append({"elevator_deg": elevator_deg, "rudder_deg": rudder_deg, "pairs": pose_results})
 	var aileron_results: Array[Dictionary] = []
 	var aileron_overlap_total := 0
@@ -113,15 +136,17 @@ func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_
 			for pair in side_pairs:
 				var a_name: String = pair[0]
 				var b_name: String = pair[1]
-				var result := _pair_metrics(pose_solids[a_name], pose_solids[b_name], detailed, minimum_tail_gap_m)
+				var result := _pair_metrics(pose_solids[a_name], pose_solids[b_name], detailed, minimum_moving_gap_m)
 				result["a"] = a_name
 				result["b"] = b_name
 				result["side"] = side
 				result["aileron_deg"] = deflection_deg
 				pose_results.append(result)
-				if result["overlap_samples"] > 0:
+				if result["overlap_samples"] > 0 or result["probe_status"] == "unresolved_surface_contact":
 					aileron_overlap_total += 1
-					failures.append("aileron %s/%s penetrates at deflection=%+.0f" % [a_name, b_name, deflection_deg])
+					failures.append("aileron %s/%s penetrates or has unresolved surface contact at deflection=%+.0f" % [a_name, b_name, deflection_deg])
+				elif result["minimum_surface_gap_m"] < minimum_moving_gap_m:
+					failures.append("aileron %s/%s gap %.6f m is below %.6f m at deflection=%+.0f" % [a_name, b_name, result["minimum_surface_gap_m"], minimum_moving_gap_m, deflection_deg])
 			aileron_results.append({"side": side, "aileron_deg": deflection_deg, "pairs": pose_results})
 	for hinge_name in original_rotations:
 		_airplane.hinges[hinge_name].rotation = original_rotations[hinge_name]
@@ -133,12 +158,13 @@ func run(airplane: Dictionary, detailed := false, minimum_tail_gap_m := MINIMUM_
 		"grid_step_m": GRID_STEP_M,
 		"approximate_detection_limit_m": 0.0018,
 		"detailed": detailed,
-		"minimum_accepted_tail_gap_m": minimum_tail_gap_m,
+		"minimum_accepted_moving_gap_m": minimum_moving_gap_m,
+		"containment_fixture": containment_fixture,
 		"elevator_poses_deg": ELEVATOR_POSES_DEG,
 		"rudder_poses_deg": RUDDER_POSES_DEG,
 		"aileron_poses_deg": AILERON_POSES_DEG,
-		"structural_union_pairs": STRUCTURAL_UNION_PAIRS,
-		"moving_clearance_pairs": MOVING_PAIRS,
+		"structural_union_pairs": structural_pairs,
+		"moving_clearance_pairs": moving_pairs,
 		"structural_union_results": structural_union_results,
 		"overlap_pair_pose_count": overlap_total,
 		"results": all_results,
@@ -190,16 +216,114 @@ func _validate_inside_probe(solids: Dictionary) -> bool:
 	return inside_body and not outside_body and inside_stab
 
 
+## A 1 mm closed cube wholly inside the fuselage must be detected as contained
+## even though its surface has positive distance from the fuselage surface.
+func _run_containment_fixture(fuselage_solid: Dictionary) -> Dictionary:
+	var fuselage_bounds: AABB = fuselage_solid["bounds"]
+	var fixture := MeshInstance3D.new()
+	fixture.name = "clearance_containment_fixture"
+	var cube := BoxMesh.new()
+	cube.size = Vector3.ONE * CONTAINMENT_FIXTURE_SIZE_M
+	fixture.mesh = cube
+	fixture.position = fuselage_bounds.get_center()
+	_root.add_child(fixture)
+	_root.force_update_transform()
+	var cube_solid: Dictionary = _solid_from_mesh(fixture)
+	var result: Dictionary = _pair_metrics(cube_solid, fuselage_solid, false, MINIMUM_ACCEPTED_MOVING_GAP_M)
+	fixture.free()
+	_root.force_update_transform()
+	var passed: bool = result["probe_status"] == "contained_mesh_vertex" and result["overlap_samples"] > 0
+	return {
+		"ok": passed,
+		"fixture": "1 mm BoxMesh fully inside fuselage bounds center",
+		"probe_status": result["probe_status"],
+		"contained_vertices_detected": result["overlap_samples"],
+		"surface_gap_m": result["minimum_surface_gap_m"],
+	}
+
+
 func _pair_metrics(a: Dictionary, b: Dictionary, detailed: bool, minimum_gap_m: float) -> Dictionary:
 	var bounds_gap_sq := _aabb_distance_sq(a["bounds"], b["bounds"])
-	var surface_gap_sq := bounds_gap_sq
-	var surface_gap_is_lower_bound := not detailed and sqrt(bounds_gap_sq) >= minimum_gap_m
-	if not surface_gap_is_lower_bound:
-		surface_gap_sq = _minimum_surface_gap_sq(a["triangles"], b["triangles"])
+	var bounds_gap := sqrt(bounds_gap_sq)
+	if bounds_gap > 0.0 and bounds_gap >= minimum_gap_m:
+		return _clearance_result(bounds_gap, true, "aabb_separated")
+	var surface_gap := sqrt(_minimum_surface_gap_sq(a["triangles"], b["triangles"]))
+	if surface_gap > 1e-8:
+		var contained_point: Variant = _contained_vertex(a["triangles"], b["triangles"])
+		if contained_point == null:
+			contained_point = _contained_vertex(b["triangles"], a["triangles"])
+		if contained_point == null:
+			return _clearance_result(surface_gap, false, "separated_surfaces")
+		if detailed and _grid_cell_count(a["bounds"], b["bounds"]) <= MAX_GRID_CELLS:
+			var contained_probe := _probe_pair(a, b, true)
+			contained_probe["minimum_surface_gap_m"] = surface_gap
+			contained_probe["minimum_surface_gap_is_lower_bound"] = false
+			contained_probe["probe_status"] = "contained_vertex_and_volume_sampled"
+			return contained_probe
+		var contained_result := _clearance_result(surface_gap, false, "contained_mesh_vertex")
+		contained_result["overlap_samples"] = 1
+		contained_result["region_root_m"] = {"min": _vec3_array(contained_point), "max": _vec3_array(contained_point)}
+		return contained_result
+	var cells := _grid_cell_count(a["bounds"], b["bounds"])
+	if cells == 0:
+		return _clearance_result(0.0, false, "zero_volume_aabb_contact")
+	if cells > MAX_GRID_CELLS:
+		var crossing_point: Variant = _contained_vertex(a["triangles"], b["triangles"])
+		if crossing_point == null:
+			crossing_point = _contained_vertex(b["triangles"], a["triangles"])
+		if crossing_point != null:
+			var overlap_result := _clearance_result(0.0, false, "contained_mesh_vertex")
+			overlap_result["overlap_samples"] = 1
+			overlap_result["region_root_m"] = {"min": _vec3_array(crossing_point), "max": _vec3_array(crossing_point)}
+			return overlap_result
+		return _clearance_result(0.0, false, "unresolved_surface_contact")
 	var probe := _probe_pair(a, b, detailed)
-	probe["minimum_surface_gap_m"] = sqrt(surface_gap_sq)
-	probe["minimum_surface_gap_is_lower_bound"] = surface_gap_is_lower_bound
+	probe["minimum_surface_gap_m"] = surface_gap
+	probe["minimum_surface_gap_is_lower_bound"] = false
+	if probe["overlap_samples"] > 0:
+		probe["probe_status"] = "inside_both_grid"
+	else:
+		probe["probe_status"] = "unresolved_surface_contact"
 	return probe
+
+
+func _clearance_result(surface_gap_m: float, is_lower_bound: bool, status: String) -> Dictionary:
+	return {
+		"overlap_samples": 0,
+		"sampled_volume_cm3": null,
+		"region_root_m": null,
+		"overlap_aabb_root_m": null,
+		"minimum_surface_gap_m": surface_gap_m,
+		"minimum_surface_gap_is_lower_bound": is_lower_bound,
+		"probe_status": status,
+	}
+
+
+func _grid_cell_count(a_bounds: AABB, b_bounds: AABB) -> int:
+	var lo := Vector3(
+		maxf(a_bounds.position.x, b_bounds.position.x),
+		maxf(a_bounds.position.y, b_bounds.position.y),
+		maxf(a_bounds.position.z, b_bounds.position.z)
+	)
+	var hi := Vector3(
+		minf(a_bounds.end.x, b_bounds.end.x),
+		minf(a_bounds.end.y, b_bounds.end.y),
+		minf(a_bounds.end.z, b_bounds.end.z)
+	)
+	if hi.x <= lo.x or hi.y <= lo.y or hi.z <= lo.z:
+		return 0
+	return maxi(1, int(ceil((hi.x - lo.x) / GRID_STEP_M))) * maxi(1, int(ceil((hi.y - lo.y) / GRID_STEP_M))) * maxi(1, int(ceil((hi.z - lo.z) / GRID_STEP_M)))
+
+
+## If separated closed surfaces have positive distance, overlap can only be
+## containment. A mesh vertex inside the other solid proves that case.
+func _contained_vertex(source_triangles: Array, target_triangles: Array) -> Variant:
+	for record in source_triangles:
+		var vertices: PackedVector3Array = record["vertices"]
+		for vertex in vertices:
+			if _point_inside_mesh(vertex, target_triangles):
+				return vertex
+	return null
 
 
 func _probe_pair(a: Dictionary, b: Dictionary, detailed: bool) -> Dictionary:
@@ -216,7 +340,7 @@ func _probe_pair(a: Dictionary, b: Dictionary, detailed: bool) -> Dictionary:
 		minf(a_bounds.end.z, b_bounds.end.z)
 	)
 	if hi.x <= lo.x or hi.y <= lo.y or hi.z <= lo.z:
-		return {"overlap_samples": 0, "sampled_volume_cm3": 0.0 if detailed else null, "region_root_m": null, "overlap_aabb_root_m": null}
+		return {"overlap_samples": 0, "sampled_volume_cm3": 0.0 if detailed else null, "region_root_m": null, "overlap_aabb_root_m": null, "probe_status": "zero_volume_aabb_contact"}
 	var nx := maxi(1, int(ceil((hi.x - lo.x) / GRID_STEP_M)))
 	var ny := maxi(1, int(ceil((hi.y - lo.y) / GRID_STEP_M)))
 	var nz := maxi(1, int(ceil((hi.z - lo.z) / GRID_STEP_M)))
@@ -253,6 +377,7 @@ func _probe_pair(a: Dictionary, b: Dictionary, detailed: bool) -> Dictionary:
 		"sample_spacing_m": [step.x, step.y, step.z],
 		"region_root_m": null if first else {"min": _vec3_array(occupied_bounds.position), "max": _vec3_array(occupied_bounds.end)},
 		"overlap_aabb_root_m": {"min": _vec3_array(lo), "max": _vec3_array(hi)},
+		"probe_status": "inside_both_grid" if samples > 0 else "no_inside_both_grid_sample",
 	}
 
 

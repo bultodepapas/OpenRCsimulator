@@ -18,3 +18,11 @@ static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
 	for surface_name in rotations:
 		var r: Dictionary = rotations[surface_name]
 		airplane.hinges[surface_name].rotation = Vector3(r.x, r.y, 0)
+
+
+## Optional visual gear state from simulation; angles in radians around model axes.
+## Positive wheel rotation is around +X; positive steering is around +Y.
+static func apply_gear(airplane: Dictionary, wheel_angles: Dictionary, steering_rad: float) -> void:
+	for key in ["left", "right", "nose"]:
+		airplane.gear[key].rotation.x = float(wheel_angles.get(key, 0.0))
+	airplane.gear.steering.rotation.y = steering_rad
