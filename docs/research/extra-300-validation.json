@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-05",
+  "scope": "EX-00 research and plan, no application modifications by this task",
+  "markdown_files": 4,
+  "local_markdown_links_checked": 57,
+  "gallery_local_links_checked": 27,
+  "missing_links": [],
+  "download_hashes_verified": 13,
+  "derived_hashes_verified": 8,
+  "local_files_ignored": 24,
+  "third_party_files_tracked": 0,
+  "whitespace_check": "passed",
+  "app_test_sh": "not run: documentation and local reference downloads only",
+  "limits": [
+    "No calibrated geometry",
+    "No model or flight implementation",
+    "No hardware or pilot validation"
+  ],
+  "documents": [
+    {
+      "path": "docs/EXTRA-300-PLAN.md",
+      "sha256": "841045932104e0bf44849d30f02180d762f41f802688172708ff91bab221d54b"
+    },
+    {
+      "path": "docs/research/extra-300-resources.md",
+      "sha256": "ff57de0bbfcd40cdfaf802b23b02d2301b2aacaf4b37f9011f26c20286f5db4a"
+    },
+    {
+      "path": "docs/research/extra-300-integration-audit.md",
+      "sha256": "b35938088d783b1c42fc414899f904b398b2a3869455d877dd3d148be8196222"
+    },
+    {
+      "path": "docs/research/extra-300-family-research.md",
+      "sha256": "dcd98c05d21e808a4e365d0d656cb6fffc4c84db5b47f952a908e122bc107226"
+    }
+  ]
+}

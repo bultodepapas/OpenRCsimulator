@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-05",
+  "kind": "observed_synthetic_render_probe",
+  "godot": "4.7.2-stable (official)",
+  "engine_commit": "ed1daf0bf",
+  "renderer": "Compatibility / OpenGL",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "elapsed_s": 2.02259866666667,
+  "frames": 63,
+  "max_delta_s": 0.0333856666666667,
+  "save_error": 0,
+  "exit_code": 0,
+  "warning": "Could not set V-Sync mode: driver does not support this operation.",
+  "image": "emission-timing.png",
+  "image_sha256": "a24d9861b0dc20774176b8a8d056b6d1f977aa22864ebd04e97cc6316ecead27",
+  "limits": [
+    "Synthetic quads, not integrated aircraft smoke",
+    "Real delta with max_fps cap; not fixed timeline",
+    "Manual clock and offscreen queue not tested",
+    "No target GPU performance measurement"
+  ]
+}

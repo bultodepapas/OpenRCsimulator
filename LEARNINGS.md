@@ -153,6 +153,9 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Aircraft modeling and reference inspection
 
+- **EX-00, investigación ampliada:** la foto roja con estrellas apareció asociada a la variante .40, mientras la geometría elegida es .60. Una foto de la misma galería muestra el intradós de franjas azules/blancas, pero otras usan motores/hélices distintos: compartir ficha no acredita compartir SKU. Registrar acabado, dimensiones e instalación por separado. [Foto y procedencia](docs/research/extra-300-photo-investigation.md). (2026-10-05)
+- **EX-00, contraste de construcción:** la reseña de primera mano del .60 aporta una masa lista para volar por encima del rango del cartucho y una cuerda media redondeada que no satisface el chequeo `span × chord = area` del loader. Mantener la construcción publicada como caso de sensibilidad, no sustituir silenciosamente nominales ni derivadas. [Segunda ronda](docs/research/extra-300-round2.md). (2026-10-05)
+
 - **EX-00, segundo avión:** el manual del Extra 300S expresa los recorridos en pulgadas en la parte más ancha de cada mando; no se pueden cargar como grados. El ala trapezoidal también obliga a distinguir cuerda local, `S/b` y cuerda aerodinámica media antes de trasladar CG y coeficientes. [Recursos inspeccionados](docs/research/extra-300-resources.md). (2026-10-05; investigación, sin vuelo nuevo)
 - **EX-00, integración:** aceptar otra ruta JSON en FlightSession no basta para tener dos aviones. El builder, los anclajes del CG, los ejes de bisagra, el tren, la máscara de sombra y los metadatos de traza conservan supuestos del Stik. La definición de avión debe resolver modelo y física juntos, preservando el caso actual. [Auditoría y plan](docs/research/extra-300-integration-audit.md). (2026-10-05; lectura de código)
 - **EX-00, lectura de fuentes:** ampliar la anotación de incidencia del plano permitió leer −½°, evitando interpretarla como 1½°. Un PDF grande o un DXF disponible tampoco garantiza escala ni autoría original: el paquete Extra incluye extracciones del manual y costillas redibujadas, todavía sin calibrar. [Plan del segundo avión](docs/EXTRA-300-PLAN.md). (2026-10-05)
@@ -198,3 +201,51 @@ Prueba y archivos: [reporte v4](docs/research/ugly-stik-model-v4.md), [validaci�
 - **US-V07, capturas automáticas HD:** duplicar resolución conserva el encuadre angular y no corrige una rueda cortada; se revisaron las miniaturas y se abrió la cámara del tren principal. Una suite separada permite añadir macros, relleno y 2560 × 1440 sin cambiar las comparaciones históricas. El wrapper recreó carpeta y galería desde clon limpio, con 28/28 PNG idénticos. En GDScript, una expresión condicional con arrays literales puede perder el tipo `Array[String]` en ejecución aunque pase el parseo; inicializar el array tipado y añadir sus elementos evitó ese fallo. [Prueba](docs/research/ugly-stik-showcase-validation.json). (2026-10-05)
 
 - **US-V03/V06/V07, motor v5:** un disco oscuro no garantiza una admisión hueca; hay que terminar la carcasa antes de la boca y construir labio, pared interior y fondo. Los perfiles de revolución suavizan piezas circulares conservando cabezas hexagonales. Unir conos de ejes distintos por su centro deja huecos: sus anillos extremos deben coincidir en plano y radio. Once macros con la misma cámara y luz permiten descubrir esas uniones; las once imágenes finales se reprodujeron por hash desde un clon limpio. [Análisis y pruebas](docs/research/ugly-stik-engine-v5.md). (2026-10-05)
+
+
+## 2026-10-05 · SM-PLAN — investigación de humo RC y bomba auxiliar
+
+- El pin real es Godot 4.7.2 con Compatibility. Las partículas GPU están disponibles, pero las capacidades deben comprobarse en ese backend: su código implementa solicitudes explícitas de avance y no admite particle trails. La elección propuesta son dos emisores de sprites independientes. Evidencia: lectura del pin, documentación y fuente GLES3; no se ha medido todavía el efecto.
+- La captura actual avanza física sin presentar las poses intermedias. Una nube con historial necesita reproducir esa trayectoria; precalentar partículas en la posición final produciría una referencia visual incorrecta. La pausa de vuelo también es propia de la simulación, por lo que hay que conectar explícitamente el reloj del efecto.
+- Un canal AUX puede llegar por USB como eje o botón; el lector actual solo procesa eventos de ejes. La bomba requiere asignación opcional por dispositivo y conservar los cuatro canales AETR. La documentación de bombas reales respalda ese tipo de control, pero no valida cuánto humo produciría nuestro silenciador .61 concreto.
+
+Fuentes, alcance y pruebas pendientes: [plan de humo y bomba](docs/SMOKE-PLAN.md) · [investigación](docs/research/rc-exhaust-smoke.md).
+
+## 2026-10-05 · M5-W00 — investigación y plan de viento
+
+- AirData ya resta viento mundial en ejes de cuerpo, pero la sesión y el HUD le pasan cero. Conectar fuerzas solamente dejaría mal el arranque trimado y la velocidad mostrada: el estado es velocidad respecto al suelo, mientras trim y aerodinámica requieren velocidad relativa al aire. La prueba existente `test_air_data.gd` pasó 11/11 con Godot 4.7.2; todavía no prueba clima integrado.
+- Una llamada a `Simulation.step()` consulta cargas cinco veces, cuatro dentro de RK4, y mantiene el mismo tiempo en todas. El generador no puede consumir azar al consultar; las ráfagas temporales requieren tiempos de etapa explícitos. Es un hallazgo de código, con cambio y pruebas pendientes.
+- Las seis estaciones del ala corrigen déficit de pérdida, no son un solver distribuido completo. Viento distinto en cada ala exige comprobar cargas locales y evitar duplicar el amortiguamiento global. Dryden describe un modelo estadístico; su nombre no demuestra realismo de un campo RC.
+- `Area3D.wind_*` afecta SoftBody3D y no integra nuestra física propia. La deriva de nubes actual está en celdas/s; con viento variable hay que integrar desplazamiento, no multiplicar la velocidad actual por el tiempo. El reloj visual envuelto a 1024 s tampoco sirve como tiempo físico del viento.
+
+Fuentes primarias, configuraciones propuestas y pruebas de implementación: [plan M5 de viento](docs/WIND-PLAN.md), [auditoría Godot](docs/research/wind-godot-integration.md), [investigación física](docs/research/wind-physics-primary-sources.md). Entrega documental; sin viento implementado ni rendimiento nuevo medido.
+
+## 2026-10-05 · M5-W00 — doce investigaciones de herramientas y Godot
+
+- El ensayo aislado con Godot 4.7.2 pasó diez comprobaciones: JSON necesita `full_precision` para conservar el float del fixture y cadenas para semillas grandes; ConfigFile conserva el int64 probado. El parser JSON admite comas finales, por lo que parsear no equivale a validar el formato del clima.
+- `SpinBox.set_value_no_signal()` también cuantiza según `step`; silenciar señales no protege la precisión del modelo. El texto pendiente todavía puede diferir de `value` hasta `apply()`. Conservar un borrador preciso y confirmar los editores al aplicar evita cambiar el clima solo por abrir un panel.
+- El análisis SciPy de una misma serie OU mostró RMS temporal 0.502766 m/s frente a 0.426056 m/s espectral con segmentos cortos y detrend local. La resolución y el detrend son parte del protocolo de validación. La discretización ZOH de una entrada determinista tampoco entrega por sí sola la covarianza del ruido estocástico.
+- La fuente GLES3 integra la velocidad de partículas antes de `process()`: un shader que además mueva `TRANSFORM` debe decidir quién integra para evitar doble transporte. Es evidencia de código; la prueba visual integrada queda pendiente.
+- Los monitores custom de Godot recortan negativos y no sirven directamente para componentes N/E/D firmadas. JSBSim y TurbSim son candidatos de comparación offline, con ejes/unidades/hipótesis explícitos; no calibran condiciones RC por sí mismos.
+
+Fuentes, ensayos reproducibles, límites y correspondencia con entregas: [doce investigaciones de viento](docs/research/wind-investigations/README.md). Se afinó el plan; no se implementó meteorología ni se añadieron dependencias al juego.
+
+
+## 2026-10-05 · EX-00 — doce investigaciones de herramientas
+
+- La lectura de `shadow.gd` mostró que medir la extensión desde las mallas no actualiza la máscara rectangular ni su referencia longitudinal. El Extra necesita contorno y datum propios; esta separación también evita duplicar proporciones del Stik.
+- Cargar el script del avión en segundo plano no ejecuta su construcción procedural ni precalienta automáticamente el atlas SVG. Medir lectura, construcción y primer frame por separado antes de introducir hilos.
+- La geometría decorativa no identifica coeficientes de vuelo. XFOIL y AVL son candidatos offline con hipótesis limitadas; cualquier contraste exige ejes, unidades, CG y cuerda de normalización coherentes, especialmente MAC frente a `S/b`.
+- Las decisiones de herramientas quedan ligadas a pasos EX y ensayos pendientes. Esta ronda revisó código y fuentes; no instaló bibliotecas ni produjo medidas nuevas de vuelo o rendimiento.
+
+Fuentes, doce preguntas y mejoras compartidas con el Stik: [investigaciones de herramientas](docs/research/extra-aircraft-tooling/README.md).
+
+## 2026-10-05 · SM-PLAN revisión 2 — doce investigaciones y ensayo de emisión
+
+- En un proyecto sintético con Godot 4.7.2 Compatibility, un emisor a 40 m/s y límite de 30 fps dejó grupos separados de quads incluso con interpolación y paso de partículas de 60 Hz. Suavizar estados de partículas no equivale a distribuir nacimientos entre poses. El proyecto, PNG y resultado se conservan; no prueban todavía el humo integrado ni rendimiento de GPU real.
+- La lectura de GLES3 distingue solicitar tiempo de encolar el procesamiento. La propuesta de reloj manual necesita probar `RenderingServer.particles_request_process(emitter.get_base())` fuera de cámara; `get_instance()` representa otro RID. Las solicitudes temporales se reemplazan y sus dos duraciones no codifican una lista arbitraria de transiciones AUX.
+- Una máscara de avión obtenida ocultando también su humo incluiría ambos efectos en la diferencia de imágenes. Capturar la silueta sin humo y usar otra región para la estela evita contaminar la medida de legibilidad.
+- Las demos Forward+ y los plugins de editor son referencias, no prueba de compatibilidad. Se mantiene material nativo, máscara pequeña y proximity fade condicionado; se registraron licencias/revisiones de candidatos y herramientas offline sin añadir dependencias.
+- El bloque AUX debe validarse aparte de AETR, revalidarse al cambiar calibración y borrar su historial de eventos vistos al cambiar perfil. OFF corta nuevos nacimientos; la nube residual procede de partículas que ya existían.
+
+Evidencia: [doce investigaciones y catálogo](docs/research/smoke-investigations/README.md), [ensayo reproducible](docs/research/smoke-investigations/godot-evidence/README.md), [plan revisado](docs/SMOKE-PLAN.md). La entrega modifica documentación y un experimento aislado; no implementa el efecto en `app/`.

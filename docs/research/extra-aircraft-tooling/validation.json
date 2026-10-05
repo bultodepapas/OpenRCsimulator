@@ -1,0 +1,16 @@
+{
+  "schema": "openrc-tooling-research-validation-v1",
+  "date": "2026-10-05",
+  "reports": 4,
+  "investigations": 12,
+  "unique_source_urls": 63,
+  "local_links_checked": 146,
+  "topic_anchors_checked": 12,
+  "missing_local_links": [],
+  "report_hashes_verified": true,
+  "trailing_whitespace": [],
+  "scoped_git_diff_check": "passed",
+  "installed_dependencies": [],
+  "runtime_tests_executed": false,
+  "scope_note": "No prueba disponibilidad futura de URLs ni exactitud del modelo; no se ejecutaron experimentos propuestos."
+}

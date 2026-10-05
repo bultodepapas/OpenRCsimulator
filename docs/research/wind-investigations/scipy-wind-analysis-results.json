@@ -1,0 +1,96 @@
+{
+  "environment": {
+    "numpy": "1.26.4",
+    "python": "3.12.3",
+    "scipy": "1.11.4"
+  },
+  "experiments": [
+    {
+      "experiment": "stationary_scalar_ou_welch_window_and_detrend",
+      "observed": {
+        "expected_lag_1_s_correlation": 0.6065306597126334,
+        "lag_1_s_correlation": 0.5940689478851644,
+        "sample_rms_mps": 0.5027656353790173,
+        "welch_results": [
+          {
+            "detrend": "constant",
+            "frequency_bin_spacing_hz": 0.05859375,
+            "integrated_psd_rms_mps": 0.42605582826543414,
+            "nperseg_samples": 4096,
+            "segment_duration_s": 17.066666666666666
+          },
+          {
+            "detrend": "false",
+            "frequency_bin_spacing_hz": 0.05859375,
+            "integrated_psd_rms_mps": 0.471657056516397,
+            "nperseg_samples": 4096,
+            "segment_duration_s": 17.066666666666666
+          },
+          {
+            "detrend": "constant",
+            "frequency_bin_spacing_hz": 0.029296875,
+            "integrated_psd_rms_mps": 0.4700377408986141,
+            "nperseg_samples": 8192,
+            "segment_duration_s": 34.13333333333333
+          },
+          {
+            "detrend": "false",
+            "frequency_bin_spacing_hz": 0.029296875,
+            "integrated_psd_rms_mps": 0.49074873020873266,
+            "nperseg_samples": 8192,
+            "segment_duration_s": 34.13333333333333
+          },
+          {
+            "detrend": "constant",
+            "frequency_bin_spacing_hz": 0.0146484375,
+            "integrated_psd_rms_mps": 0.4922870041903206,
+            "nperseg_samples": 16384,
+            "segment_duration_s": 68.26666666666667
+          },
+          {
+            "detrend": "false",
+            "frequency_bin_spacing_hz": 0.0146484375,
+            "integrated_psd_rms_mps": 0.49958144870830645,
+            "nperseg_samples": 16384,
+            "segment_duration_s": 68.26666666666667
+          }
+        ]
+      },
+      "parameters": {
+        "dt_s": 0.004166666666666667,
+        "duration_s": 900,
+        "nfft": "equal to nperseg",
+        "overlap_fraction": 0.5,
+        "sample_count": 216000,
+        "sample_rate_hz": 240.0,
+        "scaling": "density",
+        "seed": 20261005,
+        "target_rms_mps": 0.5,
+        "tau_s": 2.0,
+        "window": "periodic Hann (sym=False)"
+      }
+    },
+    {
+      "experiment": "scalar_ou_zoh_vs_exact_process_noise_covariance",
+      "observed": {
+        "Ad_cont2discrete": 0.9979188352992994,
+        "Ad_expm": 0.9979188352992993,
+        "Bd_zoh": 0.004162329401401499,
+        "Qd_absolute_difference_mps2": 3.903127820947816e-18,
+        "Qd_scalar_ou_reference_mps2": 0.0010394995387225103,
+        "Qd_van_loan_mps2": 0.0010394995387225142
+      },
+      "parameters": {
+        "continuous_A_per_s": -0.5,
+        "continuous_B": 1.0,
+        "continuous_noise_intensity_qc_mps2_per_s": 0.25,
+        "discretization_method": "ZOH",
+        "dt_s": 0.004166666666666667,
+        "sample_rate_hz": 240.0,
+        "stationary_rms_mps": 0.5,
+        "tau_s": 2.0
+      }
+    }
+  ],
+  "scope": "Exploratory offline calculations; not an app test or RC atmospheric validation."
+}

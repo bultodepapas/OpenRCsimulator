@@ -28,7 +28,8 @@
       "attribution": "Great Planes; archival derivatives Alan Sinclair / Outerzone",
       "use": "Scale candidate; verify against original manual",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:21.799213+00:00"
+      "retrieved_at": "2026-10-05T22:59:21.799213+00:00",
+      "pdf_pages": 2
     },
     {
       "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_manual.pdf",
@@ -42,7 +43,8 @@
       "attribution": "Great Planes; archival derivatives Alan Sinclair / Outerzone",
       "use": "Primary Great Planes original manual archived by Outerzone",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:24.286593+00:00"
+      "retrieved_at": "2026-10-05T22:59:24.286593+00:00",
+      "pdf_pages": 50
     },
     {
       "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_vector.pdf",
@@ -56,7 +58,8 @@
       "attribution": "Great Planes; archival derivatives Alan Sinclair / Outerzone",
       "use": "Unscaled extraction from manual; independent scale verification required",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:26.165984+00:00"
+      "retrieved_at": "2026-10-05T22:59:26.165984+00:00",
+      "pdf_pages": 2
     },
     {
       "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_CAD.zip",
@@ -81,10 +84,14 @@
       "sha256": "bb555f42969ffed4d0005ea7352d0969a632beba40ede44e9480b8ea8c281cf5",
       "content_type": "image/jpeg",
       "kind": "photo",
-      "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
-      "use": "Builder photograph; inspect appearance, not metric calibration",
+      "attribution": "Publicada en Outerzone oz10977; el aporte del conjunto se acredita a William Trujillo Melo; autor de la fotografía original no confirmado",
+      "use": "Referencia monocromática de otra decoración; no tratar como la misma construcción que fotos 004–007",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:29.596524+00:00"
+      "retrieved_at": "2026-10-05T22:59:29.596524+00:00",
+      "image_dimensions": [
+        640,
+        480
+      ]
     },
     {
       "path": "references/extra-300/photos/gp-extra-300s-60-004.jpg",
@@ -98,7 +105,11 @@
       "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
       "use": "Builder photograph; inspect appearance, not metric calibration",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:30.730288+00:00"
+      "retrieved_at": "2026-10-05T22:59:30.730288+00:00",
+      "image_dimensions": [
+        640,
+        467
+      ]
     },
     {
       "path": "references/extra-300/photos/gp-extra-300s-60-005.jpg",
@@ -112,7 +123,11 @@
       "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
       "use": "Builder photograph; inspect appearance, not metric calibration",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:31.822262+00:00"
+      "retrieved_at": "2026-10-05T22:59:31.822262+00:00",
+      "image_dimensions": [
+        640,
+        381
+      ]
     },
     {
       "path": "references/extra-300/photos/gp-extra-300s-60-006.jpg",
@@ -126,7 +141,11 @@
       "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
       "use": "Builder photograph; inspect appearance, not metric calibration",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:33.081806+00:00"
+      "retrieved_at": "2026-10-05T22:59:33.081806+00:00",
+      "image_dimensions": [
+        640,
+        602
+      ]
     },
     {
       "path": "references/extra-300/photos/gp-extra-300s-60-007.jpg",
@@ -140,7 +159,11 @@
       "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
       "use": "Builder photograph; inspect appearance, not metric calibration",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:34.288474+00:00"
+      "retrieved_at": "2026-10-05T22:59:34.288474+00:00",
+      "image_dimensions": [
+        640,
+        572
+      ]
     },
     {
       "path": "references/extra-300/photos/gp-extra-300s-60-main.jpg",
@@ -154,7 +177,11 @@
       "attribution": "William Trujillo Melo, credited in Outerzone oz10977",
       "use": "Builder overview",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:35.467279+00:00"
+      "retrieved_at": "2026-10-05T22:59:35.467279+00:00",
+      "image_dimensions": [
+        640,
+        480
+      ]
     },
     {
       "path": "references/extra-300/comparison/ef-60-extra-300-exp-v2-manual.pdf",
@@ -168,7 +195,8 @@
       "attribution": "Extreme Flight RC",
       "use": "Different electric RC design; comparison only",
       "redistribution": "local-reference-only; not licensed for game redistribution",
-      "retrieved_at": "2026-10-05T22:59:36.039619+00:00"
+      "retrieved_at": "2026-10-05T22:59:36.039619+00:00",
+      "pdf_pages": 29
     },
     {
       "path": "references/extra-300/provenance/extra-1993.html",
@@ -183,6 +211,522 @@
       "use": "Manufacturer evidence of 300L production and family history",
       "redistribution": "local-reference-only; not licensed for game redistribution",
       "retrieved_at": "2026-10-05T22:59:38.099892+00:00"
+    },
+    {
+      "path": "references/extra-300/provenance/outerzone-oz12489.html",
+      "url": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "bytes": 38196,
+      "sha256": "bf7c5ee393635424d6358416e6aa593839d6df7aa50509f616856ae113af13df",
+      "content_type": "text/html",
+      "kind": "source-page",
+      "attribution": "Outerzone",
+      "use": "Photo source and separate Great Planes .40 variant",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:16.342948+00:00",
+      "round": 2
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/oz12489-product-photo.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models/12489.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models/12489.jpg",
+      "bytes": 47664,
+      "sha256": "83509c0cdca0c09f3abfe77ae3e9a616c897d0b5199cc24f24f6187216fd365a",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Great Planes product image archived by Outerzone; original photographer unidentified",
+      "use": "Compare pixels with owner image.png; visual livery reference, not .60 dimensions",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:17.444242+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        480
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/Extra_300S_40_oz12489.pdf",
+      "url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Plan&Filename=Extra_300S_40_oz12489.pdf",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Plan&Filename=Extra_300S_40_oz12489.pdf",
+      "bytes": 385311,
+      "sha256": "dc59c67d0593b3d4fc6c17cce18bf88e44642061f7b94ac924aefb4a0961ade1",
+      "content_type": "application/pdf",
+      "kind": "comparison-plan",
+      "attribution": "Great Planes; archive contributors jmdauge / Alan Sinclair",
+      "use": "Different .40 airframe, appearance and construction comparison only; CAD derivative not calibrated",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:18.970003+00:00",
+      "round": 2,
+      "pdf_pages": 2
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/Extra_300S_40_oz12489_instructions.pdf",
+      "url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_instructions.pdf",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_instructions.pdf",
+      "bytes": 1351455,
+      "sha256": "6803da9ad25c2f11d628d10d73eb4b387a191f4426b5f7149543770b5db7c084",
+      "content_type": "application/pdf",
+      "kind": "comparison-manual",
+      "attribution": "Great Planes; archive contributors jmdauge / Alan Sinclair",
+      "use": "Different .40 airframe, appearance and construction comparison only; CAD derivative not calibrated",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:20.927675+00:00",
+      "round": 2,
+      "pdf_pages": 48
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/Extra_300S_40_oz12489_parts_callout.pdf",
+      "url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_parts_callout.pdf",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_parts_callout.pdf",
+      "bytes": 152911,
+      "sha256": "689b6f6562294f30eb6a489a8d3864634a9e46d03306c9500a8d8f40fa1d5267",
+      "content_type": "application/pdf",
+      "kind": "comparison-parts",
+      "attribution": "Great Planes; archive contributors jmdauge / Alan Sinclair",
+      "use": "Different .40 airframe, appearance and construction comparison only; CAD derivative not calibrated",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:22.312067+00:00",
+      "round": 2,
+      "pdf_pages": 2
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/Extra_300S_40_oz12489_parts_cad.zip",
+      "url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_parts_cad.zip",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/download_file.asp?planID=12489&FileType=Supp&Filename=Extra_300S_40_oz12489_parts_cad.zip",
+      "bytes": 379013,
+      "sha256": "57ec0780d152b307a07cff66e830b9c6fe55b48699104775ebb687c1e4a1789a",
+      "content_type": "application/x-zip-compressed",
+      "kind": "comparison-cad",
+      "attribution": "Great Planes; archive contributors jmdauge / Alan Sinclair",
+      "use": "Different .40 airframe, appearance and construction comparison only; CAD derivative not calibrated",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:23.864815+00:00",
+      "round": 2
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-003.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/003.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/003.jpg",
+      "bytes": 43440,
+      "sha256": "7b2d1b68623d4fb7c3bf9c18be492deb7227e6e38c085aa612d50175a515547c",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:24.936747+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        372
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-004.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/004.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/004.jpg",
+      "bytes": 80210,
+      "sha256": "aa1de80e335265d1042aeab06bf746dd131aebdad7fa186852fcb68e76619217",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:26.155651+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        560
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-005.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/005.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/005.jpg",
+      "bytes": 75677,
+      "sha256": "653400276e99c04156176c34ddb17d50d925d74e7a604af370cb1e6bb1316c60",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:27.463059+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        489
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-006.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/006.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/006.jpg",
+      "bytes": 55341,
+      "sha256": "c9fcf36c7b1ec9c21217a8f7eebf62b5cfa998ee58438d25a34847e2915ef8c3",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:28.558280+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        344
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-007.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/007.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/007.jpg",
+      "bytes": 47325,
+      "sha256": "0178d8178f0053f51e42379901fca6b8d97fe6d5a905d8f01cc6d2f9ff3f883d",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:29.649227+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        334
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-008.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/008.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/008.jpg",
+      "bytes": 33039,
+      "sha256": "fe38bb9c0abbeed2ec209a8ef894d0ecfb5ec016e0789ae7ebf31134670107b2",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:30.727437+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        384
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-009.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/009.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/009.jpg",
+      "bytes": 32169,
+      "sha256": "bf3c993e2adf1dc9fed671cb094933dee987365185464029b8fc53e4481cbcdc",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:31.789264+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        290
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-010.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/010.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/010.jpg",
+      "bytes": 33524,
+      "sha256": "cbf729a999d94c1d2f4409f004de653bedf331816214134aba01ec1a5e4a6911",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:32.835830+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        381
+      ]
+    },
+    {
+      "path": "references/extra-300/comparison/gp-extra-300s-40/photos/oz12489-011.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/011.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=12489",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/12489/011.jpg",
+      "bytes": 20740,
+      "sha256": "be115a40def8a1e7a581342572cba99df403e96d9eb264e158e3ef9889ddc7b3",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Separate .40 variant; image role determined by visual inspection",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:33.733104+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        329
+      ]
+    },
+    {
+      "path": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_review_RCM.pdf",
+      "url": "https://outerzone.co.uk/download_file.asp?planID=10977&FileType=Supp&Filename=Extra_300S_60_oz10977_review_RCM.pdf",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/download_file.asp?planID=10977&FileType=Supp&Filename=Extra_300S_60_oz10977_review_RCM.pdf",
+      "bytes": 3053298,
+      "sha256": "46d255f455c2343f45e424ecb6cd9805e8a70095af0dd24425d762aa39a384ef",
+      "content_type": "application/pdf",
+      "kind": "build-review",
+      "attribution": "Jack J Joseph, RCM April 2000; archive Outerzone",
+      "use": "First-person build/flight report of .60; qualitative independent evidence, not measured aero coefficients",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:37.127220+00:00",
+      "round": 2,
+      "pdf_pages": 3
+    },
+    {
+      "path": "references/extra-300/photos/gp-extra-300s-60-008.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/008.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/008.jpg",
+      "bytes": 46532,
+      "sha256": "49cddcb484891d6d8b4e6322631c47893184112d485e1fa14b94103b0d29e21e",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Additional .60 construction/install views; inspect before classification",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:38.221171+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        342
+      ]
+    },
+    {
+      "path": "references/extra-300/photos/gp-extra-300s-60-009.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/009.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/009.jpg",
+      "bytes": 26924,
+      "sha256": "2a12d2b92fe9cc65fa284f177a24366e6a176ab17ae9c1708aa8551dae8665b4",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Additional .60 construction/install views; inspect before classification",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:39.169154+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        355
+      ]
+    },
+    {
+      "path": "references/extra-300/photos/gp-extra-300s-60-010.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/010.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/010.jpg",
+      "bytes": 29479,
+      "sha256": "92c75a8323005e5e00aba085473e67042d91ef5e1550668e4602188af26c6969",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Additional .60 construction/install views; inspect before classification",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:40.124377+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        367
+      ]
+    },
+    {
+      "path": "references/extra-300/photos/gp-extra-300s-60-011.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/011.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/011.jpg",
+      "bytes": 28477,
+      "sha256": "34882d95ce04936fa7685105d15b7d11a0ffcc77f11bba88e814d9f9cf22e2b9",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Additional .60 construction/install views; inspect before classification",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:41.045435+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        465
+      ]
+    },
+    {
+      "path": "references/extra-300/photos/gp-extra-300s-60-012.jpg",
+      "url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/012.jpg",
+      "source_page": "https://outerzone.co.uk/plan_details.asp?ID=10977",
+      "final_url": "https://outerzone.co.uk/images/_thumbs/models_more/10977/012.jpg",
+      "bytes": 32863,
+      "sha256": "b88677c394e6fcfb8d64533ec85c16da4d38e447f394257fff0457029f3facb8",
+      "content_type": "image/jpeg",
+      "kind": "photo",
+      "attribution": "Publicada en Outerzone, ficha indicada en source_page; autor fotográfico individual no confirmado",
+      "use": "Additional .60 construction/install views; inspect before classification",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-05T23:08:42.102671+00:00",
+      "round": 2,
+      "image_dimensions": [
+        640,
+        472
+      ]
+    }
+  ],
+  "inspection": {
+    "date": "2026-10-05",
+    "methods": [
+      "File signatures PDF/JPEG/ZIP",
+      "SHA-256 and sizes",
+      "pdfinfo and pdftotext",
+      "Pillow JPEG decode",
+      "zipfile.testzip CRC, no extraction/execution",
+      "Visual inspection of both plan sheets, manual pages 43/47, thrust note and six-photo contact sheet"
+    ],
+    "limits": [
+      "No scale calibration",
+      "No aerodynamic validation",
+      "No model implementation",
+      "DXF geometry and units not inspected"
+    ],
+    "derived_local_files": [
+      {
+        "path": "references/extra-300/inspection/downthrust-note.png",
+        "bytes": 15966,
+        "sha256": "9ae49303738cfa19e4703de0dc36cc41cf46a298042f9dc36beb62a7810af76c",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/manual-p43-controls-cg.png",
+        "bytes": 562966,
+        "sha256": "e617d5420ab33a7135bd459d36e18de6218d0f919ba4a5cce865b0054d2f5182",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/manual-p47-two-view.png",
+        "bytes": 61890,
+        "sha256": "427c529bf0386b0155b239ff673ea23234fa5eefb3a97f757b166381a503ef66",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/photos-contact-sheet.jpg",
+        "bytes": 154504,
+        "sha256": "811d222fdac33f0818299e7b15ab0814ee36ddf02550cead0ac9e7ebd0366834",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/plan-1.png",
+        "bytes": 1310557,
+        "sha256": "c0dedaa9344ee9a448164126aad0d35a30b57c587bf74141d2ada0f9ea44d50f",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/plan-2.png",
+        "bytes": 1039725,
+        "sha256": "5af3794bf858c32ed0dc110bb559a9455fae54466835a003576cde299a34e4ff",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/plan1-detail.png",
+        "bytes": 2639415,
+        "sha256": "306cd11e1960b91951347c5c3f9adfe0e94f46c7d95bb56e923862978c3d7e67",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/title-fuselage.png",
+        "bytes": 129483,
+        "sha256": "b171fae4656f02cfca6698a6a1ac7ddc9b2279ad8c45a4823d7f8572214bd897",
+        "source": "Local rendering/crop/contact-sheet of files in downloads manifest; reference-only"
+      },
+      {
+        "path": "references/extra-300/inspection/gp40-photo-contact.jpg",
+        "bytes": 161552,
+        "sha256": "ca88b8fbfae82f508d2e31b88bac55684b27c9ab774558a713d487b599b278e7",
+        "source": "Local render/contact sheet of round2 original files; reference-only",
+        "round": 2
+      },
+      {
+        "path": "references/extra-300/inspection/gp60-additional-contact.jpg",
+        "bytes": 108632,
+        "sha256": "bb13b8653b6c714d0c0970af6cca9930950d5fa0d8f51c3fabdc7d9c9f4cd65b",
+        "source": "Local render/contact sheet of round2 original files; reference-only",
+        "round": 2
+      },
+      {
+        "path": "references/extra-300/inspection/review60-1.png",
+        "bytes": 5396975,
+        "sha256": "4edbd9bba05016decb60a591907a441b7e3452a74caa94d507d093970f97a2e9",
+        "source": "Local render/contact sheet of round2 original files; reference-only",
+        "round": 2
+      },
+      {
+        "path": "references/extra-300/inspection/review60-2.png",
+        "bytes": 4324080,
+        "sha256": "06233b07200d9d2dee6907c4e0fba35ce0447c8b682e87722435d06ea334cc00",
+        "source": "Local render/contact sheet of round2 original files; reference-only",
+        "round": 2
+      },
+      {
+        "path": "references/extra-300/inspection/review60-3.png",
+        "bytes": 4694643,
+        "sha256": "8860d7d67894bacaf2fe8960e2a003d37c2a521ea722dc347ebefab7593bdec8",
+        "source": "Local render/contact sheet of round2 original files; reference-only",
+        "round": 2
+      }
+    ],
+    "round2": {
+      "date": "2026-10-05",
+      "report": "docs/research/extra-300-round2.md",
+      "evidence": "docs/research/extra-300-round2-evidence.json",
+      "read_cad_headers_and_entities": true,
+      "cad_geometric_calibration": false,
+      "app_modified": false
+    }
+  },
+  "round2_download_failures": [
+    {
+      "url": "https://www.electronicsandbooks.com/edt/manual/Hardware/E/Extra%20Aircraft/POH%20EA300S%20CUS%202006-09-20.pdf",
+      "path": "references/extra-300/full-scale/extra-300s-information-manual-2006.pdf",
+      "error": "<urlopen error [Errno 113] No route to host>"
+    },
+    {
+      "url": "https://www.electronicsandbooks.com/edt/manual/Hardware/E/Extra%20Aircraft/300S_MM_20011204.pdf",
+      "path": "references/extra-300/full-scale/extra-300s-maintenance-manual-2001.pdf",
+      "error": "<urlopen error [Errno 113] No route to host>"
+    }
+  ],
+  "owner_files": [
+    {
+      "path": "references/extra-300/image.png",
+      "bytes": 400043,
+      "sha256": "9f2d2a0bf9c2f2f8e34337649fbf666dc4dc563312ea0487436e473d3e442aab",
+      "source": "Foto aportada por el propietario en el workspace y adjunta en conversación",
+      "kind": "owner-photo",
+      "image_dimensions": [
+        640,
+        480
+      ],
+      "use": "Referencia prioritaria de acabado; composición coincide con foto pública oz12489 del Extra300S40; no determina dimensiones del .60",
+      "redistribution": "local-reference-only; no redistribution permission inferred"
     }
   ]
 }
