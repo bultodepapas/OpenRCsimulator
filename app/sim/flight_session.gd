@@ -28,6 +28,8 @@ const AUX_SERVO := 1
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
 var sim: Node
+## The aircraft data file ([F5] reloads it).
+var aircraft_path := Scenarios.AIRCRAFT
 var aircraft := {} # AircraftData result: { ok, errors, warnings, model }
 var start := {} # trimmed starting condition (Trim result); empty without valid data
 ## Trims in pilot units (−1…1), like radio trim tabs: solved at the start, added to the sticks.
@@ -50,6 +52,9 @@ var device_info: Callable = func(device: int) -> Dictionary:
 var profiles_path := "user://rc_calibration.cfg"
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
+## false: the engine is stopped (dead stick: no thrust, no torque, rpm 0) until restarted. A power-off glide start
+## stops it; every other start runs it. (Starting and stopping in flight: ROADMAP G2.)
+var engine_running := true
 ## Why the session paused the simulation ("" = it did not), for the panel.
 var pause_reason := ""
 ## false: commands hold still (captures, headless traces).
@@ -64,24 +69,14 @@ func _init() -> void:
 
 ## Loads the aircraft, solves the trimmed start and creates the simulation. Call once, before adding to the tree.
 func setup(path := Scenarios.AIRCRAFT) -> void:
+	aircraft_path = path
 	sim = Sim.new()
-	aircraft = AircraftData.load_file(path)
-	for w in aircraft.warnings:
-		print("aircraft data warning: ", w)
-	if aircraft.ok:
-		var m: Dictionary = aircraft.model
-		sim.mass = m.mass_kg
-		sim.inertia = m.inertia
-		sim.loads = _loads
-		sim.pre_step = _pre_step
-		start = Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad)
-		if start.ok:
-			trims = { roll = start.roll_command, pitch = start.pitch_command, yaw = start.yaw_command }
-		else:
-			push_error("trim: " + start.message)
-	else:
+	_apply(AircraftData.load_file(path))
+	if not aircraft.ok:
 		for e in aircraft.errors:
 			push_error("aircraft data: " + e)
+	elif not start.ok:
+		push_error("trim: " + start.message)
 	if not physics_enabled:
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
@@ -155,6 +150,56 @@ func resume() -> void:
 	sim.set_paused(false)
 
 
+## Uses loaded aircraft data: mass properties, loads, trimmed start and trims.
+func _apply(data: Dictionary) -> void:
+	aircraft = data
+	start = {}
+	trims = { roll = 0.0, pitch = 0.0, yaw = 0.0 }
+	for w in aircraft.warnings:
+		print("aircraft data warning: ", w)
+	if not aircraft.ok:
+		return
+	var m: Dictionary = aircraft.model
+	sim.mass = m.mass_kg
+	sim.inertia = m.inertia
+	sim.loads = _loads
+	sim.pre_step = _pre_step
+	start = Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad)
+	if start.ok:
+		trims = { roll = start.roll_command, pitch = start.pitch_command, yaw = start.yaw_command }
+
+
+## Re-trims at another condition ("level" at `speed`, or "glide" power-off) and makes it the start. For scripted
+## maneuvers (tests, golden flights). Returns the Trim result.
+func trim_at(speed: float, mode := "level") -> Dictionary:
+	var m: Dictionary = aircraft.model
+	var t := Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad, speed) if mode == "level" \
+		else Scenarios.trimmed_glide_across_view(m, sim.gravity, m.controls.throw_rad, speed)
+	if t.ok:
+		start = t
+		trims = { roll = t.roll_command, pitch = t.pitch_command, yaw = t.get("yaw_command", 0.0) }
+	return t
+
+
+## Moves the trimmed start to another altitude (m above ground), same trim. For captures and scripted checks.
+func set_start_altitude(altitude: float) -> void:
+	if start.get("ok", false):
+		var s: PackedFloat64Array = start.state
+		s[RB.POS + 2] = -altitude
+		start.state = s
+
+
+## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
+## Invalid data keeps the current aircraft flying. Returns a message for the panel.
+func reload() -> String:
+	var data := AircraftData.load_file(aircraft_path)
+	if not data.ok:
+		return "reload failed, still flying the previous data: %s" % data.errors[0]
+	_apply(data)
+	reset()
+	return "aircraft reloaded: %s" % ("trimmed at 15 m/s, throttle %d %%" % roundi(start.throttle * 100.0) if start.ok else "TRIM FAILED (%s)" % start.message)
+
+
 func _physics_process(_delta: float) -> void:
 	if input_enabled:
 		if radio.connected and calibration != null:
@@ -179,6 +224,7 @@ func reset() -> void:
 	commands = Commands.neutral_commands()
 	if start.get("ok", false):
 		commands.throttle = start.throttle
+	engine_running = start.get("mode", "level") != "glide"
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()
 	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
@@ -231,7 +277,8 @@ func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 ## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
-	var out := PackedFloat64Array([Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, aircraft.model.propulsion), 0.0, 0.0, 0.0])
+	var rpm := Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, aircraft.model.propulsion) if engine_running else 0.0
+	var out := PackedFloat64Array([rpm, 0.0, 0.0, 0.0])
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:
 		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)

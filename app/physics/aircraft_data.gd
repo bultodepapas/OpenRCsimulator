@@ -9,6 +9,9 @@
 extends RefCounted
 
 const FORMAT := "openrc-aircraft v1"
+const Aero := preload("res://physics/aero.gd")
+## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
+const ORACLE_ALPHA_DEG := 8.0
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 
 ## Coefficient name → [unit, required sign (+1, -1 or 0 = any)]. Signs encode a statically stable airplane.
@@ -117,6 +120,9 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		if not COEFFICIENTS.has(name):
 			warnings.append("aero.coefficients.%s: unknown coefficient, ignored" % name)
 
+	var envelope := _envelope(errors, raw.get("aero", {}).get("envelope"), aero) if errors.is_empty() else {}
+	if not envelope.is_empty():
+		envelope.station_y = span / 4.0 # half-wing stations for the asymmetric stall (D9b)
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var controls := _controls(errors, raw.get("controls"))
 
@@ -153,6 +159,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		cg_inventory_le = cg_inv,
 		reference = { S = area, b = span, c = chord, arp_le = arp },
 		aero = aero,
+		envelope = envelope,
 		conventions = raw.get("aero", {}).get("conventions", {}),
 		propulsion = prop,
 		controls = controls,
@@ -251,3 +258,55 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 			rad[surface] = deg_to_rad(x)
 	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
 	return { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
+
+
+## Full-envelope parameters (D9a). The stall start angles are SOLVED so that the blended lift curve peaks exactly at
+## CL_max (positive) and CL_min (negative) for the given blend width. Returns
+## { a1, a2, n1, n2, b1, b2 (rad), CD90, CL_max, CL_min }, or {} with errors.
+static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("aero.envelope: missing")
+		return {}
+	var cl_max = _q(errors, "aero.envelope.CL_max", node.get("CL_max"), "1", 0.3, 3.0)
+	var cl_min = _q(errors, "aero.envelope.CL_min", node.get("CL_min"), "1", -3.0, -0.1)
+	var width = _q(errors, "aero.envelope.stall_blend_width", node.get("stall_blend_width"), "deg", 1.0, 30.0)
+	var cd90 = _q(errors, "aero.envelope.CD90", node.get("CD90"), "1", 0.5, 2.5)
+	var sb = _q(errors, "aero.envelope.sideslip_blend", node.get("sideslip_blend"), "deg", 1.0, 89.0, 2)
+	if not errors.is_empty():
+		return {}
+	if sb[0] >= sb[1]:
+		errors.append("aero.envelope.sideslip_blend: start %s must be below end %s" % [sb[0], sb[1]])
+	if cd90 / 2.0 >= cl_max or cd90 / 2.0 >= -cl_min:
+		errors.append("aero.envelope.CD90 = %s: the flat plate (peak CD90/2) must lift less than the stall limits" % cd90)
+	var w := deg_to_rad(width)
+	var a1 := _solve_stall_start(aero, cd90, w, cl_max, 1.0)
+	var n1 := _solve_stall_start(aero, cd90, w, cl_min, -1.0)
+	var oracle := deg_to_rad(ORACLE_ALPHA_DEG)
+	if a1 < oracle or n1 < oracle:
+		errors.append("aero.envelope: the stall blend would start at %+.1f° / %+.1f°, inside the ±%.0f° linear-oracle region (raise CL_max / CL_min or narrow the blend)" % [rad_to_deg(a1), -rad_to_deg(n1), ORACLE_ALPHA_DEG])
+	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+
+
+## Stall start (rad, magnitude) on one side (sign +1 / −1) such that the blended lift's extreme equals `target`.
+## Bisection: a later start keeps the linear rise longer, so the peak grows monotonically with the start.
+static func _solve_stall_start(aero: Dictionary, cd90: float, width: float, target: float, sign: float) -> float:
+	var lo := 0.0
+	var hi := (target - float(aero.CL0)) / float(aero.CLa) * sign # where the linear lift alone reaches the target
+	for i in 60:
+		var mid := 0.5 * (lo + hi)
+		if _blend_extreme(aero, cd90, width, mid, sign) * sign < target * sign:
+			lo = mid
+		else:
+			hi = mid
+	return 0.5 * (lo + hi)
+
+
+static func _blend_extreme(aero: Dictionary, cd90: float, width: float, start: float, sign: float) -> float:
+	var env := { a1 = start, a2 = start + width, n1 = start, n2 = start + width, b1 = 1.0, b2 = 2.0, CD90 = cd90 }
+	var best := 0.0
+	for k in 801: # 0.01·width steps across the blend, plus its edges
+		var alpha := sign * (start + width * (float(k) / 800.0) * 1.25)
+		var cl := Aero.lift_alpha(alpha, aero, env)
+		if cl * sign > best * sign:
+			best = cl
+	return best

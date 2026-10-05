@@ -34,6 +34,13 @@ func stop(path := "") -> Error:
 	return err
 
 
+## Stops listening to the simulation (a recorder made for one scripted flight).
+func detach() -> void:
+	recording = false
+	if _sim.stepped.is_connected(_on_stepped):
+		_sim.stepped.disconnect(_on_stepped)
+
+
 ## Recorded flight time.
 func seconds() -> float:
 	return trace.row_count() * _sim.dt()

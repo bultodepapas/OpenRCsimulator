@@ -558,6 +558,38 @@
   },
   "aero": {
     "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik",
+    "envelope": {
+      "CL_max": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Whole-airplane maximum lift: mid value of the CLmax 1.0-1.2 assumed in the ROADMAP predicted-handling table (semi-symmetric Jensen section, Re about 3e5); gives a 1-g stall near 9.0 m/s"
+      },
+      "CL_min": {
+        "value": -0.8,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Negative stall of a semi-symmetric section is weaker than the positive one; assumed about 0.7 x CL_max"
+      },
+      "stall_blend_width": {
+        "value": 6.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Width of the smooth transition from attached flow to flat-plate flow (PicaSim uses a cosine ramp of about 10 deg, YASim a stall-width parameter); the start is solved so the lift peak equals CL_max"
+      },
+      "CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "Flat-plate drag of the finite wing at 90 deg: Viterna CDmax = 1.11 + 0.018 AR with AR = b^2/S = 5.0 (NASA CR-1983, RESEARCH.md plan review #3)"
+      },
+      "sideslip_blend": {
+        "value": [15.0, 25.0],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Sideslip range where the linear beta terms (CYb, Clb, Cnb) give way to their sin(beta) form, finite and restoring up to knife edge"
+      }
+    },
     "conventions": {
       "alpha_beta": "rad",
       "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",

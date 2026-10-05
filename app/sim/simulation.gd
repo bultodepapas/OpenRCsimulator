@@ -34,6 +34,8 @@ var tick := 0
 var paused := false
 ## Stop stepping at this tick (-1 = never). Makes runs end at an exact tick, e.g. for replays.
 var stop_at_tick := -1
+## Wall-clock cost of a step (µs, smoothed), for the performance overlay. Measured, never fed back into the state.
+var step_usec := 0.0
 var _inertia_inv := PackedFloat64Array()
 
 
@@ -67,6 +69,7 @@ func _notification(what: int) -> void:
 
 
 func step() -> void:
+	var started := Time.get_ticks_usec()
 	var t := time()
 	aux = pre_step.call(aux, inputs, dt())
 	last_loads = loads.call(state, t)
@@ -76,6 +79,7 @@ func step() -> void:
 	previous = state
 	state = RK.rk4_step(state, dt(), f)
 	tick += 1
+	step_usec = lerpf(step_usec, float(Time.get_ticks_usec() - started), 0.05) if step_usec > 0.0 else float(Time.get_ticks_usec() - started)
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
 
 

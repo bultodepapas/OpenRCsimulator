@@ -38,3 +38,12 @@ const CONTROLS := {
 }
 
 const CAPTURE := { time = 3.0, width = 1280, height = 720 }
+
+# Pilot aids (D7). Estimated values, to be judged at Gate 2.
+## Ground shadow: height above ground (m, against z-fighting), opacity low down → high up, fade height (m).
+const SHADOW := { height = 0.05, fade_height = 80.0, alpha_low = 0.6, alpha_high = 0.18 }
+## Grass texture: tile size (m) and brightness variation (±).
+const GROUND := { tile_m = 6.0, contrast = 0.14 }
+## Auto-zoom: the pilot camera narrows its vertical FOV so the airplane's span covers at least target_px of the
+## viewport height (a 720p screen at 50° resolves ~4× worse than the eye); never below min_fov_deg.
+const AUTO_ZOOM := { target_px = 30.0, min_fov_deg = 6.0 }
