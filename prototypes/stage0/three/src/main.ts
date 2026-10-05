@@ -1,16 +1,19 @@
 import {
   Color, DirectionalLight, HemisphereLight, Mesh, MeshLambertMaterial, PerspectiveCamera,
-  PlaneGeometry, Scene, WebGLRenderer,
+  PlaneGeometry, Scene, Vector3, WebGLRenderer,
 } from 'three';
-import { buildAirplane } from './render/airplane';
+import { hingeRotations, neutralCommands, neutralRaw, propRevPerSec, stepCommands, type Commands } from './input/commands';
+import { attachKeyboard, readRaw } from './input/keyboard';
+import { applySurfaces, buildAirplane } from './render/airplane';
 import { attitudeToRender, nedToRender } from './render/frames';
+import { updatePanel } from './render/panel';
 import { poseAt } from './sim/scripted';
-import { CAMERA, CAPTURE, COLORS, GROUND, RUNWAY, SUN } from './spec';
+import { CAMERA, CAPTURE, COLORS, GROUND, INSPECT_OFFSET, RUNWAY, SUN } from './spec';
 
 const params = new URLSearchParams(location.search);
 const capture = params.has('capture');
-// Inspection view: camera 4 m from the airplane, to check geometry the pilot view is too far to show.
-const inspect = params.has('inspect');
+// Inspection view: camera fixed to the airplane, to check geometry the pilot view is too far to show.
+let inspect = params.has('inspect');
 
 const renderer = new WebGLRenderer({ antialias: true, preserveDrawingBuffer: capture });
 renderer.setPixelRatio(capture ? 1 : window.devicePixelRatio);
@@ -43,7 +46,7 @@ airplane.root.matrixAutoUpdate = false;
 scene.add(airplane.root);
 
 const camera = new PerspectiveCamera(CAMERA.fovDeg, 16 / 9, CAMERA.near, CAMERA.far);
-camera.position.copy(nedToRender([0, 0, -CAMERA.eyeHeight]));
+const pilotEye = nedToRender([0, 0, -CAMERA.eyeHeight]);
 
 function resize(w: number, h: number) {
   renderer.setSize(w, h);
@@ -51,23 +54,46 @@ function resize(w: number, h: number) {
   camera.updateProjectionMatrix();
 }
 
-function renderAt(t: number) {
+function renderAt(t: number, c: Commands, propAngle: number) {
   const pose = poseAt(t);
   const pos = nedToRender(pose.ned);
   airplane.root.matrix.copy(attitudeToRender(pose.yaw, pose.pitch, pose.roll)).setPosition(pos);
-  airplane.propeller.rotation.z = pose.prop;
-  if (inspect) camera.position.copy(pos).add(nedToRender([-2.5, 2.5, -1.5]));
+  airplane.propeller.rotation.z = propAngle;
+  applySurfaces(airplane, hingeRotations(c));
+  if (inspect) camera.position.copy(new Vector3(...INSPECT_OFFSET).applyMatrix4(airplane.root.matrix));
+  else camera.position.copy(pilotEye);
   camera.lookAt(pos);
   renderer.render(scene, camera);
 }
 
 if (capture) {
+  // Settled commands from URL parameters (the limiter is skipped), so captures are deterministic.
+  const num = (k: string, d: number) => Number(params.get(k) ?? d);
+  const c: Commands = { roll: num('roll', 0), pitch: num('pitch', 0), yaw: num('yaw', 0), throttle: num('throttle', 0.5) };
+  const t = num('t', CAPTURE.time);
   resize(CAPTURE.width, CAPTURE.height);
-  renderAt(Number(params.get('t') ?? CAPTURE.time));
+  updatePanel(neutralRaw(), c, inspect ? 'close-up' : 'pilot');
+  renderAt(t, c, 2 * Math.PI * propRevPerSec(c) * t);
   (window as unknown as { __captured: boolean }).__captured = true;
 } else {
   resize(window.innerWidth, window.innerHeight);
   window.addEventListener('resize', () => resize(window.innerWidth, window.innerHeight));
-  const t0 = performance.now();
-  renderer.setAnimationLoop(() => renderAt((performance.now() - t0) / 1000));
+  let t = 0;
+  let propAngle = 0;
+  let c = neutralCommands();
+  attachKeyboard({
+    KeyR: () => { t = 0; c = neutralCommands(); },
+    KeyC: () => { inspect = !inspect; },
+  });
+  let last = performance.now();
+  renderer.setAnimationLoop((now: number) => {
+    const dt = Math.min((now - last) / 1000, 0.1); // a stalled tab must not jump the controls
+    last = now;
+    const raw = readRaw();
+    c = stepCommands(c, raw, dt);
+    t += dt;
+    propAngle += 2 * Math.PI * propRevPerSec(c) * dt;
+    updatePanel(raw, c, inspect ? 'close-up' : 'pilot');
+    renderAt(t, c, propAngle);
+  });
 }

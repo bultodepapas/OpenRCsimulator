@@ -63,5 +63,15 @@ export const RUNWAY = { lengthEastWest: 100, widthNorthSouth: 12, centerNorth: 1
 export const SUN = { azimuthFromNorthDeg: 225, elevationDeg: 45 }; // south-west
 
 export const CAMERA = { eyeHeight: 1.7, fovDeg: 50, near: 0.1, far: 3000 };
+// Close-up camera, fixed to the airplane: model offset (left, above, behind).
+export const INSPECT_OFFSET: [number, number, number] = [-1.2, 0.9, 2.0];
+
+// Stage 1 controls. Throws are estimates (evidence kind: estimated), not from the plans.
+export const CONTROLS = {
+  rate: 4.0, // per second: full deflection or centering in 0.25 s
+  throttleRate: 0.5, // per second
+  throttleStart: 0.5,
+  maxThrowDeg: { aileron: 20, elevator: 20, rudder: 25 },
+};
 
 export const CAPTURE = { time: 3.0, width: 1280, height: 720 };

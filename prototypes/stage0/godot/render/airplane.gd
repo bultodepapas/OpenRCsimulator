@@ -61,3 +61,10 @@ static func build() -> Dictionary:
 		root.add_child(mi)
 
 	return { root = root, propeller = root.get_node("propeller"), hinges = hinges }
+
+
+## Apply hinge rotations (from input/commands.gd) to the surface pivots.
+static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
+	for surface_name in rotations:
+		var r: Dictionary = rotations[surface_name]
+		airplane.hinges[surface_name].rotation = Vector3(r.x, r.y, 0)

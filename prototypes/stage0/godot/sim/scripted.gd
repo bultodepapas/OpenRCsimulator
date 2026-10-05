@@ -14,5 +14,4 @@ static func pose_at(t: float) -> Dictionary:
 		yaw = a + PI / 2.0,
 		pitch = 0.0,
 		roll = atan(c.speed * c.speed / (Spec.G * c.radius)),
-		prop = TAU * c.prop_rev_per_sec * t,
 	}

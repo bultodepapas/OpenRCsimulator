@@ -8,12 +8,10 @@ export interface Pose {
   yaw: number;
   pitch: number;
   roll: number;
-  /** Propeller angle about the body x axis, radians. */
-  prop: number;
 }
 
 export function poseAt(t: number): Pose {
-  const { centerNorth, centerEast, altitude, radius, speed, propRevPerSec } = CIRCLE;
+  const { centerNorth, centerEast, altitude, radius, speed } = CIRCLE;
   const omega = speed / radius;
   const a = omega * t;
   return {
@@ -21,6 +19,5 @@ export function poseAt(t: number): Pose {
     yaw: a + Math.PI / 2,
     pitch: 0,
     roll: Math.atan((speed * speed) / (G * radius)),
-    prop: 2 * Math.PI * propRevPerSec * t,
   };
 }

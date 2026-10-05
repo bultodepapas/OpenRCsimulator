@@ -56,3 +56,8 @@ export function buildAirplane(): Airplane {
 
   return { root, propeller: root.getObjectByName('propeller')!, hinges };
 }
+
+/** Apply hinge rotations (from input/commands.ts) to the surface pivots. */
+export function applySurfaces(a: Airplane, rotations: Record<string, { x: number; y: number }>) {
+  for (const [name, r] of Object.entries(rotations)) a.hinges[name].rotation.set(r.x, r.y, 0);
+}

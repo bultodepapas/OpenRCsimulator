@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "inspected_on": "2026-10-05",
+  "scope": "39 local reference files; no runtime capture files; original paths unchanged",
+  "method": "SHA-256 of complete file bytes; image dimensions from Pillow; ASCII DXF group-code/value pairs; no CAD conversion",
+  "file_count": 39,
+  "file_bytes_total": 191594833,
+  "duplicate_groups": [
+    {
+      "sha256": "78a869d91fe15d961e691a549f4c53a28d9461458e0592de4959c6be2f865353",
+      "paths": [
+        "ugly stick /Ugly_Stik_Grid_Leaks_oz5175.pdf",
+        "prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf"
+      ]
+    },
+    {
+      "sha256": "26af8770365e55a4a6a8089976a1e8fde9ac5d81ac08b6cdf3b726ba5c0954de",
+      "paths": [
+        "ugly stick /image copy 3.png",
+        "ugly stick /image copy 4.png"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "ugly stick /Clasic_Ugly_Stick.dwg",
+      "bytes": 244462,
+      "sha256": "beb9a147e3004747a6dc247c5c61e0a749b5045ed7b5c932e6450488576b13c2",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /Ugly_Stik_Grid_Leaks_oz5175.pdf",
+      "bytes": 704498,
+      "sha256": "78a869d91fe15d961e691a549f4c53a28d9461458e0592de4959c6be2f865353",
+      "extension": ".pdf",
+      "inspection": "one_page_visually_inspected; no_extractable_text"
+    },
+    {
+      "path": "ugly stick /great big styk full/ala enc.jpg",
+      "bytes": 378325,
+      "sha256": "8a9b5e654a95d9b7f2647385df2eef44cbd810165717d5ba5435199e63705dab",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/ala inf.jpg",
+      "bytes": 391220,
+      "sha256": "81cc0faa5cb99aa431c181fd2aa61e9c3cca5f82424a6407e50a079145df92f2",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/ala marg.jpg",
+      "bytes": 367360,
+      "sha256": "0b0480f94f81d070c3a0a098f92937f6fd2f820558579fa3e0f75b45229a16e0",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/ala sup.jpg",
+      "bytes": 376415,
+      "sha256": "78086b3eef01575a6b43781a3c63d108ae947e7c85e99069753be7001ffc7520",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/aleron.ai",
+      "bytes": 6654,
+      "sha256": "78292651e6c2333985ef96fe5c7a2c8d93fe87543cd01935624374780cc11e09",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/aleron.dwg",
+      "bytes": 19205,
+      "sha256": "9be6acc04b9cbe94b5b0339897b366c5aacfa29ff066497235afe5391d75bce3",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/aleron.dxf",
+      "bytes": 176868,
+      "sha256": "2c325f0b8a4dcd85e2e8c843e2b26c5d862de7a978bef6097ab5a7ac43ad6695",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "LINE": 3,
+        "SPLINE": 10
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte de ala final 2d.ai",
+      "bytes": 652249,
+      "sha256": "4fd59b0e98cb6fe3dc09dd3350dd5b0ff952560f8f403d11db5cbbd3edf16679",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte de ala final 2d.dwg",
+      "bytes": 421712,
+      "sha256": "95c2f182d34e2c5c95e9dc2d64eae7cc8f8a953862080a7e75f78582eb9a6c07",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte de ala final 2d.dxf",
+      "bytes": 2570336,
+      "sha256": "19a06d0e70dee88596868413cc716d1fd643fc4763c3563c40a663ba6801b83f",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "ARC": 512,
+        "CIRCLE": 88,
+        "DIMENSION": 5,
+        "LINE": 2741,
+        "POLYLINE": 104,
+        "SEQEND": 104,
+        "SPLINE": 2126,
+        "VERTEX": 596
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte final fuse 2d.ai",
+      "bytes": 368882,
+      "sha256": "8dbd52dcbfaf1baa082fb5015cc07f87ae3153edfaa86b03846b8a5efbc6f609",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte final fuse 2d.dwg",
+      "bytes": 305246,
+      "sha256": "e24cef2697b46eaae8d520d7d7ba03c8f3e55abf3e5cf78b11dccc0f985b8037",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/corte final fuse 2d.dxf",
+      "bytes": 1868937,
+      "sha256": "99a2d484cafadd63f1d24cb1f8ee798a21e56dc6c71f4573fec0851e8505993c",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "ARC": 534,
+        "CIRCLE": 70,
+        "DIMENSION": 1,
+        "LINE": 2293,
+        "MTEXT": 1,
+        "POLYLINE": 33,
+        "SEQEND": 33,
+        "SPLINE": 1159,
+        "VERTEX": 161
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/gbs empenaje 2d.ai",
+      "bytes": 39396,
+      "sha256": "57cb0fb1e8e53be20e20784b74a3ea9208243084dd840d316ebfe505e23338c8",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/gbs empenaje 2d.dwg",
+      "bytes": 41933,
+      "sha256": "2d4616fd9c78f90786895d8e6adfc94900927b524887bc07e635a6230bb1fc39",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/gbs empenaje 2d.dxf",
+      "bytes": 267239,
+      "sha256": "20cdb6b8d1466e247970cd54e07fd7c19357ae233c5decff3ba13fc5d7fc23b2",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "ARC": 2,
+        "CIRCLE": 3,
+        "LINE": 159,
+        "SPLINE": 32
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/gbs patin.3dm",
+      "bytes": 47786,
+      "sha256": "30102862fe402997fd5f7ebcb3c051601f46760b0ef4231d597550d35d9d485d",
+      "extension": ".3dm",
+      "header_prefix_ascii": "3D Geometry File Format       50",
+      "inspection": "binary_header_only; geometry_units_and_meshes_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/great big stik 3d final.3dm",
+      "bytes": 52846247,
+      "sha256": "983ea44e80802d14bab5b24a04f1355f81d2c58affd1a38f5a337841140c2050",
+      "extension": ".3dm",
+      "header_prefix_ascii": "3D Geometry File Format       50",
+      "inspection": "binary_header_only; geometry_units_and_meshes_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/great big stik 3d final.3dmbak",
+      "bytes": 28971104,
+      "sha256": "7edb969ca50273cec2e5743380931aad8b7a1519661ac631822c19ec4c90953a",
+      "extension": ".3dmbak",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/great big stik 3d.jpg",
+      "bytes": 559568,
+      "sha256": "8cc61c75bc002838839eb6298b1b675ad4d204be61ef60f0e2e5a4f617957852",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/great big stik triciclo.jpg",
+      "bytes": 604673,
+      "sha256": "a649975409480cda33a475b7b60a1c0467a91471dc78cf2959d6198821db2988",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano ala full escala 2d.ai",
+      "bytes": 116590,
+      "sha256": "14dc0f8145d8a9a7222eb86292f917a8ac827d52f8b229d5a3a9452a92c2ac62",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano ala full escala 2d.dwg",
+      "bytes": 46376,
+      "sha256": "8cba1c4d183075e4a4d734a76ee29ff618d10120bf4898bf97969fcfddab1995",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano ala full escala 2d.dxf",
+      "bytes": 361706,
+      "sha256": "e7de8adb65eeae2177c64cfce2fd5236010aedb89beee1a144b9b4f2009fd211",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "ARC": 1,
+        "CIRCLE": 5,
+        "LINE": 526,
+        "SPLINE": 100
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano fuce full escala 2d.ai",
+      "bytes": 381930,
+      "sha256": "c27fb2f4b35674d827d99b22d2bae9c5e488d397c4eac0a1addae41881d2db91",
+      "extension": ".ai",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano fuce full escala 2d.dwg",
+      "bytes": 130697,
+      "sha256": "324dedada6a5b4f3a74a5dce1328802ad00fc056ad0c255372046787cfd960ce",
+      "extension": ".dwg",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /great big styk full/plano fuce full escala 2d.dxf",
+      "bytes": 845673,
+      "sha256": "28c6f9ac1a048382eab9bd1f8c68e28cf702c0ea2ff10cbfc29e0f8d9819b837",
+      "extension": ".dxf",
+      "dxf_header": {
+        "$ACADVER": "AC1018",
+        "$LUNITS": "2",
+        "$MEASUREMENT": "0",
+        "$INSUNITS": "4"
+      },
+      "dxf_entity_records": {
+        "ARC": 68,
+        "CIRCLE": 25,
+        "LINE": 1670,
+        "SPLINE": 278
+      },
+      "inspection": "header_and_entity_types_only; geometry_and_scale_unverified"
+    },
+    {
+      "path": "ugly stick /great big styk full/porta serb aler.jpg",
+      "bytes": 489440,
+      "sha256": "e7e6cde20e59d8b8e25f079e2672a0c4954fb2ff13ac4aba65946f24b3f50954",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great big styk full/registro.jpg",
+      "bytes": 507586,
+      "sha256": "ed5832284e67fcd69738d67c1c8b1d9a36419ecf8f8ecf6631559fc180f557cd",
+      "extension": ".jpg",
+      "image_pixels": {
+        "width": 1533,
+        "height": 673
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /great-big-styk-full-1.snapshot.2.zip.download/great-big-styk-full-1.snapshot.2.zip",
+      "bytes": 94180829,
+      "sha256": "cb742a5dc86c41d8d6ddf67bad6dc006257757e6d2444c93880f49b8373cdd4c",
+      "extension": ".zip",
+      "inspection": "inventory_only; content_not_opened"
+    },
+    {
+      "path": "ugly stick /image copy 2.png",
+      "bytes": 460300,
+      "sha256": "0aa41afd2cebcf073818e5a87c802b4d2540269c2d07c51b1da829f032d67bc3",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 800,
+        "height": 534
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /image copy 3.png",
+      "bytes": 101489,
+      "sha256": "26af8770365e55a4a6a8089976a1e8fde9ac5d81ac08b6cdf3b726ba5c0954de",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 328,
+        "height": 214
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /image copy 4.png",
+      "bytes": 101489,
+      "sha256": "26af8770365e55a4a6a8089976a1e8fde9ac5d81ac08b6cdf3b726ba5c0954de",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 328,
+        "height": 214
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /image copy.png",
+      "bytes": 212529,
+      "sha256": "cdc298de1c1747a44975ea903a2a90623ec346d885718e2fb0185e14d5fd6a18",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 640,
+        "height": 480
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /image.png",
+      "bytes": 657554,
+      "sha256": "dbc44974964669338cc0eed5571e065a490fffd14f47dd1f062bd959f1dacf75",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 720,
+        "height": 566
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "ugly stick /image2.png",
+      "bytes": 65832,
+      "sha256": "01a83a408c7b46d8b6258604382009d00c8139888a1183de919ba48db8dec1d2",
+      "extension": ".png",
+      "image_pixels": {
+        "width": 566,
+        "height": 353
+      },
+      "inspection": "visually_inspected"
+    },
+    {
+      "path": "prototypes/stage0/Ugly_Stik_Grid_Leaks_oz5175.pdf",
+      "bytes": 704498,
+      "sha256": "78a869d91fe15d961e691a549f4c53a28d9461458e0592de4959c6be2f865353",
+      "extension": ".pdf",
+      "inspection": "one_page_visually_inspected; no_extractable_text"
+    }
+  ]
+}
