@@ -1,0 +1,301 @@
+{
+	"axes": {
+		"forward": "-Z",
+		"right": "+X",
+		"up": "+Y"
+	},
+	"builder": "res://render/airplane.gd",
+	"builder_contract": [
+		"root",
+		"propeller",
+		"hinges"
+	],
+	"captures": [
+		{
+			"capture_elapsed_ms": 69.884,
+			"capture_time_unix": 1791223047,
+			"file": "top.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "neutral",
+			"projection": "orthographic",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 58.819,
+			"capture_time_unix": 1791223047,
+			"file": "bottom.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "neutral",
+			"projection": "orthographic",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 55.029,
+			"capture_time_unix": 1791223047,
+			"file": "side.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "neutral",
+			"projection": "orthographic",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 51.888,
+			"capture_time_unix": 1791223048,
+			"file": "front.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "neutral",
+			"projection": "orthographic",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 56.538,
+			"capture_time_unix": 1791223048,
+			"file": "three-quarter-neutral.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "neutral",
+			"projection": "perspective",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 51.313,
+			"capture_time_unix": 1791223048,
+			"file": "three-quarter-deflected.png",
+			"height_px": 720,
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.1948624253273
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.777086436748505
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"pose": "deflected",
+			"projection": "perspective",
+			"triangle_count": 2568,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 63.739,
+			"capture_time_unix": 1791223048,
+			"distance_m": 20.0,
+			"file": "flight-20m.png",
+			"fov_vertical_deg": 50.0,
+			"height_px": 720,
+			"keep_aspect": "KEEP_HEIGHT",
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"model_x_extent_px": 58.7830199170458,
+			"pose": "neutral",
+			"projection": "perspective",
+			"triangle_count": 2568,
+			"visible_vertical_m": 18.6523063261999,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 47.907,
+			"capture_time_unix": 1791223048,
+			"distance_m": 50.0,
+			"file": "flight-50m.png",
+			"fov_vertical_deg": 50.0,
+			"height_px": 720,
+			"keep_aspect": "KEEP_HEIGHT",
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"model_x_extent_px": 23.5132079668183,
+			"pose": "neutral",
+			"projection": "perspective",
+			"triangle_count": 2568,
+			"visible_vertical_m": 46.6307658154999,
+			"width_px": 1280
+		},
+		{
+			"capture_elapsed_ms": 51.166,
+			"capture_time_unix": 1791223048,
+			"distance_m": 100.0,
+			"file": "flight-100m.png",
+			"fov_vertical_deg": 50.0,
+			"height_px": 720,
+			"keep_aspect": "KEEP_HEIGHT",
+			"material_count": 5,
+			"mesh_instances": 46,
+			"model_bounds_m": {
+				"extent": [
+					1.52283179759979,
+					0.485100001096725,
+					1.19877600669861
+				],
+				"max": [
+					0.761415898799896,
+					0.226999998092651,
+					0.781000018119812
+				],
+				"min": [
+					-0.761415898799896,
+					-0.258100003004074,
+					-0.417775988578796
+				]
+			},
+			"model_x_extent_px": 11.7566039834092,
+			"pose": "neutral",
+			"projection": "perspective",
+			"triangle_count": 2568,
+			"visible_vertical_m": 93.2615316309997,
+			"width_px": 1280
+		}
+	],
+	"flight_camera": {
+		"fov_vertical_deg": 50.0,
+		"keep_aspect": "KEEP_HEIGHT"
+	},
+	"model": "Jensen Ugly Stik 60 / nitro .61 first",
+	"resolution_px": [
+		1280,
+		720
+	],
+	"total_elapsed_ms": 625.629
+}

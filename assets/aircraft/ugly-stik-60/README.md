@@ -1,4 +1,4 @@
-# Jensen Ugly Stik .61 — visual model v1
+# Jensen Ugly Stik .61 — visual model v2
 
 `60` in this directory means the nominal 60-inch Jensen wing, not engine displacement. The owner's target is a .61 nitro first; mini and giant are deferred.
 
@@ -9,10 +9,12 @@ python3 assets/aircraft/ugly-stik-60/compile_geometry.py
 python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
 python3 research/ugly-stik/model-v1/measure_assembly.py
 $(app/get-godot.sh) --headless --path app --script res://aircraft/verify_model.gd
-research/ugly-stik/model-v1/capture.sh
+bash research/ugly-stik/model-v2/capture.sh
 ```
 
 The compiler writes [ugly_stik_geometry.gd](../../../app/aircraft/ugly_stik_geometry.gd); do not edit that generated copy. The [native Godot builder](../../../app/aircraft/ugly_stik_model.gd) creates the exterior geometry. The [render adapter](../../../app/render/airplane.gd) preserves the original `build()` / `apply_surfaces()` interface. Static wing frames carry dihedral while their child hinges carry only commanded rotation.
+
+The [v2 report](../../../docs/research/ugly-stik-model-v2.md) records the corrected firewall-to-wing distance and its scan evidence. The assembly measurement command writes `model-assembly-current.json`; pass `--output` to save evidence for a particular revision. Historical v1 measurements and captures remain unchanged.
 
 This first model uses Godot's native mesh primitives and `SurfaceTool`, which keeps it editable without adding an import dependency. The earlier GLB fixture remains a verified option for future exchange; its axis conversion is not applied to this native model.
 

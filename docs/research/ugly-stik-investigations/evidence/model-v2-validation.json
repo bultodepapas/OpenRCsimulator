@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-05",
+  "aircraft_id": "jensen-60-nitro-61-v2",
+  "reference_files_verified": 31,
+  "reference_bytes_verified": 14083239,
+  "local_document_links_checked": 7,
+  "source_hashes": {
+    "assets/aircraft/ugly-stik-60/geometry.json": "51ca85bedab99e05fedbf07e5519a055bb53e1933de6b8b31372b6b4cfb54253",
+    "app/aircraft/ugly_stik_geometry.gd": "40977513efcf15396ed3f6769db231ea79ef9a0cb8c7b0962a652fb17c6f7524",
+    "app/aircraft/ugly_stik_model.gd": "8cea87401701ff69b118816742815b561a7209fd9e2f11cd580c1f6373605ed2",
+    "app/aircraft/verify_model.gd": "8b8d6ac53b845b3d0f9db83d0fe600c0e727fc7e666b9e98d389eb46867b1ff3",
+    "research/ugly-stik/model-v2/captures/manifest.json": "91a79478f9016b786ecb0edf36b19eb3e95fc55c8087d20ab08cd4ed93abce3d"
+  },
+  "checks_summary": [
+    "30 checks, 0 failed",
+    "17 checks, 0 failed",
+    "18 checks, 0 failed",
+    "9 checks, 0 failed",
+    "11 checks, 0 failed",
+    "14 checks, 0 failed",
+    "11 checks, 0 failed",
+    "19 checks, 0 failed",
+    "453 checks, 0 failed"
+  ],
+  "fixed_step_hashes": [
+    "ticks=480 frames=61 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f",
+    "ticks=480 frames=121 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f",
+    "ticks=480 frames=289 state_sha256=28cefe679243c722e9c8ab1959a471abc3148fe005ae3e712c0ee47b95a2ca0f"
+  ],
+  "godot_errors": false,
+  "inspection_capture_count": 9,
+  "in_app_mode": "scripted circle, close-up",
+  "limitations": [
+    "In-app data warning: inventory CG 0.080 m ahead of plan CG; existing physics data, not modified here",
+    "Software renderer captures do not measure target hardware performance"
+  ]
+}

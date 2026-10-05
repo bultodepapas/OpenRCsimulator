@@ -1,6 +1,6 @@
 # Ugly Stik: plan de modelado en paralelo
 
-Revisión 3 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik-investigations/README.md). **Primera malla .61 implementada y conectada al constructor Godot.** [Informe de ejecución y pruebas](research/ugly-stik-model-v1.md). La calibración absoluta del escaneo sigue pendiente; la geometría estimada se identifica como tal.
+Revisión 4 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik-investigations/README.md). **Modelo .61 v2 conectado: morro corregido con la lectura local del plano Jensen.** [Informe y pruebas v2](research/ugly-stik-model-v2.md). La calibración de las demás vistas sigue pendiente; la geometría estimada se identifica como tal.
 
 > **Actualización 2026-10-05 (desarrollo principal):** Gate 1 eligió **Godot**. El constructor del avión vive ahora en [`app/render/airplane.gd`](../app/render/airplane.gd), con las mismas interfaces (`airplane`, `propeller`, `*_hinge`). Las pruebas de `app/test.sh` comprueban signos de superficies sobre los nodos reales. Por decisión del propietario, los planos y CAD se movieron a `references/` (ignorado por git, solo local); las rutas de este documento ya apuntan allí. `assets/aircraft/ugly-stik-60/` contiene ahora el modelo v1.
 
@@ -13,6 +13,8 @@ Revisión 3 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik
 > - Para D1: el origen visual del modelo está "cerca del cuarto de cuerda; NO es un CG medido". La física usa el CG como origen del cuerpo, así que D1 definirá la posición del CG en el marco del modelo y el render desplazará la malla. Su geometría sigue siendo la única fuente de cotas: la física la leerá de `ugly_stik_geometry.gd` en lugar de copiarla.
 > - **D1 hecho (física), 2026-10-05: medición del plano Jensen oz1253 a escala 1:1** (`research/d1/jensen_plan_cg.py`, lectura ±0,03 in). Cuerda 12,07 in (el cartucho dice 720 in² / 60 in = 12,00 in: verificación de escala 0,6 %). **Cara delantera del cortafuegos F1 a borde de ataque: 6,94 in (0,176 m)**. **CG del plano: 4,76 in detrás del borde de ataque (39 % de la cuerda).**
 > - **Para el modelo visual:** `geometry.json` tiene el cortafuegos en `z = -0,44` y el borde de ataque en `-0,115`, es decir 0,325 m (≈12,8 in): el morro mide ≈1,85 veces el del plano. La física no depende de ello (usa borde de ataque y línea de empuje de su archivo, y el CG del plano), pero el morro se verá largo. El área 720 in² de su archivo coincide con el cartucho medido.
+
+**Resolución de las notas anteriores, modelo v2:** la unión ala/fuselaje quedó corregida en v1 (449 comprobaciones); v2 corrige F1–borde de ataque a 176,276 mm y pasa 453 comprobaciones, además de la suite completa. Las tablas sin consumidores de `app/spec.gd` se eliminaron. D1 físico fue completado por el desarrollador principal; las mejoras dimensionales de la malla continúan en este frente. Las notas citadas arriba se conservan como historial.
 
 La primera entrega es un **Jensen Ugly Stik .61 sencillo y articulado para Godot**, con fuente editable en `assets/aircraft/ugly-stik-60/` y constructor nativo en `app/aircraft/`. El propietario fijó primero el motor nitro de clase .61; **mini y gigante quedan para después**. La marca y el modelo concreto del motor siguen abiertos. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
 
@@ -39,10 +41,10 @@ Fuentes, límites y pruebas de cada conclusión: [índice de investigaciones](re
 | --- | --- |
 | Desarrollador principal | Física/simulación, controles, escena principal, capturas oficiales y documentos principales del proyecto |
 | Investigación/modelado | Este plan, `docs/research/ugly-stik-*`, `app/aircraft/`, adaptador `app/render/airplane.gd`, fuente en `assets/aircraft/`, experimentos en `research/ugly-stik/` y referencias locales |
-| Modelo v1 | `assets/aircraft/ugly-stik-60/geometry.json` y compilador reproducible de la copia Godot |
+| Modelo actual | `assets/aircraft/ugly-stik-60/geometry.json` y compilador reproducible de la copia Godot |
 | Integración | Cambio pequeño sobre una revisión estable del constructor Godot; comparar las pruebas existentes antes y después |
 
-El otro desarrollador trasladó las referencias antiguas a `references/ugly-stick/` (con `ck`); las descargas nuevas están en `references/ugly-stik/`. Ambas permanecen locales por la exclusión de `references/` del repo. La integración v1 modifica únicamente el frente de modelado asignado en AGENTS: `app/aircraft/`, `app/render/airplane.gd` y aclaraciones de las tablas visuales antiguas en `app/spec.gd`. Las capturas de inspección se guardan en `research/ugly-stik/model-v1/`; no se editan la física ni las capturas oficiales. Las herramientas auxiliares se probaron en entornos temporales aislados.
+El otro desarrollador trasladó las referencias antiguas a `references/ugly-stick/` (con `ck`); las descargas nuevas están en `references/ugly-stik/`. Ambas permanecen locales por la exclusión de `references/` del repo. La integración v1 modifica únicamente el frente de modelado asignado en AGENTS: `app/aircraft/`, `app/render/airplane.gd` y aclaraciones de las tablas visuales antiguas en `app/spec.gd`. Las capturas actuales se guardan en `research/ugly-stik/model-v2/`, con v1 conservado como historial; no se editan la física ni las capturas oficiales. Las herramientas auxiliares se probaron en entornos temporales aislados.
 
 ## Secuencia de entregas
 
@@ -60,9 +62,9 @@ Son subtareas de **D1**, conservación de **B5**, integración tras **B7** y leg
 | 8 · D7/Gate 2 | Decoración y lectura desde tierra sobre la misma geometría | Serie a 20/50/100 m, misma cámara, ambas caras y virajes; identificar orientación con el usuario |
 | 9 · D1, después de B7 | Conectar el recurso terminado al constructor Godot | Pruebas existentes de superficies/ejes y nuevas capturas neutra/deflectada; comprobar importación y escala |
 
-**Estado v1:** fuente de geometría editable, fuselaje afinado, sección alar con diedro y marcos de mando separados, cola redondeada, equipo .61 simplificado y tren triciclo. Las pruebas de articulación y las capturas son parte de esta entrega. **Próxima comprobación dimensional:** resolver la escala absoluta con referencias independientes; las trazas actuales no cierran ese control. Si una cota secundaria no se resuelve, se estima con un rango explícito; masa, inercia y polares desconocidas no bloquean la primera silueta. La incertidumbre de longitud sí impide presentarla como reproducción dimensional exacta.
+**Estado v2:** fuente de geometría editable, fuselaje afinado, sección alar con diedro y marcos de mando separados, cola redondeada, equipo .61 simplificado y tren triciclo. Las pruebas de articulación y las capturas son parte de esta entrega. El morro ya usa la lectura Jensen de 6,94 in, con control local por cuerda. **Próxima comprobación dimensional:** identificar y calibrar el contorno de cola y las estaciones restantes con referencias independientes; las trazas actuales no cierran ese control. Si una cota secundaria no se resuelve, se estima con un rango explícito; masa, inercia y polares desconocidas no bloquean la primera silueta. La incertidumbre de longitud sí impide presentarla como reproducción dimensional exacta.
 
-La integración conserva las interfaces de [el constructor](../app/render/airplane.gd) y los mandos existentes. [app/spec.gd](../app/spec.gd) mantiene las tablas históricas para comparaciones; la geometría actual viene del nuevo registro visual. La prueba de cada paso debe acompañar su futuro commit. D1 sigue pendiente como entrega física completa: esta malla no define masa, inercia ni derivadas aerodinámicas.
+La integración conserva las interfaces de [el constructor](../app/render/airplane.gd) y los mandos existentes. [app/spec.gd](../app/spec.gd) conserva constantes de escena y controles; la geometría actual viene del registro visual. La prueba de cada paso debe acompañar su futuro commit. D1 físico está completado en el frente principal: esta malla no define masa, inercia ni derivadas aerodinámicas.
 
 ## Modelo y contrato de entrega
 
@@ -91,12 +93,14 @@ Registrar triángulos, materiales, tamaño de archivo y tiempo de render de la p
 
 - Longitud y posiciones de superficies calibradas sobre una referencia Jensen consistente.
 - Coordenadas de perfil, incidencia y ángulo de diedro instalado; la elevación dibujada no es un ángulo publicado.
-- Marca/modelo e instalación final del motor .61, escape/hélice y equipo; masa, CG numérico, inercia y recorridos reales.
+- Marca/modelo e instalación final del motor .61, escape/hélice y equipo; masa, inercia y recorridos de una construcción real. El CG gráfico Jensen ya fue leído para D1; no equivale a medir un ejemplar construido.
 - Reutilización de recursos REFLEX y equivalencia dimensional del Great Big Stik con Jensen.
 - Revisión perceptual con pilotos y rendimiento en hardware real; las capturas locales no sustituyen esas pruebas.
 
-Los [estudios](research/ugly-stik-investigations/README.md) dejan la evidencia y los pendientes. El [informe v1](research/ugly-stik-model-v1.md) registra la implementación, los ensayos ejecutados y las lecciones prácticas de esta revisión.
+Los [estudios](research/ugly-stik-investigations/README.md) dejan la evidencia y los pendientes. El [informe v1](research/ugly-stik-model-v1.md) conserva la primera implementación; el [informe v2](research/ugly-stik-model-v2.md) registra la corrección dimensional y sus pruebas.
 
 ## Nuevos recursos aportados por el propietario
 
 [Ultra Stick V3 y MoJo Parts 60: análisis](research/ugly-stik-new-files.md). El paquete principal identifica Ultra Stick 120 Light/Lite y trae planos/DXF/patrones con registro de 1 in. Se conserva para una posible variante grande y para mejorar la extracción de contornos nominales; no reemplaza la referencia Jensen .61 ni cierra su calibración. El manual incluido y el redibujo difieren en dimensiones, así que sus datos permanecen separados.
+
+**Organización completada:** 31 originales conservados byte a byte bajo `references/ultra-stick-120/` y `references/mojo-60/`, con enlaces y manifiestos actualizados. El [índice por avión](research/aircraft-reference-index.md) mantiene estas fuentes separadas del Jensen .61.

@@ -77,15 +77,21 @@ func _run() -> void:
 	var a0 := _alt()
 	await create_timer(1.0).timeout
 	var a1 := _alt()
-	_check("physics: falls under gravity (30 m start)", a0 > 29.5 and a1 < a0 - 3.0, "%.1f → %.1f m" % [a0, a1])
+	# With aerodynamics (D3) and no thrust it descends, but lift makes it clearly slower than free fall (4.9 m in 1 s).
+	_check("physics: descends without power, slower than free fall", a0 > 29.5 and a1 < a0 - 0.5 and a1 > a0 - 4.0, "%.1f → %.1f m" % [a0, a1])
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await process_frame
 	await process_frame
 	_check("physics: R restarts at 30 m", _alt() > 29.5, "%.1f m" % _alt())
+	# A trimmed glide from 30 m takes ~17 s to land, so put it just above the ground and watch it restart.
+	var near: PackedFloat64Array = _main._sim.state
+	near[2] = -0.3
+	_main._sim.state = near
+	_main._sim.previous = near
 	var lowest := 100.0
 	var restarted := false
-	for i in 40: # ~4 s: hits the ground after ~2.5 s
+	for i in 20: # 2 s
 		await create_timer(0.1).timeout
 		var a := _alt()
 		restarted = restarted or (lowest < 5.0 and a > 25.0)

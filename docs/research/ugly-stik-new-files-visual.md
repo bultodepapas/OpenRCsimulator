@@ -1,6 +1,6 @@
 # Revisión visual de los archivos nuevos Ultra Stick V3
 
-**Fecha:** 2026-10-05. **Alcance:** inspección visual de las 11 fotos en `references/ultra-stick-120/Ultrastick V3/pics/` y las 3 previsualizaciones JPG en `Ultrastick V3/DXF Plans/` y `Ultrastick V3/DXF Laser cutting files/`. Abrí las imágenes para ver su contenido. No moví ni modifiqué los originales y no usé los DWG, DXF, PDF ni otros archivos de esa carpeta para inferir geometría.
+**Fecha:** 2026-10-05. **Alcance:** inspección visual de las 11 fotos en `references/ultra-stick-120/Ultrastick V3/pics/` y las 3 previsualizaciones JPG en `references/ultra-stick-120/Ultrastick V3/DXF Plans/` y `references/ultra-stick-120/Ultrastick V3/DXF Laser cutting files/`. Abrí las imágenes para ver su contenido. Durante esa inspección no moví ni modifiqué los originales y no usé los DWG, DXF, PDF ni otros archivos de esa carpeta para inferir geometría.
 
 ## Lectura principal
 

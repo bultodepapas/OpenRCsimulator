@@ -31,6 +31,11 @@ echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model t
 run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
 
+echo "== app: headless --trace starts in a trimmed glide"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
+python3 "$HERE/tests/check_trimmed_glide.py" "$TRACE"; rm -f "$TRACE"
+
 echo "== fixed step: same final state at 30, 60 and 144 fps rendering"
 HASHES=""
 for fps in 30 60 144; do
