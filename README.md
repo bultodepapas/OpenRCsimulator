@@ -2,12 +2,14 @@
 
 An open-source RC airplane simulator, developed heavily with AI. The project is in a fluid, open research phase: we are still discovering what it should become.
 
-Only two things are decided:
+Two principles guide the project:
 
 1. We are building an RC airplane simulator.
 2. We will grow from small to large, starting with something very simple that works and shows a little airplane, then expanding gradually.
 
-Everything else is under active research: technology, platforms, aircraft, environments, physics, controls, compatibility, and the order of future work. Supporting multiple platforms is an aspiration; no platform or technology has been chosen.
+Our first aircraft will be an **Ultra Stick / Ugly Stick-style .60 nitro airplane**. The exact airframe variant, dimensions, engine, and flight-model parameters remain under research. We will start with a simple representation and refine it gradually.
+
+Technology, platforms, environments, physics, controls, compatibility, and later aircraft remain open to research. Supporting multiple platforms is an aspiration; no platform or technology has been chosen.
 
 We will research options, try small experiments, and adapt as we learn. Keep choices easy to revisit and technologies easy to adopt or change. Open questions are invitations to explore.
 

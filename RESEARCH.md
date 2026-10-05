@@ -2,6 +2,10 @@
 
 Research date: **2026-10-05**. This is a growing collection of evidence, possibilities, and questions, not a stack selection or a requirements document. The only established principles remain those in [AGENTS.md](AGENTS.md). [DECISIONS.md](DECISIONS.md) records decisions when we actually make them.
 
+Latest focused follow-up: [reference aircraft, comparable prototypes, and pilot evidence](#focused-follow-up-on-the-three-priority-research-gaps). It records what this pass established and what still requires execution or observation.
+
+**Current aircraft direction — 2026-10-05:** the project owner selected an **Ultra Stick / Ugly Stick-style .60 nitro airplane** as the first model. The exact variant, geometry, engine/propeller combination, mass properties, and aerodynamic parameters remain open. Begin with a simple representation and refine it through research. This supersedes earlier statements that no first-aircraft direction had been selected; those dated entries remain research history. See [DECISIONS.md](DECISIONS.md).
+
 ## Contents
 
 - [Reading the evidence](#reading-the-evidence)
@@ -21,6 +25,7 @@ Research date: **2026-10-05**. This is a growing collection of evidence, possibi
 - [Ten investigations into codebase libraries and runtime tools](#ten-investigations-into-codebase-libraries-and-runtime-tools)
 - [Ten open-source projects to study for code inspiration](#ten-open-source-projects-to-study-for-code-inspiration)
 - [Ten investigations to guide early prototype experiments](#ten-investigations-to-guide-early-prototype-experiments)
+- [Focused follow-up on the three priority research gaps](#focused-follow-up-on-the-three-priority-research-gaps)
 - [Continuing the research](#continuing-the-research)
 
 ## Reading the evidence
@@ -1276,6 +1281,125 @@ For an engine-based example, Godot's Movie Maker mode produces non-real-time fra
 
 **Small experiment, unperformed.** Begin with only three uncertain parameters and one short deterministic maneuver. Justify each range from a measurement or label it as exploratory. Plot outputs from a small preliminary sweep, then use a suitable sensitivity method only if the extra runs answer a real question. Repeat for a different maneuver to see whether the ranking changes. Preserve the model revision, parameter ranges, sampling method, and failures with the result; no parameter-accuracy budget is fixed here.
 
+## Focused follow-up on the three priority research gaps
+
+Seventh research pass, **2026-10-05**: follow-up to the notebook review, concentrating on a reference aircraft, a common prototype comparison, and direct pilot evidence. This pass deepens selected sources instead of adding another ten topics. The provisional specimen and comparison pair are research choices that can change, not project requirements.
+
+| Gap | New evidence or concrete preparation | What remains unresolved |
+| --- | --- | --- |
+| One coherent aircraft | Pinned Ultra Stick 25e entrypoint and parameter manifest; documented discrepancies against a paper and generator; four XML files fetched and parsed. | Full dependency resolution, simulator execution, trim, measured flight correspondence, and raw-log availability. |
+| Fair technology comparison | Shared presentation/input/reset task for Three.js and Godot, source-level input caveat, recording criteria, and outcome-dependent next steps. | No implementation, build timings, performance measurements, or winner. |
+| Actual pilot experience | Six original public reports with contrasting needs, plus a short proposed observation protocol. | No project-specific interviews, observed sessions, or training-transfer evidence. |
+
+The first runtime comparison can use scripted motion and an original blockout, so missing calibrated aerodynamics need not block a visible airplane. Aircraft-data reconciliation can proceed separately. Pilot observations could begin with an existing simulator when participants are available; no outreach was performed. These are independent ways to reduce uncertainty, not a mandatory sequence.
+
+- [A reference aircraft: separate a reproducible digital specimen from measured reality](#a-reference-aircraft-separate-a-reproducible-digital-specimen-from-measured-reality)
+- [A common task for comparing development approaches](#a-common-task-for-comparing-development-approaches)
+- [Pilot evidence: six concrete reports and a way to observe the next questions](#pilot-evidence-six-concrete-reports-and-a-way-to-observe-the-next-questions)
+
+### A reference aircraft: separate a reproducible digital specimen from measured reality
+
+**Direction update:** the first simulator aircraft is now aimed at the Ultra Stick / Ugly Stick-style .60 nitro family. The electric Ultra Stick 25e below remains a useful research comparison, not the selected physical configuration. Next aircraft-specific research should identify candidate .60 nitro plans/manuals and their geometry, mass/CG, engine, propeller, and control throws. Nitro propulsion and sound need their own evidence; neither the electric power model nor its aircraft parameters should be silently carried over.
+
+**Finding:** Ultra Stick 25e is a promising *research specimen*, because both experimental literature and inspectable aircraft definitions exist. They are not interchangeable versions of one authoritative aircraft. This investigation inspected source files and a research paper; it did not run the simulator or reproduce flight measurements. “University of Minnesota” (UMN) is the relevant Ultra Stick research group here, distinct from the University of Illinois (UIUC) airfoil and propeller databases.
+
+#### Three candidate routes
+
+| Candidate | Evidence actually found | Why investigate it | Main limitation |
+|---|---|---|---|
+| UMN Ultra Stick 25e / UASLab OpenFlightSim | A published identification study plus public JSBSim configuration, geometry, motor, propeller and actuator files. | Small conventional RC airframe; lets us compare a data manifest against real implementation dependencies. | Multiple configurations differ; the digital model is not demonstrated to reproduce the paper's identified aircraft. |
+| NASA FASER | NASA reports static, forced-oscillation and rotary-balance tests on the same research aircraft used for flight tests. Rotary tests cover angle of attack 0–50°, sideslip −5–10°, and nondimensional spin rates −0.5–0.5. | Stronger lead for studying high-angle-of-attack and rotational behavior later. | The [2016 report record](https://ntrs.nasa.gov/citations/20160010112) says control-effect characterization remains incomplete; this pass did not recover a complete machine-readable database with matching flight configuration. |
+| BYU textbook Aerosonde model | One [parameter file](https://github.com/byu-magicc/mavsim_public/blob/10363e0eaeb16a61a7463505f8e122a9eb7e2b4e/mavsim_python/parameters/aerosonde_parameters.py) collects mass, inertia, geometry, stability/control coefficients and motor/propeller constants. | A compact independent calculation fixture for equations, units and control signs. | Its configured mass is 11 kg and span 2.8956 m; treat it as a textbook numerical specimen, not evidence about a small hobby trainer's handling. A parameter file alone does not establish measurement provenance. |
+
+The first row is supported by the [UMN aircraft overview](https://uav.umn.edu/resources/aircraft), the [identification paper](https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20%28spring%202013%29/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf), and the pinned files below. This comparison favors a traceable next investigation, not a final aircraft choice.
+
+#### Provisional digital specimen and parameter manifest
+
+Use **OpenFlightSim commit `b020511223946b8642c73a35eacd17c4d5c09ddf`, UltraStick25e** as the specimen identifier. The [top-level definition](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/UltraStick25e.xml) actually loads `MassOpenFlight.xml`, `MetricsOpenFlight.xml` and `AeroOpenFlight.xml`, alongside effectors, propulsion, gear, controls and sensors. Selecting a plausible neighboring XML file would silently select different data. As a limited reproducibility check, this pass fetched and parsed the pinned entrypoint, mass, metrics, and effectors XML with Python's standard XML parser, confirming these include names and the values below. This was not complete dependency resolution or a successful JSBSim load/run.
+
+| Quantity | Loaded definition or availability | Evidence status and unresolved question |
+|---|---|---|
+| Configured empty mass | 1.959 kg (`emptywt`) | Implemented value in [MassOpenFlight.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/MassOpenFlight.xml); physical configuration behind it needs reconciliation. |
+| CG | `(0.222, 0, 0.046)` m | Coordinates present in the same file. Preserve its structural reference convention; do not interpret this automatically as distance aft of wing leading edge. |
+| Inertia | `Ixx=0.07151`, `Iyy=0.08636`, `Izz=0.15364`, `Ixz=−0.014` kg·m²; other cross terms zero | Implemented, not newly measured. Confirm simulator product-of-inertia convention before porting. |
+| Wing references | Area 0.3097 m², span 1.27 m, chord 0.25 m | [MetricsOpenFlight.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/MetricsOpenFlight.xml). Aerodynamic reference point `(0.2175,0,0.046)` m is separate from CG. |
+| Aerodynamic coefficients | For example, `CL0=0.1068`, `CLα=4.58` per radian, `CD0=0.0434`; rate and surface contributions are explicit | [AeroOpenFlight.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/AeroOpenFlight.xml). The inspected lift sum is a derivative model; having coefficients does not establish a validated stall envelope. |
+| Motor | E-Flite Power25 model, 600 W | [Power25.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/engine/Power25.xml) specifies power, not a measured battery/ESC/motor efficiency map. |
+| Propeller | APC 12×6e, two blades, tabulated thrust and power coefficients | [Propeller file](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/engine/APC%2012x6e.xml) attributes derivation to APC's website; exact original dataset/version remains unresolved. |
+| Controls | Separate ailerons, flaps, rudder and elevator; limits ±0.523599 rad; servo delay 0.020 s | [Effectors.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/Effectors.xml). Model settings, not an identified transmitter-to-surface calibration. |
+| Starting flight state | Cruise initializer supplies 17 m/s | [initCruise.xml](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Simulation/aircraft/UltraStick25e/initCruise.xml) is an initialization request, not evidence of equilibrium or a reproduced trim solution. |
+
+#### The mismatch is useful evidence
+
+The identification paper's Table 1 reports 1.959 kg, but inertias `0.089, 0.144, 0.162` kg·m² and `Ixz=0.014`, with inertia obtained from swing tests. Its surfaces reach ±25°. Its baseline borrows aerodynamic information from the Ultra Stick Mini and 120, explicitly not exact geometric scales; flight identification then updates selected derivatives. Slow phugoid and spiral behavior is less well established. These distinctions are reasons to keep the paper configuration separate, not average its constants into the digital model. See sections III, VI and VII of the [paper](https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20%28spring%202013%29/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf).
+
+There is also an internal reproducibility issue: the [Python aircraft generator](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/Utilities/UltraStick25e.py) assigns `Ixz=0`, while the loaded XML uses `−0.014`. It marks mass-property sourcing unfinished and calls servo delay a guess. Regenerating files is therefore a separate operation whose output must be compared with the checked-in specimen. This is source inspection, not proof of a runtime failure.
+
+**Reuse:** The repository carries an [MIT license](https://github.com/UASLab/OpenFlightSim/blob/b020511223946b8642c73a35eacd17c4d5c09ddf/LICENSE.md). That establishes stated software terms; inspect provenance of third-party propeller tables and visual assets before redistributing a bundle. Availability of a paper also does not establish a reusable raw flight-log dataset; none was verified here.
+
+**Small next experiment:** extract a machine-readable manifest and resolve every loaded include from the pinned specimen. Preserve values, units, coordinate conventions and status as “implemented,” “measured in paper,” “estimated,” or “unknown.” Then attempt one trimmed condition and separate elevator/aileron pulses, logging forces and rates. First judge whether another clean checkout can reproduce the same result; only afterwards compare a separately constructed paper configuration against published responses. Success would justify this specimen as a useful engineering fixture. Unresolved configuration lineage or failed reproduction would justify switching fixtures without changing the simulator's direction.
+
+### A common task for comparing development approaches
+
+**Research finding.** Two contrasting routes are sufficiently documented to justify a small comparison: Three.js with JavaScript and a local web build, and Godot with GDScript and its Compatibility renderer. They are experimental representatives of a browser-library workflow and an integrated-engine workflow, not finalists or a stack decision. A third implementation would add work before the first pair reveals which differences matter.
+
+**What the source inspection establishes.** Three.js's installation guide describes HTML/JavaScript files, npm/Vite development, a production `dist` directory, and separately imported addons such as `GLTFLoader`. Its game tutorial explicitly supplies application structure beyond rendering. Godot's SceneTree supplies a running scene's lifecycle, processing, and input callbacks; its command-line interface exposes import, script checking, and export operations. This establishes different starting responsibilities, not a productivity winner. [Three.js setup](https://threejs.org/manual/pages/installation.html), [game tutorial](https://threejs.org/manual/pages/game.html), [Godot scene lifecycle](https://docs.godotengine.org/en/stable/tutorials/scripting/scene_tree.html), [Godot command-line operations](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html).
+
+For a browser-to-browser comparison, Godot's documented web path uses WebGL 2 through Compatibility, offers a single-threaded export, and excludes Godot 4 C# projects. Three.js can be tested with its WebGL renderer on the same browser. Testing Godot natively first is useful for setup observations, but comparing that native run with a browser run would conflate application framework and deployment platform. [Godot web-export constraints](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
+
+**Concrete input-source caution.** Godot's official joypad diagnostic, inspected at revision `3e08537616661a5883831628decab4c526260289`, displays numeric axis values and connection events. Its loop is bounded by `min(JOY_AXIS_MAX, 10)`, and its controller illustration uses a `0.2` deadzone for highlighting. This is a useful starting diagnostic, but not proof that every radio channel is exposed. The illustration's deadzone should not be mistaken for modification of the separately displayed raw numeric value. [Diagnostic source](https://github.com/godotengine/godot-demo-projects/blob/3e08537616661a5883831628decab4c526260289/misc/joypads/joypads.gd). The earlier notebook's Gamepad/SDL distinctions remain relevant.
+
+**Proposed shared task, not executed.** Give both implementations the same small input specification:
+
+| Part | Controlled comparison |
+| --- | --- |
+| Scene | One original airplane blockout, flat field, horizon, fixed lighting, and ground camera. Use identical dimensions and hinge locations. |
+| Motion | Play the same timestamped pose sequence first. This tests presentation without introducing two independently tuned flight models. |
+| Interaction | Move named aileron/elevator parts from keyboard input; expose the received and mapped values. Add the same physical controller only when available. |
+| Reset | Restore aircraft pose, camera state, and displayed controls to the same recorded initial condition. |
+| Delivery | Run locally, then open browser builds on the same machine/browser at the same viewport and drawing-buffer resolution. |
+| Change request | After the baseline works, change a hinge location, add axis inversion, and adjust the camera while retaining the original pose sequence. |
+
+Matching display resolution alone is insufficient: Three.js's responsive-rendering guide distinguishes CSS canvas dimensions from the actual drawing buffer and explains the extra pixel cost on high-density displays. Record both so a sharper, more expensive output is not misread as an engine performance difference. [Canvas resolution and display density](https://threejs.org/manual/pages/responsive.html).
+
+**Evidence to collect.** Separately record clean setup time, first visible result, edit-to-running time, failed builds/imports, manual editor operations, and review/repair time. Retain exact tool versions, launch instructions, screenshots at known sample times, console diagnostics, payload bytes, and frame-time observations on the same hardware. Separate cold from cached loading. Generated code quantity is not a productivity score. For AI-assisted work, retain task instructions and distinguish agent execution from human intervention; keep tool/model settings comparable and record prior familiarity. One small trial cannot establish a general ranking.
+
+**What would change our direction.** If the engine route makes the second change substantially easier, investigate its authoring advantage further. If browser-library assembly remains short and diagnostic access is clearer, deepen that route. Missing input channels would trigger a specific input-path investigation before any conclusion about rendering. If setup dominates the allotted experiment, preserve the failure and stop expanding the sample; it is evidence of friction, not proof of permanent incompatibility. If outcomes are close, choose whichever helps the next experiment temporarily, or defer the choice. No measured outcome currently exists, and neither implementation was created in this research pass.
+
+### Pilot evidence: six concrete reports and a way to observe the next questions
+
+**Research question:** what prevents people from reaching an enjoyable, understandable first flight, and which problems should our earliest playable experiment expose? This pass adds firsthand reports rather than another feature catalogue. **Evidence: original public posts and replies, read on 2026-10-05.** These are self-selected accounts, not representative survey results, verified pilot credentials, or controlled evidence of learning transfer. No participant was contacted or observed for this project.
+
+#### Reports with context and limits
+
+| Original report | What the author actually reports | Useful question for our project; evidence limit |
+| --- | --- | --- |
+| [FMS beginner asking how much practice is enough, March 2024](https://www.reddit.com/r/RCPlanes/comments/1boha89/how_long_should_i_practice_in_sim_before_flying_a/) | A person using FMS and a FlySky FS-I6X, without an RC airplane yet, says distant aircraft become too small to distinguish. Another participant objects that simulator zoom can create a misleading perspective. | Can users identify bank direction while retaining field context? These conflicting observations suggest testing visibility and distance judgment separately. They do not establish a universally correct zoom policy or FMS aerodynamic accuracy. |
+| [NX6 calibration difficulty, October 2022](https://forums.realflight.com/index.php?threads/how-to-use-windows-to-calibrate-nx6.56876/) | A prospective pilot with extensive IT experience describes hours of setup, unexplained throttle, jumping channels, and confusion over Windows axis labels. The author later reports that using a USB hub resolved the erratic behavior on their Dell XPS13/Windows 11 setup. | Would raw-input visibility distinguish connection trouble from incorrect mapping before someone blames flying ability? The reported remedy is one hardware/software case, not proof that USB-C generally fails or that a hub is our solution. |
+| [DXS reset interruption, September 2024](https://forums.realflight.com/index.php?threads/dxs-controller-with-dongle-reset.60736/) | The author asks how to reset from the transmitter because every crash requires returning to the keyboard. Replies discuss trading an existing channel assignment for reset. | Does reaching for another device interrupt short practice sessions, and can users discover a workable reset? This establishes one person's friction; the replies' controller-compatibility details were not independently hardware-tested here. |
+| [Experienced user's simulator practice, March 2021](https://www.reddit.com/r/RCPlanes/comments/lyfw1o/is_realflight_actually_helpful/) | A commenter identifying as a university research pilot describes modifying a simulator aircraft to approximate relevant characteristics, then practicing circuits, landings, and failures. Others describe returning to flying after long breaks. | A useful session may involve recreating a maneuver or regaining confidence, rather than completing beginner lessons. These are self-reports; model similarity, improvement, and field outcomes were not measured. |
+| [Assistance and discouragement, May 2026](https://www.reddit.com/r/RCPlanes/comments/1tborp2/learning_to_fly/) | A learner reports successful simulator landings in an intermediate mode but difficulty and discouragement in expert mode and instructor-led field sessions. Replies disagree: several favor immediate manual practice; another self-described instructor reports teaching through mode switching to build confidence. | Observe whether users understand which assistance is active and what they personally want to practice. The thread does not isolate input calibration, aircraft setup, teaching style, or assistance as the cause. It cannot settle which curriculum works best. |
+| [Different visual needs and preferred viewpoints, January 2026](https://www.reddit.com/r/RCPlanes/comments/1qkz4nr/new_to_rc_flying/) | In a discussion about introducing a child to RC, an adult participant reports limited vision in one eye, frequent orientation loss, and a personal preference for FPV. Another pilot describes relying on memory of the aircraft's previous attitude. | Include different visual needs and preferred flying experiences when observing the prototype. These accounts do not establish medical suitability or make FPV an equivalent substitute for ground-view practice. |
+
+The calibration and reset threads were inspected directly from the original forum HTML because the web reader normalized their query-string URLs into the forum index. The linked thread URLs preserve the original paths; summaries above refer to the posts, not the index.
+
+#### What the disagreements change
+
+**Inference:** “realism” is too broad an interview question. A user might mean recognizable orientation, familiar control response, credible stalls, difficult landings, or the emotional consequences of crashing. Ask for a particular moment and the behavior they expected. Keep aircraft setup and active assistance visible in the notes before interpreting a handling complaint as a physics defect.
+
+Reset also has two possible roles. It enables inexpensive repetition, but an immediate restart may hide what caused failure. In the March 2021 discussion, a participant recommends continuing recovery attempts instead of treating every problem as a disposable crash; in the May 2026 discussion, easy reset is used to argue for trying harder control modes. These are competing practice preferences, not evidence for imposing penalties or removing reset. A short optional replay or a repeatable starting position could be investigated if users actually ask to understand a mistake. [Practice discussion](https://www.reddit.com/r/RCPlanes/comments/lyfw1o/is_realflight_actually_helpful/) · [Assistance discussion](https://www.reddit.com/r/RCPlanes/comments/1tborp2/learning_to_fly/).
+
+#### Proposed observation, not an experiment already performed
+
+Start with four to six willing adult participants spanning beginners, returning pilots, and experienced flyers; seek varied display/controller setups and relevant access needs. This is a practical exploratory sample, not a statistically powered effectiveness study. Use an existing simulator first, or the smallest prototype once available. Allow roughly 25 minutes per person:
+
+1. **Context, 3 minutes:** ask what they want to do, what they already fly or play, their controller mode, and an example of frustrating or enjoyable practice.
+2. **Getting airborne, 7 minutes:** ask them to configure controls and begin flight without coaching initially. Record first usable-input time, first-flight time, requests for help, and mismatched axes. Separate installation/download delay from calibration work. Cap the attempt and offer help rather than consume the whole session.
+3. **Orientation and repetition, 10 minutes:** attempt an outbound turn, an inbound turn, and a return toward a chosen field reference. Ask them to repeat a difficult segment. Record when the aircraft becomes unreadable, wrong-direction corrections, reset discovery, and time between attempts. If comparing two views, alternate presentation order and hold aircraft, wind, and assistance constant.
+4. **Reflection, 5 minutes:** ask which moment they wanted to repeat, which behavior surprised them, and what one change would let them enjoy or understand another flight. Record confidence separately from task completion.
+
+**What would change:** repeated setup failure would prioritize a tiny input inspector and guided mapping trial; readable aircraft with poor field-relative judgment would prioritize camera/context experiments; long reset interruptions would prioritize restart interaction; assistance confusion would prioritize clearer state feedback. Conversely, successful setup and orientation would justify investigating flight behavior next. Preserve individual counterexamples and configuration details rather than average incompatible experiences into one satisfaction score. A short session can reveal usability problems and preferences; it cannot demonstrate long-term learning, real-flight transfer, or aerodynamic fidelity.
+
 ## Continuing the research
 
 ### Small experiments suggested by these findings
@@ -1324,3 +1448,5 @@ As research continues, add findings beside their topic with the date, original s
 **Research log — 2026-10-05, fifth pass:** investigated SuperTuxKart, Neverball, Pioneer, Rigs of Rods, VDrift, OpenRocket, the Godot TPS demo, Endless Sky, OpenTTD, and TinyRenderer. Added concrete source-reading paths, implementation observations, limitations, and small possible experiments. No upstream code or assets were imported, and no architecture or technology was selected.
 
 **Research log — 2026-10-05, sixth pass:** investigated trimmed initialization, airfoil extrapolation, ground effect, end-to-end latency, interrupted input, distant-aircraft rendering, numerical convergence, structured experiment traces, repeatable visual evidence, and parameter sensitivity. Added original-source findings and small proposed experiments, keeping numerical correctness, physical validity, and player experience distinct. No experiments were run or new project decisions made.
+
+**Research log — 2026-10-05, seventh pass:** deepened three priority gaps. Compared Ultra Stick 25e, FASER, and Aerosonde reference routes; pinned the Ultra Stick configuration and checked four XML files; documented mismatched source parameters; specified a fair two-approach prototype comparison; and inspected six original pilot reports with an observation protocol. No simulator builds, flight validation, participant observations, or outreach were performed. All project technology and aircraft choices remain open.
