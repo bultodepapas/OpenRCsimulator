@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A refactor's proof is "nothing changed", measured in bytes.** D5.9 moved half of `main.gd` and the control throws into new homes. The proof was the `--trace` file hashing identical (SHA-256 `97c4e73c…`) and five captures byte-identical. That needed a baseline taken *before* editing, and a check that captures repeat run to run (they do). The byte comparison also froze a real defect in place (physics captures draw surfaces without trims); it is recorded and fixed in its own step. (2026-10-05)
+
 - **Verification is not validation.** Every handling check so far compared the sim with numbers computed from its own borrowed coefficients, so all of them could pass while the airplane feels wrong. Linearizing the real equations took ~80 lines and a few seconds (`research/flight-modes/`). It gave the first independent comparison: against a flight-identified Ultra Stick 120, the sim is 1.45× faster in pitch and 1.9× faster in roll. *Now:* each physics milestone needs one check against data we did not derive (ROADMAP rule 6). (2026-10-05)
 - **Compare like with like before concluding.** At the same airspeed the sim's modes looked 1.6–2.9× faster than the Ultra Stick 120's; at the same lift coefficient (our wing loading is half theirs) the gap was 1.16–1.9×. The scaling choice changed the conclusion. *Now:* comparisons between airplanes state their scaling (Froude, same CL). (2026-10-05)
 
@@ -60,6 +62,9 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **three.js is one ~530 KB chunk (132 KB gzip).** Vite warns about chunks over 500 KB; harmless for now. (2026-10-05)
 
 ## Godot specifics
+
+- **A scene added from a test's `_initialize` becomes ready only after the first physics tick.** The simulation's tick counter therefore lags the global tick by one. Frames end on global ticks 40k at 30, 60 and 144 fps alike, so frame-aligned key injection uses simulation ticks 40k − 1 (119, 239, 359). The harness fails loudly if a scheduled tick is not a frame end, instead of silently sampling at different ticks. (2026-10-05)
+- **`process_physics_priority` makes the order of fixed-step work explicit.** The flight session (priority −1) shapes the pilot's commands before the simulation (its child, priority 0) steps, in the same tick. Tree order would give the same result today, but it is an implicit rule that a scene move could break. (2026-10-05)
 
 - **Read the engine source when the docs are thin; Godot's docs can be out of date.** Reading the 4.7.2-stable tag found facts no doc page states:
   - a universal macOS export fails without `import_etc2_astc`;

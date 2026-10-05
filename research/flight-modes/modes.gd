@@ -9,7 +9,6 @@ const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Trim := preload("res://physics/trim.gd")
-const Spec := preload("res://spec.gd")
 
 var model: Dictionary
 var d: Dictionary
@@ -38,9 +37,7 @@ func f(x: PackedFloat64Array) -> PackedFloat64Array:
 func _initialize() -> void:
 	var V := float(OS.get_environment("V")) if OS.get_environment("V") != "" else 15.0
 	model = AircraftData.load_file("res://data/aircraft/jensen_ugly_stik_60.json").model
-	var c: Dictionary = Spec.CONTROLS.max_throw_deg
-	var throws := { elevator = deg_to_rad(c.elevator), aileron = deg_to_rad(c.aileron), rudder = deg_to_rad(c.rudder) }
-	var t := Trim.solve("level", V, model, g, throws)
+	var t := Trim.solve("level", V, model, g, model.controls.throw_rad)
 	d = { elevator = t.elevator, aileron_right = t.aileron, aileron_left = -t.aileron, rudder = t.rudder }
 	rpm = t.rpm
 	j_inv = RB.inertia_inverse(model.inertia)

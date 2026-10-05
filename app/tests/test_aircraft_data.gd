@@ -61,6 +61,10 @@ func _initialize() -> void:
 	_check("span matches visual geometry", absf(m.reference.b - Geometry.DATA.wing.span) < 0.001, "%s vs %s" % [m.reference.b, Geometry.DATA.wing.span])
 	_check("chord matches visual geometry", absf(m.reference.c - Geometry.DATA.wing.chord) / m.reference.c < 0.01, "%s vs %s" % [m.reference.c, Geometry.DATA.wing.chord])
 
+	# Control throws are aircraft data with provenance (D5.9), in degrees in the file.
+	_check("throws loaded (aileron 20°, elevator 20°, rudder 25°)", m.controls.throw_deg.aileron == 20.0 and m.controls.throw_deg.elevator == 20.0 and m.controls.throw_deg.rudder == 25.0, str(m.controls))
+	_check("throws also in radians", absf(m.controls.throw_rad.rudder - deg_to_rad(25.0)) < 1e-15)
+
 	# Aero conventions are present, so D3+ cannot guess them.
 	for key in ["rates", "elevator", "aileron", "rudder", "drag", "axes"]:
 		_check("convention documented: " + key, m.conventions.has(key))
@@ -78,6 +82,10 @@ func _initialize() -> void:
 	_rejects("reversed elevator (Cmde > 0)", func(d): d.aero.coefficients.Cmde.value = 0.8, "Cmde")
 	_rejects("missing coefficient", func(d): d.aero.coefficients.erase("Cnr"), "Cnr")
 	_rejects("total mass implausible (kg/g mix-up)", func(d): d.inventory[0].mass.value = 4.9, "plausible range")
+	_rejects("missing controls section", func(d): d.erase("controls"), "controls: missing")
+	_rejects("throw in radians", func(d): d.controls.max_throw.rudder.unit = "rad", "unit 'rad'")
+	_rejects("missing elevator throw", func(d): d.controls.max_throw.erase("elevator"), "controls.max_throw.elevator")
+	_rejects("implausible throw", func(d): d.controls.max_throw.aileron.value = 90.0, "outside")
 	var bad := AD.validate_and_derive({ format = "nope" })
 	_check("rejects garbage", not bad.ok)
 

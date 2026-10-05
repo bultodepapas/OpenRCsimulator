@@ -33,8 +33,9 @@ static func _f(v: float, decimals := 2) -> String:
 
 
 ## c: stick commands; flown: commands actually applied (stick + trims). Surfaces show what the airplane really does.
-static func update(label: Label, raw: Dictionary, c: Dictionary, view: String, status := "", flown := {}) -> void:
-	var s := Commands.surface_deflections_deg(flown if not flown.is_empty() else c)
+## throws_deg: the aircraft's maximum throws ({} = the data file's).
+static func update(label: Label, raw: Dictionary, c: Dictionary, view: String, status := "", flown := {}, throws_deg := {}) -> void:
+	var s := Commands.surface_deflections_deg(flown if not flown.is_empty() else c, throws_deg)
 	label.text = "\n".join([
 		"channel   raw   command  surface",
 		"roll     %s    %s   R ail %s°" % [_f(raw.roll, 0), _f(c.roll), _f(s.aileron_right, 1)],

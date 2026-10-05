@@ -528,6 +528,28 @@
       "source": "UltraStick25e Jxx Jyy Jzz (1.959 kg, 1.27 m span); compared after scaling by m·b²"
     }
   },
+  "controls": {
+    "max_throw": {
+      "aileron": {
+        "value": 20.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      },
+      "elevator": {
+        "value": 20.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      },
+      "rudder": {
+        "value": 25.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      }
+    }
+  },
   "aero": {
     "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik",
     "conventions": {

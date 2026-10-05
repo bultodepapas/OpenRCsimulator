@@ -36,7 +36,7 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
 
-echo "== fixed step: same final state at 30, 60 and 144 fps rendering"
+echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
 HASHES=""
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd 2>&1)"

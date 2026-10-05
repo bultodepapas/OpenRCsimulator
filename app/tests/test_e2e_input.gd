@@ -55,7 +55,7 @@ func _run() -> void:
 	await create_timer(0.5).timeout
 	r = _row("roll")
 	# The stick re-centers; the aileron returns to its TRIM position (like a trimmed real airplane), not to 0°.
-	var trim_deg: float = _main._trims.roll * 20.0
+	var trim_deg: float = _main.session.trims.roll * _main.session.throws_deg().aileron
 	_check("release -> stick re-centers, aileron back to trim", "+0.00" in r and ("%+.1f°" % trim_deg) in r, "%s (trim %+.1f°)" % [r, trim_deg])
 
 	_key(KEY_W, true)
@@ -69,7 +69,7 @@ func _run() -> void:
 	_key(KEY_R, true)
 	_key(KEY_R, false)
 	await create_timer(0.1).timeout
-	var trim_pct := roundi(float(_main._start.throttle) * 100.0)
+	var trim_pct := roundi(float(_main.session.start.throttle) * 100.0)
 	_check("reset -> throttle back to its trimmed setting", _pct() == trim_pct, "%s (trim %d%%)" % [_row("throttle"), trim_pct])
 
 	# D5: the live airplane starts trimmed in level flight with the engine running: hands-off it holds altitude;
@@ -93,10 +93,10 @@ func _run() -> void:
 	await process_frame
 	_check("physics: R restarts at 30 m", _alt() > 29.5, "%.1f m" % _alt())
 	# Push the airplane just below the ground and check it restarts (temporary ground until D9).
-	var near: PackedFloat64Array = _main._sim.state
+	var near: PackedFloat64Array = _main.session.sim.state
 	near[2] = 0.1
-	_main._sim.state = near
-	_main._sim.previous = near
+	_main.session.sim.state = near
+	_main.session.sim.previous = near
 	await process_frame
 	await process_frame
 	var restarted := _alt() > 29.5
@@ -114,7 +114,7 @@ func _run() -> void:
 	_key(KEY_T, true)
 	_key(KEY_T, false)
 	await process_frame
-	var note: String = _main._trace_note
+	var note: String = _main.recorder.note
 	var path := note.get_slice("trace saved: ", 1).get_slice(" (", 0)
 	var rows := int(note.get_slice("(", 1).get_slice(" rows", 0))
 	_check("T again: trace saved with ~0.5 s of ticks", FileAccess.file_exists(path) and rows > 60, note)

@@ -4,7 +4,7 @@
 # model: mass_kg, inertia (PackedFloat64Array [Jxx Jyy Jzz Jxy Jxz Jyz], body FRD, about the inventory's own
 #        centre of mass: the honest estimate of the mass distribution; flight uses the plan CG, see warnings),
 #        cg_le / cg_inventory_le (PackedFloat64Array [x_aft, y_right, z_up], m), reference {S, b, c, arp_le},
-#        aero {name: float}, conventions {…}, id.
+#        aero {name: float}, conventions {…}, controls {throw_deg, throw_rad: {aileron, elevator, rudder}}, id.
 extends RefCounted
 
 const FORMAT := "openrc-aircraft v1"
@@ -117,6 +117,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			warnings.append("aero.coefficients.%s: unknown coefficient, ignored" % name)
 
 	var prop := _propulsion(errors, raw.get("propulsion"))
+	var controls := _controls(errors, raw.get("controls"))
 
 	if not errors.is_empty():
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
@@ -153,6 +154,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		aero = aero,
 		conventions = raw.get("aero", {}).get("conventions", {}),
 		propulsion = prop,
+		controls = controls,
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
 
@@ -231,3 +233,19 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	if not ct.is_empty() and ct[1] <= 0.0:
 		errors.append("propulsion.propeller.ct_table: static Ct must be positive (a propeller that pushes)")
 	return { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp }
+
+
+## Maximum surface throws (each surface's deflection at full stick), degrees in the file.
+static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("controls: missing")
+		return {}
+	var throws: Dictionary = node.get("max_throw", {})
+	var deg := {}
+	var rad := {}
+	for surface in ["aileron", "elevator", "rudder"]:
+		var x = _q(errors, "controls.max_throw." + surface, throws.get(surface), "deg", 1.0, 60.0)
+		if x != null:
+			deg[surface] = x
+			rad[surface] = deg_to_rad(x)
+	return { throw_deg = deg, throw_rad = rad }
