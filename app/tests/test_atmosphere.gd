@@ -47,6 +47,18 @@ func _initialize() -> void:
 			"%s vs %s" % [mat.get_shader_parameter("sun_dir"), sun.transform.basis.z])
 	_check("ground fog density = engine fog density", absf(ground.get_shader_parameter("beta") - env.fog_density) < 1e-9)
 
+	# L3: engine shadows are off by default; turned on, the light is compensated and the haze's sun term is unchanged.
+	_check("engine shadows off by default", not sun.shadow_enabled and Atmosphere.light_energy() == Spec.ATMOSPHERE.sun_energy)
+	var product_off: float = Atmosphere.light_energy() * Atmosphere.sun_scatter()
+	Atmosphere.engine_shadows = true
+	var sun2 := Atmosphere.create_sun(holder)
+	var env2 := Atmosphere.environment()
+	_check("engine shadows: PSSM 2 splits to 300 m, energy × compensation", sun2.shadow_enabled and sun2.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		and sun2.directional_shadow_max_distance == Spec.ATMOSPHERE.shadow_max_distance_m and absf(sun2.light_energy - Spec.ATMOSPHERE.sun_energy * Spec.ATMOSPHERE.shadow_energy_compat) < 1e-6)
+	_check("engine shadows: fog sun term (energy × scatter) unchanged", absf(Atmosphere.light_energy() * Atmosphere.sun_scatter() - product_off) < 1e-9
+		and absf(env2.fog_sun_scatter * sun2.light_energy - product_off) < 1e-5)
+	Atmosphere.engine_shadows = false
+
 	# Geometry: the ground reaches the rim, and the camera sees past it.
 	_check("ground half-size ≥ rim end", Spec.GROUND_SIZE / 2.0 >= Spec.ATMOSPHERE.rim_end_m)
 	_check("camera far ≥ 1.05 × rim end", Spec.CAMERA.far >= 1.05 * Spec.ATMOSPHERE.rim_end_m)

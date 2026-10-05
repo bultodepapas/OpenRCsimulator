@@ -4,6 +4,13 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A metric's mask must contain only what it claims to measure.** The airplane-readability metric took the airplane as "pixels that change when the airplane is hidden", which also caught the D7 ground shadow (and, once, the panel text that names the shadow mode). That contamination made L1b look unreachable after L2, and I reported a threshold recalibration that was wrong. Measured cleanly, the original thresholds pass. Now the readability views turn the shadow off in both images of a pair. (2026-10-05)
+- **A mutation that does not fail finds bugs in the code it was meant to test.** Turning engine shadows on "by mutation" changed nothing, because `--engine_shadows` was applied after the sun had been built. The Gate L comparison option had never worked. (2026-10-05)
+
+- **A radio can navigate a Godot menu even when we never assign its sticks to UI.** The pinned 4.7.2 `InputMap::get_builtins()` source already maps joystick axes to directional UI actions. The menu plan now requires an explicit navigation map and a regression case where moving RC sticks cannot change focus. A reproducible palette calculation also found that the proposed red on dark panel is only 2.61:1, so it cannot be the sole control boundary under the adopted 3:1 target. These are source inspection and calculated evidence, not a menu runtime test. [Ten menu investigations](docs/research/menu-investigations/README.md). (2026-10-05, UI research)
+
+- **Menu planning exposed a distinction between pausing physics and pausing a flight session.** Code inspection found that `FlightSession._physics_process()` still polls controls and advances the crash restart counter while `sim.paused` is true; presentation/audio also update separately. A menu must coordinate these paths while keeping calibration responsive. The plan separates fields from initial-flight scenarios and product releases from model/schema revisions. This is inspection evidence, not a new runtime test. [Menu plan](docs/MENU-PLAN.md). (2026-10-05, UI planning)
+
 - **A fix can invalidate an earlier calibration; re-measure instead of defending it.** L2's colour-space fix made the sky correctly brighter, and L1b's tonemap choice (picked against the mis-encoded sky) stopped passing its own readability thresholds. A second sweep showed no setting can, so the thresholds had come from the same error. The guard now protects the corrected baseline, and the absolute target moved to the human gate. (2026-10-05)
 
 - **Look at trajectories before writing assertions about new physics.** D9b took four model versions, each rejected by reading a printed trajectory, not by a failing assert: (1) two strips per wing → roll ran away to 30 rad/s; (2) a drag artefact (linear induced drag evaluated past the stall) → absurd yaw; (3) three strips, still lift-based → 19 rad/s; (4) roll from the **normal force**: a flat plate's normal force keeps growing to 90° while its lift falls after 45°, and only then did the spin look like a spin (~1 turn/s, 11 m/s sink, standard recovery works). Each wrong version would have passed assertions written up front for "it spins". (2026-10-05)
@@ -80,6 +87,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 - **three.js is one ~530 KB chunk (132 KB gzip).** Vite warns about chunks over 500 KB; harmless for now. (2026-10-05)
 
 ## Godot specifics
+
+- **Engine shadows in Compatibility cost more than draw calls.** The shadowed light is drawn in an additive pass blended in sRGB after tonemapping (Godot #90259, PR #98656 unmerged, searched 2026-10-05). The lit wing came out +14 % brighter, with a hue shift, clipped whites, and doubled draw calls. A planar shadow projected along the light (one quad) gives the pilot the same cue with none of that. (2026-10-05)
 
 - **In Compatibility, a sky shader's `COLOR` is sRGB, not linear.** GLES3 `sky.glsl` (4.7.2, line 250) runs `srgb_to_linear()` (a cubic approximation) on our output, while spatial shaders and fog work in linear. A sky that computes the engine's fog formula in linear therefore comes out darker than the fog it should match (158 vs 203 levels at the ground's rim). The fix is to encode with the exact inverse of that cubic. It also means every earlier sky colour had been displayed darker than intended. A colour seam was the symptom; the engine source was the answer. (2026-10-05)
 

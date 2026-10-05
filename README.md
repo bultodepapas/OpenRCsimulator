@@ -67,5 +67,6 @@ app/export.sh                       # release builds into dist/ (downloads the 1
 | [RESEARCH.md](RESEARCH.md) | Exploratory findings, original sources, open questions |
 | [AGENTS.md](AGENTS.md) | Rules and commands for contributors and AI agents |
 | [docs/UGLY-STIK-PLAN.md](docs/UGLY-STIK-PLAN.md) | The model team's plan for the Ugly Stik visual model (Spanish) |
+| [docs/MENU-PLAN.md](docs/MENU-PLAN.md) | Proposed entry screen, menus, aircraft/scenery selection, settings and staged releases (Spanish) |
 
 Licensed under the [MIT License](LICENSE). Third-party data, if bundled, keeps its own license. Plans and scans used as references stay local in the gitignored `references/` folder.

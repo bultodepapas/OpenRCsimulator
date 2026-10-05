@@ -47,6 +47,16 @@ func _initialize() -> void:
 	_check("knife edge: the span shadow vanishes", banked.basis.x.length() < 1e-6, str(banked.basis.x))
 	var dive := Shadow.footprint(Basis(Vector3(1, 0, 0), -PI / 2.0), pos, SPAN, 1.3)
 	_check("vertical dive: the length shadow vanishes", dive.basis.z.length() < 1e-6, str(dive.basis.z))
+	# L3: projected along the sun (45° up, from the south-west), a level airplane's shadow lies (h − shadow height) /
+	# tan 45° away from the point below it, on the side away from the sun.
+	var Atmosphere := load("res://render/atmosphere.gd")
+	var s: Vector3 = Atmosphere.sun_direction()
+	var sun_t := Shadow.footprint(Basis.IDENTITY, pos, SPAN, 1.3, s)
+	var vert := Shadow.footprint(Basis.IDENTITY, pos, SPAN, 1.3)
+	var shift := sun_t.origin - vert.origin
+	var expect := Vector3(-s.x, 0.0, -s.z).normalized() * (pos.y - Spec.SHADOW.height) / tan(deg_to_rad(45.0))
+	_check("sun shadow: offset (h − 0.05)/tan 45° away from the sun", shift.distance_to(expect) < 1e-4 and absf(sun_t.origin.y - Spec.SHADOW.height) < 1e-6, "%s vs %s" % [shift, expect])
+	_check("sun shadow of a level airplane keeps its span and length", absf(sun_t.basis.x.length() - SPAN) < 1e-5 and absf(sun_t.basis.z.length() - 1.3) < 1e-5)
 	_check("shadow fades with height but never vanishes", Shadow.alpha(0.0) == Spec.SHADOW.alpha_low and Shadow.alpha(1000.0) == Spec.SHADOW.alpha_high and Shadow.alpha(40.0) < Shadow.alpha(5.0))
 	var sil := Shadow.silhouette()
 	_check("silhouette: wing solid, outside clear", sil.get_pixel(10, 43).a > 0.9 and sil.get_pixel(10, 120).a < 0.05, "%s %s" % [sil.get_pixel(10, 43), sil.get_pixel(10, 120)])

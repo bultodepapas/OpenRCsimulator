@@ -1,0 +1,367 @@
+{
+  "date": "2026-10-05",
+  "kind": "cited-primary-source-index",
+  "method": "External Markdown citations in the ten completed research reports; fragments grouped by page. Source contents are not archived here. Reports distinguish documentation, inspected images, design inference and pending tests.",
+  "report_count": 10,
+  "source_count": 39,
+  "sources": [
+    {
+      "url": "https://amafoundation.modelaircraft.org/posts/ama-district-vi-club-celebrates-national-model-aviation-day-1",
+      "labels": [
+        "nota de la AMA Foundation sobre un evento de club"
+      ],
+      "reports": [
+        "07-visual-direction-assets.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_configfile.html",
+      "labels": [
+        "Referencia `ConfigFile` de Godot 4.7"
+      ],
+      "reports": [
+        "03-settings-content-versioning.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_control.html",
+      "labels": [
+        "referencia `Control`"
+      ],
+      "reports": [
+        "02-input-focus-radio-isolation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_engine.html",
+      "labels": [
+        "Referencia `Engine`"
+      ],
+      "reports": [
+        "03-settings-content-versioning.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_input.html",
+      "labels": [
+        "Referencia `Input` de Godot 4.7"
+      ],
+      "reports": [
+        "02-input-focus-radio-isolation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_resourceloader.html",
+      "labels": [
+        "Referencia `ResourceLoader` de Godot 4.7"
+      ],
+      "reports": [
+        "01-godot-shell-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_scenetree.html",
+      "labels": [
+        "Referencia `SceneTree` de Godot 4.7",
+        "temporizadores de `SceneTree`"
+      ],
+      "reports": [
+        "01-godot-shell-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_window.html",
+      "labels": [
+        "Referencia `Window` de Godot 4.7"
+      ],
+      "reports": [
+        "03-settings-content-versioning.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/i18n/internationalizing_games.html",
+      "labels": [
+        "Internationalizing games"
+      ],
+      "reports": [
+        "09-responsive-localization.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/i18n/pseudolocalization.html",
+      "labels": [
+        "sistema de pseudolocalización de Godot 4.7"
+      ],
+      "reports": [
+        "09-responsive-localization.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html",
+      "labels": [
+        "Controladores, gamepads y joysticks"
+      ],
+      "reports": [
+        "02-input-focus-radio-isolation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/inputevent.html",
+      "labels": [
+        "Flujo de `InputEvent`"
+      ],
+      "reports": [
+        "02-input-focus-radio-isolation.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html",
+      "labels": [
+        "Multiple resolutions de Godot 4.7"
+      ],
+      "reports": [
+        "09-responsive-localization.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/scripting/pausing_games.html",
+      "labels": [
+        "Pausa y modos de proceso"
+      ],
+      "reports": [
+        "01-godot-shell-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/ui/gui_containers.html",
+      "labels": [
+        "Containers reorganizan controles según el espacio disponible"
+      ],
+      "reports": [
+        "09-responsive-localization.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/ui/gui_skinning.html",
+      "labels": [
+        "recursos Theme centralizan fuentes, colores, márgenes y estilos"
+      ],
+      "reports": [
+        "09-responsive-localization.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/classes/class_input.html",
+      "labels": [
+        "Godot Input"
+      ],
+      "reports": [
+        "10-testing-performance-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/classes/class_performance.html",
+      "labels": [
+        "Godot Performance"
+      ],
+      "reports": [
+        "10-testing-performance-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/classes/class_renderingserver.html",
+      "labels": [
+        "RenderingServer"
+      ],
+      "reports": [
+        "10-testing-performance-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html",
+      "labels": [
+        "Command line tutorial"
+      ],
+      "reports": [
+        "10-testing-performance-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html",
+      "labels": [
+        "Exporting projects"
+      ],
+      "reports": [
+        "10-testing-performance-export.md"
+      ]
+    },
+    {
+      "url": "https://forums.realflight.com/downloads/RealFlight%20Drone%20Manual.pdf",
+      "labels": [
+        "manual RealFlight Drone, pp. 85–92"
+      ],
+      "reports": [
+        "06-training-modes-progression.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/core/input/input_map.cpp",
+      "labels": [
+        "Fuente oficial Godot 4.7.2-stable, `InputMap::get_builtins()`"
+      ],
+      "reports": [
+        "02-input-focus-radio-isolation.md"
+      ]
+    },
+    {
+      "url": "https://kenney.nl/assets/ui-pack",
+      "labels": [
+        "UI Pack de Kenney"
+      ],
+      "reports": [
+        "07-visual-direction-assets.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/101",
+      "labels": [
+        "XAG 101 sobre texto"
+      ],
+      "reports": [
+        "08-accessibility-legibility.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/102",
+      "labels": [
+        "XAG 102 sobre contraste"
+      ],
+      "reports": [
+        "08-accessibility-legibility.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117",
+      "labels": [
+        "XAG 117 sobre distracciones y movimiento"
+      ],
+      "reports": [
+        "08-accessibility-legibility.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick",
+      "labels": [
+        "USB Joystick, manual EdgeTX"
+      ],
+      "reports": [
+        "05-radio-onboarding.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/edgetx-how-to/configure-advanced-joystick-with-edgetx",
+      "labels": [
+        "guía Advanced Joystick"
+      ],
+      "reports": [
+        "05-radio-onboarding.md"
+      ]
+    },
+    {
+      "url": "https://www.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6b391a4f/Manuals/RealFlight-9.5-Manual.pdf",
+      "labels": [
+        "manual RealFlight 9.5, pp. 28–29"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md"
+      ]
+    },
+    {
+      "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/RFL1100_RFL1101-Manual-EN.pdf",
+      "labels": [
+        "manual oficial de RealFlight 9"
+      ],
+      "reports": [
+        "07-visual-direction-assets.md"
+      ]
+    },
+    {
+      "url": "https://www.horizonhobby.com/realflight/",
+      "labels": [
+        "RealFlight Evolution"
+      ],
+      "reports": [
+        "07-visual-direction-assets.md"
+      ]
+    },
+    {
+      "url": "https://www.ikarus.net/en/rc10-manual/",
+      "labels": [
+        "manual RC10",
+        "manual aerofly RC 10, sección 6.1",
+        "manual RC10, overlays y capítulos 15–17"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md",
+        "05-radio-onboarding.md",
+        "06-training-modes-progression.md"
+      ]
+    },
+    {
+      "url": "https://www.ikarus.net/wp-content/uploads/rc10_manual_web_01.png",
+      "labels": [
+        "inicio"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md"
+      ]
+    },
+    {
+      "url": "https://www.ikarus.net/wp-content/uploads/rca10_work15_02.png",
+      "labels": [
+        "selección de modelo"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md"
+      ]
+    },
+    {
+      "url": "https://www.ikarus.net/wp-content/uploads/rca10_work17_03.png",
+      "labels": [
+        "selección de escenario"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md"
+      ]
+    },
+    {
+      "url": "https://www.seligsim.com/manual/flight_training.html",
+      "labels": [
+        "Flight Training, SeligSIM 2026"
+      ],
+      "reports": [
+        "06-training-modes-progression.md"
+      ]
+    },
+    {
+      "url": "https://www.seligsim.com/manual/getting_started_running.html",
+      "labels": [
+        "Getting Started: Part II, “Running SeligSIM”",
+        "Getting Started: Part II, calibración"
+      ],
+      "reports": [
+        "04-rc-simulator-navigation.md",
+        "05-radio-onboarding.md"
+      ]
+    },
+    {
+      "url": "https://www.w3.org/TR/wcag/",
+      "labels": [
+        "WCAG 2.2"
+      ],
+      "reports": [
+        "08-accessibility-legibility.md"
+      ]
+    }
+  ]
+}

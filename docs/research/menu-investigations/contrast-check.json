@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-05",
+  "evidence_kind": "calculated",
+  "method": "WCAG 2.x relative sRGB luminance; opaque flat colors; no rounding before comparison",
+  "source": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+  "palette": {
+    "panel": "#17252A",
+    "text": "#F5F2E9",
+    "secondary": "#BBC8C6",
+    "accent": "#B6322E",
+    "focus": "#F5C65D"
+  },
+  "pairs": [
+    {
+      "foreground": "text",
+      "background": "panel",
+      "contrast_ratio": 14.057770496382481,
+      "adopted_target": 4.5,
+      "passes_unrounded": true
+    },
+    {
+      "foreground": "secondary",
+      "background": "panel",
+      "contrast_ratio": 9.134644924843988,
+      "adopted_target": 4.5,
+      "passes_unrounded": true
+    },
+    {
+      "foreground": "text",
+      "background": "accent",
+      "contrast_ratio": 5.383515982549721,
+      "adopted_target": 4.5,
+      "passes_unrounded": true
+    },
+    {
+      "foreground": "focus",
+      "background": "panel",
+      "contrast_ratio": 9.83009924888447,
+      "adopted_target": 3.0,
+      "passes_unrounded": true
+    },
+    {
+      "foreground": "accent",
+      "background": "panel",
+      "contrast_ratio": 2.6112619600182727,
+      "adopted_target": 3.0,
+      "passes_unrounded": false
+    },
+    {
+      "foreground": "focus",
+      "background": "accent",
+      "contrast_ratio": 3.764501378795287,
+      "adopted_target": 3.0,
+      "passes_unrounded": true
+    }
+  ],
+  "limitations": [
+    "Proposed palette, not rendered UI.",
+    "Does not measure font shape, anti-aliasing, color vision, image backgrounds, focus geometry or usability.",
+    "Thresholds adopted as design goals; no accessibility compliance claim."
+  ]
+}

@@ -40,6 +40,10 @@ var _cg_model := Vector3.ZERO
 var _look := Vector2(NAN, NAN)
 var _look_height := 1.7 # m above the pilot station (L0b top-down view: 30)
 var _shadow: MeshInstance3D
+## Ground shadow mode: "sun" (projected along the light, L3, default), "vertical" (the D7 pilot aid) or "off".
+## [V] cycles; Gate L decides the default.
+const SHADOW_MODES := ["sun", "vertical", "off"]
+var _shadow_mode := "sun"
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _auto_zoom := true
@@ -66,7 +70,9 @@ func _ready() -> void:
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", Spec.CAMERA.eye_height))
 	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
+	Atmosphere.engine_shadows = args.has("engine_shadows") # comparison only (L3); before the sun is built
 	_build_world()
+	_shadow_mode = str(args.get("shadow", "sun"))
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
 		_airplane.root.visible = false
@@ -172,7 +178,7 @@ func _status() -> String:
 		line += "\n" + recorder.note
 	else:
 		line += "\n[T] record trace"
-	line += "\n[Z] auto-zoom %s  [F5] reload aircraft data" % ("on" if _auto_zoom else "off")
+	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _auto_zoom else "off", _shadow_mode]
 	if _note != "":
 		line += "\n" + _note
 	return line
@@ -212,6 +218,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				session.cancel_calibration()
 			KEY_Z:
 				_auto_zoom = not _auto_zoom
+			KEY_V:
+				_shadow_mode = SHADOW_MODES[(SHADOW_MODES.find(_shadow_mode) + 1) % SHADOW_MODES.size()]
 			KEY_F3:
 				_show_perf = not _show_perf
 			KEY_F5:
@@ -229,7 +237,7 @@ func _on_resetting() -> void:
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
 ## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
-## --hide_airplane (readability reference), --frametimes=<file.json>
+## --hide_airplane (readability reference), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
@@ -277,7 +285,8 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y)
+	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.sun_direction() if _shadow_mode == "sun" else Vector3.UP)
 	if is_nan(_look.x):
 		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
 	else:
@@ -318,9 +327,17 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_write_manifest(out, err)
 	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
 	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
-	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s sim_clock=%s" % [out, err,
+	# L3: where the sun shadow of the airplane's CG falls on the ground (along the light, onto y = 0), on screen.
+	var cg: Vector3 = pose.pos
+	var sd := Atmosphere.sun_direction()
+	var shadow_point: Vector3 = cg - sd * (cg.y / sd.y)
+	var shadow_px := _camera.unproject_position(shadow_point)
+	var shadow_seen := not _camera.is_position_behind(shadow_point)
+	var below_px := _camera.unproject_position(Vector3(cg.x, 0.0, cg.z)) # straight below: where a vertical shadow would be
+	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s sim_clock=%s shadow_px=%s below_px=%s" % [out, err,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
-		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind", str(ShaderClock.last_clock)])
+		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind", str(ShaderClock.last_clock),
+		("%.1f,%.1f" % [shadow_px.x, shadow_px.y]) if shadow_seen else "behind", "%.1f,%.1f" % [below_px.x, below_px.y]])
 	get_tree().quit(err)
 
 

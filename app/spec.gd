@@ -37,7 +37,11 @@ const ATMOSPHERE := {
 	# horizon. Visibility 23 km = MODTRAN rural "clear". sun_scatter fitted (estimated) so the horizon toward the sun
 	# is ~1.2× the anti-sun horizon (Hosek T = 2.5). Rim fade over the outer 20 % of the ground (estimated).
 	haze = Color("#c9e3ed"), haze_energy = 1.0, visibility_m = 23000.0, sun_scatter = 0.785,
-	sun_color = Color(1, 1, 1), sun_energy = 1.0,
+	# L3 sun: colour 5200 K at a 45° sun (Godot's formula, investigation 09). Optional engine PSSM shadows to 300 m
+	# (estimated): Compatibility blends shadowed lights in sRGB after tonemapping (Godot #90259, PR #98656 unmerged),
+	# +14 % on the sunlit wing; shadow_energy_compat (measured: grass and wing within ±4 %) scales the light then, and
+	# the fog scatter is divided by it so the haze stays the same. Whites still clip, so engine shadows are off.
+	sun_color = Color("#ffe9d7"), sun_energy = 1.0, shadow_energy_compat = 0.85, shadow_max_distance_m = 300.0,
 	rim_start_m = 16000.0, rim_end_m = 20000.0,
 }
 

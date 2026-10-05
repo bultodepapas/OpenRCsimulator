@@ -106,6 +106,56 @@ for az in (0, 90, 180, 270):
         if not far > near + 10.0:
             problems.append(f"{f}: no aerial perspective (far ground {far:.0f} not hazier than near ground {near:.0f})")
 
+# L3 sun shadow: in the 0.8 m close-up the airplane's shadow lies where the light projects its CG onto the ground.
+def rgb(png):
+    return Image.open(os.path.join(d, png)).convert("RGB").load(), Image.open(os.path.join(d, png)).size
+
+
+if "capture-physics-low-inspect.png" in os.listdir(d):
+    (a, size), (b, _) = rgb("capture-physics-low-inspect.png"), rgb("capture-physics-low-inspect-noplane.png")
+    w, h = size
+    pts = []
+    for y in range(h // 2, h):
+        for x in range(0, w, 2):
+            pa, pb = a[x, y], b[x, y]
+            ground = pb[1] > pb[0] and pb[1] > pb[2]
+            still_grass = pa[1] >= pa[0] and pa[1] >= pa[2]  # not an airplane pixel (red/white/grey)
+            if ground and still_grass and lum(pa) < 0.85 * lum(pb):
+                pts.append((x, y))
+    expected = counters.get("capture-physics-low-inspect", {}).get("shadow_px", "behind")
+    if len(pts) < 200 or expected == "behind":
+        problems.append(f"sun shadow: not found in the 0.8 m close-up ({len(pts)} px, expected {expected})")
+    else:
+        cx = sum(p[0] for p in pts) / len(pts)
+        cy = sum(p[1] for p in pts) / len(pts)
+        ex, ey = map(float, expected.split(","))
+        bx, by = map(float, counters["capture-physics-low-inspect"]["below_px"].split(","))
+        to_sun_proj = ((cx - ex) ** 2 + (cy - ey) ** 2) ** 0.5
+        to_below = ((cx - bx) ** 2 + (cy - by) ** 2) ** 0.5
+        offset = ((ex - bx) ** 2 + (ey - by) ** 2) ** 0.5
+        print(f"sun shadow centroid {cx:.0f},{cy:.0f}: {to_sun_proj:.0f} px from the CG's projection along the light, "
+              f"{to_below:.0f} px from the point straight below (the two are {offset:.0f} px apart; {len(pts)} shadow px)")
+        # Direction, not shape: a whole airplane's shadow centroid is not its CG, but it must follow the light.
+        if not (to_sun_proj < 0.5 * offset and to_below > 0.5 * offset):
+            problems.append(f"sun shadow not offset along the light ({to_sun_proj:.0f} px vs {to_below:.0f} px; offset {offset:.0f})")
+
+# L3: the sunlit airplane does not clip: 99th percentile of its CIE lightness L* stays below 95 (of 100). (Saturated
+# red reaching 255 in one channel is colour, not clipping: its L* is ~55.)
+def lightness(p):
+    lin = [((c / 255 + 0.055) / 1.055) ** 2.4 if c / 255 > 0.04045 else c / 255 / 12.92 for c in p]
+    y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+    return 116 * y ** (1 / 3) - 16 if y > 0.008856 else 903.3 * y
+
+
+if "capture-physics-inspect.png" in os.listdir(d):
+    (a, size), (b, _) = rgb("capture-physics-inspect.png"), rgb("capture-physics-inspect-noplane.png")
+    w, h = size
+    ls = sorted(lightness(a[x, y]) for y in range(0, h, 2) for x in range(0, w, 2) if max(abs(a[x, y][c] - b[x, y][c]) for c in range(3)) > 10)
+    p99 = ls[int(0.99 * (len(ls) - 1))] if ls else 100
+    print(f"airplane in the close-up: {len(ls)} px sampled, 99th percentile lightness L* {p99:.1f} (limit 95)")
+    if not ls or p99 >= 95:
+        problems.append(f"sunlit airplane clips: L* 99th percentile {p99:.1f} ≥ 95")
+
 sun = counters.get("capture-land-sun", {}).get("sun_px")
 if sun is None or sun == "behind":
     problems.append("sun view: no projected sun position recorded")

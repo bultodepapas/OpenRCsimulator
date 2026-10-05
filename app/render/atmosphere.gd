@@ -13,6 +13,11 @@ const GROUND_SHADER := preload("res://render/ground.gdshader")
 ## Koschmieder: visual range = 3.912 / β (2 % contrast threshold).
 const KOSCHMIEDER := 3.912
 
+## Engine (PSSM) sun shadows: off by default. In Compatibility they double every lit object's draw calls, clip white
+## surfaces and shift hues (the shadowed light is blended in sRGB after tonemapping: Godot #90259); the sun shadow is
+## the planar projected silhouette (render/shadow.gd) instead. `--engine_shadows` turns them on for comparison (L3).
+static var engine_shadows := false
+
 
 ## Unit vector toward the sun in render axes (the light shines along the opposite direction).
 static func sun_direction() -> Vector3:
@@ -37,17 +42,32 @@ static func haze_linear() -> Vector3:
 	return Vector3(c.r, c.g, c.b) * Spec.ATMOSPHERE.haze_energy
 
 
-## The sun's light in the units of the engine's fog scatter term (linear colour · energy · π).
+## Compensation for Compatibility's sRGB blending of shadowed lights, used only with engine shadows (L3).
+static func shadow_compensation() -> float:
+	return Spec.ATMOSPHERE.shadow_energy_compat if engine_shadows else 1.0
+
+
+## The light's actual energy.
+static func light_energy() -> float:
+	return Spec.ATMOSPHERE.sun_energy * shadow_compensation()
+
+
+## Fog sun scatter as set on the engine: divided by the compensation, so the haze's sun term never changes.
+static func sun_scatter() -> float:
+	return Spec.ATMOSPHERE.sun_scatter / shadow_compensation()
+
+
+## The sun's light in the units of the engine's fog scatter term (linear colour · actual light energy · π).
 static func sun_linear() -> Vector3:
 	var c: Color = Spec.ATMOSPHERE.sun_color.srgb_to_linear()
-	return Vector3(c.r, c.g, c.b) * Spec.ATMOSPHERE.sun_energy * PI
+	return Vector3(c.r, c.g, c.b) * light_energy() * PI
 
 
 static func _set_haze_uniforms(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("haze_lin", haze_linear())
 	mat.set_shader_parameter("sun_dir", sun_direction())
 	mat.set_shader_parameter("sun_lin", sun_linear())
-	mat.set_shader_parameter("sun_scatter", Spec.ATMOSPHERE.sun_scatter)
+	mat.set_shader_parameter("sun_scatter", sun_scatter())
 
 
 static func sky_material() -> ShaderMaterial:
@@ -100,18 +120,21 @@ static func environment() -> Environment:
 	env.fog_density = beta()
 	env.fog_light_color = a.haze
 	env.fog_light_energy = a.haze_energy
-	env.fog_sun_scatter = a.sun_scatter
+	env.fog_sun_scatter = sun_scatter()
 	env.fog_sky_affect = 0.0
 	env.fog_aerial_perspective = 0.0
 	env.fog_height_density = 0.0
 	return env
 
 
-## The sun: a DirectionalLight3D shining from sun_direction() (the sky shader draws its disc from this light).
+## The sun: a DirectionalLight3D shining from sun_direction(); PSSM shadows only with engine_shadows (L3).
 static func create_sun(parent: Node) -> DirectionalLight3D:
 	var sun := DirectionalLight3D.new()
 	sun.light_color = Spec.ATMOSPHERE.sun_color
-	sun.light_energy = Spec.ATMOSPHERE.sun_energy
+	sun.light_energy = light_energy()
+	sun.shadow_enabled = engine_shadows
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_max_distance = Spec.ATMOSPHERE.shadow_max_distance_m
 	# The light shines along its −Z: toward the origin from the sun's side. Built directly (no scene tree needed).
 	sun.transform = Transform3D(Basis.looking_at(-sun_direction(), Vector3.UP), sun_direction() * 100.0)
 	parent.add_child(sun)

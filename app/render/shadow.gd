@@ -1,5 +1,7 @@
-# Ground shadow (D7): the main height cue in RC flying. A soft airplane silhouette projected straight down
-# (vertical projection: a pilot aid that reads height directly, not the sun's oblique shadow), fading with height.
+# Ground shadow (D7, L3): the main height cue in RC flying. A soft airplane silhouette projected onto the ground along
+# a direction: straight down (the D7 pilot aid, reads height directly) or along the sun (L3: the real shadow's place,
+# offset by height / tan(sun elevation)). A planar projected shadow, the classic low-end technique: one draw call, and
+# none of Compatibility's problems with engine shadows (sRGB blending of the shadowed light, L3 log).
 # Pure helpers (footprint, alpha, silhouette) + a MeshInstance3D to update each frame.
 extends RefCounted
 
@@ -32,11 +34,15 @@ static func create(parent: Node3D) -> MeshInstance3D:
 
 
 ## Ground transform of the shadow quad for an airplane with model basis `b` (nose −Z, right +X) at render
-## position `pos`: the span and length axes projected onto the ground, so banking narrows the shadow.
-static func footprint(b: Basis, pos: Vector3, span: float, length: float) -> Transform3D:
-	var right := Vector3(b.x.x, 0.0, b.x.z)
-	var aft := Vector3(b.z.x, 0.0, b.z.z) # model +Z = toward the tail
-	var center := Vector3(pos.x, Spec.SHADOW.height, pos.z)
+## position `pos`: the span and length axes projected onto the ground along `along` (a unit vector pointing up toward
+## the light: Vector3.UP for the vertical pilot aid, the sun direction for the sun shadow), so banking narrows it.
+static func footprint(b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP) -> Transform3D:
+	var s := along.normalized()
+	s.y = maxf(s.y, 0.05) # a sun on the horizon would cast an infinitely long shadow
+	var h: float = Spec.SHADOW.height
+	var right := b.x - s * (b.x.y / s.y)
+	var aft := b.z - s * (b.z.y / s.y) # model +Z = toward the tail
+	var center := pos - s * ((pos.y - h) / s.y)
 	var aft_len := aft.length()
 	if aft_len > 1e-6:
 		center += aft / aft_len * (0.5 - WING_CENTER_V) * length * aft_len
@@ -72,8 +78,8 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 	return t
 
 
-static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float) -> void:
-	shadow.transform = footprint(b, pos, span, length)
+static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP) -> void:
+	shadow.transform = footprint(b, pos, span, length, along)
 	(shadow.material_override as StandardMaterial3D).albedo_color.a = alpha(pos.y)
 
 

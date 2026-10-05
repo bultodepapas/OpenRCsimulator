@@ -1,0 +1,23 @@
+# 09 — Resoluciones e idiomas
+
+**Investigado:** 2026-10-05. **Pregunta:** ¿cómo escalar las pantallas de OpenRC y prepararlas para español e inglés sin crear una plataforma móvil ni mantener diseños separados? **Evidencia:** lectura del proyecto actual y documentación oficial de Godot 4.7; no se cambió la configuración ni se probó el proyecto en otras resoluciones.
+
+## Estado y herramientas del motor
+
+El [proyecto actual](../../../app/project.godot) declara un viewport de 1280×720. La inspección de `app/` no encontró un Theme de interfaz ni archivos de traducción. Godot documenta que [Containers reorganizan controles según el espacio disponible](https://docs.godotengine.org/en/4.7/tutorials/ui/gui_containers.html), y que los [recursos Theme centralizan fuentes, colores, márgenes y estilos](https://docs.godotengine.org/en/4.7/tutorials/ui/gui_skinning.html). Eso coincide con MENU-PLAN §7: compartir una apariencia entre pantallas y adaptar el contenido en vez de fijar cada control por coordenadas.
+
+La guía [Multiple resolutions de Godot 4.7](https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html) trata el tamaño base como área de diseño, no como cambio forzado de resolución del monitor. Para juegos no pixel-art sugiere renderizar UI con `canvas_items`, usar aspecto `expand` y anclar controles; el motor también ofrece factor de escala y ajustes para hiDPI. La guía recuerda revisar que el contenido no se haga demasiado pequeño en pantallas de alta densidad. El proyecto usa 1280×720 hoy; conservarlo como baseline para el primer menú evita mezclar el cambio de layout con una nueva resolución de trabajo. La combinación concreta de stretch y escala todavía debe comprobarse en esta app.
+
+## Español, inglés y fuentes
+
+La documentación [Internationalizing games](https://docs.godotengine.org/en/4.7/tutorials/i18n/internationalizing_games.html) permite marcar textos con claves o `tr()`, cargar traducciones, probar una locale y obtener la preferencia del sistema. También explica el fallback de fuentes: un font dinámico puede usar otras fuentes cuando no tiene un glifo. Para OpenRC, mantener nombres de producto, unidades y nombres técnicos como datos fijos; traducir navegación, ayuda, estados y explicaciones. Evitar unir fragmentos de frases: una cadena completa con marcadores permite que inglés y español cambien el orden de palabras.
+
+El [sistema de pseudolocalización de Godot 4.7](https://docs.godotengine.org/en/4.7/tutorials/i18n/pseudolocalization.html) puede añadir acentos, duplicar vocales o expandir cadenas para revelar glifos ausentes y controles que recortan texto. Una expansión de 30 % es un stress-test útil, no una predicción precisa del largo inglés. Guardar claves desde UI-01 permite probar layout y glifos sin comprometer una traducción completa en UI-B. Mantener español como idioma inicial según el plan; decidir el catálogo inglés y cualquier selector cuando se programe esa entrega, sin exponer un selector vacío.
+
+## Recomendación de implementación y comprobación
+
+Construir Inicio y fichas con VBox/HBox, Margin, Panel y Scroll containers bajo un Theme compartido. Mantener el viewport 1280×720 como composición de referencia, evitar ancho absoluto para textos y permitir que una ficha o ajustes largos se desplacen verticalmente. En pantallas muy anchas, dejar margen y centrar el panel de lectura en vez de estirar párrafos. En ventana pequeña, reordenar columnas en una sola columna y conservar Volar visible. Para una preferencia posterior de escala, probar el factor de escala del viewport desde Configuración; el valor Default Theme Scale se lee al arrancar según la guía y no es una opción dinámica por sí sola.
+
+La validación pendiente puede capturar cada pantalla a 1280×720, 1920×1080, 1024×576 y 2560×1080, con los idiomas español e inglés y una pseudolocale de 30 %. Revisar que no haya texto cortado, botones fuera de pantalla ni pérdida del foco; probar escalado al 150 % y 200 %; inspeccionar caracteres `á, é, í, ó, ú, ü, ñ, ¿, ¡` y una combinación de signos, valores y unidades. Repetir en el export para Windows/macOS/Linux, porque la detección de densidad del sistema no es idéntica en todas las plataformas. No se debe inferir buen layout de una captura headless con resolución única.
+
+**Límites:** el menú sigue siendo de escritorio, no se propone soporte móvil ni selector de idioma por adelantado. Godot ofrece los mecanismos, pero no se comprobó su comportamiento en la versión fijada del ejecutable, monitor hiDPI ni paquete exportado. La pseudolocalización descubre defectos de longitud y glifos; no reemplaza traducción humana ni revisión de tono técnico en ambos idiomas.

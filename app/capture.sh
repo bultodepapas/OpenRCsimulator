@@ -32,6 +32,9 @@ shot "-physics-nozoom" --t=1.5 --autozoom=0
 # D7: a low pass at 0.8 m, close-up: the ground shadow under the airplane (from the pilot at 77 m the grazing
 # angle makes it < 1 px thick: the shadow is a cue for close passes and landings).
 shot "-physics-low-inspect" --t=1.5 --alt=0.8 --inspect
+# L3: the same close-ups without the airplane: the sun shadow's position and the wing's clipping are measured against them.
+shot "-physics-low-inspect-noplane" --t=1.5 --alt=0.8 --inspect --hide_airplane
+shot "-physics-inspect-noplane" --t=1.5 --inspect --hide_airplane
 # L0 (LANDSCAPE-PLAN): landscape review set. Horizon from the pilot's eye at 4 azimuths, level and 10° up; the 30 m
 # trimmed view and the 3 m low pass without auto-zoom; a view toward the sun (Spec.ATMOSPHERE: azimuth 225°, elevation 45°).
 for az in 0 90 180 270; do
@@ -39,21 +42,24 @@ for az in 0 90 180 270; do
 done
 # L2: the horizon from 100 m up (the ground's rim is 0.3° below the horizon there), including toward the sun.
 for az in 0 90 180 225 270; do shot "-land-az${az}-el0-100m" --t=1.5 --look_az=$az --look_el=0 --look_alt=100; done
-shot "-land-30m" --t=1.5 --autozoom=0
-shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0
+# Readability views (L0c): no ground shadow, so the with/without difference is the airplane only (its shadow is
+# checked in the 0.8 m close-up, L3).
+shot "-land-30m" --t=1.5 --autozoom=0 --shadow=off
+shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0 --shadow=off
 shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
 # L0c: the airplane-in-view landscape shots again without the airplane: the background for the readability metric.
-shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane
-shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane
+shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane --shadow=off
+shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow=off
 # L0b: straight down from 30 m over the pilot station: ground tiling must be judged from above (investigation 06).
 shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 python3 "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
 # L0c: airplane readability against its background (pinned, hashed Python environment in .tools/visual-venv).
-# Readability regression guard at the L2 baseline (the L1b thresholds were calibrated on a mis-encoded, too dark
-# sky; with the correct sky no setting reaches them: LANDSCAPE-PLAN L1b/L2 log). Absolute targets: Gate L.
+# Readability (L1b thresholds, investigation 09): contrast ≤ −0.40, ≤ 15 % nearly invisible, ΔE ≥ 30. Background
+# saturation ≥ 25 ("not a greyed sky") at 30 m; at 3 m the airplane sits against the pale horizon haze (~21 by
+# physics), so ≥ 18 there. (Until L3 the metric also counted the D7 pilot shadow as airplane: LANDSCAPE-PLAN L3 log.)
 "$("$HERE/tests/visual-env.sh")" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
-  --require "capture-land-low3m.png:-0.30:0.15:28:25" --require "capture-land-30m.png:-0.40:0.15:35:25"
+  --require "capture-land-low3m.png:-0.40:0.15:30:18" --require "capture-land-30m.png:-0.40:0.15:30:25"
 # C7: flight trace of the same throw, headless (no display needed).
 timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5
