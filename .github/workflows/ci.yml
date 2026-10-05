@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  three:
+    name: three.js prototype
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: prototypes/stage0/three
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: prototypes/stage0/three/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run capture
+      - uses: actions/upload-artifact@v4
+        with:
+          name: captures-three
+          path: prototypes/stage0/capture-three*.png
+
+  godot:
+    name: Godot prototype
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+      - uses: actions/cache@v4
+        with:
+          path: .tools
+          key: godot-${{ hashFiles('prototypes/stage0/godot/get-godot.sh') }}
+      - run: prototypes/stage0/godot/test.sh
+      - run: prototypes/stage0/godot/capture.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: captures-godot
+          path: prototypes/stage0/capture-godot*.png

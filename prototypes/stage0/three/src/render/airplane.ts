@@ -1,6 +1,6 @@
-// Ultra Stick .60-style blockout, built from SPEC.md part tables.
+// Das Ugly Stik 60 blockout, built from SPEC.md part tables.
 import { BoxGeometry, CylinderGeometry, Group, Mesh, MeshLambertMaterial, Object3D } from 'three';
-import { BOXES, SURFACES, WHEELS, WING } from '../spec';
+import { BOXES, SURFACES, WHEELS, WINGS } from '../spec';
 
 const mat = (color: number) => new MeshLambertMaterial({ color });
 
@@ -23,12 +23,13 @@ export function buildAirplane(): Airplane {
   }
 
   // BoxGeometry face order: +x, -x, +y, -y, +z, -z.
-  const top = mat(WING.top);
-  const bottom = mat(WING.bottom);
-  const wing = new Mesh(new BoxGeometry(...WING.size), [top, top, top, bottom, top, top]);
-  wing.name = WING.name;
-  wing.position.set(...WING.center);
-  root.add(wing);
+  for (const w of WINGS) {
+    const top = mat(w.top);
+    const mesh = new Mesh(new BoxGeometry(...w.size), [top, top, top, mat(w.bottom), top, top]);
+    mesh.name = w.name;
+    mesh.position.set(...w.center);
+    root.add(mesh);
+  }
 
   const hinges: Record<string, Group> = {};
   for (const s of SURFACES) {

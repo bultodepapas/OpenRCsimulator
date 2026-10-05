@@ -1,111 +1,144 @@
 # Roadmap
 
-Started **2026-10-05**. This is the route we plan to follow, built from the findings in [RESEARCH.md](RESEARCH.md). It is a direction, not a contract. Every stage ends with something we can see or run. Every technical choice is provisional and names the evidence that would change it. Choices are recorded in [DECISIONS.md](DECISIONS.md).
+Revised **2026-10-05** after a self-review of the first plan (weak points and fixes are [at the end](#review-weak-points-found-and-how-the-plan-fixes-them)). It builds on [RESEARCH.md](RESEARCH.md), [STACK.md](STACK.md) and [DECISIONS.md](DECISIONS.md).
 
-**Be water:** take the shortest path to a visible, flyable little airplane. Learn from it, then adjust. If a stage teaches us that the route is wrong, we change the route and record why.
+**Be water, but on solid ground:** each step is small, has one objective proof, and leaves the project working. Steps go from basic to advanced; nothing advanced starts before its foundation is proven. If a step teaches us the route is wrong, we change the route and record why.
+
+## Rules for every step
+
+1. **One step = one small change** that can be reviewed in a few minutes and keeps the app working.
+2. **Every step has a proof:** a passing test, a screenshot, a trace, or a measured number. "Looks fine" is not a proof.
+3. **Known answers before unknown answers:** test the math and integrator against exact solutions before adding aerodynamics, whose answers we don't know.
+4. **Guesses are labeled:** every parameter carries its source and evidence kind (`manual`, `borrowed`, `estimated`, `measured`).
+5. **Gates are real stops:** at a gate we decide with the evidence collected, and record the decision.
 
 ## Where we are
 
-- **Established:** an RC airplane simulator that grows from small to large ([AGENTS.md](AGENTS.md)).
-- **Chosen:** the first aircraft is an Ultra Stick / Ugly Stick-style .60 nitro.
-- **Researched, not yet executed:** simulators, flight physics levels, propulsion, input pipelines, platforms, and validation methods. One small numerical experiment has run ([propeller comparison](research/compare_static_propeller.py)).
-- **Missing:** any running code. The research notebook keeps reaching the same conclusion: *more reading will not answer edit/run friction, controller compatibility, readability from the ground, or what feels right. We need a prototype.*
+- **Done:** research (RESEARCH.md), stack survey (STACK.md), the Stage 0 spec ([prototypes/stage0/SPEC.md](prototypes/stage0/SPEC.md)), and the **three.js Stage 0 build**, with pilot-view and close-up captures.
+- **Done since:** Phase A (MIT license, repo hygiene, CI green locally), B3 (Godot Stage 0, matching the three.js build), B4 (frame tests in both; a deliberately broken sign is caught).
+- **Next:** B5, Stage 1 controls in both builds.
 
-## Starting stack (provisional)
+## Phase A — Ground base
 
-The full survey of options, versions and evidence is in [STACK.md](STACK.md). In short:
+The project foundation, before more code piles up.
 
-| Area | Starting choice | We change it if… |
+| # | Step | Proof |
 | --- | --- | --- |
-| Platform | Desktop browser | The Gamepad API cannot deliver transmitter channels, or latency is poor |
-| Rendering | three.js r186, `WebGLRenderer`, isolated in `src/render/` | Upgrade churn hurts → Babylon.js. Scene authoring is the bottleneck → Godot 4.7 comparison |
-| Language / build | TypeScript 7, Vite 8, Node 24 LTS, npm, Biome | — |
-| Flight physics | Our own float64 module, never imports three | Rebuilding mature features costs too much → JSBSim |
-| Tests | Vitest 5 (headless physics), Playwright (screenshots) | — |
+| A1 | Choose and add a license ✅ **MIT** (owner decision, 2026-10-05) | `LICENSE` file; GitHub shows it after the next push |
+| A2 ✅ | Repo hygiene: pin the Node version (`.nvmrc` + `engines`), add `.editorconfig` and `.gitignore` entries for `node_modules`, `dist` and `.godot`, and document dev commands in AGENTS.md | A clean clone + the documented commands reproduce the captures |
+| A3 ✅ | CI on GitHub Actions: install, type check, tests, headless capture for both prototypes; screenshots uploaded as artifacts | ✅ Green in a local `act` run; GitHub green check after the next push |
+| A4 ✅ | Working agreement: small commits; each commit message states its proof | Written in AGENTS.md |
 
-The physics module must not import three.js. That boundary keeps the core portable if we move to another renderer or a native build later.
+## Phase B — Bake-off: the same small scene in three.js and Godot
 
-## The route
+| # | Step | Proof |
+| --- | --- | --- |
+| B1 | Shared Stage 0 spec ✅ | [SPEC.md](prototypes/stage0/SPEC.md) |
+| B2 | three.js Stage 0 ✅ | `capture-three.png` (pilot view) and `capture-three-inspect.png` (close-up) |
+| B3 ✅ | Godot 4.7 Stage 0 with the same capture mode (under Xvfb) | `capture-godot.png` and `capture-godot-inspect.png` |
+| B4 ✅ | Frame-conversion tests in both: heading 0° puts the nose at −z; heading 90° puts it at +x; bank right puts the right wing down | Automated test passes in each build |
+| B5 | Stage 1 in both: keyboard moves the surfaces through **rate-limited, self-centering** commands; an input panel shows raw → mapped values; a reset key | Captures of neutral and deflected surfaces; panel visible |
+| B6 | Score both against the **criteria fixed in advance** ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) | Filled comparison table |
+| **Gate 1** | **Choose the platform.** No physics code before this gate, because the physics language follows the platform | Decision recorded in DECISIONS.md |
+| B7 | Promote the winner into `app/`; keep the other build as an archived reference | `app/` builds and captures in CI |
 
-Each stage is small. "Done when" is the observable proof. Stages can be reordered if what we learn says so.
+## Phase C — Physics foundations (headless, no aerodynamics yet)
 
-### Stage 0 — Hello, little airplane
+| # | Step | Proof |
+| --- | --- | --- |
+| C1 | Float64 vector/quaternion module. All trig goes through one `math` module | Property tests: rotation preserves length; Euler ↔ quaternion round trip; composition |
+| C2 | Rigid-body state and its derivative: 6 degrees of freedom, full inertia tensor including `Ixz`, body-frame Euler equations | Unit tests on hand-computed derivatives |
+| C3 | RK4 integrator with quaternion renormalization | Free fall matches `½gt²` to 1e-9 m after 10 s. Torque-free spin conserves energy and angular momentum to 1e-6 relative over 60 s |
+| C4 | Convergence check at steps `h`, `h/2`, `h/4` | Error ratio ≈ 16 per halving (fourth order) |
+| C5 | Fixed-step loop: accumulator, cap on catch-up steps, render interpolation, pause when the tab is hidden | The same scripted inputs at 30, 60 and 144 fps rendering give the same final state |
+| C6 | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
+| C7 | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
 
-A web page showing a blockout Stick (boxes for fuselage, wing, tail, wheels) over a flat green field with a horizon. A fixed camera at pilot eye height (~1.7 m) looks at the airplane. The airplane follows a scripted circle, with no physics yet.
+## Phase D — First flight, in thin slices
 
-- Dimensions from the Hangar 9 Ultra Stick .60 manual: 66 in span, 55 in length.
-- **Done when:** `npm run dev` shows the airplane moving, and a screenshot proves it.
+| # | Step | Proof |
+| --- | --- | --- |
+| D1 | Aircraft data file v0 (Das Ugly Stik 60): plan geometry (60 in span, 723 in², 52 in) and a labeled mass estimate; inertia **estimated** from a component inventory; derivatives `borrowed` from the UltraStick25e; provenance per value; a loader that checks units, ranges and required fields | Loader tests, including deliberately broken files |
+| D2 | Air data: air-relative velocity, α, β, dynamic pressure (wind = 0) | Unit tests with hand-computed values |
+| D3 | Longitudinal forces only: lift `CL0 + CLα·α`, drag `CD0 + k·CL²`, weight | Power-off glide ratio in the trace equals `CL/CD` from the data |
+| D4 | Pitch moment (`Cm0`, `Cmα`, `Cmq`, `Cmδe`); stability sign check (`Cmα < 0`); **trim solver** for level flight at 15 m/s | Trim found with surfaces within limits, *or* a clear failure message naming what to change (CG, `Cm0`) |
+| D5 | Thrust v0: throttle × estimated static thrust, with a first-order lag | Level flight holds altitude within ±1 m for 30 s at trim |
+| D6 | Lateral-directional derivatives (`CYβ`, `Clβ`, `Clp`, `Clδa`, `Cnβ`, `Cnr`, `Cnδr`), with sign checks | Right aileron step rolls right; a sideslip disturbance damps out |
+| D7 | Interactive flight from an air start at trim. Textured ground and horizon for height cues. Debug HUD (airspeed, altitude, α) | Owner flies 2 minutes with no numerical blow-up; trace saved |
+| D8 | Crude stall: lift cap plus drag rise above the stall angle | A high-α trace stays finite; recovery is possible |
+| D9 | Ground-hit detection → crash → reset (no landing gear yet) | Crashing at any attitude resets cleanly |
+| D10 | Sensitivity sweep: mass, CG, `Cmα`, `CD0` at ±20% | A table ranking which unknowns matter. It decides what to research or measure next |
+| **Gate 2** | **"Is it flyable and readable?"** The owner (and ideally 1–2 RC pilots) fly it. Includes the pilot-view readability check (the airplane was only ~15 px at 87 m in B2) | Notes recorded; the next phases reordered if needed |
 
-### Stage 1 — It answers the sticks
+## Phase E — Ground handling
 
-Keyboard controls aileron, elevator, rudder, and throttle. The control surfaces visibly deflect. An on-screen panel shows the raw input and the mapped command. A key resets the airplane.
+| # | Step | Proof |
+| --- | --- | --- |
+| E1 | Tricycle landing-gear contact points (nose gear, per the Jensen plan) as spring-dampers. Stiffness is chosen from a natural-frequency rule (`ω·dt < 0.1`), not tuned by feel | Drop test: no energy gain; results agree across `h` and `h/2` |
+| E2 | Rolling friction (labeled as a guess) and nosewheel steering | Taxi a figure-eight |
+| E3 | Start on the runway: takeoff, landing, nose-over | Trace of a full circuit, from takeoff to landing |
 
-- **Done when:** each key moves the correct surface in the correct direction, checked against a screenshot of neutral and deflected states.
-- **Checkpoint:** was Three.js + TypeScript pleasant to change? If not, run the Godot comparison before going further.
+## Phase F — Real transmitter
 
-### Stage 2 — First flight
+| # | Step | Proof |
+| --- | --- | --- |
+| F1 | Raw input inspector: all axes and buttons, update rate, reconnect | Screenshot with the owner's EdgeTX radio and gamepad |
+| F2 | Mapping and calibration (center, endpoints, inversion), saved and exportable | Survives a restart |
+| F3 | Disconnect and focus-loss policy: visible pause; resuming needs an explicit action | Scripted unplug/replug log |
+| F4 | Compatibility table: device, firmware, OS, browser/engine, usable channels | One row per tested device |
 
-A rigid body with 6 degrees of freedom and fixed-step physics. Rendering interpolates between physics states (from *Fix Your Timestep*). Forces come from a linear stability-derivative model (lift, drag, side force, roll/pitch/yaw moments, control derivatives), plus simple thrust = throttle × max thrust with a lag. The model includes a crude stall: lift is capped above the stall angle. The airplane starts in the air near level flight.
+## Phase G — Nitro
 
-- Aircraft data lives in a JSON file. Every value carries its unit, source, and evidence kind (`manual`, `borrowed`, `estimated`, `measured`).
-- **Done when:** you can take off from the air start, turn, climb, glide, and crash. Headless tests pass for:
-  - Energy: a power-off glide loses energy and never gains it.
-  - Force balance: a level-flight state produces small residual accelerations.
-  - Signs: up elevator raises the nose, right aileron rolls right, right rudder yaws right.
-  - Convergence: results at step `h`, `h/2`, and `h/4` converge.
+| # | Step | Proof |
+| --- | --- | --- |
+| G1 | APC 12×6 propeller table ingestion with interpolation; out-of-range queries flagged | Tests against the file's own rows |
+| G2 | Engine rpm model: stopped/running, throttle → target rpm, lag, idle; shaft dynamics (`I·dω/dt = Q_engine − Q_prop`) | Throttle-step trace; all assumed numbers labeled |
+| G3 | Engine sound driven by rpm | A recording or user check |
+| G4 | (Optional) fuel mass and CG shift | Trim drift trace over a tank |
 
-### Stage 3 — Ground: takeoff and landing
+## Phase H — Better air and polish
 
-The taildragger gear is modeled as spring-damper contact points, with rolling friction on grass (a labeled guess) and tailwheel steering. The airplane starts on the ground. Crashes are detected and followed by a reset.
-
-- **Done when:** a takeoff run, a landing, and a nose-over all happen in a way that looks believable. A drop test shows no energy gain and no strong dependence on timestep.
-
-### Stage 4 — A real transmitter
-
-Browser Gamepad API with a raw channel inspector that shows every axis and button. Calibration covers center, endpoints, inversion, and channel assignment. No deadzone, expo, or circular limit is applied by default, because the radio already does that. When the device disconnects or focus is lost, the sim pauses visibly, and resuming requires an explicit action.
-
-- **Done when:** one real EdgeTX/OpenTX radio (or whatever hardware we have) flies the airplane. The device, firmware, OS, and browser are recorded in a compatibility table.
-
-### Stage 5 — It sounds and pulls like a nitro
-
-The engine model has running/stopped states, a throttle → target rpm curve with a response lag, and an APC 12×6 Sport coefficient table that gives thrust and torque from rpm and airspeed. The reference engine is the O.S. MAX-65AX. Engine sound follows rpm through Web Audio. Fuel mass and CG shift are optional.
-
-- **Done when:** throttle changes are audible, static and flying thrust come from the prop table, and every assumed engine number is labeled.
-
-### Stage 6 — Better air and evidence
-
-Any of these can be done, in whatever order playtesting asks for:
-
-- constant wind, then gusts
-- stall with hysteresis and a post-stall extension
+Chosen by what Gate 2 and playtests ask for:
+- wind, then gusts
+- stall hysteresis
 - propwash on the tail
 - ground effect
-- flight trace export (CSV) and replay
-- a chase camera and adaptive zoom for distant-aircraft visibility
+- replay
+- camera zoom options
+- pilot observation sessions
+- installable app (PWA or Electron)
 
-### Later horizon (not scheduled)
+## Research tracks
 
-- Pilot observation sessions using the protocol in RESEARCH.md.
-- An aircraft package format and a second aircraft.
-- Offline/PWA use.
-- Native packaging.
-- Buddy-box and shared control.
-- Floatplanes and launches.
-- An ArduPilot SITL link.
-- Parameter identification from flight logs.
+Each track is time-boxed and attached to the step that needs it:
 
-## Research tracks that run alongside
+| Track | Needed by | Time box |
+| --- | --- | --- |
+| Das Ugly Stik 60 data: published weight/CG/throws, plan dimensions (tail, gear, airfoil), component mass inventory | D1 | 1–2 sessions |
+| APC 12×6 predicted-load plot | G1 | 1 session |
+| Which transmitter/gamepad the owner has | F1 | ✅ Owner has EdgeTX/OpenTX and other RC radios plus a gamepad; keyboard during development |
+| Pilot observation sessions | Gate 2 | After D7 |
+| License compatibility for bundled data (UIUC "GPL'd data") | Before bundling any airfoil data | 1 session |
 
-These feed the stages without blocking them:
+## Review: weak points found and how the plan fixes them
 
-1. **Aircraft manifest (feeds Stage 2):** build the JSON parameter file for the Hangar 9 Ultra Stick .60 conventional wing. Estimate inertia from a component inventory. Seed the nondimensional derivatives from the UltraStick25e specimen and label them `borrowed`.
-2. **Propeller data (feeds Stage 5):** plot the APC 12×6 predicted load vs rpm at several airspeeds, extending the existing 11×6 comparison script.
-3. **Hardware (feeds Stage 4):** find out which transmitters/gamepads we can actually test with.
-4. **People (after Stage 3):** run 2–3 informal sessions with real RC pilots and watch where they get lost.
-5. **License:** choose the project license before the first public release. Check that it is compatible with the UIUC "GPL'd data" terms if we bundle airfoil data.
+Self-review of the first roadmap, 2026-10-05. Items marked *measured* come from running the three.js Stage 0 build.
 
-## How we work
-
-- **Small steps, visible proof:** every change should show a result (a screenshot, a test, or a trace). "Make it realistic" is not a task. "Up elevator raises the nose at 15 m/s" is.
-- **Label honesty:** a guessed number is marked as guessed. Simulator behavior is never called "validated" without a comparison to real data.
-- **Revisit points:** at the end of each stage, take five minutes to check whether the stack, the order, or the aircraft data needs to change. Record any change in DECISIONS.md and mark the old entry *superseded*.
+| # | Weak point | Why it matters | Fix in this plan |
+| --- | --- | --- | --- |
+| 1 | **Public repo, no license** | Nobody may legally reuse or contribute; contradicts "open source" | A1, first step |
+| 2 | Stages were too big (old Stage 2 bundled integrator, loop, aero, thrust, stall, data and tests) | Big steps hide which change broke what | Split into C1–C7 and D1–D10 |
+| 3 | Physics language depended on an undecided platform | Physics written in TS would not run inside Godot | Gate 1 before any physics code |
+| 4 | No known-answer tests before aerodynamics | Integrator bugs would masquerade as "aircraft behavior" | Phase C: free fall, torque-free spin, convergence order |
+| 5 | Borrowed 25e derivatives with .60 geometry may not trim | The airplane could be unflyable for reasons unrelated to code | D4 trim solver + stability sign checks; D10 sensitivity |
+| 6 | Inertia of the .60 is unknown | Roll/pitch response depends on it | D1 labeled estimate; D10 tells us whether it matters |
+| 7 | *Measured:* the airplane is ~15 px wide at 87 m in the pilot view; a pilot-view screenshot cannot verify geometry | Readability is a core RC problem, and checks need a close-up | Close-up capture added (B2); readability check in Gate 2 |
+| 8 | Keyboard is on/off; full deflection instantly is unflyable | First flights would feel broken | B5: rate-limited, self-centering commands |
+| 9 | Flat untextured ground gives no height or speed cues | Landing and altitude judgment impossible | D7 adds ground texture and horizon cues |
+| 10 | The flight trace was planned late (old Stage 6) | Physics bugs are hard to see without data | Moved to C7, before aerodynamics |
+| 11 | Stiff gear springs can go numerically unstable | Bouncing or exploding landings | E1 stiffness from a natural-frequency rule |
+| 12 | Transmitter hardware availability unknown | Phase F could be blocked | Ask the owner now |
+| 13 | Bake-off bias: criteria could be chosen after seeing results; the same AI writes both builds | An unfair comparison wastes the bake-off | Criteria fixed in COMPARISON.md before the Godot build |
+| 14 | This machine renders in software (no GPU) | Performance numbers here do not represent real machines | Performance judged on the owner's real hardware |
+| 15 | Research tracks had no owner or time box | Research can grow without end | Each track attached to a step, time-boxed |
+| 16 | No CI | "Works on my machine" drift; no shared evidence | A3 |

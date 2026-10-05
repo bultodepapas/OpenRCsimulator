@@ -1,6 +1,6 @@
 # Stage 0 spec: hello, little airplane
 
-One scene, built twice: in **three.js** ([three/](three/)) and in **Godot** ([godot/](godot/)). Both builds follow this spec exactly, so the comparison measures the tools rather than different scenes. Results go in [COMPARISON.md](COMPARISON.md). See [ROADMAP.md](../../ROADMAP.md) (Stage 0) and [STACK.md](../../STACK.md).
+One scene, built twice: in **three.js** ([three/](three/)) and in **Godot** ([godot/](godot/)). Both builds follow this spec exactly, so the comparison measures the tools rather than different scenes. Results go in [COMPARISON.md](COMPARISON.md). See [ROADMAP.md](../../ROADMAP.md) (Phase B) and [STACK.md](../../STACK.md).
 
 No physics yet: the airplane follows a scripted circle.
 
@@ -29,27 +29,30 @@ The airplane flies a level, coordinated right-hand circle in front of the pilot.
 | Pitch θ | 0 |
 | Propeller | spins about the body x axis at 10 rev/s (visual only, far slower than a real engine) |
 
-## Airplane blockout (Ultra Stick .60 style)
+## Airplane blockout (Das Ugly Stik 60)
 
-Span and length come from the Hangar 9 Ultra Stick .60 manual (66 in, 55 in). Everything else is an **eyeballed proportion** for visuals only, not physics data.
+Reference: the owner's plan images of **Das Ugly Stik 60** (Jensen kit, Phil Kraft design; RCM plan 939 is a related version). The Jensen plan prints **wing span 60 in, wing area 723 in², length 52 in, power .40–.61**, which gives span 1.524 m, area 0.466 m², mean chord 0.306 m (rectangular wing) and length 1.321 m. The Jensen plan shows a **nose gear** (tricycle). The RCM photos show the classic livery: red with white wingtip panels and a white fin/rudder.
+
+Everything except span, chord and length is an **eyeballed proportion** for visuals only, not physics data. The black crosses of the classic livery are left out of the blockout.
 
 All parts are boxes unless noted. Positions are part centers in model axes (meters; +x right, +y up, −z forward). The origin is roughly at the CG.
 
 | Part (node name) | Size x × y × z | Center | Color |
 | --- | --- | --- | --- |
-| `fuselage` | 0.14 × 0.16 × 1.20 | (0, 0, 0.10) | white `#f2f2f2` |
-| `cowl` | 0.13 × 0.14 × 0.12 | (0, 0, −0.56) | dark grey `#333333` |
-| `wing` (fixed part) | 1.676 × 0.04 × 0.27 | (0, 0.10, −0.03) | top yellow `#ffcc00`, bottom dark blue `#1a2a6c` |
-| `aileron_left` / `aileron_right` | 0.60 × 0.02 × 0.08 | (∓0.50, 0.10, 0.145) | red `#d01c1c` |
-| `stab` | 0.60 × 0.02 × 0.14 | (0, 0.02, 0.61) | yellow `#ffcc00` |
-| `elevator` | 0.60 × 0.02 × 0.07 | (0, 0.02, 0.715) | red `#d01c1c` |
-| `fin` | 0.02 × 0.18 × 0.16 | (0, 0.12, 0.62) | yellow `#ffcc00` |
-| `rudder` | 0.02 × 0.20 × 0.07 | (0, 0.13, 0.735) | red `#d01c1c` |
-| `gear_left` / `gear_right` | wheel: cylinder Ø 0.09, width 0.03 | (∓0.18, −0.22, −0.28) | black `#111111` |
-| `tailwheel` | cylinder Ø 0.04, width 0.015 | (0, −0.10, 0.68) | black `#111111` |
-| `propeller` | 0.305 × 0.025 × 0.01 | (0, 0, −0.63) | black `#111111` |
+| `fuselage` | 0.11 × 0.15 × 1.14 | (0, 0, 0.13) | red `#c8102e` |
+| `cowl` | 0.10 × 0.13 × 0.08 | (0, 0, −0.48) | dark grey `#333333` |
+| `wing_center` | 1.124 × 0.035 × 0.226 | (0, 0.03, 0.023) | top red `#c8102e`, bottom dark `#222222` |
+| `wing_tip_left` / `wing_tip_right` | 0.20 × 0.035 × 0.226 | (∓0.662, 0.03, 0.023) | top white `#f2f2f2`, bottom dark `#222222` |
+| `aileron_left` / `aileron_right` | 0.62 × 0.02 × 0.08 | (∓0.39, 0.03, 0.176) | red `#c8102e` |
+| `stab` | 0.56 × 0.02 × 0.13 | (0, 0, 0.635) | red `#c8102e` |
+| `elevator` | 0.56 × 0.02 × 0.07 | (0, 0, 0.735) | red `#c8102e` |
+| `fin` | 0.02 × 0.17 × 0.14 | (0, 0.155, 0.63) | white `#f2f2f2` |
+| `rudder` | 0.02 × 0.19 × 0.07 | (0, 0.165, 0.735) | white `#f2f2f2` |
+| `nosewheel` | cylinder Ø 0.07, width 0.025 | (0, −0.19, −0.40) | black `#111111` |
+| `gear_left` / `gear_right` | cylinder Ø 0.076, width 0.028 | (∓0.17, −0.19, 0.05) | black `#111111` |
+| `propeller` | 0.305 × 0.025 × 0.01 | (0, 0, −0.54) | black `#111111` |
 
-Ailerons, elevator and rudder pivot on their **leading edge** (the hinge line). The models put each surface under a pivot node there, ready for Stage 1. The bottom of the wing is a different color so the pilot can tell top from bottom.
+Ailerons, elevator and rudder pivot on their **leading edge** (the hinge line). The models put each surface under a pivot node there, ready for Stage 1 (ROADMAP B5). The underside of the wing is dark instead of the livery red, a deliberate **readability choice** so the pilot can tell top from bottom. It can be revisited.
 
 ## Scene
 

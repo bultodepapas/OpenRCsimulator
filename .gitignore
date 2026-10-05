@@ -1,0 +1,5 @@
+node_modules/
+dist/
+# Godot editor cache and downloaded tool binaries
+.godot/
+.tools/

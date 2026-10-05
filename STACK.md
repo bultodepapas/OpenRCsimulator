@@ -175,12 +175,12 @@ research/    standalone scripts (Python stdlib / Node), unchanged role
 
 | Question | Smallest experiment | Triggers |
 | --- | --- | --- |
-| Does a real radio give all channels in each browser? | Raw gamepad inspector page; test Chrome, Firefox, Safari on available OSes | Stage 4 |
-| Is three.js pleasant enough to change? | The Stage 1 checkpoint; count time lost to API changes or missing examples | Stage 1 end |
-| Does Playwright capture WebGL reliably headless and in CI? | Screenshot the Stage 0 scene in headless Chromium | Stage 0 |
-| How large is cross-engine drift in our own integrator? | Run the same scripted flight in Node, Chrome and Firefox; compare final states | Stage 2 |
+| Does a real radio give all channels in each browser? | Raw gamepad inspector page; test Chrome, Firefox, Safari on available OSes | ROADMAP F1 |
+| Is three.js pleasant enough to change? | The bake-off (B5–B6); count time lost to API changes or missing examples | Gate 1 |
+| Does Playwright capture WebGL reliably headless and in CI? | Screenshot the Stage 0 scene in headless Chromium. **Locally confirmed 2026-10-05** (SwiftShader, 1.6 s build + capture); CI still open | ROADMAP A3 |
+| How large is cross-engine drift in our own integrator? | Run the same scripted flight in Node, Chrome and Firefox; compare final states | ROADMAP C5 |
 | When does TS 7.1 restore the API? | Watch the 7.1 release; then decide whether type-aware linting is worth adding | Passive |
-| When is WebGPU worth switching to? | Re-check Firefox Linux status; try the `WebGPURenderer` swap on the Stage 2 scene | After Stage 3 |
+| When is WebGPU worth switching to? | Re-check Firefox Linux status; try the `WebGPURenderer` swap on the flying scene | After Phase E |
 
 ## Sources
 

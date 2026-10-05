@@ -20,3 +20,5 @@ We will research options, try small experiments, and adapt as we learn. Keep cho
 [DECISIONS.md](DECISIONS.md) records our current direction and the reasoning behind it as research progresses.
 
 [RESEARCH.md](RESEARCH.md) collects exploratory findings, original sources, and open questions across simulators, physics, controls, and development approaches.
+
+Licensed under the [MIT License](LICENSE). Third-party data, if bundled, keeps its own license.
