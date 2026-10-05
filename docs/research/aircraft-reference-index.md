@@ -23,3 +23,8 @@ The owner-supplied RHB/Horizon material describes Ultra Stick 120 Light/Lite con
 ## Identity pending: MoJo Parts 60
 
 [`references/mojo-60/MoJo Parts 60.dwg`](../../references/mojo-60/MoJo%20Parts%2060.dwg) is a separate owner-supplied drawing. Its available examination records only its file signature, format, size, and hash; its geometry and relationship to either the Jensen or Ultra Stick remain unknown. The filename alone does not identify the model, span, or engine class. Keep the source separate until a compatible CAD reader establishes its contents. See the [DWG audit](ugly-stik-new-files-cad.md#dwg-signatures-and-limits), [inventory](../../research/ugly-stik/new-files/inventory.json), and [metadata](../../research/ugly-stik/new-files/metadata.json).
+
+
+## Planned turbine aircraft: SebArt Avanti S A200
+
+The [Avanti S plan](../AVANTI-S-PLAN.md) selects the original 200 cm span / 222 cm length A200 with a P100-RX turbine referenced to JetCat's 2017 specification. [Family comparison](avanti-s-family-research.md), [code integration audit](avanti-s-integration-audit.md), [turbine findings](avanti-s-turbine-research.md), and [local resource inventory](avanti-s-resources.md) distinguish this version from Avanti XS, Mini, Freewing EDF and current RX-BL equipment. Originals remain ignored under [references/avanti-s/](../../references/avanti-s/); the [local gallery](../../references/avanti-s/index.html) includes assembly photographs and dimensioned turbine drawings. No complete calibrated A200 airframe plan was found. This is research and a staged implementation proposal, not an integrated or validated jet.

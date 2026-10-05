@@ -1,0 +1,441 @@
+# Generated from assets/aircraft/extra-300s-60/geometry.json; edit that source.
+# Visual geometry only. Every group has provenance in DATA.evidence.
+extends RefCounted
+
+const DATA := {
+	"id": "gp-extra-300s-60-v1",
+	"kit": "Great Planes Extra 300S .60, GPMA0236 (EXT6P01/P02 plan, EXT6P03 manual)",
+	"units": "m",
+	"axes": {
+		"nose": "-Z",
+		"right": "+X",
+		"up": "+Y"
+	},
+	"datum": "Symmetry plane; z=0 at the nominal CG station, 4-1/8 in aft of the rib-2D leading edge (manual p43); y=0 at the spinner axis in the plan side view. Physics CG may differ.",
+	"engine_class": ".61 nitro (O.S. MAX-61FX prototype installation, manual p3)",
+	"wing": {
+		"span": 1.6236,
+		"root_chord": 0.3885,
+		"tip_chord": 0.2034,
+		"le_z_root": -0.1088,
+		"le_z_tip": -0.0705,
+		"chord_plane_y": -0.0525,
+		"dihedral_deg": 0.0,
+		"incidence_deg": 0.0,
+		"aileron_inner": 0.262,
+		"aileron_outer": 0.8042,
+		"aileron_chord": 0.0525,
+		"hinge_gap": 0.002,
+		"section": [
+			[
+				0.0,
+				0.0
+			],
+			[
+				0.008,
+				0.0134
+			],
+			[
+				0.0286,
+				0.0253
+			],
+			[
+				0.0584,
+				0.0367
+			],
+			[
+				0.1157,
+				0.0525
+			],
+			[
+				0.2302,
+				0.0653
+			],
+			[
+				0.3448,
+				0.0636
+			],
+			[
+				0.4593,
+				0.0559
+			],
+			[
+				0.5739,
+				0.045
+			],
+			[
+				0.6884,
+				0.0338
+			],
+			[
+				0.803,
+				0.0229
+			],
+			[
+				0.9633,
+				0.0078
+			],
+			[
+				0.9863,
+				0.0057
+			],
+			[
+				1.0,
+				0.002
+			]
+		],
+		"reference": {
+			"le_z_2D": -0.104775,
+			"s_over_b": 0.2959,
+			"mac": 0.3056,
+			"mac_le_z": -0.0917,
+			"mac_span_station": 0.3636,
+			"cg_fraction_of_mac": 0.3
+		}
+	},
+	"fuselage_stations": [
+		[
+			-0.368,
+			0.0761,
+			0.0336,
+			-0.0319,
+			0.35,
+			0.3
+		],
+		[
+			-0.3291,
+			0.0761,
+			0.0437,
+			-0.0752,
+			0.35,
+			0.3
+		],
+		[
+			-0.3055,
+			0.0761,
+			0.0483,
+			-0.0887,
+			0.35,
+			0.3
+		],
+		[
+			-0.248,
+			0.0761,
+			0.0549,
+			-0.1039,
+			0.35,
+			0.3
+		],
+		[
+			-0.1804,
+			0.0761,
+			0.06,
+			-0.109,
+			0.35,
+			0.3
+		],
+		[
+			-0.1365,
+			0.0761,
+			0.0622,
+			-0.1101,
+			0.35,
+			0.3
+		],
+		[
+			-0.0494,
+			0.0759,
+			0.0667,
+			-0.1065,
+			0.3,
+			0.25
+		],
+		[
+			-0.0029,
+			0.0758,
+			0.0691,
+			-0.1032,
+			0.3,
+			0.25
+		],
+		[
+			0.0816,
+			0.0723,
+			0.0745,
+			-0.0968,
+			0.3,
+			0.25
+		],
+		[
+			0.1289,
+			0.072,
+			0.0461,
+			-0.0933,
+			0.3,
+			0.25
+		],
+		[
+			0.1914,
+			0.0723,
+			0.0379,
+			-0.0887,
+			0.3,
+			0.25
+		],
+		[
+			0.259,
+			0.0695,
+			0.0379,
+			-0.0811,
+			0.3,
+			0.25
+		],
+		[
+			0.3372,
+			0.0626,
+			0.0379,
+			-0.0756,
+			0.3,
+			0.25
+		],
+		[
+			0.39,
+			0.057,
+			0.1165,
+			-0.0718,
+			0.95,
+			0.25
+		],
+		[
+			0.4957,
+			0.0449,
+			0.1016,
+			-0.0651,
+			0.95,
+			0.25
+		],
+		[
+			0.5717,
+			0.0344,
+			0.0877,
+			-0.0594,
+			0.95,
+			0.25
+		],
+		[
+			0.6309,
+			0.0275,
+			0.0769,
+			-0.0549,
+			0.95,
+			0.25
+		],
+		[
+			0.7407,
+			0.014,
+			0.0473,
+			-0.049,
+			0.95,
+			0.25
+		],
+		[
+			0.8102,
+			0.0063,
+			0.0338,
+			-0.0426,
+			0.95,
+			0.25
+		]
+	],
+	"spinner": {
+		"tip_z": -0.4437,
+		"back_z": -0.3707,
+		"radius": 0.0325
+	},
+	"firewall_z": -0.2138,
+	"cowl_rear_z": -0.1365,
+	"canopy": {
+		"top": [
+			[
+				0.0816,
+				0.0745
+			],
+			[
+				0.1323,
+				0.1056
+			],
+			[
+				0.183,
+				0.1208
+			],
+			[
+				0.2337,
+				0.1268
+			],
+			[
+				0.2844,
+				0.1285
+			],
+			[
+				0.3351,
+				0.1224
+			],
+			[
+				0.39,
+				0.1165
+			]
+		],
+		"halfwidth_fraction": 0.846
+	},
+	"tail": {
+		"stab_y": 0.0262,
+		"stab_root_le_z": 0.6681,
+		"stab_tip_le_z": 0.7087,
+		"stab_half_span": 0.3125,
+		"elevator_hinge_z": 0.7849,
+		"elevator_tip_te_z": 0.8444,
+		"elevator_root_corner": [
+			0.0518,
+			0.8632
+		],
+		"elevator_inner_hinge": [
+			0.0213,
+			0.7961
+		],
+		"stab_thickness": 0.009,
+		"stab_incidence_deg": -0.5,
+		"rudder_hinge_z": 0.8143,
+		"fin_root_le": [
+			0.6816,
+			0.0735
+		],
+		"fin_top_y": 0.2831,
+		"fin_le_top_z": 0.761,
+		"balance_bottom_y": 0.2409,
+		"balance_front_z": 0.745,
+		"rudder_top_te_z": 0.8692,
+		"rudder_te_low": [
+			0.9412,
+			-0.0008
+		],
+		"rudder_bottom_corner": [
+			0.9368,
+			-0.0161
+		],
+		"rudder_bottom_hinge": [
+			0.8143,
+			-0.0414
+		],
+		"fin_thickness": 0.008,
+		"hinge_gap": 0.003
+	},
+	"gear": {
+		"main_axle": [
+			-0.0902,
+			-0.2339
+		],
+		"main_leg_root": [
+			-0.0689,
+			-0.1065
+		],
+		"main_wheel_diameter": 0.06985,
+		"track": 0.32,
+		"leg_root_half_spacing": 0.07,
+		"pant_z": [
+			-0.1673,
+			0.0203
+		],
+		"pant_y": [
+			-0.1918,
+			-0.2425
+		],
+		"pant_half_width": 0.026,
+		"tail_axle": [
+			0.8438,
+			-0.0769
+		],
+		"tail_wheel_diameter": 0.0254
+	},
+	"propeller": {
+		"diameter": 0.3048,
+		"z": -0.3747,
+		"right_thrust_deg": 2.0,
+		"down_thrust_deg": 0.5
+	},
+	"evidence": {
+		"wing.planform": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Full-size wing sheet EXT6P01 calibrated by its printed 36 in ruler (399.88 px/in, max tick residual 1 px); LE/TE least-squares lines over 13-14 columns (residual <= 1.05 px); tip block edge picked.",
+			"reserved_checks": "span 63.92 vs 64 in (-0.13 %); trapezoid area to centreline 744.7 vs 744 sq in (+0.10 %)"
+		},
+		"wing.datum": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "CG note says 4-1/8 in at rib 2D; 2D is the fuselage-side root rib (3.39 in from the centreline). The plan's CG Range symbol lies 4.116 in aft of that LE.",
+			"scope": "Visual datum only; the physics CG is set in EX-05."
+		},
+		"wing.aileron": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Inboard end at rib AR4 and outboard end at the tip block picked; hinge line fitted parallel to the TE (2.07 in constant chord, residual 5.9 px)."
+		},
+		"wing.section": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Outer edge of the root rib outline drawn at 0 deg in the fuselage side view; symmetric 13.1 % at ~25-30 % chord. The 0.008 LE point and the 0.002 TE half-thickness are visual estimates.",
+			"limits": "Same normalized section used to the tip (outer rib thickness not measured). No airfoil name or polar is inferred."
+		},
+		"wing.dihedral_incidence": {
+			"kind": "estimated",
+			"source": "manual: panels joined flat under weights; side view labels the wing 0 deg",
+			"method": "0 deg dihedral and incidence."
+		},
+		"wing.reference": {
+			"kind": "derived",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "S/b is the v1 loader reference chord; MAC from the measured trapezoid (12.03 in at 14.31 in span). Nominal CG = 30.0 % MAC.",
+			"scope": "Recorded for EX-05; not used by the mesh."
+		},
+		"fuselage_stations": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Side outline picked on EXT6P02 side view, scaled 300.56 px/in from the root rib chord at 2D; half-widths: cowl picked, 6200-13700 px detected as symmetric outline pairs in the bottom view, tail post picked.",
+			"reserved_checks": "length 54.61 vs 54.25 in (+0.67 %); spinner 2.56 vs 2.5 in; spinner back to firewall 6.18 vs 6.25 in; stab root chord side vs full size +0.5 %",
+			"limits": "Under the canopy 'top' is the sill. Rounding fractions [top, bottom] of the half-width are estimated from former drawings (6/25, 9/29, 10/30), not traced."
+		},
+		"canopy": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Top line picked in the side view; width fraction 0.846 of the local fuselage from the manual p47 sketch.",
+			"limits": "Opaque tinted shell for EX-02; transparency is an EX-10 test."
+		},
+		"tail": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Stab/elevator planform from the full-size drawing on EXT6P01 (ruler scale); placed at the side-view stab LE and centre height. Fin/rudder outline picked in the side view including the top air balance.",
+			"limits": "Stab 9 mm and fin 8 mm thickness and the 3 mm hinge gap are visual estimates; stab -0.5 deg incidence from the side-view note, visual only."
+		},
+		"gear.main": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Axle, leg root and wheel pant extent picked in the side view; 2-3/4 in wheels from the manual parts list.",
+			"limits": "Track 0.32 m, leg-root spacing 0.07 m and pant half-width 0.026 m are ESTIMATED: the plan has no front view. Contact handoff to ground physics belongs to E1/E2."
+		},
+		"gear.tail": {
+			"kind": "measured",
+			"source": "research/extra-300/ex01/metrology.json",
+			"method": "Tail-wheel axle picked; 1 in tail wheel from the plan label."
+		},
+		"propeller": {
+			"kind": "estimated",
+			"source": "manual p3 refers to the engine instructions for prop size",
+			"method": "12 in visual stand-in, plane 4 mm ahead of the spinner back. 2 deg right and 0.5 deg down thrust are plan notes, applied to the visual spinner/prop only; physics thrust stays axial until EX-06."
+		},
+		"p47_two_view": {
+			"kind": "estimated",
+			"source": "manual p47 vector sketch",
+			"method": "Not used for dimensions: compared with the plan it misplaces the tail wheel by 1.2 in and the main axle by ~0.5 in."
+		}
+	}
+}

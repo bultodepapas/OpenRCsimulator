@@ -2,6 +2,8 @@
 
 2026-10-05 · Estado: **diagnosticado en simulación; reparación pendiente**.
 
+**Ampliación posterior:** [auditoría del modelo completo](research/flight-model-robustness-audit.md) y [plan de robustez](FLIGHT-MODEL-ROBUSTNESS-PLAN.md). La variante `Cndr ×0,3` rompe la secuencia de recuperación de barrena existente (p/r residual máximo después de 6 s: 6,49 rad/s frente a 0,22); no adoptarla como parche aislado. Se localizaron además discontinuidades de la mezcla por franjas y estados con potencia aerodinámica positiva, que necesitan sus propias correcciones.
+
 **Prioridad:** cerrar este problema de Gate 2 antes de ampliar propwash o takeoff. Un pulso de rudder de medio segundo a 15 m/s puede llevar el modelo a autorrotación; reducir únicamente el coeficiente de momento evita esa entrada en el escenario reproducido. La autoridad prestada y los 25° estimados necesitan validación conjunta con el comportamiento a grandes ángulos.
 
 [Diagnóstico, evidencia, límites y comandos reproducibles](research/ugly-stik-rudder-audit.md) · [19 experimentos](research/rudder-audit/results.json).

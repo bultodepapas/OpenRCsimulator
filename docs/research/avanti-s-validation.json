@@ -1,0 +1,441 @@
+{
+  "schema": "openrc-avanti-reference-validation-v1",
+  "date": "2026-10-05",
+  "head_at_validation": "83f2035876cbc92237b3a7b8fd4b7722bd1397ac",
+  "downloaded": 42,
+  "failed_downloads": 2,
+  "downloaded_bytes": 72880914,
+  "original_counts": {
+    ".pdf": 11,
+    ".jpg": 27,
+    ".html": 4
+  },
+  "local_files_including_derivatives": 58,
+  "all_local_files_ignored": true,
+  "tracked_reference_files": [],
+  "original_file_checks": [
+    {
+      "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 6
+    },
+    {
+      "path": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 91
+    },
+    {
+      "path": "references/avanti-s/comparison/mini-avanti-intro.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 6
+    },
+    {
+      "path": "references/avanti-s/comparison/mini-avanti-assembly.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 46
+    },
+    {
+      "path": "references/avanti-s/provenance/sebart-jets-L.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/comparison/sebart-price-list.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 12
+    },
+    {
+      "path": "references/avanti-s/turbine/jetcat-p100-rx-spec.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 3
+    },
+    {
+      "path": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 1
+    },
+    {
+      "path": "references/avanti-s/turbine/jetcat-p100-rx-mount.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 1
+    },
+    {
+      "path": "references/avanti-s/turbine/jetcat-rx-manual-de.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 72
+    },
+    {
+      "path": "references/avanti-s/provenance/jetcat-p100-rx-bl.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/photos/product-00.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        670,
+        500
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/product-01.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        300,
+        225
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/product-02.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        300,
+        225
+      ]
+    },
+    {
+      "path": "references/avanti-s/provenance/ground-gallery.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7297.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7299.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        488,
+        650
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7305.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        488,
+        650
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7307.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7310.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7313.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7316.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7319.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7321.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7325.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7344.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-CIMG7349.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-top.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/ground-top-2.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/provenance/flight-gallery.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        433
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-OK.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        442
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-1.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        400
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-10.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        418
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-12.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        429
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-14.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        419
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-18.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        444
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-20.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        433
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-24.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        443
+      ]
+    },
+    {
+      "path": "references/avanti-s/photos/flight-VOLO-26.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        650,
+        412
+      ]
+    },
+    {
+      "path": "references/avanti-s/comparison/avanti-xs-manual.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 6
+    },
+    {
+      "path": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
+      "sha256_verified": true,
+      "pdf_pages": 39
+    }
+  ],
+  "generated_files": [
+    {
+      "path": "references/avanti-s/index.html",
+      "sha256": "a64f6e8556efccdad2d169f400e6906e1579b1a8093b99ea16d9921c91680d2a"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-contact-sheet.jpg",
+      "sha256": "fff967dd48deecbdd37dbf1619fce94182b6c9dd01bcb4327e2b4b4f3966cf63"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p001.png",
+      "sha256": "3f053e6b30f3d715b6cdf2339e91cd66fc126639358c6d6bb0e2462fb5db280c"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p010.png",
+      "sha256": "c20067f3681bed88de83cacd886bb2cc8a952513b426ab5afc2d2d36bbfdd807"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p020.png",
+      "sha256": "5348d0a9e2997fd46a67374dae7c4b4497f4bf566782ae2d62d61dc6e7fe7443"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p030.png",
+      "sha256": "8576f0b6f1108835ba9dc5a68c0a66ad1dfeb6f7765112d8b86c3c3d5049269e"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p040.png",
+      "sha256": "7567c3c34505914233bc8fc9e5a72730601a403c79b419ce6d5fa023b5fa182c"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p050.png",
+      "sha256": "2cbac403126a9c48305e505c10642df72c61e4c74e137d126088c78dddc0913e"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p060.png",
+      "sha256": "b1ccb1dedb44d0b8568f21b821b1efe3dd7efe73e416f7fa53f8817ead411dd2"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p070.png",
+      "sha256": "49ae16da21e992d853fe14d7870d66ed44322fe684b5c81d733ee7293d10b57c"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p080.png",
+      "sha256": "949e8aee05699032d224e4342d20625fd4e048d0206ccbaa4dd6eafb05c25644"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p090.png",
+      "sha256": "781319efd111974c8dbcfb7ed4d57917ee519dd90bef703755d8c626e22d4e4d"
+    },
+    {
+      "path": "references/avanti-s/inspection/assembly-p091-cg.png",
+      "sha256": "d3d499710f82a6b17a820ba25e4a6a07e115ce32fa654bb0739df9d8355a9f85"
+    },
+    {
+      "path": "references/avanti-s/inspection/jetcat-rx-p072-specs.png",
+      "sha256": "a22323aea7573310a63bc42f7408b161a8f791c9d1fd976ea48880d478740de0"
+    },
+    {
+      "path": "references/avanti-s/inspection/p100-rx-dimensions.png",
+      "sha256": "844a3d4fab67d4934d511d9f8a54f77e733de7beb9752d9d6ad7def1f28c66ce"
+    },
+    {
+      "path": "references/avanti-s/inspection/photo-contact-sheet.jpg",
+      "sha256": "f421699a62bcee3ceb437faf8927bda063d7b44766213eec595e729feba3a4ff"
+    }
+  ],
+  "authored_documents": [
+    {
+      "path": "docs/AVANTI-S-PLAN.md",
+      "sha256": "863ebd9b70fb2b4692d83ff2774b1a7b567797e52de762266d784ad4a75431d2"
+    },
+    {
+      "path": "docs/research/avanti-s-family-research.md",
+      "sha256": "f3a5a43e445d67f410ebe971ff3c6c7b90cf6f4e49cd14eb0caf85bda199d0b5"
+    },
+    {
+      "path": "docs/research/avanti-s-integration-audit.md",
+      "sha256": "fe61ae7394a976347d417b343e008d1ed8a83cfc510aea19f284a8be4fc7c54a"
+    },
+    {
+      "path": "docs/research/avanti-s-resources.md",
+      "sha256": "38065740231797c950a9a259caa9b9b35a1ef9f825b9058670110ae1e6daad3d"
+    },
+    {
+      "path": "docs/research/avanti-s-turbine-research.md",
+      "sha256": "e012b9be5173a4972b32261cb180369414d2b194b1732ddeb43d16c591f680ac"
+    }
+  ],
+  "code_snapshot": [
+    {
+      "path": "app/main.gd",
+      "sha256": "941d7953ab577009998799d067f717f12d5c8d398c08b00afe2206f580639146"
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "sha256": "d65c1818d966e75145f23e966aac455e22c25bb50def03613f8a2cf8c0087abf"
+    },
+    {
+      "path": "app/render/engine_sound.gd",
+      "sha256": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "349f5ffd96511d6ba6d08deeb4e1a3c6b8701cd100c459cbbd78d089f2652019"
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "sha256": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3"
+    },
+    {
+      "path": "app/physics/trim.gd",
+      "sha256": "d8dd5962b42381b2397b5e6762e5f45efeedb5cd10163083fce77661364d9f01"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "50b5931d0f04a40dc070beff7eeed04a9305aa36d77a41486e3fc87e71be3318"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "sha256": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_model.gd",
+      "sha256": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc"
+    }
+  ],
+  "local_document_links_checked": 93,
+  "missing_local_links": [],
+  "local_gallery_links": "passed",
+  "runtime_tests_run": false,
+  "limitations": [
+    "No calibrated complete A200 airframe plan found",
+    "Assembly visual sample, not full metrology",
+    "Two EDF comparison download attempts returned HTTP403; excluded from downloaded count",
+    "No app implementation, flight validation or performance measurements"
+  ]
+}
