@@ -64,3 +64,9 @@ La foto D también quedó verificada como archivo local [`references/.61 ENGINE 
 Aplicación: sustituir el silenciador ovoide y el tubo curvo provisional por un cuerpo alargado con cuello ancho, nervaduras y salida cónica. Mantener las rutas visibles de combustible y presión conectadas, y comprobar separación de hélice, bancada y fuselaje en el montaje. La foto carece de escala: longitudes, radios y tornillería del modelo continúan siendo estimaciones visuales. El nombre del archivo no identifica por sí solo la variante comercial.
 
 Los dos PNG locales permanecen en `references/`, excluidos de Git por el acuerdo del repositorio. Se versionan sus observaciones y hashes, no los originales de terceros.
+
+## Capturas automáticas del modelo desde más ángulos
+
+La suite `showcase` del inspector genera **28 PNG a 2560 × 1440**: ocho vistas generales, once del motor/escape y nueve de montaje, servos y mandos. Incluye culata/bujía, carburador, vista superior del motor, bancada, racor y boquilla del escape. Son renders del modelo Godot existente, con cámaras de inspección y luz de relleno; no añaden detalle geométrico ni acreditan una réplica comercial.
+
+Desde la raíz, `research/ugly-stik/model-v4/capture-detail.sh` genera toda la serie y su galería `review.html` en una carpeta nueva bajo `app/captures/`, cuya ruta imprime al terminar. La galería permite filtrar, ampliar y abrir cada PNG completo. El manifiesto registra cámaras, luces, resolución, hashes y piezas ocultas por vista. Las vistas de mantenimiento ocultan la piel; las piezas permanecen en su posición de montaje.

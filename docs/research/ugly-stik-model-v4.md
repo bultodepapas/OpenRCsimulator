@@ -87,3 +87,17 @@ El incremento geométrico se concentra en siluetas, motor y montaje. Quedan pend
 - [Capturas nuevas de presentación](ugly-stik-revalidation-2026-10-05/beauty.log): `beauty-a-dark.png` y `beauty-b-sky.png` coinciden por SHA-256 con ambas imágenes de la entrega. Se revisó visualmente la vista general y el perfil; los PNG repetidos quedaron temporales para evitar duplicar evidencia idéntica. No se repitió toda la galería de 95 imágenes.
 
 La auditoría del plan y del constructor no encontró una mejora de código pendiente dentro del alcance visual solicitado. Se corrigieron la frase que aún declaraba todos los pasos pendientes, las descripciones antiguas de caché/destino y la identificación del plan v5 como archivo histórico. Continúan pendientes las respuestas humanas de orientación y las medidas de rendimiento en la GPU del propietario.
+
+## US-V07 · Nuevas capturas automáticas en alta resolución
+
+2026-10-05 · La nueva suite `showcase` renderiza **28 imágenes a 2560 × 1440** desde el modelo real: ocho vistas generales, once del motor y escape, tres de montaje, tres de servos y tres de mandos. Añade ángulos delantero/trasero, intradós, planta, culata, admisión, vista superior, bancada y salida del escape. La luz de relleno facilita leer metal, goma y partes inferiores; la rueda principal queda completa en su macro. No cambia la malla ni los datos de vuelo.
+
+```bash
+research/ugly-stik/model-v4/capture-detail.sh
+```
+
+El comando crea automáticamente una carpeta única en `app/captures/` y escribe todos los PNG, `manifest.json`, `capture.log` y `review.html`. La galería funciona offline, con filtros y ampliación; cada imagen enlaza su PNG completo. También acepta `--output-dir PATH` para un destino nuevo y rechaza sobrescrituras. Python estándar valida dimensiones y hashes antes de generar el HTML; no requiere Pillow. Los productos quedan locales e ignorados por Git, como las demás capturas de la app.
+
+[Galería generada en esta entrega](../../app/captures/ugly-stik-detail-2026-10-05/review.html) · [Motor tres cuartos](../../app/captures/ugly-stik-detail-2026-10-05/engine-three-quarter-right.png) · [Servos](../../app/captures/ugly-stik-detail-2026-10-05/maintenance-servos.png) · [Validación y hashes](ugly-stik-showcase-validation.json).
+
+Prueba: `app/test.sh` pasa, incluidas 807 comprobaciones del modelo y el estado físico idéntico a 30/60/144 FPS. Un clon limpio de un snapshot temporal de los tres archivos de implementación, sin caché de Godot ni carpeta de capturas, ejecutó el wrapper sin argumentos y reprodujo **28/28 PNG idénticos**. Las dos vistas `beauty` originales conservaron sus hashes y resolución. Chromium comprobó filtros, búsqueda, visor, navegación, PNG de 2560 px y anchura móvil sin desbordamiento. Las ocho vistas generales pasan la comprobación de geometría completa en cuadro; las macros recortan deliberadamente el resto del avión. Las vistas de mantenimiento identifican la piel oculta y mantienen los componentes en su posición de montaje.

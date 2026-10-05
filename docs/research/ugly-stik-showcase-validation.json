@@ -1,0 +1,272 @@
+{
+  "date": "2026-10-05",
+  "roadmap_step": "US-V07 / D1 visual inspection",
+  "scope": "Automatic high-resolution captures of the existing model; no new mesh or physics.",
+  "command": "research/ugly-stik/model-v4/capture-detail.sh",
+  "local_gallery": "app/captures/ugly-stik-detail-2026-10-05/review.html",
+  "resolution_px": [
+    2560,
+    1440
+  ],
+  "capture_count": 28,
+  "categories": {
+    "General": 8,
+    "Motor": 11,
+    "Montaje": 3,
+    "Mandos": 3,
+    "Servos": 3
+  },
+  "source_sha256": {
+    "app/aircraft/inspect_model.gd": "9ce3d9985aeeb9fe5386898bd54c9b71f3b69022e184134be2da1c8ff7526418",
+    "research/ugly-stik/model-v4/capture-detail.sh": "d8d4b23cf7257e29071505b155b7f84cc6bae93c6333c6f491dd1eb8357257dc",
+    "research/ugly-stik/model-v4/make_detail_gallery.py": "ca7aa0cb6754a274237c69c87827a9e081c81fd675baaf29da4396a076fc62e5"
+  },
+  "captures": [
+    {
+      "file": "aircraft-front-left.png",
+      "category": "General",
+      "sha256": "d228687ecf882e9a3f2f9e4b5df76342e6212dc939624a0f4a8c77ec40d09996",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-front-right.png",
+      "category": "General",
+      "sha256": "dae07d4b430edf6f3fbb4a39a775601e3d6157d4d92ab37fc1ef53760987decd",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-rear-left.png",
+      "category": "General",
+      "sha256": "4208d51669b1a6b6ee128d23db36252dcd5dbc311a12b0972c0d58b1ca9a9b4e",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-rear-right.png",
+      "category": "General",
+      "sha256": "309638655a8c6fba54855f5811215080e03140cb1557052014f72cd8998e6fe8",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-underside.png",
+      "category": "General",
+      "sha256": "255af6c4951f288f005d3d7d86c13142308d687a62f92a106b87bdf3788f4e50",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-overhead.png",
+      "category": "General",
+      "sha256": "d4e07fda37628101553e262099fd50d5ae6e73ed1ea5494aaa14a804aa8fa791",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-nose-level.png",
+      "category": "General",
+      "sha256": "7b0e7f8aa020abb23a7216c923f09023529d242b5de3c8b5bdd1f279d24d141d",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "aircraft-tail-level.png",
+      "category": "General",
+      "sha256": "0d92451b624ad50c15aa359090d4cfb161882b12112a5de4775ea3ab9d0c38ee",
+      "maintenance_view": false,
+      "expected_crop": false,
+      "geometry_vertices_inside_viewport": true
+    },
+    {
+      "file": "engine-left.png",
+      "category": "Motor",
+      "sha256": "6790f15afc638cdae7a75ff724babbd0625abb906e8f323f6259182dee9d14e2",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-right.png",
+      "category": "Motor",
+      "sha256": "ad0d94d0171da433025146ed3efc396515ad7fec7947c5d0d7b4aa98dd99b760",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-front.png",
+      "category": "Motor",
+      "sha256": "6fe9646b126a6e062ac598eaae0f7f1dd0078c2bc583388e5c6ceeb5face5b7f",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "wing-root.png",
+      "category": "Montaje",
+      "sha256": "e543e554000c26eb25a3761ce5b182e02c91e3088cebdf3eabb256c795bae6f8",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "gear-main.png",
+      "category": "Montaje",
+      "sha256": "0d2db781aa82e812182ae2a6b4345428314e2b2c64949e1f99ac996de99080bb",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "gear-nose.png",
+      "category": "Montaje",
+      "sha256": "41a2b133ce4c196580fa4df38c9937814e7dc4e4d618ee62110b79783f338644",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "tail-controls.png",
+      "category": "Mandos",
+      "sha256": "707a66202f2f2651b832d1269a169e85c6969ae6f020b0a5aaf09f08879ad0ee",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "elevator-linkage.png",
+      "category": "Mandos",
+      "sha256": "2f096b2a880aa5d7a5f31369d5c887fcafbe60162c097c89d0a4f5991b20ca9c",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "aileron-linkage.png",
+      "category": "Mandos",
+      "sha256": "f24bb1dd30634ae403c468d7692257861ccc96c241848e6a2757fa9a94ff6e10",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "maintenance.png",
+      "category": "Servos",
+      "sha256": "706fdbe2a4f99329af43ee340f864624f08e3432c5d28a94826d08881d14fb6f",
+      "maintenance_view": true,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "maintenance-servos.png",
+      "category": "Servos",
+      "sha256": "33f5cb7df8790777dd986fb169069bfdeb1edea7ffa68e2bef6ddc289e0747ad",
+      "maintenance_view": true,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "maintenance-wing.png",
+      "category": "Servos",
+      "sha256": "9a1894c279841a3bb19df1bcc48ceaeb400f10e95c078e3bc6a6945bba4d43cd",
+      "maintenance_view": true,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-three-quarter-right.png",
+      "category": "Motor",
+      "sha256": "13fecfbab62a8a891399b8503e78020cb99425314fe408a4d50d44f7a53c9168",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-three-quarter-left.png",
+      "category": "Motor",
+      "sha256": "cb3b3afca4273f1ec7023a644a5dcd29e556796ae4814d0e07cabc01752cc225",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-overhead.png",
+      "category": "Motor",
+      "sha256": "d285a00ba154e2f2c3a5c5e3b45942de84afb5c36e0561d677cc3c8c7c4a6681",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-head.png",
+      "category": "Motor",
+      "sha256": "30878e5d203f477b97245f69cb2e68df55429dee9877ad301e3d68102ca6ff61",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-carburetor.png",
+      "category": "Motor",
+      "sha256": "1832860dd4bf9f2cde74abf72a17c7d8fd1296e6398c599eb478b2d30a388d74",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-exhaust.png",
+      "category": "Motor",
+      "sha256": "884aee40c415cef0cfae6ba9e2dfbfe154028fba4bcbd3f9cd9fdd1f0b878cc3",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-outlet.png",
+      "category": "Motor",
+      "sha256": "ec988860c448a77fbbcfecf1e3bde4e2fe2ec73b108b9bf084c6a055abc48064",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    },
+    {
+      "file": "engine-mount.png",
+      "category": "Motor",
+      "sha256": "2bc598b648d0d9f24a3831389f6202c1223b8afb2e7e65845939171b124fa830",
+      "maintenance_view": false,
+      "expected_crop": true,
+      "geometry_vertices_inside_viewport": false
+    }
+  ],
+  "validation": {
+    "app_test_sh": "pass; 807 model checks, trimmed flight, identical state at 30/60/144 fps",
+    "clean_clone": "fresh clone of temporary source snapshot containing the three listed files; no editor cache or captures directory; downloaded pinned engine reused",
+    "default_wrapper_from_clean_clone": "pass; automatically created unique timestamped output and offline gallery",
+    "clean_clone_identical_pngs": 28,
+    "legacy_beauty_identical_pngs": 2,
+    "png_hashes_and_dimensions": "28 validated by gallery generator",
+    "browser": "Chromium via existing Playwright: 28 cards, 11 engine filter, search, modal next/previous and keyboard, 2560px originals, no JavaScript errors or mobile horizontal overflow",
+    "full_aircraft_no_crop": true,
+    "wrapper_arguments": "help, both output-dir forms, existing/symlink and protected historical destinations checked"
+  },
+  "render_environment": {
+    "godot": "4.7.2-stable (official)",
+    "renderer": "gl_compatibility",
+    "device": "llvmpipe (LLVM 20.1.2, 256 bits)"
+  },
+  "limitations": [
+    "High-resolution render of existing geometry, not additional geometric detail.",
+    "Macros intentionally crop the surrounding aircraft.",
+    "Software renderer timing is not target-GPU performance.",
+    "PNG and HTML outputs are local generated files under ignored app/captures; command regenerates them."
+  ]
+}

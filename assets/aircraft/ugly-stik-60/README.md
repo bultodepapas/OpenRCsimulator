@@ -23,6 +23,14 @@ bash research/ugly-stik/model-v4/capture.sh \
 
 Choose a new capture output directory. The v4 wrapper generates inspection, 36 orientation cases, detail, motion and beauty suites; repeats the orientation cases and compares all PNG hashes. It refuses existing outputs and protects historical v1/v2/v3. The offline gallery and image differences require the exact Pillow version in [requirements.txt](../../../research/ugly-stik/model-v4/requirements.txt); the runtime and compilers do not require Pillow.
 
+For an automatic **28-image tour at 2560 × 1440**, including eleven engine views, run:
+
+```bash
+research/ugly-stik/model-v4/capture-detail.sh
+```
+
+It renders the current Godot model and writes PNGs, `manifest.json`, `capture.log`, and an offline `review.html` gallery into a new timestamped directory under `app/captures/`. Each run prints its gallery path. Use `--output-dir PATH` to choose a new destination; existing directories are rejected. Requires Python 3 and `xvfb-run`, with no gallery package installation. Categories cover the complete airplane, engine/exhaust, mounting hardware, servos, and controls. The `showcase` suite uses closer cameras and brighter fill lighting; the original comparison suites retain their cameras and resolution.
+
 The compiler writes [ugly_stik_geometry.gd](../../../app/aircraft/ugly_stik_geometry.gd); do not edit the generated copy. The [native builder](../../../app/aircraft/ugly_stik_model.gd) creates meshes and preserves `build()` → `{root, propeller, hinges}` with optional gear pivots. The [render adapter](../../../app/render/airplane.gd) retains surface commands and adds optional `apply_gear()` using raw local rotation radians. Static wing frames carry dihedral; child hinges carry commanded deflection.
 
 The [v3 report](../../../docs/research/ugly-stik-model-v3.md) records the fuselage holdout, wing/tail traces, movement clearances, mutation proof and captures. [Installation handoff](../../../docs/research/ugly-stik-model-v3-installation.md) documents wheel contacts and axis/sign conversion; it does not implement ground forces. Equipment remains a generic .61 installation. Human readability and target-hardware performance are pending.
