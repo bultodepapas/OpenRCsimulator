@@ -12,3 +12,5 @@ Everything else is under active research: technology, platforms, aircraft, envir
 We will research options, try small experiments, and adapt as we learn. Keep choices easy to revisit and technologies easy to adopt or change. Open questions are invitations to explore.
 
 [DECISIONS.md](DECISIONS.md) records our current direction and the reasoning behind it as research progresses.
+
+[RESEARCH.md](RESEARCH.md) collects exploratory findings, original sources, and open questions across simulators, physics, controls, and development approaches.
