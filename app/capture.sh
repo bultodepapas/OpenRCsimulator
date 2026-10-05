@@ -56,12 +56,15 @@ shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow
 shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
-python3 "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
-# L0c: airplane readability against its background (pinned, hashed Python environment in .tools/visual-venv).
+# Image checks run in the pinned, hashed Python environment (.tools/visual-venv: Pillow, numpy, FLIP), never on the
+# system Python: GitHub's runner has no Pillow (CI failure 2026-10-05, invisible locally and under act).
+VPY="$("$HERE/tests/visual-env.sh")"
+"$VPY" "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
+# L0c: airplane readability against its background.
 # Readability (L1b thresholds, investigation 09): contrast ≤ −0.40, ≤ 15 % nearly invisible, ΔE ≥ 30. Background
 # saturation ≥ 25 ("not a greyed sky") at 30 m; at 3 m the airplane sits against the pale horizon haze (~21 by
 # physics), so ≥ 18 there. (Until L3 the metric also counted the D7 pilot shadow as airplane: LANDSCAPE-PLAN L3 log.)
-"$("$HERE/tests/visual-env.sh")" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
+"$VPY" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
   --require "capture-land-low3m.png:-0.40:0.15:30:18" --require "capture-land-30m.png:-0.40:0.15:30:25"
 # C7: flight trace of the same throw, headless (no display needed).
 timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5
