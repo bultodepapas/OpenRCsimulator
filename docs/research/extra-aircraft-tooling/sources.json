@@ -1,0 +1,246 @@
+{
+  "schema": "openrc-tooling-research-v1",
+  "date": "2026-10-05",
+  "scope": "12 investigaciones; revisión documental, no adopción de dependencias ni pruebas nuevas de runtime",
+  "godot_pin": "4.7.2-stable",
+  "renderer": "gl_compatibility",
+  "working_tree_head_at_validation": "8fe4bad8f50157f788df77c6c41497034d108a9b",
+  "reports": [
+    {
+      "file": "docs/research/extra-aircraft-tooling/01-03-geometry-pipeline.md",
+      "sha256": "835f8c0f620127d091c91865bf4b51cc32a20d0d7060d359f39bbc5d2734163e"
+    },
+    {
+      "file": "docs/research/extra-aircraft-tooling/04-06-rig-editor-resources.md",
+      "sha256": "40628bc7ed07e7db34d4a0610a2d2a66666b8e09169ec7305d1365787549ff34"
+    },
+    {
+      "file": "docs/research/extra-aircraft-tooling/07-09-rendering.md",
+      "sha256": "70ccf1a59ffa1369ed06c9b8e5b7cc68eb85418706b88c93059ee52b214c53c5"
+    },
+    {
+      "file": "docs/research/extra-aircraft-tooling/10-12-inspection-loading-aero.md",
+      "sha256": "a616a84a6d875d314f5d24a53740522465368aaabdf0827a0e6839781412112f"
+    }
+  ],
+  "topics": [
+    {
+      "id": 1,
+      "heading": "Investigación 01 — ezdxf para sacar perfiles del CAD Extra",
+      "file": "docs/research/extra-aircraft-tooling/01-03-geometry-pipeline.md",
+      "source_urls": [
+        "https://ezdxf.readthedocs.io/en/stable/concepts/units.html",
+        "https://ezdxf.readthedocs.io/en/stable/dxfentities/lwpolyline.html",
+        "https://ezdxf.readthedocs.io/en/stable/path.html#the-path-class",
+        "https://ezdxf.readthedocs.io/en/stable/tutorials/getting_data.html",
+        "https://pypi.org/project/ezdxf/1.4.4/"
+      ]
+    },
+    {
+      "id": 2,
+      "heading": "Investigación 02 — Shapely y trimesh para topología y holguras",
+      "file": "docs/research/extra-aircraft-tooling/01-03-geometry-pipeline.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_mesh.html",
+        "https://pypi.org/project/shapely/2.1.2/",
+        "https://pypi.org/project/trimesh/5.1.1/",
+        "https://shapely.readthedocs.io/en/2.1.2/manual.html",
+        "https://shapely.readthedocs.io/en/2.1.2/reference/shapely.is_valid_reason.html",
+        "https://shapely.readthedocs.io/en/2.1.2/reference/shapely.make_valid.html",
+        "https://shapely.readthedocs.io/en/2.1.2/reference/shapely.minimum_clearance.html",
+        "https://shapely.readthedocs.io/en/stable/manual.html",
+        "https://trimesh.org/install.html",
+        "https://trimesh.org/trimesh.collision.html",
+        "https://trimesh.org/trimesh.html"
+      ]
+    },
+    {
+      "id": 3,
+      "heading": "Investigación 03 — Blender, lofts curvos y bisagras GLB",
+      "file": "docs/research/extra-aircraft-tooling/01-03-geometry-pipeline.md",
+      "source_urls": [
+        "https://docs.blender.org/manual/en/5.0/addons/import_export/scene_gltf2.html",
+        "https://docs.blender.org/manual/en/5.0/modeling/surfaces/introduction.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_3d_scenes/model_export_considerations.html",
+        "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#transformations",
+        "https://www.blender.org/about/license/"
+      ]
+    },
+    {
+      "id": 4,
+      "heading": "Investigación 04 — Ejes oblicuos de bisagra e interpolación de mandos",
+      "file": "docs/research/extra-aircraft-tooling/04-06-rig-editor-resources.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_node3d.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_quaternion.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/using_transforms.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/physics/interpolation/physics_interpolation_quick_start_guide.html"
+      ]
+    },
+    {
+      "id": 5,
+      "heading": "Investigación 05 — Cachés de materiales y aislamiento de dos aviones",
+      "file": "docs/research/extra-aircraft-tooling/04-06-rig-editor-resources.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_resource.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_shadermaterial.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/scripting/resources.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/shading_language.html#per-instance-uniforms"
+      ]
+    },
+    {
+      "id": 6,
+      "heading": "Investigación 06 — Inspector y gizmos para datum, CG y anclajes",
+      "file": "docs/research/extra-aircraft-tooling/04-06-rig-editor-resources.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_editorinspectorplugin.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_editornode3dgizmo.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_editornode3dgizmoplugin.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_editorplugin.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/plugins/editor/3d_gizmos.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/plugins/running_code_in_the_editor.html",
+        "https://godotengine.org/license/"
+      ]
+    },
+    {
+      "id": 7,
+      "heading": "Investigación 07 · Cabina del Extra: cristal o volumen opaco",
+      "file": "docs/research/extra-aircraft-tooling/07-09-rendering.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/3d_rendering_limitations.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/standard_material_3d.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/rendering/renderers.html"
+      ]
+    },
+    {
+      "id": 8,
+      "heading": "Investigación 08 · Legibilidad subpíxel y simplificación manual",
+      "file": "docs/research/extra-aircraft-tooling/07-09-rendering.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_geometryinstance3d.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/3d_antialiasing.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/mesh_lod.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/visibility_ranges.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html"
+      ]
+    },
+    {
+      "id": 9,
+      "heading": "Investigación 09 · Hélice a RPM alto sin estrobo visual",
+      "file": "docs/research/extra-aircraft-tooling/07-09-rendering.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/tutorials/3d/3d_rendering_limitations.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/physics/interpolation/physics_interpolation_introduction.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/spatial_shader.html"
+      ]
+    },
+    {
+      "id": 10,
+      "heading": "Investigación 10 — SubViewport para inspección, miniaturas y silueta propia",
+      "file": "docs/research/extra-aircraft-tooling/10-12-inspection-loading-aero.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_camera3d.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_subviewport.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_texture2d.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_viewport.html",
+        "https://docs.godotengine.org/en/4.7/classes/class_viewporttexture.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html"
+      ]
+    },
+    {
+      "id": 11,
+      "heading": "Investigación 11 — ResourceLoader y exportación de un catálogo de dos aviones",
+      "file": "docs/research/extra-aircraft-tooling/10-12-inspection-loading-aero.md",
+      "source_urls": [
+        "https://docs.godotengine.org/en/4.7/classes/class_resourceloader.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/io/background_loading.html",
+        "https://docs.godotengine.org/en/4.7/tutorials/performance/thread_safe_apis.html"
+      ]
+    },
+    {
+      "id": 12,
+      "heading": "Investigación 12 — XFOIL y AVL como herramientas offline para los datos de Godot",
+      "file": "docs/research/extra-aircraft-tooling/10-12-inspection-loading-aero.md",
+      "source_urls": [
+        "https://web.mit.edu/drela/Public/web/avl/",
+        "https://web.mit.edu/drela/Public/web/avl/AVL_User_Primer.pdf",
+        "https://web.mit.edu/drela/Public/web/avl/avl_doc.txt",
+        "https://web.mit.edu/drela/Public/web/xfoil/",
+        "https://web.mit.edu/drela/Public/web/xfoil/xfoil_doc.txt"
+      ]
+    }
+  ],
+  "local_code_snapshot": [
+    {
+      "file": "app/get-godot.sh",
+      "sha256": "cd3868ed254914fc5af635b1546069d4b3f214353705a6c4b9592f53e3310675"
+    },
+    {
+      "file": "app/project.godot",
+      "sha256": "54a41b935ccbf06b1a4a8f4e2fbde574860384777d07bd69094a77cda38534eb"
+    },
+    {
+      "file": "app/main.gd",
+      "sha256": "941d7953ab577009998799d067f717f12d5c8d398c08b00afe2206f580639146"
+    },
+    {
+      "file": "app/render/airplane.gd",
+      "sha256": "d65c1818d966e75145f23e966aac455e22c25bb50def03613f8a2cf8c0087abf"
+    },
+    {
+      "file": "app/render/frames.gd",
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "file": "app/render/shadow.gd",
+      "sha256": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9"
+    },
+    {
+      "file": "app/aircraft/ugly_stik_model.gd",
+      "sha256": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc"
+    },
+    {
+      "file": "app/aircraft/ugly_stik_finish.gd",
+      "sha256": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e"
+    },
+    {
+      "file": "app/aircraft/ugly_stik_controls.gd",
+      "sha256": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480"
+    },
+    {
+      "file": "app/aircraft/inspect_model.gd",
+      "sha256": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b"
+    },
+    {
+      "file": "app/aircraft/model_clearance.gd",
+      "sha256": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc"
+    },
+    {
+      "file": "app/sim/simulation.gd",
+      "sha256": "9f9c7d3f2317ed261c5fc6a5af2271ef09318b5e89ff2aa4ba91e4377eeeb39d"
+    },
+    {
+      "file": "app/sim/flight_session.gd",
+      "sha256": "50b5931d0f04a40dc070beff7eeed04a9305aa36d77a41486e3fc87e71be3318"
+    },
+    {
+      "file": "app/physics/aircraft_data.gd",
+      "sha256": "349f5ffd96511d6ba6d08deeb4e1a3c6b8701cd100c459cbbd78d089f2652019"
+    },
+    {
+      "file": "app/physics/aero.gd",
+      "sha256": "464657975bef0883e335b27e4d63405a74fa48d781e49b9da537211dae49be19"
+    },
+    {
+      "file": "app/export.sh",
+      "sha256": "dc746433b924833f662713fc72b97dfa6abf9414359af92bef9136ea9df5061c"
+    },
+    {
+      "file": "app/export_presets.cfg",
+      "sha256": "49e3d3a71e3aabf88e87b6a4d0ef216169a9db2851c6cadc26cc0e09ff20ad2b"
+    }
+  ]
+}

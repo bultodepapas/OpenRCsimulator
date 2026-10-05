@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-05",
+  "scope": "Smoke research documentation and isolated synthetic probe",
+  "investigations": 12,
+  "source_urls": 73,
+  "markdown_files_checked": 15,
+  "relative_links_checked": 60,
+  "missing_relative_links": [],
+  "trailing_whitespace": [],
+  "synthetic_probe": "exit 0; see godot-evidence/emission-timing-result.json",
+  "production_smoke_implemented": false,
+  "production_suite_run": false,
+  "target_gpu_benchmark_run": false,
+  "http_links_bulk_verified": false
+}

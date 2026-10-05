@@ -1,0 +1,693 @@
+{
+  "format": "openrc-smoke-research-sources-v1",
+  "date": "2026-10-05",
+  "scope": "Twelve smoke research notes; link catalog, not HTTP availability or execution report",
+  "investigation_count": 12,
+  "unique_source_urls": 73,
+  "sources": [
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_gpuparticles3d.html",
+      "titles": [
+        "API de GPUParticles3D, Godot 4.7",
+        "`GPUParticles3D`",
+        "API de semilla y restart"
+      ],
+      "used_by": [
+        "01-godot-backends.md",
+        "02-clock-captures.md",
+        "03-moving-emitter.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/particles/creating_a_3d_particle_system.html",
+      "titles": [
+        "guía de creación 3D",
+        "diferencias de conversión"
+      ],
+      "used_by": [
+        "01-godot-backends.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/particles_storage.cpp",
+      "titles": [
+        "implementación GLES3 4.7.2",
+        "Fuente GLES3 fijada: trails, subemitters y emisión manual",
+        "bucle de procesamiento 4.7.2",
+        "Código de transform y velocidad"
+      ],
+      "used_by": [
+        "01-godot-backends.md",
+        "02-clock-captures.md",
+        "03-moving-emitter.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/particles/collision.html",
+      "titles": [
+        "colisiones Compatibility"
+      ],
+      "used_by": [
+        "01-godot-backends.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_cpuparticles3d.html",
+      "titles": [
+        "API CPUParticles3D"
+      ],
+      "used_by": [
+        "01-godot-backends.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html",
+      "titles": [
+        "`RenderingServer`",
+        "API de cola",
+        "RenderingServer 4.7"
+      ],
+      "used_by": [
+        "02-clock-captures.md",
+        "10-testing-sequences.md",
+        "11-profiling-budgets.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/tree/4.7.2-stable",
+      "titles": [
+        "4.7.2-stable"
+      ],
+      "used_by": [
+        "02-clock-captures.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_visualinstance3d.html",
+      "titles": [
+        "RID de recurso vs. instancia",
+        "VisualInstance3D: centro AABB y offset"
+      ],
+      "used_by": [
+        "02-clock-captures.md",
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/scene/3d/gpu_particles_3d.cpp",
+      "titles": [
+        "constructor de GPUParticles3D",
+        "cálculo de velocidad del nodo"
+      ],
+      "used_by": [
+        "02-clock-captures.md",
+        "03-moving-emitter.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/servers/rendering/renderer_scene_cull.cpp",
+      "titles": [
+        "culling visible"
+      ],
+      "used_by": [
+        "02-clock-captures.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/particles/properties.html",
+      "titles": [
+        "propiedades de partículas 3D",
+        "Godot 4.7: propiedades de partículas 3D"
+      ],
+      "used_by": [
+        "03-moving-emitter.md",
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/particle_shader.html",
+      "titles": [
+        "referencia oficial de shaders de partículas",
+        "Godot 4.7: particle shaders"
+      ],
+      "used_by": [
+        "03-moving-emitter.md",
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/scene/resources/particle_process_material.cpp",
+      "titles": [
+        "propiedad de herencia de velocidad"
+      ],
+      "used_by": [
+        "03-moving-emitter.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Bonkahe/BasicParticleEffects",
+      "titles": [
+        "Bonkahe/BasicParticleEffects"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/vfx-in-godot",
+      "titles": [
+        "Brackeys/vfx-in-godot"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://store.godotengine.org/asset/godot-foundation/particles-3d-demo/",
+      "titles": [
+        "Godot Foundation: Particles 3D Demo",
+        "Ficha oficial Godot Foundation Particles 3D Demo"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot-demo-projects/tree/3e08537616661a5883831628decab4c526260289/3d/particles",
+      "titles": [
+        "fuente"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/brackeys-particle-controls",
+      "titles": [
+        "Brackeys Particle Controls"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Bonkahe/BasicParticleEffects/tree/7589f716854ede38678ef9617d331909961a619b",
+      "titles": [
+        "README y licencia CC0 de BasicParticleEffects"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Bonkahe/BasicParticleEffects/blob/7589f716854ede38678ef9617d331909961a619b/particle_effects_demo.tscn",
+      "titles": [
+        "escena con el material de humo"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/vfx-in-godot/tree/23b58f272b828b0a894ed7ef72fbf9033ee9d177",
+      "titles": [
+        "README de VFX in Godot"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/vfx-in-godot/blob/23b58f272b828b0a894ed7ef72fbf9033ee9d177/vfx/project.godot",
+      "titles": [
+        "configuración 4.6 Forward Plus"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/vfx-in-godot/blob/23b58f272b828b0a894ed7ef72fbf9033ee9d177/vfx/scenes/fire.tscn",
+      "titles": [
+        "escena de partículas"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://github.com/Brackeys/brackeys-particle-controls/tree/26089746f71982f675602458e369e72034c89a81",
+      "titles": [
+        "README/licencia y versión probada del plugin Particle Controls"
+      ],
+      "used_by": [
+        "04-repositories-addons.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/renderers.html",
+      "titles": [
+        "Documentación de límites del renderer Compatibility en Godot 4.7",
+        "Matriz de renderers Godot 4.7"
+      ],
+      "used_by": [
+        "04-repositories-addons.md",
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://godotshaders.com/shader/smoke-shader/",
+      "titles": [
+        "Smoke Shader de arlez80 / Yui Kinomoto",
+        "snippet MIT de arlez80"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://godotshaders.com/shader/stylized-smoke-shader/",
+      "titles": [
+        "Stylized Smoke Shader de Loop_Box",
+        "snippet CC0 de Loop_Box"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/screen-reading_shaders.html",
+      "titles": [
+        "Screen-reading shaders"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/advanced_postprocessing.html",
+      "titles": [
+        "reconstrucción NDC Compatibility"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/standard_material_3d.html",
+      "titles": [
+        "StandardMaterial3D"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/3d_rendering_limitations.html",
+      "titles": [
+        "límites de sorting"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/environment_and_post_processing.html",
+      "titles": [
+        "Fog de Environment y banding"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/issues/109553",
+      "titles": [
+        "incidencia de shader Compatibility 4.4.1"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://godotshaders.com/license/",
+      "titles": [
+        "Licencia Godot Shaders"
+      ],
+      "used_by": [
+        "05-materials-transparency.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html",
+      "titles": [
+        "importación de imágenes, alfa, compresión y mipmaps"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_noisetexture2d.html",
+      "titles": [
+        "NoiseTexture2D"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_gradienttexture2d.html",
+      "titles": [
+        "GradientTexture2D"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://github.com/RodZill4/material-maker",
+      "titles": [
+        "repositorio/licencia"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://rodzill4.github.io/material-maker/doc/user_interface_2d_preview_panel.html",
+      "titles": [
+        "exportación animada del panel 2D"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.krita.org/en/user_manual/animation.html",
+      "titles": [
+        "animación y transparencia de capas"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.krita.org/en/reference_manual/render_animation.html",
+      "titles": [
+        "render de secuencias"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://krita.org/en/about/license/",
+      "titles": [
+        "licencia"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.blender.org/manual/en/4.5/physics/fluid/type/domain/cache.html",
+      "titles": [
+        "caché de fluidos"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.blender.org/manual/en/4.5/render/eevee/render_settings/film.html",
+      "titles": [
+        "Film Transparent"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://docs.blender.org/manual/en/4.5/render/output/properties/output.html",
+      "titles": [
+        "formatos RGBA"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://www.blender.org/about/license/",
+      "titles": [
+        "licencia"
+      ],
+      "used_by": [
+        "06-authoring-textures.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/edgetx-how-to/joystick-mapping-information-for-game-developers",
+      "titles": [
+        "EdgeTX: mapa HID para desarrolladores"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html",
+      "titles": [
+        "Godot 4.7: soporte de mandos"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_inputeventjoypadmotion.html",
+      "titles": [
+        "evento de eje"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_inputeventjoypadbutton.html",
+      "titles": [
+        "evento de botón"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_inputevent.html",
+      "titles": [
+        "evento e ID de dispositivo"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_input.html",
+      "titles": [
+        "API Input"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/input_examples.html",
+      "titles": [
+        "Godot: guía de entrada"
+      ],
+      "used_by": [
+        "07-aux-radio.md"
+      ]
+    },
+    {
+      "url": "https://www.powerbox-systems.com/data/dokumente/00001024/EN/Downloads/Bedienungsanleitung/Operating%20instructions%20PowerBox%20Smokepump.pdf",
+      "titles": [
+        "PowerBox, manual de SmokePump, §§3.3–5"
+      ],
+      "used_by": [
+        "08-pump-behavior.md"
+      ]
+    },
+    {
+      "url": "https://www.minicars.se/internt/artiklar/internal_documents/38753_Skywriter_Instructions.pdf",
+      "titles": [
+        "Sullivan, instrucciones SkyWriter distribuidas por Minicars"
+      ],
+      "used_by": [
+        "08-pump-behavior.md"
+      ]
+    },
+    {
+      "url": "https://github.com/FlightGear/simgear/blob/next/simgear/scene/model/particles.hxx",
+      "titles": [
+        "cabecera de partículas de SimGear"
+      ],
+      "used_by": [
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://github.com/FlightGear/simgear/blob/next/simgear/scene/model/particles.cxx",
+      "titles": [
+        "implementación C++"
+      ],
+      "used_by": [
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://github.com/FlightGear/simgear",
+      "titles": [
+        "licencia/repositorio"
+      ],
+      "used_by": [
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://sourceforge.net/p/crrcsim/code/ci/default/tree/src/mod_windfield/",
+      "titles": [
+        "árbol del módulo"
+      ],
+      "used_by": [
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://sourceforge.net/projects/crrcsim/",
+      "titles": [
+        "licencia del proyecto"
+      ],
+      "used_by": [
+        "09-wind-advection.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/animation/creating_movies.html",
+      "titles": [
+        "Movie Maker de Godot 4.7"
+      ],
+      "used_by": [
+        "10-testing-sequences.md"
+      ]
+    },
+    {
+      "url": "https://github.com/NVlabs/flip",
+      "titles": [
+        "NVlabs/FLIP"
+      ],
+      "used_by": [
+        "10-testing-sequences.md"
+      ]
+    },
+    {
+      "url": "https://github.com/NVlabs/flip/blob/main/LICENSE",
+      "titles": [
+        "licencia"
+      ],
+      "used_by": [
+        "10-testing-sequences.md"
+      ]
+    },
+    {
+      "url": "https://ffmpeg.org/ffmpeg.html",
+      "titles": [
+        "FFmpeg: opciones de vídeo"
+      ],
+      "used_by": [
+        "10-testing-sequences.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/debugger_panel.html",
+      "titles": [
+        "Panel de depuración"
+      ],
+      "used_by": [
+        "11-profiling-budgets.md"
+      ]
+    },
+    {
+      "url": "https://github.com/baldurk/renderdoc",
+      "titles": [
+        "RenderDoc"
+      ],
+      "used_by": [
+        "11-profiling-budgets.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot-benchmarks",
+      "titles": [
+        "godot-benchmarks"
+      ],
+      "used_by": [
+        "11-profiling-budgets.md"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs/git-worktree",
+      "titles": [
+        "`git worktree`"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs/gitattributes",
+      "titles": [
+        "Atributos Git"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html",
+      "titles": [
+        "Control de versiones en Godot"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/import_process.html",
+      "titles": [
+        "proceso de importación"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage",
+      "titles": [
+        "Git LFS"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html",
+      "titles": [
+        "Exportación Godot"
+      ],
+      "used_by": [
+        "12-git-assets-export.md"
+      ]
+    }
+  ]
+}

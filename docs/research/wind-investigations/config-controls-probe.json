@@ -1,0 +1,62 @@
+{
+	"checks": [
+		{
+			"label": "float64 full_precision round trip",
+			"observed": "{\"value\":1.2345678901234567}",
+			"passed": true
+		},
+		{
+			"label": "default encoding loses digits for fixture",
+			"observed": "{\"value\":1.23456789012346}",
+			"passed": true
+		},
+		{
+			"label": "numeric JSON loses integer above 2^53",
+			"observed": "9007199254740992",
+			"passed": true
+		},
+		{
+			"label": "string seed remains exact",
+			"observed": "9007199254740993",
+			"passed": true
+		},
+		{
+			"label": "parser permits trailing comma",
+			"observed": "domain validation still required",
+			"passed": true
+		},
+		{
+			"label": "ConfigFile preserves signed int64 fixture",
+			"observed": "9223372036854775807",
+			"passed": true
+		},
+		{
+			"label": "setting value emits and snaps",
+			"observed": {
+				"signals": 1,
+				"value": 0.3
+			},
+			"passed": true
+		},
+		{
+			"label": "silent setting still snaps",
+			"observed": {
+				"signals": 1,
+				"value": 0.4
+			},
+			"passed": true
+		},
+		{
+			"label": "uncommitted text differs from value",
+			"observed": "1.3",
+			"passed": true
+		},
+		{
+			"label": "apply commits pending text",
+			"observed": 1.3,
+			"passed": true
+		}
+	],
+	"engine": "4.7.2-stable (official)",
+	"failed": 0
+}

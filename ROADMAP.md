@@ -171,6 +171,8 @@ Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`,
 
 ### M5 — Air and polish
 
+Wind implementation proposal: [WIND-PLAN.md](docs/WIND-PLAN.md), steps **M5-W00…W08** (research, configurable conditions, aircraft coupling and acceptance tests; implementation pending). This expands the wind item without reordering the milestones.
+
 Chosen by what the playtests ask for:
 - wind, then gusts
 - swirl and wing-wash effects of the propeller (tail propwash moved to E0b)

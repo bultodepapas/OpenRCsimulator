@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-05",
+  "scope": "Extra research round 2, no application changes by this task",
+  "new_downloads": 21,
+  "total_downloads": 34,
+  "download_bytes": 19251524,
+  "owner_images": 1,
+  "hashes_verified": 48,
+  "pdfs_opened": 8,
+  "images_decoded": 35,
+  "zip_crc_checks": 2,
+  "markdown_documents": 6,
+  "local_markdown_links": 94,
+  "gallery_links": 73,
+  "missing_links": [],
+  "ignored_local_files": 50,
+  "tracked_originals": 0,
+  "manifest_copies_identical": true,
+  "download_failures": [
+    {
+      "url": "https://www.electronicsandbooks.com/edt/manual/Hardware/E/Extra%20Aircraft/POH%20EA300S%20CUS%202006-09-20.pdf",
+      "path": "references/extra-300/full-scale/extra-300s-information-manual-2006.pdf",
+      "error": "<urlopen error [Errno 113] No route to host>"
+    },
+    {
+      "url": "https://www.electronicsandbooks.com/edt/manual/Hardware/E/Extra%20Aircraft/300S_MM_20011204.pdf",
+      "path": "references/extra-300/full-scale/extra-300s-maintenance-manual-2001.pdf",
+      "error": "<urlopen error [Errno 113] No route to host>"
+    }
+  ],
+  "app_test_sh": "not run; documentation/local resources only",
+  "documents": [
+    {
+      "path": "docs/EXTRA-300-PLAN.md",
+      "sha256": "dd0b2cb36159adb2656ea40f93b417925ddd1dfcbc542ca5cf2c58cd5b5ca3ed"
+    },
+    {
+      "path": "docs/research/extra-300-photo-investigation.md",
+      "sha256": "81b7b4483a163a2604e5496a029320d3c4655e32da294d28dcb7e67143a6d86c"
+    },
+    {
+      "path": "docs/research/extra-300-resources.md",
+      "sha256": "bb21c08af2b9b9615c61e6b21eccb04732a32f984a7951f3e17278a3709ab597"
+    },
+    {
+      "path": "docs/research/extra-300-integration-audit.md",
+      "sha256": "b35938088d783b1c42fc414899f904b398b2a3869455d877dd3d148be8196222"
+    },
+    {
+      "path": "docs/research/extra-300-round2.md",
+      "sha256": "1242435e66ada057815f6d6da38b90e4e8bb3a8b981c8f2931d5334fabae9d9c"
+    },
+    {
+      "path": "docs/research/extra-300-family-research.md",
+      "sha256": "dcd98c05d21e808a4e365d0d656cb6fffc4c84db5b47f952a908e122bc107226"
+    }
+  ]
+}

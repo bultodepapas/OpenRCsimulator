@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-05",
+  "cad": [
+    {
+      "archive": "references/extra-300/gp-extra-300s-60/Extra_300S_60_oz10977_CAD.zip",
+      "archive_sha256": "7d1f2bb7eb4a4556a3fe782c4d4061e6c2398f915e2e9df194919b7fa1c0f2e9",
+      "member": "Great Planes Extra 300S.dxf",
+      "member_bytes": 19555878,
+      "member_sha256": "a6a90e7ae06fc4a3bf4f186addc217798e3f444907394877ca6e7c46e5064222",
+      "headers": {
+        "$ACADVER": [
+          [
+            1,
+            "AC1015"
+          ]
+        ],
+        "$EXTMIN": [
+          [
+            10,
+            "11.81244358311814"
+          ],
+          [
+            20,
+            "-65.26432512334321"
+          ],
+          [
+            30,
+            "0.0"
+          ]
+        ],
+        "$EXTMAX": [
+          [
+            10,
+            "149.4409683745184"
+          ],
+          [
+            20,
+            "38.74289551161202"
+          ],
+          [
+            30,
+            "0.0"
+          ]
+        ],
+        "$LUNITS": [
+          [
+            70,
+            "2"
+          ]
+        ],
+        "$MEASUREMENT": [
+          [
+            70,
+            "0"
+          ]
+        ],
+        "$INSUNITS": [
+          [
+            70,
+            "1"
+          ]
+        ]
+      },
+      "entity_counts": {
+        "CIRCLE": 125,
+        "LWPOLYLINE": 37787,
+        "ARC": 257,
+        "SPLINE": 45,
+        "LINE": 1510,
+        "MTEXT": 75,
+        "ELLIPSE": 11
+      },
+      "layers": [
+        "0",
+        "Center",
+        "Dimensions",
+        "Hidden",
+        "Phantom",
+        "Trace"
+      ],
+      "method": "Read ASCII DXF group-code/value pairs in memory; count group 0 in ENTITIES; no CAD library, no extraction, no conversion",
+      "limits": "No geometric calibration, topology repair, dimensional fit or 3D reconstruction"
+    },
+    {
+      "archive": "references/extra-300/comparison/gp-extra-300s-40/Extra_300S_40_oz12489_parts_cad.zip",
+      "archive_sha256": "57ec0780d152b307a07cff66e830b9c6fe55b48699104775ebb687c1e4a1789a",
+      "member": "Extra 40 DieCut sheets.dxf",
+      "member_bytes": 2217279,
+      "member_sha256": "aaed26f71a6be9d2ad68b164b8911c0270f76563d3c282d9490abd2c40d13bea",
+      "headers": {
+        "$ACADVER": [
+          [
+            1,
+            "AC1015"
+          ]
+        ],
+        "$EXTMIN": [
+          [
+            10,
+            "-9.703149580370151"
+          ],
+          [
+            20,
+            "-12.28801488992453"
+          ],
+          [
+            30,
+            "0.0"
+          ]
+        ],
+        "$EXTMAX": [
+          [
+            10,
+            "77.56218853233146"
+          ],
+          [
+            20,
+            "56.95709228481478"
+          ],
+          [
+            30,
+            "0.0"
+          ]
+        ],
+        "$LUNITS": [
+          [
+            70,
+            "2"
+          ]
+        ],
+        "$MEASUREMENT": [
+          [
+            70,
+            "0"
+          ]
+        ],
+        "$INSUNITS": [
+          [
+            70,
+            "1"
+          ]
+        ]
+      },
+      "entity_counts": {
+        "LWPOLYLINE": 2049,
+        "CIRCLE": 21,
+        "ARC": 3,
+        "LINE": 4,
+        "MTEXT": 1,
+        "DIMENSION": 1
+      },
+      "layers": [
+        "0",
+        "Center",
+        "Dimensions",
+        "Hidden",
+        "Phantom",
+        "Trace"
+      ],
+      "method": "Read ASCII DXF group-code/value pairs in memory; count group 0 in ENTITIES; no CAD library, no extraction, no conversion",
+      "limits": "No geometric calibration, topology repair, dimensional fit or 3D reconstruction"
+    }
+  ],
+  "photo_comparison": {
+    "owner_path": "references/extra-300/image.png",
+    "web_path": "references/extra-300/comparison/gp-extra-300s-40/oz12489-product-photo.jpg",
+    "size": [
+      640,
+      480
+    ],
+    "pixel_equal": false,
+    "mean_absolute_channel_error_8bit": [
+      1.015556640625,
+      0.7806803385416666,
+      0.7950162760416667
+    ],
+    "interpretation": "Same composition visually; not byte/pixel identical. Compression/format differences plausible, not proven."
+  }
+}
