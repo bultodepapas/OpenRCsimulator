@@ -1,10 +1,14 @@
 # One flight of one aircraft: its data, the trimmed start, the pilot's commands, the fixed-step simulation, reset.
-# 64-bit floats only (guarded). Pilot commands are shaped once per PHYSICS TICK, before the simulation steps
+# 64-bit floats only (guarded). Pilot commands are sampled once per PHYSICS TICK, before the simulation steps
 # (process_physics_priority), so a flight depends only on the per-tick input samples, never on the frame rate.
+# Input device: the radio/joystick while one is connected (positions, unshaped, armed throttle), else the keyboard
+# (virtual stick: rate-limited, self-centering). Unplugging the radio triggers the failsafe: idle, sticks centred,
+# visible pause; resuming is an explicit action (resume()).
 extends Node
 
 const Commands := preload("res://input/commands.gd")
 const Keyboard := preload("res://input/keyboard.gd")
+const RcInput := preload("res://input/rc_input.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -25,8 +29,19 @@ var trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
 ## Stick commands after shaping (−1…1, throttle 0…1), and the raw input sample they came from.
 var commands := Commands.neutral_commands()
 var raw := Commands.neutral_raw()
-## read_raw() -> { roll, pitch, yaw, throttle }: the input device, sampled once per physics tick.
+## read_raw() -> { roll, pitch, yaw, throttle }: the keyboard, sampled once per physics tick.
 var read_raw: Callable = func() -> Dictionary: return Keyboard.read_raw()
+## The radio (or joystick): flies instead of the keyboard while connected.
+var radio := RcInput.new()
+## read_axis(device, axis) -> float and device_info(device) -> { guid, name, vendor_id, product_id }. Replaceable in
+## tests: Input.get_joy_guid on a device that does not exist prints an engine error.
+var read_axis: Callable = func(device: int, axis: int) -> float: return Input.get_joy_axis(device, axis as JoyAxis)
+var device_info: Callable = func(device: int) -> Dictionary:
+	var info := Input.get_joy_info(device)
+	return { guid = Input.get_joy_guid(device), name = Input.get_joy_name(device),
+		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0) }
+## Why the session paused the simulation ("" = it did not), for the panel.
+var pause_reason := ""
 ## false: commands hold still (captures, headless traces).
 var input_enabled := true
 ## false: no aircraft physics (the Stage 0/1 scripted circle). The simulation is disabled; input still shapes commands.
@@ -62,10 +77,54 @@ func setup(path := Scenarios.AIRCRAFT) -> void:
 	add_child(sim)
 
 
+func _ready() -> void:
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	var pads := Input.get_connected_joypads()
+	if not pads.is_empty():
+		_on_joy_connection_changed(pads[0], true)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadMotion:
+		radio.on_motion(event.device, event.axis, event.axis_value)
+
+
+func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
+	if is_connected and not radio.connected:
+		radio.connect_device(device, device_info.call(device))
+		print("radio connected: ", radio.device_key)
+	elif not is_connected and radio.connected and device == radio.device_id:
+		radio.disconnect_device()
+		_failsafe("radio disconnected")
+
+
+## Engine to idle, sticks centred (trims stay, like a hands-off airplane), simulation paused until resume().
+func _failsafe(reason: String) -> void:
+	commands = Commands.neutral_commands()
+	commands.throttle = 0.0
+	raw = Commands.neutral_raw()
+	sim.inputs = _inputs()
+	sim.set_paused(true)
+	pause_reason = reason
+	print("failsafe: ", reason)
+
+
+## The pilot's explicit "continue" (never automatic).
+func resume() -> void:
+	pause_reason = ""
+	sim.set_paused(false)
+
+
 func _physics_process(_delta: float) -> void:
 	if input_enabled:
-		raw = read_raw.call()
-		commands = Commands.step_commands(commands, raw, sim.dt())
+		if radio.connected:
+			radio.poll(read_axis)
+			commands = radio.sticks()
+			raw = commands.duplicate()
+			raw.throttle = radio.throttle_position() # the stick, even while the throttle is held at idle
+		else:
+			raw = read_raw.call()
+			commands = Commands.step_commands(commands, raw, sim.dt())
 		sim.inputs = _inputs()
 	# Temporary ground until crash detection (ROADMAP D9d): below the ground, start over.
 	if physics_enabled and not sim.paused and sim.state.size() == RB.SIZE and sim.state[RB.POS + 2] > 0.0:

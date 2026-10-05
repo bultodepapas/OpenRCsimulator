@@ -1,0 +1,254 @@
+{
+  "schema": "openrc-visual-research-index-v1",
+  "consulted_on": "2026-10-05",
+  "scope": "Ten internet investigations for Ugly Stik .61 visual plan revision 3",
+  "method": "Primary manufacturer pages/manuals and official Godot 4.7 docs opened during this round; source-specific findings and limits in cited reports. Jensen rubber-band count separately inspected in local primary scan.",
+  "implementation_tests_run": false,
+  "reports": [
+    {
+      "path": "01-decoration-identity.md",
+      "sha256": "81a6c725804dcf30bdaf057b1fd223071bf0c9bb06c5c9cbec78a30dbf4d829e"
+    },
+    {
+      "path": "02-covering-finish.md",
+      "sha256": "64e1fbabb84e6b887a7c1dbf457c7519c78486e52d917f807dc4d0d4addcdbf6"
+    },
+    {
+      "path": "03-engine-detail.md",
+      "sha256": "2731545bf3c7dbae89db871c0baa01f15c464b8454138ab0c60cb5d804de3e51"
+    },
+    {
+      "path": "04-exhaust-fuel.md",
+      "sha256": "7e27fbe5040acf9a07b32d676600c5a7e17ae05efd245668ed8893472287e92b"
+    },
+    {
+      "path": "05-propeller-hub.md",
+      "sha256": "bad602fc8a3e3f95bfb79afceb5b1bdca7ff80d10b7e21661241b44ea1286756"
+    },
+    {
+      "path": "06-servo-installation.md",
+      "sha256": "b79b46f44e1f924d49d11266dc4e27e48a9d9b1d4625dd8af6b910de7eba6467"
+    },
+    {
+      "path": "07-control-linkages.md",
+      "sha256": "8cab34f1728027cd29df6a64a5dec967f70b9041c8713c792f81aba7196b2bb2"
+    },
+    {
+      "path": "08-gear-fasteners.md",
+      "sha256": "df93740929b7c4c5ce627a8fdee60c58361c1ade65fd89ed742416a858c2bec8"
+    },
+    {
+      "path": "09-materials-atlas.md",
+      "sha256": "4baaa82a815a6c7d0b255910c94657f7b87d40c2344bd45a193875b64752f939"
+    },
+    {
+      "path": "10-readability-performance.md",
+      "sha256": "4f6d23961d17dbdb5e44b0ffbeec176d1d288bdb6d1bde72fae2299367a29f7e"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://hobbyking.com/duraflytm-retro-series-das-uglystik-electric-sports-model-epo-1100mm-pnf.html",
+      "cited_by": [
+        "01-decoration-identity.md"
+      ]
+    },
+    {
+      "url": "https://outerzone.co.uk/plan_details.asp?ID=1253",
+      "cited_by": [
+        "01-decoration-identity.md",
+        "08-gear-fasteners.md"
+      ]
+    },
+    {
+      "url": "https://www.oracover.de/film/oracover/oracover-width_-60-cm-length_-20-m",
+      "cited_by": [
+        "02-covering-finish.md"
+      ]
+    },
+    {
+      "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/MonoKote-Instructions.pdf",
+      "cited_by": [
+        "02-covering-finish.md"
+      ]
+    },
+    {
+      "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/manual/50sx_40-91fx.pdf",
+      "cited_by": [
+        "03-engine-detail.md",
+        "04-exhaust-fuel.md",
+        "05-propeller-hub.md"
+      ]
+    },
+    {
+      "url": "https://www.apcprop.com/faq/",
+      "cited_by": [
+        "05-propeller-hub.md"
+      ]
+    },
+    {
+      "url": "https://www.apcprop.com/technical-information/engineering/",
+      "cited_by": [
+        "05-propeller-hub.md"
+      ]
+    },
+    {
+      "url": "https://www.apcprop.com/technical-information/technical-support-advisories/",
+      "cited_by": [
+        "05-propeller-hub.md"
+      ]
+    },
+    {
+      "url": "https://www.apcprop.com/propeller-technical-data/",
+      "cited_by": [
+        "05-propeller-hub.md"
+      ]
+    },
+    {
+      "url": "https://hitecrcd.com/hs-311-standard-economy-servo/",
+      "cited_by": [
+        "06-servo-installation.md"
+      ]
+    },
+    {
+      "url": "https://futabausa.com/wp-content/uploads/2023/07/skyleaf_mx_manual.pdf",
+      "cited_by": [
+        "06-servo-installation.md"
+      ]
+    },
+    {
+      "url": "https://futabausa.com/wp-content/uploads/2023/08/8uafs-8uaps-manual.pdf",
+      "cited_by": [
+        "06-servo-installation.md"
+      ]
+    },
+    {
+      "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/HAN2595-Manual.pdf",
+      "cited_by": [
+        "07-control-linkages.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/products/nylon-kwik-links",
+      "cited_by": [
+        "07-control-linkages.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/blogs/du-bro-101/du-bro-101-how-to-install-hd-adjustable-control-horns-on-rc-airplanes",
+      "cited_by": [
+        "07-control-linkages.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/products/nickel-plated-dura-collars",
+      "cited_by": [
+        "08-gear-fasteners.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/products/steel-landing-gear-straps",
+      "cited_by": [
+        "08-gear-fasteners.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/blogs/du-bro-101/du-bro-101-how-to-install-wheel-collars",
+      "cited_by": [
+        "08-gear-fasteners.md"
+      ]
+    },
+    {
+      "url": "https://www.dubro.com/products/nylon-wing-mounting-kit",
+      "cited_by": [
+        "08-gear-fasteners.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/assets_pipeline/importing_images.html",
+      "cited_by": [
+        "09-materials-atlas.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_basematerial3d.html",
+      "cited_by": [
+        "09-materials-atlas.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/standard_material_3d.html",
+      "cited_by": [
+        "09-materials-atlas.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/shaders/shader_reference/shading_language.html",
+      "cited_by": [
+        "09-materials-atlas.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_surfacetool.html",
+      "cited_by": [
+        "09-materials-atlas.md",
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/renderers.html",
+      "cited_by": [
+        "09-materials-atlas.md",
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_arraymesh.html",
+      "cited_by": [
+        "09-materials-atlas.md",
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/3d_antialiasing.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_viewport.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_performance.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/mesh_lod.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/3d/visibility_ranges.html",
+      "cited_by": [
+        "10-readability-performance.md"
+      ]
+    }
+  ],
+  "limits": [
+    "URLs are a retrieval index, not downloaded snapshots or an asset reuse license.",
+    "Godot documentation covers series 4.7; implementation must verify with pinned 4.7.2.",
+    "Commercial references do not select hardware or identify owner photo B exactly."
+  ]
+}

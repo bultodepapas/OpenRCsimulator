@@ -1,0 +1,107 @@
+# D6a end to end: a fake radio (device 15, injected InputEventJoypadMotion) flying the real main scene.
+# Arming, unshaped sticks, the unplug failsafe and the return to the keyboard.
+# Never calls Input.get_joy_guid on the fake device (that prints an engine error): device_info is replaced.
+# Run: godot --headless --path . --script res://tests/test_e2e_radio.gd
+extends SceneTree
+
+const ID := 15 # a real radio on the dev machine would take id 0
+
+var _failures := 0
+var _main: Node
+var _session: Node
+
+
+func _check(label: String, ok: bool, detail := "") -> void:
+	if ok:
+		print("ok   ", label)
+	else:
+		_failures += 1
+		printerr("FAIL %s %s" % [label, detail])
+
+
+func _motion(axis: int, value: float) -> void:
+	var e := InputEventJoypadMotion.new() # a new event each time (debug builds warn on reuse)
+	e.device = ID
+	e.axis = axis as JoyAxis
+	e.axis_value = value
+	Input.parse_input_event(e)
+
+
+func _key(code: Key) -> void:
+	for pressed in [true, false]:
+		var e := InputEventKey.new()
+		e.physical_keycode = code
+		e.keycode = code
+		e.pressed = pressed
+		Input.parse_input_event(e)
+
+
+func _panel_has(text: String) -> bool:
+	return text in (_main._panel as Label).text
+
+
+## Counted in ticks and frames, not wall time: a slow first frame could eat a timer before any tick ran.
+func _settle() -> void:
+	for i in 4:
+		await physics_frame # emitted before a tick; 4 awaits guarantee 3 complete ticks
+	await process_frame
+	await process_frame # the panel updates in _process
+
+
+func _initialize() -> void:
+	_run()
+
+
+func _run() -> void:
+	_main = load("res://main.tscn").instantiate()
+	root.add_child(_main)
+	await _settle()
+	_session = _main.session
+	_session.device_info = func(_device: int) -> Dictionary:
+		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
+	_check("starts on the keyboard", not _session.radio.connected and _panel_has("input: keyboard"))
+
+	Input.joy_connection_changed.emit(ID, true)
+	await _settle()
+	_check("radio connected with its device key", _session.radio.connected and _session.radio.device_key == "fake|1209:4f54|Fake EdgeTX", _session.radio.device_key)
+	_check("untouched throttle (reads mid-stick) keeps the engine at idle", _session.commands.throttle == 0.0 and _session.radio.throttle_position() == 0.5, "throttle %s, stick %s, axes %s" % [_session.commands.throttle, _session.radio.throttle_position(), _session.radio.axes])
+	_check("panel says SAFE", _panel_has("SAFE"))
+
+	_motion(2, 0.2)
+	await _settle()
+	_check("throttle moved to 60 %: still SAFE", not _session.radio.armed and _session.commands.throttle == 0.0)
+	_motion(2, -1.0)
+	await _settle()
+	_check("throttle low: ARMED", _session.radio.armed and _panel_has("ARMED"))
+	_motion(2, 1.0)
+	await _settle()
+	_check("armed: full throttle", _session.commands.throttle == 1.0)
+
+	_motion(0, 1.0)
+	await _settle()
+	_check("roll stick full right → +1 at once (radio positions are not rate-limited)", _session.commands.roll == 1.0)
+	_check("the simulation flies it (stick + trim, clamped)", _session.sim.inputs[0] == 1.0, str(_session.sim.inputs))
+	_motion(1, 1.0)
+	await _settle()
+	_check("elevator stick forward → pitch −1 (nose down)", _session.commands.pitch == -1.0)
+
+	Input.joy_connection_changed.emit(ID, false)
+	await _settle()
+	_check("unplug: simulation paused", _session.sim.paused)
+	_check("unplug: engine idle, sticks centred", _session.commands.throttle == 0.0 and _session.commands.roll == 0.0 and _session.commands.pitch == 0.0)
+	_check("unplug: panel says why", _panel_has("PAUSED (radio disconnected)"))
+	var t0: float = _session.sim.time()
+	await _settle()
+	_check("unplug: stays paused (no automatic resume)", _session.sim.paused and _session.sim.time() == t0)
+
+	_key(KEY_P)
+	await _settle()
+	_check("P resumes on the keyboard", not _session.sim.paused and _panel_has("input: keyboard"))
+
+	# Godot keeps the fake device's last axis values (throttle high) after the unplug.
+	Input.joy_connection_changed.emit(ID, true)
+	await _settle()
+	_check("replug with the throttle stick high: SAFE, idle", not _session.radio.armed and _session.commands.throttle == 0.0, "position %.2f" % _session.radio.throttle_position())
+
+	print("all e2e radio checks passed" if _failures == 0 else "%d failed" % _failures)
+	quit(1 if _failures > 0 else 0)

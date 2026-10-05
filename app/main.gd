@@ -33,6 +33,8 @@ var _cg_model := Vector3.ZERO
 
 func _ready() -> void:
 	var args := _user_args()
+	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
+	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
 	_scripted = args.has("scripted")
 	_build_world()
@@ -88,8 +90,9 @@ func _status() -> String:
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
+	line += "\n" + session.radio.describe()
 	if sim.paused:
-		line += "\nPAUSED  [P] resume"
+		line += "\nPAUSED%s  [P] resume" % ("" if session.pause_reason == "" else " (%s)" % session.pause_reason)
 	if recorder.recording:
 		line += "\nREC %.1f s  [T] stop and save" % recorder.seconds()
 	elif recorder.note != "":
@@ -117,7 +120,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_R:
 				session.reset()
 			KEY_P:
-				session.sim.set_paused(false)
+				session.resume()
 			KEY_T:
 				if recorder.recording:
 					recorder.stop()

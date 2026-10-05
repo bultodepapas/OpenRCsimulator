@@ -38,3 +38,7 @@ Servos, reenvíos y tren se construyen desde el Jensen y la documentación mecá
 Preparar una vista del modelo en una orientación aproximada a A para comprobar masas de rojo/blanco y colocación de cruces; otra con cielo azul y orientación aproximada a B para comprobar lectura y festoneado. Usar además planta, intradós y laterales ortográficos. Las fotos no aportan lente ni distancia conocidas: la comparación será de composición, no una superposición dimensional ni una prueba de escala.
 
 Antes de pasar a microdetalle, deben verse: centro alar rojo continuo, dos campos blancos exteriores, puntas rojas, filetes finos, cruces proporcionadas, conjunto vertical blanco, cola horizontal roja y marca dorsal pequeña. La legibilidad desde tierra se evalúa después sobre esa composición mediante el protocolo de 20/50/100 m.
+
+## Contraste posterior con el catálogo Durafly
+
+La [investigación 01](ugly-stik-visual-investigations/01-decoration-identity.md) consultó el catálogo oficial: Durafly describe una variante EPO eléctrica de 1100 mm con motor nitro simulado. Esto refuerza el uso de las fotos como referencia de acabado, manteniendo documentación glow independiente para la mecánica. No identifica por sí solo el SKU de la foto B. [Ficha oficial del producto](https://hobbyking.com/duraflytm-retro-series-das-uglystik-electric-sports-model-epo-1100mm-pnf.html).

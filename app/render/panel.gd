@@ -37,10 +37,10 @@ static func _f(v: float, decimals := 2) -> String:
 static func update(label: Label, raw: Dictionary, c: Dictionary, view: String, status := "", flown := {}, throws_deg := {}) -> void:
 	var s := Commands.surface_deflections_deg(flown if not flown.is_empty() else c, throws_deg)
 	label.text = "\n".join([
-		"channel   raw   command  surface",
-		"roll     %s    %s   R ail %s°" % [_f(raw.roll, 0), _f(c.roll), _f(s.aileron_right, 1)],
-		"pitch    %s    %s   elev  %s°" % [_f(raw.pitch, 0), _f(c.pitch), _f(s.elevator, 1)],
-		"yaw      %s    %s   rud   %s°" % [_f(raw.yaw, 0), _f(c.yaw), _f(s.rudder, 1)],
-		"throttle %s    %s%%" % [_f(raw.throttle, 0), str(roundi(c.throttle * 100)).lpad(4)],
+		"channel   raw    command  surface",
+		"roll     %s   %s   R ail %s°" % [_f(raw.roll), _f(c.roll), _f(s.aileron_right, 1)],
+		"pitch    %s   %s   elev  %s°" % [_f(raw.pitch), _f(c.pitch), _f(s.elevator, 1)],
+		"yaw      %s   %s   rud   %s°" % [_f(raw.yaw), _f(c.yaw), _f(s.rudder, 1)],
+		"throttle %s   %s%%" % [_f(raw.throttle), str(roundi(c.throttle * 100)).lpad(4)],
 		"view: %s   [C] view  [R] reset" % view,
 	]) + ("\n" + status if status != "" else "")

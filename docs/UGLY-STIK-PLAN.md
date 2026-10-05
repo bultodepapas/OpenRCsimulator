@@ -21,7 +21,7 @@ El contrato integrado pasa **510 comprobaciones**, y `app/test.sh` pasa en el á
 
 ## Siguiente entrega visual
 
-El propietario ha elegido rojo clásico con cruces y mayor detalle de motor, servos y herrajes. El [plan visual específico](UGLY-STIK-VISUAL-PLAN.md) organiza US-V01–08 y continúa US-06/07/08. La revisión 2 del plan visual incorpora las [dos fotografías aportadas](research/ugly-stik-visual-photo-brief.md): campos blancos exteriores con cruces negras, puntas rojas, filetes oscuros y cola vertical blanca. Esta elección autoriza avanzar en el acabado; el ensayo humano pendiente servirá para ajustar su legibilidad. La implementación visual todavía está pendiente.
+El propietario ha elegido rojo clásico con cruces y mayor detalle de motor, servos y herrajes. El [plan visual específico](UGLY-STIK-VISUAL-PLAN.md) organiza US-V01–08 y continúa US-06/07/08. La revisión 3 del plan visual incorpora las [dos fotografías aportadas](research/ugly-stik-visual-photo-brief.md): campos blancos exteriores con cruces negras, puntas rojas, filetes oscuros y cola vertical blanca. Esta elección autoriza avanzar en el acabado; el ensayo humano pendiente servirá para ajustar su legibilidad. Las [diez investigaciones web de detalle y render](research/ugly-stik-visual-investigations/README.md) concretan materiales, montaje y comprobaciones. La implementación visual todavía está pendiente.
 
 ## Siguiente ciclo de aceptación
 
