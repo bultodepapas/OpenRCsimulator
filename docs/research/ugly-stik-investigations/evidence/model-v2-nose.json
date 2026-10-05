@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-05",
+  "step": "D1 visual geometry nose correction",
+  "source_pdf": "references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf",
+  "source_sha256": "d5a79f156901fd6ed2c7948a186d0c17e66b99b7d1e84eb8732e8e533fd056bc",
+  "reading_script": "research/d1/jensen_plan_cg.py",
+  "points_at_100dpi": {
+    "firewall_front_x": 114,
+    "wing_le_x": 808,
+    "wing_te_x": 2015
+  },
+  "reading_allowance_px_per_endpoint": 3,
+  "page_scale_m_per_px": 0.000254,
+  "page_scale_supported_by": {
+    "measured_chord_in": 12.07,
+    "nominal_area_over_span_chord_in": 12,
+    "difference_percent": 0.5833333333333357,
+    "nose_m_if_normalized_to_nominal_chord": 0.17525368682684342
+  },
+  "nose_m_before": 0.325,
+  "nose_m_after": 0.17627600000000002,
+  "accepted_visual_tolerance_m": 0.002,
+  "firewall_z_before": -0.44,
+  "firewall_z_after": -0.291276,
+  "installation_shift_z_m": 0.14872400000000002,
+  "front_station_z_before_after": [
+    [
+      -0.44,
+      -0.291276
+    ],
+    [
+      -0.32,
+      -0.226189
+    ],
+    [
+      -0.16,
+      -0.139407
+    ]
+  ],
+  "equipment_before": {
+    "firewall_z": -0.44,
+    "shaft_y": -0.005,
+    "prop_z": -0.557,
+    "prop_diameter": 0.3048,
+    "main_wheel_diameter": 0.0762,
+    "nose_wheel_diameter": 0.06985,
+    "wheel_y": -0.22,
+    "main_axle_z": 0.1,
+    "main_track": 0.36,
+    "nose_axle_z": -0.4
+  },
+  "equipment_after": {
+    "firewall_z": -0.291276,
+    "shaft_y": -0.005,
+    "prop_z": -0.408276,
+    "prop_diameter": 0.3048,
+    "main_wheel_diameter": 0.0762,
+    "nose_wheel_diameter": 0.06985,
+    "wheel_y": -0.22,
+    "main_axle_z": 0.1,
+    "main_track": 0.36,
+    "nose_axle_z": -0.251276
+  },
+  "kept_fixed": [
+    "wing span/chord/leading_z/root_y",
+    "tail geometry",
+    "main gear",
+    "shaft_y",
+    "mass/inertia/aerodynamic data"
+  ],
+  "limits": [
+    "The chord check supports local page scale, not every view",
+    "Front width and height remain estimated",
+    "Exact 61 engine installation and tail dimensions unresolved"
+  ]
+}

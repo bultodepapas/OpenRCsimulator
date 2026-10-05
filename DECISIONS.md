@@ -37,6 +37,10 @@ A small record of what we choose and why. The two guiding principles remain esta
 | 2026-10-05 | **CG = the Jensen plan's CG: 4.76 in aft of the LE (39 % chord).** Measured on the full-size oz1253 plan. The aero moment reference is placed there, so the borrowed static margin applies at the plan CG. | The plan is the best evidence; builders balance to it. The inventory CG (0.080 m forward) is a data-quality warning, not the flight CG. | Provisional | A measured build, or a better-justified CG. |
 | 2026-10-05 | **Wing area 720 sq in** (oz1253 title block, the measured sheet); the 723 sq in on an older Jensen sheet image is kept as an alternative. | The measured sheet is the one used for all other dimensions; 0.4 % difference. | Chosen | — |
 | 2026-10-05 | Aerodynamic coefficients are **borrowed from the UltraStick25e** (OpenFlightSim @ b020511) as nondimensional values, with their sign conventions recorded in the data file. | The closest inspectable Stik-family dataset; a starting point to be checked by trim (D4) and sensitivity (D10). | Provisional | D4/D10 or flight evidence shows they misrepresent the Ugly Stik. |
+| 2026-10-05 | **Remaining work is organized as playable milestones (M1 first flight, M2 takeoff/landing, M3 radio, M4 nitro, M5 air & polish), each ending with a build the owner flies.** | Plan review #2: after Phases A–C nothing was playable. Feel and readability can only be judged by flying. | Chosen | — |
+| 2026-10-05 | **Radio/gamepad raw input moves into M1** (before ground handling). | The owner has EdgeTX radios; keyboard flying is not RC flying. | Chosen | — |
+| 2026-10-05 | **Predicted-handling table** (stall 8.6–9.5 m/s, trim α 3.6° at 15 m/s, roll 144–192°/s…) computed from the D1 data is the acceptance target for M1's flight model. | Turns "does it fly like a Stik?" into numbers a test can check. | Chosen | Real-Stik references contradict the predictions. |
+| 2026-10-05 | Generated captures and traces belong in CI artifacts, not in git. | 65 PNG/CSV changes in 25 commits; noise in diffs and history. | Chosen (owner, 2026-10-05): `app/captures/` untracked | — |
 
 ## Open (deliberately not decided yet)
 

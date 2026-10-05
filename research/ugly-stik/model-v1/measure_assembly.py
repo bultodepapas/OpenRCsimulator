@@ -3,6 +3,7 @@
 Solve the rigid pitch needed to put the nose/main circular tires on one plane,
 then measure clearance to the swept propeller disk. No ground dynamics involved.
 """
+import argparse
 import hashlib
 import json
 import math
@@ -10,10 +11,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 SOURCE = ROOT / 'assets/aircraft/ugly-stik-60/geometry.json'
-OUT = ROOT / 'docs/research/ugly-stik-investigations/evidence/model-v1-assembly.json'
+OUT = ROOT / 'docs/research/ugly-stik-investigations/evidence/model-assembly-current.json'
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, default=OUT)
+    args = parser.parse_args()
     data = json.loads(SOURCE.read_text())
     e = data['equipment']
     rmain = e['main_wheel_diameter'] / 2
@@ -44,7 +48,8 @@ def main():
         'nominal_jensen_area_m2': 720 * 0.0254**2,
         'limits': ['No flight or installation validation', '12-inch propeller and gear placement remain estimates', 'Geometry is not a mass or inertia model', 'Nominal area is not inferred from a raster or a built airplane'],
     }
-    OUT.write_text(json.dumps(result, indent=2) + '\n')
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 
 

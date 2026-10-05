@@ -1,0 +1,22 @@
+{
+  "aircraft_id": "jensen-60-nitro-61-v2",
+  "source_sha256": "51ca85bedab99e05fedbf07e5519a055bb53e1933de6b8b31372b6b4cfb54253",
+  "evidence_kind": "calculation_on_estimated_visual_geometry",
+  "physics_configuration_changed": false,
+  "wheel_contact_assumptions": "Rigid undeformed circular tires, parallel axles, no suspension; pose only",
+  "render_rotation_x_rad": -0.009038599936701863,
+  "render_rotation_x_deg": -0.5178736290802298,
+  "ground_plane_y_m": -0.25718716578269174,
+  "nose_contact_residual_m": 0.0,
+  "propeller_disk_ground_clearance_m": 0.0961034020554195,
+  "nominal_span_m": 1.524,
+  "span_centerline_horizontal_projection_m": 1.522101757926205,
+  "rectangular_developed_planform_area_m2": 0.4645152,
+  "nominal_jensen_area_m2": 0.46451519999999996,
+  "limits": [
+    "No flight or installation validation",
+    "12-inch propeller and gear placement remain estimates",
+    "Geometry is not a mass or inertia model",
+    "Nominal area is not inferred from a raster or a built airplane"
+  ]
+}

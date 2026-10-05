@@ -3,7 +3,7 @@
 extends RefCounted
 
 const DATA := {
-	"id": "jensen-60-nitro-61-v1",
+	"id": "jensen-60-nitro-61-v2",
 	"units": "m",
 	"axes": {
 		"nose": "-Z",
@@ -83,19 +83,19 @@ const DATA := {
 	},
 	"fuselage_stations": [
 		[
-			-0.44,
+			-0.291276,
 			0.039191,
 			0.048,
 			-0.06
 		],
 		[
-			-0.32,
+			-0.226189,
 			0.046056,
 			0.056,
 			-0.064
 		],
 		[
-			-0.16,
+			-0.139407,
 			0.04958,
 			0.05,
 			-0.069
@@ -264,16 +264,16 @@ const DATA := {
 		"thickness": 0.009
 	},
 	"equipment": {
-		"firewall_z": -0.44,
+		"firewall_z": -0.291276,
 		"shaft_y": -0.005,
-		"prop_z": -0.557,
+		"prop_z": -0.408276,
 		"prop_diameter": 0.3048,
 		"main_wheel_diameter": 0.0762,
 		"nose_wheel_diameter": 0.06985,
 		"wheel_y": -0.22,
 		"main_axle_z": 0.1,
 		"main_track": 0.36,
-		"nose_axle_z": -0.4
+		"nose_axle_z": -0.251276
 	},
 	"evidence": {
 		"wing.span": {
@@ -300,7 +300,7 @@ const DATA := {
 		"fuselage_stations": {
 			"kind": "estimated",
 			"source": "research/ugly-stik/calibration-v1/jensen-contours.json",
-			"method": "z/top/bottom remain visual estimates; halfwidth interpolated from manual plan-view pixel picks at x=48+(z+0.44)/1.12*2002, using conditional 0.533206 mm/px. Longitudinal span fitted to existing 1.12m visual envelope, not a calibrated plan dimension.",
+			"method": "z/top/bottom remain visual estimates; halfwidth interpolated from manual plan-view pixel picks at x=48+(z+0.44)/1.12*2002, using conditional 0.533206 mm/px. Longitudinal span fitted to existing 1.12m visual envelope, not a calibrated plan dimension. V2 maps only stations ahead of fixed wing LE affinely from old F1=-0.44 to measured F1=-0.291276; widths/heights retained as visual estimates. See model-v2-nose.json.",
 			"scope": "source points describe the raster; no independent absolute scale; side-view trace and unresolved tail outline not adopted",
 			"conditional_width_endpoint_allowance_m": 0.003
 		},
@@ -318,11 +318,19 @@ const DATA := {
 		},
 		"equipment.other": {
 			"kind": "estimated",
-			"source": "12 in prop and gear arrangement for visual clearance trial; installation not verified"
+			"source": "12in prop and gear placement remain estimated. V2 moves prop and nose axle with F1 by +0.148724m, preserving installation offsets; shaft height and main gear unchanged."
 		},
 		"decoration": {
 			"kind": "estimated",
 			"source": "red/cream top and charcoal underside selected for readability; not claimed as a canonical livery"
+		},
+		"equipment.firewall_z": {
+			"kind": "measured",
+			"source": "research/d1/jensen_plan_cg.py; signed Jensen oz1253 page1; F1frontx114, LEx808 at100dpi",
+			"method": "wing.leading_z - (808-114)/100*0.0254",
+			"value_m_from_le": -0.17627600000000002,
+			"uncertainty_m": 0.002,
+			"scope": "Local scan reading; page scale supported by 12.07in chord vs 12in nominal, not a globally calibrated built-aircraft dimension"
 		}
 	}
 }

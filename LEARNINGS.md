@@ -4,6 +4,8 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **Measure the project before re-planning it.** Plan review #2 started from numbers: suite time 21 s, 25 commits with 65 generated-file changes, 1343 lines of visual code vs 425 of physics, no export presets, zero human flights. The numbers made the gap obvious: excellent foundations, nothing playable. *Now:* remaining work is organized as milestones that each end in a build the owner flies, with acceptance targets computed from the data (the predicted-handling table). (2026-10-05)
+
 - **A hand balance is a cheap cross-check of someone else's geometry.** Plausible component masses on the visual model put the CG ahead of the wing's leading edge, which is impossible for a flying airplane. The full-size plan then showed the nose (firewall to LE) is 6.94 in, while the provisional visual model has ~12.8 in. One physics sanity check found a visual-geometry error that no screenshot showed. (2026-10-05)
 - **Full-size plans are measuring instruments.** At 100 dpi a 1:1 plan gives 100 px per inch; the chord read 12.07 in against the title block's 12.00 in, a 0.6 % scale check. Read features with zoomed crops and pixel rulers; automatic edge search clipped at its window bounds and gave nonsense. (2026-10-05)
 - **Validate your own data with the same loader.** The new loader's first run rejected my own data file (an empty source). (2026-10-05)

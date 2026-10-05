@@ -1,0 +1,214 @@
+{
+  "schema": "org.openrcsimulator.ugly-stik-cad-audit.v1",
+  "inspected_utc_date": "2026-10-05",
+  "scope": "Read-only DXF metadata and DWG signatures; no source file modified or converted.",
+  "tooling": {
+    "dxf_parser": "ezdxf 1.4.4",
+    "python": "3.12.3",
+    "installation": "Temporary target /tmp/ugly_stik_ezdxf_1_4_4; no repository dependency change",
+    "limitations": [
+      "Parser warned that GEODATA may be incorrect and ignored ACAD_PROXY_OBJECT entities during bounding-box processing.",
+      "DXF extents are whole modelspace sheet bounds, not aircraft dimensions.",
+      "DWG files were not decoded; only initial signature, file size, file(1) classification, and SHA-256 were recorded."
+    ]
+  },
+  "dxf_units_interpretation": {
+    "$INSUNITS": 1,
+    "meaning": "inches",
+    "$MEASUREMENT": 0,
+    "$DIMLFAC": 1.0,
+    "cross_check": "Each DXF contains one closed 1.000 by 1.000 drawing-unit registration square; each nearby note/readme calls it 1 inch."
+  },
+  "dxf_files": [
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DXF Plans/Ultr Stick Lite_fuse3.dxf",
+      "bytes": 2024968,
+      "sha256": "0d0abbb426f087e5d4abdc463509e0bc379ac3c2cf4cc9ff3b5bf760f78d8e2",
+      "acadver": "AC1018",
+      "modelspace_entities": 2346,
+      "entity_counts": {
+        "LINE": 1766,
+        "LWPOLYLINE": 189,
+        "ARC": 189,
+        "ELLIPSE": 70,
+        "TEXT": 64,
+        "CIRCLE": 33,
+        "LEADER": 17,
+        "HATCH": 8,
+        "DIMENSION": 6,
+        "INSERT": 2,
+        "SPLINE": 1,
+        "MTEXT": 1
+      },
+      "layer_entity_counts": {
+        "0": 2346,
+        "Defpoints": 0,
+        "Dashed line": 0
+      },
+      "modelspace_extents_inches": {
+        "min": [-30.5091581343, -16.6432586904, 0.0],
+        "max": [41.5091581343, 15.5141528440, 0.0],
+        "size": [72.0183162686, 32.1574115344, 0.0]
+      },
+      "registration_square": {
+        "entity_handle": "1993",
+        "layer": "0",
+        "lower_left": [-11.3938134397, -7.6065095930],
+        "size": [1.0, 1.0]
+      },
+      "dimension_measurements_inches": [15.2591666147, 8.8041610885, 5.3693488237, 15.2510091684, 4.1256075122, 4.9983321775],
+      "title_block_text": "ULTRA STICK 120 LIGHT; RHB Designs; span 78 in; length 61 in; wing area 1210-1230 (unit not printed); weight 9-12 lb; 2-cycle 1.08-1.50 CI; 4-cycle 1.00-1.80 CI; gas 25cc; electric 1500-2000W"
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DXF Plans/Ultra Stick Lite Wing3.dxf",
+      "bytes": 1959420,
+      "sha256": "3dfda935ed77d75f535c300f78a8d05ed6b4ad76bd95f63014c29080ea08675f",
+      "acadver": "AC1018",
+      "modelspace_entities": 2005,
+      "entity_counts": {
+        "LINE": 1572,
+        "LWPOLYLINE": 170,
+        "ARC": 85,
+        "TEXT": 80,
+        "CIRCLE": 45,
+        "LEADER": 19,
+        "HATCH": 9,
+        "MULTILEADER": 9,
+        "ELLIPSE": 6,
+        "SPLINE": 6,
+        "INSERT": 3,
+        "MTEXT": 1
+      },
+      "layer_entity_counts": {
+        "0": 2005,
+        "Dashed line": 0,
+        "Defpoints": 0
+      },
+      "modelspace_extents_inches": {
+        "min": [-35.5476448393, -11.8287057672, 0.0],
+        "max": [46.5476448393, 20.3287057672, 0.0],
+        "size": [82.0952896785, 32.1574115344, 0.0]
+      },
+      "registration_square": {
+        "entity_handle": "17F8",
+        "layer": "0",
+        "lower_left": [4.3221011222, 13.3700875571],
+        "size": [1.0, 1.0]
+      },
+      "dimension_entities": 0,
+      "text_examples": ["AILERON 2 REQ.", "FLAP 2 REQ.", "1/4 x 1/2 Spruce Spar Stock", "1/2 Balsa stock for leading edge"]
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DXF Laser cutting files/Ultrastick CAD cut rev3.DXF",
+      "bytes": 4408342,
+      "sha256": "4472cb90f87d40d6c55028c7b3066db271b210c64c124478741a7826ce40b504",
+      "acadver": "AC1021",
+      "modelspace_entities": 1525,
+      "entity_counts": {
+        "LWPOLYLINE": 752,
+        "HATCH": 339,
+        "LINE": 299,
+        "ELLIPSE": 66,
+        "ARC": 38,
+        "CIRCLE": 14,
+        "TEXT": 13,
+        "SPLINE": 4
+      },
+      "layer_entity_counts": {
+        "0": 0,
+        "sheets": 25,
+        "vector_score": 927,
+        "Laser cut .004 offset": 286,
+        "laser cut 0 offset": 287,
+        "Defpoints": 0
+      },
+      "layer_state_and_polyline_counts": {
+        "Laser cut .004 offset": {"color_index": 10, "off": false, "closed_lwpolylines": 76, "open_lwpolylines": 55},
+        "laser cut 0 offset": {"color_index": -3, "off": true, "closed_lwpolylines": 76, "open_lwpolylines": 55},
+        "vector_score": {"color_index": 5, "off": false, "closed_lwpolylines": 478},
+        "sheets": {"color_index": 254, "off": false, "closed_lwpolylines": 12}
+      },
+      "modelspace_extents_inches": {
+        "min": [-172.8250539846, -10.9791577972, 0.0],
+        "max": [-74.3186350552, 36.0513698326, 0.0],
+        "size": [98.5064189293, 47.0305276298, 0.0]
+      },
+      "registration_square": {
+        "entity_handle": "E70",
+        "layer": "sheets",
+        "lower_left": [-119.8798879577, 26.8850652614],
+        "size": [1.0, 1.0]
+      },
+      "readme_note": "Red cut outlines use 0.004 inch offsets. Nominal-size green parts layer is named laser cut 0 offset and is off by default; do not apply both drawing compensation and machine compensation."
+    }
+  ],
+  "dwg_files_header_only": [
+    {
+      "path": "references/mojo-60/MoJo Parts 60.dwg",
+      "bytes": 93121,
+      "sha256": "ab28983fa8bd1504e43f9348bde1380eb2118df6607c4be4425bcaeecd69f690",
+      "first_six_bytes": "AC1027",
+      "file_classification": "AutoCAD 2013-2017 DWG format"
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DWG/Ultr Stick Lite_fuse3 DWG.dwg",
+      "bytes": 263881,
+      "sha256": "2a987520c5659f547bed9eeeb547e12c7782bfb5372b134f8ddac8c58376a82b",
+      "first_six_bytes": "AC1027",
+      "file_classification": "AutoCAD 2013-2017 DWG format"
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DWG/Ultr Stick Lite_fuse3 DWG2004.dwg",
+      "bytes": 271127,
+      "sha256": "18263a3bc6c10e898d7b113c22699f0405ca72141b1c6abf36cbe02c7ca20d34",
+      "first_six_bytes": "AC1018",
+      "file_classification": "AutoCAD 2004-2006 DWG format"
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DWG/Ultra Stick Lite Wing3 DWG.dwg",
+      "bytes": 322183,
+      "sha256": "3fe959f096784eda268874a84a57e3f32f1921da6547a15110ca975fdc2258b9",
+      "first_six_bytes": "AC1027",
+      "file_classification": "AutoCAD 2013-2017 DWG format"
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DWG/Ultra Stick Lite Wing3 DWG2004.dwg",
+      "bytes": 295256,
+      "sha256": "6596534c75a2212d91ada65be1597ec5e65d20b548e45cfe20f79b9a6f01875e",
+      "first_six_bytes": "AC1018",
+      "file_classification": "AutoCAD 2004-2006 DWG format"
+    }
+  ],
+  "variant_identity": {
+    "rhb_dxf_title_block": "Ultra Stick 120 Light / RHB Designs; span 78 in, length 61 in, 1210-1230 area (unit omitted), 9-12 lb; 2-stroke 1.08-1.50 CI.",
+    "horizon_hangar9_manual": "Ultra Stick Lite manual; published 76 in span, 55 in length, zero dihedral. It is a separate source/configuration pending proof of relationship to RHB redraw.",
+    "project_target": "Jensen Ugly Stik .61, nominal 60 in span, 720 sq in area, .45-.61 engine class. The RHB/Hangar9 drawings must not be merged into this model.",
+    "mojo_dwg": "Filename only; no claim about model identity, size, or engine class is supported until geometry is decoded."
+  },
+  "primary_references": [
+    {
+      "url": "https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-DXF/files/GUID-A85E8E67-27CD-4C59-BE61-4DC9FADBE74A.htm",
+      "supports": "AutoCAD DXF $ACADVER signature mappings including AC1018 and AC1021."
+    },
+    {
+      "url": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/drawing-version-codes-for-autocad.html",
+      "supports": "Autodesk DWG signature compatibility mappings including AC1018 and AC1027."
+    },
+    {
+      "url": "https://ezdxf.readthedocs.io/en/stable/concepts/units.html",
+      "supports": "$INSUNITS describes modelspace/document units; code 1 means inches; caveat notes unit handling is based on compatibility experiments."
+    },
+    {
+      "url": "https://www.horizonhobby.com/on/demandware.static/Sites-horizon-us-Site/Sites-horizon-master/default/Manuals/han2325-manual.pdf",
+      "supports": "Official Horizon Hobby Ultra Stick Lite manual; page 1 specifications and page 10 zero-dihedral wing joining note."
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DXF Plans/DXF Readme.txt",
+      "supports": "DXF plotter purpose and 1 inch registration-square instruction."
+    },
+    {
+      "path": "references/ultra-stick-120/Ultrastick V3/DXF Laser cutting files/DXF Readme.txt",
+      "supports": "0.004 inch compensated cuts, nominal-size cut outlines, and offset-layer operating advice."
+    }
+  ]
+}

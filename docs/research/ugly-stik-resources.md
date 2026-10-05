@@ -56,4 +56,6 @@ Los hashes verifican identidad de bytes, no precisión del plano, escala real ni
 
 ## Archivos añadidos por el propietario durante el modelado
 
-Se inspeccionó un segundo paquete de **31 archivos**: `Ultrastick V3/` y `MoJo Parts 60.dwg`. Los originales permanecen en la raíz, excluidos de Git. [Informe y clasificación](ugly-stik-new-files.md) · [inventario con hashes](../../research/ugly-stik/new-files/inventory.json). Corresponden principalmente a Ultra Stick 120 Light/Lite, con configuraciones distintas del Jensen .61. No se incluyen en las 16 descargas enumeradas arriba.
+Se inspeccionó un segundo paquete de **31 archivos**, entregado inicialmente en la raíz como `Ultrastick V3/` y `MoJo Parts 60.dwg`. [Informe y clasificación](ugly-stik-new-files.md) · [inventario con hashes](../../research/ugly-stik/new-files/inventory.json). Corresponden principalmente a Ultra Stick 120 Light/Lite, con configuraciones distintas del Jensen .61. No se incluyen en las 16 descargas enumeradas arriba.
+
+**Migración (2026-10-05):** los originales se trasladaron sin alterar sus bytes a [references/ultra-stick-120/Ultrastick V3/](../../references/ultra-stick-120/Ultrastick%20V3/) y [references/mojo-60/MoJo Parts 60.dwg](../../references/mojo-60/MoJo%20Parts%2060.dwg). Siguen excluidos por la regla general `references/` de `.gitignore`.

@@ -354,6 +354,25 @@ func _check_root_poses_and_propeller() -> void:
 		_check("propeller spin %.2f keeps hub fixed" % angle, (_airplane.propeller as Node3D).global_position.distance_to(hub_position) <= NUMERIC_EPSILON)
 
 
+func _check_nose_assembly() -> void:
+	var fuselage := _root.find_child("fuselage", true, false) as MeshInstance3D
+	var wing := _root.find_child("wing_right_0", true, false) as MeshInstance3D
+	var nosewheel := _root.find_child("nosewheel", true, false) as MeshInstance3D
+	_check("nose assembly nodes present", fuselage != null and wing != null and nosewheel != null)
+	if fuselage == null or wing == null or nosewheel == null:
+		return
+	var firewall_z := _root.to_local(fuselage.to_global(fuselage.mesh.get_aabb().position)).z
+	var leading_z := _root.to_local(wing.to_global(wing.mesh.get_aabb().position)).z
+	# Independent scan reading: 6.94 in from F1 to LE, not copied from runtime parameters.
+	var nose_length := leading_z - firewall_z
+	_check("F1 to leading edge agrees with 6.94 in scan reading", absf(nose_length - 6.94 * 0.0254) <= 0.002, "got %.6f m" % nose_length)
+	# This step translates the existing estimated installation as a unit; it does not rescale an engine.
+	var prop_position := _root.to_local((_airplane.propeller as Node3D).global_position)
+	_check("prop retains 117 mm installation offset ahead of F1", absf(firewall_z - prop_position.z - 0.117) < NUMERIC_EPSILON)
+	var axle_z := _root.to_local(nosewheel.global_position).z
+	_check("nose axle retains 40 mm offset behind F1", absf(axle_z - firewall_z - 0.04) < NUMERIC_EPSILON)
+
+
 func _initialize() -> void:
 	call_deferred("_run_model_checks")
 
@@ -377,6 +396,7 @@ func _run_model_checks() -> void:
 		printerr("%d checks, %d failed" % [_checks, _failures])
 		quit(1)
 		return
+	_check_nose_assembly()
 	_check_dihedral_frames()
 	_check_wing_fuselage_seat()
 	_check_root_poses_and_propeller()

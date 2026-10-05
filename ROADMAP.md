@@ -14,24 +14,16 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 
 ## Where we are
 
-- **Done:** research (RESEARCH.md), stack survey (STACK.md), the Stage 0 spec ([prototypes/stage0/SPEC.md](prototypes/stage0/SPEC.md)), and the **three.js Stage 0 build**, with pilot-view and close-up captures.
-- **Done since:** Phase A (MIT license, repo hygiene, CI green locally), B3 (Godot Stage 0, matching the three.js build), B4 (frame tests in both; a deliberately broken sign is caught).
-- **Done since:** B5 (Stage 1 controls in both, unit + end-to-end input tests), B6 (scored: three.js 73, Godot 57 of 80), **Gate 1 → Godot** (owner's decision), B7 (Godot promoted into `app/` with a float64 guard).
-- **Done since:** C1 (`app/physics/math3d.gd`: 64-bit vectors and quaternions, 11 checks over 500 random samples; two deliberate bugs caught).
-- **Done since:** C2 (`app/physics/rigid_body.gd`: 13-value float64 state, full inertia tensor with cross term; 14 hand-computed checks; three deliberate bugs each caught, run on a scratch copy).
-- **Done since:** C3 + C4 (`app/physics/integrator.gd`, RK4). Free fall error 5e-12 m after 10 s. A 60 s tumbling middle-axis spin conserves energy to 3.5e-12 and world angular momentum to 9.5e-11 (relative). Convergence ratios 15.9 / 15.9 (4th order). **Speed 47–51× real time at 240 Hz** (81–88 µs/step), so physics stays in GDScript. `test.sh` now also fails on any engine error printed during tests.
-- **Done since:** C5 (`app/sim/simulation.gd`): 240 Hz physics tick, up to 12 catch-up steps per frame (slow motion below 20 fps instead of a spiral), position lerp + attitude nlerp for rendering, pause on focus loss with explicit resume only. **The same scripted 2 s flight gives a bit-identical final state (same SHA-256) at 30, 60 and 144 fps.**
-- **Done since:** C6. The app now runs on physics by default (`--scripted` keeps the Stage 0/1 circle). A ballistic throw (15 m/s east, 30 m up, gravity only) renders from the interpolated 240 Hz state. R restarts, P resumes after a focus-loss pause, and a temporary below-ground restart holds until D9. The capture at 1.5 s shows alt 19.0 m and speed 21.0 m/s, matching hand calculation (18.97 m, 21.0 m/s). End-to-end tests cover the live physics scene.
-- **Done since:** C7 (`app/sim/trace.gd`): one CSV row per 240 Hz tick, 30 columns with units, `#` metadata (format, dt, mass, inertia, frames, load convention). Press T in the app (saved to `user://traces/`), or run `-- --trace=file.csv --t=1.5` headless; CI uploads `app/captures/trace-physics.csv`. Every row matches the hand calculation against its own timestamp to 1e-9. **Phase C is complete.**
-- **Model v1 integrated (other team, 2026-10-05):** a procedural Das Ugly Stik 60 (`app/aircraft/`, source `assets/aircraft/ugly-stik-60/geometry.json` with per-field provenance) replaces the blockout behind the same interface. `app/test.sh` now runs their `verify_model.gd` (439+ checks), and CI checks that `geometry.json` and its generated `.gd` stay in sync.
-- **Done since:** D1, the physics data file `app/data/aircraft/jensen_ugly_stik_60.json` (format `openrc-aircraft v1`, every value with unit, evidence kind and source), loaded by `app/physics/aircraft_data.gd`:
-  - **Mass:** 2.601 kg from a 19-component inventory.
-  - **CG:** the **plan CG, 4.76 in aft of the LE (39 % chord)**, measured on the full-size Jensen plan (`research/d1/jensen_plan_cg.py`). The inventory's own CG is 0.080 m further forward, reported as a warning, not hidden.
-  - **Inertia:** Jxx/Jyy/Jzz 0.113/0.218/0.316 kg·m², within 0.83–1.32× of the UltraStick25e values scaled by mass and span².
-  - **Aero:** 33 borrowed UltraStick25e coefficients with explicit sign and normalization conventions.
-  - **Loader:** rejects bad units, kinds, sources, ranges, inconsistent references and unstable signs (12 broken-data cases); the app refuses to fly on invalid data.
-  - **Render:** the visual model is offset so its CG point sits on the simulated position.
-- **Next:** D2, air data (air-relative velocity, α, β, dynamic pressure).
+- **Done (2026-10-05):**
+  - **Foundations:** research, stack survey, MIT license, CI (local `act` + GitHub).
+  - **Platform:** three.js vs Godot bake-off, then Gate 1 → **Godot 4.7**.
+  - **Physics core (Phase C):** 64-bit math, rigid body, RK4, a 240 Hz fixed step that is bit-identical across frame rates, and a CSV flight trace.
+  - **Aircraft data (D1):** Das Ugly Stik 60, with the CG and nose measured on the full-size plan.
+  - **Visual model v1** (model team).
+
+  Each step's proof is in its table row below; the lessons are in LEARNINGS.md.
+- **State:** 130 physics/input checks + 449 model-contract checks, ~21 s for the full suite. The airplane **does not fly yet**: gravity only, no aerodynamics.
+- **Next:** milestone **M1 "First flight"**, starting with D2 (air data). Plan review #2 (end of file) explains why the plan is now organized by playable milestones.
 
 ## Phase A — Ground base
 
@@ -71,59 +63,79 @@ In GDScript, on 64-bit `float`s only. `app/test.sh` rejects `Vector3`/`Basis`/`Q
 | C6 ✅ | Replace the scripted circle with the rigid body under gravity only, plus reset | Visible: the airplane falls and resets. Trace matches C3 |
 | C7 ✅ | **Flight trace export** (CSV: step, time, state, inputs, forces). The main debugging tool from now on | A trace file opens in a spreadsheet; columns carry units |
 
-## Phase D — First flight, in thin slices
+## Milestones from here: each one ends in a build the owner flies
+
+Every milestone keeps the small-step rule (one proof per step) and ends with a **playtest build** that the owner downloads and flies on their own computer and radio. Notes from that session can reorder the next milestone.
+
+### Predicted handling: targets the sim must reproduce
+
+Computed by hand from the D1 data (`app/data/aircraft/jensen_ugly_stik_60.json`, 2.601 kg, 720 in², borrowed UltraStick25e aero). These are **predictions to check, not measurements**; a big miss means a bug or bad data, a small one is a tuning question.
+
+| Quantity | Predicted | Notes |
+| --- | --- | --- |
+| Wing loading | 5.6 kg/m² (18.4 oz/ft²) | Normal for a .60 sport plane |
+| Stall speed | 8.6–9.5 m/s (19–21 mph) | CLmax 1.0–1.2 (assumed) |
+| Trim at 15 m/s | α 3.6°, CL 0.40, L/D 8.7, drag 2.9 N | |
+| Best glide | L/D 11.5 at 10.8 m/s | |
+| Full aileron (±20°) steady roll rate | 144°/s at 15 m/s, 192°/s at 20 m/s | from Clδa, Clp |
+| Static margin at the plan CG | 15.8 % MAC | borrowed Cmα / CLα |
+
+### M1 — First flight (owner flies the Ugly Stik with keyboard or radio)
 
 | # | Step | Proof |
 | --- | --- | --- |
-| D1 ✅ | Aircraft data file v0 (Das Ugly Stik 60): plan geometry (60 in span, 723 in², 52 in) and a labeled mass estimate; inertia **estimated** from a component inventory; derivatives `borrowed` from the UltraStick25e; provenance per value; a loader that checks units, ranges and required fields | Loader tests, including deliberately broken files |
-| D2 | Air data: air-relative velocity, α, β, dynamic pressure (wind = 0) | Unit tests with hand-computed values |
-| D3 | Longitudinal forces only: lift `CL0 + CLα·α`, drag `CD0 + k·CL²`, weight | Power-off glide ratio in the trace equals `CL/CD` from the data |
-| D4 | Pitch moment (`Cm0`, `Cmα`, `Cmq`, `Cmδe`); stability sign check (`Cmα < 0`); **trim solver** for level flight at 15 m/s | Trim found with surfaces within limits, *or* a clear failure message naming what to change (CG, `Cm0`) |
-| D5 | Thrust v0: throttle × estimated static thrust, with a first-order lag | Level flight holds altitude within ±1 m for 30 s at trim |
-| D6 | Lateral-directional derivatives (`CYβ`, `Clβ`, `Clp`, `Clδa`, `Cnβ`, `Cnr`, `Cnδr`), with sign checks | Right aileron step rolls right; a sideslip disturbance damps out |
-| D7 | Interactive flight from an air start at trim. Textured ground and horizon for height cues. Debug HUD (airspeed, altitude, α) | Owner flies 2 minutes with no numerical blow-up; trace saved |
-| D8 | Crude stall: lift cap plus drag rise above the stall angle | A high-α trace stays finite; recovery is possible |
-| D9 | Ground-hit detection → crash → reset (no landing gear yet) | Crashing at any attitude resets cleanly |
-| D10 | Sensitivity sweep: mass, CG, `Cmα`, `CD0` at ±20% | A table ranking which unknowns matter. It decides what to research or measure next |
-| **Gate 2** | **"Is it flyable and readable?"** The owner (and ideally 1–2 RC pilots) fly it. Includes the pilot-view readability check (the airplane was only ~15 px at 87 m in B2) | Notes recorded; the next phases reordered if needed |
+| D1 ✅ | Aircraft data file v0 (Das Ugly Stik 60): plan geometry, plan CG, inventory mass and inertia, borrowed aero with conventions, a validating loader | 30 checks, including 12 broken-data cases; the app refuses to fly on invalid data |
+| D2 | Air data: air-relative velocity, α, β, dynamic pressure; **safe at zero and very low airspeed** (no NaN, no divide-by-zero) | Hand-computed values; V → 0 stays finite |
+| D3 | **Full linear aero model, all six axes in one function** (the coefficients already exist), plus the mapping from our command conventions to the data's surface conventions (elevator +TE down, rudder +TE left…) | Hand-computed loads at three states. Sign tests: +pitch command → nose-up moment, +roll → right roll, +yaw → nose right, sideslip → weathervane, rates → damping. A power-off glide trace shows L/D ≈ 8.7 at 15 m/s |
+| D4 | Trim solver (α, elevator, throttle) at a requested speed; failure is reported, never hidden | 15 m/s trims at α 3.6° ± 0.5°; an impossible request fails visibly |
+| D5 | Thrust v0: static thrust from the APC 12×6 data at a labeled rpm, falling with airspeed, first-order lag; **placeholder engine sound** whose pitch follows throttle | Level flight holds ±1 m for 30 s at trim; climb at full throttle is plausible; sound changes with throttle |
+| D6 | Flying from an air start at trim, with keyboard **and radio/gamepad raw axes**: channel mapping, center/endpoint calibration and inversion saved to `user://`, no deadzone (former F1 + F2, moved up because the owner has EdgeTX radios) | End-to-end test with injected joystick events; owner flies with the radio |
+| D7 | Pilot aids: **ground shadow** (the main height cue in RC), textured grass, HUD (airspeed, altitude, α), performance overlay (fps, physics µs/step), view zoom key | Captures show the shadow; perf overlay numbers recorded on the owner's machine |
+| D8 | Handling check against the predictions table: scripted roll, glide and slow-flight maneuvers through the real loop | Each predicted number reproduced within its band, recorded from traces |
+| D9 | Crude stall (lift cap + drag rise) and ground hit → crash → reset | High-α trace stays finite; recovery possible; crashing at any attitude resets cleanly |
+| PT1 | **Playtest kit v0.1:** Windows, Linux and macOS exports built by CI on a git tag (cached export templates, only these platforms), published as a GitHub release. macOS is unsigned: first launch via right-click → Open | The owner downloads, runs and flies it on each OS |
+| **Gate 2** | **"Is it flyable, readable and fun?"** The owner (and ideally 1–2 RC pilots) fly v0.1: readability at distance, feel versus a real Stik, radio setup friction, frame time | Notes recorded; M2 reordered if needed |
+| D10 | Sensitivity sweep (mass, CG, Cmα, CD0, inertia ±20 %) on the D8 maneuvers | A table ranking which unknowns matter; decides what to measure next |
 
-## Phase E — Ground handling
-
-| # | Step | Proof |
-| --- | --- | --- |
-| E1 | Tricycle landing-gear contact points (nose gear, per the Jensen plan) as spring-dampers. Stiffness is chosen from a natural-frequency rule (`ω·dt < 0.1`), not tuned by feel | Drop test: no energy gain; results agree across `h` and `h/2` |
-| E2 | Rolling friction (labeled as a guess) and nosewheel steering | Taxi a figure-eight |
-| E3 | Start on the runway: takeoff, landing, nose-over | Trace of a full circuit, from takeoff to landing |
-
-## Phase F — Real transmitter
+### M2 — Takeoff and landing
 
 | # | Step | Proof |
 | --- | --- | --- |
-| F1 | Raw joystick inspector (Godot SDL3): all axes and buttons, update rate, reconnect; raw axes, no action deadzone | Screenshot with the owner's EdgeTX radio and gamepad |
-| F2 | Mapping and calibration (center, endpoints, inversion), saved and exportable | Survives a restart |
-| F3 | Disconnect and focus-loss policy: visible pause; resuming needs an explicit action | Scripted unplug/replug log |
-| F4 | Compatibility table: device, firmware, OS, browser/engine, usable channels | One row per tested device |
+| E1 | Tricycle gear contact points as spring-dampers; stiffness from a natural-frequency rule (`ω·dt < 0.1`) | Drop test: no energy gain; agrees across `h` and `h/2` |
+| E2 | Rolling friction (labeled guess), nosewheel steering, brakes off | Taxi a figure-eight |
+| E3 | Start on the runway: takeoff, circuit, landing, nose-over | Trace of a full circuit |
+| E4 | **Golden flights:** record the inputs of a flight, replay them, and compare the traces within tolerance; this becomes the regression test for every later physics change | A replayed circuit matches its recording; a deliberate physics change is detected |
+| PT2 | Playtest v0.2 | Owner flies takeoffs and landings |
 
-## Phase G — Nitro
+### M3 — The radio, done properly
+
+| # | Step | Proof |
+| --- | --- | --- |
+| F3 | Disconnect and focus-loss policy: visible pause; resuming needs an explicit action and low throttle | Scripted unplug/replug log |
+| F4 | Compatibility table: device, firmware, OS, Godot version, usable channels | One row per tested device |
+| F5 | Setup screen: pick device, move sticks to assign channels, see raw → mapped live | Owner sets up a new radio without editing files |
+
+### M4 — Nitro
 
 | # | Step | Proof |
 | --- | --- | --- |
 | G1 | APC 12×6 propeller table ingestion with interpolation; out-of-range queries flagged | Tests against the file's own rows |
 | G2 | Engine rpm model: stopped/running, throttle → target rpm, lag, idle; shaft dynamics (`I·dω/dt = Q_engine − Q_prop`) | Throttle-step trace; all assumed numbers labeled |
-| G3 | Engine sound driven by rpm | A recording or user check |
+| G3 | Engine sound driven by simulated rpm (replaces the D5 placeholder) | A recording or owner check |
 | G4 | (Optional) fuel mass and CG shift | Trim drift trace over a tank |
+| PT4 | Playtest v0.4 | Owner judges throttle response and sound |
 
-## Phase H — Better air and polish
+### M5 — Air and polish
 
-Chosen by what Gate 2 and playtests ask for:
+Chosen by what the playtests ask for:
 - wind, then gusts
-- stall hysteresis
-- propwash on the tail
+- propwash on the tail (matters for Stik takeoffs and rudder authority)
+- stall hysteresis and a post-stall extension
 - ground effect
-- replay
-- camera zoom options
+- camera options
+- settings persistence
 - pilot observation sessions
-- native desktop exports (Windows, macOS, Linux); web export later
+- web export, if wanted
 
 ## Research tracks
 
@@ -131,10 +143,12 @@ Each track is time-boxed and attached to the step that needs it:
 
 | Track | Needed by | Time box |
 | --- | --- | --- |
-| Das Ugly Stik 60 data: published weight/CG/throws, plan dimensions (tail, gear, airfoil), component mass inventory | D1 | 1–2 sessions |
-| APC 12×6 predicted-load plot | G1 | 1 session |
-| Which transmitter/gamepad the owner has | F1 | ✅ Owner has EdgeTX/OpenTX and other RC radios plus a gamepad; keyboard during development |
-| Pilot observation sessions | Gate 2 | After D7 |
+| Das Ugly Stik 60 data: plan CG ✅ and nose ✅ measured; still open: control throws, tail areas/arm, airfoil, a weighed build | D8, D10 | 1–2 sessions |
+| APC 12×6 data at a realistic .61 rpm (static thrust for D5) | D5, G1 | 1 session |
+| Which transmitter/gamepad the owner has | D6 | ✅ Owner has EdgeTX/OpenTX and other RC radios plus a gamepad; keyboard during development |
+| Pilot observation sessions | Gate 2 | After PT1 |
+| Real-Stik handling references (roll rate, stall speed, glide) from pilots or videos, to check the predicted-handling table | D8 | 1 session |
+| Owner's flying computer for the playtest builds | PT1 | ✅ Windows, Linux and macOS |
 | License compatibility for bundled data (UIUC "GPL'd data") | Before bundling any airfoil data | 1 session |
 
 ## Review: weak points found and how the plan fixes them
@@ -159,3 +173,20 @@ Self-review of the first roadmap, 2026-10-05. Items marked *measured* come from 
 | 14 | This machine renders in software (no GPU) | Performance numbers here do not represent real machines | Performance judged on the owner's real hardware |
 | 15 | Research tracks had no owner or time box | Research can grow without end | Each track attached to a step, time-boxed |
 | 16 | No CI | "Works on my machine" drift; no shared evidence | A3 |
+
+## Plan review #2 (2026-10-05): from infrastructure to a game
+
+Measured state before this review: 25 commits in one day; Phases A–C and D1 done; full suite 21 s, green. **The airplane has never flown, and the owner has never received a build.** Changes and why:
+
+| # | Finding (evidence) | Change |
+| --- | --- | --- |
+| 1 | Nothing playable exists: no export presets, no release; all runs were headless on a VM with no GPU | **Milestones end in playtest builds** (PT1 = v0.1 after first flight), built by CI on a tag |
+| 2 | Steps were all foundations; the first thing a player feels (flight) was eight steps away | M1 compresses aero into **one full six-axis step (D3)**: the D1 coefficients already exist, and sign tests guard each axis. The small-step rule still holds |
+| 3 | Radio input sat in Phase F, after ground handling, although the owner owns EdgeTX radios and keyboard flying is not RC flying | Raw joystick input and calibration **moved into M1 (D6)** |
+| 4 | Height judgment needs a shadow; the pilot view showed a ~15 px airplane at 87 m | **Ground shadow, HUD, zoom and perf overlay in M1 (D7)** |
+| 5 | No numbers said what "flies like a Stik" means | **Predicted-handling table** from the D1 data; D8 checks the sim against it |
+| 6 | Generated captures and traces are committed: 65 PNG/CSV changes in 25 commits | ✅ `app/captures/` untracked (`.gitignore` + `git rm --cached`, files kept on disk); CI artifacts only; deliberate golden references only |
+| 7 | No regression test for "feel" once physics evolves | **Golden flights (E4):** record inputs, replay, compare traces |
+| 8 | Performance only measured on a software-rendering VM | Perf overlay (D7) and frame-time notes at every playtest |
+| 9 | Visual model nose ≈ 1.85× the plan (found by the D1 hand balance) | Reported to the model team; physics is unaffected (it uses the plan CG and LE) |
+| 10 | Godot `.uid` files will appear once anyone opens the editor | Commit them when they appear (Godot's recommendation); don't delete |

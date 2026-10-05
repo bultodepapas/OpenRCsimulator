@@ -4,19 +4,19 @@ Inspección: 2026-10-05. Archivos entregados por el propietario en la raíz. [In
 
 **Resultado:** el conjunto principal documenta **Ultra Stick 120 Light/Lite**, de mayor tamaño que el Jensen .61 que estamos construyendo. Aporta planos vectoriales, patrones y detalles de construcción útiles para una futura variante grande y para mejorar el procedimiento de medición. No resuelve por sí mismo las cotas pendientes del Jensen. El nombre `MoJo Parts 60.dwg` tampoco demuestra que sea un Ugly Stik .61.
 
-Los originales siguen donde el propietario los dejó; no se editaron ni convirtieron en el sitio. Se añadieron exclusiones específicas a `.gitignore`, coherentes con el tratamiento de los demás originales de terceros. Los recortes y renders de lectura están en `references/ugly-stik/new-files-previews/`; la documentación e inventarios sí quedan en el repositorio.
+Durante la inspección, los originales no se editaron ni convirtieron. **Migración (2026-10-05):** se organizaron en [Ultra Stick 120](../../references/ultra-stick-120/Ultrastick%20V3/) y [MoJo Parts 60](../../references/mojo-60/MoJo%20Parts%2060.dwg); la regla general `references/` los mantiene fuera de Git. Los recortes y renders de lectura están en `references/ugly-stik/new-files-previews/`; la documentación e inventarios sí quedan en el repositorio.
 
 ## Qué hay y qué usar primero
 
 | Grupo | Contenido comprobado | Uso |
 | --- | --- | --- |
-| [PDF de fuselaje](../../Ultrastick%20V3/PDF%20Plans/Ultr%20Stick%20Lite_fuse3.pdf) y [ala](../../Ultrastick%20V3/PDF%20Plans/Ultra%20Stick%20Lite%20Wing3.pdf) | Dos hojas de planos completos; cartucho RHB Designs, Ultra Stick 120 Light, motor O.S. 1.08 dibujado, tren de cola; ala y cola convencionales con opciones de mandos | Fuente de forma y montaje de esta variante; contiene un cuadrado rotulado de 1 in |
-| [DXF Plans](../../Ultrastick%20V3/DXF%20Plans/) | Planos vectoriales de fuselaje y ala, vistas JPG y README | Preferibles al raster para extraer curvas y comprobar unidades; [resultados CAD](ugly-stik-new-files-cad.md) |
-| [DXF Laser cutting files](../../Ultrastick%20V3/DXF%20Laser%20cutting%20files/) | Anidado de piezas, capas y compensación de corte documentada | Elegir geometría nominal para medir; no confundir piezas desplegadas con el avión ensamblado |
-| [PDF de patrones](../../Ultrastick%20V3/pdf%20parts%20patterns/) | Tres hojas y README que pide comprobar el cuadrado de registro de 1 in, sin offsets | Una vía concreta para comprobar escala al imprimir y cotejar piezas del DXF |
-| [Manual Horizon](../../Ultrastick%20V3/pics/Original%20Horizon%20manual.pdf) | 84 páginas, portada Hangar 9 Ultra Stick Lite; montaje, mandos, CG y programación quad-flap | Manual de otra configuración; conservar separado del redibujo RHB |
-| [Fotografías](../../Ultrastick%20V3/pics/) | Once fotos de construcción/modelos; tres previews CAD adicionales en las otras carpetas | Piezas, costillas, servos, varillas, montajes y decoración; no regla de escala |
-| [DWG](../../Ultrastick%20V3/DWG/) y [MoJo Parts 60.dwg](../../MoJo%20Parts%2060.dwg) | Cinco archivos binarios CAD en total | Inventariados y examinados con los límites documentados en el informe CAD |
+| [PDF de fuselaje](../../references/ultra-stick-120/Ultrastick%20V3/PDF%20Plans/Ultr%20Stick%20Lite_fuse3.pdf) y [ala](../../references/ultra-stick-120/Ultrastick%20V3/PDF%20Plans/Ultra%20Stick%20Lite%20Wing3.pdf) | Dos hojas de planos completos; cartucho RHB Designs, Ultra Stick 120 Light, motor O.S. 1.08 dibujado, tren de cola; ala y cola convencionales con opciones de mandos | Fuente de forma y montaje de esta variante; contiene un cuadrado rotulado de 1 in |
+| [DXF Plans](../../references/ultra-stick-120/Ultrastick%20V3/DXF%20Plans/) | Planos vectoriales de fuselaje y ala, vistas JPG y README | Preferibles al raster para extraer curvas y comprobar unidades; [resultados CAD](ugly-stik-new-files-cad.md) |
+| [DXF Laser cutting files](../../references/ultra-stick-120/Ultrastick%20V3/DXF%20Laser%20cutting%20files/) | Anidado de piezas, capas y compensación de corte documentada | Elegir geometría nominal para medir; no confundir piezas desplegadas con el avión ensamblado |
+| [PDF de patrones](../../references/ultra-stick-120/Ultrastick%20V3/pdf%20parts%20patterns/) | Tres hojas y README que pide comprobar el cuadrado de registro de 1 in, sin offsets | Una vía concreta para comprobar escala al imprimir y cotejar piezas del DXF |
+| [Manual Horizon](../../references/ultra-stick-120/Ultrastick%20V3/pics/Original%20Horizon%20manual.pdf) | 84 páginas, portada Hangar 9 Ultra Stick Lite; montaje, mandos, CG y programación quad-flap | Manual de otra configuración; conservar separado del redibujo RHB |
+| [Fotografías](../../references/ultra-stick-120/Ultrastick%20V3/pics/) | Once fotos de construcción/modelos; tres previews CAD adicionales en las otras carpetas | Piezas, costillas, servos, varillas, montajes y decoración; no regla de escala |
+| [DWG](../../references/ultra-stick-120/Ultrastick%20V3/DWG/) y [MoJo Parts 60.dwg](../../references/mojo-60/MoJo%20Parts%2060.dwg) | Cinco archivos binarios CAD en total | Inventariados y examinados con los límites documentados en el informe CAD |
 
 El inventario completo registra **5 DWG, 3 DXF, 14 JPG, 6 PDF y 3 TXT**, 14,083,239 bytes en total. La inspección del manual se centró en portada/especificaciones, índice, recomendaciones de equipo y página 43; se extrajo su texto completo para búsqueda. No se revisaron visualmente sus 84 páginas.
 

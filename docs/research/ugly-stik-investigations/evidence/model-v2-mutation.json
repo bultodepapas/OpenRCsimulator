@@ -1,0 +1,10 @@
+{
+  "mutation": "Restore F1=-0.44 only in temporary copy of generated geometry",
+  "exit_code": 1,
+  "failures": [
+    "FAIL F1 to leading edge agrees with 6.94 in scan reading got 0.325000 m",
+    "FAIL prop retains 117 mm installation offset ahead of F1 ",
+    "FAIL nose axle retains 40 mm offset behind F1 "
+  ],
+  "shared_tree_mutated": false
+}
