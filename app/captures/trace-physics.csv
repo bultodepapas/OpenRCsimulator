@@ -1,6 +1,6 @@
 # format: openrc-trace v1
 # scenario: throw_across_view (gravity only, C6)
-# created_utc: 2026-10-05T17:29:05
+# created_utc: 2026-10-05T17:35:39
 # engine: Godot 4.7.2-stable (official)
 # dt_s: 0.00416666666667
 # mass_kg: 2.9

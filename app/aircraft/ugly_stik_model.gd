@@ -239,6 +239,8 @@ static func _equipment(root: Node3D) -> Node3D:
 	_box("engine_mount", Vector3(0.062, 0.016, 0.09), Vector3(0, e.shaft_y - 0.025, engine_z + 0.006), UNDER, root)
 	var crank := _cylinder("engine_crankcase", 0.022, 0.074, Vector3(0, e.shaft_y, engine_z), METAL, root)
 	crank.rotation.x = PI / 2
+	var shaft := _cylinder("engine_shaft", 0.006, 0.035, Vector3(0, e.shaft_y, e.prop_z + 0.015), METAL, root)
+	shaft.rotation.x = PI / 2
 	_cylinder("engine_cylinder", 0.02, 0.045, Vector3(0, e.shaft_y + 0.03, engine_z + 0.018), UNDER, root)
 	for i in 6:
 		_cylinder("cooling_fin_%d" % i, 0.024, 0.0022, Vector3(0, e.shaft_y + 0.018 + i * 0.006, engine_z + 0.018), METAL, root)

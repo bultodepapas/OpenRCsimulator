@@ -27,6 +27,10 @@ for t in "$HERE"/tests/test_*.gd; do
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done
 
+echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model team)"
+run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
+
 echo "== fixed step: same final state at 30, 60 and 144 fps rendering"
 HASHES=""
 for fps in 30 60 144; do

@@ -39,6 +39,8 @@ jobs:
         with:
           path: .tools
           key: godot-${{ hashFiles('app/get-godot.sh') }}
+      - name: Visual geometry runtime copy matches geometry.json
+        run: python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@v4

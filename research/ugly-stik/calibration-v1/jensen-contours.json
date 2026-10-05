@@ -1,0 +1,415 @@
+{
+  "schema_version": 1,
+  "status": "provisional_contours__not_independently_calibrated",
+  "source": {
+    "path": "references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf",
+    "sha256": "d5a79f156901fd6ed2c7948a186d0c17e66b99b7d1e84eb8732e8e533fd056bc",
+    "page_1_render": "references/ugly-stik/calibration-v1/renders/jensen-1.png",
+    "page_2_render": "references/ugly-stik/calibration-v1/renders/jensen-2.png",
+    "render_command": "pdftoppm -f 1 -l 2 -scale-to 2400 -png <source.pdf> <prefix>",
+    "page_1_pixels": [
+      2400,
+      1790
+    ],
+    "page_2_pixels": [
+      2400,
+      1806
+    ],
+    "inspection": "High-resolution page render and magnified crops; points below are manual raster picks rounded to integer pixels, not vector extraction."
+  },
+  "pixel_axes": {
+    "origin": "top-left of each rendered page",
+    "x_px": "rightward; fuselage nose to tail on page 1",
+    "y_px": "downward",
+    "page_1_views": {
+      "plan_fuselage_and_tail": "x approximately 45..2070; centerline is between upper_y_px and lower_y_px",
+      "side_fuselage": "x approximately 45..2070; fin/rudder detail is partially overlapped by the tail drawing/callout"
+    }
+  },
+  "calibration": {
+    "accepted_global_scale": null,
+    "conditional_scale_mm_per_px": 0.533206,
+    "source_of_conditional_scale": "page 1 nosewheel label 2-3/4 in; 131 px measured across both x and y; endpoint allowance +/-2 px each",
+    "scale_interval_from_endpoint_allowance_mm_per_px": [
+      0.5174,
+      0.55
+    ],
+    "check_against_pdf_page_width_mm_per_px": 0.511069,
+    "wheel_vs_pdf_width_difference_percent": 4.3315,
+    "held_out_check": {
+      "status": "not_passed",
+      "note": "The main wheels are labeled 3 in or 3-1/4 in, not one exact diameter. The page 2 60 in half-span endpoints are not sufficiently unambiguous in this scan to override the page 1 wheel diagnostic. Do not call either value a global calibration."
+    },
+    "contour_trace_uncertainty_px": 5,
+    "uncertainty_kind": "manual line-center selection allowance; engineering scan line, overlaps, and image antialiasing; not statistical"
+  },
+  "provisional_mapping_for_current_app_mesh": {
+    "purpose": "Convenience mapping only, to let the first visual mesh use the traced proportions while preserving raw pixels.",
+    "longitudinal_pixel_datum": {
+      "nose_firewall_x_px": 48,
+      "tail_fuselage_end_x_px": 2050,
+      "normalized_t": "(x_px - 48) / (2050 - 48), clamped 0..1"
+    },
+    "local_coordinates_m": {
+      "z_from_existing_geometry": "-0.44 + 1.12 * normalized_t",
+      "x_from_plan": "symmetric about fuselage centerline; half-width = (lower_y_px - upper_y_px) * 0.5 * 0.000533206; choose sign for each side",
+      "y_from_side": "(1373 - side_y_px) * 0.000533206; side lower baseline maps to y=0"
+    },
+    "comparison": "The wheel scale gives 1.068 m from x=48 to x=2050; the current app envelope is 1.12 m, a +4.9% length fit. Keep this as the app's provisional longitudinal normalization, not as a Jensen dimension."
+  },
+  "fuselage_plan_stations_px": [
+    {
+      "name": "nose_firewall",
+      "x_px": 48,
+      "upper_y_px": 687,
+      "lower_y_px": 834
+    },
+    {
+      "x_px": 100,
+      "upper_y_px": 685,
+      "lower_y_px": 838
+    },
+    {
+      "x_px": 200,
+      "upper_y_px": 681,
+      "lower_y_px": 850
+    },
+    {
+      "x_px": 300,
+      "upper_y_px": 678,
+      "lower_y_px": 853
+    },
+    {
+      "x_px": 400,
+      "upper_y_px": 675,
+      "lower_y_px": 857
+    },
+    {
+      "x_px": 500,
+      "upper_y_px": 675,
+      "lower_y_px": 860
+    },
+    {
+      "x_px": 600,
+      "upper_y_px": 675,
+      "lower_y_px": 862
+    },
+    {
+      "x_px": 700,
+      "upper_y_px": 676,
+      "lower_y_px": 866
+    },
+    {
+      "x_px": 800,
+      "upper_y_px": 676,
+      "lower_y_px": 870
+    },
+    {
+      "x_px": 900,
+      "upper_y_px": 677,
+      "lower_y_px": 874
+    },
+    {
+      "x_px": 1000,
+      "upper_y_px": 678,
+      "lower_y_px": 877
+    },
+    {
+      "x_px": 1100,
+      "upper_y_px": 679,
+      "lower_y_px": 876
+    },
+    {
+      "x_px": 1200,
+      "upper_y_px": 682,
+      "lower_y_px": 873
+    },
+    {
+      "x_px": 1300,
+      "upper_y_px": 687,
+      "lower_y_px": 870
+    },
+    {
+      "x_px": 1400,
+      "upper_y_px": 693,
+      "lower_y_px": 864
+    },
+    {
+      "x_px": 1500,
+      "upper_y_px": 700,
+      "lower_y_px": 858
+    },
+    {
+      "x_px": 1600,
+      "upper_y_px": 709,
+      "lower_y_px": 850
+    },
+    {
+      "x_px": 1700,
+      "upper_y_px": 717,
+      "lower_y_px": 843
+    },
+    {
+      "x_px": 1800,
+      "upper_y_px": 726,
+      "lower_y_px": 835
+    },
+    {
+      "x_px": 1900,
+      "upper_y_px": 740,
+      "lower_y_px": 827
+    },
+    {
+      "x_px": 1950,
+      "upper_y_px": 746,
+      "lower_y_px": 819
+    },
+    {
+      "x_px": 2000,
+      "upper_y_px": 752,
+      "lower_y_px": 811
+    },
+    {
+      "name": "tail_fuselage_end",
+      "x_px": 2050,
+      "upper_y_px": 760,
+      "lower_y_px": 800
+    }
+  ],
+  "fuselage_side_stations_px": [
+    {
+      "name": "nose_firewall",
+      "x_px": 48,
+      "upper_y_px": 1186,
+      "lower_y_px": 1373,
+      "upper_confidence": "medium"
+    },
+    {
+      "x_px": 200,
+      "upper_y_px": 1182,
+      "lower_y_px": 1373,
+      "upper_confidence": "medium"
+    },
+    {
+      "x_px": 400,
+      "upper_y_px": 1185,
+      "lower_y_px": 1373,
+      "upper_confidence": "medium"
+    },
+    {
+      "x_px": 600,
+      "upper_y_px": 1200,
+      "lower_y_px": 1373,
+      "upper_confidence": "low__wing_overlap"
+    },
+    {
+      "x_px": 800,
+      "upper_y_px": 1208,
+      "lower_y_px": 1372,
+      "upper_confidence": "low__wing_overlap"
+    },
+    {
+      "x_px": 1000,
+      "upper_y_px": 1213,
+      "lower_y_px": 1372,
+      "upper_confidence": "low__wing_overlap"
+    },
+    {
+      "x_px": 1200,
+      "upper_y_px": 1225,
+      "lower_y_px": 1371,
+      "upper_confidence": "low__wing_overlap"
+    },
+    {
+      "x_px": 1400,
+      "upper_y_px": 1240,
+      "lower_y_px": 1370,
+      "upper_confidence": "low__wing_overlap"
+    },
+    {
+      "x_px": 1600,
+      "upper_y_px": 1260,
+      "lower_y_px": 1368,
+      "upper_confidence": "medium"
+    },
+    {
+      "x_px": 1800,
+      "upper_y_px": 1282,
+      "lower_y_px": 1366,
+      "upper_confidence": "medium"
+    },
+    {
+      "x_px": 1950,
+      "upper_y_px": 1308,
+      "lower_y_px": 1364,
+      "upper_confidence": "medium"
+    },
+    {
+      "name": "tail_fuselage_end",
+      "x_px": 2050,
+      "upper_y_px": 1325,
+      "lower_y_px": 1362,
+      "upper_confidence": "low__tail_hardware_overlap"
+    }
+  ],
+  "tail_shapes_px": {
+    "horizontal_stabilizer_plan": {
+      "status": "unresolved_not_usable_for_mesh",
+      "interpretation": "The apparent plan-view region overlaps fuselage structure, linkages, and the separate detail drawing. The earlier guessed points were not an exterior contour and have been removed. No usable horizontal-stabilizer outline is supplied."
+    },
+    "vertical_fin_rudder_profile_detail": {
+      "status": "detail_observation_only__not_usable_for_mesh",
+      "hinge_and_horn_region_approx_px": {
+        "hinge_x_px": 2135,
+        "y_px_range": [
+          1070,
+          1360
+        ],
+        "elevator_horn_xy_px": [
+          [
+            2155,
+            1320
+          ],
+          [
+            2185,
+            1370
+          ]
+        ]
+      },
+      "note": "The enlargement labels 1/4 sheet fin, 1/4 sheet rudder, plywood insert and nylon elevator horn. The visible arc belongs to a detail graphic with uncertain scale and datum; retain it as an observation only, not as the assembled fin/rudder boundary.",
+      "usable_for_mesh": false,
+      "observed_callout_arc_xy_px": [
+        [
+          1810,
+          1195
+        ],
+        [
+          1840,
+          1135
+        ],
+        [
+          1900,
+          1070
+        ],
+        [
+          1980,
+          1015
+        ],
+        [
+          2060,
+          975
+        ],
+        [
+          2130,
+          955
+        ],
+        [
+          2190,
+          965
+        ],
+        [
+          2250,
+          990
+        ],
+        [
+          2310,
+          1030
+        ],
+        [
+          2350,
+          1090
+        ],
+        [
+          2370,
+          1150
+        ],
+        [
+          2360,
+          1210
+        ],
+        [
+          2370,
+          1270
+        ],
+        [
+          2330,
+          1320
+        ],
+        [
+          2260,
+          1350
+        ],
+        [
+          2190,
+          1365
+        ]
+      ]
+    },
+    "sub_rudder_side_profile": {
+      "status": "partial_observation_only__not_a_valid_tail_outline",
+      "outline_xy_px": [
+        [
+          1510,
+          1374
+        ],
+        [
+          1830,
+          1372
+        ],
+        [
+          2100,
+          1408
+        ],
+        [
+          2185,
+          1425
+        ],
+        [
+          2160,
+          1380
+        ],
+        [
+          2110,
+          1365
+        ],
+        [
+          1950,
+          1362
+        ],
+        [
+          1510,
+          1374
+        ]
+      ],
+      "note": "The raster shows part of the 3/16 in sheet sub-rudder near the tail skid, but overlap and uncertain boundary picks prevent using this as a valid outline. No tail surface contour is supplied for mesh construction.",
+      "usable_for_mesh": false
+    }
+  },
+  "dimension_checks_attempted": [
+    {
+      "view": "page1 wheel scale diagnostic",
+      "reference": "2-3/4 in nosewheel",
+      "pixel_diameter_xy": [
+        131,
+        131
+      ],
+      "result": "conditional scale only"
+    },
+    {
+      "view": "page1 held-out local check",
+      "reference": "main wheels labeled 3 in OR 3-1/4 in",
+      "result": "label is a range/choice; drawing can flag order of magnitude but not provide one exact scale"
+    },
+    {
+      "view": "page2 long check",
+      "reference": "60 in wingspan implies 30 in semispan",
+      "result": "centerline/tip assignment on raster not independently resolved to pixel uncertainty; not accepted as scale"
+    },
+    {
+      "view": "held-out area sanity check",
+      "reference": "720 in^2 divided by 60 in gives 12 in average chord",
+      "result": "derived from span and area, not an independent third dimension; not used to fit scale"
+    }
+  ],
+  "tail_outline_status": "unresolved__no_valid_tail_outline_for_mesh"
+}

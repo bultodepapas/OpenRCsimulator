@@ -4,11 +4,13 @@ extends SceneTree
 
 const Commands := preload("res://input/commands.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
 const EXPECTED_SPAN_M := 1.524 # Jensen oz1253 drawing: 60 in, converted to metres.
 const SPAN_TOLERANCE_M := 0.006 # allows scan/edge tessellation and the 1.5 in tip rise.
 const NUMERIC_EPSILON := 0.00001
+const WING_ROOT_SAMPLE_X_M := 0.003 # avoids the centerline seam after each half-wing's dihedral rotation.
 
 var _checks := 0
 var _failures := 0
@@ -67,6 +69,40 @@ func _find_named_meshes(node: Node, target_name: String, output: Array[MeshInsta
 		output.append(node as MeshInstance3D)
 	for child in node.get_children():
 		_find_named_meshes(child, target_name, output)
+
+
+func _mesh_y_samples_at_xz(mesh_node: MeshInstance3D, x_value: float, z_value: float) -> Array[float]:
+	var samples: Array[float] = []
+	if mesh_node.mesh == null:
+		return samples
+	var faces := mesh_node.mesh.get_faces()
+	for i in range(0, faces.size(), 3):
+		var a := _root.to_local(mesh_node.to_global(faces[i]))
+		var b := _root.to_local(mesh_node.to_global(faces[i + 1]))
+		var c := _root.to_local(mesh_node.to_global(faces[i + 2]))
+		var denominator := (b.z - c.z) * (a.x - c.x) + (c.x - b.x) * (a.z - c.z)
+		if absf(denominator) <= 1e-12:
+			continue
+		var weight_a := ((b.z - c.z) * (x_value - c.x) + (c.x - b.x) * (z_value - c.z)) / denominator
+		var weight_b := ((c.z - a.z) * (x_value - c.x) + (a.x - c.x) * (z_value - c.z)) / denominator
+		var weight_c := 1.0 - weight_a - weight_b
+		if weight_a >= -1e-7 and weight_b >= -1e-7 and weight_c >= -1e-7:
+			samples.append(weight_a * a.y + weight_b * b.y + weight_c * c.y)
+	return samples
+
+
+func _minimum_y(samples: Array[float]) -> float:
+	var result := INF
+	for y in samples:
+		result = minf(result, y)
+	return result
+
+
+func _maximum_y(samples: Array[float]) -> float:
+	var result := -INF
+	for y in samples:
+		result = maxf(result, y)
+	return result
 
 
 func _surface_probe_local(surface_name: String) -> Vector3:
@@ -221,6 +257,41 @@ func _check_dihedral_frames() -> void:
 		_check("%s dynamic hinge rests at local neutral" % surface_name, hinge.rotation.length() <= NUMERIC_EPSILON, str(hinge.rotation))
 
 
+func _check_wing_fuselage_seat() -> void:
+	var fuselage_nodes: Array[MeshInstance3D] = []
+	var right_root_nodes: Array[MeshInstance3D] = []
+	var left_root_nodes: Array[MeshInstance3D] = []
+	_find_named_meshes(_root, "fuselage", fuselage_nodes)
+	_find_named_meshes(_root, "wing_right_0", right_root_nodes)
+	_find_named_meshes(_root, "wing_left_0", left_root_nodes)
+	_check("fuselage has one mesh for seat check", fuselage_nodes.size() == 1)
+	_check("both root wing panels exist for seat check", right_root_nodes.size() == 1 and left_root_nodes.size() == 1)
+	if fuselage_nodes.size() != 1 or right_root_nodes.size() != 1 or left_root_nodes.size() != 1:
+		return
+	var wing: Dictionary = Geometry.DATA.wing
+	var contact_z: float = wing.leading_z + wing.chord * 0.06
+	for side in [-1.0, 1.0]:
+		var sample_x: float = side * WING_ROOT_SAMPLE_X_M
+		var wing_node: MeshInstance3D = right_root_nodes[0] if side > 0.0 else left_root_nodes[0]
+		var wing_samples := _mesh_y_samples_at_xz(wing_node, sample_x, contact_z)
+		var fuselage_samples := _mesh_y_samples_at_xz(fuselage_nodes[0], sample_x, contact_z)
+		_check(
+			"wing/fuselage samples exist at x=%.3f z=%.4f" % [sample_x, contact_z],
+			not wing_samples.is_empty() and not fuselage_samples.is_empty(),
+			"wing=%d fuselage=%d" % [wing_samples.size(), fuselage_samples.size()]
+		)
+		if wing_samples.is_empty() or fuselage_samples.is_empty():
+			continue
+		var wing_bottom := _minimum_y(wing_samples)
+		var fuselage_top := _maximum_y(fuselage_samples)
+		var gap := wing_bottom - fuselage_top
+		_check(
+			"%s wing root seats into fuselage near x=0" % ("right" if side > 0.0 else "left"),
+			gap <= 0.001,
+			"at x=%.3f z=%.4f m: wing bottom=%.5f m fuselage top=%.5f m gap=%.5f m" % [sample_x, contact_z, wing_bottom, fuselage_top, gap]
+		)
+
+
 func _check_control_direction(axis_control: String, surface_expected_signs: Dictionary, pose_index: int) -> void:
 	var root_position := Vector3(2.3, -0.7, 4.1) if pose_index == 1 else Vector3.ZERO
 	var root_rotation := Vector3(0.31, -0.47, 0.23) if pose_index == 1 else Vector3.ZERO
@@ -307,6 +378,7 @@ func _run_model_checks() -> void:
 		quit(1)
 		return
 	_check_dihedral_frames()
+	_check_wing_fuselage_seat()
 	_check_root_poses_and_propeller()
 	_check_control_direction("roll", { "aileron_left": "down", "aileron_right": "up" }, 1)
 	_check_control_direction("pitch", { "elevator": "up" }, 1)

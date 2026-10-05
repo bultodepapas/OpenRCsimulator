@@ -4,6 +4,13 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **Review a parallel team's work at the seams, not the pixels.** The model team's work was good, but four integration risks only showed up at the boundaries:
+  - their 439-check verifier and their JSON→GDScript sync check existed but **nothing ran them**;
+  - my control test still read the dead blockout tables;
+  - the wing area differed between documents (720 vs 723 in²);
+  - the visual origin is not the CG, which matters for D1.
+  *Now:* every team-owned check is wired into `test.sh` or CI, and cross-document numbers are compared during reviews. (2026-10-05)
+
 - **Check every sample against its own timestamp, not only the final value.** A deliberate "emit the trace row before incrementing the tick" bug survived the first trace tests: the final state was right, but every row was labeled one tick early (0.06 m error against its time), and duplicate ticks were not flagged. *Now:* traces must be strictly continuous (`is_continuous()`), and physics checks run on every row. (2026-10-05)
 - **One shared parse check means one person's draft can break everyone's run.** A work-in-progress `app/aircraft/verify_model.gd` with type-inference parse errors (`:=` on untyped Dictionary values) made `app/test.sh` fail for all. The guard was right; the fix is process: drafts are checked before they land in `app/`. (2026-10-05)
 

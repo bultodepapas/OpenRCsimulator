@@ -1,10 +1,18 @@
 # Ugly Stik: plan de modelado en paralelo
 
-Revisión 2 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik-investigations/README.md). **Todavía no hay un avión nuevo:** hay fuentes recuperadas, datos contrastados y experimentos que permiten construirlo con menos incertidumbre.
+Revisión 3 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik-investigations/README.md). **Primera malla .61 implementada y conectada al constructor Godot.** [Informe de ejecución y pruebas](research/ugly-stik-model-v1.md). La calibración absoluta del escaneo sigue pendiente; la geometría estimada se identifica como tal.
 
-> **Actualización 2026-10-05 (desarrollo principal):** Gate 1 eligió **Godot**. El constructor del avión vive ahora en [`app/render/airplane.gd`](../app/render/airplane.gd), con las mismas interfaces (`airplane`, `propeller`, `*_hinge`). Las pruebas de `app/test.sh` comprueban signos de superficies sobre los nodos reales. Por decisión del propietario, los planos y CAD se movieron a `references/` (ignorado por git, solo local); las rutas de este documento ya apuntan allí. `assets/aircraft/ugly-stik-60/` sigue libre.
+> **Actualización 2026-10-05 (desarrollo principal):** Gate 1 eligió **Godot**. El constructor del avión vive ahora en [`app/render/airplane.gd`](../app/render/airplane.gd), con las mismas interfaces (`airplane`, `propeller`, `*_hinge`). Las pruebas de `app/test.sh` comprueban signos de superficies sobre los nodos reales. Por decisión del propietario, los planos y CAD se movieron a `references/` (ignorado por git, solo local); las rutas de este documento ya apuntan allí. `assets/aircraft/ugly-stik-60/` contiene ahora el modelo v1.
 
-La siguiente entrega será un **Jensen Ugly Stik .61 sencillo y articulado para Godot**, preparado fuera de `app/`. El propietario fijó primero el motor nitro de clase .61; **mini y gigante quedan para después**. La marca y el modelo concreto del motor siguen abiertos. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
+> **Revisión de integración 2026-10-05 (desarrollo principal / física):**
+> - El modelo v1 funciona en el simulador sin cambios de interfaz. Mis 106 comprobaciones (97 unitarias + 9 e2e: controles, física, traza) y la prueba de independencia de FPS pasan con él. `verify_model.gd` pasó 439/0 sobre la versión confirmada.
+> - `app/test.sh` ejecuta ahora `aircraft/verify_model.gd` (como pedía la nota del ensayo), y CI ejecuta `compile_geometry.py --check` para que `geometry.json` y `ugly_stik_geometry.gd` no diverjan. Con su borrador actual (nueva comprobación de unión ala/fuselaje en `x=0`), `test.sh` falla 446/1. Es esperado; no confirmar hasta que pase.
+> - Hallazgo visual: en el perfil ortográfico el ala parece separada del fuselaje por una franja fina. La nueva comprobación de la sección en `x=0` parece atacar justo eso.
+> - `spec.gd`: las tablas BOXES/WINGS/WHEELS/SURFACES del bloque inicial ya no se usan. Mi `test_controls.gd` dejó de depender de `SURFACES`, así que se pueden borrar.
+> - Área alar: `geometry.json` usa 720 in²; `DECISIONS.md` registra 723 in², leídos en el cartucho del plano Jensen (imagen JEN-01). La diferencia es 0,4 %. Para física (D1) registraré ambos con su fuente.
+> - Para D1: el origen visual del modelo está "cerca del cuarto de cuerda; NO es un CG medido". La física usa el CG como origen del cuerpo, así que D1 definirá la posición del CG en el marco del modelo y el render desplazará la malla. Su geometría sigue siendo la única fuente de cotas: la física la leerá de `ugly_stik_geometry.gd` en lugar de copiarla.
+
+La primera entrega es un **Jensen Ugly Stik .61 sencillo y articulado para Godot**, con fuente editable en `assets/aircraft/ugly-stik-60/` y constructor nativo en `app/aircraft/`. El propietario fijó primero el motor nitro de clase .61; **mini y gigante quedan para después**. La marca y el modelo concreto del motor siguen abiertos. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
 
 ## Decisiones que cambian el plan inicial
 
@@ -27,12 +35,12 @@ Fuentes, límites y pruebas de cada conclusión: [índice de investigaciones](re
 
 | Frente | Archivos y responsabilidad |
 | --- | --- |
-| Desarrollador principal | `app/`, controles, física, capturas y documentos principales del proyecto |
-| Investigación/modelado | Este plan, `docs/research/ugly-stik-*`, experimentos en `research/ugly-stik/`, descargas en `references/ugly-stik/` |
-| Modelo siguiente | Carpeta aislada propuesta `assets/aircraft/ugly-stik-60/`, comprobando que siga libre al comenzar |
+| Desarrollador principal | Física/simulación, controles, escena principal, capturas oficiales y documentos principales del proyecto |
+| Investigación/modelado | Este plan, `docs/research/ugly-stik-*`, `app/aircraft/`, adaptador `app/render/airplane.gd`, fuente en `assets/aircraft/`, experimentos en `research/ugly-stik/` y referencias locales |
+| Modelo v1 | `assets/aircraft/ugly-stik-60/geometry.json` y compilador reproducible de la copia Godot |
 | Integración | Cambio pequeño sobre una revisión estable del constructor Godot; comparar las pruebas existentes antes y después |
 
-El otro desarrollador trasladó las referencias antiguas a `references/ugly-stick/` (con `ck`); las descargas nuevas están en `references/ugly-stik/`. Ambas permanecen locales por la exclusión de `references/` del repo. Los experimentos no escriben en `app/`, sus dependencias, capturas oficiales o índice Git. Las herramientas auxiliares se probaron en entornos temporales aislados.
+El otro desarrollador trasladó las referencias antiguas a `references/ugly-stick/` (con `ck`); las descargas nuevas están en `references/ugly-stik/`. Ambas permanecen locales por la exclusión de `references/` del repo. La integración v1 modifica únicamente el frente de modelado asignado en AGENTS: `app/aircraft/`, `app/render/airplane.gd` y aclaraciones de las tablas visuales antiguas en `app/spec.gd`. Las capturas de inspección se guardan en `research/ugly-stik/model-v1/`; no se editan la física ni las capturas oficiales. Las herramientas auxiliares se probaron en entornos temporales aislados.
 
 ## Secuencia de entregas
 
@@ -50,9 +58,9 @@ Son subtareas de **D1**, conservación de **B5**, integración tras **B7** y leg
 | 8 · D7/Gate 2 | Decoración y lectura desde tierra sobre la misma geometría | Serie a 20/50/100 m, misma cámara, ambas caras y virajes; identificar orientación con el usuario |
 | 9 · D1, después de B7 | Conectar el recurso terminado al constructor Godot | Pruebas existentes de superficies/ejes y nuevas capturas neutra/deflectada; comprobar importación y escala |
 
-**Siguiente acción concreta:** calibración y contornos del fuselaje en la carpeta aislada. En paralelo se puede ampliar el pequeño ensayo de mandos. Si una cota secundaria no se resuelve, se estima con un rango explícito; masa, inercia y polares desconocidas no bloquean la primera silueta. La incertidumbre de longitud sí impide presentarla como reproducción dimensional exacta.
+**Estado v1:** fuente de geometría editable, fuselaje afinado, sección alar con diedro y marcos de mando separados, cola redondeada, equipo .61 simplificado y tren triciclo. Las pruebas de articulación y las capturas son parte de esta entrega. **Próxima comprobación dimensional:** resolver la escala absoluta con referencias independientes; las trazas actuales no cierran ese control. Si una cota secundaria no se resuelve, se estima con un rango explícito; masa, inercia y polares desconocidas no bloquean la primera silueta. La incertidumbre de longitud sí impide presentarla como reproducción dimensional exacta.
 
-Antes de integrar, releer [app/spec.gd](../app/spec.gd) y [el constructor](../app/render/airplane.gd). Esta entrega no cambia sus valores. La prueba de cada paso debe acompañar su futuro commit. D1 sigue pendiente como entrega completa.
+La integración conserva las interfaces de [el constructor](../app/render/airplane.gd) y los mandos existentes. [app/spec.gd](../app/spec.gd) mantiene las tablas históricas para comparaciones; la geometría actual viene del nuevo registro visual. La prueba de cada paso debe acompañar su futuro commit. D1 sigue pendiente como entrega física completa: esta malla no define masa, inercia ni derivadas aerodinámicas.
 
 ## Modelo y contrato de entrega
 
@@ -60,20 +68,20 @@ La fuente editable será pequeña y paramétrica: secciones del fuselaje, contor
 
 La primera configuración es **Jensen 60 in / nitro .61**: `60` en la carpeta propuesta describe envergadura, no cilindrada. Una vez validada, mini y gigante podrán reutilizar el generador geométrico, la jerarquía de mandos y la escena de inspección. Cada variante necesitará sus propios datos de equipo, masa, inercia y aerodinámica; cambiar la escala de la malla no valida su vuelo. No se implementan esas variantes ni una arquitectura de familias en esta entrega.
 
-La salida para Godot debe conservar raíz, hélice y mapa de bisagras de la interfaz existente. GLB es una ruta comprobada para un recurso mínimo; si se adopta para el avión, acompañarlo de su fuente editable y del procedimiento de exportación. La prueba no obliga a introducir Blender ni una nueva dependencia en la aplicación.
+La salida para Godot conserva raíz, hélice y mapa de bisagras de la interfaz existente. **Ruta elegida para v1:** malla procedural nativa (`SurfaceTool` y primitivas), con constantes generadas desde JSON; sin importación GLB en la aplicación. El experimento GLB anterior queda como opción de intercambio, no como dependencia adicional. GLB es una ruta comprobada para un recurso mínimo; si se adopta para el avión, acompañarlo de su fuente editable y del procedimiento de exportación. La prueba no obliga a introducir Blender ni una nueva dependencia en la aplicación.
 
 - Nombres: `airplane`, `propeller`, `aileron_left`, `aileron_right`, `elevator`, `rudder` y sus `*_hinge`, únicos dentro del recurso.
 - Frontera del simulador: metros, morro `−Z`, derecha `+X`, arriba `+Y`. Datum geométrico explícito; CG físico almacenado aparte.
 - Jerarquía: pieza bajo su pivote, posición neutra conservada y rotación aplicada alrededor de la bisagra. Con diedro, el eje del alerón debe acompañar la semiala.
 - Signos observables: roll positivo sube el borde de salida derecho y baja el izquierdo; pitch positivo sube elevador; yaw positivo lleva el timón a la derecha del avión.
-- Exportación: declarar la orientación del recurso y ensayar la conversión una sola vez. El frente canónico glTF y el del simulador difieren; no añadir giros implícitos en varias capas. [Contrato y experimento](research/ugly-stik-investigations/09-export.md).
+- Exportación futura: declarar la orientación del recurso y ensayar la conversión una sola vez. El modelo nativo v1 ya usa los ejes del simulador y no aplica ese giro. El frente canónico glTF y el del simulador difieren; no añadir giros implícitos en varias capas. [Contrato y experimento](research/ugly-stik-investigations/09-export.md).
 - Geometría visual, parámetros físicos y configuración de equipo siguen separados. No derivar masa/inercia de una malla maciza ni coeficientes aerodinámicos de su perfil visual.
 
 ## Validación visual y rendimiento
 
 Preparar una escena de inspección aislada, con fondo uniforme, vistas ortográficas superior/lateral/frontal y una vista tres cuartos. Guardar dimensiones, encuadre y pose. Eso distingue defectos de forma de errores de cámara.
 
-Para lectura de vuelo, las distancias 20/50/100 m son muestras de prueba elegidas, no límites operacionales. Fijar FOV vertical de 50°, resolución y `KEEP_HEIGHT` en la escena Godot. El estudio de proyección ya cuantifica la pérdida de detalle; falta el ensayo de percepción y el render del nuevo avión. El intradós oscuro sigue siendo una alternativa visual a comparar.
+Para lectura de vuelo, las distancias 20/50/100 m son muestras de prueba elegidas, no límites operacionales. Fijar FOV vertical de 50°, resolución y `KEEP_HEIGHT` en la escena Godot. El estudio de proyección ya cuantifica la pérdida de detalle; las capturas del nuevo avión ya permiten inspección a esas distancias; falta el ensayo de percepción con pilotos. El intradós oscuro sigue siendo una alternativa visual a comparar.
 
 Registrar triángulos, materiales, tamaño de archivo y tiempo de render de la primera malla. No fijar un presupuesto arbitrario ni optimizar el CAD completo de antemano. El LOD automático de Godot se evalúa si la medición lo justifica. El rendimiento en software de esta VM no representa la GPU del usuario.
 
@@ -83,6 +91,6 @@ Registrar triángulos, materiales, tamaño de archivo y tiempo de render de la p
 - Coordenadas de perfil, incidencia y ángulo de diedro instalado; la elevación dibujada no es un ángulo publicado.
 - Marca/modelo e instalación final del motor .61, escape/hélice y equipo; masa, CG numérico, inercia y recorridos reales.
 - Reutilización de recursos REFLEX y equivalencia dimensional del Great Big Stik con Jensen.
-- Aspecto del avión completo importado, rendimiento y lectura con pilotos.
+- Revisión perceptual con pilotos y rendimiento en hardware real; las capturas locales no sustituyen esas pruebas.
 
-Los [estudios](research/ugly-stik-investigations/README.md) dejan la evidencia, las lecciones y la siguiente prueba para cada pendiente. No se ejecutaron las pruebas de la aplicación ni se modificó su modelo en esta revisión.
+Los [estudios](research/ugly-stik-investigations/README.md) dejan la evidencia y los pendientes. El [informe v1](research/ugly-stik-model-v1.md) registra la implementación, los ensayos ejecutados y las lecciones prácticas de esta revisión.

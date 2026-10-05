@@ -5,3 +5,7 @@ dist/
 .tools/
 # Third-party plans, scans and CAD files: reference only, licenses unknown. Never commit.
 references/
+
+# Owner-supplied CAD/manual originals (local reference material).
+/MoJo Parts 60.dwg
+/Ultrastick V3/

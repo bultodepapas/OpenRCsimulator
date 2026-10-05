@@ -1,4 +1,5 @@
-# Every number of the simulator lives here, once. Origin: prototypes/stage0/SPEC.md.
+# Scene and control defaults from prototypes/stage0/SPEC.md.
+# Current visual geometry: aircraft/ugly_stik_geometry.gd (generated from assets/).
 extends RefCounted
 
 const G := 9.80665
@@ -17,7 +18,8 @@ const GRASS := Color("#4a7a32")
 const RUNWAY_COLOR := Color("#6f9a4a")
 const SKY := Color("#9cc9ef")
 
-# Das Ugly Stik 60. Model axes: +x right, +y up, -z forward. Origin near the CG.
+# Historical Stage 0 box tables, retained for baseline comparisons/control probes.
+# The current builder does not render these tables. Model axes: +x right, +y up, -z nose.
 const BOXES := [
 	{ name = "fuselage", size = Vector3(0.11, 0.15, 1.14), center = Vector3(0, 0, 0.13), color = RED },
 	{ name = "cowl", size = Vector3(0.1, 0.13, 0.08), center = Vector3(0, 0, -0.48), color = DARK_GREY },

@@ -23,17 +23,17 @@ func _raw(overrides: Dictionary) -> Dictionary:
 	return r
 
 
-## Trailing edge relative to the hinge, in model axes, using the real node transforms.
+## Trailing-edge probe relative to the hinge, in the hinge's parent frame, using the real model's nodes.
+## Probe: 4 cm aft of the hinge (and 4 cm up for the rudder), like aircraft/verify_model.gd. Surfaces extend aft (+Z).
+const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
+
+
 func _trailing_edge(c: Dictionary, surface_name: String) -> Vector3:
 	var a := AirplaneBuilder.build()
 	AirplaneBuilder.apply_surfaces(a, Commands.hinge_rotations(c))
-	var depth := 0.0
-	for s in Spec.SURFACES:
-		if s.name == surface_name:
-			depth = s.size.z
 	var hinge: Node3D = a.hinges[surface_name]
-	var mesh: Node3D = hinge.get_child(0)
-	var te: Vector3 = hinge.transform.basis * (mesh.transform * Vector3(0, 0, depth / 2.0))
+	var probe := Vector3(0, 0.04 if surface_name == "rudder" else 0.0, 0.04)
+	var te: Vector3 = hinge.transform.basis * probe - hinge.transform.basis * Vector3(0, probe.y, 0)
 	a.root.free()
 	return te
 
@@ -57,9 +57,9 @@ func _initialize() -> void:
 	_check("throttle clamps low", Commands.step_commands(Commands.neutral_commands(), _raw({ throttle = -1.0 }), 10.0).throttle == 0.0)
 
 	# Surface signs on the real nodes
-	for s in Spec.SURFACES:
-		var te := _trailing_edge(Commands.neutral_commands(), s.name)
-		_check("neutral %s straight aft" % s.name, absf(te.x) < 1e-6 and absf(te.y) < 1e-6, str(te))
+	for surface_name in SURFACE_NAMES:
+		var te := _trailing_edge(Commands.neutral_commands(), surface_name)
+		_check("neutral %s straight aft" % surface_name, absf(te.x) < 1e-6 and absf(te.y) < 1e-6, str(te))
 	var full := Commands.neutral_commands()
 	full.roll = 1.0
 	full.pitch = 1.0

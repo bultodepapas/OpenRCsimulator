@@ -4,6 +4,7 @@ extends SceneTree
 ## Run from app/ with Godot and pass --output-dir after the `--` separator.
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const Commands := preload("res://input/commands.gd")
 const IMAGE_SIZE := Vector2i(1280, 720)
 const FLIGHT_FOV_DEG := 50.0
 const FLIGHT_DISTANCES_M := [20.0, 50.0, 100.0]
@@ -93,6 +94,13 @@ func _add_lighting() -> void:
 	fill.light_energy = 0.35
 	_world_root.add_child(fill)
 
+	var underside_fill := DirectionalLight3D.new()
+	underside_fill.name = "UndersideFill"
+	underside_fill.rotation_degrees = Vector3(48.0, -28.0, 0.0)
+	underside_fill.light_color = Color("#becbe0")
+	underside_fill.light_energy = 0.7
+	_world_root.add_child(underside_fill)
+
 
 func _add_airplane() -> void:
 	_airplane = AirplaneBuilder.build()
@@ -145,7 +153,7 @@ func _capture_definitions() -> Array[Dictionary]:
 	var captures: Array[Dictionary] = [
 		{
 			"filename": "top.png", "title": "PLANTA · NEUTRO",
-			"detail": "Ortográfica superior · escala 1:1 relativa · Jensen Ugly Stik 60 / .61",
+			"detail": "Ortográfica superior · coordenadas de modelo en metros · Jensen Ugly Stik 60 / .61",
 			"projection": ORTHO, "size": 1.58, "camera": Vector3(0.0, 5.0, 0.0),
 			"target": Vector3.ZERO, "up": Vector3(0.0, 0.0, -1.0), "pose": "neutral",
 		},
@@ -157,7 +165,7 @@ func _capture_definitions() -> Array[Dictionary]:
 		},
 		{
 			"filename": "side.png", "title": "PERFIL · NEUTRO",
-			"detail": "Ortográfica izquierda · morro hacia la derecha de imagen",
+			"detail": "Ortográfica desde el costado derecho · morro hacia la derecha de imagen",
 			"projection": ORTHO, "size": 0.92, "camera": Vector3(4.0, 0.0, 0.0),
 			"target": Vector3.ZERO, "up": Vector3.UP, "pose": "neutral",
 		},
@@ -171,14 +179,14 @@ func _capture_definitions() -> Array[Dictionary]:
 			"filename": "three-quarter-neutral.png", "title": "TRES CUARTOS · NEUTRO",
 			"detail": "Perspectiva de inspección · sin deflexiones de mandos",
 			"projection": Camera3D.PROJECTION_PERSPECTIVE, "fov": 38.0,
-			"camera": Vector3(-2.15, 1.65, 2.75), "target": Vector3.ZERO,
+			"camera": Vector3(-1.29, 0.99, 1.65), "target": Vector3.ZERO,
 			"up": Vector3.UP, "pose": "neutral",
 		},
 		{
 			"filename": "three-quarter-deflected.png", "title": "TRES CUARTOS · MANDOS DESVIADOS",
 			"detail": "Pose demostrativa fija · alerones, elevador y timón articulados",
 			"projection": Camera3D.PROJECTION_PERSPECTIVE, "fov": 38.0,
-			"camera": Vector3(-2.15, 1.65, 2.75), "target": Vector3.ZERO,
+			"camera": Vector3(-1.29, 0.99, 1.65), "target": Vector3.ZERO,
 			"up": Vector3.UP, "pose": "deflected",
 		},
 	]
@@ -210,15 +218,12 @@ func _apply_capture(capture: Dictionary) -> void:
 
 
 func _set_pose(pose_name: String) -> void:
-	var rotations := {}
+	var commands := Commands.neutral_commands()
 	if pose_name == "deflected":
-		rotations = {
-			"aileron_left": {"x": -0.30, "y": 0.0},
-			"aileron_right": {"x": 0.30, "y": 0.0},
-			"elevator": {"x": 0.34, "y": 0.0},
-			"rudder": {"x": 0.0, "y": 0.30},
-		}
-	AirplaneBuilder.apply_surfaces(_airplane, rotations)
+		commands.roll = 0.75
+		commands.pitch = 0.75
+		commands.yaw = 0.75
+	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(commands))
 
 
 func _capture_record(capture: Dictionary, output_path: String, capture_elapsed_ms: float) -> Dictionary:

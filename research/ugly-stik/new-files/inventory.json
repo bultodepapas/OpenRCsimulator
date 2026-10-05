@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-05",
+  "source": "files supplied by owner in repo root",
+  "files": [
+    {
+      "path": "MoJo Parts 60.dwg",
+      "bytes": 93121,
+      "sha256": "ab28983fa8bd1504e43f9348bde1380eb2118df6607c4be4425bcaeecd69f690"
+    },
+    {
+      "path": "Ultrastick V3/DWG/Ultr Stick Lite_fuse3 DWG.dwg",
+      "bytes": 263881,
+      "sha256": "2a987520c5659f547bed9eeeb547e12c7782bfb5372b134f8ddac8c58376a82b"
+    },
+    {
+      "path": "Ultrastick V3/DWG/Ultr Stick Lite_fuse3 DWG2004.dwg",
+      "bytes": 271127,
+      "sha256": "18263a3bc6c10e898d7b113c22699f0405ca72141b1c6abf36cbe02c7ca20d34"
+    },
+    {
+      "path": "Ultrastick V3/DWG/Ultra Stick Lite Wing3 DWG.dwg",
+      "bytes": 322183,
+      "sha256": "3fe959f096784eda268874a84a57e3f32f1921da6547a15110ca975fdc2258b9"
+    },
+    {
+      "path": "Ultrastick V3/DWG/Ultra Stick Lite Wing3 DWG2004.dwg",
+      "bytes": 295256,
+      "sha256": "6596534c75a2212d91ada65be1597ec5e65d20b548e45cfe20f79b9a6f01875e"
+    },
+    {
+      "path": "Ultrastick V3/DXF Laser cutting files/DXF Readme.txt",
+      "bytes": 771,
+      "sha256": "65994ed87851d418e6563b691dedacf2bb9ebfdcfdceeaaaada9e93c07bd599f"
+    },
+    {
+      "path": "Ultrastick V3/DXF Laser cutting files/Ultrastick CAD cut rev3.DXF",
+      "bytes": 4408342,
+      "sha256": "4472cb90f87d40d6c55028c7b3066db271b210c64c124478741a7826ce40b504"
+    },
+    {
+      "path": "Ultrastick V3/DXF Laser cutting files/Ultrastick CAD cut rev3.JPG",
+      "bytes": 110132,
+      "sha256": "37f1ee6c8b9e9d2bd8577b20efa7f6cfbeae7cea027e81d2c9dcfc5f5eeaecbd"
+    },
+    {
+      "path": "Ultrastick V3/DXF Plans/DXF Readme.txt",
+      "bytes": 845,
+      "sha256": "4705bda9cc82c431bb7017b69a6e34aa2e369005e870bcb4fabd9e232616f5fd"
+    },
+    {
+      "path": "Ultrastick V3/DXF Plans/Ultr Stick Lite_fuse3.JPG",
+      "bytes": 104190,
+      "sha256": "622607d7dd15b2124d2c10241d709149901c5e9ef215879fe5f78767a38ce26f"
+    },
+    {
+      "path": "Ultrastick V3/DXF Plans/Ultr Stick Lite_fuse3.dxf",
+      "bytes": 2024968,
+      "sha256": "0d0abbb426f087e5d4abdc463509e0bc379ac3c2cf4cc9ff3b5bf760d9b591e2"
+    },
+    {
+      "path": "Ultrastick V3/DXF Plans/Ultra Stick Lite Wing3.JPG",
+      "bytes": 90623,
+      "sha256": "5c4c72d79fc60d240881c4f5e65f8fc82d43a177aacd593872acf855c62b4aed"
+    },
+    {
+      "path": "Ultrastick V3/DXF Plans/Ultra Stick Lite Wing3.dxf",
+      "bytes": 1959420,
+      "sha256": "3dfda935ed77d75f535c300f78a8d05ed6b4ad76bd95f63014c29080ea08675f"
+    },
+    {
+      "path": "Ultrastick V3/PDF Plans/Ultr Stick Lite_fuse3.pdf",
+      "bytes": 456482,
+      "sha256": "4331e40fbfae5f1bce0320ec96eed63b44fa8fe7c92c9ed05d01325ddf9aaf92"
+    },
+    {
+      "path": "Ultrastick V3/PDF Plans/Ultra Stick Lite Wing3.pdf",
+      "bytes": 409325,
+      "sha256": "7ed28df631ccd9f1510698ee495cd0481f4537432deed1e9c382e8bb7c6a6ce7"
+    },
+    {
+      "path": "Ultrastick V3/pdf parts patterns/Parts Pattern2 Model (1).pdf",
+      "bytes": 66631,
+      "sha256": "fd3b658def74568292cbbfdf2d9f5406c5c02bd730f9cdc896a6471c18d8dc26"
+    },
+    {
+      "path": "Ultrastick V3/pdf parts patterns/Parts Pattern3 Model (1).pdf",
+      "bytes": 158387,
+      "sha256": "023edb0e88b8db998bf6566c4676d3870105ade5af9c9d7dc116af6f50535713"
+    },
+    {
+      "path": "Ultrastick V3/pdf parts patterns/PartsPatterns1 Model (1).pdf",
+      "bytes": 218490,
+      "sha256": "981604673b8034c6e3fa4764123fd732facd0bf6dd7e311b87a071cc370992b0"
+    },
+    {
+      "path": "Ultrastick V3/pdf parts patterns/_PDF readme.txt",
+      "bytes": 311,
+      "sha256": "316650849ed3db1b62f468f7cf9dd048fc08e8a2cf695eefc105e372fde32d85"
+    },
+    {
+      "path": "Ultrastick V3/pics/2832.jpg",
+      "bytes": 150634,
+      "sha256": "0e79905a64cb3e249c2757277ef3292b00b64bfa8518fac788c2b69560bdb7a4"
+    },
+    {
+      "path": "Ultrastick V3/pics/LEFTJP~1.JPG",
+      "bytes": 160505,
+      "sha256": "7b32d413f2f9ae2362edc57e1f837978c7f980f4c1f42db1c2e16b4c3ef9cf34"
+    },
+    {
+      "path": "Ultrastick V3/pics/Original Horizon manual.pdf",
+      "bytes": 1147333,
+      "sha256": "53b6d244a6a6e5361d5c0a36a2bc2fa270d1f26d84686411b2f1f87f50bad3f5"
+    },
+    {
+      "path": "Ultrastick V3/pics/P1010074.JPG",
+      "bytes": 84630,
+      "sha256": "612bad1f9fdf381f641775ea52a5ef543944be33eeef86a77df9831932a24ab9"
+    },
+    {
+      "path": "Ultrastick V3/pics/repaired.JPG",
+      "bytes": 176620,
+      "sha256": "f332d34790154b710a8d667fc35c2fb6cf4f00b877f950f3a4bac69d1b4b8804"
+    },
+    {
+      "path": "Ultrastick V3/pics/sub D.jpg",
+      "bytes": 72655,
+      "sha256": "20664be046dffeee3f2f0bd71981a5b019b5ad02e769aa9a0f9bc1913e92b09d"
+    },
+    {
+      "path": "Ultrastick V3/pics/ultrastick 1.jpg",
+      "bytes": 35663,
+      "sha256": "1265a4fb85b46491134d73c90436019ca6b888465636f0880eb60ee8852ab6cf"
+    },
+    {
+      "path": "Ultrastick V3/pics/ultrastick3.jpg",
+      "bytes": 41337,
+      "sha256": "d152a65cbd5d48fccb2a1d2114d5620b58b5b296e67335efb6404b8605446582"
+    },
+    {
+      "path": "Ultrastick V3/pics/ultrastick4.jpg",
+      "bytes": 53985,
+      "sha256": "0d78de0bf82424ce4847e5557e68b25d62a72cd4204125d7340c84f7d5f22faa"
+    },
+    {
+      "path": "Ultrastick V3/pics/ultrastick5.jpg",
+      "bytes": 43731,
+      "sha256": "423a288a5eb503605e2090c9f6c31f3a638754b9c9b848c3aa5d2b557a278179"
+    },
+    {
+      "path": "Ultrastick V3/pics/ultrastick6.jpg",
+      "bytes": 37957,
+      "sha256": "236accbe658098d7c74cc64e9d21a2564d4226d09ec929d63990f0c40db2dbe7"
+    },
+    {
+      "path": "Ultrastick V3/pics/wing_bottom.jpg",
+      "bytes": 823704,
+      "sha256": "dc37167d173b8eba5ac621d483b4986ae0afdd6bf6c669b73761a9248f6e99ba"
+    }
+  ]
+}
