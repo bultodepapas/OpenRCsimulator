@@ -11,6 +11,8 @@ const Sim := preload("res://sim/simulation.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Trace := preload("res://sim/trace.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 
 var _airplane: Dictionary
 var _camera: Camera3D
@@ -24,6 +26,8 @@ var _commands := Commands.neutral_commands()
 var _scripted := false
 var _sim: Node
 var _trace := Trace.new()
+var _aircraft: Dictionary # AircraftData result: { ok, errors, warnings, model }
+var _cg_model := Vector3.ZERO
 var _recording := false
 var _trace_note := ""
 
@@ -34,8 +38,16 @@ func _ready() -> void:
 	_scripted = args.has("scripted")
 	_build_world()
 	_sim = Sim.new()
-	_sim.mass = Scenarios.MASS_KG
-	_sim.inertia = Scenarios.inertia()
+	_aircraft = AircraftData.load_file(Scenarios.AIRCRAFT)
+	for w in _aircraft.warnings:
+		print("aircraft data warning: ", w)
+	if _aircraft.ok:
+		_sim.mass = _aircraft.model.mass_kg
+		_sim.inertia = _aircraft.model.inertia
+		_cg_model = Frames.cg_in_model_frame(_aircraft.model.cg_le, Geometry.DATA.wing.leading_z, Geometry.DATA.equipment.shaft_y)
+	else:
+		for e in _aircraft.errors:
+			push_error("aircraft data: " + e)
 	add_child(_sim)
 	_sim.stepped.connect(_on_sim_stepped)
 	if _scripted:
@@ -78,12 +90,15 @@ func _reset() -> void:
 	_t = 0.0
 	_commands = Commands.neutral_commands()
 	_sim.reset(Scenarios.throw_across_view())
-	_sim.set_paused(false)
+	# Never fly on invalid aircraft data: stay paused and show why.
+	_sim.set_paused(not _aircraft.ok)
 
 
 func _status() -> String:
 	if _scripted:
 		return "mode: scripted circle"
+	if not _aircraft.ok:
+		return "AIRCRAFT DATA INVALID: %s" % _aircraft.errors[0]
 	var s: PackedFloat64Array = _sim.state
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s" % [_sim.time(), -s[RB.POS + 2], speed]
@@ -183,7 +198,7 @@ func _build_world() -> void:
 
 
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
-	_airplane.root.transform = Transform3D(pose.basis, pose.pos)
+	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c))
 	if _inspect:
@@ -220,6 +235,7 @@ func _stop_recording(path := "") -> Error:
 func _trace_meta() -> Dictionary:
 	return {
 		scenario = "throw_across_view (gravity only, C6)",
+		aircraft = "%s (%s)" % [_aircraft.model.get("id", "?"), Scenarios.AIRCRAFT],
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
 		dt_s = _sim.dt(),

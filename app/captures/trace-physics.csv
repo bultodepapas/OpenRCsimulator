@@ -1,10 +1,11 @@
 # format: openrc-trace v1
 # scenario: throw_across_view (gravity only, C6)
-# created_utc: 2026-10-05T17:35:39
+# aircraft: jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)
+# created_utc: 2026-10-05T17:49:29
 # engine: Godot 4.7.2-stable (official)
 # dt_s: 0.00416666666667
-# mass_kg: 2.9
-# inertia_kgm2: Jxx Jyy Jzz Jxy Jxz Jyz = 0.25 0.3 0.5 0.0 0.0 0.0
+# mass_kg: 2.601
+# inertia_kgm2: Jxx Jyy Jzz Jxy Jxz Jyz = 0.11349112789696 0.21799354754744 0.31626899758012 -0.00226146712803 -0.008975453787 -0.00024937716263
 # gravity_mps2: 9.80665
 # frames: world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]
 # loads: Fx..Mz are body-axis loads at the start of each step, excluding gravity

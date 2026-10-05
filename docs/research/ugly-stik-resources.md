@@ -53,3 +53,7 @@ Los experimentos propios están en [`research/ugly-stik/`](../../research/ugly-s
 - [Fuentes 07/09](ugly-stik-investigations/07-09-resources.json): herramientas, documentación oficial y artefactos propios; herramientas temporales separadas de recursos conservados.
 
 Los hashes verifican identidad de bytes, no precisión del plano, escala real ni autoría. Para recuperar un PDF de Outerzone si rechaza el enlace directo, abrir primero su ficha pública y descargar desde ella.
+
+## Archivos añadidos por el propietario durante el modelado
+
+Se inspeccionó un segundo paquete de **31 archivos**: `Ultrastick V3/` y `MoJo Parts 60.dwg`. Los originales permanecen en la raíz, excluidos de Git. [Informe y clasificación](ugly-stik-new-files.md) · [inventario con hashes](../../research/ugly-stik/new-files/inventory.json). Corresponden principalmente a Ultra Stick 120 Light/Lite, con configuraciones distintas del Jensen .61. No se incluyen en las 16 descargas enumeradas arriba.

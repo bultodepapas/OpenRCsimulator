@@ -24,7 +24,14 @@ Revised **2026-10-05** after a self-review of the first plan (weak points and fi
 - **Done since:** C6. The app now runs on physics by default (`--scripted` keeps the Stage 0/1 circle). A ballistic throw (15 m/s east, 30 m up, gravity only) renders from the interpolated 240 Hz state. R restarts, P resumes after a focus-loss pause, and a temporary below-ground restart holds until D9. The capture at 1.5 s shows alt 19.0 m and speed 21.0 m/s, matching hand calculation (18.97 m, 21.0 m/s). End-to-end tests cover the live physics scene.
 - **Done since:** C7 (`app/sim/trace.gd`): one CSV row per 240 Hz tick, 30 columns with units, `#` metadata (format, dt, mass, inertia, frames, load convention). Press T in the app (saved to `user://traces/`), or run `-- --trace=file.csv --t=1.5` headless; CI uploads `app/captures/trace-physics.csv`. Every row matches the hand calculation against its own timestamp to 1e-9. **Phase C is complete.**
 - **Model v1 integrated (other team, 2026-10-05):** a procedural Das Ugly Stik 60 (`app/aircraft/`, source `assets/aircraft/ugly-stik-60/geometry.json` with per-field provenance) replaces the blockout behind the same interface. `app/test.sh` now runs their `verify_model.gd` (439+ checks), and CI checks that `geometry.json` and its generated `.gd` stay in sync.
-- **Next:** Phase D. D1 is the physics data file for the Das Ugly Stik 60, coordinated with the aircraft-model developer (geometry measurements are their lane; mass, inertia and aero coefficients are D1).
+- **Done since:** D1, the physics data file `app/data/aircraft/jensen_ugly_stik_60.json` (format `openrc-aircraft v1`, every value with unit, evidence kind and source), loaded by `app/physics/aircraft_data.gd`:
+  - **Mass:** 2.601 kg from a 19-component inventory.
+  - **CG:** the **plan CG, 4.76 in aft of the LE (39 % chord)**, measured on the full-size Jensen plan (`research/d1/jensen_plan_cg.py`). The inventory's own CG is 0.080 m further forward, reported as a warning, not hidden.
+  - **Inertia:** Jxx/Jyy/Jzz 0.113/0.218/0.316 kg·m², within 0.83–1.32× of the UltraStick25e values scaled by mass and span².
+  - **Aero:** 33 borrowed UltraStick25e coefficients with explicit sign and normalization conventions.
+  - **Loader:** rejects bad units, kinds, sources, ranges, inconsistent references and unstable signs (12 broken-data cases); the app refuses to fly on invalid data.
+  - **Render:** the visual model is offset so its CG point sits on the simulated position.
+- **Next:** D2, air data (air-relative velocity, α, β, dynamic pressure).
 
 ## Phase A — Ground base
 
@@ -68,7 +75,7 @@ In GDScript, on 64-bit `float`s only. `app/test.sh` rejects `Vector3`/`Basis`/`Q
 
 | # | Step | Proof |
 | --- | --- | --- |
-| D1 | Aircraft data file v0 (Das Ugly Stik 60): plan geometry (60 in span, 723 in², 52 in) and a labeled mass estimate; inertia **estimated** from a component inventory; derivatives `borrowed` from the UltraStick25e; provenance per value; a loader that checks units, ranges and required fields | Loader tests, including deliberately broken files |
+| D1 ✅ | Aircraft data file v0 (Das Ugly Stik 60): plan geometry (60 in span, 723 in², 52 in) and a labeled mass estimate; inertia **estimated** from a component inventory; derivatives `borrowed` from the UltraStick25e; provenance per value; a loader that checks units, ranges and required fields | Loader tests, including deliberately broken files |
 | D2 | Air data: air-relative velocity, α, β, dynamic pressure (wind = 0) | Unit tests with hand-computed values |
 | D3 | Longitudinal forces only: lift `CL0 + CLα·α`, drag `CD0 + k·CL²`, weight | Power-off glide ratio in the trace equals `CL/CD` from the data |
 | D4 | Pitch moment (`Cm0`, `Cmα`, `Cmq`, `Cmδe`); stability sign check (`Cmα < 0`); **trim solver** for level flight at 15 m/s | Trim found with surfaces within limits, *or* a clear failure message naming what to change (CG, `Cm0`) |

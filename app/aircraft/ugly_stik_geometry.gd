@@ -57,7 +57,7 @@ const DATA := {
 			],
 			[
 				1,
-				0
+				-0.008
 			],
 			[
 				0.78,
@@ -84,43 +84,43 @@ const DATA := {
 	"fuselage_stations": [
 		[
 			-0.44,
-			0.044,
+			0.039191,
 			0.048,
 			-0.06
 		],
 		[
 			-0.32,
-			0.048,
+			0.046056,
 			0.056,
 			-0.064
 		],
 		[
 			-0.16,
-			0.051,
+			0.04958,
 			0.05,
 			-0.069
 		],
 		[
 			0.17,
-			0.05,
+			0.051907,
 			0.045,
 			-0.068
 		],
 		[
 			0.31,
-			0.04,
+			0.045953,
 			0.028,
 			-0.052
 		],
 		[
 			0.53,
-			0.021,
+			0.029881,
 			0.016,
 			-0.028
 		],
 		[
 			0.68,
-			0.009,
+			0.010664,
 			0.013,
 			-0.013
 		]
@@ -192,26 +192,30 @@ const DATA := {
 		"fin_outline": [
 			[
 				0,
-				-0.155
+				-0.2
 			],
 			[
-				0.065,
-				-0.135
+				0.05,
+				-0.21
 			],
 			[
-				0.16,
-				-0.108
+				0.1,
+				-0.19
+			],
+			[
+				0.15,
+				-0.15
+			],
+			[
+				0.19,
+				-0.1
 			],
 			[
 				0.21,
-				-0.08
+				-0.045
 			],
 			[
-				0.231,
-				-0.046
-			],
-			[
-				0.231,
+				0.215,
 				0
 			],
 			[
@@ -225,28 +229,36 @@ const DATA := {
 				0
 			],
 			[
-				0.231,
+				0.215,
 				0
 			],
 			[
-				0.229,
-				0.026
+				0.208,
+				0.035
 			],
 			[
-				0.209,
-				0.056
+				0.189,
+				0.067
 			],
 			[
-				0.17,
-				0.075
+				0.158,
+				0.09
 			],
 			[
-				0.065,
-				0.076
+				0.118,
+				0.101
+			],
+			[
+				0.073,
+				0.1
+			],
+			[
+				0.035,
+				0.08
 			],
 			[
 				0,
-				0.06
+				0.055
 			]
 		],
 		"thickness": 0.009
@@ -287,11 +299,14 @@ const DATA := {
 		},
 		"fuselage_stations": {
 			"kind": "estimated",
-			"source": "provisional visual envelope pending trace; rows z/halfwidth/top/bottom"
+			"source": "research/ugly-stik/calibration-v1/jensen-contours.json",
+			"method": "z/top/bottom remain visual estimates; halfwidth interpolated from manual plan-view pixel picks at x=48+(z+0.44)/1.12*2002, using conditional 0.533206 mm/px. Longitudinal span fitted to existing 1.12m visual envelope, not a calibrated plan dimension.",
+			"scope": "source points describe the raster; no independent absolute scale; side-view trace and unresolved tail outline not adopted",
+			"conditional_width_endpoint_allowance_m": 0.003
 		},
 		"tail": {
 			"kind": "estimated",
-			"source": "rounded Jensen-like outline pending trace; coordinates relative to hinge"
+			"source": "Estimated rounded Jensen-like silhouette after visual inspection of signed plan; exact tail trace unresolved, no ambiguous callout coordinates imported"
 		},
 		"equipment.wheels": {
 			"kind": "manual",

@@ -14,19 +14,19 @@ La pose desviada es una demostración visual estática; no representa una orden 
 
 ## Resultado observado
 
-Primera inspección del constructor v1, 2026-10-05, Godot 4.7.2 con llvmpipe. El render produjo 9 PNG; el manifiesto inicial midió una caja de 1.5228 × 0.5011 × 1.3245 m, 45 `MeshInstance3D`, 2,460 triángulos y 73 materiales instanciados. La envergadura coincide con el objetivo documentado de 1.524 m dentro del margen de 1.2 mm. Estos conteos son del constructor inicial, antes del ajuste del asiento del ala y de la revisión geométrica en curso.
+Serie final de inspección, 2026-10-05, Godot 4.7.2 con llvmpipe, 1280×720. El script completó las nueve tomas sin errores GDScript. El manifiesto mide una caja de **1.52283 × 0.48510 × 1.34750 m**, con 46 `MeshInstance3D`, **2,568 triángulos y 5 materiales únicos** compartidos por el constructor. La extensión X queda 1.17 mm por debajo del objetivo de 1.524 m del plano; la geometría visible sigue siendo una aproximación, no una comprobación dimensional completa.
 
-La primera serie descubrió un error del visor: la función de pose neutra enviaba un diccionario vacío y no devolvía a neutro los mandos después de la toma desviada. Los PNG de vuelo de esa primera corrida quedaron desviados aunque se rotularon `neutral`; no deben usarse como prueba de lectura en vuelo. El visor ya usa `Commands.neutral_commands()` y `Commands.hinge_rotations()` para restablecer y aplicar la pose. También se acercó la cámara de tres cuartos y se añadió un relleno suave inferior tras comprobar que el intradós perdía demasiado detalle. Se regenerará toda la serie después de que termine el ajuste de geometría; los PNG actuales son diagnósticos preliminares.
+La primera pasada había revelado dos defectos del propio visor: la pose neutra no restablecía las bisagras y la cámara tres cuartos quedaba lejos. Se corrigieron antes de generar esta serie: cada pose ahora se deriva de `Commands.neutral_commands()` y `Commands.hinge_rotations()`, y la cámara cercana encuadra el avión completo. Se añadió relleno inferior para mostrar el intradós sin cambiar el material oscuro elegido para distinguir las caras.
 
-| Vista | Resultado que se debe comprobar | Hallazgo de esta revisión |
-| --- | --- | --- |
-| Planta | El contorno rojo/crema y la alineación general se distinguen. Revalidar tras el trazado de medidas. | Diagnóstico preliminar; `top.png` sí es neutra. |
-| Intradós | La cara oscura diferencia orientación, pero la primera iluminación oculta detalles. Se añadió luz de relleno desde abajo. | Comparar en la serie regenerada. |
-| Perfil | Se ve ala suspendida sobre el fuselaje con `root_y = 0.065 m`; el constructor ya se está corrigiendo a ~0.048 m. | Defecto geométrico observado, pendiente de confirmar tras el ajuste. |
-| Frente | La simetría y el diedro leve se ven; comprobar altura del ala con el nuevo asiento. | Diagnóstico preliminar. |
-| Tres cuartos neutro | El avión se entiende, pero ocupaba solo ~400×220 px. Se acercó la cámara para apuntar a ~650×360 px sin recorte. | Verificar encuadre con geometría final. |
-| Tres cuartos desviado | La pose se distingue poco a esa escala. El visor aplica ahora mandos normalizados por el módulo de controles. | Revisar bisagras en el encuadre cercano. |
-| Vuelo 20/50/100 m | El ancho proyectado calculado es 58.8/23.5/11.8 px. A 100 m queda solo una marca corta; no cabe esperar detalle. | Primera serie tenía mandos desviados por error del visor; repetir antes de valorar lectura. |
+| Vista | Hallazgo de la serie final |
+| --- | --- |
+| [Planta](../../research/ugly-stik/model-v1/captures/top.png) | La franja alar, el fuselaje estrecho y la cola se separan bien. El cuerpo y la cola conservan continuidad aparente. |
+| [Intradós](../../research/ugly-stik/model-v1/captures/bottom.png) | El relleno ayuda a distinguir ala, varillas del tren y cola; los colores oscuros siguen señalando la cara inferior. |
+| [Perfil](../../research/ugly-stik/model-v1/captures/side.png) | El ala ya apoya visualmente sobre el fuselaje con `root_y = 0.048 m`; no se aprecia el hueco de la toma anterior. |
+| [Frente](../../research/ugly-stik/model-v1/captures/front.png) | Se distinguen el diedro leve y el tren triciclo. No se ve recorte de puntas ni de ruedas. |
+| [Tres cuartos neutro](../../research/ugly-stik/model-v1/captures/three-quarter-neutral.png) | El avión ocupa cerca de 700×320 px y entra completo; motor, hélice, cola y bandas se pueden inspeccionar juntos. No observé agujeros abiertos en el encastre del ala o la cola. |
+| [Tres cuartos desviado](../../research/ugly-stik/model-v1/captures/three-quarter-deflected.png) | Alerones, elevador y timón cambian respecto a neutro y conservan una unión visible en sus bisagras. La pose se fija con roll/pitch/yaw = 0.75 y solo demuestra la articulación. |
+| [20 m](../../research/ugly-stik/model-v1/captures/flight-20m.png) / [50 m](../../research/ugly-stik/model-v1/captures/flight-50m.png) / [100 m](../../research/ugly-stik/model-v1/captures/flight-100m.png) | La proyección del ancho X es 58.78 / 23.51 / 11.76 px. A 20 m se lee el ala y los colores; a 50 m queda una silueta pequeña; a 100 m es apenas una marca de envergadura, sin detalle identificable. |
 
 El manifiesto numérico ayuda a detectar una geometría fuera de escala y a reproducir encuadres. La lectura humana sigue siendo una inspección visual; el cálculo de píxeles no sustituye una prueba de percepción con usuarios.
 
@@ -38,4 +38,4 @@ Desde cualquier directorio del repositorio:
 bash research/ugly-stik/model-v1/capture.sh
 ```
 
-El ejecutable de Godot se descarga y verifica por SHA-512 si aún no está en `.tools/`. Se requiere `xvfb-run` y el controlador OpenGL por software disponible en el entorno. El script escribe únicamente en la carpeta `captures/` de esta investigación y falla si Godot registra un error GDScript. La serie actual todavía es preliminar: falta volver a ejecutarla después de que se cierren los cambios geométricos en curso y revisar las nueve PNG resultantes.
+El ejecutable de Godot se descarga y verifica por SHA-512 si aún no está en `.tools/`. Se requiere `xvfb-run` y el controlador OpenGL por software disponible en el entorno. El script escribe únicamente en la carpeta `captures/` de esta investigación y falla si Godot registra un error GDScript. Para repetir la serie tras otro cambio geométrico, usa el mismo comando; el manifiesto registra límites, triángulos, materiales, distancia y tiempos.

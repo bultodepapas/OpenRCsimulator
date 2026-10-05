@@ -46,6 +46,13 @@ func _initialize() -> void:
 			worst = maxf(worst, (from_q[c] - from_e[c]).length())
 	_check("quat_to_render = attitude_to_render", worst < 1e-6, str(worst))
 
+	# D1: the visual model is placed so its CG point lands exactly on the simulated (CG) position.
+	var cg_model := Frames.cg_in_model_frame(PackedFloat64Array([0.1209, 0.0, 0.0]), -0.115, -0.005)
+	_close("cg in model frame", cg_model, Vector3(0, -0.005, 0.0059))
+	var cg_basis := Frames.quat_to_render(M3.q_from_euler(0.7, -0.3, 1.1))
+	var cg_pos := Vector3(12, 30, -60)
+	_close("model CG lands on the sim position", Frames.root_transform(cg_basis, cg_pos, cg_model) * cg_model, cg_pos)
+
 	var pose := Scripted.pose_at(0.0)
 	_check("t=0 north 100", absf(pose.ned[0] - 100.0) < 1e-12)
 	_check("t=0 up 20", absf(pose.ned[2] + 20.0) < 1e-12)

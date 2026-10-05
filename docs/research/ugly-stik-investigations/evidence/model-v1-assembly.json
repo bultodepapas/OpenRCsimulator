@@ -1,6 +1,6 @@
 {
   "aircraft_id": "jensen-60-nitro-61-v1",
-  "source_sha256": "95b2644d69c466b6fce596063ed130de65f04c79dca748039d5da611d868c295",
+  "source_sha256": "7f4f0198cfc5ae415cd2e1ad12a9341ee93568d9fbeb5e01b4558282ec510adb",
   "evidence_kind": "calculation_on_estimated_visual_geometry",
   "physics_configuration_changed": false,
   "wheel_contact_assumptions": "Rigid undeformed circular tires, parallel axles, no suspension; pose only",

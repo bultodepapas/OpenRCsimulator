@@ -4,6 +4,10 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 ## Process
 
+- **A hand balance is a cheap cross-check of someone else's geometry.** Plausible component masses on the visual model put the CG ahead of the wing's leading edge, which is impossible for a flying airplane. The full-size plan then showed the nose (firewall to LE) is 6.94 in, while the provisional visual model has ~12.8 in. One physics sanity check found a visual-geometry error that no screenshot showed. (2026-10-05)
+- **Full-size plans are measuring instruments.** At 100 dpi a 1:1 plan gives 100 px per inch; the chord read 12.07 in against the title block's 12.00 in, a 0.6 % scale check. Read features with zoomed crops and pixel rulers; automatic edge search clipped at its window bounds and gave nonsense. (2026-10-05)
+- **Validate your own data with the same loader.** The new loader's first run rejected my own data file (an empty source). (2026-10-05)
+
 - **Review a parallel team's work at the seams, not the pixels.** The model team's work was good, but four integration risks only showed up at the boundaries:
   - their 439-check verifier and their JSON→GDScript sync check existed but **nothing ran them**;
   - my control test still read the dead blockout tables;
@@ -74,3 +78,10 @@ Practical lessons from **actually building and running** things, as opposed to r
 
 - **Shared machine:** 9.6 GB RAM, no GPU, no sound card, no display (Xvfb available), Docker available. Other projects' services run here too. The assistant is not allowed to stop other workloads; the owner does that. (2026-10-05)
 - **Third-party plan scans are reference material, not repo content.** Plans and scans (Jensen, RCM, Outerzone) are copyrighted; keep them out of the public repo, e.g. in a gitignored folder. (2026-10-05)
+
+## Aircraft modeling and reference inspection
+
+- **An orthographic side view caught a disconnected wing.** The first .61 mesh looked plausible in three quarters but its wing root floated above the fuselage. Lowering the seat and testing both mesh sections at the same x/z point caught the defect numerically. Static dihedral now lives in wing frames above the commanded hinges; the model passes 449 checks, and reversing a hinge sign in a scratch copy triggers 12 failures. [Evidence](docs/research/ugly-stik-model-v1-rig.md). (2026-10-05)
+- **Each capture must reset its own pose.** Sending no hinge updates preserved the previous deflection while the next image was labeled neutral. The inspection harness now explicitly applies neutral commands before each neutral capture, including the distance series. [Final captures](docs/research/ugly-stik-model-v1-visual.md). (2026-10-05)
+- **A traced shape can be useful without being a calibrated dimension.** The Jensen scan's wheel and PDF page scale disagree. The model records the conditional scale and length normalization, uses only identified fuselage widths, and excludes an ambiguous tail outline. [Calibration limits](docs/research/ugly-stik-model-v1-calibration.md). (2026-10-05)
+- **A reference bundle can contain different configurations and printed conversion errors.** The new Ultra Stick RHB plan says 78 in / 61 in; its included Horizon manual says 76 in / 55 in and prints inconsistent metric conversions. The laser-cut README also distinguishes nominal contours from 0.004-inch compensated cuts. These sources are catalogued separately from each other and from Jensen .61. [Inspection](docs/research/ugly-stik-new-files.md). (2026-10-05)

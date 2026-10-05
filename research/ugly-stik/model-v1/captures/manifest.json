@@ -12,22 +12,22 @@
 	],
 	"captures": [
 		{
-			"capture_elapsed_ms": 52.37,
-			"capture_time_unix": 1791221637,
+			"capture_elapsed_ms": 97.762,
+			"capture_time_unix": 1791222491,
 			"file": "top.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.3245000243187
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.758000016212463
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -37,26 +37,26 @@
 			},
 			"pose": "neutral",
 			"projection": "orthographic",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 63.6,
-			"capture_time_unix": 1791221637,
+			"capture_elapsed_ms": 89.429,
+			"capture_time_unix": 1791222491,
 			"file": "bottom.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.3245000243187
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.758000016212463
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -66,26 +66,26 @@
 			},
 			"pose": "neutral",
 			"projection": "orthographic",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 50.8,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 84.128,
+			"capture_time_unix": 1791222491,
 			"file": "side.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.3245000243187
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.758000016212463
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -95,26 +95,26 @@
 			},
 			"pose": "neutral",
 			"projection": "orthographic",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 50.862,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 66.395,
+			"capture_time_unix": 1791222491,
 			"file": "front.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.3245000243187
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.758000016212463
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -124,26 +124,26 @@
 			},
 			"pose": "neutral",
 			"projection": "orthographic",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 53.57,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 75.558,
+			"capture_time_unix": 1791222492,
 			"file": "three-quarter-neutral.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.3245000243187
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.758000016212463
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -153,26 +153,26 @@
 			},
 			"pose": "neutral",
 			"projection": "perspective",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 51.45,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 100.644,
+			"capture_time_unix": 1791222492,
 			"file": "three-quarter-deflected.png",
 			"height_px": 720,
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.32153558731079
+					0.485100001096725,
+					1.34358644485474
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.755035579204559
+					0.226999998092651,
+					0.777086436748505
 				],
 				"min": [
 					-0.761415898799896,
@@ -182,29 +182,29 @@
 			},
 			"pose": "deflected",
 			"projection": "perspective",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 49.512,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 64.903,
+			"capture_time_unix": 1791222492,
 			"distance_m": 20.0,
 			"file": "flight-20m.png",
 			"fov_vertical_deg": 50.0,
 			"height_px": 720,
 			"keep_aspect": "KEEP_HEIGHT",
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.32153558731079
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.755035579204559
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -215,30 +215,30 @@
 			"model_x_extent_px": 58.7830199170458,
 			"pose": "neutral",
 			"projection": "perspective",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"visible_vertical_m": 18.6523063261999,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 50.893,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 64.277,
+			"capture_time_unix": 1791222492,
 			"distance_m": 50.0,
 			"file": "flight-50m.png",
 			"fov_vertical_deg": 50.0,
 			"height_px": 720,
 			"keep_aspect": "KEEP_HEIGHT",
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.32153558731079
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.755035579204559
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -249,30 +249,30 @@
 			"model_x_extent_px": 23.5132079668183,
 			"pose": "neutral",
 			"projection": "perspective",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"visible_vertical_m": 46.6307658154999,
 			"width_px": 1280
 		},
 		{
-			"capture_elapsed_ms": 56.878,
-			"capture_time_unix": 1791221638,
+			"capture_elapsed_ms": 63.697,
+			"capture_time_unix": 1791222492,
 			"distance_m": 100.0,
 			"file": "flight-100m.png",
 			"fov_vertical_deg": 50.0,
 			"height_px": 720,
 			"keep_aspect": "KEEP_HEIGHT",
-			"material_count": 73,
-			"mesh_instances": 45,
+			"material_count": 5,
+			"mesh_instances": 46,
 			"model_bounds_m": {
 				"extent": [
 					1.52283179759979,
-					0.50110000371933,
-					1.32153558731079
+					0.485100001096725,
+					1.34750002622604
 				],
 				"max": [
 					0.761415898799896,
-					0.243000000715256,
-					0.755035579204559
+					0.226999998092651,
+					0.781000018119812
 				],
 				"min": [
 					-0.761415898799896,
@@ -283,7 +283,7 @@
 			"model_x_extent_px": 11.7566039834092,
 			"pose": "neutral",
 			"projection": "perspective",
-			"triangle_count": 2460,
+			"triangle_count": 2568,
 			"visible_vertical_m": 93.2615316309997,
 			"width_px": 1280
 		}
@@ -297,5 +297,5 @@
 		1280,
 		720
 	],
-	"total_elapsed_ms": 587.168
+	"total_elapsed_ms": 834.615
 }

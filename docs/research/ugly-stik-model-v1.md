@@ -25,6 +25,10 @@ Los alerones cuelgan de marcos fijos que conservan el diedro. Sus bisagras solo 
 
 ## Pruebas y entregas del plan
 
+**Resultado final:** `app/test.sh` pasó antes y después de la integración. La ejecución final incluye **449 comprobaciones del modelo, 0 fallos**, y conserva el mismo estado físico a 30/60/144 fps. La inversión de un signo de bisagra en una copia temporal provocó 12 fallos esperados. [Registro con hashes](ugly-stik-investigations/evidence/model-v1-validation.json).
+
+La malla final contiene **46 instancias, 2,568 triángulos y 5 materiales compartidos**. Hay nueve capturas de inspección y una [captura dentro de la aplicación](../../research/ugly-stik/model-v1/captures/in-app.png). La separación calculada del disco de hélice al plano que sostiene las tres ruedas ideales es **96.5 mm** para esta instalación estimada.
+
 | Paso del plan | Entrega v1 | Límite o continuación |
 | --- | --- | --- |
 | 2 · Calibración/contornos | Registro de puntos y escalas candidatas | No se acepta calibración absoluta; faltan controles independientes por vista |
@@ -32,7 +36,7 @@ Los alerones cuelgan de marcos fijos que conservan el diedro. Sus bisagras solo 
 | 4 · Fuselaje | Secciones afinadas y franja que sigue la superficie | Ajustar cotas cuando se cierre la escala |
 | 5 · Ala | Sección visual, alerones separados, diedro y colores superior/inferior | Incidencia y coordenadas aerodinámicas siguen pendientes |
 | 6 · Cola | Estabilizador, elevador, deriva y timón independientes | Contorno simplificado, sin varillaje interno |
-| 7 · Equipo | Motor .61 visual, escape, eje/hélice, ruedas y patas | Instalación estimada, sin masa/empuxe derivados de la malla |
+| 7 · Equipo | Motor .61 visual, escape, eje/hélice, ruedas y patas | Instalación estimada, sin masa/empuje derivados de la malla |
 | 8 · Lectura | [Capturas ortográficas y a 20/50/100 m](ugly-stik-model-v1-visual.md), misma cámara | Falta observación con el propietario/pilotos; no se declara Gate 2 superado |
 | 9 · Integración | Constructor conectado a la aplicación, interfaz estable | D1 físico completo sigue pendiente |
 
@@ -56,3 +60,7 @@ Las capturas y manifiestos están separados en `research/ugly-stik/model-v1/`. L
 3. Una serie de capturas necesita restablecer todos los mandos antes de cada toma; dejar un diccionario vacío conservaba las deflexiones de la imagen anterior.
 4. La malla puede avanzar con estimaciones explícitas sin convertir la escala del PDF o una rueda dibujada en una medida física confirmada.
 5. El primer recuento encontró materiales idénticos repetidos; compartirlos por color reduce recursos sin modificar la silueta.
+
+## Material recibido durante la implementación
+
+El propietario añadió un paquete Ultra Stick V3 y un DWG MoJo. La [inspección de los nuevos archivos](ugly-stik-new-files.md) identifica el conjunto principal como Ultra Stick 120 Light y mantiene sus datos separados del Jensen .61. Sus DXF nominales y registros de una pulgada sirven al procedimiento de medición y a una futura variante grande; no se usaron para sustituir la geometría Jensen.

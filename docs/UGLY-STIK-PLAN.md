@@ -11,6 +11,8 @@ Revisión 3 · 2026-10-05 · Basada en [diez investigaciones](research/ugly-stik
 > - `spec.gd`: las tablas BOXES/WINGS/WHEELS/SURFACES del bloque inicial ya no se usan. Mi `test_controls.gd` dejó de depender de `SURFACES`, así que se pueden borrar.
 > - Área alar: `geometry.json` usa 720 in²; `DECISIONS.md` registra 723 in², leídos en el cartucho del plano Jensen (imagen JEN-01). La diferencia es 0,4 %. Para física (D1) registraré ambos con su fuente.
 > - Para D1: el origen visual del modelo está "cerca del cuarto de cuerda; NO es un CG medido". La física usa el CG como origen del cuerpo, así que D1 definirá la posición del CG en el marco del modelo y el render desplazará la malla. Su geometría sigue siendo la única fuente de cotas: la física la leerá de `ugly_stik_geometry.gd` en lugar de copiarla.
+> - **D1 hecho (física), 2026-10-05: medición del plano Jensen oz1253 a escala 1:1** (`research/d1/jensen_plan_cg.py`, lectura ±0,03 in). Cuerda 12,07 in (el cartucho dice 720 in² / 60 in = 12,00 in: verificación de escala 0,6 %). **Cara delantera del cortafuegos F1 a borde de ataque: 6,94 in (0,176 m)**. **CG del plano: 4,76 in detrás del borde de ataque (39 % de la cuerda).**
+> - **Para el modelo visual:** `geometry.json` tiene el cortafuegos en `z = -0,44` y el borde de ataque en `-0,115`, es decir 0,325 m (≈12,8 in): el morro mide ≈1,85 veces el del plano. La física no depende de ello (usa borde de ataque y línea de empuje de su archivo, y el CG del plano), pero el morro se verá largo. El área 720 in² de su archivo coincide con el cartucho medido.
 
 La primera entrega es un **Jensen Ugly Stik .61 sencillo y articulado para Godot**, con fuente editable en `assets/aircraft/ugly-stik-60/` y constructor nativo en `app/aircraft/`. El propietario fijó primero el motor nitro de clase .61; **mini y gigante quedan para después**. La marca y el modelo concreto del motor siguen abiertos. Primero calibrar la geometría y conservar los mandos; después mejorar la silueta y añadir detalle visible. El [catálogo de recursos](research/ugly-stik-resources.md) permite abrir aquí los planos, notas, manual y referencias descargados.
 
@@ -94,3 +96,7 @@ Registrar triángulos, materiales, tamaño de archivo y tiempo de render de la p
 - Revisión perceptual con pilotos y rendimiento en hardware real; las capturas locales no sustituyen esas pruebas.
 
 Los [estudios](research/ugly-stik-investigations/README.md) dejan la evidencia y los pendientes. El [informe v1](research/ugly-stik-model-v1.md) registra la implementación, los ensayos ejecutados y las lecciones prácticas de esta revisión.
+
+## Nuevos recursos aportados por el propietario
+
+[Ultra Stick V3 y MoJo Parts 60: análisis](research/ugly-stik-new-files.md). El paquete principal identifica Ultra Stick 120 Light/Lite y trae planos/DXF/patrones con registro de 1 in. Se conserva para una posible variante grande y para mejorar la extracción de contornos nominales; no reemplaza la referencia Jensen .61 ni cierra su calibración. El manual incluido y el redibujo difieren en dimensiones, así que sus datos permanecen separados.

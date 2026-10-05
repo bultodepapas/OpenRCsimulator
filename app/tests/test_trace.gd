@@ -7,6 +7,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Trace := preload("res://sim/trace.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 
 var _failures := 0
 var _count := 0
@@ -21,8 +22,9 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var sim: Node = Sim.new()
-	sim.mass = Scenarios.MASS_KG
-	sim.inertia = Scenarios.inertia()
+	var aircraft := AircraftData.load_file(Scenarios.AIRCRAFT)
+	sim.mass = aircraft.model.mass_kg
+	sim.inertia = aircraft.model.inertia
 	root.add_child(sim)
 	var trace := Trace.new()
 	trace.meta = { scenario = "test" }

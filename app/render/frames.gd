@@ -56,3 +56,14 @@ static func _ned_matrix_to_basis(r_ned: Array) -> Basis:
 		Vector3(r[0][1], r[1][1], r[2][1]),
 		Vector3(r[0][2], r[1][2], r[2][2]),
 	)
+
+
+## Physics positions are the CG. The visual model has its own origin, so place the model root such that the
+## model-frame CG point lands on the simulated position: root = Transform3D(basis, pos - basis · cg_model).
+static func cg_in_model_frame(cg_le: PackedFloat64Array, leading_z: float, thrust_y: float) -> Vector3:
+	# le frame [x_aft, y_right, z_up] from the wing leading edge on the thrust line → model frame (+x right, +y up, −z nose).
+	return Vector3(cg_le[1], thrust_y + cg_le[2], leading_z + cg_le[0])
+
+
+static func root_transform(basis: Basis, cg_position: Vector3, cg_model: Vector3) -> Transform3D:
+	return Transform3D(basis, cg_position - basis * cg_model)

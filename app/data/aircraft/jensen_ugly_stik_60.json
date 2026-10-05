@@ -1,0 +1,743 @@
+{
+  "format": "openrc-aircraft v1",
+  "id": "jensen-das-ugly-stik-60",
+  "description": "Jensen Das Ugly Stik (Phil Kraft design), 60 in span, .61 two-stroke glow. Physics data only; visual geometry lives in assets/aircraft/ugly-stik-60/geometry.json.",
+  "frames": {
+    "le_frame": "positions in metres from the wing leading edge at the fuselage centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line",
+    "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.464515,
+      "unit": "m2",
+      "kind": "manual",
+      "source": "720 sq in, oz1253 title block (an older Jensen sheet image JEN-01 prints 723 sq in, +0.4 %)"
+    },
+    "wing_span": {
+      "value": 1.524,
+      "unit": "m",
+      "kind": "manual",
+      "source": "60 in, oz1253 title block"
+    },
+    "mean_chord": {
+      "value": 0.3048,
+      "unit": "m",
+      "kind": "derived",
+      "source": "area / span = 12 in (rectangular planform); plan chord reads 12.07 in"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.1209,
+        0.0,
+        0.07
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)"
+    }
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.1209,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "manual",
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line"
+    },
+    "firewall": {
+      "value": [
+        -0.1763,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "manual",
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE"
+    },
+    "mismatch_warning_mac": {
+      "value": 0.15,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "warn when the inventory CG differs from the plan CG by more than 15 % of the mean chord"
+    }
+  },
+  "inventory": [
+    {
+      "name": "engine O.S. MAX-61FX",
+      "mass": {
+        "value": 0.55,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "O.S. catalog 17750 (RESEARCH.md)"
+      },
+      "position": {
+        "value": [
+          -0.226,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "crankcase ~2 in ahead of the firewall"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.05,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "muffler E-4010",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "sibling E-4010A is 156 g (O.S. catalog)"
+      },
+      "position": {
+        "value": [
+          -0.21,
+          0.06,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "side-mounted"
+      }
+    },
+    {
+      "name": "propeller APC 12x6 Sport",
+      "mass": {
+        "value": 0.046,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "APC LP12060 1.62 oz"
+      },
+      "position": {
+        "value": [
+          -0.286,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "~4.3 in ahead of firewall"
+      },
+      "size": {
+        "value": [
+          0.01,
+          0.305,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "spinner and prop nut",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "typical 2.25 in spinner"
+      },
+      "position": {
+        "value": [
+          -0.3,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      }
+    },
+    {
+      "name": "engine mount and bolts",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "nylon beam mount"
+      },
+      "position": {
+        "value": [
+          -0.19,
+          0.0,
+          -0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      }
+    },
+    {
+      "name": "fuel tank (empty)",
+      "mass": {
+        "value": 0.055,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "8-10 oz clunk tank"
+      },
+      "position": {
+        "value": [
+          -0.1,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: 'fuel tank & battery compartment' F1-F2"
+      }
+    },
+    {
+      "name": "fuel (half tank)",
+      "mass": {
+        "value": 0.12,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank"
+      },
+      "position": {
+        "value": [
+          -0.1,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "same as tank"
+      }
+    },
+    {
+      "name": "receiver battery 4.8 V 600 mAh",
+      "mass": {
+        "value": 0.105,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "NiMH pack"
+      },
+      "position": {
+        "value": [
+          -0.12,
+          0.0,
+          -0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: tank & battery compartment"
+      }
+    },
+    {
+      "name": "receiver",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "typical 6-8 ch receiver"
+      },
+      "position": {
+        "value": [
+          0.04,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: receiver compartment F2-F3"
+      }
+    },
+    {
+      "name": "fuselage servos (3)",
+      "mass": {
+        "value": 0.135,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "3 standard servos ~45 g"
+      },
+      "position": {
+        "value": [
+          0.15,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: hardwood servo rails behind F3"
+      }
+    },
+    {
+      "name": "aileron servo",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "standard servo"
+      },
+      "position": {
+        "value": [
+          0.15,
+          0.0,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "centre of wing"
+      }
+    },
+    {
+      "name": "nose gear and 2.75 in wheel",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "steerable nose leg"
+      },
+      "position": {
+        "value": [
+          -0.17,
+          0.0,
+          -0.12
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: nylon bearings at F1"
+      }
+    },
+    {
+      "name": "main gear and 3 in wheels",
+      "mass": {
+        "value": 0.13,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "0.090 in 2024-T3 gear (plan) and wheels"
+      },
+      "position": {
+        "value": [
+          0.137,
+          0.0,
+          -0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: main gear leg ~5.4 in aft of LE"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.36,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "wing incl. ailerons",
+      "mass": {
+        "value": 0.52,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "built-up 60 x 12 in thick-section wing, covered"
+      },
+      "position": {
+        "value": [
+          0.12,
+          0.0,
+          0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "centroid ~40 % chord, wing on top of fuselage"
+      },
+      "size": {
+        "value": [
+          0.3048,
+          1.524,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fuselage front (firewall to F4)",
+      "mass": {
+        "value": 0.22,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "ply firewall/doublers, balsa sides"
+      },
+      "position": {
+        "value": [
+          0.04,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.43,
+          0.1,
+          0.13
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fuselage rear (F4 to tail)",
+      "mass": {
+        "value": 0.14,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "balsa sides and sheeting"
+      },
+      "position": {
+        "value": [
+          0.5,
+          0.0,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.65,
+          0.07,
+          0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "stabilizer and elevator",
+      "mass": {
+        "value": 0.1,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "1/16 sheeted built-up stab, 1/4 sheet elevator"
+      },
+      "position": {
+        "value": [
+          0.78,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.2,
+          0.56,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fin and rudder",
+      "mass": {
+        "value": 0.055,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "1/4 sheet fin and rudder"
+      },
+      "position": {
+        "value": [
+          0.8,
+          0.0,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.2,
+          0.01,
+          0.2
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "pushrods, horns, hardware",
+      "mass": {
+        "value": 0.07,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "clevises, horns, pushrods, screws, switch harness: rough sum"
+      },
+      "position": {
+        "value": [
+          0.35,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "spread along the fuselage"
+      }
+    }
+  ],
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        2.3,
+        3.4
+      ],
+      "unit": "kg",
+      "kind": "borrowed",
+      "source": "Stick-family .60 manuals: Ultra Stick .60 6-7 lb, Big Stik .60 6.5 lb (RESEARCH.md), widened"
+    },
+    "inertia_reference": {
+      "value": [
+        0.07151,
+        0.08636,
+        0.15364
+      ],
+      "unit": "kg·m2",
+      "kind": "borrowed",
+      "source": "UltraStick25e Jxx Jyy Jzz (1.959 kg, 1.27 m span); compared after scaling by m·b²"
+    }
+  },
+  "aero": {
+    "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik",
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.1068,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLa": {
+        "value": 4.58,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLadot": {
+        "value": 1.9724,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLq": {
+        "value": 6.1639,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLde": {
+        "value": 0.0983,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLda_each": {
+        "value": 0.23755,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CD0": {
+        "value": 0.0434,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CL_minD": {
+        "value": 0.23,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "k_induced": {
+        "value": 0.0814934,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDda_each": {
+        "value": 0.0151,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDdr": {
+        "value": 0.0303,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDde": {
+        "value": 0.0135,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYb": {
+        "value": -0.4889,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYp": {
+        "value": -0.0375,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYr": {
+        "value": 0.15,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYdr": {
+        "value": 0.1913,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clb": {
+        "value": -0.0545,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clp": {
+        "value": -0.4496,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clr": {
+        "value": 0.1086,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clda_right": {
+        "value": -0.0823,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clda_left": {
+        "value": 0.0823,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cldr": {
+        "value": 0.0115,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cm0": {
+        "value": -0.0278,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cma": {
+        "value": -0.723,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cmq": {
+        "value": -13.5664,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cmde": {
+        "value": -0.8488,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cmda_each": {
+        "value": 0.02335,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnb": {
+        "value": 0.0723,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnp": {
+        "value": 0.118,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnr": {
+        "value": -0.1833,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnda_right": {
+        "value": 0.0287,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnda_left": {
+        "value": -0.0287,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cndr": {
+        "value": -0.1811,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      }
+    }
+  }
+}

@@ -195,9 +195,14 @@ static func _wings(root: Node3D, hinges: Dictionary) -> void:
 	var w: Dictionary = D.wing
 	# Split at hinge, retaining the semisymmetric section and separate moving trailing edge.
 	var fixed: Array = []
+	var hinge_heights: Array[float] = []
+	var trailing_height := 0.0
 	for p in w.section:
 		if p[0] <= w.hinge_fraction: fixed.append(p)
-	var moving := [[0, 0.021], [1.0 - w.hinge_fraction, 0], [0, -0.008]]
+		if is_equal_approx(p[0], w.hinge_fraction): hinge_heights.append(p[1])
+		if is_equal_approx(p[0], 1.0): trailing_height = p[1]
+	assert(hinge_heights.size() == 2, "Section needs upper/lower hinge samples")
+	var moving := [[0, hinge_heights[0]], [1.0 - w.hinge_fraction, trailing_height], [0, hinge_heights[1]]]
 	for sign in [-1.0, 1.0]:
 		var suffix := "right" if sign > 0 else "left"
 		var frame := Node3D.new()

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-05",
+  "godot": "4.7.2-stable",
+  "baseline_app_tests": "pass before model integration",
+  "final_app_tests": "pass",
+  "model_checks": 449,
+  "model_failures": 0,
+  "fixed_step_hashes_equal_at_fps": [
+    30,
+    60,
+    144
+  ],
+  "geometry_source_runtime": "compile_geometry.py --check passes",
+  "model_only_mutation_check": "in scratch copy, invert hinge X sign: 12 expected failures, exit 1",
+  "capture_series": "research/ugly-stik/model-v1/captures/manifest.json",
+  "in_app_capture": "research/ugly-stik/model-v1/captures/in-app.png",
+  "code_and_data_sha256": {
+    "assets/aircraft/ugly-stik-60/geometry.json": "7f4f0198cfc5ae415cd2e1ad12a9341ee93568d9fbeb5e01b4558282ec510adb",
+    "app/aircraft/ugly_stik_geometry.gd": "fb432d4f8d128f299fc13000d021a27b45b63db2f93ec0d9d14056017f18ad89",
+    "app/aircraft/ugly_stik_model.gd": "8cea87401701ff69b118816742815b561a7209fd9e2f11cd580c1f6373605ed2",
+    "app/aircraft/verify_model.gd": "11245fb4d1cd484fcdd1dc846b4e18f33890169e429c74a716770db8011f7a0a",
+    "app/render/airplane.gd": "ee7fde85bbc7654c16d89849c74b8ec1498b74c9b3802e569765cb1ceb7e8e8b"
+  },
+  "limits": [
+    "Scan calibration still conditional",
+    "No real-engine installation validation",
+    "No user perception test",
+    "Visual model only; flight physics not validated by this delivery"
+  ]
+}

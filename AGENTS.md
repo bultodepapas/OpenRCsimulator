@@ -26,7 +26,7 @@ Rules for the Godot app:
 
 Parallel work (2026-10-05): several developers/assistants work in this repo at the same time.
 - **Aircraft model** (another developer): `app/aircraft/`, `app/render/airplane.gd`, the geometry tables in `app/spec.gd`, `assets/aircraft/`, `docs/UGLY-STIK-PLAN.md`, `docs/research/`. Keep its node names and hinge interface (`airplane`, `propeller`, `*_hinge`) stable.
-- **Physics and simulation** (main line): `app/physics/`, `app/sim/`, `app/tests/`, the ROADMAP Phase C/D steps.
+- **Physics and simulation** (main line): `app/physics/`, `app/sim/`, `app/data/aircraft/` (physics data), `app/tests/`, the ROADMAP Phase C/D steps. Physics reads span, chord, leading edge and thrust line from the model team's generated `ugly_stik_geometry.gd`; `tests/test_aircraft_data.gd` checks that both agree.
 - `app/test.sh` parses **every** script in `app/`, so work in progress that doesn't parse breaks everyone's run and CI. Run `app/test.sh` before saving scripts into `app/`, or keep drafts outside it.
 - Before moving or renaming files, grep the whole repo for the old paths. Never leave a deliberately broken file in the working tree: run mutation checks on a copy.
 
