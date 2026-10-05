@@ -36,6 +36,7 @@ var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
 var _engine_phase := 0.0
 var _cg_model := Vector3.ZERO
+var _env: Environment
 ## Landscape review view (L0): (azimuth, elevation) in degrees from the pilot's eye, or (NAN, NAN) to follow the airplane.
 var _look := Vector2(NAN, NAN)
 var _look_height := 1.7 # m above the pilot station (L0b top-down view: 30)
@@ -121,6 +122,7 @@ func _process(delta: float) -> void:
 	if _frametimes_path != "":
 		_log_frame_time(delta)
 	ShaderClock.update(session.sim.time())
+	Atmosphere.update_clouds(_env, session.sim.time()) # at most once per cloud_update_s of simulation
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -252,7 +254,8 @@ func _view_name() -> String:
 
 func _build_world() -> void:
 	var world_env := WorldEnvironment.new()
-	world_env.environment = Atmosphere.environment()
+	_env = Atmosphere.environment()
+	world_env.environment = _env
 	add_child(world_env)
 
 	var ground := MeshInstance3D.new()
@@ -318,6 +321,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
 	ShaderClock.update(t if _scripted else sim.time())
+	Atmosphere.update_clouds(_env, t if _scripted else sim.time())
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw

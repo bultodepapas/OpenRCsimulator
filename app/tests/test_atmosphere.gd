@@ -59,6 +59,19 @@ func _initialize() -> void:
 		and absf(env2.fog_sun_scatter * sun2.light_energy - product_off) < 1e-5)
 	Atmosphere.engine_shadows = false
 
+	# L4 clouds: the drift is quantised to cloud_update_s of simulation, wrapped to the noise period, and the sky is
+	# only touched when it actually changes (each change re-renders the radiance).
+	var step: float = Spec.ATMOSPHERE.cloud_update_s
+	_check("clouds: same offset within one update interval", Atmosphere.cloud_offset(10.0) == Atmosphere.cloud_offset(10.0 + 0.99 * step))
+	_check("clouds: new offset at the next interval", Atmosphere.cloud_offset(10.0) != Atmosphere.cloud_offset(10.0 + step))
+	var drift: Vector2 = Spec.ATMOSPHERE.cloud_drift_cells_per_s
+	var off := Atmosphere.cloud_offset(123.0)
+	_check("clouds: offset inside one noise period", off.x >= 0.0 and off.x < Atmosphere.CLOUD_PERIOD and off.y >= 0.0 and off.y < Atmosphere.CLOUD_PERIOD)
+	_check("clouds: offset = drift × quantised time, wrapped", off.is_equal_approx(Vector2(fposmod(drift.x * 123.0, 64.0), fposmod(drift.y * 123.0, 64.0))))
+	var env3 := Atmosphere.environment()
+	_check("clouds: first update at t = 5 s changes the sky", Atmosphere.update_clouds(env3, 5.0))
+	_check("clouds: the same interval again does not", not Atmosphere.update_clouds(env3, 5.5))
+
 	# Geometry: the ground reaches the rim, and the camera sees past it.
 	_check("ground half-size ≥ rim end", Spec.GROUND_SIZE / 2.0 >= Spec.ATMOSPHERE.rim_end_m)
 	_check("camera far ≥ 1.05 × rim end", Spec.CAMERA.far >= 1.05 * Spec.ATMOSPHERE.rim_end_m)

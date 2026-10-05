@@ -40,6 +40,8 @@ shot "-physics-inspect-noplane" --t=1.5 --inspect --hide_airplane
 for az in 0 90 180 270; do
   for el in 0 10; do shot "-land-az${az}-el${el}" --t=1.5 --look_az=$az --look_el=$el; done
 done
+# L4: the same view 10 s later: only the clouds may change.
+shot "-land-az90-el10-t11" --t=11.5 --look_az=90 --look_el=10
 # L2: the horizon from 100 m up (the ground's rim is 0.3° below the horizon there), including toward the sun.
 for az in 0 90 180 225 270; do shot "-land-az${az}-el0-100m" --t=1.5 --look_az=$az --look_el=0 --look_alt=100; done
 # Readability views (L0c): no ground shadow, so the with/without difference is the airplane only (its shadow is

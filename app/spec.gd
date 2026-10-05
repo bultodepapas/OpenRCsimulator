@@ -43,6 +43,11 @@ const ATMOSPHERE := {
 	# the fog scatter is divided by it so the haze stays the same. Whites still clip, so engine shadows are off.
 	sun_color = Color("#ffe9d7"), sun_energy = 1.0, shadow_energy_compat = 0.85, shadow_max_distance_m = 300.0,
 	rim_start_m = 16000.0, rim_end_m = 20000.0,
+	# L4 clouds (estimated, fair-weather cumulus): coverage, deck scale, seed, colour, drift (noise cells per second,
+	# from the wind aloft once wind exists), updated at most once per second of simulation (each update re-renders
+	# the sky radiance).
+	cloud_coverage = 0.35, cloud_scale = 6.0, cloud_seed = 1253, cloud_color = Color("#f2f4f7"),
+	cloud_drift_cells_per_s = Vector2(0.004, 0.0015), cloud_update_s = 1.0,
 }
 
 const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 21000.0 } # far ≥ 1.05 × the ground's rim (L2)

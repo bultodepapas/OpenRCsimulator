@@ -94,5 +94,8 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Release notes: docs/releases/<tag>.md when it exists (written with the release), else the first-launch guide.
+          NOTES="docs/releases/${GITHUB_REF_NAME}.md"
+          [ -f "$NOTES" ] || NOTES=docs/FIRST-LAUNCH.md
           gh release create "$GITHUB_REF_NAME" dist/openrc-simulator-*.zip dist/SHA256SUMS \
-            --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file docs/FIRST-LAUNCH.md --prerelease
+            --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" --prerelease
