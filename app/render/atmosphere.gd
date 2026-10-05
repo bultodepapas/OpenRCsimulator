@@ -10,6 +10,9 @@ const Frames := preload("res://render/frames.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const GROUND_SHADER := preload("res://render/ground.gdshader")
 
+## The cloud noise's lattice period in cells (render/sky.gdshader CLOUD_PERIOD).
+const CLOUD_PERIOD := 64.0
+
 ## Koschmieder: visual range = 3.912 / β (2 % contrast threshold).
 const KOSCHMIEDER := 3.912
 
@@ -78,8 +81,34 @@ static func sky_material() -> ShaderMaterial:
 	mat.set_shader_parameter("zenith_lin", Vector3(z.r, z.g, z.b))
 	mat.set_shader_parameter("gradient_curve", a.gradient_curve)
 	mat.set_shader_parameter("sun_radius", deg_to_rad(a.sun_diameter_deg) / 2.0)
+	var cl: Color = a.cloud_color.srgb_to_linear()
+	mat.set_shader_parameter("cloud_lin", Vector3(cl.r, cl.g, cl.b))
+	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
+	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
+	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
+	mat.set_shader_parameter("cloud_offset", cloud_offset(0.0))
 	_set_haze_uniforms(mat)
 	return mat
+
+
+## L4: cloud drift for a simulation time (s): quantised to cloud_update_s and wrapped in float64 to the noise period,
+## so the sky changes at most once per update interval and never jumps.
+static func cloud_offset(sim_time: float) -> Vector2:
+	var a: Dictionary = Spec.ATMOSPHERE
+	var step: float = a.cloud_update_s
+	var t := floorf(sim_time / step) * step
+	var d: Vector2 = a.cloud_drift_cells_per_s
+	return Vector2(fposmod(d.x * t, CLOUD_PERIOD), fposmod(d.y * t, CLOUD_PERIOD))
+
+
+## Moves the clouds of an environment's sky to a simulation time; returns true when the sky actually changed.
+static func update_clouds(env: Environment, sim_time: float) -> bool:
+	var mat: ShaderMaterial = env.sky.sky_material
+	var off := cloud_offset(sim_time)
+	if mat.get_shader_parameter("cloud_offset") == off:
+		return false
+	mat.set_shader_parameter("cloud_offset", off)
+	return true
 
 
 ## The ground's material: grass texture in world space + the haze as custom fog with the rim fade.

@@ -63,8 +63,9 @@ for f in views:
 # L0d: the shader clock sent during the capture equals its simulation time (t = 1.5 s).
 for name, c in counters.items():
     if name.startswith("capture-land-"):
-        if c.get("sim_clock") != "1.5":
-            problems.append(f"{name}: sim_clock {c.get('sim_clock')} instead of 1.5 (the capture's simulation time)")
+        want = "11.5" if name.endswith("-t11") else "1.5"
+        if c.get("sim_clock") != want:
+            problems.append(f"{name}: sim_clock {c.get('sim_clock')} instead of {want} (the capture's simulation time)")
 print("sim_clock sent in every landscape view: " + ", ".join(sorted({c.get("sim_clock", "?") for n, c in counters.items() if n.startswith("capture-land-")})))
 
 # L2 haze and horizon. Row means over a right-hand strip (no panel, HUD, airplane or sun there).
@@ -155,6 +156,22 @@ if "capture-physics-inspect.png" in os.listdir(d):
     print(f"airplane in the close-up: {len(ls)} px sampled, 99th percentile lightness L* {p99:.1f} (limit 95)")
     if not ls or p99 >= 95:
         problems.append(f"sunlit airplane clips: L* 99th percentile {p99:.1f} ≥ 95")
+
+# L4 clouds: 10 s apart, the same view visibly changes only in the sky (outside the panel and HUD text). Below the
+# horizon the ground may shift by 1 level: the clouds change the sky radiance, i.e. the ambient light (measured).
+if "capture-land-az90-el10-t11.png" in os.listdir(d):
+    (a, size), (b, _) = rgb("capture-land-az90-el10.png"), rgb("capture-land-az90-el10-t11.png")
+    w, h = size
+    horizon = h // 2 + round((h / 2) / math.tan(math.radians(25)) * math.tan(math.radians(10)))
+    ui = lambda x, y: (x < 500 and y < 270) or (y > 640 and x < 1000)  # input panel, HUD line
+    delta = lambda x, y: max(abs(a[x, y][c] - b[x, y][c]) for c in range(3))
+    sky_moved = sum(1 for y in range(horizon) for x in range(0, w) if not ui(x, y) and delta(x, y) > 3)
+    ground_max = max(delta(x, y) for y in range(horizon, h) for x in range(0, w) if not ui(x, y))
+    print(f"clouds 10 s apart: {sky_moved} sky px changed by > 3 levels; the ground changed by at most {ground_max} level(s)")
+    if sky_moved < 1000:
+        problems.append(f"clouds: the sky barely changed in 10 s ({sky_moved} px)")
+    if ground_max > 1:
+        problems.append(f"clouds: the ground changed by {ground_max} levels (only the sky may change visibly)")
 
 sun = counters.get("capture-land-sun", {}).get("sun_px")
 if sun is None or sun == "behind":
