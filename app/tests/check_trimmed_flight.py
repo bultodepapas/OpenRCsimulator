@@ -5,6 +5,7 @@ Defaults match the three-second, 240 Hz smoke flight. Capture/export callers pas
 """
 import argparse
 import csv
+import json
 import math
 from pathlib import Path
 import sys
@@ -17,6 +18,58 @@ COLUMNS = (
 ).split()
 # Trace v3 prints time to nine decimal places. Allow rounding, not a missing tick.
 TIME_TOLERANCE = 1e-9
+STATE_LAYOUT = 'north_m east_m down_m u_mps v_mps w_mps qw qx qy qz p_radps q_radps r_radps'.split()
+AUX_LAYOUT = 'engine_rpm srv_roll srv_pitch srv_yaw'.split()
+
+
+def check_metadata(metadata: dict, first: dict) -> None:
+    """Current app evidence requires C7-R2 headers; unversioned legacy headers are not accepted."""
+    if metadata.get('metadata_schema') != 'openrc-flight-meta v1':
+        raise ValueError('missing or unsupported flight metadata schema')
+    for key in ('aircraft', 'configuration', 'aircraft_data_sha256', 'aircraft_data_hash_convention',
+                'loads', 'state_timing'):
+        if not metadata.get(key):
+            raise ValueError(f'missing flight metadata: {key}')
+    for key, allowed in {
+        'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle'),
+        'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1'),
+        'propwash_model': ('none', 'tail-slipstream-increment-v1'),
+    }.items():
+        if metadata.get(key) not in allowed:
+            raise ValueError(f'missing or unsupported {key}')
+    turbine = metadata['propulsion_model'] == 'turbine-ecu-spool-v1'
+    if metadata.get('engine_rpm_semantics') != ('turbine spool rpm' if turbine else 'propeller shaft rpm'):
+        raise ValueError('engine_rpm_semantics disagrees with propulsion_model')
+    try:
+        state_layout = json.loads(metadata['state_layout'])
+        aux_layout = json.loads(metadata['aux_layout'])
+        aux = json.loads(metadata['recording_start_aux'])
+        features = json.loads(metadata['propulsion_features'])
+    except (KeyError, ValueError) as error:
+        raise ValueError('missing or invalid structured flight metadata') from error
+    if state_layout != STATE_LAYOUT or aux_layout != AUX_LAYOUT:
+        raise ValueError('state/aux layout disagrees with trace v3')
+    if not isinstance(aux, list) or len(aux) != len(AUX_LAYOUT) or any(
+        type(value) not in (int, float) or not math.isfinite(value) for value in aux
+    ):
+        raise ValueError('invalid recording_start_aux')
+    if any(abs(value - first[column]) > 1e-9 for column, value in zip(AUX_LAYOUT, aux)):
+        raise ValueError('recording_start_aux disagrees with first sample')
+    if metadata.get('recording_start_tick') != str(int(first['tick'])):
+        raise ValueError('recording_start_tick disagrees with first sample')
+    if metadata.get('recording_start_engine_running') != 'true':
+        raise ValueError('trimmed powered flight must start with engine running')
+    feature_names = {'propeller_normal_force', 'propeller_pfactor', 'rotor_gyroscopic_coupling',
+                     'turbine_ram_flow', 'turbine_ram_jet'}
+    if not isinstance(features, dict) or features.keys() != feature_names or any(
+        type(value) is not bool for value in features.values()
+    ):
+        raise ValueError('invalid propulsion_features')
+    if turbine and (metadata['propwash_model'] != 'none' or features['propeller_normal_force']
+                    or features['propeller_pfactor']):
+        raise ValueError('turbine metadata declares propeller features')
+    if not turbine and (features['turbine_ram_flow'] or features['turbine_ram_jet']):
+        raise ValueError('propeller metadata declares turbine features')
 
 
 def check(path: Path, duration: float, hz: int) -> str:
@@ -68,6 +121,7 @@ def check(path: Path, duration: float, hz: int) -> str:
             raise ValueError(f"sample {index}: wrong elapsed time")
         data.append(sample)
     first, last = data[0], data[-1]
+    check_metadata(metadata, first)
     for key, tolerance in (("speed_mps", .01), ("pitch_deg", .05), ("alt_m", .05), ("engine_rpm", 1.0)):
         if abs(last[key] - first[key]) > tolerance:
             raise ValueError(f"{key} drifts {first[key]:.6f} -> {last[key]:.6f}")

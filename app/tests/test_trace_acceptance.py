@@ -1,6 +1,7 @@
 """C7-R1: real trace mutations and CLI failures must fail as processes, not just print errors."""
 import csv
 import io
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -60,6 +61,61 @@ class TraceAcceptance(unittest.TestCase):
         result = self.checker()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('720 ticks', result.stdout)
+
+    def test_active_aircraft_metadata(self):
+        cases = [
+            ('jensen-das-ugly-stik-60', 'propeller-rpm-lag-v1', 'none', False),
+            ('gp-extra-300s-60', 'propeller-rpm-lag-v1', 'none', False),
+            ('p51d-mustang-120', 'propeller-shaft-balance-v1', 'tail-slipstream-increment-v1', True),
+            ('sebart-avanti-s-a200-p100rx', 'turbine-ecu-spool-v1', 'none', False),
+        ]
+        for aircraft, propulsion, propwash, crossflow in cases:
+            with self.subTest(aircraft=aircraft):
+                path = self.directory / (aircraft + '.csv')
+                result = self.run_app('--aircraft=' + aircraft, '--trace=' + str(path), '--t=.05')
+                self.assertEqual(result.returncode, 0, result.stdout)
+                self.assertNotIn('ERROR:', result.stdout)
+                metadata = dict(line[2:].split(': ', 1) for line in path.read_text().splitlines()
+                                if line.startswith('# '))
+                self.assertEqual(metadata['propulsion_model'], propulsion)
+                self.assertEqual(metadata['propwash_model'], propwash)
+                features = json.loads(metadata['propulsion_features'])
+                self.assertEqual(features['propeller_normal_force'], crossflow)
+                self.assertEqual(features['propeller_pfactor'], crossflow)
+                checked = subprocess.run([sys.executable, str(CHECKER), str(path), '--duration=.05'],
+                                         capture_output=True, text=True, timeout=10)
+                self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_missing_or_inconsistent_flight_metadata_fails(self):
+        metadata = dict(line[2:].split(': ', 1) for line in self.meta)
+        keys = ['metadata_schema', 'aero_model', 'propulsion_model', 'propwash_model',
+                'propulsion_features', 'engine_rpm_semantics', 'state_layout', 'aux_layout',
+                'recording_start_tick', 'recording_start_aux', 'recording_start_engine_running',
+                'aircraft_data_hash_convention']
+        for key in keys:
+            with self.subTest(missing=key):
+                self.rejected(meta=[line for line in self.meta if not line.startswith('# ' + key + ':')])
+        mutations = [
+            ('metadata_schema', 'openrc-flight-meta v999'),
+            ('aero_model', 'local-surfaces-v1 with bounded attached oracle; no propwash'),
+            ('propulsion_model', 'turbine-ecu-spool-v1'),
+            ('engine_rpm_semantics', 'turbine spool rpm'),
+            ('recording_start_tick', '1'), ('recording_start_engine_running', 'false'),
+            ('aux_layout', '["srv_roll", "engine_rpm", "srv_pitch", "srv_yaw"]'),
+            ('state_layout', '[]'), ('recording_start_aux', 'null'),
+            ('recording_start_aux', '[0, 0, 0, 0]'),
+            ('recording_start_aux', '[NaN, 0, 0, 0]'),
+            ('recording_start_aux', '[true, 0, 0, 0]'),
+            ('propulsion_features', '{}'), ('propulsion_features', 'null'),
+            ('propulsion_features', 'not-json'),
+        ]
+        features = json.loads(metadata['propulsion_features'])
+        mutations.append(('propulsion_features', json.dumps({**features, 'turbine_ram_flow': True})))
+        mutations.append(('propulsion_features', json.dumps({**features, 'propeller_pfactor': 'false'})))
+        for key, value in mutations:
+            with self.subTest(key=key, value=value):
+                self.rejected(meta=[f'# {key}: {value}' if line.startswith('# ' + key + ':') else line
+                                    for line in self.meta])
 
     def test_partial_and_extra_samples_fail(self):
         for table in [[], self.table[:1], self.table[:2], self.table[:-1],
