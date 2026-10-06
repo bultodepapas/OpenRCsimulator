@@ -75,6 +75,8 @@ def main():
         real = silhouette(dark, v["box"], v["exclude"])
         if key == "front":  # left half only (the right wing's outline leaks in the drawing)
             real[:, int(view["anchors"]["centre"]["picked_px"][0]):] = False
+        for box in v.get("mask_after", []):  # propeller blades: drawn in the three-view, not compared
+            real[max(box[1] - v["box"][1], 0):box[3] - v["box"][1], max(box[0] - v["box"][0], 0):box[2] - v["box"][0]] = False
         crop = im[v["box"][1]:v["box"][3], v["box"][0]:v["box"][2]]
         result = {}
         for label, folder, man in (("after", args.candidate, manifest), ("before", args.baseline, base_manifest)):
@@ -103,6 +105,7 @@ def main():
                    metric="Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels, drop tanks and dimension lines excluded by the drawing silhouette; not metric accuracy per component.",
                    views=rows)
     (args.output / "metrics.json").write_text(json.dumps(summary, indent=2) + "\n")
+    write_viewer(args.output, fit, rows, args.candidate, args.baseline, args.label)
     for key, r in rows.items():
         a = r["after"]
         line = f"{key:6} real->model {a['real_to_model_mean_px']:5.1f} px (p90 {a['real_to_model_p90_px']:5.1f}) model->real {a['model_to_real_mean_px']:5.1f} px  IoU {a['iou']:.3f}  ≈{a['mean_mm_model']:.0f} mm on the model"
@@ -112,6 +115,49 @@ def main():
         print(line)
         print("        bins:", " ".join("  -- " if x is None else f"{x:5.1f}" for x in a["real_to_model_bins_px"]))
     print(args.output)
+
+
+def write_viewer(output, fit, rows, candidate, baseline, label):
+    """index.html: the drawing crop with the model render(s) overlaid in SVG (opacity, contour, before/after), no edits."""
+    import html as h
+    import os
+    import shutil
+    rel = lambda p: os.path.relpath(p, output)
+    blocks = []
+    for view in fit["views"]:
+        key = view["id"]
+        w, hh = view["size_px"]
+        after = rel(candidate / f"{key}.png")
+        before = rel(baseline / f"{key}.png") if baseline else ""
+        m = rows[key]["after"]
+        caption = f"{view['title']} · real→modelo {m['real_to_model_mean_px']:.1f} px (p90 {m['real_to_model_p90_px']:.1f}), IoU {m['iou']:.3f}"
+        if "before" in rows[key]:
+            b = rows[key]["before"]
+            caption += f" · antes {b['real_to_model_mean_px']:.1f} px, IoU {b['iou']:.3f}"
+        blocks.append(f'''<section><h2>{h.escape(caption)}</h2>
+<svg class="stage" viewBox="0 0 {w} {hh}" role="img"><image class="photo" href="drawing_{key}.png" width="{w}" height="{hh}"/>
+<image class="before" href="{h.escape(before)}" width="{w}" height="{hh}" opacity="0" style="filter:url(#tint)"/>
+<image class="after" href="{h.escape(after)}" width="{w}" height="{hh}" opacity=".45"/></svg></section>''')
+    page = f'''<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P-51D · siluetas sobre la tres vistas AN 01-60-3</title><style>
+*{{box-sizing:border-box}}body{{margin:0;background:#14212d;color:#edf3f6;font:16px system-ui}}main{{max-width:1600px;margin:auto;padding:24px}}
+h1{{font-size:24px}}h2{{font-size:16px;font-weight:500;color:#a8d8e0}}p{{line-height:1.5;max-width:100ch}}.controls{{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:16px 0}}
+button,select{{font:inherit;padding:8px;background:#274357;color:inherit;border:1px solid #7698a9;border-radius:6px}}button[aria-pressed=true]{{background:#096b70}}
+.stage{{width:100%;height:auto;display:block;background:#f4f1ea;border-radius:6px}}small{{color:#a8bfcd}}input{{accent-color:#2ae1d4}}
+</style><main><h1>P-51D 1/4 · siluetas del modelo sobre la tres vistas oficial (AN 01-60-3, dominio público)</h1>
+<p>{h.escape(label)}. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
+<div class="controls"><button data-mode="both" aria-pressed="true">Superponer</button><button data-mode="photo" aria-pressed="false">Solo dibujo</button><button data-mode="model" aria-pressed="false">Solo modelo</button>
+<label>Opacidad <input id="opacity" type="range" min="0" max="100" value="45"><output id="value">45%</output></label><label><input id="contour" type="checkbox"> Contorno</label><label><input id="before" type="checkbox"> Mostrar «antes»</label></div>
+<svg width="0" height="0" style="position:absolute"><defs><filter id="edge"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="inner"/><feComposite in="SourceAlpha" in2="inner" operator="out"/></filter>
+<filter id="tint"><feColorMatrix type="matrix" values="1 0 0 0 0.9  0 0 0 0 0.1  0 0 0 0 0.6  0 0 0 1 0"/></filter></defs></svg>
+{"".join(blocks)}
+<p><small>Métrica en metrics.json: distancia euclídea de cada píxel del contorno del dibujo al borde más cercano del alpha del render (y a la inversa), IoU de las máscaras rellenas. La vista frontal es cualitativa: las palas dibujadas no se separan del cuerpo.</small></p></main>
+<script>const $=s=>document.querySelector(s);let mode='both';function update(){{const o=Number($('#opacity').value)/100;document.querySelectorAll('.photo').forEach(e=>e.style.display=mode==='model'?'none':'');
+document.querySelectorAll('.after').forEach(e=>{{e.setAttribute('opacity',mode==='photo'?0:mode==='model'?1:o);e.setAttribute('filter',$('#contour').checked?'url(#edge)':'none');}});
+document.querySelectorAll('.before').forEach(e=>e.setAttribute('opacity',$('#before').checked&&mode!=='photo'?o:0));$('#value').textContent=$('#opacity').value+'%';
+document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===mode));}}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{{mode=b.dataset.mode;update();}});for(const id of ['opacity','contour','before'])$('#'+id).oninput=update;update();</script></html>'''
+    (output / "index.html").write_text(page)
 
 
 if __name__ == "__main__":

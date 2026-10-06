@@ -3,8 +3,8 @@
   "date": "2026-10-06",
   "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
   "drawing_sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
-  "model_geometry_sha256": "dc3832343c16d28380ffcb8ffb7f7b5b1437043e08336cfef8e4b525cabf5f45",
-  "picks_sha256": "e45bfaaa4519f177c1be7bce70cee5f7f66b6e4f03afff5fb10f693a67117f54",
+  "model_geometry_sha256": "d1a4267ccece016d438e0b96137521bd4a0e493e9c793c84d418f705ac296780",
+  "picks_sha256": "10f9424f26e3a17b681af08586e6a77f6517fd89e7887f41e5dbaeb80d91c6fe",
   "method": "Orthographic cameras from two anchors per view (uniform scale, no rotation, no image deformation), as research/avanti-s/user-profile. Side: spinner tip and rudder TE on the fuselage reference line; plan and front: wing tips. The front view's vertical anchor is the wing-tip chord plane (dihedral 5 deg from the drawing).",
   "limits": [
     "The 1945 reproduction is about 3 % anisotropic in the side view (fin height vs length); only the horizontal anchors are used, so vertical positions in the side view carry that error.",

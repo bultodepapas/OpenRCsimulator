@@ -34,8 +34,8 @@
       "axis_y": 0.023
     },
     "propeller_diameter": 3.404,
-    "firewall_z": -1.096,
-    "cowl_rear_z": -0.396,
+    "firewall_z": -0.1,
+    "cowl_rear_z": 0.6,
     "fuselage_stations": [
       [
         -1.996,
@@ -375,7 +375,7 @@
       "z0": -1.846,
       "z1": -0.896,
       "half_width": 0.15,
-      "height": 0.03
+      "height": 0.01
     },
     "canopy": {
       "top": [
@@ -456,46 +456,46 @@
     "gear": {
       "main_axle": [
         0.1,
-        -1.37
+        -1.7
       ],
       "main_wheel_diameter": 0.686,
       "main_wheel_width": 0.22,
       "track": 3.61,
       "strut_radius": 0.055,
       "tail_axle": [
-        5.0,
-        -0.63
+        5.13,
+        -0.64
       ],
       "tail_wheel_diameter": 0.318
     },
     "pilot": {
       "cap_top": [
-        -1.738,
-        0.621
+        1.294,
+        0.897
       ],
       "cap_brim_front": [
-        -1.898,
-        0.531
+        1.134,
+        0.807
       ],
       "nose_front": [
-        -1.878,
-        0.451
+        1.154,
+        0.727
       ],
       "head_back": [
-        -1.618,
-        0.491
+        1.414,
+        0.767
       ],
       "chin": [
-        -1.838,
-        0.371
+        1.194,
+        0.647
       ],
       "shoulder_front": [
-        -1.908,
-        0.291
+        1.124,
+        0.567
       ],
       "shoulder_back": [
-        -1.508,
-        0.271
+        1.524,
+        0.547
       ],
       "head_half_width": 0.1,
       "shoulder_half_width": 0.24

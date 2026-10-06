@@ -473,15 +473,15 @@ const DATA := {
 		"z0": -0.4613,
 		"z1": -0.2239,
 		"half_width": 0.0375,
-		"height": 0.0075
+		"height": 0.0025
 	},
 	"spinner": {
 		"tip_z": -0.6686,
 		"back_z": -0.4987,
 		"radius": 0.0972
 	},
-	"firewall_z": -0.2739,
-	"cowl_rear_z": -0.0989,
+	"firewall_z": -0.025,
+	"cowl_rear_z": 0.1499,
 	"canopy": {
 		"top": [
 			[
@@ -562,15 +562,15 @@ const DATA := {
 	"gear": {
 		"main_axle": [
 			0.025,
-			-0.3423
+			-0.4248
 		],
 		"main_wheel_diameter": 0.1714,
 		"main_wheel_width": 0.055,
 		"track": 0.902,
 		"strut_radius": 0.0137,
 		"tail_axle": [
-			1.2493,
-			-0.1574
+			1.2818,
+			-0.1599
 		],
 		"tail_wheel_diameter": 0.0795
 	},
@@ -626,32 +626,32 @@ const DATA := {
 	},
 	"pilot": {
 		"cap_top": [
-			-0.4343,
-			0.1552
+			0.3233,
+			0.2241
 		],
 		"cap_brim_front": [
-			-0.4742,
-			0.1327
+			0.2833,
+			0.2016
 		],
 		"nose_front": [
-			-0.4693,
-			0.1127
+			0.2883,
+			0.1817
 		],
 		"head_back": [
-			-0.4043,
-			0.1227
+			0.3533,
+			0.1916
 		],
 		"chin": [
-			-0.4593,
-			0.0927
+			0.2983,
+			0.1617
 		],
 		"shoulder_front": [
-			-0.4767,
-			0.0727
+			0.2809,
+			0.1417
 		],
 		"shoulder_back": [
-			-0.3768,
-			0.0677
+			0.3808,
+			0.1367
 		],
 		"head_half_width": 0.025,
 		"shoulder_half_width": 0.06
