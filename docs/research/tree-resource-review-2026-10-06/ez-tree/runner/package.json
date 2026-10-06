@@ -1,0 +1,14 @@
+{
+  "name": "openrc-ez-tree-metrics-trial",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "measure": "node generate.mjs"
+  },
+  "dependencies": {
+    "@dgreenheck/ez-tree": "1.1.0",
+    "three": "0.167.1",
+    "vite": "5.4.21"
+  }
+}

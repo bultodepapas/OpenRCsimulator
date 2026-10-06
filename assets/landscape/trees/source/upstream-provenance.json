@@ -1,0 +1,71 @@
+{
+  "source": "https://quaternius.itch.io/stylized-nature-megakit",
+  "sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+  "bytes": 104088529,
+  "upload_id": "11055123",
+  "pack": "Quaternius Stylized Nature MegaKit Standard",
+  "retrieved": "2026-10-06",
+  "license": "CC0-1.0 as embedded in this exact archive, License_Standard.txt",
+  "species": [
+    "CommonTree_1",
+    "CommonTree_3",
+    "Pine_1"
+  ],
+  "files": [
+    {
+      "entry": "License_Standard.txt",
+      "path": "License_Standard.txt",
+      "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "entry": "glTF/Bark_NormalTree.png",
+      "path": "Bark_NormalTree.png",
+      "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
+    },
+    {
+      "entry": "glTF/Bark_NormalTree_Normal.png",
+      "path": "Bark_NormalTree_Normal.png",
+      "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
+    },
+    {
+      "entry": "glTF/CommonTree_1.bin",
+      "path": "CommonTree_1.bin",
+      "sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae"
+    },
+    {
+      "entry": "glTF/CommonTree_1.gltf",
+      "path": "CommonTree_1.gltf",
+      "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+    },
+    {
+      "entry": "glTF/CommonTree_3.bin",
+      "path": "CommonTree_3.bin",
+      "sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49"
+    },
+    {
+      "entry": "glTF/CommonTree_3.gltf",
+      "path": "CommonTree_3.gltf",
+      "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
+    },
+    {
+      "entry": "glTF/Leaf_Pine_C.png",
+      "path": "Leaf_Pine_C.png",
+      "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
+    },
+    {
+      "entry": "glTF/Leaves_NormalTree_C.png",
+      "path": "Leaves_NormalTree_C.png",
+      "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
+    },
+    {
+      "entry": "glTF/Pine_1.bin",
+      "path": "Pine_1.bin",
+      "sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2"
+    },
+    {
+      "entry": "glTF/Pine_1.gltf",
+      "path": "Pine_1.gltf",
+      "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+    }
+  ]
+}

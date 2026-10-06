@@ -1,0 +1,8 @@
+{
+  "format": "openrc-tree-repeatability v1",
+  "all_identical": true,
+  "artifact_count": 26,
+  "raw_png_count": 12,
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "godot": "4.7.2.stable.official.ed1daf0bf"
+}

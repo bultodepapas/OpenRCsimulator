@@ -1,0 +1,296 @@
+{
+  "format": "openrc-tree-adaptation v1",
+  "source_archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+  "tools": {
+    "gltf_transform": "4.5.0",
+    "khronos_validator": "2.0.0-dev.3.10"
+  },
+  "scope": "High-detail offline bake sources. Not exported; L8 close mesh LODs need their own budget/review.",
+  "trees": [
+    {
+      "id": "CommonTree_1",
+      "triangles": 6265,
+      "surfaces": 2,
+      "sha256": "c0da709a389dc9eca24e28c99a00d727b813231021887aae9d2ab3fbd2f3bdb4",
+      "normalization": {
+        "source_bounds": {
+          "min": [
+            -2.1944587230682373,
+            -0.24277201294898987,
+            -2.2245190143585205
+          ],
+          "max": [
+            2.116964101791382,
+            7.022013187408447,
+            2.3531949520111084
+          ]
+        },
+        "bottom_center": [
+          -0.038747310638427734,
+          -0.24277201294898987,
+          0.06433796882629395
+        ],
+        "scale": 0.13765031895929952,
+        "height_m": 1
+      },
+      "color_components_clamped": 9034,
+      "source_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 9034,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1696 is not clamped to 0..1 range: 1.0000959634780884.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1700 is not clamped to 0..1 range: 1.0000959634780884.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1704 is not clamped to 0..1 range: 1.0000869035720825.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1708 is not clamped to 0..1 range: 1.0000869035720825.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1,
+            "ACCESSOR_NON_CLAMPED": 9034
+          }
+        }
+      },
+      "derived_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "CommonTree_3",
+      "triangles": 3505,
+      "surfaces": 2,
+      "sha256": "8ada831eb1a90b127a51ba6103f992970a96581222fe871a95afbd6e6a090bd4",
+      "normalization": {
+        "source_bounds": {
+          "min": [
+            -1.9864652156829834,
+            -0.24277201294898987,
+            -2.0609655380249023
+          ],
+          "max": [
+            2.076380968093872,
+            9.182417869567871,
+            2.1801114082336426
+          ]
+        },
+        "bottom_center": [
+          0.044957876205444336,
+          -0.24277201294898987,
+          0.05957293510437012
+        ],
+        "scale": 0.10609865821960124,
+        "height_m": 1
+      },
+      "color_components_clamped": 5281,
+      "source_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 5281,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1872 is not clamped to 0..1 range: 1.000077486038208.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1876 is not clamped to 0..1 range: 1.0000852346420288.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1880 is not clamped to 0..1 range: 1.0000852346420288.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1884 is not clamped to 0..1 range: 1.0000964403152466.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1,
+            "ACCESSOR_NON_CLAMPED": 5281
+          }
+        }
+      },
+      "derived_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "Pine_1",
+      "triangles": 3947,
+      "surfaces": 2,
+      "sha256": "52bc0b6826e5b6d39565975d9a4706f690ac513452a6c9a3e20e0d35a43494d5",
+      "normalization": {
+        "source_bounds": {
+          "min": [
+            -2.448819160461426,
+            -0.23508860170841217,
+            -2.4769327640533447
+          ],
+          "max": [
+            2.4958789348602295,
+            7.081829071044922,
+            2.0614705085754395
+          ]
+        },
+        "bottom_center": [
+          0.023529887199401855,
+          -0.23508860170841217,
+          -0.20773112773895264
+        ],
+        "scale": 0.13666957108507455,
+        "height_m": 1
+      },
+      "color_components_clamped": 4948,
+      "source_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 4948,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1192 is not clamped to 0..1 range: 1.000157356262207.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1196 is not clamped to 0..1 range: 1.000161051750183.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1200 is not clamped to 0..1 range: 1.000161051750183.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            },
+            {
+              "code": "ACCESSOR_NON_CLAMPED",
+              "message": "Accessor element at index 1204 is not clamped to 0..1 range: 1.0001580715179443.",
+              "severity": 0,
+              "pointer": "/meshes/0/primitives/0/attributes/COLOR_0"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1,
+            "ACCESSOR_NON_CLAMPED": 4948
+          }
+        }
+      },
+      "derived_validation": {
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messages": [
+            {
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+              "severity": 1,
+              "pointer": "/meshes/0/primitives/0/material"
+            }
+          ],
+          "truncated": false,
+          "counts_by_code": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          }
+        }
+      }
+    }
+  ]
+}

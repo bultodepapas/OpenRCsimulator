@@ -1,0 +1,42 @@
+{
+  "format": "openrc-tree-assets v1",
+  "atlas": "res://assets/landscape/trees/atlas.png",
+  "atlas_size_px": 1024,
+  "tile_size_px": 512,
+  "alpha_cutoff": 0.5,
+  "species": [
+    {
+      "atlas_rect_px": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "frame_size_m": 1.125001,
+      "id": "CommonTree_1",
+      "pivot_y_m": 0.5
+    },
+    {
+      "atlas_rect_px": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "frame_size_m": 1.125001,
+      "id": "CommonTree_3",
+      "pivot_y_m": 0.5
+    },
+    {
+      "atlas_rect_px": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "frame_size_m": 1.125001,
+      "id": "Pine_1",
+      "pivot_y_m": 0.5
+    }
+  ]
+}

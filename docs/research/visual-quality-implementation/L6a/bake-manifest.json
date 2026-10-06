@@ -1,0 +1,95 @@
+{
+  "bake": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "godot": "4.7.2-stable (official)",
+    "renderer": "gl_compatibility",
+    "species": [
+      {
+        "atlas_rect_px": [
+          0,
+          0,
+          512,
+          512
+        ],
+        "frame_size_m": 1.125001,
+        "id": "CommonTree_1",
+        "pivot_y_m": 0.5
+      },
+      {
+        "atlas_rect_px": [
+          512,
+          0,
+          512,
+          512
+        ],
+        "frame_size_m": 1.125001,
+        "id": "CommonTree_3",
+        "pivot_y_m": 0.5
+      },
+      {
+        "atlas_rect_px": [
+          0,
+          512,
+          512,
+          512
+        ],
+        "frame_size_m": 1.125001,
+        "id": "Pine_1",
+        "pivot_y_m": 0.5
+      }
+    ]
+  },
+  "format": "openrc-tree-bake v1",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "inputs_sha256": {
+    "assets/landscape/trees/source/Bark_NormalTree.png": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+    "assets/landscape/trees/source/Bark_NormalTree_Normal.png": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+    "assets/landscape/trees/source/CommonTree_1.bin": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
+    "assets/landscape/trees/source/CommonTree_1.gltf": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+    "assets/landscape/trees/source/CommonTree_3.bin": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
+    "assets/landscape/trees/source/CommonTree_3.gltf": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+    "assets/landscape/trees/source/Leaf_Pine_C.png": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+    "assets/landscape/trees/source/Leaves_NormalTree_C.png": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+    "assets/landscape/trees/source/License_Standard.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+    "assets/landscape/trees/source/Pine_1.bin": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
+    "assets/landscape/trees/source/Pine_1.gltf": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+    "assets/landscape/trees/source/upstream-provenance.json": "5233265ceb91316719e12dee28a60e87ce29ed6172d02e626cfcc75bb0cae375",
+    "tools/trees/adapt.mjs": "316ce07eccddb141123f663f2f118fc364ff5fe4827af6bd7e6208e0258a1da8",
+    "tools/trees/bake.gd": "6f6960fe844355f08224db83c6e8b6c56d9fcc9c75030501cc679586261b726c",
+    "tools/trees/build.py": "ab557ded4199c5ca3d6f0f2ca6e13c3558a435e11b38bafdb955f442b57874fa",
+    "tools/trees/fix_atlas.gd": "ecdce2c724d06cc629ea406aaf50872bdd9662f4b07ad4840c5e8c5fa9f3feb7",
+    "tools/trees/inspect_cards.gd": "e8c13189229643b03f777b91160a3d4e29cd2087be218cf46b0796ece9b7d6e2",
+    "tools/trees/package-lock.json": "18514ef7d922e3eda3d4772e32f12e7f4d7beb786beb0c733aaf20cf213842c8",
+    "tools/trees/process_atlas.py": "628df517c76d05d5ae41ba6e599f0b7ae5f0a33d3982f61b08f9cc2feef31b8a",
+    "tools/trees/test_process_atlas.py": "ef4c46bc931c9ca6257bd3c83b2b384e0becbe2a338eacdd57197977f9138c35",
+    "tools/trees/verify_bakes.py": "e861a16ef5f26d5d73e0e2d7c5c794bebefa5b9d47beee5c87760f32ffc3a218"
+  },
+  "outputs_sha256": {
+    "atlas/atlas-analysis.json": "3367a822aaf1d4672482bd533b6ce7e722fb176b22720d7702eda2ba1db43638",
+    "atlas/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+    "atlas/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+    "atlas/mip-00.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+    "atlas/mip-01.png": "c69d585f9ecfb1d3afc1d49898fd30826d00910bcb875ee93ae171a6e1468b2e",
+    "atlas/mip-02.png": "b93ca14f662db6920190398a013e267093b9a564f1dd7646572d6b22b24fde4d",
+    "atlas/mip-03.png": "0159571c1ba2a2f68d80ef28216ea1d5e2d311794c5267feb171a8be795e746d",
+    "atlas/mip-04.png": "fb2be465806281e2e5919a31755af2599c98b4c1b46789a14d75abd00cf5d987",
+    "atlas/mip-05.png": "f10298ebf5478b338ebfb17cec218d87d2d4f301b8196d930acd98087f8b975f",
+    "atlas/mip-06.png": "c118d4bf8d482b1e17919c95e47d606cd296e1366f16bde3348c358edff2053a",
+    "atlas/mip-07.png": "881ca5af5a6564bac6ff6c421be78641dd31bf2fd17480e1ed5ec2c2762232bb",
+    "atlas/mip-08.png": "5f96b8c0ea9bfe81af3ed992f8de7014156bdcf82d3a96456ec27c92ff13e22b",
+    "atlas/mip-09.png": "a6402e337abf8cc32cfdabac73e3a9133f2c32e832b4713a88651ee82c5e5baa",
+    "atlas/mip-10.png": "df75638d9712022f99ff007e9b4230fa79894ebd633af7e3830397782d1cd03b",
+    "atlas/mip-analysis.json": "5396307c72b948913ec74f95e8c61a7208faa89497b0821677165de83a55b056",
+    "derived/CommonTree_1-reference.glb": "5ac6abd5221744d9198e0d67f65e226ca13b39ddd846d2ddcc2f1de6a433dcba",
+    "derived/CommonTree_1-source-validation.json": "35fd10200505641ef7a589e84c57b9edf0f4e46f0a9f34cca365b2193333157f",
+    "derived/CommonTree_1.glb": "c0da709a389dc9eca24e28c99a00d727b813231021887aae9d2ab3fbd2f3bdb4",
+    "derived/CommonTree_3-reference.glb": "06393e81ac32849c46feb5fa00fe8dcc25b6bfd64c18e67149d8b6742a028299",
+    "derived/CommonTree_3-source-validation.json": "9b12dbdb996fb7baab97e8fd5207e1db928b8406af601c3f20ed27bef77bb096",
+    "derived/CommonTree_3.glb": "8ada831eb1a90b127a51ba6103f992970a96581222fe871a95afbd6e6a090bd4",
+    "derived/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+    "derived/Pine_1-reference.glb": "7b656e50db12ea8d1931ace1b5a5d3983fa024886aeba15f2b5b6c65cd6a1a84",
+    "derived/Pine_1-source-validation.json": "f2fe2a415fc5264856a2e1d0127a5c3df809feb8545ad9aa2d6a1af42db8f5d4",
+    "derived/Pine_1.glb": "52bc0b6826e5b6d39565975d9a4706f690ac513452a6c9a3e20e0d35a43494d5",
+    "derived/validation.json": "cb3c53568c0aa351c2bfe0fe76267a91161df2bc4eaa62230999b6cdfc83f04d"
+  }
+}

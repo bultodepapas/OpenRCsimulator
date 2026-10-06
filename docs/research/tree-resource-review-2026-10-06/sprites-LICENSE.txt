@@ -1,0 +1,8 @@
+License for the Tree Sprite package, (c) 2026 by klamtii.itch.io
+
+You can copy, modify, distribute or derive works of the images, even for commercial purposes,
+all without asking permission. There is no waranty or liability for this work and all its uses.
+It would be nice, if you give credit or donate on itch.io, but you don't have to.
+
+The official website is:
+http(s)://klamtii.itch.io/tree-sprites

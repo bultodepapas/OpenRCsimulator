@@ -587,3 +587,11 @@ Prueba y reproducción: [L5](docs/research/visual-quality-implementation/L5/READ
 - Al medir bien la geometría, la física mejoró sola: el morro largo adelanta la instalación y el lastre virtual bajó de 1,66 a 0,21 kg, como en los P-51 de 1/4 reales con DA-120.
 
 Prueba: [informe](docs/research/p51-silhouette-review-v1.md) con métricas y hashes, `verify_p51.gd` 126, `test_p51_handling.gd` 15, `test_aircraft_catalog.gd` 34, `app/test.sh` completo.
+
+### L6a — elegir árboles por imagen y comprobar la ruta completa (2026-10-06)
+
+- Once siluetas Kenney y siete modelos de otros packs renderizados mostraron que cumplir triángulos no basta para elegir arte. Quaternius Standard aporta copas más orgánicas; se archivó su licencia CC0 incluida y el SHA exacto, sin extrapolar a la licencia general QAL. [Comparación](docs/research/tree-resource-review-2026-10-06/README.md).
+- Separar presupuesto de autoría y runtime: fuentes de 3.505–6.265 triángulos producen cards de seis triángulos y una superficie. Las mallas fuente no se exportan ni se aprueban como LOD cercano. Un atlas sin iluminación direccional conserva la luz del campo, pero carece del detalle de normales de la fuente cuando se mira de cerca.
+- PNG externos y GLB con texturas extraídas no recibieron los mismos mipmaps por defecto. Un prototipo con importación de editor también produjo pequeñas variaciones del pino entre imports nuevos; cuatro renders del mismo import sí coincidieron. Cargar las dos referencias offline con GLTFDocument, imágenes sin compresión y mips explícitos permitió dos bakes nuevos byte-idénticos. No confundir ese diagnóstico acotado con demostrar un bug interno concreto del editor.
+- Padding del atlas no es altura del árbol: situar el quad en Y=0 hacía flotar el tronco. Centrar el marco alrededor del pivote y comprobar el texel opaco inferior detecta el fallo. El downsample requiere RGB ponderado por alpha para evitar bordes negros.
+- Revisar el pack real: no basta con que el PNG fuente tenga mips. La prueba desde un proyecto vacío carga atlas/material/catálogo/licencia y comprueba tamaño y mips en Linux, Windows y macOS. Python además debe rechazar bool al validar números de JSON, igual que Godot. [Pruebas](docs/research/visual-quality-implementation/L6a/README.md).

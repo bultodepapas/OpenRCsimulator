@@ -1,0 +1,108 @@
+{
+  "format": "ez-tree-offline-trial-metrics v1",
+  "package": "@dgreenheck/ez-tree@1.1.0",
+  "source_tag": "v1.1.0",
+  "source_commit": "89083a033a354856acae05f8856bf37c6ebcfa9b",
+  "package_tarball_sha256": "4147b49d22b01f09c9d7f3c3c34f788ad37841103a758da25e399af3cbce2f98",
+  "npm_integrity": "sha512-6pvS6hD6B6h00dm0SnkgYeT4ABU5Y1Z9M44p1tXiV5C0eKrQy2sKECXshoaUv0qAOqYVL68w/PwadUxDFDiHUg==",
+  "code_license": "MIT",
+  "exact_v1_1_leaf_image_license": "unresolved per-file; outputs not retained",
+  "leaf_texture_file_hashes": [
+    {
+      "file": "ash_color.png",
+      "sha256": "5ec987db3829a839856c32c79b18a33a78f209e911cad55c65abfb77f30e2d29"
+    },
+    {
+      "file": "aspen_color.png",
+      "sha256": "6c8cbfa3eda0f070df6ebb3c8ec6899400f3c966d1658fcfd9ae518347c2dcb9"
+    },
+    {
+      "file": "oak_color.png",
+      "sha256": "24451223cf396d22910a4932b8bb996a7274e63d81e24128c96a430ab67822b1"
+    },
+    {
+      "file": "pine_color.png",
+      "sha256": "88be36a2387554ac4b7c7d1549eae454a37ad896e8e33a7d6ae5956bd169ab08"
+    }
+  ],
+  "runner_dependencies": {
+    "three": "0.167.1",
+    "vite": "5.4.21"
+  },
+  "browser_version": "153.0.8010.12",
+  "metrics_method": "sum of branch and leaf indexed geometry triangles in browser; no binary or image export",
+  "trees": [
+    {
+      "preset": "Oak Large",
+      "generator_units_bounds": {
+        "min": [
+          -49.9311637878418,
+          0,
+          -44.828006744384766
+        ],
+        "max": [
+          47.866844177246094,
+          102.02320861816406,
+          53.8713264465332
+        ],
+        "size": [
+          97.79800796508789,
+          102.02320861816406,
+          98.69933319091797
+        ]
+      },
+      "vertices": 30104,
+      "branch_triangles": 12006,
+      "leaf_triangles": 10560,
+      "total_triangles": 22566
+    },
+    {
+      "preset": "Ash Large",
+      "generator_units_bounds": {
+        "min": [
+          -39.600799560546875,
+          0,
+          -40.238555908203125
+        ],
+        "max": [
+          39.59947204589844,
+          96.01334381103516,
+          44.91019058227539
+        ],
+        "size": [
+          79.20027160644531,
+          96.01334381103516,
+          85.14874649047852
+        ]
+      },
+      "vertices": 28098,
+      "branch_triangles": 11832,
+      "leaf_triangles": 9680,
+      "total_triangles": 21512
+    },
+    {
+      "preset": "Pine Large",
+      "generator_units_bounds": {
+        "min": [
+          -23.214448928833008,
+          0,
+          -16.82646942138672
+        ],
+        "max": [
+          21.38570213317871,
+          68.18207550048828,
+          21.149494171142578
+        ],
+        "size": [
+          44.60015106201172,
+          68.18207550048828,
+          37.9759635925293
+        ]
+      },
+      "vertices": 22217,
+      "branch_triangles": 12192,
+      "leaf_triangles": 7200,
+      "total_triangles": 19392
+    }
+  ]
+}

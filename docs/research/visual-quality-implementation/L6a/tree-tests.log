@@ -1,0 +1,63 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   catalog loads and validates
+ok   catalog format is openrc-tree-assets v1
+ok   catalog covers exactly the three baked species
+ok   catalog atlas is 1024 square with 512 tiles
+ok   catalog alpha cutoff is 0.5
+ok   catalog includes CommonTree_1
+ok   CommonTree_1 uses its canonical atlas slot
+ok   CommonTree_1 has a positive frame size and 0.5 m pivot
+ok   CommonTree_1 catalog entry has no runtime scene reference
+ok   catalog includes CommonTree_3
+ok   CommonTree_3 uses its canonical atlas slot
+ok   CommonTree_3 has a positive frame size and 0.5 m pivot
+ok   CommonTree_3 catalog entry has no runtime scene reference
+ok   catalog includes Pine_1
+ok   Pine_1 uses its canonical atlas slot
+ok   Pine_1 has a positive frame size and 0.5 m pivot
+ok   Pine_1 catalog entry has no runtime scene reference
+ok   atlas loads as a texture
+ok   atlas dimensions match catalog
+ok   atlas import has mipmaps
+ok   CommonTree_1 atlas tile contains transparent pixels
+ok   CommonTree_1 atlas tile contains opaque pixels
+ok   CommonTree_3 atlas tile contains transparent pixels
+ok   CommonTree_3 atlas tile contains opaque pixels
+ok   Pine_1 atlas tile contains transparent pixels
+ok   Pine_1 atlas tile contains opaque pixels
+ok   CommonTree_1 card mesh builds
+ok   CommonTree_1 card has exactly one surface
+ok   CommonTree_1 three crossed quads have six triangles
+ok   CommonTree_1 card frame is centered on its catalog pivot
+ok   CommonTree_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_1 bounds include all three rotated planes
+ok   CommonTree_1 card repeats full tile UVs with half-texel inset
+ok   CommonTree_1 card material uses lit alpha scissor at 0.5
+ok   CommonTree_1 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_1 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_1 card mesh and material are per-call resources
+ok   CommonTree_3 card mesh builds
+ok   CommonTree_3 card has exactly one surface
+ok   CommonTree_3 three crossed quads have six triangles
+ok   CommonTree_3 card frame is centered on its catalog pivot
+ok   CommonTree_3 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_3 bounds include all three rotated planes
+ok   CommonTree_3 card repeats full tile UVs with half-texel inset
+ok   CommonTree_3 card material uses lit alpha scissor at 0.5
+ok   CommonTree_3 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_3 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_3 card mesh and material are per-call resources
+ok   Pine_1 card mesh builds
+ok   Pine_1 card has exactly one surface
+ok   Pine_1 three crossed quads have six triangles
+ok   Pine_1 card frame is centered on its catalog pivot
+ok   Pine_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   Pine_1 bounds include all three rotated planes
+ok   Pine_1 card repeats full tile UVs with half-texel inset
+ok   Pine_1 card material uses lit alpha scissor at 0.5
+ok   Pine_1 card material is two-sided, nonmetallic and fully rough
+ok   Pine_1 card material uses anisotropic mip filtering and the atlas
+ok   Pine_1 card mesh and material are per-call resources
+ok   unknown card ID fails without a fallback
+60 checks, 0 failed
