@@ -767,3 +767,11 @@ Proof and recommendations: [project audit](docs/research/project-audit-2026-10-0
 - Crash impact ranking does not supply material thresholds. Start with a factual contact snapshot; defer damage until contact/state/mass contracts and threshold evidence exist.
 
 Proof: [ROADMAP revision 5](ROADMAP.md#execution-order-and-release-gates), [crash plan](docs/CRASH-DAMAGE-PLAN.md), reconciled research and track registry. Documentation-only change; simulator fixes remain planned and owner gates remain open.
+
+## 2026-10-06 · PT1f — rc4 release preparation
+
+- Release notes compare with the previous tag, so already-committed aircraft and physics changes are included alongside the audit and roadmap work.
+- A passing known-defect characterization is not flight validation. The rc4 notes explicitly retain the smoke-checker, damping, coupled-shaft and owner-hardware limitations.
+- Preserve raw audit logs, including emitted whitespace; apply source/document whitespace checks separately. Publish the tag only after the branch CI passes, then verify the tag build identity and downloaded release checksums.
+
+Proof: [rc4 notes](docs/releases/v0.1.0-rc4.md), [audit evidence](docs/research/project-audit-2026-10-06/README.md). Release binaries and checksums are produced from the tag by CI; pilot gates remain open.
