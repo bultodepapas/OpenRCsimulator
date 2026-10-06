@@ -24,8 +24,8 @@ static func instance(label: String, mesh: Mesh, parent: Node3D, color: Color) ->
 	parent.add_child(node)
 	return node
 
-# Flat shading is intentional for the first section/contour review.
-static func triangle(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, outward: Vector3) -> void:
+# Panels retain face normals; loft sides supply continuous vertex normals.
+static func triangle(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, outward: Vector3, normals: Dictionary = {}) -> void:
 	var normal := (c - a).cross(b - a)
 	if normal.length_squared() < 1e-16: return
 	var vertices := [a, b, c]
@@ -33,10 +33,40 @@ static func triangle(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, outwar
 		vertices = [a, c, b]
 		normal = -normal
 	for v in vertices:
-		st.set_normal(normal.normalized())
+		st.set_normal(normals.get(v, normal.normalized()))
 		st.add_vertex(v)
 
-static func loft(rows: Array, parent: Node3D, label: String, color: Color, side: float = 1.0) -> MeshInstance3D:
+static func section_slope(rows: Array, i: int, column: int) -> float:
+	if i == 0: return (float(rows[1][column]) - float(rows[0][column])) / (float(rows[1][0]) - float(rows[0][0]))
+	if i == rows.size() - 1: return section_slope([rows[-2], rows[-1]], 0, column)
+	var left_h: float = rows[i][0] - rows[i - 1][0]
+	var right_h: float = rows[i + 1][0] - rows[i][0]
+	var left_d: float = (rows[i][column] - rows[i - 1][column]) / left_h
+	var right_d: float = (rows[i + 1][column] - rows[i][column]) / right_h
+	if left_d * right_d <= 0: return 0.0
+	var w1 := 2 * right_h + left_h
+	var w2 := right_h + 2 * left_h
+	return (w1 + w2) / (w1 / left_d + w2 / right_d)
+
+# Monotone Hermite sections preserve knots and do not overshoot local extrema.
+static func interpolate_sections(rows: Array, subdivisions: int) -> Array:
+	var result: Array = []
+	for i in rows.size() - 1:
+		var h: float = rows[i + 1][0] - rows[i][0]
+		for j in subdivisions:
+			var t := float(j) / subdivisions
+			var row: Array = [lerpf(rows[i][0], rows[i + 1][0], t)]
+			for column in range(1, rows[i].size()):
+				var a: float = rows[i][column]
+				var b: float = rows[i + 1][column]
+				var value := (2*t*t*t-3*t*t+1)*a + (t*t*t-2*t*t+t)*h*section_slope(rows,i,column) + (-2*t*t*t+3*t*t)*b + (t*t*t-t*t)*h*section_slope(rows,i+1,column)
+				row.append(clampf(value, minf(a, b), maxf(a, b)))
+			result.append(row)
+	result.append(rows[-1].duplicate())
+	return result
+
+static func loft(rows: Array, parent: Node3D, label: String, color: Color, side: float = 1.0, subdivisions: int = 1, smooth: bool = false) -> MeshInstance3D:
+	rows = interpolate_sections(rows, subdivisions)
 	var rings: Array = []
 	for row in rows:
 		var ring: Array[Vector3] = []
@@ -47,12 +77,19 @@ static func loft(rows: Array, parent: Node3D, label: String, color: Color, side:
 		rings.append(ring)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var normals := {}
+	if smooth:
+		for i in rings.size():
+			for j in 32:
+				var around: Vector3 = rings[i][(j + 1) % 32] - rings[i][(j + 31) % 32]
+				var along: Vector3 = rings[mini(i + 1, rings.size() - 1)][j] - rings[maxi(i - 1, 0)][j]
+				normals[rings[i][j]] = around.cross(along).normalized()
 	for i in rings.size() - 1:
 		for j in 32:
 			var k := (j + 1) % 32
 			var hint := Vector3(cos(TAU * (j + .5) / 32), sin(TAU * (j + .5) / 32), 0)
-			triangle(st, rings[i][j], rings[i][k], rings[i + 1][k], hint)
-			triangle(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], hint)
+			triangle(st, rings[i][j], rings[i][k], rings[i + 1][k], hint, normals)
+			triangle(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], hint, normals)
 	for end in [0, rings.size() - 1]:
 		var center_x: float = float(rows[end][4]) * side if rows[end].size() > 4 else 0.0
 		var center := Vector3(center_x, (rows[end][2] + rows[end][3]) * .5, rows[end][0])
@@ -173,8 +210,8 @@ static func build() -> Dictionary:
 	root.name = "airplane"
 	root.set_meta("status", data.status)
 	var hinges := {}
-	var skin := loft(data.fuselage_stations, root, "fuselage", BLUE)
-	var canopy := loft(data.canopy_stations, root, "canopy", DARK)
+	var skin := loft(data.fuselage_stations, root, "fuselage", BLUE, 1, data.loft.longitudinal_subdivisions, data.loft.smooth_normals)
+	var canopy := loft(data.canopy_stations, root, "canopy", DARK, 1, data.loft.longitudinal_subdivisions, data.loft.smooth_normals)
 	for side in [-1.0, 1.0]:
 		lifting_surface(root, hinges, data.wing, side, false)
 		lifting_surface(root, hinges, data.tail, side, true)

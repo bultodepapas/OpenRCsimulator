@@ -140,3 +140,7 @@ La maqueta AV-02 ya se compara con tres fotos mediante [superposiciones interact
 ## Afinado AV-02 con cámaras congeladas — 2026-10-06
 
 La [segunda revisión de contornos](research/avanti-s-contour-refinement.md) reduce cuerda alar, perfila puntas/estabilizador, prolonga la transición de deriva e integra las tomas. Conserva escala nominal, siete bisagras y cámaras anteriores; incluye comparación antes/después, muestras de borde y clon limpio sin referencias. Las tres vistas mejoran en las muestras del ala, mientras fuselaje/cabina y cola posterior mantienen diferencias. Sigue siendo una geometría visual estimada; quedan metrología, detalle, comprobación de volúmenes barridos e integración.
+
+## Continuidad de fuselaje y cabina — revisión 3
+
+La [tercera revisión](research/avanti-s-contour-refinement-v3.md) estrecha moderadamente el cuerpo delantero, ajusta cabina e interpola secciones con normales suaves. Las muestras del fuselaje mejoran en frontal y posterior; el perfil y la cola siguen limitando el ajuste. Se conservan cámaras y siete bisagras. La comparación usa v2 como referencia; siguen pendientes metrología e integración AV-02.

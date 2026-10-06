@@ -1,0 +1,14 @@
+{
+	"checks": 17733,
+	"failures": [],
+	"fuselage_length_m": 2.21999979019165,
+	"geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+	"godot": "4.7.2-stable (official)",
+	"hinges": 7,
+	"limits": [
+		"Not aerodynamic validation",
+		"No full swept-volume intersection test",
+		"Approximate contours"
+	],
+	"span_m": 2.0
+}

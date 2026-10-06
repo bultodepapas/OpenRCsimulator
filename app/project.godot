@@ -4,6 +4,9 @@ config_version=5
 [application]
 
 config/name="OpenRC Simulator"
+; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
+; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
+config/version="0.1.0"
 ; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
 run/main_scene="res://app_root.tscn"
 config/features=PackedStringArray("4.7")
@@ -34,3 +37,8 @@ textures/vram_compression/import_etc2_astc=true
 ; UI-01d: English is the source and default language (set by app_root, not the OS locale); one gettext .po per
 ; other language. .po files load without an import step and are exported with all_resources (probe 23).
 locale/translations=PackedStringArray("res://i18n/es.po")
+
+[editor_plugins]
+
+; UI-04a: writes res://build_info.json into exported packs (addons/build_info; excluded from the packs themselves).
+enabled=PackedStringArray("res://addons/build_info/plugin.cfg")

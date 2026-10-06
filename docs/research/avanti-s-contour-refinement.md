@@ -47,3 +47,5 @@ No se modificó la aplicación como parte de este trabajo ni se ejecutó su suit
 ## Próxima revisión
 
 Contrastar fuselaje y cabina con nuevas cámaras independientes sobre las fotos grandes; conservar estas tres como comparación histórica. Resolver el estabilizador posterior antes de añadir detalle fino. Después: espesor y continuidad de superficies, fences, tren/puertas, librea y barrido de mandos para detectar intersecciones. El fuselaje aún muestra facetas y las alas siguen siendo sólidos de espesor constante, no perfiles aerodinámicos.
+
+Continuación: [revisión 3, fuselaje y cabina](avanti-s-contour-refinement-v3.md), con comparación contra esta revisión y cámaras conservadas.

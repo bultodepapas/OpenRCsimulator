@@ -8,10 +8,12 @@ The [visual execution plan](VISUAL-QUALITY-PLAN.md#4-secuencia-de-implementació
 
 - VQ-01a preserves L1–L4 checks in an empty-atmosphere fixture and adds full-field views; a failed capture must not pass by finding an old PNG. VQ-01b extends the existing logger, not a second benchmark framework.
 - L5 shares the field builder between flight and the new Home backdrop. It preserves today's runway/pilot numbers, marks their real provenance, and changes no collision behavior. New `collides=true` fields are refused until the capability exists in L14.
-- L6a starts with an offline ez-tree export trial, pins its exact revision before incorporating files, and falls back to a coherent Kenney CC0 family if the bounded trial fails. No proctree port or runtime tree plugin in the first delivery. Bake repeatability is checked within a fixed renderer environment.
+- L6a first performs the short reuse search in visual plan §6.1. Use an existing family if it meets silhouette/license/budget and import/bake proofs; otherwise run the bounded offline ez-tree trial, pin its exact revision, and retain the Kenney CC0 fallback. No proctree port or runtime tree plugin in the first delivery. Bake repeatability is checked within a fixed renderer environment.
 - L7 explicitly waits for the hill output of L13a; it is outside the first treeline delivery. L9a verifies the shader parity already partly supplied by L2; it does not rebuild it. Keep L11a before L10/L11b so runway checks include grass.
 - Source assets/provenance stay in `assets/landscape/`; distributable derivatives live in `app/assets/landscape/` under `res://`. Validate all three export presets from a clean clone, including data and license files.
 - The three initial quality presets keep landmark positions and shared textures. Vegetation density only removes ornament; higher texture resolutions and Forward+ need their own measured gates. See [contracts and acceptance](VISUAL-QUALITY-PLAN.md#11-contratos-para-implementar-sin-inventar-otra-arquitectura).
+
+The [source-search catalog](research/asset-sources-catalog-2026-10-06.md) adds cgbookcase, Poly Pizza, and specific search paths before creating generic content; audio and human animation do not become field-delivery requirements.
 
 The owner's [additional resource selection](research/visual-quality-supplement-2026-10-06.md) is integrated into the visual plan §6: prefer reusable CC0 surfaces/props, investigate new tools in their existing L steps, and retain the first-delivery sequence. Quaternius is no longer a blanket CC0 source; source-package evidence is required. Water and road tools are conditional future authoring options, not new acceptance requirements for L6c.
 

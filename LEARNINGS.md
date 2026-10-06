@@ -437,3 +437,22 @@ Prueba: `tests/test_ui_pause.gd` (33 comprobaciones, seis mutaciones detectadas)
 - Un `rm -rf $S/...` con variables fue bloqueado por el control de seguridad. Usar `"${S:?}"` en scripts de trabajo.
 
 Prueba: [revisión 2](docs/research/extra-300-visual-review-v1.md#5-revisión-2-2026-10-06-ex02b-y-ex-10a-aplicados), `verify_extra.gd` 104/0 (mutaciones M7–M9 detectadas), `app/test.sh` en verde en un clon limpio, 82 renders idénticos en dos ejecuciones.
+
+## 2026-10-06 · Avanti — continuidad de fuselaje y cabina
+
+- El ajuste moderado de semianchura y vientre mejoró las muestras frontal/posterior del fuselaje con cámaras congeladas; el perfil permaneció igual. No se corrigió la cola a partir de una perspectiva discrepante.
+- Separar interpolación de secciones y normales suaves permite mejorar silueta y acabado con pruebas distintas: preservar estaciones/límites y verificar que el sombreado no mueve vértices. El mayor número de triángulos requiere una medición posterior de rendimiento.
+- Comparar cada revisión con su antecesora evita atribuir al último cambio las mejoras acumuladas desde la maqueta inicial. El comparador acepta una referencia explícita y guarda hashes de ambas geometrías.
+- SciPy erosiona por defecto con cuatro vecinos; el informe anterior decía ocho. Se corrigió la descripción, sin alterar el algoritmo ni reescribir las mediciones históricas.
+
+Prueba: [revisión 3](docs/research/avanti-s-contour-refinement-v3.md), clon sin referencias, comprobaciones de interpolación/normales/mandos y capturas con la misma cámara.
+
+- Verificación v3: la mutación con normales cero sobrevivió al chequeo de longitud tras la codificación de malla. Comparar su orientación con las caras sí detectó el defecto; no basta con exigir vectores unitarios.
+
+## 2026-10-06 · VQ — buscar recursos antes de crearlos
+
+- El segundo catálogo del propietario se convirtió en un procedimiento del plan: revisar repo/fuentes, comparar hasta tres candidatos y documentar reutilizar/adaptar/crear. L6a comprueba primero si existe una familia adecuada antes de ensayar el generador; sus pruebas de silueta, atlas y export siguen vigentes.
+- cgbookcase declara CC0 para sus texturas; Poly Pizza/itch.io/OpenGameArt requieren comprobar cada recurso. Asset Store sigue en beta y complementa Asset Library. Godot Shaders licencia código por separado de imágenes y assets de demo: una captura atractiva no aporta los permisos de sus texturas.
+- Freesound y las fuentes de mocap amplían el catálogo de investigación, sin convertir audio ni personajes animados en requisitos del primer paisaje. Gratis, uso comercial y redistribución de archivos fuente son condiciones distintas.
+
+Prueba: [fuentes primarias y flujo de selección](docs/research/asset-sources-catalog-2026-10-06.md), texto recibido conservado con SHA-256 y comprobación documental. No se descargaron packs ni se ejecutó la suite del juego en esta entrega.

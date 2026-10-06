@@ -9,6 +9,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const BuildInfo := preload("res://app_state/build_info.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -57,7 +58,11 @@ func _init() -> void:
 	badge.theme_type_variation = "Badge"
 	badge.add_child(_label("ALPHA", "SectionLabel", false))
 	stage.add_child(badge)
-	stage.add_child(_label("development build", "SecondaryLabel"))
+	# The build identity (UI-04a): the version an exported build carries, or "development build" from the source tree.
+	var build := BuildInfo.current()
+	var version_label := _label(build.label if build.source == "export" else "development build", "SecondaryLabel", build.source != "export")
+	version_label.name = "Version"
+	stage.add_child(version_label)
 	column.add_child(stage)
 	column.add_child(_spacer())
 

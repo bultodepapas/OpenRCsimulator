@@ -28,3 +28,5 @@ El modelo ofrece siete bisagras, dos por grupo bilateral más timón. Guarda pun
 [Informe y límites](../../../docs/research/avanti-s-av02-preview.md) · [Capturas locales](../../../references/avanti-s/av02/index.html). Si el enlace a referencias no existe en un clon, el inspector y las verificaciones siguen funcionando.
 
 Revisión actual `a200-av02-contours-02`: ala/estabilizador con puntas segmentadas, deriva con transición cóncava y tomas carenadas. [Antes/después y límites](../../../docs/research/avanti-s-contour-refinement.md). Las capturas iniciales anteriores se conservan como referencia histórica.
+
+Revisión posterior actual: `a200-av02-contours-03`, [fuselaje y cabina](../../../docs/research/avanti-s-contour-refinement-v3.md), con secciones interpoladas y normales suaves. `verify.gd` comprueba límites de interpolación, estaciones, normales y que suavizar no cambia vértices.
