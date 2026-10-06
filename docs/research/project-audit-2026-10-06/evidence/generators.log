@@ -1,0 +1,29 @@
+
+== assets/aircraft/ugly-stik-60/compile_geometry.py --check
+Visual geometry source/runtime: identical
+exit=0
+
+== assets/aircraft/extra-300s-60/compile_geometry.py --check
+211 measured values match metrology.json (max difference 0.050 mm)
+Extra visual geometry source/runtime: identical
+exit=0
+
+== assets/aircraft/extra-300s-60/compile_appearance.py --check
+Extra appearance source/runtime: identical
+exit=0
+
+== assets/aircraft/avanti-s-a200/compile_geometry.py --check
+Avanti S visual geometry source/runtime: identical
+exit=0
+
+== research/extra-300/ex05/derive_physics.py --check
+gp_extra_300s_60.json and derivation.md are up to date
+exit=0
+
+== assets/aircraft/p51d-mustang-120/compile_geometry.py --check
+P-51D visual geometry source/runtime: identical
+exit=0
+
+== research/p51/p51-05/derive_physics.py --check
+p51d_mustang_120.json and derivation.md are up to date
+exit=0

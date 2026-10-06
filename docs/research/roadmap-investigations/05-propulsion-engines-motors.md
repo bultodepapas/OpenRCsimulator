@@ -1,24 +1,24 @@
 # 05 — Propulsion systems: glow and gas engines, electric motors with ESC and battery, and turbines
 
-**Status:** research knowledge base, 2026-10-06. **Serves:** ROADMAP M4 (G1–G4, PT4), the Avanti S turbine branch (AV-05, AV-10 in [AVANTI-S-PLAN](../../AVANTI-S-PLAN.md)), the P-51's 120 cc gas engine ([P51-PLAN](../../P51-PLAN.md), P51-06), engine smoke ([SMOKE-PLAN](../../SMOKE-PLAN.md)), and a proposed electric track (none in the roadmap today). **Read with:** [ROADMAP M4](../../../ROADMAP.md), [RESEARCH.md: Electric propulsion](../../../RESEARCH.md#electric-propulsion-distinguish-the-components-and-their-evidence), [avanti-s-turbine-research.md](../avanti-s-turbine-research.md), [ugly-stik-engine-v5.md](../ugly-stik-engine-v5.md) (visual only, no specs), [propulsion.gd](../../../app/physics/propulsion.gd).
+**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP M4 (G1–G4, PT4), the Avanti S turbine branch (AV-05, AV-10 in [AVANTI-S-PLAN](../../AVANTI-S-PLAN.md)), the P-51's 120 cc gas engine ([P51-PLAN](../../P51-PLAN.md), P51-06), engine smoke ([SMOKE-PLAN](../../SMOKE-PLAN.md)), and a proposed electric track (none in the roadmap today). **Read with:** [ROADMAP M4](../../../ROADMAP.md), [RESEARCH.md: Electric propulsion](../../../RESEARCH.md#electric-propulsion-distinguish-the-components-and-their-evidence), [avanti-s-turbine-research.md](../avanti-s-turbine-research.md), [ugly-stik-engine-v5.md](../ugly-stik-engine-v5.md) (visual only, no specs), [propulsion.gd](../../../app/physics/propulsion.gd).
 
 ## Summary
 
 - **One equation unifies every propeller power plant:** `I_rot·dω/dt = Q_source(ω, throttle, state) − Q_prop(ω, V) − Q_friction(ω)`. Glow, gas and electric differ only in `Q_source`; a turbine replaces shaft + propeller by a spool lag and a direct thrust `F = ṁ(V_e − V_0)`.
-- **Shaft dynamics are slow enough for the 240 Hz tick.** Derived for the repo's own data: .61 + APC 12×6 has τ_shaft ≈ 0.25 s at full power, ≈ 1 s at idle; DA-120 + 26×12 four-blade ≈ 0.2–0.28 s; a .60-class electric setup ≈ 30 ms. dt/τ ≤ 0.14 everywhere, but use a linearly implicit update anyway (light electric rotors approach dt/τ ≈ 1).
-- **A shaft-balance slice is already in the working tree, uncommitted** (P51-06 "G2 first slice", AV-05 turbine draft, 2026-10-06). It is a good base. It misses: the airframe reaction to rotor acceleration (`−dh/dt`), wind in the inflow, a windmilling/stopped-propeller branch, and an implicit update.
-- **Torque reaction bug-in-waiting:** the airframe feels the *engine* torque (crankcase), not the *propeller* torque. During a throttle punch they differ by `I_rot·dω/dt`; for the .61 it is 0.83 vs 0.05 N·m at the first tick. `rigid_body.gd` has no `dh/dt` term, so the punch-out torque roll is delayed by the spool time.
-- **Propeller tables stop where the interesting dead-stick physics starts.** UIUC 11×6 data end at J 0.79 (Ct −0.003); the windmilling branch (J ≈ 0.8–1.5) and the stopped-propeller drag are missing. `J = V/(nD)` is singular at n → 0, so the code zeroes everything below 1 rpm: a stopped propeller has no drag and cannot be started turning by the air.
+- **The current shaft update is split from the RK4 body step.** Estimated shaft time constants (about 0.18–0.25 s for the .61/P-51 and 30 ms for one electric example) do not by themselves justify an implicit split update at 240 Hz. The audit's P-51 full-session throttle-step probe showed first-order convergence because rpm is advanced once per tick and frozen over the RK stages. H8 should define the minimal state, stage-time and rollback contract; G2 should integrate coupled rotor speed in RK4 and verify end-to-end convergence ([doc 01](01-numerics-architecture-performance.md), [audit T1](../project-audit-2026-10-06/physics.md#t1--the-full-flight-session-is-split-order-time-dependent-rk-stage-loads-are-not-wired-through)).
+- **P-51 shaft/slipstream and Avanti turbine code are committed.** The P-51 track has an optional shaft-balance slice; the Avanti data selects the turbine branch. Both remain experimental and do not settle the general G2 coupling contract. Rotor-acceleration reaction (`−dh/dt`) is still absent; the P-51 pre-step uses body velocity without wind.
+- **Torque reaction is still missing:** the airframe feels the *engine* torque (crankcase), not only the *propeller* torque. During a throttle punch they differ by `I_rot·dω/dt`; for the .61 the derived first-tick values are 0.83 vs 0.05 N·m. `rigid_body.gd` has no `dh/dt` term, so the punch-out torque roll is delayed by the spool time.
+- **Dead-stick propeller behavior remains incomplete.** The Stik's UIUC 11×6 data end at J 0.79 (Ct −0.003); the P-51 BEM curve is clipped at its current J range. Below 1 rpm the current load path returns zero, so a stopped propeller has no drag and cannot be started by the air.
 - **Glow engines:** O.S. publishes one point (61FX: 1.9 PS at 16,000 rpm); no public torque curves were found. The O.S. manual documents the behaviour a game can use: rich "four-stroking", lean cut-out on throttle-up, rich flooding after prolonged idle, plug temperature tracking rpm (manual-level evidence).
 - **Fuel matters for mass:** a 350 cc glow tank is ~0.30 kg, 11 % of the Ugly Stik's 2.6 kg; the Avanti carries proportionally more kerosene. Derived glow burn ≈ 30–55 mL/min at 1 kW, so ~7 min at full throttle, 12–15 min mixed. DA-100 burns 71 g/min at 6,000 rpm (manufacturer, compiled).
 - **Electric is the three-constant Drela model** (`Kv, R, I0`) plus an averaged ESC (`V_m = duty·V_batt`, `I_batt = duty·I_m`) and a one-RC Thevenin LiPo. Every piece is closed-form and costs a few µs per tick. A .60-class example is worked out: 6S, 400 Kv, 14 in prop gives ~1.2 kW, 49 N static, ~11 min at 40 % mean power. All motor resistances are estimates.
 - **ESC behaviour that changes the flight comes from a manufacturer manual (Hobbywing Skywalker V2):** soft LVC ramps to 60 % power in 3 s (or a hard cut); cutoff at 2.8/3.0/3.4 V per cell; start-up ramp 200/500/800 ms; signal loss cuts after 0.25 s; thermal derating above 120 °C; brake 60/90/100 %.
 - **Turbines respond in seconds, asymmetrically.** Derived from the P100-RX model identified by L'Erario et al.: idle→max ≈ 3 s, max→idle 90 % ≈ 1.9 s. JSBSim's default schedule gives 2.0 s up and 0.6 s down. Ram drag `ṁ·V` costs 14 % of static thrust at 60 m/s.
-- **Decide now:** `pre_step` must receive the air-relative state; engine discrete states and energy stores must live in `aux`, so traces and goldens replay them; propulsion v2 must be a list of power plants, each a source → shaft → propeller with a typed `source.kind`.
+- **Near-term contract:** H8 should define the smallest typed continuous/sampled/discrete state semantics needed by wheel anchors and coupled shaft dynamics, including stage time, trace/reset behavior and fault rollback. Keep propulsion's explicit per-aircraft calls and current data shape until a concrete requirement justifies a broader state or powerplant registry.
 
 ## Where the code stands
 
-**Committed (HEAD 69dc9bc):**
+**Original baseline at HEAD 69dc9bc (historical, before the P-51/Avanti extensions):**
 
 | Piece | File | Fact |
 | --- | --- | --- |
@@ -32,11 +32,11 @@
 | Data | `app/data/aircraft/*.json` | Stik and Extra: O.S. 61FX 1397 W @ 16,000 rpm (manual), static max 11,149 rpm (derived, constant-torque assumption), idle 2,800 (estimated), APC Sport 11×6 UIUC tables applied to a 12×6, I_rot 3.5e-4 kg·m² (estimated). P-51: DA-120 8,725 W @ 6,900 (manual), static 5,751 rpm (derived), BEM tables, I_rot 0.0131 kg·m² (estimated) |
 | Sound | [engine_sound.gd](../../../app/render/engine_sound.gd) | Additive buzz at `rpm/60` with 6 harmonics, 22,050 Hz `AudioStreamGenerator`, amplitude ∝ rpm/max |
 | Smoke | [SMOKE-PLAN](../../SMOKE-PLAN.md) | Plans to read `aux[AUX_RPM]` and `engine_running` from `sim.stepped`; rpm is only a stand-in for mixture |
-| Trace | [trace.gd](../../../app/sim/trace.gd) | `openrc-trace v3` logs `engine_rpm` |
+| Trace | [trace.gd](../../../app/sim/trace.gd) | The current implementation is `openrc-trace v3` and logs `engine_rpm` |
 
-**Uncommitted, in the working tree on 2026-10-06 (other tracks, P51-06/P51-12/AV-05):** `propulsion.gd` gains an optional `engine.shaft` = { full-throttle brake `power_curve` [[rpm, W]…], `friction_torque` [N·m, N·m/krpm], `idle_power`, `peak_indicated_power` }. Engine torque `Q = min(Q_full_ind(n), P_adm/ω) − Q_f` with `P_adm = P_idle + θ·(P_peak − P_idle)`. The shaft is stepped by explicit Euler; a bisection `steady_rpm` serves the trim. Cp < 0 (windmilling) is allowed only with a shaft. Also added: thrust axis angles and a propeller normal force. `turbine.gd` adds a governor lag, accel/decel limits, `F = k·F_static(N)·σ − ṁ(N)·σ·u` and a fuel-flow table without mass change. The session's `_pre_step` reads `sim.state` body velocity, so the inflow ignores wind. **Treat these as in-flight work:** this document comments on them but does not assume they land unchanged.
+**Current committed extensions:** P-51-06/P51-12 provide optional shaft balance, thrust-axis and propeller normal-force/P-factor loads, and tail slipstream; see [P-51 plan](../../P51-PLAN.md), [`propulsion.gd`](../../../app/physics/propulsion.gd), [`slipstream.gd`](../../../app/physics/slipstream.gd) and the P-51 generated data. AV-05 provides the Avanti turbine branch; see [`turbine.gd`](../../../app/physics/turbine.gd) and [Avanti plan](../../AVANTI-S-PLAN.md). The P-51 shaft is currently stepped explicitly once per tick in `_pre_step`; turbine spool is also advanced per tick. Auxiliary values are held across rigid-body RK4 stages, so the P-51 full session has the measured first-order convergence described above. The implementation is committed, but its integration semantics and fidelity remain open.
 
-**Missing:** windmill/stopped branch and low-n formulation; `−dh/dt`; engine start/stop states; throttle servo slew (surfaces have servos, the throttle does not); carburettor nonlinearity; fuel/battery state, mass and CG change; electric chain; multi-engine; sound driven by load; validation against any measured rpm trace.
+**Current open limitations:** no rotor-acceleration reaction `−dh/dt`; the P-51 pre-step does not use wind-relative inflow; stopped-propeller loads are zero below 1 rpm, and the P-51 windmilling table coverage is clipped at its current range; engine start/stop states, throttle servo slew, carburettor nonlinearity, fuel/battery mass and CG change, the electric chain, multi-engine support, load-driven sound and validation against a measured rpm trace remain open.
 
 ## Theory and models
 
@@ -71,7 +71,7 @@ I_rot = I_prop + I_spinner + I_crank(or rotor bell) [+ gear: I_motor·G²]
 | Level | Model | Inputs | Use |
 | --- | --- | --- | --- |
 | L0 (today) | rpm lag to a throttle-mapped target | idle, max_static, τ | Ship v0 |
-| L1 (uncommitted slice) | WOT brake-power curve + friction + throttle-admitted power cap: `Q = min(Q_wot,ind(ω), P_adm(θ)/ω) − Q_f(ω)` | power curve, friction, idle/peak indicated power | G2 |
+| L1 (current optional P-51 slice) | WOT brake-power curve + friction + throttle-admitted power cap: `Q = min(Q_wot,ind(ω), P_adm(θ)/ω) − Q_f(ω)` | power curve, friction, idle/peak indicated power | P-51 experimental; G2 integration follow-up |
 | L2 | + throttle servo slew, barrel airflow map, combustion lag τ_c ≈ 2–5 revolutions (estimated), engine states (off/cranking/running/stalling) | carb geometry (estimated), starter torque | G2 + gameplay |
 | L3 | + mixture/plug-heat/flood states, fuel flow from BSFC, temperature | tuning parameters (estimated) | Realism option |
 
@@ -134,7 +134,7 @@ I_rot = I_prop + I_spinner + I_crank(or rotor bell) [+ gear: I_motor·G²]
 ### 4. Turbines (Avanti S, P100-RX)
 
 - **Thrust:** `F = ṁ(V_e − V_0)` (NASA Glenn, simplified, p_e ≈ p_0). P100-RX max ṁ 0.23 kg/s, V_e 434.7 m/s → 100 N static (repo doc, JetCat catalog). Constant-ṁ ram drag (derived): 93 N at 30 m/s, 86 N at 60, 82 N at 80 m/s. Real ṁ rises somewhat with ram pressure (not modelled; unverified magnitude).
-- **Spool:** throttle → ECU N demand → `dN/dt = clamp((N_d − N)/τ_gov, −R_dec(N), R_acc(N))` (the uncommitted `turbine.gd`). It is a sound structure: the ECU schedules acceleration to avoid flameout/over-temperature and limits deceleration to avoid starving the flame ("acceleration/deceleration delay" in ECU settings; Model Airplane News, search result only).
+- **Spool:** throttle → ECU N demand → `dN/dt = clamp((N_d − N)/τ_gov, −R_dec(N), R_acc(N))` (implemented in the committed `turbine.gd`). It is a sound structure: the ECU schedules acceleration to avoid flameout/over-temperature and limits deceleration to avoid starving the flame ("acceleration/deceleration delay" in ECU settings; Model Airplane News, search result only).
 - **Timing evidence:**
   - L'Erario et al. identified a second-order nonlinear thrust model for the P100-RX (throttle range 25–100 %, MAE 3.9 N). Simulating their EKF parameters (u in %, consistent: 87 N steady at 100 %): **25→100 % step: 10 % at 0.7 s, 63 % at 2.6 s, ~74 N at 3.0 s; 100→25 %: 63 % at 0.75 s, 90 % at 1.9 s.** Beyond ~3 s the up-step diverges, because the polynomial terms extrapolate outside the identification data. Use the timing, not the model.
   - JSBSim FGTurbine default (BPR 0): N2 rate `= 30/(1 + 3(1−n)³ + (1−σ))` %/s up and `90/(…)` down, so 60→99 % N2 in 1.96 s, 100→61 % in 0.63 s (derived). These are full-size-tuned defaults.
@@ -161,19 +161,19 @@ I_rot = I_prop + I_spinner + I_crank(or rotor bell) [+ gear: I_motor·G²]
 | Option | Pros | Cons | Verdict |
 | --- | --- | --- | --- |
 | A. Keep rpm lag (L0) | Bit-stable, trivial | No unloading, no windmill, no overspeed, wrong torque transient | Keep for aircraft without `shaft` data |
-| B. ω in `aux`, explicit Euler per tick (uncommitted slice) | Small change, deterministic | Unstable if dt/τ > 2 (light electric rotors), inflow from the start-of-tick state | Acceptable now; upgrade to C |
-| **C. ω in `aux`, linearly implicit (Rosenbrock-Euler) update: `ω₊ = ω + dt·f/(1 − dt·∂f/∂ω)`, ∂f/∂ω by one finite difference** | Unconditionally stable for the stable operating point; 2 extra torque evaluations; keeps operator splitting | O(dt) splitting error (negligible: τ ≫ dt) | **Recommended** |
-| D. ω as a 14th RK4 state | Fully coupled, 4th order | Changes `RB.SIZE`, every golden, linearize.gd, recorder; engine logic (states, cutoffs) inside RK stages is messy | Not now |
-| E. Electric: solve motor current in closed form each evaluation (B1 battery) | Exact for L1, cheap | Needs `V_batt` from aux (held over the tick) | Recommended |
-| F. Full ESC/FOC simulation | — | µs timescales, no flight effect | Never |
+| B. Shaft rpm in `aux`, explicit Euler once per tick (current P-51 slice) | Small, deterministic, demonstrates torque-balance data path | O(dt) full-session coupling; uses start-of-tick body velocity and omits wind | Current experimental implementation; migrate only after H8 defines coupled state semantics |
+| C. Shaft rpm in `aux`, linearly implicit split update | May stabilize a genuinely stiff scalar shaft equation | Retains O(dt) coupling error; current 240 Hz estimates show no demonstrated need for implicit stepping | Not the G2 target; reconsider only if measured stiffness warrants it |
+| D. Shaft rpm as a continuous RK4 state | Couples rpm, airspeed and loads at each stage; preserves fourth-order convergence for a smooth coupled RHS | Requires H8 state, stage-time, trace/reset and rollback support; discrete mode transitions stay at tick boundaries | **G2 target after H8** |
+| E. Electric: solve motor current in closed form each evaluation (B1 battery) | Exact for L1, cheap | Needs `V_batt` from a sampled state | Recommended if an electric track is prioritized |
+| F. Full ESC/FOC simulation | — | µs timescales, no flight effect | Defer |
 
-**Recommendation for this repo:**
-1. Promote the uncommitted shaft slice to option C, with the inflow from the **air-relative** velocity: `pre_step(aux, inputs, dt, state, wind)`.
-2. Add `−ḣ` to the rigid-body moment from the tick's Δω.
-3. Add the windmill/stopped branch.
-4. Then build the electric chain as a second `Q_src` (Drela L1 + averaged ESC + B1 battery), and the realism layers later.
+**Current recommendation for this repo:**
+1. Settle H8's minimal continuous/sampled/discrete state, stage-time, trace/reset and fault-rollback contract before wheel anchors or further coupled shaft work.
+2. Migrate the optional shaft model to a continuous RK4 state for G2; evaluate the coupled loads at each stage and use air-relative inflow, including wind. Require full-session `h`/`h₂`/`h₄` convergence, not only a frozen-body shaft toy test.
+3. Add the `−ḣ` airframe reaction with a sign/magnitude test; treat stopped/windmilling prop data as a separate fidelity task.
+4. Keep electric, fuel, mixture and broad multi-powerplant schema work behind concrete aircraft needs and measurements.
 
-**Unified architecture (proposal):**
+**Long-range architecture sketch (not an H8 or G2 prerequisite):**
 
 ```
 inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU schedule)
@@ -188,7 +188,7 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
         fuel/SOC, temperatures, firing & BPF frequencies → sound, smoke, HUD, trace
 ```
 
-**Per-power-plant aux block (float64, replayed and traced):** `[ω or N, θ_actuator, state_code, fuel_kg | SOC, U_c, T_motor, plug_heat, flood]`, with unused slots fixed at 0. Discrete states are encoded as float codes and change only in `pre_step` (deterministic). `engine_running` moves from the session bool into `state_code`.
+The per-power-plant state block sketched here (`ω or N`, actuator, mode, fuel or battery state) is a possible later representation. H8 should add only fields needed by an active feature; discrete transitions stay at tick boundaries, while continuously coupled values belong in the RK state.
 
 **Mass properties (G4):** update mass, CG and inertia once per tick in `pre_step` from the tank/battery inventory and hold them over RK4. The state origin is the CG, so a CG shift Δc requires shifting the position state by `R·Δc` in the same tick. That is mm-scale; document it so render interpolation does not see a jump.
 
@@ -197,11 +197,7 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
 ## Godot / GDScript notes
 
 - All of the above is scalar float64 arithmetic. Keep it in `PackedFloat64Array`/`float`, no `Vector3` (repo rule, enforced by `app/test.sh`). Use `M.exp_` (the repo's own exponential), not `exp`, where determinism across platforms matters, as `rpm_step` already does.
-- **Cost:**
-  - Option C: 3 propeller-torque and 3 source-torque evaluations per tick ≈ 3 Ct/Cp table walks. Order 10–20 µs in GDScript (estimated from the existing per-tick budget of ~510 µs for the whole model), against the 500 µs rule-7 budget, which is already exceeded on the dev VM.
-  - Move the table lookup to a precomputed uniform-J grid (O(1) index) when profiling shows it.
-  - `steady_rpm` bisection (80 iterations) runs only in trim.
-  - Dictionaries in the hot path (`prop.shaft.power_curve`) cost hash lookups: cache typed locals per tick.
+- **Cost:** the audit's shared-host measurements were 408/370 µs per tick for the Stik, 448/457 Extra, 1,256/1,187 P-51 and 412/404 Avanti (trimmed / α=15°). These are exploratory and do not isolate shaft or slipstream cost. Report per-aircraft, per-regime timings for G2; flatten table lookups only if a measured profile identifies them as material. `steady_rpm` bisection runs only in trim.
 - **Audio:** Godot's `AudioStreamGenerator` docs say it "is best used from C# or from a compiled language via GDExtension" and recommend 11,025 or 22,050 Hz from GDScript (the repo uses 22,050). G3's richer synthesis (load-dependent spectra, several voices, Doppler) is the most likely GDScript hotspot. Budget it per frame, or synthesise via `AudioStreamPlayer` pitch-shifted loops of recorded samples (licensed, provenance per SMOKE-PLAN rules). The pause behaviour learned in UI-02 (`stream_paused`) still applies.
 - **Determinism:** engine events (stop, LVC, flameout) must depend only on aux/state/inputs, never on wall-clock or `_process`. Smoke and sound read telemetry from `sim.stepped`, as SMOKE-PLAN already prescribes.
 
@@ -273,7 +269,7 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
 6. Electric L1: no-load ω = K_V(V − i₀R); stall current V/R; maximum shaft power at ω ≈ ω₀/2; η from Drela eq. (7) matches the simulated `Q·Ω/(V·I)`.
 7. Battery B1/B2: constant-current discharge reaches cutoff at `C/I` minus the R-drop correction (analytic); RC step response time constant τ_RC within 1 %. Soft LVC: power at 60 % ± 1 % after 3 s.
 8. Turbine: spool up/down times equal the integral of the schedule; idle-to-max monotone; thrust at V = 0 equals the table.
-9. Goldens: aircraft without the new data blocks replay bit-for-bit (the uncommitted slice already designs for "absent = D5 behaviour").
+9. Goldens: aircraft without the optional shaft data retain the D5 lag path; the P-51 tests check that its opt-in data do not alter the Stik baseline.
 
 **Independent validation against real RC behaviour:**
 - **Phone-audio tachometer (cheapest, owner can do it):** record a throttle step at the field and compute a spectrogram; firing frequency = rpm/60 (2-stroke single) gives rpm(t). That yields static rpm, idle rpm, step response, and in-flight unloading on a fly-by (correct for Doppler: average approach/recede). Compare static rpm with the derived 11,149 for the .61 + 12×6.
@@ -295,8 +291,8 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
 1. **Missing `−ḣ`** delays the punch torque by the spool time. Mitigation: verification test 3 plus its mutation.
 2. **J singularity and the 1 rpm cut-off:** a stopped prop has no drag and cannot be turned by the air. Mitigation: low-n (V-based) coefficients or a φ-table, plus a stopped-prop drag coefficient (estimated, labelled).
 3. **Tables end before windmilling** (UIUC 11×6 at J 0.79). The P-51 BEM `cp_table` is exactly 0 for J ≥ 0.6, i.e. the windmill torque is clipped. Mitigation: extend the BEM script's output below Cp = 0; cross-check with APC computed files; label "derived".
-4. **Explicit shaft step on stiff motors** (dt/τ → 1–2 for light, low-R, high-Kv setups). Mitigation: option C.
-5. **Inflow from ground-relative velocity** (the uncommitted `_pre_step` uses `sim.state` and calm air) gives a wrong J in wind. Mitigation: pass the air-relative velocity, the same as `_loads`.
+4. **Once-per-tick shaft stepping** produces first-order full-session convergence in the current coupled P-51 probe. Mitigation: after H8, integrate shaft speed with the coupled RK stages and test end-to-end convergence; do not hide the coupling error with an implicit scalar split.
+5. **Inflow from ground-relative velocity** (the committed `_pre_step` reads `sim.state` and assumes calm air) gives a wrong J in wind. Mitigation: use the stage's air-relative velocity in G2.
 6. **Torque-curve shape decides static rpm and spool time**, and the repo has two undocumented shapes (one mislabelled). Mitigation: one documented estimated shape per engine class; a sensitivity sweep row in `research/sensitivity/`.
 7. **Multiple or unstable equilibria** if `Q_src` rises with ω faster than `Q_prop` (a steep power curve, tuned-pipe bump). The bisection in `steady_rpm` assumes a single root. Mitigation: a loader check `dQ_src/dω < dQ_prop/dω` along the static curve; trim warns otherwise.
 8. **ESC current ≠ battery current:** treating them as equal over-drains the battery at part throttle (factor 1/d). Mitigation: `I_batt = d·I_m` + test.
@@ -313,18 +309,17 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
 | --- | --- | --- | --- |
 | G1a | Propeller table hygiene: report out-of-range J per flight (counter in trace header); document the extrapolation floors per file | Unit tests on the file's own rows; a 40 m/s dive trace reports out-of-range ticks | — |
 | G1b | Windmill and stopped branch: V-based coefficients for n·D < V/J_max, a stopped-prop drag coefficient, tables extended to Cp < 0 (BEM/APC, labelled) | Dead-stick glide L/D with stopped vs windmilling prop vs D8a's 8.46 (no-prop) — ordered and within the band set beforehand | G1a |
-| G2a | Shaft balance (land the uncommitted P51-06 slice) for the Stik/Extra/P-51 with an air-relative inflow; `pre_step` receives state and wind | Throttle-step trace + unloading test (verification 1, 4); goldens of data without `shaft` bit-identical | — |
-| G2b | Linearly implicit shaft update (option C) | Stability test with a synthetic rotor at dt/τ = 3 passes; verification 2 at 30/60/144 fps | G2a |
-| G2c | Rotor-acceleration reaction `−ḣ` | Verification 3 plus its mutation | G2a |
-| G2d | Throttle actuator: throttle servo slew + `admitted_fraction(θ)` table + combustion delay (estimated) | Step trace vs the owner's phone-audio tach (rpm(t) within a band set beforehand) | G2a |
-| G2e | Engine states in aux (OFF / CRANKING / RUNNING), stop below 0.8·idle (JSBSim rule), starter law; `engine_running` retired | Scripted scenario: idle trimmed below the stall rpm stops within 2 s and stays stopped; trace logs the state | G2a, G1b |
-| G2f | Realism layer (off by default): flood at rich idle, plug-heat cool-down, lean cut on fast throttle | Unit tests on each state; with the toggle off, goldens unchanged | G2e |
+| G2a | After H8, complete shaft balance for the Stik/Extra/P-51 with coupled RK4 rotor speed and air-relative stage loads; preserve the existing P-51 option as the experiment | Full-session throttle-step `h`/`h₂`/`h₄` convergence approaches 16; unloading matches hand calculation; no-shaft aircraft remain unchanged | H8 |
+| G2b | Rotor-acceleration reaction `−ḣ` | Verification 3 plus its mutation | G2a |
+| G2c | Throttle actuator: throttle servo slew + `admitted_fraction(θ)` table + combustion delay (estimated) | Step trace vs the owner's phone-audio tach (rpm(t) within a band set beforehand) | G2a |
+| G2d | Engine states in the minimal state contract (OFF / CRANKING / RUNNING), stop below 0.8·idle (JSBSim rule), starter law; retire `engine_running` only when a traceable replacement is needed | Scripted scenario: idle trimmed below the stall rpm stops within 2 s and stays stopped; trace logs the state | G2a, G1b, H8 |
+| G2e | Realism layer (off by default): flood at rich idle, plug-heat cool-down, lean cut on fast throttle | Unit tests on each state; with the toggle off, goldens unchanged | G2d |
 | G3a | Sound from telemetry: firing frequency, BPF, load-dependent harmonics; voices for glow single, gas twin | Headless FFT: peak at rpm/60 ± 1 bin at three rpm; owner check | G2a |
 | G3b | Electric and turbine voices (BPF + whine; turbine tone at N/60 + broadband) | FFT peaks; owner check | G3a, G-E1, AV-05 |
 | G4a | Fuel tank state + burn map (glow: BTE-based; gas: g/min table; turbine: mL/min table), engine stops at empty | Burn-out time at WOT within 5 % of the hand calculation | G2e |
 | G4b | Time-varying mass, CG and inertia from tank/battery inventory (once per tick) | Trim drift trace over a tank (G4 proof) + CG shift vs hand calc | G4a |
 | G5 | Multi-engine readiness: `powerplants[]`, per-plant aux block, twin test aircraft | Counter-rotating twin: net reaction torque 0 ± 1e-12; single engine-out yaw sign | G2a |
-| G-E1 | Electric L1: Drela 3-constant motor + averaged ESC (d = throttle) + ideal battery; data schema `source.kind = "electric"` | Verification 6; an electric Stik variant trims and flies the handling test | G2b |
+| G-E1 | Electric L1: Drela 3-constant motor + averaged ESC (d = throttle) + ideal battery; data schema `source.kind = "electric"` | Verification 6; an electric Stik variant trims and flies the handling test | G2a |
 | G-E2 | Battery B1→B2: OCV(SOC), R₀, one RC, SOC in aux; brown-out when no real root | Verification 7; voltage-sag trace on a throttle punch | G-E1 |
 | G-E3 | ESC behaviours: start ramp, LVC soft/hard, brake vs freewheel, signal-loss cut 0.25 s, arming | Unit test per mode; brake → stopped-prop glide | G-E2, G1b |
 | G-E4 | Thermal: winding temperature with R(T), ESC derate | Sustained-WOT trace plateaus; derate at threshold | G-E2 |
@@ -336,10 +331,10 @@ inputs (throttle channel) ─► actuator (throttle servo slew / ESC ramp / ECU 
 
 ## Decisions to take now
 
-1. **`pre_step` contract:** pass the start-of-tick rigid-body state and the wind (air-relative inflow). Otherwise G2, propwash (E0b) and smoke will each read `sim.state` their own way. *Recommended: change the Callable signature once, now.*
-2. **Where ω lives:** aux with a linearly implicit update (option C), not in the RK4 state. *Revisit only if coupling errors show in a measured test.*
-3. **Engine and energy states in aux** (state code, fuel, SOC, U_c, temperatures) so traces, goldens and replays capture them. *Recommended; retire the `engine_running` bool.*
-4. **Propulsion data v2 = `powerplants[]`**, each `{source{kind: glow|gas|electric|turbine, …}, shaft, propeller|null, tank|battery ref, offset, axis, rotation}` plus top-level `tanks[]`/`batteries[]` with positions. The uncommitted `kind: glow_prop|turbine` single object can map onto it, but adopting the list before more files are generated avoids a second migration. v1 files keep loading through a legacy mapping; every number keeps `{value, unit, kind, source}`.
+1. **State/input contract:** H8 defines per-stage time and explicit sampled inputs; a subsystem must not independently pull `sim.state` or assume calm air. Use the smallest API that supplies the active loads with stage state and air-relative flow.
+2. **Where coupled ω lives:** integrate it as a continuous RK4 state for G2 after H8. Keep genuinely sampled inputs at their explicit sample boundary and discrete transitions at tick boundaries. A linearly implicit split update is not the selected path; revisit only if a measured stability problem requires it.
+3. **Trace and rollback:** every new state must have defined initialization, reset, fault rollback and trace/checkpoint behavior. Add only state consumed by an active feature; do not force all hypothetical energy stores into the present contract.
+4. **Propulsion data v2:** defer a general `powerplants[]`/`tanks[]` registry. Freeze and validate the current typed format, then add the next proven capability additively. Propose a scoped migration when a named near-term aircraft cannot be represented safely with the existing fields.
 5. **Telemetry struct as the only interface for sound, smoke and HUD** (read-only, produced once per tick). *Recommended; never let audio pull from physics internals.*
 6. **Realism toggles are deterministic and off by default** (no RNG in failure causes). *Owner decision on default difficulty.*
 7. **Electric track ownership and priority:** most pilots fly electric. *Owner decision: whether G-E1 starts before G3/G4 or after PT4.*

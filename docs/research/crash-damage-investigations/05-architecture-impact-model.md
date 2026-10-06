@@ -42,8 +42,8 @@ This document turns the research into one design that fits the code as it is on 
 | Crash detection runs at tick end; a point can be up to v·dt = 0.125 m (30 m/s) below ground | Wrong point order when two points hit in one tick; a buried picture | Sub-tick crossing fraction per point (CR-01) |
 | `crash_hull` is an unnamed list | No component in messages, sounds or damage | Labels in CR-01, kept as the component ids of E3d1's typed contacts |
 | `aux` is a fixed array [rpm, servo×3] | No room for damage flags | Session-side damage configuration first (recomputed on replay); H8 named extras later |
-| Physics at ≈ 501 µs of its 500 µs budget per tick | No new per-tick cost in flight | Event-only work; zero cost without damage (Phase H buys headroom) |
-| Godot physics is 32-bit and frame-synchronised | It must never decide the flight | Used only for the wreck and debris after the handoff |
+| Dated all-aircraft audit bench (2026-10-06): Stik 408/370, Extra 448/457, P-51 1,256/1,187, Avanti 412/404 µs/tick (trim/stall; shared VM under contention; [measurement context](../project-audit-2026-10-06/README.md#evidence-ledger)) | P-51 is a profiling outlier; these exploratory readings do not certify the 500 µs target on owner hardware | CR-01 snapshots only after an existing trigger; measure later per-tick work on target hardware before setting a budget |
+| This Godot build uses default float32 physics types; flight state and replay have an independent float64 authority | A fixed physics tick does not provide matching precision or an authoritative replay contract across the boundary | Keep impact decisions/checkpoints in the float64 simulator; Godot may present a later wreck, with no feedback into flight state unless a separate precision, timing and replay contract is validated |
 | gl_compatibility renderer, a VM with no GPU | Some particle and decal features may be missing; GPU cost is unmeasured here | Doc [02](02-godot-destruction-techniques.md); frame times on the owner's machine |
 
 ## Three layers
@@ -91,7 +91,7 @@ Computed once per tick for every hull point that crossed the ground during the t
 
 Read: a Stik wingtip touching at 3 m/s vertical has e_normal = ½·0.19·9 ≈ **0.9 J**, a scrape. The same airplane flown vertically into the ground at 15 m/s puts ½·2.89·225 ≈ **325 J** into the nose. A P-51 wingtip at 3 m/s gives 7 J and its nose-in at 25 m/s gives ≈ 6.6 kJ. Same rule, very different outcomes, decided by where and how it hits.
 
-**Not proven by this experiment:** real impacts are not single plastic point events (contacts last milliseconds, structures crush, friction acts). m_eff is the right *ranking*. Absolute thresholds need doc [03](03-rc-construction-crash-physics.md) numbers and the owner's judgement.
+**Not proven by this experiment:** real impacts are not single plastic point events (contacts last milliseconds, structures crush, friction acts). m_eff is useful for *ranking* rigid-body response; it does not supply failure limits. CR-07 must acquire traceable construction/material evidence, applicable test conditions, ranges and uncertainty in pending report 03 before any structural threshold is accepted. Owner ratings and crash videos may challenge the resulting scenarios, but cannot establish or tune physical strength values. See the [research index](README.md), where report 03 is explicitly pending under CR-07.
 
 ## Outcome classes
 
@@ -117,24 +117,24 @@ Before E3d1 every ground touch is C3 or C4, as today. The resolver still reports
 
 ## Structure data (proposal, optional section of `openrc-aircraft v1`)
 
-```json
+The following is a **schema sketch, not loadable aircraft data**. It intentionally omits failure thresholds; CR-07 must acquire and review evidence before an `absorb_energy` value is specified.
+
+```text
 "structure": {
   "sections": [
-    { "id": "wing_left", "parent": "fuselage_center", "material": "balsa_built_up",
-      "inventory": ["wing incl. ailerons"], "inventory_share": 0.5,
-      "hull_points": ["wing_tip_left_le", "wing_tip_left_te"],
-      "joint": { "position": {"value": [0.15, -0.05, 0.05], "unit": "m", "kind": "estimated", "source": "…"},
-                 "absorb_energy": {"value": 12, "unit": "J", "kind": "estimated", "source": "doc 03 …"},
-                 "mode": "wing_bolts_shear" } }
-  ],
-  "surface_factor": { "runway": 1.0, "mown": 1.3, "rough": 1.5 }
+    { "id": "<section id>", "parent": "<parent id>", "material": "<sourced material>",
+      "inventory": ["<existing inventory item>"],
+      "hull_points": ["<labelled point id>"],
+      "joint": { "position": "<source-backed location>",
+                 "mode": "<failure mode supported by evidence>" } }
+  ]
 }
 ```
 
-- `id`s are the component ids that DATA-8's v2 component tree adopts, so nothing is renamed later.
+- Keep `id`s small and stable for the actual CR-07 sections. If DATA-8 is later justified, preserve these IDs or migrate them explicitly; crash work does not require a speculative v2 tree.
 - `inventory` names reuse the existing inventory item names. The loader refuses an item claimed twice or an unknown name. Generated aircraft (Extra, P-51, Avanti) get this section from their generators, never by hand.
-- `absorb_energy` is the energy a joint or section takes before it fails. Each value carries a kind; nearly all start as `estimated`. Doc [03](03-rc-construction-crash-physics.md) supplies the ranges, and the owner's judgement is the first validation.
-- `surface_factor` (estimated) scales the absorbed energy: soft ground lengthens the stopping distance and lowers the peak force. It is a single number per surface, replaceable by measurement.
+- `absorb_energy` is a proposed failure limit, not a value established by this design. CR-07 must first acquire traceable material/joint evidence with construction applicability, test conditions, ranges and uncertainty; if that evidence is insufficient, leave the failure mode unmodelled. Owner evaluation may assess outcomes after evidence review, but cannot substitute for it. See the [CR-07 pending report 03 entry in the research index](README.md).
+- A surface compliance or scaling model also needs evidence and validation before it changes a failure outcome; no per-surface factors are proposed here.
 - A **durability multiplier** (a setting: realistic 1.0, forgiving > 1) scales every `absorb_energy` and is written in the trace header. It never changes the data file.
 
 ## The resolver (pure, deterministic)

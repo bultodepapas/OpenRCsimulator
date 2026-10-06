@@ -1,0 +1,32 @@
+== build identity: v0.1.0-rc3-13-geaa8979 (commit eaa8979c7aba2ad5c5eb46e045968c1f3f7cc676, 2026-10-06T20:55:58+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exported binary reports build v0.1.0-rc3-13-geaa8979
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b
+Pack tree catalog, imported atlas, license and 480-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b
+Pack tree catalog, imported atlas, license and 480-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b
+Pack tree catalog, imported atlas, license and 480-tree field validated
+== packages
+6f5d2bb2f81c06be8817fd4c587b1f9c7030420c59d1b5807750076d0ad8f3c1  openrc-simulator-v0.1.0-rc3-13-geaa8979-linux-x86_64.zip
+e42c490117b8608f42d5712c1dba67c116763e161926bc868901b885e65c5342  openrc-simulator-v0.1.0-rc3-13-geaa8979-macos-universal.zip
+7438518ff7fa175d3ee8c1f2f77fa8455acceed2506c3d5589a472a897bdba4a  openrc-simulator-v0.1.0-rc3-13-geaa8979-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29124064 Oct  6 20:58 openrc-simulator-v0.1.0-rc3-13-geaa8979-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61274772 Oct  6 20:59 openrc-simulator-v0.1.0-rc3-13-geaa8979-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 38649036 Oct  6 20:59 openrc-simulator-v0.1.0-rc3-13-geaa8979-windows-x86_64.zip

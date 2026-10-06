@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+physics: 408.1 µs per tick (best of 3 × 2400 ticks; budget 500 µs on the owner's slowest machine)
+
+| regime (µs per call) | Air.compute | Aero.loads | Propulsion.loads | Ground.loads | Dynamics.loads | session loads | RB.derivative | RK4 overhead |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| trimmed | 6.4 | 45.8 | 6.5 | 0.8 | 65.6 | 74.3 | 3.3 | 9.0 |
+| stalled | 8.4 | 97.4 | 4.9 | 0.7 | 129.6 | 115.2 | 2.9 | 6.9 |
+| ground | 6.7 | 50.1 | 4.7 | 10.2 | 73.1 | 95.7 | 2.6 | 6.5 |
+
+stalled flight: 370.3 µs per tick (best of 3 × 2400 ticks from α 15°)

@@ -1,0 +1,35 @@
+{
+  "commit": "eaa8979c7aba2ad5c5eb46e045968c1f3f7cc676",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "host": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "full_suite_exit": 0,
+  "gd_test_scripts": 59,
+  "gd_scripts_in_app": 159,
+  "engine_errors": [],
+  "engine_warnings": [
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+    "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+  ],
+  "frame_hashes": [
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3"
+  ],
+  "export_exit": 0,
+  "benchmark_exit": 0,
+  "live_render_exit": 0,
+  "timing_limit": "Shared Linux VM; concurrent checks/software rendering and pre-existing render processes. Not owner-hardware performance.",
+  "capture_original_exit": 2,
+  "capture_original_failure": "Pre-existing Godot process writing same log inode at L6c case 31",
+  "capture_isolated_l6c_exit": 0,
+  "capture_base_images": 46,
+  "capture_vq_cases": 66,
+  "capture_isolated_l6c_cases": 64
+}

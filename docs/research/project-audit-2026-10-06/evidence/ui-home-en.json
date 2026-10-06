@@ -1,0 +1,220 @@
+{
+  "capture_scene": "home",
+  "format": "openrc-ui-capture v2",
+  "image": "ui-home-en.png",
+  "producer": "capture_ui",
+  "sha256": "0879c830d5710b16ae8c47acfc464f799a0925e92cc9957a8da1f7988351d115",
+  "size": [
+    1280,
+    720
+  ],
+  "ui_evidence": {
+    "flight_snapshot_frozen": false,
+    "home_field": {
+      "airplane_transform": {
+        "basis_columns": [
+          [
+            -0.308239698410034,
+            0.499695420265198,
+            -0.809501588344574
+          ],
+          [
+            0.215326368808746,
+            0.865497827529907,
+            0.45226988196373
+          ],
+          [
+            0.926619052886963,
+            -0.0348994955420494,
+            -0.374378383159637
+          ]
+        ],
+        "position": [
+          3.0,
+          2.75,
+          -15.0
+        ]
+      },
+      "camera_fov_deg": 12.0,
+      "camera_transform": {
+        "basis_columns": [
+          [
+            0.996917366981506,
+            0.0,
+            -0.0784590691328049
+          ],
+          [
+            0.00437970599159598,
+            0.998440742492676,
+            0.0556494630873203
+          ],
+          [
+            0.0783367305994034,
+            -0.0558215454220772,
+            0.995362937450409
+          ]
+        ],
+        "position": [
+          3.0,
+          1.70000004768372,
+          -2.0
+        ]
+      },
+      "exposure": 0.600000023841858,
+      "pilot_eye_position": [
+        3.0,
+        1.70000004768372,
+        -2.0
+      ],
+      "provenance": {
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "code_revision": "eaa8979c7aba2ad5c5eb46e045968c1f3f7cc676-dirty",
+        "source_scope": "runtime source tree; imported/exported resources may omit original files",
+        "source_sha256": {
+          "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+          "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+          "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+          "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+          "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+          "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+          "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+          "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+          "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+          "res://aircraft/inspect_p51.gd": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023",
+          "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+          "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+          "res://aircraft/p51d_appearance.gd": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+          "res://aircraft/p51d_finish.gd": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+          "res://aircraft/p51d_geometry.gd": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+          "res://aircraft/p51d_model.gd": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+          "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+          "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+          "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+          "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+          "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+          "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+          "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+          "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+          "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+          "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+          "res://aircraft/verify_p51.gd": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7",
+          "res://aircraft/verify_p51_clearance.gd": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12",
+          "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+          "res://app_root.gd": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a",
+          "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+          "res://app_state/aircraft_catalog.gd": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9",
+          "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+          "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+          "res://assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+          "res://assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+          "res://assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+          "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+          "res://data/aircraft/jensen_ugly_stik_60.json": "e2c442330c445e66960aa04f970395201d56f9c0a6649dfdc3c7a87ac0e85e36",
+          "res://data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+          "res://data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+          "res://data/field_loader.gd": "dd9432653ba5e0459de792eaf780670242a094a8fd80a93d90f7624f8fc13dc8",
+          "res://data/fields/default.json": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+          "res://data/ground/surface_friction.json": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94",
+          "res://i18n/es.po": "303914c90385dd6e5094a7bd4e983ffeae406a1e7b7835925eb9ed81581a6c0d",
+          "res://input/commands.gd": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2",
+          "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+          "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+          "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+          "res://main.gd": "6986bcaa86e68171fe5cc0179dd7edbeffe008d67d1ceda5f5de10c9ec7e9898",
+          "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+          "res://physics/aero.gd": "45caa9106db270cb3dd648861c869c23f4a37d001a7ce813bfb01b54dbfe88c0",
+          "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+          "res://physics/aircraft_data.gd": "5de8f4a5075e4d4e6078c9bc46ed590f24fc98d168bd862ccafb4ee67d66ccd5",
+          "res://physics/dynamics.gd": "5804ea9ecede102e278bc048a026784979cf7c4961aca6fee8892a11d197aa52",
+          "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+          "res://physics/ground_contact.gd": "a94abfa9a534e790beb701da66eca08d445035950af94ff55890627805e01b59",
+          "res://physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+          "res://physics/integrator.gd": "c86e5a3e7e27be3c22d5c04bbc411a911b591f8dab4ff1100154cb6acf48ff96",
+          "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+          "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+          "res://physics/propulsion.gd": "c888caa14d9d79bf7be09e88ab0ac4e488b0428ff23e9f5e41900598945e555b",
+          "res://physics/rigid_body.gd": "b2c11aafa6d9268cac3c26c7845650246a91ef10223cb95b4622fc966b9d8eec",
+          "res://physics/slipstream.gd": "3a310c3d61f64b9ac59fff38d04a26020c6d46386e3bffa2dfdce306fb01f09c",
+          "res://physics/trim.gd": "2006bf2868a814a78a33b70faa09e1d06ddd7d41568c3473719aae334905887c",
+          "res://physics/turbine.gd": "fd7937aedffa544f2b374e8512687fa87c319adc24cf562816ad4b9ab44ac4c3",
+          "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+          "res://render/airplane.gd": "7a3315cb1d7588ab600078f17fc91c062b73c7bf41ec2f6cde7e876a01b59dd3",
+          "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+          "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+          "res://render/field.gd": "98918bde52a69e8049b1489a2b031363a485c41ba429ad1f83a2c81d66e5fd04",
+          "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+          "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+          "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+          "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+          "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+          "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+          "res://render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+          "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+          "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+          "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+          "res://render/tree_assets.gd": "9e1cee18977b8fe735700be9529e0518317ffa8da17d2dfac88d49a34e3efcc9",
+          "res://render/tree_identity.gdshaderinc": "9cf2c934e7f6b6006630c772dbf70520ca1efbdacca0a64c1e0d33f57d28d45f",
+          "res://render/treeline.gd": "2e225963a057e006e4990e5d65fa3603335293d8d6863b28ad30bb56eff929b6",
+          "res://render/treeline.gdshader": "20447f34326039713598039c34d060924e705b68568a71b9b076bdc770306a0b",
+          "res://render/visual_evidence.gd": "1459da195a587a65c3472f15f86af54267d714c3e86c77d4fbb07ac87e0f4a80",
+          "res://sim/flight_session.gd": "a68c6d00c5622264abace42c0265f25b19089fa9dc814cb950b611c5d7888a6b",
+          "res://sim/maneuvers.gd": "8d9d4e3ab25d8075135628428e36cd308dd06b1cb5a8927f85e26d22d36f3c6b",
+          "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+          "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+          "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+          "res://sim/simulation.gd": "a8582859a6a52e5a7872c473685d51373fde2b35d60f493b8e3550bda0675169",
+          "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+          "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+          "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+          "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+          "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+          "res://ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+          "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+          "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+          "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+          "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+          "res://ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+          "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+          "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+          "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+          "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+          "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+        },
+        "source_tree_available": true
+      },
+      "seed": {
+        "kind": "not-used",
+        "note": "Home uses fixed analytic clouds and no RNG"
+      },
+      "shader_clock_s": 37.0,
+      "tonemapper": 3
+    },
+    "language": "en",
+    "route": "standalone-home",
+    "state": "home",
+    "viewport": {
+      "active_camera": "/root/HomeScene/@Camera3D@17",
+      "camera_3d_count": 1,
+      "world_environment_count": 1
+    },
+    "visual": {}
+  }
+}

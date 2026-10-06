@@ -1,6 +1,6 @@
 # 03 — Propeller aerodynamics, slipstream and propwash
 
-**Status:** research knowledge base, 2026-10-06. **Serves:** ROADMAP E0b (propwash on the tail), G1 (propeller table ingestion), M5 "swirl and wing-wash", 3D aerobatics (hover, torque roll), P-51 4-blade BEM table ([derive_physics.py](../../../research/p51/p51-05/derive_physics.py)), Extra EX-06 thrust axis. **Read with:** [ROADMAP E0b/G1, plan review #3 item 4](../../../ROADMAP.md), [RESEARCH.md: electric propulsion, APC/UIUC comparison, plan review #3 propwash](../../../RESEARCH.md), [propulsion.gd](../../../app/physics/propulsion.gd), [aero.gd](../../../app/physics/aero.gd), doc 02 (wing aerodynamics) and doc 05 (engine and shaft) in this folder.
+**Status:** research knowledge base, initially observed 2026-10-06; current implementation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP E0b (propwash on the tail), G1 (propeller table ingestion), M5 "swirl and wing-wash", 3D aerobatics (hover, torque roll), P-51 4-blade BEM table ([derive_physics.py](../../../research/p51/p51-05/derive_physics.py)), Extra EX-06 thrust axis. **Read with:** [ROADMAP E0b/G1, plan review #3 item 4](../../../ROADMAP.md), [RESEARCH.md: electric propulsion, APC/UIUC comparison, plan review #3 propwash](../../../RESEARCH.md), [propulsion.gd](../../../app/physics/propulsion.gd), [aero.gd](../../../app/physics/aero.gd), doc 02 (wing aerodynamics) and doc 05 (engine and shaft) in this folder.
 
 ## Summary
 
@@ -13,11 +13,11 @@
 - **Propeller data:** the Stik's table is the **measured APC Sport 11×6 at ≤ 6,259 rpm, applied to a 12×6 at 11,149 rpm**, i.e. extrapolated in rpm and size. UIUC Vol. 4 has a measured **APC 12×6E** (thin electric, a different blade) up to 7,547 rpm static and 6,044 rpm in the tunnel. Its Ct at J ≈ 0.35 rises 50 % from 3,040 to 6,044 rpm, so rpm (Reynolds) must stay a table dimension. Its zero-thrust J is ≈0.63, against 0.77 in our table.
 - **Ingestion traps found in the files:** UIUC run files repeat their last row up to 8 times (`apce_12x6_0635od_6044.txt`), have no rows between J = 0 and J ≈ 0.11–0.33, and give only slightly negative Ct. APC PER3 files are computed by a vortex method (they under-predict Cp by ≈13 % on the 11×6) and block scripted downloads (HTTP 403).
 - **The Stik's propeller is at the CG in the data** (`thrust_line_offset` [0,0,0]); the real hub is 0.414 m ahead of it. This is harmless for axial thrust but wrong for the normal force, the hub position of the wash and P-factor moments.
-- **Uncommitted work in progress in the working tree (2026-10-06, P-51 track, labelled "P51-12"):** `app/physics/slipstream.gd`, plus a shaft model, thrust axis and normal-force hook in `propulsion.gd`. It already implements the recommended **increment law** (F(washed) − F(free) on the local tail law), so the oracle is untouched and a stopped propeller adds nothing. Gaps found below: no reverse-flow cut-off, a constant axial factor, no lag, a top-hat profile, and the normal force without the jet term.
+- **Current status:** the optional P-51 shaft, thrust-axis, propeller normal-force/P-factor and tail-slipstream implementation is committed (`P51-06`, `P51-12`; see [P-51 plan](../../P51-PLAN.md) and [current source](../../../app/physics/slipstream.gd)). Its generated aircraft data declares the shaft and slipstream. This is experimental P-51 support, not validation of the Stik path: the Stik still has no slipstream data and its idle/dead-stick propeller behavior remains unvalidated. The P-51 wake is currently an idealized top-hat, has no reverse-flow fade or transport lag, and omits the propeller jet-crossflow normal-force term. Shaft rpm advances once per tick outside the RK stages; see [doc 01](01-numerics-architecture-performance.md) and [audit finding T1](../project-audit-2026-10-06/physics.md#t1--the-full-flight-session-is-split-order-time-dependent-rk-stage-loads-are-not-wired-through).
 
-## Where the code stands
+## Original baseline observed at HEAD 69dc9bc (historical)
 
-Committed code (HEAD `69dc9bc`):
+The following table describes the pre-P-51-extension code at that revision. It remains useful for the Stik's default path, but is not a description of every current aircraft.
 
 | Item | File | State |
 | --- | --- | --- |
@@ -25,14 +25,16 @@ Committed code (HEAD `69dc9bc`):
 | Thrust line | `propulsion.propeller.thrust_line_offset` = [0,0,0] | Thrust acts at the CG. Hub at x_LE −0.293 m (from `ugly_stik_geometry.gd`: `equipment.prop_z` −0.408 with the wing LE at −0.115) = **0.414 m ahead of the CG** |
 | Tail | [aero.gd](../../../app/physics/aero.gd) `_local_loads` | H and V tail are local surfaces in **free-stream** flow `v + ω×r`, used only when the blend weight is > 0. At small angles, `_global_loads` (the borrowed UltraStick25e oracle) carries everything |
 | Gyro | [dynamics.gd](../../../app/physics/dynamics.gd) | Rotor angular momentum J_p·ω_p along +x (3.5e-4 kg·m², estimated) |
-| Missing | — | Propwash, swirl, wash lag, P-factor, normal force, windmill/brake branch, rpm-dependent tables, out-of-range flags |
+| Missing from the baseline path | — | Propwash for the Stik, wash lag, windmill/stopped-prop behavior at low rpm, rpm-dependent tables and trace out-of-range flags |
 
-**Consequence for E0b (committed code):** propwash added only to `_local_loads` would vanish at small angles (blend 0). At V ≈ 0 with wash, the tail angles become small, so the oracle takes over and the oracle's q∞ is ≈0. Taxi and take-off authority would stay zero. The wash must therefore be **added outside the blend**, as an increment.
+**Baseline consequence for E0b:** propwash added only to `_local_loads` would vanish at small angles (blend 0). At V ≈ 0 with wash, the tail angles become small, so the oracle takes over and the oracle's q∞ is ≈0. Taxi and take-off authority would stay zero. The P-51 extension uses an increment outside the blend; the same principle remains relevant when the Stik path is implemented.
 
-**Working tree (uncommitted, observed 2026-10-06; another track's WIP, not reviewed or tested here):**
-- `app/physics/slipstream.gd` — momentum far-wake speed V_s = √(u² + 2T/ρA). Contracted radius r_s = R·√((u+V_s)/(2V_s)), clamped to 0.707–1.5 R. Velocity increment `axial_factor·(V_s − u)` (data, 0–1.2). Solid-body swirl Ω_s = 2Q/(ρV_sπr_s⁴)·`swirl_factor`. The wake centre drifts with α/β by (V/V_s)·dist·`vertical_drift`. Strip/circle intersection per tail piece (fin, two stab halves) with a linear chord. Load = `tail_surface_load(washed) − tail_surface_load(free)`, added in `dynamics.gd` after aero + propulsion, opt-in when `propulsion.slipstream` exists. It calls `Propulsion.thrust_torque` once per evaluation.
-- `propulsion.gd` — optional shaft balance J·dω/dt = Q_e − Q_p (doc 05), thrust axis angles (EX-06/P51-06), and `normal_force(v_air, …)` from a table k_N(J) "referred to ρn²D⁴".
-- No aircraft JSON declares `slipstream`, `normal_force` or `shaft` yet. `derive_physics.py` (P-51) has started to emit slipstream pieces. **"P51-12" is not in the registered P51-00…11 range** ([docs/README.md](../../README.md)).
+## Current P-51 extension (committed; experimental)
+
+- `app/physics/slipstream.gd` computes a momentum-theory wake, contraction, data-scaled wash and swirl; it intersects the wake with tail pieces and adds the washed-minus-free tail-load increment. The P-51 data opt in; absent data leaves other aircraft unchanged.
+- `app/physics/propulsion.gd` supports the optional shaft balance, thrust-axis angles, normal force and P-factor. The P-51 generated JSON declares those fields and the slipstream geometry.
+- The session still advances shaft rpm in `_pre_step` from the current body velocity, without wind, and holds it across the rigid-body RK stages. The current full-session refinement probe therefore shows first-order convergence. The `−dh/dt` rotor-acceleration reaction is still absent. These are integration/fidelity follow-ups; G2's target is specified in [doc 05](05-propulsion-engines-motors.md).
+- Do not transfer the P-51 implementation's status to the Stik: no current Stik JSON opts into slipstream, and the owner nose-lift/taxi checks remain open.
 
 ## Theory and models
 
@@ -116,7 +118,7 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 | 26×12, 4-blade, 5,751 rpm | 15, 10° | 236.5 | 2.99 | 2.31 | 9.8 mm |
 | same | 25, 10° | 137.5 | 5.49 | 3.45 | 25 mm |
 
-  Normal-force slope in the WIP's form k_N = N_p/(ρn²D⁴·α) ≈ **0.02·J** (12×6) and ≈ **0.035·J** (4-blade 26×12) per radian (derived). N_p acts at the hub, ahead of the CG, so it is **destabilizing** in pitch and yaw (it acts like a forward fin). For the Stik at 15 m/s that is 0.30 N × 0.41 m = 0.12 N·m.
+  In the committed P-51 table's normalization, k_N = N_p/(ρn²D⁴·α) is approximately **0.02·J** for the 12×6 and **0.035·J** for the 4-blade 26×12 per radian (derived). N_p acts at the hub, ahead of the CG, so it is **destabilizing** in pitch and yaw (it acts like a forward fin). For the Stik at 15 m/s that is 0.30 N × 0.41 m = 0.12 N·m.
 - **Jet normal force near hover:** N_j = k_j·ρA·w0·V_cross, with w0 = √(T/2ρA) and k_j ≈ 0.8 (smooth cowl) to ≈1.0 (cruciform foamie), empirical (Selig 2010, eqs. 13–16). For the 12×6, ρAw0 = 1.36 kg/s, so a 2 m/s hover drift gives ≈2.2–2.7 N (≈9 % of the weight), acting as damping. Selig blends the blade term (eq. 4) and the jet term as a weighted sum "not exceeding the maximum of either", washing the blade term out near hover.
 - **Propeller rate damping:** M = k_d·(ρ/2)·Ω²R⁵·atan(q/Ω), with k_d ≈ 2π·π·σ (Selig eqs. 10–12). For the 12×6 at hover (σ 0.08–0.12, estimated) at q = 3 rad/s: 0.28–0.42 N·m.
 - **Gyroscopic:** already in `dynamics.gd`. Selig's eqs. 8–9 are the same term.
@@ -155,8 +157,8 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 | Option | What it gives | Cost (est.) | Risk | Verdict |
 | --- | --- | --- | --- | --- |
 | A. Constant tail q multiplier η_t(throttle) | static authority | trivial | wrong at every other condition; not passive | reject |
-| B. Momentum top-hat + increment on local tail law (the WIP) | authority at V = 0, correct trend with V and T, oracle intact | 3 pieces × 2 surface loads per evaluation, ×4 RK4 stages = 24 surface evaluations per tick | overpredicts at hover (k_w = 2); sharp jet edge; swirl calibration | **adopt as the E0b base** |
-| C. B + Selig k_w(m) (two parameters k_s, k_f, linear in m = V∞/V_disc) | hover ≈1·v_i, cruise → ≈2·v_i | +2 flops | constants from a figure only (unverified values) | **adopt** (data fields) |
+| B. Momentum top-hat + increment on local tail law (committed experimentally for P-51) | authority at V = 0, correct trend with V and T, oracle intact | Current implementation evaluates wash geometry and two surface loads per immersed piece for each load evaluation | overpredicts at hover (k_w = 2); sharp jet edge; swirl calibration | **candidate base for Stik E0b, pending its proof** |
+| C. B + Selig k_w(m) (two parameters k_s, k_f, linear in m = V∞/V_disc) | hover ≈1·v_i, cruise → ≈2·v_i | +2 flops | constants from a figure only (unverified values) | candidate; compare against simpler factors and measurements |
 | D. B + Khan diffusion (Gaussian, three bands) | measured radial/axial decay, 12–15 % rms | ≈20 flops + exp per piece | fitted on one 10×4.5 (static, tractor) | later (M5) or offline to set k_w |
 | E. Per-strip wash on the wing root + swirl roll | power-on lift, torque compensation | split the inner wing strip | interacts with the doc 02 strip layout | M5 |
 | F. Vortex/BEM wake at runtime | everything | ≫ budget | — | offline only |
@@ -164,22 +166,22 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 
 **Recommendation for this repo:**
 1. **Keep the increment law** (`F(local tail law, v + Δv_wash) − F(same, v)`) outside the oracle blend. It reproduces the oracle exactly when the wash is zero (engine stopped), works at V = 0 and stays continuous across the blend.
-2. **Wake speed:** Δv = k_w(m)·v_i with m = u/(u + v_i) (Selig eq. 19). k_w goes linearly from k_s ≈ 1.0–1.4 (hover) to k_f ≈ 1.8–2.0 (cruise); label the values *estimated*. The WIP's `axial_factor·(V_s − u)` equals k_w/2 with a constant: switch to two data numbers (k_s, k_f) now, while there is no data yet.
+2. **Wake speed:** Δv = k_w(m)·v_i with m = u/(u + v_i) (Selig eq. 19). The P-51 data already use two `wash_factor` endpoints, estimated from the same hover/cruise model. Reuse that meaning for the Stik only after checking its geometry and conditions; do not add a second schema for the same factor without measured evidence.
 3. **Radius:** keep momentum contraction with a C¹ taper (cosine over ±15 % of r_s) instead of a hard edge. Clamp the expansion when T < 0.
 4. **Reverse flow:** fade the wash to 0 between u = −0.1·v_i0 and −0.2·v_i0 (Khan eq. 5.2). Without it, a tail slide gets a full static wash on the fin.
-5. **Lag:** one auxiliary state per aircraft, the lagged wash speed Δv_lag. Advance it once per tick in `pre_step` with the exact exponential, τ = x_tail/(u + 0.9·Δv), and hold it across the RK4 stages, as for rpm. The wash direction stays body-fixed, so hover damping comes from `v + ω×r` (Selig eq. 24 is reproduced).
-6. **Swirl:** keep the WIP's form, with `swirl_factor` bounded so that static swirl yaw ≤ 50 % of the full-rudder yaw in wash (pilot evidence: a Stik tracks with modest right rudder; to be checked by the owner).
+5. **Lag:** if a wash-transport state is added, define it through H8 and evaluate it consistently with RK-stage time/state when coupled to the airplane. Do not freeze state-dependent wake geometry for a whole tick by default. The wash direction stays body-fixed, so hover damping comes from `v + ω×r` (Selig eq. 24 is reproduced).
+6. **Swirl:** the P-51 implementation has a data-scaled `swirl_factor`; estimate its plausible range from torque and wake evidence, then test sensitivity and seek owner observations. The earlier 50%-of-rudder cap is a proposed bound, not a measured universal limit.
 7. **Normal force:** the k_N(J) table (blade term) **plus** the jet term k_j·ṁ·V_cross, blended as in Selig. It acts at the **hub**; fix the Stik's data so that the hub is explicit (0.414 m ahead of the CG) rather than `thrust_line_offset` [0,0,0].
 8. **Oracle consistency:** the borrowed UltraStick25e derivatives carry no provenance note in `AeroOpenFlight.xml` (fetched @ b020511). If they were identified in powered cruise, they already contain cruise wash, and the increment double-counts it. Expected size: washed fraction 0.37 × (1.30 − 1) ≈ **+11 % tail effectiveness at 15 m/s level**. Measure it with `linearize.gd` (wash on/off). If it exceeds 10 %, subtract a reference wash: increment relative to the wash at the trim thrust of the identification condition. This is unverified, so decide after measuring.
 
-**Effect on trim:** at level cruise, the wash adds ≈+11 % to the stab's force at the trim tail angle, so the trim elevator shifts slightly and Cmα grows slightly. A power change at low speed changes the pitch trim, which is the real "throttle pitches the nose" effect; its sign follows the stab's trim lift. The trim solver (`trim.gd`) must call the same `Dynamics` (it already does) and the lag state must be at steady state (Δv_lag = Δv).
+**Effect on trim:** the model predicts that at level cruise the wash adds ≈+11 % to the stab's force at the trim tail angle, so the trim elevator shifts slightly and Cmα grows slightly. A power change at low speed changes pitch trim; its sign follows the stab's trim lift. The trim solver already calls the shared `Dynamics`. If a transport lag is later added, initialize it at steady state for trim (Δv_lag = Δv).
 
 ## Godot / GDScript notes
 
-- Everything stays in `PackedFloat64Array` and `float` (64-bit), with no `Vector3`/`Basis`; `app/test.sh` guards this. The WIP complies.
-- **Hot path:** the WIP uses lambdas (`area_of.call(...)`) and Dictionaries per piece per stage. In GDScript (Godot 4.x), Callable calls and Dictionary lookups are slow compared with inlined arithmetic (general experience; **measure with `tests/bench_physics.gd`**). Precompute the pieces into a flat PackedFloat64Array at load time. Compute `thrust_torque` and the wake geometry **once per tick** in `pre_step` (operator splitting, as for rpm); only the ω-dependent angles need per-stage evaluation. The budget is 500 µs/tick against ≈510 µs already used on the dev VM, so E0b needs a cost line in its proof.
+- Everything stays in `PackedFloat64Array` and `float` (64-bit), with no `Vector3`/`Basis`; `app/test.sh` guards this. The committed implementation follows this representation.
+- **Hot path:** current `slipstream.gd` uses lambdas (`area_of.call(...)`) and Dictionaries per piece per load evaluation. These may cost more than flat typed arrays; profile before changing the representation. Keep state-dependent thrust, wake and surface evaluation at RK stages so the result follows stage state. The audit measured 408/370 µs/tick for Stik, 448/457 Extra, 1,256/1,187 P-51 and 412/404 Avanti (trimmed / α=15°) on a shared host under concurrent audit load. Those totals do not isolate slipstream cost; E0b/G1 proofs should report per-aircraft and per-regime deltas.
 - Determinism: pure functions of the state + held auxiliary states. `sqrt`/`exp` are deterministic on the same build. Opt-in data keeps the existing golden flights bit-identical. Turning wash on for the Stik is a deliberate physics change that **re-records** the goldens (`tests/record_golden.gd`).
-- Frame-rate independence: the lag uses the exact exponential over the fixed 240 Hz tick, so 30/60/144 fps stay identical.
+- No wash-transport lag is implemented yet. When added, specify whether it is sampled or continuously coupled under H8 and retain the 30/60/144 fps equivalence check.
 
 ## Reusable libraries, tools, code and datasets
 
@@ -247,7 +249,7 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 
 ## Pitfalls and risks
 
-1. **Wash added inside the oracle blend does nothing at small angles.** Mitigation: increment outside the blend (the WIP does this).
+1. **Wash added inside the oracle blend does nothing at small angles.** The committed P-51 code adds an increment outside the blend; preserve that property in the Stik implementation.
 2. **Ideal k_w = 2 at hover gives too much authority** (≈2–4× the moment). Mitigation: k_w(m) with k_s ≈ 1.0–1.4; owner nose-lift test.
 3. **Swirl overpowers the rudder** with the ideal swirl and a fully washed fin. Mitigation: bounded `swirl_factor`, evidence-based bound in a test.
 4. **Double-counting the cruise wash** in the borrowed derivatives. Mitigation: measure with linearize; reference-wash subtraction if > 10 %.
@@ -256,21 +258,21 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 7. **Extrapolation in rpm:** the tables are measured at ≤ 6,259 rpm, used at 11,149. The Re trend (+9.5 % static Ct over the measured range) suggests the high-rpm Ct is ≥ the table. Mitigation: a 2-D table with the rpm range flagged; the highest-rpm curve is held beyond its range and logged.
 8. **Trailing duplicate rows and gaps in UIUC files** break monotonic-J interpolation. Mitigation: loader de-duplication and a strict monotonicity check, with a test using the real file.
 9. **Windmill drag from the Ct floor (−0.1)** drives the glide (L/D 8.5 → 5.9). Mitigation: BEM braking branch, β-form tables, a glide test with a measured idle rpm.
-10. **Normal force at the CG** (offset [0,0,0]) loses its destabilizing moment. Mitigation: explicit hub position in the data.
+10. **Stik normal force at the CG** (offset [0,0,0]) loses its destabilizing moment. Mitigation: add the explicit hub position to Stik data.
 11. **Cost over budget** (24 extra surface evaluations per tick). Mitigation: per-tick wake geometry in `pre_step`, flat arrays, a bench in the proof.
-12. **Two tracks editing `propulsion.gd`/`aero.gd` at once** (the P-51 WIP vs the main line's E0b/G1/G2). Mitigation: land the WIP as one reviewed step with E0b's proofs; register "P51-12" or rename it to an E0b sub-step.
+12. **P-51 and main-line work share `propulsion.gd`/`aero.gd`.** The P-51 extension is committed and registered; keep Stik E0b/G1/G2 changes coordinated with the physics owners and add separate proofs for the Stik path.
 
 ## Proposed roadmap steps
 
 | Proposed ID | Step | Proof | Depends on |
 | --- | --- | --- | --- |
-| E0b1 | Pure `wake()` function + verification tests (momentum, contraction, ratio closed form) | Tests 1–2 above; mutation fails | — |
-| E0b2 | Explicit hub position for the Stik (data + loader cross-check with `ugly_stik_geometry.gd`), tail pieces from geometry | `test_aircraft_data.gd` agreement; goldens unchanged | E0b1 |
-| E0b3 | Land the tail increment (review the WIP), opt-in per aircraft, with C¹ jet edge and reverse-flow fade | Tests 3–6; µs/tick reported | E0b2 |
-| E0b4 | k_w(m) data (k_s, k_f), set from Khan/Selig; Stik opt-in | Static tail centreline 1.0–1.4·v_i; linearize at 15 m/s within +12 % (test 8) | E0b3 |
-| E0b5 | Wash lag state in `pre_step` | Test 7; frame-rate independence | E0b3 |
-| E0b6 | Swirl with a bounded factor | Static swirl yaw ≤ 50 % of full-rudder yaw; sign test | E0b4 |
-| E0b7 | Owner field checks: nose-lift, taxi blip, take-off swing, static rpm/thrust | Video + numbers in a research note; k_w/swirl adjusted with the evidence kind changed to "measured (behaviour)" | E0b4–6, owner |
+| E0b1 | Verify the committed `wake()` implementation and generalize it for the Stik (momentum, contraction, ratio closed form) | Tests 1–2 above; mutation fails | — |
+| E0b2 | Add/validate the Stik's explicit hub position (current data puts the prop at the CG; the real hub is 0.414 m ahead), cross-checked with `ugly_stik_geometry.gd`; washed tail pieces from geometry | `test_aircraft_data.gd` agreement; goldens unchanged | E0b1 |
+| E0b3 | Implement and validate the tail increment for the Stik, using the committed P-51 path as a reference; opt-in per aircraft, with C¹ jet edge and reverse-flow fade | Tests 3–6; per-aircraft µs/tick delta reported | E0b2 |
+| E0b4 | Validate or adapt the existing two-endpoint `wash_factor` for the Stik using Khan/Selig; opt in only for that aircraft | Static tail centreline 1.0–1.4·v_i; linearize at 15 m/s within +12 % (test 8) | E0b3 |
+| E0b5 | Add wash-transport state under H8; choose sampled or continuous integration from its coupling and measured lag model | Transport-delay and frame-rate tests; no first-order split in the coupled path | E0b3, H8 |
+| E0b6 | Represent swirl using torque/wake-informed parameters; retain explicit uncertainty and sensitivity | Correct sign and bounded response; compare against theory and observations without imposing a universal 50% rudder cap | E0b4 |
+| E0b7 | Owner field checks: nose-lift, taxi blip, take-off swing, static rpm/thrust | Video + numbers in a research note; label observations as measured behavior and keep fitted model parameters labeled fitted/estimated | E0b4–6, owner |
 | G1a | Table schema Ct, Cp (J, rpm) with per-run provenance (file, sha256, true D, kind) | Loader reproduces every file row at its knot; duplicate rows removed (UIUC 12×6E file) | — |
 | G1b | Out-of-range flags (J gap, J > max, rpm outside) in the trace | Counters fire on crafted queries; zero in a normal golden flight log except the known rpm extrapolation | G1a |
 | G1c | Shared offline BEM tool (from the P-51 script) → four-quadrant β tables; Stik 12×6 from APC geometry | Within ±10 % Ct, ±15 % Cp of UIUC 11×6 and 12×6E at matched rpm; windmill branch present | G1a |
@@ -284,12 +286,12 @@ These are upper bounds: wing, fuselage and cowl recover part of the swirl (the "
 
 | Decision | Why now | Recommendation |
 | --- | --- | --- |
-| Increment law outside the oracle blend | Determines where E0b lives; inside the blend it is inert at small angles | **Yes** (as in the WIP) |
-| Wake-speed data: constant `axial_factor` or k_w(m) | Schema enters JSON; changing it later re-generates every aircraft | **k_w(m): two fields (k_s, k_f)**, estimated |
-| Hub position as explicit data | Normal force, P-factor and wash all need it; `thrust_line_offset` [0,0,0] is wrong for them | **Add `hub` (le frame) to every aircraft** |
+| Increment law outside the oracle blend | Determines where E0b lives; inside the blend it is inert at small angles | **Yes**; the committed P-51 code demonstrates the pattern |
+| Wake-speed data for the Stik | The P-51 schema already has two `wash_factor` endpoints; avoid duplicate fields | Reuse those endpoints only if the same physical definition fits the Stik; keep them estimated until measured |
+| Hub position for the Stik | P-51 already has a separate hub position; the Stik's `thrust_line_offset` [0,0,0] is wrong for normal force and wash | **Add and cross-check the Stik hub; reuse the current field meaning** |
 | Table dimensionality | UIUC data show strong rpm dependence; the Stik runs far beyond the measured rpm | **(J, rpm) 2-D in G1a**, with a β-form path for G1c |
 | Opt-in until owner validation | Keeps the Stik goldens and handling stable for Gate 2 | **Opt-in**; Stik switches on at E0b7 with re-recorded goldens |
-| Ownership of the WIP | Two tracks are in `propulsion.gd` | **Merge as E0b3/G2 steps of the main line**; P-51 data consumes them |
+| Ownership of the committed P-51 implementation | P-51 and Stik work share physics files | **P-51 track owns its data/model; coordinate shared-code changes with the physics line.** E0b3 validates the Stik adaptation rather than re-landing P-51 code |
 
 ## Sources
 

@@ -1,0 +1,102 @@
+Original capture.sh exit: 2, L6c case 31/64.
+Pre-existing process PID 2337943; started before audit.
+stdout target: /home/bulto/OpenRCsimulator/app/captures/l6c/l6c-game-ground-climb.log
+stdout inode: 340926
+log inode: 340926
+    PID     ELAPSED COMMAND
+2337943    08:24:49 /home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64 --path /home/bulto/OpenRCsimulator/app --rendering-driver opengl3 --audio-driver Dummy -- --capture --visual_pose=climb --scripted --visual_distance=100 --visual_elevation=-0.5 --visual_azimuth=9 --autozoom=1 --shadow=off --aircraft=jensen-das-ugly-stik-60 --t=1.5 --case=l6c-game-ground-climb --out=/home/bulto/OpenRCsimulator/app/captures/l6c/l6c-game-ground-climb.png
+
+First 90 lines at observation (errors already precede the new engine banner):
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+          at: data_throws_deg (res://input/commands.gd:40)
+          GDScript backtrace (most recent call first):
+              [0] data_throws_deg (res://input/commands.gd:40)
+              [1] surface_deflections_deg (res://input/commands.gd:52)
+              [2] update (res://render/panel.gd:38)
+              [3] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid access to property or key 'aileron' on a base object of type 'Dictionary'.
+          at: surface_deflections_deg (res://input/commands.gd:53)
+          GDScript backtrace (most recent call first):
+              [0] surface_deflections_deg (res://input/commands.gd:53)
+              [1] update (res://render/panel.gd:38)
+              [2] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid access to property or key 'aileron_right' on a base object of type 'Dictionary'.
+          at: update (res://render/panel.gd:39)
+          GDScript backtrace (most recent call first):
+              [0] update (res://render/panel.gd:39)
+              [1] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+          at: data_throws_deg (res://input/commands.gd:40)
+          GDScript backtrace (most recent call first):
+              [0] data_throws_deg (res://input/commands.gd:40)
+              [1] surface_deflections_deg (res://input/commands.gd:52)
+              [2] hinge_rotations (res://input/commands.gd:64)
+              [3] _render_pose (res://main.gd:434)
+              [4] _process (res://main.gd:232)
+SCRIPT ERROR: Invalid access to property or key 'aileron' on a base object of type 'Dictionary'.
+          at: surface_deflections_deg (res://input/commands.gd:53)
+          GDScript backtrace (most recent call first):
+              [0] surface_deflections_deg (res://input/commands.gd:53)
+              [1] hinge_rotations (res://input/commands.gd:64)
+              [2] _render_pose (res://main.gd:434)
+              [3] _process (res://main.gd:232)
+SCRIPT ERROR: Invalid access to property or key 'aileron_right' on a base object of type 'Dictionary'.
+          at: hinge_rotations (res://input/commands.gd:65)
+          GDScript backtrace (most recent call first):
+              [0] hinge_rotations (res://input/commands.gd:65)
+              [1] _render_pose (res://main.gd:434)
+              [2] _process (res://main.gd:232)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+          at: data_throws_deg (res://input/commands.gd:40)
+          GDScript backtrace (most recent call first):
+              [0] data_throws_deg (res://input/commands.gd:40)
+              [1] surface_deflections_deg (res://input/commands.gd:52)
+              [2] update (res://render/panel.gd:38)
+              [3] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid access to property or key 'aileron' on a base object of type 'Dictionary'.
+          at: surface_deflections_deg (res://input/commands.gd:53)
+          GDScript backtrace (most recent call first):
+              [0] surface_deflections_deg (res://input/commands.gd:53)
+              [1] update (res://render/panel.gd:38)
+              [2] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid access to property or key 'aileron_right' on a base object of type 'Dictionary'.
+          at: update (res://render/panel.gd:39)
+          GDScript backtrace (most recent call first):
+              [0] update (res://render/panel.gd:39)
+              [1] _process (res://main.gd:231)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+          at: data_throws_deg (res://input/commands.gd:40)
+          GDScript backtrace (most recent call first):
+              [0] data_throws_deg (res://input/commands.gd:40)
+              [1] surface_deflections_deg (res://input/commands.gd:52)
+              [2] hinge_rotations (res://input/commands.gd:64)
+              [3] _render_pose (res://main.gd:434)
+              [4] _process (res://main.gd:232)
+SCRIPT ERROR: Invalid access to property or key 'aileron' on a base object of type 'Dictionary'.
+          at: surface_deflections_deg (res://input/commands.gd:53)
+          GDScript backtrace (most recent call first):
+              [0] surface_deflections_deg (res://input/commands.gd:53)
+              [1] hinge_rotations (res://input/commands.gd:64)
+              [2] _render_pose (res://main.gd:434)
+              [3] _process (res://main.gd:232)
+SCRIPT ERROR: Invalid access to property or key 'aileron_right' on a base object of type 'Dictionary'.
+          at: hinge_rotations (res://input/commands.gd:65)
+          GDScript backtrace (most recent call first):
+              [0] hinge_rotations (res://input/commands.gd:65)
+              [1] _render_pose (res://main.gd:434)
+              [2] _process (res://main.gd:232)
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+          at: data_throws_deg (res://input/commands.gd:40)
+          GDScript backtrace (most recent call first):
+              [0] data_throws_deg (res://input/commands.gd:40)
+              [1] surface_deflections_deg (res://input/commands.gd:52)
+              [2] update (res://render/panel.gd:38)
+              [3] _process (res://main.gd:231)
+
+New run saved-image lines:
+saved /home/bulto/OpenRCsimulator/app/captures/l6c/l6c-game-ground-climb.png (error 0) draw_calls=109 primitives=48324 sun_px=behind sim_clock=1.5 shadow_px=649.5,376.1 below_px=640.0,376.3

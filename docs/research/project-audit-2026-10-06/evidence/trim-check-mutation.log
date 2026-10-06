@@ -1,0 +1,7 @@
+Mutation: retain only initial sample of real 3 s trace.
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exit=0
+
+Mutation: final sample altitude, speed, pitch, rpm become NaN.
+trimmed level flight: alt 30.000 → nan m, speed nan m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exit=0

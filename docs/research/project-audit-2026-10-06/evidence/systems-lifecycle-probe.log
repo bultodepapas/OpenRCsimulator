@@ -1,0 +1,60 @@
+WorkerThreadPool: 12 threads, 3 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-lifecycle-probe.gd remapped: /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-lifecycle-probe.gd
+Completed load for: '/home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-lifecycle-probe.gd' remapped '/home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-lifecycle-probe.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://app_root.tscn remapped: res://app_root.tscn
+Loading resource: res://app_root.gd remapped: res://app_root.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Completed load for: 'res://app_root.gd' remapped 'res://app_root.gd' at thread -1
+Completed load for: 'res://app_root.tscn' remapped 'res://app_root.tscn' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+Loading resource: res://ui/key_labels.gd remapped: res://ui/key_labels.gd
+Completed load for: 'res://ui/key_labels.gd' remapped 'res://ui/key_labels.gd' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Loading resource: res://main.gd remapped: res://main.gd
+Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+cycle=1 node_count=218 playback_instances_alive=1/1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+cycle=2 node_count=218 playback_instances_alive=1/2
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+cycle=3 node_count=218 playback_instances_alive=1/3
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+cycle=4 node_count=218 playback_instances_alive=1/4
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+cycle=5 node_count=218 playback_instances_alive=1/5
+one_second_idle playback_instances_alive=0/5 node_count=218
+after_app_cleanup node_count=1 playback_instances_alive=0/5
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
