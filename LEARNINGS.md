@@ -784,3 +784,9 @@ Proof: [rc4 notes](docs/releases/v0.1.0-rc4.md), [audit evidence](docs/research/
 - Failed recordings preserve an existing file and return nonzero; callers must honor the exit status. Fault injection stays in excluded test fixtures.
 
 Proof: [C7-R1 report](docs/research/trace-integrity/C7-R1/README.md), nine process tests inside the passing full suite, isolated three-platform exports and byte-identical numeric traces for all four aircraft against rc4. No aerodynamic parameters or integration equations changed.
+
+## 2026-10-06 · C7-R2 — describe configured physics and recording state separately
+
+Trace model names must follow loaded configuration, not aircraft IDs: removing the P-51 shaft/slipstream opt-ins must change its headers without renaming it. A stopped engine still has a configured propulsion model. Record auxiliary state when recording starts, including mid-flight, and state explicitly that step loads use the previous rigid-body state with updated auxiliaries.
+
+Full-precision JSON remains diagnostic decimal data; a local round trip changed some servo values by about 1e-17. It is not a bit-exact checkpoint. Keep raw-file hashing and replay guarantees in DATA-3 and H8/H9. Proof: 128 metadata checks, 11 trace process tests, full suite, desktop exports and unchanged numeric rows for all four aircraft ([report](docs/research/trace-integrity/C7-R2/README.md)).

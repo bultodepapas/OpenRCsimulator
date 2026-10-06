@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-06",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "base_commit": "e3eb8d90dc0d08ce01434d7e8621c13564ac69f4",
+  "full_suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "parsed_gd_scripts": 161,
+    "gd_test_programs": 60,
+    "metadata_checks": 128,
+    "trace_process_tests": 11,
+    "trace_process_tests_seconds": 51.99
+  },
+  "lint": {
+    "before": {
+      "total": 11,
+      "errors": 0,
+      "warnings": 11,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 11,
+      "errors": 0,
+      "warnings": 11,
+      "parse_errors": 0
+    }
+  },
+  "frame_rate_state_hashes": [
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3"
+  ],
+  "exports": {
+    "command": "app/export.sh in isolated clone with modified app files overlaid",
+    "exit_code": 0,
+    "platforms": [
+      "Linux",
+      "Windows",
+      "macOS"
+    ],
+    "native_flight_smoke_platform": "Linux",
+    "checksums": [
+      "fd122e79cac2ff8f671bbdf8f060eeed5efcc932de56c52c24f49fef01538823  openrc-simulator-v0.1.0-rc4-1-ge3eb8d9-dirty-linux-x86_64.zip",
+      "faa005896403c2981c8e82d175038ff0c7094fa7d0cc1bfd00cd35198117a3a8  openrc-simulator-v0.1.0-rc4-1-ge3eb8d9-dirty-macos-universal.zip",
+      "e98f91b428da74a9bdfcee8c5d497a16fb6c62fd770257b627d0d9250e4de2f7  openrc-simulator-v0.1.0-rc4-1-ge3eb8d9-dirty-windows-x86_64.zip"
+    ]
+  },
+  "verified_source_sha256": {
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/sim/flight_session.gd": "4c75264b11c70bf81709c10aeb3fa4ac4f777672052d30396ad89db3294edadd",
+    "app/tests/check_trimmed_flight.py": "78340018efadf3719a561aa9da3e42f2f9cec999ae247bcdd4a32b9dbc6e0b7b",
+    "app/tests/test_trace_acceptance.py": "c2e5bdf27ef15cc6f9e492a0a4703e06ed57e6b97127e755fd995b74e9d9b738",
+    "app/tests/test_trace_metadata.gd": "3b627beb11c42b309e64cbc968eae3cf9bd5c4882885e34f9cc8aca576bccdcb"
+  },
+  "limits": [
+    "No native Windows/macOS gameplay or new graphical captures.",
+    "Eleven static-lint warnings are unchanged from baseline.",
+    "Metadata is diagnostic; exact input hashing and replay remain DATA-3 and H8/H9."
+  ]
+}
