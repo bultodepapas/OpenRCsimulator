@@ -82,11 +82,17 @@ rows[-1][1] = 0.045
 rows[-2][1] = round(min(rows[-2][1], 0.09), 3)
 fs["fuselage_stations"] = rows
 fs["spinner"] = {"tip_z": round(tip_z, 3), "back_z": round(spinner_back, 3), "radius": round(sp_r, 3), "axis_y": round(m["spinner"]["axis_y"], 3)}
-# The builder places the exhaust row from the nose band to firewall_z - 0.45 m (full size): the drawing shows the
-# stacks between z -1.52 and -0.54 m, so the model's "firewall" (cowl/fuselage split) is at -0.1 and the cowl panels end
-# at the windscreen base.
+# V05: the exhaust row is its own record (full size): six short stacks per side between the drawing's z -1.52 and
+# -0.54 m, high on the cowl flank, protruding ~0.09 m and raked 15 deg aft (photos; estimated). firewall/cowl_rear only
+# mark the cowl panel split now.
+fs["exhausts"] = {"z0": -1.52, "z1": -0.54, "y_fraction": 0.62, "count": 6, "length": 0.09, "radius": 0.035, "rake_deg": 15.0}
 fs["firewall_z"] = -0.1
 fs["cowl_rear_z"] = 0.6
+# V07: Hamilton Standard paddle blades with root cuffs (chord/radius table estimated from photos; the 26x12 kit size is
+# kept) and the drawing's 1 deg 45 min down thrust (visual thrust frame; the physics stays axial until P51-06).
+src["kit"]["propeller"]["blade"] = {"chord_fraction_of_radius": [[0.2, 0.22], [0.3, 0.24], [0.45, 0.22], [0.6, 0.20], [0.75, 0.18], [0.9, 0.14], [1.0, 0.05]],
+                                    "thickness_fraction_of_chord": [[0.2, 0.30], [0.35, 0.16], [0.6, 0.09], [1.0, 0.06]]}
+fs["thrust_down_deg"] = 1.75
 # Scoop stations [z, half_width, bottom]: the dip, with widths estimated from the front view silhouette (not separable
 # from the wing there): 0.30 m half-width at the lip tapering to 0.16 at the exit (unchanged estimate).
 sz = z[scoop_zone]
@@ -95,20 +101,40 @@ sz = z[scoop_zone]
 deep = sz[(np.array([at(bot_f, q) for q in sz]) < np.interp(sz, [1.0, 4.2], [at(bot_f, 1.0), at(bot_f, 4.2)]) - 0.8 * 0.3)]
 lip = float(deep.min()) - 0.06 if len(deep) else float(sz.min())
 exit_ = float(sz.max()) + 0.1
+# V03: [z, half_width, bottom, side_exponent]: the mouth is a flattened oval (n 2.6), the duct has nearly straight sides
+# (n 5), the exit rounds off again (n 3). Widths from the front-view silhouette are not separable from the wing: estimated.
 scoop = []
 for i, zz in enumerate(np.linspace(lip, exit_, 8)):
     frac = (zz - lip) / (exit_ - lip)
     width = 0.30 if frac < 0.5 else 0.30 - 0.14 * (frac - 0.5) / 0.5
     bottom = at(bot_f, lip + 0.12) if i == 0 else at(bot_f, zz)
-    scoop.append([round(float(zz), 3), round(width, 3), round(bottom - 0.01, 3)])
+    exponent = 2.6 if i == 0 else (5.0 if frac < 0.7 else 3.0)
+    scoop.append([round(float(zz), 3), round(width, 3), round(bottom - 0.01, 3), exponent])
 fs["scoop_stations"] = scoop
+fs["scoop_gutter"] = {"gap": 0.07, "length": 0.6}  # estimated (photos): boundary-layer gutter between the fuselage and the duct's upper lip
+fs["scoop_exit"] = {"door_length": 0.45, "door_angle_deg": 18.0}  # estimated (ground photo 44-74880): exit door hanging from the duct's rear
 # Canopy top line from the measured contour; the frame (windscreen/bubble joint) at the crown's start.
 cz = z[canopy_zone]
 canopy_pts = [[round(float(zz), 3), round(at(top, zz), 3)] for zz in np.arange(0.7, 3.05, 0.2)]
-fs["canopy"] = {"top": canopy_pts, "frame_z": round(float(cz[np.argmax(top[canopy_zone])]) - 0.25, 3), "halfwidth_fraction": 0.95}
+fs["canopy"] = {"top": canopy_pts, "frame_z": round(float(cz[np.argmax(top[canopy_zone])]) - 0.25, 3), "halfwidth_fraction": 0.95,
+                # V04 (estimated, photos): three-panel windscreen from the sill to the frame, frames 3 cm wide, sliding-hood rails on the sills
+                "windscreen": {"panels": 3, "centre_fraction": 0.5, "frame_width": 0.03}, "rail": {"height": 0.03, "width": 0.03},
+                "gunsight": {"length": 0.14, "height": 0.09, "width": 0.07}}
 # Carburettor intake: part of the measured top line already; keep a shallow blend.
-# The carburettor intake is already inside the measured top line: keep only a shallow blend so it does not protrude.
-fs["carb_intake"] = {"z0": round(spinner_back + 0.15, 3), "z1": round(spinner_back + 1.1, 3), "half_width": 0.15, "height": 0.01}
+# V03: the measured top line already contains the carburettor intake. The cowl stations are lowered by the intake's
+# height profile g(u) (same function in the builder), and the intake loft restores the measured line, so the side
+# silhouette does not change while the intake reads as its own scoop with a lip.
+carb = {"z0": round(spinner_back + 0.15, 3), "z1": round(spinner_back + 1.1, 3), "half_width": 0.15, "height": 0.08, "lip": 0.02}
+def smoothstep(e0, e1, x):
+    tt = min(max((x - e0) / (e1 - e0), 0.0), 1.0)
+    return tt * tt * (3 - 2 * tt)
+def intake_profile(zz):
+    u = (zz - carb["z0"]) / (carb["z1"] - carb["z0"])
+    if u <= 0 or u >= 1: return 0.0
+    return smoothstep(0.0, 0.12, u) * (1.0 - smoothstep(0.35, 1.0, u))
+for row in rows:
+    row[2] = round(row[2] - carb["height"] * intake_profile(row[0]), 3)
+fs["carb_intake"] = carb
 # Wing from the plan metrology.
 w = m["wing"]
 fs["root_chord_centreline"] = w["root_chord"]; fs["tip_chord"] = w["tip_chord"]
@@ -118,6 +144,21 @@ fs["span"] = round(2 * w["semi_span"], 3)
 fs["length"] = round(length, 3)
 fs["aileron"] = {"inner": 3.25, "outer": 5.50, "chord_fraction": 0.21}
 fs["flap"] = {"inner": 0.50, "outer": 3.20, "chord_fraction": 0.21}
+# V02: root leading-edge extension measured in the plan view ([x from the centreline, dz forward of the straight LE]),
+# kept where it is clearly above the pick noise (> 0.02 m) and closed with a zero at the next station; the fuselage side
+# (~0.44 m) and inboard are covered by the first value.
+ext = []
+running = 1e9
+for x, dz in m["wing"]["root_extension"]:
+    if dz <= 0.02:
+        break
+    running = min(running, dz)  # monotone envelope: the pick noise (+-1 in) must not make the fairing wavy
+    ext.append([round(x, 4), round(running, 4)])
+if ext:
+    ext.append([round(ext[-1][0] + 0.05, 4), 0.0])
+fs["root_extension"] = ext
+fs["tip_round_plan"] = 0.15  # estimated (plan view, photos): the D tip is nearly square with rounded corners; 0.40 m read as too elliptical in the plan silhouette
+fs["root_fillet"] = {"radius_le": 0.03, "radius_te": 0.10, "te_rise": 0.08, "length_aft": 0.25}  # estimated: narrow wing-root fillet with a short fairing behind the TE (plan-view silhouette: the TE curves aft over ~0.25 m at the root; USAF air-to-air photo); 0.08/0.18/0.35/1.0 read as a sail and lengthened the plan outline
 # Tail.
 st = m["stab"]
 stab_y = 0.35

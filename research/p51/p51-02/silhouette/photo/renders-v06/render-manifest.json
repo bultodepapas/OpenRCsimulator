@@ -1,0 +1,43 @@
+{
+	"calibration_geometry_sha256": "04ce4bfdfc52dbcb71d829ff01b17cfc4f0e570652093a317da3dd13b8c3b219",
+	"captures": [
+		{
+			"anchor_max_error_px": 0.000607071610445465,
+			"anchor_projection_px": {
+				"fin_top": [
+					537.226501464844,
+					463.45947265625
+				],
+				"spinner_tip": [
+					989.611633300781,
+					443.82080078125
+				],
+				"wheel_bottom_left": [
+					1120.25610351562,
+					810.061462402344
+				],
+				"wheel_bottom_right": [
+					630.327880859375,
+					827.833557128906
+				],
+				"wing_tip_left": [
+					1550.40319824219,
+					557.232971191406
+				],
+				"wing_tip_right": [
+					33.1671371459961,
+					602.583618164062
+				]
+			},
+			"file": "photo_oblique.png",
+			"id": "photo_oblique",
+			"sha256": "c3369506d12f0a77fc1483d87f13210a58e941dffda7f173cd3c8452e000ee98"
+		}
+	],
+	"comparison_with_frozen_camera": false,
+	"fit_sha256": "466d0bb45ba9185d0486f6ea7b4b1a493a5d97b75d6a1f1890a8f30a14f061b6",
+	"geometry_sha256": "04ce4bfdfc52dbcb71d829ff01b17cfc4f0e570652093a317da3dd13b8c3b219",
+	"godot": "4.7.2-stable (official)",
+	"model_sha256": "05e1c2332d92489be9a4fc053223955013ef9a4bf1ab8403a8afcf7b79618adc",
+	"visual_revision": "p51d-mustang-120-v1"
+}

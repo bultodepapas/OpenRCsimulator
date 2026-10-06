@@ -220,6 +220,12 @@ def main():
         stab_le_pts.append((span_in, (y_nose - (a[1] - 1)) / ty))
         stab_te_pts.append((span_in, (y_nose - a[0]) / ty))
     stab_le_pts, stab_te_pts = np.array(stab_le_pts), np.array(stab_te_pts)
+    # Tip: the outermost sampled column whose chord is still >= 30 % of the inboard chord (+1 in to the rounded end);
+    # thinner runs further out are tip remnants or dimension lines and depend on the 2 in sampling grid.
+    chords = stab_te_pts[:, 1] - stab_le_pts[:, 1]
+    ref_chord = float(np.median(chords[stab_le_pts[:, 0] < 30]))
+    keep = chords >= 0.3 * ref_chord
+    stab_le_pts, stab_te_pts = stab_le_pts[keep], stab_te_pts[keep]
     stab_half_in = stab_le_pts[:, 0].max() + 1.0
     ssel = (stab_le_pts[:, 0] > 12) & (stab_le_pts[:, 0] < stab_half_in - 6)
     sle = np.polyfit(stab_le_pts[ssel, 0], stab_le_pts[ssel, 1], 1)

@@ -21,3 +21,7 @@ app/test.sh                                                           # includes
 The [native builder](../../../app/aircraft/p51d_model.gd) keeps the Stik/Extra interface: `build()` → `{root, propeller, hinges, gear}` with `airplane`, `propeller` and `*_hinge` nodes. The wing node carries the +1° incidence, `wing_frame_<side>` the ±5° dihedral and `aileron_frame_<side>` the swept hinge line, so `render/airplane.gd::apply_surfaces()` works unchanged. Flaps are drawn fixed. The landing gear is drawn down (retracts are not simulated). Finish: an original generic natural-metal look (red spinner and nose band, olive anti-glare panel, yellow tips and rudder); no unit markings or copied artwork.
 
 Plan and status: [docs/P51-PLAN.md](../../../docs/P51-PLAN.md).
+
+## Finish (V08)
+
+[appearance.json](appearance.json) holds the natural-metal finish parameters (estimated from photos of restored P-51Ds): colours, metallic/roughness ranges, panel-line stations and pitches, rivet pitch. `python3 compile_appearance.py` writes `app/aircraft/p51d_appearance.gd` (`--check` detects a stale copy); `app/aircraft/p51d_finish.gd` draws it from object-space positions, so the geometry carries no UVs.

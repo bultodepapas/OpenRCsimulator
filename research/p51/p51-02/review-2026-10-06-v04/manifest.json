@@ -1,0 +1,176 @@
+{
+  "aircraft_id": "p51d-mustang-120-v1",
+  "captures": [
+    {
+      "camera_position_m": [
+        -7.05000019073486,
+        0.0,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_side_left.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "d764a68896a16fd5bdd9237948cf8417e4c9536f5a361101e82ef3853a9f1c13",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.11500000953674,
+        1.01520001888275,
+        -1.41000008583069
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_oblique_front_left.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "44d584c21a14d2251a20c1aba1c2811f6e85928886df164f26322b3fd85e673b",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.69200003147125,
+        -0.564000010490417,
+        -1.69200015068054
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_low_front_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "864b46c61cb852330034cf791ae0f7ba1caab4b804dda838eff7832666c3f985",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -0.846000015735626,
+        0.507240176200867,
+        0.0555004924535751
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_cockpit_left.png",
+      "fov_deg": 30.0,
+      "ortho_size_m": null,
+      "png_sha256": "f4b74bf417248138dfbb000736534a9760a3a444d6a5b8acd642f5ff34a2d1ee",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.134928226470947,
+        0.281100481748581
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.733199954032898,
+        0.394440203905106,
+        -0.451919555664062
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_cockpit_front_right.png",
+      "fov_deg": 28.0,
+      "ortho_size_m": null,
+      "png_sha256": "5fc766b334c1349e10c38180296158e027a781beec776396db9cc815d481f611",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.112440191209316,
+        0.224880382418633
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "20d811e5c3c5f6670757cc8aacd7e26ea90771046600e4476954bffe9d714560",
+  "image_size": [
+    1280,
+    720
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry review of the first P-51D model; not a pilot readability test.",
+  "model_sha256": "1e0564b9bafc7f68e51b9c1eaf766bd750cf3c043131235b68452a4d1a6ec548",
+  "ortho_size_m": 3.384,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "span_m": 2.82,
+  "status": "experimental: first visual model from scaled full-size dimensions",
+  "suite": "inspection",
+  "throws_deg": {
+    "aileron": 16.1,
+    "elevator": 14.7,
+    "rudder": 33.5
+  },
+  "throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
+  "visual_revision": "p51d-mustang-120-v1",
+  "step": "V04 canopy: faceted windscreen with frames, hood rails, gunsight, armour plate"
+}

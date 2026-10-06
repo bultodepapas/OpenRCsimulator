@@ -1,0 +1,131 @@
+{
+  "schema": "openrc-silhouette-review-v1",
+  "label": "V04",
+  "fit_sha256": "dc0cb052bca4fa70a79042969fe63bd8c90a9b7756e2d95b8c474882b1e93347",
+  "candidate": {
+    "geometry_sha256": "20d811e5c3c5f6670757cc8aacd7e26ea90771046600e4476954bffe9d714560",
+    "model_sha256": "1e0564b9bafc7f68e51b9c1eaf766bd750cf3c043131235b68452a4d1a6ec548",
+    "visual_revision": "p51d-mustang-120-v1"
+  },
+  "baseline": {
+    "geometry_sha256": "51acbadb9f084834283417eeb9ee9cf80c988918b2fa25b5b5e4d81f9568e32a",
+    "model_sha256": "4001ae8c3d40272a7f68ec1a929f8b370275b7da876375d964cede9ce5fab605"
+  },
+  "metric": "Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels and dimension lines excluded by the drawing silhouette; the exclusion boxes (drop tanks, dimension boxes) are removed from both masks and their borders ignored. Not metric accuracy per component.",
+  "views": {
+    "side": {
+      "after": {
+        "real_to_model_mean_px": 7.0804709403852835,
+        "real_to_model_p90_px": 16.149298636442232,
+        "model_to_real_mean_px": 18.59792212678004,
+        "model_to_real_p90_px": 55.29371581094978,
+        "iou": 0.8716901860307722,
+        "mean_mm_model": 14.44239794553775,
+        "real_to_model_bins_px": [
+          3.086641490146852,
+          2.1409214711659432,
+          7.374495735957264,
+          5.185973226428553,
+          3.5393726886856727,
+          19.911011504475223,
+          8.443292175453307,
+          4.455128463032558
+        ]
+      },
+      "before": {
+        "real_to_model_mean_px": 7.077340303730877,
+        "real_to_model_p90_px": 16.149298636442232,
+        "model_to_real_mean_px": 18.599828821293602,
+        "model_to_real_p90_px": 55.31726674375732,
+        "iou": 0.8717443853557773,
+        "mean_mm_model": 14.436012226174375,
+        "real_to_model_bins_px": [
+          3.086641490146852,
+          2.1409214711659432,
+          7.341326253891868,
+          5.187313029233511,
+          3.5400453236420786,
+          19.911011504475223,
+          8.443292175453307,
+          4.455128463032558
+        ]
+      }
+    },
+    "front": {
+      "after": {
+        "real_to_model_mean_px": 13.687015059955707,
+        "real_to_model_p90_px": 36.345563690772494,
+        "model_to_real_mean_px": 20.373889515519956,
+        "model_to_real_p90_px": 58.00689603927417,
+        "iou": 0.4532112327860861,
+        "mean_mm_model": 27.747938511197045,
+        "real_to_model_bins_px": [
+          3.700252649444773,
+          5.0291290407831,
+          6.064335389123092,
+          7.017564655952813,
+          22.294968574472843,
+          13.779456161993293,
+          28.899268542073752,
+          7.5983709565101885
+        ]
+      },
+      "before": {
+        "real_to_model_mean_px": 13.785881705681732,
+        "real_to_model_p90_px": 36.345563690772494,
+        "model_to_real_mean_px": 20.5821987850646,
+        "model_to_real_p90_px": 59.04150456865354,
+        "iou": 0.4514350125726177,
+        "mean_mm_model": 27.948372688729318,
+        "real_to_model_bins_px": [
+          3.700252649444773,
+          5.0291290407831,
+          6.064335389123092,
+          7.017564655952813,
+          22.294968574472843,
+          13.779456161993293,
+          28.899268542073752,
+          7.953062030160056
+        ]
+      }
+    },
+    "top": {
+      "after": {
+        "real_to_model_mean_px": 10.664303628714903,
+        "real_to_model_p90_px": 12.0,
+        "model_to_real_mean_px": 21.355881839195607,
+        "model_to_real_p90_px": 56.22277118748239,
+        "iou": 0.9139354567357145,
+        "mean_mm_model": 21.588898946860034,
+        "real_to_model_bins_px": [
+          11.911713522688974,
+          7.307095370590307,
+          2.2039693914730574,
+          5.63286302973674,
+          6.122100504356715,
+          4.714066866340179,
+          0.9030526862698398,
+          41.64040995588175
+        ]
+      },
+      "before": {
+        "real_to_model_mean_px": 10.664303628714903,
+        "real_to_model_p90_px": 12.0,
+        "model_to_real_mean_px": 21.355881839195607,
+        "model_to_real_p90_px": 56.22277118748239,
+        "iou": 0.9139354567357145,
+        "mean_mm_model": 21.588898946860034,
+        "real_to_model_bins_px": [
+          11.911713522688974,
+          7.307095370590307,
+          2.2039693914730574,
+          5.63286302973674,
+          6.122100504356715,
+          4.714066866340179,
+          0.9030526862698398,
+          41.64040995588175
+        ]
+      }
+    }
+  }
+}

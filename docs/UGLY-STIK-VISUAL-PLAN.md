@@ -23,6 +23,8 @@ La foto C aporta anatomía de horquillas y apoyos; no convierte el recubrimiento
 
 La revisión focalizada **US-V03/V06/V07 · motor v5** mejora cárter, aletas, culata, admisión, fijaciones y escape; añade once macros automáticas y comparación con cámaras iguales. [Análisis y evidencia](research/ugly-stik-engine-v5.md).
 
+*Las secciones siguientes son la especificación tal como se planificó; todos los pasos están hechos (tabla anterior) y se leen como registro de lo construido.*
+
 ## Resultado buscado
 
 Un Ugly Stik .61 rojo reconocible desde tierra, con cruces negras sobre campos blancos y una instalación mecánica convincente al acercarse. La presentación debe transmitir un aeromodelo de madera recubierto: superficies ligeras, motor glow expuesto, fijaciones, neumáticos y mandos visibles. El acabado inicial será limpio y cuidado, siguiendo las dos fotografías aportadas; el desgaste queda como detalle opcional posterior.

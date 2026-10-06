@@ -2,6 +2,8 @@
 
 **Fecha:** 2026-10-05. **Estado:** investigación y plan; viento todavía no implementado. **Base inspeccionada:** `0f002aa` y árbol de trabajo con desarrollo paralelo. **Motor:** Godot 4.7.2-stable, Compatibility, física propia float64 a 240 Hz.
 
+> Nota 2026-10-06: la auditoría de código (§2 y §4.5) es anterior a la reparación D9-R2. Ya no hay seis estaciones con déficit de pérdida: ala y colas son elementos locales (`physics/dynamics.gd`, `physics/aero.gd`). Releer el código antes de W01; W05c debe rediseñarse sobre el modelo actual.
+
 **Propuesta:** representar el viento como velocidad del aire en el mundo, consultada por el avión, y crecer desde viento constante hasta ráfagas, dirección variable, turbulencia y diferencias espaciales. La configuración debe expresar magnitudes físicas comprensibles y permitir repetir exactamente un ejercicio dentro de una misma versión. El realismo se evalúa mediante pruebas matemáticas, comparación independiente y vuelo de pilotos RC; un efecto convincente en pantalla no basta.
 
 Este documento desarrolla **M5 — Air and polish** de [ROADMAP.md](../ROADMAP.md) en pasos `M5-Wxx`. No cambia el orden de hitos aprobado ni declara completos aterrizajes, menús, humo o el Extra 300. Puede investigarse el viento en paralelo; adelantar su entrega jugable sería una decisión explícita del roadmap.

@@ -1,0 +1,154 @@
+{
+  "aircraft_id": "p51d-mustang-120-v1",
+  "captures": [
+    {
+      "camera_position_m": [
+        -7.05000019073486,
+        0.0,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_side_left.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "ff1e9e068b88925ca7898e036137e3a36b9813c44b4a3fe5120807c9a2d9af78",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.0,
+        -7.05000019073486,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_bottom.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "6a8d290cea724de3bbc3251621b46f38fa124e2bb76a618e7b1e61402503b5ca",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.11500000953674,
+        1.01520001888275,
+        -1.41000008583069
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_oblique_front_left.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "4f963369b8d7c825b86461fceb3d1e89644f3a16df76ca6cf4f00f11d6572ee3",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.69200003147125,
+        -0.564000010490417,
+        -1.69200015068054
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_low_front_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "df2c26a7e19d91289721454a224847156d16f219d30a020614aef0d783fd54b5",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "04ce4bfdfc52dbcb71d829ff01b17cfc4f0e570652093a317da3dd13b8c3b219",
+  "image_size": [
+    1280,
+    720
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry review of the first P-51D model; not a pilot readability test.",
+  "model_sha256": "05e1c2332d92489be9a4fc053223955013ef9a4bf1ab8403a8afcf7b79618adc",
+  "ortho_size_m": 3.384,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "span_m": 2.82,
+  "status": "experimental: first visual model from scaled full-size dimensions",
+  "suite": "inspection",
+  "throws_deg": {
+    "aileron": 16.1,
+    "elevator": 14.7,
+    "rudder": 33.5
+  },
+  "throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
+  "visual_revision": "p51d-mustang-120-v1",
+  "crops": {
+    "gear-closeup-front.png": "inspection_low_front_right.png crop (440,360)-(1000,560) x2",
+    "gear-closeup-side.png": "inspection_side_left.png crop (420,330)-(820,480) x3",
+    "gear-closeup-oblique.png": "inspection_oblique_front_left.png crop (300,380)-(760,660) x2.5"
+  },
+  "step": "V06 gear: raked leg with scissor, shaped strut door, closed inner well doors, spoked hubs in tube tyres, tail-wheel doors open"
+}

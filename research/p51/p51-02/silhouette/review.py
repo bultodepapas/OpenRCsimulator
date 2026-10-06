@@ -16,7 +16,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
-from scipy.ndimage import binary_erosion, distance_transform_edt
+from scipy.ndimage import binary_dilation, binary_erosion, distance_transform_edt
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
@@ -31,11 +31,19 @@ def edge(mask):
     return mask & ~binary_erosion(mask)
 
 
-def metrics(real, model, view, scale):
-    """Mean/percentile distances (px) both ways and IoU, overall and in 8 longitudinal bins (model axis)."""
+def metrics(real, model, view, scale, ignore=None):
+    """Mean/percentile distances (px) both ways and IoU, overall and in 8 longitudinal bins (model axis). `ignore` marks
+    pixels (exclusion boxes, dilated) whose outline pixels are dropped from the metric and whose area leaves both masks:
+    the boxes cut the drawing's fill, so their borders are not contour."""
+    if ignore is not None:
+        real = real & ~ignore
+        model = model & ~ignore
     d_real = distance_transform_edt(~edge(model))  # distance from any pixel to the model edge
     d_model = distance_transform_edt(~edge(real))
     re, me = edge(real), edge(model)
+    if ignore is not None:
+        grown = binary_dilation(ignore, iterations=3)
+        re, me = re & ~grown, me & ~grown
     a, b = d_real[re], d_model[me]
     out = dict(real_to_model_mean_px=float(a.mean()), real_to_model_p90_px=float(np.percentile(a, 90)),
                model_to_real_mean_px=float(b.mean()), model_to_real_p90_px=float(np.percentile(b, 90)),
@@ -90,7 +98,10 @@ def main():
             model = rgba[:, :, 3] >= 128
             if key == "front":
                 model[:, int(view["anchors"]["centre"]["picked_px"][0]):] = False
-            result[label] = metrics(real, model, key, view["display_scale_px_per_model_m"])
+            ignore = np.zeros(real.shape, bool)
+            for box in v["exclude"]:
+                ignore[max(box[1] - v["box"][1], 0):box[3] - v["box"][1], max(box[0] - v["box"][0], 0):box[2] - v["box"][0]] = True
+            result[label] = metrics(real, model, key, view["display_scale_px_per_model_m"], ignore)
             if label == "after":
                 # Composite for review: drawing in grey, model silhouette in translucent cyan, drawing outline in red.
                 rgb = np.stack([crop] * 3, -1).astype(float)
@@ -102,7 +113,7 @@ def main():
     summary = dict(schema="openrc-silhouette-review-v1", label=args.label, fit_sha256=sha(HERE / "camera-fit.json"),
                    candidate=dict(geometry_sha256=manifest["geometry_sha256"], model_sha256=manifest["model_sha256"], visual_revision=manifest.get("visual_revision")),
                    baseline=dict(geometry_sha256=base_manifest["geometry_sha256"], model_sha256=base_manifest["model_sha256"]) if base_manifest else None,
-                   metric="Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels, drop tanks and dimension lines excluded by the drawing silhouette; not metric accuracy per component.",
+                   metric="Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels and dimension lines excluded by the drawing silhouette; the exclusion boxes (drop tanks, dimension boxes) are removed from both masks and their borders ignored. Not metric accuracy per component.",
                    views=rows)
     (args.output / "metrics.json").write_text(json.dumps(summary, indent=2) + "\n")
     write_viewer(args.output, fit, rows, args.candidate, args.baseline, args.label)

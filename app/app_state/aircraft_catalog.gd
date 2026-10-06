@@ -1,10 +1,11 @@
-# The aircraft catalog (EX-03, AV-03, MENU-PLAN UI-05): the one place where an aircraft ID resolves to its physics
+# The aircraft catalog (EX-03, AV-03, P51-03, MENU-PLAN UI-05): the one place where an aircraft ID resolves to its physics
 # data file, its visual builder and its anchors, so a flight never mixes one airplane's model with another's physics.
 # Presentation and paths only: no physical parameter is copied here (they live in the data files).
 # Paths are strings, not preloads: the simulation side reads `data` without loading render code.
 extends RefCounted
 
-## What the menu may offer: FLYABLE (validated handling), EXPERIMENTAL (flies on a first, unvalidated physics
+## What the menu may offer: FLYABLE (the reference flight model: trimmed, regression-tested with golden flights and compared
+## with independent data; pilot validation at Gate 2 still pending), EXPERIMENTAL (flies on a first, unvalidated physics
 ## estimate), PREVIEW (a visual model only: no flight data, Fly is refused).
 const FLYABLE := "flyable"
 const EXPERIMENTAL := "experimental"

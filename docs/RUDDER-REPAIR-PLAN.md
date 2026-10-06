@@ -2,7 +2,7 @@
 
 > Actualización 2026-10-06: reparación implementada en el árbol de trabajo. Ver [cambios, pruebas y límites](research/flight-repair-implementation.md). D9-R1/R2, D4-R1, D1-R1 y D8a-R1 tienen implementación y regresiones; el rudder usa superficies/derivadas enlazadas. Gate 2 (validación con piloto), propwash y equilibrio de eje siguen abiertos. El texto fechado 2026-10-05 se conserva como plan original.
 
-2026-10-05 · Estado: **diagnosticado en simulación; reparación pendiente**.
+2026-10-05 · Estado: **reparado el 2026-10-06 (D10-R1…R3; nota superior); validación con piloto (Gate 2-R) pendiente**.
 
 **Ampliación posterior:** [auditoría del modelo completo](research/flight-model-robustness-audit.md) y [plan de robustez](FLIGHT-MODEL-ROBUSTNESS-PLAN.md). La variante `Cndr ×0,3` rompe la secuencia de recuperación de barrena existente (p/r residual máximo después de 6 s: 6,49 rad/s frente a 0,22); no adoptarla como parche aislado. Se localizaron además discontinuidades de la mezcla por franjas y estados con potencia aerodinámica positiva, que necesitan sus propias correcciones.
 
@@ -10,7 +10,7 @@
 
 [Diagnóstico, evidencia, límites y comandos reproducibles](research/ugly-stik-rudder-audit.md) · [19 experimentos](research/rudder-audit/results.json).
 
-Este plan continúa D8b/D10 y Gate 2. No reabre todo el simulador. Los IDs siguientes son subpasos propuestos de esas tareas; no están completados salvo el diagnóstico descrito.
+Este plan continúa D8b/D10 y Gate 2. No reabre todo el simulador. Los IDs siguientes son subpasos propuestos de esas tareas; están completados salvo Gate 2-R (validación con piloto).
 
 ## D10-R1 — Convertir el síntoma en contrato de manejo
 
@@ -72,4 +72,4 @@ Una vez corregida la respuesta física, comprobar radio real calibrada y gamepad
 4. Verificar `bench_physics.gd` si cambia código aerodinámico; capturas si cambia recorrido visual; prueba de dt frente a dt/2 si cambia la dinámica. No ampliar checks irrelevantes a un cambio de documentación.
 5. Actualizar ROADMAP, DECISIONS si cambia la arquitectura y LEARNINGS tras cada paso. Un commit por paso, con traza/test/medición como prueba. No publicar una release antes de cerrar la validación de manejo elegida.
 
-**Entrega mínima aceptable:** el caso original deja de provocar la respuesta excesiva bajo el contrato acordado, el timón sigue coordinando y recuperando, queda una prueba que falla al restaurar la causa, y el ajuste tiene una procedencia explícita. La implementación permanece pendiente; este cambio entrega el diagnóstico y el plan.
+**Entrega mínima aceptable:** el caso original deja de provocar la respuesta excesiva bajo el contrato acordado, el timón sigue coordinando y recuperando, queda una prueba que falla al restaurar la causa, y el ajuste tiene una procedencia explícita. La implementación se hizo el 2026-10-06; este cambio entrega el diagnóstico y el plan.

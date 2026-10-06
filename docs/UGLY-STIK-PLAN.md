@@ -15,7 +15,7 @@ El objetivo es un avión reconocible, articulado y legible para el primer playte
 | US-05 · D1/B5 | Puntas y alerones según planta, sección normalizada desde costilla, sombreado suave | 30 pares/poses alares sin fallo; signos y cotas del contrato conservados. [Límites del ala](research/ugly-stik-model-v3-wing.md). **Implementación cerrada**; incidencia y diedro continúan estimados |
 | US-06 · D7/Gate 2 | Ensayo de orientación 20/50/100 m, seis actitudes y dos fondos; formulario local y clave oculta | [36 casos listos](../research/ugly-stik/model-v3/captures/review.html). **Preparación completa; respuestas del piloto pendientes**. La nueva decoración roja con cruces fue elegida después por el propietario; estos datos servirán para ajustar su lectura |
 | US-07 · E1/E2 | Motor .61 genérico, escape, anclajes, pivotes de rueda/dirección, contactos y conversión de marcos | [Entrega a física](research/ugly-stik-model-v3-installation.md). **Preparación completa**; contacto/taxi pertenecen a E1/E2 y la marca del motor sigue abierta |
-| US-08 · Gate 2/M5 | Sujeción del ala, accesorios visibles y materiales; presupuesto geométrico registrado | 54 mallas, 4.816 triángulos, 5 materiales. **Detalle inicial completo; medición en hardware pendiente**. No se justifica LOD con llvmpipe |
+| US-08 · Gate 2/M5 | Sujeción del ala, accesorios visibles y materiales; presupuesto geométrico registrado | v3: 54 mallas, 4.816 triángulos, 5 materiales; v4 montada: 74 mallas, 27.040 triángulos, 23 materiales. **Detalle inicial completo; medición en hardware pendiente**. No se justifica LOD con llvmpipe |
 
 El contrato integrado pasa **510 comprobaciones**, y `app/test.sh` pasa en el árbol compartido. La prueba desde clon limpio también pasa: suite completa, contrato y nueve capturas con la geometría final. [Evidencia reproducible](../research/ugly-stik/model-v3/validation.json).
 
@@ -53,7 +53,7 @@ Para PT1: interfaz y signos correctos, ensamblaje coherente y orientación evalu
 
 | Frente | Responsabilidad |
 | --- | --- |
-| Modelado | `assets/aircraft/`, `app/aircraft/`, `app/render/airplane.gd`, este plan, investigación y capturas del modelo |
+| Modelado | `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, `verify_model.gd`, `verify_controls.gd`, `inspect_model.gd`, `app/render/airplane.gd` (compartido con los demás aviones), este plan, investigación y capturas del modelo |
 | Física/simulación | `app/physics/`, `app/sim/`, `app/data/aircraft/`, pruebas de simulación, escena principal y roadmap |
 | Intercambio | Avisar mediante documentación de cambios que afecten envergadura, cuerda, borde de ataque o línea de empuje; entregar evidencia y comprobar integración. No editar silenciosamente parámetros del otro frente |
 

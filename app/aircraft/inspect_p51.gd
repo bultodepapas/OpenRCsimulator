@@ -70,6 +70,8 @@ static func views(suite: String) -> Array:
 			_view("inspection_oblique_rear_right_full", c + s * Vector3(0.7, 0.4, 0.8), c, "persp", FULL),
 			_view("inspection_low_front_right", c + s * Vector3(0.6, -0.2, -0.85), c),
 			_view("inspection_cockpit_left", Vector3(0, 0.1, 0.25) * (s / 2.508) + s * Vector3(-0.3, 0.14, -0.08), Vector3(0, 0.12, 0.25) * (s / 2.508), "persp", NEUTRAL, 30.0),
+			# V04: windscreen facets and frames read best from low front-right
+			_view("inspection_cockpit_front_right", Vector3(0, 0.1, 0.2) * (s / 2.508) + s * Vector3(0.26, 0.1, -0.24), Vector3(0, 0.1, 0.2) * (s / 2.508), "persp", NEUTRAL, 28.0),
 		]
 	if suite in ["orbit", "all"]:
 		for elevation in [-25.0, 10.0, 40.0]:
@@ -107,6 +109,19 @@ func _run() -> void:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.75, 0.78, 0.82)
 	env.ambient_light_energy = 0.55
+	# V08: a procedural sky feeds the reflections only (the background stays the flat SKY colour, so captures compare);
+	# without it the natural-metal finish has nothing to mirror and reads as grey plastic.
+	var sky_material := ProceduralSkyMaterial.new()
+	sky_material.sky_top_color = Color(0.33, 0.52, 0.80)
+	sky_material.sky_horizon_color = Color(0.74, 0.80, 0.88)
+	sky_material.ground_bottom_color = Color(0.22, 0.24, 0.18)
+	sky_material.ground_horizon_color = Color(0.56, 0.58, 0.50)
+	sky_material.sun_angle_max = 20.0
+	var sky := Sky.new()
+	sky.sky_material = sky_material
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
+	env.sky = sky
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	var world := WorldEnvironment.new()
 	world.environment = env
 	get_root().add_child(world)
@@ -161,7 +176,7 @@ func _run() -> void:
 		"span_m": span(),
 		"throws_deg": _throws,
 		"throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
-		"light": {"sun_rotation_deg": [-50, -35, 0], "sun_energy": 1.1, "ambient": [0.75, 0.78, 0.82], "ambient_energy": 0.55, "sky": SKY.to_html(false)},
+		"light": {"sun_rotation_deg": [-50, -35, 0], "sun_energy": 1.1, "ambient": [0.75, 0.78, 0.82], "ambient_energy": 0.55, "sky": SKY.to_html(false), "reflections": "procedural sky (V08)"},
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"captures": records,
 		"limits": "Prepared views for geometry review of the first P-51D model; not a pilot readability test.",

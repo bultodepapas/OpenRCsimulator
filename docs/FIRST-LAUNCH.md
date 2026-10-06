@@ -53,6 +53,7 @@ Home lets you choose the aircraft and switch between English and Spanish. Press 
 | Resume after a radio failsafe | P | |
 | Camera: pilot / close-up | C | |
 | Auto-zoom on / off | Z | |
+| Ground shadow: sun / vertical / off | V | |
 | Performance line on / off | F3 | |
 | Record a flight trace | T | |
 | Calibrate the radio | K, then Enter at each step (Esc cancels) | |

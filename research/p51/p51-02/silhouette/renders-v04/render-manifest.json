@@ -1,0 +1,59 @@
+{
+	"calibration_geometry_sha256": "20d811e5c3c5f6670757cc8aacd7e26ea90771046600e4476954bffe9d714560",
+	"captures": [
+		{
+			"anchor_max_error_px": 0.0001220703125,
+			"anchor_projection_px": {
+				"rudder_te": [
+					1523.99987792969,
+					214.0
+				],
+				"spinner_tip": [
+					319.0,
+					214.0
+				]
+			},
+			"file": "side.png",
+			"id": "side",
+			"sha256": "7fb621282015f4e46d89c45a74fe80426633b5e6bec0e0193daaf3adc38dd019"
+		},
+		{
+			"anchor_max_error_px": 0.780487060696032,
+			"anchor_projection_px": {
+				"centre": [
+					762.5,
+					290.662109375
+				],
+				"right_tip": [
+					66.9999847412109,
+					312.780487060547
+				]
+			},
+			"file": "front.png",
+			"id": "front",
+			"sha256": "d15c96e6e5ae1a29fcaab7fb5e4cb61f8011255ca52533e0bf53cf542804dd01"
+		},
+		{
+			"anchor_max_error_px": 0.0000152587890625,
+			"anchor_projection_px": {
+				"left_tip": [
+					1458.0,
+					957.730590820312
+				],
+				"right_tip": [
+					64.9999847412109,
+					957.730590820312
+				]
+			},
+			"file": "top.png",
+			"id": "top",
+			"sha256": "4fedcfd682312b1af2f33f7b9fdc2839d172d3a1c896dfbb2fd98d736a3d8591"
+		}
+	],
+	"comparison_with_frozen_camera": false,
+	"fit_sha256": "dc0cb052bca4fa70a79042969fe63bd8c90a9b7756e2d95b8c474882b1e93347",
+	"geometry_sha256": "20d811e5c3c5f6670757cc8aacd7e26ea90771046600e4476954bffe9d714560",
+	"godot": "4.7.2-stable (official)",
+	"model_sha256": "1e0564b9bafc7f68e51b9c1eaf766bd750cf3c043131235b68452a4d1a6ec548",
+	"visual_revision": "p51d-mustang-120-v1"
+}

@@ -64,90 +64,88 @@ Gravedad: **A** rompe un clon limpio o induce a error a quien lo lea; **B** cont
 | C8 | Dos planes históricos (`UGLY-STIK-PLAN-v4/v5`) conviven con los vigentes en `docs/`; llevan banda de archivo correcta. Propuesta: `docs/archive/` cuando el equipo de modelo lo decida (hay que mover los enlaces de `UGLY-STIK-PLAN.md:3` y `v5:5`) | `docs/` | Modelo, propietario |
 | C9 | Nota de proceso: el commit `db3b58c` («Refactor code structure for improved readability and maintainability») contiene la reparación de vuelo, cambios de UI y del Extra y regraba cuatro goldens, contra la regla 8 del ROADMAP (un equipo por commit, prueba en el mensaje) y repitiendo el hallazgo 16 de la revisión #3. En un árbol compartido donde el propietario confirma con `git add -A`, la única defensa es que cada pista deje su lista de ficheros y su mensaje listos (§5) | `git log` | Propietario |
 
-## 3. Cambios aplicados en esta entrega
+## 3. Cambios aplicados (2026-10-06, dos pasadas)
 
-Solo ficheros nuevos y ficheros raíz que nadie tenía en edición, con sustituciones exactas que fallan si el texto no coincide. No se ha movido, renombrado ni borrado nada; no se ha confirmado ni preparado (`git add`) nada.
+Sustituciones exactas que fallan si el texto no coincide; nada confirmado ni preparado (`git add`) por la revisión. Los ficheros de la pista P-51 (en curso) no se han tocado.
 
 | Fichero | Cambio |
 | --- | --- |
-| `docs/README.md` (nuevo) | Mapa de documentación: alma, orden de lectura por perfil, documento canónico por pregunta, registro de pistas/planes/IDs/propiedad/evidencia, espacios de nombres de pasos, puertas, dónde vive cada cosa, convenciones, mantenimiento |
-| `docs/research/README.md` (nuevo) | Índice de investigación: la regla de las dos carpetas, puntos de entrada por pista (incluye los diez huérfanos), patrones de nombres, cómo añadir investigación |
-| `docs/research/documentation-audit-2026-10-06.md` (nuevo) | Este informe |
-| `README.md` | Fila `docs/` y línea de enlaces apuntan al mapa y al índice |
-| `AGENTS.md` | Enlace al mapa e índice en la cabecera; cuatro aviones en la descripción de Inicio; *Parallel work* remite al registro, acota la pista del modelo a `ugly-stik-60` y añade las pistas Extra/Avanti, menús y calidad visual con sus rutas; regla de comprobar `git status` antes de editar documentos compartidos; punto de convenciones en el acuerdo de trabajo. No se ha tocado la fila *Captures* que otra pista estaba editando |
-| `CONTRIBUTING.md` | Sección *Documentation* con las convenciones en corto |
-| `DECISIONS.md` | Fila para la decisión de reparación de vuelo (resumen fiel en inglés; la prosa en español se conserva bajo *Notes*), fila para el sistema de documentación (provisional, a confirmar por el propietario), lista *Open* sin «second aircraft». La fila E1 que la física añadió a la vez queda intacta |
-| `docs/FIRST-LAUNCH.md` | Ancla `#aircraft-hangar` |
-| `.gitignore` | `/references/` anclado a la raíz; `__pycache__/` y `*.pyc` |
+| `docs/README.md` (nuevo) | Mapa: alma, orden de lectura por perfil, documento canónico por pregunta, registro de 15 pistas (plan, prefijo, estado, puerta, rutas, evidencia), espacios de nombres, puertas, dónde vive cada cosa, convenciones |
+| `docs/research/README.md` (nuevo) | Índice de los 167 informes por pista (incluye los diez huérfanos y el informe E1), patrones de nombres, cómo añadir investigación |
+| `ROADMAP.md` | *Where we are*: las pistas UI, calidad visual/paisaje y Extra en una línea cada una; líneas nuevas para la reparación de vuelo y las propuestas (humo, viento); *Known limits* y *Alpha will not have* actualizados tras la reparación y rc3; **Gate F ✅** (decidida por la reparación) y **E0a parcial**; M5 enlaza WIND y SMOKE y señala VQ-03/UI-07; el apéndice en español se retira (su contenido está en la línea de reparación y en los planes); enlace al mapa. La línea P-51 no se ha tocado |
+| `DECISIONS.md` | Filas: reparación de vuelo (resumen fiel; la prosa en español se conserva en *Notes*; marcada como respuesta a Gate F) y sistema de documentación (**Chosen**, por delegación «decide tú»); lista *Open* sin «second aircraft». La fila E1 de física queda intacta |
+| `AGENTS.md` | Enlaces al mapa e índice; cuatro aviones; *Parallel work* remite al registro, acota la pista del modelo y añade Extra/Avanti, menús y calidad visual con sus rutas; regla de `git status` antes de editar documentos compartidos; convenciones en el acuerdo de trabajo |
+| `README.md`, `CONTRIBUTING.md` | Enlaces al mapa; sección *Documentation* |
+| `LEARNINGS.md` | Cabecera describe la estructura real (temático arriba, entradas fechadas por pista al final) y entrada de esta revisión |
+| `docs/EXTRA-300-PLAN.md` | Cabecera y L113 coherentes con la tabla; EX-00 ✅; rutas e IDs reales (`gp-extra-300s-60`); §10 marcada histórica, segundo «§10» → §11; nota de hélice 12×6/12×8 |
+| `docs/AVANTI-S-PLAN.md` | Frases de «maqueta aislada / rutas inexistentes / integración pendiente» actualizadas a AV-03 hecho; ID de catálogo; AV-05 sin «G1»; AV-09 «E0a–E0b» |
+| `docs/MENU-PLAN.md` | Línea de estado real (UI-00…05); cuatro aviones; L5 hecho; nota de que las anclas de código son de `bc078ef` y los defectos se corrigieron; primer cambio marcado hecho |
+| `docs/VISUAL-QUALITY-PLAN.md` | Extra vuela como experimental; Kenney → Quaternius en L6a; «siguiente L6a» → hecho |
+| `docs/LANDSCAPE-PLAN.md` | `treeline.*` en vez de `vegetation.gd`; ACES 0,6 frente al spike Filmic; rutas de assets fuente/derivados; `tools/terrain/` futuro; nota de viento variable en la deriva `sim_clock`; fecha |
+| `docs/WIND-PLAN.md` | Nota: la auditoría de código es anterior a D9-R2; releer antes de W01, rediseñar W05c |
+| `docs/FLIGHT-MODEL-ROBUSTNESS-PLAN.md`, `docs/RUDDER-REPAIR-PLAN.md` | Líneas de estado y frases «pendiente» actualizadas a implementado; D8b-R1 señalado como abierto |
+| `docs/UGLY-STIK-PLAN.md`, `docs/UGLY-STIK-VISUAL-PLAN.md` | Coste v4 junto al v3; propiedad acotada a `ugly-stik-60`; nota de que la especificación visual se lee como registro de lo construido |
+| `app/app_state/aircraft_catalog.gd` | Comentario: FLYABLE = modelo de referencia (trim, goldens, contraste independiente; validación con piloto pendiente en Gate 2); cita P51-03. Solo comentarios; `--check-only` en verde |
+| `assets/aircraft/extra-300s-60/README.md`, `docs/FIRST-LAUNCH.md` | Título «flyable (experimental)»; ancla `#aircraft-hangar`; tecla V |
+| `.gitignore` | `/references/` anclado a la raíz (A1); `__pycache__/` y `*.pyc` |
 
-**Prueba.** Comprobador de enlaces relativos y anclas (`linkcheck.py`, en el scratchpad de la sesión) sobre los ocho documentos tocados: 0 enlaces rotos. `git check-ignore`: `references/ugly-stik` sigue ignorado; `VQ-01b/references/sources.json` ya no; `__pycache__/` ignorado. `git status` muestra solo estos ficheros como míos; los ficheros de las pistas P-51, calidad visual y física siguen con sus propios cambios sin alterar. Entrega documental: no cambia código ni datos; `app/test.sh` no aplica.
+**Prueba.** Verificador de enlaces relativos y anclas sobre los 20 documentos tocados: 0 problemas. `--check-only` del catálogo: sin errores. `git check-ignore`: `references/ugly-stik` ignorado, `VQ-01b/references/sources.json` no. La línea P-51 del ROADMAP y la fila E1 de DECISIONS siguen idénticas. Entrega documental; `app/test.sh` no aplica salvo por el comentario del catálogo, cubierto por el parse.
 
-## 4. Decisiones que necesitan al propietario
+## 4. Decisiones tomadas por delegación del propietario («decide tú», 2026-10-06)
 
-1. **Idioma.** Convención adoptada como provisional: raíz e índices en inglés; planes e informes en inglés o español, uno por fichero. Alternativas: todo en inglés (traducir 15 planes y 149 informes: caro) o todo en español (la cara pública del README y las releases ya está en inglés). Recomendación: mantener la provisional.
-2. **LEARNINGS.md.** Hoy mezcla secciones temáticas en inglés (hasta la línea 190) con secciones fechadas por pista en español, en orden cronológico creciente. Opciones: (a) dejarlo así y declararlo (quitar «newest first»); (b) un fichero por pista (`docs/learnings/<pista>.md`) con LEARNINGS como índice; (c) ordenar por fecha descendente en una sola lista. Recomendación: (b) en cuanto las tres pistas activas confirmen, porque reduce los conflictos de edición en el fichero más tocado del repo (45 commits en dos días).
-3. **ROADMAP.md.** *Where we are* tiene párrafos de 1.500 caracteres por pista que duplican los planes. Recomendación: una línea por pista con el estado y el enlace al plan (texto listo en §5), mover el apéndice en español de la reparación a *Where we are* en inglés, enlazar LANDSCAPE/SMOKE/ROBUSTNESS/RUDDER, y actualizar *Known limits* tras la reparación (A7).
-4. **Gate F.** Etiquetar la decisión del 2026-10-06 como Gate F (y decir qué queda abierto: E0b propwash, G2) o reabrirla con la evidencia pendiente. Sin esto, M2 ha empezado (E1) con una puerta formalmente sin pasar.
-5. **FLYABLE del Stik** (A8): definición o estado.
-6. **Archivo.** Crear `docs/archive/` y mover `UGLY-STIK-PLAN-v4.md` y `-v5.md` (con los dos enlaces que los nombran) cuando el equipo de modelo lo acepte.
-7. **Limpieza del índice de git:** `git rm --cached -r research/avanti-s/refinement-v4/__pycache__ research/ugly-stik/model-v3/__pycache__ research/p51/p51-02/silhouette/__pycache__ research/p51/p51-02/silhouette/photo/__pycache__` (la pista P-51 ya ha borrado dos de ellos del disco), y confirmar los 61 `.uid`.
-8. **`VQ-01b/references/`**: confirmar la carpeta (licencias CC BY-SA 2.0 con atribución en `sources.json`) o renombrarla a `visual-references/` si se prefiere no tocar la regla del ignore; en ambos casos verificar desde un `git clone` limpio, como pide AGENTS.md para cambios de `.gitignore`.
+1. **Idioma:** raíz e índices en inglés; planes e informes en inglés o español, uno por fichero (fila *Chosen* en DECISIONS).
+2. **Estado en un solo sitio:** el plan es la fuente de verdad de sus pasos; el ROADMAP lleva una línea por pista. Aplicado.
+3. **Gate F:** cerrada por la reparación del 2026-10-06 con la propuesta por defecto del ROADMAP (buildup por componentes a partir del oráculo lineal); quedan E0b y G2 como pasos, y Gate 2-R como validación con piloto. Registrado en ROADMAP y DECISIONS.
+4. **FLYABLE del Stik:** se redefine la etiqueta (modelo de referencia con validación de piloto pendiente) en vez de degradar el Stik a experimental, que lo igualaría con aviones sin ningún contraste independiente.
+5. **LEARNINGS:** se mantiene un solo fichero con la estructura real declarada (temático arriba, entradas fechadas al final). La división por pistas queda como opción si el fichero sigue creciendo (§5).
 
-## 5. Texto listo para pegar
+## 5. Operaciones bloqueadas por el clasificador de permisos: para el propietario
 
-**Una línea por pista para `ROADMAP.md` → *Where we are*** (sustituye los párrafos de UI, calidad visual, Extra y P-51; los detalles ya están en cada plan):
+Un lote que movía, borraba y reescribía ficheros fue denegado como «modificación de recursos compartidos». Son operaciones correctas y pequeñas; se dejan con sus comandos para ejecutarlas a mano desde la raíz del repositorio.
 
-```markdown
-- **Tracks** (full registry, owned paths and conventions: [docs/README.md](docs/README.md)):
-  - UI ([MENU-PLAN](docs/MENU-PLAN.md)): UI-00…05 done (Home, language, pause, end flight, build identity, Help, aircraft selector); next UI-06/07/08.
-  - Visual quality ([VISUAL-QUALITY-PLAN](docs/VISUAL-QUALITY-PLAN.md), L steps defined in [LANDSCAPE-PLAN](docs/LANDSCAPE-PLAN.md)): VQ-01a/b, L5, L6a/b done; L6c numbers done, owner playtest pending (Gate L); next L9a, VQ-02.
-  - Extra 300S ([EXTRA-300-PLAN](docs/EXTRA-300-PLAN.md)): flyable, experimental; next EX-06, EX-08, EX-09.
-  - Avanti S ([AVANTI-S-PLAN](docs/AVANTI-S-PLAN.md)): preview, Fly disabled until the turbine branch (AV-05).
-  - P-51D 1/4 ([P51-PLAN](docs/P51-PLAN.md), shapes in [P51-VISUAL-PLAN](docs/P51-VISUAL-PLAN.md)): flyable, experimental; next P51-04/06/08/09 and V01–V03.
-  - Flight-model repair ([FLIGHT-MODEL-ROBUSTNESS-PLAN](docs/FLIGHT-MODEL-ROBUSTNESS-PLAN.md), [RUDDER-REPAIR-PLAN](docs/RUDDER-REPAIR-PLAN.md), [report](docs/research/flight-repair-implementation.md)): D9-R1/R2, D4-R1, D1-R1, D8a-R1, D10-R done; Gate 2-R, E0b, G2 open.
-  - Proposals, not started: [SMOKE-PLAN](docs/SMOKE-PLAN.md) (SM-00…09), [WIND-PLAN](docs/WIND-PLAN.md) (M5-W00…08).
+1. **Archivar los planes históricos** (y actualizar el enlace de `docs/UGLY-STIK-PLAN.md:3` a `archive/UGLY-STIK-PLAN-v5.md`; dentro de los archivados, cada enlace relativo necesita un `../` más, salvo el que apunta al otro archivado):
+   ```sh
+   mkdir -p docs/archive && git mv docs/UGLY-STIK-PLAN-v4.md docs/UGLY-STIK-PLAN-v5.md docs/archive/
+   ```
+2. **Sacar del índice los `.pyc` versionados** (ya ignorados por `.gitignore`):
+   ```sh
+   git rm --cached -r --ignore-unmatch research/avanti-s/refinement-v4/__pycache__ research/ugly-stik/model-v3/__pycache__ research/p51/p51-02/silhouette/__pycache__ research/p51/p51-02/silhouette/photo/__pycache__
+   ```
+3. **Confirmar** los 61 `.uid` sin versionar (punto 10 de la revisión #2 del ROADMAP) y la carpeta `docs/research/visual-quality-implementation/VQ-01b/references/` (CC BY-SA 2.0 con `sources.json`); después verificar desde un `git clone` limpio que `VQ-01b/REFERENCES.md` resuelve.
+4. **Enlaces a `references/` → texto «solo local»** (A4: 9 en planes, 219 en 30 informes). Expresión que lo hace en un solo paso sobre los ficheros no en curso (excluir los del P-51):
+   ```sh
+   perl -0pi -e 's/!?\[([^\]]*)\]\(<?(?:\.\.\/)+references\/([^)>]+)>?\)/$1 (`references\/$2`, solo local)/g' docs/AVANTI-S-PLAN.md docs/UGLY-STIK-PLAN.md docs/UGLY-STIK-VISUAL-PLAN.md docs/UGLY-STIK-PLAN-v5.md $(grep -rl 'references/' docs/research --include='*.md' | grep -v 'aircraft-reference-index\|p51-')
+   ```
+5. Opcional, si LEARNINGS (ya 680 líneas) sigue molestando: un fichero por pista en `docs/learnings/` con LEARNINGS.md como índice; el guion de división con prueba por hash quedó preparado y puede repetirse.
+
+## 6. Qué queda para la pista P-51 (única activa)
+
+- Al confirmar: `docs/P51-VISUAL-PLAN.md`, `docs/research/p51-visual-review-v1.md`, `research/p51/p51-02/visual-review-2026-10-06/` y `…/photo/metrics-2026-10-06.json` (A6).
+- B8: cabecera de `P51-PLAN.md` con P51-02c y revisión; datum «y = 0» (la línea de referencia del fuselaje es la correcta, con el eje del cono 0,006 m arriba) también en `assets/aircraft/p51d-mustang-120/README.md:5`; «7,8 px» → 7,7; columna de dependencias; `verify_p51.gd:1` «P5-02».
+- B9: escribir `P51-V01…` en prosa y renombrar los «Hito M1/M2/M3» del plan visual.
+- `docs/research/aircraft-reference-index.md`: líneas 13/15 (Extra ya vuela) y 30/38 (Avanti integrada como vista previa).
+- Carpeta vacía `research/p51/p51-01/`.
+
+## 7. Mensaje de commit para los cambios de esta revisión
+
 ```
+Docs: documentation map, track registry, research index and status cleanup
 
-**Entrada para `LEARNINGS.md`** (bajo *Process*, o como sección fechada «2026-10-06 · Documentación — mapa, registro e índice»):
+docs/README.md (canonical document per question; registry of 15 tracks with
+plan, step-ID prefix, state, gate, owned paths, evidence; namespaces; gates;
+folder rules; conventions) and docs/research/README.md (entry points for 167
+reports). Audit in docs/research/documentation-audit-2026-10-06.md.
 
-```markdown
-- **Un repositorio de dos días puede tener 17 planes, 167 informes y 13 espacios de nombres de pasos sin que nadie sepa dónde está el estado.** La revisión encontró el mismo paso con estado en tres sitios (ROADMAP, VQ-PLAN, LANDSCAPE-PLAN), planes cuya cabecera contradecía su propia tabla (EXTRA L113), un plan que auditaba un modelo ya eliminado (WIND tras D9-R2) y 228 enlaces a una carpeta ignorada. *Ahora:* `docs/README.md` registra pistas, planes, prefijos y rutas; el estado de un paso vive en su plan y el ROADMAP lleva una línea por pista; los enlaces se comprueban desde un clon limpio. Prueba: [auditoría](docs/research/documentation-audit-2026-10-06.md), comprobador de enlaces sin fallos sobre los ocho documentos tocados. (2026-10-06)
-- **Con tres pistas en el mismo árbol, `git status` antes de editar un documento compartido.** ROADMAP, LEARNINGS, DECISIONS y AGENTS cambiaron en disco mientras se revisaban; las ediciones se hicieron como sustituciones exactas que fallan si el texto no coincide, sin tocar las líneas de otros y sin `git add`. (2026-10-06)
+ROADMAP: one line per track, flight repair and proposals listed, Gate F
+decided (component buildup from the linear oracle, 2026-10-06), E0a partly
+done, known limits after the repair, Spanish appendix folded in. DECISIONS:
+repair and documentation rows, Open list. AGENTS: four aircraft, full track
+ownership, git-status rule, conventions. Plans without an active owner get
+their status lines and stale statements fixed (Extra, Avanti, Menu, Visual
+quality, Landscape, Wind, Robustness, Rudder, Ugly Stik). Catalog comment
+redefines FLYABLE honestly. .gitignore anchors /references/ and ignores
+__pycache__. FIRST-LAUNCH anchor and V key.
+
+Proof: link/anchor checker 0 problems on 20 documents; godot --check-only on
+aircraft_catalog.gd; documentation only otherwise.
 ```
-
-**Mensaje de commit para esta entrega** (ficheros: `docs/README.md`, `docs/research/README.md`, `docs/research/documentation-audit-2026-10-06.md`, `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `DECISIONS.md`, `docs/FIRST-LAUNCH.md`, `.gitignore`):
-
-```
-Docs: documentation map, track registry and research index
-
-Add docs/README.md (canonical document per question, registry of 15 tracks
-with plan, step-ID prefix, state, gate, owned paths and evidence; step-ID
-namespaces; gates; folder rules; writing conventions) and
-docs/research/README.md (entry points per track for 167 reports, naming,
-how to add research). Record the audit in
-docs/research/documentation-audit-2026-10-06.md.
-
-Point README, AGENTS (four aircraft, full track ownership, git status rule)
-and CONTRIBUTING at the map; DECISIONS gets the flight-repair decision as a
-table row and the documentation system as a provisional decision.
-Fix FIRST-LAUNCH anchor (#aircraft-hangar). .gitignore: anchor /references/
-to the root (VQ-01b/references was being ignored), ignore __pycache__.
-
-Proof: link checker 0 broken links/anchors on the 8 touched documents;
-git check-ignore confirms root references/ still ignored and
-VQ-01b/references not; documentation only, no code or data changed.
-```
-
-## 6. Qué queda para cada pista (resumen)
-
-| Pista | Acciones |
-| --- | --- |
-| Física (ROADMAP) | A7, B1, B2, B3, B16, B17, B18; §5 línea por pista |
-| Modelo (Stik) | A5, B10, B11; mención «solo local» para `references/` |
-| Extra | B6 |
-| Avanti | B7, C6 |
-| P-51 | A6, B8, B9, C5 (`p51-01` vacío) |
-| UI | B12 |
-| Calidad visual / paisaje | A1 (confirmar carpeta), A6 (L6c), B13, B14, C5 |
-| Viento | B15 antes de W01 |
-| Propietario | §4 (idioma, LEARNINGS, ROADMAP, Gate F, FLYABLE, archivo, `git rm --cached`, `.uid`) |

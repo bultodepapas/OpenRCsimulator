@@ -93,7 +93,7 @@
         [
           720,
           2130,
-          860,
+          845,
           2400
         ],
         [
@@ -107,9 +107,15 @@
           1920,
           1250,
           2150
+        ],
+        [
+          1163,
+          1186,
+          1172,
+          1450
         ]
       ],
-      "notes": "plan; excluded: stab dimension box, the rudder 30-degree fan on both sides of the fin (the fin tip column 896-930 is kept), prop-clearance extension box, two drop tanks; mask_after removes the propeller blades beside the spinner from the compared outline",
+      "notes": "plan; excluded from the FILL: stab dimension box, the rudder 30-degree fan on both sides of the fin (the fin tip column 896-930 is kept), prop-clearance extension box (stopping short of the fuselage side), two drop tanks (their dashed outlines seal under the 3 px closing and would merge with the wing: without the boxes the LE fit residual rises from 0.1 to 2.2 in). review.py ignores outline pixels inside these boxes and removes their area from both masks, so the box edges never count as contour. A 9 px box cuts the stab-span dimension's right extension line, drawn alongside the right stab tip (x 1165): the 3 px closing merged it with the tip and the measured half-span depended on the 2 in sampling grid (79.5 or 81.4 in).",
       "mask_after": [
         [
           725,

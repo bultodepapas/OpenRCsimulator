@@ -1,4 +1,4 @@
-# Great Planes Extra 300S .60 (GPMA0236): visual geometry v1, preview
+# Great Planes Extra 300S .60 (GPMA0236): visual geometry v1, flyable (experimental)
 
 `.60` is the kit size (64 in span, .61 nitro class). The model is **flyable (experimental)**: its flight data `app/data/aircraft/gp_extra_300s_60.json` is GENERATED from this geometry by `research/extra-300/ex05/derive_physics.py` (owned by the physics/catalog line).
 

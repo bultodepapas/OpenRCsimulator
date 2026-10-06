@@ -12,7 +12,7 @@ Este plan atiende la petición actual de un jet como candidato al siguiente avi�
 
 El Freewing Avanti S 80 mm EDF tiene señales públicas de difusión comercial, pero corresponde a otra construcción, tamaño y propulsión. No hay en esta investigación un censo verificable que ordene ventas de todos los Avanti de turbina. La elección del A200 se basa en documentación e identidad de turbina, no en atribuirle el título de más vendido. La [comparación de variantes](research/avanti-s-family-research.md) distingue A200, XS, Mini, XXL, composite y EDF.
 
-ID propuesto: `sebart_avanti_s_a200_p100rx`. Registrar por separado revisión geométrica, instalación de motor, condición de combustible y configuración de mandos. El P100-RX original y el P100-RX-BL actual tienen documentos con diferencias; no combinar dimensiones, RPM y comportamiento sin registrar la edición de origen.
+ID de catálogo: `sebart-avanti-s-a200-p100rx`. Registrar por separado revisión geométrica, instalación de motor, condición de combustible y configuración de mandos. El P100-RX original y el P100-RX-BL actual tienen documentos con diferencias; no combinar dimensiones, RPM y comportamiento sin registrar la edición de origen.
 
 La primera configuración volable comienza **ya en vuelo**, turbina estabilizada, flaps arriba, tren recogido y masa de una condición de combustible declarada. Se prueba vuelo nivelado, virajes, ascenso/descenso y respuesta al acelerador. Posteriormente se añaden flaps y retráctiles funcionales. Taxi, aterrizaje, frenos, arranque completo de ECU, fallos detallados, humo y empuje vectorial pertenecen a entregas posteriores.
 
@@ -52,7 +52,7 @@ Faltan perfiles identificados, polares, derivadas, área alar calibrada, masa/in
 
 ## 4. Construcción visual en Godot
 
-Conservar **Godot 4.7.2, Compatibility y el constructor nativo**. Rutas propuestas, aún inexistentes: `assets/aircraft/avanti-s-a200/geometry.json`, `appearance.json`, compiladores y `app/aircraft/avanti_s_*`. Compartir únicamente helpers que ambos constructores necesiten; la geometría del ala rectangular Stik no se reutiliza como si fuera el ala Avanti.
+Conservar **Godot 4.7.2, Compatibility y el constructor nativo**. Rutas (creadas en AV-02/AV-03): `assets/aircraft/avanti-s-a200/geometry.json`, `appearance.json`, compiladores y `app/aircraft/avanti_s_*`. Compartir únicamente helpers que ambos constructores necesiten; la geometría del ala rectangular Stik no se reutiliza como si fuera el ala Avanti.
 
 Orden visual: fuselaje por estaciones → ala baja en flecha y uniones → cola → cabina → tomas y salida → superficies separadas → tren → acabado. Cerrar la boca de admisión con profundidad visual controlada y salida tubular; no detallar compresor oculto antes de lograr una silueta reconocible. Usar fotos de mantenimiento para ubicar masas y anclajes, sin afirmar qué turbina aparece en una foto si no se identifica.
 
@@ -104,7 +104,7 @@ El contacto con terreno actualmente es accidente. Entrenamiento de aterrizajes, 
 
 ## 8. Entregas y pruebas
 
-**AV-00** está completo. **AV-02** tiene una primera maqueta aislada, documentada en la sección siguiente; integración pendiente. **AV-01** tiene preparación concreta: 30 datos trazables, cuatro proporciones, 42 recortes del montaje y un panel interactivo de tamaños/mandos. Falta cerrar contornos, secciones, área y ejes de bisagra. Véanse la [ficha AV-01](research/avanti-s-av01-metrology.md), la [mesa de referencias](../references/avanti-s/organized/index.html) y los [datos y herramienta](../research/avanti-s/av01/README.md). Los demás pasos siguen ligados a hitos existentes del [roadmap](../ROADMAP.md).
+**AV-00** está completo. **AV-02** está integrada en la app como vista previa (AV-03 ✅); sus contornos siguen en refinamiento (revisiones 2–4, más abajo). **AV-01** tiene preparación concreta: 30 datos trazables, cuatro proporciones, 42 recortes del montaje y un panel interactivo de tamaños/mandos. Falta cerrar contornos, secciones, área y ejes de bisagra. Véanse la [ficha AV-01](research/avanti-s-av01-metrology.md), la [mesa de referencias](../references/avanti-s/organized/index.html) y los [datos y herramienta](../research/avanti-s/av01/README.md). Los demás pasos siguen ligados a hitos existentes del [roadmap](../ROADMAP.md).
 
 | Paso | Cambio acotado | Dependencia | Prueba requerida |
 | --- | --- | --- | --- |
@@ -113,11 +113,11 @@ El contacto con terreno actualmente es accidente. Entrenamiento de aterrizajes, 
 | AV-02 · D1 visual | Jet sencillo en inspector | AV-01 | Frente/perfil/planta/oblicua, escala, uniones y Stik intacto |
 | AV-03 · D1/UI-05 ✅ | Catálogo y adaptador sin hélice | AV-02 | Stik → Avanti preview → Stik; ID erróneo rechazado; materiales y nodos independientes |
 | AV-04 · B5 | Rig y recorridos reales | AV-02 | Neutro/extremos/combinaciones; alerón diferencial, dos elevadores, holguras y defecto deliberado detectado en copia |
-| AV-05 · D5/G1 | Rama de turbina y datos v2 | AV-03 | Unidad de empuje, ejes, lag, idle/stop/reset/pausa; split de timestep; v1 y goldens Stik conservados |
+| AV-05 · D5 / propulsión nueva (sin equivalente en G1–G4) | Rama de turbina y datos v2 | AV-03 | Unidad de empuje, ejes, lag, idle/stop/reset/pausa; split de timestep; v1 y goldens Stik conservados |
 | AV-06 · D1–D4 | Masa, referencias aero y trim | AV-01/05 | Loader, CG/inercia, condición de combustible y solución estacionaria propia |
 | AV-07 · D8a/D10 | Primer vuelo experimental | AV-04/06 | 30 s sin mando, virajes y escalones de throttle; estados finitos; 30/60/144 fps; radio/failsafe/traza |
 | AV-08 · D7/Gate 2 | Acabado y sonido de turbina | AV-02/05 | Capturas iguales por condición, pausa estable, lectura humana cielo/suelo y coste GPU identificado |
-| AV-09 · controles/E0 | Flaps y tren funcionales en vuelo | AV-07 | Entradas opcionales, límites de actuador, trim/drag/hull por estado; no duplicar expo |
+| AV-09 · controles/E0a–E0b | Flaps y tren funcionales en vuelo | AV-07 | Entradas opcionales, límites de actuador, trim/drag/hull por estado; no duplicar expo |
 | AV-10 · G4 | Consumo y balance variables | AV-07 | Integración de flujo, depósito no negativo y masa/CG/inercia consistentes; reinicio reproducible |
 | AV-11 · D8b/Gate 2 | Contraste independiente | AV-07/09 | Observaciones de configuración comparable, sensibilidad y límites de envolvente documentados |
 | AV-12 · PT1/UI-05 | Entrega de dos aviones | AV-07/08; límites AV-09/10 explícitos | Clon limpio, import/export, smoke por ID, suite completa y captura con renderer; sin depender de `references/` |
@@ -131,7 +131,7 @@ El mayor cambio respecto al Extra es separar propulsión de hélice y turbina en
 
 Ya existe una [maqueta Godot aislada AV-02](research/avanti-s-av02-preview.md), con siete superficies articuladas, controles de escala, nueve capturas y prueba en clon sin referencias. Todas las secciones no documentadas están identificadas como estimaciones. Falta refinarla e integrarla; AV-02 y AV-04 no se consideran completos.
 
-La siguiente acción es **refinar AV-01 y completar la integración AV-02**: usar el datum longitudinal propuesto y las cotas documentadas para construir contornos y un volumen aproximado declarado, fijar los ejes de las superficies y mostrar un Avanti básico en el inspector. El archivo ya separa neumática, tanque de queroseno/humo y escape vectorial opcional. Ese trabajo no necesita integrar consumo, tren funcional o una ECU completa. Antes del primer vuelo se cierra AV-05 con una rama de turbina comprobable.
+La siguiente acción es **cerrar AV-01 y los contornos de AV-02** (la integración AV-03 ya está hecha): usar el datum longitudinal propuesto y las cotas documentadas para construir contornos y un volumen aproximado declarado, fijar los ejes de las superficies y mostrar un Avanti básico en el inspector. El archivo ya separa neumática, tanque de queroseno/humo y escape vectorial opcional. Ese trabajo no necesita integrar consumo, tren funcional o una ECU completa. Antes del primer vuelo se cierra AV-05 con una rama de turbina comprobable.
 
 ## Comparación de siluetas por transparencia — 2026-10-06
 
@@ -151,7 +151,7 @@ La [nueva selección](research/avanti-s-new-angles.md) añade 30 fotografías of
 
 ## Detalles y siete cámaras congeladas — revisión 4
 
-La [cuarta revisión AV-02](research/avanti-s-refinement-v4.md) ajusta moderadamente cabina/deriva y añade marcos, placas alares y una salida con cavidad. Siete superposiciones v3→v4 muestran mejora parcial en perfil y diferencias persistentes en lomo, frontal baja y cola posterior. Las placas tienen holgura local comprobada frente al alerón en cinco órdenes de alabeo. La maqueta permanece aislada; no cierra integración, vuelo, tren ni volumen barrido completo.
+La [cuarta revisión AV-02](research/avanti-s-refinement-v4.md) ajusta moderadamente cabina/deriva y añade marcos, placas alares y una salida con cavidad. Siete superposiciones v3→v4 muestran mejora parcial en perfil y diferencias persistentes en lomo, frontal baja y cola posterior. Las placas tienen holgura local comprobada frente al alerón en cinco órdenes de alabeo. La maqueta está integrada como vista previa (AV-03); no cierra integración, vuelo, tren ni volumen barrido completo.
 
 ## En la app como vista previa (AV-03) — 2026-10-06
 

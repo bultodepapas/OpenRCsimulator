@@ -16,7 +16,7 @@ El **300L** tiene la evidencia más clara de difusión histórica entre los avio
 
 Para este simulador elegimos el **300S .60 de Great Planes** por la documentación recuperable y la cercanía a la instalación nitro existente. Encontramos manual original, vistas constructivas, secciones y fotos superiores/inferiores. El EXP de Extreme Flight es una alternativa RC eléctrica documentada, pero el propio fabricante explica que modifica libremente al avión real; sería otra configuración y otro trabajo de propulsión. [Manual oficial EXP](https://extremeflightrc.com/cdn/shop/files/EF-60extra-V2_manual_b58079bb-afb0-434a-a4da-930f2d508ced.pdf?v=13810129977580418015).
 
-La elección es de ingeniería y contenido jugable; **no afirmamos que GPMA0236 sea el Extra RC más vendido**. No mezclaremos la cabina del 300L, la planta del 330SC y los mandos del EXP bajo un nombre genérico. La identidad interna propuesta es `gp_extra_300s_60`; la revisión del modelo, su instalación y el estado de validación van separados del ID.
+La elección es de ingeniería y contenido jugable; **no afirmamos que GPMA0236 sea el Extra RC más vendido**. No mezclaremos la cabina del 300L, la planta del 330SC y los mandos del EXP bajo un nombre genérico. La identidad de catálogo es `gp-extra-300s-60` (fichero de datos `gp_extra_300s_60.json`); la revisión del modelo, su instalación y el estado de validación van separados del ID.
 
 ## 2. Primera experiencia que queremos entregar
 
@@ -60,7 +60,7 @@ La segunda ronda encontró una masa publicada de una construcción identificada,
 
 Mantener **Godot 4.7.2, Compatibility y construcción nativa**, siguiendo el flujo JSON → generador → malla que funciona en el Stik. No incorporar dependencias nuevas para comenzar. SurfaceTool permite controlar normales/UV por vértice; su orden de caras y costuras se prueban en una pieza pequeña antes de extender el acabado. [API oficial 4.7](https://docs.godotengine.org/en/4.7/classes/class_surfacetool.html).
 
-Rutas propuestas, todavía inexistentes: `assets/aircraft/extra-300s-60/geometry.json`, `appearance.json` y compiladores; `app/aircraft/extra_300s_geometry.gd`, `extra_300s_model.gd` y módulos de acabado/mandos únicamente cuando hagan falta. El JSON contiene datos y evidencia; no es una copia renombrada del esquema rectangular del Stik.
+Rutas (creadas en EX-01…05): `assets/aircraft/extra-300s-60/geometry.json`, `appearance.json` y compiladores; `app/aircraft/extra_300s_geometry.gd`, `extra_300s_model.gd` y módulos de acabado/mandos únicamente cuando hagan falta. El JSON contiene datos y evidencia; no es una copia renombrada del esquema rectangular del Stik.
 
 Orden de construcción:
 
@@ -88,7 +88,7 @@ El registro entrega también los anclajes para transformar el CG y los metadatos
 
 Crear/cambiar avión entre sesiones, con simulación detenida, validación previa y sustitución completa de modelo/datos; no ofrecer cambio en pleno vuelo. Un ID desconocido no puede terminar mostrando un Extra con la física del Stik. Conservar el Stik como predeterminado para comandos, pruebas y capturas existentes.
 
-Coordinar con **UI-05 de [MENU-PLAN](MENU-PLAN.md)**: usar un solo catálogo e ID estable. Si el menú aún no existe, la integración técnica puede usar un argumento propuesto `--aircraft=gp_extra_300s_60`; no construir un menú paralelo. La ficha de avión distingue vista previa, vuelo experimental y validación pendiente.
+Coordinar con **UI-05 de [MENU-PLAN](MENU-PLAN.md)**: usar un solo catálogo e ID estable. La ruta directa usa `--aircraft=gp-extra-300s-60`; no construir un menú paralelo. La ficha de avión distingue vista previa, vuelo experimental y validación pendiente.
 
 ## 7. Física propia y límites de la primera entrega
 
@@ -110,11 +110,11 @@ También protege una región lineal de ±8° para ambos lados de la pérdida. Si
 
 ## 8. Entregas pequeñas y prueba de cada una
 
-Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **EX-00, EX-01, EX-02 y EX-04 están hechos** (✅ en la tabla), además del adelanto EX-10a; el resto sigue propuesto.
+Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **EX-00–05, EX-07, EX-10a y EX-11 están hechos** (✅ en la tabla); EX-06, EX-08, EX-09, EX-10 (lectura humana), EX-12 y EX-13 siguen propuestos.
 
 | ID / relación | Entrega | Dependencia | Prueba de cierre |
 | --- | --- | --- | --- |
-| EX-00 · preparación D1 | Elegir variante, reunir fuentes y auditar integración | Ninguna | Manual/planos/fotos abiertos, manifiesto con hashes, originales excluidos de Git, documentos enlazados |
+| EX-00 · preparación D1 ✅ | Elegir variante, reunir fuentes y auditar integración | Ninguna | Manual/planos/fotos abiertos, manifiesto con hashes, originales excluidos de Git, documentos enlazados |
 | EX-01 · D1 ✅ | Ficha geométrica inicial y datum | EX-00 | Puntos/escala por vista, incógnitas declaradas y cotas reservadas; una sesión acotada, no esperar metrología perfecta. **2026-10-06:** regla de 36 in (399,88 px/in), siete controles reservados en verde (envergadura −0,13 %, área +0,10 %, longitud +0,67 %, CG 4,116 frente a 4⅛ in), `measure.py --check` reproduce `metrology.json` |
 | EX-02 · D1 visual ✅ | Extra sencillo en inspector independiente | EX-01 | Capturas frente/perfil/planta/oblicua y escala nominal; root/propeller/hinges presentes; Stik sigue funcionando. **2026-10-06:** `verify_extra.gd` (84 comprobaciones en `app/test.sh`, seis mutaciones detectadas), 8 capturas repetibles byte a byte, `verify_model.gd` del Stik sigue en 807/0 |
 | EX-03 · D1 / UI-05 ✅ | Registro de modelos y selección de vista previa | EX-02 | Dos IDs resuelven sus propios recursos; ID inválido y Extra aún no volable tratados explícitamente; capturas Stik conservadas |
@@ -143,7 +143,9 @@ Por cambio integrado: regeneradores `--check`, comprobación específica del con
 
 **Entregable:** ambos aviones funcionan en export sin los recursos locales de inspiración; selección coherente, presupuesto físico del roadmap y coste gráfico medidos en el equipo del propietario. Las pruebas numéricas no sustituyen su valoración del tacto del avión.
 
-## 10. Estado al cerrar esta investigación
+## 10. Estado al cerrar la investigación inicial (2026-10-05)
+
+*Sección histórica: describe el estado antes de EX-01. El estado actual está en la cabecera y en «Volable en el menú (experimental)».*
 
 Se revisaron código, planes y research del Stik; se investigó la familia Extra y se conservaron 34 descargas locales con procedencia y hashes, más la foto del propietario. La primera ronda reunió 13 archivos y la segunda añadió 21. Se inspeccionaron cabeceras/entidades de los dos CAD, sin calibración geométrica. Hay planos, manuales, fotos y una galería local. No se implementó código de vuelo/modelado, no se modificó la elección global del roadmap y no se ejecutó `app/test.sh` por estas entregas documentales.
 
@@ -153,7 +155,7 @@ La siguiente acción concreta es **EX-01 → EX-02: fijar datum y unas pocas cot
 
 **Revisión visual 2026-10-06** ([informe](research/extra-300-visual-review-v1.md)): 79 vistas automáticas más 6 a escala, superposición del plano y métricas. La forma coincide con el plano; el defecto más relevante es que extradós e intradós no se distinguen desde tierra (H1, adelantar el intradós de EX-10). Propuesto EX-02b: suavizado del fuselaje, cabina y tren. **Hecho el mismo día:** EX-02b (fuselaje suave por interpolación monótona, cabina corregida, tren en gota y pletina desde el plano) y **EX-10a**, el adelanto de EX-10 centrado en la orientación: decoración procedural roja/blanca con estrellas e intradós azul/blanco. Desde tierra el intradós da un 23–31 % de azul y el extradós un 0 % a 20–100 m. EX-10 conserva la prueba humana de orientación y el acabado final.
 
-## 10. Herramientas investigadas y orden de adopción
+## 11. Herramientas investigadas y orden de adopción
 
 Las [doce investigaciones](research/extra-aircraft-tooling/README.md) amplían la preparación EX-00. Aplicarlas mediante los pasos existentes:
 
@@ -172,4 +174,4 @@ Las mejoras comunes se prueban primero con el Stik y luego con ambos modelos. Ni
 - **Datos (EX-05):** [`gp_extra_300s_60.json`](../app/data/aircraft/gp_extra_300s_60.json) lo **genera** [`derive_physics.py`](../research/extra-300/ex05/derive_physics.py) desde la geometría medida y el manual; el [informe de derivación](../research/extra-300/ex05/derivation.md) lista cada magnitud intermedia. Helmbold/DATCOM para pendientes, volumen de cola para estabilidad y amortiguamiento, teoría de franjas para alerones y Clp, acumulación de fricción para CD0. Masa de vuelo 3,364 kg (seco 7,10 lb, dentro de las 7–7,5 lb del manual), CG en el punto del manual (30,0 % CMA), margen estático 12,5 % CMA, pérdida 1 g a 10,3 m/s, inicio trimado a 17 m/s, CD0 0,031. Recorridos: los altos del manual p43 (alerón 17,6°, elevador 23,9°, timón 30,0°) como máximo mecánico; la radio reduce con su dual rate. Un cambio en las claves de geometría que lee obliga a regenerar (CI ejecuta `--check`).
 - **Cargador:** `reference.planform = "tapered"` con `root_chord`/`tip_chord`; las franjas de igual área se colocan en sus centroides (el Stik rectangular queda idéntico). `start.level_speed` opcional (el Stik conserva 15 m/s).
 - **Vuelo (EX-07, primera parte de EX-08):** [`test_extra_handling.gd`](../app/tests/test_extra_handling.gd): 30 s sin mandos, alabeo coordinado 213°/s a 17 m/s y 266°/s a 22 m/s (±7 % de la predicción), looping con 0,3 de palanca, pérdida al tirar a fondo con el elevador alto (como avisa el manual), pérdida sin motor y recuperación de barrena. `--aircraft=gp-extra-300s-60` en la ruta directa; la traza nombra el avión y la velocidad.
-- **Límites:** empuje axial (2° derecha y 0,5° abajo del plano pendientes en EX-06); misma hélice y datos que el Stik (APC 12x6); Cnβ del fuselaje omitido por contrato v1; derivadas cruzadas fijadas al CL de inicio; sin propwash ni combustible variable. Es verificación numérica, no validación: EX-08 completo (invertido, viraje, tonel) y EX-09 siguen abiertos.
+- **Límites:** empuje axial (2° derecha y 0,5° abajo del plano pendientes en EX-06); misma hélice y datos que el Stik (APC 12x6; el modelo visual lleva una 12×8 provisional, diferencia conocida que resuelve EX-06); Cnβ del fuselaje omitido por contrato v1; derivadas cruzadas fijadas al CL de inicio; sin propwash ni combustible variable. Es verificación numérica, no validación: EX-08 completo (invertido, viraje, tonel) y EX-09 siguen abiertos.
