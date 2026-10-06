@@ -50,7 +50,7 @@ TRACE="$(mktemp --suffix=.csv)"
 timeout 120 "$DIST/linux/openrc-simulator.x86_64" --headless --audio-driver Dummy -- --trace="$TRACE" --t=3 > "$LOG" 2>&1 \
   || { cat "$LOG"; echo "exported binary failed"; exit 1; }
 if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error in the exported binary"; exit 1; fi
-python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3
 grep -qxF "# app_build: $VERSION" "$TRACE" || { grep "^# app_" "$TRACE"; echo "the exported binary does not report build $VERSION"; exit 1; }
 echo "exported binary reports build $VERSION"; rm -f "$TRACE"
 

@@ -86,6 +86,20 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var trace_ticks: int = -1
+	if args.has("trace"):
+		var duration_text: String = str(args.get("t", Spec.CAPTURE.time))
+		var duration: float = duration_text.to_float() if duration_text.is_valid_float() else NAN
+		var rounded_ticks: float = roundf(duration * Engine.physics_ticks_per_second)
+		if typeof(args.trace) != TYPE_STRING or str(args.trace).is_empty() \
+			or not is_finite(duration) or duration <= 0.0 or not is_finite(rounded_ticks) \
+			or rounded_ticks < 1.0 or rounded_ticks >= float(9223372036854775807):
+			push_error("--trace requires a path and finite positive --t that rounds to at least one tick and fits the tick counter")
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		trace_ticks = int(rounded_ticks)
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	if not loaded_field.ok:
 		FieldError.report(self, loaded_field.errors)
@@ -162,7 +176,7 @@ func _ready() -> void:
 			get_tree().quit(1)
 			return
 		# Headless trace: record from the start to t, save, quit. No window needed.
-		_write_trace_and_quit(float(args.get("t", Spec.CAPTURE.time)), args.trace)
+		_write_trace_and_quit(trace_ticks, str(args.trace))
 		return
 	if bool(frametime_options.enabled):
 		_frametimes_path = str(frametime_options.path)
@@ -441,12 +455,26 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 		PilotCamera.look(_camera, _look.x, _look.y, _look_height)
 
 
-func _write_trace_and_quit(t: float, path: String) -> void:
+func _write_trace_and_quit(ticks: int, path: String) -> void:
 	session.input_enabled = false
 	session.sim.process_mode = Node.PROCESS_MODE_DISABLED
+	if not session.is_flyable() or session.sim.tick != 0:
+		push_error("--trace refused: flight did not start in a valid state at tick zero")
+		get_tree().quit(1)
+		return
 	recorder.start(_trace_meta())
-	for i in roundi(t / session.sim.dt()):
+	for i in ticks:
 		session.sim.step()
+		if not session.sim.fault_reason.is_empty() or session.sim.tick != i + 1:
+			recorder.recording = false
+			push_error("--trace aborted at tick %d: %s" % [session.sim.tick, session.sim.fault_reason])
+			get_tree().quit(1)
+			return
+	if recorder.trace.row_count() != ticks + 1:
+		recorder.recording = false
+		push_error("--trace aborted: recorder did not receive every tick")
+		get_tree().quit(1)
+		return
 	get_tree().quit(recorder.stop(path))
 
 

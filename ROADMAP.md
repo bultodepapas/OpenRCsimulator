@@ -1,6 +1,6 @@
 # Roadmap
 
-2026-10-06 · revision 5 · **Status: early R&D; Gate 2 pilot acceptance open. Next: evidence repairs, a bounded state contract, then a validated Stik ground circuit.** This revision implements the [whole-project audit](docs/research/project-audit-2026-10-06/README.md). It retains Godot, float64 dynamics, the fixed step, local aerodynamic loads and provenance. Step namespaces and track ownership: [documentation map](docs/README.md). Research: [phase knowledge base](docs/research/roadmap-investigations/README.md); foundations: [STACK](STACK.md), [DECISIONS](DECISIONS.md), [RESEARCH](RESEARCH.md).
+2026-10-06 · revision 5 · **Status: early R&D; Gate 2 pilot acceptance open. Next: C7-R2/D1-R2/DATA-1 evidence repairs, a bounded state contract, then a validated Stik ground circuit.** This revision implements the [whole-project audit](docs/research/project-audit-2026-10-06/README.md). It retains Godot, float64 dynamics, the fixed step, local aerodynamic loads and provenance. Step namespaces and track ownership: [documentation map](docs/README.md). Research: [phase knowledge base](docs/research/roadmap-investigations/README.md); foundations: [STACK](STACK.md), [DECISIONS](DECISIONS.md), [RESEARCH](RESEARCH.md).
 
 The [execution order below](#execution-order-and-release-gates) is authoritative. Milestone tables define work and acceptance; unchecked rows are planned, not promises for the next release. Completed rows retain their dated proof. Reviews at the end are historical inputs, not a second execution queue.
 
@@ -41,7 +41,7 @@ The [execution order below](#execution-order-and-release-gates) is authoritative
 
 | Order | Work | Dependency and exit evidence |
 | --- | --- | --- |
-| 1 — now | C7-R1/R2, D1-R2 and DATA-1; plan D1-R3 before runway starts | Evidence must reject incomplete/non-finite runs, identify active physics and catch invalid/stale aircraft data. Repair rows below define closure; audit findings remain historical evidence. |
+| 1 — now | C7-R2, D1-R2 and DATA-1; plan D1-R3 before runway starts | Evidence must reject incomplete/non-finite runs, identify active physics and catch invalid/stale aircraft data. Repair rows below define closure; audit findings remain historical evidence. |
 | 2 — in parallel | Gate 2/D6d, Gate L, PT1g; VAL-5/6/7 measurements; F1/F4 and minimum F6 latency observation | Owner uses a named build, physical radio and target hardware. Record uncertainties and raw evidence. Automated keyboard/fake-radio tests cannot close these gates. If trim prevents the session, bring forward the bounded F2 linkage-trim decision. |
 | 3 — before new persistent state | H8, with H9 tolerance/checkpoint policy | Explicit continuous, sampled and discrete state; RK stage time; reset, rollback and replay. Required before E3b1 anchors, E0a2/E0b5 lags, G2a coupling, wind filters, fuel or damage. No generic component framework required. |
 | 4 — prepare the Stik ground circuit | D11d, E0a2 and D11f; E0b low-speed tail authority; E1b and E3b1–3 after their state/data prerequisites | Accept **Clp, Cmq, Cnr and CLα** through the approach regime with justified bands; contact energy/refinement checks; stable idle and takeoff roll. G1 operating-range evidence and VAL-7 bound powered-performance claims. No homegrown VLM prerequisite. |
@@ -56,13 +56,13 @@ The [execution order below](#execution-order-and-release-gates) is authoritative
 
 **Scope controls:** H10 contributor interfaces need a concrete second implementation or demonstrated coupling problem; DATA-8 v2 needs a consumer v1 cannot represent cleanly; D11c custom VLM needs a question established offline tools cannot answer. None is a prerequisite for PT2. Existing optional v1 sections and the shared Dynamics evaluator stay until evidence requires change.
 
-### Audit repairs (planned; no simulator fix is claimed by this revision)
+### Audit repairs
 
-These repair IDs belong to the main-line roadmap. [Audit findings and reproductions](docs/research/project-audit-2026-10-06/README.md) supply the baseline.
+These repair IDs belong to the main-line roadmap; completed rows record their implementation proof. [Audit findings and reproductions](docs/research/project-audit-2026-10-06/README.md) supply the baseline.
 
 | ID | Change | Acceptance and timing |
 | --- | --- | --- |
-| C7-R1 | Harden trace duration parsing and the trimmed-flight checker; distinguish successful completion from initial-only output or numerical abort | Before using a smoke pass as release evidence: reject invalid/nonpositive/non-finite durations, NaN/Inf samples, truncated runs, discontinuous ticks and wrong elapsed duration; valid app and exported-binary traces still pass. Mutations must fail with nonzero exit status. |
+| C7-R1 ✅ | Harden trace duration parsing and the trimmed-flight checker; distinguish successful completion from initial-only output or numerical abort | **2026-10-06:** rejects invalid durations/paths, faults or missing ticks, malformed/non-finite samples, and duration/clock mismatches. All callers specify duration. Proof: 9 process tests (including real-trace mutations and last-tick fault injection), full `app/test.sh`, isolated Windows/Linux/macOS exports; four exported flights retain byte-identical numeric rows against rc4. [Report and evidence](docs/research/trace-integrity/C7-R1/README.md). |
 | C7-R2 | Derive trace feature metadata from the active aircraft and state layout; document the actual trace version | Before collecting new comparison evidence: P-51 slipstream/shaft and Avanti turbine headers describe active behavior; Stik declares its own path. Trace schema, producer and reader agree. DATA-3 supplies exact input identity. |
 | D1-R2 | Validate nested shaft-table numbers, finiteness and quantity provenance as strictly as scalar data | Now: reject numeric strings, non-finite values and missing kind/source with a field-specific error; all four current aircraft load. |
 | D1-R3 | Replace the gear bounding-box support test with a support-polygon test for configurations requesting static ground support | Before E3b2: reject a CG outside a triangular support polygon even when it is inside its bounding box; accept valid tricycle/taildragger starts and distinguish unsupported flying/retracted configurations. |

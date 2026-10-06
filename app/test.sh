@@ -72,22 +72,25 @@ echo "== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, h
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
 
+echo "== C7-R1: trace completion, finite samples and failure exits"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
+
 echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
-python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=gp-extra-300s-60 --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "gp-extra-300s-60" "$TRACE" || { echo "the Extra trace does not name the Extra"; exit 1; }
-python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=p51d-mustang-120 --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "p51d-mustang-120" "$TRACE" || { echo "the P-51 trace does not name the P-51"; exit 1; }
-python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=sebart-avanti-s-a200-p100rx --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Avanti trace does not name the Avanti"; exit 1; }
-python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
 echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
 echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"

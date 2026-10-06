@@ -35,6 +35,8 @@ The audit is a fixed evidence snapshot. [ROADMAP revision 5](../../ROADMAP.md#ex
 | --- | --- | --- |
 | [ugly-stik-rudder-audit.md](ugly-stik-rudder-audit.md) (the symptom: rudder over-authority) | [flight-model-robustness-audit.md](flight-model-robustness-audit.md) (the whole-model audit) → [flight-repair-implementation.md](flight-repair-implementation.md) (what was changed and tested, 2026-10-06) → [flight-robustness/repair-diagnostics.md](flight-robustness/repair-diagnostics.md) | [rudder-audit/](rudder-audit/) (19 experiments), [flight-robustness/](flight-robustness/) (probes, fuzz, eigenmodes, logs); [research/sensitivity/results.md](../../research/sensitivity/results.md) (D10 sweep and the UMN Ultra Stick 120 comparison); [research/flight-modes/](../../research/flight-modes/) (linearized modes) |
 
+Trace integrity: [C7-R1](trace-integrity/C7-R1/README.md) hardens CLI duration/failure exits and the trimmed-flight checker; records regression mutations and exported-flight comparisons.
+
 M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06) → [ground-friction-e2.md](ground-friction-e2.md) (E2 tyre friction, nose-wheel steering, tip-over, figure-eight taxi, 2026-10-06) → [ground-surfaces-e3a.md](ground-surfaces-e3a.md) (E3a runway, mown and rough surfaces under the wheels, 2026-10-06).
 
 Plans: [FLIGHT-MODEL-ROBUSTNESS-PLAN](../FLIGHT-MODEL-ROBUSTNESS-PLAN.md), [RUDDER-REPAIR-PLAN](../RUDDER-REPAIR-PLAN.md), ROADMAP M1.
