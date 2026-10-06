@@ -12,6 +12,7 @@ Every number written carries its unit, evidence kind and source. Nothing here va
 
     python3 research/p51/p51-05/derive_physics.py           # writes the JSON and the report
     python3 research/p51/p51-05/derive_physics.py --check   # fails if either file is stale
+    python3 research/p51/p51-05/derive_physics.py --dry     # prints the intermediate quantities, writes nothing
 """
 import json
 import math
@@ -24,6 +25,7 @@ SOURCE = ROOT / "assets/aircraft/p51d-mustang-120/source.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 OUT = ROOT / "app/data/aircraft/p51d_mustang_120.json"
 REPORT = ROOT / "research/p51/p51-05/derivation.md"
+SECTION = ROOT / "research/p51/p51-13/section.json"  # real-section camber analysis (P51-13)
 IN = 0.0254
 LB = 0.45359237
 RHO = 1.225
@@ -106,7 +108,17 @@ sweep_hc = math.atan2(hc(semi) - hc(0), semi)
 note("reference", "quarter-chord sweep (deg)", math.degrees(sweep_qc), "unswept by construction (source.json)")
 note("reference", "half-chord sweep (deg)", math.degrees(sweep_hc), "forward: the TE sweeps forward")
 dihedral = math.radians(W["dihedral_deg"])
-i_w = math.radians(W["incidence_deg"])
+washout = math.radians(W["washout_deg"])
+sec = json.load(open(SECTION))
+# Chord-weighted means over the semi-span (linear twist and linear root -> tip section blend): what the whole wing
+# sees at zero body alpha. eta = y / semi.
+n_eta = 400
+etas = [(k + 0.5) / n_eta for k in range(n_eta)]
+cw = [cr + (ct - cr) * e for e in etas]
+cmean = lambda f: sum(c * f(e) for c, e in zip(cw, etas)) / sum(cw)
+i_root = math.radians(W["incidence_deg"])
+i_w = note("aero", "mean wing incidence (deg)", math.degrees(cmean(lambda e: i_root - washout * e)), f"root {W['incidence_deg']:+.2f} deg, washout {W['washout_deg']:.2f} deg linear to the tip (NACA P-51B dimension table, source.json), chord-weighted")
+i_w = math.radians(i_w)
 
 cg_mac = KIT["cg_fraction_of_mac"]
 cg_z_model = mac_le_z + cg_mac * mac
@@ -148,7 +160,7 @@ xv_ac = fin_le_at(fin_cy) + 0.25 * (Sv / h_v)
 note("tail", "fin ac (model z, y)", [xv_ac, fin_cy], "LE at the area-centroid height + 1/4 of the mean chord")
 
 # --- Lift slopes, downwash, neutral point ----------------------------------------------------------------------
-kappa = note("aero", "section lift slope / 2pi", 0.95, "estimated: 15 % laminar section at Re ~7e5 (no polar identified)")
+kappa = note("aero", "section lift slope / 2pi", 0.86, "NACA 66(2)-415 at Re 0.7-1.0e6: 0.093-0.095 /deg (Loftin & Smith, NACA TN 1945, ntrs.nasa.gov/citations/19930082618); the NAA 45-100 is a 6-series-type laminar section; the full-size section measured 0.111 /deg at Re 13e6 (NACA MR 1943), the low Re lowers it")
 CLa_w = note("aero", "CLa wing (1/rad)", helmbold(AR, kappa, sweep_hc) * math.cos(dihedral) ** 2, "Helmbold/DATCOM x cos2(dihedral)")
 AR_h = bh * bh / Sh
 CLa_h = note("aero", "CLa horizontal (1/rad)", helmbold(AR_h, 0.9), f"Helmbold, AR {AR_h:.2f}")
@@ -158,12 +170,27 @@ slope_h = note("aero", "effective tail slope (1/rad)", CLa_h * eta_h * (1 - deps
 CLa = note("aero", "CLa airplane (1/rad)", CLa_w + slope_h * Sh / S, "wing + tail (wing-body interference ~1 for d/b 0.08)")
 
 x_qc_root = (qc(0) - g["spinner"]["tip_z"]) / fus_len
-K_f = note("aero", "K_fus (per deg)", 0.012, f"estimated, Raymer Fig. 16.14 at root quarter chord {100 * x_qc_root:.0f} % of body length (long nose: upper range)")
-cma_f_mac = K_f * fus_w ** 2 * fus_len / (mac * S) * 180 / math.pi
-dx_f = cma_f_mac / CLa_w * mac
 x_ac_w = mac_le_z + 0.25 * mac
-x_arp = note("aero", "wing-body ac = ARP (model z)", x_ac_w - dx_f, f"wing ac at 25 % MAC {x_ac_w:.4f}, fuselage moves it {dx_f * 1000:.1f} mm forward")
 arp_y = W["chord_plane_y"]
+NP_GLIDE = 0.342  # stick-fixed, power-off glide neutral point (% MAC / 100)
+
+
+def neutral_point(k_f):
+    """Neutral point (model z) for a fuselage + nacelle term k_f (Raymer's K_fus, per deg)."""
+    dx = k_f * fus_w ** 2 * fus_len / (mac * S) * 180 / math.pi / CLa_w * mac
+    x_a = x_ac_w - dx
+    cma = -slope_h * Sh / S * (xh_ac - x_a) / c_ref
+    return x_a - cma / CLa * c_ref, x_a, dx
+
+
+lo_k, hi_k = 0.0, 0.1
+for _ in range(80):
+    mid_k = 0.5 * (lo_k + hi_k)
+    lo_k, hi_k = (mid_k, hi_k) if neutral_point(mid_k)[0] > mac_le_z + NP_GLIDE * mac else (lo_k, mid_k)
+K_f = note("aero", "K_fus (per deg)", 0.5 * (lo_k + hi_k),
+           f"CALIBRATED: the fuselage, belly scoop and windmilling-propeller term that puts the power-off neutral point at the full-size airplane's measured stick-fixed glide value, {100 * NP_GLIDE:.1f} % MAC (NACA XP-51 flying-qualities report 1942, Table II, ntrs.nasa.gov/citations/19930092575; cruise 30.8, climb 30.6 % with power). Raymer Fig. 16.14 gives 0.005-0.015 for a wing at {100 * x_qc_root:.0f} % of the body; the geometry is the full-size airplane scaled, so the neutral point carries over (Re lowers both slopes alike)")
+_, x_arp, dx_f = neutral_point(K_f)
+note("aero", "wing-body ac = ARP (model z)", x_arp, f"wing ac at 25 % MAC {x_ac_w:.4f}, fuselage moves it {dx_f * 1000:.1f} mm forward")
 l_h = xh_ac - x_arp
 Cma = note("aero", "Cma about ARP (1/rad, c_ref)", -slope_h * Sh / S * l_h / c_ref, "tail only: the ARP is the wing-body ac")
 Cma_cg = Cma + CLa * (cg_z_model - x_arp) / c_ref
@@ -171,28 +198,29 @@ x_np = x_arp - Cma / CLa * c_ref
 sm = note("aero", "static margin at the kit CG (% MAC)", 100 * (x_np - cg_z_model) / mac, f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le_z) / mac:.1f} % MAC)")
 note("aero", "Cma about the CG (1/rad, c_ref)", Cma_cg, "what the pilot feels")
 
-# Camber: parabolic camber line m -> alpha_0 = -2 m (thin airfoil), Cm_ac = -pi m / 2.
-m_c = W["camber_ratio"]
-alpha0 = note("aero", "wing zero-lift angle (deg)", math.degrees(-2 * m_c), "thin-airfoil parabolic camber: -2 m")
-cm_ac = note("aero", "section Cm_ac", -math.pi * m_c / 2, "thin-airfoil parabolic camber")
+# Camber: thin-airfoil integrals over the REAL root and tip camber lines (research/p51/p51-13/section.json), blended
+# linearly root -> tip and chord-weighted. Thin-airfoil Cm_ac overestimates measured values of aft-loaded 6-series
+# sections by ~20 % (66(2)-415: -0.065 measured at Re 0.7-1e6 in NACA TN 1945 vs -0.083 for its a = 1.0, cli 0.4 mean
+# line), so x 0.8.
+rs_, ts_ = sec["root"], sec["tip"]
+alpha0 = note("aero", "wing zero-lift angle (deg)", cmean(lambda e: rs_["alpha0_deg"] + (ts_["alpha0_deg"] - rs_["alpha0_deg"]) * e),
+              f"thin-airfoil over the UIUC NAA 45-100 camber lines: root {rs_['alpha0_deg']:.2f}, tip {ts_['alpha0_deg']:.2f} deg (section.json)")
+cm_ac = note("aero", "section Cm_ac", 0.8 * cmean(lambda e: rs_["cm_ac"] + (ts_["cm_ac"] - rs_["cm_ac"]) * e),
+             f"thin-airfoil root {rs_['cm_ac']:.4f}, tip {ts_['cm_ac']:.4f} (aft-loaded camber) x 0.8 (theory/measured, NACA TN 1945)")
 CL0_w = CLa_w * (i_w - math.radians(alpha0))
 eps0 = 2 * CL0_w / (math.pi * AR)
 i_h = math.radians(T["stab_incidence_deg"])
 inc_eff = note("aero", "tail effective incidence (rad)", (i_h - eps0) / (1 - deps), "(i_h - eps0) / (1 - deps/dalpha): the local tail model sees body alpha")
-CL0 = note("aero", "CL0", CL0_w + slope_h * Sh / S * inc_eff, "wing at +1 deg incidence with camber + tail at zero body alpha")
+CL0 = note("aero", "CL0", CL0_w + slope_h * Sh / S * inc_eff, "wing at its mean incidence with camber + tail at zero body alpha")
 Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc_eff, "wing Cm_ac + tail at zero body alpha")
 
 # Controls (kit placeholder throws, degrees).
-# Throws: kit millimetres at the widest part of each surface -> hinge angle asin(d / chord) (as the Extra does).
-ail_c_in = cf_a_w = W["aileron_chord_fraction"] * (cr + (ct - cr) * W["aileron_inner"] / semi)
-elev_c = (1 - T["elevator_hinge_fraction"]) * crh
-rud_c = T["rudder_te_bottom"][0] - T["rudder_hinge_z"]
-mm = KIT["throws_mm"]
-throws = {
-    "aileron": note("controls", "aileron (deg)", math.degrees(math.asin(mm["aileron"] / 1000 / ail_c_in)), f"{mm['aileron']:.0f} mm on the {ail_c_in * 1000:.0f} mm inboard aileron chord ({KIT['throws_note']})"),
-    "elevator": note("controls", "elevator (deg)", math.degrees(math.asin(mm["elevator"] / 1000 / elev_c)), f"{mm['elevator']:.0f} mm on the {elev_c * 1000:.0f} mm root elevator chord"),
-    "rudder": note("controls", "rudder (deg)", math.degrees(math.asin(mm["rudder"] / 1000 / rud_c)), f"{mm['rudder']:.0f} mm on the {rud_c * 1000:.0f} mm bottom rudder chord"),
-}
+# Throws (P51-09): degrees, high rate, from the Hangar 9 Mustang 1.50 manual (80 in; astramodel.cz/manualy/hangar9/
+# hangar9_mustang_150.pdf, read 2026-10-06): aileron 18, elevator 15, rudder 30 deg; full-size P-51D rudder +-30 deg (NACA
+# RM L6J25). The millimetre throws of the 60cc and Top Flite manuals convert to the same range on our chords.
+THROWS_DEG = {"aileron": 18.0, "elevator": 15.0, "rudder": 30.0}
+THROWS_SRC = "Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329)"
+throws = {k: note("controls", f"{k} (deg)", v, THROWS_SRC) for k, v in THROWS_DEG.items()}
 k_flap = note("controls", "flap effectiveness correction", 0.8, "estimated: real/thin-airfoil effectiveness with gap and large throws (DATCOM range 0.6-0.9)")
 tau_e = flap_tau(cf_e) * k_flap
 ce_h = note("controls", "elevator effectiveness (local)", tau_e / (1 - deps), f"tau {tau_e:.3f} / (1 - deps/dalpha)")
@@ -220,7 +248,7 @@ spinner_d_in = 2 * g["spinner"]["radius"] / IN
 items = [
     ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
     ("mufflers / canisters (2)", 0.60, "estimated", "two in-cowl canister mufflers for a 120 cc twin", le(g["spinner"]["back_z"] + 0.20, -0.07), [0.25, 0.20, 0.08], "estimated", "under the cylinders inside the cowl"),
-    (f"propeller 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}", 0.55, "estimated", "wood/composite 4-blade giant-scale propeller (0.45-0.65 kg typical)", le(PROP["z"]), [0.02, PROP["diameter"], PROP["diameter"]], "measured", "propeller plane from geometry.json"),
+    (f"propeller 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}", 0.43, "manual", "Biela 26x12 4-blade CFK semi-scale: 428 g (pp-rc.de product page, read 2026-10-06)", le(PROP["z"]), [0.02, PROP["diameter"], PROP["diameter"]], "measured", "propeller plane from geometry.json"),
     (f"spinner {spinner_d_in:.1f} in aluminium with backplate", 0.35, "estimated", "machined aluminium spinner of this diameter", le(g["spinner"]["back_z"] - 0.06), [0.17, 0.15, 0.15], "measured", "spinner from geometry.json"),
     ("engine standoffs / mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", le(rc_fw - 0.03), None, "estimated", "on the model's firewall"),
     ("cowl (fiberglass) with dummy exhausts", 0.60, "estimated", "fiberglass cowl of a 2.5 m warbird", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, 0.0), [g["cowl_rear_z"] - g["spinner"]["back_z"], fus_w, fus_d], "measured", "between the spinner back and the cowl rear (geometry.json)"),
@@ -247,6 +275,27 @@ items = [
     ("fin and rudder, covered", 0.35, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.3, 0.02, h_v], "derived", "area centroid of the fin polygon"),
     ("pushrods, horns, cowl fasteners, hardware", 0.35, "estimated", "clevises, horns, ball links, screws, bolts: rough sum", le(0.6), None, "estimated", "spread along the fuselage"),
 ]
+# Built weight (P51-09): plan weights (Veich 18-27 kg, Don Smith 112 in 35-40 lb) understate real 1/4-scale P-51s with
+# retracts and a 120 cc twin: "easy 50-55 lb" (giantscalenews.com/threads/don-smith-p-51-mustang.10787), Bates "50 lb+";
+# the CARF 2.54 m's 15-17 kg dry scaled by span^3 gives 20.5-23 kg. Target 21.5 kg in flight: the airframe items
+# (wings, fuselage, tails, cowl, scoop, canopy, hardware) are scaled by one factor; engine, propeller, radio, fuel and
+# gear stay as listed. The balancing mass is then solved again.
+FLIGHT_MASS = 21.5
+STRUCTURE = ("wing panel", "wing tube", "fuselage", "belly scoop", "canopy", "stabilizer", "fin and rudder", "cowl", "pushrods")
+is_structure = lambda it: any(it[0].startswith(s) for s in STRUCTURE)
+k_total_struct = 1.0
+for _ in range(30):
+    base = sum(i[1] for i in items)
+    m_cg = sum(i[1] * i[4][0] for i in items) / base
+    nose_ = m_cg > cg_z_model - LE0
+    xb_ = le(g["spinner"]["back_z"] - 0.02)[0] if nose_ else le(T["stab_root_le_z"])[0]
+    total = base + base * (cg_z_model - LE0 - m_cg) / (xb_ - (cg_z_model - LE0))
+    k_struct = 1 + (FLIGHT_MASS - total) / sum(i[1] for i in items if is_structure(i))
+    items = [(i[0], i[1] * k_struct) + i[2:] if is_structure(i) else i for i in items]
+    k_total_struct *= k_struct
+    if abs(FLIGHT_MASS - total) < 1e-6:
+        break
+note("balance", "airframe mass (kg)", sum(i[1] for i in items if is_structure(i)), f"airframe items scaled so the flight mass is {FLIGHT_MASS} kg (built 1/4-scale P-51s: 50-55 lb with retracts and 120 cc)")
 mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
 x_target = cg_z_model - LE0
@@ -281,7 +330,40 @@ def inertia(pt):
 
 note("balance", "Jxx Jyy Jzz (kg m2)", inertia(cg), "component boxes + parallel axis")
 
-CL_max = note("aero", "CL_max", 1.15, "estimated: 15 % laminar section clmax ~1.3 at Re 7e5 x 0.9 for the tapered wing, flaps up (no polar identified)")
+# --- Spanwise stall (P51-13) ----------------------------------------------------------------------------------------
+# Each of the simulation's equal-area strips stalls when its section reaches its own clmax. Additional loading by
+# Schrenk (NACA TM 948): c·cl/CL = ½[c + (4S/πb)·sqrt(1 − η²)] (a 40-term lifting line gives the same 1.05 peak at
+# η 0.5, research/p51/p51-13/README.md); section clmax from the Reynolds number (NACA TN 1945, 66(2)-415 smooth:
+# 3e5 1.00 (extrapolated), 7e5 1.14, 1e6 1.16, 2e6 1.27), minus 0.05 for a painted model's finish (TN 1945: rough
+# is ~0.1 lower). The washout adds its basic loading geometrically (strip incidence). Strip i stalls at the wing CL
+# CL*_i = clmax_i / (cl/CL)_i; the strips' angle offsets are the twist plus (mean CL* − CL*_i)/CLa_w, zero-mean.
+CLMAX_RE = [(3e5, 1.00), (7e5, 1.14), (1e6, 1.16), (2e6, 1.27)]
+FINISH = 0.05
+clmax_re = lambda re: CLMAX_RE[0][1] if re <= CLMAX_RE[0][0] else next((a[1] + (b_[1] - a[1]) * (re - a[0]) / (b_[0] - a[0]) for a, b_ in zip(CLMAX_RE, CLMAX_RE[1:]) if a[0] <= re <= b_[0]), CLMAX_RE[-1][1])
+schrenk = lambda e: 0.5 * ((cr + (ct - cr) * e) + 4 * S / (math.pi * b) * math.sqrt(max(1 - e * e, 0.0))) / (cr + (ct - cr) * e)
+n_strips = 3  # physics/aero.gd WING_STATIONS_PER_SIDE
+edges = [0.0]
+area_h = (cr + ct) / 2  # semi-span area / semi, in eta units
+for k in range(1, n_strips):
+    target = area_h * k / n_strips  # cr e + (ct - cr) e^2 / 2 = target
+    a2 = (ct - cr) / 2
+    edges.append((-cr + math.sqrt(cr * cr + 4 * a2 * target)) / (2 * a2))
+edges.append(1.0)
+strip_eta = []
+for e0, e1 in zip(edges, edges[1:]):
+    es = [e0 + (e1 - e0) * (k + 0.5) / 200 for k in range(200)]
+    strip_eta.append(sum(e * (cr + (ct - cr) * e) for e in es) / sum(cr + (ct - cr) * e for e in es))
+V_stall_guess = 14.0
+for _ in range(4):
+    cl_star = [(clmax_re(V_stall_guess * (cr + (ct - cr) * e) / NU) - FINISH) / schrenk(e) for e in strip_eta]
+    CL_max = sum(cl_star) / n_strips
+    V_stall_guess = math.sqrt(2 * mass * G0 / (RHO * S * CL_max))
+eta_bar = sum(strip_eta) / n_strips
+strip_inc = [-washout * (e - eta_bar) + (CL_max - c_) / CLa_w for e, c_ in zip(strip_eta, cl_star)]
+for i, (e, c_) in enumerate(zip(strip_eta, cl_star)):
+    note("stall", f"strip {i + 1} (root to tip): eta, Re, cl/CL, CL*", [e, V_stall_guess * (cr + (ct - cr) * e) / NU, schrenk(e), c_], "")
+note("stall", "strip incidence offsets root to tip (deg)", [math.degrees(x) for x in strip_inc], f"washout part {[round(-W['washout_deg'] * (e - eta_bar), 2) for e in strip_eta]} deg; the most positive strip stalls first")
+CL_max = note("aero", "CL_max", CL_max, "mean of the strips' CL*: the wing stalls progressively around it (blend width below); full-size airplane 1.5 at Re 1.3e7 (NACA XP-51 report), the model's Re 2.5-7e5 lowers it")
 Vs = note("aero", "1-g stall (m/s)", math.sqrt(2 * mass * G0 / (RHO * S * CL_max)), "flight mass, CL_max")
 V_start = note("aero", "start speed (m/s)", round(1.6 * Vs), "1.6 x the 1-g stall, rounded: the trimmed in-air start")
 CL_ref = note("aero", "CL_ref", mass * G0 / (0.5 * RHO * V_start ** 2 * S), "level flight at the start speed; CL-dependent cross terms are frozen there")
@@ -346,7 +428,7 @@ parts = {
 }
 D_q = sum(parts.values()) * 1.1
 CD0 = note("drag", "CD0", D_q / S, f"skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: " + ", ".join(f"{k} {v:.4f} m2" for k, v in parts.items()))
-e_osw = note("drag", "Oswald e", 0.80, "estimated: taper 0.48 near the optimum; fuselage and scoop interference")
+e_osw = note("drag", "Oswald e", 0.75, "full-size P-51D 0.70-0.75 (Loftin, NASA SP-468: L/D max 14.6 with CD0 0.0163); no measured value")
 k_ind = 1 / (math.pi * e_osw * AR)
 
 
@@ -367,103 +449,136 @@ sum_y = sum(station_centres(b, cr, ct))
 wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
 
 
-# --- Propeller: blade-element / momentum model of the kit's 4-blade 28x10 --------------------------------------
-def bem_tables(diameter, pitch, blades, planform, n_rps=100.0):
-    """Ct(J), Cp(J) by blade-element/momentum theory in induced-velocity form (stable at zero airspeed), Prandtl tip
-    loss, geometric-pitch twist. Generic section: a0 = 0.9 x 2 pi, zero-lift angle -3 deg, Cl capped at +-1.2,
-    Cd = 0.012 + 0.025 Cl^2. Returns [[J, Ct], ...], [[J, Cp], ...] from J = 0 into the windmilling branch (Ct < -0.06), so the
-    simulation interpolates rather than extrapolates at high J and low rpm."""
-    R = diameter / 2
-    a0, alpha_zl, cl_max, cl_min_wm, cd0, k_cd = 2 * math.pi * 0.9, math.radians(-3.0), 1.2, 0.8, 0.012, 0.025
-    table = lambda rows, x: next((r0[1] + (r1[1] - r0[1]) * (x - r0[0]) / (r1[0] - r0[0]) for r0, r1 in zip(rows, rows[1:]) if r0[0] <= x <= r1[0]), rows[-1][1])
-    omega = 2 * math.pi * n_rps
-    ct_rows, cp_rows = [], []
-    J = 0.0
-    while True:
-        Vinf = J * n_rps * diameter
-        thrust = torque = 0.0
-        n_el = 40
-        for i in range(n_el):
-            x = 0.2 + 0.8 * (i + 0.5) / n_el
-            r = x * R
-            dr = 0.8 * R / n_el
-            c = table(planform, x) * R
-            beta = math.atan(pitch / (2 * math.pi * r))
-            wa = 0.1 * omega * r  # induced axial velocity, first guess
-            wt = 0.0  # induced swirl
-            for _ in range(300):
-                Va = Vinf + wa
-                Vt = omega * r - wt
-                phi = math.atan2(Va, Vt)
-                alpha = beta - phi
-                cl = max(-cl_min_wm, min(cl_max, a0 * (alpha - alpha_zl)))  # windmilling: the section stalls near -8 deg
-                cd = cd0 + k_cd * cl * cl + (0.02 * (alpha_zl - alpha) / 0.1 if alpha < alpha_zl - 0.14 else 0.0)  # post-stall drag rise
-                W2 = Va * Va + Vt * Vt
-                cn = cl * math.cos(phi) - cd * math.sin(phi)
-                ctan = cl * math.sin(phi) + cd * math.cos(phi)
-                dT = 0.5 * RHO * W2 * c * cn * blades  # per unit radius
-                dQr = 0.5 * RHO * W2 * c * ctan * blades  # torque per unit radius / r
-                f = blades / 2 * (R - r) / max(r * abs(math.sin(phi)), 1e-6)
-                F = max(2 / math.pi * math.acos(min(1.0, math.exp(-f))), 0.05)
-                # Momentum: dT = 4 pi r F rho (Vinf + wa) wa; dQ/r = 4 pi r F rho (Vinf + wa) wt * r
-                disc = Vinf * Vinf + max(dT, 0.0) / (math.pi * r * F * RHO)
-                wa_new = (-Vinf + math.sqrt(disc)) / 2 if dT > 0 else 0.0
-                wt_new = dQr / (4 * math.pi * r * F * RHO * max(Vinf + wa_new, 1e-3)) if dQr > 0 else 0.0
-                if abs(wa_new - wa) < 1e-5 and abs(wt_new - wt) < 1e-5:
-                    wa, wt = wa_new, wt_new
-                    break
-                wa += 0.3 * (wa_new - wa)
-                wt += 0.3 * (wt_new - wt)
-            thrust += dT * dr
-            torque += dQr * r * dr
-        Ct = thrust / (RHO * n_rps ** 2 * diameter ** 4)
-        Cp = torque * omega / (RHO * n_rps ** 3 * diameter ** 5)
-        ct_rows.append([round(J, 3), round(Ct, 5)])
-        cp_rows.append([round(J, 3), round(max(Cp, 0.0), 5)])
-        if Ct < -0.09 or J > 1.6:
-            break
-        J += 0.05
-    return ct_rows, cp_rows
+# --- Propeller: blade-element / momentum model (research/p51/p51-06/bem.py), calibrated on Mejzlik tables -------
+sys.path.insert(0, str(ROOT / "research/p51/p51-06"))
+from bem import bem_tables  # noqa: E402
 
 
-ct_table, cp_table = bem_tables(PROP["diameter"], PROP["pitch"], PROP["blades"], PROP["blade"]["chord_fraction_of_radius"])
+calib = json.load(open(ROOT / "research/p51/p51-06/calibration.json"))
+mejz = json.load(open(ROOT / "research/p51/p51-06/mejzlik_26x12.json"))
+ct_table, cp_table = bem_tables(PROP["diameter"], PROP["pitch"], PROP["blades"], PROP["blade"]["chord_fraction_of_radius"],
+                                pitch_factor=calib["pitch_factor"], chord_factor=calib["chord_factor"], j_max=1.6)
 Ct0, Cp0 = ct_table[0][1], cp_table[0][1]
-P_peak = note("propulsion", "engine peak power (W)", 11.7 * 745.7, "DA-120: 11.7 hp (desertaircraft.com/products/da-120); rpm range 1300-6900")
-n_peak = 6900.0 / 60
-# Static rpm: engine power P(n) = P_peak (n/n_peak) (2 - n/n_peak) (flat-torque two-stroke approximation) meets the propeller Cp0 rho n^3 D^5.
-lo, hi = 10.0, n_peak * 1.3
+note("propulsion", "BEM calibration (pitch x, chord x, rms)", [calib["pitch_factor"], calib["chord_factor"], calib["rms_relative_error"]],
+     "fitted to Mejzlik's manufacturer-simulated 26x12 2-blade and 3-blade tables together (research/p51/p51-06/fit_mejzlik.py); the 4-blade is the calibrated model's prediction (no 4-blade gas datasheet exists)")
+note("propulsion", "BEM Ct0 / Cp0 / J at zero thrust", [Ct0, Cp0, next(r[0] for r in ct_table if r[1] <= 0)], f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}")
+
+# --- Engine (shaft balance, P51-06) -----------------------------------------------------------------------------------
+# Full-throttle torque shape of a carburetted two-stroke twin (x = rpm / 6900): estimated, no DA-120 dyno curve is
+# published (desertaircraft.com gives 11.7 hp and 1300-6900 rpm only; UST magazine: the DA family has a flat, high
+# torque curve). Level set by the one measured anchor: a 28x10 turns 6550 rpm static on a DA-120 (Falcon spec;
+# Mejzlik 28x10 6400-6850, DLE-120 6350-6450), where Mejzlik's 28x10 static Cp 0.0238 absorbs the engine's power.
+TORQUE_SHAPE = [(0.0, 0.70), (0.2, 0.75), (0.4, 0.85), (0.6, 0.95), (0.75, 1.0), (0.9, 0.97), (1.0, 0.92), (1.1, 0.80), (1.25, 0.55), (1.4, 0.25)]
+N_REF = 6900.0
+shape = lambda rpm: next((a[1] + (b_[1] - a[1]) * (rpm / N_REF - a[0]) / (b_[0] - a[0]) for a, b_ in zip(TORQUE_SHAPE, TORQUE_SHAPE[1:]) if a[0] <= rpm / N_REF <= b_[0]), TORQUE_SHAPE[-1][1])
+anc = mejz["anchor_28x10_2B"]
+n_anchor = anc["static_rpm_on_DA120"] / 60
+P_anchor = note("propulsion", "installed power at 6550 rpm (W)", anc["static_Cp"] * RHO * n_anchor ** 3 * anc["diameter_m"] ** 5,
+                "Mejzlik 28x10 static Cp 0.0238 at the measured 6550 rpm static on a DA-120 (" + anc["static_rpm_source"] + ")")
+Q0 = P_anchor / (shape(anc["static_rpm_on_DA120"]) * 2 * math.pi * n_anchor)
+power_curve = [[float(r), Q0 * shape(r) * 2 * math.pi * r / 60] for r in range(1000, 9001, 500)]
+P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve),
+              f"at {max(power_curve, key=lambda p_: p_[1])[0]:.0f} rpm; the catalogue's 11.7 hp ({11.7 * 745.7:.0f} W) is {100 * (11.7 * 745.7 / max(p_[1] for p_ in power_curve) - 1):.0f} % higher (stock mufflers and cowl installation vs the maker's rating)")
+FRICTION = [0.5, 0.14]  # N·m, N·m per 1000 rpm: ~12 % of the brake torque at 6900 rpm (YASim uses 8 %, research synthesis 10-15 %)
+q_fric = lambda rpm: FRICTION[0] + FRICTION[1] * rpm / 1000
+IDLE_RPM = 1400.0  # static idle (DA-120 range starts at 1300; a reliable idle with a large propeller sits a little above)
+q_prop_static = lambda rpm: Cp0 * RHO * (rpm / 60) ** 2 * PROP["diameter"] ** 5 / (2 * math.pi)
+idle_power = note("propulsion", "idle admitted power (W)", (q_prop_static(IDLE_RPM) + q_fric(IDLE_RPM)) * 2 * math.pi * IDLE_RPM / 60,
+                  f"closed throttle: holds the propeller at {IDLE_RPM:.0f} rpm static against its torque plus friction")
+peak_ind = max(p_[1] + q_fric(p_[0]) * 2 * math.pi * p_[0] / 60 for p_ in power_curve)
+# Static full-throttle rpm: brake torque = propeller torque.
+lo, hi = 1000.0, 8000.0
 for _ in range(80):
     mid = 0.5 * (lo + hi)
-    engine = P_peak * (mid / n_peak) * (2 - mid / n_peak)
-    prop_p = Cp0 * RHO * mid ** 3 * PROP["diameter"] ** 5
-    if prop_p > engine:
-        hi = mid
-    else:
-        lo = mid
-n_static = 0.5 * (lo + hi)
-rpm_static = note("propulsion", "static rpm", n_static * 60, f"BEM Cp0 {Cp0:.4f} meets the engine power curve; static thrust {Ct0 * RHO * n_static ** 2 * PROP['diameter'] ** 4:.0f} N ({Ct0 * RHO * n_static ** 2 * PROP['diameter'] ** 4 / G0:.1f} kgf)")
-note("propulsion", "BEM Ct0 / Cp0 / J at zero thrust", [Ct0, Cp0, ct_table[-1][0]], f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}, P/D {PROP['pitch'] / PROP['diameter']:.3f}")
+    lo, hi = (mid, hi) if Q0 * shape(mid) > q_prop_static(mid) else (lo, mid)
+rpm_static = note("propulsion", "static rpm", 0.5 * (lo + hi), "full-throttle torque meets the 4-blade's static torque")
+n_static = rpm_static / 60
 thrust_static = Ct0 * RHO * n_static ** 2 * PROP["diameter"] ** 4
-note("propulsion", "static thrust / weight", thrust_static / (mass * G0), "for comparison, 31 kg static was quoted for a 2-blade Falcon 28x10 on a DA-120 at 6550 rpm (FlyingGiants, snippet only)")
-# Maximum level speed with the simulation's propulsion model (rpm held at the static maximum: no in-flight
-# unloading yet, ROADMAP G1): full-throttle thrust meets the drag polar at CL for level flight.
-def thrust_at(V, n):
-    J = V / (n * PROP["diameter"])
-    ct = next((r0[1] + (r1[1] - r0[1]) * (J - r0[0]) / (r1[0] - r0[0]) for r0, r1 in zip(ct_table, ct_table[1:]) if r0[0] <= J <= r1[0]), -0.1)
-    return ct * RHO * n ** 2 * PROP["diameter"] ** 4
-def drag_at(V):
-    cl = mass * G0 / (0.5 * RHO * V * V * S)
-    return 0.5 * RHO * V * V * S * (CD0 + k_ind * cl * cl)
-v_lo, v_hi = Vs, 80.0
-for _ in range(60):
-    v_mid = 0.5 * (v_lo + v_hi)
-    if thrust_at(v_mid, n_static) > drag_at(v_mid):
-        v_lo = v_mid
-    else:
-        v_hi = v_mid
-V_max = note("propulsion", "maximum level speed (m/s)", v_lo, f"full throttle at {n_static * 60:.0f} rpm (pitch speed {n_static * PROP['pitch']:.1f} m/s); the handling test flies below this")
-prop_mass = 0.55
-rotor_j = note("propulsion", "rotating inertia (kg m2)", prop_mass * (PROP["diameter"] / 2) ** 2 / 3 * 0.6 + 0.35 * (g["spinner"]["radius"] * 0.8) ** 2 / 2, "4 blades as slender rods (mL2/3 per blade pair x 0.6 planform factor) + spinner shell")
+note("propulsion", "static thrust (N, kgf) and thrust/weight", [thrust_static, thrust_static / G0, thrust_static / (mass * G0)],
+     "research estimate for a 4-blade 26x12 on a DA-120: 5000-5400 rpm, ~25 kgf (P51-09)")
+# Rotating inertia: Mejzlik's per-blade estimates (26x12 2B 7.16e-3, 3B 1.42e-2 kg m2) x 4, the spinner shell and the
+# crankshaft with the ignition flywheel.
+blade_j = (mejz["props"]["26x12 2B GAS"]["inertia_kgm2"] / 2 + mejz["props"]["26x12 3B GAS N"]["inertia_kgm2"] / 3) / 2
+rotor_j = note("propulsion", "rotating inertia (kg m2)", 4 * blade_j + 0.35 * (g["spinner"]["radius"] * 0.8) ** 2 / 2 + 0.002,
+               "4 x Mejzlik's mean per-blade inertia (26x12 2B/3B datasheets) + aluminium spinner shell + crank and flywheel 0.002 (estimated)")
+
+# --- Slipstream on the tail (E0b first slice, P51-12) -------------------------------------------------------------
+# Geometry only here; the wake itself (momentum theory, swirl) is computed in the simulation (physics/slipstream.gd).
+hub = le(PROP["z"])  # propeller disc centre on the thrust line
+x_fin = xv_ac
+fin_root_y = fus_top(x_fin)  # the fuselage blocks the wash below its top line
+fin_te_at = lambda y: T["rudder_te_bottom"][0] + (fin_top_te - T["rudder_te_bottom"][0]) * (y - T["rudder_te_bottom"][1]) / (T["fin_top_y"] - T["rudder_te_bottom"][1])
+fin_chords = [fin_te_at(fin_root_y) - fin_le_at(fin_root_y), fin_te_at(T["fin_top_y"]) - fin_le_at(T["fin_top_y"])]
+note("slipstream", "fin piece: root height, span, chords (m)", [fin_root_y, T["fin_top_y"] - fin_root_y] + fin_chords, "from the fuselage top at the fin ac to the fin tip; LE/TE lines of the fin polygon")
+slip_pieces = [
+    {"surface": "vertical", "area": Sv, "root": le(x_fin, fin_root_y), "span_dir": [0.0, 0.0, 1.0], "span": T["fin_top_y"] - fin_root_y, "chords": fin_chords},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, 1.0, 0.0], "span": hs, "chords": [crh, cth]},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, -1.0, 0.0], "span": hs, "chords": [crh, cth]},
+]
+
+# --- Landing gear (E1/E2 contacts, P51-12): taildragger, wheel bottoms from geometry.json ------------------------------
+main_r = GEAR["main_wheel_diameter"] / 2
+tail_r = GEAR["tail_wheel_diameter"] / 2
+main_pos = [le(GEAR["main_axle"][0], GEAR["main_axle"][1] - main_r, s * GEAR["track"] / 2) for s in (-1, 1)]
+tail_pos = le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] - tail_r)
+three_point = math.degrees(math.atan2(tail_pos[2] - main_pos[0][2], tail_pos[0] - main_pos[0][0]))
+note("gear", "three-point attitude (deg)", three_point, "thrust line to the ground with all three wheels down (static, uncompressed)")
+
+# --- Propeller in a crossflow (P51-06): normal force and P-factor -------------------------------------------------
+# McCormick's blade-element result as used by Selig (AIAA 2010-7938, eqs. for P_N and N_P; Ribner NACA TR 819 agrees
+# within ~20 %), per radian of disc angle of attack, with the free-stream q = ½ρV², V = JnD, A = πD²/4:
+#   C̄l = (3J/2π)·[16·Ct/(σπ²J) + C̄d]                         (mean blade lift coefficient from the thrust)
+#   C_N = σπJ²/16 · [C̄l + (aJ/2π)·ln(1 + (π/J)²) + (π/J)·C̄d]   (× ρn²D⁴)
+#   C_M = σπJ²/32 · [(2π/3J)·C̄l + (a/2)·(1 − (J/π)²·ln(1 + (π/J)²)) − (π/J)·C̄d]   (× ρn²D⁵, nose-left for α > 0)
+# σ = blade area / disc area of the calibrated planform, a = 0.9·2π (the BEM section), C̄d 0.02 (research synthesis).
+# Not included: the near-static jet ("ram drag") normal force (Selig: for 3D/hover flight).
+plan_ = PROP["blade"]["chord_fraction_of_radius"]
+sigma = PROP["blades"] * calib["chord_factor"] * sum(0.5 * (a[1] + b_[1]) * (b_[0] - a[0]) for a, b_ in zip(plan_, plan_[1:])) / math.pi
+a_bl, cd_bl = 0.9 * 2 * math.pi, 0.02
+nf_rows, pm_rows = [], []
+for J_, ct_ in ct_table:
+    if J_ <= 0.0:
+        nf_rows.append([0.0, 0.0])
+        pm_rows.append([0.0, 0.0])
+        continue
+    lg = math.log(1 + (math.pi / J_) ** 2)
+    clb = 3 * J_ / (2 * math.pi) * (16 * ct_ / (sigma * math.pi ** 2 * J_) + cd_bl)
+    cn = sigma * math.pi * J_ ** 2 / 16 * (clb + a_bl * J_ / (2 * math.pi) * lg + math.pi / J_ * cd_bl)
+    cm = sigma * math.pi * J_ ** 2 / 32 * (2 * math.pi / (3 * J_) * clb + a_bl / 2 * (1 - (J_ / math.pi) ** 2 * lg) - math.pi / J_ * cd_bl)
+    nf_rows.append([J_, round(max(cn, 0.0), 6)])
+    pm_rows.append([J_, round(max(cm, 0.0), 6)])
+note("propulsion", "solidity; C_N, C_M at J 0.3 and 0.5", [sigma, next(r[1] for r in nf_rows if r[0] >= 0.3), next(r[1] for r in pm_rows if r[0] >= 0.3), next(r[1] for r in nf_rows if r[0] >= 0.5), next(r[1] for r in pm_rows if r[0] >= 0.5)], "per rad; x rho n2 D4 and x rho n2 D5")
+THRUST_ANGLES = [1.75, 1.0]  # deg down, right
+note("propulsion", "thrust angles down, right (deg)", THRUST_ANGLES, "down 1.75 deg: Top Flite Giant P-51D manual (geometry.json visual down thrust); right 1 deg: Ziroli 98 in plans (ziroligiantscaleplans.com, 1 deg right and 1 deg down); the full-size thrust line angles are not published")
+
+# Gear (E1/E2 contacts): stiffness from the E1 rule (heave ω·dt = 0.09 at 240 Hz), split by static load so the
+# airplane sits at its three-point attitude; ζ 0.3 (sprung oleo legs, little damping); tyres as the Stik's E2 values
+# with a lower rolling resistance for the 6.75 in wheels.
+x_m, x_t = main_pos[0][0], tail_pos[0]
+tail_share = (cg[0] - x_m) / (x_t - x_m)
+k_total = (0.09 * 240) ** 2 * mass
+k_main, k_tail = k_total * (1 - tail_share) / 2, k_total * tail_share
+damp = lambda k_: 2 * 0.3 * math.sqrt(k_ * mass / 3)
+note("gear", "tail-wheel load share, sum k (N/m), static sag (mm)", [tail_share, k_total, 1000 * mass * G0 / k_total], "")
+GEAR_SRC = "wheel bottom from geometry.json (axle station and height measured on the AN 01-60-3 three-view, track 142 in full size per NACA, wheel 6.75 in)"
+gear_contact = lambda name, pos, k_, travel, steer, how: dict({
+    "name": name,
+    "position": q([float(v) for v in pos], "m", "measured", GEAR_SRC),
+    "stiffness": q(k_, "N/m", "estimated", f"E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = {k_total:.0f} N/m for {mass:.2f} kg), split by the static load ({100 * tail_share:.1f} % on the tail wheel) so all three wheels sag alike ({1000 * mass * G0 / k_total:.0f} mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"),
+    "damping": q(damp(k_), "N·s/m", "estimated", "damping ratio 0.3 of the loader's m/3 share: sprung oleo legs and tyres, little hydraulic damping in RC retract struts"),
+    "max_compression": q(travel, "m", "estimated", how),
+}, **({"max_steering": q(steer, "deg", "estimated", "steerable tail wheel linked to the rudder, +-25 deg typical for giant-scale retract tail wheels; negative: the tail wheel turns against the rudder trailing edge")} if steer else {}))
+landing_gear = {
+    "description": "P51-12: taildragger, two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces). Retracts are not simulated: the gear stays down.",
+    "contacts": [
+        gear_contact("main_left", main_pos[0], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
+        gear_contact("main_right", main_pos[1], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
+        gear_contact("tail", tail_pos, k_tail, 0.08, -25.0, "tail-wheel leg travel before the fuselage hits: estimated"),
+    ],
+    "rolling_resistance": q(0.03, "1", "estimated", "between a full-size tyre on concrete (JSBSim c172x 0.022) and the Stik's 76 mm wheel (0.04): the 171 mm wheels deform less; per-surface factors (grass) come from the field"),
+    "side_friction": q(0.8, "1", "borrowed", "JSBSim c172x static_friction 0.8 (as the Stik, E2)"),
+    "peak_slip_angle": q(6.0, "deg", "borrowed", "JSBSim FGLGear default Pacejka initial slope (as the Stik, E2)"),
+}
 
 # --- Assemble -----------------------------------------------------------------------------------------------------
 stik = json.load(open(STIK))
@@ -532,7 +647,7 @@ data = {
         "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the kit's point, NOT a measured airplane")),
     },
     "inventory": [
-        dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
+        dict({"name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3] + (f"; x{k_total_struct:.3f}: airframe scaled to the built weight (P51-09)" if is_structure(it) else "")), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
              **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}))
         for it in items
     ],
@@ -540,15 +655,13 @@ data = {
         le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), -semi), le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), semi),
         le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), -semi), le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), semi),
         le(g["spinner"]["tip_z"]),
-        le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2, -GEAR["track"] / 2),
-        le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2, GEAR["track"] / 2),
-        le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] - GEAR["tail_wheel_diameter"] / 2),
+        le(PROP["z"], -PROP["diameter"] / 2), le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, -PROP["diameter"] / 2 * 0.7071), le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, PROP["diameter"] / 2 * 0.7071),
         le(T["rudder_te_bottom"][0], T["rudder_te_bottom"][1]),
         le(T["stab_tip_le_z"] + cth, T["stab_y"], -hs), le(T["stab_tip_le_z"] + cth, T["stab_y"], hs),
         le(fin_top_te, T["fin_top_y"]),
         le(canopy_top[0], canopy_top[1]),
         le(g["scoop_stations"][2][0], g["scoop_stations"][2][2]),
-    ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, main wheel bottoms, tail wheel bottom, rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. Replaced by gear contact in E1/E2"),
+    ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"),
     "plausibility": {
         "mass_range": q([float(lo_m) - 1.5, float(hi_m) + 2.0], "kg", "estimated", f"kit flying mass range {lo_m}-{hi_m} kg (source.json; CARF 2.54 m: 15-17 kg dry), widened for fuel and the virtual balancing mass of the reference build"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],
@@ -562,7 +675,7 @@ data = {
         "envelope": {
             "CL_max": q(CL_max, "1", "estimated", "15 % laminar section clmax ~1.3 at Re 7e5 x 0.9 for the wing, flaps up; no polar identified"),
             "CL_min": q(-0.85, "1", "estimated", "cambered section: inverted stall earlier than upright"),
-            "stall_blend_width": q(5.0, "deg", "estimated", "laminar section with a sharper break than the Stik's 6 deg; tip-stall tendency of the real airplane is not modelled beyond the equal-area strips"),
+            "stall_blend_width": q(6.0, "deg", "estimated", "NACA TN 1945: at Re 0.7-1e6 the 15 % 6-series stall is rounded (cl flat over ~4 deg, mild drop); which part of the span stalls first comes from the strip offsets (aero.surfaces.wing_station_incidence)"),
             "CD90": q(1.11 + 0.018 * AR, "1", "derived", "Viterna CDmax = 1.11 + 0.018 AR (NASA CR-1983)"),
             "sideslip_blend": stik["aero"]["envelope"]["sideslip_blend"],
         },
@@ -570,6 +683,7 @@ data = {
         "coefficients": coefficients,
         "surfaces": {
             "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
+            "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
             "tail_stall_end": same("tail_stall_end"),
@@ -593,25 +707,43 @@ data = {
         },
     },
     "propulsion": {
-        "description": f"120 cc gasoline twin turning a 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}: blade-element/momentum tables computed by {SCRIPT} (no measured table for this propeller); static rpm where the propeller power meets an estimated flat-torque engine curve. AXIAL thrust.",
+        "description": f"120 cc gasoline twin turning a 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}. Shaft balance (rpm from engine torque against propeller torque), blade-element tables calibrated on Mejzlik's 26x12 2- and 3-blade data, down and right thrust, propeller normal force and P-factor, tail slipstream with swirl ({SCRIPT}, P51-06/P51-12).",
         "engine": {
             "name": "Desert Aircraft DA-120 (121 cc twin, 2.45 kg with ignition) or DLE-120",
-            "peak_power": q(P_peak, "W", "manual", "DA-120 11.7 hp, desertaircraft.com/products/da-120 (2026-10-06); DLE-120 12 hp at 7500 rpm (DLE manual)"),
-            "peak_power_rpm": q(n_peak * 60, "rpm", "manual", "DA-120 top of the 1300-6900 rpm range (desertaircraft.com)"),
-            "max_rpm_static": q(rpm_static, "rpm", "derived", D("BEM Cp0 meets the engine power curve P(n) = P_peak (n/n_peak)(2 - n/n_peak)")),
-            "idle_rpm": q(1300.0, "rpm", "manual", "DA-120 range starts at 1300 rpm (desertaircraft.com); DLE-120 idle 1300 (manual)"),
-            "lag_time_constant": q(0.6, "s", "estimated", "heavy 4-blade propeller and a carburetted twin: slower than the .61 glow's 0.25 s"),
+            "peak_power": q(11.7 * 745.7, "W", "manual", "DA-120 11.7 hp, desertaircraft.com/products/da-120 (2026-10-06): the maker's rating; the installed curve below is lower"),
+            "peak_power_rpm": q(6900.0, "rpm", "manual", "DA-120 top of the 1300-6900 rpm range (desertaircraft.com)"),
+            "max_rpm_static": q(rpm_static, "rpm", "derived", D("full-throttle shaft balance at rest (shaft model)")),
+            "idle_rpm": q(IDLE_RPM, "rpm", "estimated", "static idle: DA-120 range starts at 1300 rpm (desertaircraft.com); set a little above for a large propeller"),
+            "lag_time_constant": q(0.6, "s", "estimated", "D5 lag model, unused while the shaft model is present (kept for the format)"),
+            "shaft": {
+                "power_curve": {"value": [[r, round(w_, 1)] for r, w_ in power_curve], "unit": "rpm, W", "kind": "derived",
+                                "source": D("installed full-throttle brake power: generic two-stroke torque shape (estimated; no DA-120 dyno curve published) scaled to the measured anchor, a 28x10 at 6550 rpm static (Mejzlik 28x10 Cp 0.0238 -> %.0f W)" % P_anchor)},
+                "friction_torque": q(FRICTION, "N·m, N·m/krpm", "estimated", "friction and pumping ~12 % of the brake torque at 6900 rpm (YASim 8 %; research synthesis 10-15 %)"),
+                "idle_power": q(idle_power, "W", "derived", D(f"closed-throttle admitted power: holds {IDLE_RPM:.0f} rpm static")),
+                "peak_indicated_power": q(peak_ind, "W", "derived", D("brake + friction power at the curve's peak: the open throttle never limits")),
+            },
         },
         "propeller": {
-            "name": f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f} (scale-look choice; DA-120 lists 3-blade 26x12 / 27x12)",
+            "name": f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f} (scale look; heavy for a 120 cc: Biela rates its 26x12 4-blade for 150-160 cc, the DA-120 list gives 3-blade 26x12 / 27x12)",
             "diameter": q(PROP["diameter"], "m", "estimated", f"{KIT['propeller']['diameter_in']:.0f} in (source.json)"),
             "rotation": "clockwise seen from behind (standard tractor): the reaction torque rolls the airplane left",
-            "ct_table": q(ct_table, "1", "derived", D("blade-element/momentum theory, Prandtl tip loss, geometric pitch twist, generic section (a0 0.9x2pi, alpha_zl -3 deg, Cl caps +1.2/-0.8, Cd 0.012 + 0.025 Cl2 + post-stall rise); tabulated into the windmilling branch")),
-            "cp_table": q(cp_table, "1", "derived", D("same blade-element/momentum model")),
-            "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "4 blades as slender rods + aluminium spinner"),
-            "thrust_line_offset": q([0.0, 0.0, -cg[2]], "m", "derived", D("spinner axis relative to the inventory CG; [x_aft, y_right, z_up] from the CG")),
+            "ct_table": q(ct_table, "1", "derived", D("blade-element/momentum (research/p51/p51-06/bem.py), pitch x%.3f and chord x%.3f fitted to Mejzlik 26x12 2B/3B tables (rms %.1f %%); tabulated into the windmilling branch" % (calib["pitch_factor"], calib["chord_factor"], 100 * calib["rms_relative_error"]))),
+            "cp_table": q(cp_table, "1", "derived", D("same calibrated blade-element model; Cp < 0 = windmilling")),
+            "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "4 x Mejzlik's mean per-blade inertia (26x12 2B/3B datasheets) + spinner shell + crank and flywheel 0.002"),
+            "thrust_line_offset": q([hub[0] - cg[0], 0.0, hub[2] - cg[2]], "m", "derived", D("propeller disc centre (thrust line) relative to the inventory CG; [x_aft, y_right, z_up]")),
+            "thrust_angles": q(THRUST_ANGLES, "deg", "estimated", "down 1.75 deg (Top Flite Giant P-51D manual), right 1 deg (Ziroli 98 in plans); no published full-size or 1/4-scale value"),
+            "normal_force": q(nf_rows, "1", "derived", D(f"McCormick blade-element normal force per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D4; solidity {sigma:.3f}")),
+            "pfactor_moment": q(pm_rows, "1", "derived", D("McCormick P-factor yawing moment per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D5")),
+            "slipstream": {
+                "hub": q(hub, "m", "derived", D("propeller disc centre on the thrust line (le frame)")),
+                "wash_factor": q([0.8, 1.8], "1", "borrowed", "velocity added at the tail per disc induced velocity w: 0.8 static, 1.8 at mass-flow ratio >= 0.75 (Selig, AIAA 2010-7938, Fig. 5; ideal 2)"),
+                "swirl_factor": q(0.6, "1", "estimated", "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"),
+                "vertical_drift": q(1 - deps, "1", "derived", D("1 - d(eps)/d(alpha): the wake drifts with the downwashed flow")),
+                "pieces": [{k: (q(v, "m2" if k == "area" else ("1" if k == "span_dir" else "m"), "derived", D("tail piece from geometry.json")) if k != "surface" else v) for k, v in pc.items()} for pc in slip_pieces],
+            },
         },
     },
+    "landing_gear": landing_gear,
 }
 
 
@@ -647,7 +779,7 @@ identification. Flaps and retracts are not simulated; the drag build-up assumes 
 
 Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, static margin {sm:.1f} % MAC, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
 Throws (Hangar 9 60cc high rates scaled by span): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
-Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}, maximum level speed {V_max:.1f} m/s.
+Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}; flown performance (speeds, climb, glide, takeoff) is measured by `app/tests/test_p51_envelope.gd` (P51-08).
 
 ## Intermediate quantities
 
@@ -671,7 +803,9 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 - The laminar section's camber and thickness are approximations of the NAA 45-100 family; washout 0 by assumption.
 """
 
-if "--check" in sys.argv:
+if "--dry" in sys.argv:  # print the intermediate table, write nothing
+    print("\n".join(rows))
+elif "--check" in sys.argv:
     stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text() != t]
     if stale:
         sys.exit("stale: " + ", ".join(str(p.relative_to(ROOT)) for p in stale) + f" (run {SCRIPT})")

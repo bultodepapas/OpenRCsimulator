@@ -57,6 +57,10 @@ static func datum(id: String) -> Vector2:
 		P51_ID:
 			# geometry.json: z = 0 at the root leading edge, y = 0 on the spinner axis: the le frame's own datum.
 			return Vector2(P51Geometry.DATA.wing.le_z_root, 0.0)
+		AVANTI_ID:
+			# geometry.json: z = 0 at the root leading edge beside the fuselage, y = 0 on the root wing mid-plane; the
+			# physics le frame (AV-06) uses the same origin, and its thrust line sits where the data file says.
+			return Vector2(0.0, 0.0)
 	return Vector2.ZERO
 
 

@@ -9,12 +9,19 @@ const RB := preload("res://physics/rigid_body.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Turbine := preload("res://physics/turbine.gd")
+const Slipstream := preload("res://physics/slipstream.gd")
 
 
-## Angular momentum of the spinning propeller/crankshaft, in body axes (clockwise from behind is +x).
+## Angular momentum of the spinning propeller/crankshaft, in body axes (clockwise from behind is +x; along the
+## tilted shaft when the aircraft declares thrust angles).
 static func rotor_momentum(model: Dictionary, rpm: float) -> PackedFloat64Array:
-	var h_x: float = float(model.propulsion.rotor_inertia) * rpm * TAU / 60.0
-	return M.v3(h_x, 0.0, 0.0)
+	if Turbine.is_turbine(model.propulsion): # AV-05: the spool, signed by its rotation sense
+		return Turbine.rotor_momentum(rpm, model.propulsion)
+	var h: float = float(model.propulsion.rotor_inertia) * rpm * TAU / 60.0
+	if model.propulsion.has("axis"):
+		return M.scale(model.propulsion.axis, h)
+	return M.v3(h, 0.0, 0.0)
 
 
 ## Total body loads about the CG [Fx, Fy, Fz, Mx, My, Mz], with gravity excluded.
@@ -56,6 +63,11 @@ static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Di
 	var total := aero_loads.duplicate()
 	for i in 6:
 		total[i] += propulsion_loads[i]
+	# E0b (P51-12, opt-in): the propeller's slipstream on the tail surfaces. Absent data adds nothing at all.
+	if not model.propulsion.get("slipstream", {}).is_empty():
+		var wash := Slipstream.loads(state, air, d, model, rpm, rho)
+		for i in 6:
+			total[i] += wash[i]
 	return {
 		air = air,
 		aero_loads = aero_loads,

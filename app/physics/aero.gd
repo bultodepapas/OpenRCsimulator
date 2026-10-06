@@ -174,11 +174,15 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var ref: Dictionary = model.reference
 	var surfaces: Dictionary = model.surfaces
 	var ar := M.v3(-(ref.arp_le[0]-model.cg_le[0]), ref.arp_le[1]-model.cg_le[1], -(ref.arp_le[2]-model.cg_le[2]))
-	for y in env.station_ys:
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	for i in env.station_ys.size():
+		var y: float = env.station_ys[i]
 		var arm := M.add(ar, M.v3(0, y, 0))
 		var flow := M.add(v, M.cross(rates, arm))
 		var da: float = d.aileron_right if y > 0 else d.aileron_left
 		var effective := wrapf(atan2(flow[2], flow[0]) + surfaces.wing_aileron_effectiveness * da, -PI, PI)
+		if not twist.is_empty():
+			effective = wrapf(effective + twist[i], -PI, PI)
 		var cl := lift_alpha(effective, a, env)
 		var weight := stall_weight(effective, env)
 		var cd: float = a.CD0 + (1.0-weight)*a.k_induced*pow(cl-a.CL_minD, 2) + weight*env.CD90*pow(sin(effective), 2)
@@ -192,6 +196,21 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var cd: float = surfaces.tail_CD0 + surfaces.tail_k*cl*cl + surfaces.tail_CD90*pow(sin(effective), 2)
 		_add_load(out, _surface(v, rates, arm, tail.area, cl, cd, vertical, rho))
 	return out
+
+
+## One tail surface's load about the CG with the law of _local_loads, on `area` (m2), its arm moved by `shift` and
+## its velocity through the air changed by `extra` (both body axes). For the slipstream increment (E0b, opt-in).
+static func tail_surface_load(v: PackedFloat64Array, rates: PackedFloat64Array, d: Dictionary, model: Dictionary,
+		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float) -> PackedFloat64Array:
+	var surfaces: Dictionary = model.surfaces
+	var tail: Dictionary = surfaces[name]
+	var vertical := name == "vertical"
+	var arm := M.add(_arm(tail.position, model.cg_le), shift)
+	var flow_v := M.add(v, extra)
+	var effective := _tail_angle(flow_v, rates, arm, d, tail, vertical)
+	var cl := _tail_curve(effective, tail.lift_slope, surfaces)
+	var cd: float = surfaces.tail_CD0 + surfaces.tail_k*cl*cl + surfaces.tail_CD90*pow(sin(effective), 2)
+	return _surface(flow_v, rates, arm, area, cl, cd, vertical, rho)
 
 
 ## LE datum [aft,right,up] to a body-axis arm about the current CG.
@@ -218,10 +237,14 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	if blend == 1.0:
 		return blend
 	var arp := _arm(model.reference.arp_le, model.cg_le)
-	for y in env.station_ys:
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	for i in env.station_ys.size():
+		var y: float = env.station_ys[i]
 		var flow := M.add(v, M.cross(rates, M.add(arp, M.v3(0, y, 0))))
 		var da: float = d.aileron_right if y > 0 else d.aileron_left
 		var angle := wrapf(atan2(flow[2], flow[0]) + surfaces.wing_aileron_effectiveness*da, -PI, PI)
+		if not twist.is_empty():
+			angle = wrapf(angle + twist[i], -PI, PI)
 		var end: float = env.a1 if angle >= 0.0 else env.n1
 		blend = maxf(blend, _smoothstep((absf(angle)-limit)/(end-limit)))
 		if blend == 1.0:

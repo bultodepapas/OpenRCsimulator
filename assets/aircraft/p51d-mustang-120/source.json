@@ -12,15 +12,15 @@
     "quarter_chord_sweep_deg": 0.09,
     "dihedral_deg": 5.0,
     "incidence_deg": 1.0,
-    "washout_deg": 0.0,
+    "washout_deg": 1.88,
     "chord_plane_y_root": -0.673,
     "root_thickness_ratio": 0.1651,
     "tip_thickness_ratio": 0.1142,
     "camber_ratio": 0.0128,
     "aileron": {
-      "inner": 3.25,
+      "inner": 3.377,
       "outer": 5.5,
-      "chord_fraction": 0.21
+      "chord_fraction": 0.19
     },
     "flap": {
       "inner": 0.5,
@@ -468,7 +468,7 @@
       "stab_tip_chord": 0.7225,
       "elevator_hinge_fraction": 0.65,
       "stab_thickness_ratio": 0.1,
-      "stab_incidence_deg": 0.0,
+      "stab_incidence_deg": 2.0,
       "fin_root_le_z": 5.7,
       "dorsal_start_z": 4.6,
       "fin_top_y": 1.7669,
@@ -1246,7 +1246,7 @@
       "head_half_width": 0.1,
       "shoulder_half_width": 0.24
     },
-    "stab_incidence_note": "0 deg assumed; Ziroli's 1/4.6 model uses stab +1 deg with wing +2.5 deg (decalage 1.5 deg)",
+    "stab_incidence_note": "+2 deg to the fuselage axis, normal setting (NACA XP-51 flying-qualities report 1942, ntrs.nasa.gov/citations/19930092575, and P-51B ACR 4K02, ntrs.nasa.gov/citations/19930092458, dimension tables; Gehrkens 1944 'Design Breakdown of the P-51'). Wing root +1 deg on the same axis. P51-13 (2026-10-06); the Ziroli RC plan's stab +1 deg / wing +2.5 deg is not the full-size rigging",
     "root_extension": [
       [
         0.4982,
@@ -1560,6 +1560,11 @@
     }
   },
   "evidence": {
+    "full_size.aileron": {
+      "kind": "measured",
+      "source": "P51-13: each aileron 6 ft 11.6 in long (2.123 m, so inner end 5.5 - 2.123 m), chord 0.187-0.189 of the wing chord (NACA XP-51 flying-qualities report 1942, ntrs.nasa.gov/citations/19930092575, dimension table; NACA wing-section tunnel report 1943, ntrs.nasa.gov/citations/19930092825)",
+      "limits": "Outer end at 5.5 m kept from the three-view; the chord fraction is taken constant."
+    },
     "full_size.overall": {
       "kind": "measured",
       "source": "P-51D: span 37 ft 0 in / 11.28 m, length 32 ft 3 in / 9.83 m (warbirdsresourcegroup.org, DCS manual p18); wing area 235 ft2 (WRG) / 233.19 ft2 (DCS); propeller 11 ft 2 in (DCS). URLs and hashes in docs/research/p51-resources.json",
@@ -1568,7 +1573,7 @@
     "full_size.wing": {
       "kind": "measured",
       "source": "plan-view silhouette fit: root chord 105.0 in (extrapolated to the centreline), tip 48.3 in, LE sweep 14.5 in at the tip; dihedral 5 deg and wing reference line 26.5 in below the FRL printed on the drawing",
-      "limits": "Washout 0 is an assumption."
+      "limits": "Washout 1.88 deg (P51-13): root +1 deg 00 min, tip -0 deg 53 min measured on the P-51B (NACA ACR 4K02 dimension table, ntrs.nasa.gov/citations/19930092458); NAA quotes 2 deg (Gehrkens 1944). Applied linearly root to tip."
     },
     "full_size.tail": {
       "kind": "borrowed",

@@ -1,7 +1,8 @@
 # Trim solver: steady, wings-level, straight flight on the REAL simulation equations (D4, six-axis since D5).
 # Newton–Raphson, finite-difference Jacobian, Gaussian elimination with partial pivoting. 64-bit only (guarded).
 # Unknowns x = [alpha, elevator, X, beta, aileron, rudder] with residuals = all six accelerations
-#   level: X = throttle (0…1); engine rpm = its steady target; the prop's torque is trimmed out by aileron/rudder.
+#   level: X = throttle (0…1); engine rpm = its steady value (lag target, or the shaft torque balance at the trimmed
+#   airspeed); the prop's torque is trimmed out by aileron/rudder.
 #   glide: X = flight-path angle gamma; engine stopped.
 # Surfaces in the data conventions (rad; elevator and ailerons +TE down, rudder +TE left; aileron is antisymmetric:
 # right = +aileron, left = −aileron). Results also give the pilot-side trims (−1…1), as on a radio.
@@ -33,8 +34,17 @@ static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dict
 	var gamma := 0.0 if mode == "level" else x[2]
 	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
 	var throttle := x[2] if mode == "level" else 0.0
-	var rpm := Propulsion.target_rpm(throttle, model.propulsion) if mode == "level" else 0.0
+	var rpm := _rpm(throttle, s, mode, model)
 	return Dynamics.evaluate(s, model, _deflections(x), rpm, Air.RHO_SEA_LEVEL, M.v3(0, 0, 0), g)
+
+
+## Steady engine rpm in the trimmed state: the lag model's target, or the shaft model's torque balance at the
+## state's axial airspeed (calm air). 0 in a glide (engine stopped).
+static func _rpm(throttle: float, s: PackedFloat64Array, mode: String, model: Dictionary) -> float:
+	if mode != "level":
+		return 0.0
+	var u := M.dot(M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]), Propulsion.axis(model.propulsion))
+	return Propulsion.steady_rpm(throttle, u, model.propulsion, Air.RHO_SEA_LEVEL)
 
 
 static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float) -> PackedFloat64Array:
@@ -98,7 +108,7 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 	var gamma := 0.0 if mode == "level" else x[2]
 	var throttle := x[2] if mode == "level" else 0.0
 	var e := _evaluate(x, mode, V, model, g)
-	var rpm := Propulsion.target_rpm(throttle, model.propulsion) if mode == "level" else 0.0
+	var rpm := _rpm(throttle, e.state, mode, model)
 	var thrust: float = e.propulsion_loads[0]
 	return {
 		ok = ok, message = message, mode = mode, V = V,
