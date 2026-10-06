@@ -775,3 +775,12 @@ Proof: [ROADMAP revision 5](ROADMAP.md#execution-order-and-release-gates), [cras
 - Preserve raw audit logs, including emitted whitespace; apply source/document whitespace checks separately. Publish the tag only after the branch CI passes, then verify the tag build identity and downloaded release checksums.
 
 Proof: [rc4 notes](docs/releases/v0.1.0-rc4.md), [audit evidence](docs/research/project-audit-2026-10-06/README.md). Release binaries and checksums are produced from the tag by CI; pilot gates remain open.
+
+## 2026-10-06 · C7-R1 — require evidence that the flight actually completed
+
+- A finite initial state and stable endpoints do not prove that any ticks ran. Check the requested sample count, every tick/time pair and every numeric sample before trim tolerances.
+- A numerical guard can preserve a valid last state while stopping advancement. The trace producer must fail on the guard or missing progress; saving the remaining recorder buffer is not success.
+- Duration is a caller contract: exports/app smoke use three seconds, captures use 1.5 seconds. Explicit arguments prevent accidental acceptance against a trace's own truncated endpoint.
+- Failed recordings preserve an existing file and return nonzero; callers must honor the exit status. Fault injection stays in excluded test fixtures.
+
+Proof: [C7-R1 report](docs/research/trace-integrity/C7-R1/README.md), nine process tests inside the passing full suite, isolated three-platform exports and byte-identical numeric traces for all four aircraft against rc4. No aerodynamic parameters or integration equations changed.

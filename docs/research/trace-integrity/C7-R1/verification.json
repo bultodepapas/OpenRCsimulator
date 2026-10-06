@@ -1,0 +1,23 @@
+{
+  "step": "C7-R1",
+  "date": "2026-10-06",
+  "full_suite_exit": 0,
+  "gdscript_files_parsed": 160,
+  "gdscript_test_programs": 59,
+  "trace_process_tests": 9,
+  "trace_process_tests_seconds": 37.256,
+  "export_platforms": [
+    "Linux x86_64",
+    "Windows x86_64",
+    "macOS universal"
+  ],
+  "export_exit": 0,
+  "render_fps": [
+    30,
+    60,
+    144
+  ],
+  "render_fps_state_sha256": "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+  "lint_errors": 0,
+  "lint_preexisting_warnings": 11
+}

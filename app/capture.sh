@@ -119,7 +119,7 @@ else
   status=$?
   cat "$HERE/captures/trace-physics.log"; exit "$status"
 fi
-python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
+python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv" --duration=1.5
 # VQ-01b extends this same guarded producer: 66 fixed images, metadata/parity/readability checks.
 "$VPY" "$HERE/tests/test_visual_quality_cases.py"
 "$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"

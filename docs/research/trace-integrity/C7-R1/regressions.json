@@ -1,0 +1,20 @@
+[
+  {
+    "case": "complete flight",
+    "rc4_exit": 0,
+    "repaired_exit": 0,
+    "diagnostic": ""
+  },
+  {
+    "case": "initial sample only",
+    "rc4_exit": 0,
+    "repaired_exit": 1,
+    "diagnostic": "FAIL expected 721 samples, got 1"
+  },
+  {
+    "case": "nonfinite final sample",
+    "rc4_exit": 0,
+    "repaired_exit": 1,
+    "diagnostic": "FAIL sample 720: non-finite value"
+  }
+]
