@@ -77,11 +77,13 @@ func _initialize() -> void:
 	_check("yaw damping", _loads([15, 0, 0], [0, 0, 1.0])[5] < 0.0)
 
 	# 5. Finite everywhere: zero airspeed with wild rates, and a full alpha/beta sweep.
-	var still := _loads([0, 0, 0], [5.0, -7.0, 9.0], { roll = 1.0, pitch = -1.0, yaw = 1.0 })
+	var still := _loads([0, 0, 0], [0.0, 0.0, 0.0], { roll = 1.0, pitch = -1.0, yaw = 1.0 })
 	var zero := true
 	for i in 6:
 		zero = zero and still[i] == 0.0
-	_check("zero airspeed → zero loads (no NaN)", zero, str(still))
+	_check("zero translation AND rotation → zero loads", zero, str(still))
+	var rotating := _loads([0, 0, 0], [5.0, -7.0, 9.0])
+	_check("rotating at rest: local surface drag dissipates energy", rotating[3]*5.0 - rotating[4]*7.0 + rotating[5]*9.0 < 0.0, str(rotating))
 	var finite := true
 	for ai in range(-180, 181, 15):
 		for bi in range(-90, 91, 15):

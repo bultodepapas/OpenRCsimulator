@@ -1,0 +1,22 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "args": "--capture --scripted --look_az=90 --look_el=0 --out=horizon.png",
+  "draw_calls": {
+    "shadow": 0,
+    "visible": 2
+  },
+  "godot": "4.7.2-stable (official)",
+  "image": "horizon.png",
+  "lp_num_threads": "1",
+  "objects": {
+    "shadow": 0,
+    "visible": 2
+  },
+  "primitives": {
+    "shadow": 0,
+    "visible": 4
+  },
+  "sha256": "9d0d79030cf54ab39c3b4082e4daea3fd532a43183f63b2b9a8c93d87c236b6d",
+  "video_memory_bytes": 53409362
+}

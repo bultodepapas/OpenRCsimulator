@@ -1,0 +1,79 @@
+{
+  "schema": "openrc-avanti-av01-validation-v1",
+  "completed_date": "2026-10-06",
+  "scope": "Reference organization and AV-01 preparation only; app unchanged by this task",
+  "catalog_entries_checked": 209,
+  "unchanged_originals": 67,
+  "local_html_links_checked": 796,
+  "source_and_output_hashes": "passed",
+  "byte_identical_copies": "passed",
+  "browser": {
+    "browser": "153.0.8010.12",
+    "articles": 209,
+    "flap_filter_matches": 3,
+    "flap_landing_deg": 50,
+    "landing_radio_mix_percent": 20,
+    "positive_roll": "Izquierdo: 25.0° abajo · derecho: 30.0° arriba",
+    "negative_roll": "Izquierdo: 30.0° arriba · derecho: 25.0° abajo",
+    "mobile_overflow": false,
+    "image_decode_errors": [],
+    "javascript_errors": []
+  },
+  "clean_clone": {
+    "method": "Fresh local git clone, current authored AV-01 source and manifest overlaid (not committed); no reference files copied",
+    "head": "59cca5613fd235d9c6360eee3531a398851ec075",
+    "reference_pack_absent": true,
+    "check_data_exit": 0,
+    "check_data_stdout": "Data OK: 30 facts, 4 ratios, 42 selected steps",
+    "full_build_without_references_exit": 2,
+    "missing_reference_message_verified": true
+  },
+  "visual_review": [
+    "Landing flap crop p22/44: label, arrow and full flap retained",
+    "Flap linkage p15/29: dimension52 and both extension lines retained",
+    "CG p91/181: datum, dimension and step retained",
+    "Desktop study board reviewed; annotation moved below full flap travel"
+  ],
+  "authored_sources": [
+    {
+      "path": "research/avanti-s/av01/README.md",
+      "sha256": "91eb9e8eff3fec54d62dfadf56e9b0be490b2544e8b5559feda3e439e61f8ea5"
+    },
+    {
+      "path": "research/avanti-s/av01/measurements.json",
+      "sha256": "0b30605f6c46979cdb52052aebeea559feba1686727ca8b4a239372d57ce9ba3"
+    },
+    {
+      "path": "research/avanti-s/av01/organize.py",
+      "sha256": "28ed30d681e1ecdb599e5b4f3046f835d8644747d8add7a728e3a0927b9b44c9"
+    },
+    {
+      "path": "research/avanti-s/av01/selection.json",
+      "sha256": "f37002dc4963c8d2c869c0fb95a7fd19c28845dff1aae0f8d6322efd55f6fb6a"
+    },
+    {
+      "path": "research/avanti-s/av01/study-board.html",
+      "sha256": "3b654292056656bc6b52b5b071d112cd2423b71102b053e548468b62aad0d53c"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "references/avanti-s/organized/study-board-desktop.png",
+      "sha256": "42e0dfc8eb2a209ee15165db06ad16a5d28c4b6cb747106900fbb038cc599620"
+    },
+    {
+      "path": "references/avanti-s/organized/study-board-mobile.png",
+      "sha256": "3f702730c73cf44a71de587b44dc26d7732f590b22aacfda0b6c0542ebddbce9"
+    },
+    {
+      "path": "references/avanti-s/organized/gallery-flaps.png",
+      "sha256": "51e1c072d97751cda49f3a31b38767369fb5c0516c4c08587a3a2dee0890cae7"
+    }
+  ],
+  "limits": [
+    "AV-01 remains partial: no calibrated airframe plan, wing area, sections or measured hinge endpoints",
+    "No flight tests or Godot runtime changes",
+    "No volume inferred for pneumatic or fuel tanks",
+    "New photos retained at original resolution; no detail reconstruction"
+  ]
+}

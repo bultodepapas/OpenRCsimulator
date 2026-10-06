@@ -10,8 +10,8 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Air := preload("res://physics/air_data.gd")
-const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Dynamics := preload("res://physics/dynamics.gd")
 
 const N := 6
 
@@ -28,25 +28,18 @@ static func _deflections(x: PackedFloat64Array) -> Dictionary:
 	return { elevator = x[1], aileron_right = x[4], aileron_left = -x[4], rudder = x[5] }
 
 
-## Body loads (aero + propulsion) and the state for unknowns x.
-static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary) -> Array:
+## Shared loads/derivative and state for unknowns x. Unknown control angles remain in Aero's data convention.
+static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
-	var air := Air.compute(s, M.v3(0, 0, 0))
-	var l := Aero.loads(s, air, _deflections(x), model, Air.RHO_SEA_LEVEL)
-	if mode == "level":
-		var rpm := Propulsion.target_rpm(x[2], model.propulsion)
-		var pl := Propulsion.loads(air.v_air, rpm, model.propulsion, Air.RHO_SEA_LEVEL)
-		for i in 6:
-			l[i] += pl[i]
-	return [s, l]
+	var throttle := x[2] if mode == "level" else 0.0
+	var rpm := Propulsion.target_rpm(throttle, model.propulsion) if mode == "level" else 0.0
+	return Dynamics.evaluate(s, model, _deflections(x), rpm, Air.RHO_SEA_LEVEL, M.v3(0, 0, 0), g)
 
 
-static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, j_inv: PackedFloat64Array) -> PackedFloat64Array:
-	var e := _evaluate(x, mode, V, model)
-	var s: PackedFloat64Array = e[0]
-	var l: PackedFloat64Array = e[1]
-	var dot := RB.derivative(s, model.mass_kg, model.inertia, j_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), g)
+static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float) -> PackedFloat64Array:
+	var e := _evaluate(x, mode, V, model, g)
+	var dot: PackedFloat64Array = e.derivative
 	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
 
 
@@ -55,9 +48,8 @@ static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dict
 ##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
 static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary) -> Dictionary:
 	assert(mode == "level" or mode == "glide")
-	var j_inv := RB.inertia_inverse(model.inertia)
 	var x := PackedFloat64Array([0.05, -0.05, 0.4 if mode == "level" else -0.1, 0.0, 0.0, 0.0])
-	var r := _residual(x, mode, V, model, g, j_inv)
+	var r := _residual(x, mode, V, model, g)
 	var iterations := 0
 	while iterations < 50 and _norm(r) > 1e-10:
 		iterations += 1
@@ -68,7 +60,7 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 			var h := 1e-7 * maxf(1.0, absf(x[k]))
 			var xp := x.duplicate()
 			xp[k] += h
-			var rp := _residual(xp, mode, V, model, g, j_inv)
+			var rp := _residual(xp, mode, V, model, g)
 			for i in N:
 				jac[i][k] = (rp[i] - r[i]) / h
 		var neg := PackedFloat64Array()
@@ -76,28 +68,26 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 			neg.append(-r[i])
 		var dx := solve_linear(jac, neg)
 		if dx.is_empty():
-			return _result(false, "singular Jacobian (no trim near this condition)", x, mode, V, r, iterations, throws, model)
+			return _result(false, "singular Jacobian (no trim near this condition)", x, mode, V, r, iterations, throws, model, g)
 		for k in N:
 			x[k] += dx[k]
-		r = _residual(x, mode, V, model, g, j_inv)
+		r = _residual(x, mode, V, model, g)
 	if _norm(r) > 1e-8:
-		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(_norm(r)), x, mode, V, r, iterations, throws, model)
+		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(_norm(r)), x, mode, V, r, iterations, throws, model, g)
 	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
 		if absf(check[0]) > check[1]:
-			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model)
+			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g)
 	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
-		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model)
-	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model)
+		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g)
+	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g)
 
 
-static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary) -> Dictionary:
+static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary, g: float) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var throttle := x[2] if mode == "level" else 0.0
-	var e := _evaluate(x, mode, V, model)
+	var e := _evaluate(x, mode, V, model, g)
 	var rpm := Propulsion.target_rpm(throttle, model.propulsion) if mode == "level" else 0.0
-	var thrust := 0.0
-	if mode == "level":
-		thrust = Propulsion.loads(Air.compute(e[0], M.v3(0, 0, 0)).v_air, rpm, model.propulsion, Air.RHO_SEA_LEVEL)[0]
+	var thrust: float = e.propulsion_loads[0]
 	return {
 		ok = ok, message = message, mode = mode, V = V,
 		alpha = x[0], beta = x[3], gamma = gamma, throttle = throttle, thrust = thrust, rpm = rpm,
@@ -106,7 +96,7 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 		pitch_command = -x[1] / throws.elevator,
 		roll_command = -x[4] / throws.aileron,
 		yaw_command = -x[5] / throws.rudder,
-		state = state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3]),
+		state = e.state,
 		residual = _norm(r), iterations = iterations,
 	}
 

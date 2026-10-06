@@ -1,6 +1,6 @@
 # Segundo avión: Extra 300S .60
 
-2026-10-05 · Revisión 3, con foto del propietario, nuevas fuentes y doce investigaciones de herramientas · **Plan e investigación; avión todavía no implementado.**
+2026-10-06 · Revisión 4 · **EX-01 y EX-02 hechos: el Extra existe como vista previa visual en su inspector; todavía no vuela ni se puede seleccionar en la app.** [Informe EX-01/EX-02](research/extra-300-model-v1.md).
 
 Elegimos el **Great Planes Extra 300S .60, kit GPMA0236, 64 in / 1,6256 m**, con instalación inicial de clase O.S. MAX-61FX. Es un acrobático RC de construcción balsa/contrachapado, con carenado, cabina monoplaza y tren de cola. Será el siguiente paso después del Ugly Stik: otro avión reconocible y un comportamiento propio, construido mediante entregas pequeñas.
 
@@ -110,13 +110,13 @@ También protege una región lineal de ±8° para ambos lados de la pérdida. Si
 
 ## 8. Entregas pequeñas y prueba de cada una
 
-Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **Solo EX-00 está realizado en esta ronda.** EX-01–13 están propuestos.
+Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **EX-00, EX-01 y EX-02 están hechos** (✅ en la tabla); EX-03–13 siguen propuestos.
 
 | ID / relación | Entrega | Dependencia | Prueba de cierre |
 | --- | --- | --- | --- |
 | EX-00 · preparación D1 | Elegir variante, reunir fuentes y auditar integración | Ninguna | Manual/planos/fotos abiertos, manifiesto con hashes, originales excluidos de Git, documentos enlazados |
-| EX-01 · D1 | Ficha geométrica inicial y datum | EX-00 | Puntos/escala por vista, incógnitas declaradas y cotas reservadas; una sesión acotada, no esperar metrología perfecta |
-| EX-02 · D1 visual | Extra sencillo en inspector independiente | EX-01 | Capturas frente/perfil/planta/oblicua y escala nominal; root/propeller/hinges presentes; Stik sigue funcionando |
+| EX-01 · D1 ✅ | Ficha geométrica inicial y datum | EX-00 | Puntos/escala por vista, incógnitas declaradas y cotas reservadas; una sesión acotada, no esperar metrología perfecta. **2026-10-06:** regla de 36 in (399,88 px/in), siete controles reservados en verde (envergadura −0,13 %, área +0,10 %, longitud +0,67 %, CG 4,116 frente a 4⅛ in), `measure.py --check` reproduce `metrology.json` |
+| EX-02 · D1 visual ✅ | Extra sencillo en inspector independiente | EX-01 | Capturas frente/perfil/planta/oblicua y escala nominal; root/propeller/hinges presentes; Stik sigue funcionando. **2026-10-06:** `verify_extra.gd` (84 comprobaciones en `app/test.sh`, seis mutaciones detectadas), 8 capturas repetibles byte a byte, `verify_model.gd` del Stik sigue en 807/0 |
 | EX-03 · D1 / UI-05 | Registro de modelos y selección de vista previa | EX-02 | Dos IDs resuelven sus propios recursos; ID inválido y Extra aún no volable tratados explícitamente; capturas Stik conservadas |
 | EX-04 · B5/D1 | Articulación con ejes de bisagra propios | EX-02/03 | Neutro/extremos/combinaciones, signos, contención, continuidad; defecto deliberado en copia detectado |
 | EX-05 · D1/D2 | Datos físicos iniciales e inventario | EX-01 | Loader acepta datos con procedencia; masa/inercia válidas; CG, cuerda de referencia y hull cotejados con geometría |
@@ -148,6 +148,8 @@ Por cambio integrado: regeneradores `--check`, comprobación específica del con
 Se revisaron código, planes y research del Stik; se investigó la familia Extra y se conservaron 34 descargas locales con procedencia y hashes, más la foto del propietario. La primera ronda reunió 13 archivos y la segunda añadió 21. Se inspeccionaron cabeceras/entidades de los dos CAD, sin calibración geométrica. Hay planos, manuales, fotos y una galería local. No se implementó código de vuelo/modelado, no se modificó la elección global del roadmap y no se ejecutó `app/test.sh` por estas entregas documentales.
 
 La siguiente acción concreta es **EX-01 → EX-02: fijar datum y unas pocas cotas fiables, y ver un Extra sencillo en Godot**. Su metrología completa, decoración final y física avanzada evolucionan después de comprobar esa primera forma.
+
+**Actualización 2026-10-06:** EX-01 y EX-02 hechos ([informe](research/extra-300-model-v1.md)). La hoja de fuselaje está a escala reducida (300,56 px/in) y se calibra con la cuerda de raíz; el dibujo p.47 resultó un croquis con errores de hasta 1,2 in y no se usa para cotas. El alerón en flecha se resolvió con un marco fijo sobre la bisagra, sin cambiar `apply_surfaces()`. Siguen estimados: vía del tren, carenas, hélice y redondeo de las cuadernas. Siguiente: EX-03 (registro de dos aviones) o EX-04 (holguras de articulación).
 
 ## 10. Herramientas investigadas y orden de adopción
 

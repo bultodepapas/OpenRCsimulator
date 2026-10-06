@@ -1,0 +1,298 @@
+{
+  "format": "openrc-flight-repair-modal-analysis v1",
+  "input_sha256": "1b8dd21c1a7a7b9ce353a864d6a77411fde1f2dbf880d5a5064f2d2163d4db77",
+  "interpretation": "Diagnostic only. The historical spiral_tau is a 4x4 lateral projection. The full 8x8 coupled matrix can have a different sign. These are trim-local eigenvalues, not a validated hands-off flight result; Cnb is derived from estimated tail geometry and most lateral derivatives remain borrowed.",
+  "method": "numpy.linalg.eig on full 8x8 FlightModes Jacobian; frozen control angles; propeller gyro is included by Dynamics.evaluate",
+  "rows": [
+    {
+      "V_mps": 10.0,
+      "alpha_deg": 11.031678378388564,
+      "dominant_mode_eigenvector_abs_max_normalized": {
+        "p_rad_s": 0.12883313357541892,
+        "phi_rad": 0.7764224072909348,
+        "q_rad_s": 0.007695167024201669,
+        "r_rad_s": 0.7258120113545005,
+        "theta_rad": 0.022101244367662448,
+        "u_mps": 0.2776437681880739,
+        "v_mps": 1.0,
+        "w_mps": 0.05107457600255058
+      },
+      "dominant_mode_tau_s_negative_means_divergence": -2.872094172634874,
+      "dominant_real_part_s-1": 0.34817799831493507,
+      "full_jacobian_eigenvalues_s-1": [
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": -20.681860428269836
+        },
+        {
+          "imag_s-1": -4.655895312171546,
+          "real_s-1": -3.537691283164997
+        },
+        {
+          "imag_s-1": 4.655895312171546,
+          "real_s-1": -3.537691283164997
+        },
+        {
+          "imag_s-1": -3.394319497289872,
+          "real_s-1": -1.0128395233601784
+        },
+        {
+          "imag_s-1": 3.394319497289872,
+          "real_s-1": -1.0128395233601784
+        },
+        {
+          "imag_s-1": -1.160430396712308,
+          "real_s-1": -0.047533912130327996
+        },
+        {
+          "imag_s-1": 1.160430396712308,
+          "real_s-1": -0.047533912130327996
+        },
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": 0.34817799831493507
+        }
+      ],
+      "ok": true,
+      "projected_lateral_eigenvalues": [
+        [
+          0.3446927316536335,
+          -2.210859150104178e-75
+        ],
+        [
+          -0.9935976686248102,
+          3.384143474408758
+        ],
+        [
+          -20.68000656586449,
+          1.349401336733507e-79
+        ],
+        [
+          -0.9935976686248101,
+          -3.384143474408758
+        ]
+      ],
+      "projected_spiral_tau_s": -2.9011345704987357
+    },
+    {
+      "V_mps": 15.0,
+      "alpha_deg": 4.260302408165469,
+      "dominant_mode_eigenvector_abs_max_normalized": {
+        "p_rad_s": 0.002436836354638518,
+        "phi_rad": 1.0,
+        "q_rad_s": 0.0012698007814362716,
+        "r_rad_s": 0.6195825582986293,
+        "theta_rad": 0.029045178945241296,
+        "u_mps": 0.5392249813111109,
+        "v_mps": 0.7298555816704653,
+        "w_mps": 0.06104514256988698
+      },
+      "dominant_mode_tau_s_negative_means_divergence": -22.873807742015927,
+      "dominant_real_part_s-1": 0.043718125608057046,
+      "full_jacobian_eigenvalues_s-1": [
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": -19.494416800915335
+        },
+        {
+          "imag_s-1": -6.318356829028488,
+          "real_s-1": -6.93294432755389
+        },
+        {
+          "imag_s-1": 6.318356829028488,
+          "real_s-1": -6.93294432755389
+        },
+        {
+          "imag_s-1": -4.650685177829469,
+          "real_s-1": -1.4126392810134707
+        },
+        {
+          "imag_s-1": 4.650685177829469,
+          "real_s-1": -1.4126392810134707
+        },
+        {
+          "imag_s-1": -0.6248891057522613,
+          "real_s-1": -0.17086888303831277
+        },
+        {
+          "imag_s-1": 0.6248891057522613,
+          "real_s-1": -0.17086888303831277
+        },
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": 0.043718125608057046
+        }
+      ],
+      "ok": true,
+      "projected_lateral_eigenvalues": [
+        [
+          0.03421903597880251,
+          0.0
+        ],
+        [
+          -1.4060628755616222,
+          4.650344071345628
+        ],
+        [
+          -19.484891078551566,
+          -2.698802673467014e-79
+        ],
+        [
+          -1.4060628755616222,
+          -4.650344071345628
+        ]
+      ],
+      "projected_spiral_tau_s": -29.2235000605939
+    },
+    {
+      "V_mps": 20.0,
+      "alpha_deg": 1.8175320551809515,
+      "dominant_mode_eigenvector_abs_max_normalized": {
+        "p_rad_s": 0.006075393235089308,
+        "phi_rad": 1.0,
+        "q_rad_s": 0.0008914219095367648,
+        "r_rad_s": 0.4669314129226444,
+        "theta_rad": 0.04266743690634745,
+        "u_mps": 0.7466285707873663,
+        "v_mps": 0.5352322838655207,
+        "w_mps": 0.05650986004623034
+      },
+      "dominant_mode_tau_s_negative_means_divergence": -47.86446961858184,
+      "dominant_real_part_s-1": 0.020892323846241515,
+      "full_jacobian_eigenvalues_s-1": [
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": -26.136698026129775
+        },
+        {
+          "imag_s-1": -8.130876836310382,
+          "real_s-1": -9.20300109128532
+        },
+        {
+          "imag_s-1": 8.130876836310382,
+          "real_s-1": -9.20300109128532
+        },
+        {
+          "imag_s-1": -6.060678748230419,
+          "real_s-1": -1.7892756375464378
+        },
+        {
+          "imag_s-1": 6.060678748230419,
+          "real_s-1": -1.7892756375464378
+        },
+        {
+          "imag_s-1": -0.4243062431530836,
+          "real_s-1": -0.23305313851119092
+        },
+        {
+          "imag_s-1": 0.4243062431530836,
+          "real_s-1": -0.23305313851119092
+        },
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": 0.020892323846241515
+        }
+      ],
+      "ok": true,
+      "projected_lateral_eigenvalues": [
+        [
+          0.008459468329131031,
+          0.0
+        ],
+        [
+          -1.7805500109808114,
+          6.060305071573472
+        ],
+        [
+          -26.123002389718327,
+          5.397605346934028e-79
+        ],
+        [
+          -1.7805500109808112,
+          -6.060305071573473
+        ]
+      ],
+      "projected_spiral_tau_s": -118.21073867685033
+    },
+    {
+      "V_mps": 25.0,
+      "alpha_deg": 0.6862103730343422,
+      "dominant_mode_eigenvector_abs_max_normalized": {
+        "p_rad_s": 0.010872212893437497,
+        "phi_rad": 1.0,
+        "q_rad_s": 0.0009565656381709982,
+        "r_rad_s": 0.37398309429815757,
+        "theta_rad": 0.06231095419895609,
+        "u_mps": 0.9408192285406077,
+        "v_mps": 0.42185107141613415,
+        "w_mps": 0.05449767122034514
+      },
+      "dominant_mode_tau_s_negative_means_divergence": -65.14028072145355,
+      "dominant_real_part_s-1": 0.015351484349232412,
+      "full_jacobian_eigenvalues_s-1": [
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": -32.753068644385024
+        },
+        {
+          "imag_s-1": -9.991346622750875,
+          "real_s-1": -11.48815258446943
+        },
+        {
+          "imag_s-1": 9.991346622750875,
+          "real_s-1": -11.48815258446943
+        },
+        {
+          "imag_s-1": -7.492221999409912,
+          "real_s-1": -2.1907315401052827
+        },
+        {
+          "imag_s-1": 7.492221999409912,
+          "real_s-1": -2.1907315401052827
+        },
+        {
+          "imag_s-1": -0.25864424902382277,
+          "real_s-1": -0.2951951153960497
+        },
+        {
+          "imag_s-1": 0.25864424902382277,
+          "real_s-1": -0.2951951153960497
+        },
+        {
+          "imag_s-1": 0.0,
+          "real_s-1": 0.015351484349232412
+        }
+      ],
+      "ok": true,
+      "projected_lateral_eigenvalues": [
+        [
+          -0.00020070180447988049,
+          0.0
+        ],
+        [
+          -2.1796424152293294,
+          7.4917414910819735
+        ],
+        [
+          -32.73542049388075,
+          -3.0226589942830556e-77
+        ],
+        [
+          -2.1796424152293294,
+          -7.4917414910819735
+        ]
+      ],
+      "projected_spiral_tau_s": 4982.516238912271
+    }
+  ],
+  "state_order": [
+    "u_mps",
+    "v_mps",
+    "w_mps",
+    "p_rad_s",
+    "q_rad_s",
+    "r_rad_s",
+    "phi_rad",
+    "theta_rad"
+  ]
+}

@@ -1,0 +1,137 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"aircraft_json_sha256": "0de5e025c0228b3518ee522939ad5d5916acb00a7dc92e90b1012af9b963edb2",
+	"coverage": {
+		"com_velocity_zero_cases": 27783,
+		"com_velocity_zero_nonzero_load_cases": 27702,
+		"com_velocity_zero_positive_power_cases": 0,
+		"global_weight_cases": 181,
+		"local_weight_cases": 229553,
+		"total_cases": 229933,
+		"transition_weight_bins_0_to_1_by_tenth": [
+			22,
+			9,
+			18,
+			6,
+			10,
+			31,
+			12,
+			26,
+			20,
+			45
+		],
+		"transition_weight_cases": 199
+	},
+	"format": "openrc-aero-passivity-fuzz v1",
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"maximum_com_zero_load_norm_case": {
+		"V_com_mps": 0.0,
+		"alpha_deg": 0.0,
+		"beta_deg": 0.0,
+		"loads_N_Nm": [
+			1.5465271987999176,
+			-31.94149308430479,
+			40.86944466543784,
+			7.746982587376728,
+			23.207755598439256,
+			23.028761836343925
+		],
+		"local_flow_weight": 1.0,
+		"local_tail_flows_body_mps": {
+			"horizontal": [
+				-0.9128000000000001,
+				14.628199999999998,
+				-14.399999999999999
+			],
+			"vertical": [
+				1.5,
+				14.425,
+				-14.8
+			]
+		},
+		"omega_rad_s": [
+			-5.0,
+			-20.0,
+			-20.0
+		],
+		"power_W": -963.4652616325473,
+		"surface_fractions": {
+			"aileron_left": -1.0,
+			"aileron_right": 0.0,
+			"elevator": 0.0,
+			"rudder": 0.0
+		},
+		"v_air_body": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"maximum_power_case": {
+		"V_com_mps": 0.0,
+		"alpha_deg": 0.0,
+		"beta_deg": 0.0,
+		"loads_N_Nm": [
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			0.0
+		],
+		"local_flow_weight": 1.0,
+		"local_tail_flows_body_mps": {
+			"horizontal": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"vertical": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		"omega_rad_s": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"power_W": 0.0,
+		"surface_fractions": {
+			"aileron_left": -1.0,
+			"aileron_right": -1.0,
+			"elevator": -1.0,
+			"rudder": -1.0
+		},
+		"v_air_body": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"maximum_sampled_power_W": 0.0,
+	"mode": "full",
+	"positive_power_cases": {
+		"global": 0,
+		"local": 0,
+		"total": 0,
+		"transition": 0
+	},
+	"positive_power_threshold_W": 1e-07,
+	"power_definition": "F_aero · v_air_at_CG + M_aero_CG · omega; no propulsion, gravity or moving-surface work",
+	"random_cases": 100000,
+	"rng": "Godot RandomNumberGenerator; uniform angle/rate/speed, discrete full/neutral surface endpoints",
+	"seed": 1330660686,
+	"top_positive_cases": []
+}

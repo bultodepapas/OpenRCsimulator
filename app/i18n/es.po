@@ -1,0 +1,45 @@
+# Spanish interface texts for OpenRC Simulator (UI-01d). English is the source language: msgid is the English text.
+# Product, aircraft and field proper names are not translated. Keep placeholders (%s) and whole sentences.
+# Add a language: copy this file to <code>.po, translate msgstr, list it in project.godot
+# (internationalization/locale/translations) and in app_state/preferences.gd LANGUAGES.
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenRC Simulator\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Alpha · development"
+msgstr "Alpha · desarrollo"
+
+msgid "FLY"
+msgstr "VOLAR"
+
+msgid "Quit"
+msgstr "Salir"
+
+msgid "Language: %s"
+msgstr "Idioma: %s"
+
+msgid "Test field"
+msgstr "Campo de pruebas"
+
+msgid "Free flight · starts in the air"
+msgstr "Vuelo libre · inicio en el aire"
+
+msgid "For now the flight starts in the air; touching the ground restarts the airplane."
+msgstr "Por ahora el vuelo empieza en el aire; el contacto con el suelo reinicia el avión."
+
+msgid "Control: keyboard. Arrows: roll and pitch · A/D: rudder · W/S: throttle."
+msgstr "Control: teclado. Flechas: alabeo y profundidad · A/D: timón · W/S: acelerador."
+
+msgid "Control: radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
+msgstr "Control: radio «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctala."
+
+msgid "Control: controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
+msgstr "Control: mando «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctalo."
+
+msgid "Could not save settings (error %d)."
+msgstr "No se pudieron guardar los ajustes (error %d)."

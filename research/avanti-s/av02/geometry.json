@@ -1,0 +1,316 @@
+{
+  "schema": "openrc-avanti-visual-study-v1",
+  "revision": "a200-av02-blockout-01",
+  "status": "isolated visual study; not calibrated, not flyable",
+  "units": "m",
+  "axes": {
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "datum": {
+    "z": "Root leading edge beside fuselage projected onto symmetry plane",
+    "y": "Estimated wing midplane at root; not measured CG height"
+  },
+  "nominal": {
+    "span_m": 2.0,
+    "length_m": 2.22,
+    "engine_length_m": 0.241,
+    "engine_diameter_m": 0.097,
+    "cg_aft_root_le_m": [
+      0.24,
+      0.25,
+      0.26
+    ]
+  },
+  "fuselage_stations": [
+    [
+      -1.05,
+      0.001,
+      0.001,
+      -0.001
+    ],
+    [
+      -1.0,
+      0.025,
+      0.025,
+      -0.014
+    ],
+    [
+      -0.85,
+      0.066,
+      0.075,
+      -0.045
+    ],
+    [
+      -0.65,
+      0.109,
+      0.13,
+      -0.08
+    ],
+    [
+      -0.4,
+      0.153,
+      0.155,
+      -0.111
+    ],
+    [
+      -0.15,
+      0.178,
+      0.154,
+      -0.13
+    ],
+    [
+      0.0,
+      0.177,
+      0.139,
+      -0.138
+    ],
+    [
+      0.3,
+      0.145,
+      0.105,
+      -0.12
+    ],
+    [
+      0.6,
+      0.103,
+      0.084,
+      -0.09
+    ],
+    [
+      0.86,
+      0.066,
+      0.067,
+      -0.064
+    ],
+    [
+      1.05,
+      0.047,
+      0.05,
+      -0.048
+    ],
+    [
+      1.17,
+      0.038,
+      0.039,
+      -0.039
+    ]
+  ],
+  "canopy_stations": [
+    [
+      -0.86,
+      0.002,
+      0.076,
+      0.073
+    ],
+    [
+      -0.72,
+      0.043,
+      0.16,
+      0.094
+    ],
+    [
+      -0.53,
+      0.092,
+      0.23,
+      0.11
+    ],
+    [
+      -0.28,
+      0.12,
+      0.251,
+      0.12
+    ],
+    [
+      -0.09,
+      0.099,
+      0.214,
+      0.12
+    ],
+    [
+      0.07,
+      0.008,
+      0.125,
+      0.119
+    ]
+  ],
+  "wing": {
+    "stations": [
+      [
+        0.14,
+        0,
+        0.56,
+        0
+      ],
+      [
+        0.53,
+        0.145,
+        0.59,
+        0.007
+      ],
+      [
+        1,
+        0.32,
+        0.62,
+        0.02
+      ]
+    ],
+    "hinge_fraction": 0.69,
+    "flap_span": [
+      0.18,
+      0.53
+    ],
+    "aileron_span": [
+      0.55,
+      0.985
+    ],
+    "gap_m": 0.004,
+    "slab_thickness_m": 0.024,
+    "control_thickness_m": 0.01
+  },
+  "tail": {
+    "stations": [
+      [
+        0.05,
+        0.69,
+        1.15,
+        0.065
+      ],
+      [
+        0.43,
+        0.91,
+        1.17,
+        0.08
+      ]
+    ],
+    "hinge_fraction": 0.67,
+    "gap_m": 0.003,
+    "slab_thickness_m": 0.014,
+    "control_thickness_m": 0.01
+  },
+  "fin": {
+    "outline_yz": [
+      [
+        0.07,
+        0.53
+      ],
+      [
+        0.27,
+        0.8
+      ],
+      [
+        0.49,
+        0.87
+      ],
+      [
+        0.51,
+        0.96
+      ],
+      [
+        0.49,
+        1.105
+      ],
+      [
+        0.06,
+        1.155
+      ]
+    ],
+    "hinge_bottom_yz": [
+      0.065,
+      1.017
+    ],
+    "hinge_top_yz": [
+      0.5,
+      1.035
+    ],
+    "thickness_m": 0.014
+  },
+  "installation": {
+    "engine_center": [
+      0,
+      -0.005,
+      0.54
+    ],
+    "intake_centers": [
+      [
+        -0.174,
+        -0.018,
+        -0.2
+      ],
+      [
+        0.174,
+        -0.018,
+        -0.2
+      ]
+    ],
+    "intake_radius_m": 0.044,
+    "outlet_radius_m": 0.036
+  },
+  "controls_deg": {
+    "flap_cruise": 0,
+    "flap_takeoff": 20,
+    "flap_landing": 50,
+    "aileron_up": 30,
+    "aileron_down": 25,
+    "elevator_up": 30,
+    "elevator_down": 30,
+    "rudder_each_side": 30
+  },
+  "evidence": {
+    "nominal": {
+      "kind": "manufacturer_nominal",
+      "sources": [
+        {
+          "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+          "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+          "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+        },
+        {
+          "path": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+          "url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+          "sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5"
+        }
+      ]
+    },
+    "controls_deg": {
+      "kind": "manufacturer_nominal",
+      "source": {
+        "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+        "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+        "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+      },
+      "pdf_page": 4
+    },
+    "fuselage_stations": {
+      "kind": "estimated_visual_blockout",
+      "source": "Official CIMG7310/CIMG7313/CIMG7321 photographs; no metric reconstruction",
+      "uncertainty": "Unknown; values are design assumptions, not confidence intervals"
+    },
+    "canopy_stations": {
+      "kind": "estimated_visual_blockout",
+      "source": "Official CIMG7316 and CIMG7310 photographs"
+    },
+    "wing": {
+      "kind": "estimated_visual_blockout",
+      "source": "Official CIMG7321 and CIMG7313; endpoints constrained only by nominal span",
+      "warning": "Area, chord, sweep, dihedral and thickness are unvalidated; not aerodynamic data"
+    },
+    "tail": {
+      "kind": "estimated_visual_blockout",
+      "source": "Official CIMG7313; no calibrated scale"
+    },
+    "fin": {
+      "kind": "estimated_visual_blockout",
+      "source": "Official CIMG7310; no calibrated scale"
+    },
+    "installation": {
+      "kind": "estimated_visual_blockout",
+      "source": "Assembly steps131-134 for arrangement only; positions and duct radii assumed"
+    },
+    "finish": {
+      "kind": "illustrative",
+      "source": "White/blue/red groups for inspection; not exact SebArt livery"
+    }
+  }
+}

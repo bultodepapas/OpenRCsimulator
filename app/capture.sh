@@ -54,6 +54,13 @@ shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane --shadow=off
 shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow=off
 # L0b: straight down from 30 m over the pilot station: ground tiling must be judged from above (investigation 06).
 shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
+# UI-01a (MENU-PLAN): the Home screen with keyboard focus on Fly. Layout and focus drawing, not legibility on a real monitor.
+# UI-01d: English (default) and Spanish, the longer texts.
+for lang in en es; do
+  timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
+    --script res://tests/capture_ui.gd -- --out="$HERE/captures/ui-home-$lang.png" --lang=$lang > "$LOG" 2>&1 || true
+  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG" || [ ! -s "$HERE/captures/ui-home-$lang.png" ]; then cat "$LOG"; echo "Home capture ($lang) failed"; exit 1; fi
+done
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 # Image checks run in the pinned, hashed Python environment (.tools/visual-venv: Pillow, numpy, FLIP), never on the

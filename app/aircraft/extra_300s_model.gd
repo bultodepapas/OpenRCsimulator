@@ -137,7 +137,7 @@ static func _fuselage(root: Node3D) -> void:
 static func _canopy(root: Node3D) -> void:
 	var c: Dictionary = D.canopy
 	var zs: Array[float] = []
-	for p in c.top: zs.append(p[0])
+	for k in 25: zs.append(lerpf(c.top[0][0], c.top[-1][0], float(k) / 24.0)) # dense enough to round the ends
 	for s in D.fuselage_stations:
 		if s[0] > c.top[0][0] and s[0] < c.top[-1][0]: zs.append(s[0])
 	zs.sort()
@@ -148,7 +148,9 @@ static func _canopy(root: Node3D) -> void:
 			if z >= c.top[i][0] and z <= c.top[i + 1][0]:
 				top = lerpf(c.top[i][1], c.top[i + 1][1], (z - c.top[i][0]) / (c.top[i + 1][0] - c.top[i][0]))
 		var base := _station_value(z, 2) - 0.002
-		var half: float = c.halfwidth_fraction * _station_value(z, 1)
+		# Plan outline: superellipse (n = 4) along the canopy length, straight sides and rounded ends.
+		var u := absf((z - (zs[0] + zs[-1]) / 2.0) / ((zs[-1] - zs[0]) / 2.0))
+		var half: float = c.halfwidth_fraction * _station_value(z, 1) * pow(maxf(1.0 - pow(u, 4.0), 0.0), 0.25)
 		var ring: Array[Vector3] = []
 		for k in 13:
 			var angle := PI * float(k) / 12.0
@@ -259,8 +261,8 @@ static func _wings(root: Node3D, hinges: Dictionary) -> void:
 		wing.add_child(frame)
 		var pivot := _hinge("aileron_" + suffix, frame, hinges)
 		var to_local := frame.transform.affine_inverse()
-		var a := sign * (inner + end_gap)
-		var b := sign * (outer - end_gap)
+		var a: float = sign * (inner + end_gap)
+		var b: float = sign * (outer - end_gap)
 		_wing_panel("aileron_" + suffix, minf(a, b), maxf(a, b), "aileron", pivot, to_local)
 
 
@@ -269,7 +271,10 @@ static func _plate(label: String, outline: Array, thickness: float, color: Color
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
-	assert(not triangles.is_empty(), "Invalid outline: " + label)
+	if triangles.is_empty():
+		# An assert would stop a headless run in the debugger; an engine error fails app/test.sh instead.
+		push_error("Extra model: outline %s does not triangulate" % label)
+		return _instance(label, ArrayMesh.new(), parent)
 	var to3 := func(p: Vector2, side: float) -> Vector3:
 		return Vector3(side * thickness / 2.0, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2.0, p.y)
 	var st := _surface(material(color, 0.4))

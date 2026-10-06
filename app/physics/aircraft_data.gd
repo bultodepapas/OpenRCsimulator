@@ -2,7 +2,7 @@
 # 64-bit floats only (guarded). Errors block use; warnings are data-quality notes to show, not hide.
 # Result: { ok: bool, errors: PackedStringArray, warnings: PackedStringArray, model: Dictionary }
 # model: mass_kg, inertia (PackedFloat64Array [Jxx Jyy Jzz Jxy Jxz Jyz], body FRD, about the inventory's own
-#        centre of mass: the honest estimate of the mass distribution; flight uses the plan CG, see warnings),
+#        centre of mass; configurations whose declared flight CG disagrees are rejected),
 #        cg_le / cg_inventory_le (PackedFloat64Array [x_aft, y_right, z_up], m), reference {S, b, c, arp_le},
 #        aero {name: float}, conventions {…}, controls {throw_deg, throw_rad: {aileron, elevator, rudder},
 #        servo_rate (full throws per second)}, id.
@@ -41,6 +41,20 @@ static func _fail(message: String) -> Dictionary:
 	return { ok = false, errors = PackedStringArray([message]), warnings = PackedStringArray(), model = {} }
 
 
+static func _dictionary(errors: PackedStringArray, path: String, node: Variant) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("%s: expected an object" % path)
+		return {}
+	return node
+
+
+static func _array(errors: PackedStringArray, path: String, node: Variant) -> Array:
+	if typeof(node) != TYPE_ARRAY:
+		errors.append("%s: expected an array" % path)
+		return []
+	return node
+
+
 ## Checks one quantity { value, unit, kind, source }. size: 0 = scalar, n = array of n numbers.
 static func _q(errors: PackedStringArray, path: String, node: Variant, unit: String, lo: float, hi: float, size := 0) -> Variant:
 	if typeof(node) != TYPE_DICTIONARY:
@@ -76,20 +90,22 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		errors.append("format must be '%s', got '%s'" % [FORMAT, raw.get("format")])
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
 
-	var ref: Dictionary = raw.get("reference", {})
+	var ref := _dictionary(errors, "reference", raw.get("reference", {}))
 	var area = _q(errors, "reference.wing_area", ref.get("wing_area"), "m2", 0.05, 3.0)
 	var span = _q(errors, "reference.wing_span", ref.get("wing_span"), "m", 0.3, 4.0)
 	var chord = _q(errors, "reference.mean_chord", ref.get("mean_chord"), "m", 0.05, 1.0)
 	var arp = _q(errors, "reference.aero_reference_point", ref.get("aero_reference_point"), "m", -2.0, 2.0, 3)
-	if area != null and span != null and chord != null and absf(span * chord - area) / area > 0.01:
+	if ref.get("planform", "rectangular") == "rectangular" and area != null and span != null and chord != null and absf(span * chord - area) / area > 0.01:
 		errors.append("reference: span × mean_chord = %.4f m2 differs from wing_area %.4f m2 by more than 1 %%" % [span * chord, area])
 
-	var bal: Dictionary = raw.get("balance", {})
+	if ref.get("planform", "rectangular") != "rectangular":
+		errors.append("reference.planform: local wing elements currently require rectangular; tapered wings need their own area distribution")
+	var bal := _dictionary(errors, "balance", raw.get("balance", {}))
 	var plan_cg = _q(errors, "balance.plan_cg", bal.get("plan_cg"), "m", -2.0, 2.0, 3)
 	_q(errors, "balance.firewall", bal.get("firewall"), "m", -2.0, 2.0, 3)
-	var mismatch_limit = _q(errors, "balance.mismatch_warning_mac", bal.get("mismatch_warning_mac"), "1", 0.0, 1.0)
+	var cg_tolerance = _q(errors, "balance.cg_tolerance", bal.get("cg_tolerance"), "m", 0.000001, 0.005)
 
-	var inventory: Array = raw.get("inventory", [])
+	var inventory := _array(errors, "inventory", raw.get("inventory", []))
 	if inventory.is_empty():
 		errors.append("inventory: empty")
 	var parts := []
@@ -103,12 +119,14 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		var s = _q(errors, label + ".size", c.get("size"), "m", 0.0, 4.0, 3) if c.has("size") else PackedFloat64Array([0.0, 0.0, 0.0])
 		parts.append([m, p, s])
 
-	var plaus: Dictionary = raw.get("plausibility", {})
+	var plaus := _dictionary(errors, "plausibility", raw.get("plausibility", {}))
 	var mass_range = _q(errors, "plausibility.mass_range", plaus.get("mass_range"), "kg", 0.01, 100.0, 2)
 	var inertia_ref = _q(errors, "plausibility.inertia_reference", plaus.get("inertia_reference"), "kg·m2", 0.0, 100.0, 3)
 
 	var aero := {}
-	var coeffs: Dictionary = raw.get("aero", {}).get("coefficients", {})
+	var aero_node := _dictionary(errors, "aero", raw.get("aero", {}))
+	var conventions := _dictionary(errors, "aero.conventions", aero_node.get("conventions", {}))
+	var coeffs := _dictionary(errors, "aero.coefficients", aero_node.get("coefficients", {}))
 	for name in COEFFICIENTS:
 		var spec: Array = COEFFICIENTS[name]
 		var x = _q(errors, "aero.coefficients." + name, coeffs.get(name), spec[0], -100.0, 100.0)
@@ -120,21 +138,16 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		if not COEFFICIENTS.has(name):
 			warnings.append("aero.coefficients.%s: unknown coefficient, ignored" % name)
 
-	var envelope := _envelope(errors, raw.get("aero", {}).get("envelope"), aero) if errors.is_empty() else {}
+	var envelope := _envelope(errors, aero_node.get("envelope"), aero) if errors.is_empty() else {}
 	if not envelope.is_empty():
 		# Equal-area wing strips for the asymmetric stall (D9b): centres at ±(k + ½)/n of the semi-span.
 		var n: int = Aero.WING_STATIONS_PER_SIDE
 		var ys := PackedFloat64Array()
-		var c := 0.0
 		for side in [-1.0, 1.0]:
 			for k in n:
-				var y: float = side * (k + 0.5) / n * span / 2.0
-				ys.append(y)
-				c += (y / span) * (y / span)
-		# Strip damping in attached flow is −CLα·(2/2n)·Σ(y_i/b)²·… = −CLα·c/n per p̂; κ scales it to the data's Clp.
+				ys.append(side * (k + 0.5) / n * span / 2.0)
 		envelope.station_ys = ys
-		envelope.span = span
-		envelope.station_kappa = absf(aero.Clp) / (aero.CLa * 2.0 * c / (2 * n))
+	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope)
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
@@ -154,9 +167,9 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 
 	if mass < mass_range[0] or mass > mass_range[1]:
 		errors.append("total mass %.3f kg outside the plausible range %s kg (unit mistake?)" % [mass, mass_range])
-	var mismatch: float = absf(cg_inv[0] - plan_cg[0]) / chord
-	if mismatch > mismatch_limit:
-		warnings.append("balance: inventory CG is %.3f m %s of the plan CG (%.0f %% of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG." % [absf(cg_inv[0] - plan_cg[0]), "ahead" if cg_inv[0] < plan_cg[0] else "behind", mismatch * 100.0])
+	for axis in 3:
+		if absf(cg_inv[axis]-plan_cg[axis]) > cg_tolerance:
+			errors.append("balance: inventory CG axis %d disagrees with flight CG by %.4f m (tolerance %.4f m); reconcile the build before flying" % [axis, absf(cg_inv[axis]-plan_cg[axis]), cg_tolerance])
 	var scale: float = (mass / 1.959) * pow(span / 1.27, 2)
 	var names := ["Jxx", "Jyy", "Jzz"]
 	for k in 3:
@@ -166,17 +179,20 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 
 	var model := {
 		id = raw.get("id", ""),
+		data_sha256 = JSON.stringify(raw, "", true).sha256_text(),
+		configuration = bal.get("configuration", "unspecified"),
 		mass_kg = mass,
 		inertia = j,
-		cg_le = plan_cg,
+		cg_le = cg_inv,
 		cg_inventory_le = cg_inv,
-		reference = { S = area, b = span, c = chord, arp_le = arp },
+		reference = { S = area, b = span, c = chord, geometric_chord = area/span, arp_le = arp },
 		aero = aero,
 		envelope = envelope,
-		conventions = raw.get("aero", {}).get("conventions", {}),
+		surfaces = surfaces,
+		conventions = conventions,
 		propulsion = prop,
 		controls = controls,
-		crash_hull = _hull_body(hull, plan_cg),
+		crash_hull = _hull_body(hull, cg_inv),
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
 
@@ -215,23 +231,31 @@ static func _table(errors: PackedStringArray, path: String, node: Variant, lo: f
 		errors.append("%s: unit '%s', expected '1'" % [path, node.get("unit")])
 	if not (node.get("kind") in KINDS):
 		errors.append("%s: kind '%s' is not one of %s" % [path, node.get("kind"), KINDS])
+	if typeof(node.get("source")) != TYPE_STRING or str(node.get("source")).strip_edges().is_empty():
+		errors.append("%s: empty source" % path)
 	var rows: Array = node.value
 	if rows.size() < 2:
 		errors.append("%s: needs at least 2 rows" % path)
 		return out
 	for i in rows.size():
 		var row = rows[i]
-		if typeof(row) != TYPE_ARRAY or row.size() != 2 or not is_finite(float(row[0])) or not is_finite(float(row[1])):
+		if typeof(row) != TYPE_ARRAY or row.size() != 2:
 			errors.append("%s[%d]: expected [J, value]" % [path, i])
 			return PackedFloat64Array()
-		if i == 0 and float(row[0]) != 0.0:
+		for value in row:
+			if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+				errors.append("%s[%d]: J and value must be finite numbers" % [path, i])
+				return PackedFloat64Array()
+		var j_value := float(row[0])
+		var coefficient := float(row[1])
+		if i == 0 and j_value != 0.0:
 			errors.append("%s: first row must be J = 0" % path)
-		if i > 0 and float(row[0]) <= float(rows[i - 1][0]):
+		if i > 0 and j_value <= float(rows[i - 1][0]):
 			errors.append("%s[%d]: J must increase" % [path, i])
-		if float(row[1]) < lo or float(row[1]) > hi:
-			errors.append("%s[%d]: %s outside [%s, %s]" % [path, i, row[1], lo, hi])
-		out.append(float(row[0]))
-		out.append(float(row[1]))
+		if coefficient < lo or coefficient > hi:
+			errors.append("%s[%d]: %s outside [%s, %s]" % [path, i, coefficient, lo, hi])
+		out.append(j_value)
+		out.append(coefficient)
 	return out
 
 
@@ -239,8 +263,8 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("propulsion: missing")
 		return {}
-	var e: Dictionary = node.get("engine", {})
-	var pr: Dictionary = node.get("propeller", {})
+	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
+	var pr := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
 	var max_rpm = _q(errors, "propulsion.engine.max_rpm_static", e.get("max_rpm_static"), "rpm", 1000.0, 50000.0)
 	var idle = _q(errors, "propulsion.engine.idle_rpm", e.get("idle_rpm"), "rpm", 0.0, 20000.0)
 	var lag = _q(errors, "propulsion.engine.lag_time_constant", e.get("lag_time_constant"), "s", 0.01, 5.0)
@@ -263,7 +287,7 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("controls: missing")
 		return {}
-	var throws: Dictionary = node.get("max_throw", {})
+	var throws := _dictionary(errors, "controls.max_throw", node.get("max_throw", {}))
 	var deg := {}
 	var rad := {}
 	for surface in ["aileron", "elevator", "rudder"]:
@@ -336,6 +360,8 @@ static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat
 	for key in ["unit", "kind", "source"]:
 		if not node.has(key):
 			errors.append("crash_hull: missing '%s'" % key)
+	if node.get("kind") not in KINDS or typeof(node.get("source")) != TYPE_STRING or str(node.get("source")).strip_edges().is_empty():
+		errors.append("crash_hull: invalid evidence kind or empty source")
 	if node.get("unit") != "m":
 		errors.append("crash_hull: unit '%s', expected 'm'" % node.get("unit"))
 	for p in node.value:
@@ -343,10 +369,14 @@ static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat
 			errors.append("crash_hull: each point needs 3 numbers")
 			return PackedFloat64Array()
 		for x in p:
-			if not (typeof(x) in [TYPE_INT, TYPE_FLOAT]) or absf(x) > 3.0:
-				errors.append("crash_hull: %s is not a point within 3 m" % [p])
+			if typeof(x) not in [TYPE_INT, TYPE_FLOAT]:
+				errors.append("crash_hull: %s is not a numeric point within 3 m" % [p])
 				return PackedFloat64Array()
-			out.append(float(x))
+			var coordinate := float(x)
+			if not is_finite(coordinate) or absf(coordinate) > 3.0:
+				errors.append("crash_hull: %s is not a finite point within 3 m" % [p])
+				return PackedFloat64Array()
+			out.append(coordinate)
 	return out
 
 
@@ -357,4 +387,55 @@ static func _hull_body(hull: PackedFloat64Array, cg: Variant) -> PackedFloat64Ar
 		return out
 	for i in range(0, hull.size(), 3):
 		out.append_array(PackedFloat64Array([-(hull[i] - cg[0]), hull[i + 1] - cg[1], -(hull[i + 2] - cg[2])]))
+	return out
+
+
+## Local-surface data has explicit evidence like the reference derivatives. Linked rudder
+## derivatives are about ARP, not CG; the final load transfer supplies the remaining arm.
+static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary,
+		area: Variant, span: Variant, arp: Variant, env: Dictionary) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("aero.surfaces: expected an object")
+		return {}
+	if not errors.is_empty():
+		return {}
+	if env.is_empty():
+		errors.append("aero.surfaces: envelope is empty or invalid")
+		return {}
+	var out := {}
+	var specs := {
+		wing_aileron_effectiveness = ["1", 0.01, 1.0],
+		attached_limit = ["deg", 1.0, 8.0], tail_local_limit = ["deg", 9.0, 30.0],
+		tail_stall_end = ["deg", 10.0, 60.0], tail_CD0 = ["1", 0.001, 0.2],
+		tail_k = ["1", 0.0, 2.0], tail_CD90 = ["1", 0.5, 2.5],
+	}
+	for key in specs:
+		var spec: Array = specs[key]
+		var value = _q(errors, "aero.surfaces." + key, node.get(key), spec[0], spec[1], spec[2])
+		if value != null:
+			out[key] = deg_to_rad(value) if spec[0] == "deg" else value
+	for name in ["horizontal", "vertical"]:
+		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
+		var label: String = "aero.surfaces." + name
+		out[name] = {
+			area = _q(errors, label + ".area", tail.get("area"), "m2", 0.001, 1.0),
+			position = _q(errors, label + ".position", tail.get("position"), "m", -2.0, 2.0, 3),
+			lift_slope = _q(errors, label + ".lift_slope", tail.get("lift_slope"), "1/rad", 0.1, 6.3),
+			control_effectiveness = _q(errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", 0.01, 1.5),
+			incidence = _q(errors, label + ".incidence", tail.get("incidence"), "rad", -0.2, 0.2),
+		}
+	if not errors.is_empty():
+		return {}
+	if out.tail_stall_end <= out.tail_local_limit or out.tail_local_limit <= out.attached_limit 			or minf(env.a1, env.n1) <= out.attached_limit:
+		errors.append("aero.surfaces: attached/local/stall limits must be strictly ordered")
+	var fin: Dictionary = out.vertical
+	var arm: float = fin.position[0] - arp[0]
+	if arm <= 0.0:
+		errors.append("aero.surfaces.vertical: tail must be aft of the aerodynamic reference")
+	var cy: float = fin.lift_slope*fin.area/area*fin.control_effectiveness
+	var expected := {CYdr = cy, Cndr = -cy*arm/span, Cldr = cy*(fin.position[2]-arp[2])/span,
+		Cnb = fin.lift_slope*fin.area/area*arm/span}
+	for key in expected:
+		if absf(aero[key]-expected[key]) > 1e-8:
+			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm (expected %.8f)" % [key, expected[key]])
 	return out

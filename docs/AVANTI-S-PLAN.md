@@ -1,6 +1,6 @@
 # Avanti S de turbina: plan del siguiente avión
 
-2026-10-05 · Revisión 1 · **Investigación y planificación; avión no implementado.**
+2026-10-06 · Revisión 3 · **AV-00 completo; AV-01 provisional; AV-02 iniciado con maqueta aislada. Sin avión volable ni integración en la app.**
 
 La variante elegida es el **SebArt Avanti S A200 original**, documentado como «Avanti S Jet 2.2m»: **2,00 m de envergadura y 2,22 m de longitud**, con instalación inicial **JetCat P100-RX, ficha de referencia 2017, y tobera fija**. La documentación original permite identificarlo mejor que una mezcla de versiones comerciales actuales. El catálogo reciente usa también «2.3m»; esa etiqueta no autoriza a cambiar las dimensiones del manual elegido. [Manual SebArt](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [catálogo actual](https://www.sebart.it/download/sebart-pricelist.pdf).
 
@@ -104,7 +104,7 @@ El contacto con terreno actualmente es accidente. Entrenamiento de aterrizajes, 
 
 ## 8. Entregas y pruebas
 
-Solo **AV-00** se completa con esta investigación. Los demás pasos son propuestas ligadas a hitos existentes del [roadmap](../ROADMAP.md).
+**AV-00** está completo. **AV-02** tiene una primera maqueta aislada, documentada en la sección siguiente; integración pendiente. **AV-01** tiene preparación concreta: 30 datos trazables, cuatro proporciones, 42 recortes del montaje y un panel interactivo de tamaños/mandos. Falta cerrar contornos, secciones, área y ejes de bisagra. Véanse la [ficha AV-01](research/avanti-s-av01-metrology.md), la [mesa de referencias](../references/avanti-s/organized/index.html) y los [datos y herramienta](../research/avanti-s/av01/README.md). Los demás pasos siguen ligados a hitos existentes del [roadmap](../ROADMAP.md).
 
 | Paso | Cambio acotado | Dependencia | Prueba requerida |
 | --- | --- | --- | --- |
@@ -129,4 +129,6 @@ Las tolerancias físicas y presupuestos de rendimiento se fijan antes de ajustar
 
 El mayor cambio respecto al Extra es separar propulsión de hélice y turbina en todos sus consumidores. La mayor carencia de referencia es geometría dimensionada del fuselaje/ala completos. Se controla con una primera forma aproximada declarada, datos físicos separados y pruebas de regresión Stik.
 
-La siguiente acción es **AV-01 → AV-02**: fijar datum, silueta y pocas cotas fiables, y mostrar un Avanti básico en el inspector. Ese trabajo no necesita integrar consumo, tren funcional o una ECU completa. Antes del primer vuelo se cierra AV-05 con una rama de turbina comprobable.
+Ya existe una [maqueta Godot aislada AV-02](research/avanti-s-av02-preview.md), con siete superficies articuladas, controles de escala, nueve capturas y prueba en clon sin referencias. Todas las secciones no documentadas están identificadas como estimaciones. Falta refinarla e integrarla; AV-02 y AV-04 no se consideran completos.
+
+La siguiente acción es **refinar AV-01 y completar la integración AV-02**: usar el datum longitudinal propuesto y las cotas documentadas para construir contornos y un volumen aproximado declarado, fijar los ejes de las superficies y mostrar un Avanti básico en el inspector. El archivo ya separa neumática, tanque de queroseno/humo y escape vectorial opcional. Ese trabajo no necesita integrar consumo, tren funcional o una ECU completa. Antes del primer vuelo se cierra AV-05 con una rama de turbina comprobable.

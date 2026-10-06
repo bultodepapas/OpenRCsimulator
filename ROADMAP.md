@@ -29,6 +29,8 @@ Revised **2026-10-05** after three reviews (the second, "from infrastructure to 
   - **The Ugly Stik flies trimmed level flight with its engine running:** six-axis aero; .61 glow engine with APC 12×6 thrust and torque; six-axis trim (throttle, elevator, aileron, rudder) applied like radio trims; positional engine sound.
 - **Releases:** [v0.1.0-rc1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc1) (M1 flight, radio, pilot aids) and [v0.1.0-rc2](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc2) (landscape L0–L4: sky, haze, clouds, sun shadow; frame-time report). Notes per release in `docs/releases/`.
 - **Next: Gate 2 — the owner flies v0.1.** Everything in M1 that can be done without the owner is done (2026-10-05). Waiting on the owner: D6d (fly with your radio, F4 rows), a `v0.1.0-rc1` tag for PT1f, PT1g (launch on each OS), Gate 2 ratings, then Gate F. Done in M1: D9d (crash hull and restart), D9c (gyroscopic precession), D9b (asymmetric stall, spins with standard recovery), D9a (full-envelope stall at 8.8 m/s, linear model kept as exact oracle), D6a–c (radio with safety and calibration, servos), D7 (shadow, grass, HUD, perf, auto-zoom, hot reload), D8a (handling verification, modes test, golden flights).
+- **UI track ([MENU-PLAN](docs/MENU-PLAN.md), subordinate to Gate 2):** UI-00, UI-01a, UI-01b and UI-01d done (2026-10-05/06). The app opens on a Home screen (Fly/Language/Quit, Theme built in code, keyboard focus visible), in English by default with Spanish available (gettext `.po`, choice saved in `user://settings.cfg`); any `--` argument keeps the direct flight, so traces and captures are byte-identical to before. Radio axes and buttons are removed from Godot's `ui_*` actions, so sticks never move the menu focus. Proof: `tests/test_ui_home.gd`, `test_ui_input.gd` and `test_ui_language.gd` (22), mutation-checked; `capture.sh` saves `ui-home-en.png` and `ui-home-es.png`. Next: UI-02 (pause, which also silences the engine sound that keeps playing during every pause today).
+- **Second aircraft track ([EXTRA-300-PLAN](docs/EXTRA-300-PLAN.md), subordinate to Gate 2):** EX-00–02 done (2026-10-06). The Great Planes Extra 300S .60 is measured from its plans (7 reserved checks: span, area, length, CG mark and stab chord within 0.7 %; spinner diameter +2.5 %, spinner-to-firewall −1.1 %) and exists as a **visual preview** in its own inspector (`aircraft/inspect_extra.gd`). No physics data, not selectable, does not fly. Proof: `aircraft/verify_extra.gd` (84 checks in `app/test.sh`, six mutations caught), [report](docs/research/extra-300-model-v1.md). Next: EX-03 (two-aircraft registry) or EX-04 (articulation clearances).
 - **Open question for D6d:** the solved start trims are added on top of the radio's sticks, and the radio has its own trims. Decide with the owner's radio whether the sim's trims stay, reset to zero, or apply only on the keyboard.
 - **Alpha (v0.1 = PT1) readiness: all the work that does not need the owner is done (2026-10-05).**
   - **Done:** D1–D5, D5.9, D6a–c, D7, D8a, D8b (US120 part), D9a–d, D10, PT1a–e (PT1f written, PT1g documented).
@@ -43,7 +45,7 @@ Revised **2026-10-05** after three reviews (the second, "from infrastructure to 
     - a developed spin needs opposite rudder (it does not recover hands-off);
     - from the pilot's eye the ground shadow only helps up close;
     - auto-zoom can push the ground out of frame.
-  - **Alpha will not have:** runway takeoff and landing (M2), wind, a radio setup screen, a realistic engine response, or menus. It starts in the air.
+  - **Alpha will not have:** runway takeoff and landing (M2), wind, a radio setup screen, a realistic engine response, or menus beyond Home (UI-B). It starts in the air.
 - **M1 so far, measured against the predicted-handling table:**
   - trim α 3.71° at 15 m/s (predicted 3.6°); thrust needed 3.00 N (predicted 2.93);
   - glide L/D 8.46 (predicted 8.7; the hand estimate ignored trim drag); α 1.51° at 20 m/s (predicted 1.5°);
@@ -281,3 +283,16 @@ Few indie simulators start this well. The weak points are about what comes next.
 | 15 | **Inventory Iyy is 1.7× a Roskam-typical value** (Ry 0.438 vs 0.338) | Labeled; D10 parameter |
 | 16 | **Commits don't state proofs and mix teams:** several commits named "Refactor code structure for improved readability" add physics and model files together. Bisecting a regression becomes hard | Rule 8 (one team per commit, proof in the message, the assistant supplies the message) |
 | 17 | **The flight-model architecture decision was implicit.** The derivative model cannot express propwash, asymmetric stall or damage, and the model team's geometry could feed a component buildup | Gate F before M2, with a default proposal: grow the buildup one surface group at a time, each matching the linear oracle |
+
+
+### Seguimiento de reparación de vuelo — 2026-10-06
+
+[Informe de implementación y pruebas](docs/research/flight-repair-implementation.md). Los planes R amplían los pasos existentes; no cierran la validación física de Gate 2.
+
+- [x] D9-R1/R2: cargas locales de ala/colas, continuidad en flujo invertido y potencia pasiva; retirar los déficits mezclados y `station_kappa`.
+- [x] D4-R1: preparación de avión/trim transaccional, rollback de estado no finito y fallos en etapas RK; reload inválido conserva vuelo.
+- [x] D1-R1: configuración virtual de masa balanceada, CG/inercia de una misma distribución y rechazo de discrepancias; procedencia explícita.
+- [x] D8a-R1: evaluador compartido y Jacobiano completo con giroscópico; modos 4×4 etiquetados como proyecciones.
+- [x] D10-R: derivados de rudder enlazados con fuerza/brazo, recorrido conservado y regresiones de autoridad/recuperación.
+- [ ] Gate 2-R: contrastar manejo y estabilidad espiral con piloto y construcción real; las bandas de ingeniería no son telemetría.
+- [ ] E0b/G2: propwash y equilibrio de eje en cambios separados. La cola local incorporada aquí usa flujo libre; no declarar E0 completo.
