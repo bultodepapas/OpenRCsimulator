@@ -136,3 +136,7 @@ La siguiente acción es **refinar AV-01 y completar la integración AV-02**: usa
 ## Comparación de siluetas por transparencia — 2026-10-06
 
 La maqueta AV-02 ya se compara con tres fotos mediante [superposiciones interactivas](../references/avanti-s/alignment/index.html). Se ajusta una cámara por foto conservando geometría, imágenes originales y puntos reservados. [Método, errores y diferencias detectadas](research/avanti-s-transparency-comparison.md). Es una ayuda para refinar contornos; no cierra la metrología ni acredita área/perfiles. La próxima edición debe contrastar los tres encuadres y guardar el efecto de cualquier reajuste de cámara.
+
+## Afinado AV-02 con cámaras congeladas — 2026-10-06
+
+La [segunda revisión de contornos](research/avanti-s-contour-refinement.md) reduce cuerda alar, perfila puntas/estabilizador, prolonga la transición de deriva e integra las tomas. Conserva escala nominal, siete bisagras y cámaras anteriores; incluye comparación antes/después, muestras de borde y clon limpio sin referencias. Las tres vistas mejoran en las muestras del ala, mientras fuselaje/cabina y cola posterior mantienen diferencias. Sigue siendo una geometría visual estimada; quedan metrología, detalle, comprobación de volúmenes barridos e integración.

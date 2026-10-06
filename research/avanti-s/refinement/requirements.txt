@@ -1,0 +1,2 @@
+-r ../alignment/requirements.txt
+Pillow==11.3.0

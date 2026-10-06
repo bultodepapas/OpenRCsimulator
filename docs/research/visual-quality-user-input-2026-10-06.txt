@@ -1,0 +1,449 @@
+Sí. Para un simulador RC en Godot hay bastante material gratuito que puede ahorrar muchísimo trabajo. Revisé específicamente recursos que puedas usar razonablemente en un proyecto **open source**, porque ahí la licencia importa más que simplemente que el asset sea “gratis”.
+
+Mi conclusión es que **no deberías ponerte a modelar árboles, piedras, carreteras, césped, materiales, agua y cielo desde cero**. Hay un stack bastante bueno ya hecho.
+
+
+
+### El stack que yo usaría para tu simulador
+
+| Necesidad | Recurso | Qué te aporta | Licencia / open source | Mi nota |
+|---|---|---|---|---:|
+| 🌍 Terreno grande | **Terrain3D** | Montañas, campos, pintura de terrenos, LOD, foliage | MIT | **10/10** |
+| 🌱 Texturas realistas | **ambientCG** | Césped, tierra, asfalto, concreto, roca, arena, etc. PBR | CC0 | **10/10** |
+| 🌳 Texturas + árboles + rocas + HDRI | **Poly Haven** | Assets fotoescaneados de altísima calidad | CC0 | **10/10** |
+| 🌲 Colocar miles de árboles | **ProtonScatter** | Distribución procedural de árboles, piedras, objetos | MIT | **9.5/10** |
+| 🌳 Crear árboles | **Tree3D** | Generador procedural directamente en Godot | MIT | **9/10** |
+| 🌾 Césped | **Simple Grass Textured** | Césped/plantas ya preparado para Godot | MIT | **8.5/10** |
+| ☀️ Cielo/clima | **Sky3D** | Día/noche, sol, luna, nubes, niebla | MIT | **9.5/10** |
+| 🌊 Lagos/mar | **Boujie Water Shader** | Olas Gerstner, espuma, refracción, profundidad | MIT | **9/10** |
+| 🌊 Física dentro del agua | **WaterBox** | Flotación y drag para RigidBody3D | MIT | **8/10** |
+| 🛣️ Carreteras | **Godot Road Generator** | Carreteras e intersecciones proceduralmente | MIT | **9/10** |
+| 🚗 Carros y props | **Kenney** | Carros, ciudades, señales, objetos, edificios | CC0 | **9/10** |
+| 🏠 Props low-poly | **KayKit** | Miles de objetos, edificios, mobiliario | CC0 | **8.5/10** |
+| 🎨 Crear materiales | **Material Maker** | Crear PBR procedural sin Photoshop/Substance | MIT | **9/10** |
+
+Y hay una combinación particularmente buena para lo que tú estás haciendo.
+
+---
+
+## 1. Terrain3D: probablemente lo primero que integraría
+
+Este me parece casi hecho para un simulador RC.
+
+Terrain3D es un sistema de terreno para Godot 4.4+ y permite terrenos desde **64 × 64 m hasta 65,5 × 65,5 km**, hasta 32 texturas, 10 niveles de LOD, foliage instancing, pintura de texturas, humedad, sculpting e importación de heightmaps. Está bajo MIT. [Godot Engine](https://godotengine.org/asset-library/asset/3892)
+
+[Terrain3D para Godot](https://godotengine.org/asset-library/asset/3892?utm_source=chatgpt.com)
+
+Para un simulador RC esto es muy importante porque no quieres solamente un escenario pequeño. Desde un avión RC puedes ver **kilómetros de terreno**.
+
+Yo haría algo como:
+
+**Terrain3D**
+→ pradera  
+→ pista RC  
+→ carretera  
+→ lago  
+→ zonas de bosque  
+→ montañas lejanas.
+
+Y dejaría que el LOD reduzca el detalle cuando el avión se aleja.
+
+---
+
+# 2. ambientCG: tu biblioteca de materiales
+
+Esta puede solucionarte prácticamente todas las superficies.
+
+Actualmente ambientCG tiene alrededor de **2.900 assets**, incluyendo materiales PBR, HDRIs y modelos. Todo está bajo **CC0**, incluso para uso comercial y sin atribución obligatoria. [AmbientCG](https://ambientcg.com/)
+
+[Explorar ambientCG](https://ambientcg.com/?utm_source=chatgpt.com)
+
+Buscaría allí:
+
+- grass
+- dry grass
+- dirt
+- soil
+- gravel
+- asphalt
+- concrete
+- mud
+- rock
+- forest ground
+- sand
+- paving
+
+Un material PBR normalmente trae cosas como:
+
+`Albedo / Base Color`
+
+`Normal`
+
+`Roughness`
+
+`AO`
+
+`Height / Displacement`
+
+Eso hace una diferencia enorme frente a simplemente poner una imagen JPG de pasto.
+
+Para tu pista RC, por ejemplo:
+
+**césped + tierra + asfalto + grava**
+
+pueden salir todos de aquí.
+
+---
+
+# 3. Poly Haven: probablemente la mejor fuente de assets realistas gratis
+
+Poly Haven sería mi otra biblioteca principal.
+
+Sus assets son **CC0**, y permiten uso, modificación y redistribución incluso comercial. [Poly Haven](https://polyhaven.com/es/license?utm_source=chatgpt.com)
+
+Tienen:
+
+**texturas PBR fotoescaneadas hasta 8K+, HDRI de hasta 16K y modelos 3D bastante realistas.** [Poly Haven](https://polyhaven.com/?utm_source=chatgpt.com)
+
+[Poly Haven](https://polyhaven.com/?utm_source=chatgpt.com)
+
+Para tu juego usaría especialmente:
+
+**árboles, troncos, piedras, rocas, terrenos y HDRI de exteriores.**
+
+Por ejemplo, ya tienen colecciones completas de árboles. 
+
+El único cuidado es que algunos modelos son extremadamente detallados.
+
+Para un simulador:
+
+**cerca del jugador:** modelo de buena calidad.  
+**100–300 m:** modelo simplificado.  
+**muy lejos:** billboard/impostor.
+
+Godot soporta Mesh LOD y lo considera una de las técnicas principales para optimizar escenas 3D. [GitHub](https://github.com/godotengine/godot-docs/blob/master/tutorials/3d/mesh_lod.rst?utm_source=chatgpt.com)
+
+---
+
+# 4. ProtonScatter: esto te evita plantar 5.000 árboles manualmente
+
+Este plugin me parece especialmente útil para ti.
+
+**ProtonScatter** coloca objetos proceduralmente y de forma no destructiva. Está bajo MIT. [Godot Engine](https://godotengine.org/asset-library/asset/1866?utm_source=chatgpt.com)
+
+[ProtonScatter](https://godotengine.org/asset-library/asset/1866?utm_source=chatgpt.com)
+
+Tú le dices básicamente:
+
+> en esta área quiero árboles.
+
+Y puedes generar:
+
+árboles  
+arbustos  
+flores  
+piedras  
+postes  
+maleza  
+hierba  
+objetos decorativos.
+
+En vez de moverlos uno por uno.
+
+Para un aeropuerto RC esto es perfecto.
+
+---
+
+# 5. Tree3D: árboles directamente dentro de Godot
+
+Hay además un plugin bastante reciente llamado **Tree3D**.
+
+Genera árboles proceduralmente y puede generar también sus colisiones. Está bajo MIT y funciona con Godot 4.5+. [Godot Engine](https://godotengine.org/asset-library/asset/3141?utm_source=chatgpt.com)
+
+[Tree3D](https://godotengine.org/asset-library/asset/3141?utm_source=chatgpt.com)
+
+Eso significa que puedes hacer diferentes variaciones:
+
+árbol alto  
+árbol pequeño  
+árbol ancho  
+árbol joven  
+árbol seco
+
+sin tener que descargar 30 árboles diferentes.
+
+Luego ProtonScatter los distribuye.
+
+---
+
+# 6. Incluso encontré un proyecto de bosque completo para estudiar
+
+Esto me parece especialmente interesante porque tu proyecto está en fase de investigación.
+
+Hay un **Procedural Forest Demo para Godot 4.6**, publicado en 2026, que incluye:
+
+biomas procedurales, scattering, billboard LOD, terreno procedural, viento en el follaje, grass dinámico, cielo y rayos de sol mediante compositor. [Godot Engine](https://godotengine.org/asset-library/asset/5013?utm_source=chatgpt.com)
+
+Aunque está bajo **CC-BY-4.0**, lo cual exige atribución, yo lo descargaría aunque solo sea para estudiar **cómo resolvieron el problema completo del bosque**.
+
+Es casi un ejemplo de arquitectura visual para tu juego.
+
+---
+
+# 7. Agua: no necesitas programarla
+
+Para un lago donde puedas volar con el avión encima, hay varias opciones.
+
+La que probaría primero es **Boujie Water Shader**.
+
+Tiene:
+
+ondas Gerstner  
+espuma  
+espuma en costa  
+refracción  
+Fresnel  
+depth fog  
+LOD del océano.
+
+Y es MIT. [Godot Engine](https://godotengine.org/asset-library/asset/2070?utm_source=chatgpt.com)
+
+[Boujie Water Shader](https://godotengine.org/asset-library/asset/2070?utm_source=chatgpt.com)
+
+Para un simulador RC probablemente esto es suficiente.
+
+Si quieres además que un hidroavión pueda:
+
+**flotar, hundirse, experimentar drag, etc.**
+
+entonces puedes mirar **WaterBox**, que implementa volumen de agua, flotación y drag para `RigidBody3D`. También es MIT. [Godot Engine](https://godotengine.org/asset-library/asset/5339?utm_source=chatgpt.com)
+
+---
+
+# 8. El cielo puede mejorar muchísimo la percepción gráfica
+
+Antes incluso de poner mejores modelos, mejorar:
+
+**sol + exposición + cielo + niebla + atmósfera**
+
+puede transformar completamente cómo se ve el juego.
+
+Godot ya trae `PhysicalSkyMaterial`, que utiliza un modelo físico de luz diurna y produce un cielo más realista que el cielo procedural básico. [Godot Engine documentation](https://docs.godotengine.org/es/4.x/classes/class_physicalskymaterial.html?utm_source=chatgpt.com)
+
+Pero encontré algo todavía más interesante para tu caso:
+
+### Sky3D
+
+Tiene:
+
+sol  
+luna  
+estrellas  
+fases lunares  
+día/noche  
+atmósfera  
+fog  
+nubes  
+exposición dinámica.
+
+Funciona incluso con Forward, Mobile y Compatibility y es MIT. [Godot Engine](https://godotengine.org/asset-library/asset/5167)
+
+[Sky3D](https://godotengine.org/asset-library/asset/5167?utm_source=chatgpt.com)
+
+Aunque tu simulador comience simplemente con “un domingo a las 10 de la mañana”, tener esa infraestructura podría permitir después:
+
+7:00 a. m.  
+mediodía  
+atardecer  
+noche  
+día nublado.
+
+---
+
+# 9. Kenney: una mina de cosas pequeñas
+
+Para objetos secundarios usaría mucho **Kenney**.
+
+Tiene assets CC0.
+
+Por ejemplo encontré:
+
+**Car Kit:** 45 archivos, CC0. [Kenney](https://kenney.nl/assets/car-kit?part=e87ebc1a-6413-45e1-9a40-ed1276cc92d6\&utm_source=chatgpt.com)
+
+**Racing Kit:** 110 archivos, CC0. [Kenney](https://kenney.nl/assets/racing-kit?utm_source=chatgpt.com)
+
+También tiene ciudades, carreteras, fábricas, skyboxes, edificios, prototipos, UI, etc. Su biblioteca actual incluso tiene City Kit, City Roads, Mini Forest y otros paquetes 3D. [Kenney](https://kenney.nl/assets)
+
+[Kenney Assets](https://kenney.nl/assets?utm_source=chatgpt.com)
+
+No son hiperrealistas.
+
+Pero para objetos como:
+
+carros estacionados  
+conos  
+barreras  
+señales  
+bancas  
+canecas  
+vallas  
+pequeños edificios
+
+funcionan perfectamente.
+
+Especialmente objetos que ves desde un avión a 100 metros.
+
+---
+
+# 10. KayKit es otra biblioteca enorme CC0
+
+KayKit también tiene bastantes paquetes preparados para videojuegos y compatibles con Godot.
+
+Hay paquetes CC0 como:
+
+City Builder  
+Furniture  
+Prototype  
+Dungeon  
+Restaurant  
+Characters.
+
+La propia Asset Library de Godot tiene varios de ellos publicados como CC0. [Godot Engine](https://godotengine.org/asset-library/asset?filter=kaykit\&utm_source=chatgpt.com)
+
+El City Builder, por ejemplo, viene en OBJ, FBX y glTF y está diseñado para motores como Godot. [GitHub](https://github.com/KayKit-Game-Assets/KayKit-City-Builder-Bits-1.0/blob/main/README.md?utm_source=chatgpt.com)
+
+Esto me gusta para poblar rápidamente mundos sin diseñarlo todo.
+
+---
+
+# 11. Carreteras: también hay un generador
+
+Encontré uno particularmente bueno y actualizado prácticamente esta semana:
+
+### Godot Road Generator 0.9.4
+
+Actualizado el **1 de octubre de 2026**.
+
+Permite:
+
+carreteras  
+calles  
+paths  
+intersecciones  
+colisiones  
+carriles  
+AI paths  
+integración con Terrain3D.
+
+MIT. [Godot Engine](https://godotengine.org/asset-library/asset/5507?utm_source=chatgpt.com)
+
+[Godot Road Generator](https://godotengine.org/asset-library/asset/5507?utm_source=chatgpt.com)
+
+Para un simulador RC esto te deja hacer rápidamente algo como:
+
+`campo → pista → vía secundaria → carretera → parqueadero`.
+
+---
+
+# 12. Material Maker: cuando no encuentres una textura, créala
+
+Este proyecto me gustó mucho para tu filosofía open source.
+
+**Material Maker** es básicamente una alternativa open source a herramientas de creación de materiales procedurales.
+
+Tiene más de **200 nodos**, genera materiales PBR y exporta para Godot. También tiene una biblioteca comunitaria de cientos de materiales, nodos y brushes. [Material Maker](https://www.materialmaker.org/?utm_source=chatgpt.com)
+
+El programa en sí está bajo MIT. [GitHub](https://github.com/RodZill4/material-maker?utm_source=chatgpt.com)
+
+[Material Maker](https://www.materialmaker.org/?utm_source=chatgpt.com)
+
+Por ejemplo podrías crear:
+
+asfalto de pista RC  
+líneas blancas  
+cemento envejecido  
+pasto irregular  
+barro  
+huellas de neumáticos  
+superficies mojadas.
+
+Sin ser artista 3D experto.
+
+---
+
+# 13. Hay otro hallazgo que no es visual, pero para TU juego es importantísimo
+
+Mientras investigaba apareció esto:
+
+### Godot Aerodynamic Physics
+
+Es literalmente un addon para **simulación aerodinámica en Godot**.
+
+Tiene:
+
+`AeroBody3D`  
+`AeroInfluencer3D`  
+superficies aerodinámicas  
+perfiles de desempeño  
+y tienen planeado ampliar perfiles de airfoils, sistemas de rotores y análisis energético.
+
+MIT y actualizado en junio de 2026. [Godot Engine](https://godotengine.org/asset-library/asset/2580?utm_source=chatgpt.com)
+
+[Godot Aerodynamic Physics](https://godotengine.org/asset-library/asset/2580?utm_source=chatgpt.com)
+
+Yo **sí lo metería en nuestra carpeta de investigación**, aunque terminemos no utilizándolo. Para un simulador RC merece ser evaluado.
+
+---
+
+## Una advertencia importante: Quaternius
+
+Inicialmente pensé en recomendártelo mucho porque tiene unos packs espectaculares de naturaleza, autos, ciudades y props.
+
+Pero encontré algo importante.
+
+**Quaternius cambió su licencia el 28 de agosto de 2026.**
+
+Su licencia actual permite usar gratuitamente los assets en juegos, modificarlos y distribuir el producto final, pero explícitamente **prohíbe redistribuir los assets como assets**. [Quaternius](https://quaternius.com/license.html)
+
+Eso es incómodo para un juego cuyo repositorio completo quieres tener en GitHub.
+
+Así que yo no lo pondría automáticamente dentro del repo open source.
+
+Hay packs antiguos que aparecen todavía identificados como CC0 y habría que verificar individualmente qué versión y licencia tenían. No asumiría que todo Quaternius sigue siendo CC0.
+
+Este tipo de detalle es precisamente el que conviene controlar.
+
+---
+
+# Lo que yo construiría primero
+
+Si este fuera nuestro repo, haría la primera transformación visual así:
+
+1. **Terrain3D**
+2. **4–6 materiales ambientCG/Poly Haven**
+3. **Sky3D**
+4. **árboles + ProtonScatter**
+5. **grass**
+6. **agua**
+7. **carretera y parqueadero**
+8. **carritos, vallas, bancas, hangares, conos y props**
+9. **fog atmosférico muy ligero**
+10. **LOD serio para mantener FPS**
+
+Con eso puedes pasar de algo que parece:
+
+> “demo técnica de Godot”
+
+a algo que empieza a parecer:
+
+> **“simulador RC moderno”.**
+
+Y hay otra decisión que considero importante: **yo no intentaría hacerlo fotorealista al máximo**. Buscaría un **realismo limpio/semi-realista**, similar a simuladores de vuelo modernos pero simplificando objetos lejanos. Como el jugador mira normalmente el avión desde decenas o cientos de metros, la iluminación, el terreno, la vegetación, el cielo y las sombras importan muchísimo más que tener un carro de 400.000 polígonos.
+
+Además, Godot ya tiene soporte para LOD y occlusion culling, por lo que podemos construir el sistema para que los árboles/props cercanos sean buenos y los lejanos sean muy baratos de renderizar. [GitHub](https://github.com/godotengine/godot-docs/blob/master/tutorials/3d/mesh_lod.rst?utm_source=chatgpt.com)
+
+**La combinación que más me convence para nuestro proyecto es:**
+
+**Godot + Terrain3D + ambientCG + Poly Haven + ProtonScatter + Tree3D + Sky3D + Boujie Water + Kenney + Material Maker.**
+
+Todo ese núcleo es **MIT o CC0**, por lo que además encaja especialmente bien con la idea de que el simulador sea open source.

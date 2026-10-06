@@ -378,3 +378,62 @@ Evidencia: [comparación y límites](docs/research/avanti-s-transparency-compari
 - Medir antes de asumir: el desglose atribuyó el coste a la textura de césped (≈ 220 ms) y a la construcción del avión (≈ 240 ms). En GDScript una lambda captura las variables locales por valor: un cronómetro que actualiza `t` dentro de la lambda mide tiempos acumulados.
 
 Prueba: capturas `ui-home-en.png`/`ui-home-es.png`, `tests/test_ui_home.gd` (contraste de cada etiqueta, fondo liberado al volar), mutaciones y suite completa en un clon limpio.
+
+## 2026-10-06 · VQ — revisión senior antes de implementar
+
+- El campo actual se construye tanto en `main.gd` como en `ui/home_scene.gd`: compartir materiales no comparte el montaje. L5 debe dar a ambos un constructor de campo común, manteniendo separados cámara, avión, entorno y sesión.
+- Las pruebas de atmósfera usan filas y franjas de cielo/suelo vacíos; añadir árboles exige mantener ese fixture y crear casos del campo completo, no aflojar los umbrales. Además, `capture.sh` puede encontrar un PNG anterior tras un proceso fallido: VQ-01a debe exigir salida nueva y estado correcto antes de usar capturas como evidencia.
+- `preferences.gd` ya tiene esquema y `app_root.gd` separa la ruta técnica de las preferencias. Calidad se integra ahí; las texturas generadas por código no ganan variantes 1K/2K/4K por añadir un selector. Los primeros presets comparten recursos.
+- El plan de paisaje hace depender las colinas L7 del generador L13a, y los assets fuente de la raíz no son recursos exportables de `app/`. La primera entrega se acota a L5/L6, con derivados runtime y prueba de los tres exports.
+
+Prueba: lectura de esos flujos y contratos, y revisión de enlaces/consistencia del [plan ejecutable](docs/VISUAL-QUALITY-PLAN.md). Son hallazgos de revisión; no se implementaron las correcciones ni se ejecutó la suite del juego en esta entrega.
+
+## 2026-10-06 · EX-02 — revisión visual automática del Extra
+
+- Superponer el plano escaneado a la escala exacta de una vista ortográfica comprueba de una vez datos, constructor y cámara. Ala, cola, carenado y rueda de cola caen sobre las líneas; el tren no (carena simétrica frente a una gota, pata cilíndrica frente a una pletina). Esas superposiciones son material derivado del plano: se generan en local y no se versionan.
+- Medir bordes de silueta en un render a 1137 px/m frente a `geometry.json` aisló un defecto de 2–3 mm (margen añadido a la cabina) que no se veía en ninguna imagen. A 1280×720 (2,6 mm/px) quedaba dentro del ruido. La primera versión de la comprobación daba 190 mm de error porque la deriva forma parte de la silueta lateral: revisar qué pieza define cada borde antes de culpar al modelo.
+- El hallazgo más importante no era de forma sino de lectura: con alabeo de ±60° visto desde tierra, extradós e intradós blancos dan luminancias de 127 y 139. Medir la orientación por tono da una línea base objetiva para EX-10, antes de pintar nada.
+- Los recorridos de la vista previa venían del archivo de datos del Stik. Calcularlos del manual del Extra (`asin(d/r)` en la cuerda más ancha: 17,6° / 23,9° / 30,0°) cambió las imágenes deflectadas. Mirar de dónde sale cada número, incluso en código solo visual.
+- Con commits en paralelo, el inspector se preparó y verificó en una copia de `app/` y se copió después. Ningún estado intermedio roto llegó al árbol.
+
+Prueba: [informe](docs/research/extra-300-visual-review-v1.md), `research/extra-300/ex02/capture.sh` (82 renders idénticos en dos ejecuciones), `review.json` en `research/extra-300/ex02/review-2026-10-06/`.
+
+## 2026-10-06 · Avanti — afinar con cámaras congeladas
+
+- Mantener las tres cámaras distingue cambios de forma de cambios de encuadre. Reducir la cuerda estimada y segmentar las puntas mejoró las muestras del ala en las tres fotos; el fuselaje siguió discrepando. No basta con mejorar una sola perspectiva.
+- Un contorno curvo no debe producir una bisagra curva: el borde de salida sigue las estaciones, mientras el eje y borde delantero del mando se interpolan sobre una recta común.
+- La transición cóncava de deriva requiere triangulación de polígonos; un abanico desde un centro puede cubrir huecos. Dos extrusiones de una C, cuyo centro cae fuera del polígono, verifican volumen orientado y detectan inversión de caras en una copia temporal.
+- La distancia al borde más cercano es exploratoria y depende de oclusiones: puede cambiar una métrica del fuselaje aunque sus secciones no cambien. Guardar muestras, hashes y resultados desfavorables evita presentarla como metrología.
+
+Prueba: [afinamiento y comparación](docs/research/avanti-s-contour-refinement.md), clon sin referencias, siete bisagras, tres overlays, nueve capturas y visor comprobado en escritorio/móvil. Recursos gráficos locales excluidos de Git.
+
+## 2026-10-06 · VQ — integrar bibliotecas y assets aportados por el propietario
+
+- La licencia general Quaternius QAL (2026-08-28) restringe redistribución independiente, mientras algunas fichas antiguas aún indican CC0. Los planes dejan de tratar al proveedor como CC0 por defecto: conservar evidencia del archivo/paquete o elegir alternativa. No se presume revocación de una licencia anterior demostrada.
+- El soporte de Compatibility de Sky3D está declarado por su autor; su coste de integración aquí viene de `TIME`, el control del entorno y la coherencia del reloj. El código MIT tampoco cubre sus mapas estelares CC BY 4.0. ProtonScatter también separa licencia del addon y texturas demo.
+- Reutilizar materiales/props reduce autoría, pero generadores con colisión o flotación no sustituyen la física float64. El aporte amplía L6/L9/L10/L11/L18/L19 con candidatos y pruebas sin convertir agua, carreteras o una migración de cielo/terreno en requisitos del primer campo.
+
+Prueba: [contraste con fuentes primarias y decisiones](docs/research/visual-quality-supplement-2026-10-06.md), con el texto original conservado. Integración documental; no se instalaron addons ni se ejecutaron nuevos benchmarks.
+
+## 2026-10-06 · UI-02/03 — pausa, foco y vuelta a Inicio
+
+- Investigar antes de escribir evitó dos errores de diseño: un botón enfocado **no** consume Enter ni Espacio (el evento sigue hasta `_unhandled_input` del vuelo, que tiene Enter para la calibración), y en X11 la notificación de foco de aplicación llega unos 250 ms después de la de ventana, con la tecla aún pulsada. El menú se traga todas las teclas que la GUI deja pasar.
+- La prueba con eventos reales encontró dos defectos que la lectura del código no veía: el menú se liberaba dentro de su propio `_unhandled_input` (después `get_viewport()` era nulo), y abrirlo desde `NOTIFICATION_APPLICATION_FOCUS_OUT` fallaba porque el árbol bloquea `add_child()` mientras propaga la notificación; en la app real habría fallado igual. Abrir el menú en diferido lo resuelve.
+- Simular la pérdida de foco con `SceneTree.notification()` sigue el camino real (libera teclas y propaga); `root.propagate_notification()` no libera las teclas.
+- El defecto de sonido de la investigación 19 se corrige en el mismo sitio que lo causaba: con `stream_paused` asignado en cada frame (una sola asignación tras `play()` no sobrevive hasta que el reproductor registra su playback) y la hélice sin avanzar mientras la simulación está pausada.
+- Una retención con nombre en la sesión es más segura que desactivar el nodo: desactivarlo cortaría `_input`, y la radio necesita sus eventos de movimiento para la regla de armado.
+- Destruir la escena de Inicio antes de su primer dibujado deja dos texturas GL de 256 × 256 reportadas como filtradas al salir (Compatibility, llvmpipe). Una sonda mínima con una textura sola no lo reproduce, ni la sombra sola; no se aisló más. Una persona no puede pulsar Volar antes del primer frame; la captura espera dos frames.
+
+Prueba: `tests/test_ui_pause.gd` (33 comprobaciones, seis mutaciones detectadas), capturas `ui-pause-en.png`/`ui-pause-es.png`, traza y captura de vuelo idénticas al HEAD, suite completa en un clon limpio.
+
+## 2026-10-06 · EX-02b/EX-10a — superficie suave, tren del plano y decoración que se lee
+
+- Interpolación cúbica **monótona** (Fritsch–Carlson) entre estaciones medidas: pasa por cada medida y no sobrepasa los valores vecinos. Un spline normal habría abombado el marco trasero de la cabina, que sube 79 mm en 53 mm de longitud. Render frente a datos ≤ 1,16 mm.
+- Una pieza asentada sobre otra debe tomar el ancho de la piel a su altura, no una fracción del ancho máximo: la cúpula asomaba «orejas» sobre el lomo redondeado.
+- Con espaciado uniforme, el morro romo de la carena quedaba entre dos muestras y salía en cuña. El espaciado coseno concentra las secciones donde el contorno gira.
+- Las UV en coordenadas del modelo (metros, fracción de cuerda) permiten definir la decoración con las cotas del avión: la misma banda cruza paneles y mandos sin costuras, sin textura. Una banda definida como fracción de la altura local se escalonaba donde cambiaba el techo; en altura absoluta salió recta.
+- La métrica de orientación necesitaba dos arreglos para no engañar. La luminancia sola no distingue rojo de azul. Y los píxeles de borde mezclados con el cielo contaban como «azul» (5–15 % en un avión todo blanco); contando solo píxeles interiores, la línea base es 0 %.
+- Una copia de trabajo desincronizada (geometría generada anterior) pasaba sus pruebas; el `diff` previo a instalar lo detectó. Sincronizar los ficheros generados antes de verificar en la copia.
+- Un `rm -rf $S/...` con variables fue bloqueado por el control de seguridad. Usar `"${S:?}"` en scripts de trabajo.
+
+Prueba: [revisión 2](docs/research/extra-300-visual-review-v1.md#5-revisión-2-2026-10-06-ex02b-y-ex-10a-aplicados), `verify_extra.gd` 104/0 (mutaciones M7–M9 detectadas), `app/test.sh` en verde en un clon limpio, 82 renders idénticos en dos ejecuciones.

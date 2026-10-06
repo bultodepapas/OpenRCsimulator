@@ -64,6 +64,9 @@ var crash := {}
 var pause_reason := ""
 ## false: commands hold still (captures, headless traces).
 var input_enabled := true
+## Holds by name (UI-02: "menu"). While any is set the session is frozen: no input sampling, no crash countdown,
+## the simulation paused. Releasing the last hold does not resume: continuing stays the pilot's explicit resume().
+var holds := {}
 ## false: no aircraft physics (the Stage 0/1 scripted circle). The simulation is disabled; input still shapes commands.
 var physics_enabled := true
 
@@ -150,8 +153,32 @@ func _failsafe(reason: String) -> void:
 	print("failsafe: ", reason)
 
 
-## The pilot's explicit "continue" (never automatic).
+## Freezes the session for `reason` (a menu): inputs, crash countdown and simulation all stop where they are.
+func hold(reason: String) -> void:
+	holds[reason] = true
+	sim.set_paused(true)
+
+
+## Lifts one hold. The flight stays paused until resume() (or the crash hold ends and restarts it).
+func release(reason: String) -> void:
+	holds.erase(reason)
+
+
+## Whether this flight can fly at all: valid aircraft and start, no simulation fault (menus disable Continue).
+func is_flyable() -> bool:
+	return _flight_ready()
+
+
+## Whether resume() would fly now: flyable, not held, not showing a crash.
+func can_resume() -> bool:
+	return holds.is_empty() and crash.is_empty() and _flight_ready()
+
+
+## The pilot's explicit "continue" (never automatic). Refused while a menu holds the session or a crash is shown
+## (the crash restarts by itself; flying on would pass through the ground).
 func resume() -> void:
+	if not holds.is_empty() or not crash.is_empty():
+		return
 	if not _has_valid_start():
 		sim.set_paused(true)
 		if pause_reason.is_empty():
@@ -321,6 +348,8 @@ func reload() -> String:
 
 
 func _physics_process(_delta: float) -> void:
+	if not holds.is_empty():
+		return # frozen by a menu: no sampling (navigation keys never reach the flight), no crash countdown
 	if input_enabled:
 		if radio.connected and calibration != null:
 			radio.poll(read_axis, sim.dt())

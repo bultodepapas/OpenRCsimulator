@@ -1,0 +1,1263 @@
+{
+ "format": "openrc-visual-review v1",
+ "step": "EX-02 review",
+ "captures": 79,
+ "visual_revision": "gp-extra-300s-60-ex02-preview",
+ "geometry_sha256": "e792e424f76aa3ae3dc4b390ec5df57364f0b219374eeefbe3026957fb27c2f6",
+ "throws_deg": {
+  "aileron": 17.6006649098975,
+  "elevator": 23.92194317248,
+  "rudder": 30.0260709855021
+ },
+ "tools": {
+  "python_pillow": "11.3.0",
+  "numpy": "1.26.4"
+ },
+ "cropped_non_detail_views": [],
+ "distance_footprint": {
+  "distance_020m_level_crossing.png": {
+   "span_px": 50,
+   "height_px": 24,
+   "pixels": 547
+  },
+  "distance_020m_roll_minus60.png": {
+   "span_px": 50,
+   "height_px": 58,
+   "pixels": 950
+  },
+  "distance_020m_roll_plus60.png": {
+   "span_px": 50,
+   "height_px": 36,
+   "pixels": 703
+  },
+  "distance_020m_nose_toward_pilot.png": {
+   "span_px": 58,
+   "height_px": 21,
+   "pixels": 428
+  },
+  "distance_050m_level_crossing.png": {
+   "span_px": 22,
+   "height_px": 10,
+   "pixels": 87
+  },
+  "distance_050m_roll_minus60.png": {
+   "span_px": 21,
+   "height_px": 24,
+   "pixels": 191
+  },
+  "distance_050m_roll_plus60.png": {
+   "span_px": 22,
+   "height_px": 20,
+   "pixels": 171
+  },
+  "distance_050m_nose_toward_pilot.png": {
+   "span_px": 25,
+   "height_px": 6,
+   "pixels": 62
+  },
+  "distance_100m_level_crossing.png": {
+   "span_px": 11,
+   "height_px": 6,
+   "pixels": 26
+  },
+  "distance_100m_roll_minus60.png": {
+   "span_px": 10,
+   "height_px": 12,
+   "pixels": 53
+  },
+  "distance_100m_roll_plus60.png": {
+   "span_px": 10,
+   "height_px": 11,
+   "pixels": 50
+  },
+  "distance_100m_nose_toward_pilot.png": {
+   "span_px": 13,
+   "height_px": 3,
+   "pixels": 16
+  }
+ },
+ "orientation_contrast": {
+  "020m": {
+   "roll_plus60": {
+    "pixels": 363,
+    "mean_luminance": 127.0
+   },
+   "roll_minus60": {
+    "pixels": 560,
+    "mean_luminance": 139.2
+   },
+   "difference": -12.2
+  },
+  "050m": {
+   "roll_plus60": {
+    "pixels": 85,
+    "mean_luminance": 130.1
+   },
+   "roll_minus60": {
+    "pixels": 95,
+    "mean_luminance": 137.8
+   },
+   "difference": -7.7
+  },
+  "100m": {
+   "roll_plus60": {
+    "pixels": 33,
+    "mean_luminance": 123.4
+   },
+   "roll_minus60": {
+    "pixels": 35,
+    "mean_luminance": 134.1
+   },
+   "difference": -10.7
+  }
+ },
+ "scale_views": "scale_hr",
+ "render_vs_geometry": {
+  "image_size": [
+   3840,
+   2160
+  ],
+  "px_per_m": 1136.842,
+  "pixel_mm": 0.88,
+  "side_profile_residuals": [
+   {
+    "z_m": -0.3291,
+    "bottom_mm": -0.45,
+    "top_mm": 0.28
+   },
+   {
+    "z_m": -0.3055,
+    "bottom_mm": -0.14,
+    "top_mm": 0.08
+   },
+   {
+    "z_m": -0.248,
+    "bottom_mm": -0.78,
+    "top_mm": 0.52
+   },
+   {
+    "z_m": 0.0816,
+    "bottom_mm": 0.04,
+    "top_mm": 2.91
+   },
+   {
+    "z_m": 0.1289,
+    "bottom_mm": 0.06,
+    "top_mm": 2.04
+   },
+   {
+    "z_m": 0.1914,
+    "bottom_mm": -0.14,
+    "top_mm": 2.23
+   },
+   {
+    "z_m": 0.259,
+    "bottom_mm": -0.71,
+    "top_mm": 2.54
+   },
+   {
+    "z_m": 0.3372,
+    "bottom_mm": -0.05,
+    "top_mm": 1.85
+   },
+   {
+    "z_m": 0.39,
+    "bottom_mm": -0.33,
+    "top_mm": 2.25
+   },
+   {
+    "z_m": 0.4957,
+    "bottom_mm": 0.01,
+    "top_mm": 0.44
+   },
+   {
+    "z_m": 0.5717,
+    "bottom_mm": -0.41,
+    "top_mm": 0.26
+   },
+   {
+    "z_m": 0.6309,
+    "bottom_mm": -0.52,
+    "top_mm": 0.51
+   },
+   {
+    "z_m": 0.7407,
+    "bottom_mm": -0.26
+   }
+  ],
+  "top_width_residuals": [
+   {
+    "z_m": -0.3291,
+    "half_width_mm": 0.43
+   },
+   {
+    "z_m": -0.3055,
+    "half_width_mm": 0.43
+   },
+   {
+    "z_m": -0.248,
+    "half_width_mm": 0.43
+   },
+   {
+    "z_m": 0.3372,
+    "half_width_mm": 0.29
+   },
+   {
+    "z_m": 0.39,
+    "half_width_mm": 0.18
+   },
+   {
+    "z_m": 0.4957,
+    "half_width_mm": -0.04
+   },
+   {
+    "z_m": 0.5717,
+    "half_width_mm": -0.09
+   },
+   {
+    "z_m": 0.6309,
+    "half_width_mm": 0.65
+   }
+  ],
+  "wing_edge_residuals": [
+   {
+    "span_m": -0.22,
+    "le_mm": -0.79,
+    "te_mm": 0.41
+   },
+   {
+    "span_m": 0.22,
+    "le_mm": 0.09,
+    "te_mm": 0.41
+   },
+   {
+    "span_m": -0.3,
+    "le_mm": -0.17,
+    "te_mm": 0.8
+   },
+   {
+    "span_m": 0.3,
+    "le_mm": -0.17,
+    "te_mm": -0.08
+   },
+   {
+    "span_m": -0.4,
+    "le_mm": -0.49,
+    "te_mm": 0.41
+   },
+   {
+    "span_m": 0.4,
+    "le_mm": -0.49,
+    "te_mm": 0.41
+   },
+   {
+    "span_m": -0.5,
+    "le_mm": -0.81,
+    "te_mm": 0.02
+   },
+   {
+    "span_m": 0.5,
+    "le_mm": 0.07,
+    "te_mm": 0.02
+   },
+   {
+    "span_m": -0.6,
+    "le_mm": -0.25,
+    "te_mm": 0.51
+   },
+   {
+    "span_m": 0.6,
+    "le_mm": -0.25,
+    "te_mm": 0.51
+   },
+   {
+    "span_m": -0.7,
+    "le_mm": -0.57,
+    "te_mm": 0.12
+   },
+   {
+    "span_m": 0.7,
+    "le_mm": -0.57,
+    "te_mm": 0.12
+   },
+   {
+    "span_m": -0.78,
+    "le_mm": 0.06,
+    "te_mm": 0.52
+   },
+   {
+    "span_m": 0.78,
+    "le_mm": 0.06,
+    "te_mm": 0.52
+   }
+  ],
+  "max_abs_mm": 2.91,
+  "allowance_mm": 2.5,
+  "ok": false
+ },
+ "plan_overlays": {
+  "overlay_side_fuselage_sheet.png": "side view vs EXT6P02 side view (scale 300.56 px/in)",
+  "overlay_top_wing_sheet.png": "top view, left wing vs EXT6P01 full-size wing (ruler 399.88 px/in)",
+  "overlay_top_stab_sheet.png": "top view, stab/elevator vs full-size drawing on EXT6P01",
+  "overlay_top_fuselage_bottom_view.png": "top view, fuselage vs EXT6P02 bottom view (mirror-symmetric)",
+  "overlay_side_fuselage_sheet_zoom_nose.png": "side view vs EXT6P02 side view (scale 300.56 px/in): nose",
+  "overlay_side_fuselage_sheet_zoom_canopy.png": "side view vs EXT6P02 side view (scale 300.56 px/in): canopy",
+  "overlay_side_fuselage_sheet_zoom_tail.png": "side view vs EXT6P02 side view (scale 300.56 px/in): tail",
+  "overlay_side_fuselage_sheet_zoom_gear.png": "side view vs EXT6P02 side view (scale 300.56 px/in): gear",
+  "overlay_top_wing_sheet_zoom_wing.png": "top view, left wing vs EXT6P01 full-size wing (ruler 399.88 px/in): wing",
+  "overlay_top_wing_sheet_zoom_tip.png": "top view, left wing vs EXT6P01 full-size wing (ruler 399.88 px/in): tip",
+  "overlay_top_stab_sheet_zoom_stab.png": "top view, stab/elevator vs full-size drawing on EXT6P01: stab",
+  "overlay_top_fuselage_bottom_view_zoom_nose.png": "top view, fuselage vs EXT6P02 bottom view (mirror-symmetric): nose",
+  "overlay_top_fuselage_bottom_view_zoom_aft.png": "top view, fuselage vs EXT6P02 bottom view (mirror-symmetric): aft"
+ },
+ "per_image": {
+  "inspection_front.png": {
+   "pixels": 15718,
+   "bbox_px": [
+    332,
+    252,
+    947,
+    461
+   ],
+   "width_px": 616,
+   "height_px": 210,
+   "touches_border": false
+  },
+  "inspection_side_left.png": {
+   "pixels": 37440,
+   "bbox_px": [
+    377,
+    252,
+    901,
+    461
+   ],
+   "width_px": 525,
+   "height_px": 210,
+   "touches_border": false
+  },
+  "inspection_top.png": {
+   "pixels": 96947,
+   "bbox_px": [
+    332,
+    97,
+    947,
+    621
+   ],
+   "width_px": 616,
+   "height_px": 525,
+   "touches_border": false
+  },
+  "inspection_bottom.png": {
+   "pixels": 96963,
+   "bbox_px": [
+    332,
+    97,
+    947,
+    621
+   ],
+   "width_px": 616,
+   "height_px": 525,
+   "touches_border": false
+  },
+  "inspection_oblique_front_left.png": {
+   "pixels": 45333,
+   "bbox_px": [
+    404,
+    230,
+    869,
+    497
+   ],
+   "width_px": 466,
+   "height_px": 268,
+   "touches_border": false
+  },
+  "inspection_oblique_rear_right.png": {
+   "pixels": 43766,
+   "bbox_px": [
+    388,
+    300,
+    941,
+    461
+   ],
+   "width_px": 554,
+   "height_px": 162,
+   "touches_border": false
+  },
+  "inspection_oblique_front_left_full.png": {
+   "pixels": 44611,
+   "bbox_px": [
+    404,
+    229,
+    869,
+    497
+   ],
+   "width_px": 466,
+   "height_px": 269,
+   "touches_border": false
+  },
+  "inspection_oblique_rear_right_full.png": {
+   "pixels": 40391,
+   "bbox_px": [
+    389,
+    300,
+    941,
+    461
+   ],
+   "width_px": 553,
+   "height_px": 162,
+   "touches_border": false
+  },
+  "orbit_el-25_az000.png": {
+   "pixels": 45586,
+   "bbox_px": [
+    310,
+    231,
+    969,
+    467
+   ],
+   "width_px": 660,
+   "height_px": 237,
+   "touches_border": false
+  },
+  "orbit_el-25_az030.png": {
+   "pixels": 50876,
+   "bbox_px": [
+    346,
+    246,
+    932,
+    459
+   ],
+   "width_px": 587,
+   "height_px": 214,
+   "touches_border": false
+  },
+  "orbit_el-25_az060.png": {
+   "pixels": 55575,
+   "bbox_px": [
+    383,
+    200,
+    868,
+    459
+   ],
+   "width_px": 486,
+   "height_px": 260,
+   "touches_border": false
+  },
+  "orbit_el-25_az090.png": {
+   "pixels": 59251,
+   "bbox_px": [
+    368,
+    203,
+    875,
+    476
+   ],
+   "width_px": 508,
+   "height_px": 274,
+   "touches_border": false
+  },
+  "orbit_el-25_az120.png": {
+   "pixels": 59437,
+   "bbox_px": [
+    371,
+    203,
+    932,
+    487
+   ],
+   "width_px": 562,
+   "height_px": 285,
+   "touches_border": false
+  },
+  "orbit_el-25_az150.png": {
+   "pixels": 54540,
+   "bbox_px": [
+    390,
+    143,
+    968,
+    492
+   ],
+   "width_px": 579,
+   "height_px": 350,
+   "touches_border": false
+  },
+  "orbit_el-25_az180.png": {
+   "pixels": 44829,
+   "bbox_px": [
+    347,
+    119,
+    933,
+    487
+   ],
+   "width_px": 587,
+   "height_px": 369,
+   "touches_border": false
+  },
+  "orbit_el-25_az210.png": {
+   "pixels": 54457,
+   "bbox_px": [
+    311,
+    143,
+    889,
+    492
+   ],
+   "width_px": 579,
+   "height_px": 350,
+   "touches_border": false
+  },
+  "orbit_el-25_az240.png": {
+   "pixels": 59405,
+   "bbox_px": [
+    347,
+    203,
+    908,
+    487
+   ],
+   "width_px": 562,
+   "height_px": 285,
+   "touches_border": false
+  },
+  "orbit_el-25_az270.png": {
+   "pixels": 59156,
+   "bbox_px": [
+    404,
+    204,
+    911,
+    476
+   ],
+   "width_px": 508,
+   "height_px": 273,
+   "touches_border": false
+  },
+  "orbit_el-25_az300.png": {
+   "pixels": 55488,
+   "bbox_px": [
+    411,
+    200,
+    896,
+    459
+   ],
+   "width_px": 486,
+   "height_px": 260,
+   "touches_border": false
+  },
+  "orbit_el-25_az330.png": {
+   "pixels": 50707,
+   "bbox_px": [
+    347,
+    243,
+    932,
+    459
+   ],
+   "width_px": 586,
+   "height_px": 217,
+   "touches_border": false
+  },
+  "orbit_el+10_az000.png": {
+   "pixels": 26372,
+   "bbox_px": [
+    311,
+    242,
+    968,
+    487
+   ],
+   "width_px": 658,
+   "height_px": 246,
+   "touches_border": false
+  },
+  "orbit_el+10_az030.png": {
+   "pixels": 34888,
+   "bbox_px": [
+    346,
+    243,
+    927,
+    492
+   ],
+   "width_px": 582,
+   "height_px": 250,
+   "touches_border": false
+  },
+  "orbit_el+10_az060.png": {
+   "pixels": 42931,
+   "bbox_px": [
+    382,
+    248,
+    870,
+    486
+   ],
+   "width_px": 489,
+   "height_px": 239,
+   "touches_border": false
+  },
+  "orbit_el+10_az090.png": {
+   "pixels": 43479,
+   "bbox_px": [
+    368,
+    255,
+    875,
+    472
+   ],
+   "width_px": 508,
+   "height_px": 218,
+   "touches_border": false
+  },
+  "orbit_el+10_az120.png": {
+   "pixels": 42891,
+   "bbox_px": [
+    367,
+    264,
+    934,
+    455
+   ],
+   "width_px": 568,
+   "height_px": 192,
+   "touches_border": false
+  },
+  "orbit_el+10_az150.png": {
+   "pixels": 33370,
+   "bbox_px": [
+    385,
+    271,
+    966,
+    444
+   ],
+   "width_px": 582,
+   "height_px": 174,
+   "touches_border": false
+  },
+  "orbit_el+10_az180.png": {
+   "pixels": 22553,
+   "bbox_px": [
+    350,
+    274,
+    928,
+    455
+   ],
+   "width_px": 579,
+   "height_px": 182,
+   "touches_border": false
+  },
+  "orbit_el+10_az210.png": {
+   "pixels": 33370,
+   "bbox_px": [
+    313,
+    271,
+    894,
+    444
+   ],
+   "width_px": 582,
+   "height_px": 174,
+   "touches_border": false
+  },
+  "orbit_el+10_az240.png": {
+   "pixels": 42915,
+   "bbox_px": [
+    345,
+    264,
+    912,
+    455
+   ],
+   "width_px": 568,
+   "height_px": 192,
+   "touches_border": false
+  },
+  "orbit_el+10_az270.png": {
+   "pixels": 43469,
+   "bbox_px": [
+    404,
+    255,
+    911,
+    472
+   ],
+   "width_px": 508,
+   "height_px": 218,
+   "touches_border": false
+  },
+  "orbit_el+10_az300.png": {
+   "pixels": 42865,
+   "bbox_px": [
+    408,
+    248,
+    897,
+    486
+   ],
+   "width_px": 490,
+   "height_px": 239,
+   "touches_border": false
+  },
+  "orbit_el+10_az330.png": {
+   "pixels": 34865,
+   "bbox_px": [
+    352,
+    243,
+    933,
+    492
+   ],
+   "width_px": 582,
+   "height_px": 250,
+   "touches_border": false
+  },
+  "orbit_el+40_az000.png": {
+   "pixels": 65725,
+   "bbox_px": [
+    322,
+    148,
+    957,
+    545
+   ],
+   "width_px": 636,
+   "height_px": 398,
+   "touches_border": false
+  },
+  "orbit_el+40_az030.png": {
+   "pixels": 70519,
+   "bbox_px": [
+    361,
+    163,
+    929,
+    558
+   ],
+   "width_px": 569,
+   "height_px": 396,
+   "touches_border": false
+  },
+  "orbit_el+40_az060.png": {
+   "pixels": 75975,
+   "bbox_px": [
+    380,
+    205,
+    864,
+    634
+   ],
+   "width_px": 485,
+   "height_px": 430,
+   "touches_border": false
+  },
+  "orbit_el+40_az090.png": {
+   "pixels": 75893,
+   "bbox_px": [
+    368,
+    214,
+    875,
+    626
+   ],
+   "width_px": 508,
+   "height_px": 413,
+   "touches_border": false
+  },
+  "orbit_el+40_az120.png": {
+   "pixels": 71329,
+   "bbox_px": [
+    372,
+    213,
+    915,
+    569
+   ],
+   "width_px": 544,
+   "height_px": 357,
+   "touches_border": false
+  },
+  "orbit_el+40_az150.png": {
+   "pixels": 67481,
+   "bbox_px": [
+    393,
+    239,
+    958,
+    563
+   ],
+   "width_px": 566,
+   "height_px": 325,
+   "touches_border": false
+  },
+  "orbit_el+40_az180.png": {
+   "pixels": 60976,
+   "bbox_px": [
+    351,
+    230,
+    928,
+    583
+   ],
+   "width_px": 578,
+   "height_px": 354,
+   "touches_border": false
+  },
+  "orbit_el+40_az210.png": {
+   "pixels": 67463,
+   "bbox_px": [
+    321,
+    241,
+    886,
+    563
+   ],
+   "width_px": 566,
+   "height_px": 323,
+   "touches_border": false
+  },
+  "orbit_el+40_az240.png": {
+   "pixels": 71307,
+   "bbox_px": [
+    365,
+    213,
+    907,
+    569
+   ],
+   "width_px": 543,
+   "height_px": 357,
+   "touches_border": false
+  },
+  "orbit_el+40_az270.png": {
+   "pixels": 75907,
+   "bbox_px": [
+    404,
+    214,
+    911,
+    626
+   ],
+   "width_px": 508,
+   "height_px": 413,
+   "touches_border": false
+  },
+  "orbit_el+40_az300.png": {
+   "pixels": 76049,
+   "bbox_px": [
+    415,
+    205,
+    899,
+    633
+   ],
+   "width_px": 485,
+   "height_px": 429,
+   "touches_border": false
+  },
+  "orbit_el+40_az330.png": {
+   "pixels": 70425,
+   "bbox_px": [
+    350,
+    163,
+    918,
+    558
+   ],
+   "width_px": 569,
+   "height_px": 396,
+   "touches_border": false
+  },
+  "detail_cowl_spinner_front_left.png": {
+   "pixels": 287214,
+   "bbox_px": [
+    187,
+    0,
+    1279,
+    719
+   ],
+   "width_px": 1093,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_cowl_chin_below.png": {
+   "pixels": 418146,
+   "bbox_px": [
+    290,
+    0,
+    1279,
+    719
+   ],
+   "width_px": 990,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_spinner_prop_side.png": {
+   "pixels": 285613,
+   "bbox_px": [
+    501,
+    162,
+    1279,
+    719
+   ],
+   "width_px": 779,
+   "height_px": 558,
+   "touches_border": true
+  },
+  "detail_canopy_left.png": {
+   "pixels": 571005,
+   "bbox_px": [
+    0,
+    113,
+    1279,
+    719
+   ],
+   "width_px": 1280,
+   "height_px": 607,
+   "touches_border": true
+  },
+  "detail_canopy_rear.png": {
+   "pixels": 463362,
+   "bbox_px": [
+    0,
+    93,
+    1279,
+    719
+   ],
+   "width_px": 1280,
+   "height_px": 627,
+   "touches_border": true
+  },
+  "detail_wing_root_top_left.png": {
+   "pixels": 775785,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    719
+   ],
+   "width_px": 1280,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_wing_root_below_left.png": {
+   "pixels": 810030,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    719
+   ],
+   "width_px": 1280,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_wing_root_trailing_edge.png": {
+   "pixels": 559087,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    705
+   ],
+   "width_px": 1280,
+   "height_px": 706,
+   "touches_border": true
+  },
+  "detail_aileron_right_full.png": {
+   "pixels": 272951,
+   "bbox_px": [
+    0,
+    0,
+    1229,
+    486
+   ],
+   "width_px": 1230,
+   "height_px": 487,
+   "touches_border": true
+  },
+  "detail_aileron_right_opposite.png": {
+   "pixels": 309126,
+   "bbox_px": [
+    0,
+    0,
+    1229,
+    506
+   ],
+   "width_px": 1230,
+   "height_px": 507,
+   "touches_border": true
+  },
+  "detail_aileron_inboard_gap.png": {
+   "pixels": 473618,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    464
+   ],
+   "width_px": 1280,
+   "height_px": 465,
+   "touches_border": true
+  },
+  "detail_aileron_hinge_edge_on.png": {
+   "pixels": 387991,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    719
+   ],
+   "width_px": 1280,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_wing_tip_right.png": {
+   "pixels": 266021,
+   "bbox_px": [
+    432,
+    0,
+    1279,
+    471
+   ],
+   "width_px": 848,
+   "height_px": 472,
+   "touches_border": true
+  },
+  "detail_tail_left_rear.png": {
+   "pixels": 360668,
+   "bbox_px": [
+    0,
+    0,
+    975,
+    684
+   ],
+   "width_px": 976,
+   "height_px": 685,
+   "touches_border": true
+  },
+  "detail_tail_left_rear_full.png": {
+   "pixels": 342541,
+   "bbox_px": [
+    0,
+    0,
+    972,
+    663
+   ],
+   "width_px": 973,
+   "height_px": 664,
+   "touches_border": true
+  },
+  "detail_elevator_notch_top_full.png": {
+   "pixels": 388365,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    582
+   ],
+   "width_px": 1280,
+   "height_px": 583,
+   "touches_border": true
+  },
+  "detail_tail_below_tailwheel.png": {
+   "pixels": 404201,
+   "bbox_px": [
+    0,
+    0,
+    936,
+    719
+   ],
+   "width_px": 937,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_fin_root_side.png": {
+   "pixels": 572688,
+   "bbox_px": [
+    0,
+    0,
+    1231,
+    719
+   ],
+   "width_px": 1232,
+   "height_px": 720,
+   "touches_border": true
+  },
+  "detail_main_gear_front.png": {
+   "pixels": 270324,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    496
+   ],
+   "width_px": 1280,
+   "height_px": 497,
+   "touches_border": true
+  },
+  "detail_main_gear_side.png": {
+   "pixels": 291896,
+   "bbox_px": [
+    0,
+    0,
+    1279,
+    543
+   ],
+   "width_px": 1280,
+   "height_px": 544,
+   "touches_border": true
+  },
+  "distance_020m_level_crossing.png": {
+   "pixels": 547,
+   "bbox_px": [
+    624,
+    349,
+    673,
+    372
+   ],
+   "width_px": 50,
+   "height_px": 24,
+   "touches_border": false
+  },
+  "distance_020m_roll_minus60.png": {
+   "pixels": 950,
+   "bbox_px": [
+    624,
+    331,
+    673,
+    388
+   ],
+   "width_px": 50,
+   "height_px": 58,
+   "touches_border": false
+  },
+  "distance_020m_roll_plus60.png": {
+   "pixels": 703,
+   "bbox_px": [
+    624,
+    344,
+    673,
+    379
+   ],
+   "width_px": 50,
+   "height_px": 36,
+   "touches_border": false
+  },
+  "distance_020m_nose_toward_pilot.png": {
+   "pixels": 428,
+   "bbox_px": [
+    611,
+    353,
+    668,
+    373
+   ],
+   "width_px": 58,
+   "height_px": 21,
+   "touches_border": false
+  },
+  "distance_050m_level_crossing.png": {
+   "pixels": 87,
+   "bbox_px": [
+    633,
+    355,
+    654,
+    364
+   ],
+   "width_px": 22,
+   "height_px": 10,
+   "touches_border": false
+  },
+  "distance_050m_roll_minus60.png": {
+   "pixels": 191,
+   "bbox_px": [
+    633,
+    348,
+    653,
+    371
+   ],
+   "width_px": 21,
+   "height_px": 24,
+   "touches_border": false
+  },
+  "distance_050m_roll_plus60.png": {
+   "pixels": 171,
+   "bbox_px": [
+    633,
+    351,
+    654,
+    370
+   ],
+   "width_px": 22,
+   "height_px": 20,
+   "touches_border": false
+  },
+  "distance_050m_nose_toward_pilot.png": {
+   "pixels": 62,
+   "bbox_px": [
+    627,
+    358,
+    651,
+    363
+   ],
+   "width_px": 25,
+   "height_px": 6,
+   "touches_border": false
+  },
+  "distance_100m_level_crossing.png": {
+   "pixels": 26,
+   "bbox_px": [
+    637,
+    357,
+    647,
+    362
+   ],
+   "width_px": 11,
+   "height_px": 6,
+   "touches_border": false
+  },
+  "distance_100m_roll_minus60.png": {
+   "pixels": 53,
+   "bbox_px": [
+    637,
+    354,
+    646,
+    365
+   ],
+   "width_px": 10,
+   "height_px": 12,
+   "touches_border": false
+  },
+  "distance_100m_roll_plus60.png": {
+   "pixels": 50,
+   "bbox_px": [
+    637,
+    355,
+    646,
+    365
+   ],
+   "width_px": 10,
+   "height_px": 11,
+   "touches_border": false
+  },
+  "distance_100m_nose_toward_pilot.png": {
+   "pixels": 16,
+   "bbox_px": [
+    633,
+    359,
+    645,
+    361
+   ],
+   "width_px": 13,
+   "height_px": 3,
+   "touches_border": false
+  },
+  "scale_side_left.png": {
+   "pixels": 37440,
+   "bbox_px": [
+    377,
+    252,
+    901,
+    461
+   ],
+   "width_px": 525,
+   "height_px": 210,
+   "touches_border": false
+  },
+  "scale_top.png": {
+   "pixels": 96947,
+   "bbox_px": [
+    332,
+    97,
+    947,
+    621
+   ],
+   "width_px": 616,
+   "height_px": 525,
+   "touches_border": false
+  },
+  "scale_front.png": {
+   "pixels": 15718,
+   "bbox_px": [
+    332,
+    252,
+    947,
+    461
+   ],
+   "width_px": 616,
+   "height_px": 210,
+   "touches_border": false
+  }
+ }
+}

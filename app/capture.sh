@@ -60,6 +60,10 @@ for lang in en es; do
   timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
     --script res://tests/capture_ui.gd -- --out="$HERE/captures/ui-home-$lang.png" --lang=$lang > "$LOG" 2>&1 || true
   if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG" || [ ! -s "$HERE/captures/ui-home-$lang.png" ]; then cat "$LOG"; echo "Home capture ($lang) failed"; exit 1; fi
+  # UI-02: the pause menu over the real, frozen flight (the airplane must stay in view beside the menu).
+  timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
+    --script res://tests/capture_ui.gd -- --out="$HERE/captures/ui-pause-$lang.png" --lang=$lang --screen=pause > "$LOG" 2>&1 || true
+  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG" || [ ! -s "$HERE/captures/ui-pause-$lang.png" ]; then cat "$LOG"; echo "Pause capture ($lang) failed"; exit 1; fi
 done
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"

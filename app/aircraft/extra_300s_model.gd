@@ -5,15 +5,17 @@
 extends RefCounted
 
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
+const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-ex02-preview"
-const RED := Color("c41e2a")
+const VISUAL_REVISION := "gp-extra-300s-60-ex02b-red-stars"
+const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const GLASS := Color("1c2733")
 const METAL := Color("8b9299")
 const TIRE := Color("1a1c20")
 const PROP := Color("24262b")
-const RING_CORNER_SEGMENTS := 6
+const RING_CORNER_SEGMENTS := 10
+const LOFT_STEP_M := 0.015 # longitudinal ring spacing between measured stations
 const CHORD_SAMPLES := 22
 
 static var _materials := {}
@@ -32,17 +34,17 @@ static func material(color: Color, roughness := 0.55, metallic := 0.0) -> Standa
 
 
 # Godot front faces are clockwise; order the vertices so the face normal agrees with the outward hint.
-static func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, na: Vector3, nb: Vector3, nc: Vector3, outward: Vector3) -> void:
+static func _tri(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, na: Vector3, nb: Vector3, nc: Vector3, outward: Vector3, uv := [], uv2 := []) -> void:
 	var face := (c - a).cross(b - a)
 	if face.length_squared() < 1e-14:
 		return
+	var order := [0, 1, 2] if face.dot(outward) >= 0.0 else [0, 2, 1]
 	var points := [a, b, c]
 	var normals := [na, nb, nc]
-	if face.dot(outward) < 0.0:
-		points = [a, c, b]
-		normals = [na, nc, nb]
-	for k in 3:
+	for k in order:
 		st.set_normal(normals[k])
+		if not uv.is_empty(): st.set_uv(uv[k])
+		if not uv2.is_empty(): st.set_uv2(uv2[k])
 		st.add_vertex(points[k])
 
 
@@ -64,7 +66,8 @@ static func _surface(mat: Material) -> SurfaceTool:
 
 # Loft through closed rings that share a point count. Vertex normals come from the grid tangents and are
 # turned away from each ring's centroid; flat caps close the first and last rings when requested.
-static func _loft(rings: Array, mat: Material, caps := [true, true]) -> ArrayMesh:
+# uvs/uv2s (optional): one Array[Vector2] per ring, matching its points; consumed by the procedural finish.
+static func _loft(rings: Array, mat: Material, caps := [true, true], uvs := [], uv2s := []) -> ArrayMesh:
 	var st := _surface(mat)
 	var count: int = rings[0].size()
 	var centers: Array[Vector3] = []
@@ -88,14 +91,32 @@ static func _loft(rings: Array, mat: Material, caps := [true, true]) -> ArrayMes
 		for j in count:
 			var k := (j + 1) % count
 			var out: Vector3 = (rings[i][j] + rings[i + 1][k]) * 0.5 - (centers[i] + centers[i + 1]) * 0.5
-			_tri(st, rings[i][j], rings[i][k], rings[i + 1][k], normals[i][j], normals[i][k], normals[i + 1][k], out)
-			_tri(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], normals[i][j], normals[i + 1][k], normals[i + 1][j], out)
+			_tri(st, rings[i][j], rings[i][k], rings[i + 1][k], normals[i][j], normals[i][k], normals[i + 1][k], out,
+				_pick(uvs, [[i, j], [i, k], [i + 1, k]]), _pick(uv2s, [[i, j], [i, k], [i + 1, k]]))
+			_tri(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], normals[i][j], normals[i + 1][k], normals[i + 1][j], out,
+				_pick(uvs, [[i, j], [i + 1, k], [i + 1, j]]), _pick(uv2s, [[i, j], [i + 1, k], [i + 1, j]]))
 	for end in [0, rings.size() - 1]:
 		if not caps[0 if end == 0 else 1]: continue
 		var axis: Vector3 = (centers[end] - centers[1 if end == 0 else end - 1]).normalized()
 		for j in count:
-			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis)
+			var cap := [[end, -1], [end, j], [end, (j + 1) % count]]
+			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis, _pick(uvs, cap), _pick(uv2s, cap))
 	return st.commit()
+
+
+# UVs for [ring, point] pairs; point -1 is the ring centre (mean UV), used by the end caps.
+static func _pick(table: Array, keys: Array) -> Array:
+	if table.is_empty(): return []
+	var out := []
+	for key in keys:
+		var row: Array = table[key[0]]
+		if key[1] >= 0:
+			out.append(row[key[1]])
+		else:
+			var mean := Vector2.ZERO
+			for v in row: mean += v
+			out.append(mean / row.size())
+	return out
 
 
 # Rounded-rectangle fuselage ring; corner radii are fractions of the half-width, limited by the height.
@@ -127,34 +148,100 @@ static func _station_value(z: float, column: int) -> float:
 	return rows[-1][column]
 
 
+## Monotone cubic (Fritsch-Carlson) through [x, y] points sorted by x: exact at every measured point, smooth
+## between them, and never beyond the neighbouring measured values (a Catmull-Rom spline would bulge at the
+## canopy frame and the cowl chin). Constant outside the range.
+static func monotone(points: Array, x: float) -> float:
+	var n := points.size()
+	if x <= points[0][0]: return points[0][1]
+	if x >= points[n - 1][0]: return points[n - 1][1]
+	var i := 0
+	while x > points[i + 1][0]: i += 1
+	var x0: float = points[i][0]
+	var h: float = points[i + 1][0] - x0
+	var t := (x - x0) / h
+	var m0 := _tangent(points, i)
+	var m1 := _tangent(points, i + 1)
+	return (2*t*t*t - 3*t*t + 1) * points[i][1] + (t*t*t - 2*t*t + t) * h * m0 + (-2*t*t*t + 3*t*t) * points[i + 1][1] + (t*t*t - t*t) * h * m1
+
+
+static func _secant(points: Array, k: int) -> float:
+	return (points[k + 1][1] - points[k][1]) / (points[k + 1][0] - points[k][0])
+
+
+static func _tangent(points: Array, k: int) -> float:
+	var n := points.size()
+	if k == 0 or k == n - 1:
+		return 0.0 # flat ends: no extrapolated bulge at the cowl face or the tail post
+	var a := _secant(points, k - 1)
+	var b := _secant(points, k)
+	if a * b <= 0.0:
+		return 0.0 # local extremum or flat: keep it a measured extremum
+	var h0: float = points[k][0] - points[k - 1][0]
+	var h1: float = points[k + 1][0] - points[k][0]
+	return 3.0 * (h0 + h1) / ((2.0 * h1 + h0) / a + (h1 + 2.0 * h0) / b) # Fritsch-Butland weighted harmonic mean
+
+
+static var _columns := {}
+
+
+## Smooth fuselage profile: column 1 half-width, 2 top, 3 bottom (monotone cubic through the stations).
+static func profile(z: float, column: int) -> float:
+	if not _columns.has(column):
+		var points := []
+		for s in D.fuselage_stations: points.append([s[0], s[column]])
+		_columns[column] = points
+	return monotone(_columns[column], z)
+
+
 static func _fuselage(root: Node3D) -> void:
 	var rings: Array = []
-	for s in D.fuselage_stations:
-		rings.append(_fuselage_ring(s[0], s[1], s[2], s[3], s[4], s[5]))
-	_instance("fuselage", _loft(rings, material(RED, 0.45)), root)
+	var uvs: Array = []
+	var rows: Array = D.fuselage_stations
+	for i in rows.size():
+		var steps := 1 if i == rows.size() - 1 else maxi(1, ceili((rows[i + 1][0] - rows[i][0]) / LOFT_STEP_M))
+		for k in steps:
+			if i == rows.size() - 1 and k > 0: break
+			var z: float = rows[i][0] if i == rows.size() - 1 else lerpf(rows[i][0], rows[i + 1][0], float(k) / steps)
+			var top := profile(z, 2)
+			var bottom := profile(z, 3)
+			var ring := _fuselage_ring(z, profile(z, 1), top, bottom, _station_value(z, 4), _station_value(z, 5))
+			var uv: Array[Vector2] = []
+			for point in ring: uv.append(Vector2(point.y, z))
+			rings.append(ring)
+			uvs.append(uv)
+	_instance("fuselage", _loft(rings, Finish.material(Finish.FUSELAGE, D.cowl_rear_z), [true, true], uvs), root)
+
+
+## Half-width of the fuselage skin at height y (same corner rounding as _fuselage_ring), for parts seated on it.
+static func skin_half_width(z: float, y: float) -> float:
+	var half_width := profile(z, 1)
+	var top := profile(z, 2)
+	var rt := minf(_station_value(z, 4) * half_width, (top - profile(z, 3)) * 0.6)
+	if y <= top - rt: return half_width
+	var dy := y - (top - rt)
+	return half_width - rt + sqrt(maxf(rt * rt - dy * dy, 0.0))
 
 
 static func _canopy(root: Node3D) -> void:
 	var c: Dictionary = D.canopy
 	var zs: Array[float] = []
-	for k in 25: zs.append(lerpf(c.top[0][0], c.top[-1][0], float(k) / 24.0)) # dense enough to round the ends
+	for k in 41: zs.append(lerpf(c.top[0][0], c.top[-1][0], float(k) / 40.0)) # dense enough to round the ends
 	for s in D.fuselage_stations:
 		if s[0] > c.top[0][0] and s[0] < c.top[-1][0]: zs.append(s[0])
 	zs.sort()
 	var rings: Array = []
 	for z in zs:
-		var top := 0.0
-		for i in c.top.size() - 1:
-			if z >= c.top[i][0] and z <= c.top[i + 1][0]:
-				top = lerpf(c.top[i][1], c.top[i + 1][1], (z - c.top[i][0]) / (c.top[i + 1][0] - c.top[i][0]))
-		var base := _station_value(z, 2) - 0.002
+		var top := monotone(c.top, z)
+		var base := profile(z, 2) - 0.002 # seated just under the skin; the crown stays on the measured line
 		# Plan outline: superellipse (n = 4) along the canopy length, straight sides and rounded ends.
 		var u := absf((z - (zs[0] + zs[-1]) / 2.0) / ((zs[-1] - zs[0]) / 2.0))
-		var half: float = c.halfwidth_fraction * _station_value(z, 1) * pow(maxf(1.0 - pow(u, 4.0), 0.0), 0.25)
+		# Never wider than the skin it sits on: over the rounded turtle deck the seat narrows.
+		var half: float = minf(c.halfwidth_fraction * profile(z, 1) * pow(maxf(1.0 - pow(u, 4.0), 0.0), 0.25), skin_half_width(z, base))
 		var ring: Array[Vector3] = []
-		for k in 13:
-			var angle := PI * float(k) / 12.0
-			ring.append(Vector3(half * cos(angle), base + maxf(top - base + 0.002, 0.0) * sin(angle), z))
+		for k in 25:
+			var angle := PI * float(k) / 24.0
+			ring.append(Vector3(half * cos(angle), base + maxf(top - base, 0.0) * sin(angle), z))
 		rings.append(ring)
 	_instance("canopy", _loft(rings, material(GLASS, 0.12, 0.2), [false, false]), root)
 
@@ -213,6 +300,8 @@ static func _hinge_fraction(span: float) -> float:
 static func _wing_panel(label: String, a: float, b: float, part: String, parent: Node3D, to_local := Transform3D.IDENTITY) -> void:
 	var g: float = D.wing.hinge_gap / 2.0
 	var rings: Array = []
+	var uvs: Array = []
+	var uv2s: Array = []
 	for x in [a, b]:
 		var span := absf(x)
 		var h := _hinge_fraction(span)
@@ -222,10 +311,17 @@ static func _wing_panel(label: String, a: float, b: float, part: String, parent:
 			"fixed": ring = _wing_ring(x, 0.0, h - g / _chord(span))
 			"aileron": ring = _wing_ring(x, h + g / _chord(span), 1.0, true)
 		var local: Array[Vector3] = []
-		for p in ring: local.append(to_local * p)
+		var uv: Array[Vector2] = []
+		var uv2: Array[Vector2] = []
+		for p in ring:
+			local.append(to_local * p)
+			uv.append(Vector2(span, (p.z - _le_z(span)) / _chord(span)))
+			uv2.append(Vector2(_chord(span), 0.0))
 		rings.append(local)
-	var color := RED if part == "aileron" else WHITE
-	_instance(label, _loft(rings, material(color, 0.4)), parent)
+		uvs.append(uv)
+		uv2s.append(uv2)
+	var finish := Finish.material(Finish.AILERON if part == "aileron" else Finish.WING)
+	_instance(label, _loft(rings, finish, [true, true], uvs, uv2s), parent)
 
 
 static func _hinge(label: String, parent: Node3D, hinges: Dictionary) -> Node3D:
@@ -267,7 +363,8 @@ static func _wings(root: Node3D, hinges: Dictionary) -> void:
 
 
 # Flat outline extruded symmetrically; outline points are [u, v] mapped by `axes` to the node's local frame.
-static func _plate(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false) -> MeshInstance3D:
+# part >= 0 selects the procedural finish, with the outline coordinates as UV.
+static func _plate(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, part := -1) -> MeshInstance3D:
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
 	var triangles := Geometry2D.triangulate_polygon(polygon)
@@ -277,11 +374,12 @@ static func _plate(label: String, outline: Array, thickness: float, color: Color
 		return _instance(label, ArrayMesh.new(), parent)
 	var to3 := func(p: Vector2, side: float) -> Vector3:
 		return Vector3(side * thickness / 2.0, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2.0, p.y)
-	var st := _surface(material(color, 0.4))
+	var st := _surface(material(color, 0.4) if part < 0 else Finish.material(part))
 	for side in [-1.0, 1.0]:
 		var n := Vector3(side, 0, 0) if vertical else Vector3(0, side, 0)
 		for i in range(0, triangles.size(), 3):
-			_tri(st, to3.call(polygon[triangles[i]], side), to3.call(polygon[triangles[i + 1]], side), to3.call(polygon[triangles[i + 2]], side), n, n, n, n)
+			var face_uv := [polygon[triangles[i]], polygon[triangles[i + 1]], polygon[triangles[i + 2]]]
+			_tri(st, to3.call(face_uv[0], side), to3.call(face_uv[1], side), to3.call(face_uv[2], side), n, n, n, n, face_uv)
 	var center := Vector2.ZERO
 	for p in polygon: center += p
 	center /= polygon.size()
@@ -293,8 +391,8 @@ static func _plate(label: String, outline: Array, thickness: float, color: Color
 		var n2 := Vector2(edge.y, -edge.x).normalized()
 		if n2.dot(mid - center) < 0.0: n2 = -n2
 		var n := Vector3(0, n2.x, n2.y) if vertical else Vector3(n2.x, 0, n2.y)
-		_tri(st, to3.call(p, -1.0), to3.call(q, -1.0), to3.call(q, 1.0), n, n, n, n)
-		_tri(st, to3.call(p, -1.0), to3.call(q, 1.0), to3.call(p, 1.0), n, n, n, n)
+		_tri(st, to3.call(p, -1.0), to3.call(q, -1.0), to3.call(q, 1.0), n, n, n, n, [p, q, q])
+		_tri(st, to3.call(p, -1.0), to3.call(q, 1.0), to3.call(p, 1.0), n, n, n, n, [p, q, p])
 	return _instance(label, st.commit(), parent)
 
 
@@ -310,13 +408,13 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	frame.rotation.x = deg_to_rad(t.stab_incidence_deg)
 	root.add_child(frame)
 	var stab := [[-hs, t.stab_tip_le_z - hz], [0.0, t.stab_root_le_z - hz], [hs, t.stab_tip_le_z - hz], [hs, -g], [-hs, -g]]
-	_plate("stab", stab, t.stab_thickness, WHITE, frame)
+	_plate("stab", stab, t.stab_thickness, WHITE, frame, false, Finish.HORIZONTAL_TAIL)
 	var elevator := _hinge("elevator", frame, hinges)
 	var inner: Array = t.elevator_inner_hinge
 	var corner: Array = t.elevator_root_corner
 	for sign in [-1.0, 1.0]:
 		var outline := [[sign * inner[0], g], [sign * hs, g], [sign * hs, t.elevator_tip_te_z - hz], [sign * corner[0], corner[1] - hz], [sign * inner[0], inner[1] - hz]]
-		_plate("elevator_" + ("right" if sign > 0 else "left"), outline, t.stab_thickness * 0.8, RED, elevator)
+		_plate("elevator_" + ("right" if sign > 0 else "left"), outline, t.stab_thickness * 0.8, RED, elevator, false, Finish.HORIZONTAL_TAIL)
 	# Fin and rudder: outlines are [height y, z] in a frame on the rudder hinge line.
 	var rz: float = t.rudder_hinge_z
 	var rudder_frame := Node3D.new()
@@ -325,14 +423,14 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	root.add_child(rudder_frame)
 	var le: Array = t.fin_root_le
 	var bal_y: float = t.balance_bottom_y
-	var fin := [[_station_value(le[0], 2) - 0.005, le[0] - rz], [le[1], le[0] - rz], [bal_y - g, t.balance_front_z - rz - 0.001], [bal_y - g, -g], [_station_value(rz, 2) - 0.005, -g]]
-	_plate("fin", fin, t.fin_thickness, WHITE, rudder_frame, true)
+	var fin := [[profile(le[0], 2) - 0.005, le[0] - rz], [le[1], le[0] - rz], [bal_y - g, t.balance_front_z - rz - 0.001], [bal_y - g, -g], [profile(rz, 2) - 0.005, -g]]
+	_plate("fin", fin, t.fin_thickness, WHITE, rudder_frame, true, Finish.VERTICAL_TAIL)
 	var rudder := _hinge("rudder", rudder_frame, hinges)
 	var low: Array = t.rudder_te_low
 	var bottom_corner: Array = t.rudder_bottom_corner
 	var bottom_hinge: Array = t.rudder_bottom_hinge
 	var outline := [[bottom_hinge[1], g], [bal_y + g, g], [bal_y + g, t.balance_front_z - rz], [t.fin_top_y, t.fin_le_top_z - rz], [t.fin_top_y, t.rudder_top_te_z - rz], [low[1], low[0] - rz], [bottom_corner[1], bottom_corner[0] - rz]]
-	_plate("rudder", outline, t.fin_thickness, RED, rudder, true)
+	_plate("rudder", outline, t.fin_thickness, RED, rudder, true, Finish.VERTICAL_TAIL)
 
 
 static func _cylinder(label: String, radius: float, length: float, color: Color, parent: Node3D, segments := 16) -> MeshInstance3D:
@@ -368,18 +466,9 @@ static func _gear(root: Node3D) -> Dictionary:
 	for sign in [-1.0, 1.0]:
 		var suffix := "right" if sign > 0 else "left"
 		var axle := Vector3(sign * g.track / 2.0, g.main_axle[1], g.main_axle[0])
-		_strut("main_leg_" + suffix, Vector3(sign * g.leg_root_half_spacing, g.main_leg_root[1], g.main_leg_root[0]), axle - Vector3(sign * 0.02, 0, 0), 0.0045, root)
+		_strap("main_leg_" + suffix, sign, root)
 		gear[suffix] = _wheel("wheel_" + suffix, g.main_wheel_diameter, 0.022, axle, root)
-		var pant := MeshInstance3D.new()
-		pant.name = "wheel_pant_" + suffix
-		var shell := SphereMesh.new()
-		shell.radius = 1.0
-		shell.height = 2.0
-		shell.material = material(RED, 0.45)
-		pant.mesh = shell
-		pant.position = Vector3(axle.x, (g.pant_y[0] + g.pant_y[1]) / 2.0, (g.pant_z[0] + g.pant_z[1]) / 2.0)
-		pant.scale = Vector3(g.pant_half_width, absf(g.pant_y[0] - g.pant_y[1]) / 2.0, (g.pant_z[1] - g.pant_z[0]) / 2.0)
-		root.add_child(pant)
+		_pant("wheel_pant_" + suffix, axle.x, root)
 	# Tail wheel steers with a pivot on the rudder hinge line.
 	var t: Dictionary = D.tail
 	var steering := Node3D.new()
@@ -391,6 +480,46 @@ static func _gear(root: Node3D) -> Dictionary:
 	gear["tail"] = _wheel("wheel_tail", g.tail_wheel_diameter, 0.01, axle_local, steering)
 	gear["steering"] = steering
 	return gear
+
+
+# Aluminium strap: edge-on chord from the side view (front/rear edges at root and tip), splayed outward in front
+# view from the fuselage bottom to just inboard of the wheel, inside the pant.
+static func _strap(label: String, sign: float, parent: Node3D) -> void:
+	var g: Dictionary = D.gear
+	var leg: Dictionary = g.leg
+	var root_x: float = sign * g.leg_root_half_spacing
+	var tip_x: float = sign * (g.track / 2.0 - 0.016)
+	var root_y: float = leg.root[2] + 0.008 # reaches into the fuselage: no visible seam
+	var tip_y: float = leg.tip[2] - 0.01 # ends inside the pant
+	var along := Vector2(tip_x - root_x, tip_y - root_y).normalized()
+	var across: Vector2 = Vector2(-along.y, along.x) * float(leg.thickness) / 2.0
+	var rings: Array = []
+	for end in [[root_x, root_y, leg.root], [tip_x, tip_y, leg.tip]]:
+		var ring: Array[Vector3] = []
+		for corner in [[1.0, 0], [1.0, 1], [-1.0, 1], [-1.0, 0]]:
+			var c: Vector2 = Vector2(end[0], end[1]) + across * float(corner[0])
+			ring.append(Vector3(c.x, c.y, end[2][corner[1]]))
+		rings.append(ring)
+	_instance(label, _loft(rings, material(METAL, 0.35, 0.6)), parent)
+
+
+# Teardrop pant: elliptical sections along the side-view outline; the width follows the local height, so the
+# blunt nose stays round and the tail narrows. The wheel's lower arc shows below it, as on the plan.
+static func _pant(label: String, center_x: float, parent: Node3D) -> void:
+	var g: Dictionary = D.gear
+	var profile_rows: Array = g.pant_profile
+	var max_height := 0.0
+	for row in profile_rows: max_height = maxf(max_height, row[1] - row[2])
+	var rings: Array = []
+	for row in profile_rows:
+		var half_height: float = (row[1] - row[2]) / 2.0
+		var half_width: float = g.pant_half_width * pow(2.0 * half_height / max_height, 0.6)
+		var ring: Array[Vector3] = []
+		for k in 20:
+			var angle := TAU * k / 20.0
+			ring.append(Vector3(center_x + half_width * cos(angle), (row[1] + row[2]) / 2.0 + half_height * sin(angle), row[0]))
+		rings.append(ring)
+	_instance(label, _loft(rings, material(RED, 0.45), [false, false]), parent)
 
 
 static func _propeller(root: Node3D) -> Node3D:
@@ -413,7 +542,7 @@ static func _propeller(root: Node3D) -> Node3D:
 			var angle := TAU * j / 20.0
 			ring.append(Vector3(r * cos(angle), r * sin(angle), -length * (1.0 - u)))
 		rings.append(ring)
-	_instance("spinner", _loft(rings, material(WHITE, 0.3), [false, true]), thrust)
+	_instance("spinner", _loft(rings, material(RED, 0.3), [false, true]), thrust) # red, as in the owner's photo
 	var propeller := Node3D.new()
 	propeller.name = "propeller"
 	propeller.position = Vector3(0, 0, p.z - s.back_z)

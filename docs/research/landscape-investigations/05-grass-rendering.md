@@ -1,5 +1,7 @@
 # 05 · Grass and ground cover in the Compatibility renderer
 
+**License update (2026-10-06):** Quaternius references below describe individual pack listings, not a blanket CC0 license. Verify the exact file/distribution against the current QAL and retained CC0 evidence before reuse; see the [verified supplement](../visual-quality-supplement-2026-10-06.md#correcciones-de-licencia-y-alcance).
+
 Date: 2026-10-05. **Question:** which grass technique works in Godot 4.7.2 Compatibility (WebGL 2), stays byte-repeatable in llvmpipe captures, and is worth drawing for a pilot standing at 1.7 m? How far out do 3D blades matter?
 
 ## Findings

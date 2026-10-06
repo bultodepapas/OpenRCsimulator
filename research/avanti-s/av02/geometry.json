@@ -1,6 +1,6 @@
 {
   "schema": "openrc-avanti-visual-study-v1",
-  "revision": "a200-av02-blockout-01",
+  "revision": "a200-av02-contours-02",
   "status": "isolated visual study; not calibrated, not flyable",
   "units": "m",
   "axes": {
@@ -140,19 +140,37 @@
       [
         0.14,
         0,
-        0.56,
+        0.43,
         0
       ],
       [
         0.53,
         0.145,
-        0.59,
+        0.5,
         0.007
       ],
       [
+        0.9,
+        0.278,
+        0.54,
+        0.0172
+      ],
+      [
+        0.95,
+        0.296,
+        0.535,
+        0.0186
+      ],
+      [
+        0.985,
+        0.309,
+        0.53,
+        0.0196
+      ],
+      [
         1,
-        0.32,
-        0.62,
+        0.325,
+        0.523,
         0.02
       ]
     ],
@@ -163,7 +181,7 @@
     ],
     "aileron_span": [
       0.55,
-      0.985
+      0.95
     ],
     "gap_m": 0.004,
     "slab_thickness_m": 0.024,
@@ -173,14 +191,26 @@
     "stations": [
       [
         0.05,
-        0.69,
-        1.15,
+        0.86,
+        1.1,
         0.065
       ],
       [
+        0.35,
+        0.98,
+        1.14,
+        0.07684
+      ],
+      [
+        0.4,
+        1.003,
+        1.131,
+        0.07882
+      ],
+      [
         0.43,
-        0.91,
-        1.17,
+        1.02,
+        1.104,
         0.08
       ]
     ],
@@ -192,16 +222,36 @@
   "fin": {
     "outline_yz": [
       [
-        0.07,
-        0.53
+        0.085,
+        0.3
+      ],
+      [
+        0.1,
+        0.4
+      ],
+      [
+        0.125,
+        0.51
+      ],
+      [
+        0.18,
+        0.64
       ],
       [
         0.27,
-        0.8
+        0.75
       ],
       [
-        0.49,
-        0.87
+        0.38,
+        0.835
+      ],
+      [
+        0.465,
+        0.887
+      ],
+      [
+        0.498,
+        0.92
       ],
       [
         0.51,
@@ -224,7 +274,8 @@
       0.5,
       1.035
     ],
-    "thickness_m": 0.014
+    "thickness_m": 0.014,
+    "leading_outline_count": 9
   },
   "installation": {
     "engine_center": [
@@ -232,20 +283,60 @@
       -0.005,
       0.54
     ],
-    "intake_centers": [
+    "outlet_radius_m": 0.036,
+    "intake_stations": [
       [
-        -0.174,
-        -0.018,
-        -0.2
+        -0.09,
+        0.026,
+        0.007,
+        -0.063,
+        0.156
       ],
       [
-        0.174,
-        -0.018,
-        -0.2
+        -0.07,
+        0.029,
+        0.01,
+        -0.066,
+        0.156
+      ],
+      [
+        0.015,
+        0.032,
+        0.013,
+        -0.067,
+        0.154
+      ],
+      [
+        0.14,
+        0.023,
+        0.009,
+        -0.058,
+        0.145
+      ],
+      [
+        0.28,
+        0.006,
+        -0.012,
+        -0.038,
+        0.13
       ]
     ],
-    "intake_radius_m": 0.044,
-    "outlet_radius_m": 0.036
+    "intake_shadow_stations": [
+      [
+        -0.091,
+        0.021,
+        0.001,
+        -0.057,
+        0.156
+      ],
+      [
+        -0.089,
+        0.021,
+        0.001,
+        -0.057,
+        0.156
+      ]
+    ]
   },
   "controls_deg": {
     "flap_cruise": 0,
@@ -294,19 +385,23 @@
     "wing": {
       "kind": "estimated_visual_blockout",
       "source": "Official CIMG7321 and CIMG7313; endpoints constrained only by nominal span",
-      "warning": "Area, chord, sweep, dihedral and thickness are unvalidated; not aerodynamic data"
+      "warning": "Area, chord, sweep, dihedral and thickness are unvalidated; not aerodynamic data",
+      "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
     },
     "tail": {
       "kind": "estimated_visual_blockout",
-      "source": "Official CIMG7313; no calibrated scale"
+      "source": "Official CIMG7313; no calibrated scale",
+      "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
     },
     "fin": {
       "kind": "estimated_visual_blockout",
-      "source": "Official CIMG7310; no calibrated scale"
+      "source": "Official CIMG7310; no calibrated scale",
+      "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
     },
     "installation": {
       "kind": "estimated_visual_blockout",
-      "source": "Assembly steps131-134 for arrangement only; positions and duct radii assumed"
+      "source": "Assembly steps131-134 for arrangement only; positions and duct radii assumed",
+      "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
     },
     "finish": {
       "kind": "illustrative",
