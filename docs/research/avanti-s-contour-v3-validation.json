@@ -1,0 +1,82 @@
+{
+  "clean_local_clone": true,
+  "source_overlay": [
+    "research/avanti-s/av02",
+    "research/avanti-s/alignment",
+    "research/avanti-s/refinement"
+  ],
+  "references_available": false,
+  "external_pinned_engine": ".tools/Godot_v4.7.2-stable_linux.x86_64",
+  "verify": {
+    "exit_code": 0,
+    "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n{\"checks\":17733,\"failures\":[],\"fuselage_length_m\":2.21999979019165,\"geometry_sha256\":\"babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a\",\"godot\":\"4.7.2-stable (official)\",\"hinges\":7,\"limits\":[\"Not aerodynamic validation\",\"No full swept-volume intersection test\",\"Approximate contours\"],\"span_m\":2.0}\n",
+    "stderr": ""
+  },
+  "render": {
+    "exit_code": 0,
+    "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nWARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)\nOpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)\n\nAligned transparent captures: 3\n",
+    "stderr": ""
+  },
+  "inspector": {
+    "exit_code": 0,
+    "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nWARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)\nOpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)\n\nAV02: 9 captures in /tmp/avanti-refinement-clone-dmhbopuu/repo/confirmation-inspector\n",
+    "stderr": ""
+  },
+  "unchanged_geometry_guard": {
+    "exit_code": 2,
+    "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n",
+    "stderr": "ERROR: Geometry changed after camera fit\n   at: push_error (core/variant/variant_utility.cpp:1023)\n   GDScript backtrace (most recent call first):\n       [0] run (res://../alignment/render.gd:22)\n"
+  },
+  "invalid_normals_mutation_detected": {
+    "exit_code": 1,
+    "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n{\"checks\":17733,\"failures\":[\"Loft normals disagree with face orientation: fuselage\",\"Loft normals disagree with face orientation: canopy\"],\"fuselage_length_m\":2.21999979019165,\"geometry_sha256\":\"babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a\",\"godot\":\"4.7.2-stable (official)\",\"hinges\":7,\"limits\":[\"Not aerodynamic validation\",\"No full swept-volume intersection test\",\"Approximate contours\"],\"span_m\":2.0}\n",
+    "stderr": ""
+  },
+  "browser": {
+    "errors": [],
+    "assets": [
+      {
+        "url": "references/avanti-s/photos/ground-CIMG7310.jpg",
+        "width": 650,
+        "height": 488
+      },
+      {
+        "url": "references/avanti-s/refinement-v2/renders-final/side.png",
+        "width": 650,
+        "height": 488
+      },
+      {
+        "url": "references/avanti-s/photos/ground-CIMG7310.jpg",
+        "width": 650,
+        "height": 488
+      },
+      {
+        "url": "references/avanti-s/refinement-v3/renders-final/side.png",
+        "width": 650,
+        "height": 488
+      }
+    ],
+    "checks": [
+      "3 view switches/screenshots",
+      "opacity",
+      "contour filter",
+      "sample toggle",
+      "blink",
+      "390px mobile overflow",
+      "source and render images load"
+    ]
+  },
+  "clone_recaptures_identical_to_final": true,
+  "frozen_camera_unchanged_from_head": true,
+  "source_hashes": {
+    "research/avanti-s/av02/geometry.json": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+    "research/avanti-s/av02/model.gd": "df6b7efb5a0057bd0a50b7f8b16f6825fda35e948ad5a60d020815a94d1f66c6",
+    "research/avanti-s/av02/verify.gd": "01229ff97d79560bc667f27cf186c161c030d2b8aa01df59b686799481411cce",
+    "research/avanti-s/refinement/review.py": "dafa4a650bcd33157dd485a2c53acb468fa2c921e2d3efb8f44aa183a17b2def",
+    "research/avanti-s/refinement/review.html": "ac4088c36a0912365c0fcbb02d20de8bf803da8bd57ba7e73d2a527ee5601967"
+  },
+  "reference_outputs_ignored": [
+    "references/avanti-s/refinement-v3/index.html",
+    "references/avanti-s/refinement-v3/renders-final/front_high.png"
+  ]
+}

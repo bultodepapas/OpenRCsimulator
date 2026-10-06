@@ -19,3 +19,5 @@ python3 research/avanti-s/refinement/review.py \
 La página usa SVG: referencias intactas, dos capas de render, opacidad, contornos, puntos de revisión y alternancia. No aplica transformaciones manuales. La comparación por píxeles lee únicamente el canal alpha de los renders; **no edita imágenes**. `contour-picks.json` documenta muestras manuales exploratorias, elegidas durante el afinado. La distancia al borde más cercano no identifica piezas ni demuestra precisión física; los cambios de oclusión pueden mover la métrica de una zona sin modificar esa pieza.
 
 [Resultado de esta revisión](../../../docs/research/avanti-s-contour-refinement.md) · [Comparador local](../../../references/avanti-s/refinement-v2/index.html).
+
+Para comparar revisiones consecutivas, `--baseline` selecciona el directorio de renders anterior (con manifiesto), `--before-label`/`--after-label` identifican ambas versiones y `--description`/`--report` indican el cambio y su informe. Se registra el hash de geometría y constructor de ambos lados. [Ejemplo v2 → v3](../../../docs/research/avanti-s-contour-refinement-v3.md). Los archivos históricos ya generados se conservan.

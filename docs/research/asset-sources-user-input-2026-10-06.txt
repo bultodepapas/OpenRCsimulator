@@ -1,0 +1,548 @@
+# Fuentes de assets y recursos para el simulador RC en Godot
+
+Antes de modelar, programar o crear un recurso desde cero, revisar estas fuentes. El objetivo es reutilizar assets y sistemas existentes siempre que su calidad y licencia sean adecuadas.
+
+## ⭐ Prioridad máxima — seguros y muy útiles para un proyecto open source
+
+### 1. Poly Haven
+
+**Qué descargar:**
+- árboles
+- vegetación
+- rocas
+- troncos
+- modelos 3D
+- texturas PBR
+- HDRI / cielos
+- superficies naturales
+
+**Calidad:** muy alta / realista.  
+**Licencia:** CC0. Los assets pueden incluirse y redistribuirse dentro del proyecto.
+
+[Poly Haven — descargar assets](https://polyhaven.com/?utm_source=chatgpt.com)
+
+Especialmente útil para buscar:
+
+`tree`, `grass`, `rock`, `forest`, `ground`, `dirt`, `sky`, `cloud`, `wood`.
+
+---
+
+### 2. ambientCG
+
+**Qué descargar:**
+- césped
+- tierra
+- barro
+- asfalto
+- concreto
+- grava
+- caminos
+- madera
+- metal
+- piedras
+- materiales PBR
+- algunos modelos y HDRI
+
+**Calidad:** alta.  
+**Licencia:** CC0.
+
+[ambientCG — descargar materiales](https://ambientcg.com/?utm_source=chatgpt.com)
+
+Ideal para reemplazar materiales simples de Godot por superficies PBR reales.
+
+---
+
+### 3. cgbookcase
+
+Otra biblioteca excelente de texturas PBR.
+
+Tiene cientos de superficies como:
+
+- asfalto
+- carreteras
+- marcas viales
+- césped
+- forest floor
+- grava
+- tierra
+- piedra
+- cortezas
+- madera
+- concreto
+- metal
+- suciedad
+
+**Licencia:** CC0.
+
+[cgbookcase — texturas PBR](https://www.cgbookcase.com/textures?utm_source=chatgpt.com)
+
+Especialmente interesante para nuestro simulador porque tiene incluso **carreteras, líneas viales y asfalto mojado/deteriorado**.
+
+---
+
+### 4. Kenney
+
+Una de las mejores bibliotecas generales para videojuegos.
+
+**Qué descargar:**
+- carros
+- edificios
+- señales
+- carreteras
+- conos
+- barreras
+- personajes
+- props
+- mobiliario
+- objetos urbanos
+- UI
+- botones
+- cursores
+- iconos
+- prototipos
+
+**Licencia:** prácticamente toda su biblioteca de assets está publicada como CC0; verificar el pack descargado. Packs actuales como Prototype Kit y UI Pack están marcados CC0.
+
+[Kenney Assets](https://kenney.nl/assets?utm_source=chatgpt.com)
+
+Muy útil para poblar rápidamente una pista RC sin fabricar cada objeto.
+
+---
+
+### 5. KayKit
+
+Muy buena fuente de modelos 3D optimizados para juegos.
+
+**Qué descargar:**
+- personas
+- personajes animados
+- edificios
+- ciudad
+- muebles
+- props
+- objetos de prototipo
+- vegetación estilizada
+- objetos pequeños
+
+Los packs gratuitos incluyen normalmente formatos:
+
+`GLTF / FBX / OBJ`
+
+y están preparados explícitamente para motores como Godot. Varios packs gratuitos actuales están publicados como CC0.
+
+[KayKit — assets descargables](https://kaylousberg.itch.io/?utm_source=chatgpt.com)
+
+---
+
+### 6. Poly Pizza
+
+Biblioteca grande de modelos 3D low-poly.
+
+**Qué buscar:**
+- trees
+- cars
+- people
+- buildings
+- fences
+- benches
+- rocks
+- street props
+- nature
+- airport
+
+Permite filtrar específicamente por **CC0** y tiene modelos en formatos como OBJ, FBX y GLTF preparados para motores como Godot.
+
+[Poly Pizza — modelos 3D](https://poly.pizza/?utm_source=chatgpt.com)
+
+**Importante:** utilizar preferiblemente el filtro `CC0`.
+
+---
+
+## 🔧 Plugins, código y sistemas completos para Godot
+
+### 7. Godot Asset Store
+
+Es la nueva tienda/repositorio oficial de assets de Godot.
+
+Hay:
+
+- plugins
+- sistemas de terreno
+- cámaras
+- shaders
+- herramientas
+- física
+- networking
+- controladores
+- modelos
+- efectos
+- UI
+- proyectos completos
+
+El Asset Store oficial fue lanzado en 2026 y es el sucesor de Asset Library.
+
+[Godot Asset Store](https://store.godotengine.org/?utm_source=chatgpt.com)
+
+**Buscar aquí ANTES de programar un sistema nuevo.**
+
+Preferir:
+
+`MIT`, `Apache-2.0`, `BSD`.
+
+---
+
+### 8. Godot Asset Library
+
+La biblioteca tradicional de Godot sigue disponible y contiene años de plugins que todavía no necesariamente están publicados en el nuevo Asset Store. Godot confirma que los recursos de esta biblioteca se distribuyen gratuitamente bajo licencias open source.
+
+[Godot Asset Library](https://godotengine.org/asset-library/asset?utm_source=chatgpt.com)
+
+Buscar términos como:
+
+`terrain`  
+`water`  
+`camera`  
+`joystick`  
+`input`  
+`vehicle`  
+`physics`  
+`grass`  
+`foliage`  
+`weather`  
+`cloud`  
+`road`  
+`audio`  
+`multiplayer`  
+`replay`  
+`debug`
+
+---
+
+### 9. Godot Shaders
+
+Biblioteca especializada exclusivamente en shaders para Godot.
+
+Actualmente contiene miles de shaders y permite filtrar por:
+
+- Spatial
+- Sky
+- Particles
+- Fog
+- Canvas
+
+y por licencia.
+
+**Qué buscar para nuestro simulador:**
+- water
+- ocean
+- grass
+- foliage
+- wind
+- clouds
+- sky
+- fog
+- atmospheric
+- rain
+- snow
+- reflection
+- lens flare
+- dirt
+- post processing
+
+[Godot Shaders](https://godotshaders.com/?utm_source=chatgpt.com)
+
+**Usar preferiblemente:** `CC0` o `MIT`.
+
+---
+
+## 🎨 Bibliotecas generales de assets
+
+### 10. OpenGameArt
+
+Biblioteca gigantesca de contenido para videojuegos.
+
+Hay:
+
+- modelos 3D
+- personajes
+- animaciones
+- texturas
+- sonidos
+- música
+- UI
+- sprites
+
+[OpenGameArt](https://opengameart.org/?utm_source=chatgpt.com)
+
+**IMPORTANTE:** las licencias varían por asset.
+
+Para nuestro repositorio, filtrar preferiblemente por:
+
+`CC0`.
+
+OpenGameArt confirma que CC0 permite copiar, modificar y distribuir sin atribución.
+
+---
+
+### 11. itch.io Game Assets
+
+Es enorme y mucha gente publica allí packs gratuitos.
+
+Actualmente tiene miles de assets 3D gratuitos y permite filtrar por licencia, incluyendo CC0.
+
+**Qué encontrar:**
+- árboles
+- naturaleza
+- ciudades
+- vehículos
+- personas
+- personajes
+- animaciones
+- UI
+- audio
+- efectos
+- modelos 3D
+- edificios
+- props
+
+[itch.io — assets 3D gratuitos](https://itch.io/game-assets/free/tag-3d?utm_source=chatgpt.com)
+
+Para open source buscar especialmente:
+
+`CC0 + Free + 3D`
+
+---
+
+## 🔊 Sonidos y audio
+
+### 12. Freesound
+
+Enorme biblioteca de grabaciones reales.
+
+Buscar:
+
+- RC plane
+- electric motor
+- propeller
+- servo
+- wind
+- airplane flyby
+- birds
+- airport ambience
+- grass
+- wheels
+- impact
+- rain
+- water
+- crowd
+
+[Freesound](https://freesound.org/?utm_source=chatgpt.com)
+
+**IMPORTANTE:** Freesound permite varias licencias.
+
+Para nuestro repositorio usar preferiblemente:
+
+`CC0`.
+
+La plataforma permite distinguir entre CC0, Attribution y Attribution-NonCommercial.
+
+---
+
+## 🧍 Animaciones y motion capture
+
+### 13. CMU Motion Capture Database
+
+Base de datos de Carnegie Mellon University con una enorme cantidad de animaciones humanas capturadas profesionalmente.
+
+Hay movimientos como:
+
+- caminar
+- correr
+- sentarse
+- mirar
+- girarse
+- levantar objetos
+- agacharse
+- gesticular
+- deportes
+- interacción entre personas
+
+El propio proyecto indica que el dataset de movimientos es **free for all uses**.
+
+[CMU Motion Capture Database](https://mocap.cs.cmu.edu/?utm_source=chatgpt.com)
+
+Muy útil para personas que estén alrededor de una pista RC.
+
+---
+
+### 14. Mixamo
+
+Excelente para descargar rápidamente animaciones humanas:
+
+- idle
+- walking
+- pointing
+- sitting
+- talking
+- waving
+- running
+- crouching
+
+Adobe permite utilizar los personajes y animaciones gratuitamente en videojuegos, incluidos proyectos comerciales.
+
+[Adobe Mixamo](https://www.mixamo.com/?utm_source=chatgpt.com)
+
+⚠️ **No tratarlo igual que CC0.**
+
+Útil para el producto final, pero revisar antes de redistribuir archivos fuente descargados dentro del repositorio open source.
+
+---
+
+## 🧩 Fuente adicional muy grande
+
+### 15. GitHub
+
+Buscar proyectos open source existentes antes de implementar sistemas complejos.
+
+[GitHub](https://github.com/?utm_source=chatgpt.com)
+
+Búsquedas recomendadas:
+
+`Godot terrain`
+
+`Godot flight simulator`
+
+`Godot aerodynamics`
+
+`Godot RC simulator`
+
+`Godot joystick`
+
+`Godot water`
+
+`Godot weather`
+
+`Godot foliage`
+
+`Godot procedural vegetation`
+
+`Godot open world`
+
+`Godot replay`
+
+`Godot telemetry`
+
+`Godot camera`
+
+`Godot vehicle physics`
+
+`Godot audio`
+
+`Godot MCP`
+
+Revisar siempre:
+
+- licencia
+- actividad reciente
+- issues
+- versión de Godot
+- última actualización
+
+---
+
+# ⚠️ Recursos útiles pero con precaución
+
+### Quaternius
+
+Tiene una cantidad enorme de:
+
+- árboles
+- vehículos
+- edificios
+- personajes
+- animales
+- naturaleza
+- props
+- animaciones
+
+[Quaternius](https://quaternius.com/?utm_source=chatgpt.com)
+
+Pero **desde agosto de 2026 utiliza Quaternius Asset License (QAL)**. Permite utilizar gratuitamente los assets en juegos y otros proyectos, pero prohíbe redistribuir los assets como assets.
+
+Por eso:
+
+**✅ Puede servir para el juego.**
+
+**⚠️ No meter automáticamente los archivos originales en un repositorio GitHub open source.**
+
+---
+
+# Orden recomendado para buscar
+
+Cuando necesitemos un recurso, seguir aproximadamente este orden:
+
+**Modelos y naturaleza**
+
+`Poly Haven → Kenney → KayKit → Poly Pizza → itch.io CC0 → OpenGameArt CC0`
+
+**Texturas**
+
+`ambientCG → Poly Haven → cgbookcase`
+
+**Godot/plugins**
+
+`Godot Asset Store → Godot Asset Library → GitHub`
+
+**Shaders/VFX**
+
+`Godot Shaders → Asset Store → GitHub`
+
+**Sonidos**
+
+`Freesound CC0 → OpenGameArt CC0 → Kenney`
+
+**Animaciones**
+
+`CMU Mocap → KayKit → Mixamo`
+
+---
+
+# Regla para el desarrollo
+
+Antes de crear algo desde cero, buscar si ya existe.
+
+Ejemplo:
+
+> “Necesitamos árboles.”
+
+No modelarlos inmediatamente.
+
+Buscar primero:
+
+`Poly Haven → Kenney → KayKit → Poly Pizza`.
+
+> “Necesitamos agua.”
+
+Buscar primero:
+
+`Godot Asset Store → Godot Shaders → GitHub`.
+
+> “Necesitamos joystick RC.”
+
+Buscar:
+
+`Godot Asset Store → Asset Library → GitHub`.
+
+> “Necesitamos una animación de una persona caminando.”
+
+Buscar:
+
+`CMU Mocap → KayKit → Mixamo`.
+
+> “Necesitamos sonidos de motor eléctrico.”
+
+Buscar:
+
+`Freesound CC0 → OpenGameArt`.
+
+La meta es **no gastar tiempo desarrollando recursos genéricos que ya existen**. El desarrollo propio debería concentrarse principalmente en lo que hace único al proyecto: simulación RC, aerodinámica, comportamiento del avión, transmisores, configuración, telemetría y experiencia de vuelo.

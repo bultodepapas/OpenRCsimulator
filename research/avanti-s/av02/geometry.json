@@ -1,6 +1,6 @@
 {
   "schema": "openrc-avanti-visual-study-v1",
-  "revision": "a200-av02-contours-02",
+  "revision": "a200-av02-contours-03",
   "status": "isolated visual study; not calibrated, not flyable",
   "units": "m",
   "axes": {
@@ -32,45 +32,45 @@
     ],
     [
       -1.0,
-      0.025,
+      0.023,
       0.025,
       -0.014
     ],
     [
       -0.85,
-      0.066,
+      0.06,
       0.075,
-      -0.045
+      -0.041
     ],
     [
       -0.65,
-      0.109,
+      0.095,
       0.13,
-      -0.08
+      -0.07
     ],
     [
       -0.4,
-      0.153,
+      0.129,
       0.155,
-      -0.111
+      -0.093
     ],
     [
       -0.15,
-      0.178,
+      0.151,
       0.154,
-      -0.13
+      -0.11
     ],
     [
       0.0,
-      0.177,
+      0.162,
       0.139,
-      -0.138
+      -0.12
     ],
     [
       0.3,
-      0.145,
+      0.137,
       0.105,
-      -0.12
+      -0.11
     ],
     [
       0.6,
@@ -118,7 +118,7 @@
     ],
     [
       -0.28,
-      0.12,
+      0.108,
       0.251,
       0.12
     ],
@@ -376,11 +376,13 @@
     "fuselage_stations": {
       "kind": "estimated_visual_blockout",
       "source": "Official CIMG7310/CIMG7313/CIMG7321 photographs; no metric reconstruction",
-      "uncertainty": "Unknown; values are design assumptions, not confidence intervals"
+      "uncertainty": "Unknown; values are design assumptions, not confidence intervals",
+      "refinement": "Visual estimate from unchanged comparison cameras and existing official photos; docs/research/avanti-s-contour-refinement-v3.md. No metric calibration."
     },
     "canopy_stations": {
       "kind": "estimated_visual_blockout",
-      "source": "Official CIMG7316 and CIMG7310 photographs"
+      "source": "Official CIMG7316 and CIMG7310 photographs",
+      "refinement": "Visual estimate from unchanged comparison cameras and existing official photos; docs/research/avanti-s-contour-refinement-v3.md. No metric calibration."
     },
     "wing": {
       "kind": "estimated_visual_blockout",
@@ -406,6 +408,15 @@
     "finish": {
       "kind": "illustrative",
       "source": "White/blue/red groups for inspection; not exact SebArt livery"
+    },
+    "loft": {
+      "kind": "procedural_visual_interpolation",
+      "source": "Shape-preserving interpolation through estimated sections; adds no measured dimensions."
     }
+  },
+  "loft": {
+    "longitudinal_subdivisions": 4,
+    "smooth_normals": true,
+    "interpolation": "bounded_monotone_hermite"
   }
 }

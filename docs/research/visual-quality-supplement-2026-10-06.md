@@ -6,6 +6,8 @@ El aporte refuerza la reutilización de assets y herramientas de autoría. La pr
 
 Integridad de la entrada: copia byte a byte del adjunto; SHA-256 `56493f2b12142e41653616582e32cf7e9d13864275000974b363dfc99483b8c8`. La copia conserva recomendaciones originales; las decisiones vigentes están en este informe y en el plan.
 
+**Continuación:** el [segundo catálogo](asset-sources-catalog-2026-10-06.md) añade fuentes y la búsqueda previa a generar assets en L6a. La secuencia de entrega y los controles de licencia de este informe se conservan.
+
 ## Resultado por recurso ya investigado
 
 | Recurso | Evidencia contrastada | Integración concreta |

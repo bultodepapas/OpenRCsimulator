@@ -20,8 +20,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--candidate', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--baseline', type=Path, default=ROOT / 'references/avanti-s/alignment/renders-v1')
+    parser.add_argument('--before-label', default='Antes · maqueta inicial')
+    parser.add_argument('--after-label', default='Después · contornos revisados')
+    parser.add_argument('--description', default='Se comparan dos revisiones con cámaras congeladas; las referencias originales permanecen intactas.')
+    parser.add_argument('--report', default='avanti-s-contour-refinement.md')
     args = parser.parse_args()
-    baseline = ROOT / 'references/avanti-s/alignment/renders-v1'
+    baseline = args.baseline.resolve()
     candidate = args.candidate.resolve()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -57,12 +62,17 @@ def main():
                           before=relative(baseline / (key + '.png')), after=relative(candidate / (key + '.png')),
                           groups=groups))
     result = dict(schema='openrc-contour-review-v1', method=picks['method'],
-                  metric='Unsigned distance to nearest alpha>=128 silhouette pixel, 8-neighbour erosion. Samples are not independent and nearest edge may belong to another component. Not a full-mask IoU or aerodynamic/metric accuracy.',
+                  metric='Unsigned Euclidean distance to nearest alpha>=128 silhouette pixel; SciPy default cross-shaped (4-neighbour) erosion. Samples are not independent and nearest edge may belong to another component. Not a full-mask IoU or aerodynamic/metric accuracy.',
                   geometry_sha256=manifest['geometry_sha256'], model_sha256=manifest['model_sha256'],
+                  baseline_geometry_sha256=original_manifest.get('geometry_sha256', fit['model_geometry_sha256']),
+                  baseline_model_sha256=original_manifest['model_sha256'],
                   camera_fit_sha256=sha(fit_path), contour_picks_sha256=sha(HERE/'contour-picks.json'), groups=rows)
     (output / 'metrics.json').write_text(json.dumps(result, indent=2)+'\n')
     data = dict(views=views, metrics=result)
     html = (HERE/'review.html').read_text().replace('__REVIEW_DATA__', json.dumps(data, ensure_ascii=False))
+    import html as html_escape
+    html = html.replace('Antes · maqueta inicial', html_escape.escape(args.before_label)).replace('Después · contornos revisados', html_escape.escape(args.after_label))
+    html = html.replace('__DESCRIPTION__', html_escape.escape(args.description)).replace('__REPORT__', html_escape.escape(args.report, quote=True))
     (output/'index.html').write_text(html)
     for row in rows:
         print(f"{row['view']:12} {row['group']:5} {row['before_mean_px']:5.1f} → {row['after_mean_px']:5.1f} px")

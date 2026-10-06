@@ -43,11 +43,45 @@ func check_concave_panels() -> void:
 		check(absf(volume - .14) < .000001, "Concave panel triangulation/winding: %s" % volume)
 		parent.free()
 
+func check_lofts(model: Dictionary) -> void:
+	for key in ["fuselage_stations", "canopy_stations"]:
+		var knots: Array = model.data[key]
+		var samples := Model.interpolate_sections(knots, 4)
+		var valid := samples.size() == (knots.size() - 1) * 4 + 1
+		for i in knots.size() - 1:
+			valid = valid and samples[i * 4] == knots[i]
+			for j in 4:
+				var row: Array = samples[i * 4 + j]
+				valid = valid and row[1] > 0 and row[2] > row[3]
+				for c in range(1, row.size()):
+					valid = valid and row[c] >= minf(knots[i][c], knots[i + 1][c]) - 1e-8 and row[c] <= maxf(knots[i][c], knots[i + 1][c]) + 1e-8
+		check(valid and samples[-1] == knots[-1], key + " interpolation changed knots or overshot bounds")
+	for node in [model.skin, model.canopy]:
+		var arrays: Array = node.mesh.surface_get_arrays(0)
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var valid: bool = normals.size() == arrays[Mesh.ARRAY_VERTEX].size()
+		for n in normals: valid = valid and n.is_finite() and absf(n.length() - 1) < .001
+		check(valid, "Invalid loft normals: " + str(node.name))
+		# Godot may encode a zero input normal as a unit vector. Check its
+		# direction against each actual triangle as well as its stored length.
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var outward := true
+		for i in range(0, vertices.size(), 3):
+			var geometric := (vertices[i + 2] - vertices[i]).cross(vertices[i + 1] - vertices[i]).normalized()
+			outward = outward and geometric.dot(normals[i] + normals[i + 1] + normals[i + 2]) > 0
+		check(outward, "Loft normals disagree with face orientation: " + str(node.name))
+	# Shading must not move vertices or change the physical silhouette.
+	var parent := Node3D.new()
+	var flat := Model.loft(model.data.canopy_stations, parent, "flat_probe", Color.WHITE, 1, 4, false)
+	check(flat.mesh.get_faces() == model.canopy.mesh.get_faces(), "Smooth shading moved canopy vertices")
+	parent.free()
+
 func run() -> void:
 	check_concave_panels()
 	var model := Model.build()
 	get_root().add_child(model.root)
 	await process_frame
+	check_lofts(model)
 	var bounds := vertex_bounds(model.root)
 	check(absf(bounds.size.x - 2.0) < .0001, "Nominal span must be 2m")
 	check(absf(bounds.size.z - 2.22) < .0001, "Overall model length must be 2.22m")

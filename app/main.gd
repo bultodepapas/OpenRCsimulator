@@ -21,6 +21,7 @@ const Ground := preload("res://render/ground.gd")
 const Hud := preload("res://render/hud.gd")
 const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
+const BuildInfo := preload("res://app_state/build_info.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -219,7 +220,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if recorder.recording:
 					recorder.stop()
 				elif not _scripted:
-					recorder.start(session.trace_meta())
+					recorder.start(_trace_meta())
 			KEY_C:
 				_inspect = not _inspect
 			KEY_K:
@@ -252,6 +253,16 @@ func set_overlays_visible(on: bool) -> void:
 			n = n.get_parent()
 		if n != null:
 			n.visible = on
+
+
+## The session's trace header plus which build flew it (UI-04a): the exported smoke test compares app_build with
+## the ZIP name. "development" when running from the source tree.
+func _trace_meta() -> Dictionary:
+	var meta: Dictionary = session.trace_meta()
+	var build := BuildInfo.current()
+	meta.app_build = build.describe if build.source == "export" else "development"
+	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
+	return meta
 
 
 ## One file never mixes two flights.
@@ -328,7 +339,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 func _write_trace_and_quit(t: float, path: String) -> void:
 	session.input_enabled = false
 	session.sim.process_mode = Node.PROCESS_MODE_DISABLED
-	recorder.start(session.trace_meta())
+	recorder.start(_trace_meta())
 	for i in roundi(t / session.sim.dt()):
 		session.sim.step()
 	get_tree().quit(recorder.stop(path))
