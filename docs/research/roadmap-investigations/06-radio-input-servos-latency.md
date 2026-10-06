@@ -378,7 +378,7 @@ IDs: F3–F5 keep their ROADMAP meaning; flight aids M5-AIDS-n; the optional rea
 47. [S47] ArduPilot Plane flight modes and source (GPLv3). https://ardupilot.org/plane/docs/flight-modes.html (fetched)
 48. [S48] Steam, RealFlight Trainer Edition (app 1314820), RealFlight Evolution (2069310), UMX Conscendo add-on (2759380). https://store.steampowered.com/app/1314820 (fetched via API)
 49. [S49] PicaSim repository (PolyForm Noncommercial). https://github.com/Rowlhouse/PicaSim (fetched)
-50. [S50] SeligSIM manual, Editing the transmitter; Spektrum NX10/DX8 guides. https://www.seligsim.com/manual/edit_transmitter.html (fetched); https://www.seligsim.com/manual/controllers/howto-spektrum-nx10.html (search result only)
+50. [S50] SeligSIM manual, Editing the transmitter; Spektrum NX10/DX8 guides. https://www.seligsim.com/manual/edit_transmitter.html (fetched); https://www.seligsim.com/manual/controllers/howto-spektrum-nx10.html (search result only; 404 on 2026-10-06)
 51. [S51] EdgeTX manual, Trainer (model setup). https://manual.edgetx.org/color-radios/model-settings/model-setup/trainer (fetched)
 52. [S52] O. Liang, How to use ExpressLRS Bluetooth joystick. https://oscarliang.com/expresslrs-bluetooth-joystick/ (search result only)
 53. [S53] M. Neiderhauser, CRSFJoystick (RP2040). https://github.com/mikeneiderhauser/CRSFJoystick (fetched)

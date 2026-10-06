@@ -351,8 +351,8 @@ Principles: objects keyed by ID (merge-patchable, stable diffs); every number ke
 15. CRRCSim 0.9.13, "Airplane file format version 2", https://sources.debian.org/data/main/c/crrcsim/0.9.13-3.2/documentation/file_format/airplane02.html — fetched.
 16. CRRCSim 0.9.13, "Power and propulsion", https://sources.debian.org/data/main/c/crrcsim/0.9.13-3.2/documentation/power_propulsion/power_propulsion.html — fetched.
 17. D. Rowlands, PicaSim "Customisation", https://rowlhouse.co.uk/PicaSim/customisation.html — fetched.
-18. Wikipedia, "RealFlight" (aircraft editor), https://wikipedia.com/wiki/RealFlight — search result only.
-19. Robitronic, "RC Flight Simulator by AccuRC", https://robitronic.com/en/accurc-simulator.html — search result only (404 on fetch).
+18. Wikipedia, "RealFlight" (aircraft editor), https://www.realflight.com/ — search result only (the Wikipedia article URL found earlier is a 404 on 2026-10-06).
+19. Robitronic, "RC Flight Simulator by AccuRC", https://robitronic.com/en/accurc-simulator.html — search result only (dead link: 404 on 2026-10-06).
 20. IPACS, aerofly wiki "aircraft:tmd", https://aerofly.com/dokuwiki/doku.php/aircraft:tmd — fetched.
 21. IPACS, "tmEdit Manual", https://www.aerofly-sim.de/download/software/tmedit/manual — search result only.
 22. ClearView RC, "Plane model parameter definitions", https://www.rcflightsim.com/ClearViewPlaneModelParameterDefinitions.html — fetched.
