@@ -1654,8 +1654,9 @@
   "runtime_tests_run": false,
   "limitations": [
     "No calibrated complete A200 airframe plan found",
-    "Assembly visual sample, not full metrology",
-    "Two EDF comparison download attempts returned HTTP403; excluded from downloaded count",
-    "No app implementation, flight validation or performance measurements"
-  ]
+    "Selected assembly steps inspected; no full metrology",
+    "Two EDF downloads unavailable HTTP403; not counted as originals",
+    "Isolated AV02 prototype implemented; no app integration or flight validation"
+  ],
+  "av02_evidence": "docs/research/avanti-s-av02-validation.json"
 }

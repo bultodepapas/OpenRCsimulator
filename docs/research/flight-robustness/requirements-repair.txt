@@ -1,0 +1,2 @@
+# Optional offline coupled-eigenvalue research only; not needed by app/test.sh.
+numpy==1.26.4

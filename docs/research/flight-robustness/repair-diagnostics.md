@@ -45,6 +45,7 @@ Reproduce the matrix and eigenvalue files from the repository root:
 FLIGHT_REPAIR_MODES_OUT="$PWD/docs/research/flight-robustness/repair-modes-input.json" \
   $(app/get-godot.sh) --headless --path app \
   --script "$PWD/docs/research/flight-robustness/repair-modes-probe.gd"
+# Offline analysis uses NumPy pinned in requirements-repair.txt (1.26.4).
 python3 docs/research/flight-robustness/repair-modes-eigen.py \
   --input docs/research/flight-robustness/repair-modes-input.json \
   --output docs/research/flight-robustness/repair-modes-results.json

@@ -2,6 +2,8 @@
 
 Revisión: **2026-10-05** (fecha de la sesión en America/Bogota), incluyendo el equipo de referencia informado por el propietario.
 
+Continuación: [segunda ronda de técnicas, materiales y diagnóstico](visual-quality-round2/README.md), con fuentes adicionales y un ensayo Godot reproducible. Este catálogo conserva las herramientas de autoría de la primera ronda.
+
 Este documento complementa el plan de calidad visual de [`docs/VISUAL-QUALITY-PLAN.md`](../VISUAL-QUALITY-PLAN.md). Compara herramientas, addons, bibliotecas de recursos y material de aprendizaje para el simulador Godot. No modifica el proyecto ni prueba addons dentro de `app/`.
 
 ## Criterio y contexto comprobado

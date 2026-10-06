@@ -1,0 +1,81 @@
+# The Home backdrop (MENU-PLAN §3/§7, UI-01c): our Ugly Stik over our field, rendered from the same builders the
+# flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
+# No simulation, no input, no animation: shaders get a fixed sim_clock, so every frame is the same picture.
+# The app imports no textures, so a live still render replaces a screenshot file (no import step, nothing to
+# regenerate when the model or the landscape improves). It mirrors main.gd's world setup; keep them in step.
+extends Node3D
+
+const Spec := preload("res://spec.gd")
+const Frames := preload("res://render/frames.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
+const Shadow := preload("res://render/shadow.gd")
+const Ground := preload("res://render/ground.gd")
+
+## Composition, in NED metres from the pilot station and degrees: a low pass along the runway at eye height, banked
+## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
+## flat perspective, the horizon in the lower third, the airplane in the right third facing the menu).
+const AIRPLANE_NED := [15.0, 3.0, -2.75]
+const ATTITUDE_DEG := { yaw = -112.0, pitch = 2.0, roll = -30.0 }
+const CAMERA_NED := [2.0, 3.0, -1.7]
+const FOV_DEG := 12.0
+## The camera looks this far left of the airplane (deg), and this far above the horizon (deg).
+const AIRPLANE_RIGHT_DEG := 4.5
+const CAMERA_PITCH_DEG := 3.2
+const PROP_ANGLE := 0.6 # rad: a blade off the vertical reads better than a single line
+## Fixed clock (s) for clouds and any time-based shader: a still picture.
+const CLOCK := 37.0
+
+var airplane: Dictionary
+var camera: Camera3D
+
+
+func _init() -> void:
+	name = "HomeScene"
+	ShaderClock.register() # before any material that reads sim_clock compiles
+	var world_env := WorldEnvironment.new()
+	var env := Atmosphere.environment()
+	world_env.environment = env
+	add_child(world_env)
+
+	var ground := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(Spec.GROUND_SIZE, Spec.GROUND_SIZE)
+	ground.mesh = plane
+	ground.material_override = Ground.grass_material()
+	add_child(ground)
+	var runway := MeshInstance3D.new()
+	var strip := PlaneMesh.new()
+	strip.size = Vector2(Spec.RUNWAY.length_east_west, Spec.RUNWAY.width_north_south)
+	runway.mesh = strip
+	runway.material_override = Ground.runway_material()
+	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.03])
+	add_child(runway)
+	Atmosphere.create_sun(self)
+
+	airplane = AirplaneBuilder.build()
+	add_child(airplane.root)
+	var basis := Frames.attitude_to_render(deg_to_rad(ATTITUDE_DEG.yaw), deg_to_rad(ATTITUDE_DEG.pitch), deg_to_rad(ATTITUDE_DEG.roll))
+	var pos := Frames.ned_to_render(AIRPLANE_NED)
+	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
+	airplane.propeller.rotation.z = PROP_ANGLE
+	var extent := Shadow.model_extent(airplane.root)
+	var shadow := Shadow.create(self)
+	Shadow.update(shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction())
+
+	camera = Camera3D.new()
+	camera.fov = FOV_DEG
+	camera.near = Spec.CAMERA.near
+	camera.far = Spec.CAMERA.far
+	add_child(camera)
+	camera.position = Frames.ned_to_render(CAMERA_NED)
+	var to_airplane := pos - camera.position
+	var azimuth := atan2(to_airplane.x, -to_airplane.z) - deg_to_rad(AIRPLANE_RIGHT_DEG) # render: x east, -z north
+	var elevation := deg_to_rad(CAMERA_PITCH_DEG)
+	var look := Vector3(sin(azimuth) * cos(elevation), sin(elevation), -cos(azimuth) * cos(elevation))
+	camera.look_at_from_position(camera.position, camera.position + look, Vector3.UP)
+	camera.current = true
+
+	ShaderClock.update(CLOCK)
+	Atmosphere.update_clouds(env, CLOCK)

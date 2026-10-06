@@ -349,3 +349,32 @@ Pruebas y procedencia: [implementación](docs/research/flight-repair-implementat
 - Las cinco nuevas fotos oficiales de 4320 × 3240 aclaran cabina, tomas y placas de ala, pero mantienen perspectiva. A200-13 se identifica como tubo original P100 de doble pared; no aparecieron dimensiones que permitan calibrar su instalación.
 
 Prueba: [maqueta y resultados](docs/research/avanti-s-av02-preview.md), [clon sin referencias y defecto detectado](docs/research/avanti-s-av02-clone-check.json). No es validación aerodinámica, rendimiento de GPU real ni integración del Avanti en la app.
+
+
+## 2026-10-05 · VQ-00 ronda 2 — técnicas de render e importación
+
+- En Godot 4.7.2 Compatibility, dos MeshInstance3D con un ShaderMaterial compartido conservaron colores independientes mediante `instance uniform`; cambiar el uniform común afectó a ambos. No se debe heredar la limitación de tutoriales antiguos ni generalizar este ensayo de vec4 a texturas por instancia.
+- Una malla fuera de cámara desplazada por vertex shader al centro fue descartada con bounds automáticos; ajustar solo `custom_aabb` recuperó su imagen. Bounds de vegetación deben incluir deformación, no solamente la geometría en reposo.
+- La guía oficial distingue preparación visible de materiales en Compatibility y precompilación de pipelines de Forward+/Mobile. Cargar un recurso y medir FPS una vez calentado no prueba ausencia de tirones al mostrar un efecto por primera vez. Es hallazgo documental; no se midió stutter en este ensayo.
+- El fixture pasó cinco estados y ocho verificaciones de píxel por ejecución; cinco PNG se repitieron byte a byte en dos procesos llvmpipe. Esto comprueba comportamiento local, no velocidad de una RTX 3090 ni integración de materiales con los aviones.
+
+Evidencia, fuentes y ensayos pendientes: [segunda ronda visual](docs/research/visual-quality-round2/README.md), [código y capturas](docs/research/visual-quality-round2/godot-probe/README.md). Sin cambios de aplicación ni instalación de herramientas externas.
+
+## 2026-10-06 · Avanti — comparar antes de refinar
+
+- Ajustar una cámara por foto y superponer un render transparente revela diferencias que quedan ocultas al ver las imágenes por separado. Se conservaron geometría y fotografías; ninguna deformación 2D se usó para mejorar artificialmente la coincidencia.
+- Un residuo pequeño en los puntos de ajuste no garantiza ajuste global: la oblicua posterior tiene RMS de 7,7 px en sus cuatro anclas y 26,1 px en los tres puntos reservados. Modelo aproximado, FOV supuesto y selección manual contribuyen al error; no es una medida física del avión.
+- La conversión de ejes de cámara se verificó entre el cálculo numérico y la proyección real de Godot antes de interpretar los contornos. Los PNG conservan transparencia real y la página SVG permite opacidad, contorno, alternancia y corrección uniforme reversible.
+- Las superposiciones priorizan fuselaje/tomas, contornos alares y transición de deriva para la siguiente edición. El modelo permanece igual en esta ronda para conservar una referencia de partida.
+
+Evidencia: [comparación y límites](docs/research/avanti-s-transparency-comparison.md), [validación](docs/research/avanti-s-alignment-validation.json). Las composiciones que contienen fotografías permanecen locales y excluidas de Git.
+
+## 2026-10-06 · UI-01c — revisión visual de Inicio
+
+- Mirar la captura encontró lo que las pruebas no podían: la pantalla pasaba contraste, foco y tamaño de texto y, aun así, no mostraba el avión que da identidad al proyecto, y la ficha quedaba a 800 px del botón que describe. Una revisión visual crítica es un paso propio, no un adorno.
+- Como la app construye todo su mundo en código, un render fijo con los mismos constructores es más barato y más fiel que una captura PNG: no hay paso de importación y la imagen mejora sola con el modelo y el paisaje. El encuadre fotográfico (teleobjetivo de 12°, avión en el tercio derecho con el morro hacia el menú, horizonte en el tercio inferior) necesitó cuatro iteraciones; mirar una dirección fija a mano dejó el avión detrás del menú, y calcularla desde la posición del avión lo resolvió.
+- La fuente predeterminada de Godot no tiene flechas (U+2190–2193) ni «●»; con un respaldo del sistema la imagen cambiaría entre máquinas. Las teclas de flecha se dibujan como triángulos.
+- Un panel translúcido al 94 % deja ver el horizonte y se parte en dos tonos; al 97 % ya no. El contraste de superficies translúcidas se comprueba sobre blanco y sobre negro: con el panel al 55 %, el contorno de foco bajaba a 2,28:1.
+- Medir antes de asumir: el desglose atribuyó el coste a la textura de césped (≈ 220 ms) y a la construcción del avión (≈ 240 ms). En GDScript una lambda captura las variables locales por valor: un cronómetro que actualiza `t` dentro de la lambda mide tiempos acumulados.
+
+Prueba: capturas `ui-home-en.png`/`ui-home-es.png`, `tests/test_ui_home.gd` (contraste de cada etiqueta, fondo liberado al volar), mutaciones y suite completa en un clon limpio.

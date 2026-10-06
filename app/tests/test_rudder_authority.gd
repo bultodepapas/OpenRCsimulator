@@ -58,11 +58,11 @@ func _doublet(reverse := false) -> Dictionary:
 	return maneuver
 
 
-func _pulse_maneuver(speed: float, amplitude: float, pulse_s: float, direction: float) -> Dictionary:
+func _pulse_maneuver(speed: float, amplitude: float, pulse_s: float, direction: float, mode := "level") -> Dictionary:
 	var start_s := 0.1
 	var end_s := start_s + pulse_s
 	return {
-		mode = "level",
+		mode = mode,
 		speed = speed,
 		duration = end_s + 0.5,
 		sticks = func(t: float, _state: PackedFloat64Array) -> Dictionary:
@@ -91,11 +91,16 @@ func _trace_stats(trace: RefCounted, rudder_throw_deg: float) -> Dictionary:
 		speed_min_mps = INF,
 		speed_max_mps = -INF,
 		altitude_min_m = INF,
+		altitude_max_m = -INF,
+		altitude_change_peak_m = 0.0,
+		engine_rpm_peak = 0.0,
 		rms_beta_deg = 0.0,
 		rms_r_deg_s = 0.0,
 		rudder_right_delta_deg = -INF,
 		rudder_left_delta_deg = INF,
-		r_after_1_5s_deg_s = NAN,
+		r_at_3s_deg_s = NAN,
+		has_r_at_3s = false,
+		r_final_deg_s = NAN,
 		first_phase_yaw_deg_s = 0.0,
 		first_phase_yaw_min_deg_s = INF,
 		second_phase_yaw_deg_s = 0.0,
@@ -130,6 +135,10 @@ func _trace_stats(trace: RefCounted, rudder_throw_deg: float) -> Dictionary:
 		stats.speed_min_mps = minf(stats.speed_min_mps, trace.value(row, "speed_mps"))
 		stats.speed_max_mps = maxf(stats.speed_max_mps, trace.value(row, "speed_mps"))
 		stats.altitude_min_m = minf(stats.altitude_min_m, trace.value(row, "alt_m"))
+		stats.altitude_max_m = maxf(stats.altitude_max_m, trace.value(row, "alt_m"))
+		stats.altitude_change_peak_m = maxf(stats.altitude_change_peak_m,
+			absf(trace.value(row, "alt_m") - trace.value(0, "alt_m")))
+		stats.engine_rpm_peak = maxf(stats.engine_rpm_peak, trace.value(row, "engine_rpm"))
 		beta_sq_sum += beta * beta
 		r_sq_sum += yaw_rate * yaw_rate
 		var actual_rudder_deg: float = trace.value(row, "srv_yaw") * rudder_throw_deg - rudder_zero
@@ -145,15 +154,20 @@ func _trace_stats(trace: RefCounted, rudder_throw_deg: float) -> Dictionary:
 	stats.rms_beta_deg = sqrt(beta_sq_sum / n)
 	stats.rms_r_deg_s = sqrt(r_sq_sum / n)
 	var dt: float = trace.value(1, "t_s") - trace.value(0, "t_s")
-	var release_row := clampi(roundi(3.0 / dt), 0, trace.row_count() - 1)
-	stats.r_after_1_5s_deg_s = rad_to_deg(trace.value(release_row, "r_radps"))
+	var sample_at_3s := roundi(3.0 / dt)
+	if sample_at_3s < trace.row_count() and absf(trace.value(sample_at_3s, "t_s") - t0 - 3.0) <= dt * 0.01:
+		stats.r_at_3s_deg_s = rad_to_deg(trace.value(sample_at_3s, "r_radps"))
+		stats.has_r_at_3s = true
+	stats.r_final_deg_s = rad_to_deg(trace.value(trace.row_count() - 1, "r_radps"))
 	return stats
 
 
 func _stats_detail(stats: Dictionary) -> String:
-	return "βpk %.2f° RMS %.2f°, rpk %.2f°/s RMS %.2f°/s, ppk %.2f°/s, αpk %.2f°, rollpk %.2f°, r@release+1.5s %.2f°/s" % [
+	var r_at_3s := "%.2f°/s" % stats.r_at_3s_deg_s if stats.has_r_at_3s else "unavailable"
+	return "βpk %.2f° RMS %.2f°, rpk %.2f°/s RMS %.2f°/s, ppk %.2f°/s, αpk %.2f°, rollpk %.2f°, altitude %.2f–%.2f m (Δpk %.2f m), rpm pk %.0f, r@3s %s, rfinal %.2f°/s" % [
 		stats.beta_peak_deg, stats.rms_beta_deg, stats.r_peak_deg_s, stats.rms_r_deg_s,
-		stats.p_peak_deg_s, stats.alpha_peak_deg, stats.roll_peak_deg, stats.r_after_1_5s_deg_s]
+		stats.p_peak_deg_s, stats.alpha_peak_deg, stats.roll_peak_deg, stats.altitude_min_m,
+		stats.altitude_max_m, stats.altitude_change_peak_m, stats.engine_rpm_peak, r_at_3s, stats.r_final_deg_s]
 
 
 func _check_run_integrity(label: String, run: Dictionary, expected_rows: int, throw_deg: float) -> Dictionary:
@@ -221,8 +235,9 @@ func _run() -> void:
 		"right-phase r %.2f°/s, left-phase r %.2f°/s" % [right_stats.first_phase_yaw_deg_s, right_stats.second_phase_yaw_deg_s])
 	_check("reference doublet |β| peak ≤25° (estimated screen)", right_stats.beta_peak_deg <= BETA_LIMIT_DEG, _stats_detail(right_stats))
 	_check("reference doublet |r| peak ≤120°/s (estimated screen)", right_stats.r_peak_deg_s <= YAW_RATE_LIMIT_DEG_S, _stats_detail(right_stats))
-	_check("|r| 1.5 s after release ≤15°/s (estimated recovery screen)",
-		absf(right_stats.r_after_1_5s_deg_s) <= RELEASE_YAW_RATE_LIMIT_DEG_S, _stats_detail(right_stats))
+	_check("|r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen)",
+		right_stats.has_r_at_3s and absf(right_stats.r_at_3s_deg_s) <= RELEASE_YAW_RATE_LIMIT_DEG_S,
+		_stats_detail(right_stats))
 	print("RUDDER_REFERENCE 15 m/s, 240 Hz: " + _stats_detail(right_stats))
 	var old_cndr := _run_maneuver(_doublet(false), REFERENCE_HZ, true)
 	var old_cndr_stats := _trace_stats(old_cndr.trace, rudder_throw_deg)
@@ -231,8 +246,7 @@ func _run() -> void:
 		(old_cndr_stats.beta_peak_deg > BETA_LIMIT_DEG or old_cndr_stats.r_peak_deg_s > YAW_RATE_LIMIT_DEG_S),
 		"legacy Cndr %.5f; %s" % [AUDITED_BORROWED_CNDR, _stats_detail(old_cndr_stats)])
 
-	# Reverse ordering proves the other initial direction. The reference limits apply only to the defined
-	# right-then-left maneuver above; other directions and stronger/longer inputs are measured without those limits.
+	# The mirrored reference doublet uses the same provisional limits; longer/stronger inputs below do not.
 	var left_first := _run_maneuver(_doublet(true), REFERENCE_HZ)
 	var left_stats := _check_run_integrity("left-first reverse doublet", left_first, expected_reference_rows, rudder_throw_deg)
 	_check("left-first doublet produces left then right yaw response",
@@ -241,24 +255,34 @@ func _run() -> void:
 		"δr left %.2f°, right %.2f°; phase r %.2f°/s then %.2f°/s" % [left_stats.rudder_left_delta_deg,
 			left_stats.rudder_right_delta_deg, left_stats.first_phase_yaw_min_deg_s, left_stats.second_phase_yaw_max_deg_s])
 
+	_check("mirrored reference doublet respects the same authority/recovery screens",
+		left_stats.beta_peak_deg <= BETA_LIMIT_DEG and left_stats.r_peak_deg_s <= YAW_RATE_LIMIT_DEG_S
+		and left_stats.has_r_at_3s and absf(left_stats.r_at_3s_deg_s) <= RELEASE_YAW_RATE_LIMIT_DEG_S, _stats_detail(left_stats))
+
 	# Timestep comparison at the same 15 m/s reference maneuver; event times align exactly at both rates.
 	var fine := _run_maneuver(_doublet(false), 2 * REFERENCE_HZ)
 	var fine_stats := _check_run_integrity("reference doublet at 480 Hz", fine, roundi(3.0 * 2 * REFERENCE_HZ) + 1, rudder_throw_deg)
 	var beta_dt_error: float = absf(fine_stats.beta_peak_deg - right_stats.beta_peak_deg)
 	var yaw_dt_error: float = absf(fine_stats.r_peak_deg_s - right_stats.r_peak_deg_s)
-	_check("dt/2 converges: β peak within 2° and r peak within 10°/s",
-		beta_dt_error <= 2.0 and yaw_dt_error <= 10.0,
-		"Δβ %.3f°, Δr %.3f°/s; 240 Hz [%s]; 480 Hz [%s]" % [beta_dt_error, yaw_dt_error, _stats_detail(right_stats), _stats_detail(fine_stats)])
+	var final_yaw_dt_error: float = absf(fine_stats.r_final_deg_s - right_stats.r_final_deg_s)
+	# Engineering numerical check only: halving dt keeps integrated peaks close and final-rate residual O(dt).
+	_check("dt/2 converges: β peak ≤0.25°, r peak ≤1°/s, final r ≤0.5°/s apart",
+		beta_dt_error <= 0.25 and yaw_dt_error <= 1.0 and final_yaw_dt_error <= 0.5,
+		"Δβ %.3f°, Δrpk %.3f°/s, Δrfinal %.3f°/s; 240 Hz [%s]; 480 Hz [%s]" % [
+			beta_dt_error, yaw_dt_error, final_yaw_dt_error, _stats_detail(right_stats), _stats_detail(fine_stats)])
 
 	# Range samples intentionally cover distinct amplitudes, pulse lengths, directions and speeds. They check
 	# trace continuity and finiteness only: the reference doublet limits do not apply to sustained/extreme inputs.
 	var cases := []
 	for pair in [[0.1, 0.1], [0.25, 0.25], [0.5, 0.5], [1.0, 2.0]]:
 		for direction in [-1.0, 1.0]:
-			cases.append({ speed = 15.0, amplitude = pair[0], duration = pair[1], direction = direction })
+			cases.append({ speed = 15.0, amplitude = pair[0], duration = pair[1], direction = direction,
+				mode = "level", kind = "sustained_2s" if pair[0] == 1.0 else "pulse" })
 	for speed in [12.0, 20.0]:
 		for direction in [-1.0, 1.0]:
-			cases.append({ speed = speed, amplitude = 0.5, duration = 0.25, direction = direction })
+			cases.append({ speed = speed, amplitude = 0.5, duration = 0.25, direction = direction, mode = "level", kind = "pulse" })
+	for direction in [-1.0, 1.0]:
+		cases.append({ speed = 15.0, amplitude = 0.5, duration = 0.5, direction = direction, mode = "glide", kind = "glide" })
 	var sweep_beta_peak := 0.0
 	var sweep_yaw_peak := 0.0
 	var sweep_alpha_peak := 0.0
@@ -268,12 +292,25 @@ func _run() -> void:
 	var sweep_rms_yaw := 0.0
 	var sweep_rows := 0
 	var sweep_ok := true
+	var sustained_hold_count := 0
+	var sustained_holds_ok := true
+	var glide_count := 0
+	var glide_ok := true
+	var glide_rpm_peak := 0.0
 	for case in cases:
-		var maneuver := _pulse_maneuver(case.speed, case.amplitude, case.duration, case.direction)
+		var maneuver := _pulse_maneuver(case.speed, case.amplitude, case.duration, case.direction, case.mode)
 		var run := _run_maneuver(maneuver, REFERENCE_HZ)
 		var expected_rows := roundi(maneuver.duration * REFERENCE_HZ) + 1
 		var stats := _trace_stats(run.trace, rudder_throw_deg)
-		sweep_ok = sweep_ok and run.fault.is_empty() and stats.finite and stats.continuous and run.trace.row_count() == expected_rows
+		var case_ok: bool = run.fault.is_empty() and stats.finite and stats.continuous and run.trace.row_count() == expected_rows
+		sweep_ok = sweep_ok and case_ok
+		if case.kind == "sustained_2s":
+			sustained_hold_count += 1
+			sustained_holds_ok = sustained_holds_ok and case_ok
+		if case.kind == "glide":
+			glide_count += 1
+			glide_ok = glide_ok and case_ok
+			glide_rpm_peak = maxf(glide_rpm_peak, stats.engine_rpm_peak)
 		sweep_beta_peak = maxf(sweep_beta_peak, stats.beta_peak_deg)
 		sweep_yaw_peak = maxf(sweep_yaw_peak, stats.r_peak_deg_s)
 		sweep_alpha_peak = maxf(sweep_alpha_peak, stats.alpha_peak_deg)
@@ -284,6 +321,10 @@ func _run() -> void:
 		sweep_rows += run.trace.row_count()
 	var rms_beta := sqrt(sweep_rms_beta / maxf(1.0, float(sweep_rows)))
 	var rms_yaw := sqrt(sweep_rms_yaw / maxf(1.0, float(sweep_rows)))
+	_check("full rudder held for 2 s remains finite in both directions", sustained_holds_ok and sustained_hold_count == 2,
+		"%d direction cases" % sustained_hold_count)
+	_check("retrimming glide at 15 m/s with rudder pulses remains finite in both directions", glide_ok and glide_count == 2,
+		"%d direction cases; engine rpm pk %.0f" % [glide_count, glide_rpm_peak])
 	_check("amplitude/duration/speed sweep stays finite in both rudder directions", sweep_ok,
 		"%d cases; βpk %.2f° RMS %.2f°, rpk %.2f°/s RMS %.2f°/s, αpk %.2f°, speed %.2f–%.2f m/s" % [
 			cases.size(), sweep_beta_peak, rms_beta, sweep_yaw_peak, rms_yaw, sweep_alpha_peak, sweep_speed_min, sweep_speed_max])
@@ -300,6 +341,10 @@ func _run() -> void:
 	_check("injected keyboard A reaches left rudder and left yaw", key_left.fault.is_empty()
 		and key_left.stats.finite and key_left.stats.rudder_left_delta_deg < -10.0 and key_left.stats.r_negative_deg_s < 0.0,
 		_stats_detail(key_left.stats))
+	_check("traces shorter than 3 s leave the 3 s recovery sample unavailable",
+		not key_right.stats.has_r_at_3s and is_nan(key_right.stats.r_at_3s_deg_s)
+		and not key_left.stats.has_r_at_3s and is_nan(key_left.stats.r_at_3s_deg_s),
+		"keyboard trace duration 0.75 s; r@3s remains unavailable")
 	var radio_right := await _run_device_case(DEVICE_ID, false, 1.0, rudder_throw_deg)
 	_check("simulated radio path reaches right rudder with finite flight data", radio_right.fault.is_empty()
 		and radio_right.stats.finite and radio_right.stats.rudder_right_delta_deg > 10.0 and radio_right.stats.r_positive_deg_s > 0.0,

@@ -1,10 +1,12 @@
-# Home screen (MENU-PLAN §3, steps UI-01a/UI-01d): Fly, language and Quit, a summary of what Fly starts, and which
-# control flies. No physics runs behind it. Built in code with containers, so it reflows instead of using absolute
-# positions. Texts are English source strings: Labels and Buttons translate themselves when the locale changes
-# (res://i18n/*.po); sentences built at runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED.
+# Home screen (MENU-PLAN §3, steps UI-01a/01c/01d): one column over our Ugly Stik (ui/home_scene.gd).
+# Top to bottom: the name and build stage; what Fly starts (next to Fly); Fly; Language and Quit; how to control.
+# Built in code with containers, so it reflows instead of using absolute positions. Texts are English source
+# strings: Labels and Buttons translate themselves when the locale changes (res://i18n/*.po); sentences built at
+# runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED. Proper names are never translated.
 extends Control
 
 const UiTheme := preload("res://ui/ui_theme.gd")
+const KeyCap := preload("res://ui/key_cap.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 
@@ -14,14 +16,18 @@ signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
 
+const SIDEBAR_WIDTH := 440
 ## What Fly starts, until the catalog (UI-05/06) reads it from installed content. Presentation only: no physical
-## parameter is copied here. The aircraft name is a proper name and is not translated.
-const SUMMARY := ["Jensen Das Ugly Stik 60", "Test field", "Free flight · starts in the air"]
+## parameter is copied here.
+const AIRCRAFT_NAME := "Jensen Das Ugly Stik 60"
+## Keyboard legend: keys (QWERTY physical positions, as keyboard.gd reads them) and what they do.
+const KEYS := [[["left", "right"], "Roll"], [["up", "down"], "Pitch"], [["A", "D"], "Rudder"], [["W", "S"], "Throttle"]]
 
 var fly_button: Button
 var language_button: Button
 var quit_button: Button
 var control_label: Label
+var keys_legend: GridContainer
 var note_label: Label
 var _fly_sent := false
 
@@ -30,71 +36,94 @@ func _init() -> void:
 	name = "Home"
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(_backdrop())
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 48)
-	add_child(margin)
-	var row := HBoxContainer.new()
-	margin.add_child(row)
+	var sidebar := PanelContainer.new()
+	sidebar.name = "Sidebar"
+	sidebar.theme_type_variation = "Sidebar"
+	sidebar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
+	add_child(sidebar)
+	add_child(_fade())
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 0)
+	sidebar.add_child(column)
 
-	var menu := PanelContainer.new()
-	menu.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	menu.custom_minimum_size.x = 380
-	row.add_child(menu)
-	var items := VBoxContainer.new()
-	items.add_theme_constant_override("separation", 14)
-	menu.add_child(items)
-	var title := _label("OpenRC Simulator", "TitleLabel")
-	title.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # product name
-	items.add_child(title)
-	items.add_child(_label("Alpha · development", "SecondaryLabel"))
-	items.add_child(_gap(18))
+	var title := _label("OpenRC Simulator", "TitleLabel", false)
+	column.add_child(title)
+	var stage := HBoxContainer.new()
+	stage.add_theme_constant_override("separation", 10)
+	var badge := PanelContainer.new()
+	badge.theme_type_variation = "Badge"
+	badge.add_child(_label("ALPHA", "SectionLabel", false))
+	stage.add_child(badge)
+	stage.add_child(_label("development build", "SecondaryLabel"))
+	column.add_child(stage)
+	column.add_child(_spacer())
+
+	column.add_child(_label("NEXT FLIGHT", "SectionLabel"))
+	column.add_child(_gap(8))
+	var card := PanelContainer.new()
+	card.theme_type_variation = "Card"
+	var card_lines := VBoxContainer.new()
+	card_lines.add_theme_constant_override("separation", 4)
+	card_lines.add_child(_label(AIRCRAFT_NAME, "CardTitle", false))
+	card_lines.add_child(_label("Test field · Free flight", "SecondaryLabel"))
+	var limits := _label("Starts in the air; touching the ground restarts the airplane.", "SecondaryLabel")
+	limits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	card_lines.add_child(limits)
+	card.add_child(card_lines)
+	column.add_child(card)
+	column.add_child(_gap(18))
+
 	fly_button = _button("FLY", "PrimaryButton")
 	fly_button.name = "Fly"
-	fly_button.custom_minimum_size.y = 64
+	fly_button.custom_minimum_size.y = 66
 	fly_button.pressed.connect(_on_fly)
-	items.add_child(fly_button)
+	column.add_child(fly_button)
+	column.add_child(_gap(12))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
 	language_button = _button("", "")
 	language_button.name = "Language"
 	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
+	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
-	items.add_child(language_button)
+	row.add_child(language_button)
 	quit_button = _button("Quit", "")
 	quit_button.name = "Quit"
+	quit_button.custom_minimum_size.x = 120
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
-	items.add_child(quit_button)
-	items.add_child(_gap(18))
-	control_label = _label("", "SecondaryLabel")
-	control_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
-	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	items.add_child(control_label)
-	note_label = _label("", "SecondaryLabel")
-	note_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	row.add_child(quit_button)
+	column.add_child(row)
+	note_label = _label("", "SecondaryLabel", false)
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
-	items.add_child(note_label)
+	column.add_child(note_label)
+	column.add_child(_spacer())
 
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(spacer)
-
-	var card := PanelContainer.new()
-	card.size_flags_vertical = Control.SIZE_SHRINK_END
-	card.custom_minimum_size.x = 360
-	row.add_child(card)
-	var lines := VBoxContainer.new()
-	card.add_child(lines)
-	var aircraft := _label(SUMMARY[0], "")
-	aircraft.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	lines.add_child(aircraft)
-	for s in SUMMARY.slice(1):
-		lines.add_child(_label(s, "SecondaryLabel"))
-	var limits := _label("For now the flight starts in the air; touching the ground restarts the airplane.", "SecondaryLabel")
-	limits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lines.add_child(limits)
+	column.add_child(_label("CONTROLS", "SectionLabel"))
+	column.add_child(_gap(8))
+	control_label = _label("", "SecondaryLabel", false) # built with tr()
+	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(control_label)
+	column.add_child(_gap(10))
+	keys_legend = GridContainer.new()
+	keys_legend.columns = 2
+	keys_legend.add_theme_constant_override("h_separation", 18)
+	keys_legend.add_theme_constant_override("v_separation", 8)
+	for k in KEYS:
+		var caps := HBoxContainer.new()
+		caps.add_theme_constant_override("separation", 4)
+		for key in k[0]:
+			caps.add_child(KeyCap.make(key))
+		var pair := HBoxContainer.new()
+		pair.add_theme_constant_override("separation", 10)
+		pair.add_child(caps)
+		var action := _label(k[1], "SecondaryLabel")
+		pair.add_child(action)
+		keys_legend.add_child(pair)
+	column.add_child(keys_legend)
 
 
 func _ready() -> void:
@@ -108,7 +137,7 @@ func _notification(what: int) -> void:
 		_update_texts()
 
 
-## A one-line message under the control status (e.g. a settings file that could not be saved); "" hides it.
+## A one-line message under the buttons (e.g. a settings file that could not be saved); "" hides it.
 func set_note(text: String) -> void:
 	note_label.text = text
 	note_label.visible = text != ""
@@ -134,15 +163,15 @@ func _update_texts() -> void:
 ## Whole sentences per case (never a translated word inserted into another translated sentence).
 func _update_control() -> void:
 	var pads := Input.get_connected_joypads()
+	keys_legend.visible = pads.is_empty() # the keys only fly while no joypad is connected
 	if pads.is_empty():
-		# Physical keys (QWERTY positions); labels for other layouts arrive with the help screen (UI-04b).
-		control_label.text = tr("Control: keyboard. Arrows: roll and pitch · A/D: rudder · W/S: throttle.")
+		control_label.text = tr("Keyboard — no radio connected.")
 		return
 	var pad_name := Input.get_joy_name(pads[0])
 	if RcInput.looks_like_radio(pad_name):
-		control_label.text = tr("Control: radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
+		control_label.text = tr("Radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
 	else:
-		control_label.text = tr("Control: controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
+		control_label.text = tr("Controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
 
 
 func _on_joy_changed(_device: int, _connected: bool) -> void:
@@ -157,30 +186,31 @@ func _on_fly() -> void:
 	fly_requested.emit()
 
 
-func _backdrop() -> TextureRect:
-	# A calm field (MENU-PLAN §7): sky over grass, drawn from a gradient until our own capture replaces it (UI-01c).
+## The column's edge fades into the scene instead of cutting it with a hard line.
+func _fade() -> TextureRect:
 	var g := Gradient.new()
-	g.offsets = PackedFloat32Array([0.0, 0.6, 0.62, 1.0])
-	g.colors = PackedColorArray([Color("#5b8fc4"), Color("#c9dbe6"), Color("#6f8f4f"), Color("#3f5a2d")])
+	g.colors = PackedColorArray([UiTheme.SIDEBAR, Color(UiTheme.SIDEBAR, 0.0)])
 	var tex := GradientTexture2D.new()
 	tex.gradient = g
-	tex.fill_from = Vector2(0, 0)
-	tex.fill_to = Vector2(0, 1)
-	tex.width = 8
-	tex.height = 256
+	tex.width = 64
+	tex.height = 4
 	var rect := TextureRect.new()
 	rect.texture = tex
 	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rect.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	rect.offset_left = SIDEBAR_WIDTH
+	rect.offset_right = SIDEBAR_WIDTH + 32
 	return rect
 
 
-static func _label(text: String, variation: String) -> Label:
+static func _label(text: String, variation: String, translate := true) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.theme_type_variation = variation
+	if not translate:
+		l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	return l
 
 
@@ -194,4 +224,10 @@ static func _button(text: String, variation: String) -> Button:
 static func _gap(height: int) -> Control:
 	var c := Control.new()
 	c.custom_minimum_size.y = height
+	return c
+
+
+static func _spacer() -> Control:
+	var c := Control.new()
+	c.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	return c

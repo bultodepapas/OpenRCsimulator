@@ -11,8 +11,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Alpha · development"
-msgstr "Alpha · desarrollo"
+msgid "development build"
+msgstr "versión de desarrollo"
+
+msgid "NEXT FLIGHT"
+msgstr "PRÓXIMO VUELO"
+
+msgid "Test field · Free flight"
+msgstr "Campo de pruebas · Vuelo libre"
+
+msgid "Starts in the air; touching the ground restarts the airplane."
+msgstr "Empieza en el aire; el contacto con el suelo reinicia el avión."
 
 msgid "FLY"
 msgstr "VOLAR"
@@ -23,23 +32,29 @@ msgstr "Salir"
 msgid "Language: %s"
 msgstr "Idioma: %s"
 
-msgid "Test field"
-msgstr "Campo de pruebas"
+msgid "CONTROLS"
+msgstr "CONTROLES"
 
-msgid "Free flight · starts in the air"
-msgstr "Vuelo libre · inicio en el aire"
+msgid "Keyboard — no radio connected."
+msgstr "Teclado — sin radio conectada."
 
-msgid "For now the flight starts in the air; touching the ground restarts the airplane."
-msgstr "Por ahora el vuelo empieza en el aire; el contacto con el suelo reinicia el avión."
+msgid "Radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
+msgstr "Radio «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctala."
 
-msgid "Control: keyboard. Arrows: roll and pitch · A/D: rudder · W/S: throttle."
-msgstr "Control: teclado. Flechas: alabeo y profundidad · A/D: timón · W/S: acelerador."
+msgid "Controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
+msgstr "Mando «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctalo."
 
-msgid "Control: radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
-msgstr "Control: radio «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctala."
+msgid "Roll"
+msgstr "Alabeo"
 
-msgid "Control: controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it."
-msgstr "Control: mando «%s». Baja el acelerador para habilitar el motor. Para volar con teclado, desconéctalo."
+msgid "Pitch"
+msgstr "Profundidad"
+
+msgid "Rudder"
+msgstr "Timón"
+
+msgid "Throttle"
+msgstr "Acelerador"
 
 msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."

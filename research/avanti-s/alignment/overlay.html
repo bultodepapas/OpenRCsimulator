@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Avanti · comparación por transparencias</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101b25;color:#e8f0f5;font:16px system-ui}main{max-width:1280px;margin:auto;padding:24px}h1{font-size:27px;margin:8px 0}p{line-height:1.5}header p{color:#afc2d0;max-width:90ch}.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px}aside{padding:18px;background:#1a2b39;border-radius:12px}label{display:block;margin:14px 0 4px}select,button{font:inherit;background:#263e50;color:#f5f9fc;border:1px solid #557084;border-radius:6px;padding:8px;cursor:pointer}select{width:100%}button[aria-pressed=true]{background:#00787f;border-color:#39e4d3}input[type=range]{width:100%;accent-color:#2ed4cf}.buttons{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}output{float:right;color:#78e7dc}.stage{border-radius:10px;overflow:hidden;background:#080e12;border:1px solid #304555}svg{display:block;width:100%;height:auto;touch-action:none;cursor:grab}svg:active{cursor:grabbing}.status{min-height:48px;font-size:14px;color:#b9d0dd}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin:12px 0}.fit{color:#ffb64a}.check{color:#8df088}.model{color:#2fe8e1}small{display:block;line-height:1.5;color:#afc2d0}a{color:#80d8ee}.measure{font:12px ui-monospace,monospace;background:#122330;padding:10px;border-radius:6px}.meta{font-size:14px;color:#acbdc9}details{margin-top:20px}summary{cursor:pointer}code{overflow-wrap:anywhere}@media(max-width:800px){main{padding:12px}.layout{grid-template-columns:1fr}aside{padding:14px}.stage{order:0}}
+</style>
+<main>
+<header><a href="../av02/index.html">← Maqueta y referencias</a><h1>Avanti · comparar por transparencias</h1><p>La foto permanece intacta. La silueta cian es el modelo visto desde una cámara aproximada ajustada a cuatro puntos de la imagen. Arrastra la capa para afinar la posición o alterna foto/modelo.</p></header>
+<div class="layout"><section>
+<div class="stage"><svg id="stage" viewBox="0 0 650 488" role="img" aria-label="Fotografía del Avanti con modelo superpuesto">
+<defs><filter id="edge" x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="erode" radius="1.1" result="inner"/><feComposite in="SourceAlpha" in2="inner" operator="out" result="border"/><feFlood flood-color="#14fff1"/><feComposite in2="border" operator="in"/></filter></defs>
+<image id="photo" width="650" height="488"/>
+<g id="transformed"><image id="model" width="650" height="488"/><g id="predicted"></g></g>
+<g id="picked"></g>
+</svg></div>
+<div class="legend"><span class="model">Cian: modelo</span><span class="fit">Naranja: puntos de ajuste</span><span class="check">Verde: puntos reservados</span></div>
+<p class="status" id="status"></p>
+<p class="meta" id="view-note"></p>
+</section><aside>
+<label for="view">Vista</label><select id="view"></select>
+<label for="opacity">Opacidad del modelo <output id="opacity-value"></output></label><input id="opacity" type="range" min="0" max="100" value="45">
+<div class="buttons" id="modes"><button data-mode="fill" aria-pressed="true">Superponer</button><button data-mode="edge" aria-pressed="false">Contorno</button><button data-mode="photo" aria-pressed="false">Solo foto</button><button data-mode="model" aria-pressed="false">Solo modelo</button><button data-mode="blink" aria-pressed="false">Parpadear</button></div>
+<label for="x">Horizontal <output id="x-value"></output></label><input id="x" type="range" min="-120" max="120" value="0" step=".1">
+<label for="y">Vertical <output id="y-value"></output></label><input id="y" type="range" min="-120" max="120" value="0" step=".1">
+<label for="scale">Escala uniforme <output id="scale-value"></output></label><input id="scale" type="range" min=".6" max="1.4" value="1" step=".001">
+<label for="angle">Rotación <output id="angle-value"></output></label><input id="angle" type="range" min="-20" max="20" value="0" step=".1">
+<label><input type="checkbox" id="landmarks"> Mostrar puntos de referencia</label>
+<div class="buttons"><button id="reset">Restablecer ajuste</button><button id="save">Guardar ajuste JSON</button></div>
+<div class="measure" id="metrics"></div>
+<small>El error corresponde al ajuste inicial de cámara. Si mueves la capa, esa cifra deja de describir tu superposición. No se estira cada eje por separado ni se deforma la foto.</small>
+</aside></div>
+<details><summary>Método y límites</summary><p>Cuatro puntos aproximados, elegidos manualmente, ajustan orientación y posición de cámara con FOV vertical supuesto de 45°. Los puntos verdes no intervienen en el ajuste. La geometría del avión permanece igual: las diferencias de silueta pueden proceder del modelo, de la cámara o de la selección de puntos.</p><p>La coincidencia en píxeles no demuestra dimensiones físicas. No hay calibración de lente, reconstrucción ortográfica ni corrección de distorsión. La vista lateral contiene un punto de salida parcialmente oculto y es menos fiable.</p><p><a href="../../../docs/research/avanti-s-transparency-comparison.md">Notas y conclusiones</a> · <a href="../../../research/avanti-s/alignment/camera-fit.json">Cámaras y errores</a></p></details>
+</main>
+<script>
+const DATA=__ALIGNMENT_DATA__;
+const $=s=>document.querySelector(s), controls=['opacity','x','y','scale','angle'];
+let mode='fill',blinkVisible=true,timer=null,drag=null;
+for(const v of DATA.views){const o=document.createElement('option');o.value=v.id;o.textContent=v.title;$('#view').append(o);}
+function current(){return DATA.views.find(v=>v.id===$('#view').value);}
+function values(){return Object.fromEntries(controls.map(k=>[k,Number($('#'+k).value)]));}
+function pointMarker(group,x,y,color,label,cross){const ns='http://www.w3.org/2000/svg';const el=document.createElementNS(ns,cross?'path':'circle');if(cross){el.setAttribute('d',`M${x-4},${y}h8 M${x},${y-4}v8`);}else{el.setAttribute('cx',x);el.setAttribute('cy',y);el.setAttribute('r',4);}el.setAttribute('fill','none');el.setAttribute('stroke',color);el.setAttribute('stroke-width','1.4');const title=document.createElementNS(ns,'title');title.textContent=label;el.append(title);group.append(el);}
+function load(){stopBlink();mode='fill';$('#opacity').value=45;for(const k of ['x','y','angle'])$('#'+k).value=0;$('#scale').value=1;const v=current();$('#photo').setAttribute('href','../photos/'+v.photo.split('/').pop());$('#model').setAttribute('href','renders-v1/'+v.id+'.png');$('#picked').replaceChildren();$('#predicted').replaceChildren();for(const p of v.landmarks){pointMarker($('#picked'),...p.picked_px,p.role==='fit'?'#ffb64a':'#8df088',`${p.key}: ${p.role}, error inicial ${p.error_px.toFixed(1)}px`,false);pointMarker($('#predicted'),...p.projected_px,'#14fff1',p.key+' proyectado',true);}$('#metrics').textContent=`Ajuste: ${v.fit_rms_px.toFixed(1)} px RMS · Reservados: ${v.check_rms_px.toFixed(1)} px RMS`;$('#view-note').textContent=v.id==='side'?'Perfil oblicuo: salida parcialmente oculta; alineación exploratoria de menor confianza.':'Perspectiva aproximada: revisar cuerpo, ala y cola por separado; no asumir una coincidencia global.';update();}
+function update(){const v=values();$('#transformed').setAttribute('transform',`translate(${v.x} ${v.y}) translate(325 244) rotate(${v.angle}) scale(${v.scale}) translate(-325 -244)`);$('#photo').style.opacity=mode==='model'?0:1;$('#model').setAttribute('filter',mode==='edge'?'url(#edge)':'none');let opacity=mode==='photo'?0:mode==='model'?1:mode==='blink'?(blinkVisible?1:0):v.opacity/100;$('#model').style.opacity=opacity;$('#picked').style.display=$('#landmarks').checked?'':'none';$('#predicted').style.display=$('#landmarks').checked&&mode!=='photo'?'':'none';$('#opacity-value').textContent=v.opacity+'%';$('#x-value').textContent=v.x.toFixed(1)+' px';$('#y-value').textContent=v.y.toFixed(1)+' px';$('#scale-value').textContent=v.scale.toFixed(3)+'×';$('#angle-value').textContent=v.angle.toFixed(1)+'°';document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===mode));const moved=v.x!==0||v.y!==0||v.scale!==1||v.angle!==0;$('#status').textContent=moved?'Corrección manual activa. La cámara original y los puntos medidos se conservan; el error RMS mostrado corresponde al ajuste inicial.':'Ajuste inicial de cámara. Prueba «Contorno» o «Parpadear» para localizar diferencias de forma.';}
+function stopBlink(){if(timer)clearInterval(timer);timer=null;blinkVisible=true;}
+for(const k of controls)$('#'+k).addEventListener('input',update);
+$('#landmarks').addEventListener('change',update);$('#view').addEventListener('change',load);$('#reset').addEventListener('click',load);
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{stopBlink();mode=b.dataset.mode;if(mode==='blink')timer=setInterval(()=>{blinkVisible=!blinkVisible;update();},650);update();}));
+function svgPoint(e){return new DOMPoint(e.clientX,e.clientY).matrixTransform($('#stage').getScreenCTM().inverse());}
+$('#stage').addEventListener('pointerdown',e=>{if(e.button!==0)return;const p=svgPoint(e);drag={p,x:Number($('#x').value),y:Number($('#y').value)};$('#stage').setPointerCapture(e.pointerId);});
+$('#stage').addEventListener('pointermove',e=>{if(!drag)return;const p=svgPoint(e);$('#x').value=Math.max(-120,Math.min(120,drag.x+p.x-drag.p.x));$('#y').value=Math.max(-120,Math.min(120,drag.y+p.y-drag.p.y));update();});
+for(const event of ['pointerup','pointercancel'])$('#stage').addEventListener(event,()=>drag=null);
+$('#save').addEventListener('click',()=>{const record={schema:'openrc-overlay-manual-adjustment-v1',view:current().id,photo_sha256:current().photo_sha256,model_geometry_sha256:DATA.model_geometry_sha256,original_camera:{position_m:current().camera_position_m,basis_columns:current().camera_basis_columns,vertical_fov_deg:current().assumed_vertical_fov_deg},camera_fit_picks_sha256:DATA.picks_sha256,transform:values(),mode,note:'2D display transform only; original files and 3D model unchanged'};const url=URL.createObjectURL(new Blob([JSON.stringify(record,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='avanti-'+current().id+'-alignment.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+load();
+</script>
+</html>

@@ -24,12 +24,12 @@ func _initialize() -> void:
 	var rho := 1.225
 	var D := 0.3048
 
-	# Static thrust at full rpm: T = Ct(0)·ρ·n²·D⁴ (hand) ≈ 41.2 N, T/W ≈ 1.6.
+	# Static thrust at full rpm: T = Ct(0)·ρ·n²·D⁴ (hand) ≈ 41.2 N, T/W ≈ 1.46.
 	var n: float = prop.max_rpm / 60.0
 	var hand := 0.1130 * rho * n * n * pow(D, 4)
 	var still := P.loads(M.v3(0, 0, 0), prop.max_rpm, prop, rho)
 	_check("static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N", absf(still[0] - hand) < 1e-9 and absf(hand - 41.2) < 0.2, "%.2f N" % still[0])
-	_check("T/W ≈ 1.6 (vertical capable)", absf(still[0] / (r.model.mass_kg * 9.80665) - 1.6) < 0.1, "%.2f" % (still[0] / (r.model.mass_kg * 9.80665)))
+	_check("T/W ≈ 1.46 (balanced virtual reference build)", absf(still[0] / (r.model.mass_kg * 9.80665) - 1.46) < 0.02, "%.2f" % (still[0] / (r.model.mass_kg * 9.80665)))
 	# The derivation is self-consistent: static prop power = assumed engine power at that rpm (1398 W × rpm/16000).
 	var power := 0.0471 * rho * n * n * n * pow(D, 5)
 	_check("static power balance closes", absf(power - 1397.5 * prop.max_rpm / 16000.0) < 1.0, "%.0f W" % power)

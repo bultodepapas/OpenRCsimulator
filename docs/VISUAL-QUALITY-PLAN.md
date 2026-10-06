@@ -177,3 +177,18 @@ Quedan por medir resolución/monitor/OS de la 3090, hardware de gama baja, el co
 Se posponen mundos enormes, erosión compleja, nubes volumétricas como requisito base, GI dinámica generalizada, ray tracing y fotogrametría pesada. Ninguno resuelve primero el campo vacío o la lectura del avión. Un panorama de campo real sigue siendo alternativa posterior de L16/L17, con proxies de oclusión/colisión y límites claros para cámaras móviles.
 
 **Siguiente cambio concreto:** VQ-01 formaliza referencias y escenas; **L5** mueve los datos del campo sin alterar su aspecto; **L6a/b/c** entrega el primer horizonte arbolado. En cuanto existan materiales y escena de comparación, la RTX 3090 permite adelantar el ensayo VQ-07, manteniéndolo aislado de la ruta para equipos modestos.
+
+## 10. Segunda ronda de investigación: condiciones nuevas de implementación
+
+La [segunda ronda](research/visual-quality-round2/README.md) amplía fuentes, técnicas y herramientas, con un [proyecto sintético ejecutado](research/visual-quality-round2/godot-probe/README.md). No implementa pasos de producto ni cambia el orden de L5/L6.
+
+| Paso | Añadir al diseño y a su prueba |
+| --- | --- |
+| VQ-02 / EX-10 | UV y tangentes antes de normal maps; comprobar bordes del atlas a distancia. El ensayo confirmó tintes por objeto con `instance uniform` en Compatibility 4.7.2; no acredita samplers por instancia ni MultiMesh |
+| L6/L8/L11/L15 | Reducir también coste del material distante; usar histéresis en vez de asumir fade HLOD de Forward+. Bounds deben cubrir viento/deformación: el ensayo reprodujo desaparición y recuperación ajustando AABB |
+| L9c | Filtrar bandas procedurales según tamaño de píxel, manteniendo contraste de pista; MSAA no sustituye el filtrado del shader |
+| VQ-06 / UI de carga | Añadir primera entrada/primer efecto al protocolo; cargar recursos no equivale a dibujar y preparar shaders en Compatibility |
+| SM / VQ-07 | Probar profundidad e intersecciones transparentes por backend; separar Shader Baker, precompilación y calentamiento OpenGL |
+| VQ-07 / exportación | Registrar backend, herramienta de perfilado y actividad soportada. Optimizar GLB en copia y verificar jerarquía, bisagras, UV y escala antes de adoptar la salida |
+
+Prueba nueva: 5 estados y 8 muestras de píxel por ejecución; dos ejecuciones con 5 PNG idénticos y sin errores de motor/script/shader. Es evidencia de comportamiento en llvmpipe, no benchmark de la 3090. Los ensayos de importación, GPU y optimizadores externos siguen propuestos.

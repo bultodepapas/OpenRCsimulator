@@ -96,7 +96,7 @@ func _default_and_switch() -> void:
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Language -> Spanish at once", TranslationServer.get_locale() == "es" and home.fly_button.atr(home.fly_button.text) == "VOLAR")
-	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text.begins_with("Control: teclado"),
+	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text.begins_with("Teclado"),
 		"%s | %s" % [home.language_button.text, home.control_label.text])
 	_check("focus stays on Language", ui.focus_name() == "Language", ui.focus_name())
 	var untranslated := PackedStringArray()

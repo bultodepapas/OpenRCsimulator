@@ -41,11 +41,15 @@ func _run() -> void:
 	await ui.settle() # Theme lookups and deferred focus need a frame inside the tree
 	var home: Control = app.home
 	_check("Home shown, no flight scene, no simulation", home != null and app.flight == null and _sessions(root) == 0)
+	var scene: Node3D = app.home_scene
+	_check("Home backdrop: our airplane, its camera current", scene != null and scene.airplane.root.is_inside_tree()
+		and root.get_viewport().get_camera_3d() == scene.camera)
 
-	# Theme, read back from real controls (MENU-PLAN §7: 4.5:1 text, 3:1 focus and boundaries).
+	# Theme, read back from real controls (MENU-PLAN §7: 4.5:1 text, 3:1 focus). Translucent surfaces are judged
+	# over the worst sky or ground behind them (white and black).
 	var fly: Button = home.fly_button
 	var quit_b: Button = home.quit_button
-	var panel_bg: Color = (home.find_children("*", "PanelContainer", true, false)[0] as Control).get_theme_stylebox("panel").bg_color
+	var panel_bg: Color = (home.get_node("Sidebar") as Control).get_theme_stylebox("panel").bg_color
 	for b in [fly, quit_b]:
 		for state in ["normal", "hover", "pressed"]:
 			var bg: Color = b.get_theme_stylebox(state).bg_color
@@ -56,26 +60,30 @@ func _run() -> void:
 	_check("Fly inherits Button's focus outline, without fill", focus == quit_b.get_theme_stylebox("focus") and not focus.draw_center)
 	var r_focus := UiTheme.contrast(focus.border_color, panel_bg)
 	_check("contrast: focus outline on panel %.2f:1 >= 3" % r_focus, r_focus >= 3.0)
-	var fly_border: Color = (fly.get_theme_stylebox("normal") as StyleBoxFlat).border_color
-	var r_border := UiTheme.contrast(fly_border, panel_bg)
-	_check("contrast: Fly boundary on panel %.2f:1 >= 3 (red alone is 2.61:1)" % r_border, r_border >= 3.0)
-	var secondary: Label = home.control_label
-	var r_sec := UiTheme.contrast(secondary.get_theme_color("font_color"), panel_bg)
-	_check("contrast: secondary text on panel %.2f:1 >= 4.5" % r_sec, r_sec >= 4.5)
-	# AGI "Clear Text": >= 17 px from ascender to descender at 720p, for the smallest text on Home.
-	var h := secondary.get_theme_font("font").get_height(secondary.get_theme_font_size("font_size"))
-	_check("smallest text is %.1f px tall (>= 17 at 1280x720)" % h, h >= 17.0)
+	# Every label against the surface it sits on (sidebar, card or key cap), and the smallest text height.
+	var worst := INF
+	var worst_name := ""
+	var smallest := INF
+	for l in home.find_children("*", "Label", true, false):
+		var bg := _surface(l, panel_bg)
+		var r := UiTheme.contrast(l.get_theme_color("font_color"), bg)
+		if r < worst:
+			worst = r
+			worst_name = l.text
+		smallest = minf(smallest, l.get_theme_font("font").get_height(l.get_theme_font_size("font_size")))
+	_check("contrast: every Home label >= 4.5:1 on its surface (worst %.2f, \"%s\")" % [worst, worst_name], worst >= 4.5)
+	# AGI "Clear Text": >= 17 px from ascender to descender at 720p.
+	_check("smallest text is %.1f px tall (>= 17 at 1280x720)" % smallest, smallest >= 17.0)
 
 	# Keyboard: focus starts on Fly and is visible; arrows move it; nothing flies while navigating.
 	_check("initial focus on Fly", ui.focus_name() == "Fly", ui.focus_name())
 	_check("focus outline visible (keyboard focus)", fly.has_focus(true))
 	await ui.tap(KEY_DOWN)
 	_check("Down -> Language", ui.focus_name() == "Language", ui.focus_name())
-	await ui.tap(KEY_DOWN)
-	_check("Down -> Quit", ui.focus_name() == "Quit", ui.focus_name())
+	await ui.tap(KEY_RIGHT)
+	_check("Right -> Quit", ui.focus_name() == "Quit", ui.focus_name())
 	await ui.tap(KEY_UP)
-	await ui.tap(KEY_UP)
-	_check("Up, Up -> Fly", ui.focus_name() == "Fly", ui.focus_name())
+	_check("Up -> Fly", ui.focus_name() == "Fly", ui.focus_name())
 	_check("navigating did not start a flight", app.flight == null and _sessions(root) == 0)
 
 	# Quit asks to close (the signal only: the test must not quit through it).
@@ -99,13 +107,27 @@ func _run() -> void:
 	await ui.settle()
 	_check("Enter on Fly starts the flight", app.flight != null and app.home == null)
 	_check("double Enter -> exactly one flight session", _sessions(root) == 1, "%d sessions" % _sessions(root))
-	_check("Home freed after Fly", root.find_children("Home", "", true, false).is_empty())
+	_check("Home and its backdrop freed after Fly", root.find_children("Home", "", true, false).is_empty()
+		and root.find_children("HomeScene", "", true, false).is_empty())
+	_check("the flight's camera is the one in use", root.get_viewport().get_camera_3d() == app.flight._camera)
 
 	_check("Fly did not write settings", not FileAccess.file_exists(PREFS))
 	app.queue_free()
 	await process_frame
 	print("all UI home checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+## The background colour behind a label: the nearest PanelContainer ancestor's panel style, else `fallback`.
+static func _surface(n: Node, fallback: Color) -> Color:
+	var p := n.get_parent()
+	while p != null:
+		if p is PanelContainer:
+			var box := (p as Control).get_theme_stylebox("panel") as StyleBoxFlat
+			if box != null and box.draw_center:
+				return box.bg_color
+		p = p.get_parent()
+	return fallback
 
 
 static func _sessions(n: Node) -> int:

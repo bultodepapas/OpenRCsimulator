@@ -1,0 +1,164 @@
+{
+  "schema": "openrc-avanti-overlay-validation-v1",
+  "date": "2026-10-06",
+  "model_geometry_unchanged": true,
+  "geometry_sha256": "a82624d3765d04dd55fa3531c9e54a1166467ded130577ec1ec9b9145815ed7a",
+  "views": [
+    {
+      "view": "front_high",
+      "original_sha256_unchanged": true,
+      "rgba_alpha_range": [
+        0,
+        255
+      ],
+      "fit_rms_px": 8.508892914129312,
+      "withheld_rms_px": 5.847538969682276,
+      "godot_projection_delta_px": 6.29135975032113e-05
+    },
+    {
+      "view": "rear_high",
+      "original_sha256_unchanged": true,
+      "rgba_alpha_range": [
+        0,
+        255
+      ],
+      "fit_rms_px": 7.718829874998616,
+      "withheld_rms_px": 26.078201778309197,
+      "godot_projection_delta_px": 6.103515625e-05
+    },
+    {
+      "view": "side",
+      "original_sha256_unchanged": true,
+      "rgba_alpha_range": [
+        0,
+        255
+      ],
+      "fit_rms_px": 16.573500564220637,
+      "withheld_rms_px": 20.24693476672826,
+      "godot_projection_delta_px": 5.50163458683528e-05
+    }
+  ],
+  "browser": {
+    "browser": "153.0.8010.12",
+    "javascript_errors": [],
+    "views_checked": 3,
+    "opacity_zero_and_75": true,
+    "manual_translation": true,
+    "pointer_drag": true,
+    "json_export": true,
+    "reset": true,
+    "blink": true,
+    "photo_mode": true,
+    "mobile_no_horizontal_overflow": true
+  },
+  "fresh_clone": {
+    "method": "Fresh local clone with current authored AV02 and alignment sources overlaid; no photographs copied",
+    "head": "db3b58cb2a6080376ed131e007299c2198101760",
+    "render_exit": 0,
+    "renders": 3,
+    "photo_references_absent": true,
+    "max_projection_delta_px": 6.29135975032113e-05
+  },
+  "all_comparison_files_ignored": true,
+  "tracked_comparison_files": 0,
+  "comparison_files": 14,
+  "static_html_links_checked": 3,
+  "source_files": [
+    {
+      "path": "research/avanti-s/alignment/README.md",
+      "sha256": "6ff9ec175f25e07ac81f30c5fd00ca08fa62f68da28cb8707817ef8adc3a7252"
+    },
+    {
+      "path": "research/avanti-s/alignment/build_page.py",
+      "sha256": "a33cfc11a4cf454bc2bb6a8c86b301f16a279408844095cc46ae053f4fece49a"
+    },
+    {
+      "path": "research/avanti-s/alignment/camera-fit.json",
+      "sha256": "acefc6e5965aec92233a59d6c21c91baa1abf82e0e2689621cfbdf5ae96ad2d3"
+    },
+    {
+      "path": "research/avanti-s/alignment/fit.py",
+      "sha256": "84631dc770e92272c79f6dc32c489f97ab00d69462fc74d5c73bc97bbaa6afbd"
+    },
+    {
+      "path": "research/avanti-s/alignment/overlay.html",
+      "sha256": "810fc0f76244fae94d3d08809f6690ef7f938af1b942a6c3fb97c8d81d2f62ae"
+    },
+    {
+      "path": "research/avanti-s/alignment/picks.json",
+      "sha256": "315d26e0b1fe3235b8dfc0ae113c0b7ed85ddf67703c702b1980350e3751af64"
+    },
+    {
+      "path": "research/avanti-s/alignment/render.gd",
+      "sha256": "72b9b9042c9ec359cb4b6e326714cda3567e423b1a15c3516da3c53363c1094f"
+    },
+    {
+      "path": "research/avanti-s/alignment/requirements.txt",
+      "sha256": "a6a2aeab29af289bd778cf0a8e41d5ce52a3a5d19e29560a57db362fcbf6fd00"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "references/avanti-s/alignment/front_high-contour.png",
+      "sha256": "317475c68a6409af12af121d6dfd5f61db4f307982796b71f82a05844eead47c"
+    },
+    {
+      "path": "references/avanti-s/alignment/front_high-overlay.png",
+      "sha256": "45f76dc248cd9bb29242de6b5d37793985f48a89e7d8bd9508ed12872c49ae6c"
+    },
+    {
+      "path": "references/avanti-s/alignment/index.html",
+      "sha256": "4b5962afd34a4e9b59bae47810019508781dca06339dcc2e2030cb80c74e67a0"
+    },
+    {
+      "path": "references/avanti-s/alignment/rear_high-contour.png",
+      "sha256": "2533d58761a379197b7ac11b42ff6432b1bca4249ac5a1c9f715e3d2d0f0ca8a"
+    },
+    {
+      "path": "references/avanti-s/alignment/rear_high-overlay.png",
+      "sha256": "f29ba45e195b53b0905cbd5a4dfa185fdac71a86fa30426d4741b1f9dda2afdc"
+    },
+    {
+      "path": "references/avanti-s/alignment/renders-v1/front_high.png",
+      "sha256": "d9f4c2660e98f8ae7df18d5d578968565b967cc6f5c0aa4996d58cc4604abc27"
+    },
+    {
+      "path": "references/avanti-s/alignment/renders-v1/rear_high.png",
+      "sha256": "6ea54e00dd2b01467038349ad2e7569c97f424fb90f28834ef03b31144fe4c7f"
+    },
+    {
+      "path": "references/avanti-s/alignment/renders-v1/render-manifest.json",
+      "sha256": "9f896b5f76386b33ce07fc9275bea50d836e81d1c99b391d9395863e5c112e4a"
+    },
+    {
+      "path": "references/avanti-s/alignment/renders-v1/side.png",
+      "sha256": "9ab2b444e6a737ad88160533d8d1083a46c26b9daaf753da1c5cddbe81a96b8d"
+    },
+    {
+      "path": "references/avanti-s/alignment/saved-adjustment-check.json",
+      "sha256": "92a300cc5855ddf07e4b2ade6d1dee6af4064190e46583e12e620d734f6909db"
+    },
+    {
+      "path": "references/avanti-s/alignment/side-contour.png",
+      "sha256": "c16ac2e85fa45097f1ee7f6087eea78c9b090201a745e0061b001a5a65e85fc6"
+    },
+    {
+      "path": "references/avanti-s/alignment/side-overlay.png",
+      "sha256": "b67e5a093506f3303ad028f705b9441a0618cee0c81b491e11e917d9c2075252"
+    },
+    {
+      "path": "references/avanti-s/alignment/viewer-desktop.png",
+      "sha256": "0ab4af12bbb249586e4e2ac282c479b48b354c7174948348508af3c4efce13aa"
+    },
+    {
+      "path": "references/avanti-s/alignment/viewer-mobile.png",
+      "sha256": "d56bd27ad2823c27a37a0fa02a23e6df6be32f6215447ac8bf7149fee8a2f641"
+    }
+  ],
+  "limits": [
+    "Approximate perspective pose, fixed assumed45degree FOV; no camera calibration",
+    "4 fit landmarks per view; heldout points excluded from fit",
+    "Pixel errors combine model/camera/manual-pick error; no metric shape accuracy claim",
+    "No geometry edit or flight test"
+  ]
+}

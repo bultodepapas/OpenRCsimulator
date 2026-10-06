@@ -1,0 +1,8 @@
+{
+  "same_environment_repeat": true,
+  "images_byte_identical": 5,
+  "pixel_checks_per_run": 8,
+  "states_per_run": 5,
+  "engine_error_lines": 0,
+  "timing_benchmark": false
+}
