@@ -12,6 +12,7 @@ const PREFS := "user://test_ui_aircraft_settings.cfg"
 const STIK := "jensen-das-ugly-stik-60"
 const EXTRA := "gp-extra-300s-60"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
+const P51 := "p51d-mustang-120"
 
 var _failures := 0
 var ui: RefCounted
@@ -52,7 +53,7 @@ func _run() -> void:
 	var home: Control = app.home
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
-	_check("default: Fly enabled and focused, counter 1 of 3", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 3",
+	_check("default: Fly enabled and focused, counter 1 of 4", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 4",
 		home.aircraft_count_label.text)
 
 	# Right from Fly reaches the next arrow; Enter there shows the Extra.
@@ -64,7 +65,11 @@ func _run() -> void:
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
 	_check("choosing never starts a flight", app.flight == null)
 
-	# Next again: the Avanti preview. Fly is disabled and leaves the focus order; the card says why.
+	# Next again: the P-51 (experimental, flyable); then the Avanti preview. Fly is disabled and leaves the focus
+	# order; the card says why.
+	await ui.tap(KEY_ENTER)
+	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == P51, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	_check("Avanti preview: shown, Fly disabled, explained", home.aircraft_id == AVANTI and home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Preview only") and not home.limits_label.visible)
@@ -83,7 +88,7 @@ func _run() -> void:
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
-	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 3 de 3" and status.can_auto_translate()
+	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 4 de 4" and status.can_auto_translate()
 		and status.atr(status.text).begins_with("Solo vista previa") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
 	app.set_language("en")

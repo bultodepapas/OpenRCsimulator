@@ -1,0 +1,267 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "args": "--capture --t=1.5 --autozoom=0 --shadow=off --hide_airplane --look_az=0 --look_el=-90 --case=field-top30m-repeat1 --look_alt=30 --out=field-top30m-repeat1.png",
+  "capture_scene": "field",
+  "draw_calls": {
+    "shadow": 0,
+    "visible": 2
+  },
+  "format": "openrc-capture v1",
+  "godot": "4.7.2-stable (official)",
+  "image": "field-top30m-repeat1.png",
+  "lp_num_threads": "1",
+  "objects": {
+    "shadow": 0,
+    "visible": 2
+  },
+  "primitives": {
+    "shadow": 0,
+    "visible": 4
+  },
+  "renderer": "gl_compatibility",
+  "sha256": "62b41d07e9eccbafbe72bb340bd87d536cfb3e653f325c9ddee40bb06c49a535",
+  "video_memory_bytes": 53409362,
+  "visual_evidence": {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "backend": "gl_compatibility",
+    "camera": {
+      "autozoom": false,
+      "far_m": 21000.0,
+      "fov_deg": 50.0,
+      "keep_aspect": 1,
+      "mode": "pilot",
+      "near_m": 0.100000001490116,
+      "projection": 0,
+      "transform": {
+        "basis_columns": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            -0.0000000437113882867379,
+            -1.0
+          ],
+          [
+            0.0,
+            1.0,
+            -0.0000000437113882867379
+          ]
+        ],
+        "position": [
+          0.0,
+          30.0,
+          0.0
+        ]
+      },
+      "viewport": [
+        1280.0,
+        720.0
+      ]
+    },
+    "case_id": "field-top30m-repeat1",
+    "clock_s": 1.5,
+    "coordinate_frame": "render: east/up/south; metres",
+    "distance_to_camera_m": 62.563648223877,
+    "distance_to_pilot_m": 68.6665802001953,
+    "exposure": 0.600000023841858,
+    "format": "openrc-visual-evidence v1",
+    "light": {
+      "color": "(1.0, 0.9137, 0.8431, 1.0)",
+      "direction": [
+        -0.5,
+        0.70710676908493,
+        0.5
+      ],
+      "energy": 1.0
+    },
+    "pose": {
+      "basis_columns": [
+        [
+          -0.000000000000000222044604925031,
+          0.00000000000000558580959264532,
+          1.0
+        ],
+        [
+          -0.0742878019809723,
+          0.997236847877502,
+          -0.00000000000000557887069874141
+        ],
+        [
+          -0.997236847877502,
+          -0.0742878019809723,
+          0.000000000000000222044604925031
+        ]
+      ],
+      "position": [
+        -17.5000972747803,
+        30.0,
+        -60.0662689208984
+      ]
+    },
+    "preset": "current-default",
+    "provenance": {
+      "build": {
+        "commit": "",
+        "commit_date": "",
+        "describe": "",
+        "dirty": false,
+        "godot": "4.7.2-stable (official)",
+        "label": "",
+        "parsed": {
+          "after": 0,
+          "base": "0.1.0",
+          "dirty": false,
+          "prerelease": "",
+          "semver": "0.1.0",
+          "sha": "",
+          "tag": ""
+        },
+        "source": "development",
+        "version": "0.1.0"
+      },
+      "code_revision": "0ee0b513466c136c0cca4e46c9abe3f4d5bf600b-dirty",
+      "source_scope": "runtime source tree; imported/exported resources may omit original files",
+      "source_sha256": {
+        "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+        "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+        "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+        "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+        "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+        "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+        "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+        "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+        "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+        "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+        "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+        "res://aircraft/p51d_geometry.gd": "a93cb20809e3ecb693682b4bc90bc6520353065553fcc8290c313c023e987def",
+        "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+        "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+        "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+        "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+        "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+        "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+        "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+        "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+        "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+        "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+        "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+        "res://app_root.gd": "c9946e5c8510909da8345e5dcd524ff54e8cf2b8af6351fcfeaaa5c6ff907804",
+        "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+        "res://app_state/aircraft_catalog.gd": "de3024ec73372515c069f9fdaaeba9adb8d11e098d327ac996c1cd05a8100fcd",
+        "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+        "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+        "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+        "res://data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+        "res://data/aircraft/p51d_mustang_120.json": "f8fdc5bbb746cd1a9974185e90fd426068ea4422b3332f2dc42f16f0015fdc6c",
+        "res://i18n/es.po": "f2b2a9a9e1cc41130fd02a5ec3226a3f5e03a98395a4785782588112876752b7",
+        "res://input/commands.gd": "ea359e6820331cf34f691f24c9154fc18df875b5b770dc01d335671959e5f4e5",
+        "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+        "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+        "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+        "res://main.gd": "3aae6c4688969778f900e50a1def537439447ca7f27539df5c071d842c975275",
+        "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+        "res://physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+        "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+        "res://physics/aircraft_data.gd": "86638ff4d0932309130f016420b5c21425a63dbef4c366d6c4c4d071b2751f73",
+        "res://physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+        "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+        "res://physics/integrator.gd": "41b519cdb91f28067e8b1bd46d30fcab08cabe7dcf74414d827323bb3098579b",
+        "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+        "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+        "res://physics/propulsion.gd": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3",
+        "res://physics/rigid_body.gd": "890970b446f570dded94d932d654a23ef64bc91be30a85975b0051b6aeea4f39",
+        "res://physics/trim.gd": "7700128d43c21d31a5af86d7ded108d6480f22376181a442382f1ac7857d7f1e",
+        "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+        "res://render/airplane.gd": "41affa996fa7f0e2d56ea30fe4223ac435c7947d89ac38fc1a313197647ea065",
+        "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+        "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+        "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+        "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+        "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+        "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+        "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+        "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+        "res://render/pilot_camera.gd": "126cbdd740fd903d2cfa23c017ca6de32ec86f11f5c774e02de5c4b6665138f6",
+        "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+        "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+        "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+        "res://render/visual_evidence.gd": "c2038bd8ed5d8cd28b11a72b2299a77bef6d50bd61e73850a345ce6b550f326e",
+        "res://sim/flight_session.gd": "0c22a4117d0faddd227f68098f9e8d2b19e5037f5a0c74a5054a8271ac44ed47",
+        "res://sim/maneuvers.gd": "2a20a79125d62b885c97347b0303e5d003fbaa43b94f90046fcef70ea6c8704c",
+        "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+        "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+        "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+        "res://sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+        "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+        "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+        "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+        "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+        "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+        "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+        "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+        "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+        "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+        "res://ui/home_scene.gd": "085d6872f395655205c628a53a3142e3fb5188301134e89ffad2fed98e430dd5",
+        "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+        "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+        "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+        "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+        "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+      },
+      "source_tree_available": true
+    },
+    "render_settings": {
+      "msaa_3d": 2,
+      "scaling_3d_scale": 1.0,
+      "screen_space_aa": 0
+    },
+    "route": "physics-fixed",
+    "seed": {
+      "kind": "not-used",
+      "note": "procedural shaders use fixed analytic noise; no RNG"
+    },
+    "simulation_tick": 360,
+    "simulation_time_s": 1.5,
+    "state": {
+      "aircraft_visible": false,
+      "controls": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.284374818125337,
+        "yaw": 0.0
+      },
+      "engine_shadows": false,
+      "paused": true,
+      "physics_state": [
+        60.0662689153805,
+        -17.5000975906375,
+        -30.0,
+        14.9584877712547,
+        -0.0441792769206297,
+        1.11431224919817,
+        0.706618150676249,
+        -0.0262828677065072,
+        0.0262828677065033,
+        0.706618150676249,
+        -0.00000000000000354372753089009,
+        0.000000000000000174725720379731,
+        -0.00000000000000374483935980598
+      ],
+      "propeller_angle_rad": 53.6033897399902,
+      "shadow": "off",
+      "surfaces": {
+        "pitch": 0.262836484934918,
+        "roll": 0.0205260161958305,
+        "throttle": 0.284374818125337,
+        "yaw": 0.026386599355537
+      }
+    },
+    "tonemapper": 3,
+    "visual_distance_m": 0.0,
+    "visual_pose": ""
+  }
+}

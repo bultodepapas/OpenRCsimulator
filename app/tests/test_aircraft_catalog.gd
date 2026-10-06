@@ -26,11 +26,11 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
-	_check("three aircraft, unique IDs", Catalog.ids().size() == 3 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 3, str(Catalog.ids()))
+	_check("four aircraft, unique IDs", Catalog.ids().size() == 4 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 4, str(Catalog.ids()))
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
-	_check("step wraps both ways", Catalog.step(Catalog.ids()[2], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[2])
+	_check("step wraps both ways", Catalog.step(Catalog.ids()[3], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[3])
 	_check("the render adapter knows every catalog ID by the same name",
-		[AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID] == Array(Catalog.ids()))
+		[AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.AVANTI_ID] == Array(Catalog.ids()))
 
 	for id in Catalog.ids():
 		var e := Catalog.entry(id)

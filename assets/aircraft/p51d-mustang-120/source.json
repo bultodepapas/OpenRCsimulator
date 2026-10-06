@@ -5,119 +5,479 @@
     "units": "m",
     "frame": "z along the fuselage, positive aft, z = 0 at the wing leading edge on the centreline; y up, y = 0 on the propeller axis (thrust line); x to the right",
     "span": 11.286,
-    "length": 9.830,
+    "length": 9.83,
     "wing_area": 21.83,
-    "root_chord_centreline": 2.640,
-    "tip_chord": 1.270,
+    "root_chord_centreline": 2.64,
+    "tip_chord": 1.27,
     "quarter_chord_sweep_deg": 0.0,
     "dihedral_deg": 5.0,
     "incidence_deg": 1.0,
     "washout_deg": 0.0,
-    "chord_plane_y_root": -0.30,
-    "root_thickness_ratio": 0.151,
-    "tip_thickness_ratio": 0.114,
-    "camber_ratio": 0.015,
-    "aileron": {"inner": 3.25, "outer": 5.50, "chord_fraction": 0.21},
-    "flap": {"inner": 0.50, "outer": 3.20, "chord_fraction": 0.21},
-    "spinner": {"tip_z": -2.35, "back_z": -1.55, "radius": 0.345},
+    "chord_plane_y_root": -0.3,
+    "root_thickness_ratio": 0.1651,
+    "tip_thickness_ratio": 0.1142,
+    "camber_ratio": 0.0128,
+    "aileron": {
+      "inner": 3.25,
+      "outer": 5.5,
+      "chord_fraction": 0.21
+    },
+    "flap": {
+      "inner": 0.5,
+      "outer": 3.2,
+      "chord_fraction": 0.21
+    },
+    "spinner": {
+      "tip_z": -2.35,
+      "back_z": -1.55,
+      "radius": 0.345
+    },
     "propeller_diameter": 3.404,
     "firewall_z": 0.75,
-    "cowl_rear_z": 1.70,
+    "cowl_rear_z": 1.7,
     "fuselage_stations": [
-      [-1.55, 0.345, 0.345, -0.345, 2.0, 2.0],
-      [-1.30, 0.400, 0.420, -0.420, 2.2, 2.0],
-      [-1.00, 0.430, 0.470, -0.470, 2.3, 2.0],
-      [-0.60, 0.440, 0.500, -0.500, 2.4, 2.0],
-      [-0.20, 0.440, 0.520, -0.520, 2.4, 2.0],
-      [0.00, 0.440, 0.530, -0.530, 2.4, 2.0],
-      [0.40, 0.440, 0.540, -0.550, 2.4, 2.0],
-      [0.75, 0.440, 0.560, -0.560, 2.4, 2.0],
-      [1.20, 0.440, 0.570, -0.570, 2.4, 2.0],
-      [1.70, 0.430, 0.580, -0.570, 2.4, 2.0],
-      [1.95, 0.430, 0.580, -0.570, 2.4, 2.0],
-      [2.40, 0.420, 0.560, -0.560, 2.3, 2.0],
-      [2.90, 0.400, 0.520, -0.550, 2.3, 2.0],
-      [3.50, 0.360, 0.450, -0.500, 2.2, 2.0],
-      [4.20, 0.300, 0.360, -0.430, 2.2, 2.0],
-      [5.00, 0.220, 0.260, -0.300, 2.1, 2.0],
-      [5.70, 0.150, 0.170, -0.170, 2.0, 2.0],
-      [6.60, 0.090, 0.090, -0.090, 2.0, 2.0],
-      [6.95, 0.040, 0.050, -0.030, 2.0, 2.0]
+      [
+        -1.55,
+        0.345,
+        0.345,
+        -0.345,
+        2.0,
+        2.0
+      ],
+      [
+        -1.3,
+        0.4,
+        0.42,
+        -0.42,
+        2.2,
+        2.0
+      ],
+      [
+        -1.0,
+        0.43,
+        0.47,
+        -0.47,
+        2.3,
+        2.0
+      ],
+      [
+        -0.6,
+        0.44,
+        0.5,
+        -0.5,
+        2.4,
+        2.0
+      ],
+      [
+        -0.2,
+        0.44,
+        0.52,
+        -0.52,
+        2.4,
+        2.0
+      ],
+      [
+        0.0,
+        0.44,
+        0.53,
+        -0.53,
+        2.4,
+        2.0
+      ],
+      [
+        0.4,
+        0.44,
+        0.54,
+        -0.55,
+        2.4,
+        2.0
+      ],
+      [
+        0.75,
+        0.44,
+        0.56,
+        -0.56,
+        2.4,
+        2.0
+      ],
+      [
+        1.2,
+        0.44,
+        0.57,
+        -0.57,
+        2.4,
+        2.0
+      ],
+      [
+        1.7,
+        0.43,
+        0.58,
+        -0.57,
+        2.4,
+        2.0
+      ],
+      [
+        1.95,
+        0.43,
+        0.58,
+        -0.57,
+        2.4,
+        2.0
+      ],
+      [
+        2.4,
+        0.42,
+        0.56,
+        -0.56,
+        2.3,
+        2.0
+      ],
+      [
+        2.9,
+        0.4,
+        0.52,
+        -0.55,
+        2.3,
+        2.0
+      ],
+      [
+        3.5,
+        0.36,
+        0.45,
+        -0.5,
+        2.2,
+        2.0
+      ],
+      [
+        4.2,
+        0.3,
+        0.36,
+        -0.43,
+        2.2,
+        2.0
+      ],
+      [
+        5.0,
+        0.22,
+        0.26,
+        -0.3,
+        2.1,
+        2.0
+      ],
+      [
+        5.7,
+        0.15,
+        0.17,
+        -0.17,
+        2.0,
+        2.0
+      ],
+      [
+        6.6,
+        0.09,
+        0.09,
+        -0.09,
+        2.0,
+        2.0
+      ],
+      [
+        6.95,
+        0.04,
+        0.05,
+        -0.03,
+        2.0,
+        2.0
+      ]
     ],
     "scoop_stations": [
-      [2.05, 0.300, -0.95],
-      [2.50, 0.330, -1.08],
-      [3.00, 0.330, -1.12],
-      [3.50, 0.300, -1.05],
-      [3.90, 0.240, -0.85],
-      [4.35, 0.160, -0.60]
+      [
+        2.05,
+        0.3,
+        -0.95
+      ],
+      [
+        2.5,
+        0.33,
+        -1.08
+      ],
+      [
+        3.0,
+        0.33,
+        -1.12
+      ],
+      [
+        3.5,
+        0.3,
+        -1.05
+      ],
+      [
+        3.9,
+        0.24,
+        -0.85
+      ],
+      [
+        4.35,
+        0.16,
+        -0.6
+      ]
     ],
-    "carb_intake": {"z0": -1.45, "z1": -0.40, "half_width": 0.15, "height": 0.10},
+    "carb_intake": {
+      "z0": -1.45,
+      "z1": -0.4,
+      "half_width": 0.15,
+      "height": 0.1
+    },
     "canopy": {
-      "top": [[1.95, 0.58], [2.20, 0.86], [2.45, 0.98], [2.75, 1.02], [3.05, 0.97], [3.35, 0.82], [3.65, 0.52]],
+      "top": [
+        [
+          1.95,
+          0.58
+        ],
+        [
+          2.2,
+          0.86
+        ],
+        [
+          2.45,
+          0.98
+        ],
+        [
+          2.75,
+          1.02
+        ],
+        [
+          3.05,
+          0.97
+        ],
+        [
+          3.35,
+          0.82
+        ],
+        [
+          3.65,
+          0.52
+        ]
+      ],
       "frame_z": 2.35,
       "halfwidth_fraction": 0.95
     },
     "tail": {
-      "stab_y": 0.10,
-      "stab_root_le_z": 6.00,
-      "stab_tip_le_z": 6.35,
-      "stab_half_span": 2.015,
-      "stab_root_chord": 1.25,
-      "stab_tip_chord": 0.70,
+      "stab_y": 0.1,
+      "stab_root_le_z": 5.85,
+      "stab_tip_le_z": 6.3,
+      "stab_half_span": 1.995,
+      "stab_root_chord": 1.4,
+      "stab_tip_chord": 0.7,
       "elevator_hinge_fraction": 0.65,
-      "stab_thickness_ratio": 0.10,
+      "stab_thickness_ratio": 0.1,
       "stab_incidence_deg": 0.0,
-      "fin_root_le_z": 5.90,
-      "dorsal_start_z": 5.30,
-      "fin_top_y": 1.95,
-      "fin_top_le_z": 6.75,
-      "fin_top_chord": 0.55,
+      "fin_root_le_z": 6.0,
+      "dorsal_start_z": 5.3,
+      "fin_top_y": 1.62,
+      "fin_top_le_z": 6.8,
+      "fin_top_chord": 0.5,
       "rudder_hinge_z": 6.95,
-      "rudder_te_bottom": [7.45, -0.05],
+      "rudder_te_bottom": [
+        7.45,
+        -0.05
+      ],
       "fin_thickness_ratio": 0.09
     },
     "gear": {
-      "main_axle": [0.10, -1.65],
+      "main_axle": [
+        0.1,
+        -1.65
+      ],
       "main_wheel_diameter": 0.686,
       "main_wheel_width": 0.22,
       "track": 3.61,
       "strut_radius": 0.055,
-      "tail_axle": [6.45, -0.50],
+      "tail_axle": [
+        6.45,
+        -0.5
+      ],
       "tail_wheel_diameter": 0.318
     },
     "pilot": {
-      "cap_top": [2.72, 0.93],
-      "cap_brim_front": [2.56, 0.84],
-      "nose_front": [2.58, 0.76],
-      "head_back": [2.84, 0.80],
-      "chin": [2.62, 0.68],
-      "shoulder_front": [2.55, 0.60],
-      "shoulder_back": [2.95, 0.58],
-      "head_half_width": 0.10,
+      "cap_top": [
+        2.72,
+        0.93
+      ],
+      "cap_brim_front": [
+        2.56,
+        0.84
+      ],
+      "nose_front": [
+        2.58,
+        0.76
+      ],
+      "head_back": [
+        2.84,
+        0.8
+      ],
+      "chin": [
+        2.62,
+        0.68
+      ],
+      "shoulder_front": [
+        2.55,
+        0.6
+      ],
+      "shoulder_back": [
+        2.95,
+        0.58
+      ],
+      "head_half_width": 0.1,
       "shoulder_half_width": 0.24
-    }
+    },
+    "stab_incidence_note": "0 deg assumed; Ziroli's 1/4.6 model uses stab +1 deg with wing +2.5 deg (decalage 1.5 deg)"
   },
   "section": {
-    "name": "NAA/NACA 45-100 class laminar section, approximated",
-    "half_thickness_normalised": [[0.0, 0.0], [0.0125, 0.12], [0.025, 0.165], [0.05, 0.225], [0.1, 0.305], [0.2, 0.405], [0.3, 0.465], [0.4, 0.5], [0.5, 0.49], [0.6, 0.44], [0.7, 0.35], [0.8, 0.235], [0.9, 0.115], [0.95, 0.06], [1.0, 0.005]],
-    "camber": "parabolic, y_c = 4 m x (1 - x), m = camber_ratio"
+    "name": "NAA/NACA 45-100 (P-51D), UIUC ordinates: root BL17.5 (p51droot.dat), tip BL215 (p51dtip.dat)",
+    "half_thickness_normalised": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.00558,
+        0.0865
+      ],
+      [
+        0.02221,
+        0.1718
+      ],
+      [
+        0.04952,
+        0.2475
+      ],
+      [
+        0.08688,
+        0.3184
+      ],
+      [
+        0.13347,
+        0.3769
+      ],
+      [
+        0.18826,
+        0.4278
+      ],
+      [
+        0.25,
+        0.4678
+      ],
+      [
+        0.31733,
+        0.4945
+      ],
+      [
+        0.38874,
+        0.5
+      ],
+      [
+        0.46264,
+        0.4765
+      ],
+      [
+        0.53736,
+        0.4267
+      ],
+      [
+        0.61126,
+        0.3622
+      ],
+      [
+        0.68267,
+        0.2962
+      ],
+      [
+        0.75,
+        0.2341
+      ],
+      [
+        0.81175,
+        0.1703
+      ],
+      [
+        0.86653,
+        0.1065
+      ],
+      [
+        0.91312,
+        0.0578
+      ],
+      [
+        0.95049,
+        0.0279
+      ],
+      [
+        0.97779,
+        0.0116
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "camber": "parabolic approximation y_c = 4 m x (1 - x), m = camber_ratio (UIUC root camber 1.26 % at 39 %, tip 1.30 % at 46 %)",
+    "source": "https://m-selig.ae.illinois.edu/ads/coord/p51droot.dat and p51dtip.dat; local copies references/p51-mustang/airfoils/ (hashes in references/p51-mustang/index.json)"
   },
   "kit": {
-    "name": "PLACEHOLDER: giant-scale P-51D for a 120 cc gasoline engine",
-    "span": 2.508,
-    "length": null,
-    "wing_area": null,
-    "engine": "120 cc class gasoline twin-cylinder (DA-120 / DLE-120 class)",
-    "propeller": {"diameter_in": 28.0, "pitch_in": 10.0, "blades": 4},
-    "flying_mass_kg": [16.0, 19.0],
-    "cg_fraction_of_mac": 0.25,
-    "throws_deg": {"aileron": 15.0, "elevator": 15.0, "rudder": 25.0}
+    "name": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit)",
+    "span": 2.82,
+    "length": 2.4575,
+    "wing_area": 1.364,
+    "engine": "Desert Aircraft DA-120 (121 cc twin, 11.7 hp, 2.45 kg with ignition) or DLE-120 class",
+    "propeller": {
+      "diameter_in": 26.0,
+      "pitch_in": 12.0,
+      "blades": 4,
+      "note": "DA-120 list: 2-blade 27x11/28x10/28x12, 3-blade 26x12/27x12; a 4-blade 26x12 is chosen for the scale look (estimated load)"
+    },
+    "flying_mass_kg": [
+      18.0,
+      24.0
+    ],
+    "cg_fraction_of_mac": 0.27,
+    "cg_note": "Hangar 9 60cc: 171 mm behind the root LE (range 165-178) at 1/5 scale; CARF: front edge of the wing tube; Ziroli: 8-1/4 in behind the LE at the fuselage at 1/4.6. Converted to MAC with the LE extension these cluster at 25-30 % MAC; 27 % chosen (estimated)",
+    "throws_mm": {
+      "aileron": 27.0,
+      "elevator": 31.0,
+      "rudder": 69.0
+    },
+    "throws_note": "Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm",
+    "flaps_deg": {
+      "take_off": 15.0,
+      "landing": 45.0,
+      "note": "CARF manual p28; not simulated"
+    }
   },
   "evidence": {
-    "full_size.overall": {"kind": "estimated", "source": "published P-51D specifications (span 37 ft 0.3 in, length 32 ft 3 in, wing area 235 sq ft, stab span 13 ft 2.5 in, track 11 ft 10 in, propeller 11 ft 2 in, 27 in / 12.5 in wheels); URLs in docs/research/p51-resources.json once verified", "limits": "Sections, station lines, scoop and canopy proportions are read by eye from public three-view drawings, not measured on a calibrated plan."},
-    "full_size.wing": {"kind": "estimated", "source": "root chord 104 in, tip chord 50 in, AR 5.86, dihedral 5 deg, NAA 45-100 section 15.1 % root / 11.4 % tip; quarter chord assumed unswept (LE sweep 3.5 deg)", "limits": "Incidence +1 deg and zero washout are assumptions to confirm."},
-    "section": {"kind": "estimated", "source": "generic laminar thickness distribution (max at 40 % chord) with 1.5 % parabolic camber; the true NAA 45-100 ordinates are not reproduced", "limits": "Visual and first-estimate aero only."},
-    "kit": {"kind": "estimated", "source": "placeholder until the research report selects the reference kit", "limits": "Span, mass, propeller and throws are provisional."}
+    "full_size.overall": {
+      "kind": "estimated",
+      "source": "P-51D: span 37 ft 0 in / 11.28 m, length 32 ft 3 in / 9.83 m (warbirdsresourcegroup.org, DCS manual p18); wing area 235 ft2 (WRG) / 233.19 ft2 (DCS); propeller 11 ft 2 in (DCS). URLs and hashes in docs/research/p51-resources.json",
+      "limits": "Fuselage sections, station lines, scoop and canopy proportions are read by eye from the public-domain AN 01-60-3 three-view (references/p51-mustang/drawings/), not measured on a calibrated plan. Gear track 11 ft 10 in and 27 in / 12.5 in wheels are unverified."
+    },
+    "full_size.wing": {
+      "kind": "estimated",
+      "source": "root/tip chord 104/50 in reproduce 235 ft2 to the centreline (Mason, VT: 101.8/46.4 in, AR 5.876 for 233 ft2: unresolved); dihedral 5 deg along 25 % chord and ~1 deg root incidence (modelflying.co.uk snippet); quarter chord assumed unswept",
+      "limits": "Washout 0 is an assumption."
+    },
+    "full_size.tail": {
+      "kind": "borrowed",
+      "source": "Mason (Virginia Tech) P-51D configuration study: horizontal 45.4 ft2, span 13.1 ft, chords 4.6/2.3 ft; vertical 14.8 ft2, span 4.7 ft, chords 4.7/1.6 ft (references/p51-mustang/papers/)",
+      "limits": "Dorsal fillet and positions along the fuselage are read from the three-view."
+    },
+    "section": {
+      "kind": "borrowed",
+      "source": "UIUC p51droot.dat (BL17.5: t/c 16.5 % at 39 %, camber 1.26 %) and p51dtip.dat (BL215: 11.4 % at 46 %, camber 1.30 %)",
+      "limits": "The builder uses the root thickness distribution with a parabolic camber line; the true camber line is not reproduced."
+    },
+    "kit": {
+      "kind": "estimated",
+      "source": "No commercial ARF exists for 100-150 cc (research 2026-10-06): 1/4-scale plans (Veich: 284.5 cm, 1.36 m2, 18-27 kg; Bates 112 in, 50 lb+; FokkeRC 111 in, Kolm 155 cc). Engine DA-120 (desertaircraft.com, toni-clark.com). CG/throws from the Hangar 9 60cc, CARF and Ziroli manuals (references/p51-mustang/manuals/)",
+      "limits": "Exact 1/4 scale assumed; the propeller choice and the throws are estimates."
+    }
   }
 }

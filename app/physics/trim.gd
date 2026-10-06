@@ -48,7 +48,19 @@ static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dict
 ##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
 static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary) -> Dictionary:
 	assert(mode == "level" or mode == "glide")
-	var x := PackedFloat64Array([0.05, -0.05, 0.4 if mode == "level" else -0.1, 0.0, 0.0, 0.0])
+	# A large low-pitch propeller windmills at part throttle when V is near its pitch speed; there the thrust falls
+	# with rpm and Newton walks the throttle below zero (P-51 1/4, 26x12 four-blade at 27 m/s). Retrying from higher
+	# throttle guesses only after a failure keeps every previously converging trim bit-identical.
+	var result := {}
+	for guess in ([0.4, 0.75, 0.95] if mode == "level" else [-0.1]):
+		result = _solve_from(mode, V, model, g, throws, guess)
+		if result.ok:
+			return result
+	return result
+
+
+static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float) -> Dictionary:
+	var x := PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
 	var r := _residual(x, mode, V, model, g)
 	var iterations := 0
 	while iterations < 50 and _norm(r) > 1e-10:

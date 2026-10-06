@@ -50,7 +50,7 @@ func _initialize() -> void:
 	var a: Dictionary = model.aero
 	var v0: float = model.start_speed
 	_check("data id", model.id == ID, str(model.id))
-	_check("giant-scale mass and span", model.mass_kg > 15.0 and model.mass_kg < 23.0 and absf(float(model.reference.b) - 2.508) < 0.01, "%.2f kg, %.3f m" % [model.mass_kg, model.reference.b])
+	_check("giant-scale mass and span", model.mass_kg > 15.0 and model.mass_kg < 23.0 and absf(float(model.reference.b) - 2.82) < 0.01, "%.2f kg, %.3f m" % [model.mass_kg, model.reference.b])
 	_check("trim throttle leaves a climb reserve (below 85 %)", session.start.throttle < 0.85, "%.0f %%" % (session.start.throttle * 100.0))
 	_check("trim elevator within half the throw", absf(session.start.get("pitch_command", 0.0)) < 0.5, str(session.start.get("pitch_command", "?")))
 	var hands_off := func(_t: float, _s: PackedFloat64Array) -> Dictionary: return Maneuvers._hands_off()
@@ -63,7 +63,7 @@ func _initialize() -> void:
 		"Δalt %.4f m, Δspeed %.5f m/s" % [hold.value(last, "alt_m") - hold.value(0, "alt_m"), hold.value(last, "speed_mps") - v0])
 
 	# Coordinated full-aileron roll vs the single-axis prediction −2·Clδa·δa/Clp · 2V/b (± 7 %, as for the Stik and Extra).
-	for v in [v0, 35.0]:
+	for v in [v0, 27.0]: # 27 m/s: below the full-throttle level maximum of this propeller (derivation.md)
 		var roll := { mode = "level", speed = v, duration = 3.0, sticks = func(t: float, s: PackedFloat64Array) -> Dictionary:
 			return Maneuvers._coordinated(Maneuvers._pulse(t, 0.25, 1.75, { roll = 1.0 }), s) }
 		var tr: RefCounted = Maneuvers.fly(session, roll)
@@ -71,9 +71,9 @@ func _initialize() -> void:
 		var p := rad_to_deg(_max(tr, "p_radps"))
 		_check("coordinated roll at %.0f m/s: %.0f°/s ± 7 %% (single-axis prediction)" % [v, predicted], absf(p - predicted) <= 0.07 * predicted, "%.1f°/s" % p)
 
-	# Inside loop as a pilot flies a warbird: 0.5 stick and full throttle from 32 m/s, from 150 m: round within 8 s.
-	var loop := { mode = "level", speed = 32.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
-		return Maneuvers._pulse(t, 0.2, 8.0, { pitch = 0.5, throttle_delta = 1.0 }) }
+	# Inside loop as a pilot flies a warbird: 0.7 stick (≈10° of elevator) and full throttle from 27 m/s, from 150 m: round within 8 s.
+	var loop := { mode = "level", speed = 27.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
+		return Maneuvers._pulse(t, 0.2, 8.0, { pitch = 0.7, throttle_delta = 1.0 }) }
 	var lt: RefCounted = Maneuvers.fly(session, loop)
 	var turned := 0.0
 	var loop_time := NAN
@@ -81,7 +81,7 @@ func _initialize() -> void:
 		turned += float(lt.value(r, "q_radps")) * session.sim.dt()
 		if is_nan(loop_time) and turned >= TAU:
 			loop_time = r * session.sim.dt()
-	_check("inside loop at 0.5 stick from 32 m/s: 360° of pitch within 8 s, finite", turned >= TAU and _finite(lt), "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
+	_check("inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite", turned >= TAU and _finite(lt), "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
 	_check("inside loop: faster than the 1-g stall speed over the top", _min(lt, "speed_mps", 0.0, loop_time) > _stall_speed(model),
 		"min %.1f m/s (1-g stall %.1f)" % [_min(lt, "speed_mps", 0.0, loop_time), _stall_speed(model)])
 

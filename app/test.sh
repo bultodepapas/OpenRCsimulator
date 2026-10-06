@@ -42,17 +42,25 @@ echo "== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, fini
 run --script res://aircraft/verify_extra.gd 2>&1 | tee "$LOG" | tail -2
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract failed (see above)"; exit 1; fi
 
+echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"
+run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 model contract failed (see above)"; exit 1; fi
+
 echo "== Avanti S preview contract (aircraft/verify_avanti.gd, AV-03: visual only, no flight data)"
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti preview contract failed (see above)"; exit 1; fi
 
-echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra by catalog ID)"
+echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra and the P-51 by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=gp-extra-300s-60 --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "gp-extra-300s-60" "$TRACE" || { echo "the Extra trace does not name the Extra"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=p51d-mustang-120 --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "p51d-mustang-120" "$TRACE" || { echo "the P-51 trace does not name the P-51"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
 echo "== app: a preview or unknown aircraft is refused on the direct route (exit 1, never another airplane)"
 for id in sebart-avanti-s-a200-p100rx no-such-aircraft; do
@@ -68,11 +76,42 @@ import json, sys
 r = json.load(open(sys.argv[1]))
 ms = r["frame_ms"]
 assert r["frames"] > 10 and r["seconds"] >= 1.5, r
+assert r["format"] == "openrc-frametimes v2" and r["complete"] is True
+assert r["route"] == "live-input" and r["input_enabled"] is True
+assert len(r["frame_deltas_s"]) == r["frames"]
+assert abs(sum(r["frame_deltas_s"]) - r["seconds"]) < 1e-8
+assert all(len(values) == r["frames"] for values in r["raw_metrics"].values())
+assert r["simulation"]["ticks"] > 0 and r["actual_warmup_s"] >= 1.0
 assert 0 < ms["p50"] <= ms["p95"] <= ms["p99"] <= ms["max"], ms
 assert all(k in r for k in ("adapter", "api", "godot", "os", "vsync", "physics_us_per_tick")), sorted(r)
 print(f"frame-time report: {r['frames']} frames, p50 {ms['p50']:.2f} <= p95 {ms['p95']:.2f} <= p99 {ms['p99']:.2f} ms")
 PY
 rm -f "$FT"
+
+echo "== VQ-01b: scripted logger disables input and identifies its route"
+FT="$(mktemp --suffix=.json)"
+run -- --frametimes="$FT" --warmup=0 --t=0.1 --scripted --case=logger-smoke > "$LOG" 2>&1
+if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+python3 - "$FT" <<'PYLOGGER'
+import json, sys
+r = json.load(open(sys.argv[1]))
+assert r["route"] == "scripted-fixed" and r["case_id"] == "logger-smoke"
+assert r["input_enabled"] is False and r["simulation"]["ticks"] == 0
+assert r["complete"] is True and r["seconds"] >= 0.1
+assert r["seconds"] - r["frame_deltas_s"][-1] < 0.100001
+assert r["warmup_s"] == 0 and r["backend"] and r["preset"]
+print("scripted route, raw samples and disabled input verified")
+PYLOGGER
+rm -f "$FT"
+echo "== VQ-01b: invalid logger options and output write failures fail the process"
+for bad in --t=0 --t=nan --warmup=-1 --capture --trace=/dev/null; do
+  if run -- --frametimes=/dev/null "$bad" > "$LOG" 2>&1; then
+    echo "logger accepted invalid option $bad"; exit 1
+  fi
+done
+if run -- --frametimes="$HERE" --warmup=0 --t=0.01 > "$LOG" 2>&1; then
+  echo "logger hid an output write failure"; exit 1
+fi
 
 echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
 HASHES=""

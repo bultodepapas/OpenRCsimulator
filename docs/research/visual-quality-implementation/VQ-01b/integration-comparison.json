@@ -1,0 +1,32 @@
+[
+  {
+    "case_id": "pilot-30m-autozoom-on",
+    "png_identical": true,
+    "sha256": "ad0fe76d1f7c5c2f5fa5010b9d6ab83f34f22d26620681f0b70460c556ffbe07"
+  },
+  {
+    "case_id": "field-az0-el0-repeat1",
+    "png_identical": true,
+    "sha256": "5747c0fd900bfcc3b201eb31d090ff2e244387ad05d88c5a53c28a078413fbc6"
+  },
+  {
+    "case_id": "synthetic-stik-20m-level",
+    "png_identical": true,
+    "sha256": "e817c0dd52453696d951084f79810b5d5db6cd9222cb88119493de75d566e189"
+  },
+  {
+    "case_id": "synthetic-extra-20m-level",
+    "png_identical": true,
+    "sha256": "6ad981fe69cb97969d52c1c0d0d9051eaae797898413d06e9cef0faf34c1c024"
+  },
+  {
+    "case_id": "ui-flight-en",
+    "png_identical": true,
+    "sha256": "4f98a628fee553c480657e4dca95a838d98d24b581ca4fbb09913985fc59a64e"
+  },
+  {
+    "case_id": "ui-flight-es",
+    "png_identical": true,
+    "sha256": "4f98a628fee553c480657e4dca95a838d98d24b581ca4fbb09913985fc59a64e"
+  }
+]

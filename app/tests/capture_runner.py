@@ -62,11 +62,22 @@ def run_capture(command: list[str], output: Path, kind: str, scene: str,
             if len(saved) != 1:
                 raise RuntimeError('missing or ambiguous successful capture record')
         elif kind == 'ui':
-            # capture_ui has no engine manifest; identify this as harness evidence, not GPU telemetry.
-            data = {'format': 'openrc-ui-capture v1', 'producer': 'capture_runner',
-                    'image': output.name, 'sha256': sha256, 'size': [1280, 720],
-                    'capture_scene': scene, 'process_exit': status}
-            manifest.write_text(json.dumps(data, indent=2, sort_keys=True) + '\n')
+            if manifest.exists():
+                data = json.loads(manifest.read_text())
+                if (data.get('format') != 'openrc-ui-capture v2' or
+                        data.get('image') != output.name or data.get('sha256') != sha256 or
+                        data.get('capture_scene') != scene):
+                    raise RuntimeError('native UI manifest identity/hash mismatch')
+                if not isinstance(data.get('ui_evidence'), dict):
+                    raise RuntimeError('native UI manifest missing runtime evidence')
+            else:
+                if scene == 'flight':
+                    raise RuntimeError('flight transition requires native UI evidence')
+                # Backward compatible with the original layout-only UI producer.
+                data = {'format': 'openrc-ui-capture v1', 'producer': 'capture_runner',
+                        'image': output.name, 'sha256': sha256, 'size': [1280, 720],
+                        'capture_scene': scene, 'process_exit': status}
+                manifest.write_text(json.dumps(data, indent=2, sort_keys=True) + '\n')
         else:
             raise RuntimeError(f'unknown capture kind: {kind}')
         return data
