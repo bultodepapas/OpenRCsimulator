@@ -1,0 +1,22 @@
+{
+  "pack": "Kenney Nature Kit; page labels 1.0, included License.txt labels 2.1",
+  "page": "https://kenney.nl/assets/nature-kit",
+  "archive_url": "https://kenney.nl/media/pages/assets/nature-kit/37ac38a37b-1677698939/kenney_nature-kit.zip",
+  "archive_sha256": "fa7974a0d342bfe63c38664ba9f8ec1a4aab8ea25f099bdc56870e33588c4d9d",
+  "retrieved": "2026-10-06",
+  "license": "CC0-1.0; see source/License.txt",
+  "files": [
+    {
+      "entry": "Models/GLTF format/tree_default.glb",
+      "sha256": "562d29638c902de3c7bee465d3a53bb77117efbc392ae04ed894faf6b5dc691d"
+    },
+    {
+      "entry": "Models/GLTF format/tree_oak.glb",
+      "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
+    },
+    {
+      "entry": "Models/GLTF format/tree_pineTallA.glb",
+      "sha256": "e0a56eb196d8a64ba86c7304d607136e17e6f9ad748dffcf86bd53b18b91b196"
+    }
+  ]
+}

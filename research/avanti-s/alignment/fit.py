@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fit a fixed-FOV camera, never aircraft geometry, to manually selected landmarks."""
 import hashlib
+import argparse
 import json
 from pathlib import Path
 import numpy as np
@@ -35,7 +36,11 @@ def project(pose, points, focal, center):
 
 
 def main():
-    data = json.loads((HERE / 'picks.json').read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--picks', type=Path, default=HERE / 'picks.json')
+    parser.add_argument('--output', type=Path, default=HERE / 'camera-fit.json')
+    args = parser.parse_args()
+    data = json.loads(args.picks.read_text())
     assert sha(ROOT / 'research/avanti-s/av02/geometry.json') == data['model_geometry_sha256']
     output = []
     for view in data['views']:
@@ -52,6 +57,9 @@ def main():
             return np.r_[(projected - uv).ravel(), np.minimum(depth - .2, 0) * 1000]
 
         initial = initial_pose(view['initial_camera'])
+        roll = Rotation.from_euler('z', view.get('initial_camera_roll_deg', 0), degrees=True)
+        initial[:3] = (roll * Rotation.from_rotvec(initial[:3])).as_rotvec()
+        initial[3:] = roll.apply(initial[3:])
         rng = np.random.default_rng(42)
         fits = []
         for attempt in range(12):
@@ -61,7 +69,9 @@ def main():
                 guess[3:] += rng.normal(0, .2, 3)
             fit = least_squares(residual, guess, max_nfev=1000, ftol=1e-12, xtol=1e-12, gtol=1e-12)
             _, depth = project(fit.x, xyz, focal, center)
-            if fit.success and np.min(depth) > .2:
+            camera_position = -Rotation.from_rotvec(fit.x[:3]).as_matrix().T @ fit.x[3:]
+            hemisphere_ok = view.get('camera_hemisphere') != 'below' or camera_position[1] < 0
+            if fit.success and np.min(depth) > .2 and hemisphere_ok:
                 fits.append(fit)
         assert fits, view['id']
         fit = min(fits, key=lambda x: np.sum(x.fun ** 2))
@@ -84,9 +94,9 @@ def main():
         print(f"{view['id']}: fit RMS {record['fit_rms_px']:.1f}px; withheld {record['check_rms_px']:.1f}px")
     result = dict(schema='openrc-avanti-camera-fit-v1', date='2026-10-06',
                   method='Perspective rigid camera; fixed vertical FOV45, centered principal point, no lens distortion',
-                  versions=dict(numpy=np.__version__, scipy=scipy.__version__), picks_sha256=sha(HERE / 'picks.json'),
+                  versions=dict(numpy=np.__version__, scipy=scipy.__version__), picks_sha256=sha(args.picks),
                   model_geometry_sha256=data['model_geometry_sha256'], limits=data['limitations'], views=output)
-    (HERE / 'camera-fit.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
 
 
 if __name__ == '__main__':

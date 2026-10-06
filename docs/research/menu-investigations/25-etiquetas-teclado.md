@@ -1,0 +1,45 @@
+# 25 — Etiquetas de tecla según la distribución real (Ayuda y leyenda de Inicio)
+
+**Investigado:** 2026-10-06. **Pregunta:** el vuelo lee teclas físicas (`app/input/keyboard.gd`, `physical_keycode` en `app/main.gd`), pero `app/ui/home.gd` rotula «A/D/W/S» fijo. ¿Qué API de Godot 4.7.2 convierte una tecla física en la etiqueta que ve el jugador, qué devuelve en cada plataforma y en headless, cómo se refresca y cómo se prueba? **Evidencia:** código del tag `4.7.2-stable`, documentación 4.7, issues y PR, dos proyectos de referencia, y la sonda [25-key-label-probe.gd](probes/25-key-label-probe.gd) ejecutada con el binario fijado en headless y en una ventana X11 real bajo Xvfb con las distribuciones `us`, `fr`, `de`, `ru` y `us,fr`. No se probó Windows, macOS, Wayland ni la web.
+
+## Hallazgos verificables
+
+1. **Cuatro vías, una sola útil para una leyenda estática** (Documentado y Observado en código). [`DisplayServer.keyboard_get_label_from_physical`](https://docs.godotengine.org/en/4.7/classes/class_displayserver.html#class-displayserver-method-keyboard-get-label-from-physical) convierte una tecla física (posición QWERTY de EE. UU.) en la «etiqueta localizada impresa en la tecla» y devuelve un `Key`, no un `String` ([#107276](https://github.com/godotengine/godot/issues/107276)). `keyboard_get_keycode_from_physical` devuelve en cambio el código latino: en ruso, la tecla física A da etiqueta `Ф` y código `A`. [`OS.get_keycode_string`](https://docs.godotengine.org/en/4.7/classes/class_os.html#class-os-method-get-keycode-string) solo formatea: usa nombres fijos en inglés para teclas con nombre («Left», «Escape», «Enter», «F3») y el carácter para las demás ([keyboard.cpp](https://github.com/godotengine/godot/blob/4.7.2-stable/core/os/keyboard.cpp#L363-L403)). [`InputEventKey.key_label`](https://docs.godotengine.org/en/4.7/classes/class_inputeventkey.html#class-inputeventkey-property-key-label) y `as_text_key_label()` necesitan un evento real que la plataforma ya haya rellenado. `as_text_physical_keycode()` da siempre el nombre QWERTY, y `as_text()` añade « - Physical» ([input_event.cpp](https://github.com/godotengine/godot/blob/4.7.2-stable/core/input/input_event.cpp#L474-L496)). Las teclas con nombre llevan el bit `KEY_SPECIAL` (1 << 22).
+2. **Resultado en X11** (Ejecutado en 4.7.2, Xvfb). Las letras son correctas para las tres distribuciones; flechas, F3, Esc e Intro no cambian:
+
+   | Física | us | fr | de | ru (etiqueta / código) |
+   | --- | --- | --- | --- | --- |
+   | A · W · Q · Z | A · W · Q · Z | **Q · Z · A · W** | A · W · Q · **Y** | Ф · Ц · Й · Я / A · W · Q · Z |
+   | S · D · Left · F3 · Escape · Enter | iguales | iguales | iguales | S→Ы, D→В; las demás iguales |
+
+   Con dos grupos (`us,fr`), `keyboard_get_layout_count()` vale 2. Tras `keyboard_set_current_layout(1)`, las etiquetas pasan a AZERTY. Cada llamada consulta el servidor X ([display_server_x11.cpp](https://github.com/godotengine/godot/blob/4.7.2-stable/platform/linuxbsd/x11/display_server_x11.cpp#L3805-L3849)). Un `setxkbmap` en caliente se ve **en el mismo fotograma**. Cada llamada cuesta 42–49 µs.
+3. **Por plataforma** (Observado en código). **Windows:** `ToUnicodeEx` con la distribución activa; los dígitos 0–9, PrintScreen, KP_ADD y KP_5 se devuelven sin traducir ([display_server_windows.cpp](https://github.com/godotengine/godot/blob/4.7.2-stable/platform/windows/display_server_windows.cpp#L4078-L4144)). **macOS:** `UCKeyTranslate` sobre `TISCopyCurrentKeyboardInputSource()` en cada llamada; un observador de `kTISNotifySelectedKeyboardInputSourceChanged` solo marca como obsoleta la lista de distribuciones ([display_server_macos_base.mm](https://github.com/godotengine/godot/blob/4.7.2-stable/platform/macos/display_server_macos_base.mm#L354-L374)). **Wayland:** se implementó en 4.6 ([PR #113837](https://github.com/godotengine/godot/pull/113837)) mediante `xkb_state`. Sin estado de teclado devuelve la tecla física sin error ([wayland_thread.cpp](https://github.com/godotengine/godot/blob/4.7.2-stable/platform/linuxbsd/wayland/wayland_thread.cpp#L5864-L5881)). **Web, Android y headless:** no reimplementan la función. La [base](https://github.com/godotengine/godot/blob/4.7.2-stable/servers/display/display_server.cpp#L1204-L1229) devuelve la tecla física y además imprime `ERROR: Not supported by this display server.` (Ejecutado: headless da `layouts=0 current=-1` y `label(A) -> 65` con ese ERROR). `keyboard_get_current_layout()` devuelve −1 sin error.
+4. **No hay señal ni notificación de cambio de distribución** (Observado en código). Ni `DisplayServer` ni `Node` exponen una. SDL3 sí la tiene ([`SDL_EVENT_KEYMAP_CHANGED`](https://wiki.libsdl.org/SDL3/SDL_EventType)). Como todas las implementaciones consultan la distribución activa en cada llamada, basta con volver a llamar.
+5. **Fallos conocidos** (Issue). [#122740](https://github.com/godotengine/godot/issues/122740) (abierto; afecta a 4.7.2 en X11 y Wayland) devuelve resultados erróneos con distribuciones alemanas para teclas de puntuación como la coma, según el orden de las distribuciones. Las correcciones siguen abiertas: [PR #122801](https://github.com/godotengine/godot/pull/122801) y [#122813](https://github.com/godotengine/godot/pull/122813) (teclas muertas). [PR #111795](https://github.com/godotengine/godot/pull/111795) (4.6) quitó errores en X11 para teclas sin etiqueta. Las letras, flechas y F-keys de OpenRC no aparecen afectadas.
+6. **Otras referencias** (Observado en código). [Input Helper](https://github.com/nathanhoad/godot_input_helper/blob/ccfad58f7eea997e3d4f0903dcac9212da2b2208/addons/input_helper/input_helper.gd#L210-L218) (v4.7.0) protege la llamada con `keyboard_get_current_layout() > -1`, pero usa `keycode_from_physical`, que da letras latinas en ruso. La [demo oficial de remapeo](https://github.com/godotengine/godot-demo-projects/blob/3e08537616661a5883831628decab4c526260289/gui/input_mapping/ActionRemapButton.gd#L45-L50) muestra `as_text()`, en inglés y QWERTY. SDL recomienda leer las teclas por posición física y mostrar el nombre del carácter impreso ([BestKeyboardPractices](https://wiki.libsdl.org/SDL3/BestKeyboardPractices)). La [GAG](https://gameaccessibilityguidelines.com/allow-controls-to-be-remapped-reconfigured/) cita AZERTY como motivo para el remapeo (inv. 22).
+
+## Aplicación a OpenRC
+
+`home.gd` rotula `[["A","D"],"Rudder"], [["W","S"],"Throttle"]`. En AZERTY eso muestra A/W donde el jugador pulsa Q/Z. En `main.gd`, el atajo físico Z (autozoom) está rotulado en AZERTY como W, y en QWERTZ como Y. Las flechas, F3, F5, Esc e Intro no cambian, pero `OS.get_keycode_string` las nombra en inglés, así que necesitan nombres traducibles propios. `app/test.sh` falla con cualquier `ERROR:`: llamar a la API sin protección en headless rompería la suite. Los caracteres no latinos (Ф, Ц…) exigen glifos en la fuente de UI-09c. Lo trata `has_char()` en la inv. 16.
+
+## Recomendación para UI-04b
+
+Una sola función pura con el mapeo inyectable, y una tabla única (acción → tecla física) compartida con `keyboard.gd` y los atajos:
+```gdscript
+static func label_for_physical(key: Key, to_label: Callable = Callable()) -> String:
+	var label := key
+	if to_label.is_valid():
+		label = to_label.call(key)
+	elif DisplayServer.keyboard_get_current_layout() >= 0: # -1 on headless/web/Android: QWERTY fallback, no ERROR
+		label = DisplayServer.keyboard_get_label_from_physical(key)
+	if label == KEY_NONE:
+		label = key
+	if label & KEY_SPECIAL: # named key: own translatable name ("Left arrow", "Esc"…); static, so no tr()
+		return TranslationServer.translate(SPECIAL_NAMES.get(label, OS.get_keycode_string(label)))
+	return String.chr(label)
+```
+Ejecutado tal cual en headless con un mapeo AZERTY y otro ruso inyectados: `["A", "W", "Left arrow", "F3", "Esc"]` sin mapeo y sin `ERROR:`; `["Q", "Z", "W", "Ф"]` con ellos. Recalcular al construir o mostrar Inicio y Ayuda (`NOTIFICATION_VISIBILITY_CHANGED`, ~10 llamadas ≈ 0,5 ms en X11), al recibir `NOTIFICATION_APPLICATION_FOCUS_IN` y, en esas pantallas, cuando un `InputEventKey` real llegue con `key_label` distinto de la etiqueta en caché. Nunca recalcular por fotograma. Prueba determinista en headless: pasar `func(k): return {KEY_A: KEY_Q, KEY_Q: KEY_A, KEY_W: KEY_Z, KEY_Z: KEY_W}.get(k, k)` y comprobar «Q/D» y «Z/S» en la leyenda, `Ф` con un mapeo ruso, la ruta sin mapeo en headless (QWERTY y ningún `ERROR:`) y que cada tecla de la tabla aparezca en la Ayuda. La sonda X11 con `-noreset` puede añadirse como captura opcional, no como prueba de CI.
+
+## Límites y pendientes
+
+Solo se ejecutó en X11 (Xvfb). Windows, macOS, Wayland y la web se infieren del código. Xvfb necesita `-noreset`: sin él, el servidor se reinicia cuando `setxkbmap` se desconecta y pierde la distribución (las primeras ejecuciones parecían «no cambiar»). No se midió el coste en Windows ni en macOS. No se probaron IME, distribuciones Dvorak ni el cambio por atajo del sistema con la ventana enfocada. Falta decidir si las flechas se muestran como glifo (← →) o como palabra, y comprobar los glifos en la fuente elegida.

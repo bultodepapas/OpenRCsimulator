@@ -1,6 +1,6 @@
 # UI capture (MENU-PLAN UI-01a): renders the Home screen and saves a PNG, for layout and focus review.
 # Needs a renderer (run under Xvfb, see capture.sh):
-#   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/home.png [--lang=es] [--no-ui] [--no-scene] [--screen=pause]
+#   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/home.png [--lang=es] [--no-ui] [--no-scene] [--screen=pause|help|hint]
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
 
@@ -21,7 +21,22 @@ func _run() -> void:
 		elif a.begins_with("--lang="):
 			lang = a.trim_prefix("--lang=")
 	TranslationServer.set_locale(lang) # never the OS locale: captures must not depend on the machine
-	if "--screen=pause" in OS.get_cmdline_user_args():
+	var args := OS.get_cmdline_user_args()
+	if "--screen=help" in args or "--screen=hint" in args:
+		var app: Node = load("res://app_root.tscn").instantiate()
+		app.user_args = PackedStringArray()
+		app.preferences_path = "user://capture_ui_hint_settings.cfg"
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(app.preferences_path)) # first flight: the hint shows
+		root.add_child(app)
+		await process_frame
+		await process_frame # Home drawn once before anything else (see below)
+		TranslationServer.set_locale(lang)
+		if "--screen=help" in args:
+			app.open_help(app.home.help_button)
+		else:
+			app.start_flight()
+			await create_timer(1.0).timeout
+	elif "--screen=pause" in args:
 		# The real app: Home, Fly, one second of flight, then the pause menu over the frozen flight.
 		var app: Node = load("res://app_root.tscn").instantiate()
 		app.user_args = PackedStringArray()

@@ -21,8 +21,6 @@ const PLAN_UP := Vector3(0, 0, -1) # plan views: nose at the top of the image
 const NEUTRAL := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
 const FULL := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
 const FULL_OPPOSITE := {roll = -1.0, pitch = -1.0, yaw = -1.0, throttle = 0.0}
-# Manual p43 high rates, inches at the widest part of each surface: aileron 5/8, elevator 1-1/4, rudder 2-1/2.
-const MANUAL_HIGH_RATE_IN := {aileron = 0.625, elevator = 1.25, rudder = 2.5}
 
 var _camera: Camera3D
 var _airplane: Dictionary
@@ -38,20 +36,6 @@ func _arg(name: String, fallback: String) -> String:
 		if arg.begins_with("--%s=" % name):
 			return arg.trim_prefix("--%s=" % name)
 	return fallback
-
-
-# delta = asin(d / r) with r the surface chord where the manual measures the throw (its widest part).
-static func manual_throws_deg() -> Dictionary:
-	var t: Dictionary = D.tail
-	var chords := {
-		aileron = float(D.wing.aileron_chord),
-		elevator = float(t.elevator_root_corner[1]) - float(t.elevator_hinge_z),
-		rudder = float(t.rudder_te_low[0]) - float(t.rudder_hinge_z),
-	}
-	var out := {}
-	for k in chords:
-		out[k] = rad_to_deg(asin(minf(MANUAL_HIGH_RATE_IN[k] * 0.0254 / chords[k], 1.0)))
-	return out
 
 
 static func _view(name: String, position: Vector3, target: Vector3, projection := "persp", controls := NEUTRAL, fov := 40.0, attitude := Vector3.ZERO, area := "", up := Vector3.UP) -> Dictionary:
@@ -157,7 +141,7 @@ func _run() -> void:
 	_camera.far = 400.0
 	get_root().add_child(_camera)
 	_camera.current = true
-	_throws = manual_throws_deg()
+	_throws = Extra.manual_throws_deg()
 	var records := []
 	for view in selected:
 		# Reset every surface, the attitude and the propeller; nothing may leak from the previous view.

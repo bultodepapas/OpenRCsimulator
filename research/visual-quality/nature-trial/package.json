@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@gltf-transform/cli": "4.5.0",
+    "gltf-validator": "2.0.0-dev.3.10"
+  }
+}

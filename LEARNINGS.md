@@ -456,3 +456,21 @@ Prueba: [revisión 3](docs/research/avanti-s-contour-refinement-v3.md), clon sin
 - Freesound y las fuentes de mocap amplían el catálogo de investigación, sin convertir audio ni personajes animados en requisitos del primer paisaje. Gratis, uso comercial y redistribución de archivos fuente son condiciones distintas.
 
 Prueba: [fuentes primarias y flujo de selección](docs/research/asset-sources-catalog-2026-10-06.md), texto recibido conservado con SHA-256 y comprobación documental. No se descargaron packs ni se ejecutó la suite del juego en esta entrega.
+
+## 2026-10-06 · VQ — usar herramientas sobre assets reales
+
+- Kenney Nature Kit aportó tres árboles de 78/114/196 triángulos, pero sus GLB originales fallan Khronos con `SCENE_NON_ROOT_NODE`. Godot los importa de todos modos: importar no prueba conformidad. Reescribir con glTF Transform 4.5.0 `weld` produjo derivados sin errores/warnings, −7,7 % de bytes y captura idéntica. El original se conserva como evidencia, no como recurso aprobado.
+- En una escena aislada de 480 árboles, 24 MultiMesh con dos superficies consumen 48 draws; unificar colores/material en una superficie da 24 con las mismas 62.080 primitivas. Presupuestar superficies y pases, no solo nodos. No es una medición de FPS ni un ensayo del campo completo.
+- La declaración `KHR_materials_unlit` del archivo no describía los materiales efectivos: hojas y troncos llegan con sombreado por píxel y `metallic=1`. Separar conversión conservadora de adaptación artística. El A/B también detectó una conversión sRGB innecesaria para colores por vértice en Compatibility; corregida, la diferencia máxima de la unión es un nivel de 8 bits. Repetirla al cambiar backend.
+- Grass001 1K de ambientCG funciona como muestrario de albedo frente a normal OpenGL + roughness en StandardMaterial3D. El relieve cercano no elimina repetición del tile ni demuestra lectura en vuelo. El shader del suelo, su bruma y sus zonas aún necesitan integración y A/B propios.
+
+Prueba: [ensayo Kenney y herramientas](docs/research/visual-quality-nature-trial-2026-10-06.md), seis casos repetidos en dos procesos, validación Khronos y comparación Pillow/NumPy; [muestra PBR](docs/research/visual-quality-material-trial-2026-10-06.md). Ejecución aislada con Godot 4.7.2 Compatibility/llvmpipe; sin cambios de esta tarea en la app ni benchmark de la 3090.
+
+## 2026-10-06 · Avanti — más vistas y ambigüedad de cámara
+
+- Revisar el índice completo de las galerías oficiales recuperó 30 fotos adicionales que no estaban en la primera selección: incluyen frontal baja, interior, detalles bajo el morro y el ala, cola e intradós en vuelo. No son 30 fuentes independientes.
+- Cuatro puntos aproximadamente simétricos pueden admitir una solución reflejada: la primera correspondencia de alas en una foto inferior dio una cámara encima del avión. Corregir izquierda/derecha y verificar el hemisferio descartó esa falsa coincidencia.
+- La lámina comercial de tres vistas ayuda a distinguir intradós/extradós, pero la ficha del producto no transforma sus dibujos sin cotas en un plano calibrado. El reportaje de Aerotec usa P220 vectorial; no trasladar su salida al P100 fijo.
+- La nueva frontal revela diferencias de sección que las primeras oblicuas no resolvían. Las comparaciones se añaden sin cambiar geometría, conservando imágenes, tamaños nativos, puntos reservados y errores desfavorables.
+
+Prueba: [galería y nuevas comparaciones](docs/research/avanti-s-new-angles.md), hashes de 33 recursos, tres renders repetidos en clon sin referencias, ajuste determinista y visor de escritorio/móvil. Todos los originales gráficos siguen fuera de Git.

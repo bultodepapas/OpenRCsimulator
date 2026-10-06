@@ -1,6 +1,7 @@
 # Investigation 25 probe: what the pinned Godot returns when turning a physical (US QWERTY) key into the label the
 # player sees, on the headless display server and on a real X11 window under Xvfb with several XKB layouts.
-# It reports behaviour; it asserts nothing. Never run it with --path app.
+# It reports behaviour; it asserts nothing. Never run it with --path app. Xvfb needs -noreset: without it the server
+# resets (and drops the setxkbmap keymap) as soon as setxkbmap, its only client, disconnects.
 #   D=$(mktemp -d); printf 'config_version=5\n' > "$D/project.godot"
 #   cp docs/research/menu-investigations/probes/25-key-label-probe.gd "$D/"
 #   G=.tools/Godot_v4.7.2-stable_linux.x86_64; E="XDG_CONFIG_HOME=$D/cfg XDG_DATA_HOME=$D/data"
@@ -11,7 +12,7 @@
 #     $G --rendering-driver opengl3 --audio-driver Dummy --path '$D' --script res://25-key-label-probe.gd"; done
 #   # 3. X11, hot switch inside one process (the probe runs setxkbmap itself) and a two-group layout us,fr:
 #   env $E xvfb-run -a -s "-screen 0 640x480x24 -noreset" $G --rendering-driver opengl3 --audio-driver Dummy --path "$D" \
-#     --script res://25-key-label-probe.gd -- --hot=us,fr,de --groups=us,fr
+#     --script res://25-key-label-probe.gd -- --hot=fr,ru,us --groups=us,fr
 extends SceneTree
 
 const KEYS := [KEY_A, KEY_W, KEY_Q, KEY_Z, KEY_S, KEY_D, KEY_LEFT, KEY_F3, KEY_ESCAPE, KEY_ENTER]
@@ -81,6 +82,11 @@ func _run() -> void:
 		DisplayServer.keyboard_set_current_layout(1)
 		await _frames(10)
 		_dump("groups %s after keyboard_set_current_layout(1)" % groups)
+	if DisplayServer.get_name() != "headless":
+		var t0 := Time.get_ticks_usec()
+		for i in 1000:
+			DisplayServer.keyboard_get_label_from_physical(KEY_W)
+		print("cost: %.1f us per keyboard_get_label_from_physical call (1000 calls)" % ((Time.get_ticks_usec() - t0) / 1000.0))
 	# InputEventKey built by code (what a test can inject): key_label is whatever the test sets; as_text_* only format.
 	var ev := InputEventKey.new()
 	ev.physical_keycode = KEY_W

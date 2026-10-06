@@ -1,0 +1,40 @@
+{
+  "schema": "openrc-avanti-new-angles-validation-v1",
+  "resources_checked": 33,
+  "new_jpegs": 31,
+  "bytes": 7399303,
+  "model_unchanged_from_v3": true,
+  "geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+  "fit_reproduction_identical": true,
+  "clean_clone_without_references": true,
+  "three_clone_captures_identical": true,
+  "render_stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nWARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)\nOpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)\n\nAligned transparent captures: 3\n",
+  "render_stderr": "",
+  "mismatched_picks_rejected": true,
+  "browser": {
+    "errors": [],
+    "cards": 32,
+    "images": 31,
+    "checks": [
+      "3 views with native aspect ratios",
+      "opacity",
+      "edge",
+      "anchors",
+      "blink",
+      "category filter",
+      "all gallery images load",
+      "390px mobile layout"
+    ]
+  },
+  "camera_fit_sha256": "e1cb0840df140c07925c0df24ec9a4388666a05629463b07ecaf8f6cdf24ebed",
+  "source_hashes": {
+    "research/avanti-s/alignment/fit.py": "1f007e3fb8f569eac784502890e9901488dc2b943347896b424840d77be0722c",
+    "research/avanti-s/alignment/render.gd": "de97582dcf966fd5c0384027f80287bb5ec608a3344ee46657e3355aba9610ce",
+    "research/avanti-s/new-angles/build_page.py": "fe0e5ccd6ea2f315b0ef35cc6d33d7c159de784d629b7c55ff254bcccf7d47fd",
+    "research/avanti-s/new-angles/viewer.html": "e12f30b1dbb9a96fce39b12a584f75c0e7f7a3ad0bb02da88a5d855bc2d8abd0"
+  },
+  "ignored": [
+    "references/avanti-s/new-angles/index.html",
+    "references/avanti-s/new-angles/intermodel-a200-yellow-three-views.jpg"
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "schema": "openrc-avanti-alignment-picks-v1",
+  "date": "2026-10-06",
+  "model_geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+  "landmarks_m": {
+    "nose": [
+      0,
+      0,
+      -1.05
+    ],
+    "fin_top": [
+      0,
+      0.51,
+      0.96
+    ],
+    "wing_right": [
+      1,
+      0.02,
+      0.424
+    ],
+    "wing_left": [
+      -1,
+      0.02,
+      0.424
+    ],
+    "tail_right": [
+      0.43,
+      0.08,
+      1.062
+    ],
+    "tail_left": [
+      -0.43,
+      0.08,
+      1.062
+    ],
+    "outlet": [
+      0,
+      0,
+      1.17
+    ],
+    "canopy_top": [
+      0,
+      0.251,
+      -0.28
+    ],
+    "intake_right": [
+      0.156,
+      -0.028,
+      -0.09
+    ],
+    "intake_left": [
+      -0.156,
+      -0.028,
+      -0.09
+    ]
+  },
+  "landmark_rule": "Manual approximate visible outline points, native pixels; current v3 tip mid-chords. Not calibrated survey targets.",
+  "limitations": [
+    "Fixed assumed 45 degree FOV, unknown lens and perspective",
+    "Camera fitting against approximate v3 model; never metric measurement",
+    "Check points excluded from fit",
+    "Flight surfaces may be deflected, unlike neutral render; gear/fences absent"
+  ],
+  "views": [
+    {
+      "id": "front_low",
+      "title": "Frontal baja \u00b7 tomas y vientre",
+      "initial_camera": [
+        0,
+        0.1,
+        -3
+      ],
+      "fit": {
+        "nose": [
+          329,
+          260
+        ],
+        "wing_right": [
+          107,
+          223
+        ],
+        "wing_left": [
+          551,
+          224
+        ],
+        "canopy_top": [
+          331,
+          140
+        ]
+      },
+      "check": {
+        "intake_right": [
+          288,
+          224
+        ],
+        "intake_left": [
+          369,
+          224
+        ]
+      },
+      "note": "Low frontal; fin and tail partly hidden. Canopy apex is an estimated surface point. Gear excluded.",
+      "photo": "references/avanti-s/new-angles/a200-ground-cimg7323.jpg",
+      "photo_sha256": "cb23ee8288adffdd6fdc03da12883d28e23c4825586b5acb99fbbe59db5b724c",
+      "size_px": [
+        650,
+        488
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6
+    },
+    {
+      "id": "front_quarter",
+      "title": "Oblicua frontal \u00b7 cabina y uni\u00f3n alar",
+      "initial_camera": [
+        3,
+        3,
+        -3
+      ],
+      "fit": {
+        "nose": [
+          577,
+          354
+        ],
+        "fin_top": [
+          111,
+          73
+        ],
+        "wing_right": [
+          36,
+          346
+        ],
+        "wing_left": [
+          358,
+          146
+        ]
+      },
+      "check": {
+        "tail_right": [
+          58,
+          197
+        ],
+        "tail_left": [
+          191,
+          140
+        ]
+      },
+      "note": "Opposite diagonal from existing rear comparison; partly hidden far tail.",
+      "photo": "references/avanti-s/new-angles/a200-ground-cimg7308.jpg",
+      "photo_sha256": "294a40565907294870d4b1501acbe64a1fef9b989ffc865275c1d11df30e04ae",
+      "size_px": [
+        650,
+        488
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6
+    },
+    {
+      "id": "underside",
+      "title": "Inferior en vuelo \u00b7 ala y cola",
+      "initial_camera": [
+        2,
+        -3,
+        1
+      ],
+      "initial_camera_roll_deg": 180,
+      "fit": {
+        "nose": [
+          158,
+          250
+        ],
+        "wing_right": [
+          292,
+          335
+        ],
+        "wing_left": [
+          420,
+          128
+        ],
+        "outlet": [
+          464,
+          225
+        ]
+      },
+      "check": {
+        "fin_top": [
+          494,
+          285
+        ],
+        "tail_left": [
+          492,
+          187
+        ],
+        "tail_right": [
+          437,
+          274
+        ]
+      },
+      "note": "Banked underside; control deflections and gear doors are not known. Wingtip midpoints approximate; fixed FOV is exploratory. Left/right assignments must preserve the visibly underside camera hemisphere; mirrored fit from above is invalid.",
+      "photo": "references/avanti-s/new-angles/a200-flight-volo-21.jpg",
+      "photo_sha256": "fd0962e16359bf1ef42d8bd04e1088795ae2337efbc5da590cabd1d1fcdd48f7",
+      "size_px": [
+        650,
+        489
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6,
+      "camera_hemisphere": "below"
+    }
+  ]
+}

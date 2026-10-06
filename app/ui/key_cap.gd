@@ -6,6 +6,16 @@ extends PanelContainer
 const ARROWS := ["left", "right", "up", "down"]
 
 
+const ARROW_KEYS := { KEY_LEFT: "left", KEY_RIGHT: "right", KEY_UP: "up", KEY_DOWN: "down" }
+
+
+## A key cap for a PHYSICAL key: arrows drawn, others named as the player's layout prints them (ui/key_labels.gd).
+static func for_key(physical: Key, mapper := Callable()) -> PanelContainer:
+	if ARROW_KEYS.has(physical):
+		return make(ARROW_KEYS[physical])
+	return make(load("res://ui/key_labels.gd").label(physical, mapper))
+
+
 ## A key cap showing `key`: "left", "right", "up", "down" (drawn) or a key label such as "A" (never translated).
 static func make(key: String) -> PanelContainer:
 	var cap: PanelContainer = load("res://ui/key_cap.gd").new()

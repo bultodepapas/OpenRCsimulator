@@ -8,7 +8,7 @@ const SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
 const LANGUAGES := { "en": "English", "es": "Español" }
-const DEFAULTS := { language = "en" }
+const DEFAULTS := { language = "en", first_flight_hint_seen = false }
 
 
 ## Returns the preferences: the DEFAULTS keys plus `writable` (false for a file from a newer version, which must
@@ -34,6 +34,9 @@ static func load_from(path: String) -> Dictionary:
 	var language: Variant = cfg.get_value("ui", "language", DEFAULTS.language)
 	if typeof(language) == TYPE_STRING and LANGUAGES.has(language):
 		prefs.language = language
+	var hint_seen: Variant = cfg.get_value("ui", "first_flight_hint_seen", DEFAULTS.first_flight_hint_seen)
+	if typeof(hint_seen) == TYPE_BOOL:
+		prefs.first_flight_hint_seen = hint_seen
 	return prefs
 
 
@@ -43,4 +46,5 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "schema", SCHEMA)
 	cfg.set_value("ui", "language", prefs.language)
+	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	return cfg.save(path)

@@ -144,3 +144,7 @@ La [segunda revisión de contornos](research/avanti-s-contour-refinement.md) red
 ## Continuidad de fuselaje y cabina — revisión 3
 
 La [tercera revisión](research/avanti-s-contour-refinement-v3.md) estrecha moderadamente el cuerpo delantero, ajusta cabina e interpola secciones con normales suaves. Las muestras del fuselaje mejoran en frontal y posterior; el perfil y la cola siguen limitando el ajuste. Se conservan cámaras y siete bisagras. La comparación usa v2 como referencia; siguen pendientes metrología e integración AV-02.
+
+## Referencias complementarias y tres ángulos nuevos — 2026-10-06
+
+La [nueva selección](research/avanti-s-new-angles.md) añade 30 fotografías oficiales, lámina comercial de tres vistas y reportaje Aerotec. Compara frontal baja, oblicua frontal alta e intradós en vuelo con la geometría v3 intacta. La frontal prioriza revisar sección de vientre y tomas; el intradós es exploratorio por mandos desconocidos y mayor residuo. Las cámaras anteriores permanecen congeladas y los nuevos recursos son exclusivamente locales.

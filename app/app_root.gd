@@ -13,6 +13,8 @@ const UiInput := preload("res://ui/ui_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
+const HelpScreen := preload("res://ui/help_screen.gd")
+const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
@@ -23,6 +25,7 @@ var home: Control
 var home_scene: Node3D
 var flight: Node
 var pause_menu: CanvasLayer
+var help: CanvasLayer
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
@@ -56,6 +59,7 @@ func show_home() -> void:
 	home.fly_requested.connect(start_flight)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
+	home.help_requested.connect(open_help)
 	add_child(home)
 
 
@@ -74,6 +78,7 @@ func set_language(code: String) -> void:
 func start_flight() -> void:
 	if flight != null:
 		return
+	close_help()
 	for screen in [home, home_scene]:
 		if screen != null:
 			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
@@ -85,6 +90,15 @@ func start_flight() -> void:
 	if flight.session != null:
 		flight.pause_requested.connect(open_pause)
 		_keyboard_reader = flight.session.read_raw
+		if has_home and not preferences.get("first_flight_hint_seen", false):
+			var hint := FirstFlightHint.new(flight.session)
+			hint.done.connect(_on_first_flight_hint_done)
+			flight.add_child(hint) # freed with the flight
+
+
+func _on_first_flight_hint_done() -> void:
+	preferences.first_flight_hint_seen = true
+	Preferences.save_to(preferences_path, preferences) # a failed save only means the hint shows again next time
 
 
 func _notification(what: int) -> void:
@@ -107,6 +121,7 @@ func open_pause() -> void:
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
+	pause_menu.help_requested.connect(open_help)
 	add_child(pause_menu)
 	pause_menu.show_for(session)
 	flight.set_overlays_visible(false)
@@ -114,6 +129,23 @@ func open_pause() -> void:
 
 ## Continue (or Esc): back to the flight. The session decides whether it flies again (never over a crash being
 ## shown, invalid data or a fault); keys still held from the menu stay masked until released.
+## Help over whatever is showing (Home or the pause menu); closing it gives the focus back to `from`.
+func open_help(from: Control = null) -> void:
+	if help != null:
+		return
+	help = HelpScreen.new(from)
+	help.closed.connect(close_help)
+	add_child(help)
+
+
+func close_help() -> void:
+	if help == null:
+		return
+	remove_child(help) # deferred-safe: the Help screen marked its key event handled before asking
+	help.queue_free()
+	help = null
+
+
 func continue_flight() -> void:
 	if pause_menu == null:
 		return
@@ -136,6 +168,7 @@ func restart_flight() -> void:
 func end_flight() -> void:
 	if flight == null or not has_home or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
 		return
+	close_help()
 	if pause_menu != null:
 		remove_child(pause_menu)
 		pause_menu.queue_free()
@@ -154,6 +187,7 @@ func quit_app() -> void:
 
 
 func _close_pause() -> void:
+	close_help()
 	var session: Node = flight.session
 	session.release("menu")
 	flight.set_overlays_visible(true)

@@ -1,7 +1,7 @@
 {
  "format": "openrc-metrology v1",
  "step": "EX-01",
- "picks_sha256": "a07e6f5d151d75c0e2d87b1f59ac3a717c6925d740ebfcf6b979d367b26caeb7",
+ "picks_sha256": "03fa1ebb268d76deb6fa4506674406571c75a9b9bd39cfe7ea2925d61038a08d",
  "scales": {
   "wing_sheet_px_per_in": 399.877,
   "ruler_max_tick_residual_px": 1.0,
@@ -719,6 +719,36 @@
     -0.094408,
     -0.071078,
     -0.192681
+   ]
+  },
+  "pilot": {
+   "cap_top": [
+    0.28946,
+    0.124229
+   ],
+   "cap_brim_front": [
+    0.258192,
+    0.105637
+   ],
+   "nose_front": [
+    0.272559,
+    0.081974
+   ],
+   "head_back": [
+    0.320729,
+    0.098876
+   ],
+   "chin": [
+    0.280164,
+    0.065917
+   ],
+   "shoulder_front": [
+    0.285235,
+    0.060002
+   ],
+   "shoulder_back": [
+    0.328335,
+    0.053241
    ]
   },
   "wheel_pant_y": [

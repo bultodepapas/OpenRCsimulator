@@ -7,12 +7,17 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 const Extra := preload("res://aircraft/extra_300s_model.gd")
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
+const Clearance := preload("res://aircraft/extra_clearance.gd")
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
 const KIT_SPAN_M := 64.0 * 0.0254 # plan title block, 64 in
 const KIT_LENGTH_M := 54.25 * 0.0254 # plan title block, 54-1/4 in (spinner tip to rudder TE assumed)
 const SPAN_TOLERANCE_M := 0.008 # tip block edge read at +/-6 px plus 0.5 % paper/scan allowance
 const LENGTH_TOLERANCE := 0.01 # reserved length check measured +0.67 % in EX-01
+const MINIMUM_GAP_M := 0.0005 # moving surfaces at the manual high rates (measured 1.75 mm, 2026-10-06)
+const BEVEL_TEST_DEG := 45.0 # common 3D rate: beveled hinges must still clear their fixed neighbours
+const BEVEL_PAIRS := ["rudder/fin", "elevator_right/stab", "elevator_left/stab", "aileron_right/wing_right_ahead_of_aileron",
+	"aileron_left/wing_left_ahead_of_aileron", "aileron_right/wing_right_root", "aileron_right/wing_right_tip"]
 
 var _checks := 0
 var _failures := 0
@@ -158,6 +163,41 @@ func _run() -> void:
 		_check("%s has model-space UVs" % m.name, uv.size() == (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size())
 	_check("builder red = appearance red", Extra.RED.is_equal_approx(Color(Finish.A.colors.red)))
 	_check("finish never reads TIME", not Finish.SHADER_CODE.contains("TIME"))
+	# Propeller: tip-to-tip span of the blades in the propeller frame equals the data diameter.
+	var prop_box := AABB()
+	for blade in airplane.propeller.get_children():
+		if blade is MeshInstance3D:
+			var b: AABB = blade.transform * blade.get_aabb()
+			prop_box = b if prop_box.size == Vector3.ZERO else prop_box.merge(b)
+	_check("propeller diameter", absf(prop_box.size.x - float(Geometry.DATA.propeller.diameter)) < 0.002, "%.4f m" % prop_box.size.x)
+	# Pilot inside the canopy: every pilot vertex below the measured canopy line and inside the skin's width.
+	var pilot_node: Node3D = root.find_child("pilot", false, false)
+	var outside := 0
+	var pilot_vertices := 0
+	if pilot_node != null:
+		var pilot_meshes: Array[MeshInstance3D] = []
+		_meshes(pilot_node, pilot_meshes)
+		for m in pilot_meshes:
+			for v in _vertices(m):
+				pilot_vertices += 1
+				var local := root.global_transform.affine_inverse() * v
+				var crown := Extra.monotone(Geometry.DATA.canopy.top, local.z)
+				if local.y > crown - 0.001 or absf(local.x) > Extra.profile(local.z, 1): outside += 1
+	_check("pilot inside the canopy", pilot_vertices > 0 and outside == 0, "%d of %d vertices outside" % [outside, pilot_vertices])
+	var glass: Material = (root.find_child("canopy", false, false) as MeshInstance3D).mesh.surface_get_material(0)
+	var alpha: float = Finish.A.canopy.alpha
+	_check("canopy transparency from appearance.json", (glass as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA and is_equal_approx(glass.albedo_color.a, alpha) if alpha < 1.0 else true)
+	# EX-04: articulation clearances on the posed model (Extra-specific pairs and the manual p43 throws).
+	var throws := Extra.manual_throws_deg()
+	var clear := Clearance.run(airplane, throws)
+	_check("no penetration at the manual high rates", clear.ok, str(clear.failures))
+	_check("moving-surface gap >= %.1f mm" % (MINIMUM_GAP_M * 1000.0), clear.minimum_gap_m >= MINIMUM_GAP_M, "%.2f mm" % (clear.minimum_gap_m * 1000.0))
+	var bevel := Clearance.run(airplane, {aileron = BEVEL_TEST_DEG, elevator = BEVEL_TEST_DEG, rudder = BEVEL_TEST_DEG}, BEVEL_PAIRS)
+	_check("beveled hinges clear at %.0f deg" % BEVEL_TEST_DEG, bevel.ok and bevel.minimum_gap_m >= MINIMUM_GAP_M,
+		"%s, min gap %.2f mm" % [str(bevel.failures), bevel.minimum_gap_m * 1000.0])
+	var rudder_limit := Clearance.rudder_limit_deg(airplane)
+	_check("elevator relief leaves >= 5 deg beyond the manual rudder throw", rudder_limit >= float(throws.rudder) + 5.0, "%.1f deg" % rudder_limit)
+	print("clearance: min gap %.2f mm at manual throws %s; rudder limited to %.1f deg by the elevator relief" % [clear.minimum_gap_m * 1000.0, throws, rudder_limit])
 	print("extra preview: %d meshes, %d triangles, extent %.3f x %.3f x %.3f m" % [meshes.size(), triangles, box.size.x, box.size.y, box.size.z])
 	print("verify_extra: %d checks, %d failures%s" % [_checks, _failures, "" if _failures == 0 else " FAIL"])
 	stik.root.free()
