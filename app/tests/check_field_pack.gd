@@ -24,4 +24,27 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack field validated, SHA-256 ", args[1])
+	var trees: Script = load("res://render/tree_assets.gd")
+	if trees == null or not FileAccess.file_exists("res://assets/landscape/trees/LICENSE.txt"):
+		printerr("Pack has no tree assets adapter/license")
+		quit(1)
+		return
+	var catalog: Dictionary = trees.catalog()
+	if not catalog.ok:
+		printerr("Pack tree catalog rejected: ", catalog.errors)
+		quit(1)
+		return
+	for entry: Dictionary in catalog.catalog.species:
+		var mesh: ArrayMesh = trees.card_mesh(entry.id)
+		if mesh == null:
+			printerr("Missing imported tree asset in pack: ", entry.id)
+			quit(1)
+			return
+		var material: StandardMaterial3D = mesh.surface_get_material(0) as StandardMaterial3D
+		var picture: Image = material.albedo_texture.get_image() if material != null else null
+		if picture == null or picture.get_size() != Vector2i(1024, 1024) or not picture.has_mipmaps():
+			printerr("Pack tree atlas lost its size or mipmaps: ", entry.id)
+			quit(1)
+			return
+	print("Pack tree catalog, imported atlas and license validated")
 	quit(0)

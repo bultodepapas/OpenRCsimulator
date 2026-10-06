@@ -1,0 +1,992 @@
+== import resource dependencies
+== float64 guard: no 32-bit math types in simulation code
+== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
+== parse check: every script
+== test_aero.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+23 checks, 0 failed
+== test_air_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_aircraft_catalog.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default is the Ugly Stik and it is in the catalog  
+ok   four aircraft, unique IDs  ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"]
+ok   unknown ID: no entry, cannot fly  
+ok   step wraps both ways  
+ok   the render adapter knows every catalog ID by the same name  
+ok   jensen-das-ugly-stik-60: builds root/propeller/hinges  
+ok   jensen-das-ugly-stik-60: surfaces deflect and return through the shared adapter  
+ok   jensen-das-ugly-stik-60: data loads  
+ok   jensen-das-ugly-stik-60: the data file is this aircraft (id matches)  jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   jensen-das-ugly-stik-60: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   gp-extra-300s-60: builds root/propeller/hinges  
+ok   gp-extra-300s-60: surfaces deflect and return through the shared adapter  
+ok   gp-extra-300s-60: data loads  
+ok   gp-extra-300s-60: the data file is this aircraft (id matches)  gp-extra-300s-60
+ok   gp-extra-300s-60: span of the built model matches the data within 1 %  model 1.6236 m, data 1.6256 m
+ok   gp-extra-300s-60: CG lands on the root chord in the visual model  model point (0.0, -0.024345, 0.0), LE z -0.1088, chord 0.3885
+ok   p51d-mustang-120: builds root/propeller/hinges  
+ok   p51d-mustang-120: surfaces deflect and return through the shared adapter  
+ok   p51d-mustang-120: data loads  
+ok   p51d-mustang-120: the data file is this aircraft (id matches)  p51d-mustang-120
+ok   p51d-mustang-120: span of the built model matches the data within 1 %  model 2.8225 m, data 2.8200 m
+ok   p51d-mustang-120: CG lands on the root chord in the visual model  model point (0.0, -0.075837, 0.177848), LE z 0.0000, chord 0.6664
+ok   sebart-avanti-s-a200-p100rx: builds root/propeller/hinges  
+ok   sebart-avanti-s-a200-p100rx: surfaces deflect and return through the shared adapter  
+ok   sebart-avanti-s-a200-p100rx: preview has no data and cannot fly  
+ok   sebart-avanti-s-a200-p100rx: preview has no spinning propeller  
+ok   Extra: CG at the model's CG station (manual 4-1/8 in at rib 2D) within 1 mm  z 0.00000 m
+ok   Extra: physics throws = the model's manual high rates  { "aileron": 17.600665, "elevator": 23.921943, "rudder": 30.026071 } vs { &"aileron": 17.6006649098975, &"elevator": 23.92194317248, &"rudder": 30.0260709855021 }
+ok   Extra: tapered wing roots = measured geometry  
+ok   Extra: equal-area strips move inboard on the tapered wing  outer strip at 0.638 m of 0.813
+ok   flight scene: Extra model and Extra physics together  
+ok   flight scene: trimmed at the Extra's start speed  17.0
+ok   flight scene: trace header names the Extra and its speed  trimmed level flight (engine running) across view at 17.0 m/s (D5: six-axis trim, calm air)
+34 checks, 0 failed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_aircraft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+51 checks, 0 failed
+== test_atmosphere.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+27 checks, 0 failed
+== test_build_info.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   parse "v0.1.0-rc2" -> 0.1.0-rc2
+ok   parse "v0.1.0-rc2-5-gabc1234" -> 0.1.0-rc2+5.gabc1234
+ok   parse "v0.1.0-rc2-5-gabc1234-dirty" -> 0.1.0-rc2+5.gabc1234.dirty
+ok   parse "v0.1.0-rc2-dirty" -> 0.1.0-rc2+dirty
+ok   parse "v1.2.3" -> 1.2.3
+ok   parse "v0.2.0-rc.10-12-g0123456789ab" -> 0.2.0-rc.10+12.g0123456789ab
+ok   parse "ee1f7d6" -> 0.1.0+gee1f7d6
+ok   parse "ee1f7d6-dirty" -> 0.1.0+gee1f7d6.dirty
+ok   parse "export-manual" -> 0.1.0+export-manual
+ok   parse "main" -> 0.1.0+main
+ok   parse "" -> 0.1.0
+ok   source tree: development build, numeric version from project.godot (0.1.0)
+ok   exported: label is the SemVer of the describe
+ok   a file of another format is ignored (development)
+all build info checks passed
+== test_controls.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+17 checks, 0 failed
+== test_controls_reference.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   found the stick keys in keyboard.gd (8)
+ok   found the shortcuts in main.gd (12)
+ok   every handled key is in the Help tables
+ok   every key in the Help tables is handled
+ok   first-flight hint: at most 3 items, keys from the tables
+all controls reference checks passed
+== test_crash.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   level at 0.30 m: clear of the ground  
+ok   level at 0.20 m: the wheels touch  
+ok   inverted at 0.35 m: clear  
+ok   inverted at 0.20 m: the fin touches  
+ok   knife edge at 0.70 m: the down wing tip touches  
+ok   knife edge at 0.85 m: clear  
+ok   vertical dive at 0.30 m: the spinner touches  
+CRASH at 11.3 m/s (sink 10.1 m/s) - restarting
+CRASH at 11.9 m/s (sink 6.3 m/s) - restarting
+CRASH at 16.7 m/s (sink 10.3 m/s) - restarting
+CRASH at 17.4 m/s (sink 10.1 m/s) - restarting
+CRASH at 21.8 m/s (sink 7.7 m/s) - restarting
+CRASH at 16.3 m/s (sink 13.0 m/s) - restarting
+CRASH at 12.1 m/s (sink 7.6 m/s) - restarting
+CRASH at 13.9 m/s (sink 4.0 m/s) - restarting
+CRASH at 7.9 m/s (sink 7.7 m/s) - restarting
+CRASH at 22.8 m/s (sink 11.0 m/s) - restarting
+CRASH at 15.3 m/s (sink 8.9 m/s) - restarting
+CRASH at 11.9 m/s (sink 4.2 m/s) - restarting
+CRASH at 16.3 m/s (sink 13.0 m/s) - restarting
+CRASH at 18.5 m/s (sink 13.3 m/s) - restarting
+CRASH at 13.5 m/s (sink 5.7 m/s) - restarting
+CRASH at 14.2 m/s (sink 5.4 m/s) - restarting
+CRASH at 19.3 m/s (sink 6.4 m/s) - restarting
+CRASH at 12.8 m/s (sink 8.0 m/s) - restarting
+CRASH at 9.8 m/s (sink 6.1 m/s) - restarting
+CRASH at 18.1 m/s (sink 6.6 m/s) - restarting
+CRASH at 14.4 m/s (sink 6.9 m/s) - restarting
+CRASH at 8.6 m/s (sink 5.2 m/s) - restarting
+CRASH at 11.2 m/s (sink 8.8 m/s) - restarting
+CRASH at 13.9 m/s (sink 5.5 m/s) - restarting
+CRASH at 16.2 m/s (sink 11.8 m/s) - restarting
+CRASH at 21.0 m/s (sink 10.8 m/s) - restarting
+CRASH at 22.9 m/s (sink 13.3 m/s) - restarting
+CRASH at 19.7 m/s (sink 11.6 m/s) - restarting
+CRASH at 22.5 m/s (sink 10.1 m/s) - restarting
+CRASH at 21.5 m/s (sink 13.1 m/s) - restarting
+CRASH at 19.1 m/s (sink 11.2 m/s) - restarting
+CRASH at 15.7 m/s (sink 6.8 m/s) - restarting
+CRASH at 11.6 m/s (sink 10.3 m/s) - restarting
+CRASH at 13.4 m/s (sink 9.1 m/s) - restarting
+CRASH at 13.4 m/s (sink 11.1 m/s) - restarting
+CRASH at 13.6 m/s (sink 13.0 m/s) - restarting
+CRASH at 15.3 m/s (sink 11.6 m/s) - restarting
+CRASH at 12.2 m/s (sink 10.9 m/s) - restarting
+CRASH at 14.6 m/s (sink 11.1 m/s) - restarting
+CRASH at 13.6 m/s (sink 11.0 m/s) - restarting
+CRASH at 14.5 m/s (sink 7.4 m/s) - restarting
+CRASH at 20.1 m/s (sink 11.9 m/s) - restarting
+CRASH at 11.3 m/s (sink 6.0 m/s) - restarting
+CRASH at 15.1 m/s (sink 13.7 m/s) - restarting
+CRASH at 18.4 m/s (sink 6.6 m/s) - restarting
+CRASH at 20.3 m/s (sink 11.6 m/s) - restarting
+CRASH at 11.7 m/s (sink 6.9 m/s) - restarting
+CRASH at 18.3 m/s (sink 8.3 m/s) - restarting
+CRASH at 19.8 m/s (sink 14.6 m/s) - restarting
+CRASH at 19.4 m/s (sink 6.4 m/s) - restarting
+CRASH at 15.6 m/s (sink 13.7 m/s) - restarting
+CRASH at 21.2 m/s (sink 9.6 m/s) - restarting
+CRASH at 19.0 m/s (sink 8.2 m/s) - restarting
+CRASH at 13.1 m/s (sink 9.9 m/s) - restarting
+CRASH at 15.0 m/s (sink 14.3 m/s) - restarting
+CRASH at 24.0 m/s (sink 12.0 m/s) - restarting
+CRASH at 21.5 m/s (sink 11.1 m/s) - restarting
+CRASH at 8.3 m/s (sink 6.6 m/s) - restarting
+CRASH at 18.2 m/s (sink 7.8 m/s) - restarting
+CRASH at 14.7 m/s (sink 14.3 m/s) - restarting
+CRASH at 15.2 m/s (sink 10.6 m/s) - restarting
+CRASH at 14.1 m/s (sink 8.5 m/s) - restarting
+CRASH at 20.6 m/s (sink 11.7 m/s) - restarting
+CRASH at 17.7 m/s (sink 12.3 m/s) - restarting
+CRASH at 17.8 m/s (sink 10.0 m/s) - restarting
+CRASH at 11.4 m/s (sink 11.1 m/s) - restarting
+CRASH at 10.3 m/s (sink 6.4 m/s) - restarting
+CRASH at 11.7 m/s (sink 6.6 m/s) - restarting
+CRASH at 5.8 m/s (sink 5.1 m/s) - restarting
+CRASH at 9.4 m/s (sink 7.1 m/s) - restarting
+CRASH at 13.9 m/s (sink 5.2 m/s) - restarting
+CRASH at 15.0 m/s (sink 10.5 m/s) - restarting
+CRASH at 9.6 m/s (sink 5.6 m/s) - restarting
+CRASH at 20.1 m/s (sink 12.8 m/s) - restarting
+CRASH at 9.2 m/s (sink 4.3 m/s) - restarting
+CRASH at 9.0 m/s (sink 7.2 m/s) - restarting
+CRASH at 18.8 m/s (sink 14.7 m/s) - restarting
+CRASH at 21.3 m/s (sink 7.3 m/s) - restarting
+CRASH at 10.1 m/s (sink 8.8 m/s) - restarting
+CRASH at 13.3 m/s (sink 8.3 m/s) - restarting
+CRASH at 23.8 m/s (sink 3.9 m/s) - restarting
+CRASH at 15.4 m/s (sink 10.5 m/s) - restarting
+CRASH at 16.5 m/s (sink 12.1 m/s) - restarting
+CRASH at 7.9 m/s (sink 6.3 m/s) - restarting
+CRASH at 17.4 m/s (sink 13.1 m/s) - restarting
+CRASH at 10.3 m/s (sink 8.9 m/s) - restarting
+CRASH at 12.2 m/s (sink 6.8 m/s) - restarting
+CRASH at 16.3 m/s (sink 5.2 m/s) - restarting
+CRASH at 27.4 m/s (sink 16.8 m/s) - restarting
+CRASH at 19.2 m/s (sink 11.3 m/s) - restarting
+CRASH at 11.7 m/s (sink 4.6 m/s) - restarting
+CRASH at 12.8 m/s (sink 5.9 m/s) - restarting
+CRASH at 12.1 m/s (sink 8.5 m/s) - restarting
+CRASH at 20.3 m/s (sink 9.3 m/s) - restarting
+CRASH at 20.6 m/s (sink 11.4 m/s) - restarting
+CRASH at 10.2 m/s (sink 9.5 m/s) - restarting
+CRASH at 12.4 m/s (sink 6.5 m/s) - restarting
+CRASH at 15.4 m/s (sink 11.3 m/s) - restarting
+CRASH at 18.3 m/s (sink 13.0 m/s) - restarting
+CRASH at 14.4 m/s (sink 11.5 m/s) - restarting
+ok   100 random crashes: detected, impact finite and shown, then restart at the trimmed start  
+CRASH at 10.0 m/s (sink 0.0 m/s) - restarting
+ok   crash freeze = 1.5 s (360 ticks)  360 ticks
+CRASH at 10.0 m/s (sink 0.0 m/s) - restarting
+ok   R during the freeze restarts at once  
+10 checks, 0 failed
+== test_dynamics.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   shared loads equal manual aero + propulsion evaluation 
+ok   shared derivative equals manual rigid-body derivative including rotor momentum 
+ok   shared evaluation reports its explicit air/load/rotor context 
+ok   15 m/s level trim exists trimmed
+ok   flight modes expose the full 8×8 Jacobian 
+ok   existing longitudinal and lateral modes use explicit 4×4 projections 
+ok   full Jacobian retains the rotor q→r gyroscopic coupling ΔA[ṙ,q] 0.3921136560787156 vs J⁻¹(0,0,h)z 0.39211365607871557
+7 checks, 0 failed
+== test_e2e_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   hold -> roll +1, aileron +20°
+ok   release -> stick re-centers, aileron back to trim
+ok   throttle rose and holds after release
+ok   reset -> throttle back to its trimmed setting
+ok   physics: trimmed level flight holds altitude hands-off
+ok   physics: throttle back → descends
+ok   physics: R restarts at 30 m
+CRASH at 15.0 m/s (sink 0.0 m/s) - restarting
+ok   physics: ground contact → CRASH shown
+ok   physics: restarts by itself after the crash
+ok   L0d: sim_clock = simulation time mod 1024 at three ticks
+ok   T: recording shows in the panel
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-06T03-13-59.csv (121 rows)
+ok   T again: trace saved with ~0.5 s of ticks
+all e2e checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_e2e_radio.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   starts on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   radio connected with its device key
+ok   untouched throttle (reads mid-stick) keeps the engine at idle
+ok   panel says SAFE
+ok   throttle moved to 60 %: still SAFE
+ok   throttle low: ARMED
+ok   armed: full throttle
+ok   roll stick full right → +1 at once (radio positions are not rate-limited)
+ok   the simulation flies it (stick + trim, clamped)
+ok   elevator stick forward → pitch −1 (nose down)
+failsafe: radio disconnected
+ok   unplug: simulation paused
+ok   unplug: engine idle, sticks centred
+ok   unplug: panel says why
+ok   unplug: stays paused (no automatic resume)
+ok   P resumes on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   replug with the throttle stick high: SAFE, idle
+failsafe: calibrating radio
+ok   K starts the calibration (paused, step 1)
+radio calibrated: fake|1209:4f54|Fake EdgeTX
+ok   calibrated: aileron axis 3, rudder axis 0, elevator inverted
+ok   calibration saved for this device
+ok   after calibration: axis 3 flies the ailerons; armed by the low throttle
+failsafe: radio disconnected
+radio connected: fake|1209:4f54|Fake EdgeTX (calibrated profile)
+ok   replug loads the saved calibration
+failsafe: calibrating radio
+ok   Esc cancels; the calibration stays
+all e2e radio checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_engine_sound.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+7 checks, 0 failed
+== test_envelope.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   oracle: small local wing AND tail angles including deflection → loads identical to the linear model (500 states)  
+ok   tip stall: 9 m/s, α 7°, rolling 3 rad/s → the right tip is past the stall (loads differ)  
+ok   every α and β: finite coefficients  
+ok   continuous: largest change per 0.1° < 0.05  0.0213
+ok   lift peaks at CL_max 1.10 inside the blend  1.0999 at 12.7°
+ok   negative lift bottoms at CL_min -0.80  -0.8000
+ok   stall starts outside the ±8° oracle region  +12.1° / −10.9°
+ok   α 90°: flat-plate drag CD0 + CD90, ~no lift, strong nose-down moment  { &"CL": 0.0, &"CD": 1.2434, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.7508, &"Cn": 0.0 }
+ok   tail first (α 180°): pitch equilibrium is unstable (Cm grows with α)  -0.0423 → -0.0278
+ok   knife edge (β 90°): weathervane and side force still there  { &"CL": 0.1068, &"CD": 0.04463692638362, &"CY": -0.4889, &"Cl": -0.0545, &"Cm": -0.0278, &"Cn": 0.12142374219627 }
+ok   refused: CL_max 0.6 would stall inside the oracle region  ["aero.envelope.CD90 = 1.2: the flat plate (peak CD90/2) must lift less than the stall limits", "aero.envelope: the stall blend would start at +5.6° / -10.9°, inside the ±8° linear-oracle region (raise CL_max / CL_min or narrow the blend)"]
+ok   refused: no envelope  
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   full envelope: flown stall within 5% of 1-g CL_max speed 9.51  9.49 m/s
+ok   linear oracle: holds altitude below 90% of physical CL_max speed (unphysical)  8.21 m/s
+ok   tail slide at −8 m/s: 3 s of flight stay finite  [-0.49617086463547, -2.580289300825, -17.0415891864018, 24.0257594739537, -0.6431445704602, 1.44928560078848, 0.88414692260073, -0.05575726929148, -0.43217655951772, -0.16851933889095, 0.25720294483515, 0.70504744812722, 0.01968330898081]
+15 checks, 0 failed
+== test_extra_handling.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Extra data loads and trims at its own start speed  17.0
+ok   hands-off 30 s: finite  
+ok   hands-off 30 s: altitude within 1 m, speed within 0.2 m/s  Δalt 0.0000 m, Δspeed -0.00000 m/s
+ok   coordinated roll at 17 m/s: 209°/s ± 7 % (single-axis prediction)  213.0°/s
+ok   coordinated roll at 22 m/s: 271°/s ± 7 % (single-axis prediction)  265.5°/s
+ok   inside loop at 0.3 stick: 360° of pitch within 6 s, finite  525° (4.6 s)
+ok   inside loop: faster than the 1-g stall speed over the top  min 18.0 m/s (1-g stall 10.3)
+ok   full high-rate up elevator at 20 m/s stalls the wing, finite  α max 47.4° (stall start 13.3°)
+ok   full-up power-off: α passes the stall start, finite  α max 51.6° (stall start 13.3°)
+ok   spin: right rudder + full up yaws right  r max 1.48 rad/s
+ok   spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite  0.08 rad/s
+ok   spin: still above the ground at the end (the check is not measured underground)  79 m
+12 checks, 0 failed
+== test_field_integration.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field file is readable
+ok   loader accepts intentional rough/mown/runway overlap
+ok   builder leaves normalized input unchanged
+ok   builder creates one named mesh per surface
+ok   field builder owns no camera, environment, session or collision nodes
+ok   rectangles use east-west length and north-south width
+ok   overlap layering gives rough < mown < runway
+ok   rough grass and mown strip materials are selected by surface type
+ok   overlapping mown surfaces remain separate matte resources
+ok   two builds create independent trees, meshes, materials and grass textures
+ok   custom field copy is derived from the default
+ok   write only the user:// custom field copy
+ok   customized field copy remains valid
+ok   save test-only preferences
+ok   interactive route opens Home with no flight
+ok   Home built the field from the injected file
+ok   Home composition follows the custom pilot station and eye height
+ok   Home consumes custom runway center and dimensions
+ok   Home initially focuses Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   activating Home Fly creates the flight
+ok   flight built the same custom field geometry and materials
+ok   Home and flight hold separate field trees and mutable resources
+ok   transition leaves exactly one field, camera and WorldEnvironment
+ok   the flight camera and environment are the active ones
+ok   the flight owns exactly one session
+ok   Home nodes are gone after the transition
+ok   custom pilot station and eye height reach the flight camera metadata
+ok   camera aim uses custom pilot coordinates and eye height
+ok   review camera defaults to the field's eye height
+ok   review altitude override stays above the field's pilot station
+ok   app did not mutate either field JSON file
+ok   field error screen shows every validation detail
+ok   field error screen focuses its Quit button
+ok   English error title is available
+ok   imported Spanish field error strings translate
+ok   error panel controls render the Spanish title and Quit label
+ok   the repository default field JSON was never changed
+ok   the app only read the temporary customized field JSON
+all field integration checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_field_loader.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+158 checks, 0 failed
+== test_frame_samples.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   frametime defaults are 1 s warm-up and 20 s sample
+ok   custom finite warm-up and duration parse
+ok   logger stays disabled without its path
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   10 s warm-up config accepted
+ok   warm-up crossing frame accepted but excluded
+ok   logger waits for the next whole frame
+ok   first full post-warm-up frame recorded
+ok   terminal whole frame recorded
+ok   actual warm-up moves past a warm-up stall
+ok   full sampled frames exclude the warm-up stall
+ok   actual whole-frame sample end is reported
+ok   short aggregation config accepted
+ok   first aggregation frame accepted
+ok   second aggregation frame accepted
+ok   final frame completes at the whole-frame boundary
+ok   versioned format and legacy summary fields remain
+ok   legacy summary now aggregates monotonic wall time
+ok   engine delta has separate aggregate and percentile channel
+ok   raw frame arrays preserve exact wall intervals
+ok   per-frame simulation and performance metrics are retained
+ok   actual start and end differ from requested duration only by whole frame overrun
+ok   valid report writes successfully
+ok   written JSON round-trips raw samples
+ok   directory write failure is returned to the caller
+ok   zero sample duration rejected by helper
+ok   invalid metrics sample config accepted
+ok   first frame establishes contiguous clock
+ok   discontinuous monotonic interval rejected
+ok   metric schema config accepted
+ok   first metric shape accepted
+ok   changing raw metric shape rejected
+43 checks, 0 failed
+== test_frames.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+18 checks, 0 failed
+== test_golden.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   golden roll_15 replays (600 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 5.551115123125783e-17, rate 2.220446049250313e-16 rad/s
+ok   golden pull_throttle replays (720 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 5.551115123125783e-17, rate 2.7755575615628914e-17 rad/s
+ok   golden rudder_doublet replays (720 ticks): worst error: position 1.4210854715202004e-14 m, velocity 1.7763568394002505e-15 m/s, attitude 3.3306690738754696e-16, rate 4.440892098500626e-16 rad/s
+ok   golden glide_15 replays (1200 ticks): worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 8.673617379884035e-18, rate 2.0194839173657902e-28 rad/s
+4 golden flights, 0 failed
+== test_gyro.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   rotor angular momentum at full rpm ≈ 0.41 N·m·s  0.4086
+ok   pull up (q > 0), clockwise prop → nose yaws RIGHT (ṙ > 0)  Δṙ 0.845 rad/s²
+ok   size: Δω̇ = J⁻¹·(0, 0, q·h)  
+ok   yaw right (r > 0), clockwise prop → nose pitches DOWN (q̇ < 0)  Δq̇ -1.058 rad/s²
+ok   torque-free tumble with the rotor: total angular momentum conserved to 1e-6 over 60 s  4.171457206637082e-11
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flown pull-up at full throttle: yaw rate more to the right with the gyro  r -0.062 vs -0.138 rad/s
+6 checks, 0 failed
+== test_handling.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   trim α at 15 m/s within 4.26° ± 0.5  4.26°
+ok   hands-off 5 s: altitude and speed hold  Δalt 0 m
+ok   roll_15 coordinated: roll rate 144°/s ± 7 % (single-axis prediction)  144.9°/s
+ok   roll_15 feet still: adverse yaw slows roll; coordination reduces sideslip  129.2°/s (89 % of coordinated)
+ok   roll_20 coordinated: roll rate 192°/s ± 7 % (single-axis prediction)  189.9°/s
+ok   roll_20 feet still: adverse yaw slows roll; coordination reduces sideslip  183.5°/s (97 % of coordinated)
+ok   glide L/D at 15 m/s = 9.11 ± 2 %  L/D 9.11
+ok   pull + throttle: climbs  28.5 m
+ok   right rudder first: yaw rate goes right first  1.24 rad/s
+9 checks, 0 failed
+== test_integrator.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   free fall: ½gt² after 10 s err 5.286437954055145e-12 m
+ok   tilted fall stays vertical drift 3.2376299394153163e-12 m
+ok   constant force: ½at² err -3.836930773104541e-13 m
+ok   spin 60 s: energy conserved worst rel 3.480865527503368e-12
+ok   spin 60 s: world angular momentum conserved worst rel 9.50327010917384e-11
+ok   quaternion stays unit 
+ok   stress case really flips 
+ok   4th-order convergence errors 5.236970999078494e-07 3.3002987009922435e-08 2.0708714743022938e-09, ratios 15.9 15.9
+ok   speed ≥ 20× real time at 240 Hz 47× (2400 steps in 0.212 s, 88.3 µs/step)
+9 checks, 0 failed
+== test_math3d.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_modes.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+34 checks, 0 failed
+== test_p51_handling.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   P-51 data loads and trims at its own start speed  22.0 trimmed
+ok   data id  p51d-mustang-120
+ok   giant-scale mass and span  18.21 kg, 2.820 m
+ok   trim throttle leaves a climb reserve (below 85 %)  57 %
+ok   trim elevator within half the throw  0.12512763854947
+ok   hands-off 30 s: finite  
+ok   hands-off 30 s: altitude within 2 m, speed within 0.3 m/s  Δalt 0.0000 m, Δspeed -0.00000 m/s
+ok   coordinated roll at 22 m/s: 99°/s ± 7 % (single-axis prediction)  100.0°/s
+ok   coordinated roll at 27 m/s: 121°/s ± 7 % (single-axis prediction)  118.1°/s
+ok   inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  1066° (4.6 s)
+ok   inside loop: faster than the 1-g stall speed over the top  min 22.9 m/s (1-g stall 13.6)
+ok   full-up power-off: α passes the stall start, finite  α max 33.8° (stall start 12.0°)
+ok   spin: right rudder + full up yaws right  r max 1.19 rad/s
+ok   spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite  0.19 rad/s
+ok   spin: still above the ground at the end  82 m
+15 checks, 0 failed
+== test_physical_envelope.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+passive neutral aero: 0 / 925 states add energy; worst -42.862 W
+continuity across reversed flow: PASS
+seeded fixed-control envelope: 0/5000 positive power; finite=true
+rudder force and moments share the declared physical lever: true
+== test_pilot_aids.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+22 checks, 0 failed
+== test_propulsion.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data with propulsion loads []
+ok   static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N 41.25 N
+ok   T/W ≈ 1.46 (balanced virtual reference build) 1.46
+ok   static power balance closes 974 W
+ok   Ct at a knot 
+ok   Ct between knots 
+ok   Ct for J < 0 = static 
+ok   Ct beyond the data goes negative (windmill drag), floored -0.04781904761905
+ok   thrust falls with airspeed 41.3 > 32.6 > 4.7 N
+ok   past zero-thrust speed the prop drags -8.49 N at 50 m/s
+ok   power rolls the airplane left (Mx < 0) -0.834 N·m
+ok   stopped engine: no loads 
+ok   63.2 % of the step after τ 0.6321
+ok   lag is exact: 60 small steps = 1 big step 8077.574546 vs 8077.574546
+ok   throttle 0 → idle, throttle clamps 
+ok   finite at any airspeed 
+16 checks, 0 failed
+== test_rc_calibration.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+18 checks, 0 failed
+== test_rc_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+41 checks, 0 failed
+== test_rigid_body.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+14 checks, 0 failed
+== test_rudder_authority.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   right-first reference doublet completes without a simulation fault 
+ok   right-first reference doublet records every tick 721 rows, expected 721; sim tick 720
+ok   right-first reference doublet state, loads and commands stay finite βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   right-first doublet moves the real rudder both ways δr right 24.34°, left -25.00°
+ok   right-first doublet yaws in both commanded directions right-phase r 51.21°/s, left-phase r -86.82°/s
+ok   reference doublet |β| peak ≤25° (estimated screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   reference doublet |r| peak ≤120°/s (estimated screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+RUDDER_REFERENCE 15 m/s, 240 Hz: βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   restoring the audited borrowed Cndr makes the reference test reject the old authority legacy Cndr -0.18110; βpk 36.19° RMS 19.57°, rpk 149.16°/s RMS 70.34°/s, ppk 59.07°/s, αpk 8.04°, rollpk 18.00°, altitude 27.28–30.03 m (Δpk 2.72 m), rpm pk 5169, r@3s -36.84°/s, rfinal -36.84°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   left-first reverse doublet completes without a simulation fault 
+ok   left-first reverse doublet records every tick 721 rows, expected 721; sim tick 720
+ok   left-first reverse doublet state, loads and commands stay finite βpk 19.86° RMS 9.67°, rpk 86.08°/s RMS 39.32°/s, ppk 54.40°/s, αpk 6.11°, rollpk 20.97°, altitude 29.53–30.22 m (Δpk 0.47 m), rpm pk 5174, r@3s 3.78°/s, rfinal 3.78°/s
+ok   left-first doublet produces left then right yaw response δr left -25.00°, right 24.34°; phase r -52.22°/s then 84.92°/s
+ok   mirrored reference doublet respects the same authority/recovery screens βpk 19.86° RMS 9.67°, rpk 86.08°/s RMS 39.32°/s, ppk 54.40°/s, αpk 6.11°, rollpk 20.97°, altitude 29.53–30.22 m (Δpk 0.47 m), rpm pk 5174, r@3s 3.78°/s, rfinal 3.78°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   reference doublet at 480 Hz completes without a simulation fault 
+ok   reference doublet at 480 Hz records every tick 1441 rows, expected 1441; sim tick 1440
+ok   reference doublet at 480 Hz state, loads and commands stay finite βpk 19.92° RMS 9.81°, rpk 87.83°/s RMS 39.71°/s, ppk 54.57°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.94°/s, rfinal -4.94°/s
+ok   dt/2 converges: β peak ≤0.25°, r peak ≤1°/s, final r ≤0.5°/s apart Δβ 0.000°, Δrpk 0.004°/s, Δrfinal 0.076°/s; 240 Hz [βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s]; 480 Hz [βpk 19.92° RMS 9.81°, rpk 87.83°/s RMS 39.71°/s, ppk 54.57°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.94°/s, rfinal -4.94°/s]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   full rudder held for 2 s remains finite in both directions 2 direction cases
+ok   retrimming glide at 15 m/s with rudder pulses remains finite in both directions 2 direction cases; engine rpm pk 0
+ok   amplitude/duration/speed sweep stays finite in both rudder directions 14 cases; βpk 18.05° RMS 7.20°, rpk 52.22°/s RMS 22.16°/s, αpk 7.59°, speed 11.97–20.00 m/s
+RUDDER_SWEEP finite-only: 14 cases, βpk 18.05° RMS 7.20°, rpk 52.22°/s RMS 22.16°/s, αpk 7.59°, speed 11.97–20.00 m/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard D reaches right rudder and right yaw βpk 16.40° RMS 10.36°, rpk 49.87°/s RMS 33.39°/s, ppk 53.92°/s, αpk 5.59°, rollpk 16.03°, altitude 30.00–30.05 m (Δpk 0.05 m), rpm pk 5174, r@3s unavailable, rfinal -8.89°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard A reaches left rudder and left yaw βpk 16.21° RMS 10.18°, rpk 50.89°/s RMS 33.77°/s, ppk 53.84°/s, αpk 6.01°, rollpk 16.21°, altitude 30.00–30.12 m (Δpk 0.12 m), rpm pk 5174, r@3s unavailable, rfinal 10.19°/s
+ok   traces shorter than 3 s leave the 3 s recovery sample unavailable keyboard trace duration 0.75 s; r@3s remains unavailable
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003d|Fake EdgeTX (default profile)
+failsafe: radio disconnected
+ok   simulated radio path reaches right rudder with finite flight data βpk 17.23° RMS 11.49°, rpk 51.10°/s RMS 34.98°/s, ppk 54.84°/s, αpk 6.12°, rollpk 17.02°, altitude 29.99–30.03 m (Δpk 0.03 m), rpm pk 5096, r@3s unavailable, rfinal -21.81°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003e|Test Gamepad (gamepad profile)
+failsafe: radio disconnected
+ok   simulated gamepad path reaches left rudder with finite flight data βpk 11.96° RMS 8.02°, rpk 35.49°/s RMS 24.77°/s, ppk 37.06°/s, αpk 5.43°, rollpk 11.12°, altitude 30.00–30.02 m (Δpk 0.02 m), rpm pk 5174, r@3s unavailable, rfinal 23.26°/s
+26 checks, 0 failed
+== test_servo.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+6 checks, 0 failed
+== test_session_guards.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   untrimmable fixture was written
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   untrimmable reload is rejected  reload failed; previous aircraft and flight retained: trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   rejected reload preserves the active model
+ok   rejected reload preserves start and trims
+ok   rejected reload preserves current and previous state
+ok   rejected reload preserves tick and pause status
+ok   session exposes a runtime fault and pauses
+ok   session resume cannot bypass a runtime fault
+trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   untrimmable initial aircraft has no accepted start
+ok   untrimmable initial aircraft stays paused
+ok   initial failure states the trim problem  trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   resume cannot bypass an invalid initial trim
+ok   direct stepping cannot bypass an invalid initial trim
+ok   invalid initial start is inert instead of a thrown flight
+ok   simulation accepts a valid initial state
+ok   nonfinite loads pause at the last valid state
+ok   nonfinite loads expose a readable fault  step rejected: aircraft returned nonfinite or malformed loads
+ok   numerical fault cannot be resumed without a valid reset
+ok   explicit valid reset clears the simulation fault
+ok   nonfinite k2 loads roll back the full tick  calls 3, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k3 loads roll back the full tick  calls 4, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k4 loads roll back the full tick  calls 5, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite auxiliary state rolls back and pauses
+ok   nonfinite pre-step auxiliary output rolls back and pauses
+ok   nonfinite current state restores the last valid state
+ok   degenerate quaternion reset is rejected
+ok   rejected quaternion reset retains valid state and pauses
+ok   nonfinite quaternion reset is rejected
+ok   nonfinite quaternion keeps the last valid state
+ok   inverted flight and high angular rates are not faulted by themselves
+ok   valid mass and inertia changes after reset use current values  u 15.008333333, p 0.004166667
+31 checks, 0 failed
+== test_shader_clock.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+7 checks, 0 failed
+== test_simulation.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_spin.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stalled (α 16°), no rotation: no stall roll or yaw moment  { &"CL": 0.61681504435107, &"CD": 0.14002031093278, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.22833887603416, &"Cn": 0.0 }
+ok   α 5°: roll damping = the linear oracle's (attached flow at every strip)  -0.451322 vs -0.451322 (Clp -0.4496)
+ok   α 13.5° (stall break): roll damping turns positive → autorotation  0.741
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   symmetric airplane: stalls (α > 20°) without rolling (< 0.5°)  α max 34°, roll max 0.00°
+ok   inventory airplane (Jxy -0.0095): asymmetry produces more roll than symmetric inertia  roll max 7°
+ok   cross-controlled stall sustains right autorotation over 2.5–4 s (>1 rad/s engineering screen)  1.48 rad/s
+ok   autorotation descends (potential energy feeds rotation)  14.4 m/s
+ok   standard recovery (opposite rudder, forward stick, 0.9 s): rotation stopped and stays stopped from 6 s  
+8 checks, 0 failed
+CRASH at 20.5 m/s (sink -9.7 m/s) - restarting
+== test_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+19 checks, 0 failed
+== test_tree_assets.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   catalog loads and validates
+ok   catalog format is openrc-tree-assets v1
+ok   catalog covers exactly the three baked species
+ok   catalog atlas is 1024 square with 512 tiles
+ok   catalog alpha cutoff is 0.5
+ok   catalog includes CommonTree_1
+ok   CommonTree_1 uses its canonical atlas slot
+ok   CommonTree_1 has a positive frame size and 0.5 m pivot
+ok   CommonTree_1 catalog entry has no runtime scene reference
+ok   catalog includes CommonTree_3
+ok   CommonTree_3 uses its canonical atlas slot
+ok   CommonTree_3 has a positive frame size and 0.5 m pivot
+ok   CommonTree_3 catalog entry has no runtime scene reference
+ok   catalog includes Pine_1
+ok   Pine_1 uses its canonical atlas slot
+ok   Pine_1 has a positive frame size and 0.5 m pivot
+ok   Pine_1 catalog entry has no runtime scene reference
+ok   atlas loads as a texture
+ok   atlas dimensions match catalog
+ok   atlas import has mipmaps
+ok   CommonTree_1 atlas tile contains transparent pixels
+ok   CommonTree_1 atlas tile contains opaque pixels
+ok   CommonTree_3 atlas tile contains transparent pixels
+ok   CommonTree_3 atlas tile contains opaque pixels
+ok   Pine_1 atlas tile contains transparent pixels
+ok   Pine_1 atlas tile contains opaque pixels
+ok   CommonTree_1 card mesh builds
+ok   CommonTree_1 card has exactly one surface
+ok   CommonTree_1 three crossed quads have six triangles
+ok   CommonTree_1 card frame is centered on its catalog pivot
+ok   CommonTree_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_1 bounds include all three rotated planes
+ok   CommonTree_1 card repeats full tile UVs with half-texel inset
+ok   CommonTree_1 card material uses lit alpha scissor at 0.5
+ok   CommonTree_1 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_1 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_1 card mesh and material are per-call resources
+ok   CommonTree_3 card mesh builds
+ok   CommonTree_3 card has exactly one surface
+ok   CommonTree_3 three crossed quads have six triangles
+ok   CommonTree_3 card frame is centered on its catalog pivot
+ok   CommonTree_3 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_3 bounds include all three rotated planes
+ok   CommonTree_3 card repeats full tile UVs with half-texel inset
+ok   CommonTree_3 card material uses lit alpha scissor at 0.5
+ok   CommonTree_3 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_3 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_3 card mesh and material are per-call resources
+ok   Pine_1 card mesh builds
+ok   Pine_1 card has exactly one surface
+ok   Pine_1 three crossed quads have six triangles
+ok   Pine_1 card frame is centered on its catalog pivot
+ok   Pine_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   Pine_1 bounds include all three rotated planes
+ok   Pine_1 card repeats full tile UVs with half-texel inset
+ok   Pine_1 card material uses lit alpha scissor at 0.5
+ok   Pine_1 card material is two-sided, nonmetallic and fully rough
+ok   Pine_1 card material uses anisotropic mip filtering and the atlas
+ok   Pine_1 card mesh and material are per-call resources
+ok   unknown card ID fails without a fallback
+60 checks, 0 failed
+== test_trim.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Gaussian elimination solves a known system 8.881784197001252e-16
+ok   level 15 m/s trims (six axes, with throttle) trimmed
+ok   trim alpha 4.26° ± 0.5° 4.26°
+ok   thrust ≈ drag ≈ 3 N 3.129 N at throttle 0.284 (5174 rpm)
+ok   up elevator trim (borrowed Cm0 < 0) pitch trim 0.263
+ok   prop torque trimmed out with small aileron/rudder roll trim 0.0205, yaw trim 0.0264, beta -0.169°
+ok   converged tightly residual 1.1365471290758677e-13 in 4 iterations
+ok   level flight holds ±1 m for 30 s Δalt -0.0000 m
+ok   no spiral: heading holds within 1° for 30 s Δheading -0.0000°
+ok   25 m/s: less alpha, more throttle alpha 0.69°, throttle 0.681
+ok   glide 15 m/s trims trimmed
+ok   glide ratio ≈ 9.1 L/D 9.11, glide angle -6.26°
+ok   glide: no lateral trim needed 
+ok   5 m/s is impossible and says why singular Jacobian (no trim near this condition)
+14 checks, 0 failed
+== test_ui_aircraft.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default: the Ugly Stik on the card and in the backdrop
+ok   default: Fly enabled and focused, counter 1 of 4
+ok   Right from Fly -> next aircraft arrow
+ok   Enter on the arrow: the Extra on the card, in the backdrop and saved
+ok   Extra: Fly enabled, its status says experimental
+ok   choosing never starts a flight
+ok   P-51: shown, experimental, Fly enabled
+ok   Avanti preview: shown, Fly disabled, explained
+ok   Avanti preview: the backdrop shows it, focus stays on the arrow
+ok   Avanti preview: Fly never starts a flight
+ok   next wraps around to the Ugly Stik
+ok   previous arrow goes back to the Avanti
+ok   Spanish: counter and status translated
+ok   restart: the saved preview comes back, Fly disabled, focus on an arrow
+ok   Fly with the Extra: one flight, Extra model and Extra physics
+ok   unknown saved aircraft -> default
+ok   saved aircraft of the wrong type -> default
+all UI aircraft checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_flight_capture.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   test preferences save
+ok   interactive app starts on Home
+ok   Home Fly is the focused real button
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home Fly creates the flight
+ok   Home and HomeScene leave the viewport
+ok   exactly one Camera3D remains under the viewport
+ok   exactly one WorldEnvironment remains under the viewport
+ok   flight camera is active
+ok   fixed capture state is exactly 360 simulation ticks
+ok   fixed capture state is exactly 1.5 simulation seconds
+ok   disabled simulation stays frozen without showing the pause state
+all UI flight capture checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_help.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   headless (no layout): QWERTY names
+ok   AZERTY: physical A, W, Z print Q, Z, W
+ok   Russian: physical A, W print Ф, Ц
+ok   named keys get names, arrows are drawn
+ok   named keys are translated
+ok   Home: Help reachable by keyboard
+ok   Enter opens Help, focus on Close
+ok   Help shows every key of the shared table (20)
+ok   about: development build, Godot, licence
+ok   Help scrolls to keyboard focus
+ok   English Help fits without scrolling (582 <= 600 px)
+ok   Esc closes Help, focus back on Help
+ok   Esc in Help did not start or quit anything
+ok   Help: every text translated to Spanish
+ok   about in Spanish
+ok   Spanish Help fits without scrolling (582 <= 600 px)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause: Help reachable
+ok   Help over the pause menu swallows flight keys
+ok   Esc closes Help, the pause menu stays
+ok   Esc again continues the flight
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   first flight: the hint shows, three items
+ok   the hint takes no keyboard focus
+ok   flight keys fly under the hint
+ok   paused time does not use the hint up
+ok   after 0.5 s flown it goes and is remembered
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   next flight: no hint
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route: no hint, no settings
+all UI help checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_home.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly did not write settings
+all UI home checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   precondition: the engine binds joypad events to ui_* (10 found)
+ok   focus starts on Fly
+ok   precondition: unisolated, the elevator stick moves the focus
+ok   isolation removed 10 joypad events, none left
+ok   axis 1 = +1 does not move the focus
+ok   axis 1 = -1 does not move the focus
+ok   axis 0 = +1 does not move the focus
+ok   axis 0 = -1 does not move the focus
+ok   button 11 does not move the focus
+ok   button 12 does not move the focus
+ok   button 13 does not move the focus
+ok   button 14 does not move the focus
+ok   button 3 does not move the focus
+ok   no radio event activated Fly
+ok   the flight still reads the raw axis (0.75)
+ok   keyboard still navigates: Down -> Language
+ok   app_root isolates joypads at startup
+all UI input checks passed
+== test_ui_language.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   Spanish catalog: 71 texts, none untranslated
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+ok   English by default, even on a Spanish OS
+ok   language button names the language in itself
+ok   Enter on Language -> Spanish at once
+ok   dynamic texts rebuilt in Spanish
+ok   focus stays on Language
+ok   every translatable Home text has a Spanish translation
+ok   choice saved
+ok   next start remembers Spanish
+ok   and cycles back to English
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight: English, no settings file created
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight ignores a saved Spanish preference and leaves the file alone
+all UI language checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_pause.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flying with engine sound
+ok   Esc opens the pause menu, focus on Continue
+ok   the session is held and paused
+ok   simulation frozen (tick 109)
+ok   propeller frozen
+ok   engine sound paused and silent (-200.0 dB)
+ok   Down navigates the menu -> Restart
+ok   navigation keys never reach the flight commands
+ok   R, T and P do nothing behind the menu
+ok   Esc again: back to the flight
+ok   flying again: ticks, sound
+ok   a key held through Continue does not fly
+ok   pressed again after release, it flies
+CRASH at 15.0 m/s (sink 0.0 m/s) - restarting
+ok   crash shown
+ok   menu explains the crash
+ok   crash countdown frozen under the menu (312 ticks left)
+ok   Continue does not fly through the crash
+ok   then the crash restarts the flight by itself
+ok   focus lost -> paused with the menu open
+ok   Enter on Continue resumes
+ok   Esc in the calibration wizard cancels it, no menu
+ok   fault: Continue disabled, focus on Restart, reason shown
+ok   fault: Continue refused, menu stays
+ok   Restart: a fresh trimmed flight
+ok   End flight reachable by keyboard
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-06T03-15-27.csv (74 rows)
+ok   End flight saved the trace
+ok   back on Home, flight freed
+ok   focus on Fly again
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   failed save: still in the flight, the menu explains
+ok   End again: Home, without the trace
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   5 cycles: same node count on Home every time [209.0, 209.0, 209.0, 209.0, 209.0, 209.0]
+ok   5 cycles: no session, engine sound or pause menu left
+all UI pause checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_visual_evidence.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+visual evidence: 65 checks, 0 failed
+== L5: invalid field files fail before Home or flight can start
+test_headless_invalid_fields_fail_both_routes (__main__.FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 5.223s
+
+OK
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m
+verify_extra: 123 checks, 0 failures
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+verify_p51: 126 checks, 0 failed
+== Avanti S preview contract (aircraft/verify_avanti.gd, AV-03: visual only, no flight data)
+PASS 137 checks
+== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra and the P-51 by catalog ID)
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+trimmed level flight: alt 30.000 → 30.000 m, speed 17.0000 m/s, throttle 0.354, 5756 rpm, trims ail +0.0113 elev +0.0985
+trimmed level flight: alt 30.000 → 30.000 m, speed 22.0000 m/s, throttle 0.567, 3945 rpm, trims ail +0.0251 elev +0.1251
+== app: a preview or unknown aircraft is refused on the direct route (exit 1, never another airplane)
+refused
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+frame-time report: 218 frames, p50 6.87 <= p95 7.74 <= p99 8.09 ms
+== VQ-01b: scripted logger disables input and identifies its route
+scripted route, raw samples and disabled input verified
+== VQ-01b: invalid logger options and output write failures fail the process
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+ticks=480 frames=61 throttle=0.5344 state_sha256=ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3
+ticks=480 frames=121 throttle=0.5344 state_sha256=ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3
+ticks=480 frames=289 throttle=0.5344 state_sha256=ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3
+identical

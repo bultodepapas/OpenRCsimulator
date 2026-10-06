@@ -1,0 +1,147 @@
+{
+  "schema": "openrc-tree-atlas-analysis v1",
+  "raw_capture_size_px": 1024,
+  "atlas_size_px": 1024,
+  "tile_size_px": 512,
+  "atlas_variant": "adapted_albedo",
+  "silhouette_iou_minimum": 0.995,
+  "downsampling": {
+    "method": "2x2 BOX; RGB is alpha-weighted in straight-alpha space, alpha is the arithmetic mean.",
+    "transparent_rgb": "zero when every input sample in a 2x2 block is transparent"
+  },
+  "reserved_fourth_slot": "transparent",
+  "species": [
+    {
+      "id": "CommonTree_1",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 206795,
+        "mean_absolute_rgb_difference_0_255": 9.51022349025202e-05,
+        "mean_absolute_difference_by_channel_0_255": [
+          0.00010154984404845378,
+          0.00012572837834570467,
+          5.802848231340216e-05
+        ],
+        "maximum_absolute_rgb_difference_0_255": 2,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        140,
+        40,
+        373,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 140,
+        "top": 40,
+        "right": 138,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "CommonTree_3",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 155108,
+        "mean_absolute_rgb_difference_0_255": 0.00033310123698756134,
+        "mean_absolute_difference_by_channel_0_255": [
+          0.0003739330015215205,
+          0.0002063078629084251,
+          0.0004190628465327385
+        ],
+        "maximum_absolute_rgb_difference_0_255": 65,
+        "fraction_pixels_above_two_rgb_levels": 6.447120715888285e-06
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        169,
+        40,
+        343,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 169,
+        "top": 40,
+        "right": 168,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "Pine_1",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 165863,
+        "mean_absolute_rgb_difference_0_255": 2.813567020171266e-05,
+        "mean_absolute_difference_by_channel_0_255": [
+          5.4261649674731555e-05,
+          1.8087216558243853e-05,
+          1.2058144372162568e-05
+        ],
+        "maximum_absolute_rgb_difference_0_255": 1,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        107,
+        30,
+        404,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 107,
+        "top": 30,
+        "right": 107,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    }
+  ]
+}

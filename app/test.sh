@@ -5,6 +5,15 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 GODOT="$("$HERE/get-godot.sh")"
 run() { timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
 
+# L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
+IMPORT_LOG="$(mktemp)"
+echo "== import resource dependencies"
+if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
+  || grep -qE "^(SCRIPT |SHADER )?ERROR:" "$IMPORT_LOG"; then
+  cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
+fi
+rm -f "$IMPORT_LOG"
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.
@@ -128,4 +137,3 @@ if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $
   echo "final state depends on the rendering frame rate:$HASHES"; exit 1
 fi
 echo "identical"
-

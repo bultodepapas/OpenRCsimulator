@@ -1,0 +1,32 @@
+== build identity: 09059c3 (commit 09059c340097c262e0e1550856014f06c35f4a06, 2026-10-06T03:20:21+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exported binary reports build 09059c3
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+Pack tree catalog, imported atlas and license validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+Pack tree catalog, imported atlas and license validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+Pack tree catalog, imported atlas and license validated
+== packages
+e1d0ffb47b0bec205569761da5c391e6677b14047ea85b3198d816b9f1ecc376  openrc-simulator-09059c3-linux-x86_64.zip
+c7749d43b590b2b95e79f09e84aad6b4cc154521b571c5dd692a2f69e70439b3  openrc-simulator-09059c3-macos-universal.zip
+0cd8b93acd487005cd8f7a1ba22c0f761879544fcb9f8f3f2574eb035260d0a0  openrc-simulator-09059c3-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29016950 Oct  6 03:24 openrc-simulator-09059c3-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61168241 Oct  6 03:25 openrc-simulator-09059c3-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 38542039 Oct  6 03:25 openrc-simulator-09059c3-windows-x86_64.zip

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "kaykit/Tree_1_A_Color1",
+    "triangles": 530,
+    "materials": 1
+  },
+  {
+    "id": "kaykit/Tree_2_A_Color1",
+    "triangles": 336,
+    "materials": 1
+  },
+  {
+    "id": "kaykit/Tree_3_A_Color1",
+    "triangles": 978,
+    "materials": 1
+  },
+  {
+    "id": "kaykit/Tree_4_A_Color1",
+    "triangles": 404,
+    "materials": 1
+  },
+  {
+    "id": "megakit/CommonTree_1",
+    "triangles": 6265,
+    "materials": 2
+  },
+  {
+    "id": "megakit/Pine_1",
+    "triangles": 3947,
+    "materials": 2
+  },
+  {
+    "id": "megakit/TwistedTree_1",
+    "triangles": 9564,
+    "materials": 2
+  }
+]
