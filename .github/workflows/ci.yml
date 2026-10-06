@@ -40,11 +40,13 @@ jobs:
         with:
           path: .tools
           key: godot-${{ hashFiles('app/get-godot.sh') }}
-      - name: Visual geometry runtime copy matches geometry.json
+      - name: Generated geometry and physics data match their sources
         run: |
           python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
           python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
           python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
+          python3 assets/aircraft/avanti-s-a200/compile_geometry.py --check
+          python3 research/extra-300/ex05/derive_physics.py --check
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

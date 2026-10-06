@@ -65,7 +65,7 @@ static func interpolate_sections(rows: Array, subdivisions: int) -> Array:
 	result.append(rows[-1].duplicate())
 	return result
 
-static func loft(rows: Array, parent: Node3D, label: String, color: Color, side: float = 1.0, subdivisions: int = 1, smooth: bool = false) -> MeshInstance3D:
+static func loft(rows: Array, parent: Node3D, label: String, color: Color, side: float = 1.0, subdivisions: int = 1, smooth: bool = false, cap_rear: bool = true) -> MeshInstance3D:
 	rows = interpolate_sections(rows, subdivisions)
 	var rings: Array = []
 	for row in rows:
@@ -91,6 +91,7 @@ static func loft(rows: Array, parent: Node3D, label: String, color: Color, side:
 			triangle(st, rings[i][j], rings[i][k], rings[i + 1][k], hint, normals)
 			triangle(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], hint, normals)
 	for end in [0, rings.size() - 1]:
+		if end != 0 and not cap_rear: continue
 		var center_x: float = float(rows[end][4]) * side if rows[end].size() > 4 else 0.0
 		var center := Vector3(center_x, (rows[end][2] + rows[end][3]) * .5, rows[end][0])
 		for j in 32:
@@ -204,17 +205,79 @@ static func cylinder(root: Node3D, label: String, radius: float, length: float, 
 	node.position = center
 	return node
 
+static func canopy_frames(parent: Node3D, data: Dictionary) -> void:
+	var rows := interpolate_sections(data.canopy_stations, data.loft.longitudinal_subdivisions)
+	for index in data.details.canopy_frame_z_m.size():
+		var center: float = data.details.canopy_frame_z_m[index]
+		var frames: Array = []
+		for z in [center - data.details.canopy_frame_width_m * .5, center + data.details.canopy_frame_width_m * .5]:
+			for i in rows.size() - 1:
+				if z >= rows[i][0] and z <= rows[i + 1][0]:
+					var t: float = (z - rows[i][0]) / (rows[i + 1][0] - rows[i][0])
+					var offset: float = data.details.canopy_frame_offset_m
+					frames.append([z, lerpf(rows[i][1], rows[i + 1][1], t) + offset,
+						lerpf(rows[i][2], rows[i + 1][2], t) + offset, lerpf(rows[i][3], rows[i + 1][3], t) - offset])
+					break
+		# Parent to canopy so the inspector's interior toggle also hides the frames.
+		loft(frames, parent, "canopy_frame_%s" % index, WHITE, 1, 1, true)
+
+static func wing_fences(root: Node3D, data: Dictionary) -> void:
+	var detail: Dictionary = data.details
+	var x: float = detail.fence_span_m
+	var s := station(data.wing.stations, x)
+	var span: Array = ["aileron", data.wing.aileron_span[0], data.wing.aileron_span[1]]
+	for side in [-1.0, 1.0]:
+		var hinge_z := hinge_point(data.wing, span, x, side).z
+		var aft: float = hinge_z - detail.fence_hinge_clearance_m
+		var y: float = s[3]
+		var le: float = s[1]
+		var outline: Array = [Vector3(side*x,y + detail.fence_bottom_m,le + .025),
+			Vector3(side*x,y - .055,le - .025), Vector3(side*x,y + .015,le - .035),
+			Vector3(side*x,y + detail.fence_top_m,le + .015), Vector3(side*x,y + .027,aft),
+			Vector3(side*x,y - .05,aft)]
+		slab(outline, Vector3(detail.fence_thickness_m * .5,0,0), root,
+			"wing_fence_left" if side < 0 else "wing_fence_right", WHITE)
+
+static func exhaust(root: Node3D, data: Dictionary) -> void:
+	var tail: Array = data.fuselage_stations[-1]
+	var z: float = tail[0]
+	var radius: float = data.details.exhaust_inner_radius_m
+	var depth: float = data.details.exhaust_depth_m
+	var rim := SurfaceTool.new()
+	var throat := SurfaceTool.new()
+	rim.begin(Mesh.PRIMITIVE_TRIANGLES)
+	throat.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for j in 32:
+		var a := TAU * j / 32.0
+		var b := TAU * (j + 1) / 32.0
+		var oa := Vector3(tail[1]*cos(a),tail[2]*sin(a),z)
+		var ob := Vector3(tail[1]*cos(b),tail[2]*sin(b),z)
+		var ia := Vector3(radius*cos(a),radius*sin(a),z)
+		var ib := Vector3(radius*cos(b),radius*sin(b),z)
+		triangle(rim,oa,ob,ib,Vector3.BACK)
+		triangle(rim,oa,ib,ia,Vector3.BACK)
+		var da := ia - Vector3(0,0,depth)
+		var db := ib - Vector3(0,0,depth)
+		var inward := -Vector3(cos((a+b)*.5),sin((a+b)*.5),0)
+		triangle(throat,ia,ib,db,inward)
+		triangle(throat,ia,db,da,inward)
+		triangle(throat,Vector3(0,0,z-depth),da,db,Vector3.BACK)
+	instance("exhaust_fixed",rim.commit(),root,Color("879198"))
+	instance("exhaust_throat",throat.commit(),root,Color("0c141d"))
+
 static func build() -> Dictionary:
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://geometry.json"))
 	var root := Node3D.new()
 	root.name = "airplane"
 	root.set_meta("status", data.status)
 	var hinges := {}
-	var skin := loft(data.fuselage_stations, root, "fuselage", BLUE, 1, data.loft.longitudinal_subdivisions, data.loft.smooth_normals)
+	var skin := loft(data.fuselage_stations, root, "fuselage", BLUE, 1, data.loft.longitudinal_subdivisions, data.loft.smooth_normals, false)
 	var canopy := loft(data.canopy_stations, root, "canopy", DARK, 1, data.loft.longitudinal_subdivisions, data.loft.smooth_normals)
+	canopy_frames(canopy, data)
 	for side in [-1.0, 1.0]:
 		lifting_surface(root, hinges, data.wing, side, false)
 		lifting_surface(root, hinges, data.tail, side, true)
+	wing_fences(root, data)
 	var fin: Dictionary = data.fin
 	var a := Vector3(0, fin.hinge_bottom_yz[0], fin.hinge_bottom_yz[1])
 	var b := Vector3(0, fin.hinge_top_yz[0], fin.hinge_top_yz[1])
@@ -232,7 +295,7 @@ static func build() -> Dictionary:
 		var suffix := "left" if side < 0 else "right"
 		loft(data.installation.intake_stations, root, "intake_fairing_" + suffix, WHITE, side)
 		loft(data.installation.intake_shadow_stations, root, "intake_shadow_" + suffix, DARK, side)
-	cylinder(root, "exhaust_fixed", data.installation.outlet_radius_m, .003, Vector3(0, 0, 1.1685), DARK)
+	exhaust(root, data)
 	var propeller := Node3D.new()
 	propeller.name = "propeller"
 	root.add_child(propeller) # compatibility placeholder: no geometry and no rotation

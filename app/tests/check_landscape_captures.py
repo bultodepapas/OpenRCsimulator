@@ -5,6 +5,8 @@ gradient says which way is up); no 8-bit banding (the longest run of identical p
 in the sun view the sun disc sits where the light direction projects (≤ 2 px).
 Usage: python3 check_landscape_captures.py <captures dir>
 """
+import hashlib
+import json
 import math
 import os
 import re
@@ -17,6 +19,8 @@ problems = []
 counters = {}
 for line in open(os.path.join(d, "landscape-counters.txt")):
     name, rest = line.split(" ", 1)
+    if name in counters:
+        problems.append(f"duplicate counter record: {name}")
     counters[name] = dict(kv.split("=") for kv in rest.split())
 
 
@@ -29,9 +33,31 @@ def band(px, x0, x1, y0, y1):
     return sum(vals) / len(vals)
 
 
-views = sorted(f for f in os.listdir(d) if f.startswith("capture-land-") and f.endswith(".png"))
-if len(views) < 19:
-    problems.append(f"expected 19 landscape views, found {len(views)}")
+# This is the atmosphere reference inventory, not a glob of whichever old PNGs happen to remain.
+land_cases = [f"az{az}-el{el}" for az in (0, 90, 180, 270) for el in (0, 10)]
+land_cases += ["az90-el10-t11"] + [f"az{az}-el0-100m" for az in (0, 90, 180, 225, 270)]
+land_cases += ["30m", "low3m", "sun", "30m-noplane", "low3m-noplane", "top"]
+views = sorted(f"capture-land-{case}.png" for case in land_cases)
+expected = {f[:-4] for f in views}
+expected.update("capture" + suffix for suffix in ("", "-inspect", "-inspect-deflected", "-physics",
+                "-physics-inspect", "-physics-nozoom", "-physics-low-inspect",
+                "-physics-low-inspect-noplane", "-physics-inspect-noplane"))
+if set(counters) != expected:
+    problems.append(f"counter inventory mismatch: missing={sorted(expected - set(counters))}, extra={sorted(set(counters) - expected)}")
+for name in sorted(expected):
+    try:
+        with open(os.path.join(d, name + ".json")) as file:
+            manifest = json.load(file)
+        with open(os.path.join(d, name + ".png"), "rb") as file:
+            digest = hashlib.sha256(file.read()).hexdigest()
+        if manifest.get("image") != name + ".png" or manifest.get("sha256") != digest:
+            problems.append(f"{name}: manifest image/hash mismatch")
+        if manifest.get("capture_scene") != "atmosphere":
+            problems.append(f"{name}: L1-L4 require the atmosphere fixture, not the production field")
+    except (OSError, ValueError) as error:
+        problems.append(f"{name}: missing or invalid evidence: {error}")
+if problems:
+    sys.exit("\n".join(problems))
 for f in views:
     im = Image.open(os.path.join(d, f)).convert("RGB")
     px = im.load()

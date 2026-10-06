@@ -1,6 +1,6 @@
 # Avanti S de turbina: plan del siguiente avión
 
-2026-10-06 · Revisión 3 · **AV-00 completo; AV-01 provisional; AV-02 iniciado con maqueta aislada. Sin avión volable ni integración en la app.**
+2026-10-06 · Revisión 4 · **AV-00 completo; AV-01 provisional; AV-02 en la app (AV-03): vista previa en el menú, «Volar» desactivado hasta la rama de turbina (AV-05).**
 
 La variante elegida es el **SebArt Avanti S A200 original**, documentado como «Avanti S Jet 2.2m»: **2,00 m de envergadura y 2,22 m de longitud**, con instalación inicial **JetCat P100-RX, ficha de referencia 2017, y tobera fija**. La documentación original permite identificarlo mejor que una mezcla de versiones comerciales actuales. El catálogo reciente usa también «2.3m»; esa etiqueta no autoriza a cambiar las dimensiones del manual elegido. [Manual SebArt](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf), [catálogo actual](https://www.sebart.it/download/sebart-pricelist.pdf).
 
@@ -111,7 +111,7 @@ El contacto con terreno actualmente es accidente. Entrenamiento de aterrizajes, 
 | AV-00 · preparación D1 | Elegir versión y archivar evidencia | — | Fuentes abiertas, archivos válidos, hashes y exclusión Git comprobados |
 | AV-01 · D1 | Datum y geometría mínima | AV-00 | Cotas con procedencia, límites y controles reservados; discrepancias visibles |
 | AV-02 · D1 visual | Jet sencillo en inspector | AV-01 | Frente/perfil/planta/oblicua, escala, uniones y Stik intacto |
-| AV-03 · D1/UI-05 | Catálogo y adaptador sin hélice | AV-02 | Stik → Avanti preview → Stik; ID erróneo rechazado; materiales y nodos independientes |
+| AV-03 · D1/UI-05 ✅ | Catálogo y adaptador sin hélice | AV-02 | Stik → Avanti preview → Stik; ID erróneo rechazado; materiales y nodos independientes |
 | AV-04 · B5 | Rig y recorridos reales | AV-02 | Neutro/extremos/combinaciones; alerón diferencial, dos elevadores, holguras y defecto deliberado detectado en copia |
 | AV-05 · D5/G1 | Rama de turbina y datos v2 | AV-03 | Unidad de empuje, ejes, lag, idle/stop/reset/pausa; split de timestep; v1 y goldens Stik conservados |
 | AV-06 · D1–D4 | Masa, referencias aero y trim | AV-01/05 | Loader, CG/inercia, condición de combustible y solución estacionaria propia |
@@ -148,3 +148,13 @@ La [tercera revisión](research/avanti-s-contour-refinement-v3.md) estrecha mode
 ## Referencias complementarias y tres ángulos nuevos — 2026-10-06
 
 La [nueva selección](research/avanti-s-new-angles.md) añade 30 fotografías oficiales, lámina comercial de tres vistas y reportaje Aerotec. Compara frontal baja, oblicua frontal alta e intradós en vuelo con la geometría v3 intacta. La frontal prioriza revisar sección de vientre y tomas; el intradós es exploratorio por mandos desconocidos y mayor residuo. Las cámaras anteriores permanecen congeladas y los nuevos recursos son exclusivamente locales.
+
+## Detalles y siete cámaras congeladas — revisión 4
+
+La [cuarta revisión AV-02](research/avanti-s-refinement-v4.md) ajusta moderadamente cabina/deriva y añade marcos, placas alares y una salida con cavidad. Siete superposiciones v3→v4 muestran mejora parcial en perfil y diferencias persistentes en lomo, frontal baja y cola posterior. Las placas tienen holgura local comprobada frente al alerón en cinco órdenes de alabeo. La maqueta permanece aislada; no cierra integración, vuelo, tren ni volumen barrido completo.
+
+## En la app como vista previa (AV-03) — 2026-10-06
+
+La maqueta AV-02 (`a200-av02-contours-03`) vive ahora en la app: [`avanti_s_model.gd`](../app/aircraft/avanti_s_model.gd) con geometría compilada desde [`assets/aircraft/avanti-s-a200/`](../assets/aircraft/avanti-s-a200/README.md); vértices idénticos a AV-02 (mismo SHA-256 de mallas, normales, materiales y bisagras). El catálogo lo ofrece en Inicio como **vista previa**: se ve en el fondo y en la ficha, pero «Volar» está desactivado y explica que la turbina aún no se simula. La ruta directa lo rechaza salvo con `--scripted` (círculo visual, sin física). `render/airplane.gd` traduce las deflexiones comunes a sus siete bisagras (dos elevadores; flaps quietos, `set_flaps()` preparado) y no hace girar ningún disco de hélice.
+
+Prueba: `verify_avanti.gd` (137 comprobaciones en `app/test.sh`, dos mutaciones de signo detectadas), `test_aircraft_catalog.gd`, `test_ui_aircraft.gd`. **Siguiente para volar:** AV-05 (rama de turbina y datos v2) y AV-06 (masa, referencias y trim); el catálogo solo necesitará la ruta de datos y cambiar el estado.

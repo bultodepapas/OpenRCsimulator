@@ -1,5 +1,5 @@
-# The Home backdrop (MENU-PLAN §3/§7, UI-01c): our Ugly Stik over our field, rendered from the same builders the
-# flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
+# The Home backdrop (MENU-PLAN §3/§7, UI-01c, UI-05): the selected airplane (the Ugly Stik by default) over our
+# field, rendered from the same builders the flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
 # No simulation, no input, no animation: shaders get a fixed sim_clock, so every frame is the same picture.
 # The app imports no textures, so a live still render replaces a screenshot file (no import step, nothing to
 # regenerate when the model or the landscape improves). It mirrors main.gd's world setup; keep them in step.
@@ -29,9 +29,11 @@ const CLOCK := 37.0
 
 var airplane: Dictionary
 var camera: Camera3D
+var _shadow: MeshInstance3D
 
 
-func _init() -> void:
+## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
+func _init(aircraft := AirplaneBuilder.STIK_ID) -> void:
 	name = "HomeScene"
 	ShaderClock.register() # before any material that reads sim_clock compiles
 	var world_env := WorldEnvironment.new()
@@ -54,15 +56,9 @@ func _init() -> void:
 	add_child(runway)
 	Atmosphere.create_sun(self)
 
-	airplane = AirplaneBuilder.build()
-	add_child(airplane.root)
-	var basis := Frames.attitude_to_render(deg_to_rad(ATTITUDE_DEG.yaw), deg_to_rad(ATTITUDE_DEG.pitch), deg_to_rad(ATTITUDE_DEG.roll))
+	_shadow = Shadow.create(self)
+	show_aircraft(aircraft)
 	var pos := Frames.ned_to_render(AIRPLANE_NED)
-	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
-	airplane.propeller.rotation.z = PROP_ANGLE
-	var extent := Shadow.model_extent(airplane.root)
-	var shadow := Shadow.create(self)
-	Shadow.update(shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction())
 
 	camera = Camera3D.new()
 	camera.fov = FOV_DEG
@@ -79,3 +75,22 @@ func _init() -> void:
 
 	ShaderClock.update(CLOCK)
 	Atmosphere.update_clouds(env, CLOCK)
+
+
+## Builds `id` in the composition's pose (and its shadow), replacing the airplane shown. Every catalog airplane uses
+## the same pose: the same photograph of a different model.
+func show_aircraft(id: String) -> void:
+	var built := AirplaneBuilder.build(id)
+	if built.is_empty():
+		return
+	if not airplane.is_empty():
+		remove_child(airplane.root)
+		airplane.root.queue_free()
+	airplane = built
+	add_child(airplane.root)
+	var basis := Frames.attitude_to_render(deg_to_rad(ATTITUDE_DEG.yaw), deg_to_rad(ATTITUDE_DEG.pitch), deg_to_rad(ATTITUDE_DEG.roll))
+	var pos := Frames.ned_to_render(AIRPLANE_NED)
+	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
+	airplane.propeller.rotation.z = PROP_ANGLE
+	var extent := Shadow.model_extent(airplane.root)
+	Shadow.update(_shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction())

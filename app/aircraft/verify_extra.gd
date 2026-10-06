@@ -71,7 +71,7 @@ func _run() -> void:
 		_check("%s rest pose" % k, airplane.hinges[k].transform.is_equal_approx(Transform3D.IDENTITY))
 	for k in ["left", "right", "tail", "steering"]:
 		_check("gear %s" % k, airplane.gear.has(k) and airplane.gear[k] is Node3D)
-	_check("metadata", root.get_meta("aircraft_id", "") == Geometry.DATA.id and String(root.get_meta("status", "")).begins_with("preview"))
+	_check("metadata", root.get_meta("aircraft_id", "") == Geometry.DATA.id and String(root.get_meta("status", "")).begins_with("flyable (experimental)"))
 
 	var meshes: Array[MeshInstance3D] = []
 	_meshes(root, meshes)

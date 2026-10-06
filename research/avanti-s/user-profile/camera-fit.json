@@ -1,0 +1,103 @@
+{
+  "schema": "openrc-profile-diagnostic-camera-v1",
+  "model_geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+  "picks_sha256": "c0914056630835cc4b8a7a0c60dff9efb065b2247625b9a27ca365b09e035a6b",
+  "method": "Orthographic side-view diagnostic: uniform display scale from approximate nose/rear-body horizontal extents; align mean height. No camera roll or image deformation.",
+  "limits": [
+    "Exact photographed variant and original photographer unknown",
+    "Photo retains perspective; not an orthographic plan",
+    "rear_body_proxy is an inferred visible rear-body landmark, NOT a visible exhaust centre",
+    "Nozzle, wings, gear and fences do not share a common profile plane; no metric accuracy claim"
+  ],
+  "views": [
+    {
+      "id": "profile",
+      "title": "Perfil del usuario \u00b7 alineaci\u00f3n por extremos aproximados",
+      "photo": "references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png",
+      "photo_sha256": "4ab4d1ba032756c4c0877a00db53162c38cf4ecdfa79d8dedf83d74dbb8977e3",
+      "size_px": [
+        1818,
+        865
+      ],
+      "projection": "orthographic",
+      "orthographic_size_m": 1.1730604764813684,
+      "camera_position_m": [
+        4,
+        0.14171655467318267,
+        0.09593769089798411
+      ],
+      "camera_basis_columns": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "landmarks": [
+        {
+          "key": "nose",
+          "role": "fit",
+          "picked_px": [
+            1754,
+            534
+          ],
+          "projected_px": [
+            1754.0,
+            537.0
+          ],
+          "error_px": 3.0
+        },
+        {
+          "key": "rear_body_proxy",
+          "role": "fit",
+          "picked_px": [
+            117,
+            540
+          ],
+          "projected_px": [
+            117.00000000000011,
+            537.0
+          ],
+          "error_px": 3.0
+        },
+        {
+          "key": "fin_top",
+          "role": "check",
+          "picked_px": [
+            126,
+            139
+          ],
+          "projected_px": [
+            271.85135135135147,
+            160.93243243243245
+          ],
+          "error_px": 147.4911803580763
+        },
+        {
+          "key": "canopy_top",
+          "role": "check",
+          "picked_px": [
+            1129,
+            315
+          ],
+          "projected_px": [
+            1186.2117117117118,
+            351.91576576576574
+          ],
+          "error_px": 68.08783826100594
+        }
+      ],
+      "display_scale_px_per_model_m": 737.3873873873873
+    }
+  ]
+}

@@ -12,7 +12,7 @@ const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
-const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
@@ -28,6 +28,8 @@ signal pause_requested
 
 var session: Node
 var recorder: RefCounted
+## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
+var aircraft_id := ""
 var _airplane: Dictionary
 var _camera: Camera3D
 var _panel: Label
@@ -70,6 +72,16 @@ func _ready() -> void:
 	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
 	_scripted = args.has("scripted")
+	if aircraft_id == "":
+		aircraft_id = str(args.get("aircraft", Catalog.DEFAULT_ID))
+	if not Catalog.has(aircraft_id) or (not Catalog.can_fly(aircraft_id) and not _scripted):
+		# Never another airplane in its place, and never a preview "flying" without flight data (it would be a
+		# ballistic throw). A preview may still fly the scripted circle (--scripted): visual only.
+		push_error("aircraft '%s' refused: %s" % [aircraft_id, "not in the catalog (%s)" % ", ".join(Catalog.ids()) if not Catalog.has(aircraft_id) else "preview only, no flight data (use --scripted)"])
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(1)
+		return
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
@@ -84,7 +96,7 @@ func _ready() -> void:
 		_shadow.visible = false
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
-	session.setup()
+	session.setup(Catalog.entry(aircraft_id).data)
 	_update_cg_model()
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
@@ -150,7 +162,8 @@ func _process(delta: float) -> void:
 
 func _update_cg_model() -> void:
 	if session.aircraft.ok:
-		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, Geometry.DATA.wing.leading_z, Geometry.DATA.equipment.shaft_y)
+		var datum := AirplaneBuilder.datum(aircraft_id) # the data file's le frame in this aircraft's model
+		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x, datum.y)
 
 
 func _update_hud() -> void:
@@ -279,7 +292,8 @@ func _on_resetting() -> void:
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
 ## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
-## --hide_airplane (readability reference), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows
+## --hide_airplane (readability reference), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
+## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted)
 func _user_args() -> Dictionary:
 	var args := {}
 	for a in OS.get_cmdline_user_args():
@@ -298,6 +312,21 @@ func _build_world() -> void:
 	world_env.environment = _env
 	add_child(world_env)
 
+	_build_field()
+
+	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light
+
+	_airplane = AirplaneBuilder.build(aircraft_id)
+	add_child(_airplane.root)
+	_extent = Shadow.model_extent(_airplane.root)
+	_shadow = Shadow.create(self)
+	_camera = PilotCamera.create(self)
+	_panel = InputPanel.create(self)
+	_hud = Hud.create(self)
+
+
+## Production field seam. The atmosphere fixture overrides only these ground meshes.
+func _build_field() -> void:
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(Spec.GROUND_SIZE, Spec.GROUND_SIZE)
@@ -313,15 +342,9 @@ func _build_world() -> void:
 	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.03]) # 3 cm up: no z-fighting with a 21 km far plane
 	add_child(runway)
 
-	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light
 
-	_airplane = AirplaneBuilder.build()
-	add_child(_airplane.root)
-	_extent = Shadow.model_extent(_airplane.root)
-	_shadow = Shadow.create(self)
-	_camera = PilotCamera.create(self)
-	_panel = InputPanel.create(self)
-	_hud = Hud.create(self)
+func _capture_scene_id() -> String:
+	return "field"
 
 
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
@@ -368,7 +391,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out).get_base_dir())
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
-	_write_manifest(out, err)
+	var manifest_err := _write_manifest(out, err)
 	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
 	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
 	# L3: where the sun shadow of the airplane's CG falls on the ground (along the light, onto y = 0), on screen.
@@ -382,17 +405,20 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 		("%.1f,%.1f" % [sun_px.x, sun_px.y]) if sun_visible else "behind", str(ShaderClock.last_clock),
 		("%.1f,%.1f" % [shadow_px.x, shadow_px.y]) if shadow_seen else "behind", "%.1f,%.1f" % [below_px.x, below_px.y]])
-	get_tree().quit(err)
+	get_tree().quit(err if err != OK else manifest_err)
 
 
 ## L0b determinism manifest next to each capture (<name>.json): image hash, per-pass render counters, renderer,
-## Mesa and Godot versions, llvmpipe thread count. Two runs must give identical manifests with non-zero counters.
-func _write_manifest(png_path: String, err: Error) -> void:
+## Mesa and Godot versions, llvmpipe thread count. Two fixed runs must give identical manifests; sky-only views can have zero visible mesh counters.
+func _write_manifest(png_path: String, err: Error) -> Error:
 	var vp := get_viewport().get_viewport_rid()
 	var info := func(type: int, what: int) -> int: return RenderingServer.viewport_get_render_info(vp, type, what)
 	var visible := RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE
 	var shadow := RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW
 	var m := {
+		format = "openrc-capture v1",
+		capture_scene = _capture_scene_id(),
+		renderer = RenderingServer.get_current_rendering_method(),
 		image = png_path.get_file(),
 		sha256 = FileAccess.get_sha256(png_path) if err == OK else "",
 		draw_calls = { visible = info.call(visible, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME), shadow = info.call(shadow, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME) },
@@ -406,9 +432,17 @@ func _write_manifest(png_path: String, err: Error) -> void:
 		args = " ".join(OS.get_cmdline_user_args()).replace(png_path, png_path.get_file()),
 	}
 	var f := FileAccess.open(png_path.get_basename() + ".json", FileAccess.WRITE)
-	if f != null:
-		f.store_string(JSON.stringify(m, "  ", true) + "\n")
-		f.close()
+	if f == null:
+		var open_error := FileAccess.get_open_error()
+		push_error("Cannot write capture manifest: %s" % error_string(open_error))
+		return open_error
+	f.store_string(JSON.stringify(m, "  ", true) + "\n")
+	f.flush()
+	var write_error := f.get_error()
+	f.close()
+	if write_error != OK:
+		push_error("Cannot save capture manifest: %s" % error_string(write_error))
+	return write_error
 
 
 ## L0e: records frame deltas of the normal app (trimmed start, pilot camera) and writes percentiles for Gate L.

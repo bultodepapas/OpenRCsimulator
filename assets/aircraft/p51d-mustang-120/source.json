@@ -1,0 +1,123 @@
+{
+  "id": "p51d-mustang-120-source-v1",
+  "purpose": "Full-size North American P-51D dimensions (metres) and the kit values that scale them. build_geometry.py turns this into geometry.json; nothing here is used by the app directly.",
+  "full_size": {
+    "units": "m",
+    "frame": "z along the fuselage, positive aft, z = 0 at the wing leading edge on the centreline; y up, y = 0 on the propeller axis (thrust line); x to the right",
+    "span": 11.286,
+    "length": 9.830,
+    "wing_area": 21.83,
+    "root_chord_centreline": 2.640,
+    "tip_chord": 1.270,
+    "quarter_chord_sweep_deg": 0.0,
+    "dihedral_deg": 5.0,
+    "incidence_deg": 1.0,
+    "washout_deg": 0.0,
+    "chord_plane_y_root": -0.30,
+    "root_thickness_ratio": 0.151,
+    "tip_thickness_ratio": 0.114,
+    "camber_ratio": 0.015,
+    "aileron": {"inner": 3.25, "outer": 5.50, "chord_fraction": 0.21},
+    "flap": {"inner": 0.50, "outer": 3.20, "chord_fraction": 0.21},
+    "spinner": {"tip_z": -2.35, "back_z": -1.55, "radius": 0.345},
+    "propeller_diameter": 3.404,
+    "firewall_z": 0.75,
+    "cowl_rear_z": 1.70,
+    "fuselage_stations": [
+      [-1.55, 0.345, 0.345, -0.345, 2.0, 2.0],
+      [-1.30, 0.400, 0.420, -0.420, 2.2, 2.0],
+      [-1.00, 0.430, 0.470, -0.470, 2.3, 2.0],
+      [-0.60, 0.440, 0.500, -0.500, 2.4, 2.0],
+      [-0.20, 0.440, 0.520, -0.520, 2.4, 2.0],
+      [0.00, 0.440, 0.530, -0.530, 2.4, 2.0],
+      [0.40, 0.440, 0.540, -0.550, 2.4, 2.0],
+      [0.75, 0.440, 0.560, -0.560, 2.4, 2.0],
+      [1.20, 0.440, 0.570, -0.570, 2.4, 2.0],
+      [1.70, 0.430, 0.580, -0.570, 2.4, 2.0],
+      [1.95, 0.430, 0.580, -0.570, 2.4, 2.0],
+      [2.40, 0.420, 0.560, -0.560, 2.3, 2.0],
+      [2.90, 0.400, 0.520, -0.550, 2.3, 2.0],
+      [3.50, 0.360, 0.450, -0.500, 2.2, 2.0],
+      [4.20, 0.300, 0.360, -0.430, 2.2, 2.0],
+      [5.00, 0.220, 0.260, -0.300, 2.1, 2.0],
+      [5.70, 0.150, 0.170, -0.170, 2.0, 2.0],
+      [6.60, 0.090, 0.090, -0.090, 2.0, 2.0],
+      [6.95, 0.040, 0.050, -0.030, 2.0, 2.0]
+    ],
+    "scoop_stations": [
+      [2.05, 0.300, -0.95],
+      [2.50, 0.330, -1.08],
+      [3.00, 0.330, -1.12],
+      [3.50, 0.300, -1.05],
+      [3.90, 0.240, -0.85],
+      [4.35, 0.160, -0.60]
+    ],
+    "carb_intake": {"z0": -1.45, "z1": -0.40, "half_width": 0.15, "height": 0.10},
+    "canopy": {
+      "top": [[1.95, 0.58], [2.20, 0.86], [2.45, 0.98], [2.75, 1.02], [3.05, 0.97], [3.35, 0.82], [3.65, 0.52]],
+      "frame_z": 2.35,
+      "halfwidth_fraction": 0.95
+    },
+    "tail": {
+      "stab_y": 0.10,
+      "stab_root_le_z": 6.00,
+      "stab_tip_le_z": 6.35,
+      "stab_half_span": 2.015,
+      "stab_root_chord": 1.25,
+      "stab_tip_chord": 0.70,
+      "elevator_hinge_fraction": 0.65,
+      "stab_thickness_ratio": 0.10,
+      "stab_incidence_deg": 0.0,
+      "fin_root_le_z": 5.90,
+      "dorsal_start_z": 5.30,
+      "fin_top_y": 1.95,
+      "fin_top_le_z": 6.75,
+      "fin_top_chord": 0.55,
+      "rudder_hinge_z": 6.95,
+      "rudder_te_bottom": [7.45, -0.05],
+      "fin_thickness_ratio": 0.09
+    },
+    "gear": {
+      "main_axle": [0.10, -1.65],
+      "main_wheel_diameter": 0.686,
+      "main_wheel_width": 0.22,
+      "track": 3.61,
+      "strut_radius": 0.055,
+      "tail_axle": [6.45, -0.50],
+      "tail_wheel_diameter": 0.318
+    },
+    "pilot": {
+      "cap_top": [2.72, 0.93],
+      "cap_brim_front": [2.56, 0.84],
+      "nose_front": [2.58, 0.76],
+      "head_back": [2.84, 0.80],
+      "chin": [2.62, 0.68],
+      "shoulder_front": [2.55, 0.60],
+      "shoulder_back": [2.95, 0.58],
+      "head_half_width": 0.10,
+      "shoulder_half_width": 0.24
+    }
+  },
+  "section": {
+    "name": "NAA/NACA 45-100 class laminar section, approximated",
+    "half_thickness_normalised": [[0.0, 0.0], [0.0125, 0.12], [0.025, 0.165], [0.05, 0.225], [0.1, 0.305], [0.2, 0.405], [0.3, 0.465], [0.4, 0.5], [0.5, 0.49], [0.6, 0.44], [0.7, 0.35], [0.8, 0.235], [0.9, 0.115], [0.95, 0.06], [1.0, 0.005]],
+    "camber": "parabolic, y_c = 4 m x (1 - x), m = camber_ratio"
+  },
+  "kit": {
+    "name": "PLACEHOLDER: giant-scale P-51D for a 120 cc gasoline engine",
+    "span": 2.508,
+    "length": null,
+    "wing_area": null,
+    "engine": "120 cc class gasoline twin-cylinder (DA-120 / DLE-120 class)",
+    "propeller": {"diameter_in": 28.0, "pitch_in": 10.0, "blades": 4},
+    "flying_mass_kg": [16.0, 19.0],
+    "cg_fraction_of_mac": 0.25,
+    "throws_deg": {"aileron": 15.0, "elevator": 15.0, "rudder": 25.0}
+  },
+  "evidence": {
+    "full_size.overall": {"kind": "estimated", "source": "published P-51D specifications (span 37 ft 0.3 in, length 32 ft 3 in, wing area 235 sq ft, stab span 13 ft 2.5 in, track 11 ft 10 in, propeller 11 ft 2 in, 27 in / 12.5 in wheels); URLs in docs/research/p51-resources.json once verified", "limits": "Sections, station lines, scoop and canopy proportions are read by eye from public three-view drawings, not measured on a calibrated plan."},
+    "full_size.wing": {"kind": "estimated", "source": "root chord 104 in, tip chord 50 in, AR 5.86, dihedral 5 deg, NAA 45-100 section 15.1 % root / 11.4 % tip; quarter chord assumed unswept (LE sweep 3.5 deg)", "limits": "Incidence +1 deg and zero washout are assumptions to confirm."},
+    "section": {"kind": "estimated", "source": "generic laminar thickness distribution (max at 40 % chord) with 1.5 % parabolic camber; the true NAA 45-100 ordinates are not reproduced", "limits": "Visual and first-estimate aero only."},
+    "kit": {"kind": "estimated", "source": "placeholder until the research report selects the reference kit", "limits": "Span, mass, propeller and throws are provisional."}
+  }
+}

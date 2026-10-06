@@ -704,7 +704,7 @@ static func build() -> Dictionary:
 	root.name = "airplane"
 	root.set_meta("aircraft_id", D.id)
 	root.set_meta("visual_revision", VISUAL_REVISION)
-	root.set_meta("status", "preview: visual only, not flyable")
+	root.set_meta("status", "flyable (experimental): flight data generated from this geometry in app/data/aircraft/gp_extra_300s_60.json")
 	root.set_meta("evidence", "assets/aircraft/extra-300s-60/geometry.json; research/extra-300/ex01/metrology.json")
 	var hinges := {}
 	_fuselage(root)

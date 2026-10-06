@@ -204,7 +204,8 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
-	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad)
+	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
+	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0))
 	if not candidate_start.get("ok", false):
 		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
 		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }
@@ -344,7 +345,7 @@ func reload() -> String:
 	reset()
 	if not sim.fault_reason.is_empty():
 		return "aircraft reload failed during reset; simulation paused: %s" % sim.fault_reason
-	return "aircraft reloaded: trimmed at 15 m/s, throttle %d %%" % roundi(start.throttle * 100.0)
+	return "aircraft reloaded: trimmed at %.0f m/s, throttle %d %%" % [start.V, roundi(start.throttle * 100.0)]
 
 
 func _physics_process(_delta: float) -> void:
@@ -494,7 +495,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 ## Header lines for a flight trace of this session.
 func trace_meta() -> Dictionary:
 	return {
-		scenario = "trimmed level flight across view at 15 m/s (D5: engine, six-axis trim, calm air)",
+		scenario = "trimmed %s across view at %.1f m/s (D5: six-axis trim, calm air)" % ["level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))],
 		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), aircraft_path],
 		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
 		configuration = aircraft.model.get("configuration", "unspecified"),

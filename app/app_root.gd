@@ -2,7 +2,8 @@
 # - user arguments after `--` (--trace, --capture, --frametimes, --scripted, --inspect, --quick-flight, ...):
 #   the flight scene starts at once, exactly as before, in English, without reading or writing preferences;
 # - no user arguments: the Home screen in the saved language (English by default, whatever the OS locale);
-#   Fly creates the flight scene, Quit closes the app.
+#   Fly creates the flight scene with the aircraft chosen on Home (remembered in the settings), Quit closes the app.
+#   The direct route flies `--aircraft=<id>` or the Ugly Stik (main.gd reads it).
 # The flight lives under this node: Esc (or losing focus) opens the pause menu over it (UI-02), and "End flight"
 # frees it and shows Home again (UI-03). Menus hold the session; continuing is always an explicit action.
 extends Node
@@ -15,6 +16,7 @@ const PauseMenu := preload("res://ui/pause_menu.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
@@ -53,10 +55,13 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 
 
 func show_home() -> void:
-	home_scene = HomeScene.new() # our Ugly Stik over our field, still: no simulation runs behind Home
+	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	home_scene = HomeScene.new(aircraft) # the chosen airplane over our field, still: no simulation runs behind Home
 	add_child(home_scene)
 	home = Home.new()
+	home.set_aircraft(aircraft)
 	home.fly_requested.connect(start_flight)
+	home.aircraft_requested.connect(set_aircraft)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
@@ -74,6 +79,19 @@ func set_language(code: String) -> void:
 		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
 
+## Shows another aircraft on Home (card and backdrop) and remembers it, like the language: a failed save keeps the
+## choice for this session and says so.
+func set_aircraft(id: String) -> void:
+	if home == null or not Catalog.has(id):
+		return
+	preferences.aircraft = id
+	home.set_aircraft(id)
+	if home_scene != null:
+		home_scene.show_aircraft(id)
+	var err := Preferences.save_to(preferences_path, preferences)
+	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+
+
 ## Creates the flight scene in this same frame (captures and traces stay frame-for-frame identical) and frees Home.
 func start_flight() -> void:
 	if flight != null:
@@ -83,9 +101,11 @@ func start_flight() -> void:
 		if screen != null:
 			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
 			screen.queue_free()
+	var aircraft: String = home.aircraft_id if home != null else ""
 	home = null
 	home_scene = null
 	flight = load(FLIGHT_SCENE).instantiate()
+	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
 	add_child(flight)
 	if flight.session != null:
 		flight.pause_requested.connect(open_pause)

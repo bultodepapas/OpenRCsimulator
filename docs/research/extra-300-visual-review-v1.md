@@ -84,3 +84,32 @@ Evidencia: [antes](../../research/extra-300/ex02/review-2026-10-06/) · [despué
 Decisión: la decoración es un **shader procedural** y no un atlas como el del Stik. El constructor escribe coordenadas del modelo en las UV (envergadura, fracción de cuerda, altura y z en metros), así que las bandas y las estrellas caen en su sitio en cada panel y en los mandos móviles, sin costuras ni texturas. Una banda definida como fracción de la altura local se escalonaba en el reborde de la cabina; definida en altura absoluta sale recta. `verify_extra.gd` (104 comprobaciones) verifica material, UV, rojo compartido y ausencia de `TIME`.
 
 **Sigue pendiente:** H4 (bisel de bisagras y holguras, EX-04), H7 (tomas de aire, escape, piloto, horns, hélice real) y la prueba humana de orientación de EX-10. La vía del tren, la anchura de las carenas y el grosor de la pletina siguen estimados. Los tonos son una lectura a ojo de fotos con luz desconocida.
+
+## 6. Revisión 3 (2026-10-06): EX-04 articulación, hélice, piloto y cabina transparente
+
+Evidencia: [review-2026-10-06-ex04](../../research/extra-300/ex02/review-2026-10-06-ex04/) (revisión visual `gp-extra-300s-60-ex04-pilot`).
+
+**EX-04: holguras medidas.** `app/aircraft/extra_clearance.gd` coloca el modelo en cada pose y comprueba cada mando frente a sus vecinos: alerón ↔ ala delante del alerón, raíz y punta; elevadores ↔ estabilizador, deriva y fuselaje; timón ↔ deriva, fuselaje, estabilizador y elevadores. Hay **penetración** si un canto cruza un triángulo o un vértice queda dentro (paridad de rayo). La **holgura** es la menor distancia vértice-triángulo o arista-arista. Las poses son cada alerón y las 9 combinaciones elevador × timón, con los recorridos del manual convertidos con `asin(d/r)`: 17,6°, 23,9° y 30,0°.
+
+| Caso | Antes (canto recto) | Después (bisel en V a 45°) |
+| --- | --- | --- |
+| Holgura mínima a los recorridos del manual | 0,83 mm (timón ↔ deriva) | **1,75 mm** |
+| Timón ↔ deriva a 45° | Penetra | 2,5 mm |
+| Elevador ↔ estabilizador a 45° | 0,0 mm (contacto) | 2,3 mm |
+| Alerones a 45° (ya tenían bisel) | 1,7 mm | 1,7 mm |
+| Timón ↔ elevador con el elevador neutro | — | **Límite de 43,0°**, fijado por el corte de alivio del elevador del plano |
+
+Mi predicción inicial, que a 30° el timón de canto recto penetraría la deriva, era errónea: quedaba a 0,8 mm y cruzaba hacia los 41°. El bisel se limita en el timón a la zona junto a la deriva, porque el compensador superior pasa por encima de ella. La geometría medida del corte del elevador **no se modificó**: el límite de 43° queda como dato para los recorridos de EX-05.
+
+`verify_extra.gd` exige:
+- sin penetración y holgura ≥ 0,5 mm a los recorridos del manual;
+- bisagras biseladas libres y con holgura a 45°;
+- un límite del timón al menos 5° por encima de su recorrido.
+
+Mutaciones detectadas: timón sin bisel, elevador sin bisel (que falló primero porque el contacto exacto no contaba como penetración y ahora también se exige holgura) y holgura de bisagra cero.
+
+**Hélice.** 12×8 estimada (el kit remite al manual del motor): dos palas con cuerda variable y punta redondeada, torsión `atan(paso / 2πr)`, cara trasera plana y cara delantera curvada. `verify_extra` comprueba el diámetro medido en la malla.
+
+**Piloto y cabina.** El piloto se construye con 7 puntos tomados del dibujo del plano (gorra, visera, nariz, nuca, barbilla y hombros; los anchos son estimados) y se ve a través de una cúpula tintada con alpha 0,45 sobre un suelo de cabina oscuro. La primera versión dejaba la visera flotando 4 cm por encima de la cúpula, porque giraba alrededor del origen del avión. La detectó la comprobación render ↔ datos (+17,5 mm sobre el perfil de la cabina) y se corrigió girando cada pieza alrededor de su centro. `verify_extra` exige que todos los vértices del piloto queden bajo la línea medida de la cúpula y dentro del ancho de la piel; subir la cabeza 26 mm hace fallar la prueba. En las 36 vistas de órbita no aparecen defectos de ordenación de transparencias. Para volver a la cúpula opaca basta con `canopy.alpha = 1.0` en `appearance.json`.
+
+**Estado:** 32 mallas y 19 502 triángulos. 82 renders idénticos en dos ejecuciones. Orientación OK (azul abajo 23–31 %, arriba 0 %). Render frente a datos ≤ 1,16 mm. `app/test.sh` en verde sobre `HEAD` limpio (`0ee0b51`). **Pendiente:** tomas de aire y escape del carenado, horns y varillas, la vía del tren (estimada) y la prueba humana de orientación de EX-10.

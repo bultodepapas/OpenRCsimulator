@@ -1,6 +1,6 @@
 {
   "schema": "openrc-avanti-visual-study-v1",
-  "revision": "a200-av02-contours-03",
+  "revision": "a200-av02-contours-details-04",
   "status": "isolated visual study; not calibrated, not flyable",
   "units": "m",
   "axes": {
@@ -113,19 +113,19 @@
     [
       -0.53,
       0.092,
-      0.23,
+      0.245,
       0.11
     ],
     [
-      -0.28,
+      -0.23,
       0.108,
-      0.251,
+      0.275,
       0.12
     ],
     [
       -0.09,
       0.099,
-      0.214,
+      0.235,
       0.12
     ],
     [
@@ -235,31 +235,31 @@
       ],
       [
         0.18,
-        0.64
+        0.65
       ],
       [
         0.27,
-        0.75
+        0.77
       ],
       [
         0.38,
-        0.835
+        0.865
       ],
       [
         0.465,
-        0.887
+        0.927
       ],
       [
         0.498,
-        0.92
+        0.9700000000000001
       ],
       [
         0.51,
-        0.96
+        1.02
       ],
       [
         0.49,
-        1.105
+        1.165
       ],
       [
         0.06,
@@ -272,7 +272,7 @@
     ],
     "hinge_top_yz": [
       0.5,
-      1.035
+      1.095
     ],
     "thickness_m": 0.014,
     "leading_outline_count": 9
@@ -283,7 +283,6 @@
       -0.005,
       0.54
     ],
-    "outlet_radius_m": 0.036,
     "intake_stations": [
       [
         -0.09,
@@ -382,7 +381,7 @@
     "canopy_stations": {
       "kind": "estimated_visual_blockout",
       "source": "Official CIMG7316 and CIMG7310 photographs",
-      "refinement": "Visual estimate from unchanged comparison cameras and existing official photos; docs/research/avanti-s-contour-refinement-v3.md. No metric calibration."
+      "refinement": "Revision 4: small profile changes assessed with seven frozen views including user cutout; visual estimates, not measured dimensions. See docs/research/avanti-s-refinement-v4.md."
     },
     "wing": {
       "kind": "estimated_visual_blockout",
@@ -398,7 +397,7 @@
     "fin": {
       "kind": "estimated_visual_blockout",
       "source": "Official CIMG7310; no calibrated scale",
-      "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
+      "refinement": "Revision 4: small profile changes assessed with seven frozen views including user cutout; visual estimates, not measured dimensions. See docs/research/avanti-s-refinement-v4.md."
     },
     "installation": {
       "kind": "estimated_visual_blockout",
@@ -412,11 +411,31 @@
     "loft": {
       "kind": "procedural_visual_interpolation",
       "source": "Shape-preserving interpolation through estimated sections; adds no measured dimensions."
+    },
+    "details": {
+      "kind": "estimated_visual_detail",
+      "source": "Official CIMG7323, CIMG7345/7346, CIMG7314 and user profile cutout; docs/research/avanti-s-new-angles.md",
+      "warning": "Positions, sizes and clearances are model design assumptions. No measured duct geometry or aerodynamic effects."
     }
   },
   "loft": {
     "longitudinal_subdivisions": 4,
     "smooth_normals": true,
     "interpolation": "bounded_monotone_hermite"
+  },
+  "details": {
+    "canopy_frame_z_m": [
+      -0.63,
+      -0.29
+    ],
+    "canopy_frame_width_m": 0.009,
+    "canopy_frame_offset_m": 0.0015,
+    "fence_span_m": 0.68,
+    "fence_thickness_m": 0.002,
+    "fence_top_m": 0.038,
+    "fence_bottom_m": -0.075,
+    "fence_hinge_clearance_m": 0.018,
+    "exhaust_inner_radius_m": 0.03,
+    "exhaust_depth_m": 0.04
   }
 }

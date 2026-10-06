@@ -474,3 +474,67 @@ Prueba: [ensayo Kenney y herramientas](docs/research/visual-quality-nature-trial
 - La nueva frontal revela diferencias de sección que las primeras oblicuas no resolvían. Las comparaciones se añaden sin cambiar geometría, conservando imágenes, tamaños nativos, puntos reservados y errores desfavorables.
 
 Prueba: [galería y nuevas comparaciones](docs/research/avanti-s-new-angles.md), hashes de 33 recursos, tres renders repetidos en clon sin referencias, ajuste determinista y visor de escritorio/móvil. Todos los originales gráficos siguen fuera de Git.
+
+## 2026-10-06 · UI-04a/b — identidad de build y Ayuda
+
+- Exportar de verdad era barato y mereció la pena: las plantillas ya estaban en la máquina y `export.sh` completo en un clon limpio demostró la cadena entera (el binario exportado declara su `git describe`, el `.exe` pasa de 1.0.0.0 a 0.1.0.0). Una captura de la ventana del binario exportado con `ImageGrab` de Pillow sobre Xvfb, sin `xwd`, enseñó el Inicio empaquetado.
+- Buscar un nombre en un binario necesita distinguir datos de ajustes: `addons/build_info` aparecía en el paquete solo como la ruta de `[editor_plugins]` dentro de los ajustes del proyecto; los scripts no estaban.
+- Una lambda guardada en una variable `static` de un script hace abortar Godot 4.7.2 al salir (código 134, tres de tres; con la variable vaciada antes, cero de tres). Se descubrió por una sonda que inyectaba un mapeo de teclado; el mapeo pasó a ser parámetro.
+- `keyboard_get_label_from_physical` imprime `ERROR: Not supported by this display server` en headless, y `test.sh` lo contaría como fallo; `keyboard_get_current_layout() >= 0` lo evita. `Expression` no resuelve las constantes `KEY_*`, pero `OS.find_keycode_from_string()` sí, con el nombre sin prefijo.
+- Comprobar que una pantalla cabe sin scroll con `get_combined_minimum_size()` funciona en headless si el contenedor fija el ancho: detectó 622/641 px frente a 600 igual que la captura, y vigila que una traducción futura no esconda «Acerca de» a quien navega con teclado.
+- Con tres botones en una fila, Abajo desde el botón ancho cae en el del centro por geometría; un vecino de foco explícito lo fija.
+
+Prueba: `test_build_info.gd`, `test_controls_reference.gd`, `test_ui_help.gd` (27, con mutaciones), `export.sh` completo, capturas de Ayuda y pista en inglés y español.
+
+## 2026-10-06 · EX-04 — holguras medidas, bisel de bisagras, hélice y piloto
+
+- Antes de cambiar la geometría, medir. Mi predicción («a 30° el timón de canto recto penetra la deriva») era errónea: había 0,8 mm de holgura y el cruce llegaba hacia los 41°. La medida orientó bien el arreglo: el bisel subió la holgura mínima a 1,75 mm y deja libres las bisagras a 45°.
+- «Sin penetración» no basta como criterio: sin bisel, el elevador quedaba en contacto exacto (0,0 mm) a 45° y la prueba pasaba. Exigir además una holgura mínima.
+- El corte de alivio del elevador del plano limita el timón a 43° con el elevador neutro. Es geometría medida, no un fallo del modelo: se deja tal cual y se documenta como límite para los recorridos de EX-05.
+- Un nodo debe colocarse en el centro de su pieza si luego se va a girar: la visera giraba alrededor del origen del avión y flotaba 4 cm sobre la cabina. La comprobación render ↔ datos lo detectó (+17,5 mm) antes que la vista.
+- Coordinación entre sesiones: otra sesión iba a leer `Geometry.DATA` para el catálogo de aviones. Publicar las claves estables y las ya cambiadas (`pant_z/pant_y/main_leg_root` → `pant_profile/leg`) evitó que construyera sobre claves retiradas.
+
+Prueba: `verify_extra.gd` 123/0 (mutaciones de bisel, holgura, altura del piloto), `app/test.sh` en verde sobre `HEAD` limpio `0ee0b51`, [revisión 3](docs/research/extra-300-visual-review-v1.md#6-revisión-3-2026-10-06-ex-04-articulación-hélice-piloto-y-cabina-transparente).
+
+## 2026-10-06 · Avanti — perfil transparente del usuario
+
+- Se conservó el PNG adjunto original de 1818 × 865 con alpha y hash, sin regenerarlo ni limpiar sus bordes. El damero del visor permite comprobar la transparencia sin tocar el archivo.
+- Un recorte de fondo no elimina la perspectiva ni confirma la variante. Alinear por un extremo posterior inferido sirve como diagnóstico, pero no identifica la posición real del escape ni proporciona cotas.
+- La superposición lateral señala cabina más baja/adelantada y parte alta de deriva adelantada en la maqueta. Son hipótesis para contrastar con las otras vistas, no cambios automáticos de geometría.
+
+Prueba: [perfil aportado y comparación](docs/research/avanti-s-user-profile.md), original intacto, proyección verificada y regresión de cámaras de perspectiva en clon sin referencias.
+
+## 2026-10-06 · Avanti AV-02 v4: detalle y siete superposiciones
+
+- Una mejora de cabina/deriva en perfil puede empeorar otra cámara. Conservar cámaras y siete pares v3→v4 permite registrar ese compromiso: perfil mejora parcialmente, posterior alta empeora 0,7 px en muestras de cola; el lomo sigue pendiente. [Evidencia y límites](docs/research/avanti-s-refinement-v4.md).
+- Añadir placas cambia el borde más cercano en métricas de silueta aunque la planta alar no cambie. No interpretar esa reducción como mejor forma del ala. La comparación del perfil excluye explícitamente la punta de deriva todavía desalineada.
+- Las placas deben comprobarse contra triángulos transformados del alerón, no sólo su bisagra neutra. Cinco órdenes de alabeo y cortes en ambas caras de cada placa detectan una invasión deliberada; sigue siendo una prueba local muestreada.
+- Una cavidad de salida requiere quitar la tapa posterior del fuselaje. Los marcos de cabina deben seguir su visibilidad al abrir el inspector interior. ArrayMesh introduce cuantización observable (~0,019 mm en el anillo de esta salida); tolerancias de malla deben reflejarla.
+
+## 2026-10-06 · VQ-01a — la captura tiene que probar que se produjo
+
+- `timeout ... || true` más comprobar que existe un PNG aceptaba evidencia vieja. Ahora cada caso elimina sus PNG/JSON anteriores, exige salida cero, decodifica la imagen y verifica el sidecar/hash; un error retira artefactos parciales y conserva el log. El marcador del conjunto solo se publica tras las comprobaciones completas. Dos mutaciones prueban que las guardas de frescura y código de salida sí importan.
+- Separar atmósfera y campo no significa quitar el suelo: L2 mide terreno cercano/lejano y bruma. Un fixture que sobrescribe solo la construcción de suelo/pista conserva las 29 referencias; un obstáculo en la construcción del campo no se filtra al fixture. L5 aún debe compartir el campo con Home.
+- Una vista de solo cielo puede registrar cero draw calls de mallas. La vista del sol lo demostró: exigir contadores positivos rechazaba una captura válida. Se admiten ceros, con sus propios controles de imagen, y hay una prueba de ese caso.
+- El CSV incluye `created_utc`; comparar los datos de vuelo por separado evita llamar regresión a un cambio de fecha. Los datos y las 29 imágenes quedaron iguales, incluidos los cambios concurrentes del catálogo.
+- No editar un script Bash mientras se ejecuta: puede releer el resto desde un offset anterior y fallar aunque `bash -n` pase. La verificación final se hizo sobre un clon congelado; ese fallo intermedio no publicó el marcador de éxito.
+
+Prueba: [VQ-01a](docs/research/visual-quality-implementation/VQ-01a/README.md), suite del juego, 15 casos de guardado, siete experimentos de integración/métricas, dos mutaciones de guardas y 46 capturas nuevas en clon limpio. Sin cambios físicos ni relajación de límites L1–L4.
+
+## 2026-10-06 · EX-03/05/07/11, AV-03, UI-05 — tres aviones en el menú
+
+- Un catálogo de un solo archivo ([aircraft_catalog.gd](app/app_state/aircraft_catalog.gd)) con rutas como texto basta para tres aviones: la simulación lee `data` sin cargar código de render, y [render/airplane.gd](app/render/airplane.gd) es el único lugar que asocia ID → constructor → datum. Un ID desconocido o una vista previa sin datos se rechaza (salida 1), nunca se sustituye por otro avión.
+- Poner el punto de referencia aerodinámico del Extra en el **centro aerodinámico ala-fuselaje**, y no en el CG como en el Stik, hace que el modelo global y el local (post-pérdida) tengan la misma rigidez en cabeceo: el Cmα sobre el ARP es solo de cola y la transferencia al CG aporta el resto. Con el ARP en el CG, el modelo local pierde la contribución desestabilizadora del ala/fuselaje.
+- Las derivadas de amortiguamiento (Cmq, CLq, CLα̇) usan la pendiente de cola **sin** el factor de downwash (1 − dε/dα): la velocidad de cabeceo cambia el ángulo de la cola directamente. Usar la pendiente efectiva daba Cmq −4,8 en lugar de −9,1. El centro del incremento de sustentación de un alerón está al ~44 % de la cuerda local (teoría de perfil delgado), no en el alerón: ponerlo allí triplicaba Cmδa.
+- Con los recorridos altos del manual (elevador 24°), tirar a fondo a 20 m/s lleva el Extra a α ≈ 47°: pérdida, como avisa el manual («too much throw can force the plane into a stall or snap roll»). El looping se vuela con ~0,3 de palanca. Probar un «looping a fondo» habría llevado a reducir eficacias sin evidencia; la prueba describe ahora la técnica del piloto y la pérdida por separado.
+- Una prueba que compara el vuelo con predicciones calculadas desde los mismos datos no detecta datos equivocados (mutación del recorrido de alerón: pasa). La detecta la prueba cruzada con el modelo visual (`manual_throws_deg()`). Hacen falta las dos clases de prueba.
+- Las etiquetas de Godot guardan el texto fuente y traducen al dibujar: comprobar `label.atr(label.text)`, no `label.text`. Un resumen largo sin `autowrap` ensanchaba la columna lateral de Inicio en español; solo la captura lo mostró.
+- Dos errores de tipado de GDScript (`:=` sobre un valor sin tipo) llegaron a `app/` en borradores de prueba y habrían roto la ejecución de todos: los borradores se comprueban con `--check-only` fuera de `app/` antes de copiarlos.
+
+Prueba: `test_aircraft_catalog.gd` (28), `test_extra_handling.gd` (12), `test_ui_aircraft.gd` (16), `verify_avanti.gd` (137), trazas `--aircraft` en `app/test.sh`, `derive_physics.py --check` en CI; siete mutaciones en copia, todas detectadas; vuelos dorados, manejo, barrena y trim del Stik sin cambios.
+
+## 2026-10-05 · Herramientas — selección de skills Godot
+
+- Leer las instrucciones concretas cambia la selección: la skill de input exige zonas muertas radiales para sticks, mientras la emisora RC necesita canales independientes. Se dejó fuera.
+- Las guías de iluminación incluyen caminos para Compatibility y Forward+; instalar una guía no valida todos sus ejemplos para nuestro renderizador. La física float64 y los datos con procedencia siguen siendo contratos del proyecto.
+- Se instalaron seis skills con commits fijados y sin modificar sus paquetes. Prueba: 238 archivos cotejados con blobs Git, seis frontmatters y sus enlaces relativos comprobados, 17 scripts Python analizados sintácticamente. No se ejecutaron sus ejemplos. [Selección, límites y reproducción](docs/GODOT-SKILLS.md).
