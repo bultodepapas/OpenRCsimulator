@@ -1,0 +1,310 @@
+{
+  "aircraft_id": "p51d-mustang-120-v1",
+  "captures": [
+    {
+      "camera_position_m": [
+        0.0,
+        0.0,
+        -7.05000019073486
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_front.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "122e68ae943794bed97ffd2a64b4d400d4d6d2dcbc1afbb5720c54ea1c2a9d15",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -7.05000019073486,
+        0.0,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_side_left.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "8e20115caa5eb37e97927a510608032557d789f08c62667f7f62b4664aedf321",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.0,
+        7.05000019073486,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_top.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "090fd7b72fceb50eecf466a8a919e9125fa69f4ec9e668b52e526eb390635fe0",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.0,
+        -7.05000019073486,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_bottom.png",
+      "fov_deg": null,
+      "ortho_size_m": 3.384,
+      "png_sha256": "0c6dd85bdecfb52faf759a60be495c524fde7122e7aa6f6c9354227d9984a0cb",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.11500000953674,
+        1.01520001888275,
+        -1.41000008583069
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_oblique_front_left.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "da2d932d1c3a545ec4d76e9f9005af0a3bb90dfa96b78db2c895dc1f654223c9",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.97399997711182,
+        1.12800002098083,
+        2.96099996566772
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_oblique_rear_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "f6d9c6d53bc3a7f34b98d12fc42b8a91a068bea8fc459c98cb864d11aa6dbfba",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.11500000953674,
+        1.01520001888275,
+        -1.41000008583069
+      ],
+      "controls": {
+        "aileron": 1.0,
+        "elevator": 1.0,
+        "rudder": 1.0
+      },
+      "file": "inspection_oblique_front_left_full.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "94ae50218bd48849048f526ff34a66a898235940b16a7661174dfd6095350234",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.97399997711182,
+        1.12800002098083,
+        2.96099996566772
+      ],
+      "controls": {
+        "aileron": 1.0,
+        "elevator": 1.0,
+        "rudder": 1.0
+      },
+      "file": "inspection_oblique_rear_right_full.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "4a34fd9a40dee8eb955c86e1a81ba3e36316770aeded6bb819d4aa147ee3e493",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.69200003147125,
+        -0.564000010490417,
+        -1.69200015068054
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_low_front_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "ee6453dcb20a21c95575b5f0507883f38eda8fd3659613f5ca481ef474f0026b",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -0.846000015735626,
+        0.507240176200867,
+        0.0555004924535751
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "inspection_cockpit_left.png",
+      "fov_deg": 30.0,
+      "ortho_size_m": null,
+      "png_sha256": "b2335f2fc65178fa59c97397e718e7385b05cd23464ccd64555624ddb5333066",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.134928226470947,
+        0.281100481748581
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "bf5ee1852e3a377559e211cdf338182483969b36d2f9c3849f3408439ce6f26e",
+  "image_size": [
+    1280,
+    720
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry review of the first P-51D model; not a pilot readability test.",
+  "model_sha256": "a2bd2c836526b9b43cb7ba9f0dc92e23ec70cc3e34e4ecc5242f6302c99e23d4",
+  "ortho_size_m": 3.384,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "span_m": 2.82,
+  "status": "experimental: first visual model from scaled full-size dimensions",
+  "suite": "inspection",
+  "throws_deg": {
+    "aileron": 16.1,
+    "elevator": 14.7,
+    "rudder": 33.5
+  },
+  "throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
+  "visual_revision": "p51d-mustang-120-v1"
+}

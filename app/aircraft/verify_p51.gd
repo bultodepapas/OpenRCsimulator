@@ -12,6 +12,9 @@ extends SceneTree
 
 const P51 := preload("res://aircraft/p51d_model.gd")
 const Stik := preload("res://aircraft/ugly_stik_model.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
+const Commands := preload("res://input/commands.gd")
+const Clearance := preload("res://aircraft/extra_clearance.gd") # generic mesh-pair clearance checker (EX-04), by mesh name
 const D: Dictionary = preload("res://aircraft/p51d_geometry.gd").DATA
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
@@ -253,6 +256,44 @@ func _run() -> void:
 	_check("fin height", absf(highs.fin - float(t.fin_top_y)) < 0.005 and absf(highs.rudder - float(t.fin_top_y)) < 0.01, "%.4f / %.4f" % [highs.fin, highs.rudder])
 	var stab_box := _bounds(root, [meshes.filter(func(m): return m.name == "stab")[0]] as Array[MeshInstance3D])
 	_check("stab span", absf(stab_box.size.x - 2.0 * float(t.stab_half_span)) < 0.005, "%.4f" % stab_box.size.x)
+	# V01: tail shapes from the measured outlines. Fin LE monotone (no loops), stab tip rounded in plan, elevator horn
+	# balance ahead of the hinge at the tip, and clearances of rudder/elevators against their neighbours at the flown
+	# throws and at 45 deg (same checker as the Extra, tail pairs only).
+	var fin_mesh: MeshInstance3D = meshes.filter(func(m): return m.name == "fin")[0]
+	var le_ok := true
+	var prev_z := -INF
+	for y_step in 12:
+		var y := lerpf(lows.fin + 0.01, highs.fin - 0.02, float(y_step) / 11.0)
+		var z_min := INF
+		for v in _vertices(root, fin_mesh):
+			if absf(v.y - y) < 0.004: z_min = minf(z_min, v.z)
+		if z_min < prev_z - 0.002: le_ok = false
+		if z_min < INF: prev_z = z_min
+	_check("fin leading edge sweeps aft monotonically with height", le_ok)
+	var tip_corner := 0
+	var stab_mesh: MeshInstance3D = meshes.filter(func(m): return m.name == "stab")[0]
+	var plan_tip: Array = P51._stab_plan(float(t.stab_half_span) - 0.002)
+	var plan_mid: Array = P51._stab_plan(0.5 * float(t.stab_half_span))
+	_check("stab tip rounded in plan (tip chord < 40 % of mid chord)", (plan_tip[1] - plan_tip[0]) < 0.4 * (plan_mid[1] - plan_mid[0]), "%.3f vs %.3f" % [plan_tip[1] - plan_tip[0], plan_mid[1] - plan_mid[0]])
+	for v in _vertices(root, stab_mesh):
+		if absf(v.x) > float(t.stab_half_span) - 0.001 and v.z < plan_tip[0] - 0.01: tip_corner += 1
+	_check("no stab vertex ahead of the rounded tip", tip_corner == 0, str(tip_corner))
+	var horn_ahead := 0
+	var hinge_z_frame := 0.0
+	for m in meshes:
+		if m.name == "elevator_right":
+			for v in _vertices(root, m):
+				var s_frac: float = absf(v.x) / float(t.stab_half_span)
+				var plan_v: Array = P51._stab_plan(absf(v.x))
+				var frac: float = (v.z - plan_v[0]) / (plan_v[1] - plan_v[0])
+				if s_frac > float(t.elevator_horn.span_from_fraction) + 0.02 and frac < float(t.elevator_hinge_fraction) - 0.05: horn_ahead += 1
+	_check("elevator horn balance reaches ahead of the hinge line at the tip", horn_ahead > 0, str(horn_ahead))
+	# Hinge clearances live in verify_p51_clearance.gd (the Extra's checker needs ~5 s per pose and pair on these lofts).
+	var fus_max_z := -INF
+	for m in meshes:
+		if m.name == "fuselage":
+			for v in _vertices(root, m): fus_max_z = maxf(fus_max_z, v.z)
+	_check("tail cone ends ahead of the rudder hinge", fus_max_z < float(t.rudder_hinge_z) - 0.002, "%.4f vs hinge %.4f" % [fus_max_z, t.rudder_hinge_z])
 	var crown := -INF
 	for p in D.canopy.top: crown = maxf(crown, p[1])
 	_check("canopy crown", absf(highs.canopy - crown) < 0.004, "%.4f vs %.4f" % [highs.canopy, crown])

@@ -105,6 +105,12 @@ def main():
             "rudder_te_bottom": [L(t["rudder_te_bottom"][0]), L(t["rudder_te_bottom"][1])],
             "fin_thickness": L(t["fin_thickness_ratio"] * t["fin_top_chord"] * 1.6),
             "hinge_gap": 0.003,
+            # V01 (measured outlines, scaled): tail upper/lower contours [z, y] and stab planform [x, z]
+            "upper_outline": [[L(z), L(y)] for z, y in t["upper_outline"]],
+            "lower_outline": [[L(z), L(y)] for z, y in t["lower_outline"]],
+            "stab_planform": {"le": [[L(x), L(z)] for x, z in t["stab_planform"]["le"]], "te": [[L(x), L(z)] for x, z in t["stab_planform"]["te"]]},
+            "elevator_horn": t["elevator_horn"],
+            "stab_tip_round": L(t["stab_tip_round"]),
         },
         "gear": {
             "main_axle": [L(g["main_axle"][0]), L(g["main_axle"][1])],

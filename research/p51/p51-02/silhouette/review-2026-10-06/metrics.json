@@ -1,9 +1,9 @@
 {
   "schema": "openrc-silhouette-review-v1",
-  "label": "Revisi\u00f3n 1 (2026-10-06): estaciones de fuselaje, cabina, toma ventral, cola, cono y tren medidos en la tres vistas; antes = primera maqueta a ojo",
-  "fit_sha256": "86ec302d28e1fd2382b9c3217a3584e79a50a67c30f5ec49433713ec9514040c",
+  "label": "Revisi\u00f3n 1 (2026-10-06): estaciones de fuselaje, cabina, toma ventral (boca en escal\u00f3n), cola, cono y tren medidos en la tres vistas; antes = primera maqueta a ojo",
+  "fit_sha256": "6ec5d52fae86c31288c4418a4435bbe025e2ce58e2b7ae7440fd2d05e5052385",
   "candidate": {
-    "geometry_sha256": "d1a4267ccece016d438e0b96137521bd4a0e493e9c793c84d418f705ac296780",
+    "geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
     "model_sha256": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
     "visual_revision": "p51d-mustang-120-v1"
   },
@@ -15,19 +15,19 @@
   "views": {
     "side": {
       "after": {
-        "real_to_model_mean_px": 7.755835870634886,
-        "real_to_model_p90_px": 16.149298636442232,
-        "model_to_real_mean_px": 17.296287054734712,
-        "model_to_real_p90_px": 51.21130548079983,
-        "iou": 0.8705509174615063,
-        "mean_mm_model": 15.82126153826358,
+        "real_to_model_mean_px": 7.725331937054931,
+        "real_to_model_p90_px": 16.099612397277703,
+        "model_to_real_mean_px": 17.206755934642764,
+        "model_to_real_p90_px": 51.0,
+        "iou": 0.8712566027611747,
+        "mean_mm_model": 15.75903604520724,
         "real_to_model_bins_px": [
           3.5419223774640076,
           2.5265946842873537,
           7.274602023841268,
-          5.591624563024291,
-          3.522248258871561,
-          19.90748618685064,
+          5.317351072418891,
+          3.542795063530263,
+          19.904464219464234,
           9.272805073251773,
           6.910899540755417
         ]
@@ -53,12 +53,12 @@
     },
     "front": {
       "after": {
-        "real_to_model_mean_px": 13.536452242709904,
+        "real_to_model_mean_px": 13.63552845667666,
         "real_to_model_p90_px": 36.11369398381303,
-        "model_to_real_mean_px": 20.33947863650952,
-        "model_to_real_p90_px": 59.79243577274084,
-        "iou": 0.4642919473629097,
-        "mean_mm_model": 27.422985146869202,
+        "model_to_real_mean_px": 20.433242657362165,
+        "model_to_real_p90_px": 59.0,
+        "iou": 0.45039966490976996,
+        "mean_mm_model": 27.623699890681163,
         "real_to_model_bins_px": [
           3.682905398652561,
           5.0291290407831,
@@ -67,7 +67,7 @@
           22.69366096984065,
           13.777132899056843,
           28.899499320014947,
-          7.032551671546682
+          7.390295614591423
         ]
       },
       "before": {

@@ -30,6 +30,10 @@ Documentation-only changes need link and content checks; they do not require rer
 
 Record useful research in `docs/`, with original sources, limitations and a reproducible experiment when practical. Pin dependency versions. Include license, provenance and processing steps for any third-party asset; a free download alone does not establish redistribution rights. Keep reference scans with unclear redistribution rights out of commits.
 
+## Documentation
+
+Start at the [documentation map](docs/README.md): it names the canonical document for each question, lists every track, plan and step-ID prefix with the paths each owns, and states the writing conventions. In short: one language per file; every plan carries a date, revision, status line and step-ID prefix; a step's status lives in its plan and ROADMAP.md keeps one line per track; evidence folders are named after the step they prove; never link the gitignored `references/` or `app/captures/` folders as if they were in the repository. Research reports go under `docs/research/` and are listed in its [index](docs/research/README.md).
+
 ## Releases
 
 `app/export.sh` builds and smoke-tests packages for all three platforms. CI exports `main` and `v*` tags; a `v*` tag also publishes a GitHub prerelease using `docs/releases/<tag>.md`. Release tags identify the tested code and must stay fixed. Later documentation improvements belong in a new commit.

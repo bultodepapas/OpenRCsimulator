@@ -1,5 +1,5 @@
 {
-	"calibration_geometry_sha256": "d1a4267ccece016d438e0b96137521bd4a0e493e9c793c84d418f705ac296780",
+	"calibration_geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
 	"captures": [
 		{
 			"anchor_max_error_px": 0.00006103515625,
@@ -15,7 +15,7 @@
 			},
 			"file": "side.png",
 			"id": "side",
-			"sha256": "cf3eaa5d279ac788aa36afb66479721b8917073976980eb1f3024667b1974f5e"
+			"sha256": "f9dd1e58d1efb6490df208693c9674391f1483918d8553ba2b0bda6dcbd43789"
 		},
 		{
 			"anchor_max_error_px": 0.780487060696032,
@@ -31,7 +31,7 @@
 			},
 			"file": "front.png",
 			"id": "front",
-			"sha256": "8294be6c843386a53fe60a65735ea769e67746d778c2755bd21f4ffb7a004d21"
+			"sha256": "571c4fd944a9aae24c6aca80b28a6893726c6f20266baa83398d18f07ce0bc53"
 		},
 		{
 			"anchor_max_error_px": 0.0000152587890625,
@@ -51,8 +51,8 @@
 		}
 	],
 	"comparison_with_frozen_camera": false,
-	"fit_sha256": "86ec302d28e1fd2382b9c3217a3584e79a50a67c30f5ec49433713ec9514040c",
-	"geometry_sha256": "d1a4267ccece016d438e0b96137521bd4a0e493e9c793c84d418f705ac296780",
+	"fit_sha256": "6ec5d52fae86c31288c4418a4435bbe025e2ce58e2b7ae7440fd2d05e5052385",
+	"geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
 	"godot": "4.7.2-stable (official)",
 	"model_sha256": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
 	"visual_revision": "p51d-mustang-120-v1"

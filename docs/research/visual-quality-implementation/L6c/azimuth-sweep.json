@@ -1,0 +1,706 @@
+{
+ "format": "openrc-l6c-azimuth-sweep v1",
+ "note": "Design-time sweeps on the committed L6b treeline (seed 610602): wide 50-degree scans with/without trees at 1.6 deg elevation, then game-view probes (autozoom) per elevation. Composition = share of the 6 px ring around the airplane. Not part of capture.sh.",
+ "probes": {
+  "azimuth_0": {
+   "elevations_deg": {
+    "-0.5": {
+     "fov_deg": 20.71,
+     "horizon_row": 342.8,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.9794,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.0,
+        "trees": 0.0206
+       },
+       "delta_e": 57.52,
+       "delta_e_p10": 14.2,
+       "pixels": 94,
+       "share_low_contrast": 0.1489,
+       "weber_contrast": 0.5702
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.8993,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.0819,
+        "trees": 0.0188
+       },
+       "delta_e": 67.76,
+       "delta_e_p10": 30.16,
+       "pixels": 289,
+       "share_low_contrast": 0.2457,
+       "weber_contrast": 0.0238
+      },
+      "level": {
+       "background": {
+        "ground": 0.9798,
+        "other": 0.0,
+        "pixels": 643,
+        "sky": 0.0,
+        "trees": 0.0202
+       },
+       "delta_e": 55.66,
+       "delta_e_p10": 12.78,
+       "pixels": 97,
+       "share_low_contrast": 0.3196,
+       "weber_contrast": 0.6232
+      }
+     }
+    },
+    "1.0": {
+     "fov_deg": 20.71,
+     "horizon_row": 394.4,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.1237,
+        "trees": 0.8763
+       },
+       "delta_e": 50.62,
+       "delta_e_p10": 11.19,
+       "pixels": 94,
+       "share_low_contrast": 0.0851,
+       "weber_contrast": 0.3245
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.2467,
+        "trees": 0.7533
+       },
+       "delta_e": 59.78,
+       "delta_e_p10": 20.5,
+       "pixels": 288,
+       "share_low_contrast": 0.0868,
+       "weber_contrast": -0.1318
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 641,
+        "sky": 0.2075,
+        "trees": 0.7925
+       },
+       "delta_e": 50.6,
+       "delta_e_p10": 12.59,
+       "pixels": 99,
+       "share_low_contrast": 0.0202,
+       "weber_contrast": -0.0554
+      }
+     }
+    },
+    "1.3": {
+     "fov_deg": 20.71,
+     "horizon_row": 404.7,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 678,
+        "sky": 0.1873,
+        "trees": 0.8127
+       },
+       "delta_e": 50.89,
+       "delta_e_p10": 11.37,
+       "pixels": 96,
+       "share_low_contrast": 0.1042,
+       "weber_contrast": -0.0112
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.3186,
+        "trees": 0.6814
+       },
+       "delta_e": 61.07,
+       "delta_e_p10": 25.37,
+       "pixels": 288,
+       "share_low_contrast": 0.0556,
+       "weber_contrast": -0.2594
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 640,
+        "sky": 0.3797,
+        "trees": 0.6203
+       },
+       "delta_e": 48.58,
+       "delta_e_p10": 7.81,
+       "pixels": 100,
+       "share_low_contrast": 0.09,
+       "weber_contrast": -0.3102
+      }
+     }
+    },
+    "1.6": {
+     "fov_deg": 20.71,
+     "horizon_row": 415.0,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 680,
+        "sky": 0.3338,
+        "trees": 0.6662
+       },
+       "delta_e": 51.86,
+       "delta_e_p10": 11.44,
+       "pixels": 97,
+       "share_low_contrast": 0.1237,
+       "weber_contrast": -0.3588
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.4381,
+        "trees": 0.5619
+       },
+       "delta_e": 62.55,
+       "delta_e_p10": 24.18,
+       "pixels": 288,
+       "share_low_contrast": 0.0417,
+       "weber_contrast": -0.3616
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 640,
+        "sky": 0.5141,
+        "trees": 0.4859
+       },
+       "delta_e": 46.75,
+       "delta_e_p10": 7.8,
+       "pixels": 100,
+       "share_low_contrast": 0.2,
+       "weber_contrast": -0.3765
+      }
+     }
+    },
+    "2.0": {
+     "fov_deg": 20.71,
+     "horizon_row": 428.8,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.4772,
+        "trees": 0.5228
+       },
+       "delta_e": 45.24,
+       "delta_e_p10": 7.96,
+       "pixels": 99,
+       "share_low_contrast": 0.202,
+       "weber_contrast": -0.4028
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 905,
+        "sky": 0.5845,
+        "trees": 0.4155
+       },
+       "delta_e": 62.96,
+       "delta_e_p10": 25.04,
+       "pixels": 287,
+       "share_low_contrast": 0.0557,
+       "weber_contrast": -0.4968
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 640,
+        "sky": 0.5031,
+        "trees": 0.4969
+       },
+       "delta_e": 47.5,
+       "delta_e_p10": 7.81,
+       "pixels": 100,
+       "share_low_contrast": 0.24,
+       "weber_contrast": -0.3951
+      }
+     }
+    },
+    "2.3": {
+     "fov_deg": 20.71,
+     "horizon_row": 439.1,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.5184,
+        "trees": 0.4816
+       },
+       "delta_e": 45.41,
+       "delta_e_p10": 8.03,
+       "pixels": 99,
+       "share_low_contrast": 0.1717,
+       "weber_contrast": -0.4029
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.5487,
+        "trees": 0.4513
+       },
+       "delta_e": 62.48,
+       "delta_e_p10": 25.05,
+       "pixels": 288,
+       "share_low_contrast": 0.0451,
+       "weber_contrast": -0.4697
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 639,
+        "sky": 0.5399,
+        "trees": 0.4601
+       },
+       "delta_e": 46.91,
+       "delta_e_p10": 8.08,
+       "pixels": 101,
+       "share_low_contrast": 0.1485,
+       "weber_contrast": -0.3988
+      }
+     }
+    }
+   },
+   "view": "game (autozoom)"
+  },
+  "azimuth_9": {
+   "elevations_deg": {
+    "-0.5": {
+     "fov_deg": 20.71,
+     "horizon_row": 342.8,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.8262,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.0,
+        "trees": 0.1738
+       },
+       "delta_e": 58.15,
+       "delta_e_p10": 13.83,
+       "pixels": 94,
+       "share_low_contrast": 0.0851,
+       "weber_contrast": 0.7482
+      },
+      "inverted": {
+       "background": {
+        "ground": 0.8149,
+        "other": 0.0,
+        "pixels": 643,
+        "sky": 0.0,
+        "trees": 0.1851
+       },
+       "delta_e": 57.6,
+       "delta_e_p10": 11.54,
+       "pixels": 99,
+       "share_low_contrast": 0.1414,
+       "weber_contrast": 0.8521
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.729,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.0111,
+        "trees": 0.26
+       },
+       "delta_e": 65.39,
+       "delta_e_p10": 30.01,
+       "pixels": 289,
+       "share_low_contrast": 0.0727,
+       "weber_contrast": 0.7019
+      },
+      "level": {
+       "background": {
+        "ground": 0.8569,
+        "other": 0.0,
+        "pixels": 643,
+        "sky": 0.0,
+        "trees": 0.1431
+       },
+       "delta_e": 56.43,
+       "delta_e_p10": 12.96,
+       "pixels": 97,
+       "share_low_contrast": 0.2474,
+       "weber_contrast": 0.7806
+      }
+     }
+    },
+    "10": {
+     "fov_deg": 20.71,
+     "horizon_row": 707.5,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 698,
+        "sky": 1.0,
+        "trees": 0.0
+       },
+       "delta_e": 44.44,
+       "delta_e_p10": 10.28,
+       "pixels": 115,
+       "share_low_contrast": 0.0696,
+       "weber_contrast": -0.4732
+      },
+      "inverted": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 672,
+        "sky": 1.0,
+        "trees": 0.0
+       },
+       "delta_e": 43.54,
+       "delta_e_p10": 9.01,
+       "pixels": 119,
+       "share_low_contrast": 0.0672,
+       "weber_contrast": -0.4749
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 917,
+        "sky": 1.0,
+        "trees": 0.0
+       },
+       "delta_e": 57.5,
+       "delta_e_p10": 11.42,
+       "pixels": 286,
+       "share_low_contrast": 0.0524,
+       "weber_contrast": -0.5202
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 672,
+        "sky": 1.0,
+        "trees": 0.0
+       },
+       "delta_e": 48.45,
+       "delta_e_p10": 9.03,
+       "pixels": 119,
+       "share_low_contrast": 0.0756,
+       "weber_contrast": -0.5058
+      }
+     }
+    },
+    "2.3": {
+     "fov_deg": 20.71,
+     "horizon_row": 439.1,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 679,
+        "sky": 0.0015,
+        "trees": 0.9985
+       },
+       "delta_e": 54.83,
+       "delta_e_p10": 13.48,
+       "pixels": 99,
+       "share_low_contrast": 0.0808,
+       "weber_contrast": 0.6088
+      },
+      "inverted": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 641,
+        "sky": 0.0031,
+        "trees": 0.9969
+       },
+       "delta_e": 55.68,
+       "delta_e_p10": 14.37,
+       "pixels": 101,
+       "share_low_contrast": 0.0792,
+       "weber_contrast": 0.7387
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.0022,
+        "trees": 0.9978
+       },
+       "delta_e": 65.4,
+       "delta_e_p10": 30.62,
+       "pixels": 288,
+       "share_low_contrast": 0.0486,
+       "weber_contrast": 0.7009
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 639,
+        "sky": 0.0031,
+        "trees": 0.9969
+       },
+       "delta_e": 56.08,
+       "delta_e_p10": 13.53,
+       "pixels": 101,
+       "share_low_contrast": 0.1188,
+       "weber_contrast": 0.6866
+      }
+     }
+    },
+    "4.1": {
+     "fov_deg": 20.71,
+     "horizon_row": 501.3,
+     "poses": {
+      "climb": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 694,
+        "sky": 0.2205,
+        "trees": 0.7795
+       },
+       "delta_e": 54.34,
+       "delta_e_p10": 9.62,
+       "pixels": 104,
+       "share_low_contrast": 0.0673,
+       "weber_contrast": -0.1323
+      },
+      "inverted": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 652,
+        "sky": 0.316,
+        "trees": 0.684
+       },
+       "delta_e": 53.95,
+       "delta_e_p10": 10.81,
+       "pixels": 106,
+       "share_low_contrast": 0.0755,
+       "weber_contrast": -0.1857
+      },
+      "knife_left": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 904,
+        "sky": 0.3761,
+        "trees": 0.6239
+       },
+       "delta_e": 63.81,
+       "delta_e_p10": 18.92,
+       "pixels": 289,
+       "share_low_contrast": 0.0519,
+       "weber_contrast": -0.2737
+      },
+      "level": {
+       "background": {
+        "ground": 0.0,
+        "other": 0.0,
+        "pixels": 663,
+        "sky": 0.3002,
+        "trees": 0.6998
+       },
+       "delta_e": 50.1,
+       "delta_e_p10": 9.39,
+       "pixels": 106,
+       "share_low_contrast": 0.0849,
+       "weber_contrast": -0.1496
+      }
+     }
+    }
+   },
+   "view": "game (autozoom)"
+  }
+ },
+ "scan": {
+  "look_az0": {
+   "band_deg": [
+    0.4,
+    2.6
+   ],
+   "candidates": [
+    {
+     "azimuth_deg": 0.5,
+     "coverage_0.4_2.6_deg": 0.87,
+     "solid_band_deg": [
+      1.01,
+      3.6
+     ]
+    },
+    {
+     "azimuth_deg": 8.8,
+     "coverage_0.4_2.6_deg": 0.99,
+     "solid_band_deg": [
+      0.49,
+      4.12
+     ]
+    },
+    {
+     "azimuth_deg": -10.9,
+     "coverage_0.4_2.6_deg": 0.91,
+     "solid_band_deg": [
+      0.93,
+      2.34
+     ]
+    },
+    {
+     "azimuth_deg": 11.5,
+     "coverage_0.4_2.6_deg": 0.94,
+     "solid_band_deg": [
+      0.86,
+      2.56
+     ]
+    },
+    {
+     "azimuth_deg": 13.5,
+     "coverage_0.4_2.6_deg": 0.89,
+     "solid_band_deg": [
+      0.93,
+      3.45
+     ]
+    },
+    {
+     "azimuth_deg": 16.5,
+     "coverage_0.4_2.6_deg": 0.92,
+     "solid_band_deg": [
+      0.64,
+      2.27
+     ]
+    },
+    {
+     "azimuth_deg": -16.5,
+     "coverage_0.4_2.6_deg": 0.85,
+     "solid_band_deg": [
+      1.01,
+      2.56
+     ]
+    },
+    {
+     "azimuth_deg": 18.9,
+     "coverage_0.4_2.6_deg": 0.96,
+     "solid_band_deg": [
+      0.78,
+      2.86
+     ]
+    }
+   ],
+   "elevation_deg": 1.6,
+   "fov_deg": 50.0,
+   "tree_pixels": 14204,
+   "window_px": 13
+  },
+  "look_az180": {
+   "band_deg": [
+    0.4,
+    2.6
+   ],
+   "candidates": [
+    {
+     "azimuth_deg": 180.2,
+     "coverage_0.4_2.6_deg": 0.96,
+     "solid_band_deg": [
+      -0.11,
+      2.71
+     ]
+    },
+    {
+     "azimuth_deg": 181.9,
+     "coverage_0.4_2.6_deg": 1.0,
+     "solid_band_deg": [
+      -0.11,
+      2.56
+     ]
+    },
+    {
+     "azimuth_deg": 183.4,
+     "coverage_0.4_2.6_deg": 0.96,
+     "solid_band_deg": [
+      0.64,
+      3.6
+     ]
+    },
+    {
+     "azimuth_deg": 175.6,
+     "coverage_0.4_2.6_deg": 0.97,
+     "solid_band_deg": [
+      -0.18,
+      3.01
+     ]
+    },
+    {
+     "azimuth_deg": 189.2,
+     "coverage_0.4_2.6_deg": 0.97,
+     "solid_band_deg": [
+      0.64,
+      2.42
+     ]
+    },
+    {
+     "azimuth_deg": 170.3,
+     "coverage_0.4_2.6_deg": 0.95,
+     "solid_band_deg": [
+      0.86,
+      2.71
+     ]
+    },
+    {
+     "azimuth_deg": 166.0,
+     "coverage_0.4_2.6_deg": 0.96,
+     "solid_band_deg": [
+      -0.18,
+      3.01
+     ]
+    },
+    {
+     "azimuth_deg": 161.3,
+     "coverage_0.4_2.6_deg": 0.92,
+     "solid_band_deg": [
+      0.86,
+      2.27
+     ]
+    }
+   ],
+   "elevation_deg": 1.6,
+   "fov_deg": 50.0,
+   "tree_pixels": 23789,
+   "window_px": 13
+  }
+ }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "file": "rc-field.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Model_aircraft_airfield_-_geograph.org.uk_-_2843002.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Model_aircraft_airfield_-_geograph.org.uk_-_2843002.jpg",
+    "author": "Robin Webster",
+    "title": "Model aircraft airfield",
+    "date": "2012-03-11",
+    "sha256": "eec7e550713404f8d14bf1a30056e04cdc189ae8f71bea55d0c0ba9a88d4ab3c",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "downloaded_utc": "2026-10-06",
+    "changes": "none"
+  },
+  {
+    "file": "extra-finish.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/e/e0/N763DT_Extra_EA-300L.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:N763DT_Extra_EA-300L.jpg",
+    "author": "Tomás Del Coro",
+    "title": "N763DT Extra EA-300L",
+    "date": "2022-05-12",
+    "sha256": "55b67cc4cd49a4ca0710021ec012aa2efd8b0b62aafcc62c6d597c59c1b7d253",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "downloaded_utc": "2026-10-06",
+    "changes": "none"
+  }
+]

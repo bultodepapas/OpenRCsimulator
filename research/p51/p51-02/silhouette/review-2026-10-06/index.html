@@ -5,15 +5,15 @@ h1{font-size:24px}h2{font-size:16px;font-weight:500;color:#a8d8e0}p{line-height:
 button,select{font:inherit;padding:8px;background:#274357;color:inherit;border:1px solid #7698a9;border-radius:6px}button[aria-pressed=true]{background:#096b70}
 .stage{width:100%;height:auto;display:block;background:#f4f1ea;border-radius:6px}small{color:#a8bfcd}input{accent-color:#2ae1d4}
 </style><main><h1>P-51D 1/4 · siluetas del modelo sobre la tres vistas oficial (AN 01-60-3, dominio público)</h1>
-<p>Revisión 1 (2026-10-06): estaciones de fuselaje, cabina, toma ventral, cola, cono y tren medidos en la tres vistas; antes = primera maqueta a ojo. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
+<p>Revisión 1 (2026-10-06): estaciones de fuselaje, cabina, toma ventral (boca en escalón), cola, cono y tren medidos en la tres vistas; antes = primera maqueta a ojo. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
 <div class="controls"><button data-mode="both" aria-pressed="true">Superponer</button><button data-mode="photo" aria-pressed="false">Solo dibujo</button><button data-mode="model" aria-pressed="false">Solo modelo</button>
 <label>Opacidad <input id="opacity" type="range" min="0" max="100" value="45"><output id="value">45%</output></label><label><input id="contour" type="checkbox"> Contorno</label><label><input id="before" type="checkbox"> Mostrar «antes»</label></div>
 <svg width="0" height="0" style="position:absolute"><defs><filter id="edge"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="inner"/><feComposite in="SourceAlpha" in2="inner" operator="out"/></filter>
 <filter id="tint"><feColorMatrix type="matrix" values="1 0 0 0 0.9  0 0 0 0 0.1  0 0 0 0 0.6  0 0 0 1 0"/></filter></defs></svg>
-<section><h2>Perfil · AN 01-60-3 · real→modelo 7.8 px (p90 16.1), IoU 0.871 · antes 22.4 px, IoU 0.681</h2>
+<section><h2>Perfil · AN 01-60-3 · real→modelo 7.7 px (p90 16.1), IoU 0.871 · antes 22.4 px, IoU 0.681</h2>
 <svg class="stage" viewBox="0 0 1905 495" role="img"><image class="photo" href="drawing_side.png" width="1905" height="495"/>
 <image class="before" href="../renders-before/side.png" width="1905" height="495" opacity="0" style="filter:url(#tint)"/>
-<image class="after" href="../renders-after/side.png" width="1905" height="495" opacity=".45"/></svg></section><section><h2>Frontal · AN 01-60-3 (mitad izquierda) · real→modelo 13.5 px (p90 36.1), IoU 0.464 · antes 21.6 px, IoU 0.446</h2>
+<image class="after" href="../renders-after/side.png" width="1905" height="495" opacity=".45"/></svg></section><section><h2>Frontal · AN 01-60-3 (mitad izquierda) · real→modelo 13.6 px (p90 36.1), IoU 0.450 · antes 21.6 px, IoU 0.446</h2>
 <svg class="stage" viewBox="0 0 1550 595" role="img"><image class="photo" href="drawing_front.png" width="1550" height="595"/>
 <image class="before" href="../renders-before/front.png" width="1550" height="595" opacity="0" style="filter:url(#tint)"/>
 <image class="after" href="../renders-after/front.png" width="1550" height="595" opacity=".45"/></svg></section><section><h2>Planta · AN 01-60-3 · real→modelo 15.0 px (p90 51.1), IoU 0.827 · antes 31.3 px, IoU 0.603</h2>

@@ -1,0 +1,108 @@
+{
+  "answer_key": "key/answer-key.json",
+  "answer_key_sha256": "b31086deb2954a686f205932a2e96c11b6b8f6ffad7b34791260fa62a3e61c77",
+  "distance_m": 100.0,
+  "format": "openrc-l6c-kit v1",
+  "images": [
+    {
+      "image": "01.png",
+      "sha256": "e6e9cd95259c9bdaab9128b1152b23e75ef47102c01c3cca3ab0f54626750935"
+    },
+    {
+      "image": "02.png",
+      "sha256": "8145f9e5e8f80a84aaa6d96c5afecb5d7badb8bf140abed34790a035fb5e2dd7"
+    },
+    {
+      "image": "03.png",
+      "sha256": "177151f758f924ea0dda039add131cec090f6ca295946a20c1d140fe565d07db"
+    },
+    {
+      "image": "04.png",
+      "sha256": "b8278307415626868eaf3e69e47a42aef19fb1145c1fb35b78acf434d2aaf520"
+    },
+    {
+      "image": "05.png",
+      "sha256": "bd51d0f13660c21274b1d1d6aa9b4499cf4c1bd2207ea2dec909ca273b7d31c9"
+    },
+    {
+      "image": "06.png",
+      "sha256": "e0a98a90f754403252dc1bd24b6d9a97e2c4fa4e2f7caa28903761d929fe03c3"
+    },
+    {
+      "image": "07.png",
+      "sha256": "e51c2bac30682d39ebbc4e7babc669d6a1865817705f00235b914444a4e35f6a"
+    },
+    {
+      "image": "08.png",
+      "sha256": "1af477a9b6ca5a8a86eca84207c0df2855e43b4356128623293fdd8e2656fd4d"
+    },
+    {
+      "image": "09.png",
+      "sha256": "963d89aff0f4af1e4a64aea7e83747d48dc6bd9a68f179c9f72fc507b2d7ba4c"
+    },
+    {
+      "image": "10.png",
+      "sha256": "568ccb58c5b687601d70187e0dc6abcc748f96e406fd7e6bbb0f2317610701b1"
+    },
+    {
+      "image": "11.png",
+      "sha256": "e89fb733664457b496b6c6641e2e82fc1d41d6b3eebccdd990c22e9e8d514c95"
+    },
+    {
+      "image": "12.png",
+      "sha256": "7dcea8386e5899492e1eecbfaf3d3be10d690388612e125eae8fa276d7639b1c"
+    },
+    {
+      "image": "13.png",
+      "sha256": "ec8aa9ac96bb16b481fe37e5fb94f5e7264871e1fd6ebe462e37173eb9abd3e8"
+    },
+    {
+      "image": "14.png",
+      "sha256": "e08c37ab9caecaaea69044727b7f2365dba68ab2788a3aeae31205a67600da94"
+    },
+    {
+      "image": "15.png",
+      "sha256": "41e497396a05305a5bf28afd2837d9644614743f260ffba7b67d7a5ade69163c"
+    },
+    {
+      "image": "16.png",
+      "sha256": "2bf06fe2161eed336c2784b9a01fe35e0bc5aaa218a0cb295c64017598205068"
+    },
+    {
+      "image": "17.png",
+      "sha256": "94e972261f4412fcf653875a34b0009b15c8eab72a90c093de5ce4682f77ff98"
+    },
+    {
+      "image": "18.png",
+      "sha256": "a67bc4fa0d791999b455e2b158e8726be0ad5f903f01b57ed68b888b2609310a"
+    },
+    {
+      "image": "19.png",
+      "sha256": "bee83a50052072b1267ed5c990e08bfcd2b55870c56134a00ffb7e9f96194cb2"
+    },
+    {
+      "image": "20.png",
+      "sha256": "cc796ae5b593bf5a9b8c68c1f3fef585c167ac27119a7edbd90f88d32e6184a6"
+    },
+    {
+      "image": "21.png",
+      "sha256": "752c43b52ec40a2021b590c118916b437c40440016f0e8f5c5fa2b15386b9ac9"
+    },
+    {
+      "image": "22.png",
+      "sha256": "3b532283493602fd02dd211281dbea86234b3dca8e86e6c56ff292fa98b7518a"
+    },
+    {
+      "image": "23.png",
+      "sha256": "784ea58fd18712f942f22a0ba67a09b9af62e06eeb175fcaaf22939cefca43cd"
+    },
+    {
+      "image": "24.png",
+      "sha256": "0952993f0c739ef6abaf7cace941d1da6bdf484d7e4a2c83da54e88f0d7b45d2"
+    }
+  ],
+  "pass_correct": 22,
+  "responses_template": "responses-template.csv",
+  "view": "game",
+  "viewer": "index.html"
+}

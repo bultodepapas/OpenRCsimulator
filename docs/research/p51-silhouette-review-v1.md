@@ -1,6 +1,6 @@
 # P-51D · revisión 1 por siluetas sobre la tres vistas oficial
 
-2026-10-06 · Geometría `p51d-mustang-120-v1` tras aplicar la metrología; comparación con la primera maqueta (cotas a ojo). [Visor antes/después](../../research/p51/p51-02/silhouette/review-2026-10-06/index.html) · [métricas](../../research/p51/p51-02/silhouette/review-2026-10-06/metrics.json) · [metrología](../../research/p51/p51-02/silhouette/metrology.json) · [método y reproducción](../../research/p51/p51-02/silhouette/README.md) · [renders del inspector v6](../../research/p51/p51-02/review-2026-10-06-v6/).
+2026-10-06 · Geometría `p51d-mustang-120-v1` tras aplicar la metrología; comparación con la primera maqueta (cotas a ojo). [Visor antes/después](../../research/p51/p51-02/silhouette/review-2026-10-06/index.html) · [métricas](../../research/p51/p51-02/silhouette/review-2026-10-06/metrics.json) · [metrología](../../research/p51/p51-02/silhouette/metrology.json) · [método y reproducción](../../research/p51/p51-02/silhouette/README.md) · [renders del inspector v6](../../research/p51/p51-02/review-2026-10-06-measured/).
 
 ## Método
 
@@ -42,12 +42,26 @@ Los grupos medidos pasan de *estimated* a *measured* en `source.json`; siguen es
 
 Al regenerar los datos (`research/p51/p51-05/derive_physics.py`) con la nueva geometría: el morro largo adelanta motor, baterías y depósito, de modo que el inventario equilibra en el 27 % MAC con **0,21 kg** de lastre virtual (antes 1,66 kg), coherente con lo que reportan los constructores de P-51 de 1/4 con DA-120; masa de vuelo 18,2 kg; el brazo de cola más corto baja el margen estático de 15,1 a **12,2 % MAC**; pérdida 13,6 m/s, arranque 22 m/s. `tests/test_p51_handling.gd` 15/15, `tests/test_aircraft_catalog.gd` 34/34, `aircraft/verify_p51.gd` 126/126.
 
+## Comparación con la foto oblicua del usuario
+
+El propietario aportó un recorte con alpha de un P-51D real («Val-Halla», cola roja) en oblicua baja frontal con tren abajo. Es el caso de las fotos del Avanti: seis puntos marcados (ápice del cono, puntas alares, cima de la deriva, apoyo de las dos ruedas), cámara en perspectiva ajustada con el campo de visión libre (teleobjetivo: queda en el límite de 4°, distancia y FOV no se separan), render transparente a 1579 × 996 y superposición. Herramientas en [`silhouette/photo/`](../../research/p51/p51-02/silhouette/photo/): `picks.json`, `fit.py`, `review_photo.py`; el original y las composiciones quedan en `references/p51-mustang/user-photos/` (foto de tercero, fuera de Git); en el repositorio van los puntos, la cámara, el render cian del modelo y [metrics-2026-10-06.json](../../research/p51/p51-02/silhouette/photo/metrics-2026-10-06.json).
+
+| | Valor |
+| --- | --- |
+| Ajuste de cámara (6 puntos) | RMS **8,6 px**; puntos reservados (cima de cabina, labio de la toma) 14,3 px |
+| Contorno foto → modelo | **8,6 px** de media, p90 18,4 px; modelo → foto 8,9 px |
+| IoU (palas borrosas excluidas por alpha < 200 y cajas) | **0,80** |
+
+Lo que enseñó: la boca de la toma real es un escalón casi vertical, no una rampa (el labio quedaba 48 px alto): se corrigió la regla de `apply_metrology.py` y el labio baja a −1,11 m desde z 1,23. La cima de la cabina del modelo queda ~10 px alta y el parabrisas algo adelantado desde este ángulo (ambiguo entre altura y profundidad; no se cambió). Diedro, vía, altura del tren, posición de deriva y estabilizador y la cuerda de las puntas coinciden dentro del ruido de los picks. El fuselaje real lleva puertas de tren, antena y piloto; el modelo no.
+
+Dos trampas registradas: primero asigné las alas al revés (el avión muestra su lado **derecho**: la escarapela visible en el intradós va en el ala derecha; con el morro a la derecha de la imagen, el lado visible es el derecho), lo que daba 27 px de RMS y una cámara reflejada, como ya pasó en el Avanti; y marqué el vértice del cono en el borde de la silueta en vez del ápice (centro del casquete visto).
+
 ## Límites
 
 - Píxeles, no milímetros: la métrica no identifica piezas y el borde más cercano puede ser de otra; tampoco valida aerodinámica.
 - El perfil del dibujo es un 3 % anisótropo; solo se calibra la escala horizontal para la cámara, así que las alturas del perfil arrastran ese error (≈ 5 mm sobre el modelo en la deriva).
 - La extensión del borde de ataque de raíz, el carenado de salida, las puertas del patín y los depósitos no se modelan; los flaps y alerones conservan sus fracciones estimadas (no se distinguen en la silueta).
-- La frontal es cualitativa (palas no separables). El eje de empuje real está 1°45' inclinado respecto a la línea de referencia; el modelo lo mantiene paralelo (P51-06).
+- La frontal del dibujo es cualitativa (palas no separables). En la foto, las palas se excluyen por alpha y cajas; la cámara de teleobjetivo deja FOV y distancia correlacionados (fiarse de la superposición, no de la distancia). El eje de empuje real está 1°45' inclinado respecto a la línea de referencia; el modelo lo mantiene paralelo (P51-06).
 
 ## Lección
 

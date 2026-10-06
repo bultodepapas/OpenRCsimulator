@@ -70,5 +70,32 @@
     -0.6,
     -9.0
   ],
-  "notes": "The nose points to the viewer's right and the airplane is seen from below: the national insignia on the under-surface is on the RIGHT wing, which is the wing on the viewer's left, so the camera is front-right-below and the viewer's-left wing/wheel are the model's +x side. Picked points: spinner apex (the dome's centre as seen, not its silhouette edge), rounded tip extremes, fin cap top, tyre bottoms, canopy frame top, scoop lip bottom. Wheel bottoms are tyre contact points in flight (oleo extended), like the drawing's extended gear. The propeller is motion-blurred: excluded by alpha threshold and boxes."
+  "notes": "The nose points to the viewer's right and the airplane is seen from below: the national insignia on the under-surface is on the RIGHT wing, which is the wing on the viewer's left, so the camera is front-right-below and the viewer's-left wing/wheel are the model's +x side. Picked points: spinner apex (the dome's centre as seen, not its silhouette edge), rounded tip extremes, fin cap top, tyre bottoms, canopy frame top, scoop lip bottom. Wheel bottoms are tyre contact points in flight (oleo extended), like the drawing's extended gear. The propeller is motion-blurred: excluded by alpha threshold and boxes.",
+  "exclude_px": [
+    [
+      775,
+      320,
+      960,
+      425
+    ],
+    [
+      995,
+      230,
+      1110,
+      400
+    ],
+    [
+      1040,
+      440,
+      1230,
+      575
+    ],
+    [
+      875,
+      590,
+      960,
+      660
+    ]
+  ],
+  "exclude_note": "propeller blade cores (upper-left, upper-right, right and lower blade) in image pixels; the right box stops above the far wing's upper edge"
 }

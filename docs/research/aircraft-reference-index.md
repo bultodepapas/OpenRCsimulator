@@ -44,3 +44,7 @@ The research of 2026-10-06 found no commercial ARF for 100-150 cc: that class is
 ### P-51D: siluetas sobre la tres vistas (revisión 1)
 
 [Informe](p51-silhouette-review-v1.md) · [visor antes/después](../../research/p51/p51-02/silhouette/review-2026-10-06/index.html) · [método](../../research/p51/p51-02/silhouette/README.md). El dibujo AN 01-60-3 (dominio público) es la referencia dimensional del modelo; sus recortes y las siluetas del modelo se conservan en el repositorio, el original en `references/`.
+
+### P-51D: revisión visual 1 y plan visual
+
+[Revisión visual](p51-visual-review-v1.md) (18 hallazgos ordenados por gravedad, comparativas con las fotos USAF de dominio público y la foto del propietario) · [plan visual](../P51-VISUAL-PLAN.md) (V01-V11, con criterios de aceptación por siluetas).

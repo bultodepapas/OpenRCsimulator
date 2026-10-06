@@ -18,6 +18,7 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
+const Ground := preload("res://physics/ground_contact.gd")
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -364,17 +365,36 @@ func _physics_process(_delta: float) -> void:
 			raw = read_raw.call()
 			commands = Commands.step_commands(commands, raw, sim.dt())
 		sim.inputs = _inputs()
-	# D9d: any crash-hull point at or below the ground is a crash (no landing gear physics until M2).
+	# D9d: any crash-hull point at or below the ground is a crash. E1: the wheels are spring-damper contacts instead
+	# (aircraft with a landing_gear section); a leg pushed past its travel is a crash too.
 	if not crash.is_empty():
 		crash.ticks_left -= 1
 		if crash.ticks_left <= 0:
 			reset()
 		return
-	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state) and touches_ground(sim.state):
-		_crash()
+	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
+		if touches_ground(sim.state):
+			_crash("")
+		elif gear_collapsed(sim.state):
+			_crash("gear collapsed")
+
+
+## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.
+func gear_collapsed(s: PackedFloat64Array) -> bool:
+	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
+		return false
+	return Ground.collapsed(s, aircraft.model.landing_gear)
+
+
+## Compression of each landing-gear contact at state `s` (m, ≤ 0 in the air), in data order; empty without gear.
+func gear_compressions(s: PackedFloat64Array) -> PackedFloat64Array:
+	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
+		return PackedFloat64Array()
+	return Ground.compressions(s, aircraft.model.landing_gear)
 
 
 ## True when any crash-hull point of the airplane at state `s` is at or below the ground (NED down ≥ 0).
+## Wheels are not hull points on aircraft with landing gear (E1): a wheel on the ground is a landing.
 func touches_ground(s: PackedFloat64Array) -> bool:
 	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
 		return false
@@ -389,14 +409,14 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 	return false
 
 
-func _crash() -> void:
+func _crash(why: String) -> void:
 	var s: PackedFloat64Array = sim.state
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
 	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
-	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()) }
+	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why }
 	sim.set_paused(true)
-	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s) - restarting" % [speed, sink]
+	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - restarting" % [speed, sink, "" if why.is_empty() else ", " + why]
 	print(pause_reason)
 
 
@@ -468,12 +488,17 @@ func _inputs() -> PackedFloat64Array:
 	return PackedFloat64Array([f.roll, f.pitch, f.yaw, f.throttle])
 
 
-## Simulation loads: aerodynamics (D3) + propulsion (D5) from the servos' actual positions, in calm air.
+## Simulation loads: aerodynamics (D3) + propulsion (D5) from the servos' actual positions, in calm air, plus the
+## landing gear's ground contacts (E1) while a wheel pushes on the ground (nothing is added in the air).
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
 	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
-	return Dynamics.loads(s, aircraft.model, Aero.deflections_from_surfaces(surfaces), a[AUX_RPM],
+	var out := Dynamics.loads(s, aircraft.model, Aero.deflections_from_surfaces(surfaces), a[AUX_RPM],
 		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
+	var ground := Ground.loads(s, aircraft.model.landing_gear)
+	for i in ground.size():
+		out[i] += ground[i]
+	return out
 
 
 ## Propeller angular momentum (D9c): J_p·ω along body +x (clockwise seen from behind).
@@ -500,6 +525,7 @@ func trace_meta() -> Dictionary:
 		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "local-surfaces-v1 with bounded attached oracle; no propwash",
+		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1), normal force only" % aircraft.model.landing_gear.contacts.size() if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
 		dt_s = sim.dt(),

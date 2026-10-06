@@ -86,6 +86,63 @@ def dilate(mask, r):
     return out
 
 
+# Pixels that differ by more than this (0–1 scale) between a view with and without an object are that object.
+DIFFERENCE_LEVELS = 2.5 / 255.0
+# The airplane's surroundings: a ring this many pixels wide around its mask.
+RING_PX = 6
+
+
+def difference_mask(a, b, threshold=DIFFERENCE_LEVELS):
+    return np.abs(a - b).max(axis=-1) > threshold
+
+
+def background_composition(ring, tree_mask=None, horizon_row=None):
+    """What the ring pixels are (L6c): trees from a tree mask (view with trees minus view without), sky above the
+    horizon row and ground below it; "other" when a part cannot be told. Fractions of the ring."""
+    n = int(ring.sum())
+    if n == 0:
+        return {"pixels": 0, "trees": 0.0, "sky": 0.0, "ground": 0.0, "other": 1.0}
+    rows = np.nonzero(ring)[0]
+    trees = tree_mask[ring] if tree_mask is not None else np.zeros(n, dtype=bool)
+    if horizon_row is None:
+        sky = np.zeros(n, dtype=bool)
+        ground = np.zeros(n, dtype=bool)
+    else:
+        sky = ~trees & (rows < float(horizon_row))
+        ground = ~trees & ~sky
+    other = ~trees & ~sky & ~ground
+    return {"pixels": n, "trees": round(float(trees.mean()), 4), "sky": round(float(sky.mean()), 4),
+            "ground": round(float(ground.mean()), 4), "other": round(float(other.mean()), 4)}
+
+
+def measure_pair(a, b, tree_mask=None, horizon_row=None):
+    """Readability of the airplane in `a` against the same view `b` without it (L0c). With a tree mask of `b`
+    and/or the horizon row, also reports what surrounds the airplane (L6c)."""
+    mask = difference_mask(a, b)
+    if mask.sum() == 0:
+        return {"pixels": 0}
+    ring = dilate(mask, RING_PX) & ~mask
+    la, lb = luminance(a), luminance(b)
+    l_plane, l_bg = float(la[mask].mean()), float(lb[ring].mean())
+    local = (la[mask] - lb[mask]) / np.maximum(lb[mask], 1e-6)
+    de = np.linalg.norm(lab(a)[mask] - lab(b)[mask], axis=-1)
+    rows, cols = np.nonzero(mask)
+    result = {
+        "pixels": int(mask.sum()),
+        "weber_contrast": round((l_plane - l_bg) / max(l_bg, 1e-6), 4),
+        "share_low_contrast": round(float((np.abs(local) < 0.1).mean()), 4),
+        "delta_e": round(float(de.mean()), 2),
+        # Investigation 09's "sky sat": mean (max − min) of RGB (0–255) behind the airplane; low = greyed sky.
+        "background_saturation": round(float(((b[ring].max(axis=-1) - b[ring].min(axis=-1)) * 255.0).mean()), 1),
+    }
+    if tree_mask is not None or horizon_row is not None:
+        result["delta_e_p10"] = round(float(np.percentile(de, 10)), 2)
+        result["bbox_px"] = {"width": int(cols.max() - cols.min() + 1), "height": int(rows.max() - rows.min() + 1),
+                             "centre": [round(float(cols.mean()), 1), round(float(rows.mean()), 1)]}
+        result["background"] = background_composition(ring, tree_mask, horizon_row)
+    return result
+
+
 def readability(cap_dir, out_path):
     results = {}
     for name in sorted(os.listdir(cap_dir)):
@@ -93,23 +150,9 @@ def readability(cap_dir, out_path):
             continue
         with_name = name.replace("-noplane.png", ".png")
         a, b = load(os.path.join(cap_dir, with_name)), load(os.path.join(cap_dir, name))
-        mask = (np.abs(a - b).max(axis=-1) > 2.5 / 255.0)
-        if mask.sum() == 0:
-            results[with_name] = {"pixels": 0}
+        results[with_name] = measure_pair(a, b)
+        if results[with_name]["pixels"] == 0:
             continue
-        ring = dilate(mask, 6) & ~mask
-        la, lb = luminance(a), luminance(b)
-        l_plane, l_bg = float(la[mask].mean()), float(lb[ring].mean())
-        local = (la[mask] - lb[mask]) / np.maximum(lb[mask], 1e-6)
-        de = np.linalg.norm(lab(a)[mask] - lab(b)[mask], axis=-1)
-        results[with_name] = {
-            "pixels": int(mask.sum()),
-            "weber_contrast": round((l_plane - l_bg) / max(l_bg, 1e-6), 4),
-            "share_low_contrast": round(float((np.abs(local) < 0.1).mean()), 4),
-            "delta_e": round(float(de.mean()), 2),
-            # Investigation 09's "sky sat": mean (max − min) of RGB (0–255) behind the airplane; low = greyed sky.
-            "background_saturation": round(float(((b[ring].max(axis=-1) - b[ring].min(axis=-1)) * 255.0).mean()), 1),
-        }
         r = results[with_name]
         print(f"{with_name}: {r['pixels']} airplane pixels, Weber contrast {r['weber_contrast']:+.3f}, "
               f"{100 * r['share_low_contrast']:.1f} % with |contrast| < 0.1, mean ΔE {r['delta_e']:.1f}, "

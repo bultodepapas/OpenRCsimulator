@@ -3,7 +3,7 @@
   "date": "2026-10-06",
   "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
   "drawing_sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
-  "model_geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
+  "model_geometry_sha256": "2feb3b4f4a59435a8b83230ee4bf6f3986b07a84486c3579a54215359733dab9",
   "picks_sha256": "10f9424f26e3a17b681af08586e6a77f6517fd89e7887f41e5dbaeb80d91c6fe",
   "method": "Orthographic cameras from two anchors per view (uniform scale, no rotation, no image deformation), as research/avanti-s/user-profile. Side: spinner tip and rudder TE on the fuselage reference line; plan and front: wing tips. The front view's vertical anchor is the wing-tip chord plane (dihedral 5 deg from the drawing).",
   "limits": [

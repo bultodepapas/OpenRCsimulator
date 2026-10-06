@@ -1,0 +1,14 @@
+{
+ "format": "openrc-l6c-repeatability v1",
+ "runs": [
+  "standalone treeline_readability.py capture",
+  "app/capture.sh"
+ ],
+ "captures_identical": 64,
+ "captures_total": 64,
+ "differing": [],
+ "readability_identical": true,
+ "kit_identical": true,
+ "input_sha256_identical": true,
+ "code_revision": "03ca02774d3dfc204e4e80a033bee966cf357724-dirty"
+}
