@@ -15,6 +15,9 @@ const VEL := 3
 const ATT := 6
 const RATE := 10
 const SIZE := 13
+## Trace metadata uses the same order as make_state (column names include units).
+const STATE_LAYOUT := ["north_m", "east_m", "down_m", "u_mps", "v_mps", "w_mps",
+	"qw", "qx", "qy", "qz", "p_radps", "q_radps", "r_radps"]
 
 
 static func make_state(pos_ned: PackedFloat64Array, vel_body: PackedFloat64Array,

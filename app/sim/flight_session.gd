@@ -30,6 +30,7 @@ signal resetting
 ## (roll, pitch, yaw in command units, −1…1 of each surface's throw, trims included).
 const AUX_RPM := 0
 const AUX_SERVO := 1
+const AUX_LAYOUT := ["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
 var sim: Node
@@ -577,12 +578,34 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 
 ## Header lines for a flight trace of this session.
 func trace_meta() -> Dictionary:
+	var model: Dictionary = aircraft.model
+	var prop: Dictionary = model.propulsion
+	var turbine: bool = Turbine.is_turbine(prop)
+	var propulsion_model: String = "turbine-ecu-spool-v1" if turbine else (
+		"propeller-shaft-balance-v1" if Propulsion.has_shaft(prop) else "propeller-rpm-lag-v1")
 	return {
+		metadata_schema = "openrc-flight-meta v1",
 		scenario = "trimmed %s across view at %.1f m/s (D5: six-axis trim, calm air)" % ["level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))],
 		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), aircraft_path],
 		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
+		aircraft_data_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
 		configuration = aircraft.model.get("configuration", "unspecified"),
-		aero_model = "local-surfaces-v1 with bounded attached oracle; no propwash",
+		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else "local-surfaces-v1 with bounded attached oracle",
+		propulsion_model = propulsion_model,
+		propwash_model = "none" if prop.get("slipstream", {}).is_empty() else "tail-slipstream-increment-v1",
+		propulsion_features = JSON.stringify({
+			propeller_normal_force = not turbine and prop.has("axis") and not prop.get("normal_force", PackedFloat64Array()).is_empty(),
+			propeller_pfactor = not turbine and prop.has("axis") and not prop.get("pfactor_moment", PackedFloat64Array()).is_empty(),
+			rotor_gyroscopic_coupling = float(prop.rotor_inertia) != 0.0,
+			turbine_ram_flow = turbine and float(prop.get("ram_flow", 0.0)) != 0.0,
+			turbine_ram_jet = turbine and prop.has("ram_jet"),
+		}),
+		engine_rpm_semantics = "turbine spool rpm" if turbine else "propeller shaft rpm",
+		state_layout = JSON.stringify(RB.STATE_LAYOUT),
+		aux_layout = JSON.stringify(AUX_LAYOUT),
+		recording_start_tick = sim.tick,
+		recording_start_aux = JSON.stringify(Array(sim.aux), "", true, true),
+		recording_start_engine_running = JSON.stringify(engine_running),
 		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2), on %s" % [aircraft.model.landing_gear.contacts.size(), "field '%s' surfaces (E3a)" % ground_field_id if not ground_surfaces.is_empty() else "dry pavement"] if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
@@ -591,5 +614,6 @@ func trace_meta() -> Dictionary:
 		inertia_kgm2 = "Jxx Jyy Jzz Jxy Jxz Jyz = %s" % " ".join(Array(sim.inertia).map(func(v): return str(v))),
 		gravity_mps2 = sim.gravity,
 		frames = "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
-		loads = "Fx..Mz are body-axis loads at the start of each step, excluding gravity",
+		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
+		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
