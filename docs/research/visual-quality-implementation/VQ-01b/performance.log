@@ -1,0 +1,4 @@
+VQ-01b frametime 1/3 scripted-fixed
+VQ-01b frametime 2/3 scripted-fixed
+VQ-01b frametime 3/3 scripted-fixed
+complete: 3 frametime reports at /tmp/openrc-vq01b-final/app/captures/vq01b/performance

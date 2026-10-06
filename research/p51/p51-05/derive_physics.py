@@ -183,7 +183,16 @@ CL0 = note("aero", "CL0", CL0_w + slope_h * Sh / S * inc_eff, "wing at +1 deg in
 Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc_eff, "wing Cm_ac + tail at zero body alpha")
 
 # Controls (kit placeholder throws, degrees).
-throws = dict(KIT["throws_deg"])
+# Throws: kit millimetres at the widest part of each surface -> hinge angle asin(d / chord) (as the Extra does).
+ail_c_in = cf_a_w = W["aileron_chord_fraction"] * (cr + (ct - cr) * W["aileron_inner"] / semi)
+elev_c = (1 - T["elevator_hinge_fraction"]) * crh
+rud_c = T["rudder_te_bottom"][0] - T["rudder_hinge_z"]
+mm = KIT["throws_mm"]
+throws = {
+    "aileron": note("controls", "aileron (deg)", math.degrees(math.asin(mm["aileron"] / 1000 / ail_c_in)), f"{mm['aileron']:.0f} mm on the {ail_c_in * 1000:.0f} mm inboard aileron chord ({KIT['throws_note']})"),
+    "elevator": note("controls", "elevator (deg)", math.degrees(math.asin(mm["elevator"] / 1000 / elev_c)), f"{mm['elevator']:.0f} mm on the {elev_c * 1000:.0f} mm root elevator chord"),
+    "rudder": note("controls", "rudder (deg)", math.degrees(math.asin(mm["rudder"] / 1000 / rud_c)), f"{mm['rudder']:.0f} mm on the {rud_c * 1000:.0f} mm bottom rudder chord"),
+}
 k_flap = note("controls", "flap effectiveness correction", 0.8, "estimated: real/thin-airfoil effectiveness with gap and large throws (DATCOM range 0.6-0.9)")
 tau_e = flap_tau(cf_e) * k_flap
 ce_h = note("controls", "elevator effectiveness (local)", tau_e / (1 - deps), f"tau {tau_e:.3f} / (1 - deps/dalpha)")
@@ -191,13 +200,13 @@ CLde = note("aero", "CLde (1/rad)", slope_h * ce_h * Sh / S, "")
 Cmde = note("aero", "Cmde (1/rad)", -CLde * l_h / c_ref, "")
 
 chord = lambda y: cr + (ct - cr) * y / semi
+cf_a = W["aileron_chord_fraction"]
 y1, y2 = W["aileron_inner"], min(W["aileron_outer"], semi)
 n_int = 400
 ys = [y1 + (y2 - y1) * (k + 0.5) / n_int for k in range(n_int)]
 dy = (y2 - y1) / n_int
 int_c = sum(chord(y) for y in ys) * dy
 int_cy = sum(chord(y) * y for y in ys) * dy
-cf_a = W["aileron_chord_fraction"]
 tau_a = note("controls", "aileron tau", flap_tau(cf_a) * k_flap, f"chord fraction {cf_a:.3f}")
 CLda_each = CLa_w * tau_a * int_c / S
 Clda = -CLa_w * tau_a * int_cy / (S * b)
@@ -209,7 +218,7 @@ rc_fw = g["spinner"]["back_z"] + 0.25  # the model's engine box: a 120 cc twin o
 cp_y = W["chord_plane_y"]
 spinner_d_in = 2 * g["spinner"]["radius"] / IN
 items = [
-    ("engine, 120 cc gasoline twin with ignition module", 2.75, "estimated", "DA-120 / DLE-120 class: 2.6-2.9 kg with ignition (manufacturer specifications to be cited in docs/research/p51-resources.json)", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
+    ("engine DA-120 with ignition module", 2.45, "manual", "DA-120: 2300 g engine, 2445 g with ignition (toni-clark.com/en/da-120); DLE-120 2.78-2.90 kg complete", le(g["spinner"]["back_z"] + 0.13), [0.16, 0.30, 0.16], "estimated", "crankshaft on the thrust line, crankcase ~0.13 m behind the spinner back"),
     ("mufflers / canisters (2)", 0.60, "estimated", "two in-cowl canister mufflers for a 120 cc twin", le(g["spinner"]["back_z"] + 0.20, -0.07), [0.25, 0.20, 0.08], "estimated", "under the cylinders inside the cowl"),
     (f"propeller 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}", 0.55, "estimated", "wood/composite 4-blade giant-scale propeller (0.45-0.65 kg typical)", le(PROP["z"]), [0.02, PROP["diameter"], PROP["diameter"]], "measured", "propeller plane from geometry.json"),
     (f"spinner {spinner_d_in:.1f} in aluminium with backplate", 0.35, "estimated", "machined aluminium spinner of this diameter", le(g["spinner"]["back_z"] - 0.06), [0.17, 0.15, 0.15], "measured", "spinner from geometry.json"),
@@ -362,9 +371,10 @@ wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
 def bem_tables(diameter, pitch, blades, planform, n_rps=100.0):
     """Ct(J), Cp(J) by blade-element/momentum theory in induced-velocity form (stable at zero airspeed), Prandtl tip
     loss, geometric-pitch twist. Generic section: a0 = 0.9 x 2 pi, zero-lift angle -3 deg, Cl capped at +-1.2,
-    Cd = 0.012 + 0.025 Cl^2. Returns [[J, Ct], ...], [[J, Cp], ...] from J = 0 to the first negative thrust."""
+    Cd = 0.012 + 0.025 Cl^2. Returns [[J, Ct], ...], [[J, Cp], ...] from J = 0 into the windmilling branch (Ct < -0.06), so the
+    simulation interpolates rather than extrapolates at high J and low rpm."""
     R = diameter / 2
-    a0, alpha_zl, cl_max, cd0, k_cd = 2 * math.pi * 0.9, math.radians(-3.0), 1.2, 0.012, 0.025
+    a0, alpha_zl, cl_max, cl_min_wm, cd0, k_cd = 2 * math.pi * 0.9, math.radians(-3.0), 1.2, 0.8, 0.012, 0.025
     table = lambda rows, x: next((r0[1] + (r1[1] - r0[1]) * (x - r0[0]) / (r1[0] - r0[0]) for r0, r1 in zip(rows, rows[1:]) if r0[0] <= x <= r1[0]), rows[-1][1])
     omega = 2 * math.pi * n_rps
     ct_rows, cp_rows = [], []
@@ -386,8 +396,8 @@ def bem_tables(diameter, pitch, blades, planform, n_rps=100.0):
                 Vt = omega * r - wt
                 phi = math.atan2(Va, Vt)
                 alpha = beta - phi
-                cl = max(-cl_max, min(cl_max, a0 * (alpha - alpha_zl)))
-                cd = cd0 + k_cd * cl * cl
+                cl = max(-cl_min_wm, min(cl_max, a0 * (alpha - alpha_zl)))  # windmilling: the section stalls near -8 deg
+                cd = cd0 + k_cd * cl * cl + (0.02 * (alpha_zl - alpha) / 0.1 if alpha < alpha_zl - 0.14 else 0.0)  # post-stall drag rise
                 W2 = Va * Va + Vt * Vt
                 cn = cl * math.cos(phi) - cd * math.sin(phi)
                 ctan = cl * math.sin(phi) + cd * math.cos(phi)
@@ -410,7 +420,7 @@ def bem_tables(diameter, pitch, blades, planform, n_rps=100.0):
         Cp = torque * omega / (RHO * n_rps ** 3 * diameter ** 5)
         ct_rows.append([round(J, 3), round(Ct, 5)])
         cp_rows.append([round(J, 3), round(max(Cp, 0.0), 5)])
-        if Ct < 0 or J > 1.5:
+        if Ct < -0.09 or J > 1.6:
             break
         J += 0.05
     return ct_rows, cp_rows
@@ -418,8 +428,8 @@ def bem_tables(diameter, pitch, blades, planform, n_rps=100.0):
 
 ct_table, cp_table = bem_tables(PROP["diameter"], PROP["pitch"], PROP["blades"], PROP["blade"]["chord_fraction_of_radius"])
 Ct0, Cp0 = ct_table[0][1], cp_table[0][1]
-P_peak = note("propulsion", "engine peak power (W)", 8200.0, "estimated: 120 cc gasoline twin, ~11 hp class at ~7000 rpm (manufacturer data to cite)")
-n_peak = 7000.0 / 60
+P_peak = note("propulsion", "engine peak power (W)", 11.7 * 745.7, "DA-120: 11.7 hp (desertaircraft.com/products/da-120); rpm range 1300-6900")
+n_peak = 6900.0 / 60
 # Static rpm: engine power P(n) = P_peak (n/n_peak) (2 - n/n_peak) (flat-torque two-stroke approximation) meets the propeller Cp0 rho n^3 D^5.
 lo, hi = 10.0, n_peak * 1.3
 for _ in range(80):
@@ -434,7 +444,24 @@ n_static = 0.5 * (lo + hi)
 rpm_static = note("propulsion", "static rpm", n_static * 60, f"BEM Cp0 {Cp0:.4f} meets the engine power curve; static thrust {Ct0 * RHO * n_static ** 2 * PROP['diameter'] ** 4:.0f} N ({Ct0 * RHO * n_static ** 2 * PROP['diameter'] ** 4 / G0:.1f} kgf)")
 note("propulsion", "BEM Ct0 / Cp0 / J at zero thrust", [Ct0, Cp0, ct_table[-1][0]], f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}, P/D {PROP['pitch'] / PROP['diameter']:.3f}")
 thrust_static = Ct0 * RHO * n_static ** 2 * PROP["diameter"] ** 4
-note("propulsion", "static thrust / weight", thrust_static / (mass * G0), "giant warbird with a 120 cc twin: builders report roughly 1.2-1.6 static")
+note("propulsion", "static thrust / weight", thrust_static / (mass * G0), "for comparison, 31 kg static was quoted for a 2-blade Falcon 28x10 on a DA-120 at 6550 rpm (FlyingGiants, snippet only)")
+# Maximum level speed with the simulation's propulsion model (rpm held at the static maximum: no in-flight
+# unloading yet, ROADMAP G1): full-throttle thrust meets the drag polar at CL for level flight.
+def thrust_at(V, n):
+    J = V / (n * PROP["diameter"])
+    ct = next((r0[1] + (r1[1] - r0[1]) * (J - r0[0]) / (r1[0] - r0[0]) for r0, r1 in zip(ct_table, ct_table[1:]) if r0[0] <= J <= r1[0]), -0.1)
+    return ct * RHO * n ** 2 * PROP["diameter"] ** 4
+def drag_at(V):
+    cl = mass * G0 / (0.5 * RHO * V * V * S)
+    return 0.5 * RHO * V * V * S * (CD0 + k_ind * cl * cl)
+v_lo, v_hi = Vs, 80.0
+for _ in range(60):
+    v_mid = 0.5 * (v_lo + v_hi)
+    if thrust_at(v_mid, n_static) > drag_at(v_mid):
+        v_lo = v_mid
+    else:
+        v_hi = v_mid
+V_max = note("propulsion", "maximum level speed (m/s)", v_lo, f"full throttle at {n_static * 60:.0f} rpm (pitch speed {n_static * PROP['pitch']:.1f} m/s); the handling test flies below this")
 prop_mass = 0.55
 rotor_j = note("propulsion", "rotating inertia (kg m2)", prop_mass * (PROP["diameter"] / 2) ** 2 / 3 * 0.6 + 0.35 * (g["spinner"]["radius"] * 0.8) ** 2 / 2, "4 blades as slender rods (mL2/3 per blade pair x 0.6 planform factor) + spinner shell")
 
@@ -527,7 +554,7 @@ data = {
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
-        "max_throw": {k: q(float(v), "deg", "estimated", "kit placeholder high-rate throw (source.json); the manufacturer's manual value replaces it") for k, v in throws.items()},
+        "max_throw": {k: q(float(v), "deg", "estimated", "asin(kit mm / local chord): " + KIT["throws_note"]) for k, v in throws.items()},
         "servo_full_throw_time": q(0.18, "s", "estimated", "giant-scale high-torque servos: 0.15-0.20 s per 60 deg at 6-7 V"),
     },
     "aero": {
@@ -568,18 +595,18 @@ data = {
     "propulsion": {
         "description": f"120 cc gasoline twin turning a 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f}: blade-element/momentum tables computed by {SCRIPT} (no measured table for this propeller); static rpm where the propeller power meets an estimated flat-torque engine curve. AXIAL thrust.",
         "engine": {
-            "name": "120 cc gasoline twin-cylinder (DA-120 / DLE-120 class), placeholder specification",
-            "peak_power": q(P_peak, "W", "estimated", "~11 hp class two-stroke gasoline twin (manufacturer data to cite)"),
-            "peak_power_rpm": q(n_peak * 60, "rpm", "estimated", "typical peak of a 120 cc twin"),
+            "name": "Desert Aircraft DA-120 (121 cc twin, 2.45 kg with ignition) or DLE-120",
+            "peak_power": q(P_peak, "W", "manual", "DA-120 11.7 hp, desertaircraft.com/products/da-120 (2026-10-06); DLE-120 12 hp at 7500 rpm (DLE manual)"),
+            "peak_power_rpm": q(n_peak * 60, "rpm", "manual", "DA-120 top of the 1300-6900 rpm range (desertaircraft.com)"),
             "max_rpm_static": q(rpm_static, "rpm", "derived", D("BEM Cp0 meets the engine power curve P(n) = P_peak (n/n_peak)(2 - n/n_peak)")),
-            "idle_rpm": q(1300.0, "rpm", "estimated", "gasoline twin idle 1200-1400 rpm with a large 4-blade"),
+            "idle_rpm": q(1300.0, "rpm", "manual", "DA-120 range starts at 1300 rpm (desertaircraft.com); DLE-120 idle 1300 (manual)"),
             "lag_time_constant": q(0.6, "s", "estimated", "heavy 4-blade propeller and a carburetted twin: slower than the .61 glow's 0.25 s"),
         },
         "propeller": {
-            "name": f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f} (kit placeholder)",
+            "name": f"4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f} (scale-look choice; DA-120 lists 3-blade 26x12 / 27x12)",
             "diameter": q(PROP["diameter"], "m", "estimated", f"{KIT['propeller']['diameter_in']:.0f} in (source.json)"),
             "rotation": "clockwise seen from behind (standard tractor): the reaction torque rolls the airplane left",
-            "ct_table": q(ct_table, "1", "derived", D("blade-element/momentum theory, Prandtl tip loss, geometric pitch twist, generic section (a0 0.9x2pi, alpha_zl -3 deg, Cd 0.012 + 0.025 Cl2)")),
+            "ct_table": q(ct_table, "1", "derived", D("blade-element/momentum theory, Prandtl tip loss, geometric pitch twist, generic section (a0 0.9x2pi, alpha_zl -3 deg, Cl caps +1.2/-0.8, Cd 0.012 + 0.025 Cl2 + post-stall rise); tabulated into the windmilling branch")),
             "cp_table": q(cp_table, "1", "derived", D("same blade-element/momentum model")),
             "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "4 blades as slender rods + aluminium spinner"),
             "thrust_line_offset": q([0.0, 0.0, -cg[2]], "m", "derived", D("spinner axis relative to the inventory CG; [x_aft, y_right, z_up] from the CG")),
@@ -619,8 +646,8 @@ Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT)}` and `source.json`; d
 identification. Flaps and retracts are not simulated; the drag build-up assumes the gear DOWN.
 
 Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, static margin {sm:.1f} % MAC, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
-Throws (kit placeholder): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
-Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}.
+Throws (Hangar 9 60cc high rates scaled by span): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
+Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}, maximum level speed {V_max:.1f} m/s.
 
 ## Intermediate quantities
 

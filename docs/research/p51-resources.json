@@ -1,0 +1,418 @@
+{
+  "format": "openrc-reference-manifest v1",
+  "aircraft": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class); CARF 2.54 m, Hangar 9 60cc, Top Flite Giant and Ziroli 1/4.6 are documented comparisons, not the selected geometry",
+  "retrieved": "2026-10-06",
+  "note": "Local copies live in the gitignored references/p51-mustang/ (index.json, README.md written at download time). Research report: docs/research/p51-family-research.md.",
+  "files": [
+    {
+      "path": "references/p51-mustang/manuals/carf_models_p51_mustang_instructions.pdf",
+      "url": "https://carf-models.com/files/product/9b/86/19/carf_models_mustang_instructions.pdf",
+      "bytes": 13481867,
+      "sha256": "c27824e3c4b56fa6d70b450f23a67745824e784ef30e7aba5fbbda5f20c7d7ce",
+      "file_type": "PDF, 29 pages",
+      "kind": "manual",
+      "license": "Copyright CARF-Models / Composite-ARF; manufacturer-published free download. Reference only, do not redistribute.",
+      "use": "CARF-Models P-51 Mustang 1:4.3 (2540 mm) assembly instructions: CG at front edge of wing tube, control throws, flap angles, engine offset 13.5 deg",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/manuals/hangar9_HAN4770_p51d_60cc_manual.pdf",
+      "url": "https://www.astramodel.cz/manualy/H/HAN4770-Manual.pdf",
+      "bytes": 2734714,
+      "sha256": "dbd5223474247d8f7b351dba30efde3f4fe9cebff068f33d3dfac72285acdbe5",
+      "file_type": "PDF, 112 pages",
+      "kind": "manual",
+      "license": "Copyright Horizon Hobby LLC; free manual download (mirror at Astra Model). Reference only.",
+      "use": "Hangar 9 P-51D Mustang 60cc ARF (HAN4770, 89 in) multilingual instruction manual: specs, CG 171 mm (165-178), control throws, flap/elevator mix",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/manuals/topflite_TOPA0400_giant_p51d_kit_manual.pdf",
+      "url": "http://manuals.hobbico.com/top/topa0400-manual.pdf",
+      "bytes": 2527717,
+      "sha256": "a2882e6a656d518f9d4091b47060c690493e5e2343aa2df7c10ca262304ccc9a",
+      "file_type": "PDF, 60 pages",
+      "kind": "manual",
+      "license": "Copyright Top Flite / Hobbico; free manual download. Reference only.",
+      "use": "Top Flite Gold Edition Giant Scale P-51D (TOPA0400, 84.5 in) kit instruction manual: engine 30-60cc, CG 4-9/16 in, throws, 1.75 deg downthrust",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/papers/vt_mason_P51DMustang_configuration_aerodynamics.pdf",
+      "url": "https://archive.aoe.vt.edu/mason/Mason_f/P51DMustang.pdf",
+      "bytes": 6453882,
+      "sha256": "e4f95bf5883c1651382f0cd7bb1eec927ea3db512cf32c7bf96da0deda9c9256",
+      "file_type": "PDF, 14 pages",
+      "kind": "paper",
+      "license": "Course material hosted by Virginia Tech; copyright authors (T. Basuray, M. Janeway). Reference only.",
+      "use": "Virginia Tech (W.H. Mason course) student configuration study of the P-51D: wing S=233 ft2, b=37 ft, Cr=8.48 ft, Ct=3.87 ft, AR 5.9; tail areas 45.4/14.8 ft2; CDo 0.0055, CLmax 1.5",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/49/North_American_P-51D_Mustang_3-view_line_drawing.png",
+      "bytes": 440726,
+      "sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
+      "file_type": "PNG image data, 1905 x 2489, 8-bit grayscale, non-interlaced",
+      "kind": "drawing",
+      "license": "Public domain (U.S. Military work, 1945) per Wikimedia Commons",
+      "use": "P-51D 3-view line drawing, 1905x2489 px, from USAAF manual AN 01-60-3 p.30 (based on NAA drawing 106-00001)",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/drawings/p51_3view_usaf_commons.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/North_American_P-51_Mustang_3-view_line_drawing.jpg",
+      "bytes": 233441,
+      "sha256": "05578d7732aff236d9f0758ac334c46bf4928a744db96c9dc285ee5b86932ad2",
+      "file_type": "JPEG image data, JFIF standard 1.02, resolution (DPI), density 200x200, segment length 16, Exif Standard: [TIFF image data, big-endian, direntries=7, orientation=upper-left, xresolution=98, yresolution=106, resolutionunit=2, software=Adobe Photoshop CS Macintosh, datetime=2004:11:16 14:06:40], baseline, precision 8, 1870x1273, components 3",
+      "kind": "drawing",
+      "license": "Public domain (U.S. Air Force) per Wikimedia Commons",
+      "use": "P-51 3-view line drawing, 1870x1273 px, U.S. Air Force",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/drawings/p51d_line_drawing_commons.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/North_American_P-51D_Mustang_line_drawing.png",
+      "bytes": 412669,
+      "sha256": "b52a198125b040e30fc7129dbf08859714dcb8b1af1adadfa25aa9a74eb70d9d",
+      "file_type": "PNG image data, 1708 x 1265, 8-bit/color RGB, non-interlaced",
+      "kind": "drawing",
+      "license": "Public domain per Wikimedia Commons (no author stated)",
+      "use": "P-51D line drawing, 1708x1265 px",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/drawings/p51d_nasa_dfrc_EG-0068-01.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/03/North_American_P-51D_EG-0068-01.svg",
+      "bytes": 67432,
+      "sha256": "a4d8c1abf0ef0530350a7a7f02ea02a3ef9fbc15d0991a43d89d05b48c6d79b7",
+      "file_type": "SVG Scalable Vector Graphics image",
+      "kind": "drawing",
+      "license": "Public domain (NASA) per Wikimedia Commons",
+      "use": "NASA Dryden graphic EG-0068-01 of the P-51D (Tom Tschida), small SVG",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/airfoils/p51droot.dat",
+      "url": "https://m-selig.ae.illinois.edu/ads/coord/p51droot.dat",
+      "bytes": 979,
+      "sha256": "fafb590a9cc0ca481284b41bbbc98e56ebb00548e22b34b3e9a6e4e5e76be019",
+      "file_type": "ASCII text, with CRLF line terminators",
+      "kind": "airfoil",
+      "license": "UIUC Airfoil Coordinates Database (M. Selig); free for research use, see UIUC site terms",
+      "use": "P-51D root airfoil (BL17.5, NAA/NACA 45-100 family) coordinates, Lednicer format, UIUC Airfoil Coordinates Database",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/airfoils/p51dtip.dat",
+      "url": "https://m-selig.ae.illinois.edu/ads/coord/p51dtip.dat",
+      "bytes": 977,
+      "sha256": "a66596d5a541ef5ab831fb73e292b93b70e6aa26b917e09e79341bbe5530a873",
+      "file_type": "ASCII text, with CRLF line terminators",
+      "kind": "airfoil",
+      "license": "UIUC Airfoil Coordinates Database (M. Selig); free for research use",
+      "use": "P-51D tip airfoil (BL215) coordinates, Lednicer format, UIUC",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/airfoils/p51droot-il-selig.dat",
+      "url": "http://airfoiltools.com/airfoil/seligdatfile?airfoil=p51droot-il",
+      "bytes": 889,
+      "sha256": "dc40b8882e5311d70b007622ef7300ea36f2c6461097eafe9ca909980ff45fde",
+      "file_type": "ASCII text",
+      "kind": "airfoil",
+      "license": "airfoiltools.com re-distribution of UIUC data; free",
+      "use": "P-51D root airfoil (BL17.5), Selig format export from airfoiltools.com",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/airfoils/p51dtip-il-selig.dat",
+      "url": "http://airfoiltools.com/airfoil/seligdatfile?airfoil=p51dtip-il",
+      "bytes": 887,
+      "sha256": "6b99dd146c460a8411bff2afb2255d223ea0115ecd146f15137286bdf4fddd59",
+      "file_type": "ASCII text",
+      "kind": "airfoil",
+      "license": "airfoiltools.com re-distribution of UIUC data; free",
+      "use": "P-51D tip airfoil (BL215), Selig format export from airfoiltools.com",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/dle120_operators_manual_hobbico.pdf",
+      "url": "http://manuals.hobbico.com/dle/dleg0120-manual.pdf",
+      "bytes": 478057,
+      "sha256": "fdbe819fdd11f6ecac0408fbe0a01313e393cc184e1b5da15d3ee330831d77b1",
+      "file_type": "PDF, 24 pages",
+      "kind": "engine",
+      "license": "Copyright DLE / Hobbico; free manual download. Reference only.",
+      "use": "DLE-120 operator's manual: 120 cc, 12 HP @ 7500 rpm, 47x35 mm, 10.5:1, 2306 g engine, props 26x10-28x10",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/da120_owners_manual_2018-01-08_desertaircraft_au.pdf",
+      "url": "https://www.desertaircraft.com.au/shop/files/attachments/17517/DA120_MANUAL_1-8-2018.pdf",
+      "bytes": 292349,
+      "sha256": "d5f0d6662f3935cd5ceed65ee1cbf709d18b404e1b2b60a0f8dcf19ae23c14a3",
+      "file_type": "PDF, 9 pages",
+      "kind": "engine",
+      "license": "Copyright Desert Aircraft; free manual download. Reference only.",
+      "use": "Desert Aircraft DA-120 owner's manual (2018-01-08) from the Australian distributor",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/da120_dimension_views_desertaircraft_au.pdf",
+      "url": "https://www.desertaircraft.com.au/shop/files/attachments/17517/da120_views.pdf",
+      "bytes": 522265,
+      "sha256": "de58ad92b428458b6d9e4bce26c4395bf0e49b111ac84edfe64ea49f322bc799",
+      "file_type": "PDF, 1 pages",
+      "kind": "engine",
+      "license": "Copyright Desert Aircraft; free download. Reference only.",
+      "use": "DA-120 dimensioned engine views (mounting template drawings)",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/da100-120_efi_owners_manual_HFEDCN0054_REV_G.pdf",
+      "url": "https://www.hfeinternational.com/wp-content/uploads/2018/05/HFEDCN0054_REV_G.pdf",
+      "bytes": 1543979,
+      "sha256": "988424106887dfcf6cdfffdb969c76477f955ba9f20d0a6c7cbeba9513949f2c",
+      "file_type": "PDF, 19 pages",
+      "kind": "engine",
+      "license": "Copyright HFE International / Desert Aircraft; free download. Reference only.",
+      "use": "DA 100/120 EFI owner's manual (HFE International, Rev G), 40:1 mix",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/3W-110iB2-CS_Annex-A_tech_details.pdf",
+      "url": "https://3w-modellmotoren.de/wp-content/uploads/2016/11/3W-110iB2-CS-Annex-A-tech.-details-EN-Rev-4_2016.pdf",
+      "bytes": 991529,
+      "sha256": "a6f18bb03a90cc937323888da2956bec937f7a3e791b1e1a052aa295e63da359",
+      "file_type": "PDF, 4 pages",
+      "kind": "engine",
+      "license": "Copyright 3W-Modellmotoren Weinhold GmbH; free download. Reference only.",
+      "use": "3W-110i B2 CS technical data sheet: 12.8 HP, 45x35 mm, 1200-8500 rpm, 3050 g incl. ignition, props 26x10 2-blade / 27x14 3-blade",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/engines/3w110iB2_product_page.html",
+      "url": "https://3w-modellmotoren.de/produkt/3w-110i-b2/?lang=en",
+      "bytes": 273349,
+      "sha256": "c5b31d0442e1283992b21414a3d557cbfd059820110aaaafe0511404dd9fe074",
+      "file_type": "HTML document, ASCII text, with very long lines (63607)",
+      "kind": "engine",
+      "license": "Copyright 3W-Modellmotoren; page snapshot for reference only.",
+      "use": "3W-110i B2 product page (HTML snapshot): 110 cc, 11.8 HP, 3.050 kg, EUR 1294",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/photos/p51d-5-na_44-13926_375fs_usaf.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/375th_Fighter_Squadron_North_American_P-51D-5-NA_Mustang_44-13926.jpg",
+      "bytes": 343599,
+      "sha256": "0debc619d3db880e1c07bd7ec4cb286ed74b03eb964695512d8083973054f2ae",
+      "file_type": "JPEG image data, JFIF standard 1.02, resolution (DPI), density 300x300, segment length 16, Exif Standard: [TIFF image data, big-endian, direntries=8, description=War Theatre #12 - France - Airplanes, orientation=upper-left, xresolution=436, yresolution=444, resolutionunit=2, software=Adobe Photoshop 7.0, datetime=2004:03:12 14:31:39], baseline, precision 8, 3167x2400, components 1",
+      "kind": "photo",
+      "license": "Public domain (U.S. Air Force photo) per Wikimedia Commons",
+      "use": "Photo: P-51D-5-NA 44-13926 of the 375th FS, 3167x2400 px (early D without dorsal fillet)",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/photos/f51d-30-na_44-74617_12fbs_usaf.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/12th_FBS_North_American_F-51D-30-NA_Mustang_44-74617.jpg",
+      "bytes": 98863,
+      "sha256": "631771574131b8b2d84a71654bcc96c2b3426a99af30ae9a417e094ec41a89cb",
+      "file_type": "JPEG image data, Exif standard: [TIFF image data, little-endian, direntries=10, manufacturer=_@, model=HP ojp7700, xresolution=146, yresolution=154, resolutionunit=2, software=Paint Shop Pro Photo 12.01, datetime=2012:02:13 08:53:36], baseline, precision 8, 926x566, components 3",
+      "kind": "photo",
+      "license": "Public domain (United States Air Force) per Wikimedia Commons",
+      "use": "Photo: F-51D-30-NA 44-74617, 12th FBS (Korea era), 926x566 px",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/photos/f51d-30-na_44-74880_192fbs_usaf.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/192d_Fighter-Bomber_Squadron%2C_North_American_F-51D-30-NA_Mustang%2C_sn._44-74880.jpg",
+      "bytes": 86193,
+      "sha256": "94d29b864d4a4bf7500bcd797eaf1bc16ab62fc777655a0fbd7c880958a107be",
+      "file_type": "JPEG image data, JFIF standard 1.02, resolution (DPI), density 96x96, segment length 16, baseline, precision 8, 1000x541, components 3",
+      "kind": "photo",
+      "license": "Public domain (United States Air Force) per Wikimedia Commons",
+      "use": "Photo: F-51D-30-NA 44-74880, 192d FBS, 1000x541 px",
+      "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    }
+  ],
+  "pages": [
+    {
+      "url": "https://www.desertaircraft.com/products/da-120",
+      "use": "DA-120: 121 cc, 11.7 hp, 1300-6900 rpm, 4.95 lb, propeller list, $1,249",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.toni-clark.com/en/da-120/",
+      "use": "DA-120 weights 2300 g engine / 2445 g with ignition",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.macgregor.co.uk/dleengine/dle120.htm",
+      "use": "DLE-120 specs: 12 hp at 7500 rpm, 2306 g, props 26x10-28x10",
+      "status": "fetched"
+    },
+    {
+      "url": "https://3w-modellmotoren.de/produkt/3w-110i-b2/?lang=en",
+      "use": "3W-110i B2: 110 cc, 11.8 hp, 3.05 kg",
+      "status": "fetched"
+    },
+    {
+      "url": "https://nexusmodels.co.uk/products/carf-p-51-mustang-1-4-3-422000",
+      "use": "CARF P-51 Mustang 2540 mm, 15-17 kg, 50-85 cc, manual link",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.flyrc.com/hangar-9-60cc-p-51d-mustang/",
+      "use": "Hangar 9 P-51D 60cc specifications",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.modelaviation.com/horizon-mustang-p51d",
+      "use": "Model Aviation review (stall / landing behaviour)",
+      "status": "fetched"
+    },
+    {
+      "url": "https://ziroligiantscaleplans.com/p-51d-mustang-plans.html",
+      "use": "Ziroli 1/4.6 P-51D plans: 98 in, 1650 sq in, 26-36 lb, CG, incidences",
+      "status": "fetched"
+    },
+    {
+      "url": "https://lcka.com.au/product/north-american-p-51d-mustang-14-plans-cv/",
+      "use": "Chad Veich 1/4 P-51D plans: 284.5 cm, 1.36 m2, 18-27 kg",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.fighteraces.co.uk/shop/jerry-bates-plans/military/north-american-p-51b-c-mustang-1-4/",
+      "use": "Jerry Bates 1/4 P-51B/C plans: 112.25 in, 50 lb+, 80 cc+",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.fokkerc.com/product/mustang-p-51-d-1-4/",
+      "use": "FokkeRC 1/4 P-51D short kit: 2819 mm / 2457 mm, Kolm IL155",
+      "status": "fetched"
+    },
+    {
+      "url": "https://rcwarbirdmodels.com/products/96-p-51d-mustang",
+      "use": "RC Warbird Models 96 in composite P-51D, 60-85 cc",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.toprcmodel-usa.com/p-51.html",
+      "use": "TopRC Model 89 in composite P-51D, 50-65 cc",
+      "status": "fetched"
+    },
+    {
+      "url": "https://meister-scale.com/HeritageP51Mustang/index.html",
+      "use": "Meister Scale 1/5 P-51D",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.towerhobbies.com/cgi-bin/wti0001p?I=LXEDP2&P=3",
+      "use": "Top Flite Giant P-51D ARF specifications",
+      "status": "search snippet"
+    },
+    {
+      "url": "https://www.flyingrc.net/tfp51seg3.html",
+      "use": "Top Flite Giant P-51D ARF flight report",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.modelairplanenews.com/first-flight-success-giant-scale-p-51d-mustang/",
+      "use": "Ziroli 98 in P-51D maiden on a DA-85",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.warbirdsresourcegroup.org/URG/p51mustang_specifications.html",
+      "use": "P-51D specifications: span, length, 235 sq ft, weights, stall 100 mph",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.digitalcombatsimulator.com/upload/iblock/aa2/DCS-P-51D_Flight_Manual_EN.pdf",
+      "use": "DCS P-51D manual: 233.19 sq ft, propeller 11 ft 2 in, stall table p115 (copyright, consulted only)",
+      "status": "fetched, not saved"
+    },
+    {
+      "url": "https://archive.aoe.vt.edu/mason/Mason_f/P51DMustang.pdf",
+      "use": "Mason (Virginia Tech) P-51D configuration aerodynamics: chords, tail areas, AR 5.876",
+      "status": "downloaded"
+    },
+    {
+      "url": "https://www.aopa.org/news-and-media/all-news/2007/august/01/north-american-aviation-p-51d-mustang",
+      "use": "AOPA pilot report and specification box",
+      "status": "fetched"
+    },
+    {
+      "url": "https://www.mustangsmustangs.com/p-51/variants/p51d",
+      "use": "P-51D variant changes: bubble canopy, dorsal fillet, 8,102 built",
+      "status": "fetched"
+    },
+    {
+      "url": "https://commons.wikimedia.org/wiki/Category:North_American_P-51_Mustang_drawings",
+      "use": "Public-domain drawings category",
+      "status": "fetched"
+    },
+    {
+      "url": "https://m-selig.ae.illinois.edu/ads/coord/p51droot.dat",
+      "use": "UIUC P-51D root (BL17.5) airfoil ordinates",
+      "status": "downloaded"
+    },
+    {
+      "url": "https://www.modelflying.co.uk/p-51d-mustang/",
+      "use": "dihedral 5 deg along 25 % chord, ~1 deg root incidence",
+      "status": "search snippet only"
+    },
+    {
+      "url": "https://www.flyinggiants.com/forums/showthread.php?t=200294",
+      "use": "Falcon 28x10 on DA-120: 6550 rpm, 31 kg static (snippet; thread paywalled)",
+      "status": "search snippet only"
+    },
+    {
+      "url": "https://www.rcuniverse.com/forum/rc-warbirds-warplanes-200/1612780-top-flite-giant-p-51d-mustang.html",
+      "use": "giant P-51 take-off / tip-stall behaviour",
+      "status": "403, snippet only"
+    }
+  ]
+}

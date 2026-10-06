@@ -36,3 +36,7 @@ The [Avanti S plan](../AVANTI-S-PLAN.md) selects the original 200 cm span / 222 
 ### Avanti S: primera maqueta AV-02
 
 [Inspector Godot y evidencia](avanti-s-av02-preview.md) · [capturas y fotos grandes](../../references/avanti-s/av02/index.html) · [investigación geométrica](avanti-s-geometry-followup.md). Acumulado: 76 originales locales. El modelo es aproximado, aislado y no volable.
+
+## Fourth aircraft: P-51D Mustang 1/4 scale, 120 cc class
+
+The research of 2026-10-06 found no commercial ARF for 100-150 cc: that class is the 1/4-scale plans-built P-51D (Veich, Bates, FokkeRC: 2.82 m, 18-27 kg) with a DA-120 / DLE-120. The simulator model is the full-size P-51D scaled exactly 1/4 from published dimensions, the public-domain AN 01-60-3 three-view and the UIUC NAA 45-100 ordinates; CG, throws and flap angles come from the CARF 2.54 m, Hangar 9 60cc and Ziroli manuals. [Plan](../P51-PLAN.md) · [research report](p51-family-research.md) · [manifest with hashes](p51-resources.json) · [physics derivation](../../research/p51/p51-05/derivation.md). Manuals, drawings, airfoil files, engine sheets and photos stay in the ignored [`references/p51-mustang/`](../../references/p51-mustang/) (its `index.json` lists licences). The CARF, Hangar 9 and Top Flite kits are comparisons, not the selected geometry.

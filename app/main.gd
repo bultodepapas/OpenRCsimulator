@@ -19,8 +19,10 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd")
 const Hud := preload("res://render/hud.gd")
+const FrameSamples := preload("res://render/frame_samples.gd")
 const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
+const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
@@ -56,18 +58,41 @@ var _hud: Label
 var _auto_zoom := true
 var _show_perf := true
 var _frame_times := PackedFloat64Array()
-## L0e frame-time logger: --frametimes=<file.json> --t=<seconds>. Frame deltas after a 1 s warm-up.
-const FRAMETIME_WARMUP_S := 1.0
-var _frametimes_path := ""
-var _frametimes_duration := 20.0
-var _frametimes := PackedFloat64Array()
-var _frametimes_elapsed := 0.0
+## VQ-01b frame-time logger; raw wall deltas and the engine's delta are both retained.
+var _frametimes_path: String = ""
+var _frametimes_warmup_s: float = 1.0
+var _frametimes_duration: float = 20.0
+var _frametime_samples: RefCounted = null
+var _frametimes_elapsed: float = 0.0
+var _frametimes_active: bool = false
+var _frametimes_clock_primed: bool = false
+var _frametimes_scripted_fixed: bool = false
+var _frametimes_last_usec: int = 0
+var _frametimes_sim_start_s: float = 0.0
+var _frametimes_sim_start_tick: int = 0
 ## Last one-off message (reload result), shown in the panel.
 var _note := ""
+var _visual_pose: Dictionary = {}
+var _last_render_pose: Dictionary = {}
 
 
 func _ready() -> void:
 	var args := _user_args()
+	var frametime_options: Dictionary = FrameSamples.options(args)
+	if not frametime_options.ok:
+		push_error(str(frametime_options.error))
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	var pose_error: String = VisualEvidence.validate_pose(args)
+	if pose_error != "":
+		push_error(pose_error)
+		set_process(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	if args.has("visual_pose"):
+		_visual_pose = VisualEvidence.synthetic_pose(str(args.visual_pose), float(args.visual_distance), Spec.CAMERA.eye_height)
 	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
 	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
@@ -115,9 +140,21 @@ func _ready() -> void:
 		# Headless trace: record from the start to t, save, quit. No window needed.
 		_write_trace_and_quit(float(args.get("t", Spec.CAPTURE.time)), args.trace)
 		return
-	if args.has("frametimes"):
-		_frametimes_path = str(args.frametimes)
-		_frametimes_duration = float(args.get("t", 20.0))
+	if bool(frametime_options.enabled):
+		_frametimes_path = str(frametime_options.path)
+		_frametimes_warmup_s = float(frametime_options.warmup_s)
+		_frametimes_duration = float(frametime_options.sample_s)
+		_frametime_samples = FrameSamples.new()
+		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration):
+			push_error("Invalid frame-time options: " + _frametime_samples.failure)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_frametimes_active = true
+		_frametimes_scripted_fixed = _scripted
+		if _frametimes_scripted_fixed:
+			session.input_enabled = false
+			_show_perf = false
+			set_process_unhandled_input(false)
 	if args.has("capture"):
 		_capturing = true
 		_show_perf = false # wall-clock numbers would make captures differ run to run
@@ -135,20 +172,33 @@ func _process(delta: float) -> void:
 	if _capturing:
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
-	if _frametimes_path != "":
-		_log_frame_time(delta)
-	ShaderClock.update(session.sim.time())
-	Atmosphere.update_clouds(_env, session.sim.time()) # at most once per cloud_update_s of simulation
+	if _frametimes_active:
+		if not _frametimes_clock_primed:
+			_frametimes_last_usec = Time.get_ticks_usec()
+			_frametimes_clock_primed = true
+			_frametimes_sim_start_s = session.sim.time()
+			_frametimes_sim_start_tick = session.sim.tick
+		else:
+			_log_frame_time(delta)
+	var visual_clock_s: float = session.sim.time()
+	if _frametimes_scripted_fixed:
+		visual_clock_s = _frametimes_elapsed
+	ShaderClock.update(visual_clock_s)
+	Atmosphere.update_clouds(_env, visual_clock_s) # at most once per cloud_update_s of simulation
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
 	var sim: Node = session.sim
 	_t += dt
+	if _frametimes_scripted_fixed:
+		_t = _frametimes_elapsed
 	# Any pause (menu, focus, failsafe, calibration, crash) freezes the picture and the sound with the simulation:
 	# the propeller stops where it is and the engine's generator stops being drained (stream_paused), so no stale
 	# buzz at flying rpm plays on (UI-02, research 19).
 	var frozen: bool = sim.paused and not _scripted
-	if not frozen:
+	if _frametimes_scripted_fixed:
+		_prop_angle = fposmod(TAU * (sim.aux[0] / 60.0) * _frametimes_elapsed, TAU)
+	elif not frozen:
 		_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
 	if _engine_audio != null:
 		_engine_audio.stream_paused = frozen
@@ -169,7 +219,7 @@ func _update_cg_model() -> void:
 func _update_hud() -> void:
 	var lines := PackedStringArray()
 	if _scripted or not session.aircraft.ok:
-		lines.append("scripted circle" if _scripted else "no flight data")
+		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
 	else:
 		var s: PackedFloat64Array = session.sim.state
 		var air := Air.compute(s, M.v3(0.0, 0.0, 0.0))
@@ -180,6 +230,8 @@ func _update_hud() -> void:
 
 
 func _status() -> String:
+	if not _visual_pose.is_empty():
+		return "mode: synthetic inspection (not flight)"
 	if _scripted:
 		return "mode: scripted circle"
 	if not session.aircraft.ok:
@@ -212,6 +264,8 @@ func _status() -> String:
 
 ## Pose to draw: { pos: Vector3, basis: Basis } in render axes.
 func _current_pose() -> Dictionary:
+	if not _visual_pose.is_empty():
+		return _visual_pose
 	if _scripted:
 		var p := Scripted.pose_at(_t)
 		return { pos = Frames.ned_to_render(p.ned), basis = Frames.attitude_to_render(p.yaw, p.pitch, p.roll) }
@@ -303,6 +357,8 @@ func _user_args() -> Dictionary:
 
 
 func _view_name() -> String:
+	if not _visual_pose.is_empty():
+		return "fixed inspection"
 	return "close-up" if _inspect else "pilot"
 
 
@@ -348,6 +404,7 @@ func _capture_scene_id() -> String:
 
 
 func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
+	_last_render_pose = pose
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
@@ -417,6 +474,7 @@ func _write_manifest(png_path: String, err: Error) -> Error:
 	var shadow := RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW
 	var m := {
 		format = "openrc-capture v1",
+		visual_evidence = capture_evidence(),
 		capture_scene = _capture_scene_id(),
 		renderer = RenderingServer.get_current_rendering_method(),
 		image = png_path.get_file(),
@@ -445,37 +503,131 @@ func _write_manifest(png_path: String, err: Error) -> Error:
 	return write_error
 
 
-## L0e: records frame deltas of the normal app (trimmed start, pilot camera) and writes percentiles for Gate L.
-## On the owner's machine: `"OpenRC Simulator.exe" -- --frametimes=frametimes.json --t=20` (add Godot's
-## `--disable-vsync` before `--` to measure beyond the refresh rate).
+## VQ-01b: records raw monotonic frame intervals after warm-up. Legacy summary fields use wall-clock deltas;
+## engine `delta` stays available in engine_* fields. Use --warmup=<seconds> (default 1) and --t=<seconds> (20).
 func _log_frame_time(delta: float) -> void:
-	_frametimes_elapsed += delta
-	if _frametimes_elapsed > FRAMETIME_WARMUP_S:
-		_frametimes.append(delta)
-	if _frametimes_elapsed < FRAMETIME_WARMUP_S + _frametimes_duration:
+	var now_usec: int = Time.get_ticks_usec()
+	var wall_delta_usec: int = now_usec - _frametimes_last_usec
+	_frametimes_last_usec = now_usec
+	var sim: Node = session.sim
+	var raw_metrics: Dictionary = {
+		sim_time_s = sim.time(),
+		sim_tick = sim.tick,
+		physics_step_usec = sim.step_usec,
+		fps_monitor = Performance.get_monitor(Performance.TIME_FPS),
+		process_time_s = Performance.get_monitor(Performance.TIME_PROCESS),
+		physics_process_time_s = Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS),
+		object_count = Performance.get_monitor(Performance.OBJECT_COUNT),
+		node_count = Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		draw_calls = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
+		physics_3d_active_objects = Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
+		physics_3d_collision_pairs = Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
+	}
+	if not _frametime_samples.record_frame(delta, wall_delta_usec, now_usec, raw_metrics):
+		_frametimes_active = false
+		push_error("Frame-time measurement failed: " + _frametime_samples.failure)
+		get_tree().quit(1)
 		return
-	var ms := func(q: float) -> float: return Hud.percentile(_frametimes, q) * 1000.0
-	var total := 0.0
-	for d in _frametimes:
-		total += d
-	var report := {
-		frames = _frametimes.size(),
-		seconds = total,
-		fps_mean = _frametimes.size() / maxf(total, 1e-9),
-		frame_ms = { p50 = ms.call(0.50), p95 = ms.call(0.95), p99 = ms.call(0.99), max = ms.call(1.0) },
-		physics_us_per_tick = session.sim.step_usec,
+	_frametimes_elapsed = float(_frametime_samples.elapsed_wall_usec) / 1000000.0
+	if not _frametime_samples.finished:
+		return
+	var report: Dictionary = _frametime_samples.report()
+	var sim_end_s: float = sim.time()
+	var sim_end_tick: int = sim.tick
+	var sample_metrics: Dictionary = report.raw_metrics
+	var sample_times: PackedFloat64Array = sample_metrics.get("sim_time_s", PackedFloat64Array())
+	var sample_ticks: PackedFloat64Array = sample_metrics.get("sim_tick", PackedFloat64Array())
+	var sample_simulation: Dictionary = {
+		scope = "first sampled frame end through last sampled frame end; excludes the first sampled interval",
+		start_time_s = sample_times[0] if not sample_times.is_empty() else sim_end_s,
+		end_time_s = sample_times[sample_times.size() - 1] if not sample_times.is_empty() else sim_end_s,
+		start_tick = int(sample_ticks[0]) if not sample_ticks.is_empty() else sim_end_tick,
+		end_tick = int(sample_ticks[sample_ticks.size() - 1]) if not sample_ticks.is_empty() else sim_end_tick,
+		ticks = int(sample_ticks[sample_ticks.size() - 1] - sample_ticks[0]) if sample_ticks.size() > 1 else 0,
+	}
+	var run_args: Dictionary = _user_args()
+	var route_name: String = "scripted-fixed" if _frametimes_scripted_fixed else "live-input"
+	report.merge({
+		case_id = str(run_args.get("case", route_name)),
+		route = route_name,
+		preset = "current-default",
+		backend = RenderingServer.get_current_rendering_method(),
+		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
+		camera = {
+			fov_deg = _camera.fov,
+			autozoom = _auto_zoom,
+			near_m = _camera.near,
+			far_m = _camera.far,
+			mode = _view_name(),
+			projection = _camera.projection,
+			keep_aspect = _camera.keep_aspect,
+			viewport = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
+			transform = VisualEvidence.transform(_camera.global_transform),
+		},
+		physics_us_per_tick = sim.step_usec,
 		adapter = RenderingServer.get_video_adapter_name(),
 		api = RenderingServer.get_video_adapter_api_version(),
 		godot = Engine.get_version_info().string,
 		os = OS.get_name(),
+		pid = OS.get_process_id(),
 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
-		note = "Frame time over the trimmed start with the pilot camera, after a %.0f s warm-up. Software renderers (llvmpipe) are not performance numbers." % FRAMETIME_WARMUP_S,
+		aircraft_id = aircraft_id,
+		input_enabled = session.input_enabled,
+		simulation = {
+			scope = "first _process clock prime through sample completion; includes warm-up",
+			start_time_s = _frametimes_sim_start_s,
+			end_time_s = sim_end_s,
+			elapsed_time_s = sim_end_s - _frametimes_sim_start_s,
+			start_tick = _frametimes_sim_start_tick,
+			end_tick = sim_end_tick,
+			ticks = sim_end_tick - _frametimes_sim_start_tick,
+			physics_ticks_per_second = Engine.physics_ticks_per_second,
+			physics_enabled = session.physics_enabled,
+			paused = sim.paused,
+			fault = sim.fault_reason,
+			step_usec_smoothed = sim.step_usec,
+		},
+		measured_simulation = sample_simulation,
+		code_provenance = VisualEvidence.provenance(),
+		note = "Frame intervals use monotonic Time.get_ticks_usec wall time; legacy seconds/fps_mean/frame_ms use that clock. Godot delta is recorded separately under engine_*. The first _process call primes the clock, excluding ready/startup. The scripted-fixed route disables input and advances its visual clock from elapsed wall time. preset=current-default reports current rendering settings; the app has no named performance presets. Software renderers such as llvmpipe are not target-hardware performance numbers.",
+	}, true)
+	var write_result: Dictionary = FrameSamples.write_json(_frametimes_path, report)
+	_frametimes_active = false
+	var frame_stats: Dictionary = report.frame_ms
+	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, _frametimes_path])
+	if not write_result.ok:
+		push_error("Cannot write frame-time report '%s': %s" % [_frametimes_path, error_string(int(write_result.error))])
+		get_tree().quit(1)
+		return
+	get_tree().quit(OK)
+
+
+## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.
+func capture_evidence() -> Dictionary:
+	var args: Dictionary = _user_args()
+	var pilot: Vector3 = Frames.ned_to_render([0.0, 0.0, -Spec.CAMERA.eye_height])
+	var position: Vector3 = _last_render_pose.get("pos", Vector3.ZERO)
+	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
+	return {
+		format = "openrc-visual-evidence v1", provenance = VisualEvidence.provenance(),
+		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
+		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),
+		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction()), energy = Atmosphere.light_energy(), color = str(Spec.ATMOSPHERE.sun_color)},
+		route = "synthetic-inspection" if not _visual_pose.is_empty() else ("scripted-circle" if _scripted else "physics-fixed"),
+		preset = "current-default", backend = RenderingServer.get_current_rendering_method(),
+		pose = VisualEvidence.transform(Transform3D(basis, position)), coordinate_frame = "render: east/up/south; metres",
+		distance_to_pilot_m = position.distance_to(pilot), distance_to_camera_m = position.distance_to(_camera.global_position),
+		camera = {transform = VisualEvidence.transform(_camera.global_transform), fov_deg = _camera.fov,
+			autozoom = _auto_zoom, near_m = _camera.near, far_m = _camera.far, mode = _view_name(),
+			projection = _camera.projection, keep_aspect = _camera.keep_aspect,
+			viewport = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y]},
+		exposure = _env.tonemap_exposure, tonemapper = _env.tonemap_mode,
+		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
+		clock_s = ShaderClock.last_clock, simulation_time_s = session.sim.time(), simulation_tick = session.sim.tick,
+		state = {paused = session.sim.paused, aircraft_visible = _airplane.root.visible, shadow = _shadow_mode,
+			engine_shadows = Atmosphere.engine_shadows, physics_state = Array(session.sim.state),
+			controls = session.commands, surfaces = session.surfaces(), propeller_angle_rad = _airplane.propeller.rotation.z},
+		seed = {kind = "not-used", note = "procedural shaders use fixed analytic noise; no RNG"},
 	}
-	var f := FileAccess.open(_frametimes_path, FileAccess.WRITE)
-	if f != null:
-		f.store_string(JSON.stringify(report, "  ", true) + "\n")
-		f.close()
-	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames → %s" % [ms.call(0.50), ms.call(0.95), ms.call(0.99), _frametimes.size(), _frametimes_path])
-	_frametimes_path = ""
-	get_tree().quit(OK if f != null else ERR_CANT_CREATE)

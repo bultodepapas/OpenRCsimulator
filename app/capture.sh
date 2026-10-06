@@ -11,6 +11,12 @@ rm -f "$HERE/captures/run-manifest.json"
 GODOT="$("$HERE/get-godot.sh")"
 VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/test_capture_runner.py"
+# A dirty checkout is identified by revision plus per-file hashes in native evidence.
+if [ -z "${OPENRC_CODE_REVISION:-}" ]; then
+  OPENRC_CODE_REVISION="$(git -C "$HERE" rev-parse HEAD 2>/dev/null || echo unavailable)"
+  if [ -n "$(git -C "$HERE" status --porcelain --untracked-files=normal)" ]; then OPENRC_CODE_REVISION+="-dirty"; fi
+  export OPENRC_CODE_REVISION
+fi
 CAPTURE_NAMES=()
 # L0b: llvmpipe thread count pinned. 1 and 12 threads gave byte-identical captures on Mesa 25.2.8 (2026-10-05), so
 # this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
@@ -107,6 +113,9 @@ else
   cat "$HERE/captures/trace-physics.log"; exit "$status"
 fi
 python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
+# VQ-01b extends this same guarded producer: 66 fixed images, metadata/parity/readability checks.
+"$VPY" "$HERE/tests/test_visual_quality_cases.py"
+"$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"
 # Publish exactly this run's inventory, never a glob that can silently include old outputs.
 "$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
 import hashlib, json, sys
@@ -121,7 +130,9 @@ for name in sys.argv[2:]:
                     'sha256': data['sha256'],
                     'manifest_sha256': hashlib.sha256(sidecar.read_bytes()).hexdigest()})
 trace = hashlib.sha256((root / 'trace-physics.csv').read_bytes()).hexdigest()
-manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace}
+manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace,
+            'visual_quality_manifest': 'vq01b/visual-quality-run-manifest.json',
+            'visual_quality_manifest_sha256': hashlib.sha256((root / 'vq01b/visual-quality-run-manifest.json').read_bytes()).hexdigest()}
 temp = root / 'run-manifest.tmp'
 temp.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
 temp.replace(root / 'run-manifest.json')

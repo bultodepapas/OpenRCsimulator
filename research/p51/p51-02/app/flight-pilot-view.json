@@ -1,0 +1,25 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "args": "--aircraft=p51d-mustang-120 --capture --t=1.5 --out=flight-pilot-view.png",
+  "capture_scene": "field",
+  "draw_calls": {
+    "shadow": 0,
+    "visible": 76
+  },
+  "format": "openrc-capture v1",
+  "godot": "4.7.2-stable (official)",
+  "image": "flight-pilot-view.png",
+  "lp_num_threads": "",
+  "objects": {
+    "shadow": 0,
+    "visible": 76
+  },
+  "primitives": {
+    "shadow": 0,
+    "visible": 39813
+  },
+  "renderer": "gl_compatibility",
+  "sha256": "385e515329d398f13b5c348f72d640d840c94d81bd7fc3084e2d1fee873217e6",
+  "video_memory_bytes": 46974338
+}

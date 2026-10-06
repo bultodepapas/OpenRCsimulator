@@ -33,6 +33,14 @@ const ENTRIES := [
 		data = "res://data/aircraft/gp_extra_300s_60.json",
 	},
 	{
+		id = "p51d-mustang-120",
+		name = "P-51D Mustang 1/4",
+		summary = "Giant-scale warbird · 2.82 m · 120 cc gasoline",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: first physics estimate from the full-size airplane scaled 1/4, not yet flight-tested.",
+		data = "res://data/aircraft/p51d_mustang_120.json",
+	},
+	{
 		id = "sebart-avanti-s-a200-p100rx",
 		name = "SebArt Avanti S",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",

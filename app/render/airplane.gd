@@ -11,10 +11,13 @@ const StikGeometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const Extra := preload("res://aircraft/extra_300s_model.gd")
 const ExtraGeometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Avanti := preload("res://aircraft/avanti_s_model.gd")
+const P51 := preload("res://aircraft/p51d_model.gd")
+const P51Geometry := preload("res://aircraft/p51d_geometry.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
+const P51_ID := "p51d-mustang-120"
 
 
 static func _mat(color: Color) -> StandardMaterial3D:
@@ -32,6 +35,8 @@ static func build(id := STIK_ID) -> Dictionary:
 			airplane = Extra.build()
 		AVANTI_ID:
 			airplane = Avanti.build()
+		P51_ID:
+			airplane = P51.build()
 		_:
 			push_error("render/airplane.gd: unknown aircraft '%s'" % id)
 			return {}
@@ -49,10 +54,13 @@ static func datum(id: String) -> Vector2:
 		EXTRA_ID:
 			# geometry.json: y = 0 on the spinner axis; the physics le frame starts at the trapezoid's root LE.
 			return Vector2(ExtraGeometry.DATA.wing.le_z_root, 0.0)
+		P51_ID:
+			# geometry.json: z = 0 at the root leading edge, y = 0 on the spinner axis: the le frame's own datum.
+			return Vector2(P51Geometry.DATA.wing.le_z_root, 0.0)
 	return Vector2.ZERO
 
 
-## Hinge rotations from input/commands.gd hinge_rotations(). Stik and Extra: wing rest frames carry the dihedral
+## Hinge rotations from input/commands.gd hinge_rotations(). Stik, Extra and P-51: wing rest frames carry the dihedral
 ## (Stik) or the swept hinge line (Extra); the hinge rotates only in its own frame. The Avanti drives its own
 ## axis/rest hinges from the same deflections in degrees.
 static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:

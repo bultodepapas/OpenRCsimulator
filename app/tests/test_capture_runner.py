@@ -75,6 +75,14 @@ if mode not in ("missing_manifest", "ui"):
     if mode == "malformed_manifest":
         manifest.write_text("{this is not JSON")
 
+if mode.startswith("ui_v2"):
+    data = {"format": "openrc-ui-capture v2", "capture_scene": scene,
+            "image": out.name, "sha256": hashlib.sha256(out.read_bytes()).hexdigest(),
+            "ui_evidence": {"camera_count": 1, "world_environment_count": 1}}
+    if mode == "ui_v2_bad_hash": data["sha256"] = "0" * 64
+    if mode == "ui_v2_no_evidence": del data["ui_evidence"]
+    manifest.write_text(json.dumps(data))
+
 if mode == "ui":
     print(f"saved {out} (error 0)", flush=True)
 else:
@@ -106,6 +114,21 @@ class CaptureRunnerTests(unittest.TestCase):
     @property
     def log_path(self):
         return self.output.with_suffix(".log")
+
+    def test_native_ui_evidence_is_preserved(self):
+        result = run_capture(self.command("ui_v2"), self.output, "ui", SCENE)
+        self.assertEqual(result["format"], "openrc-ui-capture v2")
+        self.assertEqual(result["ui_evidence"]["camera_count"], 1)
+
+    def test_native_ui_invalid_metadata_is_rejected(self):
+        for mode in ("ui_v2_bad_hash", "ui_v2_no_evidence"):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                run_capture(self.command(mode), self.output, "ui", SCENE)
+            self.assertFalse(self.output.exists())
+
+    def test_flight_cannot_fall_back_to_layout_only_metadata(self):
+        with self.assertRaisesRegex(RuntimeError, "requires native"):
+            run_capture(self.command("ui"), self.output, "ui", "flight")
 
     def seed_stale_evidence(self):
         Image.new("RGB", (1280, 720), (250, 0, 250)).save(self.output, format="PNG")

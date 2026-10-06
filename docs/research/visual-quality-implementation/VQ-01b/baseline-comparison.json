@@ -1,0 +1,198 @@
+{
+  "flight_and_field_images": 38,
+  "all_identical": true,
+  "trace_rows_identical": true,
+  "trace_rows": 361,
+  "captures": [
+    {
+      "image": "capture.png",
+      "sha256": "2266ec0dfca33fd498fe00bab6946c046a27d3232e506fb3b1a6d4bb7c82d467",
+      "same_png": true
+    },
+    {
+      "image": "capture-inspect.png",
+      "sha256": "fec8c51976fece69a5ef7f01cf1718182f973dd3986957aac8f54ea2d4180a4a",
+      "same_png": true
+    },
+    {
+      "image": "capture-inspect-deflected.png",
+      "sha256": "f158a24e76932d72bddac8b90f17fab1c364dc4ff1f2b7b5b43a54b906e5ce31",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics.png",
+      "sha256": "6896b4eca6cd50463fe5e44017d8f66c62225bfb25677bd23de8a4ec692c19f8",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics-inspect.png",
+      "sha256": "1bb0f77069483d68eaa39f70c3726a15f8401b4b5e6cb62d1956eaa8cd76dd0d",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics-nozoom.png",
+      "sha256": "4c49f043b8588f7258e3e39c972a1da603f7cb5367b619226649930d2e8d437e",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics-low-inspect.png",
+      "sha256": "958f0d46cea43dae1bc87930e116c0b6ec13ad8e1fcc45bffb479166d9f77331",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics-low-inspect-noplane.png",
+      "sha256": "6a7e6205e8b7bcc3afec76dbfc1fb21598dd5e7c2a4b8d791ab40a59100feee9",
+      "same_png": true
+    },
+    {
+      "image": "capture-physics-inspect-noplane.png",
+      "sha256": "94386b3823bdfac3b4f04f1fc8637be032efd4cc2d9fbee0c6c691a26425960c",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az0-el0.png",
+      "sha256": "c995f7b670ecc4996106f14e26393692a63e19545668a0ff29ad9db0f933bd6b",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az0-el10.png",
+      "sha256": "59579965878257ccedea3269ef4aa1541b119fe07e64bad6354bafcdae6426fb",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az90-el0.png",
+      "sha256": "22cc7512c349ce16bd1bd430f75a643b7bc71c9e91e2582f822405dd26f42d00",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az90-el10.png",
+      "sha256": "1f656e7b9ce0879055eaa677aa2d34b3f2e42b79800d1f4553f30c14bc31d20e",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az180-el0.png",
+      "sha256": "436e59eaadb7e71cf985d0679599c7418afa399522e5603ca28f663bc9cc3e5a",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az180-el10.png",
+      "sha256": "72208f02e86b244070ddd7fa2bf4116fc0c95f17f2458fc1fb55cde4434cce11",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az270-el0.png",
+      "sha256": "a64a1241e8b53ddfe91c955d44cd8019294fddab7b1e69eada51a19708996b0d",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az270-el10.png",
+      "sha256": "a9750b5563f637412ef58ac061b15ce8e4f26f6df64b46f2ca61fa9c6bb05ce4",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az90-el10-t11.png",
+      "sha256": "3a13efdd4557216d392966a2b52eddd52a96f9523f8ee7ecf6020448eff35131",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az0-el0-100m.png",
+      "sha256": "99c8b8c1b0af4c0b4f634afbb03e6dec4baeaa41fb8dd36a0c2485820abd90ba",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az90-el0-100m.png",
+      "sha256": "fa83d0c93b2b73f5f3da2427b4805d41d7e0889638f14376ab5db5ef99793297",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az180-el0-100m.png",
+      "sha256": "ac55454b76300de6b10896420cc46aa33abc027e9bd1fbcbaa82b6292d1fbe4f",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az225-el0-100m.png",
+      "sha256": "2f626775ea11d1c18f3671d15fd19969981759a6a8eea50a0ca5c54fa7fc862f",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-az270-el0-100m.png",
+      "sha256": "fa55bf41645845fb1af53f36bfc0ddcf658f52597d02b42397b680885adadd4b",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-30m.png",
+      "sha256": "1291b362b043105fe7003437f56bf65970f32909243042a15f82738b9a5502cb",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-low3m.png",
+      "sha256": "dbea0a2b0b2c10a7669cec1de95b1cd81c9ff2961ac591dc4fc9189ccafef55d",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-sun.png",
+      "sha256": "c2d56b9a29a19f407ffdcd507011c4c11ad68a8bc0e2c4cad687ba2bdb43a99d",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-30m-noplane.png",
+      "sha256": "06bffd9c9f6b61d4dfc6abe3714c00a8eb53743f96b03001899f3d12876cab1b",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-low3m-noplane.png",
+      "sha256": "c65ab2beddc47c1d41f28a1ec235806c6ce7a3b70e53cd0499135f4d393e03b5",
+      "same_png": true
+    },
+    {
+      "image": "capture-land-top.png",
+      "sha256": "9edaaa0c3aa1705474b2d4094677aa11b39322054d2729e3aa90520149df711c",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az0-el0.png",
+      "sha256": "77ddf9c4306a22c1a1922ff251a7213b8538b05b760daea7a4052be718aa81ee",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az0-el10.png",
+      "sha256": "6aaf69a363a23adf2ca1106cc3c21197bc5226761ecb19976ee09a8270a97408",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az90-el0.png",
+      "sha256": "22cc7512c349ce16bd1bd430f75a643b7bc71c9e91e2582f822405dd26f42d00",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az90-el10.png",
+      "sha256": "1f656e7b9ce0879055eaa677aa2d34b3f2e42b79800d1f4553f30c14bc31d20e",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az180-el0.png",
+      "sha256": "436e59eaadb7e71cf985d0679599c7418afa399522e5603ca28f663bc9cc3e5a",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az180-el10.png",
+      "sha256": "72208f02e86b244070ddd7fa2bf4116fc0c95f17f2458fc1fb55cde4434cce11",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az270-el0.png",
+      "sha256": "a64a1241e8b53ddfe91c955d44cd8019294fddab7b1e69eada51a19708996b0d",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-az270-el10.png",
+      "sha256": "a9750b5563f637412ef58ac061b15ce8e4f26f6df64b46f2ca61fa9c6bb05ce4",
+      "same_png": true
+    },
+    {
+      "image": "field/capture-land-top.png",
+      "sha256": "9edaaa0c3aa1705474b2d4094677aa11b39322054d2729e3aa90520149df711c",
+      "same_png": true
+    }
+  ]
+}

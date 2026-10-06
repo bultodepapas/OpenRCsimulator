@@ -1,0 +1,19 @@
+== build identity: 2bfd212 (commit 2bfd2123e3c5b9342f5cf1b93f5e1045f402e9d5, 2026-10-06T02:19:32+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exported binary reports build 2bfd212
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== packages
+91f5c945f931df5ff87611af1fca04370e964838a00c8289b17e0ca5d5e4921e  openrc-simulator-2bfd212-linux-x86_64.zip
+c688983c8979fa2e4caa4b3c23c4454776d3ad9b96839429fead7bba8857a67a  openrc-simulator-2bfd212-macos-universal.zip
+8484bede9a32f840ab039c14babb48e78dfd3222f356b58378f69c40c3ea3588  openrc-simulator-2bfd212-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 32018964 Oct  6 02:20 openrc-simulator-2bfd212-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 65467277 Oct  6 02:20 openrc-simulator-2bfd212-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 42280037 Oct  6 02:20 openrc-simulator-2bfd212-windows-x86_64.zip
