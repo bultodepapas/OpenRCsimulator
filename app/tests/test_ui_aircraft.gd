@@ -1,6 +1,7 @@
 # UI-05 / EX-11 / AV-03: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and the
-# backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), a
-# preview cannot be flown, and a stale or broken preference falls back to the default.
+# backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), and a
+# stale or broken preference falls back to the default. Since AV-07 the catalog has no preview entry: the Avanti flies
+# (experimental), so the "a preview cannot be flown" path has no real entry to drive here.
 # Run: godot --headless --path . --script res://tests/test_ui_aircraft.gd
 extends SceneTree
 
@@ -65,18 +66,15 @@ func _run() -> void:
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
 	_check("choosing never starts a flight", app.flight == null)
 
-	# Next again: the P-51 (experimental, flyable); then the Avanti preview. Fly is disabled and leaves the focus
-	# order; the card says why.
+	# Next again: the P-51 (experimental, flyable); then the Avanti (experimental since AV-07, flyable).
 	await ui.tap(KEY_ENTER)
 	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == P51, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
-	_check("Avanti preview: shown, Fly disabled, explained", home.aircraft_id == AVANTI and home.fly_button.disabled
-		and home.aircraft_status_label.text.begins_with("Preview only") and not home.limits_label.visible)
-	_check("Avanti preview: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
-	home.fly_button.pressed.emit() # even a stray press (mouse on a disabled button is ignored by Godot; this is stricter)
-	await ui.settle()
-	_check("Avanti preview: Fly never starts a flight", app.flight == null)
+	_check("Avanti: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental"), home.aircraft_status_label.text)
+	_check("Avanti: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
+	_check("choosing the Avanti never starts a flight", app.flight == null)
 
 	# Wraps to the Stik; Left goes back to the Avanti. Spanish texts follow the language.
 	await ui.tap(KEY_ENTER)
@@ -89,16 +87,15 @@ func _run() -> void:
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
 	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 4 de 4" and status.can_auto_translate()
-		and status.atr(status.text).begins_with("Solo vista previa") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
+		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
 	app.set_language("en")
 	await _close(app)
 
-	# A new start remembers the Avanti (Fly disabled, focus on the arrow) ...
+	# A new start remembers the Avanti (Fly enabled) ...
 	app = await _app()
 	home = app.home
-	_check("restart: the saved preview comes back, Fly disabled, focus on an arrow", home.aircraft_id == AVANTI and home.fly_button.disabled and ui.focus_name() == "NextAircraft",
-		ui.focus_name())
+	_check("restart: the saved Avanti comes back, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled, ui.focus_name())
 	# ... and Fly with the Extra starts the Extra: its model with its physics.
 	app.set_aircraft(EXTRA)
 	await ui.settle()

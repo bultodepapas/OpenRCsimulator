@@ -68,11 +68,11 @@ echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: r
 run --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
 
-echo "== Avanti S preview contract (aircraft/verify_avanti.gd, AV-03: visual only, no flight data)"
+echo "== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)"
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
-if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti preview contract failed (see above)"; exit 1; fi
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
 
-echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra and the P-51 by catalog ID)"
+echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
@@ -84,8 +84,14 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=p51d-mustang-120 --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "p51d-mustang-120" "$TRACE" || { echo "the P-51 trace does not name the P-51"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
-echo "== app: a preview or unknown aircraft is refused on the direct route (exit 1, never another airplane)"
-for id in sebart-avanti-s-a200-p100rx no-such-aircraft; do
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=sebart-avanti-s-a200-p100rx --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Avanti trace does not name the Avanti"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
+python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
+echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
+for id in no-such-aircraft; do
   if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
 done
 echo "refused"

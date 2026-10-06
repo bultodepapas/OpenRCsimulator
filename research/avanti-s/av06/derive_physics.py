@@ -32,8 +32,23 @@ SCRIPT = "research/avanti-s/av06/derive_physics.py"
 GEO_SRC = "assets/aircraft/avanti-s-a200/geometry.json (AV-02 visual blockout, estimated)"
 
 g = json.load(open(GEOMETRY))
-IN = json.load(open(INPUTS))
+IN = globals().get("IN_OVERRIDE") or json.load(open(INPUTS))  # sensitivity.py injects modified inputs
 log = []
+# Wing station along the fuselage (inputs airframe.wing_forward_shift): every fuselage-attached part (fuselage, canopy,
+# tail, fin, installation, fuselage items) moves aft by this much relative to the wing and its leading-edge datum, i.e.
+# the wing sits that much further forward on the fuselage than the visual blockout draws it. 0 = the blockout as drawn.
+DZ = IN["airframe"]["wing_forward_shift"]["value"]
+for r in g["fuselage_stations"] + g["canopy_stations"]:
+    r[0] += DZ
+for r in g["tail"]["stations"]:
+    r[1] += DZ
+    r[2] += DZ
+g["fin"]["outline_yz"] = [[y, z + DZ] for y, z in g["fin"]["outline_yz"]]
+for k in ("hinge_bottom_yz", "hinge_top_yz"):
+    g["fin"][k][1] += DZ
+g["installation"]["engine_center"][2] += DZ
+for r in g["installation"]["intake_stations"]:
+    r[0] += DZ
 
 
 def v(key):
@@ -130,6 +145,7 @@ S_blockout, _, _, _ = planform(strips(Wg["stations"]))
 target = IN["airframe"].get("wing_area")
 chord_scale = target["value"] / S_blockout if target else 1.0
 note("reference", "blockout wing area (m2)", S_blockout, GEO_SRC + "; trapezoids through the fuselage to the centreline")
+note("reference", "wing forward shift on the fuselage (m)", DZ, src("airframe.wing_forward_shift")[1])
 note("reference", "chord scale applied", chord_scale, "inputs wing_area / blockout area" if target else "none: no published area, the blockout is used")
 wst = strips(Wg["stations"], chord_scale)
 S, mac, mac_le, y_centroid = planform(wst)
@@ -249,8 +265,20 @@ for i in range(n_seg):
     munk += w * w * f * dz
 Cma_fus = note("aero", "Cma fuselage (1/rad, MAC)", math.pi / 2 * munk / (S * mac), "Munk-Multhopp over the fuselage stations, Biot-Savart upwash ahead of the wing")
 dx_f = Cma_fus / CLa_w * mac
-x_arp = note("aero", "wing-body ac = ARP (model z)", x_ac_w - dx_f, f"wing ac at 25 % MAC {x_ac_w:.4f}, the fuselage moves it {dx_f * 1000:.1f} mm forward")
-Cma = note("aero", "Cma about ARP (1/rad, c_ref)", -slope_h * Sh / S * l_h / c_ref * (xh_ac - x_arp) / l_h, "tail only: the ARP is the wing-body ac")
+x_arp_tb = note("aero", "textbook wing-body ac (model z)", x_ac_w - dx_f, f"wing ac at 25 % MAC {x_ac_w:.4f}, the fuselage moves it {dx_f * 1000:.1f} mm forward")
+# Neutral point: x_np = x_arp (1 - r) + r x_h with r = slope_h Sh / (S CLa) (tail lift about the wing-body ac).
+r_t = slope_h * Sh / (S * CLa)
+np_tb = note("aero", "textbook neutral point (model z)", x_arp_tb * (1 - r_t) + r_t * xh_ac, f"{100 * (x_arp_tb * (1 - r_t) + r_t * xh_ac - mac_le) / mac:.1f} % MAC: blockout geometry + textbook methods alone")
+# Anchor (inputs stability.np_anchor): the manufacturer's CG range is flown by many owners, so the airplane is statically
+# stable there. If the textbook neutral point contradicts it, the wing-body ac moves aft by the smallest amount that puts
+# the anchor CG at the stated margin; the shift is the geometry's unresolved longitudinal error (reported, not hidden).
+anchor = IN["stability"]["np_anchor"]
+np_target = anchor["cg"] + anchor["static_margin"] * mac
+x_np_adopted = max(np_tb, np_target)
+x_arp = (x_np_adopted - r_t * xh_ac) / (1 - r_t)
+note("aero", "neutral point anchor (model z)", np_target, f"{anchor['cg'] * 1000:.0f} mm CG at {100 * anchor['static_margin']:.0f} % MAC margin: {anchor['source']}")
+note("aero", "wing-body ac = ARP (model z)", x_arp, f"shifted {1000 * (x_arp - x_arp_tb):+.1f} mm from the textbook value to meet the anchor ({100 * (x_arp - x_arp_tb) / mac:+.1f} % MAC)" if x_arp != x_arp_tb else "textbook value: the anchor is already met")
+Cma = note("aero", "Cma about ARP (1/rad, c_ref)", -slope_h * Sh / S * (xh_ac - x_arp) / c_ref, "tail only: the ARP is the wing-body ac")
 x_np = x_arp - Cma / CLa * c_ref
 cg_z = v("airframe.cg_aft_of_root_le")
 sm = note("aero", "static margin at the flight CG (% MAC)", 100 * (x_np - cg_z) / mac,
@@ -285,23 +313,71 @@ Clda = note("aero", "Clda_right (1/rad)", -a_strip * tau_a * sum(c * y * dy for 
 
 # --- Inventory (le frame) ------------------------------------------------------------------------------------------
 items = []
+# Structure measured by owners (airframe research): placed from the geometry.
+ST = IN["structure"]
+exposed = [st_ for st_ in wst if st_[0] >= Wg["stations"][0][0]]
+ex_area = sum(c * dy for _, _, c, _, dy in exposed)
+ex_y = sum(c * y * dy for y, _, c, _, dy in exposed) / ex_area
+ex_z = sum((z + 0.42 * c) * c * dy for _, z, c, _, dy in exposed) / ex_area
+for side, sign in (("left", -1.0), ("right", 1.0)):
+    items.append((f"wing panel {side}, covered, with flap and aileron", float(ST["wing_panel"]["value"]), ST["wing_panel"]["kind"], ST["wing_panel"]["source"],
+                  le(ex_z, ex_y * math.tan(dihedral), sign * ex_y), [mac, semi - Wg["stations"][0][0], 0.05], "derived", "42 % chord at the exposed panel's area centroid (geometry.json)"))
+th_area = sum(c * dy for _, _, c, _, dy in tst if _ >= Tg["stations"][0][0])
+th_y = sum(c * y * dy for y, _, c, _, dy in tst if y >= Tg["stations"][0][0]) / th_area
+th_z = sum((z + 0.45 * c) * c * dy for y, z, c, _, dy in tst if y >= Tg["stations"][0][0]) / th_area
+for side, sign in (("left", -1.0), ("right", 1.0)):
+    items.append((f"stab half {side} with elevator", float(ST["stab_half"]["value"]), ST["stab_half"]["kind"], ST["stab_half"]["source"],
+                  le(th_z, h_stab, sign * th_y), [mach, bh / 2, 0.02], "derived", "45 % chord at the stab half's area centroid (geometry.json)"))
+# Composite shell: mass spread over the stations in proportion to the wetted perimeter (Ramanujan ellipse) x length.
+shell = float(ST["fuselage_shell"]["value"])
+segs = []
+for r0, r1 in zip(FS, FS[1:]):
+    a_ = (r0[1] + r1[1]) / 2
+    b_ = ((r0[2] - r0[3]) + (r1[2] - r1[3])) / 4
+    per = math.pi * (3 * (a_ + b_) - math.sqrt((3 * a_ + b_) * (a_ + 3 * b_)))
+    segs.append((r0, r1, per * (r1[0] - r0[0])))
+tot_wet = sum(x[2] for x in segs)
+for r0, r1, w_ in segs:
+    zc = (r0[0] + r1[0]) / 2
+    yc = ((r0[2] + r0[3]) + (r1[2] + r1[3])) / 4
+    items.append((f"fuselage shell {r0[0]:+.2f} to {r1[0]:+.2f} m", shell * w_ / tot_wet, ST["fuselage_shell"]["kind"], ST["fuselage_shell"]["source"] + "; spread by wetted area",
+                  le(zc, yc), [r1[0] - r0[0], 2 * max(r0[1], r1[1]), max(r0[2] - r0[3], r1[2] - r1[3])], "derived", "segment centre, fuselage stations (geometry.json)"))
+items.append(("fin and rudder", float(ST["fin"]["value"]), ST["fin"]["kind"], ST["fin"]["source"], le(fin_cz, fin_cy), [0.3, 0.015, h_v], "derived", "fin outline area centroid (geometry.json)"))
 for it in IN["inventory"]:
-    pos = it["position_model"]  # [model z, model y, model x]
+    pos = list(it["position_model"])  # [model z, model y, model x]
+    if it.get("attached", "fuselage") != "wing":
+        pos[0] += DZ
     items.append((it["name"], float(it["mass"]["value"]), it["mass"]["kind"], it["mass"]["source"],
                   le(pos[0], pos[1], pos[2]), it.get("size"), it["position_kind"], it["position_source"]))
 fuel_l = v("fuel.tank_l") * v("fuel.fraction")
 fuel_kg = fuel_l * v("fuel.density")
-fpos = v("fuel.position_model")
+fpos = list(v("fuel.position_model"))
+fpos[0] += DZ
 items.append(("kerosene + 5 % oil (declared fuel state)", fuel_kg, "derived",
               f"{v('fuel.tank_l')} l x {v('fuel.fraction')} x {v('fuel.density')} kg/l ({src('fuel.tank_l')[1]}; {src('fuel.fraction')[1]})",
               le(fpos[0], fpos[1], fpos[2]), [0.25, 0.14, 0.10], "estimated", src("fuel.position_model")[1]))
+# Builders balance a jet by placing the batteries and electronics (inputs: "balance_item"): they move together, within
+# the bay limits, to put the CG on the manual's point; whatever they cannot reach becomes a virtual balancing mass.
+movable = [k for k, it in enumerate(IN["inventory"]) if it.get("balance_item")]
+offset = len(items) - len(IN["inventory"]) - 1  # index of the first inventory item in `items`
+z_lo, z_hi = IN["balance"]["balance_item_range_z"]
+m_mov = sum(items[offset + k][1] for k in movable)
+mom = sum(i[1] * i[4][0] for i in items)
+m_all = sum(i[1] for i in items)
+mom_fixed = mom - sum(items[offset + k][1] * items[offset + k][4][0] for k in movable)
+z_bal = min(max((cg_z * m_all - mom_fixed) / m_mov, z_lo), z_hi)
+for k in movable:
+    it = items[offset + k]
+    items[offset + k] = (it[0], it[1], it[2], it[3], [z_bal, it[4][1], it[4][2]], it[5], "derived",
+                         f"placed to balance: the batteries and electronics together at model z {z_bal:.3f} (bay {z_lo}..{z_hi} m)")
+note("balance", "batteries/electronics station (model z)", z_bal, f"{m_mov:.2f} kg moved within {z_lo}..{z_hi} m to approach the manual CG" + (" (at the bay limit)" if z_bal in (z_lo, z_hi) else ""))
 dry = sum(i[1] for i in items[:-1])
 note("balance", "dry inventory (kg)", dry, f"manual: {v('airframe.dry_mass')} kg RTF dry with P100")
 mass0 = sum(i[1] for i in items)
 x_cg0 = sum(i[1] * i[4][0] for i in items) / mass0
 note("balance", "inventory CG without balancing mass (model z)", x_cg0, f"target {cg_z:.3f}")
 nose = x_cg0 > cg_z
-xb = v("balance.nose_ballast_z") if nose else v("balance.tail_ballast_z")
+xb = IN["balance"]["nose_ballast_z"] if nose else IN["balance"]["tail_ballast_z"]
 mb = mass0 * (cg_z - x_cg0) / (xb - cg_z)
 note("balance", "balancing mass (kg)", mb, ("nose" if nose else "tail") + " weight that puts the CG on the manual's point")
 if mb > 1e-6:
@@ -432,7 +508,11 @@ n_idle = v("turbine.idle_rpm")
 
 
 def thrust_at(V_, n):
-    return k_inst * tab(thrust_rows, n) - tab(mflow_rows, n) * V_
+    """Net thrust as physics/turbine.gd computes it (ram recovery included)."""
+    m0 = tab(mflow_rows, n)
+    vj0 = k_inst * tab(thrust_rows, n) / m0
+    mf = m0 * (1 + v("turbine.ram_flow") * V_ * V_)
+    return mf * (math.sqrt(vj0 * vj0 + tab(T["ram_jet"]["value"], n) * V_ * V_) - V_)
 
 
 def drag_at(V_):
@@ -499,7 +579,7 @@ same = lambda key: dict(surf[key], source="same provisional value as the Ugly St
 eng = IN["turbine"]
 tq = lambda key, unit: q(eng[key]["value"], unit, eng[key]["kind"], eng[key]["source"])
 intake = g["installation"]["intake_stations"][0]
-EXHAUST_Z = 1.1685  # app/aircraft/avanti_s_model.gd: the fixed exhaust ring at the tail cone (model z)
+EXHAUST_Z = 1.1685 + DZ  # app/aircraft/avanti_s_model.gd: the fixed exhaust ring at the tail cone (model z)
 engine_c = g["installation"]["engine_center"]
 canopy_top = max(g["canopy_stations"], key=lambda r: r[2])
 tip = Wg["stations"][-1]
@@ -605,6 +685,8 @@ data = {
             "decel_limit": tq("decel_limit", "rpm, rpm/s"),
             "governor_tau": tq("governor_tau", "s"),
             "installed_factor": tq("installed_factor", "1"),
+            "ram_flow": tq("ram_flow", "s2/m2"),
+            "ram_jet": tq("ram_jet", "rpm, 1"),
             "rotor_inertia": tq("rotor_inertia", "kg·m2"),
             "rotor_sense": tq("rotor_sense", "1"),
         },
@@ -670,7 +752,9 @@ Throws (manual high rate): aileron {v('controls.aileron_up')}° up / {v('control
 - CL-dependent cross terms (Clb sweep part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
 """
 
-if "--check" in sys.argv:
+if __name__ != "__main__":
+    pass  # imported by sensitivity.py: compute only
+elif "--check" in sys.argv:
     stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text() != t]
     if stale:
         sys.exit("stale: " + ", ".join(str(p.relative_to(ROOT)) for p in stale) + f" (run {SCRIPT})")

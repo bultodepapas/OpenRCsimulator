@@ -701,3 +701,49 @@ Proof: [E2](docs/research/ground-friction-e2.md), `test_ground_friction.gd` (26)
 
 Proof: [E3a](docs/research/ground-surfaces-e3a.md), `test_ground_surfaces.gd` (28), E1/E2 tests unchanged, trace rows identical, 5 mutations caught.
 
+## 2026-10-06 · Plan review #4 — research knowledge base per phase
+
+- **Re-derive a headline number before repeating it.** ROADMAP still said "pitch 1.45× too fast"; two independent research passes found it obsolete since D1-R1 (Iyy 0.218 → 0.387), and `research/sensitivity/results.md` silently predated the repair. Comparison tables must be generated from code and checked against the live test bands, or they rot.
+- **A gap against flight data has a cheapest explanation; find it before tuning.** The 2× roll gap is mostly roll inertia (Ixx/(m·b²) 0.0172 vs 0.028 on both swing-tested UMN Sticks); tuning Clp would have "fixed" roll τ and broken roll rate, which already matches within 2 %. Hence ROADMAP rule 10.
+- **Blends hide regime changes.** The oracle-to-local blend is continuous in loads but not in derivatives: Clp moves −0.45 → −0.77 and Cmq −13.6 → −4.4 between α 6° and 10°. Linearize across the blend, not only at trim (D11b).
+- **Measure the budget before adding physics.** The bench read 501 µs per tick against 500 µs before propwash, shaft dynamics or turbulence; headroom work (Phase H) now precedes them.
+- **Parallel research needs a lead's reconciliation pass.** Ten documents disagreed in three places (where rpm lives, the touchdown fix, G1 numbering); the resolutions are recorded in the knowledge-base README so later readers don't relitigate them. A session-wide web-search cap (200) was hit by the fourth agent; later sources were fetched by URL and are marked.
+
+Proof: [knowledge base](docs/research/roadmap-investigations/README.md) (facts re-checked: bench 501 µs/tick; damping probe through `Aero.loads`; propwash ratio recomputed; 347 external URLs checked, 4 repaired); ROADMAP plan review #4; link checker clean on every touched document. No simulation code or data changed.
+
+## 2026-10-06 · AV-05a, AV-06, AV-07 — the Avanti S flies on a turbine
+
+- **An optional data key that the generator forgets is a silent physics change.** The derivation assumed ram recovery (Vmax 73.4 m/s) but did not write `ram_flow`/`ram_jet`; the loader accepts them as optional, so the simulator flew the plain momentum law (70.5 m/s). Comparing the report's Vmax with a trim bisection in the simulator found it; the handling test now checks the lapse the data must produce.
+- **A trim solver needs a gradient past the limits.** Clamping the throttle map and the thrust table above full throttle gave "singular Jacobian" at speeds the airplane could almost reach; extrapolating them linearly (trim only, flight never leaves 0…1) turned it into "needs throttle 1.06".
+- **Two unexplained symptoms that point the same way are worth testing as one hypothesis, and rejecting when the numbers say so.** The inventory balanced 100 mm forward of the manual's CG and the neutral point sat 35 mm ahead of it; moving the wing forward on the fuselage fixed the balance at 12.5 cm but the neutral point by only 23 mm, so it was not adopted and the stability was anchored on documented CG practice instead.
+- **Probe failures before loosening tests:** the "slow" idle deceleration failed because the test's altitude-hold PD oscillated on this airframe, not because of drag; an energy-rate check against the drag polar replaced it (4 % agreement). Full-throw rolls (pb/2V 0.25) leave the linear range at the tips; the linear prediction is checked at the manual's normal D/R.
+- **A fuselage-loaded jet does not spin like a trainer:** with Iyy ≈ 4·Ixx the full-up full-rudder entry wallows deep in the stall (α 68°) instead of settling into a spin; the meaningful checks are entry and recovery.
+- **The owner commits the whole working tree:** files of an unfinished step can land in a commit. Keep every saved state parseable and passing.
+
+Proof: [model report](docs/research/avanti-s-av06-physics-model.md), `test_turbine.gd` (27), `test_avanti_handling.gd` (30), `derive_physics.py --check`, app `--trace` with `check_trimmed_flight.py`, sensitivity table.
+
+## 2026-10-06 · P51-06, P51-08, P51-09, P51-12, P51-13 — P-51 realism pass
+
+- **Check a propeller model against power, not just thrust.** The blade-element 4-blade 26x12 looked plausible (32.6 kgf static) but needed ~8.5 kW at 5751 rpm; one measured static rpm on a known propeller (28x10 at 6550 rpm on a DA-120, Mejzlik Cp 0.0238) pins the installed power at 6.9 kW, 24 % under the catalogue rating, and the static rpm fell to 4950.
+- **Manufacturer tables calibrate a BEM across blade counts:** fitting effective pitch and chord scale to the 2- and 3-blade versions together (rms 6.5 %) gives a defensible 4-blade prediction. Gas-propeller "pitch" understates the aerodynamic pitch by ~44 % (zero thrust at J 0.76-0.81 for a nominal P/D 0.46), which moved the top speed from 32 to 51 m/s.
+- **Primary sources settle "unresolved" geometry quickly:** two NACA dimension tables gave root/tip chords, washout (+1°00' / −0°53'), stab incidence +2° and the measured neutral points; the conflicting values came from student slides.
+- **A measured neutral point is a better anchor than a fuselage chart:** the textbook build-up put it at 38.5 % MAC; NACA measured 34.2 % in the glide. One lumped, labelled term (K_fus 0.033/deg) carries the difference.
+- **Swirl must decay with the axial wash:** taking the wash factor (0.8·w static) from Selig but the ideal swirl gave a 22° static swirl angle at the fin and a 46° takeoff swing in 3 s; scaling the tangential velocity by the same k_w/2 keeps the swirl angle at the ideal wake's (~13° × straightening) and the swing at 30°.
+- **Scripted pilots find the airplane's traps:** pulling to 16° at 17 m/s after touchdown drops a wingtip, a hard pull-out after a stall re-stalls the wing, and neutral stick still carries the up trim. Fix the pilot's technique (wheel landing, α-limited pull-out, stick relative to trim) rather than widening the band.
+- **Count the CG height when flaring:** the main wheels hang 0.5 m below the CG; a flare started on the CG's height touched down at 3.3 m/s.
+- **The owner commits mid-step and other tracks build on uncommitted files:** another track extended `propulsion.gd` on top of this work within the hour. Keep every saved state parsing and passing, and edit shared files with exact-match replacements.
+
+Proof: [flight realism report](docs/research/p51-flight-realism.md), `tests/test_p51_envelope.gd` (15), `tests/test_p51_ground.gd` (11), `tests/test_p51_handling.gd` (15), `research/p51/p51-06/fit_mejzlik.py`, `derive_physics.py --check`; Stik goldens unchanged.
+
+## 2026-10-06 · H1–H3, D11a–b — headroom without behaviour change, and a re-measured baseline
+
+- **Measure the breakdown before optimising.** The headline (592 µs per tick on the loaded VM) hid that five load evaluations cost 73 µs each and the derivative 21 µs × 4, while RK4 itself costs 7 µs. The two cheapest fixes (reuse k1, scalar derivative) took the tick to 400 µs; flattening aero is next, but only once the tracks editing those files have landed.
+- **Bit-identical refactors need an oracle that would notice.** A SHA-256 over state, aux and loads for 1,200 ticks × 4 aircraft × 3 regimes proved H2 and H3 changed nothing, and a deliberately stale cache changed all 12 hashes. Two mutations were themselves wrong (adding an exact zero first is not a reassociation; a crash is not a stale cache): check that a mutation is actually non-equivalent before trusting a survivor or a failure.
+- **To keep a rewrite bit-identical, keep every operation, including multiplications by zero.** The scalar derivative copies the vector helpers' order and zero terms exactly; reassociating one sum gave 3,123 mismatches in 10,000 states.
+- **When a refactor breaks a test, read what the test pinned.** The guard test counted load calls ("once before RK, then k1…k4"); H2 changed the count, not the safety. The test now injects faults by stage and pins the new count of four, so losing the reuse is caught too.
+- **A parallel track can change your oracle's inputs mid-measurement.** The Avanti fingerprints moved between two runs because its data was regenerated in between; re-baselining HEAD code against the same data (scratch copy, only my files reverted) separated the two.
+- **Validation tables must say they are generated.** `results.md` silently predated the flight repair; it now carries its generator and command. After the repair the loader ties Cnβ to the fin, CG to the inventory and the gear to the mass, so the sweep varies fin area, the whole inventory and mass with its springs: the physical knobs, not the derived numbers.
+- **Report a mode near neutral by its pole, not its time constant.** The spiral's τ crosses infinity, so percent changes read −2,390 %; its pole λ stays small and continuous.
+- **Pin a known defect instead of committing a red test.** `test_damping_regimes.gd` measures the regime jump (Clp × 1.73, Cmq × 0.28, Cnr × 0.72, CLα × 1.34 over α 0–11°) and fails if it changes either way; the fix flips one flag and the same measurements become the acceptance test.
+
+Proof: ROADMAP H1–H3, D11a, D11b rows; `test_rigid_body.gd` (15), `test_session_guards.gd` (32), `test_damping_regimes.gd` (17); [`research/sensitivity/results.md`](research/sensitivity/results.md); `app/test.sh` green.

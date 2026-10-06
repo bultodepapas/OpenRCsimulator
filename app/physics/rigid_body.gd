@@ -68,27 +68,67 @@ static func inertia_inverse(j: PackedFloat64Array) -> PackedFloat64Array:
 ## force_body and moment_body exclude gravity; gravity (g, m/s², along NED +D) is added here.
 ## j_inv is inertia_inverse(j), passed in so it is computed once per aircraft, not per step.
 ## h_rotor: angular momentum of spinning parts in body axes (N·m·s; e.g. the propeller, D9c), or empty for none.
+## H3: written out in scalars (one allocation instead of ~20). Every product and sum keeps the order and the zero
+## terms of the vector helpers it replaces (derivative_reference in tests/test_rigid_body.gd), so results are
+## bit-identical, signs of zero included.
 static func derivative(s: PackedFloat64Array, mass: float, j: PackedFloat64Array, j_inv: PackedFloat64Array,
 		force_body: PackedFloat64Array, moment_body: PackedFloat64Array, g: float, h_rotor := PackedFloat64Array()) -> PackedFloat64Array:
-	var vel := _slice3(s, VEL)
-	var q := _att(s)
-	var w := _slice3(s, RATE)
+	var v0 := s[VEL]
+	var v1 := s[VEL + 1]
+	var v2 := s[VEL + 2]
+	var q0 := s[ATT]
+	var q1 := s[ATT + 1]
+	var q2 := s[ATT + 2]
+	var q3 := s[ATT + 3]
+	var w0 := s[RATE]
+	var w1 := s[RATE + 1]
+	var w2 := s[RATE + 2]
 
-	# Position: body velocity rotated into NED.
-	var pos_dot := M.q_rotate(q, vel)
+	# Position: body velocity rotated into NED, v' = v + q0·t + u × t with u = (q1, q2, q3), t = 2·(u × v).
+	var t0 := (q2 * v2 - q3 * v1) * 2.0
+	var t1 := (q3 * v0 - q1 * v2) * 2.0
+	var t2 := (q1 * v1 - q2 * v0) * 2.0
+	var pn := (v0 + t0 * q0) + (q2 * t2 - q3 * t1)
+	var pe := (v1 + t1 * q0) + (q3 * t0 - q1 * t2)
+	var pd := (v2 + t2 * q0) + (q1 * t1 - q2 * t0)
 
-	# Translation in body axes: F/m + gravity(body) - ω × v.
-	var gravity_body := M.q_rotate(M.q_conj(q), M.v3(0.0, 0.0, g))
-	var vel_dot := M.sub(M.add(M.scale(force_body, 1.0 / mass), gravity_body), M.cross(w, vel))
+	# Gravity in body axes: (0, 0, g) rotated by the conjugate quaternion, u = (−q1, −q2, −q3).
+	var n1 := -q1
+	var n2 := -q2
+	var n3 := -q3
+	var g0 := (n2 * g - n3 * 0.0) * 2.0
+	var g1 := (n3 * 0.0 - n1 * g) * 2.0
+	var g2 := (n1 * 0.0 - n2 * 0.0) * 2.0
+	var gx := (0.0 + g0 * q0) + (n2 * g2 - n3 * g1)
+	var gy := (0.0 + g1 * q0) + (n3 * g0 - n1 * g2)
+	var gz := (g + g2 * q0) + (n1 * g1 - n2 * g0)
+
+	# Translation in body axes: F/m + gravity(body) − ω × v.
+	var k := 1.0 / mass
+	var ud := (force_body[0] * k + gx) - (w1 * v2 - w2 * v1)
+	var vd := (force_body[1] * k + gy) - (w2 * v0 - w0 * v2)
+	var wd := (force_body[2] * k + gz) - (w0 * v1 - w1 * v0)
 
 	# Attitude: q̇ = ½ q ⊗ [0, ω].
-	var q_dot := M.q_mul(q, M.quat(0.0, w[0], w[1], w[2]))
-	for i in 4:
-		q_dot[i] *= 0.5
+	var qd0 := (q0 * 0.0 - q1 * w0 - q2 * w1 - q3 * w2) * 0.5
+	var qd1 := (q0 * w0 + q1 * 0.0 + q2 * w2 - q3 * w1) * 0.5
+	var qd2 := (q0 * w1 - q1 * w2 + q2 * 0.0 + q3 * w0) * 0.5
+	var qd3 := (q0 * w2 + q1 * w1 - q2 * w0 + q3 * 0.0) * 0.5
 
 	# Rotation: ω̇ = J⁻¹ (M − ω × (Jω + h)). The rotor term is gyroscopic precession: pitching a clockwise
 	# (from behind) propeller nose-up yaws the airplane right.
-	var jw := inertia_mul(j, w)
-	var rate_dot := inertia_mul(j_inv, M.sub(moment_body, M.cross(w, jw if h_rotor.is_empty() else M.add(jw, h_rotor))))
+	var h0 := j[0] * w0 + j[3] * w1 + j[4] * w2
+	var h1 := j[3] * w0 + j[1] * w1 + j[5] * w2
+	var h2 := j[4] * w0 + j[5] * w1 + j[2] * w2
+	if not h_rotor.is_empty():
+		h0 = h0 + h_rotor[0]
+		h1 = h1 + h_rotor[1]
+		h2 = h2 + h_rotor[2]
+	var m0 := moment_body[0] - (w1 * h2 - w2 * h1)
+	var m1 := moment_body[1] - (w2 * h0 - w0 * h2)
+	var m2 := moment_body[2] - (w0 * h1 - w1 * h0)
 
-	return make_state(pos_dot, vel_dot, q_dot, rate_dot)
+	return PackedFloat64Array([pn, pe, pd, ud, vd, wd, qd0, qd1, qd2, qd3,
+		j_inv[0] * m0 + j_inv[3] * m1 + j_inv[4] * m2,
+		j_inv[3] * m0 + j_inv[1] * m1 + j_inv[5] * m2,
+		j_inv[4] * m0 + j_inv[5] * m1 + j_inv[2] * m2])

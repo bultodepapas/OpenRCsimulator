@@ -289,6 +289,58 @@
       "redistribution": "local-reference-only; not licensed for game redistribution",
       "retrieved_at": "2026-10-06",
       "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/propellers/mejzlik_26x12-2b-gas-datasheet.pdf",
+      "url": "https://www.mejzlik.eu/files/26x12-2b-gas-datasheet.pdf",
+      "bytes": 539741,
+      "sha256": "cd1ab93174666af532f1851eb89af1ac210bf899bc83ad17f9f3334ce9666851",
+      "file_type": "PDF, 2 pages",
+      "kind": "datasheet",
+      "license": "Copyright Mejzlik Propellers s.r.o.; free manufacturer download. Reference only.",
+      "use": "Mejzlik 26x12 2B GAS: mass, inertia, Ct/Cp table (manufacturer-simulated at 5400 rpm); P51-06 calibration",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/propellers/mejzlik_26x12-3b-gas-n-datasheet.pdf",
+      "url": "https://www.mejzlik.eu/files/26x12-3b-gas-n-datasheet.pdf",
+      "bytes": 532399,
+      "sha256": "ce084e9e6ba21137fd8c5434c3b8aabc411f465e45729cd203557d061bc044a8",
+      "file_type": "PDF, 2 pages",
+      "kind": "datasheet",
+      "license": "Copyright Mejzlik Propellers s.r.o.; free manufacturer download. Reference only.",
+      "use": "Mejzlik 26x12 3B GAS N: Ct/Cp table; P51-06 calibration",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/propellers/mejzlik_28x10-2b-gas-datasheet.pdf",
+      "url": "https://www.mejzlik.eu/files/28x10-2b-gas-datasheet.pdf",
+      "bytes": 540682,
+      "sha256": "d74faafe9d320e64a6965cc8c9434a66e3ffad188b966acf3aa1a5cbb8b0d556",
+      "file_type": "PDF, 2 pages",
+      "kind": "datasheet",
+      "license": "Copyright Mejzlik Propellers s.r.o.; free manufacturer download. Reference only.",
+      "use": "Mejzlik 28x10 2B GAS: static Ct 0.0751, Cp 0.0238; P51-06 engine power anchor",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/papers/selig_2010_aiaa-2010-7938_propeller_slipstream.pdf",
+      "url": "https://m-selig.web.engr.illinois.edu/pubs/Selig-2010-AIAA-2010-7638-PropAeroSim.pdf",
+      "bytes": 2784299,
+      "sha256": "530a1a50b7460610ab0ab6f16c19e12805e449a5af0743d293f190c0fe44b1cc",
+      "file_type": "PDF, 23 pages",
+      "kind": "paper",
+      "license": "Copyright the author/AIAA; author-hosted preprint. Reference only.",
+      "use": "Selig, Modeling Propeller Aerodynamics and Slipstream Effects on Small UAVs in Realtime, AIAA 2010-7938: eqs. 4-6 (normal force, P-factor), 17-20 (wash factor); P51-06, P51-12",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
     }
   ],
   "pages": [

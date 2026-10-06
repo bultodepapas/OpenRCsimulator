@@ -45,9 +45,9 @@ const ENTRIES := [
 		id = "sebart-avanti-s-a200-p100rx",
 		name = "SebArt Avanti S",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",
-		status = PREVIEW,
-		status_note = "Preview only: turbine propulsion is not simulated yet.",
-		data = "",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Flaps up, gear up: in-air start only.",
+		data = "res://data/aircraft/sebart_avanti_s_a200.json",
 	},
 ]
 

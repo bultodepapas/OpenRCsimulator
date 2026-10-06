@@ -15,6 +15,10 @@ Some scripts under `research/` read the gitignored `references/` folder (plans, 
 
 ## Entry points per track
 
+### Roadmap knowledge base (all phases)
+
+[roadmap-investigations/README.md](roadmap-investigations/README.md) (plan review #4, 2026-10-06): ten documents that do the research in advance for each phase. 01 numerics, architecture and performance · 02 aerodynamics at RC scale · 03 propeller and propwash · 04 ground handling and collisions · 05 propulsion (glow, gas, electric, turbine) · 06 radio, servos and latency · 07 atmosphere, wind and turbulence · 08 validation and flight testing · 09 aircraft data and pipeline · 10 audio, perception and presentation. Read the phase's document before starting a step.
+
 ### Flight model and simulation
 
 | Read first | Then | Evidence |
@@ -48,7 +52,7 @@ Shared tooling investigations for the Extra and the Stik: [extra-aircraft-toolin
 
 | Read first | Then | Evidence |
 | --- | --- | --- |
-| [avanti-s-family-research.md](avanti-s-family-research.md) (variant and turbine) | [avanti-s-resources.md](avanti-s-resources.md), [avanti-s-turbine-research.md](avanti-s-turbine-research.md), [avanti-s-integration-audit.md](avanti-s-integration-audit.md), [avanti-s-av01-metrology.md](avanti-s-av01-metrology.md), [avanti-s-controls-and-installation.md](avanti-s-controls-and-installation.md), [avanti-s-geometry-followup.md](avanti-s-geometry-followup.md), [avanti-s-av02-preview.md](avanti-s-av02-preview.md) | Contour refinement, in order: [transparency comparison](avanti-s-transparency-comparison.md) → [refinement](avanti-s-contour-refinement.md) → [v3](avanti-s-contour-refinement-v3.md) → [new angles](avanti-s-new-angles.md) ([sources](avanti-s-additional-angle-sources.md)) → [user profile](avanti-s-user-profile.md) → [refinement v4](avanti-s-refinement-v4.md) (latest). Scripts and viewers: [research/avanti-s/](../../research/avanti-s/) (`av01`, `av02`, `alignment`, `refinement`, `new-angles`, `user-profile`, `refinement-v4`) |
+| [avanti-s-family-research.md](avanti-s-family-research.md) (variant and turbine) | [avanti-s-resources.md](avanti-s-resources.md), [avanti-s-turbine-research.md](avanti-s-turbine-research.md), [avanti-s-integration-audit.md](avanti-s-integration-audit.md), [avanti-s-av01-metrology.md](avanti-s-av01-metrology.md), [avanti-s-controls-and-installation.md](avanti-s-controls-and-installation.md), [avanti-s-geometry-followup.md](avanti-s-geometry-followup.md), [avanti-s-av02-preview.md](avanti-s-av02-preview.md); physics: [requirements](avanti-s-av05-physics-requirements.md) → [turbine dynamics](avanti-s-av05-turbine-dynamics.md), [airframe data](avanti-s-av06-airframe-data.md), [aero references](avanti-s-av06-aero-references.md) → **[physics model and validation](avanti-s-av06-physics-model.md)** | Contour refinement, in order: [transparency comparison](avanti-s-transparency-comparison.md) → [refinement](avanti-s-contour-refinement.md) → [v3](avanti-s-contour-refinement-v3.md) → [new angles](avanti-s-new-angles.md) ([sources](avanti-s-additional-angle-sources.md)) → [user profile](avanti-s-user-profile.md) → [refinement v4](avanti-s-refinement-v4.md) (latest). Scripts and viewers: [research/avanti-s/](../../research/avanti-s/) (`av01`, `av02`, `alignment`, `refinement`, `new-angles`, `user-profile`, `refinement-v4`) |
 
 Plan: [AVANTI-S-PLAN](../AVANTI-S-PLAN.md).
 
@@ -56,7 +60,7 @@ Plan: [AVANTI-S-PLAN](../AVANTI-S-PLAN.md).
 
 | Read first | Then | Evidence |
 | --- | --- | --- |
-| [p51-family-research.md](p51-family-research.md) (why a 1/4-scale P-51D for 120 cc) | [p51-silhouette-review-v1.md](p51-silhouette-review-v1.md) (dimensions measured by silhouettes over the AN 01-60-3 three-view and the owner's photo), [p51-visual-review-v1.md](p51-visual-review-v1.md) (shapes and details, 18 ranked findings), [p51-visual-review-v2.md](p51-visual-review-v2.md) (closure of V01-V10: before/after per step, status of the 18 findings, open items) | [research/p51/](../../research/p51/): [`p51-02/silhouette/README.md`](../../research/p51/p51-02/silhouette/README.md) (the silhouette method), [`p51-05/derivation.md`](../../research/p51/p51-05/derivation.md) (physics) |
+| [p51-family-research.md](p51-family-research.md) (why a 1/4-scale P-51D for 120 cc), [p51-flight-realism.md](p51-flight-realism.md) (physics cross-checked against NACA and RC-class data: sources, 22 corrections, flown envelope, open uncertainties) | [p51-silhouette-review-v1.md](p51-silhouette-review-v1.md) (dimensions measured by silhouettes over the AN 01-60-3 three-view and the owner's photo), [p51-visual-review-v1.md](p51-visual-review-v1.md) (shapes and details, 18 ranked findings), [p51-visual-review-v2.md](p51-visual-review-v2.md) (closure of V01-V10: before/after per step, status of the 18 findings, open items) | [research/p51/](../../research/p51/): [`p51-02/silhouette/README.md`](../../research/p51/p51-02/silhouette/README.md) (the silhouette method), [`p51-05/derivation.md`](../../research/p51/p51-05/derivation.md) (physics), [`p51-06`](../../research/p51/p51-06/README.md) (propeller calibration, engine anchor), [`p51-08`](../../research/p51/p51-08/README.md) (envelope bands), [`p51-13`](../../research/p51/p51-13/README.md) (section, spanwise stall) |
 
 Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
 

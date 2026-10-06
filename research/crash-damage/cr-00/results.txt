@@ -1,0 +1,56 @@
+
+== gp_extra_300s_60: m=3.36 kg  KE at 10/15/25 m/s = 168/378/1051 J
+  L tip LE     r=(+0.07,-0.81,+0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.23   0.57   0.32   3.19  ratio level 0.07
+  R tip LE     r=(+0.07,+0.81,+0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.23   0.57   0.32   3.19  ratio level 0.07
+  L tip TE     r=(-0.13,-0.81,+0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.23   0.57   0.31   2.95  ratio level 0.07
+  R tip TE     r=(-0.13,+0.81,+0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.23   0.57   0.31   2.95  ratio level 0.07
+  spinner      r=(+0.44,+0.00,-0.02)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.08   3.34   1.54   1.37  ratio level 0.32
+  L wheel      r=(+0.09,-0.16,+0.24)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.09   1.83   2.24   1.46  ratio level 0.62
+  R wheel      r=(+0.09,+0.16,+0.24)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.09   1.83   2.24   1.46  ratio level 0.62
+  tail wheel   r=(-0.84,+0.00,+0.07)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.39   3.22   0.62   0.54  ratio level 0.12
+  tail end     r=(-0.94,+0.00,-0.02)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.32   3.34   0.61   0.44  ratio level 0.10
+  L stab       r=(-0.84,-0.31,-0.05)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.32   1.92   0.58   0.53  ratio level 0.10
+  R stab       r=(-0.84,+0.31,-0.05)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.32   1.92   0.58   0.53  ratio level 0.10
+  fin top      r=(-0.87,+0.00,-0.31)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.37   1.67   1.25   0.38  ratio level 0.11
+  canopy       r=(-0.28,+0.00,-0.15)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.80   2.69   3.08   1.58  ratio level 0.54
+
+== jensen_ugly_stik_60: m=2.89 kg  KE at 10/15/25 m/s = 144/325/902 J
+  L tip        r=(-0.03,-0.76,-0.05)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.19   0.64   0.29   2.70  ratio level 0.07
+  R tip        r=(-0.03,+0.76,-0.05)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.19   0.64   0.29   2.70  ratio level 0.07
+  spinner      r=(+0.45,+0.00,+0.00)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.15   2.89   1.64   1.30  ratio level 0.40
+  tail end     r=(-0.87,+0.00,-0.02)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.43   2.88   0.78   0.52  ratio level 0.15
+  L stab tip   r=(-0.81,-0.28,-0.02)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.35   1.96   0.62   0.59  ratio level 0.12
+  R stab tip   r=(-0.81,+0.28,-0.02)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.38   1.96   0.66   0.59  ratio level 0.13
+  fin top      r=(-0.85,+0.00,-0.26)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.45   1.92   1.26   0.42  ratio level 0.16
+  belly        r=(+0.00,+0.00,+0.05)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.89   2.83   2.86   2.70  ratio level 1.00
+
+== p51d_mustang_120: m=21.50 kg  KE at 10/15/25 m/s = 1075/2419/6719 J
+  L tip LE     r=(+0.09,-1.41,-0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.58   3.90   2.17  21.07  ratio level 0.07
+  R tip LE     r=(+0.09,+1.41,-0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.58   3.90   2.17  21.07  ratio level 0.07
+  L tip TE     r=(-0.22,-1.41,-0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.57   3.90   2.16  19.24  ratio level 0.07
+  R tip TE     r=(-0.22,+1.41,-0.03)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.57   3.90   2.16  19.24  ratio level 0.07
+  spinner      r=(+0.85,+0.00,-0.07)  m_eff[kg] level/nose-in/45dive/kn-edge:   6.60  21.16   9.24   8.16  ratio level 0.31
+  prop low     r=(+0.73,+0.00,+0.26)  m_eff[kg] level/nose-in/45dive/kn-edge:   8.07  17.74  15.99   8.00  ratio level 0.38
+  prop L       r=(+0.73,-0.23,+0.16)  m_eff[kg] level/nose-in/45dive/kn-edge:   7.15  17.82  12.32   8.94  ratio level 0.33
+  prop R       r=(+0.73,+0.23,+0.16)  m_eff[kg] level/nose-in/45dive/kn-edge:   7.15  17.82  12.32   8.94  ratio level 0.33
+  tail end     r=(-1.61,+0.00,-0.08)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.34  21.09   4.57   3.08  ratio level 0.11
+  L stab       r=(-1.38,-0.50,-0.16)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.49  13.00   4.79   3.86  ratio level 0.12
+  R stab       r=(-1.38,+0.50,-0.16)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.49  13.00   4.79   3.86  ratio level 0.12
+  fin top      r=(-1.51,+0.00,-0.51)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.63  11.76   8.38   2.65  ratio level 0.12
+  canopy       r=(-0.15,+0.00,-0.31)  m_eff[kg] level/nose-in/45dive/kn-edge:  20.13  16.56  20.66  12.93  ratio level 0.94
+  scoop        r=(-0.33,+0.00,+0.22)  m_eff[kg] level/nose-in/45dive/kn-edge:  15.95  18.64  14.51  14.04  ratio level 0.74
+
+== sebart_avanti_s_a200: m=11.76 kg  KE at 10/15/25 m/s = 588/1323/3674 J
+  L tip LE     r=(-0.08,-1.00,-0.01)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.59   2.37   0.93  11.38  ratio level 0.05
+  R tip LE     r=(-0.08,+1.00,-0.01)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.59   2.37   0.93  11.38  ratio level 0.05
+  L tip TE     r=(-0.28,-1.00,-0.01)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.58   2.37   0.92   8.89  ratio level 0.05
+  R tip TE     r=(-0.28,+1.00,-0.01)  m_eff[kg] level/nose-in/45dive/kn-edge:   0.58   2.37   0.92   8.89  ratio level 0.05
+  nose         r=(+1.29,+0.00,+0.01)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.30  11.75   2.36   1.55  ratio level 0.11
+  tail cone    r=(-0.93,+0.00,+0.04)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.28  11.65   3.58   2.64  ratio level 0.19
+  belly mid    r=(+0.24,+0.00,+0.13)  m_eff[kg] level/nose-in/45dive/kn-edge:   9.20  10.93  11.39   7.66  ratio level 0.78
+  belly fwd    r=(+0.74,+0.00,+0.09)  m_eff[kg] level/nose-in/45dive/kn-edge:   3.23  11.32   5.82   3.52  ratio level 0.27
+  belly aft    r=(-0.36,+0.00,+0.10)  m_eff[kg] level/nose-in/45dive/kn-edge:   7.24  11.27   7.84   7.03  ratio level 0.62
+  L stab       r=(-0.86,-0.43,-0.07)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.45   6.68   2.53   2.88  ratio level 0.12
+  R stab       r=(-0.86,+0.43,-0.07)  m_eff[kg] level/nose-in/45dive/kn-edge:   1.45   6.68   2.53   2.88  ratio level 0.12
+  fin top      r=(-0.91,+0.00,-0.50)  m_eff[kg] level/nose-in/45dive/kn-edge:   2.34   5.28   8.37   1.26  ratio level 0.20
+  canopy       r=(+0.52,+0.00,-0.25)  m_eff[kg] level/nose-in/45dive/kn-edge:   5.11   9.10   4.87   3.70  ratio level 0.43

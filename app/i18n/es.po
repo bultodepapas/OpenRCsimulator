@@ -215,6 +215,9 @@ msgstr "Modelo de vuelo en evaluación."
 msgid "Experimental: first physics estimate from the plans, not yet flight-tested."
 msgstr "Experimental: primera estimación física a partir de los planos, aún sin contrastar en vuelo."
 
+msgid "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Flaps up, gear up: in-air start only."
+msgstr "Experimental: primera estimación física (turbina, datos del kit y de propietarios), aún sin contrastar en vuelo. Flaps arriba, tren recogido: solo inicio en vuelo."
+
 msgid "Preview only: turbine propulsion is not simulated yet."
 msgstr "Solo vista previa: la propulsión por turbina aún no se simula."
 
