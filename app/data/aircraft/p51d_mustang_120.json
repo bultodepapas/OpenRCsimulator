@@ -39,7 +39,7 @@
     },
     "aero_reference_point": {
       "value": [
-        0.153394,
+        0.153458,
         0.0,
         -0.1682
       ],
@@ -751,9 +751,9 @@
       },
       "position": {
         "value": [
-          1.56265,
+          1.562866,
           0.0,
-          0.197473
+          0.197453
         ],
         "unit": "m",
         "kind": "derived",
@@ -792,7 +792,7 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.207352,
+        "value": 0.207461,
         "unit": "kg",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the kit balance point; a virtual reference build, NOT measured hardware or a ballast recommendation"
@@ -1005,13 +1005,13 @@
         "source": "research/p51/p51-05/derive_physics.py: Helmbold wing x cos2(dihedral) + downwashed tail"
       },
       "CLadot": {
-        "value": 1.461212,
+        "value": 1.461136,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
       },
       "CLq": {
-        "value": 5.524046,
+        "value": 5.523885,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail volume + DATCOM wing term"
@@ -1029,7 +1029,7 @@
         "source": "research/p51/p51-05/derive_physics.py: strip theory over the aileron span"
       },
       "CD0": {
-        "value": 0.045031,
+        "value": 0.045018,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: component drag build-up at 22 m/s with the gear DOWN (retracts not simulated), see derivation.md"
@@ -1065,43 +1065,43 @@
         "source": "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"
       },
       "CYb": {
-        "value": -0.405058,
+        "value": -0.404899,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.055217,
+        "value": -0.055182,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.266329,
+        "value": 0.266241,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin behind the CG"
       },
       "CYdr": {
-        "value": 0.12791642879518295,
+        "value": 0.12792960607144957,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.086991,
+        "value": -0.086974,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 5 deg dihedral (strip theory) + wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.598804,
+        "value": -0.5988,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.135567,
+        "value": 0.135557,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: CL_ref/4 + fin"
@@ -1119,19 +1119,19 @@
         "source": "research/p51/p51-05/derive_physics.py: strip theory"
       },
       "Cldr": {
-        "value": 0.01658708661944005,
+        "value": 0.016587888031504877,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin height above the ARP"
       },
       "Cm0": {
-        "value": 0.010432,
+        "value": 0.010431,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac (parabolic camber) + tail at zero body alpha, about the ARP"
       },
       "Cma": {
-        "value": -0.82133,
+        "value": -0.821287,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
@@ -1143,31 +1143,31 @@
         "source": "research/p51/p51-05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
       },
       "Cmde": {
-        "value": -0.877355,
+        "value": -0.877309,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: elevator lift x tail arm from the ARP"
       },
       "Cmda_each": {
-        "value": -0.054404,
+        "value": -0.054364,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: aileron lift increment at its thin-airfoil centre, arm from the ARP"
       },
       "Cnb": {
-        "value": 0.13563431731211037,
+        "value": 0.13558245857147042,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.029065,
+        "value": -0.029076,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.152001,
+        "value": -0.151988,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
@@ -1185,7 +1185,7 @@
         "source": "research/p51/p51-05/derive_physics.py: adverse yaw"
       },
       "Cndr": {
-        "value": -0.060906318920368525,
+        "value": -0.06092343542925594,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin arm from the ARP (must equal the vertical surface)"
@@ -1272,29 +1272,29 @@
       },
       "vertical": {
         "area": {
-          "value": 0.135344,
+          "value": 0.135192,
           "unit": "m2",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: fin + rudder side polygon from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
         },
         "position": {
           "value": [
-            1.496113,
+            1.496416,
             0.0,
-            0.197473
+            0.197453
           ],
           "unit": "m",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: fin ac: quarter chord at the area-centroid height"
         },
         "lift_slope": {
-          "value": 2.88753,
+          "value": 2.889157,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: Helmbold (end-plated AR) x DATCOM sidewash/eta"
         },
         "control_effectiveness": {
-          "value": 0.449048,
+          "value": 0.449346,
           "unit": "1",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / sidewash factor"

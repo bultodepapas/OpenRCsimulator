@@ -21,12 +21,12 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | reference | quarter-chord sweep (deg) | 0.09956 | unswept by construction (source.json) |
 | reference | half-chord sweep (deg) | -3.551 | forward: the TE sweeps forward |
 | balance | CG (% MAC) | 27 | kit placeholder balance point (source.json); model z 0.1778 |
-| fuselage | max width / depth / length (m) | 0.2288, 0.3465, 2.333 | spinner tip to tail post; scoop adds 0.495 m of depth |
+| fuselage | max width / depth / length (m) | 0.2288, 0.3465, 2.323 | spinner tip to tail post; scoop adds 0.495 m of depth |
 | tail | Sh (m2) | 0.2541 | stab + elevators trapezoid through the fuselage |
 | tail | horizontal ac (model z) | 1.392 | quarter chord of the stab MAC |
 | tail | elevator chord fraction | 0.35 | hinge at a constant chord fraction |
-| tail | Sv (m2) | 0.1353 | fin (with dorsal fillet) + rudder side polygon |
-| tail | rudder area fraction | 0.2532 | used as its chord fraction |
+| tail | Sv (m2) | 0.1352 | fin (with dorsal fillet) + rudder side polygon |
+| tail | rudder area fraction | 0.2534 | used as its chord fraction |
 | tail | fin ac (model z, y) | 1.496, 0.1975 | LE at the area-centroid height + 1/4 of the mean chord |
 | aero | section lift slope / 2pi | 0.95 | estimated: 15 % laminar section at Re ~7e5 (no polar identified) |
 | aero | CLa wing (1/rad) | 4.286 | Helmbold/DATCOM x cos2(dihedral) |
@@ -36,10 +36,10 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | aero | effective tail slope (1/rad) | 1.742 | CLa_h eta (1 - deps/dalpha) |
 | aero | CLa airplane (1/rad) | 4.609 | wing + tail (wing-body interference ~1 for d/b 0.08) |
 | aero | K_fus (per deg) | 0.012 | estimated, Raymer Fig. 16.14 at root quarter chord 36 % of body length (long nose: upper range) |
-| aero | wing-body ac = ARP (model z) | 0.1534 | wing ac at 25 % MAC 0.1677, fuselage moves it 14.3 mm forward |
+| aero | wing-body ac = ARP (model z) | 0.1535 | wing ac at 25 % MAC 0.1677, fuselage moves it 14.2 mm forward |
 | aero | Cma about ARP (1/rad, c_ref) | -0.8213 | tail only: the ARP is the wing-body ac |
-| aero | static margin at the kit CG (% MAC) | 12.24 | neutral point at model z 0.2401 (39.2 % MAC) |
-| aero | Cma about the CG (1/rad, c_ref) | -0.5897 | what the pilot feels |
+| aero | static margin at the kit CG (% MAC) | 12.25 | neutral point at model z 0.2401 (39.2 % MAC) |
+| aero | Cma about the CG (1/rad, c_ref) | -0.5902 | what the pilot feels |
 | aero | wing zero-lift angle (deg) | -1.467 | thin-airfoil parabolic camber: -2 m |
 | aero | section Cm_ac | -0.02011 | thin-airfoil parabolic camber |
 | aero | tail effective incidence (rad) | -0.0383 | (i_h - eps0) / (1 - deps/dalpha): the local tail model sees body alpha |
@@ -51,11 +51,11 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | controls | flap effectiveness correction | 0.8 | estimated: real/thin-airfoil effectiveness with gap and large throws (DATCOM range 0.6-0.9) |
 | controls | elevator effectiveness (local) | 1.068 | tau 0.565 / (1 - deps/dalpha) |
 | aero | CLde (1/rad) | 0.3447 |  |
-| aero | Cmde (1/rad) | -0.8774 |  |
+| aero | Cmde (1/rad) | -0.8773 |  |
 | controls | aileron tau | 0.4499 | chord fraction 0.210 |
 | aero | Clda_right (1/rad) | -0.1168 | strip theory |
 | balance | inventory without balancing mass (kg, CG x_aft m) | 18, 0.1859 | target CG x_aft 0.1778 |
-| balance | balancing mass (kg) | 0.2074 | nose weight that puts the CG on the kit's balance point |
+| balance | balancing mass (kg) | 0.2075 | nose weight that puts the CG on the kit's balance point |
 | balance | flight mass (kg) | 18.21 | dry 17.837 kg = 39.3 lb vs kit range 18.0-24.0 kg |
 | balance | flight CG (le frame) | 0.1778, 0, -0.07584 | z: below the thrust line by the inventory |
 | balance | Jxx Jyy Jzz (kg m2) | 2.833, 5.578, 7.755 | component boxes + parallel axis |
@@ -63,16 +63,16 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | aero | 1-g stall (m/s) | 13.59 | flight mass, CL_max |
 | aero | start speed (m/s) | 22 | 1.6 x the 1-g stall, rounded: the trimmed in-air start |
 | aero | CL_ref | 0.439 | level flight at the start speed; CL-dependent cross terms are frozen there |
-| lateral | fin effective AR | 2.157 | geometric h2/Sv x 1.55 end-plate factor (fuselage + stab, DATCOM range 1.4-1.7) |
+| lateral | fin effective AR | 2.16 | geometric h2/Sv x 1.55 end-plate factor (fuselage + stab, DATCOM range 1.4-1.7) |
 | lateral | (1 + dsigma/dbeta) eta_v | 1.091 | Nelson/DATCOM: 0.724 + 3.06 (Sv/S)/(1 + cos sweep) + 0.4 z_w/d + 0.009 AR (low wing: z_w down positive) |
-| lateral | effective fin slope (1/rad) | 2.888 |  |
-| lateral | rudder effectiveness (local) | 0.449 | tau 0.490 / sidewash factor |
+| lateral | effective fin slope (1/rad) | 2.889 |  |
+| lateral | rudder effectiveness (local) | 0.4493 | tau 0.490 / sidewash factor |
 | lateral | CYb body (1/rad) | -0.1202 | -2 K_i S0/S, K_i 1.3 low wing (DATCOM), S0 0.8 w d |
-| lateral | Cnb body, omitted (1/rad) | -0.02347 | DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not in v1 (Cnb must equal the fin term), same as the Stik and Extra |
+| lateral | Cnb body, omitted (1/rad) | -0.02326 | DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not in v1 (Cnb must equal the fin term), same as the Stik and Extra |
 | lateral | Clb dihedral (1/rad) | -0.08199 | strip theory: -CLa_w Gamma (1 + 2 lambda) / (6 (1 + lambda)); 5 deg geometric dihedral |
 | lateral | Clb low-wing interference (1/rad) | 0.03578 | DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing |
 | lateral | Clb wing sweep/taper at CL_ref (1/rad) | -0.01317 | DATCOM Clb/CL ~ -0.0005/deg for an unswept AR 5.8 taper 0.48 wing (estimated) |
-| drag | CD0 | 0.04503 | skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: wing 0.0117 m2, tails 0.0040 m2, fuselage 0.0091 m2, belly scoop (wetted + inlet spill) 0.0053 m2, gear down: wheels, struts, doors 0.0200 m2, cooling flow, exhausts, cowl leaks 0.0060 m2 |
+| drag | CD0 | 0.04502 | skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: wing 0.0117 m2, tails 0.0040 m2, fuselage 0.0091 m2, belly scoop (wetted + inlet spill) 0.0053 m2, gear down: wheels, struts, doors 0.0200 m2, cooling flow, exhausts, cowl leaks 0.0060 m2 |
 | drag | Oswald e | 0.8 | estimated: taper 0.48 near the optimum; fuselage and scoop interference |
 | propulsion | engine peak power (W) | 8725 | DA-120: 11.7 hp (desertaircraft.com/products/da-120); rpm range 1300-6900 |
 | propulsion | static rpm | 5967 | BEM Cp0 0.0566 meets the engine power curve; static thrust 320 N (32.7 kgf) |
@@ -87,37 +87,37 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | --- | --- | --- |
 | CL0 | 0.17219 | derived |
 | CLa | 4.6091 | derived |
-| CLadot | 1.4612 | derived |
-| CLq | 5.524 | derived |
+| CLadot | 1.4611 | derived |
+| CLq | 5.5239 | derived |
 | CLde | 0.34465 | derived |
 | CLda_each | 0.30617 | derived |
-| CD0 | 0.045031 | derived |
+| CD0 | 0.045018 | derived |
 | CL_minD | 0.092272 | estimated |
 | k_induced | 0.068643 | derived |
 | CDda_each | 0.0151 | borrowed |
 | CDdr | 0.0303 | borrowed |
 | CDde | 0.0135 | borrowed |
-| CYb | -0.40506 | derived |
-| CYp | -0.055217 | derived |
-| CYr | 0.26633 | derived |
-| CYdr | 0.12792 | derived |
-| Clb | -0.086991 | derived |
+| CYb | -0.4049 | derived |
+| CYp | -0.055182 | derived |
+| CYr | 0.26624 | derived |
+| CYdr | 0.12793 | derived |
+| Clb | -0.086974 | derived |
 | Clp | -0.5988 | derived |
-| Clr | 0.13557 | derived |
+| Clr | 0.13556 | derived |
 | Clda_right | -0.11681 | derived |
 | Clda_left | 0.11681 | derived |
-| Cldr | 0.016587 | derived |
-| Cm0 | 0.010432 | derived |
-| Cma | -0.82133 | derived |
+| Cldr | 0.016588 | derived |
+| Cm0 | 0.010431 | derived |
+| Cma | -0.82129 | derived |
 | Cmq | -8.3515 | derived |
-| Cmde | -0.87735 | derived |
-| Cmda_each | -0.054404 | derived |
-| Cnb | 0.13563 | derived |
-| Cnp | -0.029065 | derived |
-| Cnr | -0.152 | derived |
+| Cmde | -0.87731 | derived |
+| Cmda_each | -0.054364 | derived |
+| Cnb | 0.13558 | derived |
+| Cnp | -0.029076 | derived |
+| Cnr | -0.15199 | derived |
 | Cnda_right | 0.015384 | derived |
 | Cnda_left | -0.015384 | derived |
-| Cndr | -0.060906 | derived |
+| Cndr | -0.060923 | derived |
 
 ## Propeller tables (blade-element/momentum, 4-blade 26x12)
 
