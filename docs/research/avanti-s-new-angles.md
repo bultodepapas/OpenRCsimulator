@@ -2,7 +2,7 @@
 
 2026-10-06 · **30 fotografías oficiales adicionales**, una ilustración comercial de tres vistas, un PDF de Aerotec y su ficha comercial de procedencia: **33 archivos nuevos inventariados, 7.399.303 bytes**. Los JPEG son 31, contando la ilustración. Las fotos pertenecen a los álbumes oficiales ya conocidos: son imágenes nuevas en el archivo local, no 30 fuentes independientes.
 
-[Galería local y tres superposiciones](../../references/avanti-s/new-angles/index.html) · [inventario de esta ronda](avanti-s-new-angle-resources.json) · [fuentes externas complementarias](avanti-s-additional-angle-sources.md).
+Galería local y tres superposiciones (`references/avanti-s/new-angles/index.html`, local only) · [inventario de esta ronda](avanti-s-new-angle-resources.json) · [fuentes externas complementarias](avanti-s-additional-angle-sources.md).
 
 ## Qué aporta cada grupo
 

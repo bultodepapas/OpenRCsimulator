@@ -1,6 +1,6 @@
 # Research index
 
-`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of 167. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
+`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of 167. New reports are written in English (AGENTS.md rule 8); most reports before 2026-10-06 are in Spanish and are translated when next revised. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
 
 ## Two folders, one rule
 
@@ -107,4 +107,4 @@ Observed and kept:
 1. Write the report in `docs/research/` with the name pattern above, in one language, with date, sources (and their licenses), what was done, what came out, what it does not prove, and the command that reproduces it when one exists.
 2. Put the evidence next to it or in the step's evidence folder; put scripts and raw data under `research/<track>/<step>/`.
 3. Link the report from its plan and from this index. Record the lesson in LEARNINGS.md under a dated heading with the step IDs.
-4. Never link `references/` or `app/captures/` as if they were in the repository; write "local only" in plain text. Third-party files need a license that allows redistribution and a `sources.json` with author, URL, license and hash before they are committed.
+4. Write in English. Never link `references/` or `app/captures/` as if they were in the repository; write "local only" in plain text. Third-party files need a license that allows redistribution and a `sources.json` with author, URL, license and hash before they are committed.

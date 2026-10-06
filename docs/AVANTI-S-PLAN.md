@@ -6,7 +6,7 @@ La variante elegida es el **SebArt Avanti S A200 original**, documentado como «
 
 Este plan atiende la petición actual de un jet como candidato al siguiente avión tras el Ugly Stik. El [plan Extra 300](EXTRA-300-PLAN.md) conserva su investigación; ambos deben compartir el futuro catálogo, sin duplicar la selección de aeronaves. **La primera entrega del Avanti será una vista previa sencilla; el primer vuelo físico necesita una propulsión nueva.**
 
-[Familia y elección](research/avanti-s-family-research.md) · [Recursos locales y lectura visual](research/avanti-s-resources.md) · [Auditoría de integración](research/avanti-s-integration-audit.md) · [Turbina y límites físicos](research/avanti-s-turbine-research.md) · [Galería local](../references/avanti-s/index.html).
+[Familia y elección](research/avanti-s-family-research.md) · [Recursos locales y lectura visual](research/avanti-s-resources.md) · [Auditoría de integración](research/avanti-s-integration-audit.md) · [Turbina y límites físicos](research/avanti-s-turbine-research.md) · Galería local (`references/avanti-s/index.html`, local only).
 
 ## 1. Identidad, popularidad y alcance
 
@@ -104,7 +104,7 @@ El contacto con terreno actualmente es accidente. Entrenamiento de aterrizajes, 
 
 ## 8. Entregas y pruebas
 
-**AV-00** está completo. **AV-02** está integrada en la app como vista previa (AV-03 ✅); sus contornos siguen en refinamiento (revisiones 2–4, más abajo). **AV-01** tiene preparación concreta: 30 datos trazables, cuatro proporciones, 42 recortes del montaje y un panel interactivo de tamaños/mandos. Falta cerrar contornos, secciones, área y ejes de bisagra. Véanse la [ficha AV-01](research/avanti-s-av01-metrology.md), la [mesa de referencias](../references/avanti-s/organized/index.html) y los [datos y herramienta](../research/avanti-s/av01/README.md). Los demás pasos siguen ligados a hitos existentes del [roadmap](../ROADMAP.md).
+**AV-00** está completo. **AV-02** está integrada en la app como vista previa (AV-03 ✅); sus contornos siguen en refinamiento (revisiones 2–4, más abajo). **AV-01** tiene preparación concreta: 30 datos trazables, cuatro proporciones, 42 recortes del montaje y un panel interactivo de tamaños/mandos. Falta cerrar contornos, secciones, área y ejes de bisagra. Véanse la [ficha AV-01](research/avanti-s-av01-metrology.md), la mesa de referencias (`references/avanti-s/organized/index.html`, local only) y los [datos y herramienta](../research/avanti-s/av01/README.md). Los demás pasos siguen ligados a hitos existentes del [roadmap](../ROADMAP.md).
 
 | Paso | Cambio acotado | Dependencia | Prueba requerida |
 | --- | --- | --- | --- |
@@ -135,7 +135,7 @@ La siguiente acción es **cerrar AV-01 y los contornos de AV-02** (la integraci�
 
 ## Comparación de siluetas por transparencia — 2026-10-06
 
-La maqueta AV-02 ya se compara con tres fotos mediante [superposiciones interactivas](../references/avanti-s/alignment/index.html). Se ajusta una cámara por foto conservando geometría, imágenes originales y puntos reservados. [Método, errores y diferencias detectadas](research/avanti-s-transparency-comparison.md). Es una ayuda para refinar contornos; no cierra la metrología ni acredita área/perfiles. La próxima edición debe contrastar los tres encuadres y guardar el efecto de cualquier reajuste de cámara.
+La maqueta AV-02 ya se compara con tres fotos mediante superposiciones interactivas (`references/avanti-s/alignment/index.html`, local only). Se ajusta una cámara por foto conservando geometría, imágenes originales y puntos reservados. [Método, errores y diferencias detectadas](research/avanti-s-transparency-comparison.md). Es una ayuda para refinar contornos; no cierra la metrología ni acredita área/perfiles. La próxima edición debe contrastar los tres encuadres y guardar el efecto de cualquier reajuste de cámara.
 
 ## Afinado AV-02 con cámaras congeladas — 2026-10-06
 

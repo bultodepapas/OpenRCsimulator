@@ -24,7 +24,7 @@ La historia corporativa llama al 300L una plataforma especialmente exitosa, y re
 
 ## Datos aprovechables del Great Planes GPMA0236
 
-La página del archivo identifica el diseño de 1998 como modelo RC sport-scale de motor .60, publicado por Great Planes con referencia EXT6. La copia archivada del manual está marcada EXT6P03 V1.2 y © 2004 Great Planes. Se conserva junto al plano en [`references/extra-300/gp-extra-300s-60/`](../../references/extra-300/gp-extra-300s-60/), carpeta cubierta por la regla general de exclusión de `references/`. [Ficha de archivo y procedencia](https://outerzone.co.uk/plan_details.asp?ID=10977).
+La página del archivo identifica el diseño de 1998 como modelo RC sport-scale de motor .60, publicado por Great Planes con referencia EXT6. La copia archivada del manual está marcada EXT6P03 V1.2 y © 2004 Great Planes. Se conserva junto al plano en `references/extra-300/gp-extra-300s-60/` (`references/extra-300/gp-extra-300s-60/`, local only), carpeta cubierta por la regla general de exclusión de `references/`. [Ficha de archivo y procedencia](https://outerzone.co.uk/plan_details.asp?ID=10977).
 
 | Dato | Valor documentado | Cómo usarlo |
 | --- | --- | --- |

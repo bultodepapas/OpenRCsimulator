@@ -2,7 +2,7 @@
 
 2026-10-06 · Comparación de la maqueta AV-02 con tres fotografías oficiales ya archivadas. **Se ajustó la cámara; la geometría y las fotos permanecen intactas.**
 
-Abrir el [comparador interactivo](../../references/avanti-s/alignment/index.html). También quedan imágenes listas para revisar: [frontal con transparencia](../../references/avanti-s/alignment/front_high-overlay.png), [posterior con contorno](../../references/avanti-s/alignment/rear_high-contour.png) y [perfil superpuesto](../../references/avanti-s/alignment/side-overlay.png).
+Abrir el comparador interactivo (`references/avanti-s/alignment/index.html`, local only). También quedan imágenes listas para revisar: frontal con transparencia (`references/avanti-s/alignment/front_high-overlay.png`, local only), posterior con contorno (`references/avanti-s/alignment/rear_high-contour.png`, local only) y perfil superpuesto (`references/avanti-s/alignment/side-overlay.png`, local only).
 
 ## Uso
 
@@ -39,7 +39,7 @@ La siguiente iteración debe modificar un grupo de geometría cada vez y compara
 
 ## Comprobación y reproducción
 
-[Código y comandos](../../research/avanti-s/alignment/README.md) · [validación](avanti-s-alignment-validation.json) · [manifiesto de renders](../../references/avanti-s/alignment/renders-v1/render-manifest.json).
+[Código y comandos](../../research/avanti-s/alignment/README.md) · [validación](avanti-s-alignment-validation.json) · manifiesto de renders (`references/avanti-s/alignment/renders-v1/render-manifest.json`, local only).
 
 Se verificaron la transparencia real de los PNG, la conversión de proyecciones, los hashes de originales y geometría, y los controles de opacidad, modos, corrección manual, reinicio y exportación JSON en navegador. La página se revisó también a 390 px de ancho. Una copia sobre clon limpio puede volver a renderizar la geometría con las cámaras guardadas sin disponer de las fotos; el comparador sí necesita esos originales locales.
 

@@ -2,7 +2,7 @@
 
 2026-10-05 · **AV-01 parcialmente preparado.** Referencia A200 original de 2000 × 2220 mm y P100-RX 2017. Hay archivo organizado, cotas trazables y un panel de mandos; todavía no hay planta calibrada ni avión implementado.
 
-Abrir la [mesa de referencias local](../../references/avanti-s/organized/index.html) o el [panel interactivo de dimensiones y flaps](../../references/avanti-s/organized/study-board.html). El panel compara longitudes a una misma escala y permite seleccionar flap 0°/20°/50° y recorrer el diferencial de alerones. Es un esquema geométrico: no simula sustentación, trim ni tiempo de servo.
+Abrir la mesa de referencias local (`references/avanti-s/organized/index.html`, local only) o el panel interactivo de dimensiones y flaps (`references/avanti-s/organized/study-board.html`, local only). El panel compara longitudes a una misma escala y permite seleccionar flap 0°/20°/50° y recorrer el diferencial de alerones. Es un esquema geométrico: no simula sustentación, trim ni tiempo de servo.
 
 ## Archivo ordenado
 
@@ -50,10 +50,10 @@ Los datos numéricos, fuentes con hash y fórmulas quedan en [measurements.json]
 
 La secuencia exacta para estudiar el flap es:
 
-1. [Eje de palanca, p.21 paso 41](../../references/avanti-s/organized/details/03-controls/flap-eje-palanca-p021-s041.png).
-2. [Neutro, p.21 paso 42](../../references/avanti-s/organized/details/03-controls/flap-posicion-vuelo-p021-s042.png): 0° según introducción.
-3. [Despegue, p.22 paso 43](../../references/avanti-s/organized/details/03-controls/flap-posicion-despegue-p022-s043.png): 20° abajo; mezcla recomendada de elevador abajo 8%.
-4. [Aterrizaje, p.22 paso 44](../../references/avanti-s/organized/details/03-controls/flap-posicion-aterrizaje-p022-s044.png): 50° abajo; mezcla recomendada de elevador abajo 20%.
+1. Eje de palanca, p.21 paso 41 (`references/avanti-s/organized/details/03-controls/flap-eje-palanca-p021-s041.png`, local only).
+2. Neutro, p.21 paso 42 (`references/avanti-s/organized/details/03-controls/flap-posicion-vuelo-p021-s042.png`, local only): 0° según introducción.
+3. Despegue, p.22 paso 43 (`references/avanti-s/organized/details/03-controls/flap-posicion-despegue-p022-s043.png`, local only): 20° abajo; mezcla recomendada de elevador abajo 8%.
+4. Aterrizaje, p.22 paso 44 (`references/avanti-s/organized/details/03-controls/flap-posicion-aterrizaje-p022-s044.png`, local only): 50° abajo; mezcla recomendada de elevador abajo 20%.
 
 Los ángulos proceden del [manual de introducción, p.4](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf#page=4), no de medir las fotos oblicuas. El alerón sube 30° y baja 25° a recorrido alto; elevadores y timón tienen 30° por sentido. Las mezclas en porcentaje necesitan una definición de canal/rate antes de convertirse a una deflexión; no son coeficientes físicos.
 
@@ -63,7 +63,7 @@ La continuidad visual p.69–72 y los rótulos de válvulas de aire permiten cla
 
 ## Datum y siguiente avance
 
-Para compartir la convención visual del Stik se propone nariz `−Z`, derecha `+X`, arriba `+Y`, metros. El datum longitudinal se toma en el borde de ataque junto al fuselaje, proyectado sobre el plano de simetría. Entonces las referencias de CG corresponden a `z = +0,240 / +0,250 / +0,260 m`, **solo una vez construido ese datum**. La altura del origen, altura del CG y distancia nariz–datum no están medidas. La [foto p.91/181](../../references/avanti-s/organized/details/07-datum/cg-desde-borde-ataque-raiz-p091-s181.png) y la [introducción p.5](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf#page=5) definen la referencia longitudinal.
+Para compartir la convención visual del Stik se propone nariz `−Z`, derecha `+X`, arriba `+Y`, metros. El datum longitudinal se toma en el borde de ataque junto al fuselaje, proyectado sobre el plano de simetría. Entonces las referencias de CG corresponden a `z = +0,240 / +0,250 / +0,260 m`, **solo una vez construido ese datum**. La altura del origen, altura del CG y distancia nariz–datum no están medidas. La foto p.91/181 (`references/avanti-s/organized/details/07-datum/cg-desde-borde-ataque-raiz-p091-s181.png`, local only) y la [introducción p.5](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf#page=5) definen la referencia longitudinal.
 
 Antes de cerrar AV-01 faltan planta calibrada o contorno aproximado explícito, secciones, cuerdas, área, incidencias y extremos de bisagra. El panel actual permite revisar tamaños y movimientos, pero no sustituye esa geometría. AV-02 podrá mostrar un volumen aproximado declarado; AV-05 sigue siendo necesario para volar con propulsión de turbina.
 

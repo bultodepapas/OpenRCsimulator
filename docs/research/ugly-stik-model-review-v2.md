@@ -9,7 +9,7 @@ El objetivo sigue siendo un Jensen Ugly Stik de 60 in con motor clase .61, recon
 ## Evidencia revisada
 
 - [Fuente geométrica](../../assets/aircraft/ugly-stik-60/geometry.json), [constructor](../../app/aircraft/ugly_stik_model.gd), [pruebas del modelo](../../app/aircraft/verify_model.gd), [visor](../../app/aircraft/inspect_model.gd) y [adaptador](../../app/render/airplane.gd).
-- Ambas hojas Jensen renderizadas localmente: [hoja 1](../../references/ugly-stik/calibration-v1/renders/jensen-1.png) y [hoja 2](../../references/ugly-stik/calibration-v1/renders/jensen-2.png). Comparación visual con planta, frente e intradós v2; perfil y tres cuartos revisados en la entrega v2.
+- Ambas hojas Jensen renderizadas localmente: hoja 1 (`references/ugly-stik/calibration-v1/renders/jensen-1.png`, local only) y hoja 2 (`references/ugly-stik/calibration-v1/renders/jensen-2.png`, local only). Comparación visual con planta, frente e intradós v2; perfil y tres cuartos revisados en la entrega v2.
 - [Calibración provisional](ugly-stik-model-v1-calibration.md), [medición del morro](ugly-stik-investigations/evidence/model-v2-nose.json), [validación v2](ugly-stik-investigations/evidence/model-v2-validation.json), [manifiesto de capturas](../../research/ugly-stik/model-v2/captures/manifest.json) y [roadmap](../../ROADMAP.md).
 - Los cinco hashes de fuente/captura registrados en la validación v2 coinciden al revisar. Las 453 comprobaciones y la suite verde pertenecen a esa ejecución anterior; esta revisión no vuelve a ejecutar pruebas de una simulación que está cambiando en paralelo.
 

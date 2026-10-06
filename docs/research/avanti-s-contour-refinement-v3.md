@@ -2,7 +2,7 @@
 
 2026-10-06 · AV-02 sigue como maqueta visual aislada. Esta revisión continúa directamente desde `a200-av02-contours-02`; las cámaras, fotografías y muestras de contorno son las mismas. La geometría actual es `a200-av02-contours-03`.
 
-[Antes/después v2 → v3](../../references/avanti-s/refinement-v3/index.html) · [captura oblicua actual](../../references/avanti-s/refinement-v3/inspector-final/oblique-flap0.png) · [oblicua anterior](../../references/avanti-s/refinement-v2/inspector-final/oblique-flap0.png) · [planta actual](../../references/avanti-s/refinement-v3/inspector-final/top-flap0.png).
+Antes/después v2 → v3 (`references/avanti-s/refinement-v3/index.html`, local only) · captura oblicua actual (`references/avanti-s/refinement-v3/inspector-final/oblique-flap0.png`, local only) · oblicua anterior (`references/avanti-s/refinement-v2/inspector-final/oblique-flap0.png`, local only) · planta actual (`references/avanti-s/refinement-v3/inspector-final/top-flap0.png`, local only).
 
 ## Cambios conservados
 

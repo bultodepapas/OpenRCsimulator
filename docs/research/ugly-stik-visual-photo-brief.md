@@ -53,13 +53,13 @@ Aplicación: horquillas metálicas con dos orejas y pasador, bases circulares de
 
 Aplicación: adoptar esos rasgos para el motor visual de clase .61, conservando el eje y los puntos de instalación existentes. La corona dorada y el carburador inclinado pasan a ser referencias de apariencia; no se copia el texto ni se afirma una réplica comercial. Silenciador, alimentación y bancada siguen apoyándose en la investigación documental y llevan sus estimaciones explícitas.
 
-La foto D también quedó verificada como archivo local [`references/.61 ENGINE NITRO OS.png`](<../../references/.61 ENGINE NITRO OS.png>), SHA-256 `33552dca9dc62f3a4a9b8c732b0ac3714245b4a60cbc6bd6beb8fdbab2e7de33`. A/B/C siguen identificadas mediante los adjuntos, sin ruta o hash supuesto. [Entrega visual v4](ugly-stik-model-v4.md).
+La foto D también quedó verificada como archivo local `references/.61 ENGINE NITRO OS.png` (`references/.61 ENGINE NITRO OS.png`, local only), SHA-256 `33552dca9dc62f3a4a9b8c732b0ac3714245b4a60cbc6bd6beb8fdbab2e7de33`. A/B/C siguen identificadas mediante los adjuntos, sin ruta o hash supuesto. [Entrega visual v4](ugly-stik-model-v4.md).
 
 ## Fotos E/F: silenciador montado y separado
 
 **E · Motor plateado montado.** Imagen adjunta de 500 × 500 px. Permite distinguir el silenciador alargado, su nariz redondeada, nervaduras exteriores longitudinales, unión central y reducción hacia la salida. También se ve el cuello de unión al cilindro, tornillería y un racor. La culata de este motor es diferente de D; se usa como referencia de montaje, conservando la dirección artística dorada ya elegida.
 
-**F · Motor dorado y silenciador separado.** Archivo del propietario [`references/.61 AND EXHAUST.png`](<../../references/.61 AND EXHAUST.png>), 1080 × 1080 px, SHA-256 `5e3b9e50c7b9e8f957cdf09aba5e67e4b4749ede6ef38df11e69ee53d1f437c1`. Es un conjunto con el escape desmontado, no un despiece interno del motor. Muestra con más claridad el cuello ancho de fundición y su brida, los resaltes paralelos sobre el cuerpo, la costura circunferencial, el cono posterior, la boquilla y el racor pequeño.
+**F · Motor dorado y silenciador separado.** Archivo del propietario `references/.61 AND EXHAUST.png` (`references/.61 AND EXHAUST.png`, local only), 1080 × 1080 px, SHA-256 `5e3b9e50c7b9e8f957cdf09aba5e67e4b4749ede6ef38df11e69ee53d1f437c1`. Es un conjunto con el escape desmontado, no un despiece interno del motor. Muestra con más claridad el cuello ancho de fundición y su brida, los resaltes paralelos sobre el cuerpo, la costura circunferencial, el cono posterior, la boquilla y el racor pequeño.
 
 Aplicación: sustituir el silenciador ovoide y el tubo curvo provisional por un cuerpo alargado con cuello ancho, nervaduras y salida cónica. Mantener las rutas visibles de combustible y presión conectadas, y comprobar separación de hélice, bancada y fuselaje en el montaje. La foto carece de escala: longitudes, radios y tornillería del modelo continúan siendo estimaciones visuales. El nombre del archivo no identifica por sí solo la variante comercial.
 

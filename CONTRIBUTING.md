@@ -32,7 +32,7 @@ Record useful research in `docs/`, with original sources, limitations and a repr
 
 ## Documentation
 
-Start at the [documentation map](docs/README.md): it names the canonical document for each question, lists every track, plan and step-ID prefix with the paths each owns, and states the writing conventions. In short: one language per file; every plan carries a date, revision, status line and step-ID prefix; a step's status lives in its plan and ROADMAP.md keeps one line per track; evidence folders are named after the step they prove; never link the gitignored `references/` or `app/captures/` folders as if they were in the repository. Research reports go under `docs/research/` and are listed in its [index](docs/research/README.md).
+Start at the [documentation map](docs/README.md): it names the canonical document for each question, lists every track, plan and step-ID prefix with the paths each owns, and states the writing conventions. In short: English, short and precise, one language per file; every plan carries a date, revision, status line and step-ID prefix; a step's status lives in its plan and ROADMAP.md keeps one line per track; evidence folders are named after the step they prove; never link the gitignored `references/` or `app/captures/` folders as if they were in the repository. Research reports go under `docs/research/` and are listed in its [index](docs/research/README.md).
 
 ## Releases
 

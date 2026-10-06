@@ -1,6 +1,6 @@
 # Avanti · perfil transparente aportado por el usuario
 
-2026-10-06 · [PNG original local](../../references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png) · [comparador de perfil](../../references/avanti-s/user-profile/index.html) · [registro de procedencia](avanti-s-user-profile-resource.json).
+2026-10-06 · PNG original local (`references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png`, local only) · comparador de perfil (`references/avanti-s/user-profile/index.html`, local only) · [registro de procedencia](avanti-s-user-profile-resource.json).
 
 El adjunto se guardó **sin recortar, remuestrear, regenerar ni modificar sus bytes**: PNG RGBA, **1818 × 865**, 785.323 bytes, con alpha entre 0 y 255. Su SHA-256 es `4ab4d1ba032756c4c0877a00db53162c38cf4ecdfa79d8dedf83d74dbb8977e3`. Se conservan los restos del recorte en el borde. El fondo cuadriculado del visor no forma parte de la imagen.
 
