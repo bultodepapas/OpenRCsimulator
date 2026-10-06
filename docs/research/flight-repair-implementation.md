@@ -71,6 +71,7 @@ Este cambio explica parte de la variación de trim, planeo y modos. Para validar
 | Recuperación de barrena desde 6 s | pasa; falla con parche aislado Cndr×0,3 | conserva el criterio original de α<10°, |p|/|r|<1 rad/s |
 | Trim a 15 m/s | α≈3,71° | α≈4,26° con la masa reconciliada |
 | Planeo sin motor a 15 m/s | L/D≈8,46 | L/D≈9,11 con la masa reconciliada |
+| Empuje/peso estático, misma hélice/motor | ≈1,6 | ≈1,46 por la masa de balance |
 | Pérdida en vuelo lento | configuración de 2,601 kg | 9,49 m/s; predicción de 1g y CLmax: 9,51 m/s |
 
 `test_physical_envelope.gd` conserva el caso rojo original y añade 5.000 estados deterministas con q, β, controles asimétricos, V=0 y rates. Comprueba finitud y potencia total, además de aislar la contribución del rudder y verificar sus brazos de momento. El barrido ampliado queda en [repair-fuzz.gd](flight-robustness/repair-fuzz.gd) y su JSON asociado.
@@ -97,3 +98,15 @@ Las trazas incorporan hash SHA-256 de los datos aceptados, configuración y nomb
 La reparación entrega superficies locales y sus guards; **propwash, equilibrio de eje motor/hélice, downwash explícito y pérdida dinámica siguen siendo ampliaciones separadas E0b/G2**, como requería el plan. No se añaden durante esta reparación para compensar la autoridad. Tampoco convierte los modelos visuales Extra/Avanti en modelos de vuelo validados. El ala local actual sigue discretizada para la planta rectangular del Ugly; una nueva planta necesita su propia distribución de área y cuerda.
 
 No se cierra Gate 2 sin prueba del usuario con radio real/teclado, ni se declara realismo validado por disponer de tests verdes. Las pruebas de dispositivos simulados verifican sus rutas y servos, no la sensación del piloto.
+
+
+## Resultado de integración
+
+- `app/test.sh`: **exit 0**, incluyendo parse de todos los scripts, float64, tests de entrada/servo/sesión/trim/manejo/pérdida/barrena/goldens, contratos visuales Ugly y Extra, trim en la app real y mismo hash de estado a 30/60/144 FPS.
+- Última comprobación específica de autoridad: **26/26**, incluido doblete espejo bajo las mismas bandas, mutación del Cndr antiguo, teclado/radio/gamepad simulados, pulsos de planeo retrimado y rudder mantenido 2 s. Muestra de recuperación a 3 s no disponible en trazas más cortas: no se inventa leyendo la última fila.
+- 240 frente a 480 Hz: diferencia de pico β <0,001°, pico r≈0,004°/s y r final≈0,076°/s; tolerancias de ingeniería 0,25° / 1°/s / 0,5°/s respectivamente.
+- Barrido final: **229.933 estados**, cero casos de potencia positiva; hash de archivos en su JSON. No sustituye identificación física.
+- Benchmark de vuelo trimado: **487,3 μs/tick**, mejor de 3×2.400 ticks en este host compartido. Está cerca del presupuesto de 500 μs; falta medir en la máquina más lenta del propietario y no es un máximo garantizado de todo el régimen separado.
+- El test de idioma de la UI concurrente emite una advertencia ObjectDB al salir; no hay errores de motor y no se modificó esa UI para esta reparación.
+
+[Resultados y hashes](flight-robustness/repair-validation.json) · [suite completa](flight-robustness/repair-suite.log) · [autoridad final](flight-robustness/repair-authority.log) · [coste](flight-robustness/repair-benchmark.log) · [pasividad y estabilidad acoplada](flight-robustness/repair-diagnostics.md).

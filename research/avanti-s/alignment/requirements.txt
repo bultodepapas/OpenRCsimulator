@@ -1,0 +1,3 @@
+# Offline camera fit only; already available in the environment used for this study.
+numpy==1.26.4
+scipy==1.11.4

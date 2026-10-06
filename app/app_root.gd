@@ -7,6 +7,7 @@
 extends Node
 
 const Home := preload("res://ui/home.gd")
+const HomeScene := preload("res://ui/home_scene.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const FLIGHT_SCENE := "res://main.tscn"
@@ -16,6 +17,7 @@ var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
 var preferences := {}
 var home: Control
+var home_scene: Node3D
 var flight: Node
 
 
@@ -39,6 +41,8 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 
 
 func show_home() -> void:
+	home_scene = HomeScene.new() # our Ugly Stik over our field, still: no simulation runs behind Home
+	add_child(home_scene)
 	home = Home.new()
 	home.fly_requested.connect(start_flight)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
@@ -61,8 +65,11 @@ func set_language(code: String) -> void:
 func start_flight() -> void:
 	if flight != null:
 		return
-	if home != null:
-		home.queue_free()
-		home = null
+	for screen in [home, home_scene]:
+		if screen != null:
+			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
+			screen.queue_free()
+	home = null
+	home_scene = null
 	flight = load(FLIGHT_SCENE).instantiate()
 	add_child(flight)

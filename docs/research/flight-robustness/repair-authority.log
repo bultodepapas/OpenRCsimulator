@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   right-first reference doublet completes without a simulation fault 
+ok   right-first reference doublet records every tick 721 rows, expected 721; sim tick 720
+ok   right-first reference doublet state, loads and commands stay finite βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   right-first doublet moves the real rudder both ways δr right 24.34°, left -25.00°
+ok   right-first doublet yaws in both commanded directions right-phase r 51.21°/s, left-phase r -86.82°/s
+ok   reference doublet |β| peak ≤25° (estimated screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   reference doublet |r| peak ≤120°/s (estimated screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+ok   |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen) βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+RUDDER_REFERENCE 15 m/s, 240 Hz: βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   restoring the audited borrowed Cndr makes the reference test reject the old authority legacy Cndr -0.18110; βpk 36.19° RMS 19.57°, rpk 149.16°/s RMS 70.34°/s, ppk 59.07°/s, αpk 8.04°, rollpk 18.00°, altitude 27.28–30.03 m (Δpk 2.72 m), rpm pk 5169, r@3s -36.84°/s, rfinal -36.84°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   left-first reverse doublet completes without a simulation fault 
+ok   left-first reverse doublet records every tick 721 rows, expected 721; sim tick 720
+ok   left-first reverse doublet state, loads and commands stay finite βpk 19.86° RMS 9.67°, rpk 86.08°/s RMS 39.32°/s, ppk 54.40°/s, αpk 6.11°, rollpk 20.97°, altitude 29.53–30.22 m (Δpk 0.47 m), rpm pk 5174, r@3s 3.78°/s, rfinal 3.78°/s
+ok   left-first doublet produces left then right yaw response δr left -25.00°, right 24.34°; phase r -52.22°/s then 84.92°/s
+ok   mirrored reference doublet respects the same authority/recovery screens βpk 19.86° RMS 9.67°, rpk 86.08°/s RMS 39.32°/s, ppk 54.40°/s, αpk 6.11°, rollpk 20.97°, altitude 29.53–30.22 m (Δpk 0.47 m), rpm pk 5174, r@3s 3.78°/s, rfinal 3.78°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   reference doublet at 480 Hz completes without a simulation fault 
+ok   reference doublet at 480 Hz records every tick 1441 rows, expected 1441; sim tick 1440
+ok   reference doublet at 480 Hz state, loads and commands stay finite βpk 19.92° RMS 9.81°, rpk 87.83°/s RMS 39.71°/s, ppk 54.57°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.94°/s, rfinal -4.94°/s
+ok   dt/2 converges: β peak ≤0.25°, r peak ≤1°/s, final r ≤0.5°/s apart Δβ 0.000°, Δrpk 0.004°/s, Δrfinal 0.076°/s; 240 Hz [βpk 19.92° RMS 9.80°, rpk 87.83°/s RMS 39.69°/s, ppk 54.54°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.87°/s, rfinal -4.87°/s]; 480 Hz [βpk 19.92° RMS 9.81°, rpk 87.83°/s RMS 39.71°/s, ppk 54.57°/s, αpk 5.74°, rollpk 20.50°, altitude 29.42–30.07 m (Δpk 0.58 m), rpm pk 5174, r@3s -4.94°/s, rfinal -4.94°/s]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   full rudder held for 2 s remains finite in both directions 2 direction cases
+ok   retrimming glide at 15 m/s with rudder pulses remains finite in both directions 2 direction cases; engine rpm pk 0
+ok   amplitude/duration/speed sweep stays finite in both rudder directions 14 cases; βpk 18.05° RMS 7.20°, rpk 52.22°/s RMS 22.16°/s, αpk 7.59°, speed 11.97–20.00 m/s
+RUDDER_SWEEP finite-only: 14 cases, βpk 18.05° RMS 7.20°, rpk 52.22°/s RMS 22.16°/s, αpk 7.59°, speed 11.97–20.00 m/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard D reaches right rudder and right yaw βpk 16.40° RMS 10.36°, rpk 49.87°/s RMS 33.39°/s, ppk 53.92°/s, αpk 5.59°, rollpk 16.03°, altitude 30.00–30.05 m (Δpk 0.05 m), rpm pk 5174, r@3s unavailable, rfinal -8.89°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard A reaches left rudder and left yaw βpk 16.21° RMS 10.18°, rpk 50.89°/s RMS 33.77°/s, ppk 53.84°/s, αpk 6.01°, rollpk 16.21°, altitude 30.00–30.12 m (Δpk 0.12 m), rpm pk 5174, r@3s unavailable, rfinal 10.19°/s
+ok   traces shorter than 3 s leave the 3 s recovery sample unavailable keyboard trace duration 0.75 s; r@3s remains unavailable
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003d|Fake EdgeTX (default profile)
+failsafe: radio disconnected
+ok   simulated radio path reaches right rudder with finite flight data βpk 17.23° RMS 11.49°, rpk 51.10°/s RMS 34.98°/s, ppk 54.84°/s, αpk 6.12°, rollpk 17.02°, altitude 29.99–30.03 m (Δpk 0.03 m), rpm pk 5096, r@3s unavailable, rfinal -21.81°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003e|Test Gamepad (gamepad profile)
+failsafe: radio disconnected
+ok   simulated gamepad path reaches left rudder with finite flight data βpk 11.96° RMS 8.02°, rpk 35.49°/s RMS 24.77°/s, ppk 37.06°/s, αpk 5.43°, rollpk 11.12°, altitude 30.00–30.02 m (Δpk 0.02 m), rpm pk 5174, r@3s unavailable, rfinal 23.26°/s
+26 checks, 0 failed

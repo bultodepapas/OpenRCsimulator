@@ -132,3 +132,7 @@ El mayor cambio respecto al Extra es separar propulsión de hélice y turbina en
 Ya existe una [maqueta Godot aislada AV-02](research/avanti-s-av02-preview.md), con siete superficies articuladas, controles de escala, nueve capturas y prueba en clon sin referencias. Todas las secciones no documentadas están identificadas como estimaciones. Falta refinarla e integrarla; AV-02 y AV-04 no se consideran completos.
 
 La siguiente acción es **refinar AV-01 y completar la integración AV-02**: usar el datum longitudinal propuesto y las cotas documentadas para construir contornos y un volumen aproximado declarado, fijar los ejes de las superficies y mostrar un Avanti básico en el inspector. El archivo ya separa neumática, tanque de queroseno/humo y escape vectorial opcional. Ese trabajo no necesita integrar consumo, tren funcional o una ECU completa. Antes del primer vuelo se cierra AV-05 con una rama de turbina comprobable.
+
+## Comparación de siluetas por transparencia — 2026-10-06
+
+La maqueta AV-02 ya se compara con tres fotos mediante [superposiciones interactivas](../references/avanti-s/alignment/index.html). Se ajusta una cámara por foto conservando geometría, imágenes originales y puntos reservados. [Método, errores y diferencias detectadas](research/avanti-s-transparency-comparison.md). Es una ayuda para refinar contornos; no cierra la metrología ni acredita área/perfiles. La próxima edición debe contrastar los tres encuadres y guardar el efecto de cualquier reajuste de cámara.

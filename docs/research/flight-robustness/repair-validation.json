@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-06",
+  "status": "automated repair checks passed; real-aircraft handling/stability validation pending",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "log": "repair-suite.log",
+    "note": "Complete suite passed. Final mirrored-reference assertion added afterwards and verified in focused authority run. Existing UI test emitted an ObjectDB leak warning; no engine error."
+  },
+  "focused_authority": {
+    "command": "godot --headless --path app --script res://tests/test_rudder_authority.gd",
+    "checks": 26,
+    "failures": 0,
+    "log": "repair-authority.log"
+  },
+  "rudder_reference": {
+    "V_mps": 15,
+    "right_first": {
+      "beta_peak_deg": 19.918,
+      "r_peak_deg_s": 87.832,
+      "roll_peak_deg": 20.497,
+      "r_1_5s_after_release_deg_s": -4.87
+    },
+    "left_first": {
+      "beta_peak_deg": 19.86,
+      "r_peak_deg_s": 86.08,
+      "r_1_5s_after_release_deg_s": 3.78
+    },
+    "old_model": {
+      "beta_peak_deg": 42.413,
+      "r_peak_deg_s": 462.145,
+      "roll_peak_deg": 178.605
+    },
+    "legacy_cndr_mutation": {
+      "beta_peak_deg": 36.19,
+      "r_peak_deg_s": 149.16,
+      "rejected_by_reference_screen": true
+    },
+    "dt_240_vs_480_Hz": {
+      "beta_peak_delta_deg": 0.0,
+      "r_peak_delta_deg_s": 0.004,
+      "r_final_delta_deg_s": 0.076
+    }
+  },
+  "passivity": {
+    "original_grid_cases": 925,
+    "original_model_positive_cases": 46,
+    "repaired_model_positive_cases": 0,
+    "seeded_CI_cases": 5000,
+    "full_research_cases": 229933,
+    "full_research_positive_cases": 0,
+    "report": "repair-fuzz-results.json"
+  },
+  "benchmark": {
+    "us_per_tick": 487.3,
+    "workload": "trimmed flight, best of 3 x 2400 ticks, this shared development host",
+    "owner_hardware_validated": false,
+    "log": "repair-benchmark.log"
+  },
+  "core_sha256": {
+    "app/physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+    "app/physics/aircraft_data.gd": "7dc59455fb9008a2b299ba6d4c8d35e7feddba8127cf36a019eef41c41d777ba",
+    "app/physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+    "app/physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+    "app/physics/trim.gd": "7700128d43c21d31a5af86d7ded108d6480f22376181a442382f1ac7857d7f1e",
+    "app/sim/flight_session.gd": "789deb057d3ae3f9bf21a496f46f6d25f7345a1784fc37a63846bbeee5f53414",
+    "app/sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+    "app/tests/test_physical_envelope.gd": "7219dc9dda056139d5ef6d6f18c64528863ea41924689de23a12c3964a1fb7e6",
+    "app/tests/test_rudder_authority.gd": "d1fc61587a3c7d9a4cd58e05fd3e10bc106fb378c22d116523b34ff6a1c0e230",
+    "app/tests/test_session_guards.gd": "c3d5c8648263f66b9e8854e75ab31103aaa7890780f4b9295bb842397f1a872e",
+    "app/tests/test_dynamics.gd": "53c3edd42eaac33d7f857bc0b8687cc935b86930b3a4160081298ffcaa79f398",
+    "app/tests/test_propulsion.gd": "f60f4d9dde1b8d436d148e5e6c8b03ab20e762690bb41e519273c7b3a97177ea"
+  }
+}

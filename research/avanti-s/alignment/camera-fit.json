@@ -1,0 +1,466 @@
+{
+  "schema": "openrc-avanti-camera-fit-v1",
+  "date": "2026-10-06",
+  "method": "Perspective rigid camera; fixed vertical FOV45, centered principal point, no lens distortion",
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "picks_sha256": "315d26e0b1fe3235b8dfc0ae113c0b7ed85ddf67703c702b1980350e3751af64",
+  "model_geometry_sha256": "a82624d3765d04dd55fa3531c9e54a1166467ded130577ec1ec9b9145815ed7a",
+  "limits": [
+    "Perspective camera fitted to approximate model; no lens calibration",
+    "No shape or nonuniform image warp is fitted",
+    "Check points excluded from optimization; neither their errors nor fit RMS are metric aircraft accuracy",
+    "Side outlet partly occluded: manually estimated point with lower confidence"
+  ],
+  "views": [
+    {
+      "id": "front_high",
+      "title": "Frontal elevada",
+      "photo": "references/avanti-s/photos/ground-CIMG7321.jpg",
+      "initial_camera": [
+        0.1,
+        3,
+        -4
+      ],
+      "fit": {
+        "nose": [
+          342,
+          470
+        ],
+        "fin_top": [
+          346,
+          49
+        ],
+        "wing_right": [
+          149,
+          202
+        ],
+        "wing_left": [
+          552,
+          200
+        ]
+      },
+      "check": {
+        "tail_right": [
+          277,
+          130
+        ],
+        "tail_left": [
+          418,
+          129
+        ]
+      },
+      "photo_sha256": "ccecba73a557c04c2e5ca0b6fb97d8a5315d5220c7fb708466ac0553a490ca2f",
+      "size_px": [
+        650,
+        488
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6,
+      "camera_position_m": [
+        -0.03576764883402844,
+        1.5343822553642812,
+        -2.0345669376630067
+      ],
+      "camera_basis_columns": [
+        [
+          -0.9987860527847102,
+          -0.030006707118555517,
+          0.039064284079441416
+        ],
+        [
+          -0.0012196247521807473,
+          0.8078643888467544,
+          0.5893671536052243
+        ],
+        [
+          -0.04924361154710262,
+          0.5886040492225324,
+          -0.8069202810443152
+        ]
+      ],
+      "fit_rms_px": 8.508892914129312,
+      "check_rms_px": 5.847538969682276,
+      "landmarks": [
+        {
+          "key": "nose",
+          "role": "fit",
+          "picked_px": [
+            342,
+            470
+          ],
+          "projected_px": [
+            341.90866638635924,
+            472.55449874859653
+          ],
+          "error_px": 2.5561309992959895
+        },
+        {
+          "key": "fin_top",
+          "role": "fit",
+          "picked_px": [
+            346,
+            49
+          ],
+          "projected_px": [
+            346.837297031842,
+            61.241713783927366
+          ],
+          "error_px": 12.270314693891462
+        },
+        {
+          "key": "wing_right",
+          "role": "fit",
+          "picked_px": [
+            149,
+            202
+          ],
+          "projected_px": [
+            147.83809944953651,
+            194.01966795110977
+          ],
+          "error_px": 8.064472239378839
+        },
+        {
+          "key": "wing_left",
+          "role": "fit",
+          "picked_px": [
+            552,
+            200
+          ],
+          "projected_px": [
+            552.4832579901371,
+            191.79991735779168
+          ],
+          "error_px": 8.2143102950934
+        },
+        {
+          "key": "tail_right",
+          "role": "check",
+          "picked_px": [
+            277,
+            130
+          ],
+          "projected_px": [
+            272.1482709228828,
+            132.40106614206732
+          ],
+          "error_px": 5.413353272817767
+        },
+        {
+          "key": "tail_left",
+          "role": "check",
+          "picked_px": [
+            418,
+            129
+          ],
+          "projected_px": [
+            423.9898295331091,
+            130.79024370181065
+          ],
+          "error_px": 6.251642212057475
+        }
+      ]
+    },
+    {
+      "id": "rear_high",
+      "title": "Oblicua posterior",
+      "photo": "references/avanti-s/photos/ground-CIMG7313.jpg",
+      "initial_camera": [
+        -2,
+        2,
+        3
+      ],
+      "fit": {
+        "nose": [
+          416,
+          67
+        ],
+        "fin_top": [
+          195,
+          188
+        ],
+        "wing_right": [
+          585,
+          251
+        ],
+        "wing_left": [
+          127,
+          188
+        ]
+      },
+      "check": {
+        "tail_right": [
+          366,
+          356
+        ],
+        "tail_left": [
+          108,
+          300
+        ],
+        "outlet": [
+          230,
+          336
+        ]
+      },
+      "photo_sha256": "a69649ea35e5d237b2ef372e8a6658d0fcfbd841f2211c8cab5555e90ef0d7ae",
+      "size_px": [
+        650,
+        488
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6,
+      "camera_position_m": [
+        1.0918475369028966,
+        1.3458925490166413,
+        2.0503870038205196
+      ],
+      "camera_basis_columns": [
+        [
+          0.8909361699667359,
+          -0.18878136740114584,
+          -0.4130306724290061
+        ],
+        [
+          -0.1256854019538746,
+          0.7714730901906338,
+          -0.6237246594831786
+        ],
+        [
+          0.43638964330136926,
+          0.6076107853172684,
+          0.6636062181636305
+        ]
+      ],
+      "fit_rms_px": 7.718829874998616,
+      "check_rms_px": 26.078201778309197,
+      "landmarks": [
+        {
+          "key": "nose",
+          "role": "fit",
+          "picked_px": [
+            416,
+            67
+          ],
+          "projected_px": [
+            423.74984545343807,
+            62.50058960401438
+          ],
+          "error_px": 8.961294463618422
+        },
+        {
+          "key": "fin_top",
+          "role": "fit",
+          "picked_px": [
+            195,
+            188
+          ],
+          "projected_px": [
+            199.2499390266228,
+            184.51846613197588
+          ],
+          "error_px": 5.49391115729136
+        },
+        {
+          "key": "wing_right",
+          "role": "fit",
+          "picked_px": [
+            585,
+            251
+          ],
+          "projected_px": [
+            580.3524118217198,
+            251.96639226463054
+          ],
+          "error_px": 4.746997986520299
+        },
+        {
+          "key": "wing_left",
+          "role": "fit",
+          "picked_px": [
+            127,
+            188
+          ],
+          "projected_px": [
+            120.50447222235388,
+            195.94402978938245
+          ],
+          "error_px": 10.261553995607496
+        },
+        {
+          "key": "tail_right",
+          "role": "check",
+          "picked_px": [
+            366,
+            356
+          ],
+          "projected_px": [
+            347.708730827647,
+            333.70306638813236
+          ],
+          "error_px": 28.83962164154558
+        },
+        {
+          "key": "tail_left",
+          "role": "check",
+          "picked_px": [
+            108,
+            300
+          ],
+          "projected_px": [
+            129.11752162456978,
+            287.43548332372274
+          ],
+          "error_px": 24.57268399814358
+        },
+        {
+          "key": "outlet",
+          "role": "check",
+          "picked_px": [
+            230,
+            336
+          ],
+          "projected_px": [
+            213.65751737145092,
+            354.37390840855784
+          ],
+          "error_px": 24.590186023503378
+        }
+      ]
+    },
+    {
+      "id": "side",
+      "title": "Perfil oblicuo",
+      "photo": "references/avanti-s/photos/ground-CIMG7310.jpg",
+      "initial_camera": [
+        3,
+        1,
+        -0.5
+      ],
+      "fit": {
+        "nose": [
+          625,
+          252
+        ],
+        "fin_top": [
+          82,
+          126
+        ],
+        "wing_right": [
+          181,
+          366
+        ],
+        "outlet": [
+          93,
+          253
+        ]
+      },
+      "check": {
+        "tail_right": [
+          33,
+          267
+        ]
+      },
+      "photo_sha256": "a5927d2edbf0470bacdd74ea50c152cea6be1bfdb72eef8644fcb662978a5411",
+      "size_px": [
+        650,
+        488
+      ],
+      "assumed_vertical_fov_deg": 45,
+      "pick_uncertainty_px": 6,
+      "camera_position_m": [
+        2.2691795210559684,
+        0.7284665837617383,
+        0.05441254304340236
+      ],
+      "camera_basis_columns": [
+        [
+          -0.02736086061719748,
+          -0.029046610229444242,
+          -0.9992035216813765
+        ],
+        [
+          -0.29761292919426185,
+          0.9544854597908403,
+          -0.01959723001546876
+        ],
+        [
+          0.9542944659185116,
+          0.29683968986988024,
+          -0.03476019038002772
+        ]
+      ],
+      "fit_rms_px": 16.573500564220637,
+      "check_rms_px": 20.24693476672826,
+      "landmarks": [
+        {
+          "key": "nose",
+          "role": "fit",
+          "picked_px": [
+            625,
+            252
+          ],
+          "projected_px": [
+            623.3355265547368,
+            243.58023426188177
+          ],
+          "error_px": 8.582710931563286
+        },
+        {
+          "key": "fin_top",
+          "role": "fit",
+          "picked_px": [
+            82,
+            126
+          ],
+          "projected_px": [
+            107.15673842563632,
+            127.04367819023739
+          ],
+          "error_px": 25.178378668624877
+        },
+        {
+          "key": "wing_right",
+          "role": "fit",
+          "picked_px": [
+            181,
+            366
+          ],
+          "projected_px": [
+            177.33398318639837,
+            369.7958700414937
+          ],
+          "error_px": 5.277149670941608
+        },
+        {
+          "key": "outlet",
+          "role": "fit",
+          "picked_px": [
+            93,
+            253
+          ],
+          "projected_px": [
+            73.97723414806433,
+            254.18155625611232
+          ],
+          "error_px": 19.059425380738215
+        },
+        {
+          "key": "tail_right",
+          "role": "check",
+          "picked_px": [
+            33,
+            267
+          ],
+          "projected_px": [
+            52.84404100356193,
+            271.0190053616663
+          ],
+          "error_px": 20.24693476672826
+        }
+      ]
+    }
+  ]
+}

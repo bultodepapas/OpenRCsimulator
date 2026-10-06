@@ -1,0 +1,199 @@
+{
+  "engine": {
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "hex": 263938,
+    "status": "stable",
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "timestamp": 0,
+    "string": "4.7.2-stable (official)"
+  },
+  "renderer": "gl_compatibility",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "resolution": [
+    640,
+    360
+  ],
+  "performance_benchmark": false,
+  "results": [
+    {
+      "name": "01-instance-red-green",
+      "passed": true,
+      "save_error": 0,
+      "sha256": "61e9d40dd2a699e6d4f7b8068feb71a20e69e53915b3431a82fc0303fc453d50",
+      "samples": [
+        {
+          "pixel": [
+            230.0,
+            180.0
+          ],
+          "rgb": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "expected": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "passed": true
+        },
+        {
+          "pixel": [
+            410.0,
+            180.0
+          ],
+          "rgb": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "expected": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "02-instance-blue-green",
+      "passed": true,
+      "save_error": 0,
+      "sha256": "e4a007d2ef07e1471f019cddc7c735bc4ddee5520ba6709e92920dc7228a3b05",
+      "samples": [
+        {
+          "pixel": [
+            230.0,
+            180.0
+          ],
+          "rgb": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "expected": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "passed": true
+        },
+        {
+          "pixel": [
+            410.0,
+            180.0
+          ],
+          "rgb": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "expected": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "03-shared-yellow",
+      "passed": true,
+      "save_error": 0,
+      "sha256": "e8a6f22f2d43d1190c3a9ad2b4fb229e01fc4d44a32ddf847cb51492890b9612",
+      "samples": [
+        {
+          "pixel": [
+            230.0,
+            180.0
+          ],
+          "rgb": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "expected": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "passed": true
+        },
+        {
+          "pixel": [
+            410.0,
+            180.0
+          ],
+          "rgb": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "expected": [
+            1.0,
+            1.0,
+            0.0
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "04-displaced-culled",
+      "passed": true,
+      "save_error": 0,
+      "sha256": "4b2cfa855ae27d03dc03c97c35d98fd87ce7c7b96bfaa461b29931cdfabd696a",
+      "samples": [
+        {
+          "pixel": [
+            320.0,
+            180.0
+          ],
+          "rgb": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "expected": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "05-displaced-bounds",
+      "passed": true,
+      "save_error": 0,
+      "sha256": "3d55926adcafb7a4222e4258f8bf8d75b68bf3624052005e7f5e41775ab638f2",
+      "samples": [
+        {
+          "pixel": [
+            320.0,
+            180.0
+          ],
+          "rgb": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "expected": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "passed": true
+}
