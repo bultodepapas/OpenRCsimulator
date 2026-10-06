@@ -47,7 +47,7 @@ Each question has one canonical document. Other documents may repeat the answer,
 | Which aircraft exist and what may the menu offer? | [`app/app_state/aircraft_catalog.gd`](../app/app_state/aircraft_catalog.gd) | IDs, names and the meaning of flyable / experimental / preview |
 | Which numbers does an aircraft fly with, and where do they come from? | `app/data/aircraft/<id>.json` | Format `openrc-aircraft v1`; generated files name their generator |
 | How were the README images made? | [docs/media/README.md](media/README.md) | |
-| What shipped in a release? | `docs/releases/<tag>.md` | [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md) |
+| What shipped in a release? | `docs/releases/<tag>.md` | [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md), [rc4](releases/v0.1.0-rc4.md) |
 
 ## Tracks, plans and step IDs
 
@@ -68,7 +68,7 @@ State as recorded in each plan and in ROADMAP on 2026-10-06. "Owns" lists the pa
 | **Smoke** (exhaust and pump) | [SMOKE-PLAN](SMOKE-PLAN.md) (es, rev 2) | SM-00…09 | Proposal: no smoke code exists; one isolated Godot experiment | Model team's exhaust anchor, UI-10 radio wizard, wind W07 | Proposed: `app/render/aircraft_smoke.gd`, `app/sim/smoke_system.gd`, `app/input/aux_channel.gd` | [rc-exhaust-smoke](research/rc-exhaust-smoke.md), [smoke-investigations/](research/smoke-investigations/README.md) |
 | **Wind** (M5) | [WIND-PLAN](WIND-PLAN.md) (es) | M5-W00…W08, Gates W-A and W-B | Proposal: only W00 (the plan itself) exists. Its code audit predates the D9-R2 repair and must be re-read before W01 | M5; UI-07 settings; L15 windsock | Proposed: `app/physics/wind_*.gd`, `app/data/weather/` | [wind-physics-primary-sources](research/wind-physics-primary-sources.md), [wind-godot-integration](research/wind-godot-integration.md), [wind-investigations/](research/wind-investigations/README.md) |
 | **Player guide** | [FIRST-LAUNCH.md](FIRST-LAUNCH.md) (en) | none | Current for the v0.1 alpha; also the fallback release notes in CI | PT1g, Gate 2 | — | — |
-| **Releases** | [releases/](releases/) | tags `v*` | rc1 (notes in FIRST-LAUNCH), [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md) | PT1f | — | — |
+| **Releases** | [releases/](releases/) | tags `v*` | rc1 (notes in FIRST-LAUNCH), [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md), [rc4](releases/v0.1.0-rc4.md) | PT1f | — | — |
 | **Tooling record** | [GODOT-SKILLS.md](GODOT-SKILLS.md) (es) + [installation manifest](godot-skills-installation.json) | none | Six third-party Godot agent skills installed outside the repo (`~/.codex/skills/`); not a game dependency | — | — | — |
 | **Archive** | [archive/](archive/README.md) (historical plan revisions); [bake-off spec](../prototypes/stage0/SPEC.md) and [comparison](../prototypes/stage0/COMPARISON.md); [RESEARCH.md](../RESEARCH.md) | — | Frozen; kept for context. Historical plans carry a banner pointing to the current one | — | — | — |
 
