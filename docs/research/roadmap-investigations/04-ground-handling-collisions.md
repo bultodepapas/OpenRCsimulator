@@ -369,7 +369,7 @@ The Stik's V_s is 9.5 m/s at 2.9 kg, so a hand launch needs either a hard throw 
 16. C. Canudas de Wit, H. Olsson, K. J. Åström, P. Lischinsky, "A new model for control of systems with friction", IEEE TAC 40(3):419–425, 1995. https://lup.lub.lu.se/search/publication/8517353 (search result only); https://ieeexplore.ieee.org/document/376053 (linked from 17)
 17. A. Ramadhan (auralius), LuGre reconstruction (Table I parameters). https://github.com/auralius/LuGre (fetched)
 18. D. Karnopp, "Computer simulation of stick-slip friction in mechanical dynamic systems", J. Dyn. Sys. Meas. Control 107(1):100–103, 1985; Simulink implementation page. https://mathworks.com/matlabcentral/fileexchange/155462-karnopp-s-model-stick-slip-friction-dynamics-in-simulink (search result only)
-19. Y. Gonthier, J. McPhee, C. Lange, J.-C. Piedbœuf, "A regularized contact model with asymmetric damping and dwell-time dependent friction", Multibody Syst. Dyn. 11:209–233, 2004. https://uwaterloo.ca/motion-research-group/node/688 (search result only)
+19. Y. Gonthier, J. McPhee, C. Lange, J.-C. Piedbœuf, "A regularized contact model with asymmetric damping and dwell-time dependent friction", Multibody Syst. Dyn. 11:209–233, 2004. https://doi.org/10.1023/B:MUBO.0000029392.21648.bc (DOI verified via Crossref 2026-10-06; not read)
 20. Altair, MotionSolve friction formulation (LuGre, Dahl comparison). https://2022.help.altair.com/2022/hwsolvers/altair_help/topics/tools/bushing_model_friction_formulation_ms_r.htm (fetched)
 21. Laminar Research (B. Supnik), "X-Plane 11.0 public beta 14 is out". https://developer.x-plane.com/?p=7504 (fetched)
 22. Wikipedia, "Rolling resistance" (√(z/d), diameter dependence). https://en.wikipedia.org/wiki/Rolling_resistance (fetched)

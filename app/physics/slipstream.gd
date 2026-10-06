@@ -3,7 +3,8 @@
 # r_s = R·sqrt((u + w)/(u + 2w)). The velocity added at the tail is k_w·w, with k_w rising linearly from the static to
 # the forward-flight value over the mass-flow ratio m = u/(u + w) ∈ [0, 0.75] (Selig 2010, AIAA 2010-7938, Fig. 5:
 # 0.8 and 1.8, below the ideal 2 because of the fuselage). Swirl: the shaft torque leaves as angular momentum flux
-# Q = ṁ·r·v_t at every radius (free vortex, core clamped at 0.3R), ṁ = ρπR²(u + w), times a straightening factor.
+# Q = ṁ·r·v_t at every radius (free vortex, core clamped at 0.3R), ṁ = ρπR²(u + w), decayed with the axial wash (k_w/2)
+# and times a straightening factor.
 # Each tail piece (the fin, each stab half) is a strip along its span with a linear chord; the part of it inside the
 # slipstream circle (around the shaft axis, drifted with the free stream at angle of attack and sideslip) gets the
 # INCREMENT  F(local tail law with the washed flow) − F(same law with the free stream), so the free-stream tail
@@ -65,7 +66,9 @@ static func wake(v_air: PackedFloat64Array, thrust: float, torque: float, prop: 
 	var ratio := clampf((u + w) / maxf(u + 2.0 * w, 1e-6), RADIUS_MIN * RADIUS_MIN, RADIUS_MAX * RADIUS_MAX)
 	var m := u / maxf(u + w, 1e-6) if w > 0.0 else 1.0
 	var k_w: float = lerpf(ss.wash_factor[0], ss.wash_factor[1], clampf(m / 0.75, 0.0, 1.0))
-	var swirl: float = ss.swirl_factor * torque / (rho * area * maxf(u + w, SWIRL_SPEED_FLOOR))
+	# Mixing that leaves k_w·w of the ideal 2w at the tail spreads the angular momentum over proportionally more air:
+	# the tangential velocity falls by the same k_w/2, so the swirl ANGLE is the ideal wake's times swirl_factor.
+	var swirl: float = ss.swirl_factor * 0.5 * k_w * torque / (rho * area * maxf(u + w, SWIRL_SPEED_FLOOR))
 	return { u = u, w = w, vs = u + 2.0 * w, dv = k_w * w, rs = R * sqrt(ratio), swirl = swirl, core = 0.3 * R }
 
 
