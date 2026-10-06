@@ -604,3 +604,9 @@ Prueba: [informe](docs/research/p51-silhouette-review-v1.md) con métricas y has
 - Las exclusiones deben considerar la copa completa y el corredor de aproximación, no solo el centro del tronco dentro del rectángulo de pista. El loader exige una envolvente conservadora de 15 m y bounds de render incluyen padding bajo suelo, escala y giro.
 - Tres especies de un atlas caben en una superficie por sector cuando el shader elige UVs. La arboleda completa usa ocho draws, las vistas piloto cuatro y los claros dos; sombras de cards desactivadas. Son contadores en llvmpipe, no prueba de FPS objetivo ni aceptación humana de legibilidad.
 - Un clon sin `.godot` mostró que `capture.sh` dependía de la importación hecha por tests/editor. El runner de capturas y la revisión aislada ahora importan recursos antes de empezar; no se acepta una imagen con atlas ausente aunque Godot termine con código cero.
+
+### Presentación del repositorio y guía de pilotos
+
+- El README y la guía de primer arranque deben reflejar el catálogo y la tabla de controles del código: la guía antigua aún decía que no había menús. Distinguir aviones volables, estimaciones experimentales y previews evita prometer validación física pendiente.
+- Para un proyecto que publica prereleases, enlazar a `/releases`: `/releases/latest` no es una entrada fiable a la última alpha. Conservar la etiqueta de release y publicar las mejoras de documentación en otro commit mantiene la identidad del binario.
+- Prueba: enlaces locales e imagen verificados; controles y estados cotejados con `controls_reference.gd` y `aircraft_catalog.gd`; solo documentación y plantillas, sin cambios de runtime.

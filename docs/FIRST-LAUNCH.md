@@ -1,12 +1,13 @@
 # OpenRC Simulator: first launch
 
-A test build of an RC airplane simulator: a Das Ugly Stik 60 with a .61 glow engine. The airplane starts in the air, already trimmed for level flight at 15 m/s. Please fly it and tell us how it feels compared with a real Stik.
+An alpha RC airplane simulator. Start with the Jensen Das Ugly Stik 60 and tell us how it feels compared with a real Stik. Extra 300S and P-51D are experimental flight models; Avanti S is a visual preview with Fly disabled. See the [aircraft table](../README.md#aircraft) for their status.
 
 ## 1. Download and check
 
-From the release page, download the zip for your computer. `SHA256SUMS` lists each file's checksum. To check yours:
+From [Releases](https://github.com/bultodepapas/OpenRCsimulator/releases), download the ZIP for your computer. Choose the newest prerelease. `SHA256SUMS` lists each file's checksum. To check yours:
 
-- **Linux or macOS:** `sha256sum -c SHA256SUMS --ignore-missing`
+- **Linux:** `sha256sum -c SHA256SUMS --ignore-missing`
+- **macOS:** `shasum -a 256 openrc-simulator-*.zip`, then compare with the matching entry in `SHA256SUMS`.
 - **Windows (PowerShell):** `Get-FileHash .\openrc-simulator-*.zip`
 
 ## 2. First launch
@@ -40,13 +41,16 @@ You need OpenGL 3.3 graphics.
 
 ## 3. Fly
 
+Home lets you choose the aircraft and switch between English and Spanish. Press **Fly** to start in the air, trimmed for level flight (15 m/s for the Stik). Navigate menus with the keyboard or mouse; the radio controls only flight. **Esc** opens the pause menu with Continue, Restart flight, End flight and Quit. Losing window focus also pauses.
+
 | Control | Keyboard | Radio / gamepad |
 | --- | --- | --- |
 | Aileron, elevator | arrow keys | right stick (Mode 2) |
 | Rudder | A / D | left stick, left–right |
 | Throttle | W / S | left stick, up–down |
 | Restart | R | |
-| Resume after a pause | P | |
+| Pause menu | Esc | |
+| Resume after a radio failsafe | P | |
 | Camera: pilot / close-up | C | |
 | Auto-zoom on / off | Z | |
 | Performance line on / off | F3 | |
@@ -67,13 +71,14 @@ A crash freezes the scene for 1.5 s, showing the impact speed, then the flight r
 
 - full six-axis flight with prop torque and gyroscopic effects;
 - stall at about 9 m/s and spins (recover with opposite rudder and the stick forward);
-- servos, engine sound, a ground shadow and auto-zoom.
+- servos, engine sound, a ground shadow and auto-zoom;
+- Home, Help and pause menus in English and Spanish;
+- a shared test field with sky, haze, clouds and three tree variants. Trees are visual only and have no collisions.
 
 **It does not have yet:**
 
 - takeoff or landing (it starts in the air);
 - wind;
-- menus;
 - real engine response or engine sound recordings.
 
 ## 5. Measure frame times (for the landscape work)
