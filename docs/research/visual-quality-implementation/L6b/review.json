@@ -1,0 +1,3540 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"complete": true,
+	"field_sha256": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+	"format": "openrc-l6b-review v1",
+	"godot": "4.7.2-stable (official)",
+	"hash_samples": [
+		{
+			"east": -37.25,
+			"height_error_m": 0.000207149621211045,
+			"north": -560.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000514106034950057
+		},
+		{
+			"east": -102.0,
+			"height_error_m": 0.000419072275171573,
+			"north": -557.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000575590119127334
+		},
+		{
+			"east": -17.75,
+			"height_error_m": 0.0000372296554260743,
+			"north": -547.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000859317461379128
+		},
+		{
+			"east": -7.25,
+			"height_error_m": 0.000302610276150972,
+			"north": -541.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011765297712607
+		},
+		{
+			"east": 39.5,
+			"height_error_m": 0.0000572763929618247,
+			"north": -531.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000000666566425722159
+		},
+		{
+			"east": 91.0,
+			"height_error_m": 0.000251061522483553,
+			"north": -529.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000440972026631847
+		},
+		{
+			"east": 15.75,
+			"height_error_m": 0.0000171829178867711,
+			"north": -525.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000045717959153313
+		},
+		{
+			"east": 143.5,
+			"height_error_m": 0.0000219559506362543,
+			"north": -520.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000785626874191259
+		},
+		{
+			"east": -18.75,
+			"height_error_m": 0.0000276835899306604,
+			"north": -518.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000938168939212114
+		},
+		{
+			"east": 127.5,
+			"height_error_m": 0.000218604899806962,
+			"north": -514.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000423404666713978
+		},
+		{
+			"east": 53.25,
+			"height_error_m": 0.0000143190982413444,
+			"north": -509.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000130448716508802
+		},
+		{
+			"east": 223.75,
+			"height_error_m": 0.000190921309872749,
+			"north": -509.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000130303737915227
+		},
+		{
+			"east": -80.25,
+			"height_error_m": 0.0000534579667643698,
+			"north": -506.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000273875500012011
+		},
+		{
+			"east": 11.25,
+			"height_error_m": 0.000306428702344874,
+			"north": -505.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000654754889648501
+		},
+		{
+			"east": 174.0,
+			"height_error_m": 0.000326475439884177,
+			"north": -505.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000121795020724846
+		},
+		{
+			"east": 189.5,
+			"height_error_m": 0.0000362750488758223,
+			"north": -503.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110575874037955
+		},
+		{
+			"east": -113.5,
+			"height_error_m": 0.00000381842619745498,
+			"north": -495.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000904605648406331
+		},
+		{
+			"east": -101.75,
+			"height_error_m": 0.0000820961632452821,
+			"north": -493.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000696955206276328
+		},
+		{
+			"east": 211.75,
+			"height_error_m": 0.000329339259529604,
+			"north": -490.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000858380934389835
+		},
+		{
+			"east": 47.75,
+			"height_error_m": 0.000378978800096519,
+			"north": -484.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000016331044983886
+		},
+		{
+			"east": 283.25,
+			"height_error_m": 0.000214786473605955,
+			"north": -484.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000109265071363218
+		},
+		{
+			"east": -134.25,
+			"height_error_m": 0.000445801258553757,
+			"north": -484.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000268076356230162
+		},
+		{
+			"east": -116.0,
+			"height_error_m": 0.000448665078202737,
+			"north": -483.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000113261304699463
+		},
+		{
+			"east": -22.0,
+			"height_error_m": 0.0003455675708679,
+			"north": -476.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000981964020377868
+		},
+		{
+			"east": 265.0,
+			"height_error_m": 0.00018805749022377,
+			"north": -474.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000101974000708438
+		},
+		{
+			"east": 284.0,
+			"height_error_m": 0.0000954606549363746,
+			"north": -470.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000352796984381953
+		},
+		{
+			"east": 102.75,
+			"height_error_m": 0.00014700940860024,
+			"north": -469.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000359290983418248
+		},
+		{
+			"east": -154.0,
+			"height_error_m": 0.000336021505376038,
+			"north": -468.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000592655887841076
+		},
+		{
+			"east": -12.75,
+			"height_error_m": 0.000223377932551116,
+			"north": -466.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000121851845387544
+		},
+		{
+			"east": 292.25,
+			"height_error_m": 0.0000267289833821849,
+			"north": -462.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000860978881340735
+		},
+		{
+			"east": -72.5,
+			"height_error_m": 0.000100233687682305,
+			"north": -456.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000942984884995113
+		},
+		{
+			"east": 203.0,
+			"height_error_m": 0.000260607587977191,
+			"north": -455.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000425735991980147
+		},
+		{
+			"east": 258.25,
+			"height_error_m": 0.0000801869501465546,
+			"north": -455.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000564476789444157
+		},
+		{
+			"east": 214.0,
+			"height_error_m": 0.000168010752688019,
+			"north": -454.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000480409433301077
+		},
+		{
+			"east": 1.25,
+			"height_error_m": 0.000416208455522593,
+			"north": -449.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000122060314186712
+		},
+		{
+			"east": 285.25,
+			"height_error_m": 0.000109779753177719,
+			"north": -447.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000564915076317618
+		},
+		{
+			"east": 352.75,
+			"height_error_m": 0.000462984176442305,
+			"north": -446.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000827560569129915
+		},
+		{
+			"east": 255.25,
+			"height_error_m": 0.000216695686706458,
+			"north": -445.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000057554679920635
+		},
+		{
+			"east": 170.25,
+			"height_error_m": 0.000173738391984202,
+			"north": -441.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000970015822385761
+		},
+		{
+			"east": -70.75,
+			"height_error_m": 0.000439119012707323,
+			"north": -440.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000115389312611569
+		},
+		{
+			"east": 346.5,
+			"height_error_m": 0.000359886669109244,
+			"north": -439.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000343205061610341
+		},
+		{
+			"east": 268.75,
+			"height_error_m": 0.0000305474095796399,
+			"north": -439.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000434094728358758
+		},
+		{
+			"east": 92.25,
+			"height_error_m": 0.00000190921309695113,
+			"north": -439.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000356826347314154
+		},
+		{
+			"east": 136.25,
+			"height_error_m": 0.000146054802051765,
+			"north": -430.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000476106746473137
+		},
+		{
+			"east": 280.5,
+			"height_error_m": 0.000241515456991692,
+			"north": -428.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000579669504183755
+		},
+		{
+			"east": 221.25,
+			"height_error_m": 0.000468711815738487,
+			"north": -427.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000380824401968738
+		},
+		{
+			"east": 269.25,
+			"height_error_m": 0.000465847996089508,
+			"north": -425.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110832168407349
+		},
+		{
+			"east": 66.5,
+			"height_error_m": 0.000196648949170708,
+			"north": -424.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000952013526687168
+		},
+		{
+			"east": -11.5,
+			"height_error_m": 0.000438164406158847,
+			"north": -424.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000119713833058199
+		},
+		{
+			"east": -94.5,
+			"height_error_m": 0.000288291177909628,
+			"north": -423.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000451450454264368
+		},
+		{
+			"east": 256.0,
+			"height_error_m": 0.000163237719942089,
+			"north": -417.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116588302953247
+		},
+		{
+			"east": -56.5,
+			"height_error_m": 0.000479212487782377,
+			"north": -415.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000704290775832561
+		},
+		{
+			"east": 305.5,
+			"height_error_m": 0.000264426014174646,
+			"north": -411.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000640753655831716
+		},
+		{
+			"east": -45.0,
+			"height_error_m": 0.000190921309872749,
+			"north": -411.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000306203989941523
+		},
+		{
+			"east": 230.0,
+			"height_error_m": 0.0000601402126108042,
+			"north": -410.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000457837829084262
+		},
+		{
+			"east": -16.5,
+			"height_error_m": 0.000308337915445378,
+			"north": -410.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000302654497197352
+		},
+		{
+			"east": -382.75,
+			"height_error_m": 0.000283518145160144,
+			"north": -403.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000709796611337854
+		},
+		{
+			"east": 210.75,
+			"height_error_m": 0.00032170240713647,
+			"north": -403.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000787856540777065
+		},
+		{
+			"east": 314.5,
+			"height_error_m": 0.000468711815738487,
+			"north": -399.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000121121788757339
+		},
+		{
+			"east": 363.75,
+			"height_error_m": 0.000144145588954814,
+			"north": -397.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000298418465791706
+		},
+		{
+			"east": -72.25,
+			"height_error_m": 0.000190921309872749,
+			"north": -397.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000999453057124455
+		},
+		{
+			"east": -403.0,
+			"height_error_m": 0.000248197702834574,
+			"north": -397.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115214010074194
+		},
+		{
+			"east": -57.0,
+			"height_error_m": 0.000311201735094357,
+			"north": -396.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103142158338843
+		},
+		{
+			"east": 69.75,
+			"height_error_m": 0.000482076307427803,
+			"north": -394.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000169207901223878
+		},
+		{
+			"east": 186.25,
+			"height_error_m": 0.0000830507697955341,
+			"north": -391.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000201643015426134
+		},
+		{
+			"east": 226.75,
+			"height_error_m": 0.000334112292279087,
+			"north": -390.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000524126191292495
+		},
+		{
+			"east": 325.0,
+			"height_error_m": 0.000282563538611669,
+			"north": -387.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00010076351627486
+		},
+		{
+			"east": -63.75,
+			"height_error_m": 0.000181375244379112,
+			"north": -383.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000775830019605905
+		},
+		{
+			"east": 29.25,
+			"height_error_m": 0.000436255193058344,
+			"north": -383.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000723429564795097
+		},
+		{
+			"east": 80.5,
+			"height_error_m": 0.000470621028838991,
+			"north": -383.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116061216355323
+		},
+		{
+			"east": 174.0,
+			"height_error_m": 0.000229105571847299,
+			"north": -381.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000317568922492129
+		},
+		{
+			"east": 127.0,
+			"height_error_m": 0.000328384652981129,
+			"north": -380.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000022544110381939
+		},
+		{
+			"east": 205.5,
+			"height_error_m": 0.000265380620723121,
+			"north": -380.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000047846972390353
+		},
+		{
+			"east": 358.75,
+			"height_error_m": 0.000135554130011428,
+			"north": -379.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000730718463346491
+		},
+		{
+			"east": 275.5,
+			"height_error_m": 0.000451528897848164,
+			"north": -376.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000511719722018356
+		},
+		{
+			"east": 381.5,
+			"height_error_m": 0.000420026881720048,
+			"north": -376.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000831271673824574
+		},
+		{
+			"east": 216.25,
+			"height_error_m": 0.000414299242423866,
+			"north": -373.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000201553024501422
+		},
+		{
+			"east": 184.25,
+			"height_error_m": 0.000333157685727059,
+			"north": -372.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000107694473993725
+		},
+		{
+			"east": -414.0,
+			"height_error_m": 0.00022337793254934,
+			"north": -372.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000100033459643711
+		},
+		{
+			"east": -4.5,
+			"height_error_m": 0.000133644916910924,
+			"north": -370.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106137207708024
+		},
+		{
+			"east": 88.75,
+			"height_error_m": 0.000485894733625258,
+			"north": -367.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000741463512659024
+		},
+		{
+			"east": 310.0,
+			"height_error_m": 0.000313110948191309,
+			"north": -366.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000492145997279536
+		},
+		{
+			"east": -421.25,
+			"height_error_m": 0.00035224981671611,
+			"north": -361.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000820593279931003
+		},
+		{
+			"east": 202.25,
+			"height_error_m": 0.000376114980447539,
+			"north": -358.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000283492372736838
+		},
+		{
+			"east": 121.75,
+			"height_error_m": 0.000381842619745498,
+			"north": -356.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000109035439162408
+		},
+		{
+			"east": -366.0,
+			"height_error_m": 0.000112643572826698,
+			"north": -355.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000299899903906109
+		},
+		{
+			"east": 61.0,
+			"height_error_m": 0.000329339259529604,
+			"north": -351.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000171692521737654
+		},
+		{
+			"east": -399.75,
+			"height_error_m": 0.0000229105571847299,
+			"north": -350.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000844034755713707
+		},
+		{
+			"east": 181.0,
+			"height_error_m": 0.000450574291299688,
+			"north": -347.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000126514310041514
+		},
+		{
+			"east": 204.5,
+			"height_error_m": 0.000366568914955678,
+			"north": -346.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000644844708643788
+		},
+		{
+			"east": 417.25,
+			"height_error_m": 0.0000954606549363746,
+			"north": -346.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000112445092580238
+		},
+		{
+			"east": -307.5,
+			"height_error_m": 0.000102142900782809,
+			"north": -340.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000367449753539972
+		},
+		{
+			"east": 49.75,
+			"height_error_m": 0.00021574108015443,
+			"north": -339.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106481656009905
+		},
+		{
+			"east": 83.25,
+			"height_error_m": 0.000158464687196158,
+			"north": -336.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000108903630202661
+		},
+		{
+			"east": 336.25,
+			"height_error_m": 0.000109779753177719,
+			"north": -336.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000486005259726641
+		},
+		{
+			"east": -92.75,
+			"height_error_m": 0.000235787817693733,
+			"north": -336.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000058011610772013
+		},
+		{
+			"east": 351.5,
+			"height_error_m": 0.0000820961632452821,
+			"north": -333.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000109816821688646
+		},
+		{
+			"east": -104.25,
+			"height_error_m": 0.000223377932551116,
+			"north": -332.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000192814340000957
+		},
+		{
+			"east": -17.5,
+			"height_error_m": 0.000173738391985978,
+			"north": -331.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116964080524085
+		},
+		{
+			"east": 366.75,
+			"height_error_m": 0.000396161717986843,
+			"north": -331.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000084239667125896
+		},
+		{
+			"east": -359.75,
+			"height_error_m": 0.000363705095308475,
+			"north": -329.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000864110071661095
+		},
+		{
+			"east": 322.5,
+			"height_error_m": 0.000422890701369028,
+			"north": -327.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000773243740415097
+		},
+		{
+			"east": 232.5,
+			"height_error_m": 0.0000630040322562309,
+			"north": -326.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000154705076180761
+		},
+		{
+			"east": 297.0,
+			"height_error_m": 0.000423845307917503,
+			"north": -324.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000585723601900234
+		},
+		{
+			"east": 400.0,
+			"height_error_m": 0.0000114552785923649,
+			"north": -324.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000515622476315869
+		},
+		{
+			"east": -53.75,
+			"height_error_m": 0.000171829178885474,
+			"north": -324.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000153133647149417
+		},
+		{
+			"east": 82.25,
+			"height_error_m": 0.000395207111438367,
+			"north": -323.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000462830405627557
+		},
+		{
+			"east": 430.75,
+			"height_error_m": 0.000198558162267659,
+			"north": -323.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000378708061816724
+		},
+		{
+			"east": -464.25,
+			"height_error_m": 0.000137463343108379,
+			"north": -322.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00010447412441561
+		},
+		{
+			"east": 343.5,
+			"height_error_m": 0.0000133644916928688,
+			"north": -321.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000183362430284106
+		},
+		{
+			"east": 158.25,
+			"height_error_m": 0.000332203079178583,
+			"north": -319.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000395315559242881
+		},
+		{
+			"east": 116.0,
+			"height_error_m": 0.000150827834801248,
+			"north": -319.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000104804074856801
+		},
+		{
+			"east": 254.5,
+			"height_error_m": 0.0000973698680368784,
+			"north": -316.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116225024801131
+		},
+		{
+			"east": 52.5,
+			"height_error_m": 0.0000229105571847299,
+			"north": -314.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000114609767077667
+		},
+		{
+			"east": 78.0,
+			"height_error_m": 0.000461074963343577,
+			"north": -314.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000735934341662414
+		},
+		{
+			"east": 299.75,
+			"height_error_m": 0.000408571603127683,
+			"north": -314.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000298606764301823
+		},
+		{
+			"east": -439.75,
+			"height_error_m": 0.000138417949656855,
+			"north": -313.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000585978555829314
+		},
+		{
+			"east": 25.75,
+			"height_error_m": 0.000278745112414214,
+			"north": -313.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000127160879840327
+		},
+		{
+			"east": 246.25,
+			"height_error_m": 0.00016228311339006,
+			"north": -310.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000113960032062321
+		},
+		{
+			"east": -336.25,
+			"height_error_m": 0.0000458211143694598,
+			"north": -310.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000820193347403908
+		},
+		{
+			"east": -1.0,
+			"height_error_m": 0.0000477303274664109,
+			"north": -308.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000972355464312624
+		},
+		{
+			"east": 197.75,
+			"height_error_m": 0.000307383308895126,
+			"north": -306.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000317032328034372
+		},
+		{
+			"east": 272.5,
+			"height_error_m": 0.0000229105571847299,
+			"north": -306.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000930990015999278
+		},
+		{
+			"east": 21.75,
+			"height_error_m": 0.0000534579667643698,
+			"north": -304.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000170889305585176
+		},
+		{
+			"east": -88.75,
+			"height_error_m": 0.000319793194037743,
+			"north": -302.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000102174637190311
+		},
+		{
+			"east": 232.5,
+			"height_error_m": 0.000355113636363313,
+			"north": -302.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000171590863056181
+		},
+		{
+			"east": -483.25,
+			"height_error_m": 0.000433391373412917,
+			"north": -300.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000119229073262783
+		},
+		{
+			"east": -410.5,
+			"height_error_m": 0.000351295210165858,
+			"north": -300.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000882970571178809
+		},
+		{
+			"east": 220.5,
+			"height_error_m": 0.000376114980449316,
+			"north": -300.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000104885563247059
+		},
+		{
+			"east": 383.0,
+			"height_error_m": 0.000184239064026315,
+			"north": -297.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000309241838278851
+		},
+		{
+			"east": -18.75,
+			"height_error_m": 0.000132690310362449,
+			"north": -296.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000410864886593032
+		},
+		{
+			"east": 66.75,
+			"height_error_m": 0.000252970735582281,
+			"north": -296.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000883025558842121
+		},
+		{
+			"east": 212.0,
+			"height_error_m": 0.000118371212121104,
+			"north": -291.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000144884886106311
+		},
+		{
+			"east": 160.25,
+			"height_error_m": 0.000277790505865738,
+			"north": -290.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000230680317634402
+		},
+		{
+			"east": 232.75,
+			"height_error_m": 0.0000591856060605522,
+			"north": -289.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000817305443265859
+		},
+		{
+			"east": 283.25,
+			"height_error_m": 0.000484940127076783,
+			"north": -287.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000102796543262507
+		},
+		{
+			"east": -465.0,
+			"height_error_m": 0.000368478128054406,
+			"north": -286.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000000416937598668454
+		},
+		{
+			"east": 272.75,
+			"height_error_m": 0.00000572763929795883,
+			"north": -286.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000467011449365451
+		},
+		{
+			"east": -41.0,
+			"height_error_m": 0.0000649132453567347,
+			"north": -286.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000924057730058436
+		},
+		{
+			"east": 110.75,
+			"height_error_m": 0.000236742424242209,
+			"north": -283.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000013553128398236
+		},
+		{
+			"east": -285.0,
+			"height_error_m": 0.000125053457967539,
+			"north": -281.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000042206820719759
+		},
+		{
+			"east": 377.5,
+			"height_error_m": 0.000403798570381753,
+			"north": -278.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000463930281124902
+		},
+		{
+			"east": -13.75,
+			"height_error_m": 0.000231969391496278,
+			"north": -277.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000983703763512978
+		},
+		{
+			"east": 317.5,
+			"height_error_m": 0.000340794538121969,
+			"north": -277.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000447069444264869
+		},
+		{
+			"east": 307.5,
+			"height_error_m": 0.00029974645649844,
+			"north": -276.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000318047178196057
+		},
+		{
+			"east": -259.5,
+			"height_error_m": 0.000178511424731909,
+			"north": -276.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116388833246939
+		},
+		{
+			"east": 151.0,
+			"height_error_m": 0.0000200467375393032,
+			"north": -273.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000479272940046016
+		},
+		{
+			"east": 25.0,
+			"height_error_m": 0.000155600867547179,
+			"north": -272.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000234559736425055
+		},
+		{
+			"east": 345.0,
+			"height_error_m": 0.000105006720431788,
+			"north": -270.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000881889065595942
+		},
+		{
+			"east": 183.25,
+			"height_error_m": 0.000274926686216759,
+			"north": -267.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000057383039157699
+		},
+		{
+			"east": -325.5,
+			"height_error_m": 0.000435300586509868,
+			"north": -265.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000104105347496386
+		},
+		{
+			"east": 217.75,
+			"height_error_m": 0.000449619684751212,
+			"north": -265.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000850645432303176
+		},
+		{
+			"east": -424.5,
+			"height_error_m": 0.000257743768328211,
+			"north": -254.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000912776086279266
+		},
+		{
+			"east": -448.0,
+			"height_error_m": 0.000205240408114093,
+			"north": -252.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000361007391056489
+		},
+		{
+			"east": -271.25,
+			"height_error_m": 0.000175647605082929,
+			"north": -250.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000409571746997628
+		},
+		{
+			"east": -314.25,
+			"height_error_m": 0.0000840053763440096,
+			"north": -249.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000688984734660281
+		},
+		{
+			"east": -410.75,
+			"height_error_m": 0.00032170240713647,
+			"north": -246.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000112862030178462
+		},
+		{
+			"east": 366.75,
+			"height_error_m": 0.000219559506355438,
+			"north": -246.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000175258647834298
+		},
+		{
+			"east": 156.0,
+			"height_error_m": 0.000205240408114093,
+			"north": -246.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000321123380846444
+		},
+		{
+			"east": 194.25,
+			"height_error_m": 0.000411435422776663,
+			"north": -245.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000992575758851505
+		},
+		{
+			"east": -508.0,
+			"height_error_m": 0.000387570259043457,
+			"north": -243.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000840311983267839
+		},
+		{
+			"east": -363.25,
+			"height_error_m": 0.0000467757209179354,
+			"north": -243.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000104141008756997
+		},
+		{
+			"east": 289.5,
+			"height_error_m": 0.00015464626099515,
+			"north": -240.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000118681654929453
+		},
+		{
+			"east": -388.75,
+			"height_error_m": 0.000317883980940792,
+			"north": -239.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000521896524707799
+		},
+		{
+			"east": 427.5,
+			"height_error_m": 0.0000572763929618247,
+			"north": -236.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000540322088440348
+		},
+		{
+			"east": -251.25,
+			"height_error_m": 0.000476348668133397,
+			"north": -236.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000536254371135136
+		},
+		{
+			"east": 395.25,
+			"height_error_m": 0.0000467757209179354,
+			"north": -236.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000454538324667908
+		},
+		{
+			"east": 142.25,
+			"height_error_m": 0.000401889357283025,
+			"north": -233.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000300079885748872
+		},
+		{
+			"east": -343.25,
+			"height_error_m": 0.00000286381964897942,
+			"north": -233.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000366646537395265
+		},
+		{
+			"east": -296.75,
+			"height_error_m": 0.000393297898337863,
+			"north": -231.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000105850750845349
+		},
+		{
+			"east": 217.25,
+			"height_error_m": 0.000355113636363313,
+			"north": -231.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000474378671091458
+		},
+		{
+			"east": -493.25,
+			"height_error_m": 0.000461074963343577,
+			"north": -228.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000231103585666137
+		},
+		{
+			"east": -429.25,
+			"height_error_m": 0.000381842619745498,
+			"north": -228.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000784278746923661
+		},
+		{
+			"east": -419.0,
+			"height_error_m": 0.00035320442326281,
+			"north": -228.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000383434016675288
+		},
+		{
+			"east": 165.5,
+			"height_error_m": 0.0000553671798613209,
+			"north": -228.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000255548243860426
+		},
+		{
+			"east": -242.75,
+			"height_error_m": 0.0000448665078209842,
+			"north": -228.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000686476778648526
+		},
+		{
+			"east": 151.75,
+			"height_error_m": 0.0000801869501465546,
+			"north": -227.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000119076262351303
+		},
+		{
+			"east": -404.75,
+			"height_error_m": 0.000457256537146122,
+			"north": -226.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000153623570606776
+		},
+		{
+			"east": 225.0,
+			"height_error_m": 0.000469666422286963,
+			"north": -226.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000112495251700651
+		},
+		{
+			"east": -441.25,
+			"height_error_m": 0.000435300586509868,
+			"north": -225.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000858169300375078
+		},
+		{
+			"east": 346.75,
+			"height_error_m": 0.0000735047043001202,
+			"north": -224.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000198645135949249
+		},
+		{
+			"east": -315.25,
+			"height_error_m": 0.0000840053763440096,
+			"north": -223.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000036181222169418
+		},
+		{
+			"east": -251.0,
+			"height_error_m": 0.000479212487782377,
+			"north": -216.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000263840324814524
+		},
+		{
+			"east": 280.5,
+			"height_error_m": 0.0000114552785923649,
+			"north": -214.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000000930693112355385
+		},
+		{
+			"east": -219.25,
+			"height_error_m": 0.000369432734604658,
+			"north": -213.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000197303710880448
+		},
+		{
+			"east": -389.5,
+			"height_error_m": 0.000101188294230781,
+			"north": -213.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000252237071691752
+		},
+		{
+			"east": 196.5,
+			"height_error_m": 0.000483985520528307,
+			"north": -209.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000694325607160096
+		},
+		{
+			"east": 514.5,
+			"height_error_m": 0.000347476783968403,
+			"north": -208.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000507640336957493
+		},
+		{
+			"east": -201.25,
+			"height_error_m": 0.000455347324047395,
+			"north": -208.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000032070011281693
+		},
+		{
+			"east": -211.25,
+			"height_error_m": 0.000185193670576567,
+			"north": -207.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000369856050888018
+		},
+		{
+			"east": -463.5,
+			"height_error_m": 0.000165146933042593,
+			"north": -206.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000409281789801597
+		},
+		{
+			"east": 357.25,
+			"height_error_m": 0.000344612964319424,
+			"north": -204.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011958018710656
+		},
+		{
+			"east": 417.5,
+			"height_error_m": 0.00031502016128826,
+			"north": -200.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000026429859611099
+		},
+		{
+			"east": -401.75,
+			"height_error_m": 0.0000887784090899402,
+			"north": -199.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000881584089551524
+		},
+		{
+			"east": -260.75,
+			"height_error_m": 0.0000505941471189431,
+			"north": -199.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000250795602418918
+		},
+		{
+			"east": -387.5,
+			"height_error_m": 0.000409526209679711,
+			"north": -197.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000636329325915952
+		},
+		{
+			"east": -446.75,
+			"height_error_m": 0.00021860489980341,
+			"north": -196.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000302364540005762
+		},
+		{
+			"east": 215.25,
+			"height_error_m": 0.0000649132453567347,
+			"north": -196.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000648512493421904
+		},
+		{
+			"east": -421.25,
+			"height_error_m": 0.000137463343108379,
+			"north": -193.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000440615414025736
+		},
+		{
+			"east": 515.75,
+			"height_error_m": 0.000451528897848164,
+			"north": -189.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000555393160089901
+		},
+		{
+			"east": -339.25,
+			"height_error_m": 0.000270153653470828,
+			"north": -186.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000649359029487595
+		},
+		{
+			"east": 215.25,
+			"height_error_m": 0.000438164406158847,
+			"north": -186.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000902320994149441
+		},
+		{
+			"east": -313.0,
+			"height_error_m": 0.000217650293254934,
+			"north": -186.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103399619483469
+		},
+		{
+			"east": -434.5,
+			"height_error_m": 0.000157510080647683,
+			"north": -186.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000344799826152986
+		},
+		{
+			"east": -205.0,
+			"height_error_m": 0.000416208455522593,
+			"north": -182.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000512577925837476
+		},
+		{
+			"east": -475.0,
+			"height_error_m": 0.00030738330889335,
+			"north": -174.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000275188624021538
+		},
+		{
+			"east": -237.25,
+			"height_error_m": 0.0000830507697955341,
+			"north": -171.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106855100029613
+		},
+		{
+			"east": -513.25,
+			"height_error_m": 0.0000639586388082591,
+			"north": -169.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000970439090419717
+		},
+		{
+			"east": -359.0,
+			"height_error_m": 0.000441028225807827,
+			"north": -169.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110388568640207
+		},
+		{
+			"east": -258.5,
+			"height_error_m": 0.000179466031280384,
+			"north": -167.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000440415447757747
+		},
+		{
+			"east": -316.5,
+			"height_error_m": 0.000377069586999568,
+			"north": -165.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110000626761142
+		},
+		{
+			"east": -377.75,
+			"height_error_m": 0.000247243096286098,
+			"north": -165.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000986678307484112
+		},
+		{
+			"east": -220.75,
+			"height_error_m": 0.0000439119012725087,
+			"north": -161.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000980537569936768
+		},
+		{
+			"east": -451.25,
+			"height_error_m": 0.0000782777370460508,
+			"north": -160.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000841561802955582
+		},
+		{
+			"east": 275.75,
+			"height_error_m": 0.00012696267106449,
+			"north": -160.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000021317961313605
+		},
+		{
+			"east": -243.0,
+			"height_error_m": 0.00012696267106449,
+			"north": -156.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000737697420296612
+		},
+		{
+			"east": -482.75,
+			"height_error_m": 0.000389479472140408,
+			"north": -155.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000954098214673849
+		},
+		{
+			"east": -386.75,
+			"height_error_m": 0.000416208455522593,
+			"north": -153.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000190729652009836
+		},
+		{
+			"east": -272.0,
+			"height_error_m": 0.0003455675708679,
+			"north": -149.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000169462855144076
+		},
+		{
+			"east": 526.75,
+			"height_error_m": 0.0000276835899342132,
+			"north": -145.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000814597520977234
+		},
+		{
+			"east": -311.25,
+			"height_error_m": 0.000235787817693733,
+			"north": -144.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000820236667324892
+		},
+		{
+			"east": 538.75,
+			"height_error_m": 0.000415253848974118,
+			"north": -140.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000121637877821268
+		},
+		{
+			"east": -392.25,
+			"height_error_m": 0.000228150965298823,
+			"north": -139.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000766421429811981
+		},
+		{
+			"east": 386.5,
+			"height_error_m": 0.000409526209679711,
+			"north": -135.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000314481052092752
+		},
+		{
+			"east": -375.75,
+			"height_error_m": 0.000211922653958752,
+			"north": -134.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000283449052815854
+		},
+		{
+			"east": 483.75,
+			"height_error_m": 0.000181375244379112,
+			"north": -131.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000694102305391908
+		},
+		{
+			"east": -533.5,
+			"height_error_m": 0.00014700940860024,
+			"north": -128.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000113408281736893
+		},
+		{
+			"east": -515.25,
+			"height_error_m": 0.000234833211145258,
+			"north": -125.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000542496767357292
+		},
+		{
+			"east": -365.0,
+			"height_error_m": 0.00000763685239490997,
+			"north": -122.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000651020449446982
+		},
+		{
+			"east": -466.0,
+			"height_error_m": 0.000196648949170708,
+			"north": -118.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000607793614910701
+		},
+		{
+			"east": -385.0,
+			"height_error_m": 0.000407616996579208,
+			"north": -117.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000000768212888857533
+		},
+		{
+			"east": -518.25,
+			"height_error_m": 0.000178511424731909,
+			"north": -116.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000616900579770707
+		},
+		{
+			"east": -427.25,
+			"height_error_m": 0.0000105006720438894,
+			"north": -115.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000112311446628377
+		},
+		{
+			"east": 539.5,
+			"height_error_m": 0.000152737047898199,
+			"north": -115.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000116090212074482
+		},
+		{
+			"east": -555.25,
+			"height_error_m": 0.000401889357283025,
+			"north": -114.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000904205715879236
+		},
+		{
+			"east": 327.25,
+			"height_error_m": 0.000309292521993854,
+			"north": -106.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00010538048890929
+		},
+		{
+			"east": 436.0,
+			"height_error_m": 0.0000515487536674186,
+			"north": -106.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000104612437467622
+		},
+		{
+			"east": -459.0,
+			"height_error_m": 0.000201421981916639,
+			"north": -104.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000377324931291056
+		},
+		{
+			"east": 533.5,
+			"height_error_m": 0.000329339259529604,
+			"north": -104.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000312518007192786
+		},
+		{
+			"east": 425.25,
+			"height_error_m": 0.000378024193548043,
+			"north": -99.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000328458950407118
+		},
+		{
+			"east": -561.5,
+			"height_error_m": 0.000361795882209748,
+			"north": -94.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000593180814547623
+		},
+		{
+			"east": -355.25,
+			"height_error_m": 0.000383751832844226,
+			"north": -94.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000698345038951942
+		},
+		{
+			"east": 444.0,
+			"height_error_m": 0.000468711815738487,
+			"north": -93.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000806772027963643
+		},
+		{
+			"east": 390.0,
+			"height_error_m": 0.000164192326490564,
+			"north": -93.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000642270097199749
+		},
+		{
+			"east": 413.5,
+			"height_error_m": 0.0000830507697955341,
+			"north": -92.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000830358482342142
+		},
+		{
+			"east": -411.5,
+			"height_error_m": 0.000135554130011428,
+			"north": -91.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00006633602633066
+		},
+		{
+			"east": -384.75,
+			"height_error_m": 0.000100233687682305,
+			"north": -90.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000452448671106609
+		},
+		{
+			"east": -445.5,
+			"height_error_m": 0.000163237719942089,
+			"north": -88.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000990714372627322
+		},
+		{
+			"east": -436.5,
+			"height_error_m": 0.000399980144184298,
+			"north": -88.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000775171782061435
+		},
+		{
+			"east": -464.5,
+			"height_error_m": 0.000239606243891188,
+			"north": -87.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000073561273230105
+		},
+		{
+			"east": -267.5,
+			"height_error_m": 0.000306428702346651,
+			"north": -87.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000109764329017104
+		},
+		{
+			"east": 357.5,
+			"height_error_m": 0.000465847996089508,
+			"north": -87.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110832168407349
+		},
+		{
+			"east": 465.25,
+			"height_error_m": 0.000217650293254934,
+			"north": -84.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000136902746747936
+		},
+		{
+			"east": -548.75,
+			"height_error_m": 0.000466802602637983,
+			"north": -83.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000552160311091399
+		},
+		{
+			"east": -539.75,
+			"height_error_m": 0.000422890701369028,
+			"north": -80.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000409238469885054
+		},
+		{
+			"east": -401.25,
+			"height_error_m": 0.000336021505376038,
+			"north": -80.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011769963592112
+		},
+		{
+			"east": -426.0,
+			"height_error_m": 0.000342703751222473,
+			"north": -74.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103754233651721
+		},
+		{
+			"east": 390.75,
+			"height_error_m": 0.000147964015152269,
+			"north": -71.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000785638541942468
+		},
+		{
+			"east": 362.5,
+			"height_error_m": 0.000278745112414214,
+			"north": -70.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000357884517399043
+		},
+		{
+			"east": -435.75,
+			"height_error_m": 0.0000754139174006241,
+			"north": -68.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000695897036195881
+		},
+		{
+			"east": -293.0,
+			"height_error_m": 0.00032170240713647,
+			"north": -67.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000259470982566512
+		},
+		{
+			"east": -529.75,
+			"height_error_m": 0.000115507392472125,
+			"north": -66.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000240288873700756
+		},
+		{
+			"east": -328.0,
+			"height_error_m": 0.0000420026881720048,
+			"north": -65.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000241280388357384
+		},
+		{
+			"east": 503.0,
+			"height_error_m": 0.000215741080156207,
+			"north": -63.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000120626863094664
+		},
+		{
+			"east": 424.0,
+			"height_error_m": 0.000294018817204034,
+			"north": -63.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011407251461204
+		},
+		{
+			"east": -518.0,
+			"height_error_m": 0.000323611620235198,
+			"north": -62.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000109207079925497
+		},
+		{
+			"east": -441.5,
+			"height_error_m": 0.000116461999022377,
+			"north": -54.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0001081893996564
+		},
+		{
+			"east": 299.75,
+			"height_error_m": 0.000098324474585354,
+			"north": -54.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000350818920606955
+		},
+		{
+			"east": -324.75,
+			"height_error_m": 0.000376114980449316,
+			"north": -50.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000283805665421966
+		},
+		{
+			"east": 275.25,
+			"height_error_m": 0.000403798570381753,
+			"north": -49.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000370514288436929
+		},
+		{
+			"east": -298.0,
+			"height_error_m": 0.0000420026881720048,
+			"north": -49.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115279833829529
+		},
+		{
+			"east": 557.5,
+			"height_error_m": 0.00017278378543395,
+			"north": -44.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000113651245021967
+		},
+		{
+			"east": -335.5,
+			"height_error_m": 0.000456301930597647,
+			"north": -43.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00012099797356413
+		},
+		{
+			"east": -379.0,
+			"height_error_m": 0.000481121700879328,
+			"north": -42.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000764003464706065
+		},
+		{
+			"east": 427.0,
+			"height_error_m": 0.00000859145894338553,
+			"north": -42.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000923779440622496
+		},
+		{
+			"east": -480.25,
+			"height_error_m": 0.000312156341642833,
+			"north": 73.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000824429378809555
+		},
+		{
+			"east": -405.5,
+			"height_error_m": 0.0000276835899342132,
+			"north": 73.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000210471690844649
+		},
+		{
+			"east": -364.0,
+			"height_error_m": 0.0000525033602158942,
+			"north": 79.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000660640673268986
+		},
+		{
+			"east": -540.75,
+			"height_error_m": 0.000146054802051765,
+			"north": 80.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011421749320667
+		},
+		{
+			"east": -265.75,
+			"height_error_m": 0.0000830507697955341,
+			"north": 81.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000360325818000717
+		},
+		{
+			"east": -510.0,
+			"height_error_m": 0.0000696862781026653,
+			"north": 83.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000673972001781209
+		},
+		{
+			"east": -525.5,
+			"height_error_m": 0.000098324474585354,
+			"north": 85.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000840178672423253
+		},
+		{
+			"east": 406.75,
+			"height_error_m": 0.000414299242422089,
+			"north": 85.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000464201868402014
+		},
+		{
+			"east": -417.25,
+			"height_error_m": 0.000427663734114958,
+			"north": 86.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000503059360690283
+		},
+		{
+			"east": 333.25,
+			"height_error_m": 0.0000572763929618247,
+			"north": 93.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000743403222056571
+		},
+		{
+			"east": -544.75,
+			"height_error_m": 0.000040093475071501,
+			"north": 94.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000998504862383953
+		},
+		{
+			"east": -406.25,
+			"height_error_m": 0.0000286381964809124,
+			"north": 95.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000038664353016582
+		},
+		{
+			"east": -445.0,
+			"height_error_m": 0.000461074963343577,
+			"north": 98.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000878166293145632
+		},
+		{
+			"east": -375.5,
+			"height_error_m": 0.000269199046920576,
+			"north": 99.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000300914754061132
+		},
+		{
+			"east": 482.75,
+			"height_error_m": 0.000142236375857863,
+			"north": 99.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000638590644674863
+		},
+		{
+			"east": 432.75,
+			"height_error_m": 0.000151782441349724,
+			"north": 101.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000841340115620426
+		},
+		{
+			"east": -332.0,
+			"height_error_m": 0.000224332539101368,
+			"north": 105.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000123449775144557
+		},
+		{
+			"east": 343.75,
+			"height_error_m": 0.0001345995234594,
+			"north": 109.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000802112728526261
+		},
+		{
+			"east": -470.75,
+			"height_error_m": 0.0000458211143694598,
+			"north": 115.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000833791297600861
+		},
+		{
+			"east": -431.0,
+			"height_error_m": 0.000473484848484418,
+			"north": 122.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000213336259480279
+		},
+		{
+			"east": 351.0,
+			"height_error_m": 0.000462029569892053,
+			"north": 122.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000703432572022322
+		},
+		{
+			"east": -399.25,
+			"height_error_m": 0.000416208455522593,
+			"north": 123.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110152270897057
+		},
+		{
+			"east": -340.5,
+			"height_error_m": 0.000336976111924514,
+			"north": 131.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.00011306149988588
+		},
+		{
+			"east": -457.25,
+			"height_error_m": 0.000308337915445378,
+			"north": 134.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115170516495677
+		},
+		{
+			"east": -295.0,
+			"height_error_m": 0.000429572947211909,
+			"north": 140.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115587454094346
+		},
+		{
+			"east": -235.75,
+			"height_error_m": 0.000413344635873614,
+			"north": 151.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000111594721082353
+		},
+		{
+			"east": -396.5,
+			"height_error_m": 0.000481121700879328,
+			"north": 152.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000105459147192732
+		},
+		{
+			"east": -325.5,
+			"height_error_m": 0.0000343658357770948,
+			"north": 153.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000225586082411855
+		},
+		{
+			"east": 265.5,
+			"height_error_m": 0.000474439455032893,
+			"north": 156.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000112302447536017
+		},
+		{
+			"east": 501.25,
+			"height_error_m": 0.000202376588465114,
+			"north": 163.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000867221277562891
+		},
+		{
+			"east": 271.25,
+			"height_error_m": 0.0000792323435980791,
+			"north": 166.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000348209305904845
+		},
+		{
+			"east": -476.25,
+			"height_error_m": 0.000165146933040816,
+			"north": 166.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000310613301053309
+		},
+		{
+			"east": 442.75,
+			"height_error_m": 0.0000439119012725087,
+			"north": 169.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000349067509723966
+		},
+		{
+			"east": 214.25,
+			"height_error_m": 0.0000219559506362543,
+			"north": 171.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000224347930481983
+		},
+		{
+			"east": 382.0,
+			"height_error_m": 0.000187102883675294,
+			"north": 172.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000174913702979396
+		},
+		{
+			"east": -438.5,
+			"height_error_m": 0.000436255193058344,
+			"north": 172.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000103562757711728
+		},
+		{
+			"east": 316.0,
+			"height_error_m": 0.000229105571847299,
+			"north": 172.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000113465106399424
+		},
+		{
+			"east": -462.25,
+			"height_error_m": 0.000357022849462041,
+			"north": 174.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000288374973940464
+		},
+		{
+			"east": 368.0,
+			"height_error_m": 0.000138417949656855,
+			"north": 174.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000888354763590726
+		},
+		{
+			"east": 240.5,
+			"height_error_m": 0.000377069586999568,
+			"north": 179.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000895353704946089
+		},
+		{
+			"east": -289.75,
+			"height_error_m": 0.000155600867547179,
+			"north": 180.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000119687170889615
+		},
+		{
+			"east": -203.25,
+			"height_error_m": 0.0000964152614848501,
+			"north": 182.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000795763708039132
+		},
+		{
+			"east": 207.75,
+			"height_error_m": 0.000254879948681008,
+			"north": 183.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000109170251889612
+		},
+		{
+			"east": -395.75,
+			"height_error_m": 0.00036752352150593,
+			"north": 185.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000657874412226533
+		},
+		{
+			"east": -455.75,
+			"height_error_m": 0.000319793194037743,
+			"north": 188.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000979902667888055
+		},
+		{
+			"east": -519.75,
+			"height_error_m": 0.000306428702346651,
+			"north": 190.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000837737371821579
+		},
+		{
+			"east": -269.75,
+			"height_error_m": 0.000425754521018007,
+			"north": 191.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000676256656038099
+		},
+		{
+			"east": 349.5,
+			"height_error_m": 0.0000429572947240331,
+			"north": 193.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000471169157598705
+		},
+		{
+			"east": -464.75,
+			"height_error_m": 0.000396161717986843,
+			"north": 194.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000156543126910158
+		},
+		{
+			"east": -409.25,
+			"height_error_m": 0.000370387341153133,
+			"north": 198.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000077444688908912
+		},
+		{
+			"east": 430.5,
+			"height_error_m": 0.0000095460654918611,
+			"north": 198.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115087029665339
+		},
+		{
+			"east": 294.25,
+			"height_error_m": 0.000234833211143481,
+			"north": 199.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000423416334465188
+		},
+		{
+			"east": 377.75,
+			"height_error_m": 0.000295928030304538,
+			"north": 201.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000728657110857789
+		},
+		{
+			"east": 181.25,
+			"height_error_m": 0.000105006720431788,
+			"north": 207.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000800161351373063
+		},
+		{
+			"east": 340.25,
+			"height_error_m": 0.0000152737047898199,
+			"north": 208.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000356912987142799
+		},
+		{
+			"east": -190.25,
+			"height_error_m": 0.000177556818181657,
+			"north": 212.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000378751381733267
+		},
+		{
+			"east": -373.0,
+			"height_error_m": 0.000145100195503289,
+			"north": 213.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000580562711252064
+		},
+		{
+			"east": 384.0,
+			"height_error_m": 0.000348431390518655,
+			"north": 213.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106009060524048
+		},
+		{
+			"east": -245.5,
+			"height_error_m": 0.000393297898337863,
+			"north": 213.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000231515185946662
+		},
+		{
+			"east": 236.5,
+			"height_error_m": 0.000364659701858727,
+			"north": 219.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000698628293989145
+		},
+		{
+			"east": 456.5,
+			"height_error_m": 0.000301655669598944,
+			"north": 221.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000643603205618959
+		},
+		{
+			"east": 261.0,
+			"height_error_m": 0.0000477303274664109,
+			"north": 222.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000113359289390935
+		},
+		{
+			"east": 466.0,
+			"height_error_m": 0.0000410480816235292,
+			"north": 223.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000934869434794372
+		},
+		{
+			"east": -440.25,
+			"height_error_m": 0.000175647605082929,
+			"north": 224.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000174768724376939
+		},
+		{
+			"east": 329.0,
+			"height_error_m": 0.000127917277614742,
+			"north": 225.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000660194069730391
+		},
+		{
+			"east": 219.5,
+			"height_error_m": 0.000350340603617383,
+			"north": 226.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000867409576077449
+		},
+		{
+			"east": 500.0,
+			"height_error_m": 0.000288291177909628,
+			"north": 226.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000248682613337436
+		},
+		{
+			"east": -357.5,
+			"height_error_m": 0.0000859145894427371,
+			"north": 226.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000020844199052128
+		},
+		{
+			"east": 479.75,
+			"height_error_m": 0.000419072275171573,
+			"north": 229.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000101872515691603
+		},
+		{
+			"east": -414.5,
+			"height_error_m": 0.000392343291789388,
+			"north": 230.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115020039134439
+		},
+		{
+			"east": 285.0,
+			"height_error_m": 0.000170874572336999,
+			"north": 231.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000954156553412133
+		},
+		{
+			"east": 395.5,
+			"height_error_m": 0.000330293866079856,
+			"north": 232.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000134908049681526
+		},
+		{
+			"east": 224.75,
+			"height_error_m": 0.00014700940860024,
+			"north": 234.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000740550321178812
+		},
+		{
+			"east": -466.5,
+			"height_error_m": 0.000407616996579208,
+			"north": 237.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000124652923816915
+		},
+		{
+			"east": 271.75,
+			"height_error_m": 0.000250106915935078,
+			"north": 238.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000102776546636374
+		},
+		{
+			"east": 353.5,
+			"height_error_m": 0.000481121700879328,
+			"north": 238.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103143325114186
+		},
+		{
+			"east": 296.75,
+			"height_error_m": 0.000449619684751212,
+			"north": 238.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000805612199208383
+		},
+		{
+			"east": 379.0,
+			"height_error_m": 0.000418117668623097,
+			"north": 238.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000487298399327596
+		},
+		{
+			"east": -282.0,
+			"height_error_m": 0.000328384652981129,
+			"north": 240.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000983123849129797
+		},
+		{
+			"east": 254.0,
+			"height_error_m": 0.000221468719452389,
+			"north": 240.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000402549470130964
+		},
+		{
+			"east": 491.75,
+			"height_error_m": 0.0000820961632470585,
+			"north": 241.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000509856721286894
+		},
+		{
+			"east": 507.25,
+			"height_error_m": 0.0000420026881720048,
+			"north": 242.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000101165956013283
+		},
+		{
+			"east": 218.25,
+			"height_error_m": 0.000136508736559904,
+			"north": 244.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000876394897852961
+		},
+		{
+			"east": 393.5,
+			"height_error_m": 0.000234833211145258,
+			"north": 245.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000319630274985272
+		},
+		{
+			"east": 413.5,
+			"height_error_m": 0.000304519489247923,
+			"north": 260.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000399829880084468
+		},
+		{
+			"east": -141.5,
+			"height_error_m": 0.000157510080647683,
+			"north": 262.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106653296772841
+		},
+		{
+			"east": 312.25,
+			"height_error_m": 0.000152737047898199,
+			"north": 263.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000171234250441188
+		},
+		{
+			"east": 365.0,
+			"height_error_m": 0.0004209814882703,
+			"north": 264.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000163455428436876
+		},
+		{
+			"east": 453.5,
+			"height_error_m": 0.000446755865102233,
+			"north": 265.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000685641910334045
+		},
+		{
+			"east": -160.5,
+			"height_error_m": 0.000352249816714334,
+			"north": 266.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000334849676297821
+		},
+		{
+			"east": 247.5,
+			"height_error_m": 0.000397116324535318,
+			"north": 266.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000758987552664792
+		},
+		{
+			"east": 232.75,
+			"height_error_m": 0.000333157685727059,
+			"north": 268.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000780121038688186
+		},
+		{
+			"east": 405.25,
+			"height_error_m": 0.000168010752688019,
+			"north": 268.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000732646504988388
+		},
+		{
+			"east": 42.5,
+			"height_error_m": 0.000228150965298823,
+			"north": 269.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000365376733304501
+		},
+		{
+			"east": 241.5,
+			"height_error_m": 0.0000496395405669148,
+			"north": 274.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000051558747306224
+		},
+		{
+			"east": 82.5,
+			"height_error_m": 0.000243424670088643,
+			"north": 275.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000750620499623267
+		},
+		{
+			"east": -384.5,
+			"height_error_m": 0.000244379276637119,
+			"north": 277.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000100700026069767
+		},
+		{
+			"east": 381.25,
+			"height_error_m": 0.000461074963343577,
+			"north": 278.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000119923468632502
+		},
+		{
+			"east": 363.75,
+			"height_error_m": 0.000485894733625258,
+			"north": 279.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000157123041287788
+		},
+		{
+			"east": 421.25,
+			"height_error_m": 0.000295928030304538,
+			"north": 280.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000285455417632363
+		},
+		{
+			"east": 451.5,
+			"height_error_m": 0.0000534579667643698,
+			"north": 280.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000273875500012011
+		},
+		{
+			"east": -358.0,
+			"height_error_m": 0.000401889357284801,
+			"north": 280.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000102524584258745
+		},
+		{
+			"east": 339.0,
+			"height_error_m": 0.00044389204545503,
+			"north": 283.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000458985990090532
+		},
+		{
+			"east": -418.5,
+			"height_error_m": 0.000141281769305834,
+			"north": 285.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000647164366158748
+		},
+		{
+			"east": 429.0,
+			"height_error_m": 0.00033029386607808,
+			"north": 288.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000568512854588477
+		},
+		{
+			"east": -386.5,
+			"height_error_m": 0.000302610276149196,
+			"north": 288.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000147811144568522
+		},
+		{
+			"east": 298.75,
+			"height_error_m": 0.000156555474095654,
+			"north": 290.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000337064324060776
+		},
+		{
+			"east": 69.5,
+			"height_error_m": 0.0000362750488775987,
+			"north": 291.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000652011964106247
+		},
+		{
+			"east": 483.75,
+			"height_error_m": 0.0000324566226783674,
+			"north": 295.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00010074001932292
+		},
+		{
+			"east": -297.25,
+			"height_error_m": 0.00016228311339006,
+			"north": 296.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000655523102539579
+		},
+		{
+			"east": -390.25,
+			"height_error_m": 0.000366568914955678,
+			"north": 298.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000410088357050142
+		},
+		{
+			"east": 3.25,
+			"height_error_m": 0.000193785129521729,
+			"north": 299.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000128309040845487
+		},
+		{
+			"east": -344.75,
+			"height_error_m": 0.0000754139174006241,
+			"north": 300.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000105990230672148
+		},
+		{
+			"east": 375.25,
+			"height_error_m": 0.000225287145649844,
+			"north": 304.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000102510086398944
+		},
+		{
+			"east": 74.5,
+			"height_error_m": 0.000120280425219832,
+			"north": 305.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000657027876156402
+		},
+		{
+			"east": 279.25,
+			"height_error_m": 0.000107870540077215,
+			"north": 306.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000611927987641536
+		},
+		{
+			"east": 3.5,
+			"height_error_m": 0.000464893389541032,
+			"north": 311.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000106352342050364
+		},
+		{
+			"east": 457.25,
+			"height_error_m": 0.000125053457967539,
+			"north": 311.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000786073477727633
+		},
+		{
+			"east": 19.0,
+			"height_error_m": 0.000213831867057479,
+			"north": 316.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000190373039399283
+		},
+		{
+			"east": -94.25,
+			"height_error_m": 0.00029974645649844,
+			"north": 321.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000761248871414821
+		},
+		{
+			"east": 467.75,
+			"height_error_m": 0.000474439455032893,
+			"north": 324.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000111530064102361
+		},
+		{
+			"east": 431.25,
+			"height_error_m": 0.000131735703810421,
+			"north": 326.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000990949342147829
+		},
+		{
+			"east": 457.25,
+			"height_error_m": 0.0000143190982413444,
+			"north": 329.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000857467742907403
+		},
+		{
+			"east": 424.75,
+			"height_error_m": 0.000237697030790684,
+			"north": 333.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000404779136715661
+		},
+		{
+			"east": 379.25,
+			"height_error_m": 0.000282563538611669,
+			"north": 334.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000846397733136328
+		},
+		{
+			"east": -393.5,
+			"height_error_m": 0.000124098851415511,
+			"north": 337.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000758239324185617
+		},
+		{
+			"east": 393.25,
+			"height_error_m": 0.000229105571847299,
+			"north": 337.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000936374208408974
+		},
+		{
+			"east": -230.0,
+			"height_error_m": 0.000111688966276446,
+			"north": 340.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000719906758606115
+		},
+		{
+			"east": -102.5,
+			"height_error_m": 0.0000715954912031691,
+			"north": 342.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000935147724234753
+		},
+		{
+			"east": 337.5,
+			"height_error_m": 0.000342703751222473,
+			"north": 345.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000309218502776432
+		},
+		{
+			"east": -299.0,
+			"height_error_m": 0.000300701063050468,
+			"north": 353.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000531571736193115
+		},
+		{
+			"east": 360.75,
+			"height_error_m": 0.000217650293254934,
+			"north": 357.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000396808665099613
+		},
+		{
+			"east": 103.0,
+			"height_error_m": 0.000155600867547179,
+			"north": 359.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000089480879382986
+		},
+		{
+			"east": -19.75,
+			"height_error_m": 0.000167056146139544,
+			"north": 361.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000403987588319943
+		},
+		{
+			"east": 13.0,
+			"height_error_m": 0.000297837243401489,
+			"north": 362.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000920401613027089
+		},
+		{
+			"east": -158.25,
+			"height_error_m": 0.00024628848973407,
+			"north": 362.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000872080543267706
+		},
+		{
+			"east": 320.25,
+			"height_error_m": 0.000137463343108379,
+			"north": 362.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000601539550930674
+		},
+		{
+			"east": 415.0,
+			"height_error_m": 0.000391388685237359,
+			"north": 364.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000347531083946251
+		},
+		{
+			"east": 125.75,
+			"height_error_m": 0.000236742424242209,
+			"north": 365.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000713519383786828
+		},
+		{
+			"east": -71.5,
+			"height_error_m": 0.000481121700879328,
+			"north": 367.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000659904112541021
+		},
+		{
+			"east": -24.0,
+			"height_error_m": 0.000354159029814838,
+			"north": 375.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000118610332407343
+		},
+		{
+			"east": 358.75,
+			"height_error_m": 0.000175647605082929,
+			"north": 376.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000114258653234778
+		},
+		{
+			"east": 376.0,
+			"height_error_m": 0.000372296554253637,
+			"north": 378.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000286748557236649
+		},
+		{
+			"east": 336.75,
+			"height_error_m": 0.000144145588954814,
+			"north": 381.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000318203824543062
+		},
+		{
+			"east": 104.0,
+			"height_error_m": 0.0000448665078209842,
+			"north": 382.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000118784306720965
+		},
+		{
+			"east": 120.5,
+			"height_error_m": 0.000433391373411141,
+			"north": 383.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000162742203224653
+		},
+		{
+			"east": -349.5,
+			"height_error_m": 0.000414299242422089,
+			"north": 384.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000664853369167773
+		},
+		{
+			"east": -73.25,
+			"height_error_m": 0.000457256537146122,
+			"north": 384.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000195780567313619
+		},
+		{
+			"east": -290.5,
+			"height_error_m": 0.000367523521504154,
+			"north": 387.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000118311711235108
+		},
+		{
+			"east": -360.75,
+			"height_error_m": 0.000119325818673133,
+			"north": 388.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000028528710353859
+		},
+		{
+			"east": 396.25,
+			"height_error_m": 0.000270153653470828,
+			"north": 390.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000327510755667726
+		},
+		{
+			"east": -157.75,
+			"height_error_m": 0.00017278378543395,
+			"north": 391.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000579414550254675
+		},
+		{
+			"east": 103.25,
+			"height_error_m": 0.000445801258553757,
+			"north": 394.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000478023120367155
+		},
+		{
+			"east": 361.25,
+			"height_error_m": 0.000273972079668283,
+			"north": 400.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000077386697471038
+		},
+		{
+			"east": 145.75,
+			"height_error_m": 0.0000200467375393032,
+			"north": 401.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000045948758129466
+		},
+		{
+			"east": 345.0,
+			"height_error_m": 0.000109779753177719,
+			"north": 401.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000237201003296938
+		},
+		{
+			"east": -84.0,
+			"height_error_m": 0.000282563538611669,
+			"north": 404.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000606277173542669
+		},
+		{
+			"east": -113.0,
+			"height_error_m": 0.0000286381964809124,
+			"north": 406.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000643429925952788
+		},
+		{
+			"east": 368.75,
+			"height_error_m": 0.000203331195017142,
+			"north": 408.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000640475366396054
+		},
+		{
+			"east": -209.0,
+			"height_error_m": 0.000478257881230348,
+			"north": 412.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000547591002586501
+		},
+		{
+			"east": 65.5,
+			"height_error_m": 0.000270153653470828,
+			"north": 419.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000810596459093205
+		},
+		{
+			"east": 84.25,
+			"height_error_m": 0.000207149621211045,
+			"north": 421.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000071718716856406
+		},
+		{
+			"east": 143.5,
+			"height_error_m": 0.0000066822458464344,
+			"north": 421.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000324634519284217
+		},
+		{
+			"east": 372.25,
+			"height_error_m": 0.000139372556205331,
+			"north": 421.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000114266485551795
+		},
+		{
+			"east": 45.25,
+			"height_error_m": 0.000139372556205331,
+			"north": 422.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000456811311169147
+		},
+		{
+			"east": 10.5,
+			"height_error_m": 0.000425754521016231,
+			"north": 423.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000797331785999944
+		},
+		{
+			"east": 74.5,
+			"height_error_m": 0.000346522177419928,
+			"north": 425.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000264220272935822
+		},
+		{
+			"east": -27.0,
+			"height_error_m": 0.000407616996579208,
+			"north": 426.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000300981409484535
+		},
+		{
+			"east": 358.5,
+			"height_error_m": 0.000344612964319424,
+			"north": 429.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000165728414942556
+		},
+		{
+			"east": -83.75,
+			"height_error_m": 0.000403798570381753,
+			"north": 431.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000738442297683051
+		},
+		{
+			"east": 130.0,
+			"height_error_m": 0.0000190921309872749,
+			"north": 432.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000223591385344335
+		},
+		{
+			"east": -151.0,
+			"height_error_m": 0.00032170240713647,
+			"north": 432.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000406597203017611
+		},
+		{
+			"east": 108.75,
+			"height_error_m": 0.0000124098851426169,
+			"north": 435.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000287360123780722
+		},
+		{
+			"east": 162.0,
+			"height_error_m": 0.000371341947705162,
+			"north": 452.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000075888589398776
+		},
+		{
+			"east": 57.25,
+			"height_error_m": 0.000437209799606819,
+			"north": 460.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000930735062070198
+		},
+		{
+			"east": 135.25,
+			"height_error_m": 0.000229105571847299,
+			"north": 467.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000713507716034734
+		},
+		{
+			"east": 71.75,
+			"height_error_m": 0.000215741080156207,
+			"north": 467.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000763066937725654
+		},
+		{
+			"east": 81.0,
+			"height_error_m": 0.000232923998044754,
+			"north": 468.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000697190175795726
+		},
+		{
+			"east": 70.0,
+			"height_error_m": 0.000469666422286963,
+			"north": 486.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000588443191937849
+		},
+		{
+			"east": 161.5,
+			"height_error_m": 0.000214786473607731,
+			"north": 487.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000683000643473264
+		},
+		{
+			"east": 88.75,
+			"height_error_m": 0.000298791849951741,
+			"north": 489.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000769430977040769
+		},
+		{
+			"east": -43.0,
+			"height_error_m": 0.000220514112903913,
+			"north": 491.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000943353165361316
+		},
+		{
+			"east": 52.5,
+			"height_error_m": 0.0000467757209179354,
+			"north": 495.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000113366314469232
+		},
+		{
+			"east": -2.75,
+			"height_error_m": 0.000162283113391837,
+			"north": 496.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000374237060887239
+		},
+		{
+			"east": -92.0,
+			"height_error_m": 0.000354159029814838,
+			"north": 500.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00010321231408561
+		},
+		{
+			"east": 181.0,
+			"height_error_m": 0.000215741080156207,
+			"north": 500.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00006904228528537
+		},
+		{
+			"east": -259.75,
+			"height_error_m": 0.000486849340177287,
+			"north": 500.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000114188497487788
+		},
+		{
+			"east": -44.25,
+			"height_error_m": 0.0000925968352873952,
+			"north": 501.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000177488314421215
+		},
+		{
+			"east": 177.5,
+			"height_error_m": 0.0000878238025414646,
+			"north": 509.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000328447282655908
+		},
+		{
+			"east": 81.5,
+			"height_error_m": 0.0000534579667643698,
+			"north": 513.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000009965168674686
+		},
+		{
+			"east": 154.5,
+			"height_error_m": 0.0000649132453567347,
+			"north": 513.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000185212148755554
+		},
+		{
+			"east": -53.25,
+			"height_error_m": 0.0000248197702834574,
+			"north": 519.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000397568561334438
+		},
+		{
+			"east": -226.75,
+			"height_error_m": 0.000369432734604658,
+			"north": 521.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000869517599575431
+		},
+		{
+			"east": 107.0,
+			"height_error_m": 0.000252016129032029,
+			"north": 521.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000820538292262141
+		},
+		{
+			"east": -191.5,
+			"height_error_m": 0.000159419293744634,
+			"north": 532.0,
+			"species_matches": true,
+			"yaw_error_rad": 0.000110331743977676
+		},
+		{
+			"east": 141.5,
+			"height_error_m": 0.000447710471652485,
+			"north": 532.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000797465096840089
+		},
+		{
+			"east": 94.5,
+			"height_error_m": 0.000407616996579208,
+			"north": 534.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000806125458165941
+		},
+		{
+			"east": -79.0,
+			"height_error_m": 0.000351295210165858,
+			"north": 537.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000731443356317696
+		},
+		{
+			"east": 108.5,
+			"height_error_m": 0.000323611620235198,
+			"north": 539.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000851636946959111
+		},
+		{
+			"east": 75.0,
+			"height_error_m": 0.000342703751222473,
+			"north": 540.75,
+			"species_matches": true,
+			"yaw_error_rad": 0.000115858246322986
+		},
+		{
+			"east": 118.25,
+			"height_error_m": 0.000364659701858727,
+			"north": 542.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103967034443486
+		},
+		{
+			"east": 160.75,
+			"height_error_m": 0.0000801869501465546,
+			"north": 546.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.0000081492744699041
+		},
+		{
+			"east": -120.5,
+			"height_error_m": 0.000249152309386602,
+			"north": 548.5,
+			"species_matches": true,
+			"yaw_error_rad": 0.000017449043494544
+		},
+		{
+			"east": 84.5,
+			"height_error_m": 0.000316929374388764,
+			"north": 559.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.00000491009504022255
+		},
+		{
+			"east": -70.0,
+			"height_error_m": 0.000177556818181657,
+			"north": 560.25,
+			"species_matches": true,
+			"yaw_error_rad": 0.000103258141214591
+		}
+	],
+	"views": [
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az000-el00",
+			"sha256": "7890505a262c50f8f23c51ee142e51d8f530556fb89ea7f9906b57b42207badb",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az000-el10",
+			"sha256": "1ad5fb0bd92e4d17224fb12aae8a6dfa727f7519292e9e0b8f1dd198f15bbeb1",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az090-el00",
+			"sha256": "f345d2d046fe11f535c16af32c3e7d0acbe6df661fe0aca2eb6ef34e1e3bbb20",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az090-el10",
+			"sha256": "062521db38ce4b1d03b71243e2c8aa57c43ffd53fd83fc0eff3549490c733f7c",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 1
+			},
+			"id": "az180-el00",
+			"sha256": "fa680000ba68c98541ce8307c14145a9ccc0f15149a76156cae955c616ce5185",
+			"trees": {
+				"shadow": 0,
+				"visible": 5
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 1
+			},
+			"id": "az180-el10",
+			"sha256": "83bf06b5645470c639179f868b272dad67458c97e582775466ae5e61b0be70c9",
+			"trees": {
+				"shadow": 0,
+				"visible": 5
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az270-el00",
+			"sha256": "fc2b782577b4cdab499aab65ad3327d82aab6f8f768a84d4a9b07373b0299649",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "az270-el10",
+			"sha256": "2667ea45c632ba87e8379f67836595153f67821fe52c7ec91c14574f4c8209ce",
+			"trees": {
+				"shadow": 0,
+				"visible": 6
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "gap030",
+			"sha256": "fb63dcd54305a3a2df987062e54a9af10c6ac3e0a69b032dc86987df0d2ad35b",
+			"trees": {
+				"shadow": 0,
+				"visible": 4
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 2
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "gap210",
+			"sha256": "74ad2a68e3353759f15afa3f53f9834eaeb0c46f75e050944f58f59161dd595c",
+			"trees": {
+				"shadow": 0,
+				"visible": 4
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 2
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 2
+			},
+			"id": "overhead",
+			"sha256": "890401b46fc26391a913a65666c65bfc06215500d483c6ee49c1321c534698a4",
+			"trees": {
+				"shadow": 0,
+				"visible": 10
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 8
+		},
+		{
+			"baseline": {
+				"shadow": 0,
+				"visible": 5
+			},
+			"id": "engine-shadow-audit",
+			"sha256": "693c5d0210cfa73da333896715acea220dce7c54e51faa90c822b1867578e105",
+			"trees": {
+				"shadow": 0,
+				"visible": 9
+			},
+			"vegetation_shadow_draws": 0,
+			"vegetation_visible_draws": 4
+		}
+	]
+}

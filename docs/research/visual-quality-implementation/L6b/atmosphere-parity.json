@@ -1,0 +1,7 @@
+{
+  "case": "atmosphere north 0deg, t1.5",
+  "baseline": "shared project before L6b installation; fresh guarded capture",
+  "identical": true,
+  "before_sha256": "c995f7b670ecc4996106f14e26393692a63e19545668a0ff29ad9db0f933bd6b",
+  "after_sha256": "c995f7b670ecc4996106f14e26393692a63e19545668a0ff29ad9db0f933bd6b"
+}

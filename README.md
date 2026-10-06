@@ -40,7 +40,8 @@ On Linux; on other systems use Godot 4.7.2 directly:
 
 ```sh
 app/get-godot.sh                    # downloads the pinned, checksum-verified Godot 4.7.2 into .tools/
-$(app/get-godot.sh) --path app      # fly (needs a display)
+$(app/get-godot.sh) --headless --path app --import  # once after a fresh clone or asset changes
+$(app/get-godot.sh) --path app      # open Home (needs a display)
 app/test.sh                         # all checks, headless
 app/export.sh                       # release builds into dist/ (downloads the 1.28 GB export templates once)
 ```

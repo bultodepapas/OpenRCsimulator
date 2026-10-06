@@ -1,0 +1,3019 @@
+{
+  "app": "/tmp/openrc-l6b-capture-clean/app",
+  "capture_timeout_s": 120.0,
+  "code_revision": "5e0347954bca121c2459ace466ed64dec26f9dce",
+  "code_revision_source": "environment:OPENRC_CODE_REVISION",
+  "complete": true,
+  "created_utc": "2026-10-06T03:57:17+00:00",
+  "display": {
+    "runner": "xvfb-run",
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "field_repeat_parity": [
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "be1470d855522ec5783513e25654b8c28a78e2875dfdda161c069113a0397f5a",
+      "view": "field-az0-el0"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "93b023f9b2686c8651b17621d8b66d7903c515b60189ca239c1e74798ed17eee",
+      "view": "field-az0-el10"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "b71d68f3483472e4c7ad06dee98b1fb706bd42aa57ed2b9415ef1a77b6a7dee8",
+      "view": "field-az180-el0"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "13d87cdfeb784661dd0c62b560c33252a56b9d0e4f66df9e84821c0a2be64148",
+      "view": "field-az180-el10"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "4d17929cb01a2ad4bc5ad29a63a0c89a4b594a55299faa9c490495dc67c62abc",
+      "view": "field-az270-el0"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "9a6ee05aca225e1e1ea84ac753b9e1b4f543d54c0069099f4488869dc7f422e8",
+      "view": "field-az270-el10"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "d0557ff9a4ee2dbef4815ca3e241ead8349d189d767a5868b81704a0365054a8",
+      "view": "field-az90-el0"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "1cfa3a69314dfb59d04d4edc2ef39d03a651072e35fdf36795a47bdbd9e940b2",
+      "view": "field-az90-el10"
+    },
+    {
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 4
+        }
+      },
+      "render_counters_identical": true,
+      "repeat_images_identical": true,
+      "sha256": "62b41d07e9eccbafbe72bb340bd87d536cfb3e653f325c9ddee40bb06c49a535",
+      "view": "field-top30m"
+    }
+  ],
+  "format": "openrc-vq-01b-run v1",
+  "godot": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "harness_sha256": "5dd2b06441ffcbda612c52481ba3c09ec9eeebd2387e4accb2916ec2d18c7ddb",
+  "inventory": {
+    "capture_count": 66,
+    "counts_by_family": {
+      "field-repeat": 18,
+      "pilot-readability": 8,
+      "synthetic-attitude": 36,
+      "ui-route": 4
+    },
+    "expected_case_ids": [
+      "pilot-30m-autozoom-on",
+      "pilot-30m-autozoom-on-noplane",
+      "pilot-30m-autozoom-off",
+      "pilot-30m-autozoom-off-noplane",
+      "pilot-3m-autozoom-on",
+      "pilot-3m-autozoom-on-noplane",
+      "pilot-3m-autozoom-off",
+      "pilot-3m-autozoom-off-noplane",
+      "field-az0-el0-repeat1",
+      "field-az0-el0-repeat2",
+      "field-az0-el10-repeat1",
+      "field-az0-el10-repeat2",
+      "field-az90-el0-repeat1",
+      "field-az90-el0-repeat2",
+      "field-az90-el10-repeat1",
+      "field-az90-el10-repeat2",
+      "field-az180-el0-repeat1",
+      "field-az180-el0-repeat2",
+      "field-az180-el10-repeat1",
+      "field-az180-el10-repeat2",
+      "field-az270-el0-repeat1",
+      "field-az270-el0-repeat2",
+      "field-az270-el10-repeat1",
+      "field-az270-el10-repeat2",
+      "field-top30m-repeat1",
+      "field-top30m-repeat2",
+      "synthetic-stik-20m-level",
+      "synthetic-stik-20m-inverted",
+      "synthetic-stik-20m-knife_left",
+      "synthetic-stik-20m-knife_right",
+      "synthetic-stik-20m-climb",
+      "synthetic-stik-20m-dive",
+      "synthetic-stik-50m-level",
+      "synthetic-stik-50m-inverted",
+      "synthetic-stik-50m-knife_left",
+      "synthetic-stik-50m-knife_right",
+      "synthetic-stik-50m-climb",
+      "synthetic-stik-50m-dive",
+      "synthetic-stik-100m-level",
+      "synthetic-stik-100m-inverted",
+      "synthetic-stik-100m-knife_left",
+      "synthetic-stik-100m-knife_right",
+      "synthetic-stik-100m-climb",
+      "synthetic-stik-100m-dive",
+      "synthetic-extra-20m-level",
+      "synthetic-extra-20m-inverted",
+      "synthetic-extra-20m-knife_left",
+      "synthetic-extra-20m-knife_right",
+      "synthetic-extra-20m-climb",
+      "synthetic-extra-20m-dive",
+      "synthetic-extra-50m-level",
+      "synthetic-extra-50m-inverted",
+      "synthetic-extra-50m-knife_left",
+      "synthetic-extra-50m-knife_right",
+      "synthetic-extra-50m-climb",
+      "synthetic-extra-50m-dive",
+      "synthetic-extra-100m-level",
+      "synthetic-extra-100m-inverted",
+      "synthetic-extra-100m-knife_left",
+      "synthetic-extra-100m-knife_right",
+      "synthetic-extra-100m-climb",
+      "synthetic-extra-100m-dive",
+      "ui-home-en",
+      "ui-home-es",
+      "ui-flight-en",
+      "ui-flight-es"
+    ]
+  },
+  "pilot_readability": {
+    "pilot-30m-autozoom-off.png": {
+      "background_saturation": 54.1,
+      "delta_e": 41.51,
+      "pixels": 65,
+      "share_low_contrast": 0.0923,
+      "weber_contrast": -0.4277
+    },
+    "pilot-30m-autozoom-on.png": {
+      "background_saturation": 54.1,
+      "delta_e": 48.67,
+      "pixels": 172,
+      "share_low_contrast": 0.0233,
+      "weber_contrast": -0.3996
+    },
+    "pilot-3m-autozoom-off.png": {
+      "background_saturation": 31.2,
+      "delta_e": 40.88,
+      "pixels": 52,
+      "share_low_contrast": 0.0962,
+      "weber_contrast": -0.5499
+    },
+    "pilot-3m-autozoom-on.png": {
+      "background_saturation": 34.2,
+      "delta_e": 47.83,
+      "pixels": 114,
+      "share_low_contrast": 0.0614,
+      "weber_contrast": -0.2451
+    }
+  },
+  "pilot_readability_sha256": "627ed5fc7fffa8104ade4eb7a67564a026401fecb7a8d56989e8d0c3bfe58774",
+  "reference_suite": {
+    "checker": "app/tests/check_landscape_captures.py",
+    "implementation_report": "docs/research/visual-quality-implementation/VQ-01a/README.md",
+    "note": "The L1-L4 atmosphere captures stay in their existing suite; this matrix does not rerun or replace them.",
+    "runner": "app/capture.sh"
+  },
+  "rendering_driver": "opengl3",
+  "synthetic_parity": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60",
+      "gp-extra-300s-60"
+    ],
+    "camera": {
+      "autozoom": false,
+      "exposure": 0.600000023841858,
+      "fov_deg": 50.0,
+      "light": {
+        "color": "(1.0, 0.9137, 0.8431, 1.0)",
+        "direction": [
+          -0.5,
+          0.70710676908493,
+          0.5
+        ],
+        "energy": 1.0
+      }
+    },
+    "case_count": 36,
+    "distances_m": [
+      20,
+      50,
+      100
+    ],
+    "poses": [
+      "level",
+      "inverted",
+      "knife_left",
+      "knife_right",
+      "climb",
+      "dive"
+    ],
+    "shared_light_fov_exposure": true
+  },
+  "native_manifest_sha256": "ee04ac48500c2e61f5b42e3f6fad4da6efbcb527782a5bc3ba9a35d16c581a2c",
+  "captures": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-30m-autozoom-on.json",
+      "capture_manifest_sha256": "0d1447e9dc47feca0314eb2193346801f6700f7107e0ee38580ee05c54f7fbcd",
+      "capture_scene": "field",
+      "case_id": "pilot-30m-autozoom-on",
+      "family": "pilot-readability",
+      "image": "pilot-30m-autozoom-on.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 103
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 103
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 47496
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "ad0fe76d1f7c5c2f5fa5010b9d6ab83f34f22d26620681f0b70460c556ffbe07"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-30m-autozoom-on-noplane.json",
+      "capture_manifest_sha256": "6132711082c2022458e06fa2294d5465d480b3b5675888c1dd95286289fbc193",
+      "capture_scene": "field",
+      "case_id": "pilot-30m-autozoom-on-noplane",
+      "family": "pilot-readability",
+      "image": "pilot-30m-autozoom-on-noplane.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 3
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 3
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 656
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "a5f7c2f97067fe04685093007a48f16b75fbe433941a64632d1a9630e88527d8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-30m-autozoom-off.json",
+      "capture_manifest_sha256": "ae8e2b7af239332ec1009e8ceccd5dc52ca320301e63d36abaaa56278bee5e6a",
+      "capture_scene": "field",
+      "case_id": "pilot-30m-autozoom-off",
+      "family": "pilot-readability",
+      "image": "pilot-30m-autozoom-off.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 104
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 104
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 47694
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "82d246282342186f1ca90abba5d99550e95bd0d15025434a2abdb4db5ad11d05"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-30m-autozoom-off-noplane.json",
+      "capture_manifest_sha256": "af99853ebf56f2d754da094319431826067e910d77dcb45dcbc26b247a8ef5b9",
+      "capture_scene": "field",
+      "case_id": "pilot-30m-autozoom-off-noplane",
+      "family": "pilot-readability",
+      "image": "pilot-30m-autozoom-off-noplane.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 4
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 4
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 854
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "878303b4e41636e5732b026323c9e2c56fd0a82683fbe7111211f941805b18b0"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-3m-autozoom-on.json",
+      "capture_manifest_sha256": "866c0767de6d90959ce520f9ccd315eee6110aea8fb637ebe050f7603f54395a",
+      "capture_scene": "field",
+      "case_id": "pilot-3m-autozoom-on",
+      "family": "pilot-readability",
+      "image": "pilot-3m-autozoom-on.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 105
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 105
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 47696
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "b7440417395a8635eb9e5d328609a606238951c581a5b0b5d5de7c97f76fcb88"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-3m-autozoom-on-noplane.json",
+      "capture_manifest_sha256": "16bec1eb46b2ce00857cf2ad67d09aaaf89b1e710e232c86c5d3a6136d76894d",
+      "capture_scene": "field",
+      "case_id": "pilot-3m-autozoom-on-noplane",
+      "family": "pilot-readability",
+      "image": "pilot-3m-autozoom-on-noplane.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 856
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "bf57c104271705309cdd3efe6cfb6beb125a665b4158d312444d1101a479e276"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-3m-autozoom-off.json",
+      "capture_manifest_sha256": "77084c2b0a66fb67c49e181312d5f9a4a81bb1a1d141c787c46996249a637ad0",
+      "capture_scene": "field",
+      "case_id": "pilot-3m-autozoom-off",
+      "family": "pilot-readability",
+      "image": "pilot-3m-autozoom-off.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 105
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 105
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 47696
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "aee2462a751f8e2fd4e81c986eedfd1f61abe48692184e1ea3645957218c19ce"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "pilot-3m-autozoom-off-noplane.json",
+      "capture_manifest_sha256": "dc72ad2c049fad58462a08016bd2c75810d4919591200e40aa70358d16e785a8",
+      "capture_scene": "field",
+      "case_id": "pilot-3m-autozoom-off-noplane",
+      "family": "pilot-readability",
+      "image": "pilot-3m-autozoom-off-noplane.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 856
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "physics-fixed",
+      "sha256": "322674de95a4a0b175e8746ca184f461069dc7465fefe85a5c8b18512f3e0083"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az0-el0-repeat1.json",
+      "capture_manifest_sha256": "3cb63bcd0435741c12db753f02a6ebd86e10d45dbc17a74785d9a6ee1ae098b8",
+      "capture_scene": "field",
+      "case_id": "field-az0-el0-repeat1",
+      "family": "field-repeat",
+      "image": "field-az0-el0-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "repeat_group": "field-az0-el0",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "be1470d855522ec5783513e25654b8c28a78e2875dfdda161c069113a0397f5a"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az0-el0-repeat2.json",
+      "capture_manifest_sha256": "15ce6558d1a78e7402642aba4c560d917fc8d987148116685488dcda7292c64c",
+      "capture_scene": "field",
+      "case_id": "field-az0-el0-repeat2",
+      "family": "field-repeat",
+      "image": "field-az0-el0-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "repeat_group": "field-az0-el0",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "be1470d855522ec5783513e25654b8c28a78e2875dfdda161c069113a0397f5a"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az0-el10-repeat1.json",
+      "capture_manifest_sha256": "8c9f66c66972295d1bec9b4f3bee0172c03cea9c0cb8c3b8f83e8b282db01531",
+      "capture_scene": "field",
+      "case_id": "field-az0-el10-repeat1",
+      "family": "field-repeat",
+      "image": "field-az0-el10-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "repeat_group": "field-az0-el10",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "93b023f9b2686c8651b17621d8b66d7903c515b60189ca239c1e74798ed17eee"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az0-el10-repeat2.json",
+      "capture_manifest_sha256": "90d2c680c82c04fe235883dfafd5f49c9c33704afe8f0a3af605e234b6d5e201",
+      "capture_scene": "field",
+      "case_id": "field-az0-el10-repeat2",
+      "family": "field-repeat",
+      "image": "field-az0-el10-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1234
+        }
+      },
+      "repeat_group": "field-az0-el10",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "93b023f9b2686c8651b17621d8b66d7903c515b60189ca239c1e74798ed17eee"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az90-el0-repeat1.json",
+      "capture_manifest_sha256": "7a0258937b0c9ef6fb3ce8b6333435dd52c70b0415a6d3d1e5d0cec4a97f4b98",
+      "capture_scene": "field",
+      "case_id": "field-az90-el0-repeat1",
+      "family": "field-repeat",
+      "image": "field-az90-el0-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "repeat_group": "field-az90-el0",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "d0557ff9a4ee2dbef4815ca3e241ead8349d189d767a5868b81704a0365054a8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az90-el0-repeat2.json",
+      "capture_manifest_sha256": "d53b70f5549ef8b9883997d884b074eba9cbd4a3aed7e6aa93f8f8b2ee8fbcbe",
+      "capture_scene": "field",
+      "case_id": "field-az90-el0-repeat2",
+      "family": "field-repeat",
+      "image": "field-az90-el0-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "repeat_group": "field-az90-el0",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "d0557ff9a4ee2dbef4815ca3e241ead8349d189d767a5868b81704a0365054a8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az90-el10-repeat1.json",
+      "capture_manifest_sha256": "c834ba3a838c67228af184e6b7b38c258a81c28312411c2ef1371a93faf31f9a",
+      "capture_scene": "field",
+      "case_id": "field-az90-el10-repeat1",
+      "family": "field-repeat",
+      "image": "field-az90-el10-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "repeat_group": "field-az90-el10",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "1cfa3a69314dfb59d04d4edc2ef39d03a651072e35fdf36795a47bdbd9e940b2"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az90-el10-repeat2.json",
+      "capture_manifest_sha256": "d5fd5d3305875af087d1d3cebbe8ec34ea2f7bc0a76b5830f5bce32457832edd",
+      "capture_scene": "field",
+      "case_id": "field-az90-el10-repeat2",
+      "family": "field-repeat",
+      "image": "field-az90-el10-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1618
+        }
+      },
+      "repeat_group": "field-az90-el10",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "1cfa3a69314dfb59d04d4edc2ef39d03a651072e35fdf36795a47bdbd9e940b2"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az180-el0-repeat1.json",
+      "capture_manifest_sha256": "99d30a35ebde8a384e5c286ff5504e11b8aa147ebeccb342a3ca5470c9fb144e",
+      "capture_scene": "field",
+      "case_id": "field-az180-el0-repeat1",
+      "family": "field-repeat",
+      "image": "field-az180-el0-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "repeat_group": "field-az180-el0",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "b71d68f3483472e4c7ad06dee98b1fb706bd42aa57ed2b9415ef1a77b6a7dee8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az180-el0-repeat2.json",
+      "capture_manifest_sha256": "5a0dc488d57e95326682e2a15d3b7a2e606889d174f5016f1bfe9bf21475300b",
+      "capture_scene": "field",
+      "case_id": "field-az180-el0-repeat2",
+      "family": "field-repeat",
+      "image": "field-az180-el0-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "repeat_group": "field-az180-el0",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "b71d68f3483472e4c7ad06dee98b1fb706bd42aa57ed2b9415ef1a77b6a7dee8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az180-el10-repeat1.json",
+      "capture_manifest_sha256": "a789f78919170b5969d7947991c24134ce987d7154441db9f772e53055ace6a8",
+      "capture_scene": "field",
+      "case_id": "field-az180-el10-repeat1",
+      "family": "field-repeat",
+      "image": "field-az180-el10-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "repeat_group": "field-az180-el10",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "13d87cdfeb784661dd0c62b560c33252a56b9d0e4f66df9e84821c0a2be64148"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az180-el10-repeat2.json",
+      "capture_manifest_sha256": "d8198e1ddc3632e098dbd97cbf7302e01ad5a8c71cee6201ce5e474c7c102340",
+      "capture_scene": "field",
+      "case_id": "field-az180-el10-repeat2",
+      "family": "field-repeat",
+      "image": "field-az180-el10-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 5
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1652
+        }
+      },
+      "repeat_group": "field-az180-el10",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "13d87cdfeb784661dd0c62b560c33252a56b9d0e4f66df9e84821c0a2be64148"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az270-el0-repeat1.json",
+      "capture_manifest_sha256": "3fa525573825f1ee296ad75ec5ca25a3f9918e761561def5162bc976c02d99d3",
+      "capture_scene": "field",
+      "case_id": "field-az270-el0-repeat1",
+      "family": "field-repeat",
+      "image": "field-az270-el0-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "repeat_group": "field-az270-el0",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "4d17929cb01a2ad4bc5ad29a63a0c89a4b594a55299faa9c490495dc67c62abc"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az270-el0-repeat2.json",
+      "capture_manifest_sha256": "53c2750d4e003f9eefb0a3c777ced776facccef205a7a484ddb67c1c1c309b24",
+      "capture_scene": "field",
+      "case_id": "field-az270-el0-repeat2",
+      "family": "field-repeat",
+      "image": "field-az270-el0-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "repeat_group": "field-az270-el0",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "4d17929cb01a2ad4bc5ad29a63a0c89a4b594a55299faa9c490495dc67c62abc"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az270-el10-repeat1.json",
+      "capture_manifest_sha256": "e007a92da19aded8e93919a84de5ae6e2b8e4470ab0163bffe97821a985aa4ef",
+      "capture_scene": "field",
+      "case_id": "field-az270-el10-repeat1",
+      "family": "field-repeat",
+      "image": "field-az270-el10-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "repeat_group": "field-az270-el10",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "9a6ee05aca225e1e1ea84ac753b9e1b4f543d54c0069099f4488869dc7f422e8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-az270-el10-repeat2.json",
+      "capture_manifest_sha256": "3af398202bebf874a90760cb18bab14bc8248f871d10f5f9d502e3aa737c588d",
+      "capture_scene": "field",
+      "case_id": "field-az270-el10-repeat2",
+      "family": "field-repeat",
+      "image": "field-az270-el10-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 6
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 1270
+        }
+      },
+      "repeat_group": "field-az270-el10",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "9a6ee05aca225e1e1ea84ac753b9e1b4f543d54c0069099f4488869dc7f422e8"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-top30m-repeat1.json",
+      "capture_manifest_sha256": "c6b06ef87bdb8cdd9e2518e1154932dbcbc7e967e92cc5ea17ce136a044b4386",
+      "capture_scene": "field",
+      "case_id": "field-top30m-repeat1",
+      "family": "field-repeat",
+      "image": "field-top30m-repeat1.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 4
+        }
+      },
+      "repeat_group": "field-top30m",
+      "repeat_index": 1,
+      "route": "physics-fixed",
+      "sha256": "62b41d07e9eccbafbe72bb340bd87d536cfb3e653f325c9ddee40bb06c49a535"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "field-top30m-repeat2.json",
+      "capture_manifest_sha256": "7bd32bebc12330e7723fe137e1388c4fcce5a8525c8d6d90f887831bcb88821b",
+      "capture_scene": "field",
+      "case_id": "field-top30m-repeat2",
+      "family": "field-repeat",
+      "image": "field-top30m-repeat2.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 2
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 4
+        }
+      },
+      "repeat_group": "field-top30m",
+      "repeat_index": 2,
+      "route": "physics-fixed",
+      "sha256": "62b41d07e9eccbafbe72bb340bd87d536cfb3e653f325c9ddee40bb06c49a535"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-level.json",
+      "capture_manifest_sha256": "c6235007084958c02edfcf0bfb9dc3af97cc2c493d86856708f5a1c1f2391b4c",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "568f532ffe5b171acf8b2fd0f9e3a218876f261e023fbefaa88027cda53a5309"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-inverted.json",
+      "capture_manifest_sha256": "e9a46e64c3b57c3285f1d97415839173ff488ec9509146f5bd95e936df8e4344",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "15516f7eb72205cfa4144cac363ad40bbad7de053fe29090970954d3a9134d00"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-knife_left.json",
+      "capture_manifest_sha256": "7adc1853b5b0acd2dc2dd415896cf68d571e1ca4d691c07dacc03bcadd733b9c",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "d6ab069217a0d23772c7757f6a9d3b17f90520984f1bb2ab81696d7355fb6e7c"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-knife_right.json",
+      "capture_manifest_sha256": "3a80a2b05738684c4a9c84a9fbf5003c7574f0fd4a7f405a828a0f89fcd06877",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "de3328cd0c9e680480ecd69f368a14c1b6a7f2dafdd39f2fa5dcd2dc30e9650b"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-climb.json",
+      "capture_manifest_sha256": "8e7bc007ede241cd6938f6701e8f871bec574cc398f5589e9cbb5c7441b5ac25",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "cdff6897360c9379ab97cadb95ab5b1a36d2498eaa38cdc78345e49eae1e7e89"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-20m-dive.json",
+      "capture_manifest_sha256": "bdddcd3258b0f898d8b68bc7ecfc7a755bf58370d6fc3b593cc2902733369411",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-20m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-20m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "f583b2afae09bdb01559a127fa84491281560482ffa91d46ebd9d36b7a255f2e"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-level.json",
+      "capture_manifest_sha256": "b680986008638d26f8460b636e8ef81e7a28b1d54e623d0939dd421f7c228d88",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "b1958db6214a6350df8672327670dc06b9299827761fb6ec76062f904e90f55b"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-inverted.json",
+      "capture_manifest_sha256": "f766eea56e5cec64c6aa3e0c208f028d9ac5a9c6d0b054104874a90a9194ea61",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "c029dd5bb37f62682aa20b76312502734999704af58b3bd97a5ea483206dec51"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-knife_left.json",
+      "capture_manifest_sha256": "fd1ab528c86327fbd250b12b1e2c1816e2ca430322f76817727daa022def596b",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "07c567df7ac9baff8ab03bdcd3d92ec9d53687ccdc90aa852c8012012eeb659a"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-knife_right.json",
+      "capture_manifest_sha256": "42855efa441dea38b3562a550e063f1a1710018f27b4661e28d2d64bcdd697ff",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "fc32640a53e226773ef0acea567249441e63216a67da895c2d25b5519e89cfdd"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-climb.json",
+      "capture_manifest_sha256": "7761ef63225e54f288f453054e417a162b84e99b4bf939dc10459073bb3879d4",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "6b2fdac6e6d24af0b8af77e6f86a6b61282ba0b427107eb128e2b8a21d2ad35b"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-50m-dive.json",
+      "capture_manifest_sha256": "999c4ac604061b4840b220051f84d7ae353a5e5fd6d2279d8dc62b8c280b13e7",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-50m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-50m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "413263bf8c7d6ab62a582f459f16637bd31037b38d885408a4b07837575d348b"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-level.json",
+      "capture_manifest_sha256": "18a75802e3b9661f8975573d02eef70c69e054302a9382ff238cbe0bc865d0ff",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "87f7dcfb634018d4c46da1dc8a2e847ff11fca4792d651f4c72801955cacb66e"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-inverted.json",
+      "capture_manifest_sha256": "891eb42d8467e9dc462e31c61a3b12250f87e6fb8dc5330d983c00ef4ffbe882",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "41fa5cc590e0bf3e00c3351580d1529298efe3c6bf5e6ea3042aec1f4941632b"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-knife_left.json",
+      "capture_manifest_sha256": "8e73537d0b981f808218ef3957c5a28d9bd54d0b6f6910c6bb0d8ae6d8600e1f",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "0a5dbd31b248ad6f4b49f245ec07bb86deab9b868c1736e5d5ff115c34eab9cb"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-knife_right.json",
+      "capture_manifest_sha256": "f37b5cd08b3da15fb9e628902f371a76aa2f6018d43df61d387a628fb3a4d266",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "76a20f817326c6b878260a2ad09d29f2b5602550ce2afe827ac815fee7f21beb"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-climb.json",
+      "capture_manifest_sha256": "af3d7f19bc4e31cd89d8d6f2278f2cc48f8188ef0db5bd76672718d6d27b2e01",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "7a6e78d09dce7276a070196fc2418010b14718b97c551fe3d5a2a98ea84c11b3"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "capture_manifest": "synthetic-stik-100m-dive.json",
+      "capture_manifest_sha256": "b195229c443906b2d4d524281d131032cc1a94b07df69d84c427a55cd9354cdb",
+      "capture_scene": "field",
+      "case_id": "synthetic-stik-100m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-stik-100m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 106
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 48074
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "86f4699d0b4db9cde175981ef2987fc3402d0cab042770f867c21e30eaab59a7"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-level.json",
+      "capture_manifest_sha256": "450289a831600f5d62c225b95493417be00a4bebddee2cab7e05da822ee033ff",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "d6c34c6fc66b281eb4681ed8f77f1ba40fa36792ad161b4dddc8bc178a7f268e"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-inverted.json",
+      "capture_manifest_sha256": "f8be60651e081fae3554479a7b4c80cfa34d690fd30de7574be7ef7a4b30caee",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "a90ecdcfbc332008d7575e26c6531e40ada582f9fb36cf58e0b3a131d2887377"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-knife_left.json",
+      "capture_manifest_sha256": "309b8a13720a2522c3102a086eb5ab373a3b4f2e20d7edabb292737e5ce52f93",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "21a2d74eddd83128d87d21a7987ffeff25711058077b6d538b5700e8b9ea57b5"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-knife_right.json",
+      "capture_manifest_sha256": "0014b5e820406534dc5ba78321180cb283ae1f6b127c2270e6f8828dac4bffad",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "b42acd0323a8ee8f84413d3b96fadd48c93d9315b81a9637f0edb850b201f649"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-climb.json",
+      "capture_manifest_sha256": "b8d4483873361e16b527d1865bb870e3e16bf06b5644e6d32b1909cdb07a28af",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "7b839eb47e0d20aae85bd2e714171a1d8cce68a4bd8acab3e462fa7bbec80d37"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-20m-dive.json",
+      "capture_manifest_sha256": "77d8fb4132e61539e0c691ea21f0dceae59548ac1eb214b45c882f3257436b67",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-20m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-20m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "cec17a79a2409af70fb61031cb96c0d726e3a5dcb61995f1d362d0514b014564"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-level.json",
+      "capture_manifest_sha256": "0e23293a2ef5d1989e4774d4063c021488874ceed5171922cc58261904ef849f",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "4ad5bbff7e1ff7a84c7f8e52661063bffd812388b2b7f6470a39d78233aaa140"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-inverted.json",
+      "capture_manifest_sha256": "a25f94e6231057b8af12d9f6144ca04c9766c901c036504c05bc48fe83a71d25",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "3682255944d1f3e8490acb71877251eaff2ab191a9aab57fab57da4ad8471658"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-knife_left.json",
+      "capture_manifest_sha256": "697f52eefdb4eae5db69974bdc15b133ec608125450027eb7f36fc227744d0b2",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "113a46f2e2c3da570371c1f02ef04ad714c12d347176dcd9ef116a293a123d01"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-knife_right.json",
+      "capture_manifest_sha256": "fd36ccb04dd781379c3555db6e5e1b5afed4f87f0d671367e27a776f28a5bd9a",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "4ad33b957dbfc17b566fc5d3d765e31535f781322dd83e0ba4da72a230037423"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-climb.json",
+      "capture_manifest_sha256": "46a161d765388bfaa9623cd5754bb9293b6540b9418e582867f3560553f93a5c",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "d452480ba0dec4e2e4dde434b753745f28af8217da0cc8e3a5ee632899770c64"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-50m-dive.json",
+      "capture_manifest_sha256": "b8bfc5f56325a896ca990d325a17472abc95f47637cbd61d613226bd8cb9475a",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-50m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-50m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "7c0c91b94489977f5196f1e1fa7a5de50161e33cfce3d88c16ce4395f5046003"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-level.json",
+      "capture_manifest_sha256": "e9cc8d689f579797a355d17ffe8c6e98e32e2c37d06181605b89c65e51f75f10",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-level",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-level.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "e66053ab4003a4cd4de08134ad25833d1bf0d38e791a0e80dc0b800907ed3989"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-inverted.json",
+      "capture_manifest_sha256": "c1e8a9965fa3a415f996c3b3760457cdb4be7aec06bc687874440b6c66dbf23c",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-inverted",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-inverted.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "21f2e906ee266b826a3ab5e14e6958545cd7a8883593a2314a65d8520db94e4f"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-knife_left.json",
+      "capture_manifest_sha256": "01abeb2820d988952ac5772061f722070a8f381897df9ab0588a81ccb52a96a7",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-knife_left",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-knife_left.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "7443087eb54191997191e3f1f827ef0c0188cd7dea72e37e8203ad4145b224d1"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-knife_right.json",
+      "capture_manifest_sha256": "de2c2f23765fd255bc9a718cf71c5ace8a0334f55b8e9bdfe7901e6acd315f9b",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-knife_right",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-knife_right.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "920bdafb90d608a5c2149b88b0c67b2ec16951090c545704d9ed38ef6dc4e0e1"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-climb.json",
+      "capture_manifest_sha256": "8e87a1f2df51ae7f123594699a9d1f6b0f3dc0b1e7a3ada89b655b838b068cac",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-climb",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-climb.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "bb5b1d2cfa060fcb7d4407666795beb45bad9e456a65a424d981073469dfc82a"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "capture_manifest": "synthetic-extra-100m-dive.json",
+      "capture_manifest_sha256": "74b58f4f6803ef6632baa5ebd1cf3cb06952a5c5fa099d0cd1e06ecc9dcf4b49",
+      "capture_scene": "field",
+      "case_id": "synthetic-extra-100m-dive",
+      "family": "synthetic-attitude",
+      "image": "synthetic-extra-100m-dive.png",
+      "render_counters": {
+        "draw_calls": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "objects": {
+          "shadow": 0,
+          "visible": 38
+        },
+        "primitives": {
+          "shadow": 0,
+          "visible": 20736
+        }
+      },
+      "repeat_group": "",
+      "repeat_index": 0,
+      "route": "synthetic-inspection",
+      "sha256": "4d0ca85718c687275c923302dbfecc5ce0f73b7355b597d29f8bbf4013781a63"
+    },
+    {
+      "capture_manifest": "ui-home-en.json",
+      "capture_manifest_sha256": "750c219c8bab51253f879f55346af1edcbd8208409eaa714b2f328f4e965a869",
+      "capture_scene": "home",
+      "case_id": "ui-home-en",
+      "family": "ui-route",
+      "image": "ui-home-en.png",
+      "kind": "ui",
+      "language": "en",
+      "route": "standalone-home",
+      "sha256": "0879c830d5710b16ae8c47acfc464f799a0925e92cc9957a8da1f7988351d115",
+      "ui_evidence": {
+        "flight_snapshot_frozen": false,
+        "home_field": {
+          "airplane_transform": {
+            "basis_columns": [
+              [
+                -0.308239698410034,
+                0.499695420265198,
+                -0.809501588344574
+              ],
+              [
+                0.215326368808746,
+                0.865497827529907,
+                0.45226988196373
+              ],
+              [
+                0.926619052886963,
+                -0.0348994955420494,
+                -0.374378383159637
+              ]
+            ],
+            "position": [
+              3.0,
+              2.75,
+              -15.0
+            ]
+          },
+          "camera_fov_deg": 12.0,
+          "camera_transform": {
+            "basis_columns": [
+              [
+                0.996917366981506,
+                0.0,
+                -0.0784590691328049
+              ],
+              [
+                0.00437970599159598,
+                0.998440742492676,
+                0.0556494630873203
+              ],
+              [
+                0.0783367305994034,
+                -0.0558215454220772,
+                0.995362937450409
+              ]
+            ],
+            "position": [
+              3.0,
+              1.70000004768372,
+              -2.0
+            ]
+          },
+          "exposure": 0.600000023841858,
+          "pilot_eye_position": [
+            3.0,
+            1.70000004768372,
+            -2.0
+          ],
+          "provenance": {
+            "build": {
+              "commit": "",
+              "commit_date": "",
+              "describe": "",
+              "dirty": false,
+              "godot": "4.7.2-stable (official)",
+              "label": "",
+              "parsed": {
+                "after": 0,
+                "base": "0.1.0",
+                "dirty": false,
+                "prerelease": "",
+                "semver": "0.1.0",
+                "sha": "",
+                "tag": ""
+              },
+              "source": "development",
+              "version": "0.1.0"
+            },
+            "code_revision": "5e0347954bca121c2459ace466ed64dec26f9dce",
+            "source_scope": "runtime source tree; imported/exported resources may omit original files",
+            "source_sha256": {
+              "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+              "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+              "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+              "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+              "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+              "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+              "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+              "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+              "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+              "res://aircraft/inspect_p51.gd": "8415ef50a3bb154e80e0dfb60ea25802989b331a5bc16aa0c4df98f99edce5ce",
+              "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+              "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+              "res://aircraft/p51d_geometry.gd": "fb81f04c849850440d6cc41c074fcbf8ec8987c5e0318a5127503026732d7e2f",
+              "res://aircraft/p51d_model.gd": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
+              "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+              "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+              "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+              "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+              "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+              "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+              "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+              "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+              "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+              "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+              "res://aircraft/verify_p51.gd": "14dcb9e7743ced8859135f596c317134aa27530a92bd4be61fb0010bfd2de66b",
+              "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+              "res://app_root.gd": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a",
+              "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+              "res://app_state/aircraft_catalog.gd": "a02ea82f98dc142e259dac301d6456ac1ae9db96828773649ce68b436e5d934c",
+              "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+              "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+              "res://assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+              "res://assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+              "res://assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+              "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+              "res://data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+              "res://data/aircraft/p51d_mustang_120.json": "93f6c0c4c69dd6e8acbcf1f0ae3db58e93775eb8ff6bbac2b21a6f462e18d339",
+              "res://data/field_loader.gd": "dd9432653ba5e0459de792eaf780670242a094a8fd80a93d90f7624f8fc13dc8",
+              "res://data/fields/default.json": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+              "res://i18n/es.po": "84b58c71ebe60aa3806f1a34067c546cd062fd2f733c883f95515c1f4656eecf",
+              "res://input/commands.gd": "ea359e6820331cf34f691f24c9154fc18df875b5b770dc01d335671959e5f4e5",
+              "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+              "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+              "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+              "res://main.gd": "dae3930fea833656f4b9d256c8202713586ccc5de6fa5b8a96128b3277771fbd",
+              "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+              "res://physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+              "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+              "res://physics/aircraft_data.gd": "86638ff4d0932309130f016420b5c21425a63dbef4c366d6c4c4d071b2751f73",
+              "res://physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+              "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+              "res://physics/integrator.gd": "41b519cdb91f28067e8b1bd46d30fcab08cabe7dcf74414d827323bb3098579b",
+              "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+              "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+              "res://physics/propulsion.gd": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3",
+              "res://physics/rigid_body.gd": "890970b446f570dded94d932d654a23ef64bc91be30a85975b0051b6aeea4f39",
+              "res://physics/trim.gd": "0c54456dc375c5066e1943a042f98dd7ef474821797f44b3bd6d578824c969da",
+              "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+              "res://render/airplane.gd": "7029bcfaca71223663d365246ceeac358b857e3507aaa89f8040c658f4f75573",
+              "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+              "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+              "res://render/field.gd": "98918bde52a69e8049b1489a2b031363a485c41ba429ad1f83a2c81d66e5fd04",
+              "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+              "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+              "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+              "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+              "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+              "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+              "res://render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+              "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+              "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+              "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+              "res://render/tree_assets.gd": "9e1cee18977b8fe735700be9529e0518317ffa8da17d2dfac88d49a34e3efcc9",
+              "res://render/tree_identity.gdshaderinc": "9cf2c934e7f6b6006630c772dbf70520ca1efbdacca0a64c1e0d33f57d28d45f",
+              "res://render/treeline.gd": "2e225963a057e006e4990e5d65fa3603335293d8d6863b28ad30bb56eff929b6",
+              "res://render/treeline.gdshader": "20447f34326039713598039c34d060924e705b68568a71b9b076bdc770306a0b",
+              "res://render/visual_evidence.gd": "1e403d6418ef4704b329157f4d8f1de5c7ffb9eb3b2f40c1b5690a2dfc2d0ac6",
+              "res://sim/flight_session.gd": "0c22a4117d0faddd227f68098f9e8d2b19e5037f5a0c74a5054a8271ac44ed47",
+              "res://sim/maneuvers.gd": "2a20a79125d62b885c97347b0303e5d003fbaa43b94f90046fcef70ea6c8704c",
+              "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+              "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+              "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+              "res://sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+              "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+              "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+              "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+              "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+              "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+              "res://ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+              "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+              "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+              "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+              "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+              "res://ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+              "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+              "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+              "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+              "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+              "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+            },
+            "source_tree_available": true
+          },
+          "seed": {
+            "kind": "not-used",
+            "note": "Home uses fixed analytic clouds and no RNG"
+          },
+          "shader_clock_s": 37.0,
+          "tonemapper": 3
+        },
+        "language": "en",
+        "route": "standalone-home",
+        "state": "home",
+        "viewport": {
+          "active_camera": "/root/HomeScene/@Camera3D@17",
+          "camera_3d_count": 1,
+          "world_environment_count": 1
+        },
+        "visual": {}
+      }
+    },
+    {
+      "capture_manifest": "ui-home-es.json",
+      "capture_manifest_sha256": "66a1262bba4115921aa547959b5e28eab93c69313ee9c06db5a85a329bcff8dd",
+      "capture_scene": "home",
+      "case_id": "ui-home-es",
+      "family": "ui-route",
+      "image": "ui-home-es.png",
+      "kind": "ui",
+      "language": "es",
+      "route": "standalone-home",
+      "sha256": "7ff067486852b5e0015aa353dcf4eba37f84d07f1ef4a74b2e72128aa3cf449d",
+      "ui_evidence": {
+        "flight_snapshot_frozen": false,
+        "home_field": {
+          "airplane_transform": {
+            "basis_columns": [
+              [
+                -0.308239698410034,
+                0.499695420265198,
+                -0.809501588344574
+              ],
+              [
+                0.215326368808746,
+                0.865497827529907,
+                0.45226988196373
+              ],
+              [
+                0.926619052886963,
+                -0.0348994955420494,
+                -0.374378383159637
+              ]
+            ],
+            "position": [
+              3.0,
+              2.75,
+              -15.0
+            ]
+          },
+          "camera_fov_deg": 12.0,
+          "camera_transform": {
+            "basis_columns": [
+              [
+                0.996917366981506,
+                0.0,
+                -0.0784590691328049
+              ],
+              [
+                0.00437970599159598,
+                0.998440742492676,
+                0.0556494630873203
+              ],
+              [
+                0.0783367305994034,
+                -0.0558215454220772,
+                0.995362937450409
+              ]
+            ],
+            "position": [
+              3.0,
+              1.70000004768372,
+              -2.0
+            ]
+          },
+          "exposure": 0.600000023841858,
+          "pilot_eye_position": [
+            3.0,
+            1.70000004768372,
+            -2.0
+          ],
+          "provenance": {
+            "build": {
+              "commit": "",
+              "commit_date": "",
+              "describe": "",
+              "dirty": false,
+              "godot": "4.7.2-stable (official)",
+              "label": "",
+              "parsed": {
+                "after": 0,
+                "base": "0.1.0",
+                "dirty": false,
+                "prerelease": "",
+                "semver": "0.1.0",
+                "sha": "",
+                "tag": ""
+              },
+              "source": "development",
+              "version": "0.1.0"
+            },
+            "code_revision": "5e0347954bca121c2459ace466ed64dec26f9dce",
+            "source_scope": "runtime source tree; imported/exported resources may omit original files",
+            "source_sha256": {
+              "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+              "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+              "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+              "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+              "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+              "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+              "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+              "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+              "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+              "res://aircraft/inspect_p51.gd": "8415ef50a3bb154e80e0dfb60ea25802989b331a5bc16aa0c4df98f99edce5ce",
+              "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+              "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+              "res://aircraft/p51d_geometry.gd": "fb81f04c849850440d6cc41c074fcbf8ec8987c5e0318a5127503026732d7e2f",
+              "res://aircraft/p51d_model.gd": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
+              "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+              "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+              "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+              "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+              "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+              "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+              "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+              "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+              "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+              "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+              "res://aircraft/verify_p51.gd": "14dcb9e7743ced8859135f596c317134aa27530a92bd4be61fb0010bfd2de66b",
+              "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+              "res://app_root.gd": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a",
+              "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+              "res://app_state/aircraft_catalog.gd": "a02ea82f98dc142e259dac301d6456ac1ae9db96828773649ce68b436e5d934c",
+              "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+              "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+              "res://assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+              "res://assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+              "res://assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+              "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+              "res://data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+              "res://data/aircraft/p51d_mustang_120.json": "93f6c0c4c69dd6e8acbcf1f0ae3db58e93775eb8ff6bbac2b21a6f462e18d339",
+              "res://data/field_loader.gd": "dd9432653ba5e0459de792eaf780670242a094a8fd80a93d90f7624f8fc13dc8",
+              "res://data/fields/default.json": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+              "res://i18n/es.po": "84b58c71ebe60aa3806f1a34067c546cd062fd2f733c883f95515c1f4656eecf",
+              "res://input/commands.gd": "ea359e6820331cf34f691f24c9154fc18df875b5b770dc01d335671959e5f4e5",
+              "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+              "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+              "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+              "res://main.gd": "dae3930fea833656f4b9d256c8202713586ccc5de6fa5b8a96128b3277771fbd",
+              "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+              "res://physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+              "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+              "res://physics/aircraft_data.gd": "86638ff4d0932309130f016420b5c21425a63dbef4c366d6c4c4d071b2751f73",
+              "res://physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+              "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+              "res://physics/integrator.gd": "41b519cdb91f28067e8b1bd46d30fcab08cabe7dcf74414d827323bb3098579b",
+              "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+              "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+              "res://physics/propulsion.gd": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3",
+              "res://physics/rigid_body.gd": "890970b446f570dded94d932d654a23ef64bc91be30a85975b0051b6aeea4f39",
+              "res://physics/trim.gd": "0c54456dc375c5066e1943a042f98dd7ef474821797f44b3bd6d578824c969da",
+              "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+              "res://render/airplane.gd": "7029bcfaca71223663d365246ceeac358b857e3507aaa89f8040c658f4f75573",
+              "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+              "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+              "res://render/field.gd": "98918bde52a69e8049b1489a2b031363a485c41ba429ad1f83a2c81d66e5fd04",
+              "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+              "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+              "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+              "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+              "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+              "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+              "res://render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+              "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+              "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+              "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+              "res://render/tree_assets.gd": "9e1cee18977b8fe735700be9529e0518317ffa8da17d2dfac88d49a34e3efcc9",
+              "res://render/tree_identity.gdshaderinc": "9cf2c934e7f6b6006630c772dbf70520ca1efbdacca0a64c1e0d33f57d28d45f",
+              "res://render/treeline.gd": "2e225963a057e006e4990e5d65fa3603335293d8d6863b28ad30bb56eff929b6",
+              "res://render/treeline.gdshader": "20447f34326039713598039c34d060924e705b68568a71b9b076bdc770306a0b",
+              "res://render/visual_evidence.gd": "1e403d6418ef4704b329157f4d8f1de5c7ffb9eb3b2f40c1b5690a2dfc2d0ac6",
+              "res://sim/flight_session.gd": "0c22a4117d0faddd227f68098f9e8d2b19e5037f5a0c74a5054a8271ac44ed47",
+              "res://sim/maneuvers.gd": "2a20a79125d62b885c97347b0303e5d003fbaa43b94f90046fcef70ea6c8704c",
+              "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+              "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+              "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+              "res://sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+              "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+              "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+              "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+              "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+              "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+              "res://ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+              "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+              "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+              "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+              "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+              "res://ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+              "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+              "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+              "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+              "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+              "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+            },
+            "source_tree_available": true
+          },
+          "seed": {
+            "kind": "not-used",
+            "note": "Home uses fixed analytic clouds and no RNG"
+          },
+          "shader_clock_s": 37.0,
+          "tonemapper": 3
+        },
+        "language": "es",
+        "route": "standalone-home",
+        "state": "home",
+        "viewport": {
+          "active_camera": "/root/HomeScene/@Camera3D@17",
+          "camera_3d_count": 1,
+          "world_environment_count": 1
+        },
+        "visual": {}
+      }
+    },
+    {
+      "capture_manifest": "ui-flight-en.json",
+      "capture_manifest_sha256": "ae67b315fb00ec43777dcb3b33a22e6d4ea4e7c7b3950aa628c9ed9f3e97510a",
+      "capture_scene": "flight",
+      "case_id": "ui-flight-en",
+      "family": "ui-route",
+      "image": "ui-flight-en.png",
+      "kind": "ui",
+      "language": "en",
+      "route": "interactive-home-fly",
+      "sha256": "4f98a628fee553c480657e4dca95a838d98d24b581ca4fbb09913985fc59a64e",
+      "ui_evidence": {
+        "flight_snapshot_frozen": true,
+        "language": "en",
+        "route": "interactive-home-fly",
+        "state": "flight",
+        "viewport": {
+          "active_camera": "/root/AppRoot/Main/@Camera3D@86",
+          "camera_3d_count": 1,
+          "world_environment_count": 1
+        },
+        "visual": {
+          "aircraft": "jensen-das-ugly-stik-60",
+          "backend": "gl_compatibility",
+          "camera": {
+            "autozoom": true,
+            "far_m": 21000.0,
+            "fov_deg": 29.7958793640137,
+            "keep_aspect": 1,
+            "mode": "pilot",
+            "near_m": 0.100000001490116,
+            "projection": 0,
+            "transform": {
+              "basis_columns": [
+                [
+                  0.960082590579987,
+                  0.0,
+                  -0.279716730117798
+                ],
+                [
+                  0.115281447768211,
+                  0.911122143268585,
+                  0.395684987306595
+                ],
+                [
+                  0.254856109619141,
+                  -0.412136405706406,
+                  0.874752521514893
+                ]
+              ],
+              "position": [
+                0.0,
+                1.70000004768372,
+                0.0
+              ]
+            },
+            "viewport": [
+              1280.0,
+              720.0
+            ]
+          },
+          "case_id": "unspecified",
+          "clock_s": 1.5,
+          "coordinate_frame": "render: east/up/south; metres",
+          "distance_to_camera_m": 68.6665802001953,
+          "distance_to_pilot_m": 68.6665802001953,
+          "exposure": 0.600000023841858,
+          "field_data": {
+            "id": "default",
+            "path": "res://data/fields/default.json",
+            "sha256": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b"
+          },
+          "format": "openrc-visual-evidence v1",
+          "light": {
+            "color": "(1.0, 0.9137, 0.8431, 1.0)",
+            "direction": [
+              -0.5,
+              0.70710676908493,
+              0.5
+            ],
+            "energy": 1.0
+          },
+          "pose": {
+            "basis_columns": [
+              [
+                -2.22044604925031e-16,
+                5.58580959264532e-15,
+                1.0
+              ],
+              [
+                -0.0742878019809723,
+                0.997236847877502,
+                -5.57887069874141e-15
+              ],
+              [
+                -0.997236847877502,
+                -0.0742878019809723,
+                2.22044604925031e-16
+              ]
+            ],
+            "position": [
+              -17.5000972747803,
+              30.0,
+              -60.0662689208984
+            ]
+          },
+          "preset": "current-default",
+          "provenance": {
+            "build": {
+              "commit": "",
+              "commit_date": "",
+              "describe": "",
+              "dirty": false,
+              "godot": "4.7.2-stable (official)",
+              "label": "",
+              "parsed": {
+                "after": 0,
+                "base": "0.1.0",
+                "dirty": false,
+                "prerelease": "",
+                "semver": "0.1.0",
+                "sha": "",
+                "tag": ""
+              },
+              "source": "development",
+              "version": "0.1.0"
+            },
+            "code_revision": "5e0347954bca121c2459ace466ed64dec26f9dce",
+            "source_scope": "runtime source tree; imported/exported resources may omit original files",
+            "source_sha256": {
+              "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+              "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+              "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+              "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+              "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+              "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+              "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+              "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+              "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+              "res://aircraft/inspect_p51.gd": "8415ef50a3bb154e80e0dfb60ea25802989b331a5bc16aa0c4df98f99edce5ce",
+              "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+              "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+              "res://aircraft/p51d_geometry.gd": "fb81f04c849850440d6cc41c074fcbf8ec8987c5e0318a5127503026732d7e2f",
+              "res://aircraft/p51d_model.gd": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
+              "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+              "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+              "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+              "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+              "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+              "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+              "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+              "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+              "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+              "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+              "res://aircraft/verify_p51.gd": "14dcb9e7743ced8859135f596c317134aa27530a92bd4be61fb0010bfd2de66b",
+              "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+              "res://app_root.gd": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a",
+              "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+              "res://app_state/aircraft_catalog.gd": "a02ea82f98dc142e259dac301d6456ac1ae9db96828773649ce68b436e5d934c",
+              "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+              "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+              "res://assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+              "res://assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+              "res://assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+              "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+              "res://data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+              "res://data/aircraft/p51d_mustang_120.json": "93f6c0c4c69dd6e8acbcf1f0ae3db58e93775eb8ff6bbac2b21a6f462e18d339",
+              "res://data/field_loader.gd": "dd9432653ba5e0459de792eaf780670242a094a8fd80a93d90f7624f8fc13dc8",
+              "res://data/fields/default.json": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+              "res://i18n/es.po": "84b58c71ebe60aa3806f1a34067c546cd062fd2f733c883f95515c1f4656eecf",
+              "res://input/commands.gd": "ea359e6820331cf34f691f24c9154fc18df875b5b770dc01d335671959e5f4e5",
+              "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+              "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+              "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+              "res://main.gd": "dae3930fea833656f4b9d256c8202713586ccc5de6fa5b8a96128b3277771fbd",
+              "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+              "res://physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+              "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+              "res://physics/aircraft_data.gd": "86638ff4d0932309130f016420b5c21425a63dbef4c366d6c4c4d071b2751f73",
+              "res://physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+              "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+              "res://physics/integrator.gd": "41b519cdb91f28067e8b1bd46d30fcab08cabe7dcf74414d827323bb3098579b",
+              "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+              "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+              "res://physics/propulsion.gd": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3",
+              "res://physics/rigid_body.gd": "890970b446f570dded94d932d654a23ef64bc91be30a85975b0051b6aeea4f39",
+              "res://physics/trim.gd": "0c54456dc375c5066e1943a042f98dd7ef474821797f44b3bd6d578824c969da",
+              "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+              "res://render/airplane.gd": "7029bcfaca71223663d365246ceeac358b857e3507aaa89f8040c658f4f75573",
+              "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+              "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+              "res://render/field.gd": "98918bde52a69e8049b1489a2b031363a485c41ba429ad1f83a2c81d66e5fd04",
+              "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+              "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+              "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+              "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+              "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+              "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+              "res://render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+              "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+              "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+              "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+              "res://render/tree_assets.gd": "9e1cee18977b8fe735700be9529e0518317ffa8da17d2dfac88d49a34e3efcc9",
+              "res://render/tree_identity.gdshaderinc": "9cf2c934e7f6b6006630c772dbf70520ca1efbdacca0a64c1e0d33f57d28d45f",
+              "res://render/treeline.gd": "2e225963a057e006e4990e5d65fa3603335293d8d6863b28ad30bb56eff929b6",
+              "res://render/treeline.gdshader": "20447f34326039713598039c34d060924e705b68568a71b9b076bdc770306a0b",
+              "res://render/visual_evidence.gd": "1e403d6418ef4704b329157f4d8f1de5c7ffb9eb3b2f40c1b5690a2dfc2d0ac6",
+              "res://sim/flight_session.gd": "0c22a4117d0faddd227f68098f9e8d2b19e5037f5a0c74a5054a8271ac44ed47",
+              "res://sim/maneuvers.gd": "2a20a79125d62b885c97347b0303e5d003fbaa43b94f90046fcef70ea6c8704c",
+              "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+              "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+              "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+              "res://sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+              "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+              "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+              "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+              "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+              "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+              "res://ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+              "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+              "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+              "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+              "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+              "res://ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+              "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+              "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+              "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+              "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+              "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+            },
+            "source_tree_available": true
+          },
+          "render_settings": {
+            "msaa_3d": 2,
+            "scaling_3d_scale": 1.0,
+            "screen_space_aa": 0
+          },
+          "route": "physics-fixed",
+          "seed": {
+            "kind": "not-used",
+            "note": "procedural shaders use fixed analytic noise; no RNG"
+          },
+          "simulation_tick": 360,
+          "simulation_time_s": 1.5,
+          "state": {
+            "aircraft_visible": true,
+            "controls": {
+              "pitch": 0.0,
+              "roll": 0.0,
+              "throttle": 0.284374818125337,
+              "yaw": 0.0
+            },
+            "engine_shadows": false,
+            "paused": false,
+            "physics_state": [
+              60.0662689153805,
+              -17.5000975906375,
+              -30.0,
+              14.9584877712547,
+              -0.0441792769206297,
+              1.11431224919817,
+              0.706618150676249,
+              -0.0262828677065072,
+              0.0262828677065033,
+              0.706618150676249,
+              -3.54372753089009e-15,
+              1.74725720379731e-16,
+              -3.74483935980598e-15
+            ],
+            "propeller_angle_rad": 53.6033897399902,
+            "shadow": "sun",
+            "surfaces": {
+              "pitch": 0.262836484934918,
+              "roll": 0.0205260161958305,
+              "throttle": 0.284374818125337,
+              "yaw": 0.026386599355537
+            }
+          },
+          "tonemapper": 3,
+          "visual_distance_m": 0.0,
+          "visual_pose": ""
+        }
+      }
+    },
+    {
+      "capture_manifest": "ui-flight-es.json",
+      "capture_manifest_sha256": "eb364080da80e30fdc67f496ccd5aa63c2dd00954dc0c9d22c8c382d223a051d",
+      "capture_scene": "flight",
+      "case_id": "ui-flight-es",
+      "family": "ui-route",
+      "image": "ui-flight-es.png",
+      "kind": "ui",
+      "language": "es",
+      "route": "interactive-home-fly",
+      "sha256": "4f98a628fee553c480657e4dca95a838d98d24b581ca4fbb09913985fc59a64e",
+      "ui_evidence": {
+        "flight_snapshot_frozen": true,
+        "language": "es",
+        "route": "interactive-home-fly",
+        "state": "flight",
+        "viewport": {
+          "active_camera": "/root/AppRoot/Main/@Camera3D@86",
+          "camera_3d_count": 1,
+          "world_environment_count": 1
+        },
+        "visual": {
+          "aircraft": "jensen-das-ugly-stik-60",
+          "backend": "gl_compatibility",
+          "camera": {
+            "autozoom": true,
+            "far_m": 21000.0,
+            "fov_deg": 29.7958793640137,
+            "keep_aspect": 1,
+            "mode": "pilot",
+            "near_m": 0.100000001490116,
+            "projection": 0,
+            "transform": {
+              "basis_columns": [
+                [
+                  0.960082590579987,
+                  0.0,
+                  -0.279716730117798
+                ],
+                [
+                  0.115281447768211,
+                  0.911122143268585,
+                  0.395684987306595
+                ],
+                [
+                  0.254856109619141,
+                  -0.412136405706406,
+                  0.874752521514893
+                ]
+              ],
+              "position": [
+                0.0,
+                1.70000004768372,
+                0.0
+              ]
+            },
+            "viewport": [
+              1280.0,
+              720.0
+            ]
+          },
+          "case_id": "unspecified",
+          "clock_s": 1.5,
+          "coordinate_frame": "render: east/up/south; metres",
+          "distance_to_camera_m": 68.6665802001953,
+          "distance_to_pilot_m": 68.6665802001953,
+          "exposure": 0.600000023841858,
+          "field_data": {
+            "id": "default",
+            "path": "res://data/fields/default.json",
+            "sha256": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b"
+          },
+          "format": "openrc-visual-evidence v1",
+          "light": {
+            "color": "(1.0, 0.9137, 0.8431, 1.0)",
+            "direction": [
+              -0.5,
+              0.70710676908493,
+              0.5
+            ],
+            "energy": 1.0
+          },
+          "pose": {
+            "basis_columns": [
+              [
+                -2.22044604925031e-16,
+                5.58580959264532e-15,
+                1.0
+              ],
+              [
+                -0.0742878019809723,
+                0.997236847877502,
+                -5.57887069874141e-15
+              ],
+              [
+                -0.997236847877502,
+                -0.0742878019809723,
+                2.22044604925031e-16
+              ]
+            ],
+            "position": [
+              -17.5000972747803,
+              30.0,
+              -60.0662689208984
+            ]
+          },
+          "preset": "current-default",
+          "provenance": {
+            "build": {
+              "commit": "",
+              "commit_date": "",
+              "describe": "",
+              "dirty": false,
+              "godot": "4.7.2-stable (official)",
+              "label": "",
+              "parsed": {
+                "after": 0,
+                "base": "0.1.0",
+                "dirty": false,
+                "prerelease": "",
+                "semver": "0.1.0",
+                "sha": "",
+                "tag": ""
+              },
+              "source": "development",
+              "version": "0.1.0"
+            },
+            "code_revision": "5e0347954bca121c2459ace466ed64dec26f9dce",
+            "source_scope": "runtime source tree; imported/exported resources may omit original files",
+            "source_sha256": {
+              "res://aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+              "res://aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+              "res://aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+              "res://aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+              "res://aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+              "res://aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+              "res://aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+              "res://aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+              "res://aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+              "res://aircraft/inspect_p51.gd": "8415ef50a3bb154e80e0dfb60ea25802989b331a5bc16aa0c4df98f99edce5ce",
+              "res://aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+              "res://aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+              "res://aircraft/p51d_geometry.gd": "fb81f04c849850440d6cc41c074fcbf8ec8987c5e0318a5127503026732d7e2f",
+              "res://aircraft/p51d_model.gd": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
+              "res://aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+              "res://aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+              "res://aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+              "res://aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+              "res://aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+              "res://aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+              "res://aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+              "res://aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+              "res://aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+              "res://aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+              "res://aircraft/verify_p51.gd": "14dcb9e7743ced8859135f596c317134aa27530a92bd4be61fb0010bfd2de66b",
+              "res://aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+              "res://app_root.gd": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a",
+              "res://app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+              "res://app_state/aircraft_catalog.gd": "a02ea82f98dc142e259dac301d6456ac1ae9db96828773649ce68b436e5d934c",
+              "res://app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+              "res://app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+              "res://assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+              "res://assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+              "res://assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+              "res://data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+              "res://data/aircraft/jensen_ugly_stik_60.json": "b69cf614bbefac5ba55d7866c3086a79efbdd4a8b256da3b77f26b2d8588ccb1",
+              "res://data/aircraft/p51d_mustang_120.json": "93f6c0c4c69dd6e8acbcf1f0ae3db58e93775eb8ff6bbac2b21a6f462e18d339",
+              "res://data/field_loader.gd": "dd9432653ba5e0459de792eaf780670242a094a8fd80a93d90f7624f8fc13dc8",
+              "res://data/fields/default.json": "b4fad6277314d098477ac8ada6bf4c5d2dabeb7d932abfec9104ba3a66397b8b",
+              "res://i18n/es.po": "84b58c71ebe60aa3806f1a34067c546cd062fd2f733c883f95515c1f4656eecf",
+              "res://input/commands.gd": "ea359e6820331cf34f691f24c9154fc18df875b5b770dc01d335671959e5f4e5",
+              "res://input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+              "res://input/rc_calibration.gd": "44b267c326316acc03a7eaf7d4ca50151861ac97855c1dd17c69287e3270e06f",
+              "res://input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced",
+              "res://main.gd": "dae3930fea833656f4b9d256c8202713586ccc5de6fa5b8a96128b3277771fbd",
+              "res://main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+              "res://physics/aero.gd": "851f58f39342e919d125f56438fd40f181a9bf27b91b276b22b030096bb037dc",
+              "res://physics/air_data.gd": "f1006fb9f18a79d3454b447f2a3b8bac55fc7470c297d004dd0cf78543854194",
+              "res://physics/aircraft_data.gd": "86638ff4d0932309130f016420b5c21425a63dbef4c366d6c4c4d071b2751f73",
+              "res://physics/dynamics.gd": "29f0edfcca7e2be27c3f7233853282ea5f1de743913ea97d385a9b4067c3bb86",
+              "res://physics/flight_modes.gd": "bb222ede8fa6442de7ebde86d11662742f523428e45a339ec62add3afe4e702c",
+              "res://physics/integrator.gd": "41b519cdb91f28067e8b1bd46d30fcab08cabe7dcf74414d827323bb3098579b",
+              "res://physics/linearize.gd": "abd424d18017cc3aa35821dd6e9caacb10be1b559a7ec582cc3ac9f0782c5a4b",
+              "res://physics/math3d.gd": "e43bb4cb2d1d4921f2df80bb0d346028bd7f7a83e2f7659cbfacbaed48e45cd8",
+              "res://physics/propulsion.gd": "5ea86dfd1e62db66234f69170305999791cbea5288ab37a7402869ebdf0d67f3",
+              "res://physics/rigid_body.gd": "890970b446f570dded94d932d654a23ef64bc91be30a85975b0051b6aeea4f39",
+              "res://physics/trim.gd": "0c54456dc375c5066e1943a042f98dd7ef474821797f44b3bd6d578824c969da",
+              "res://project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+              "res://render/airplane.gd": "7029bcfaca71223663d365246ceeac358b857e3507aaa89f8040c658f4f75573",
+              "res://render/atmosphere.gd": "7c1ca9f3668a75247e70297f2153928ff728088a8dae0bbe1e9424f8066d2fe3",
+              "res://render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+              "res://render/field.gd": "98918bde52a69e8049b1489a2b031363a485c41ba429ad1f83a2c81d66e5fd04",
+              "res://render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+              "res://render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+              "res://render/ground.gd": "8aa962a1af3caff7e74d95762d855cc764b7fd9cc2a61df94f2ac3add5208734",
+              "res://render/ground.gdshader": "76044da82f74d0d7ada4eb07ff0eca6be7620a840500b747510dd74889315b7b",
+              "res://render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+              "res://render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+              "res://render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+              "res://render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+              "res://render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+              "res://render/sky.gdshader": "058c04c5dab9e2e32cea983c223bdc84a77c1d4124c6e698c34b47581ae979ba",
+              "res://render/tree_assets.gd": "9e1cee18977b8fe735700be9529e0518317ffa8da17d2dfac88d49a34e3efcc9",
+              "res://render/tree_identity.gdshaderinc": "9cf2c934e7f6b6006630c772dbf70520ca1efbdacca0a64c1e0d33f57d28d45f",
+              "res://render/treeline.gd": "2e225963a057e006e4990e5d65fa3603335293d8d6863b28ad30bb56eff929b6",
+              "res://render/treeline.gdshader": "20447f34326039713598039c34d060924e705b68568a71b9b076bdc770306a0b",
+              "res://render/visual_evidence.gd": "1e403d6418ef4704b329157f4d8f1de5c7ffb9eb3b2f40c1b5690a2dfc2d0ac6",
+              "res://sim/flight_session.gd": "0c22a4117d0faddd227f68098f9e8d2b19e5037f5a0c74a5054a8271ac44ed47",
+              "res://sim/maneuvers.gd": "2a20a79125d62b885c97347b0303e5d003fbaa43b94f90046fcef70ea6c8704c",
+              "res://sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+              "res://sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+              "res://sim/scripted.gd": "b135d09e617ceadda6088ff987980a5d7216a543e4eaf58e50c330f42b081df9",
+              "res://sim/simulation.gd": "68670845c10167d9270fc8a1793c2cc6963ae505b73c2147a8ba26435d5ced05",
+              "res://sim/trace.gd": "2a1e8d9c2ada8392ea17ef2df61831f5587104bbccdbdbeab19796de4c01bdeb",
+              "res://spec.gd": "fcaabf805e0c9544208314c266699e93adedad207594ef04a3206eae45964d15",
+              "res://tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+              "res://tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f",
+              "res://ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+              "res://ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+              "res://ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+              "res://ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+              "res://ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+              "res://ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+              "res://ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+              "res://ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+              "res://ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+              "res://ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+              "res://ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+              "res://ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+            },
+            "source_tree_available": true
+          },
+          "render_settings": {
+            "msaa_3d": 2,
+            "scaling_3d_scale": 1.0,
+            "screen_space_aa": 0
+          },
+          "route": "physics-fixed",
+          "seed": {
+            "kind": "not-used",
+            "note": "procedural shaders use fixed analytic noise; no RNG"
+          },
+          "simulation_tick": 360,
+          "simulation_time_s": 1.5,
+          "state": {
+            "aircraft_visible": true,
+            "controls": {
+              "pitch": 0.0,
+              "roll": 0.0,
+              "throttle": 0.284374818125337,
+              "yaw": 0.0
+            },
+            "engine_shadows": false,
+            "paused": false,
+            "physics_state": [
+              60.0662689153805,
+              -17.5000975906375,
+              -30.0,
+              14.9584877712547,
+              -0.0441792769206297,
+              1.11431224919817,
+              0.706618150676249,
+              -0.0262828677065072,
+              0.0262828677065033,
+              0.706618150676249,
+              -3.54372753089009e-15,
+              1.74725720379731e-16,
+              -3.74483935980598e-15
+            ],
+            "propeller_angle_rad": 53.6033897399902,
+            "shadow": "sun",
+            "surfaces": {
+              "pitch": 0.262836484934918,
+              "roll": 0.0205260161958305,
+              "throttle": 0.284374818125337,
+              "yaw": 0.026386599355537
+            }
+          },
+          "tonemapper": 3,
+          "visual_distance_m": 0.0,
+          "visual_pose": ""
+        }
+      }
+    }
+  ]
+}

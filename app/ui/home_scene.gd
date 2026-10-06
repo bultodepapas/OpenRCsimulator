@@ -1,8 +1,8 @@
 # The Home backdrop (MENU-PLAN §3/§7, UI-01c, UI-05): the selected airplane (the Ugly Stik by default) over our
 # field, rendered from the same builders the flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
 # No simulation, no input, no animation: shaders get a fixed sim_clock, so every frame is the same picture.
-# The app imports no textures, so a live still render replaces a screenshot file (no import step, nothing to
-# regenerate when the model or the landscape improves). FieldBuilder owns the shared field geometry.
+# A live still render follows the current models, imported tree atlas and landscape.
+# FieldBuilder owns the shared field geometry.
 extends Node3D
 
 const Spec := preload("res://spec.gd")

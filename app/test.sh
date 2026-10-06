@@ -14,6 +14,9 @@ if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --impor
 fi
 rm -f "$IMPORT_LOG"
 
+echo "== L6b offline tree placement matches committed positions"
+python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.

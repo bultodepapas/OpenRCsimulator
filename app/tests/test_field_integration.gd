@@ -258,6 +258,8 @@ func _custom_field_source(default_source: String) -> String:
 	if parser.parse(default_source) != OK or typeof(parser.data) != TYPE_DICTIONARY:
 		return ""
 	var raw: Dictionary = (parser.data as Dictionary).duplicate(true)
+	# L5 surface/elevated-pilot fixture; L6b default Home -> Fly parity has its own test.
+	raw["objects"] = []
 	var pilot: Dictionary = raw["pilot"]
 	(pilot["north"] as Dictionary)["value"] = 7.25
 	(pilot["east"] as Dictionary)["value"] = -6.5

@@ -9,6 +9,13 @@ flock -n 9 || { echo "another capture run owns $HERE/captures" >&2; exit 1; }
 # The complete-set marker only exists after every capture, image check and trace succeeds.
 rm -f "$HERE/captures/run-manifest.json"
 GODOT="$("$HERE/get-godot.sh")"
+# L6b: fresh checkouts have no imported tree atlas. Import before hashing/rendering any scene.
+IMPORT_LOG="$(mktemp)"
+if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
+  || grep -qE "^(SCRIPT |SHADER )?ERROR:" "$IMPORT_LOG"; then
+  cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
+fi
+rm -f "$IMPORT_LOG"
 VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/test_capture_runner.py"
 # A dirty checkout is identified by revision plus per-file hashes in native evidence.
@@ -118,6 +125,8 @@ python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
 "$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"
 # L5: both interactive error routes must show a usable error instead of starting an invalid field.
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
+# L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
+python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6b"
 # Publish exactly this run's inventory, never a glob that can silently include old outputs.
 "$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
 import hashlib, json, sys
@@ -133,6 +142,8 @@ for name in sys.argv[2:]:
                     'manifest_sha256': hashlib.sha256(sidecar.read_bytes()).hexdigest()})
 trace = hashlib.sha256((root / 'trace-physics.csv').read_bytes()).hexdigest()
 manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace,
+            'treeline_review': 'l6b/repeat-1/review.json',
+            'treeline_review_sha256': hashlib.sha256((root / 'l6b/repeat-1/review.json').read_bytes()).hexdigest(),
             'visual_quality_manifest': 'vq01b/visual-quality-run-manifest.json',
             'visual_quality_manifest_sha256': hashlib.sha256((root / 'vq01b/visual-quality-run-manifest.json').read_bytes()).hexdigest()}
 temp = root / 'run-manifest.tmp'

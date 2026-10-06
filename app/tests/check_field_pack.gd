@@ -46,5 +46,27 @@ func _initialize() -> void:
 			printerr("Pack tree atlas lost its size or mipmaps: ", entry.id)
 			quit(1)
 			return
-	print("Pack tree catalog, imported atlas and license validated")
+	var builder: Script = load("res://render/field.gd")
+	var field: Node3D = builder.build(result.field)
+	var grove: Node3D = field.get_node_or_null("treeline")
+	if grove == null or grove.get_child_count() != 8:
+		printerr("Pack missing L6b treeline/shader or sector groups")
+		field.free()
+		quit(1)
+		return
+	var count: int = 0
+	for node: MultiMeshInstance3D in grove.get_children():
+		count += node.multimesh.instance_count
+		var shader_material: ShaderMaterial = node.multimesh.mesh.surface_get_material(0) as ShaderMaterial
+		if shader_material == null or shader_material.shader == null:
+			printerr("Pack treeline shader missing")
+			field.free()
+			quit(1)
+			return
+	field.free()
+	if count != 480:
+		printerr("Pack tree count mismatch: ", count)
+		quit(1)
+		return
+	print("Pack tree catalog, imported atlas, license and 480-tree field validated")
 	quit(0)
