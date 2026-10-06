@@ -1,0 +1,37 @@
+WorkerThreadPool: 12 threads, 3 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://app_root.tscn remapped: res://app_root.tscn
+Loading resource: res://app_root.gd remapped: res://app_root.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Completed load for: 'res://app_root.gd' remapped 'res://app_root.gd' at thread -1
+Completed load for: 'res://app_root.tscn' remapped 'res://app_root.tscn' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Loading resource: res://main.gd remapped: res://main.gd
+Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /tmp/openrc-l5-base-trace.csv (721 rows)
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Leaked instance: AudioStreamGeneratorPlayback:9223372107050649259 - Reference count: 1
+Hint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).
+Orphan StringName: Master (static: 0, total: 1)
+StringName: 1 unclaimed string names at exit.

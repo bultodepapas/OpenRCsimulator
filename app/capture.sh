@@ -116,6 +116,8 @@ python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
 # VQ-01b extends this same guarded producer: 66 fixed images, metadata/parity/readability checks.
 "$VPY" "$HERE/tests/test_visual_quality_cases.py"
 "$VPY" "$HERE/tests/visual_quality_cases.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/vq01b"
+# L5: both interactive error routes must show a usable error instead of starting an invalid field.
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
 # Publish exactly this run's inventory, never a glob that can silently include old outputs.
 "$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
 import hashlib, json, sys

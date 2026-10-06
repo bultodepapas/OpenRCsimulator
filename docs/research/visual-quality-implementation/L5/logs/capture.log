@@ -1,0 +1,277 @@
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 2.615s
+
+OK
+verified capture.png (atmosphere)
+verified capture-inspect.png (atmosphere)
+verified capture-inspect-deflected.png (atmosphere)
+verified capture-physics.png (atmosphere)
+verified capture-physics-inspect.png (atmosphere)
+verified capture-physics-nozoom.png (atmosphere)
+verified capture-physics-low-inspect.png (atmosphere)
+verified capture-physics-low-inspect-noplane.png (atmosphere)
+verified capture-physics-inspect-noplane.png (atmosphere)
+verified capture-land-az0-el0.png (atmosphere)
+verified capture-land-az0-el10.png (atmosphere)
+verified capture-land-az90-el0.png (atmosphere)
+verified capture-land-az90-el10.png (atmosphere)
+verified capture-land-az180-el0.png (atmosphere)
+verified capture-land-az180-el10.png (atmosphere)
+verified capture-land-az270-el0.png (atmosphere)
+verified capture-land-az270-el10.png (atmosphere)
+verified capture-land-az90-el10-t11.png (atmosphere)
+verified capture-land-az0-el0-100m.png (atmosphere)
+verified capture-land-az90-el0-100m.png (atmosphere)
+verified capture-land-az180-el0-100m.png (atmosphere)
+verified capture-land-az225-el0-100m.png (atmosphere)
+verified capture-land-az270-el0-100m.png (atmosphere)
+verified capture-land-30m.png (atmosphere)
+verified capture-land-low3m.png (atmosphere)
+verified capture-land-sun.png (atmosphere)
+verified capture-land-30m-noplane.png (atmosphere)
+verified capture-land-low3m-noplane.png (atmosphere)
+verified capture-land-top.png (atmosphere)
+verified capture-land-az0-el0.png (field)
+verified capture-land-az0-el10.png (field)
+verified capture-land-az90-el0.png (field)
+verified capture-land-az90-el10.png (field)
+verified capture-land-az180-el0.png (field)
+verified capture-land-az180-el10.png (field)
+verified capture-land-az270-el0.png (field)
+verified capture-land-az270-el10.png (field)
+verified capture-land-top.png (field)
+verified ui-home-en.png (home)
+verified ui-pause-en.png (pause)
+verified ui-help-en.png (help)
+verified ui-hint-en.png (hint)
+verified ui-home-es.png (home)
+verified ui-pause-es.png (pause)
+verified ui-help-es.png (help)
+verified ui-hint-es.png (hint)
+render counters per view (draw calls and primitives): /tmp/openrc-l5-final/app/captures/landscape-counters.txt
+capture draw_calls=105 primitives=47308 sun_px=behind sim_clock=3.0 shadow_px=755.7,758.3 below_px=640.0,764.8
+capture-inspect draw_calls=106 primitives=47316 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-inspect-deflected draw_calls=106 primitives=47322 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-physics draw_calls=105 primitives=47736 sun_px=behind sim_clock=1.5 shadow_px=1152.4,1008.4 below_px=640.0,1016.9
+capture-physics-inspect draw_calls=106 primitives=47744 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-physics-nozoom draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-physics-low-inspect draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-low-inspect-noplane draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-inspect-noplane draw_calls=6 primitives=904 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-land-az0-el0 draw_calls=16 primitives=3374 sun_px=behind sim_clock=1.5 shadow_px=675.3,376.1 below_px=415.1,381.8
+capture-land-az0-el10 draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=675.9,512.8 below_px=410.5,518.8
+capture-land-az90-el0 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,713.5 below_px=3289.8,285.0
+capture-land-az90-el10 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-18027.2,892.6 below_px=3285.4,420.1
+capture-land-az180-el0 draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,338.2
+capture-land-az180-el10 draw_calls=5 primitives=896 sun_px=1267.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=412.7,473.7
+capture-land-az270-el0 draw_calls=6 primitives=898 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,435.0
+capture-land-az270-el10 draw_calls=6 primitives=898 sun_px=12.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=3377.6,574.8
+capture-land-az90-el10-t11 draw_calls=107 primitives=47742 sun_px=behind sim_clock=11.5 shadow_px=222.4,504.9 below_px=281.2,506.4
+capture-land-az0-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=675.3,1309.8 below_px=415.1,1645.3
+capture-land-az90-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,21151.8 below_px=3289.8,-4051.5
+capture-land-az180-el0-100m draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,-925.3
+capture-land-az225-el0-100m draw_calls=5 primitives=896 sun_px=640.0,-412.0 sim_clock=1.5 shadow_px=behind below_px=-766.8,-2205.0
+capture-land-az270-el0-100m draw_calls=5 primitives=896 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,4771.5
+capture-land-30m draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m draw_calls=106 primitives=47734 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-sun draw_calls=4 primitives=894 sun_px=640.0,79.0 sim_clock=1.5 shadow_px=behind below_px=-872.4,668.3
+capture-land-30m-noplane draw_calls=5 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m-noplane draw_calls=6 primitives=894 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-top draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=735.6,-1731.7 below_px=189.7,-1185.8
+capture-land-30m-noplane.png: sky top 105.0 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-30m.png: sky top 105.0 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-az0-el0-100m.png: sky top 167.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el0.png: sky top 167.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el10.png: sky top 149.8 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az180-el0-100m.png: sky top 203.0 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el0.png: sky top 203.0 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el10.png: sky top 187.4 < near horizon 224.1 (horizon row 496), longest equal run 2 px
+capture-land-az225-el0-100m.png: sky top 182.1 < near horizon 218.4 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0-100m.png: sky top 160.1 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0.png: sky top 160.1 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el10.png: sky top 129.9 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el0-100m.png: sky top 157.8 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el0.png: sky top 157.8 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el10-t11.png: sky top 129.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el10.png: sky top 129.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-low3m-noplane.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-low3m.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-sun.png: sky top 119.8 < near horizon 219.2 (horizon row 720), longest equal run 2 px
+sim_clock sent in every landscape view: 1.5, 11.5
+capture-land-az0-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az90-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az180-el0-100m.png: largest step across the ground rim 2.9 levels
+capture-land-az225-el0-100m.png: largest step across the ground rim 3.2 levels
+capture-land-az270-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az0-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 124 vs near ground 79
+capture-land-az90-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 124 vs near ground 79
+capture-land-az180-el0.png: sky above the horizon steps ≤ 0.1 levels; far ground 130 vs near ground 85
+capture-land-az270-el0.png: sky above the horizon steps ≤ 0.2 levels; far ground 124 vs near ground 78
+sun shadow centroid 459,580: 42 px from the CG's projection along the light, 181 px from the point straight below (the two are 206 px apart; 16856 shadow px)
+airplane in the close-up: 9133 px sampled, 99th percentile lightness L* 90.0 (limit 95)
+clouds 10 s apart: 24821 sky px changed by > 3 levels; the ground changed by at most 1 level(s)
+sun disc centroid 639.5,78.5 vs projected 640.0,79.0: 0.71 px
+landscape captures ok
+capture-land-30m.png: 65 airplane pixels, Weber contrast -0.428, 9.2 % with |contrast| < 0.1, mean ΔE 41.5, background saturation 54.1
+capture-land-low3m.png: 52 airplane pixels, Weber contrast -0.497, 9.6 % with |contrast| < 0.1, mean ΔE 38.5, background saturation 21.5
+capture-physics-inspect.png: 36474 airplane pixels, Weber contrast +1.218, 26.2 % with |contrast| < 0.1, mean ΔE 77.3, background saturation 64.0
+capture-physics-low-inspect.png: 74632 airplane pixels, Weber contrast +0.248, 9.7 % with |contrast| < 0.1, mean ΔE 52.1, background saturation 68.2
+readability thresholds met: capture-land-low3m.png:-0.40:0.15:30:18, capture-land-30m.png:-0.40:0.15:30:25
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+VQ-01b capture 1/66 pilot-30m-autozoom-on
+VQ-01b capture 2/66 pilot-30m-autozoom-on-noplane
+VQ-01b capture 3/66 pilot-30m-autozoom-off
+VQ-01b capture 4/66 pilot-30m-autozoom-off-noplane
+VQ-01b capture 5/66 pilot-3m-autozoom-on
+VQ-01b capture 6/66 pilot-3m-autozoom-on-noplane
+VQ-01b capture 7/66 pilot-3m-autozoom-off
+VQ-01b capture 8/66 pilot-3m-autozoom-off-noplane
+VQ-01b capture 9/66 field-az0-el0-repeat1
+VQ-01b capture 10/66 field-az0-el0-repeat2
+VQ-01b capture 11/66 field-az0-el10-repeat1
+VQ-01b capture 12/66 field-az0-el10-repeat2
+VQ-01b capture 13/66 field-az90-el0-repeat1
+VQ-01b capture 14/66 field-az90-el0-repeat2
+VQ-01b capture 15/66 field-az90-el10-repeat1
+VQ-01b capture 16/66 field-az90-el10-repeat2
+VQ-01b capture 17/66 field-az180-el0-repeat1
+VQ-01b capture 18/66 field-az180-el0-repeat2
+VQ-01b capture 19/66 field-az180-el10-repeat1
+VQ-01b capture 20/66 field-az180-el10-repeat2
+VQ-01b capture 21/66 field-az270-el0-repeat1
+VQ-01b capture 22/66 field-az270-el0-repeat2
+VQ-01b capture 23/66 field-az270-el10-repeat1
+VQ-01b capture 24/66 field-az270-el10-repeat2
+VQ-01b capture 25/66 field-top30m-repeat1
+VQ-01b capture 26/66 field-top30m-repeat2
+VQ-01b capture 27/66 synthetic-stik-20m-level
+VQ-01b capture 28/66 synthetic-stik-20m-inverted
+VQ-01b capture 29/66 synthetic-stik-20m-knife_left
+VQ-01b capture 30/66 synthetic-stik-20m-knife_right
+VQ-01b capture 31/66 synthetic-stik-20m-climb
+VQ-01b capture 32/66 synthetic-stik-20m-dive
+VQ-01b capture 33/66 synthetic-stik-50m-level
+VQ-01b capture 34/66 synthetic-stik-50m-inverted
+VQ-01b capture 35/66 synthetic-stik-50m-knife_left
+VQ-01b capture 36/66 synthetic-stik-50m-knife_right
+VQ-01b capture 37/66 synthetic-stik-50m-climb
+VQ-01b capture 38/66 synthetic-stik-50m-dive
+VQ-01b capture 39/66 synthetic-stik-100m-level
+VQ-01b capture 40/66 synthetic-stik-100m-inverted
+VQ-01b capture 41/66 synthetic-stik-100m-knife_left
+VQ-01b capture 42/66 synthetic-stik-100m-knife_right
+VQ-01b capture 43/66 synthetic-stik-100m-climb
+VQ-01b capture 44/66 synthetic-stik-100m-dive
+VQ-01b capture 45/66 synthetic-extra-20m-level
+VQ-01b capture 46/66 synthetic-extra-20m-inverted
+VQ-01b capture 47/66 synthetic-extra-20m-knife_left
+VQ-01b capture 48/66 synthetic-extra-20m-knife_right
+VQ-01b capture 49/66 synthetic-extra-20m-climb
+VQ-01b capture 50/66 synthetic-extra-20m-dive
+VQ-01b capture 51/66 synthetic-extra-50m-level
+VQ-01b capture 52/66 synthetic-extra-50m-inverted
+VQ-01b capture 53/66 synthetic-extra-50m-knife_left
+VQ-01b capture 54/66 synthetic-extra-50m-knife_right
+VQ-01b capture 55/66 synthetic-extra-50m-climb
+VQ-01b capture 56/66 synthetic-extra-50m-dive
+VQ-01b capture 57/66 synthetic-extra-100m-level
+VQ-01b capture 58/66 synthetic-extra-100m-inverted
+VQ-01b capture 59/66 synthetic-extra-100m-knife_left
+VQ-01b capture 60/66 synthetic-extra-100m-knife_right
+VQ-01b capture 61/66 synthetic-extra-100m-climb
+VQ-01b capture 62/66 synthetic-extra-100m-dive
+VQ-01b capture 63/66 ui-home-en
+VQ-01b capture 64/66 ui-home-es
+VQ-01b capture 65/66 ui-flight-en
+VQ-01b capture 66/66 ui-flight-es
+/tmp/openrc-l5-final/app/tests/compare_captures.py:117: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmph8d_tipm/repo/captures/vq01b/pilot-readability.json' mode='w' encoding='UTF-8'>
+  json.dump(results, open(out_path, "w"), indent=2, sort_keys=True)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 3.067s
+
+OK
+pilot-30m-autozoom-off.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-30m-autozoom-on.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-3m-autozoom-off.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-3m-autozoom-on.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+VQ-01b capture 1/66 pilot-30m-autozoom-on
+VQ-01b capture 2/66 pilot-30m-autozoom-on-noplane
+VQ-01b capture 3/66 pilot-30m-autozoom-off
+VQ-01b capture 4/66 pilot-30m-autozoom-off-noplane
+VQ-01b capture 5/66 pilot-3m-autozoom-on
+VQ-01b capture 6/66 pilot-3m-autozoom-on-noplane
+VQ-01b capture 7/66 pilot-3m-autozoom-off
+VQ-01b capture 8/66 pilot-3m-autozoom-off-noplane
+VQ-01b capture 9/66 field-az0-el0-repeat1
+VQ-01b capture 10/66 field-az0-el0-repeat2
+VQ-01b capture 11/66 field-az0-el10-repeat1
+VQ-01b capture 12/66 field-az0-el10-repeat2
+VQ-01b capture 13/66 field-az90-el0-repeat1
+VQ-01b capture 14/66 field-az90-el0-repeat2
+VQ-01b capture 15/66 field-az90-el10-repeat1
+VQ-01b capture 16/66 field-az90-el10-repeat2
+VQ-01b capture 17/66 field-az180-el0-repeat1
+VQ-01b capture 18/66 field-az180-el0-repeat2
+VQ-01b capture 19/66 field-az180-el10-repeat1
+VQ-01b capture 20/66 field-az180-el10-repeat2
+VQ-01b capture 21/66 field-az270-el0-repeat1
+VQ-01b capture 22/66 field-az270-el0-repeat2
+VQ-01b capture 23/66 field-az270-el10-repeat1
+VQ-01b capture 24/66 field-az270-el10-repeat2
+VQ-01b capture 25/66 field-top30m-repeat1
+VQ-01b capture 26/66 field-top30m-repeat2
+VQ-01b capture 27/66 synthetic-stik-20m-level
+VQ-01b capture 28/66 synthetic-stik-20m-inverted
+VQ-01b capture 29/66 synthetic-stik-20m-knife_left
+VQ-01b capture 30/66 synthetic-stik-20m-knife_right
+VQ-01b capture 31/66 synthetic-stik-20m-climb
+VQ-01b capture 32/66 synthetic-stik-20m-dive
+VQ-01b capture 33/66 synthetic-stik-50m-level
+VQ-01b capture 34/66 synthetic-stik-50m-inverted
+VQ-01b capture 35/66 synthetic-stik-50m-knife_left
+VQ-01b capture 36/66 synthetic-stik-50m-knife_right
+VQ-01b capture 37/66 synthetic-stik-50m-climb
+VQ-01b capture 38/66 synthetic-stik-50m-dive
+VQ-01b capture 39/66 synthetic-stik-100m-level
+VQ-01b capture 40/66 synthetic-stik-100m-inverted
+VQ-01b capture 41/66 synthetic-stik-100m-knife_left
+VQ-01b capture 42/66 synthetic-stik-100m-knife_right
+VQ-01b capture 43/66 synthetic-stik-100m-climb
+VQ-01b capture 44/66 synthetic-stik-100m-dive
+VQ-01b capture 45/66 synthetic-extra-20m-level
+VQ-01b capture 46/66 synthetic-extra-20m-inverted
+VQ-01b capture 47/66 synthetic-extra-20m-knife_left
+VQ-01b capture 48/66 synthetic-extra-20m-knife_right
+VQ-01b capture 49/66 synthetic-extra-20m-climb
+VQ-01b capture 50/66 synthetic-extra-20m-dive
+VQ-01b capture 51/66 synthetic-extra-50m-level
+VQ-01b capture 52/66 synthetic-extra-50m-inverted
+VQ-01b capture 53/66 synthetic-extra-50m-knife_left
+VQ-01b capture 54/66 synthetic-extra-50m-knife_right
+VQ-01b capture 55/66 synthetic-extra-50m-climb
+VQ-01b capture 56/66 synthetic-extra-50m-dive
+VQ-01b capture 57/66 synthetic-extra-100m-level
+VQ-01b capture 58/66 synthetic-extra-100m-inverted
+VQ-01b capture 59/66 synthetic-extra-100m-knife_left
+VQ-01b capture 60/66 synthetic-extra-100m-knife_right
+VQ-01b capture 61/66 synthetic-extra-100m-climb
+VQ-01b capture 62/66 synthetic-extra-100m-dive
+VQ-01b capture 63/66 ui-home-en
+VQ-01b capture 64/66 ui-home-es
+VQ-01b capture 65/66 ui-flight-en
+VQ-01b capture 66/66 ui-flight-es
+pilot-30m-autozoom-off.png: 65 airplane pixels, Weber contrast -0.428, 9.2 % with |contrast| < 0.1, mean ΔE 41.5, background saturation 54.1
+pilot-30m-autozoom-on.png: 172 airplane pixels, Weber contrast -0.400, 2.3 % with |contrast| < 0.1, mean ΔE 48.7, background saturation 54.1
+pilot-3m-autozoom-off.png: 52 airplane pixels, Weber contrast -0.497, 9.6 % with |contrast| < 0.1, mean ΔE 38.5, background saturation 21.5
+pilot-3m-autozoom-on.png: 114 airplane pixels, Weber contrast -0.548, 11.4 % with |contrast| < 0.1, mean ΔE 44.9, background saturation 21.5
+complete: 66 captures; manifest /tmp/openrc-l5-final/app/captures/vq01b/visual-quality-run-manifest.json
+test_interactive_routes_show_a_focused_localized_error_panel (__main__.FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.311s
+
+OK
+capture set complete: 46 fresh images + manifests; trace verified

@@ -1,0 +1,100 @@
+{
+  "format": "openrc-silhouette-picks v1",
+  "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
+  "drawing_sha256": "SEE index.json; verified by measure.py",
+  "source": "AN 01-60-3 p30 (NAA drawing 106-00001), public domain, via Wikimedia Commons",
+  "method": "Dark pixels (<140) are closed by 3 px to seal the inked outline, the paper reachable from the crop border is flooded, the complement is opened by 4 px (removes dimension lines, leaders and text) and the largest component is the view's filled silhouette. Manual exclusion boxes (original pixel coordinates) drop closed regions that are not the airplane (dimension boxes, the rudder-travel fan, drop tanks). Each axis of each view is calibrated with a printed dimension because the 1945 reproduction is not isotropic (about 2 %).",
+  "printed_dimensions_in": {
+    "length": 387.3125,
+    "span": 444.3125,
+    "fin_top_above_frl": 69.5625,
+    "stab_span": 158.125,
+    "track": 142.0,
+    "prop_diameter": 134.0,
+    "spinner_tip_to_prop_plane": 26.75,
+    "thrust_to_ground_at_prop": 76.5,
+    "wing_ref_below_frl": 26.5,
+    "mac": 79.6,
+    "mac_le_to_25pct": 19.89,
+    "thrust_down_deg": 1.75,
+    "dihedral_deg": 5.0,
+    "three_point_angle_deg": 13.6
+  },
+  "views": {
+    "side": {
+      "box": [
+        0,
+        45,
+        1905,
+        540
+      ],
+      "exclude": [],
+      "frl_row_hint": 260,
+      "notes": "profile; the main wheel circle is not connected (excluded by the fill); the propeller blade has gaps and is excluded"
+    },
+    "front": {
+      "box": [
+        150,
+        585,
+        1700,
+        1180
+      ],
+      "exclude": [
+        [
+          1060,
+          585,
+          1700,
+          1180
+        ]
+      ],
+      "notes": "left half only (the right wing outline leaks through a dashed line); gear and wheels are dropped by the fill"
+    },
+    "top": {
+      "box": [
+        150,
+        1186,
+        1620,
+        2489
+      ],
+      "exclude": [
+        [
+          660,
+          1186,
+          745,
+          1370
+        ],
+        [
+          845,
+          1225,
+          896,
+          1340
+        ],
+        [
+          931,
+          1225,
+          1000,
+          1340
+        ],
+        [
+          720,
+          2130,
+          860,
+          2400
+        ],
+        [
+          585,
+          1920,
+          680,
+          2150
+        ],
+        [
+          1150,
+          1920,
+          1250,
+          2150
+        ]
+      ],
+      "notes": "plan; excluded: stab dimension box, the rudder 30-degree fan on both sides of the fin (the fin tip column 896-930 is kept), prop-clearance extension box, two drop tanks"
+    }
+  }
+}

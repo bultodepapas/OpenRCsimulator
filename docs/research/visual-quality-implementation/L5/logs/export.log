@@ -1,0 +1,29 @@
+== build identity: 790ed4e (commit 790ed4eb7c0b5cb57a8dc12b323d57ea1bd52b9d, 2026-10-06T02:43:37+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+exported binary reports build 790ed4e
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec
+== packages
+865ed5afd9ad5906f71e86d7bda9721522726d5e819dff278b18f47b9d9df5c9  openrc-simulator-790ed4e-linux-x86_64.zip
+4053d1c376818911ffb89d9d4700e76d33950159a054e3017ffbf9b5d0171d80  openrc-simulator-790ed4e-macos-universal.zip
+90a7f9cbc2d401e406d7929acacdd1699164242e1c70a0d813b0378743a2642e  openrc-simulator-790ed4e-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 28893286 Oct  6 02:44 openrc-simulator-790ed4e-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61042643 Oct  6 02:44 openrc-simulator-790ed4e-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 38419085 Oct  6 02:44 openrc-simulator-790ed4e-windows-x86_64.zip

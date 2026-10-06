@@ -10,6 +10,7 @@ extends Node
 
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
@@ -22,6 +23,8 @@ const FLIGHT_SCENE := "res://main.tscn"
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
+## Test seam; both routes always use the same file, including after Home → Fly.
+var field_path: String = FieldLoader.DEFAULT_PATH
 var preferences := {}
 var home: Control
 var home_scene: Node3D
@@ -56,8 +59,10 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	home_scene = HomeScene.new(aircraft) # the chosen airplane over our field, still: no simulation runs behind Home
+	home_scene = HomeScene.new(aircraft, field_path) # the chosen airplane over our field, still: no simulation runs behind Home
 	add_child(home_scene)
+	if not home_scene.field_errors.is_empty():
+		return
 	home = Home.new()
 	home.set_aircraft(aircraft)
 	home.fly_requested.connect(start_flight)
@@ -105,6 +110,7 @@ func start_flight() -> void:
 	home = null
 	home_scene = null
 	flight = load(FLIGHT_SCENE).instantiate()
+	flight.field_path = field_path
 	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
 	add_child(flight)
 	if flight.session != null:

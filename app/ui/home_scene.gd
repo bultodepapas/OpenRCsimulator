@@ -2,7 +2,7 @@
 # field, rendered from the same builders the flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
 # No simulation, no input, no animation: shaders get a fixed sim_clock, so every frame is the same picture.
 # The app imports no textures, so a live still render replaces a screenshot file (no import step, nothing to
-# regenerate when the model or the landscape improves). It mirrors main.gd's world setup; keep them in step.
+# regenerate when the model or the landscape improves). FieldBuilder owns the shared field geometry.
 extends Node3D
 
 const Spec := preload("res://spec.gd")
@@ -11,14 +11,16 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
-const Ground := preload("res://render/ground.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
+const FieldBuilder = preload("res://render/field.gd")
+const FieldError = preload("res://ui/field_error.gd")
 
-## Composition, in NED metres from the pilot station and degrees: a low pass along the runway at eye height, banked
+## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
 ## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
 ## flat perspective, the horizon in the lower third, the airplane in the right third facing the menu).
-const AIRPLANE_NED := [15.0, 3.0, -2.75]
+const AIRPLANE_NED := [15.0, 3.0, -1.05]
 const ATTITUDE_DEG := { yaw = -112.0, pitch = 2.0, roll = -30.0 }
-const CAMERA_NED := [2.0, 3.0, -1.7]
+const CAMERA_NED := [2.0, 3.0, 0.0]
 const FOV_DEG := 12.0
 ## The camera looks this far left of the airplane (deg), and this far above the horizon (deg).
 const AIRPLANE_RIGHT_DEG := 4.5
@@ -27,45 +29,41 @@ const PROP_ANGLE := 0.6 # rad: a blade off the vertical reads better than a sing
 ## Fixed clock (s) for clouds and any time-based shader: a still picture.
 const CLOCK := 37.0
 
+var field: Dictionary = {}
+var field_errors: PackedStringArray = PackedStringArray()
+
 var airplane: Dictionary
 var camera: Camera3D
 var _shadow: MeshInstance3D
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH) -> void:
 	name = "HomeScene"
+	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
+	field_errors = loaded_field.errors
+	if not loaded_field.ok:
+		return
+	field = loaded_field.field
 	ShaderClock.register() # before any material that reads sim_clock compiles
 	var world_env := WorldEnvironment.new()
 	var env := Atmosphere.environment()
 	world_env.environment = env
 	add_child(world_env)
 
-	var ground := MeshInstance3D.new()
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(Spec.GROUND_SIZE, Spec.GROUND_SIZE)
-	ground.mesh = plane
-	ground.material_override = Ground.grass_material()
-	add_child(ground)
-	var runway := MeshInstance3D.new()
-	var strip := PlaneMesh.new()
-	strip.size = Vector2(Spec.RUNWAY.length_east_west, Spec.RUNWAY.width_north_south)
-	runway.mesh = strip
-	runway.material_override = Ground.runway_material()
-	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.03])
-	add_child(runway)
+	add_child(FieldBuilder.build(field))
 	Atmosphere.create_sun(self)
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)
-	var pos := Frames.ned_to_render(AIRPLANE_NED)
+	var pos := _composition_position(AIRPLANE_NED)
 
 	camera = Camera3D.new()
 	camera.fov = FOV_DEG
 	camera.near = Spec.CAMERA.near
 	camera.far = Spec.CAMERA.far
 	add_child(camera)
-	camera.position = Frames.ned_to_render(CAMERA_NED)
+	camera.position = _composition_position(CAMERA_NED)
 	var to_airplane := pos - camera.position
 	var azimuth := atan2(to_airplane.x, -to_airplane.z) - deg_to_rad(AIRPLANE_RIGHT_DEG) # render: x east, -z north
 	var elevation := deg_to_rad(CAMERA_PITCH_DEG)
@@ -75,6 +73,19 @@ func _init(aircraft := AirplaneBuilder.STIK_ID) -> void:
 
 	ShaderClock.update(CLOCK)
 	Atmosphere.update_clouds(env, CLOCK)
+
+
+func _composition_position(offset_ned: Array) -> Vector3:
+	return Frames.ned_to_render([
+		float(field.pilot.north) + float(offset_ned[0]),
+		float(field.pilot.east) + float(offset_ned[1]),
+		float(field.pilot.down) - float(field.pilot.eye_height) + float(offset_ned[2]),
+	])
+
+
+func _ready() -> void:
+	if not field_errors.is_empty():
+		FieldError.report(self, field_errors)
 
 
 ## Builds `id` in the composition's pose (and its shadow), replacing the airplane shown. Every catalog airplane uses
@@ -89,7 +100,7 @@ func show_aircraft(id: String) -> void:
 	airplane = built
 	add_child(airplane.root)
 	var basis := Frames.attitude_to_render(deg_to_rad(ATTITUDE_DEG.yaw), deg_to_rad(ATTITUDE_DEG.pitch), deg_to_rad(ATTITUDE_DEG.roll))
-	var pos := Frames.ned_to_render(AIRPLANE_NED)
+	var pos := _composition_position(AIRPLANE_NED)
 	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
 	airplane.propeller.rotation.z = PROP_ANGLE
 	var extent := Shadow.model_extent(airplane.root)

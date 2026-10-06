@@ -217,3 +217,9 @@ msgstr "Experimental: primera estimación física a partir de los planos, aún s
 
 msgid "Preview only: turbine propulsion is not simulated yet."
 msgstr "Solo vista previa: la propulsión por turbina aún no se simula."
+
+msgid "The field could not be loaded."
+msgstr "No se pudo cargar el campo."
+
+msgid "Flight is unavailable. Restore the field data and restart the simulator."
+msgstr "El vuelo no está disponible. Restaura los datos del campo y reinicia el simulador."

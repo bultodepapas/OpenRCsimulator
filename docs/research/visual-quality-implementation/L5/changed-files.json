@@ -1,0 +1,122 @@
+[
+  {
+    "path": "app/app_root.gd",
+    "before_sha256": "c9946e5c8510909da8345e5dcd524ff54e8cf2b8af6351fcfeaaa5c6ff907804",
+    "after_sha256": "f2e6ceff0ac4146c7ffe05f16f192b650d6f859cb178ad16671c6b4a95705d0a"
+  },
+  {
+    "path": "app/capture.sh",
+    "before_sha256": "f07d22ac782256d216733cd6c247a209e7e2358409106c3fa60a685565dc1b85",
+    "after_sha256": "487598990633962724daefbff33b50bf4ecdc67c74e196125027ec42cfaeca4c"
+  },
+  {
+    "path": "app/data/field_loader.gd",
+    "before_sha256": null,
+    "after_sha256": "1141805d083bc9649247f0c796eae8f7fa2c18dc3022dc881fde504f87bec7c3"
+  },
+  {
+    "path": "app/data/field_loader.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "2fff43b8bb2a99130e92d0fc063a2c1d9d67f417e2afa81230aad9765eb5b08c"
+  },
+  {
+    "path": "app/data/fields/default.json",
+    "before_sha256": null,
+    "after_sha256": "016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec"
+  },
+  {
+    "path": "app/export.sh",
+    "before_sha256": "87f9b248fde168a3fefa1817aac49598b8fc0d672c8ddc10e16c12288d7a6bc4",
+    "after_sha256": "06afba3f40245a81f9a023d5be40d53fb06fd81fc96092e5e6d088996c2565fa"
+  },
+  {
+    "path": "app/i18n/es.po",
+    "before_sha256": "f2b2a9a9e1cc41130fd02a5ec3226a3f5e03a98395a4785782588112876752b7",
+    "after_sha256": "84b58c71ebe60aa3806f1a34067c546cd062fd2f733c883f95515c1f4656eecf"
+  },
+  {
+    "path": "app/main.gd",
+    "before_sha256": "3aae6c4688969778f900e50a1def537439447ca7f27539df5c071d842c975275",
+    "after_sha256": "dae3930fea833656f4b9d256c8202713586ccc5de6fa5b8a96128b3277771fbd"
+  },
+  {
+    "path": "app/render/field.gd",
+    "before_sha256": null,
+    "after_sha256": "a36fe2e608b0f79360166698be8d42858ff4b8906bdfc587ed15df7371f7b765"
+  },
+  {
+    "path": "app/render/field.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "3934d1e425a6bad3fd8dda35ae39427560817708827f2ddf708ce4a342c7cc75"
+  },
+  {
+    "path": "app/render/pilot_camera.gd",
+    "before_sha256": "126cbdd740fd903d2cfa23c017ca6de32ec86f11f5c774e02de5c4b6665138f6",
+    "after_sha256": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7"
+  },
+  {
+    "path": "app/test.sh",
+    "before_sha256": "1d584fb53cae05a1a9d4650c0cad7757baa8656c584e0ed2d28678439d4ee6b1",
+    "after_sha256": "b5b1f65a328b148407d18f801f9ebaaa7cf926b92b6b6242afb567bd04adfc58"
+  },
+  {
+    "path": "app/tests/check_field_pack.gd",
+    "before_sha256": null,
+    "after_sha256": "ab137fb0667f5b5a18fe5a768da613db427c812af7408dd77d917adfbb4d03a8"
+  },
+  {
+    "path": "app/tests/check_field_pack.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "6b4924f34d46deda3077cbf8588438c83aa04296aab387a6ac21e499e7ef1131"
+  },
+  {
+    "path": "app/tests/probe_field_failure.gd",
+    "before_sha256": null,
+    "after_sha256": "cf7ecbe099b53514b6cb4cfde48f93fa6e0a15d3bd0c0832e9668214ef093fb5"
+  },
+  {
+    "path": "app/tests/probe_field_failure.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "c227f67f0e81873f30df0dc5e384a170df9317c4ff8f3d1d66a90dddda8de3dc"
+  },
+  {
+    "path": "app/tests/test_field_failures.py",
+    "before_sha256": null,
+    "after_sha256": "deb5f3556875674241369b16fe0ff569b68a7a67a4dd49853beb3b0143577aa2"
+  },
+  {
+    "path": "app/tests/test_field_integration.gd",
+    "before_sha256": null,
+    "after_sha256": "acb70a38709a8c0f6f0d7b5a3eafea26f6c620c0d8a3698a71f091a7407e4da9"
+  },
+  {
+    "path": "app/tests/test_field_integration.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "72673358aedc6d062bdd9035a98810ec9e922281eefa3de1867cc680eab13ec8"
+  },
+  {
+    "path": "app/tests/test_field_loader.gd",
+    "before_sha256": null,
+    "after_sha256": "d7860d25e6a9a3addedd8b84ae10a95980c578cc2ddb24e16b53a2c33f06c9ad"
+  },
+  {
+    "path": "app/tests/test_field_loader.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "092f6a255291d9351d78aa9e2bab4fe1a5af6bcbd22f5a065dfa0de6a33a9d27"
+  },
+  {
+    "path": "app/ui/field_error.gd",
+    "before_sha256": null,
+    "after_sha256": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db"
+  },
+  {
+    "path": "app/ui/field_error.gd.uid",
+    "before_sha256": null,
+    "after_sha256": "d82f258ba4ec54b01895982561c201fcbd9036060dea6de628f619188546c332"
+  },
+  {
+    "path": "app/ui/home_scene.gd",
+    "before_sha256": "085d6872f395655205c628a53a3142e3fb5188301134e89ffad2fed98e430dd5",
+    "after_sha256": "802b17ebb7c526c3f60bbd2aba847916017295192482df2c85c17d2732774083"
+  }
+]

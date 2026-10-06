@@ -1,6 +1,6 @@
 # Calidad visual del simulador: dirección, herramientas y entregas
 
-2026-10-05 · Revisado contra el código el **2026-10-06**, con **ensayos prácticos de herramientas y assets** añadidos en §6.2. **VQ-01a y VQ-01b implementados y verificados; siguiente paso L5.** Preferencia del propietario: «una mezcla de todos, con opciones para subir calidad»: realismo RC, presentación limpia y buen rendimiento, con calidad escalable. Equipo disponible para probar: **Ryzen 9 5900X, RTX 3090 y 64 GB RAM**. Resolución, sistema operativo y equipo modesto de referencia todavía sin definir.
+2026-10-05 · Revisado contra el código el **2026-10-06**, con **ensayos prácticos de herramientas y assets** añadidos en §6.2. **VQ-01a, VQ-01b y L5 implementados y verificados; siguiente paso L6a.** Preferencia del propietario: «una mezcla de todos, con opciones para subir calidad»: realismo RC, presentación limpia y buen rendimiento, con calidad escalable. Equipo disponible para probar: **Ryzen 9 5900X, RTX 3090 y 64 GB RAM**. Resolución, sistema operativo y equipo modesto de referencia todavía sin definir.
 
 La recomendación es construir **un campo RC reconocible, un avión con materiales convincentes y una imagen estable en movimiento**, conservando Compatibility como base. Primero composición, escala, contraste y materiales; después efectos caros. Forward+ merece una comparación controlada, no una migración asumida.
 
@@ -15,7 +15,7 @@ La investigación inicial revisó scripts, configuración, planes y fuentes ofic
 | [get-godot.sh](../app/get-godot.sh) y binario ejecutado: 4.7.2-stable; [project.godot](../app/project.godot): Compatibility | Evaluar herramientas contra esta combinación concreta |
 | `msaa_3d=2` | Ya es **MSAA 4×**, no 2×. El valor es un enum: [Viewport](https://docs.godotengine.org/en/4.7/classes/class_viewport.html#enum-viewport-msaa) |
 | [atmosphere.gd](../app/render/atmosphere.gd): cielo propio, ACES, exposición, bruma, reflejo de cielo y nubes | L1–L4 ya existen; afinar con pruebas A/B, sin volver a implementarlos |
-| [main.gd](../app/main.gd), `_build_field` tras VQ-01a: plano de suelo y plano de pista; [home_scene.gd](../app/ui/home_scene.gd) también los construye | L5 comparte el constructor del campo entre Inicio y vuelo; cada escena conserva su cámara, avión y reloj |
+| [field.gd](../app/render/field.gd) y [field_loader.gd](../app/data/field_loader.gd), L5: campo desde JSON validado, compartido por Inicio y vuelo | Cada escena conserva su cámara, avión y reloj; datos inválidos impiden arrancar la sesión. [Evidencia L5](research/visual-quality-implementation/L5/README.md) |
 | [ground.gdshader](../app/render/ground.gdshader): tile de hierba en coordenadas mundiales con mipmaps y muestreo anisotrópico | Conservar ese filtrado; falta romper repetición, introducir superficies y transiciones |
 | [shadow.gd](../app/render/shadow.gd): máscara planar genérica, geometría/datum propios del Stik | Extra necesita su propia silueta; alabeo extremo y suelo irregular requieren otro tratamiento |
 | [pilot_camera.gd](../app/render/pilot_camera.gd): seguimiento y autozoom; horizonte puede salir del cuadro | Calidad incluye encuadre y lectura del vuelo, además de materiales |
@@ -78,7 +78,7 @@ Porcentajes y distancias son **decisiones de diseño provisionales**, no resulta
 | --- | --- | --- | --- |
 | VQ-01a ✅ · L0 | Render/tests: proteger el harness contra PNG viejos y separar la escena de atmósfera vacía de las vistas del campo completo | Ninguna nueva | Forzar fallo/timeout en copia con PNG viejo debe fallar; producir PNG/manifest nuevos debe pasar. Mantener controles L1–L4 en fixture vacío y añadir vistas del campo sin relajar sus límites. **Cerrado:** [15 pruebas, mutaciones, 46 capturas y suite](research/visual-quality-implementation/VQ-01a/README.md) |
 | VQ-01b ✅ · L0/D7 | Render/tests: referencias visuales, casos fijos y extensión mínima del logger existente | VQ-01a | Manifiesto de casos de §8, capturas iniciales, datos crudos de frametime y calentamiento configurable. El reporte identifica ruta/backend/perfil; un vuelo con radio no se etiqueta como replay fijo. **Cerrado:** [66 casos nuevos, muestras crudas y prueba de integración](research/visual-quality-implementation/VQ-01b/README.md) |
-| L5 | Campo: loader `openrc-field v1`, archivo actual y constructor compartido entre Inicio y vuelo | VQ-01b | Números actuales intactos; loader rechaza tipos/unidades/no finitos/rectángulos inválidos; paridad de capturas y traza; recurso incluido en export Linux/Windows/macOS |
+| L5 — **completado** | Campo: loader `openrc-field v1`, archivo actual y constructor compartido entre Inicio y vuelo | VQ-01b | [Prueba L5](research/visual-quality-implementation/L5/README.md). Números actuales intactos; loader rechaza tipos/unidades/no finitos/rectángulos inválidos; paridad de capturas y traza; recurso incluido en export Linux/Windows/macOS |
 | L6a | Assets: adaptar las tres muestras Kenney ensayadas (§6.2); alternativa ez-tree si falla su silueta. ≤ 1k triángulos por malla, atlas 1024²; corregir metalicidad, paleta y escala | L5 | Derivados GLB sin errores Khronos, procedencia/SHA y A/B tras conversión; importar desde clon limpio y exportar sin rutas externas; bake repetible, padding y mips inspeccionados. Los originales defectuosos no pasan al runtime |
 | L6b | Campo: posiciones offline y ocho sectores MultiMesh con huecos; una superficie/material por grupo de cards, hasta tres especies | L6a | SHA de posiciones; cuatro azimuts × dos elevaciones; bounds completos; ≤ 24 draws reales del pase visible, anotando pases extra. Misma distribución en todos los presets, fuera de pista/calle de vuelo; sin colisiones nuevas |
 | L6c | Render/playtest: lectura ante árboles y aceptación de la primera entrega | L6b | Protocolo de §8 y resultados humanos registrados. Si falla, reducir densidad/contraste o abrir huecos antes de añadir más detalle |
@@ -248,7 +248,7 @@ VQ-01a y VQ-01b se implementaron sin esperar hardware modesto, resolución final
 
 Fuera de la primera entrega: terreno con colisión, aterrizaje, clima dinámico, mundos enormes, GI dinámica, nubes volumétricas, ray tracing, fotogrametría, streaming de texturas y migración de renderer. L7 espera su generador; L12–L15 siguen el plan físico; L16–L20 siguen condicionados a sus gates. Un panorama real continúa siendo una alternativa futura, no una segunda implementación paralela.
 
-**Siguiente cambio concreto: L5.** VQ-01a protege el harness y separa atmósfera/campo; VQ-01b añade 66 casos a los 46 existentes, metadatos efectivos y medición cruda. [Evidencia y reproducción](research/visual-quality-implementation/VQ-01b/README.md). Compartir ahora loader/construcción del campo entre Inicio y vuelo conservando estas referencias; los perfiles y el rendimiento en hardware del propietario siguen pendientes.
+**Siguiente cambio concreto: L6a.** VQ-01a/b protegen las referencias; [L5 comparte el campo validado entre Inicio y vuelo](research/visual-quality-implementation/L5/README.md), conservando imágenes y trazas. Implementar ahora la silueta del arbolado y comprobar su lectura desde el piloto; los perfiles y el rendimiento en hardware del propietario siguen pendientes.
 
 ## 10. Segunda ronda de investigación: condiciones nuevas de implementación
 
@@ -309,7 +309,7 @@ Se intentó refutar cada objeción buscando soporte ya existente en código y pl
 | Hallazgo y riesgo | Evidencia y contraevidencia revisada | Decisión que cierra la ambigüedad |
 | --- | --- | --- |
 | **Resuelto en VQ-01a:** un PNG antiguo podía aparentar una captura nueva | El harness anterior dejaba archivos previos, ignoraba el código de salida y comprobaba existencia; buscar líneas ERROR no cubría todos los fallos | Limpieza, proceso/imagen/hash/manifiesto obligatorios; 15 pruebas y mutaciones demuestran rechazo de evidencia vieja |
-| **Bloqueante de integración:** paisaje distinto en Inicio y vuelo | `_build_world()` y `home_scene.gd::_init()` construyen suelo/pista por separado. Home sí reutiliza materiales, pero no el montaje del campo | L5 introduce un constructor acotado compartido y prueba ambas rutas |
+| **Resuelto en L5:** montaje distinto en Inicio y vuelo | Ambos usan ahora `field_loader.gd` y `field.gd`, con recursos propios por escena | [Paridad de imágenes/traza, rutas y exports](research/visual-quality-implementation/L5/README.md) |
 | **Resuelto en VQ-01a:** árboles invalidarían pruebas de cielo vacío | `check_landscape_captures.py` usa filas/franjas fijas (bruma/nubes). Los controles L0 sí existen; no deben rehacerse ni relajarse | Fixture de referencia separado y nueve vistas del campo; una mutación del campo deja intacta la referencia, sin relajar umbrales |
 | **Bloqueante de planificación:** L7 depende de L13a | El plan de paisaje nombra explícitamente su generador de colinas; L7 figuraba antes en la primera entrega | L7 sale del mínimo entregable y espera esa salida; no arrastra física de terreno |
 | **Bloqueante para presets:** límites 1K/2K/4K sin mecanismo | `Ground.grass_material()` crea ImageTexture por código y el proyecto no tiene cargador de variantes. El importador documentado no resuelve ese runtime | Primeros perfiles comparten texturas; variantes solo tras necesidad y pipeline offline demostrado |
@@ -320,7 +320,7 @@ Se intentó refutar cada objeción buscando soporte ya existente en código y pl
 
 **Preguntas que cambian decisiones, convertidas en pruebas:** ¿la mejora se ve durante vuelo y no solo en inspector? → L6c/VQ-02; ¿el recurso entra en un build limpio? → L6a/L5; ¿el preset cambia algo y conserva la traza? → VQ-06; ¿la sombra nativa cambia la pintura? → VQ-04b; ¿el coste cabe sin ralentizar la simulación? → registro de ticks y frame times en §8. No requieren una nueva ronda de permisos para comenzar.
 
-**Veredicto: buena idea, proceder.** El plan está listo para implementar por la secuencia de §4 con sus límites y criterios de cierre. Las decisiones de diseño anteriores resuelven los bloqueos del plan; la aprobación de rendimiento, lectura humana y efectos experimentales conserva sus gates. Próxima acción: L5; usar la matriz y las guardas verificadas, sin migrar renderer.
+**Veredicto: buena idea, proceder.** El plan está listo para implementar por la secuencia de §4 con sus límites y criterios de cierre. Las decisiones de diseño anteriores resuelven los bloqueos del plan; la aprobación de rendimiento, lectura humana y efectos experimentales conserva sus gates. Próxima acción: L6a; usar la matriz, el campo compartido de L5 y las guardas verificadas, sin migrar renderer.
 
 Prueba de la revisión senior original: inspección del flujo real de entrada, construcción de campo, render/capturas, persistencia, logger y tres presets de export; comprobación de enlaces y consistencia documental. Esa revisión fue documental. Los ensayos añadidos después en §6.2 acreditan sus pruebas aisladas; no acreditan implementación en la app, suite del juego ni nuevos benchmarks GPU.
 
@@ -332,7 +332,7 @@ La primera entrega y el siguiente paso de §4 se mantienen: las bibliotecas ampl
 
 El [segundo aporte de fuentes](research/asset-sources-catalog-2026-10-06.md), integrado el mismo día, añade §6.1 y la búsqueda previa de L6a. Su [texto original](research/asset-sources-user-input-2026-10-06.txt) queda conservado por separado del primer aporte.
 
-El uso práctico posterior de esas herramientas queda integrado en §6.2 y en los criterios L6a/b: [árboles/validación/instancing](research/visual-quality-nature-trial-2026-10-06.md) y [muestra de materiales PBR](research/visual-quality-material-trial-2026-10-06.md). Son prototipos reproducibles, no pasos de la app declarados completos. VQ-01a y VQ-01b se implementaron después de esos ensayos; el siguiente paso de integración es L5.
+El uso práctico posterior de esas herramientas queda integrado en §6.2 y en los criterios L6a/b: [árboles/validación/instancing](research/visual-quality-nature-trial-2026-10-06.md) y [muestra de materiales PBR](research/visual-quality-material-trial-2026-10-06.md). Son prototipos reproducibles, no pasos de la app declarados completos. VQ-01a, VQ-01b y L5 se implementaron después de esos ensayos; el siguiente paso de integración es L6a.
 
 ## 14. VQ-01a implementado — 2026-10-06
 
@@ -345,4 +345,10 @@ El fixture conserva suelo/pista de referencia para L1–L4; el campo real tiene 
 
 [Prueba y reproducción](research/visual-quality-implementation/VQ-01b/README.md): matriz de 66 casos nuevos (112 PNG con el conjunto previo), nueve pares de campo idénticos, datos de lectura con/sin autozoom y 36 inspecciones Stik/Extra. Inicio → Volar queda en tick 360 y verifica una cámara/un entorno. El logger v2 mantiene claves compatibles, guarda reloj monotónico y `delta` por separado, descarta el frame de transición del calentamiento e identifica ruta/caso/backend/configuración. Se conservan tres muestras de 60 s tras 10 s de calentamiento; son prueba del protocolo en llvmpipe, no rendimiento aprobado. La hoja de referencias conserva atribuciones/licencias fuera del runtime.
 
-La suite, captura en clon limpio y exports verifican la entrega; no cambian física, geometría ni umbrales anteriores. La integración conserva el catálogo y la ampliación concurrente del P-51. L5 sigue pendiente y es el siguiente cambio previsto en el orden del plan.
+La suite, captura en clon limpio y exports verifican la entrega; no cambian física, geometría ni umbrales anteriores. La integración conserva el catálogo y la ampliación concurrente del P-51. Al cerrar VQ-01b, L5 era el siguiente cambio previsto; el registro siguiente cierra ese paso.
+
+## 15. Registro L5 — campo compartido implementado
+
+[Entrega y reproducción](research/visual-quality-implementation/L5/README.md): datos `openrc-field v1` validados antes de crear sesión, constructor compartido, cámara/composición desde la estación del piloto, error interactivo EN/ES y fallo explícito en automatización. Se conservan las medidas y materiales anteriores; no se añade vegetación ni se cambia el contacto con el suelo.
+
+Prueba en clones limpios: suite completa, 158 comprobaciones de loader, 38 de integración, ocho entradas inválidas/rutas y dos pantallas de error; 112 capturas, 108 casos deterministas byte-idénticos y traza sin cambios. Los tres packs contienen el JSON y loader compilado, verificados sin árbol fuente; smoke de vuelo Linux. Siguiente paso: **L6a**.
