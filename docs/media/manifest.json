@@ -1,0 +1,109 @@
+{
+  "aircraft": [
+    {
+      "bounds": {
+        "position": [
+          -0.761171698570251,
+          -0.258100003004074,
+          -0.428276002407074
+        ],
+        "size": [
+          1.5223433971405,
+          0.436234056949615,
+          1.32597398757935
+        ]
+      },
+      "frames": 24,
+      "id": "jensen-das-ugly-stik-60",
+      "name": "Jensen Das Ugly Stik 60",
+      "status": "flyable",
+      "still": "ugly-stik.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -0.811800003051758,
+          -0.268824994564056,
+          -0.445070445537567
+        ],
+        "size": [
+          1.62360000610352,
+          0.551921308040619,
+          1.38627004623413
+        ]
+      },
+      "frames": 24,
+      "id": "gp-extra-300s-60",
+      "name": "Great Planes Extra 300S .60",
+      "status": "experimental",
+      "still": "extra-300s.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -1.41125750541687,
+          -0.510500013828278,
+          -0.668599963188171
+        ],
+        "size": [
+          2.82251501083374,
+          0.952000021934509,
+          2.45987820625305
+        ]
+      },
+      "frames": 24,
+      "id": "p51d-mustang-120",
+      "name": "P-51D Mustang 1/4",
+      "status": "experimental",
+      "still": "p51d-mustang.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -1.0,
+          -0.119999997317791,
+          -1.04999995231628
+        ],
+        "size": [
+          2.0,
+          0.629999995231628,
+          2.21999979019165
+        ]
+      },
+      "frames": 24,
+      "id": "sebart-avanti-s-a200-p100rx",
+      "name": "SebArt Avanti S",
+      "status": "preview",
+      "still": "avanti-s.png"
+    }
+  ],
+  "background": "#111820",
+  "engine": "4.7.2-stable (official)",
+  "format": "openrc-readme-renders v1",
+  "frame_count": 96,
+  "purpose": "Studio model presentation; not gameplay or flight validation",
+  "renderer": "gl_compatibility",
+  "source_commit": "a6a3abfab1a3262dbe6f468e4458c2773ff5a789",
+  "stills_size": [
+    960,
+    540
+  ],
+  "tour_size": [
+    640,
+    360
+  ],
+  "animation": {
+    "file": "aircraft-tour.gif",
+    "duration_ms": 10560,
+    "pillow": "12.3.0",
+    "frame_duration_ms": 110
+  },
+  "sha256": {
+    "aircraft-tour.gif": "8152f24726f024aafdc71360efd844d203921ec94e0ecdb127157809f8e811d4",
+    "avanti-s.png": "e5f48cf56ee0aac2e4e211bf53e429042f0d457921fa2f4e79bd8f41fec9002f",
+    "extra-300s.png": "8ee8ead3eca1603ca72cefda1eb42627210dd57dc056002501eb56bc04765f2e",
+    "flight.png": "802b2186bf608c810607151eddff92560e944a04d76c5d31eaf82cdae7e953d0",
+    "p51d-mustang.png": "3a96d2cf61da50e7cbbffc728f7ffee4d3124ce0f235244fc6a690a6a1d3a713",
+    "ugly-stik.png": "fe2ddfbd735cdd34c0dabb6da229bcc22f06a022b3d19cc06c2f0c3d1390e01a"
+  }
+}

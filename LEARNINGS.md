@@ -610,3 +610,9 @@ Prueba: [informe](docs/research/p51-silhouette-review-v1.md) con métricas y has
 - El README y la guía de primer arranque deben reflejar el catálogo y la tabla de controles del código: la guía antigua aún decía que no había menús. Distinguir aviones volables, estimaciones experimentales y previews evita prometer validación física pendiente.
 - Para un proyecto que publica prereleases, enlazar a `/releases`: `/releases/latest` no es una entrada fiable a la última alpha. Conservar la etiqueta de release y publicar las mejoras de documentación en otro commit mantiene la identidad del binario.
 - Prueba: enlaces locales e imagen verificados; controles y estados cotejados con `controls_reference.gd` y `aircraft_catalog.gd`; solo documentación y plantillas, sin cambios de runtime.
+
+### README visual — capturar el catálogo real
+
+- Una galería uniforme construida con `render/airplane.gd` muestra los cuatro modelos actuales sin reutilizar renders de revisiones antiguas. Los bounds de cada avión mantienen el encuadre; las etiquetas del tour salen del catálogo y conservan el estado experimental/preview.
+- GitHub admite GIF, tablas HTML y bloques `details`: un tour de 96 fotogramas a 640×360 pesa 1,7 MB y tiene alternativa estática. Separar vistas de estudio y capturas reales del juego evita presentar una órbita de cámara como maniobra volada.
+- Prueba: renders inspeccionados, GIF decodificado (96 frames/10,56 s), hashes y enlaces locales comprobados; render Markdown de GitHub verificado. Herramienta de documentación fuera de `app/`, sin cambios de runtime.
