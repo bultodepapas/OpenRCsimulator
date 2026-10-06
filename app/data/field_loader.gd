@@ -6,10 +6,20 @@ const DEFAULT_PATH: String = "res://data/fields/default.json"
 const FORMAT: String = "openrc-field v1"
 # Field coordinates feed Godot's standard float32 render positions; larger finite float64 values overflow there.
 const FLOAT32_MAX: float = 3.4028234663852886e38
+# L6b visual-layout assumptions, not measured field or vegetation dimensions.
+const MAX_FIELD_OBJECTS: int = 1
+const MAX_TREELINE_POSITIONS: int = 800
+const TREE_POSITION_GRID_M: float = 0.25
+const TREE_POSITION_GRID_TOLERANCE: float = 0.000001
+const TREE_MIN_RADIUS_M: float = 250.0
+const TREE_MAX_RADIUS_M: float = 600.0
+const TREE_CARD_MAX_HORIZONTAL_RADIUS_M: float = 15.0 # Estimated visible card envelope.
+const TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M: float = 35.0 # Estimated approach and low-flight clearance.
+const MAX_PILOT_HORIZONTAL_COORDINATE_M: float = 1000000.0 # Keeps absolute tree coordinates stable for render/hash bounds.
 const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
 const PILOT_KEYS: Array[String] = ["id", "north", "east", "down", "eye_height"]
 const SURFACE_KEYS: Array[String] = ["id", "type", "center_north", "center_east", "length_east_west", "width_north_south"]
-const OBJECT_KEYS: Array[String] = ["id", "collides"]
+const OBJECT_KEYS: Array[String] = ["id", "type", "collides", "positions"]
 const QUANTITY_KEYS: Array[String] = ["value", "unit", "kind", "source"]
 const SURFACE_TYPES: Array[String] = ["rough", "mown", "runway"]
 const EVIDENCE_KINDS: Array[String] = ["manual", "measured", "borrowed", "estimated", "derived"]
@@ -95,23 +105,33 @@ static func validate(raw: Variant) -> Dictionary:
 			"width_north_south": width_north_south,
 		}
 		normalized_surfaces.append(normalized_surface)
-		validated_surfaces.append({"type": surface_type, "bounds": bounds})
+		validated_surfaces.append({
+			"type": surface_type,
+			"bounds": bounds,
+			"center_north": center_north,
+			"width_north_south": width_north_south,
+		})
 		if not surface_id.is_empty():
 			surface_index_by_id[surface_id] = surface_type
 
 	var objects: Array = _array(errors, "objects", root.get("objects"))
-	for index: int in range(objects.size()):
-		var object_path: String = "objects[%d]" % index
-		var object_node: Dictionary = _object(errors, object_path, objects[index])
-		_check_keys(errors, object_path, object_node, OBJECT_KEYS, ["id"])
-		_register_id(errors, ids, object_path + ".id", object_node.get("id"))
-		if object_node.has("collides"):
-			var collides: Variant = object_node.get("collides")
-			if typeof(collides) != TYPE_BOOL:
-				errors.append("%s.collides: expected a boolean" % object_path)
-			elif collides:
-				errors.append("%s.collides=true is unsupported until L14" % object_path)
-		errors.append("%s: field objects are unsupported until L6" % object_path)
+	var normalized_objects: Array = []
+	if objects.size() > MAX_FIELD_OBJECTS:
+		errors.append("objects: at most %d object is supported" % MAX_FIELD_OBJECTS)
+	elif objects.size() == 1:
+		var object_path: String = "objects[0]"
+		var object_node: Dictionary = _object(errors, object_path, objects[0])
+		var normalized_object: Dictionary = _validate_treeline(
+			errors,
+			ids,
+			object_path,
+			object_node,
+			pilot_north,
+			pilot_east,
+			pilot_down,
+			validated_surfaces
+		)
+		normalized_objects.append(normalized_object)
 
 	var selected_runway_type: String = str(surface_index_by_id.get(runway_id, ""))
 	if runway_id.is_empty():
@@ -137,9 +157,178 @@ static func validate(raw: Variant) -> Dictionary:
 			"eye_height": eye_height,
 		},
 		"surfaces": normalized_surfaces,
-		"objects": [],
+		"objects": normalized_objects,
 	}
 	return {"ok": true, "errors": errors, "field": normalized_field}
+
+
+static func _validate_treeline(
+	errors: PackedStringArray,
+	ids: Dictionary,
+	path: String,
+	object_node: Dictionary,
+	pilot_north: float,
+	pilot_east: float,
+	pilot_down: float,
+	surfaces: Array
+) -> Dictionary:
+	_check_keys(errors, path, object_node, OBJECT_KEYS, OBJECT_KEYS)
+	var identifier: String = _register_id(errors, ids, path + ".id", object_node.get("id"))
+	if not identifier.is_empty():
+		if identifier != identifier.strip_edges():
+			errors.append("%s.id: leading or trailing whitespace is not allowed" % path)
+		var node_name: String = identifier.validate_node_name()
+		if node_name != identifier:
+			errors.append("%s.id: '%s' is not a valid Godot node name" % [path, identifier])
+	var object_type: String = _read_string(errors, path + ".type", object_node.get("type"), true)
+	if object_type != "treeline":
+		errors.append("%s.type: expected 'treeline'" % path)
+	if object_node.has("collides"):
+		var collides: Variant = object_node.get("collides")
+		if typeof(collides) != TYPE_BOOL:
+			errors.append("%s.collides: expected a boolean" % path)
+		elif collides:
+			errors.append("%s.collides=true is unsupported until L14" % path)
+
+	if object_type == "treeline":
+		if pilot_down != 0.0:
+			errors.append("%s: treeline requires pilot.down == 0 m for flat ground" % path)
+		if absf(pilot_north) > MAX_PILOT_HORIZONTAL_COORDINATE_M or absf(pilot_east) > MAX_PILOT_HORIZONTAL_COORDINATE_M:
+			errors.append("%s: pilot north/east coordinates with trees must be within +/- %.0f m" % [path, MAX_PILOT_HORIZONTAL_COORDINATE_M])
+
+	var raw_positions: Variant = object_node.get("positions")
+	var position_quantity: Dictionary = _object(errors, path + ".positions", raw_positions)
+	_check_keys(errors, path + ".positions", position_quantity, QUANTITY_KEYS, QUANTITY_KEYS)
+	_check_position_metadata(errors, path + ".positions", position_quantity)
+	var positions: Array[Array] = _validate_tree_positions(
+		errors,
+		path + ".positions.value",
+		position_quantity.get("value"),
+		pilot_north,
+		pilot_east,
+		surfaces
+	)
+	return {
+		"id": identifier,
+		"type": object_type,
+		"collides": false,
+		"positions": positions,
+	}
+
+
+static func _check_position_metadata(errors: PackedStringArray, path: String, quantity: Dictionary) -> void:
+	var unit: Variant = quantity.get("unit")
+	if typeof(unit) != TYPE_STRING or unit != "m":
+		errors.append("%s.unit: expected 'm'" % path)
+	var kind: Variant = quantity.get("kind")
+	if typeof(kind) != TYPE_STRING or kind != "derived":
+		errors.append("%s.kind: expected 'derived'" % path)
+	var source: Variant = quantity.get("source")
+	if typeof(source) != TYPE_STRING or String(source).strip_edges().is_empty():
+		errors.append("%s.source: must be a nonempty string" % path)
+
+
+static func _validate_tree_positions(
+	errors: PackedStringArray,
+	path: String,
+	raw_positions: Variant,
+	pilot_north: float,
+	pilot_east: float,
+	surfaces: Array
+) -> Array[Array]:
+	var normalized: Array[Array] = []
+	if typeof(raw_positions) != TYPE_ARRAY:
+		errors.append("%s: expected an array" % path)
+		return normalized
+	var positions: Array = raw_positions
+	if positions.is_empty() or positions.size() > MAX_TREELINE_POSITIONS:
+		errors.append("%s: expected 1..%d positions, got %d" % [path, MAX_TREELINE_POSITIONS, positions.size()])
+		return normalized
+	var seen_positions: Dictionary = {}
+	for index: int in range(positions.size()):
+		var point_path: String = "%s[%d]" % [path, index]
+		var point_value: Variant = positions[index]
+		if typeof(point_value) != TYPE_ARRAY:
+			errors.append("%s: expected an array of 3 numbers [north, east, down]" % point_path)
+			continue
+		var point: Array = point_value
+		if point.size() != 3:
+			errors.append("%s: expected exactly 3 numbers [north, east, down]" % point_path)
+			continue
+		var coordinates: Array[float] = []
+		var valid_numbers: bool = true
+		for axis_index: int in range(3):
+			var axis_name: String = ["north", "east", "down"][axis_index]
+			var raw_coordinate: Variant = point[axis_index]
+			if typeof(raw_coordinate) != TYPE_FLOAT and typeof(raw_coordinate) != TYPE_INT:
+				errors.append("%s.%s: expected a number" % [point_path, axis_name])
+				valid_numbers = false
+				coordinates.append(0.0)
+				continue
+			var coordinate: float = float(raw_coordinate)
+			coordinates.append(coordinate)
+			if not is_finite(coordinate):
+				errors.append("%s.%s: must be finite" % [point_path, axis_name])
+				valid_numbers = false
+			elif not _on_position_grid(coordinate):
+				errors.append("%s.%s: must be quantized to %.2f m" % [point_path, axis_name, TREE_POSITION_GRID_M])
+		if not valid_numbers:
+			continue
+		var north_offset: float = coordinates[0]
+		var east_offset: float = coordinates[1]
+		var down_offset: float = coordinates[2]
+		normalized.append([north_offset, east_offset, down_offset])
+		if down_offset != 0.0:
+			errors.append("%s.down: treeline positions must be flat at 0 m" % point_path)
+		if absf(north_offset) > TREE_MAX_RADIUS_M or absf(east_offset) > TREE_MAX_RADIUS_M:
+			errors.append("%s: horizontal radius must be %.0f..%.0f m" % [point_path, TREE_MIN_RADIUS_M, TREE_MAX_RADIUS_M])
+		else:
+			var radius: float = sqrt(north_offset * north_offset + east_offset * east_offset)
+			if radius < TREE_MIN_RADIUS_M or radius > TREE_MAX_RADIUS_M:
+				errors.append("%s: horizontal radius must be %.0f..%.0f m" % [point_path, TREE_MIN_RADIUS_M, TREE_MAX_RADIUS_M])
+		if absf(north_offset) <= TREE_MAX_RADIUS_M and absf(east_offset) <= TREE_MAX_RADIUS_M and down_offset == 0.0:
+			var duplicate_key: String = "%d,%d,%d" % [
+				roundi(north_offset / TREE_POSITION_GRID_M),
+				roundi(east_offset / TREE_POSITION_GRID_M),
+				roundi(down_offset / TREE_POSITION_GRID_M),
+			]
+			if seen_positions.has(duplicate_key):
+				errors.append("%s: duplicate position (same 0.25 m grid cell as index %d)" % [point_path, int(seen_positions[duplicate_key])])
+			else:
+				seen_positions[duplicate_key] = index
+		_validate_tree_placement(errors, point_path, pilot_north + north_offset, pilot_east + east_offset, surfaces)
+	return normalized
+
+
+static func _on_position_grid(value: float) -> bool:
+	var grid_units: float = value / TREE_POSITION_GRID_M
+	return absf(grid_units - roundf(grid_units)) <= TREE_POSITION_GRID_TOLERANCE
+
+
+static func _validate_tree_placement(errors: PackedStringArray, path: String, center_north: float, center_east: float, surfaces: Array) -> void:
+	if not is_finite(center_north) or not is_finite(center_east):
+		return
+	var has_rough_envelope: bool = false
+	for surface_value: Variant in surfaces:
+		var surface: Dictionary = surface_value
+		var surface_type: String = str(surface.get("type", ""))
+		if surface_type == "rough":
+			var bounds: Dictionary = surface["bounds"]
+			if (
+				center_north - TREE_CARD_MAX_HORIZONTAL_RADIUS_M >= float(bounds["north_min"])
+				and center_north + TREE_CARD_MAX_HORIZONTAL_RADIUS_M <= float(bounds["north_max"])
+				and center_east - TREE_CARD_MAX_HORIZONTAL_RADIUS_M >= float(bounds["east_min"])
+				and center_east + TREE_CARD_MAX_HORIZONTAL_RADIUS_M <= float(bounds["east_max"])
+			):
+				has_rough_envelope = true
+		elif surface_type == "runway" or surface_type == "mown":
+			var strip_center_north: float = float(surface["center_north"])
+			var strip_width: float = float(surface["width_north_south"])
+			var required_clearance: float = strip_width / 2.0 + TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M + TREE_CARD_MAX_HORIZONTAL_RADIUS_M
+			if is_finite(strip_center_north) and is_finite(strip_width) and absf(center_north - strip_center_north) <= required_clearance:
+				errors.append("%s: tree center is inside the runway/mown north-south flight corridor (infinite east-west strip)" % path)
+	if not has_rough_envelope:
+		errors.append("%s: tree center +/- %.0f m envelope must be fully contained by a rough surface" % [path, TREE_CARD_MAX_HORIZONTAL_RADIUS_M])
 
 
 static func _failure(message: String) -> Dictionary:

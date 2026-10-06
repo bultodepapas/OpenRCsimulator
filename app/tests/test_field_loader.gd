@@ -51,13 +51,20 @@ func _initialize() -> void:
 		var surfaces: Array = field["surfaces"]
 		var rough: Dictionary = surfaces[0]
 		var runway: Dictionary = surfaces[1]
+		var objects: Array = field["objects"]
+		var raw_objects: Array = (_fresh_data()["objects"] as Array)
 		_check("normalized root layout", field.keys().size() == 6 and field.has_all(["format", "id", "runway", "pilot", "surfaces", "objects"]))
 		_check("normalized identity and runway reference", field["format"] == "openrc-field v1" and field["id"] == "default" and field["runway"] == "runway")
 		_check("pilot layout uses float metres", pilot.keys().size() == 5 and typeof(pilot["north"]) == TYPE_FLOAT and typeof(pilot["eye_height"]) == TYPE_FLOAT)
 		_check("pilot station is historical origin with 1.7 m eye height", pilot["id"] == "pilot" and pilot["north"] == 0.0 and pilot["east"] == 0.0 and pilot["down"] == 0.0 and pilot["eye_height"] == 1.7)
 		_check("rough rectangle keeps the historical 40 km visual ground", rough["id"] == "rough" and rough["type"] == "rough" and rough["center_north"] == 0.0 and rough["center_east"] == 0.0 and rough["length_east_west"] == 40000.0 and rough["width_north_south"] == 40000.0)
 		_check("runway keeps Spec geometry", runway["id"] == "runway" and runway["type"] == "runway" and runway["center_north"] == 15.0 and runway["center_east"] == 0.0 and runway["length_east_west"] == 100.0 and runway["width_north_south"] == 12.0)
-		_check("normalized surfaces contain only data fields", rough.keys().size() == 6 and runway.keys().size() == 6 and field["objects"].is_empty())
+		_check("normalized surfaces contain only data fields", rough.keys().size() == 6 and runway.keys().size() == 6)
+		_check("default objects normalize without changing their count", objects.size() == raw_objects.size() and objects.size() <= 1)
+		if objects.size() == 1:
+			var treeline: Dictionary = objects[0]
+			var tree_positions: Array = treeline["positions"]
+			_check("default treeline normalizes to renderer-neutral fields", treeline.keys().size() == 4 and treeline["id"] == "treeline" and treeline["type"] == "treeline" and treeline["collides"] == false and tree_positions.size() == 480)
 	_check("default source records historical Spec rather than AMA", _default_sources_are_clear())
 
 	var direct_invalid: Dictionary = Loader.validate("not a field")
@@ -114,9 +121,9 @@ func _initialize() -> void:
 	_rejects("rectangle collapses at float64 precision", func(data: Dictionary) -> void: _surface_quantity(data, 0, "center_north")["value"] = 1e30, "degenerates at float64 precision")
 	_rejects("rectangle collapses in float32 render coordinates", func(data: Dictionary) -> void: _surface_quantity(data, 0, "length_east_west")["value"] = 1e-50, "degenerates at float32 render precision")
 	_rejects("same-type surface overlap", func(data: Dictionary) -> void: _append_surface(data, _surface("rough-2", "rough", 100.0, 0.0, 50.0, 50.0)), "positive-area overlap")
-	_rejects("same ID across object and surface", func(data: Dictionary) -> void: _append_object(data, {"id": "rough"}), "duplicate ID 'rough'")
-	_rejects("object with collision is explicitly deferred", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "collides": true}), "collides=true is unsupported until L14")
-	_rejects("non-colliding object is still explicitly unsupported", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "collides": false}), "objects[0]: field objects are unsupported until L6")
+	_rejects("same ID across object and surface", func(data: Dictionary) -> void: _append_object(data, {"id": "rough", "type": "treeline", "collides": false, "positions": _positions([[300.0, 0.0, 0.0]])}), "duplicate ID 'rough'")
+	_rejects("object with collision is explicitly deferred", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "type": "treeline", "collides": true, "positions": _positions([[300.0, 0.0, 0.0]])}), "collides=true is unsupported until L14")
+	_rejects("object type must be treeline", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "type": "rock", "collides": false, "positions": _positions([[300.0, 0.0, 0.0]])}), "type: expected 'treeline'")
 	_rejects("object collision flag must be boolean", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "collides": "yes"}), "collides: expected a boolean")
 	_rejects("unknown object field rejected", func(data: Dictionary) -> void: _append_object(data, {"id": "tree", "material": "wood"}), "unknown key 'material'")
 	_rejects("objects must be an array", func(data: Dictionary) -> void: data["objects"] = {}, "objects: expected an array")
@@ -127,6 +134,7 @@ func _initialize() -> void:
 	var allowed_kind_result: Dictionary = Loader.validate(allowed_kinds)
 	_check("valid evidence kinds remain available", bool(allowed_kind_result["ok"]), str(allowed_kind_result["errors"]))
 	var elevated_pilot: Dictionary = _fresh_data()
+	elevated_pilot["objects"] = []
 	_pilot_quantity(elevated_pilot, "down")["value"] = 2.0
 	var elevated_result: Dictionary = Loader.validate(elevated_pilot)
 	_check("pilot down coordinate can place the camera above or below field datum", bool(elevated_result["ok"]), str(elevated_result["errors"]))
@@ -201,8 +209,18 @@ func _append_surface(data: Dictionary, surface: Dictionary) -> void:
 
 
 func _append_object(data: Dictionary, object_data: Dictionary) -> void:
+	data["objects"] = []
 	var objects: Array = data["objects"]
 	objects.append(object_data)
+
+
+func _positions(points: Array) -> Dictionary:
+	return {
+		"value": points,
+		"unit": "m",
+		"kind": "derived",
+		"source": "L6b loader test fixture; estimated visual layout, not surveyed dimensions.",
+	}
 
 
 func _surface_endpoint_error() -> String:

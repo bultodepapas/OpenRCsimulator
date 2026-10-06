@@ -2,6 +2,7 @@
 extends RefCounted
 
 const Frames = preload("res://render/frames.gd")
+const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
 # Visual separation only, never terrain height or collision geometry. Higher priority wins overlaps.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
@@ -19,4 +20,6 @@ static func build(field: Dictionary) -> Node3D:
 		mesh_instance.material_override = Ground.grass_material() if surface.type == "rough" else Ground.runway_material()
 		mesh_instance.position = Frames.ned_to_render([surface.center_north, surface.center_east, -float(SURFACE_LIFT[surface.type])])
 		result.add_child(mesh_instance)
+	for object_data: Dictionary in field.objects:
+		result.add_child(Treeline.build(object_data, field.pilot))
 	return result

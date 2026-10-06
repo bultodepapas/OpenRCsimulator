@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "project_path": "/tmp/openrc-l6b-work/app",
+  "counts": {
+    "total": 10,
+    "errors": 0,
+    "warnings": 10,
+    "parse_errors": 0
+  },
+  "categories": {
+    "godot3_api": 0,
+    "godot3_shader": 0,
+    "inference": 0,
+    "node_ref": 0,
+    "unique_name": 0,
+    "signal_target": 0,
+    "missing_resource": 0,
+    "input_action": 0,
+    "group_ref": 0,
+    "res_path": 10,
+    "animation_ref": 0
+  },
+  "scan_summary": {
+    "gd": 141,
+    "tscn": 3,
+    "tres": 0,
+    "shader": 4,
+    "project_godot": 1,
+    "scene_script_pairs": 3,
+    "node_paths_checked": 0,
+    "skipped_dynamic_paths": 0,
+    "skipped_gdignore_dirs": 0
+  },
+  "suppressions": {
+    "total": 1,
+    "used": 1,
+    "unused": []
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../assets/aircraft/ugly-stik-60/appearance.json` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 130,
+      "suggested_fix": "Create `res://../assets/aircraft/ugly-stik-60/appearance.json`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../research/ugly-stik/model-v1` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 171,
+      "suggested_fix": "Create `res://../research/ugly-stik/model-v1`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../research/ugly-stik/model-v2` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 172,
+      "suggested_fix": "Create `res://../research/ugly-stik/model-v2`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../research/ugly-stik/model-v3` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 173,
+      "suggested_fix": "Create `res://../research/ugly-stik/model-v3`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../assets/aircraft/ugly-stik-60/geometry.json` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 960,
+      "suggested_fix": "Create `res://../assets/aircraft/ugly-stik-60/geometry.json`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../assets/aircraft/ugly-stik-60/appearance.json` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 968,
+      "suggested_fix": "Create `res://../assets/aircraft/ugly-stik-60/appearance.json`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../research/ugly-stik/model-v3/capture.sh` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 971,
+      "suggested_fix": "Create `res://../research/ugly-stik/model-v3/capture.sh`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../research/ugly-stik/model-v3/make_review_kit.py` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 972,
+      "suggested_fix": "Create `res://../research/ugly-stik/model-v3/make_review_kit.py`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://../assets/aircraft/ugly-stik-60/appearance.json` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://aircraft/inspect_model.gd",
+      "line": 994,
+      "suggested_fix": "Create `res://../assets/aircraft/ugly-stik-60/appearance.json`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    },
+    {
+      "severity": "warning",
+      "category": "res_path",
+      "rule": "res_path_missing",
+      "message": "The literal `res://build_info.json` does not exist on disk (no file and no directory). Nothing here proves it is loaded, so this is a warning \u2014 but a `res://` string in a script is almost always a path that is about to be opened, and the load will return null.",
+      "file": "res://app_state/build_info.gd",
+      "line": 7,
+      "suggested_fix": "Create `res://build_info.json`, fix the path, or \u2014 if the file is produced at runtime \u2014 write it through `FileAccess.open(\u2026, FileAccess.WRITE)` / `ResourceSaver.save()`, which the linter recognises and stops reporting. `# lint:ignore res_path` on the line silences it for good."
+    }
+  ]
+}

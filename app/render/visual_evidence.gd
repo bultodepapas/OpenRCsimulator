@@ -51,7 +51,7 @@ static func provenance() -> Dictionary:
 	var hashes: Dictionary = {}
 	# Include source, shaders, generated geometry, physical data and assets. Exclude generated captures,
 	# import caches and test output. Exported packs may omit sources: report that limitation explicitly.
-	for directory in ["res://render", "res://aircraft", "res://data", "res://ui", "res://app_state", "res://sim", "res://physics", "res://input", "res://i18n"]:
+	for directory in ["res://assets/landscape/trees", "res://render", "res://aircraft", "res://data", "res://ui", "res://app_state", "res://sim", "res://physics", "res://input", "res://i18n"]:
 		_hash_directory(directory, hashes)
 	for path in ["res://main.gd", "res://main.tscn", "res://spec.gd", "res://project.godot", "res://app_root.gd", "res://app_root.tscn", "res://tests/fixtures/atmosphere_field.gd", "res://tests/fixtures/atmosphere_field.tscn"]:
 		if FileAccess.file_exists(path):

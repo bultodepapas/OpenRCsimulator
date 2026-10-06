@@ -1,0 +1,5 @@
+{
+  "isolated_mutation": "one north coordinate +0.25m",
+  "exit_code": 1,
+  "error": "Committed placement differs from offline recipe"
+}

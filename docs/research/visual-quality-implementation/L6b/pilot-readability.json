@@ -1,0 +1,30 @@
+{
+  "pilot-30m-autozoom-off.png": {
+    "background_saturation": 54.1,
+    "delta_e": 41.51,
+    "pixels": 65,
+    "share_low_contrast": 0.0923,
+    "weber_contrast": -0.4277
+  },
+  "pilot-30m-autozoom-on.png": {
+    "background_saturation": 54.1,
+    "delta_e": 48.67,
+    "pixels": 172,
+    "share_low_contrast": 0.0233,
+    "weber_contrast": -0.3996
+  },
+  "pilot-3m-autozoom-off.png": {
+    "background_saturation": 31.2,
+    "delta_e": 40.88,
+    "pixels": 52,
+    "share_low_contrast": 0.0962,
+    "weber_contrast": -0.5499
+  },
+  "pilot-3m-autozoom-on.png": {
+    "background_saturation": 34.2,
+    "delta_e": 47.83,
+    "pixels": 114,
+    "share_low_contrast": 0.0614,
+    "weber_contrast": -0.2451
+  }
+}

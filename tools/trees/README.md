@@ -30,3 +30,11 @@ LP_NUM_THREADS=1 xvfb-run -a "$(app/get-godot.sh)" --path app \
 The fixture shows the actual runtime factory at four rotations. A caller in L6b should build one mesh per species and reuse it in sector MultiMeshes; disable card shadow casting. The transparent card frame extends below zero, while the **visible trunk** is at zero; its center is `pivot_y_m`, not half the padded image height. The test checks the lowest visible texel rather than only the quad bounds.
 
 Run `app/export.sh` in a fresh clone to verify every pack without loose-file fallback. `check_field_pack.gd` loads the catalog, license and imported atlas through the adapter in all three packs. No GLB, source texture, npm package or runtime generator belongs in the exported tree family. llvmpipe images do not establish RTX 3090 frame times.
+
+## L6b: distribución e integración
+
+`python3 tools/trees/place.py` regenera únicamente `objects` del campo por defecto; `--check` comprueba la receta sin escribir. Las posiciones son offsets NED respecto al piloto, en una rejilla de 0,25 m. El JSON conserva procedencia y estimaciones. El loader mantiene despejadas pista/aproximaciones y limita tamaño, radio y geometría del conjunto.
+
+`python3 tools/trees/check_review.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l6b-review` usa xvfb/OpenGL para medir draws con y sin árboles, probar las 480 identidades calculadas por el shader y repetir trece PNG. También ejecuta el test de instancias con renderer real. Está integrado en `app/capture.sh`; el renderer dummy de la suite headless no puede probar getters de buffers GPU.
+
+El hash está espejado en `app/render/treeline.gd` y `tree_identity.gdshaderinc`: rejilla N/E ×4 +2400, mezcla entera módulo65521. El custom data transmite cuatro bytes exactos para evitar pérdida por float16 en Compatibility. No hay RNG por frame ni posiciones regeneradas al abrir un vuelo. Los GLB detallados siguen fuera del juego.

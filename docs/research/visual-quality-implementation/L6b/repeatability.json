@@ -1,0 +1,22 @@
+{
+  "format": "openrc-l6b-repeat v1",
+  "complete": true,
+  "png_count": 13,
+  "byte_identical": true,
+  "png_sha256": {
+    "az000-el00.png": "7890505a262c50f8f23c51ee142e51d8f530556fb89ea7f9906b57b42207badb",
+    "az000-el10.png": "1ad5fb0bd92e4d17224fb12aae8a6dfa727f7519292e9e0b8f1dd198f15bbeb1",
+    "az090-el00.png": "f345d2d046fe11f535c16af32c3e7d0acbe6df661fe0aca2eb6ef34e1e3bbb20",
+    "az090-el10.png": "062521db38ce4b1d03b71243e2c8aa57c43ffd53fd83fc0eff3549490c733f7c",
+    "az180-el00.png": "fa680000ba68c98541ce8307c14145a9ccc0f15149a76156cae955c616ce5185",
+    "az180-el10.png": "83bf06b5645470c639179f868b272dad67458c97e582775466ae5e61b0be70c9",
+    "az270-el00.png": "fc2b782577b4cdab499aab65ad3327d82aab6f8f768a84d4a9b07373b0299649",
+    "az270-el10.png": "2667ea45c632ba87e8379f67836595153f67821fe52c7ec91c14574f4c8209ce",
+    "engine-shadow-audit.png": "693c5d0210cfa73da333896715acea220dce7c54e51faa90c822b1867578e105",
+    "gap030.png": "fb63dcd54305a3a2df987062e54a9af10c6ac3e0a69b032dc86987df0d2ad35b",
+    "gap210.png": "74ad2a68e3353759f15afa3f53f9834eaeb0c46f75e050944f58f59161dd595c",
+    "hash-probe.png": "db8d5dd65e7f4fd667c31cb0d26d2f2052ee6e1dc02cb0f44889eae52e924190",
+    "overhead.png": "890401b46fc26391a913a65666c65bfc06215500d483c6ee49c1321c534698a4"
+  },
+  "report_identical": true
+}
