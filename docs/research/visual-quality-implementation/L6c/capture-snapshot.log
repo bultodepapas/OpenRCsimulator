@@ -1,0 +1,155 @@
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 2.616s
+
+OK
+render counters per view (draw calls and primitives): /tmp/claude-1000/-home-bulto-OpenRCsimulator/ef43251d-ca0e-4317-8351-b72c84baecfb/scratchpad/l6c-snap/app/captures/landscape-counters.txt
+capture draw_calls=105 primitives=47308 sun_px=behind sim_clock=3.0 shadow_px=755.7,758.3 below_px=640.0,764.8
+capture-inspect draw_calls=106 primitives=47316 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-inspect-deflected draw_calls=106 primitives=47322 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-physics draw_calls=105 primitives=47736 sun_px=behind sim_clock=1.5 shadow_px=1152.4,1008.4 below_px=640.0,1016.9
+capture-physics-inspect draw_calls=106 primitives=47744 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-physics-nozoom draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-physics-low-inspect draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-low-inspect-noplane draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-inspect-noplane draw_calls=6 primitives=904 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-land-az0-el0 draw_calls=16 primitives=3374 sun_px=behind sim_clock=1.5 shadow_px=675.3,376.1 below_px=415.1,381.8
+capture-land-az0-el10 draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=675.9,512.8 below_px=410.5,518.8
+capture-land-az90-el0 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,713.5 below_px=3289.8,285.0
+capture-land-az90-el10 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-18027.2,892.6 below_px=3285.4,420.1
+capture-land-az180-el0 draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,338.2
+capture-land-az180-el10 draw_calls=5 primitives=896 sun_px=1267.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=412.7,473.7
+capture-land-az270-el0 draw_calls=6 primitives=898 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,435.0
+capture-land-az270-el10 draw_calls=6 primitives=898 sun_px=12.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=3377.6,574.8
+capture-land-az90-el10-t11 draw_calls=107 primitives=47742 sun_px=behind sim_clock=11.5 shadow_px=222.4,504.9 below_px=281.2,506.4
+capture-land-az0-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=675.3,1309.8 below_px=415.1,1645.3
+capture-land-az90-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,21151.8 below_px=3289.8,-4051.5
+capture-land-az180-el0-100m draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,-925.3
+capture-land-az225-el0-100m draw_calls=5 primitives=896 sun_px=640.0,-412.0 sim_clock=1.5 shadow_px=behind below_px=-766.8,-2205.0
+capture-land-az270-el0-100m draw_calls=5 primitives=896 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,4771.5
+capture-land-30m draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m draw_calls=106 primitives=47734 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-sun draw_calls=4 primitives=894 sun_px=640.0,79.0 sim_clock=1.5 shadow_px=behind below_px=-872.4,668.3
+capture-land-30m-noplane draw_calls=5 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m-noplane draw_calls=6 primitives=894 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-top draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=735.6,-1731.7 below_px=189.7,-1185.8
+capture-land-30m-noplane.png: sky top 105.0 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-30m.png: sky top 105.0 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-az0-el0-100m.png: sky top 167.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el0.png: sky top 167.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el10.png: sky top 149.8 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az180-el0-100m.png: sky top 203.0 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el0.png: sky top 203.0 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el10.png: sky top 187.4 < near horizon 224.1 (horizon row 496), longest equal run 2 px
+capture-land-az225-el0-100m.png: sky top 182.1 < near horizon 218.4 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0-100m.png: sky top 160.1 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0.png: sky top 160.1 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el10.png: sky top 129.9 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el0-100m.png: sky top 157.8 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el0.png: sky top 157.8 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el10-t11.png: sky top 129.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el10.png: sky top 129.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-low3m-noplane.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-low3m.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-sun.png: sky top 119.8 < near horizon 219.2 (horizon row 720), longest equal run 2 px
+sim_clock sent in every landscape view: 1.5, 11.5
+capture-land-az0-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az90-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az180-el0-100m.png: largest step across the ground rim 2.9 levels
+capture-land-az225-el0-100m.png: largest step across the ground rim 3.2 levels
+capture-land-az270-el0-100m.png: largest step across the ground rim 3.0 levels
+capture-land-az0-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 124 vs near ground 79
+capture-land-az90-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 124 vs near ground 79
+capture-land-az180-el0.png: sky above the horizon steps ≤ 0.1 levels; far ground 130 vs near ground 85
+capture-land-az270-el0.png: sky above the horizon steps ≤ 0.2 levels; far ground 124 vs near ground 78
+sun shadow centroid 459,580: 42 px from the CG's projection along the light, 181 px from the point straight below (the two are 206 px apart; 16856 shadow px)
+airplane in the close-up: 9133 px sampled, 99th percentile lightness L* 90.0 (limit 95)
+clouds 10 s apart: 24821 sky px changed by > 3 levels; the ground changed by at most 1 level(s)
+sun disc centroid 639.5,78.5 vs projected 640.0,79.0: 0.71 px
+landscape captures ok
+capture-land-30m.png: 65 airplane pixels, Weber contrast -0.428, 9.2 % with |contrast| < 0.1, mean ΔE 41.5, background saturation 54.1
+capture-land-low3m.png: 52 airplane pixels, Weber contrast -0.497, 9.6 % with |contrast| < 0.1, mean ΔE 38.5, background saturation 21.5
+capture-physics-inspect.png: 36474 airplane pixels, Weber contrast +1.218, 26.2 % with |contrast| < 0.1, mean ΔE 77.3, background saturation 64.0
+capture-physics-low-inspect.png: 74632 airplane pixels, Weber contrast +0.248, 9.7 % with |contrast| < 0.1, mean ΔE 52.1, background saturation 68.2
+readability thresholds met: capture-land-low3m.png:-0.40:0.15:30:18, capture-land-30m.png:-0.40:0.15:30:25
+trimmed level flight: alt 30.000 → 30.000 m, speed 15.0000 m/s, throttle 0.284, 5174 rpm, trims ail +0.0205 elev +0.2628
+/tmp/claude-1000/-home-bulto-OpenRCsimulator/ef43251d-ca0e-4317-8351-b72c84baecfb/scratchpad/l6c-snap/app/tests/compare_captures.py:160: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpkluw0tig/repo/captures/vq01b/pilot-readability.json' mode='w' encoding='UTF-8'>
+  json.dump(results, open(out_path, "w"), indent=2, sort_keys=True)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 3.431s
+
+OK
+pilot-30m-autozoom-off.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-30m-autozoom-on.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-3m-autozoom-off.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-3m-autozoom-on.png: 176 airplane pixels, Weber contrast +0.295, 0.0 % with |contrast| < 0.1, mean ΔE 108.7, background saturation 117.0
+pilot-30m-autozoom-off.png: 65 airplane pixels, Weber contrast -0.428, 9.2 % with |contrast| < 0.1, mean ΔE 41.5, background saturation 54.1
+pilot-30m-autozoom-on.png: 172 airplane pixels, Weber contrast -0.400, 2.3 % with |contrast| < 0.1, mean ΔE 48.7, background saturation 54.1
+pilot-3m-autozoom-off.png: 52 airplane pixels, Weber contrast -0.550, 9.6 % with |contrast| < 0.1, mean ΔE 40.9, background saturation 31.2
+pilot-3m-autozoom-on.png: 114 airplane pixels, Weber contrast -0.245, 6.1 % with |contrast| < 0.1, mean ΔE 47.8, background saturation 34.2
+complete: 66 captures; manifest /tmp/claude-1000/-home-bulto-OpenRCsimulator/ef43251d-ca0e-4317-8351-b72c84baecfb/scratchpad/l6c-snap/app/captures/vq01b/visual-quality-run-manifest.json
+test_interactive_routes_show_a_focused_localized_error_panel (__main__.FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.678s
+
+OK
+L6b: 13 PNGs and reports repeat byte-for-byte; 480 shader identities, maximum 8 vegetation draws, no shadow draws; GPU instance/bounds checks passed
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 2.192s
+
+OK
+l6c-game-sky-level: 119 px (27×11), Weber -0.506, 7.6 % nearly invisible, ΔE 48.5 (p10 9.0), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-sky-inverted: 119 px (27×11), Weber -0.475, 6.7 % nearly invisible, ΔE 43.5 (p10 9.0), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-sky-knife_left: 286 px (27×30), Weber -0.520, 5.2 % nearly invisible, ΔE 57.5 (p10 11.4), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-sky-knife_right: 288 px (27×30), Weber -0.517, 6.2 % nearly invisible, ΔE 55.9 (p10 11.3), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-sky-climb: 115 px (22×21), Weber -0.473, 7.0 % nearly invisible, ΔE 44.4 (p10 10.3), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-sky-dive: 121 px (21×22), Weber -0.471, 12.4 % nearly invisible, ΔE 43.9 (p10 10.4), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-game-horizon-level: 106 px (27×10), Weber -0.150, 8.5 % nearly invisible, ΔE 50.1 (p10 9.4), surroundings 70 % trees / 30 % sky / 0 % ground
+l6c-game-horizon-inverted: 106 px (27×9), Weber -0.186, 7.5 % nearly invisible, ΔE 54.0 (p10 10.8), surroundings 68 % trees / 32 % sky / 0 % ground
+l6c-game-horizon-knife_left: 289 px (26×30), Weber -0.274, 5.2 % nearly invisible, ΔE 63.8 (p10 18.9), surroundings 62 % trees / 38 % sky / 0 % ground
+l6c-game-horizon-knife_right: 290 px (27×30), Weber -0.291, 5.9 % nearly invisible, ΔE 63.4 (p10 20.3), surroundings 62 % trees / 38 % sky / 0 % ground
+l6c-game-horizon-climb: 104 px (22×21), Weber -0.132, 6.7 % nearly invisible, ΔE 54.3 (p10 9.6), surroundings 78 % trees / 22 % sky / 0 % ground
+l6c-game-horizon-dive: 104 px (21×22), Weber -0.342, 10.6 % nearly invisible, ΔE 46.9 (p10 9.2), surroundings 54 % trees / 46 % sky / 0 % ground
+l6c-game-trees-level: 101 px (27×9), Weber +0.687, 11.9 % nearly invisible, ΔE 56.1 (p10 13.5), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-trees-inverted: 101 px (27×9), Weber +0.739, 7.9 % nearly invisible, ΔE 55.7 (p10 14.4), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-trees-knife_left: 288 px (26×30), Weber +0.701, 4.9 % nearly invisible, ΔE 65.4 (p10 30.6), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-trees-knife_right: 291 px (27×30), Weber +0.693, 6.5 % nearly invisible, ΔE 65.1 (p10 30.6), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-trees-climb: 99 px (22×20), Weber +0.609, 8.1 % nearly invisible, ΔE 54.8 (p10 13.5), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-trees-dive: 102 px (20×22), Weber +0.629, 5.9 % nearly invisible, ΔE 55.0 (p10 12.9), surroundings 100 % trees / 0 % sky / 0 % ground
+l6c-game-ground-level: 97 px (27×9), Weber +0.781, 24.7 % nearly invisible, ΔE 56.4 (p10 13.0), surroundings 14 % trees / 0 % sky / 86 % ground
+l6c-game-ground-inverted: 99 px (27×9), Weber +0.852, 14.1 % nearly invisible, ΔE 57.6 (p10 11.5), surroundings 19 % trees / 0 % sky / 81 % ground
+l6c-game-ground-knife_left: 289 px (26×30), Weber +0.702, 7.3 % nearly invisible, ΔE 65.4 (p10 30.0), surroundings 26 % trees / 1 % sky / 73 % ground
+l6c-game-ground-knife_right: 290 px (26×30), Weber +0.682, 7.2 % nearly invisible, ΔE 65.3 (p10 29.2), surroundings 26 % trees / 1 % sky / 73 % ground
+l6c-game-ground-climb: 94 px (22×20), Weber +0.748, 8.5 % nearly invisible, ΔE 58.1 (p10 13.8), surroundings 17 % trees / 0 % sky / 83 % ground
+l6c-game-ground-dive: 94 px (20×22), Weber +0.709, 12.8 % nearly invisible, ΔE 53.0 (p10 12.4), surroundings 34 % trees / 1 % sky / 66 % ground
+l6c-fixed-sky-level: 28 px (11×5), Weber -0.457, 10.7 % nearly invisible, ΔE 35.7 (p10 11.2), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-sky-inverted: 27 px (11×4), Weber -0.424, 18.5 % nearly invisible, ΔE 34.4 (p10 10.3), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-sky-knife_left: 55 px (10×12), Weber -0.497, 5.5 % nearly invisible, ΔE 49.7 (p10 17.1), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-sky-knife_right: 54 px (10×12), Weber -0.444, 5.6 % nearly invisible, ΔE 46.0 (p10 14.2), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-sky-climb: 27 px (9×8), Weber -0.433, 7.4 % nearly invisible, ΔE 34.3 (p10 10.8), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-sky-dive: 28 px (8×9), Weber -0.415, 10.7 % nearly invisible, ΔE 31.5 (p10 10.5), surroundings 0 % trees / 100 % sky / 0 % ground
+l6c-fixed-horizon-level: 27 px (11×4), Weber -0.396, 3.7 % nearly invisible, ΔE 32.0 (p10 10.9), surroundings 47 % trees / 53 % sky / 0 % ground
+l6c-fixed-horizon-inverted: 26 px (11×4), Weber -0.461, 7.7 % nearly invisible, ΔE 40.3 (p10 11.2), surroundings 47 % trees / 53 % sky / 0 % ground
+l6c-fixed-horizon-knife_left: 54 px (10×12), Weber -0.411, 0.0 % nearly invisible, ΔE 57.4 (p10 25.4), surroundings 48 % trees / 52 % sky / 0 % ground
+l6c-fixed-horizon-knife_right: 54 px (10×12), Weber -0.408, 5.6 % nearly invisible, ΔE 54.5 (p10 17.3), surroundings 47 % trees / 53 % sky / 0 % ground
+l6c-fixed-horizon-climb: 26 px (9×8), Weber -0.525, 3.9 % nearly invisible, ΔE 40.6 (p10 12.6), surroundings 55 % trees / 45 % sky / 0 % ground
+l6c-fixed-horizon-dive: 27 px (8×9), Weber -0.392, 7.4 % nearly invisible, ΔE 34.5 (p10 10.4), surroundings 47 % trees / 53 % sky / 0 % ground
+l6c-fixed-trees-level: 24 px (11×4), Weber -0.048, 4.2 % nearly invisible, ΔE 37.0 (p10 11.1), surroundings 91 % trees / 9 % sky / 0 % ground
+l6c-fixed-trees-inverted: 24 px (11×4), Weber -0.054, 4.2 % nearly invisible, ΔE 41.0 (p10 12.5), surroundings 92 % trees / 8 % sky / 0 % ground
+l6c-fixed-trees-knife_left: 54 px (10×12), Weber +0.168, 7.4 % nearly invisible, ΔE 58.8 (p10 30.4), surroundings 92 % trees / 8 % sky / 0 % ground
+l6c-fixed-trees-knife_right: 54 px (10×12), Weber +0.222, 9.3 % nearly invisible, ΔE 56.3 (p10 26.5), surroundings 92 % trees / 8 % sky / 0 % ground
+l6c-fixed-trees-climb: 25 px (9×8), Weber +0.316, 0.0 % nearly invisible, ΔE 39.6 (p10 10.7), surroundings 99 % trees / 1 % sky / 0 % ground
+l6c-fixed-trees-dive: 25 px (8×9), Weber +0.270, 0.0 % nearly invisible, ΔE 41.5 (p10 13.3), surroundings 97 % trees / 3 % sky / 0 % ground
+l6c-fixed-ground-level: 24 px (11×4), Weber +0.106, 4.2 % nearly invisible, ΔE 34.5 (p10 11.3), surroundings 21 % trees / 5 % sky / 75 % ground
+l6c-fixed-ground-inverted: 24 px (11×4), Weber +0.062, 8.3 % nearly invisible, ΔE 35.4 (p10 10.6), surroundings 20 % trees / 6 % sky / 74 % ground
+l6c-fixed-ground-knife_left: 54 px (10×12), Weber -0.091, 7.4 % nearly invisible, ΔE 57.6 (p10 25.6), surroundings 20 % trees / 13 % sky / 67 % ground
+l6c-fixed-ground-knife_right: 54 px (10×12), Weber -0.040, 1.8 % nearly invisible, ΔE 56.0 (p10 20.0), surroundings 20 % trees / 13 % sky / 67 % ground
+l6c-fixed-ground-climb: 25 px (9×8), Weber -0.035, 16.0 % nearly invisible, ΔE 38.6 (p10 9.6), surroundings 17 % trees / 6 % sky / 77 % ground
+l6c-fixed-ground-dive: 25 px (8×9), Weber -0.191, 12.0 % nearly invisible, ΔE 35.1 (p10 11.2), surroundings 24 % trees / 12 % sky / 64 % ground
+L6c complete: 64 captures, 8 measured groups, kit of 24 images in /tmp/claude-1000/-home-bulto-OpenRCsimulator/ef43251d-ca0e-4317-8351-b72c84baecfb/scratchpad/l6c-snap/app/captures/l6c/kit
+capture set complete: 46 fresh images + manifests; trace verified
+capture.sh exit 0

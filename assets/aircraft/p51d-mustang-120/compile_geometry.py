@@ -51,6 +51,16 @@ def validate(d):
     assert t["dorsal_start_z"] < t["fin_root_le_z"] < t["fin_top_le_z"] < t["rudder_hinge_z"] < t["rudder_te_bottom"][0]
     assert t["fin_top_le_z"] + t["fin_top_chord"] > t["rudder_hinge_z"], "the rudder must reach the fin top"
     assert t["fin_top_y"] > t["stab_y"] and 0 < t["stab_thickness"] < 0.05 and 0 < t["fin_thickness"] < 0.05
+    # V01 outlines: z increasing, the upper contour reaches fin_top_y, the lower one stays below the stab, the stab
+    # planform has LE ahead of TE at every station and converges at the tip.
+    up, lo = t["upper_outline"], t["lower_outline"]
+    assert increasing(up) and increasing(lo) and abs(max(p[1] for p in up) - t["fin_top_y"]) < 1e-3
+    assert all(p[1] < t["stab_y"] + 0.05 for p in lo) and up[0][0] <= t["dorsal_start_z"] + 0.05
+    le, te = t["stab_planform"]["le"], t["stab_planform"]["te"]
+    assert increasing(le) and increasing(te) and len(le) == len(te) and all(a[1] < b[1] for a, b in zip(le, te))
+    assert te[-1][1] - le[-1][1] < 0.5 * (te[0][1] - le[0][1]), "stab tip must be narrower than the root"
+    h = t["elevator_horn"]
+    assert 0.5 < h["span_from_fraction"] < 1.0 and 0.2 < h["chord_fraction"] < t["elevator_hinge_fraction"]
     g = d["gear"]
     assert g["main_axle"][1] < w["chord_plane_y"] and g["track"] > 0 and g["main_wheel_diameter"] > g["tail_wheel_diameter"] > 0
     pr = d["propeller"]

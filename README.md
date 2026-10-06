@@ -139,11 +139,11 @@ Exports go to `dist/`, include checksums and use `git describe` as their build i
 | --- | --- |
 | [`app/`](app/) | Godot app, flight physics, controls, UI, rendering and tests |
 | [`assets/`](assets/) | Aircraft source data, geometry generators and asset provenance |
-| [`docs/`](docs/) | Implementation plans, release notes and research evidence |
+| [`docs/`](docs/) | Implementation plans, release notes and research evidence; start at the [documentation map](docs/README.md) |
 | [`research/`](research/) · [`tools/`](tools/) | Reproducible experiments and asset-processing tools |
 | [`prototypes/stage0/three/`](prototypes/stage0/three/) | Archived three.js bake-off prototype |
 
-[Roadmap](ROADMAP.md) · [Architecture decisions](DECISIONS.md) · [Stack](STACK.md) · [Practical lessons](LEARNINGS.md) · [Research](RESEARCH.md) · [Visual-quality plan](docs/VISUAL-QUALITY-PLAN.md) · [Menu plan](docs/MENU-PLAN.md)
+[Documentation map](docs/README.md) · [Roadmap](ROADMAP.md) · [Architecture decisions](DECISIONS.md) · [Stack](STACK.md) · [Practical lessons](LEARNINGS.md) · [Research index](docs/research/README.md) · [Visual-quality plan](docs/VISUAL-QUALITY-PLAN.md) · [Menu plan](docs/MENU-PLAN.md)
 
 ## Contribute
 

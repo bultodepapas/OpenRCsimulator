@@ -15,7 +15,7 @@
       "file": "inspection_front.png",
       "fov_deg": null,
       "ortho_size_m": 3.384,
-      "png_sha256": "564400daefeba9615c874985415ed3329156834b5d6ceb9ef51af3e960914f83",
+      "png_sha256": "b30c9f1766967a840ca0da46a89b02dbfc2ecc2e3bbf10aaadfd9c45a11e7ef1",
       "projection": "ortho",
       "target_m": [
         0.0,
@@ -42,7 +42,7 @@
       "file": "inspection_side_left.png",
       "fov_deg": null,
       "ortho_size_m": 3.384,
-      "png_sha256": "b9aa76f3ccfcc69c1d70dabe0c3b0683ed1195bb6cf1803be3453814130a0fed",
+      "png_sha256": "602461b276b1db53f0bdfc0229f2925e0b2dbb71993e9b521be9aa9676197dbb",
       "projection": "ortho",
       "target_m": [
         0.0,
@@ -96,7 +96,7 @@
       "file": "inspection_bottom.png",
       "fov_deg": null,
       "ortho_size_m": 3.384,
-      "png_sha256": "8d5726485ca4d4381c98477495f36196113dad20dc64e68df79481f1d6300d7a",
+      "png_sha256": "cfd2ee0ec8edce1ded92842ebe742c94c45d5e1d0a91d6e82d6b03bc63f1df58",
       "projection": "ortho",
       "target_m": [
         0.0,
@@ -123,7 +123,7 @@
       "file": "inspection_oblique_front_left.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "88aa569ae4201f8264deca2583b54b801ef5c3facf1fb123a30e1485e930cf6f",
+      "png_sha256": "5bf96a90fc7d32924a7e40e45ac27d386fd8bb4da46f91fe6ff0d978187d77a1",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -150,7 +150,7 @@
       "file": "inspection_oblique_rear_right.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "581887ceff3086d590a45de5a12b8622b76acea201631137f79b78df67618ec2",
+      "png_sha256": "ed775ea1c355d124391543e092f1313cef9fe9f90dc5ca44e2a03377904625ff",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -177,7 +177,7 @@
       "file": "inspection_oblique_front_left_full.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "454ec1bff0ef6c45bb06e0bcfe44ffe442c57702ec9c1785b3725eb6376a8f38",
+      "png_sha256": "40001f199f47a8a7f3e943439836134dc6873f3c8bd30ddc6c443e3a58421ec0",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -204,7 +204,7 @@
       "file": "inspection_oblique_rear_right_full.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "f5116ac636f0799f0a3889d2918fca61620ac2a421b8d47f1fb4de3dcfa1fb6b",
+      "png_sha256": "9272fd4410fc002528b06c5218125b0b00ae7d0638bd84abf9a34f414e892aa3",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -231,7 +231,7 @@
       "file": "inspection_low_front_right.png",
       "fov_deg": 40.0,
       "ortho_size_m": null,
-      "png_sha256": "65e50bad7c701dc83e0d677794a91fec5e21ab89613ed2b7f50b468fc64b7873",
+      "png_sha256": "aea81306be03375edebb6a3c62efceb71e4e44cb51b614a4519231c9159dad5c",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -258,7 +258,7 @@
       "file": "inspection_cockpit_left.png",
       "fov_deg": 30.0,
       "ortho_size_m": null,
-      "png_sha256": "6a26e4ede89a4b56579589aee9f5c2997320f1f83c4f5a61ae8c2cb0a5742159",
+      "png_sha256": "b2335f2fc65178fa59c97397e718e7385b05cd23464ccd64555624ddb5333066",
       "projection": "persp",
       "target_m": [
         0.0,
@@ -273,7 +273,7 @@
     }
   ],
   "format": "openrc-capture-manifest v1",
-  "geometry_sha256": "b61420397d4cc8236c56414d4fd3ccf6c99824e6246f0052f82b20a7ea24c34c",
+  "geometry_sha256": "fb81f04c849850440d6cc41c074fcbf8ec8987c5e0318a5127503026732d7e2f",
   "image_size": [
     1280,
     720

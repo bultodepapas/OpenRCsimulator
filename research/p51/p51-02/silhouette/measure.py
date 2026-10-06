@@ -243,6 +243,17 @@ def main():
     frl_row_front = log["front"]["top_row"] + sp_r_px + spinner_axis_in * log["front"]["px_per_in_x"]
     chord_plane_root_in = (frl_row_front - log["front"]["chord_plane_row_at_centreline"]) / log["front"]["px_per_in_x"]
     log["front"]["chord_plane_root_above_frl_in"] = float(chord_plane_root_in)
+    # --- V01: tail outlines (side) and stab planform (plan), full-size metres in the model frame -------------------
+    tail_z_m = zm(DIM["length"])
+    upper, lower = [], []
+    for z_in in np.arange(4.7 / IN + z0, DIM["length"] - 0.01, 1.5):  # from aft of the antenna mast
+        i = int(np.argmin(np.abs(top[:, 0] - z_in)))
+        upper.append([round(zm(z_in), 4), round(top[i, 1] * IN, 4)])
+    for z_in in np.arange(6.1 / IN + z0, DIM["length"] - 0.01, 1.5):
+        j = int(np.argmin(np.abs(bottom[:, 0] - z_in)))
+        lower.append([round(zm(z_in), 4), round(bottom[j, 1] * IN, 4)])
+    stab_le = [[round(sp * IN, 4), round(zm(zz), 4)] for sp, zz in stab_le_pts if sp > 4.0]
+    stab_te = [[round(sp * IN, 4), round(zm(zz), 4)] for sp, zz in stab_te_pts if sp > 4.0]
     metrology = {
         "format": "openrc-metrology v1",
         "drawing": picks["drawing"], "drawing_sha256": sha(drawing), "picks_sha256": sha(HERE / "picks.json"),
@@ -257,6 +268,8 @@ def main():
         "stab": {"half_span": round(stab_half_in * IN, 4), "root_le_z": round(zm(log["stab"]["root_le_from_spinner_tip_in"]), 4), "root_chord": round(log["stab"]["root_chord_in"] * IN, 4),
                  "tip_le_z": round(zm(log["stab"]["tip_le_from_spinner_tip_in"]), 4), "tip_chord": round(log["stab"]["tip_chord_in"] * IN, 4)},
         "fin": {"top_y": round(DIM["fin_top_above_frl"] * IN, 4)},
+        "tail_outlines": {"upper": upper, "lower": lower, "stab_le": stab_le, "stab_te": stab_te,
+                          "note": "upper: top contour of the side silhouette from the dorsal start to the rudder TE (dorsal fillet, fin LE, cap, rudder TE); lower: tail-cone/rudder bottom aft of the tail wheel; stab_le/te: plan-view planform [x from centreline, z], 2 in steps; the vertical axis of the side view is ~3 % short (not corrected)"},
         "front": {"dihedral_deg_fit": round(log["front"]["dihedral_fit_deg"], 2), "chord_plane_y_root": round(chord_plane_root_in * IN, 4)},
     }
     metrology["reserved_checks"]["dihedral"] = {"measured_deg": log["front"]["dihedral_fit_deg"], "printed_deg": DIM["dihedral_deg"]}

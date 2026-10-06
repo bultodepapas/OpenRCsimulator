@@ -21,6 +21,17 @@ python3 research/p51/p51-02/silhouette/review.py --candidate /tmp/p51-renders \
   --baseline research/p51/p51-02/silhouette/renders-before --output /tmp/p51-review --label "prueba"
 ```
 
-`renders-before/` es la primera maqueta (a ojo), `renders-after/` la revisión 1 y `review-2026-10-06/` su comparación con visor. Métrica: distancia euclídea de cada píxel del contorno del dibujo al borde más cercano del alpha del render (y a la inversa) e IoU de las máscaras; en píxeles (≈ 490 px por metro de modelo), no es precisión métrica por pieza. Las palas dibujadas se excluyen por cajas en perfil y planta; en la frontal no se pueden separar del cuerpo, así que esa vista es cualitativa. Dependencias: Python 3 con NumPy, SciPy y Pillow del sistema (las mismas que el Avanti).
+`renders-before/` es la primera maqueta (a ojo), `renders-after/` la revisión 1 y `review-2026-10-06/` su comparación con visor; `renders-v01/` y `review-2026-10-06-v01/` son el paso V01 (cola) frente a la revisión 1, y `photo/renders-v01/` + `photo/metrics-v01.json` lo mismo sobre la foto. Métrica: distancia euclídea de cada píxel del contorno del dibujo al borde más cercano del alpha del render (y a la inversa) e IoU de las máscaras; en píxeles (≈ 490 px por metro de modelo), no es precisión métrica por pieza. Las palas dibujadas se excluyen por cajas en perfil y planta; en la frontal no se pueden separar del cuerpo, así que esa vista es cualitativa. Dependencias: Python 3 con NumPy, SciPy y Pillow del sistema (las mismas que el Avanti).
+
+## Foto oblicua del usuario (`photo/`)
+
+Misma técnica con una cámara en perspectiva (como `research/avanti-s/alignment/fit.py`, más el campo de visión como incógnita): `photo/picks.json` (seis puntos marcados y su significado en el modelo), `photo/fit.py` → `photo/camera-fit.json`, el mismo `render.gd` con `--fit=res://../research/p51/p51-02/silhouette/photo/camera-fit.json`, y `photo/review_photo.py` (silueta de la foto = alpha ≥ 200 menos cajas de palas). La foto es de un tercero: original y composiciones en `references/p51-mustang/user-photos/` (ignorado); en Git solo puntos, cámara, el render cian y `photo/metrics-2026-10-06.json`.
+
+```sh
+python3 research/p51/p51-02/silhouette/photo/fit.py
+xvfb-run -a -s "-screen 0 1600x1000x24" "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --audio-driver Dummy \
+  --script res://../research/p51/p51-02/silhouette/render.gd -- --fit=res://../research/p51/p51-02/silhouette/photo/camera-fit.json --output-dir=/tmp/p51-photo
+python3 research/p51/p51-02/silhouette/photo/review_photo.py --candidate /tmp/p51-photo --output /tmp/p51-photo-review
+```
 
 [Informe](../../../../docs/research/p51-silhouette-review-v1.md) · [Plan](../../../../docs/P51-PLAN.md).

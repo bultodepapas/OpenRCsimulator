@@ -1,6 +1,6 @@
 # OpenRC Simulator: first launch
 
-An alpha RC airplane simulator. Start with the Jensen Das Ugly Stik 60 and tell us how it feels compared with a real Stik. Extra 300S and P-51D are experimental flight models; Avanti S is a visual preview with Fly disabled. See the [aircraft table](../README.md#aircraft) for their status.
+An alpha RC airplane simulator. Start with the Jensen Das Ugly Stik 60 and tell us how it feels compared with a real Stik. Extra 300S and P-51D are experimental flight models; Avanti S is a visual preview with Fly disabled. See the [aircraft table](../README.md#aircraft-hangar) for their status.
 
 ## 1. Download and check
 

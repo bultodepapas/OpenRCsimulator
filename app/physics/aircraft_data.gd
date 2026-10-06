@@ -189,6 +189,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		if ratio < 0.5 or ratio > 2.0:
 			warnings.append("inertia: %s = %.4f kg·m2 is %.2f× the scaled UltraStick25e value" % [names[k], j[k], ratio])
 
+	var gear := _landing_gear(errors, raw.get("landing_gear"), cg_inv, mass)
+
 	var model := {
 		id = raw.get("id", ""),
 		data_sha256 = JSON.stringify(raw, "", true).sha256_text(),
@@ -206,8 +208,73 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		propulsion = prop,
 		controls = controls,
 		crash_hull = _hull_body(hull, cg_inv),
+		landing_gear = gear,
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
+
+
+## Landing gear (E1): optional. Without it every hull point, wheels included, is a crash (D9d). With it, each contact
+## is a spring-damper on its compression; the wheel points must then be absent from the crash hull.
+## Rules: at least 3 contacts, on both sides, with the CG inside their footprint (the airplane stands on its wheels);
+## the heave frequency ω = sqrt(Σk / m) must satisfy ω·dt < 0.1 at the project's physics tick (ROADMAP E1: an
+## explicit integrator resolves the spring instead of exciting it); each damping ratio ζ = c / (2·sqrt(k·m/n)) in
+## 0.05–2 (a wire leg and a tyre, not a shock absorber, and never negative).
+## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression }],
+## reach, heave_omega, static_sag } or {} when absent.
+static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFloat64Array, mass: float) -> Dictionary:
+	if node == null:
+		return {}
+	var gear := _dictionary(errors, "landing_gear", node)
+	if gear.is_empty():
+		return {}
+	var raw_contacts := _array(errors, "landing_gear.contacts", gear.get("contacts"))
+	if raw_contacts.size() < 3:
+		errors.append("landing_gear.contacts: fewer than 3 contacts")
+		return {}
+	var contacts := []
+	var total_k := 0.0
+	var reach := 0.0
+	var x_min := INF
+	var x_max := -INF
+	var y_min := INF
+	var y_max := -INF
+	for i in raw_contacts.size():
+		var label := "landing_gear.contacts[%d]" % i
+		var c := _dictionary(errors, label, raw_contacts[i])
+		var position = _q(errors, label + ".position", c.get("position"), "m", -3.0, 3.0, 3)
+		var k = _q(errors, label + ".stiffness", c.get("stiffness"), "N/m", 1.0, 1.0e6)
+		var damping = _q(errors, label + ".damping", c.get("damping"), "N·s/m", 0.0, 1.0e4)
+		var travel = _q(errors, label + ".max_compression", c.get("max_compression"), "m", 0.005, 0.5)
+		if position == null or k == null or damping == null or travel == null:
+			continue
+		if typeof(c.get("name")) != TYPE_STRING or str(c.name).strip_edges().is_empty():
+			errors.append("%s: missing name" % label)
+			continue
+		var n := float(raw_contacts.size())
+		var zeta: float = damping / (2.0 * sqrt(k * mass / n))
+		if zeta < 0.05 or zeta > 2.0:
+			errors.append("%s.damping: ratio ζ = %.2f outside 0.05–2 (with m/%d per contact)" % [label, zeta, int(n)])
+		x_min = minf(x_min, position[0])
+		x_max = maxf(x_max, position[0])
+		y_min = minf(y_min, position[1])
+		y_max = maxf(y_max, position[1])
+		var body := PackedFloat64Array([-(position[0] - cg[0]), position[1] - cg[1], -(position[2] - cg[2])])
+		reach = maxf(reach, sqrt(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
+		total_k += k
+		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel) })
+	if not errors.is_empty() or contacts.size() < 3:
+		return {}
+	if not (x_min < cg[0] and cg[0] < x_max):
+		errors.append("landing_gear: the CG (x_aft %.3f m) is outside the wheelbase %.3f–%.3f m; the airplane cannot stand on its wheels" % [cg[0], x_min, x_max])
+	if not (y_min < cg[1] and cg[1] < y_max):
+		errors.append("landing_gear: no contact on each side of the CG (y %.3f–%.3f m)" % [y_min, y_max])
+	var dt := 1.0 / float(ProjectSettings.get_setting("physics/common/physics_ticks_per_second", 60))
+	var omega := sqrt(total_k / mass)
+	if omega * dt >= 0.1:
+		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) is not < 0.1; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt])
+	if not errors.is_empty():
+		return {}
+	return { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k }
 
 
 ## Spanwise positions (m, ±) of the equal-area wing strips for the asymmetric stall (D9b), left side first.

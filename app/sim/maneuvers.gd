@@ -7,7 +7,9 @@ const M := preload("res://physics/math3d.gd")
 
 ## Slow flight (D9a): idle throttle, elevator holding the start altitude (PD on altitude error and climb rate),
 ## so the airplane slows down at constant height until the wing can no longer hold it.
-const SLOW_FLIGHT := { altitude = 30.0, kp = 1.5, kd = 1.5 } # m; stick per m; stick per m/s (tuned on traces, 2026-10-05)
+## Flown from 150 m (E1): after the stall the airplane falls for the rest of the 10 s and used to sink below the
+## ground, where nothing acted on it; with gear contacts the ground is real, so the maneuver starts high enough.
+const SLOW_FLIGHT := { altitude = 150.0, kp = 1.5, kd = 1.5 } # m; stick per m; stick per m/s (tuned on traces, 2026-10-05)
 
 ## Rudder gain of the "coordinated" maneuvers: yaw command per radian of sideslip (holds β ≈ 0, like a pilot's feet).
 const COORDINATION_GAIN := 10.0
@@ -24,11 +26,12 @@ static func all() -> Dictionary:
 		roll_20_coordinated = { mode = "level", speed = 20.0, duration = 2.5, sticks = func(t: float, s: PackedFloat64Array) -> Dictionary: return _coordinated(_pulse(t, 0.25, 1.25, { roll = 1.0 }), s) },
 		glide_15 = { mode = "glide", speed = 15.0, duration = 5.0, sticks = func(_t: float, _s: PackedFloat64Array) -> Dictionary: return _hands_off() },
 		pull_throttle = { mode = "level", speed = 15.0, duration = 3.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary: return _pulse(t, 0.25, 1.75, { pitch = 0.5, throttle_delta = 0.7 }) },
-		slow_flight = { mode = "level", speed = 12.0, duration = 10.0, sticks = func(_t: float, s: PackedFloat64Array) -> Dictionary: return _altitude_hold(s) },
+		slow_flight = { mode = "level", speed = 12.0, altitude = SLOW_FLIGHT.altitude, duration = 10.0, sticks = func(_t: float, s: PackedFloat64Array) -> Dictionary: return _altitude_hold(s) },
 		symmetric_stall = { mode = "glide", speed = 12.0, duration = 4.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary: return _pulse(t, 0.25, 4.0, { pitch = 1.0 }) },
 		# Power-off spin entry (full up elevator + full right rudder), then the standard recovery (opposite rudder,
-		# stick forward) held until the rotation stops (0.9 s), then neutral.
-		spin_right = { mode = "level", speed = 12.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
+		# stick forward) held until the rotation stops (0.9 s), then neutral. From 150 m: the spin loses ~80 m in 8 s
+		# and used to continue below the ground (E1 made the ground real).
+		spin_right = { mode = "level", speed = 12.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
 			var c := _pulse(t, 0.25, 4.0, { pitch = 1.0, yaw = 1.0 })
 			if t >= 4.0 and t < 4.9:
 				c = { roll = 0.0, pitch = -0.5, yaw = -1.0, throttle_delta = 0.0 }

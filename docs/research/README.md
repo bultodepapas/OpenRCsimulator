@@ -1,0 +1,110 @@
+# Research index
+
+`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of 167. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
+
+## Two folders, one rule
+
+| Folder | Holds | Example |
+| --- | --- | --- |
+| `docs/research/` | Reports (`.md`), their sidecar data (`*-validation.json`, `*-metrics.json`, `sources.json`), probes and the evidence of a step (logs, PNG, JSON) | `visual-quality-implementation/L6b/README.md` and its 30 evidence files |
+| `research/` (repository root) | Scripts and data of reproducible experiments and of the aircraft measurement pipelines: measure, fit, render, derive | `research/extra-300/ex05/derive_physics.py` generates `app/data/aircraft/gp_extra_300s_60.json` |
+
+Aircraft tracks keep the report here and the scripts, picks and renders under `research/<aircraft>/<step>/`. Engine and feature tracks (menu, smoke, wind, landscape, visual quality, flight robustness) keep report, probes and evidence together here. Both are fine; what matters is that the report links the evidence and the evidence names the step.
+
+Some scripts under `research/` read the gitignored `references/` folder (plans, scans and photos with unknown licenses) and cannot be rerun from a fresh clone. Their reports say so; the measured numbers they produced are committed.
+
+## Entry points per track
+
+### Flight model and simulation
+
+| Read first | Then | Evidence |
+| --- | --- | --- |
+| [ugly-stik-rudder-audit.md](ugly-stik-rudder-audit.md) (the symptom: rudder over-authority) | [flight-model-robustness-audit.md](flight-model-robustness-audit.md) (the whole-model audit) → [flight-repair-implementation.md](flight-repair-implementation.md) (what was changed and tested, 2026-10-06) → [flight-robustness/repair-diagnostics.md](flight-robustness/repair-diagnostics.md) | [rudder-audit/](rudder-audit/) (19 experiments), [flight-robustness/](flight-robustness/) (probes, fuzz, eigenmodes, logs); [research/sensitivity/results.md](../../research/sensitivity/results.md) (D10 sweep and the UMN Ultra Stick 120 comparison); [research/flight-modes/](../../research/flight-modes/) (linearized modes) |
+
+M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06).
+
+Plans: [FLIGHT-MODEL-ROBUSTNESS-PLAN](../FLIGHT-MODEL-ROBUSTNESS-PLAN.md), [RUDDER-REPAIR-PLAN](../RUDDER-REPAIR-PLAN.md), ROADMAP M1.
+
+### Ugly Stik
+
+| Topic | Read first | Then |
+| --- | --- | --- |
+| Sources and local references | [ugly-stik-resources.md](ugly-stik-resources.md) | [ugly-stik-sources.md](ugly-stik-sources.md), [ugly-stik-local-audit.md](ugly-stik-local-audit.md), [ugly-stik-new-files.md](ugly-stik-new-files.md) (with [-cad](ugly-stik-new-files-cad.md) and [-visual](ugly-stik-new-files-visual.md)), [aircraft-reference-index.md](aircraft-reference-index.md) (all aircraft) |
+| Ten investigations before modelling | [ugly-stik-investigations/README.md](ugly-stik-investigations/README.md) | 01-03 geometry, 04-06 components, 07 CAD, 08 plan metrology, 09 export, 10 screen readability; `evidence/` |
+| Model versions | [ugly-stik-model-v4.md](ugly-stik-model-v4.md) (current geometry v3 + finish v4) | [v1](ugly-stik-model-v1.md) ([rig](ugly-stik-model-v1-rig.md), [calibration](ugly-stik-model-v1-calibration.md), [visual](ugly-stik-model-v1-visual.md)), [v2](ugly-stik-model-v2.md), [review v2](ugly-stik-model-review-v2.md), [v3](ugly-stik-model-v3.md) ([metrology](ugly-stik-model-v3-metrology.md), [wing](ugly-stik-model-v3-wing.md), [installation](ugly-stik-model-v3-installation.md), [readability](ugly-stik-model-v3-readability.md)), [v4 controls](ugly-stik-model-v4-controls.md), [v4 equipment](ugly-stik-model-v4-equipment.md), [engine v5](ugly-stik-engine-v5.md) (+ [evidence](ugly-stik-engine-v5-evidence/)), [revalidation 2026-10-05](ugly-stik-revalidation-2026-10-05/) |
+| Finish and tooling | [ugly-stik-visual-photo-brief.md](ugly-stik-visual-photo-brief.md) | [ugly-stik-visual-investigations/](ugly-stik-visual-investigations/README.md) (01-10), [ugly-stik-tooling-investigations/](ugly-stik-tooling-investigations/README.md) (01-10) |
+
+Scripts, captures and galleries: [research/ugly-stik/](../../research/ugly-stik/) (`model-v1` … `model-v4`, [model-v4/README.md](../../research/ugly-stik/model-v4/README.md)). Plans: [UGLY-STIK-PLAN](../UGLY-STIK-PLAN.md), [UGLY-STIK-VISUAL-PLAN](../UGLY-STIK-VISUAL-PLAN.md).
+
+### Extra 300S
+
+| Read first | Then | Evidence |
+| --- | --- | --- |
+| [extra-300-family-research.md](extra-300-family-research.md) (which Extra and why) | [extra-300-resources.md](extra-300-resources.md), [extra-300-round2.md](extra-300-round2.md), [extra-300-photo-investigation.md](extra-300-photo-investigation.md), [extra-300-integration-audit.md](extra-300-integration-audit.md) (what a second aircraft needed from the app), [extra-300-model-v1.md](extra-300-model-v1.md) (metrology and preview), [extra-300-visual-review-v1.md](extra-300-visual-review-v1.md) | [research/extra-300/](../../research/extra-300/) (`ex01` metrology, `ex02` captures, [`ex05/derivation.md`](../../research/extra-300/ex05/derivation.md) physics) |
+
+Shared tooling investigations for the Extra and the Stik: [extra-aircraft-tooling/README.md](extra-aircraft-tooling/README.md). Plan: [EXTRA-300-PLAN](../EXTRA-300-PLAN.md).
+
+### Avanti S
+
+| Read first | Then | Evidence |
+| --- | --- | --- |
+| [avanti-s-family-research.md](avanti-s-family-research.md) (variant and turbine) | [avanti-s-resources.md](avanti-s-resources.md), [avanti-s-turbine-research.md](avanti-s-turbine-research.md), [avanti-s-integration-audit.md](avanti-s-integration-audit.md), [avanti-s-av01-metrology.md](avanti-s-av01-metrology.md), [avanti-s-controls-and-installation.md](avanti-s-controls-and-installation.md), [avanti-s-geometry-followup.md](avanti-s-geometry-followup.md), [avanti-s-av02-preview.md](avanti-s-av02-preview.md) | Contour refinement, in order: [transparency comparison](avanti-s-transparency-comparison.md) → [refinement](avanti-s-contour-refinement.md) → [v3](avanti-s-contour-refinement-v3.md) → [new angles](avanti-s-new-angles.md) ([sources](avanti-s-additional-angle-sources.md)) → [user profile](avanti-s-user-profile.md) → [refinement v4](avanti-s-refinement-v4.md) (latest). Scripts and viewers: [research/avanti-s/](../../research/avanti-s/) (`av01`, `av02`, `alignment`, `refinement`, `new-angles`, `user-profile`, `refinement-v4`) |
+
+Plan: [AVANTI-S-PLAN](../AVANTI-S-PLAN.md).
+
+### P-51D
+
+| Read first | Then | Evidence |
+| --- | --- | --- |
+| [p51-family-research.md](p51-family-research.md) (why a 1/4-scale P-51D for 120 cc) | [p51-silhouette-review-v1.md](p51-silhouette-review-v1.md) (dimensions measured by silhouettes over the AN 01-60-3 three-view and the owner's photo), [p51-visual-review-v1.md](p51-visual-review-v1.md) (shapes and details, 18 ranked findings) | [research/p51/](../../research/p51/): [`p51-02/silhouette/README.md`](../../research/p51/p51-02/silhouette/README.md) (the silhouette method), [`p51-05/derivation.md`](../../research/p51/p51-05/derivation.md) (physics) |
+
+Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
+
+### Menus and product shell
+
+[menu-investigations/README.md](menu-investigations/README.md): 25 numbered investigations (01-22, 24, 25; number 23 is a probe only, explained in the README), Godot probes under `probes/`, a contrast checker and `sources.json`. Start with [02 input focus and radio isolation](menu-investigations/02-input-focus-radio-isolation.md). Plan: [MENU-PLAN](../MENU-PLAN.md).
+
+### Visual quality and landscape
+
+| Topic | Read first | Then |
+| --- | --- | --- |
+| Landscape research | [landscape-research.md](landscape-research.md) | [landscape-investigations/README.md](landscape-investigations/README.md) (01 sky … 11 wind ambience) |
+| Visual-quality direction and tools | [visual-quality-tools-2026-10-05.md](visual-quality-tools-2026-10-05.md) | [visual-quality-baseline-2026-10-05/](visual-quality-baseline-2026-10-05/README.md), [visual-quality-round2/](visual-quality-round2/README.md) (native rendering tricks, textures, profiling, a Godot probe), [visual-quality-supplement-2026-10-06.md](visual-quality-supplement-2026-10-06.md) (+ [plugins](visual-quality-supplement-plugins-2026-10-06.md)), the owner's input ([visual](visual-quality-user-input-2026-10-06.txt), [assets](asset-sources-user-input-2026-10-06.txt)) |
+| Asset sources | [asset-sources-catalog-2026-10-06.md](asset-sources-catalog-2026-10-06.md) | [asset-audio-animation-sources-2026-10-06.md](asset-audio-animation-sources-2026-10-06.md), [tree-resource-review-2026-10-06/](tree-resource-review-2026-10-06/README.md) |
+| Trials | [material trial](visual-quality-material-trial-2026-10-06.md), [nature trial](visual-quality-nature-trial-2026-10-06.md) | Projects under [research/visual-quality/](../../research/visual-quality/) |
+| Implementation evidence, one folder per step | [VQ-01a](visual-quality-implementation/VQ-01a/README.md), [VQ-01b](visual-quality-implementation/VQ-01b/README.md) (with [visual references](visual-quality-implementation/VQ-01b/REFERENCES.md)), [L5](visual-quality-implementation/L5/README.md), [L6a](visual-quality-implementation/L6a/README.md), [L6b](visual-quality-implementation/L6b/README.md), [L6c](visual-quality-implementation/L6c/README.md) | Each README states what was measured, how, and what it does not prove (software rendering verifies the protocol, not target-GPU performance) |
+
+Plans: [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md), [LANDSCAPE-PLAN](../LANDSCAPE-PLAN.md). Tree tooling: [tools/trees/README.md](../../tools/trees/README.md).
+
+### Smoke
+
+[rc-exhaust-smoke.md](rc-exhaust-smoke.md), then [smoke-investigations/README.md](smoke-investigations/README.md) (01-12) and the isolated emission experiment in [godot-evidence/](smoke-investigations/godot-evidence/README.md). Plan: [SMOKE-PLAN](../SMOKE-PLAN.md).
+
+### Wind
+
+[wind-physics-primary-sources.md](wind-physics-primary-sources.md), [wind-godot-integration.md](wind-godot-integration.md) (code audit; written before the 2026-10-06 flight repair, re-read against `physics/dynamics.gd` before W01), [wind-investigations/README.md](wind-investigations/README.md) (01-12). Plan: [WIND-PLAN](../WIND-PLAN.md).
+
+### Cross-aircraft
+
+[aircraft-reference-index.md](aircraft-reference-index.md): the index of the owner-supplied local references per aircraft identity (the files themselves are local only).
+
+## Naming
+
+Observed and kept:
+
+| Pattern | Use | Example |
+| --- | --- | --- |
+| `<track>-<topic>.md` | A report | `extra-300-integration-audit.md` |
+| `<track>-model-v<N>[-<part>].md` | A model revision and its parts | `ugly-stik-model-v3-wing.md` |
+| `<track>-<topic>-YYYY-MM-DD.md` | A dated snapshot that will be repeated | `visual-quality-tools-2026-10-05.md` |
+| `<track>-investigations/NN-<topic>.md` | Numbered research rounds, with a README that lists them | `landscape-investigations/04-trees-and-impostors.md` |
+| `<report>-validation.json`, `-metrics.json`, `-checks.json` | Sidecar data of a report, named after the report | `avanti-s-av02-validation.json` |
+| `<area>-implementation/<STEP-ID>/` | Evidence of one step, uppercase ID as in the plan | `visual-quality-implementation/L6b/` |
+| `research/<track>/<step-id>/` | Scripts and data of a step, lowercase | `research/extra-300/ex05/` |
+
+## Adding research
+
+1. Write the report in `docs/research/` with the name pattern above, in one language, with date, sources (and their licenses), what was done, what came out, what it does not prove, and the command that reproduces it when one exists.
+2. Put the evidence next to it or in the step's evidence folder; put scripts and raw data under `research/<track>/<step>/`.
+3. Link the report from its plan and from this index. Record the lesson in LEARNINGS.md under the track's dated heading.
+4. Never link `references/` or `app/captures/` as if they were in the repository; write "local only" in plain text. Third-party files need a license that allows redistribution and a `sources.json` with author, URL, license and hash before they are committed.

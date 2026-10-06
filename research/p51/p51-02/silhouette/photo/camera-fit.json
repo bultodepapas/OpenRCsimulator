@@ -6,8 +6,8 @@
     "numpy": "1.26.4",
     "scipy": "1.11.4"
   },
-  "picks_sha256": "5b64ef4bef44786673261cccbad0a20cc7a1b34deece92cce1a3861650cd89e7",
-  "model_geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
+  "picks_sha256": "1fe3de4de641de4bba4855ed342254de219be823abed26080c2bade8e82101b7",
+  "model_geometry_sha256": "2feb3b4f4a59435a8b83230ee4bf6f3986b07a84486c3579a54215359733dab9",
   "drawing_sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
   "limits": [
     "Six hand-picked landmarks with ~6 px tolerance; wheel contact points depend on tyre compression and the model's gear height from the drawing",

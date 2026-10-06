@@ -616,3 +616,57 @@ Prueba: [informe](docs/research/p51-silhouette-review-v1.md) con métricas y has
 - Una galería uniforme construida con `render/airplane.gd` muestra los cuatro modelos actuales sin reutilizar renders de revisiones antiguas. Los bounds de cada avión mantienen el encuadre; las etiquetas del tour salen del catálogo y conservan el estado experimental/preview.
 - GitHub admite GIF, tablas HTML y bloques `details`: un tour de 96 fotogramas a 640×360 pesa 1,7 MB y tiene alternativa estática. Separar vistas de estudio y capturas reales del juego evita presentar una órbita de cámara como maniobra volada.
 - Prueba: renders inspeccionados, GIF decodificado (96 frames/10,56 s), hashes y enlaces locales comprobados; render Markdown de GitHub verificado. Herramienta de documentación fuera de `app/`, sin cambios de runtime.
+
+## 2026-10-06 · P51-02c — la foto del usuario con cámara en perspectiva
+
+- Identificar el lado antes de marcar puntos: vista desde abajo con el morro a la derecha, la escarapela del intradós está en el ala derecha, luego se ve el lado derecho y el ala del lado izquierdo de la imagen es la derecha del modelo. Con los lados cambiados el ajuste daba 27 px de RMS y una cámara reflejada (lo mismo que en el Avanti); corregido, 8,6 px.
+- El «vértice del cono» en una foto es el centro del casquete visto, no el borde de su silueta; marcarlo en el borde desplazó el morro 25 px.
+- Un teleobjetivo deja FOV y distancia correlacionados: el ajuste se va al límite inferior del FOV sin empeorar la superposición. Ajustar el FOV, acotarlo y no leer la distancia como dato.
+- Las palas borrosas tienen alpha parcial: el umbral 200 elimina la mayoría y las cajas el resto; sin ellas la métrica cae de 21 a 8,6 px sin tocar el modelo. Reportar siempre qué se excluye.
+- Dejar de un lado, pero evaluar en varios ángulos: el dibujo ortográfico midió las estaciones; la oblicua reveló que la boca de la toma es un escalón y no la rampa que había interpolado entre estaciones.
+
+Prueba: [sección de la foto](docs/research/p51-silhouette-review-v1.md#comparación-con-la-foto-oblicua-del-usuario), `research/p51/p51-02/silhouette/photo/metrics-2026-10-06.json`, suite completa.
+
+## 2026-10-06 · P51 — revisión visual: separar dimensiones de formas
+
+- Con las siluetas dentro de 1-3 cm de modelo, lo que delata al P-51 ya no son medidas sino **formas**: deriva/timón de placa, estabilizador de puntas cuadradas, toma ventral «barriga de ballena», raíz alar sin extensión ni carenado, escapes como peine. Una tabla de hallazgos con gravedad A/B/C y evidencia por imagen ordena el trabajo mejor que una lista de deseos.
+- Las fotos de archivo sin cámara ajustada sirven para formas y detalles (comparación cualitativa en el ángulo de órbita más parecido), no para medir; mantener la métrica solo donde hay cámara ajustada (dibujo y foto del propietario) evita confundir las dos cosas.
+- Cada paso del plan visual lleva un criterio de aceptación por siluetas («no empeorar perfil 7,7 px / planta 15,0 px, mejorar la raíz alar»): así la forma no se corrige a costa de las dimensiones ya medidas.
+
+Prueba: [revisión visual 1](docs/research/p51-visual-review-v1.md), [plan visual](docs/P51-VISUAL-PLAN.md), comparativas en `research/p51/p51-02/visual-review-2026-10-06/`.
+
+## 2026-10-06 · L6c — medir antes de creer la estimación
+
+- La estimación del plan («rojo sobre verde, −0,18 de contraste») valía para la hierba plana y ni ahí: ante las cards de árboles L6b el Stik iluminado de frente es **más claro** que el fondo (Weber +0,6/+0,7) y sobre la hierba +0,7/+0,85. Donde sí aparece el par débil es en **horizontal sobre hierba** (ala roja vista desde arriba: 25 % de píxeles casi invisibles en luminancia, ΔE 53). Y en el **borde de copas**, cielo y árboles se compensan y el Weber medio cae a −0,15 aunque cada píxel siga separándose (≤ 11 % casi invisible, ΔE ≥ 47); con el avión de 12 px del fixture de 50° el mezclado anula el contraste medio ante árboles y hierba. En fondos mixtos o blancos pequeños no usar el contraste medio contra el anillo: registrar la fracción local y el decil bajo de ΔE.
+- El norte exacto del fixture VQ-01b no sirve para «ante los árboles»: a 100 m el avión cae en el borde de un árbol con cielo detrás (49/51 %). Dos renders anchos con y sin arboleda, medidos por columnas, encontraron en un minuto el azimut con banda sólida (9°: 0,5°–4,1°); el sur era igual de denso pero mira al sol. Elegir fondos midiendo la escena comprometida, no el dibujo de la distribución.
+- Una máscara exacta vale más que clasificar colores: ocultar la arboleda (`--hide_treeline`) y restar imágenes da los árboles píxel a píxel; la fila del horizonte sale de la transformación real de la cámara registrada. Con eso el runner puede rechazar un caso que no es lo que su nombre dice (guardas de identidad, distintas de los umbrales de calidad, que siguen siendo de Gate L).
+- Para el playtest, la imagen debe ser la del juego (autozoom, FOV 20,7°, ~30 px de envergadura), no la del fixture de 50° (12,6 px): el contrato de poses pasa de «autozoom prohibido» a «autozoom explícito 0/1 registrado en la evidencia»; la familia VQ-01b sigue fijando 0. Los defaults nuevos reproducen la pose anterior bit a bit, y una prueba lo exige.
+- Un orden ciego se fija con una semilla propia y se comprueba que no coincide ni con el orden alfabético ni con el de generación; las imágenes del kit se copian sin sidecar y el visor no contiene nombres de caso. El puntuador exige filas completas: una respuesta en blanco no cuenta como fallo silencioso.
+- Trabajo en paralelo: mientras corría mi suite, otro desarrollador guardó `physics/aircraft_data.gd` a medias (función aún no escrita) y la tanda de capturas falló al cargar `main.gd`. La evidencia se repitió en un worktree congelado de HEAD con solo mis archivos; no hay que tocar el trabajo ajeno ni esperar a que termine.
+
+Prueba: [L6c](docs/research/visual-quality-implementation/L6c/README.md), `test_visual_evidence.gd` (97), `test_treeline_readability.py` (10), 64 capturas medidas, suite completa y `capture.sh` en el worktree congelado.
+
+## 2026-10-06 · E1 — tren de aterrizaje como contactos muelle-amortiguador
+
+- La regla `ω·dt < 0.1` del ROADMAP fija el tren más blando de lo que parece: Σk < 1662 N/m para 2,9 kg a 240 Hz, 18 mm de flecha estática. Es la rigidez que el integrador explícito resuelve, no la medida; si algún día se mide un tren más rígido, hacen falta subpasos del contacto o un tick más fino, y así queda etiquetado en la fuente del dato.
+- Repartir la rigidez según la carga estática (27 % morro, 73 % principales) hace que el avión repose nivelado; con el morro más blando «sin pensar» quedaba 2° picado y la prueba de reposo lo delató.
+- El modo de cabeceo sobre el tren (ζ ≈ 0,2, τ ≈ 0,5 s) tarda más en calmarse que el de altura: 4 s no bastaban para 10⁻⁴ rad/s y el umbral parecía un fallo del contacto. Antes de aflojar una tolerancia, estimar la constante de tiempo del modo.
+- La fuerza de contacto es vertical en NED, así que el CG no puede desplazarse en horizontal: la deriva que aparece (2 µm) es error de truncamiento de RK4 en ejes cuerpo y se demuestra porque se reduce 17,9× con h/2 (cuarto orden). Una prueba de convergencia dice más que una tolerancia suelta.
+- Devolver un array vacío cuando ninguna rueda toca, en lugar de ceros, mantiene el vuelo en el aire bit a bit (sumar +0,0 a −0,0 cambia el signo que imprime la traza).
+- GDScript no admite `%e` en `%`: el error de formato abortó `_initialize` antes de `quit()` y el run headless quedó colgado hasta el `timeout`. Usar `%s` (str) para números pequeños; un test que no llega a `quit()` cuelga, no falla.
+- La tabla de equipo del modelo visual sitúa el eje principal 2 cm por delante del CG (triciclo que se sentaría sobre la cola); la física conserva el 0,215 m del casco D9d y la prueba solo compara vía y alturas. Cuando dos equipos estiman el mismo número, la prueba de acuerdo debe limitarse a lo que ambos sostienen.
+- Un suelo que no empuja no se nota: `slow_flight` y `spin_right` bajaban a −78 m y −55 m desde 2026-10-05 sin que ninguna prueba lo viera, porque `Maneuvers.fly` no pasa por la comprobación de choque. Al hacer real el suelo, la barrena perdió la autorrotación (0,23 rad/s) y pareció un fallo del tren. Las maniobras que caen empiezan ahora a 150 m; la densidad es constante y sus resultados no cambian. Toda maniobra escrita debería registrar su altitud mínima.
+- «Antes» medido en un worktree de HEAD con `.tools` enlazado (traza y bench) sin tocar los archivos a medias de los demás; las mutaciones en una copia `rsync` sin assets (enlazados) para no dejar nunca un archivo roto en el árbol compartido.
+
+Prueba: [E1](docs/research/landing-gear-contact-e1.md), `test_ground_contact.gd` (22), `test_crash.gd` (12), `test_aircraft_data.gd` (66), traza idéntica en filas, goldens sin cambios, 4 mutaciones detectadas.
+
+## 2026-10-06 · P51-V01 — cola por contornos medidos y holguras
+
+- Un loft cuyas estaciones no están ordenadas se pliega sobre sí mismo y la malla «cerrada» deja de serlo: el comprobador de holguras lo lee como penetración en cualquier pose, incluso en neutro, sin que ningún vértice esté dentro del vecino. Ordenar siempre la lista de estaciones (la del cuerno al 86 % quedó detrás de «punta − 9 cm») antes de hacer el loft; una comprobación de monotonía evitaría repetirlo.
+- `extra_clearance.gd` usa `global_transform`: solo vale con el avión dentro del árbol de escena (`call_deferred`); en `_initialize` devuelve identidad y toda pareja «penetra». Reutilizarlo fue correcto (es genérico por nombres de malla), pero cuesta ~5 s por pose y pareja sobre lofts de 1-2 k triángulos: con 9 poses tardaba 124 s frente a los 60 s por script de `test.sh`. Solución: verificador propio con dos poses extremas (recorridos volados y 45°) y las tres parejas que pueden tocarse: 33 s.
+- La compensación de los elevadores no puede hacerse con una transición diagonal de 8 mm entre estaciones: la nariz del cuerno barre la cara diagonal del estabilizador al deflectar. Escalón casi vertical (±0,5 mm) con el cuerno 2 mm por fuera del corte, como en el avión real.
+- Compartir la estación final del elevador con el estabilizador evita que la planta redondeada (curva) difiera entre dos lofts muestreados en estaciones distintas: 0,9 mm de solape desaparecen.
+- Invertir un contorno medido y(z) por bisección (parte ascendente = borde de ataque y dorsal; descendente = cabeza y borde de salida) da deriva y timón fieles sin modelar a mano; por debajo del lomo el contorno no existe y hay que decidir explícitamente qué hace el timón (bisel hasta el cono).
+- El cono de cola debe acabar antes de la charnela: si la termina 6 mm detrás, el timón atraviesa el fuselaje en neutro y nadie lo ve en las capturas; la holgura sí.
+
+Prueba: `verify_p51.gd` 131, `verify_p51_clearance.gd` 12, siluetas perfil 7,7 → 7,2 px con cámara congelada, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v01/index.html).

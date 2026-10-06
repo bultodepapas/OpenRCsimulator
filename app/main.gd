@@ -81,6 +81,7 @@ var _frametimes_sim_start_tick: int = 0
 var _note := ""
 var _visual_pose: Dictionary = {}
 var _last_render_pose: Dictionary = {}
+var _treeline_hidden: bool = false # L6c background-only capture (--hide_treeline)
 
 
 func _ready() -> void:
@@ -104,7 +105,8 @@ func _ready() -> void:
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
 	if args.has("visual_pose"):
-		_visual_pose = VisualEvidence.synthetic_pose(str(args.visual_pose), float(args.visual_distance), float(field.pilot.eye_height) - float(field.pilot.down))
+		_visual_pose = VisualEvidence.synthetic_pose(str(args.visual_pose), float(args.visual_distance), float(field.pilot.eye_height) - float(field.pilot.down),
+			float(args.get("visual_elevation", VisualEvidence.DEFAULT_ELEVATION_DEG)), float(args.get("visual_azimuth", VisualEvidence.DEFAULT_AZIMUTH_DEG)))
 		_visual_pose.pos += Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
 	Input.use_accumulated_input = false
@@ -132,6 +134,14 @@ func _ready() -> void:
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
 		_airplane.root.visible = false
 		_shadow.visible = false
+	if args.has("hide_treeline"):
+		# L6c: the same view without the vegetation gives the exact tree mask behind the airplane. A field with
+		# nothing to hide (the atmosphere fixture) must fail, never pass off a view with trees as the tree-free one.
+		if not _hide_field_objects():
+			push_error("--hide_treeline refused: this field has no objects to hide")
+			set_process(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
 	session.setup(Catalog.entry(aircraft_id).data)
@@ -359,7 +369,9 @@ func _on_resetting() -> void:
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,
 ## --alt=4 (start altitude, m), --autozoom=0, --look_az=90 --look_el=10 --look_alt=30 (fixed landscape review view),
-## --hide_airplane (readability reference), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
+## --hide_airplane (readability reference), --hide_treeline (L6c tree-mask reference; refused without field objects),
+## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
+## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted)
 func _user_args() -> Dictionary:
 	var args := {}
@@ -397,6 +409,18 @@ func _build_world() -> void:
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
 	add_child(FieldBuilder.build(field))
+
+
+## Hides every field object (today: the treeline) for a background-only capture. False when there is none.
+func _hide_field_objects() -> bool:
+	var hidden := false
+	for object_data: Dictionary in field.get("objects", []):
+		var node: Node3D = get_node_or_null(NodePath("Field/%s" % str(object_data.id))) as Node3D
+		if node != null:
+			node.visible = false
+			hidden = true
+	_treeline_hidden = hidden
+	return hidden
 
 
 func _capture_scene_id() -> String:
@@ -615,6 +639,8 @@ func capture_evidence() -> Dictionary:
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
 		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},
 		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),
+		visual_elevation_deg = float(args.get("visual_elevation", VisualEvidence.DEFAULT_ELEVATION_DEG)),
+		visual_azimuth_deg = float(args.get("visual_azimuth", VisualEvidence.DEFAULT_AZIMUTH_DEG)),
 		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction()), energy = Atmosphere.light_energy(), color = str(Spec.ATMOSPHERE.sun_color)},
 		route = "synthetic-inspection" if not _visual_pose.is_empty() else ("scripted-circle" if _scripted else "physics-fixed"),
 		preset = "current-default", backend = RenderingServer.get_current_rendering_method(),
@@ -627,7 +653,7 @@ func capture_evidence() -> Dictionary:
 		exposure = _env.tonemap_exposure, tonemapper = _env.tonemap_mode,
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
 		clock_s = ShaderClock.last_clock, simulation_time_s = session.sim.time(), simulation_tick = session.sim.tick,
-		state = {paused = session.sim.paused, aircraft_visible = _airplane.root.visible, shadow = _shadow_mode,
+		state = {paused = session.sim.paused, aircraft_visible = _airplane.root.visible, treeline_visible = not _treeline_hidden, shadow = _shadow_mode,
 			engine_shadows = Atmosphere.engine_shadows, physics_state = Array(session.sim.state),
 			controls = session.commands, surfaces = session.surfaces(), propeller_angle_rad = _airplane.propeller.rotation.z},
 		seed = {kind = "not-used", note = "procedural shaders use fixed analytic noise; no RNG"},

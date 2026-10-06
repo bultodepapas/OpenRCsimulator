@@ -98,6 +98,33 @@ func _initialize() -> void:
 	_rejects("aero wrong type", func(d): d.aero = [], "expected an object")
 	_rejects("tail wrong type", func(d): d.aero.surfaces.horizontal = [], "expected an object")
 	_rejects("hull NaN", func(d): d.crash_hull.value[0][0] = NAN, "finite point")
+
+	# Landing gear (E1): three spring-damper contacts, the wheels no longer in the crash hull, stiffness by the tick rule.
+	var gear: Dictionary = m.landing_gear
+	_check("landing gear: 3 contacts; the hull keeps 8 points without the wheels", gear.get("contacts", []).size() == 3 and m.crash_hull.size() == 8 * 3, str(gear))
+	var eq: Dictionary = Geometry.DATA.equipment
+	var mains_ok := true
+	for i in 2:
+		var p: PackedFloat64Array = gear.contacts[i].position
+		mains_ok = mains_ok and absf(absf(p[1]) - eq.main_track / 2.0) < 1e-9 and absf(p[2] - (-eq.wheel_y + eq.main_wheel_diameter / 2.0)) < 1e-9
+	var nose: PackedFloat64Array = gear.contacts[2].position
+	_check("gear track and wheel bottoms match the visual model's equipment table", mains_ok and absf(nose[2] - (-eq.wheel_y + eq.nose_wheel_diameter / 2.0)) < 1e-4, str(gear.contacts))
+	_check("mains aft of the CG, nose ahead (a tricycle stands on its wheels)", gear.contacts[0].position[0] < 0.0 and gear.contacts[2].position[0] > 0.0)
+	_check("heave rule ω·dt < 0.1 at 240 Hz, not absurdly soft", gear.heave_omega / 240.0 < 0.1 and gear.heave_omega > 15.0, "ω %.1f rad/s" % gear.heave_omega)
+	_check("static sag 1–3 cm", gear.static_sag > 0.01 and gear.static_sag < 0.03, "%.4f m" % gear.static_sag)
+	var no_gear := _raw()
+	no_gear.erase("landing_gear")
+	var r_no_gear := AD.validate_and_derive(no_gear)
+	_check("without a landing_gear section the data still loads (gear is optional; wheels crash as in D9d)", r_no_gear.ok and r_no_gear.model.landing_gear.is_empty(), str(r_no_gear.errors))
+	_rejects("gear too stiff for the tick", func(d): for c in d.landing_gear.contacts: c.stiffness.value *= 50, "ω·dt")
+	_rejects("CG outside the wheelbase", func(d): for c in d.landing_gear.contacts: c.position.value[0] -= 0.2, "cannot stand")
+	_rejects("all wheels on one side", func(d): for c in d.landing_gear.contacts: c.position.value[1] += 0.5, "each side")
+	_rejects("gear stiffness in lbf/in", func(d): d.landing_gear.contacts[0].stiffness.unit = "lbf/in", "unit 'lbf/in'")
+	_rejects("negative damping", func(d): d.landing_gear.contacts[1].damping.value = -5, "outside")
+	_rejects("overdamped gear (a shock absorber, not a wire leg)", func(d): d.landing_gear.contacts[0].damping.value = 500, "ratio")
+	_rejects("two wheels only", func(d): d.landing_gear.contacts.pop_back(), "fewer than 3")
+	_rejects("gear travel missing", func(d): d.landing_gear.contacts[2].erase("max_compression"), "max_compression")
+	_rejects("unnamed contact", func(d): d.landing_gear.contacts[0].erase("name"), "missing name")
 	_rejects("prop table numeric strings", func(d): d.propulsion.propeller.ct_table.value[0] = ["0", "0.1"], "finite numbers")
 	_rejects("prop table empty source", func(d): d.propulsion.propeller.cp_table.source = "", "empty source")
 	_check("data fingerprint is available for traces", m.data_sha256.length() == 64)

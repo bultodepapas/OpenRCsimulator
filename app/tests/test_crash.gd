@@ -28,9 +28,12 @@ func _initialize() -> void:
 	session.input_enabled = false
 	session.reset()
 
-	# The hull: level, the wheels hang 0.25 m below the thrust line; inverted, the fin top is 0.26 m above it.
+	# The hull: level, the belly is 0.053 m below the thrust line (the wheels, 0.26 m below it, are landing gear since
+	# E1: touching is a landing, 0.12 m of leg travel is a collapse); inverted, the fin top is 0.26 m above it.
 	_check("level at 0.30 m: clear of the ground", not session.touches_ground(_at(0.30, 0.0, 0.0, 0.0)))
-	_check("level at 0.20 m: the wheels touch", session.touches_ground(_at(0.20, 0.0, 0.0, 0.0)))
+	_check("level at 0.20 m: the wheels touch, which is not a hull crash", not session.touches_ground(_at(0.20, 0.0, 0.0, 0.0)) and not session.gear_collapsed(_at(0.20, 0.0, 0.0, 0.0)))
+	_check("level at 0.10 m: the gear is pushed past its travel", session.gear_collapsed(_at(0.10, 0.0, 0.0, 0.0)))
+	_check("level at 0.05 m: the belly touches", session.touches_ground(_at(0.05, 0.0, 0.0, 0.0)))
 	_check("inverted at 0.35 m: clear", not session.touches_ground(_at(0.35, 0.0, 0.0, PI)))
 	_check("inverted at 0.20 m: the fin touches", session.touches_ground(_at(0.20, 0.0, 0.0, PI)))
 	_check("knife edge at 0.70 m: the down wing tip touches", session.touches_ground(_at(0.70, 0.0, 0.0, PI / 2.0)))

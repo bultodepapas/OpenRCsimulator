@@ -44,7 +44,9 @@ fin_zone = z > 5.6
 top_f[fin_zone] = np.nan
 # Tail post anchors: top 0.25 m, bottom -0.03 m above the FRL at the rudder bottom hinge (read from the drawing's rudder
 # bottom corner); the interpolation below uses them as the last valid samples.
-post_z = tail_z - 0.5
+# V01: the tail cone ends just ahead of the rudder hinge, faired to the fin post (half-width 0.045 m), so the rudder owns
+# everything aft of the hinge; the cone top meets the fin root, its bottom the measured lower outline.
+post_z = 6.64 - 0.02
 deck_anchor_i = int(np.argmin(np.abs(z - post_z)))
 top_f[deck_anchor_i] = 0.25
 bot_f[deck_anchor_i] = -0.03
@@ -75,6 +77,9 @@ for zz in stations_z:
 # The spinner back ring must match the spinner radius (rounded nose): force half-width = radius there.
 sp_r = m["calibration"]["side"]["spinner_radius_at_prop_plane_in"] * IN
 rows[0][1] = round(sp_r, 3); rows[0][2] = round(m["spinner"]["axis_y"] + sp_r, 3); rows[0][3] = round(m["spinner"]["axis_y"] - sp_r, 3)
+# Tail post: the last two stations narrow to the fin post width (V01).
+rows[-1][1] = 0.045
+rows[-2][1] = round(min(rows[-2][1], 0.09), 3)
 fs["fuselage_stations"] = rows
 fs["spinner"] = {"tip_z": round(tip_z, 3), "back_z": round(spinner_back, 3), "radius": round(sp_r, 3), "axis_y": round(m["spinner"]["axis_y"], 3)}
 # The builder places the exhaust row from the nose band to firewall_z - 0.45 m (full size): the drawing shows the
@@ -120,6 +125,14 @@ fs["tail"].update({"stab_y": stab_y, "stab_root_le_z": st["root_le_z"], "stab_ti
                    "stab_root_chord": st["root_chord"], "stab_tip_chord": st["tip_chord"],
                    "fin_root_le_z": 5.7, "dorsal_start_z": 4.6, "fin_top_y": m["fin"]["top_y"], "fin_top_le_z": 6.15, "fin_top_chord": 0.6,
                    "rudder_hinge_z": 6.64, "rudder_te_bottom": [round(tail_z, 3), 0.03]})
+# V01: tail outlines and stab planform as measured point lists; fin_top_y from the outline's maximum.
+to = m["tail_outlines"]
+fs["tail"]["upper_outline"] = to["upper"]
+fs["tail"]["lower_outline"] = to["lower"]
+fs["tail"]["stab_planform"] = {"le": to["stab_le"], "te": to["stab_te"]}
+fs["tail"]["fin_top_y"] = round(max(p[1] for p in to["upper"]), 4)
+fs["tail"]["elevator_horn"] = {"span_from_fraction": 0.86, "chord_fraction": 0.42}  # estimated: tip horn balance of the D elevators
+fs["tail"]["stab_tip_round"] = 0.24  # estimated (plan view): planform rounding over the last 0.24 m of the stab tip
 # Gear: wheel bottoms from the drawing (front view: 0.28 m higher than the first estimate), tail wheel at the bump.
 # Main wheel bottom ~82 in below the FRL in the side view (and ~78 in below the spinner axis in the front view): axle at -1.70 m.
 fs["gear"].update({"main_axle": [0.10, -1.70], "tail_axle": [5.13, -0.64]})

@@ -38,6 +38,8 @@ const SILL_DEPTH_M := 0.045 # canopy sill below the deck line
 const TIP_ROUND_M := 0.03 # elliptical thickness fade at the wing tips
 const END_GAP_M := 0.002 # spanwise clearance at the ends of moving surfaces
 const PROP_TIP_M := 0.03 # yellow blade tips
+const HORN_CLEARANCE_M := 0.002 # spanwise gap between the stab's horn cut and the elevator horn (V01)
+const STEP_M := 0.0005 # half-length of the near-vertical span step at the horn cut
 
 static var _materials := {}
 static var _columns := {}
@@ -634,104 +636,178 @@ static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
 
 # Horizontal tail section at signed span s, in the tail frame (origin on the elevator hinge). Symmetric section
 # with the wing's thickness distribution; thickness scales with the local chord.
-static func _stab_ring(s: float, hz: float, part: String) -> Array[Vector3]:
-	var t: Dictionary = D.tail
-	var g: float = t.hinge_gap / 2.0
-	var u: float = absf(s) / t.stab_half_span
-	var le: float = lerpf(t.stab_root_le_z, t.stab_tip_le_z, u) - hz
-	var c: float = lerpf(t.stab_root_chord, t.stab_tip_chord, u)
-	var thickness: float = t.stab_thickness * c / t.stab_root_chord
-	var shrink := _round_factor(t.stab_half_span - absf(s), 0.025)
-	if part == "fixed":
-		return _foil_ring(s, le, c, thickness, 0.0, 0.0, (-g - le) / c, false, shrink)
-	return _foil_ring(s, le, c, thickness, 0.0, (g - le) / c, 1.0, true, shrink)
+# V01: the tail is built from outlines measured on the AN 01-60-3 side and plan views (geometry.json → tail.upper_outline,
+# lower_outline, stab_planform). The fin leading edge, cap and rudder trailing edge are the inverse of the upper contour.
+
+# z of the measured upper tail contour at height y: `rising` = dorsal fillet and fin LE (before the contour's maximum),
+# otherwise the cap and the raked rudder TE (after it). Bisection on z over a monotone interpolation of the contour.
+static func _upper_z_at(y: float, rising: bool) -> float:
+	var pts: Array = D.tail.upper_outline
+	var i_max := 0
+	for i in pts.size():
+		if pts[i][1] > pts[i_max][1]: i_max = i
+	var lo: float = pts[0][0] if rising else pts[i_max][0]
+	var hi: float = pts[i_max][0] if rising else pts[-1][0]
+	for k in 40:
+		var mid := 0.5 * (lo + hi)
+		var ym := monotone(pts, mid)
+		if (ym < y) == rising: lo = mid
+		else: hi = mid
+	return 0.5 * (lo + hi)
 
 
-# Fin leading edge as [y, z] samples: the dorsal fillet rises as a quartic over the sloping deck from dorsal_start_z
-# to the join on the straight fin LE, then that LE to the top. First sample sits inside the tail cone.
-static func _fin_outline() -> Array:
-	var t: Dictionary = D.tail
-	var y_root: float = profile(t.fin_root_le_z, 2) - 0.004
-	var join_y: float = 0.32 * t.fin_top_y # fillet meets the straight LE at 32 % of the fin height
-	var z_join: float = lerpf(t.fin_root_le_z, t.fin_top_le_z, (join_y - y_root) / (t.fin_top_y - y_root))
-	var out := [[-0.005, t.dorsal_start_z]]
-	for k in 9:
-		var u := float(k) / 8.0
-		var z: float = lerpf(t.dorsal_start_z, z_join, u)
-		out.append([profile(z, 2) - 0.004 + (join_y - (profile(z_join, 2) - 0.004)) * pow(u, 4.0), z]) # quartic: long, low fairing
-	for k in range(1, 7):
-		var u := float(k) / 6.0
-		out.append([lerpf(join_y, t.fin_top_y, u), lerpf(z_join, t.fin_top_le_z, u)])
-	return out
+static func _fin_top_y() -> float:
+	return float(D.tail.fin_top_y)
 
 
-# Rudder trailing edge z at height y: straight from the top chord to rudder_te_bottom, rounded over the top 3 cm.
+# Rudder trailing edge z at height y: the measured raked TE and cap above the contour's last point, a straight line down
+# to rudder_te_bottom below it.
 static func _rudder_te(y: float) -> float:
 	var t: Dictionary = D.tail
-	var top_te: float = t.fin_top_le_z + t.fin_top_chord
-	var te: float = lerpf(t.rudder_te_bottom[0], top_te, (y - t.rudder_te_bottom[1]) / (t.fin_top_y - t.rudder_te_bottom[1]))
-	var v: float = (y - (t.fin_top_y - 0.03)) / 0.03
-	if v > 0.0: te = t.rudder_hinge_z + (te - t.rudder_hinge_z) * maxf(sqrt(maxf(1.0 - v * v, 0.0)), 0.15)
-	return te
+	var pts: Array = t.upper_outline
+	var y_low: float = pts[-1][1]
+	if y >= y_low: return _upper_z_at(y, false)
+	var z_low: float = pts[-1][0]
+	var b: Array = t.rudder_te_bottom
+	if y >= float(b[1]): return lerpf(float(b[0]), z_low, clampf((y - float(b[1])) / (y_low - float(b[1])), 0.0, 1.0))
+	# Below the trailing-edge bottom corner the rudder's base is bevelled back to the hinge along the measured tail-cone
+	# bottom (the tail light sits in this corner on the real airplane).
+	var y_base: float = _tail_lower_y(t.rudder_hinge_z)
+	return lerpf(t.rudder_hinge_z + 0.03, float(b[0]), clampf((y - y_base) / (float(b[1]) - y_base), 0.0, 1.0))
 
 
-# Vertical tail section at height y in the fin frame (origin on the rudder hinge): the fin's section continues
-# into the rudder. Axes relabelled so thickness is X and height is Y.
-static func _fin_ring(y: float, outline: Array, c_ref: float, part: String) -> Array[Vector3]:
+# Rudder bottom edge (model y) at z: the measured lower tail contour (tail cone and rudder base).
+static func _tail_lower_y(z: float) -> float:
+	return monotone(D.tail.lower_outline, z)
+
+
+# Vertical tail section at height y in the fin frame (origin on the rudder hinge line). The fin's section continues into
+# the rudder; near the deck the fin widens quadratically into the dorsal fairing (up to 0.7 of the local half-width).
+# Axes relabelled so thickness is X and height is Y.
+static func _fin_ring(y: float, part: String) -> Array[Vector3]:
 	var t: Dictionary = D.tail
 	var g: float = t.hinge_gap / 2.0
 	var rz: float = t.rudder_hinge_z
 	var swap := Basis(Vector3(0, 1, 0), Vector3(1, 0, 0), Vector3(0, 0, 1))
-	var le: float = _table(outline, y) - rz
-	var shrink := _round_factor(t.fin_top_y - y, 0.02)
+	var z_le: float = _upper_z_at(y, true)
+	var le: float = z_le - rz
+	var y_deck: float = profile(z_le, 2) - 0.004
+	var top := _fin_top_y()
+	var blend := clampf(1.0 - (y - y_deck) / (0.12 * (top - y_deck)), 0.0, 1.0)
+	var widen: float = 1.0 + (minf(0.7 * profile(z_le, 1), 4.0 * t.fin_thickness) / t.fin_thickness - 1.0) * blend * blend
+	var shrink := _round_factor(top - y, 0.02)
+	var c_fixed := -g - le
+	var c_ref: float = rz - g - _upper_z_at(y_deck + 0.3 * (top - y_deck), true) # thickness reference chord: fin at 30 % height
+	var thickness: float = t.fin_thickness * widen * minf(1.0, c_fixed / c_ref)
 	if part == "fixed":
-		var c := -g - le
-		return _foil_ring(y, le, c, t.fin_thickness * minf(1.0, c / c_ref), 0.0, 0.0, 1.0, false, shrink, swap)
+		return _foil_ring(y, le, c_fixed, thickness, 0.0, 0.0, 1.0, false, shrink, swap)
 	var c := _rudder_te(y) - rz - le
-	return _foil_ring(y, le, c, t.fin_thickness * minf(1.0, (-g - le) / c_ref), 0.0, (g - le) / c, 1.0, true, shrink, swap)
+	return _foil_ring(y, le, c, t.fin_thickness * minf(1.0, c_fixed / c_ref), 0.0, (g - le) / c, 1.0, true, shrink, swap)
+
+
+# Stab planform from the measured plan view (clamped outside the samples), rounded in plan over the last
+# stab_tip_round of span about mid chord. Returns [le_z, te_z] (model z).
+static func _stab_plan(span: float) -> Array:
+	var t: Dictionary = D.tail
+	var pf: Dictionary = t.stab_planform
+	var le: float = monotone(pf.le, span)
+	var te: float = monotone(pf.te, span)
+	var d: float = t.stab_half_span - span
+	if d < float(t.stab_tip_round):
+		var u := 1.0 - d / float(t.stab_tip_round)
+		var f := sqrt(maxf(1.0 - u * u, 0.0016))
+		var mid := 0.5 * (le + te)
+		le = mid - 0.5 * (te - le) * f
+		te = mid + 0.5 * (te - le) * f
+	return [le, te]
+
+
+# Elevator hinge fraction along the span: the manual's fraction, except the tip horn balance where the elevator's
+# leading edge moves forward to horn.chord_fraction (the fixed stab is cut back accordingly).
+static func _elevator_hinge_fraction(span: float, moving := false) -> float:
+	var t: Dictionary = D.tail
+	var horn: Dictionary = t.elevator_horn
+	# The horn's inboard face sits HORN_CLEARANCE_M outboard of the stab's cut, so the part of the elevator ahead of the
+	# hinge never shares a span station with fixed stab ahead of the hinge (a straight step, as on the real airplane).
+	var step: float = float(horn.span_from_fraction) * t.stab_half_span + (HORN_CLEARANCE_M if moving else 0.0)
+	return float(horn.chord_fraction) if span > step else float(t.elevator_hinge_fraction)
+
+
+# Horizontal tail section at spanwise s (signed) in the tail frame (origin on the elevator hinge line at hz).
+static func _stab_ring(s: float, hz: float, part: String) -> Array[Vector3]:
+	var t: Dictionary = D.tail
+	var g: float = t.hinge_gap / 2.0
+	var plan := _stab_plan(absf(s))
+	var le: float = plan[0] - hz
+	var c: float = plan[1] - plan[0]
+	var thickness: float = t.stab_thickness * c / t.stab_root_chord
+	var shrink := _round_factor(t.stab_half_span - absf(s), 0.02)
+	var hinge_z: float = plan[0] + _elevator_hinge_fraction(absf(s), part != "fixed") * c - hz
+	if part == "fixed":
+		return _foil_ring(s, le, c, thickness, 0.0, 0.0, (hinge_z - g - le) / c, false, shrink)
+	return _foil_ring(s, le, c, thickness, 0.0, (hinge_z + g - le) / c, 1.0, true, shrink)
 
 
 static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var t: Dictionary = D.tail
 	var hs: float = t.stab_half_span
 	var alu := _aluminium()
-	# Elevator hinge at 65 % of the local chord: root z 1.5139, tip z 1.5122, a 0.2 deg sweep. Approximated by one
-	# straight hinge parallel to X at the mean z, so the elevator pivot is a plain rotation about the frame's +X.
+	# Elevator hinge: straight, parallel to X, at the mean of the measured planform's hinge z over the plain (non-horn)
+	# span (the measured hinge line sweeps < 0.3 deg); the horn balance rotates about the same axis.
 	var f: float = t.elevator_hinge_fraction
-	var hz: float = ((t.stab_root_le_z + f * t.stab_root_chord) + (t.stab_tip_le_z + f * t.stab_tip_chord)) / 2.0
+	var p0 := _stab_plan(0.0)
+	var p1 := _stab_plan(hs * float(t.elevator_horn.span_from_fraction))
+	var hz: float = ((p0[0] + f * (p0[1] - p0[0])) + (p1[0] + f * (p1[1] - p1[0]))) / 2.0
 	var frame := Node3D.new()
 	frame.name = "tail_frame"
 	frame.position = Vector3(0, t.stab_y, hz)
 	frame.rotation.x = deg_to_rad(t.stab_incidence_deg)
 	root.add_child(frame)
+	var horn_s: float = hs * float(t.elevator_horn.span_from_fraction)
+	var stations: Array[float] = []
+	# The elevator's end station (hs - END_GAP_M) is also a stab station, so both follow the same straight segments of the
+	# rounded planform there and the hinge gap stays exact (the rounding is curved between stations).
+	for s in [0.0, 0.3 * hs, 0.6 * hs, horn_s - STEP_M, horn_s + STEP_M, hs - 0.09, hs - 0.06, hs - 0.035, hs - 0.018, hs - 0.008, hs - 0.004, hs - END_GAP_M, hs]:
+		stations.append(s)
+	stations.sort() # the horn cut (86 % of the semi-span) lies among the tip stations: a loft must never fold back
 	var rings := []
-	for s in [-hs, -hs + 0.004, -hs + 0.012, -hs + 0.025, 0.0, hs - 0.025, hs - 0.012, hs - 0.004, hs]:
-		rings.append(_stab_ring(s, hz, "fixed"))
+	for i in range(stations.size() - 1, 0, -1): rings.append(_stab_ring(-stations[i], hz, "fixed"))
+	for s in stations: rings.append(_stab_ring(s, hz, "fixed"))
 	_instance("stab", _loft(rings, alu), frame)
 	var elevator := _hinge("elevator", frame, hinges)
 	for sign in [-1.0, 1.0]:
 		var el := []
-		# Inner end clears the rudder that passes down between the elevators.
-		var inner: float = t.fin_thickness / 2.0 + 0.006
-		for s in [inner, hs - 0.025, hs - 0.012, hs - 0.004, hs - END_GAP_M]:
+		var inner: float = t.fin_thickness / 2.0 + 0.006 # clears the rudder that passes down between the elevators
+		var horn_e: float = horn_s + HORN_CLEARANCE_M
+		var el_stations: Array[float] = []
+		for s in [inner, 0.3 * hs, 0.6 * hs, horn_e - STEP_M, horn_e + STEP_M, hs - 0.09, hs - 0.06, hs - 0.035, hs - 0.018, hs - 0.008, hs - END_GAP_M]:
+			el_stations.append(s)
+		el_stations.sort()
+		for s in el_stations:
 			el.append(_stab_ring(sign * s, hz, "moving"))
 		_instance("elevator_" + ("right" if sign > 0 else "left"), _loft(el, alu), elevator)
-	# Fin with dorsal fillet and rudder, in a frame on the rudder hinge line.
+	# Fin with the dorsal fairing, and the rudder, in a frame on the rudder hinge line. Ring heights: dense near the deck
+	# (fairing) and near the cap.
 	var fin_frame := Node3D.new()
 	fin_frame.name = "fin_frame"
 	fin_frame.position = Vector3(0, 0, t.rudder_hinge_z)
 	root.add_child(fin_frame)
-	var outline := _fin_outline()
-	var c_ref: float = t.rudder_hinge_z - t.hinge_gap / 2.0 - outline[9][1] # fixed chord at the fillet/LE join
+	var top := _fin_top_y()
+	var y_deck: float = profile(float(t.upper_outline[0][0]), 2) - 0.006
+	var heights: Array[float] = [y_deck]
+	for k in range(1, 7): heights.append(lerpf(y_deck, y_deck + 0.12 * (top - y_deck), float(k) / 6.0))
+	for k in range(1, 9): heights.append(lerpf(y_deck + 0.12 * (top - y_deck), top - 0.03, float(k) / 8.0))
+	for y in [top - 0.018, top - 0.01, top - 0.005, top - 0.002]: heights.append(y)
 	var fin := []
-	for p in outline: fin.append(_fin_ring(p[0], outline, c_ref, "fixed"))
-	for y in [t.fin_top_y - 0.012, t.fin_top_y - 0.005, t.fin_top_y]:
-		fin.append(_fin_ring(y, outline, c_ref, "fixed"))
+	for y in heights: fin.append(_fin_ring(y, "fixed"))
 	_instance("fin", _loft(fin, alu), fin_frame)
 	var rudder := _hinge("rudder", fin_frame, hinges)
 	var rud := []
-	for y in [t.rudder_te_bottom[1] + 0.002, 0.0, 0.1 * t.fin_top_y, 0.28 * t.fin_top_y, 0.46 * t.fin_top_y, 0.7 * t.fin_top_y, 0.88 * t.fin_top_y, t.fin_top_y - 0.02, t.fin_top_y - 0.012, t.fin_top_y - 0.005, t.fin_top_y - END_GAP_M]:
-		rud.append(_fin_ring(y, outline, c_ref, "moving"))
+	var y_base: float = _tail_lower_y(t.rudder_hinge_z) + 0.003
+	rud.append(_fin_ring(y_base, "moving"))
+	rud.append(_fin_ring(float(t.rudder_te_bottom[1]), "moving"))
+	for y in heights:
+		if y > float(t.rudder_te_bottom[1]) + 0.01: rud.append(_fin_ring(y, "moving"))
 	_instance("rudder", _loft(rud, material(YELLOW, 0.4)), rudder)
 
 
@@ -875,7 +951,7 @@ static func _propeller(root: Node3D) -> Node3D:
 
 ## Kit placeholder throws (degrees), used by the inspector until the P-51 data file sets flight throws.
 static func manual_throws_deg() -> Dictionary:
-	return {aileron = 15.0, elevator = 15.0, rudder = 25.0}
+	return {aileron = 16.1, elevator = 14.7, rudder = 33.5} # app/data/aircraft/p51d_mustang_120.json controls.max_throw (V01)
 
 
 static func build() -> Dictionary:
