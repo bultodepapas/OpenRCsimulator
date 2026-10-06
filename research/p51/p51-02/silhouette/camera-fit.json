@@ -1,0 +1,232 @@
+{
+  "schema": "openrc-profile-diagnostic-camera-v1",
+  "date": "2026-10-06",
+  "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
+  "drawing_sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
+  "model_geometry_sha256": "dc3832343c16d28380ffcb8ffb7f7b5b1437043e08336cfef8e4b525cabf5f45",
+  "picks_sha256": "e45bfaaa4519f177c1be7bce70cee5f7f66b6e4f03afff5fb10f693a67117f54",
+  "method": "Orthographic cameras from two anchors per view (uniform scale, no rotation, no image deformation), as research/avanti-s/user-profile. Side: spinner tip and rudder TE on the fuselage reference line; plan and front: wing tips. The front view's vertical anchor is the wing-tip chord plane (dihedral 5 deg from the drawing).",
+  "limits": [
+    "The 1945 reproduction is about 3 % anisotropic in the side view (fin height vs length); only the horizontal anchors are used, so vertical positions in the side view carry that error.",
+    "The drawing's outline is the ink centre; the filled silhouettes used for the anchors are eroded 2 px to it.",
+    "Propeller blades, drop tanks, dimension lines and the main wheels are not compared."
+  ],
+  "views": [
+    {
+      "id": "side",
+      "title": "Perfil \u00b7 AN 01-60-3",
+      "crop_box": [
+        0,
+        45,
+        1905,
+        540
+      ],
+      "size_px": [
+        1905,
+        495
+      ],
+      "projection": "orthographic",
+      "orthographic_size_m": 1.0097589211618259,
+      "display_scale_px_per_model_m": 490.216020503641,
+      "camera_position_m": [
+        -20.0,
+        -0.06833721991701246,
+        0.6236874273858922
+      ],
+      "camera_basis_columns": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ]
+      ],
+      "anchors": {
+        "spinner_tip": {
+          "model_m": [
+            0,
+            0,
+            -0.6686
+          ],
+          "picked_px": [
+            319,
+            214
+          ]
+        },
+        "rudder_te": {
+          "model_m": [
+            0,
+            0,
+            1.7895
+          ],
+          "picked_px": [
+            1524,
+            214
+          ]
+        }
+      },
+      "checks": {
+        "fin_top": {
+          "model_m": [
+            0,
+            0.4415,
+            1.6865999999999999
+          ],
+          "picked_px": [
+            1447,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "id": "front",
+      "title": "Frontal \u00b7 AN 01-60-3 (mitad izquierda)",
+      "crop_box": [
+        150,
+        585,
+        1700,
+        1180
+      ],
+      "size_px": [
+        1550,
+        595
+      ],
+      "projection": "orthographic",
+      "orthographic_size_m": 1.2053879310344826,
+      "display_scale_px_per_model_m": 493.6170212765958,
+      "camera_position_m": [
+        -0.024310344827586206,
+        -0.0138848237892546,
+        -20.0
+      ],
+      "camera_basis_columns": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "anchors": {
+        "right_tip": {
+          "model_m": [
+            1.41,
+            -0.04484098442844714,
+            0
+          ],
+          "picked_px": [
+            67,
+            312
+          ]
+        },
+        "centre": {
+          "model_m": [
+            0,
+            0,
+            0
+          ],
+          "picked_px": [
+            763,
+            null
+          ]
+        }
+      },
+      "checks": {}
+    },
+    {
+      "id": "top",
+      "title": "Planta \u00b7 AN 01-60-3",
+      "crop_box": [
+        150,
+        1186,
+        1620,
+        2489
+      ],
+      "size_px": [
+        1470,
+        1303
+      ],
+      "projection": "orthographic",
+      "orthographic_size_m": 2.6378033022254126,
+      "display_scale_px_per_model_m": 493.97163120567376,
+      "camera_position_m": [
+        0.05364680545585068,
+        20.0,
+        0.6199355348169419
+      ],
+      "camera_basis_columns": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "anchors": {
+        "right_tip": {
+          "model_m": [
+            1.41,
+            0,
+            0
+          ],
+          "picked_px": [
+            65,
+            null
+          ]
+        },
+        "left_tip": {
+          "model_m": [
+            -1.41,
+            0,
+            0
+          ],
+          "picked_px": [
+            1458,
+            null
+          ]
+        }
+      },
+      "checks": {
+        "spinner_tip": {
+          "model_m": [
+            0,
+            0,
+            -0.6686
+          ],
+          "picked_px": [
+            761,
+            1288
+          ]
+        }
+      }
+    }
+  ]
+}

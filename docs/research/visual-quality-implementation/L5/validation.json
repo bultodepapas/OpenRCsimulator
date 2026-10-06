@@ -1,0 +1,47 @@
+{
+  "format": "openrc-l5-validation v1",
+  "complete": true,
+  "created_utc": "2026-10-06T02:50:20.718408+00:00",
+  "baseline_commit": "a039980c453ba6a93151ec57b4746887e4bfdc31",
+  "private_validation_commit": "790ed4eb7c0b5cb57a8dc12b323d57ea1bd52b9d",
+  "shared_repo_commit_created": false,
+  "clean_clone": true,
+  "test_exit": 0,
+  "capture_exit": 0,
+  "export_exit": 0,
+  "loader_checks": 158,
+  "integration_checks": 38,
+  "headless_invalid_cases": 8,
+  "interactive_error_routes": 2,
+  "capture_inventory": 112,
+  "fixed_png_identical": 108,
+  "legacy_live_snapshots_excluded": 4,
+  "trace_data_identical": true,
+  "render_environment": {
+    "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+    "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+    "godot": "4.7.2-stable (official)",
+    "renderer": "gl_compatibility",
+    "lp_num_threads": "1"
+  },
+  "exported_field_sha256": "016d324bf81622ce57f17163e80244457145cbb4e874c88176f1512ae1870fec",
+  "export_platforms_field_checked": [
+    "Linux embedded PCK",
+    "Windows embedded PCK",
+    "macOS PCK"
+  ],
+  "native_platform_smoke": [
+    "Linux"
+  ],
+  "lint_errors": 0,
+  "lint_warnings_before": 10,
+  "lint_warnings_after": 10,
+  "note": "Software renderer; no target-GPU performance claim. No physics/golden changes.",
+  "installed_files_match_validated_clone": true,
+  "shared_focused_exit": 0,
+  "concurrent_p51_changes_preserved_sha256": {
+    "app/aircraft/p51d_geometry.gd": "04e4bff3ef2b57ac9ccd9b200ea50e16e52ab8f24b7d53eb3307d8120db8cde8",
+    "assets/aircraft/p51d-mustang-120/geometry.json": "dc3832343c16d28380ffcb8ffb7f7b5b1437043e08336cfef8e4b525cabf5f45",
+    "assets/aircraft/p51d-mustang-120/source.json": "7ea017665975a00519b59696af89d370b31bcdf994100ec7250c1fd3d355d1dd"
+  }
+}

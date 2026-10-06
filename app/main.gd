@@ -17,7 +17,10 @@ const EngineSound := preload("res://render/engine_sound.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
-const Ground := preload("res://render/ground.gd")
+const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
+const FieldLoader = preload("res://data/field_loader.gd")
+const FieldBuilder = preload("res://render/field.gd")
+const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
 const Air := preload("res://physics/air_data.gd")
@@ -27,6 +30,10 @@ const BuildInfo := preload("res://app_state/build_info.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
+
+## Data path is injectable before entering the tree; normal routes use the packaged default.
+var field_path: String = FieldLoader.DEFAULT_PATH
+var field: Dictionary = {}
 
 var session: Node
 var recorder: RefCounted
@@ -78,6 +85,11 @@ var _last_render_pose: Dictionary = {}
 
 func _ready() -> void:
 	var args := _user_args()
+	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
+	if not loaded_field.ok:
+		FieldError.report(self, loaded_field.errors)
+		return
+	field = loaded_field.field
 	var frametime_options: Dictionary = FrameSamples.options(args)
 	if not frametime_options.ok:
 		push_error(str(frametime_options.error))
@@ -92,7 +104,8 @@ func _ready() -> void:
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
 	if args.has("visual_pose"):
-		_visual_pose = VisualEvidence.synthetic_pose(str(args.visual_pose), float(args.visual_distance), Spec.CAMERA.eye_height)
+		_visual_pose = VisualEvidence.synthetic_pose(str(args.visual_pose), float(args.visual_distance), float(field.pilot.eye_height) - float(field.pilot.down))
+		_visual_pose.pos += Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
 	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
@@ -110,7 +123,7 @@ func _ready() -> void:
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
-		_look_height = float(args.get("look_alt", Spec.CAMERA.eye_height))
+		_look_height = float(args.get("look_alt", field.pilot.eye_height))
 	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
 	Atmosphere.engine_shadows = args.has("engine_shadows") # comparison only (L3); before the sun is built
 	_build_world()
@@ -376,27 +389,14 @@ func _build_world() -> void:
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root)
 	_shadow = Shadow.create(self)
-	_camera = PilotCamera.create(self)
+	_camera = PilotCamera.create(self, field.pilot)
 	_panel = InputPanel.create(self)
 	_hud = Hud.create(self)
 
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	var ground := MeshInstance3D.new()
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(Spec.GROUND_SIZE, Spec.GROUND_SIZE)
-	ground.mesh = plane
-	ground.material_override = Ground.grass_material()
-	add_child(ground)
-
-	var runway := MeshInstance3D.new()
-	var strip := PlaneMesh.new()
-	strip.size = Vector2(Spec.RUNWAY.length_east_west, Spec.RUNWAY.width_north_south)
-	runway.mesh = strip
-	runway.material_override = Ground.runway_material()
-	runway.position = Frames.ned_to_render([Spec.RUNWAY.center_north, 0.0, -0.03]) # 3 cm up: no z-fighting with a 21 km far plane
-	add_child(runway)
+	add_child(FieldBuilder.build(field))
 
 
 func _capture_scene_id() -> String:
@@ -607,12 +607,13 @@ func _log_frame_time(delta: float) -> void:
 ## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.
 func capture_evidence() -> Dictionary:
 	var args: Dictionary = _user_args()
-	var pilot: Vector3 = Frames.ned_to_render([0.0, 0.0, -Spec.CAMERA.eye_height])
+	var pilot: Vector3 = Frames.ned_to_render([field.pilot.north, field.pilot.east, float(field.pilot.down) - float(field.pilot.eye_height)])
 	var position: Vector3 = _last_render_pose.get("pos", Vector3.ZERO)
 	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
 	return {
 		format = "openrc-visual-evidence v1", provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
+		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},
 		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),
 		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction()), energy = Atmosphere.light_energy(), color = str(Spec.ATMOSPHERE.sun_color)},
 		route = "synthetic-inspection" if not _visual_pose.is_empty() else ("scripted-circle" if _scripted else "physics-fixed"),

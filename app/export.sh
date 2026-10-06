@@ -27,7 +27,9 @@ echo "== build identity: $VERSION (commit $OPENRC_BUILD_COMMIT, $OPENRC_BUILD_DA
 DIST="$ROOT/dist"
 rm -rf "$DIST" && mkdir -p "$DIST/linux" "$DIST/windows" "$DIST/macos"
 run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
-LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
+LOG="$(mktemp)"
+PACK_PROBE="$(mktemp -d)"
+trap 'rm -f "$LOG"; rm -rf "$PACK_PROBE"' EXIT
 
 echo "== import (a fresh clone has no .godot cache)"
 run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
@@ -57,6 +59,24 @@ python3 "$HERE/tests/check_macos_export.py" "$DIST/macos/OpenRC Simulator.zip"
 
 echo "== version fields: .exe VERSIONINFO and Info.plist carry config/version $NUMERIC"
 python3 "$HERE/tests/check_build_versions.py" "$DIST/windows/OpenRC Simulator.exe" "$DIST/macos/OpenRC Simulator.zip" "$NUMERIC"
+
+echo "== default field and compiled loader are present in all three packs (empty-project smoke)"
+# Do not use --path app: that would mask a missing JSON with the loose source file.
+FIELD_SHA="$(sha256sum "$HERE/data/fields/default.json" | cut -d ' ' -f1)"
+python3 - "$DIST/macos/OpenRC Simulator.zip" "$PACK_PROBE/macos.pck" <<'PYPACK'
+import pathlib, sys, zipfile
+with zipfile.ZipFile(sys.argv[1]) as archive:
+    packs = [name for name in archive.namelist() if name.endswith(".pck")]
+    assert len(packs) == 1, packs
+    pathlib.Path(sys.argv[2]).write_bytes(archive.read(packs[0]))
+PYPACK
+for pack in "$DIST/linux/openrc-simulator.x86_64" "$DIST/windows/OpenRC Simulator.exe" "$PACK_PROBE/macos.pck"; do
+  timeout 60 "$GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
+    --script "$HERE/tests/check_field_pack.gd" -- "$pack" "$FIELD_SHA" > "$LOG" 2>&1 \
+    || { cat "$LOG"; echo "field pack check failed: $pack"; exit 1; }
+  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+  cat "$LOG"
+done
 
 echo "== packages"
 (cd "$DIST/linux" && zip -q -9 "$DIST/openrc-simulator-$VERSION-linux-x86_64.zip" openrc-simulator.x86_64)

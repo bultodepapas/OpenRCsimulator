@@ -21,11 +21,11 @@ const DATA := {
 	"engine_class": "Desert Aircraft DA-120 (121 cc twin, 11.7 hp, 2.45 kg with ignition) or DLE-120 class",
 	"wing": {
 		"span": 2.82,
-		"root_chord": 0.6596,
-		"tip_chord": 0.3173,
+		"root_chord": 0.6664,
+		"tip_chord": 0.3066,
 		"le_z_root": 0.0,
-		"le_z_tip": 0.0856,
-		"chord_plane_y": -0.075,
+		"le_z_tip": 0.0924,
+		"chord_plane_y": -0.1682,
 		"dihedral_deg": 5.0,
 		"incidence_deg": 1.0,
 		"washout_deg": 0.0,
@@ -126,282 +126,451 @@ const DATA := {
 			]
 		],
 		"reference": {
-			"trapezoid_area": 1.3775,
-			"s_over_b": 0.4885,
-			"mac": 0.5085,
-			"mac_le_z": 0.0378,
-			"mac_span_station": 0.6227,
+			"trapezoid_area": 1.3719,
+			"s_over_b": 0.4865,
+			"mac": 0.5087,
+			"mac_le_z": 0.0405,
+			"mac_span_station": 0.6181,
 			"cg_fraction_of_mac": 0.27
 		}
 	},
 	"fuselage_stations": [
 		[
-			-0.3873,
-			0.0862,
-			0.0862,
-			-0.0862,
-			2.0,
-			2.0
-		],
-		[
-			-0.3248,
-			0.0999,
-			0.1049,
-			-0.1049,
-			2.2,
-			2.0
-		],
-		[
-			-0.2499,
-			0.1074,
-			0.1174,
-			-0.1174,
-			2.3,
-			2.0
-		],
-		[
-			-0.1499,
-			0.1099,
-			0.1249,
-			-0.1249,
+			-0.4987,
+			0.0972,
+			0.1029,
+			-0.0915,
 			2.4,
 			2.0
 		],
 		[
-			-0.05,
-			0.1099,
-			0.1299,
-			-0.1299,
+			-0.4363,
+			0.1012,
+			0.0999,
+			-0.1592,
+			2.4,
+			2.0
+		],
+		[
+			-0.3738,
+			0.1029,
+			0.1082,
+			-0.1717,
+			2.4,
+			2.0
+		],
+		[
+			-0.3113,
+			0.1127,
+			0.1162,
+			-0.1799,
+			2.4,
+			2.0
+		],
+		[
+			-0.2489,
+			0.1144,
+			0.1204,
+			-0.1862,
+			2.4,
+			2.0
+		],
+		[
+			-0.1864,
+			0.1134,
+			0.1267,
+			-0.1944,
+			2.4,
+			2.0
+		],
+		[
+			-0.1239,
+			0.1124,
+			0.1309,
+			-0.1986,
+			2.4,
+			2.0
+		],
+		[
+			-0.0615,
+			0.1124,
+			0.1369,
+			-0.2029,
 			2.4,
 			2.0
 		],
 		[
 			0.0,
-			0.1099,
-			0.1324,
-			-0.1324,
+			0.1122,
+			0.1409,
+			-0.2029,
 			2.4,
 			2.0
 		],
 		[
-			0.0999,
-			0.1099,
-			0.1349,
-			-0.1374,
+			0.001,
+			0.1122,
+			0.1409,
+			-0.2029,
 			2.4,
 			2.0
 		],
 		[
-			0.1874,
-			0.1099,
-			0.1399,
-			-0.1399,
+			0.0635,
+			0.1107,
+			0.1429,
+			-0.2029,
 			2.4,
 			2.0
 		],
 		[
-			0.2998,
-			0.1099,
-			0.1424,
-			-0.1424,
-			2.4,
-			2.0
-		],
-		[
-			0.4248,
-			0.1074,
+			0.1259,
+			0.1094,
 			0.1449,
-			-0.1424,
+			-0.2006,
 			2.4,
 			2.0
 		],
 		[
-			0.4872,
-			0.1074,
-			0.1449,
-			-0.1424,
+			0.1884,
+			0.1079,
+			0.1459,
+			-0.2006,
 			2.4,
 			2.0
 		],
 		[
-			0.5997,
+			0.2509,
+			0.1064,
+			0.1464,
+			-0.1986,
+			2.4,
+			2.0
+		],
+		[
+			0.3133,
 			0.1049,
-			0.1399,
-			-0.1399,
-			2.3,
+			0.1469,
+			-0.1951,
+			2.4,
 			2.0
 		],
 		[
-			0.7246,
-			0.0999,
-			0.1299,
-			-0.1374,
-			2.3,
+			0.3758,
+			0.1037,
+			0.1474,
+			-0.1884,
+			2.4,
 			2.0
 		],
 		[
-			0.8745,
-			0.09,
-			0.1124,
-			-0.1249,
-			2.2,
+			0.4383,
+			0.1022,
+			0.1479,
+			-0.1834,
+			2.4,
 			2.0
 		],
 		[
-			1.0494,
-			0.075,
-			0.09,
-			-0.1074,
-			2.2,
+			0.5007,
+			0.1007,
+			0.1484,
+			-0.1784,
+			2.4,
 			2.0
 		],
 		[
-			1.2493,
-			0.055,
-			0.065,
-			-0.075,
+			0.5632,
+			0.0992,
+			0.1489,
+			-0.1734,
+			2.4,
+			2.0
+		],
+		[
+			0.6257,
+			0.0977,
+			0.1494,
+			-0.1684,
+			2.4,
+			2.0
+		],
+		[
+			0.6881,
+			0.0964,
+			0.1499,
+			-0.1634,
+			2.4,
+			2.0
+		],
+		[
+			0.7506,
+			0.0942,
+			0.1504,
+			-0.1584,
 			2.1,
 			2.0
 		],
 		[
-			1.4242,
-			0.0375,
-			0.0425,
-			-0.0425,
-			2.0,
+			0.8131,
+			0.0907,
+			0.1484,
+			-0.1534,
+			2.1,
 			2.0
 		],
 		[
-			1.6491,
-			0.0225,
-			0.0225,
-			-0.0225,
-			2.0,
+			0.8755,
+			0.0865,
+			0.1457,
+			-0.1484,
+			2.1,
 			2.0
 		],
 		[
-			1.7366,
-			0.01,
-			0.0125,
-			-0.0075,
-			2.0,
+			0.938,
+			0.0815,
+			0.1414,
+			-0.1434,
+			2.1,
+			2.0
+		],
+		[
+			1.0005,
+			0.0765,
+			0.1414,
+			-0.1412,
+			2.1,
+			2.0
+		],
+		[
+			1.0629,
+			0.072,
+			0.1407,
+			-0.1332,
+			2.1,
+			2.0
+		],
+		[
+			1.1254,
+			0.0662,
+			0.1399,
+			-0.1259,
+			2.1,
+			2.0
+		],
+		[
+			1.1879,
+			0.0605,
+			0.1422,
+			-0.1482,
+			2.1,
+			2.0
+		],
+		[
+			1.2503,
+			0.0557,
+			0.1499,
+			-0.1334,
+			2.1,
+			2.0
+		],
+		[
+			1.3128,
+			0.0515,
+			0.1564,
+			-0.1187,
+			2.1,
+			2.0
+		],
+		[
+			1.3753,
+			0.047,
+			0.1627,
+			-0.1037,
+			2.1,
+			2.0
+		],
+		[
+			1.4377,
+			0.0427,
+			0.1464,
+			-0.089,
+			2.1,
+			2.0
+		],
+		[
+			1.5002,
+			0.0385,
+			0.1234,
+			-0.074,
+			2.1,
+			2.0
+		],
+		[
+			1.5627,
+			0.034,
+			0.1007,
+			-0.0617,
+			2.1,
+			2.0
+		],
+		[
+			1.6251,
+			0.0302,
+			0.0777,
+			-0.0477,
+			2.1,
+			2.0
+		],
+		[
+			1.6646,
+			0.0302,
+			0.0632,
+			-0.0142,
+			2.1,
 			2.0
 		]
 	],
 	"scoop_stations": [
 		[
-			0.5122,
+			0.2963,
 			0.075,
-			-0.2374
+			-0.1989
 		],
 		[
-			0.6247,
-			0.0825,
-			-0.2699
-		],
-		[
-			0.7496,
-			0.0825,
-			-0.2799
-		],
-		[
-			0.8745,
+			0.4168,
 			0.075,
-			-0.2624
+			-0.2931
 		],
 		[
-			0.9745,
-			0.06,
-			-0.2124
+			0.5375,
+			0.075,
+			-0.2898
 		],
 		[
-			1.0869,
+			0.6579,
+			0.075,
+			-0.2719
+		],
+		[
+			0.7783,
+			0.0632,
+			-0.2434
+		],
+		[
+			0.8988,
+			0.0517,
+			-0.2004
+		],
+		[
+			1.0192,
 			0.04,
-			-0.1499
+			-0.1422
 		]
 	],
 	"carb_intake": {
-		"z0": -0.3623,
-		"z1": -0.0999,
+		"z0": -0.4613,
+		"z1": -0.2239,
 		"half_width": 0.0375,
-		"height": 0.025
+		"height": 0.0075
 	},
 	"spinner": {
-		"tip_z": -0.5872,
-		"back_z": -0.3873,
-		"radius": 0.0862
+		"tip_z": -0.6686,
+		"back_z": -0.4987,
+		"radius": 0.0972
 	},
-	"firewall_z": 0.1874,
-	"cowl_rear_z": 0.4248,
+	"firewall_z": -0.2739,
+	"cowl_rear_z": -0.0989,
 	"canopy": {
 		"top": [
 			[
-				0.4872,
-				0.1449
+				0.1749,
+				0.1559
 			],
 			[
-				0.5497,
-				0.2149
+				0.2249,
+				0.1872
 			],
 			[
-				0.6122,
-				0.2449
+				0.2749,
+				0.2211
 			],
 			[
-				0.6871,
-				0.2549
+				0.3248,
+				0.2366
 			],
 			[
-				0.7621,
-				0.2424
+				0.3748,
+				0.2324
 			],
 			[
-				0.8371,
-				0.2049
+				0.4248,
+				0.2324
 			],
 			[
-				0.912,
-				0.1299
+				0.4747,
+				0.2279
+			],
+			[
+				0.5247,
+				0.2239
+			],
+			[
+				0.5747,
+				0.2261
+			],
+			[
+				0.6247,
+				0.1949
+			],
+			[
+				0.6746,
+				0.1804
+			],
+			[
+				0.7246,
+				0.1614
 			]
 		],
-		"frame_z": 0.5872,
+		"frame_z": 0.2209,
 		"halfwidth_fraction": 0.95
 	},
 	"tail": {
-		"stab_y": 0.025,
-		"stab_root_le_z": 1.4617,
-		"stab_tip_le_z": 1.5742,
-		"stab_half_span": 0.4985,
-		"stab_root_chord": 0.3498,
-		"stab_tip_chord": 0.1749,
+		"stab_y": 0.0875,
+		"stab_root_le_z": 1.2834,
+		"stab_tip_le_z": 1.3801,
+		"stab_half_span": 0.5043,
+		"stab_root_chord": 0.3241,
+		"stab_tip_chord": 0.1797,
 		"elevator_hinge_fraction": 0.65,
-		"stab_thickness": 0.0262,
+		"stab_thickness": 0.0252,
 		"stab_incidence_deg": 0.0,
-		"fin_root_le_z": 1.4992,
-		"dorsal_start_z": 1.3243,
-		"fin_top_y": 0.4048,
-		"fin_top_le_z": 1.6991,
-		"fin_top_chord": 0.1249,
-		"rudder_hinge_z": 1.7366,
+		"fin_root_le_z": 1.4242,
+		"dorsal_start_z": 1.1494,
+		"fin_top_y": 0.4415,
+		"fin_top_le_z": 1.5367,
+		"fin_top_chord": 0.1499,
+		"rudder_hinge_z": 1.6591,
 		"rudder_te_bottom": [
-			1.8615,
-			-0.0125
+			1.7895,
+			0.0075
 		],
-		"fin_thickness": 0.018,
+		"fin_thickness": 0.0216,
 		"hinge_gap": 0.003
 	},
 	"gear": {
 		"main_axle": [
 			0.025,
-			-0.4123
+			-0.3423
 		],
 		"main_wheel_diameter": 0.1714,
 		"main_wheel_width": 0.055,
 		"track": 0.902,
 		"strut_radius": 0.0137,
 		"tail_axle": [
-			1.6116,
-			-0.1249
+			1.2493,
+			-0.1574
 		],
 		"tail_wheel_diameter": 0.0795
 	},
@@ -409,8 +578,8 @@ const DATA := {
 		"diameter": 0.6604,
 		"pitch": 0.3048,
 		"blades": 4,
-		"z": -0.4373,
-		"hub_radius": 0.0431,
+		"z": -0.5487,
+		"hub_radius": 0.0486,
 		"scale_diameter": 0.8505,
 		"blade": {
 			"chord_fraction_of_radius": [
@@ -457,45 +626,45 @@ const DATA := {
 	},
 	"pilot": {
 		"cap_top": [
-			0.6796,
-			0.2324
+			-0.4343,
+			0.1552
 		],
 		"cap_brim_front": [
-			0.6397,
-			0.2099
+			-0.4742,
+			0.1327
 		],
 		"nose_front": [
-			0.6447,
-			0.1899
+			-0.4693,
+			0.1127
 		],
 		"head_back": [
-			0.7096,
-			0.1999
+			-0.4043,
+			0.1227
 		],
 		"chin": [
-			0.6547,
-			0.1699
+			-0.4593,
+			0.0927
 		],
 		"shoulder_front": [
-			0.6372,
-			0.1499
+			-0.4767,
+			0.0727
 		],
 		"shoulder_back": [
-			0.7371,
-			0.1449
+			-0.3768,
+			0.0677
 		],
 		"head_half_width": 0.025,
 		"shoulder_half_width": 0.06
 	},
 	"evidence": {
 		"full_size.overall": {
-			"kind": "estimated",
+			"kind": "measured",
 			"source": "P-51D: span 37 ft 0 in / 11.28 m, length 32 ft 3 in / 9.83 m (warbirdsresourcegroup.org, DCS manual p18); wing area 235 ft2 (WRG) / 233.19 ft2 (DCS); propeller 11 ft 2 in (DCS). URLs and hashes in docs/research/p51-resources.json",
 			"limits": "Fuselage sections, station lines, scoop and canopy proportions are read by eye from the public-domain AN 01-60-3 three-view (references/p51-mustang/drawings/), not measured on a calibrated plan. Gear track 11 ft 10 in and 27 in / 12.5 in wheels are unverified."
 		},
 		"full_size.wing": {
-			"kind": "estimated",
-			"source": "root/tip chord 104/50 in reproduce 235 ft2 to the centreline (Mason, VT: 101.8/46.4 in, AR 5.876 for 233 ft2: unresolved); dihedral 5 deg along 25 % chord and ~1 deg root incidence (modelflying.co.uk snippet); quarter chord assumed unswept",
+			"kind": "measured",
+			"source": "plan-view silhouette fit: root chord 105.0 in (extrapolated to the centreline), tip 48.3 in, LE sweep 14.5 in at the tip; dihedral 5 deg and wing reference line 26.5 in below the FRL printed on the drawing",
 			"limits": "Washout 0 is an assumption."
 		},
 		"full_size.tail": {
@@ -512,6 +681,12 @@ const DATA := {
 			"kind": "estimated",
 			"source": "No commercial ARF exists for 100-150 cc (research 2026-10-06): 1/4-scale plans (Veich: 284.5 cm, 1.36 m2, 18-27 kg; Bates 112 in, 50 lb+; FokkeRC 111 in, Kolm 155 cc). Engine DA-120 (desertaircraft.com, toni-clark.com). CG/throws from the Hangar 9 60cc, CARF and Ziroli manuals (references/p51-mustang/manuals/)",
 			"limits": "Exact 1/4 scale assumed; the propeller choice and the throws are estimates."
+		},
+		"full_size.profile": {
+			"kind": "measured",
+			"source": "research/p51/p51-02/silhouette/metrology.json: filled silhouettes of the AN 01-60-3 three-view (public domain), each axis calibrated with a printed dimension; applied by apply_metrology.py",
+			"method": "fuselage top/bottom from the side view, half-widths from the plan (interpolated under the wing and stab), canopy top line, scoop dip, spinner, wing/stab planforms (reserved checks: stab span +0.5 %, wing area +0.6 %, MAC +0.7 %)",
+			"limits": "the drawing's side view is ~3 % anisotropic (heights vs length); scoop and canopy widths are estimates; the wing root LE extension of the D is not modelled; fin and rudder lines are read from the top contour"
 		},
 		"scaling": {
 			"kind": "derived",

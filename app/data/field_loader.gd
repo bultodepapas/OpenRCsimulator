@@ -1,0 +1,287 @@
+## Loads an openrc-field v1 data file into a renderer-neutral, normalized dictionary.
+## Quantities are metres in NED coordinates; invalid input always returns an empty field.
+extends RefCounted
+
+const DEFAULT_PATH: String = "res://data/fields/default.json"
+const FORMAT: String = "openrc-field v1"
+# Field coordinates feed Godot's standard float32 render positions; larger finite float64 values overflow there.
+const FLOAT32_MAX: float = 3.4028234663852886e38
+const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
+const PILOT_KEYS: Array[String] = ["id", "north", "east", "down", "eye_height"]
+const SURFACE_KEYS: Array[String] = ["id", "type", "center_north", "center_east", "length_east_west", "width_north_south"]
+const OBJECT_KEYS: Array[String] = ["id", "collides"]
+const QUANTITY_KEYS: Array[String] = ["value", "unit", "kind", "source"]
+const SURFACE_TYPES: Array[String] = ["rough", "mown", "runway"]
+const EVIDENCE_KINDS: Array[String] = ["manual", "measured", "borrowed", "estimated", "derived"]
+
+
+## Result shape: {ok: bool, errors: PackedStringArray, field: Dictionary}.
+static func load_from(path: String = DEFAULT_PATH) -> Dictionary:
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return _failure("%s: cannot open field file (error %d)" % [path, FileAccess.get_open_error()])
+	var text: String = file.get_as_text()
+	file.close()
+	var parser: JSON = JSON.new()
+	var parse_result: Error = parser.parse(text)
+	if parse_result != OK:
+		return _failure("%s: JSON error at line %d: %s" % [path, parser.get_error_line(), parser.get_error_message()])
+	return validate(parser.data)
+
+
+## Validate untrusted parsed data and unwrap each {value, unit, kind, source} quantity to a float.
+static func validate(raw: Variant) -> Dictionary:
+	var errors: PackedStringArray = PackedStringArray()
+	if typeof(raw) != TYPE_DICTIONARY:
+		return _failure("field: expected an object")
+
+	var root: Dictionary = raw
+	_check_keys(errors, "field", root, ROOT_KEYS, ROOT_KEYS)
+	var format_value: Variant = root.get("format")
+	if typeof(format_value) != TYPE_STRING or format_value != FORMAT:
+		errors.append("format: expected '%s'" % FORMAT)
+
+	var ids: Dictionary = {}
+	var field_id: String = _register_id(errors, ids, "id", root.get("id"))
+	var runway_id: String = _read_string(errors, "runway", root.get("runway"), true)
+
+	var pilot: Dictionary = _object(errors, "pilot", root.get("pilot"))
+	_check_keys(errors, "pilot", pilot, PILOT_KEYS, PILOT_KEYS)
+	var pilot_id: String = _register_id(errors, ids, "pilot.id", pilot.get("id"))
+	var pilot_north: float = _quantity_or_zero(errors, "pilot.north", pilot.get("north"), false)
+	var pilot_east: float = _quantity_or_zero(errors, "pilot.east", pilot.get("east"), false)
+	var pilot_down: float = _quantity_or_zero(errors, "pilot.down", pilot.get("down"), false)
+	var eye_height: float = _quantity_or_zero(errors, "pilot.eye_height", pilot.get("eye_height"), true)
+	var eye_down: float = pilot_down - eye_height
+	if not is_finite(eye_down) or absf(eye_down) > FLOAT32_MAX:
+		errors.append("pilot eye position (down - eye_height) exceeds the finite float32 range used by render coordinates")
+
+	var surfaces: Array = _array(errors, "surfaces", root.get("surfaces"))
+	var normalized_surfaces: Array = []
+	var validated_surfaces: Array = []
+	var surface_index_by_id: Dictionary = {}
+	for index: int in range(surfaces.size()):
+		var surface_path: String = "surfaces[%d]" % index
+		var surface: Dictionary = _object(errors, surface_path, surfaces[index])
+		_check_keys(errors, surface_path, surface, SURFACE_KEYS, SURFACE_KEYS)
+		var surface_id: String = _register_id(errors, ids, surface_path + ".id", surface.get("id"))
+		if not surface_id.is_empty():
+			if surface_id != surface_id.strip_edges():
+				errors.append("%s.id: leading or trailing whitespace is not allowed" % surface_path)
+			var node_name: String = surface_id.validate_node_name()
+			if node_name != surface_id:
+				errors.append("%s.id: '%s' is not a valid Godot node name" % [surface_path, surface_id])
+		var surface_type: String = _read_string(errors, surface_path + ".type", surface.get("type"), true)
+		if not SURFACE_TYPES.has(surface_type):
+			errors.append("%s.type: expected one of %s" % [surface_path, SURFACE_TYPES])
+		var center_north: float = _quantity_or_zero(errors, surface_path + ".center_north", surface.get("center_north"), false)
+		var center_east: float = _quantity_or_zero(errors, surface_path + ".center_east", surface.get("center_east"), false)
+		var length_east_west: float = _quantity_or_zero(errors, surface_path + ".length_east_west", surface.get("length_east_west"), true)
+		var width_north_south: float = _quantity_or_zero(errors, surface_path + ".width_north_south", surface.get("width_north_south"), true)
+		var bounds: Dictionary = _rectangle_bounds(
+			errors,
+			surface_path,
+			center_north,
+			center_east,
+			length_east_west,
+			width_north_south
+		)
+		var normalized_surface: Dictionary = {
+			"id": surface_id,
+			"type": surface_type,
+			"center_north": center_north,
+			"center_east": center_east,
+			"length_east_west": length_east_west,
+			"width_north_south": width_north_south,
+		}
+		normalized_surfaces.append(normalized_surface)
+		validated_surfaces.append({"type": surface_type, "bounds": bounds})
+		if not surface_id.is_empty():
+			surface_index_by_id[surface_id] = surface_type
+
+	var objects: Array = _array(errors, "objects", root.get("objects"))
+	for index: int in range(objects.size()):
+		var object_path: String = "objects[%d]" % index
+		var object_node: Dictionary = _object(errors, object_path, objects[index])
+		_check_keys(errors, object_path, object_node, OBJECT_KEYS, ["id"])
+		_register_id(errors, ids, object_path + ".id", object_node.get("id"))
+		if object_node.has("collides"):
+			var collides: Variant = object_node.get("collides")
+			if typeof(collides) != TYPE_BOOL:
+				errors.append("%s.collides: expected a boolean" % object_path)
+			elif collides:
+				errors.append("%s.collides=true is unsupported until L14" % object_path)
+		errors.append("%s: field objects are unsupported until L6" % object_path)
+
+	var selected_runway_type: String = str(surface_index_by_id.get(runway_id, ""))
+	if runway_id.is_empty():
+		errors.append("runway: must reference a surface ID")
+	elif selected_runway_type.is_empty():
+		errors.append("runway: unknown surface ID '%s'" % runway_id)
+	elif selected_runway_type != "runway":
+		errors.append("runway: surface '%s' must have type 'runway'" % runway_id)
+
+	_check_same_type_overlaps(errors, validated_surfaces)
+
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors, "field": {}}
+	var normalized_field: Dictionary = {
+		"format": FORMAT,
+		"id": field_id,
+		"runway": runway_id,
+		"pilot": {
+			"id": pilot_id,
+			"north": pilot_north,
+			"east": pilot_east,
+			"down": pilot_down,
+			"eye_height": eye_height,
+		},
+		"surfaces": normalized_surfaces,
+		"objects": [],
+	}
+	return {"ok": true, "errors": errors, "field": normalized_field}
+
+
+static func _failure(message: String) -> Dictionary:
+	return {"ok": false, "errors": PackedStringArray([message]), "field": {}}
+
+
+static func _object(errors: PackedStringArray, path: String, node: Variant) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("%s: expected an object" % path)
+		return {}
+	return node
+
+
+static func _array(errors: PackedStringArray, path: String, node: Variant) -> Array:
+	if typeof(node) != TYPE_ARRAY:
+		errors.append("%s: expected an array" % path)
+		return []
+	return node
+
+
+static func _check_keys(
+	errors: PackedStringArray,
+	path: String,
+	node: Dictionary,
+	allowed: Array[String],
+	required: Array[String]
+) -> void:
+	for key: String in required:
+		if not node.has(key):
+			errors.append("%s: missing '%s'" % [path, key])
+	for key_variant: Variant in node.keys():
+		var key: String = str(key_variant)
+		if not allowed.has(key):
+			errors.append("%s: unknown key '%s'" % [path, key])
+
+
+static func _read_string(errors: PackedStringArray, path: String, value: Variant, nonempty: bool) -> String:
+	if typeof(value) != TYPE_STRING:
+		errors.append("%s: expected a string" % path)
+		return ""
+	var text: String = value
+	if nonempty and text.strip_edges().is_empty():
+		errors.append("%s: must not be empty" % path)
+	return text
+
+
+static func _register_id(errors: PackedStringArray, ids: Dictionary, path: String, value: Variant) -> String:
+	var identifier: String = _read_string(errors, path, value, true)
+	if identifier.is_empty():
+		return identifier
+	if ids.has(identifier):
+		errors.append("%s: duplicate ID '%s' (already used by %s)" % [path, identifier, ids[identifier]])
+	else:
+		ids[identifier] = path
+	return identifier
+
+
+static func _quantity_or_zero(errors: PackedStringArray, path: String, node: Variant, positive: bool) -> float:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("%s: expected a quantity object" % path)
+		return 0.0
+	var quantity: Dictionary = node
+	_check_keys(errors, path, quantity, QUANTITY_KEYS, QUANTITY_KEYS)
+	var unit: Variant = quantity.get("unit")
+	if typeof(unit) != TYPE_STRING or unit != "m":
+		errors.append("%s.unit: expected 'm'" % path)
+	var kind: Variant = quantity.get("kind")
+	if typeof(kind) != TYPE_STRING:
+		errors.append("%s.kind: expected one of %s" % [path, EVIDENCE_KINDS])
+	elif not EVIDENCE_KINDS.has(kind):
+		errors.append("%s.kind: expected one of %s" % [path, EVIDENCE_KINDS])
+	var source: Variant = quantity.get("source")
+	if typeof(source) != TYPE_STRING or String(source).strip_edges().is_empty():
+		errors.append("%s.source: must be a nonempty string" % path)
+	var raw_value: Variant = quantity.get("value")
+	if typeof(raw_value) != TYPE_FLOAT and typeof(raw_value) != TYPE_INT:
+		errors.append("%s.value: expected a number" % path)
+		return 0.0
+	var numeric_value: float = float(raw_value)
+	if not is_finite(numeric_value):
+		errors.append("%s.value: must be finite" % path)
+	elif absf(numeric_value) > FLOAT32_MAX:
+		errors.append("%s.value: exceeds the finite float32 range used by render coordinates" % path)
+	if positive and numeric_value <= 0.0:
+		errors.append("%s.value: must be greater than zero" % path)
+	elif positive and is_finite(numeric_value) and absf(numeric_value) <= FLOAT32_MAX and _render_float(numeric_value) <= 0.0:
+		errors.append("%s.value: positive metre size rounds to zero in float32 render coordinates" % path)
+	return numeric_value
+
+
+static func _rectangle_bounds(
+	errors: PackedStringArray,
+	path: String,
+	center_north: float,
+	center_east: float,
+	length_east_west: float,
+	width_north_south: float
+) -> Dictionary:
+	var north_min: float = center_north - width_north_south / 2.0
+	var north_max: float = center_north + width_north_south / 2.0
+	var east_min: float = center_east - length_east_west / 2.0
+	var east_max: float = center_east + length_east_west / 2.0
+	var bounds: Dictionary = {
+		"north_min": north_min,
+		"north_max": north_max,
+		"east_min": east_min,
+		"east_max": east_max,
+	}
+	var endpoints_renderable: bool = true
+	for endpoint_name: String in ["north_min", "north_max", "east_min", "east_max"]:
+		var endpoint: float = bounds[endpoint_name]
+		if not is_finite(endpoint):
+			errors.append("%s: %s endpoint must be finite" % [path, endpoint_name])
+			endpoints_renderable = false
+		elif absf(endpoint) > FLOAT32_MAX:
+			errors.append("%s: %s endpoint exceeds the finite float32 range used by render coordinates" % [path, endpoint_name])
+			endpoints_renderable = false
+	if north_min >= north_max or east_min >= east_max:
+		errors.append("%s: rectangle degenerates at float64 precision" % path)
+	elif endpoints_renderable and (
+		_render_float(north_min) >= _render_float(north_max)
+		or _render_float(east_min) >= _render_float(east_max)
+	):
+		errors.append("%s: rectangle degenerates at float32 render precision" % path)
+	return bounds
+
+
+static func _render_float(value: float) -> float:
+	var packed: PackedFloat32Array = PackedFloat32Array([value])
+	return float(packed[0])
+
+
+static func _check_same_type_overlaps(errors: PackedStringArray, surfaces: Array) -> void:
+	for first_index: int in range(surfaces.size()):
+		var first: Dictionary = surfaces[first_index]
+		for second_index: int in range(first_index + 1, surfaces.size()):
+			var second: Dictionary = surfaces[second_index]
+			if first.get("type") != second.get("type"):
+				continue
+			var first_bounds: Dictionary = first["bounds"]
+			var second_bounds: Dictionary = second["bounds"]
+			var overlap_north: bool = float(first_bounds["north_min"]) < float(second_bounds["north_max"]) and float(second_bounds["north_min"]) < float(first_bounds["north_max"])
+			var overlap_east: bool = float(first_bounds["east_min"]) < float(second_bounds["east_max"]) and float(second_bounds["east_min"]) < float(first_bounds["east_max"])
+			if overlap_north and overlap_east:
+				errors.append("surfaces[%d] and surfaces[%d]: positive-area overlap between same-type '%s' surfaces" % [first_index, second_index, first.get("type")])

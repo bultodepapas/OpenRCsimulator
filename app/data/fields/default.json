@@ -1,0 +1,91 @@
+{
+  "format": "openrc-field v1",
+  "id": "default",
+  "runway": "runway",
+  "pilot": {
+    "id": "pilot",
+    "north": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Historical Spec pilot station at the origin; retained as a simulation reference, not an AMA standard."
+    },
+    "east": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Historical Spec pilot station at the origin; retained as a simulation reference, not an AMA standard."
+    },
+    "down": {
+      "value": 0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Historical Spec pilot station at the origin; retained as a simulation reference, not an AMA standard."
+    },
+    "eye_height": {
+      "value": 1.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Historical Spec.CAMERA eye height; retained as a visual estimate, not an AMA standard."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "rough",
+      "type": "rough",
+      "center_north": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec ground centered at the origin; 40 km visual extent, not an AMA standard."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec ground centered at the origin; 40 km visual extent, not an AMA standard."
+      },
+      "length_east_west": {
+        "value": 40000,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.GROUND_SIZE visual extent; not an AMA field dimension or standard."
+      },
+      "width_north_south": {
+        "value": 40000,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.GROUND_SIZE visual extent; not an AMA field dimension or standard."
+      }
+    },
+    {
+      "id": "runway",
+      "type": "runway",
+      "center_north": {
+        "value": 15,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.RUNWAY center_north; retained for visual parity, not an AMA standard."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.RUNWAY default east coordinate is zero; not an AMA standard."
+      },
+      "length_east_west": {
+        "value": 100,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.RUNWAY length_east_west; retained for visual parity, not an AMA standard."
+      },
+      "width_north_south": {
+        "value": 12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Historical Spec.RUNWAY width_north_south; retained for visual parity, not an AMA standard."
+      }
+    }
+  ],
+  "objects": []
+}

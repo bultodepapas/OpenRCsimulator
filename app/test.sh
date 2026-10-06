@@ -34,6 +34,9 @@ for t in "$HERE"/tests/test_*.gd; do
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done
 
+echo "== L5: invalid field files fail before Home or flight can start"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes
+
 echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model team)"
 run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi

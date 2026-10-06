@@ -564,3 +564,14 @@ Prueba: `tests/test_p51_handling.gd` (15 checks), `test_trim.gd`, `test_golden.g
 - Un clon inmutable hace reproducible la prueba. El catálogo de cuatro aviones llegó mientras se validaba: se conservaron sus cambios, se fusionaron las comprobaciones nuevas de `test.sh` y se repitió la suite sobre esa integración. La actualización concurrente de navegación del P-51 resolvió el test que todavía saltaba directamente del Extra al Avanti.
 
 Prueba: [VQ-01b](docs/research/visual-quality-implementation/VQ-01b/README.md), 112 capturas, nueve pares de campo idénticos, 38 imágenes anteriores y datos de traza intactos; 18 pruebas de guardas, 14 de matriz, 43 de muestreo y 65 de poses/procedencia; suites completas, tres exports y smoke Linux. L5 es el siguiente paso; medir GPU y lectura humana sigue pendiente.
+
+## 2026-10-06 · L5 — campo compartido sin cambiar el vuelo
+
+- Compartir un builder no basta: Inicio y vuelo deben cargar el mismo archivo, antes de crear cámara o sesión. La ruta interactiva necesita un error visible y la automatización un código de salida no cero; nunca sustituir datos inválidos por el campo predeterminado.
+- El campo se describe en metros NED, con cantidades y procedencia; la conversión a Godot pertenece al render. Un número finito en float64 puede desbordar float32, y un rectángulo positivo puede colapsar al convertirlo: el loader comprueba también esa representabilidad.
+- El orden del JSON no determina qué superficie gana un solape. L5 conserva meshes separados, con prioridad visual pista > segado > rough; dos rectángulos del mismo nivel no pueden compartir área. Los 3 cm de la pista siguen sin ser relieve físico.
+- Una prueba con piloto fuera del origen detectó que Inicio ignoraba la estación: su composición ahora usa desplazamientos desde los ojos del piloto. El campo por defecto mantiene la imagen anterior; un campo personalizado cambia ambas rutas coherentemente.
+- El JSON debe probarse dentro de cada pack desde un proyecto vacío. Ejecutar el smoke desde `app/` podría resolver el archivo fuente y ocultar un fallo del filtro de exportación. El cargador compilado y el SHA del JSON se verifican en Linux/Windows/macOS.
+- Los cuatro snapshots antiguos de pausa/hint dependen del tiempo de pared; no son goldens píxel a píxel. La comparación L5 exige paridad en los otros 108 casos deterministas y en las filas de datos de la traza, conservando los umbrales previos.
+
+Prueba y reproducción: [L5](docs/research/visual-quality-implementation/L5/README.md). No se cambian simulación, colisiones ni datos de aeronaves; el siguiente paso visual es L6a.

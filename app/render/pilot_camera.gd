@@ -6,8 +6,12 @@ const Spec := preload("res://spec.gd")
 const Frames := preload("res://render/frames.gd")
 
 
-static func create(parent: Node) -> Camera3D:
+static func create(parent: Node, pilot: Dictionary = {}) -> Camera3D:
 	var camera := Camera3D.new()
+	# Metadata belongs to this camera: independent scenes never share a mutable pilot position.
+	var station: Array = [pilot.get("north", 0.0), pilot.get("east", 0.0), pilot.get("down", 0.0)]
+	camera.set_meta("pilot_station", station)
+	camera.set_meta("pilot_eye_height", pilot.get("eye_height", Spec.CAMERA.eye_height))
 	camera.fov = Spec.CAMERA.fov_deg
 	camera.near = Spec.CAMERA.near
 	camera.far = Spec.CAMERA.far
@@ -32,9 +36,11 @@ static func auto_fov(span: float, distance: float, viewport_h: float, target_px 
 ## Landscape review views (L0): from above the pilot station (height in m, default the eye height), looking at an
 ## azimuth (deg from north, clockwise) and an elevation (deg above the horizon; −90 = straight down), base FOV.
 ## Independent of the airplane.
-static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float, height := float(Spec.CAMERA.eye_height)) -> void:
+static func look(camera: Camera3D, azimuth_deg: float, elevation_deg: float, height: float = NAN) -> void:
 	camera.fov = Spec.CAMERA.fov_deg
-	camera.position = Frames.ned_to_render([0.0, 0.0, -height])
+	var station: Array = camera.get_meta("pilot_station", [0.0, 0.0, 0.0])
+	var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height)) if is_nan(height) else height
+	camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
 	var az := deg_to_rad(azimuth_deg)
 	var el := deg_to_rad(elevation_deg)
 	var dir := Frames.ned_to_render([cos(az) * cos(el), sin(az) * cos(el), -sin(el)])
@@ -51,7 +57,9 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		# Inspection view: camera fixed to the airplane (left, above, behind), to check geometry.
 		camera.position = airplane * Spec.INSPECT_OFFSET
 	else:
-		camera.position = Frames.ned_to_render([0.0, 0.0, -Spec.CAMERA.eye_height])
+		var station: Array = camera.get_meta("pilot_station", [0.0, 0.0, 0.0])
+		var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height))
+		camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
 		if auto_zoom_span > 0.0:
 			var h := float(camera.get_viewport().get_visible_rect().size.y) if camera.is_inside_tree() else float(Spec.CAPTURE.height)
 			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), h)
