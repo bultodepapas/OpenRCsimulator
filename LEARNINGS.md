@@ -575,3 +575,15 @@ Prueba: [VQ-01b](docs/research/visual-quality-implementation/VQ-01b/README.md), 
 - Los cuatro snapshots antiguos de pausa/hint dependen del tiempo de pared; no son goldens píxel a píxel. La comparación L5 exige paridad en los otros 108 casos deterministas y en las filas de datos de la traza, conservando los umbrales previos.
 
 Prueba y reproducción: [L5](docs/research/visual-quality-implementation/L5/README.md). No se cambian simulación, colisiones ni datos de aeronaves; el siguiente paso visual es L6a.
+
+## 2026-10-06 · P51-02b — siluetas: superponer antes de medir
+
+- Empecé extrayendo cotas de la tres vistas con rellenos y máscaras; el propietario señaló que el Avanti fue más fácil y rápido. Tenía razón: la superposición con cámara anclada (dos anclas, escala uniforme, render plano transparente) mostró de un vistazo que el ala estaba 0,33 m adelantada y 0,37 m alta y la cabina casi 1 m atrás; la metrología solo puso números. Orden: superponer, mirar, corregir, medir.
+- Un dibujo de línea no es una foto: el relleno «fuga» por los huecos de las líneas discontinuas que cruzan el contorno. Cerrar la tinta 3 px antes de rellenar sella el avión; una apertura de 4 px borra cotas y texto; el relleno llega al borde exterior de la tinta y hay que retroceder 2 px. Las cajas de exclusión deben respetar la pieza (la primera cortó la punta de la deriva y falseó la escala un 7 %).
+- La reproducción de 1945 es ~3 % anisótropa en el perfil y no en la planta: calibrar cada eje de cada vista con su cota impresa y reservar otras cotas como comprobación (estabilizador, área, MAC quedaron dentro del 0,7 %).
+- Las tres vistas comparten la columna de simetría en el papel: la frontal se centra con la planta, porque su píxel más alto es una pala, no el cono.
+- Un script que «desplaza» valores existentes no es idempotente: el piloto se fue 0,8 m delante del morro en la tercera ejecución y apareció como una línea vertical misteriosa (su placa blindada). Escribir valores absolutos desde una plantilla.
+- La métrica de contorno castiga lo que la referencia dibuja y el modelo no (palas, patín extendido, depósitos): excluirlo por cajas o declararlo cualitativo, no «mejorar» el modelo para ganar píxeles.
+- Al medir bien la geometría, la física mejoró sola: el morro largo adelanta la instalación y el lastre virtual bajó de 1,66 a 0,21 kg, como en los P-51 de 1/4 reales con DA-120.
+
+Prueba: [informe](docs/research/p51-silhouette-review-v1.md) con métricas y hashes, `verify_p51.gd` 126, `test_p51_handling.gd` 15, `test_aircraft_catalog.gd` 34, `app/test.sh` completo.

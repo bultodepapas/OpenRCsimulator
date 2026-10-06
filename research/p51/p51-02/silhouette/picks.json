@@ -30,7 +30,21 @@
       ],
       "exclude": [],
       "frl_row_hint": 260,
-      "notes": "profile; the main wheel circle is not connected (excluded by the fill); the propeller blade has gaps and is excluded"
+      "notes": "profile; the main wheel circle is not connected (excluded by the fill); the propeller blade has gaps and is excluded; mask_after removes the vertical propeller blade above and below the spinner from the compared outline",
+      "mask_after": [
+        [
+          358,
+          45,
+          404,
+          205
+        ],
+        [
+          358,
+          315,
+          404,
+          540
+        ]
+      ]
     },
     "front": {
       "box": [
@@ -47,7 +61,8 @@
           1180
         ]
       ],
-      "notes": "left half only (the right wing outline leaks through a dashed line); gear and wheels are dropped by the fill"
+      "notes": "left half only (the right wing outline leaks through a dashed line); gear and wheels are dropped by the fill; the four propeller blades cannot be separated from the body by boxes: the front metric is qualitative (wing, stab, gear height)",
+      "mask_after": []
     },
     "top": {
       "box": [
@@ -94,7 +109,21 @@
           2150
         ]
       ],
-      "notes": "plan; excluded: stab dimension box, the rudder 30-degree fan on both sides of the fin (the fin tip column 896-930 is kept), prop-clearance extension box, two drop tanks"
+      "notes": "plan; excluded: stab dimension box, the rudder 30-degree fan on both sides of the fin (the fin tip column 896-930 is kept), prop-clearance extension box, two drop tanks; mask_after removes the propeller blades beside the spinner from the compared outline",
+      "mask_after": [
+        [
+          725,
+          2396,
+          862,
+          2426
+        ],
+        [
+          964,
+          2396,
+          1100,
+          2426
+        ]
+      ]
     }
   }
 }

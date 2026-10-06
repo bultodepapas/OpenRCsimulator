@@ -8,7 +8,7 @@
   },
   "reference": {
     "wing_area": {
-      "value": 1.377429,
+      "value": 1.37193,
       "unit": "m2",
       "kind": "derived",
       "source": "research/p51/p51-05/derive_physics.py: trapezoid span x (root + tip) / 2 from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
@@ -20,28 +20,28 @@
       "source": "kit span, P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit) (source.json)"
     },
     "mean_chord": {
-      "value": 0.48845,
+      "value": 0.4865,
       "unit": "m",
       "kind": "derived",
-      "source": "S / b: the v1 coefficient reference length. NOT the MAC (0.5084 m at 0.6227 m span)"
+      "source": "S / b: the v1 coefficient reference length. NOT the MAC (0.5087 m at 0.6181 m span)"
     },
     "root_chord": {
-      "value": 0.6596,
+      "value": 0.6664,
       "unit": "m",
       "kind": "derived",
       "source": "104 in full-size root chord x scale, assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
     },
     "tip_chord": {
-      "value": 0.3173,
+      "value": 0.3066,
       "unit": "m",
       "kind": "derived",
       "source": "50 in full-size tip chord x scale, assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
     },
     "aero_reference_point": {
       "value": [
-        0.151822,
+        0.153394,
         0.0,
-        -0.075
+        -0.1682
       ],
       "unit": "m",
       "kind": "derived",
@@ -60,17 +60,17 @@
   "balance": {
     "plan_cg": {
       "value": [
-        0.17508,
+        0.177847,
         0.0,
-        -0.043883
+        -0.075837
       ],
       "unit": "m",
       "kind": "estimated",
-      "source": "27 % MAC (kit placeholder, source.json) = model z 0.1751; z from the inventory (derived)"
+      "source": "27 % MAC (kit placeholder, source.json) = model z 0.1778; z from the inventory (derived)"
     },
     "firewall": {
       "value": [
-        -0.1373,
+        -0.2487,
         0.0,
         0.0
       ],
@@ -97,7 +97,7 @@
       },
       "position": {
         "value": [
-          -0.2573,
+          -0.3687,
           0.0,
           0.0
         ],
@@ -126,7 +126,7 @@
       },
       "position": {
         "value": [
-          -0.1873,
+          -0.2987,
           0.0,
           -0.07
         ],
@@ -155,7 +155,7 @@
       },
       "position": {
         "value": [
-          -0.4373,
+          -0.5487,
           0.0,
           0.0
         ],
@@ -175,7 +175,7 @@
       }
     },
     {
-      "name": "spinner 6.8 in aluminium with backplate",
+      "name": "spinner 7.7 in aluminium with backplate",
       "mass": {
         "value": 0.35,
         "unit": "kg",
@@ -184,7 +184,7 @@
       },
       "position": {
         "value": [
-          -0.4473,
+          -0.5587,
           0.0,
           0.0
         ],
@@ -213,7 +213,7 @@
       },
       "position": {
         "value": [
-          -0.1673,
+          -0.2787,
           0.0,
           0.0
         ],
@@ -232,7 +232,7 @@
       },
       "position": {
         "value": [
-          0.01875,
+          -0.1744,
           0.0,
           0.0
         ],
@@ -242,9 +242,9 @@
       },
       "size": {
         "value": [
-          0.8121,
-          0.2198,
-          0.2873
+          0.6486,
+          0.2288,
+          0.3465
         ],
         "unit": "m",
         "kind": "estimated",
@@ -261,7 +261,7 @@
       },
       "position": {
         "value": [
-          -0.0373,
+          -0.1487,
           0.0,
           -0.02
         ],
@@ -280,7 +280,7 @@
       },
       "position": {
         "value": [
-          -0.0373,
+          -0.1487,
           0.0,
           -0.02
         ],
@@ -299,7 +299,7 @@
       },
       "position": {
         "value": [
-          -0.1073,
+          -0.2187,
           0.0,
           -0.08
         ],
@@ -318,7 +318,7 @@
       },
       "position": {
         "value": [
-          -0.0773,
+          -0.1887,
           0.0,
           -0.09
         ],
@@ -358,7 +358,7 @@
         "value": [
           0.12,
           0.0,
-          -0.075
+          -0.1682
         ],
         "unit": "m",
         "kind": "estimated",
@@ -387,7 +387,7 @@
         "value": [
           0.3,
           0.0,
-          -0.075
+          -0.1682
         ],
         "unit": "m",
         "kind": "estimated",
@@ -414,9 +414,9 @@
       },
       "position": {
         "value": [
-          1.4117,
+          1.2334,
           0.0,
-          0.025
+          0.0875
         ],
         "unit": "m",
         "kind": "estimated",
@@ -462,7 +462,7 @@
       },
       "position": {
         "value": [
-          -0.0873,
+          -0.1987,
           0.0,
           0.02
         ],
@@ -474,7 +474,7 @@
     {
       "name": "main retracts, struts and wheels (2 sides)",
       "mass": {
-        "value": 1.8,
+        "value": 2.0,
         "unit": "kg",
         "kind": "estimated",
         "source": "two electric/pneumatic giant-scale retracts (0.5 kg each), oleo struts (0.25 each), 6 in wheels with hubs (0.2 each), gear doors"
@@ -483,7 +483,7 @@
         "value": [
           0.025,
           0.0,
-          -0.24365
+          -0.2965
         ],
         "unit": "m",
         "kind": "measured",
@@ -493,7 +493,7 @@
         "value": [
           0.12,
           0.902,
-          0.3373
+          0.2566
         ],
         "unit": "m",
         "kind": "estimated",
@@ -510,9 +510,9 @@
       },
       "position": {
         "value": [
-          1.6116,
+          1.2818,
           0.0,
-          -0.0849
+          -0.1199
         ],
         "unit": "m",
         "kind": "measured",
@@ -522,16 +522,16 @@
     {
       "name": "wing panel, left, sheeted, with flap and aileron",
       "mass": {
-        "value": 1.8,
+        "value": 2.0,
         "unit": "kg",
         "kind": "estimated",
         "source": "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair)"
       },
       "position": {
         "value": [
-          0.251346,
-          -0.622657,
-          -0.075
+          0.254149,
+          -0.618101,
+          -0.1682
         ],
         "unit": "m",
         "kind": "derived",
@@ -539,7 +539,7 @@
       },
       "size": {
         "value": [
-          0.50844,
+          0.508675,
           1.41,
           0.07
         ],
@@ -551,16 +551,16 @@
     {
       "name": "wing panel, right, sheeted, with flap and aileron",
       "mass": {
-        "value": 1.8,
+        "value": 2.0,
         "unit": "kg",
         "kind": "estimated",
         "source": "same as the left panel"
       },
       "position": {
         "value": [
-          0.251346,
-          0.622657,
-          -0.075
+          0.254149,
+          0.618101,
+          -0.1682
         ],
         "unit": "m",
         "kind": "derived",
@@ -568,7 +568,7 @@
       },
       "size": {
         "value": [
-          0.50844,
+          0.508675,
           1.41,
           0.07
         ],
@@ -589,7 +589,7 @@
         "value": [
           0.17,
           0.0,
-          -0.075
+          -0.1682
         ],
         "unit": "m",
         "kind": "estimated",
@@ -609,7 +609,7 @@
     {
       "name": "fuselage front (engine box to cockpit rear), covered",
       "mass": {
-        "value": 1.5,
+        "value": 1.8,
         "unit": "kg",
         "kind": "estimated",
         "source": "lite-ply/balsa box with doublers, glassed"
@@ -627,8 +627,8 @@
       "size": {
         "value": [
           1.0,
-          0.2198,
-          0.2873
+          0.2288,
+          0.3465
         ],
         "unit": "m",
         "kind": "estimated",
@@ -667,7 +667,7 @@
     {
       "name": "fuselage rear and turtle deck, covered",
       "mass": {
-        "value": 0.8,
+        "value": 1.0,
         "unit": "kg",
         "kind": "estimated",
         "source": "balsa sides and stringered deck"
@@ -722,9 +722,9 @@
       },
       "position": {
         "value": [
-          1.61911,
+          1.429245,
           0.0,
-          0.025
+          0.0875
         ],
         "unit": "m",
         "kind": "measured",
@@ -732,8 +732,8 @@
       },
       "size": {
         "value": [
-          0.3498,
-          0.997,
+          0.3241,
+          1.0086,
           0.025
         ],
         "unit": "m",
@@ -751,9 +751,9 @@
       },
       "position": {
         "value": [
-          1.691233,
+          1.56265,
           0.0,
-          0.16341
+          0.197473
         ],
         "unit": "m",
         "kind": "derived",
@@ -763,7 +763,7 @@
         "value": [
           0.3,
           0.02,
-          0.4173
+          0.434
         ],
         "unit": "m",
         "kind": "estimated",
@@ -792,14 +792,14 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 1.664379,
+        "value": 0.207352,
         "unit": "kg",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the kit balance point; a virtual reference build, NOT measured hardware or a ballast recommendation"
       },
       "position": {
         "value": [
-          -0.4073,
+          -0.5187,
           0.0,
           0.0
         ],
@@ -822,74 +822,74 @@
   "crash_hull": {
     "value": [
       [
-        0.0856,
+        0.0924,
         -1.41,
-        0.048359
+        -0.044841
       ],
       [
-        0.0856,
+        0.0924,
         1.41,
-        0.048359
+        -0.044841
       ],
       [
-        0.4029,
+        0.399,
         -1.41,
-        0.048359
+        -0.044841
       ],
       [
-        0.4029,
+        0.399,
         1.41,
-        0.048359
+        -0.044841
       ],
       [
-        -0.5872,
+        -0.6686,
         0.0,
         0.0
       ],
       [
         0.025,
         -0.451,
-        -0.498
+        -0.5105
       ],
       [
         0.025,
         0.451,
-        -0.498
+        -0.5105
       ],
       [
-        1.6116,
+        1.2818,
         0.0,
-        -0.16465
+        -0.19965
       ],
       [
-        1.8615,
+        1.7895,
         0.0,
-        -0.0125
+        0.0075
       ],
       [
-        1.7491,
-        -0.4985,
-        0.025
+        1.5598,
+        -0.5043,
+        0.0875
       ],
       [
-        1.7491,
-        0.4985,
-        0.025
+        1.5598,
+        0.5043,
+        0.0875
       ],
       [
-        1.824,
+        1.6866,
         0.0,
-        0.4048
+        0.4415
       ],
       [
-        0.6871,
+        0.3248,
         0.0,
-        0.2549
+        0.2366
       ],
       [
-        0.7496,
+        0.5375,
         0.0,
-        -0.2799
+        -0.2898
       ]
     ],
     "unit": "m",
@@ -899,12 +899,12 @@
   "plausibility": {
     "mass_range": {
       "value": [
-        17.5,
+        16.5,
         26.0
       ],
       "unit": "kg",
       "kind": "estimated",
-      "source": "kit flying mass range 18.0-24.0 kg (source.json), widened for fuel and the virtual balancing mass of the reference build"
+      "source": "kit flying mass range 18.0-24.0 kg (source.json; CARF 2.54 m: 15-17 kg dry), widened for fuel and the virtual balancing mass of the reference build"
     },
     "inertia_reference": {
       "value": [
@@ -920,19 +920,19 @@
   "controls": {
     "max_throw": {
       "aileron": {
-        "value": 16.142215,
+        "value": 16.260684,
         "unit": "deg",
         "kind": "estimated",
         "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
       },
       "elevator": {
-        "value": 14.667303,
+        "value": 15.859793,
         "unit": "deg",
         "kind": "estimated",
         "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
       },
       "rudder": {
-        "value": 33.534703,
+        "value": 31.947441,
         "unit": "deg",
         "kind": "estimated",
         "source": "asin(kit mm / local chord): Hangar 9 HAN4770 high rates (aileron 22 mm up, elevator 25 mm, rudder 55 mm) scaled by span 2.82/2.26 = 1.25; CARF (2.54 m) high rate: aileron 12.7 mm, elevator 19 mm up, rudder 51 mm"
@@ -967,7 +967,7 @@
         "source": "laminar section with a sharper break than the Stik's 6 deg; tip-stall tendency of the real airplane is not modelled beyond the equal-area strips"
       },
       "CD90": {
-        "value": 1.213921,
+        "value": 1.214337,
         "unit": "1",
         "kind": "derived",
         "source": "Viterna CDmax = 1.11 + 0.018 AR (NASA CR-1983)"
@@ -993,55 +993,55 @@
     },
     "coefficients": {
       "CL0": {
-        "value": 0.171895,
+        "value": 0.172188,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: cambered wing at +1 deg incidence + tail at zero body alpha"
       },
       "CLa": {
-        "value": 4.60421,
+        "value": 4.609075,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: Helmbold wing x cos2(dihedral) + downwashed tail"
       },
       "CLadot": {
-        "value": 1.688145,
+        "value": 1.461212,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
       },
       "CLq": {
-        "value": 5.982388,
+        "value": 5.524046,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail volume + DATCOM wing term"
       },
       "CLde": {
-        "value": 0.34576,
+        "value": 0.344655,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail slope x elevator effectiveness"
       },
       "CLda_each": {
-        "value": 0.309903,
+        "value": 0.306167,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory over the aileron span"
       },
       "CD0": {
-        "value": 0.043295,
+        "value": 0.045002,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: component drag build-up at 22 m/s with the gear DOWN (retracts not simulated), see derivation.md"
       },
       "CL_minD": {
-        "value": 0.092163,
+        "value": 0.092272,
         "unit": "1",
         "kind": "estimated",
         "source": "cambered laminar section: minimum drag near half the zero-alpha wing lift"
       },
       "k_induced": {
-        "value": 0.068918,
+        "value": 0.068643,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 1/(pi e AR), e 0.80 estimated"
@@ -1065,127 +1065,127 @@
         "source": "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"
       },
       "CYb": {
-        "value": -0.328982,
+        "value": -0.405058,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.034347,
+        "value": -0.055217,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.237945,
+        "value": 0.266329,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin behind the CG"
       },
       "CYdr": {
-        "value": 0.1371771862343255,
+        "value": 0.12791642879518295,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.097418,
+        "value": -0.086991,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 5 deg dihedral (strip theory) + wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.601686,
+        "value": -0.598804,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.128951,
+        "value": 0.135567,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: CL_ref/4 + fin"
       },
       "Clda_right": {
-        "value": -0.118354,
+        "value": -0.116805,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory"
       },
       "Clda_left": {
-        "value": 0.118354,
+        "value": 0.116805,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory"
       },
       "Cldr": {
-        "value": 0.011597309563874307,
+        "value": 0.01658708661944005,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin height above the ARP"
       },
       "Cm0": {
-        "value": 0.015411,
+        "value": 0.010432,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac (parabolic camber) + tail at zero body alpha, about the ARP"
       },
       "Cma": {
-        "value": -0.943851,
+        "value": -0.82133,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -11.127139,
+        "value": -8.351505,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
       },
       "Cmde": {
-        "value": -1.010766,
+        "value": -0.877355,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: elevator lift x tail arm from the ARP"
       },
       "Cmda_each": {
-        "value": -0.054318,
+        "value": -0.054404,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: aileron lift increment at its thin-airfoil centre, arm from the ARP"
       },
       "Cnb": {
-        "value": 0.1208990515366823,
+        "value": 0.13563431731211037,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.038239,
+        "value": -0.029065,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.148673,
+        "value": -0.152001,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.01583,
+        "value": 0.015384,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.8, taper 0.48)"
       },
       "Cnda_left": {
-        "value": -0.01583,
+        "value": -0.015384,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: adverse yaw"
       },
       "Cndr": {
-        "value": -0.07098865878794836,
+        "value": -0.060906318920368525,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin arm from the ARP (must equal the vertical surface)"
@@ -1193,7 +1193,7 @@
     },
     "surfaces": {
       "wing_aileron_effectiveness": {
-        "value": 0.232841,
+        "value": 0.231243,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: |Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips"
@@ -1236,35 +1236,35 @@
       },
       "horizontal": {
         "area": {
-          "value": 0.261563,
+          "value": 0.254066,
           "unit": "m2",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: stab + elevator trapezoid from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
         },
         "position": {
           "value": [
-            1.579717,
+            1.39183,
             0.0,
-            0.025
+            0.0875
           ],
           "unit": "m",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: quarter chord of the stab MAC"
         },
         "lift_slope": {
-          "value": 1.70028,
+          "value": 1.742254,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: Helmbold x eta 0.9 x (1 - deps/dalpha)"
         },
         "control_effectiveness": {
-          "value": 1.070895,
+          "value": 1.068213,
           "unit": "1",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / (1 - deps/dalpha)"
         },
         "incidence": {
-          "value": -0.038502,
+          "value": -0.038298,
           "unit": "rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha)"
@@ -1272,29 +1272,29 @@
       },
       "vertical": {
         "area": {
-          "value": 0.113901,
+          "value": 0.135344,
           "unit": "m2",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: fin + rudder side polygon from assets/aircraft/p51d-mustang-120/geometry.json (P51-01: full-size P-51D dimensions scaled to the kit span)"
         },
         "position": {
           "value": [
-            1.611161,
+            1.496113,
             0.0,
-            0.16341
+            0.197473
           ],
           "unit": "m",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: fin ac: quarter chord at the area-centroid height"
         },
         "lift_slope": {
-          "value": 2.825254,
+          "value": 2.88753,
           "unit": "1/rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: Helmbold (end-plated AR) x DATCOM sidewash/eta"
         },
         "control_effectiveness": {
-          "value": 0.587173,
+          "value": 0.449048,
           "unit": "1",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / sidewash factor"
@@ -1495,7 +1495,7 @@
         "source": "research/p51/p51-05/derive_physics.py: same blade-element/momentum model"
       },
       "rotating_inertia": {
-        "value": 0.012826,
+        "value": 0.013052,
         "unit": "kg·m2",
         "kind": "estimated",
         "source": "4 blades as slender rods + aluminium spinner"
@@ -1504,7 +1504,7 @@
         "value": [
           0.0,
           0.0,
-          0.043883
+          0.075837
         ],
         "unit": "m",
         "kind": "derived",

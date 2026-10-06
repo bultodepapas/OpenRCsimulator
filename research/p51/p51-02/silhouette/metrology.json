@@ -2,7 +2,7 @@
   "format": "openrc-metrology v1",
   "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
   "drawing_sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
-  "picks_sha256": "e45bfaaa4519f177c1be7bce70cee5f7f66b6e4f03afff5fb10f693a67117f54",
+  "picks_sha256": "10f9424f26e3a17b681af08586e6a77f6517fd89e7887f41e5dbaeb80d91c6fe",
   "frame": "full-size metres; z aft from the wing leading edge extrapolated to the centreline (straight outboard LE), y up from the fuselage reference line (FRL), x right",
   "calibration": {
     "side": {

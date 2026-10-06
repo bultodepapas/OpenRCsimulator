@@ -77,8 +77,11 @@ sp_r = m["calibration"]["side"]["spinner_radius_at_prop_plane_in"] * IN
 rows[0][1] = round(sp_r, 3); rows[0][2] = round(m["spinner"]["axis_y"] + sp_r, 3); rows[0][3] = round(m["spinner"]["axis_y"] - sp_r, 3)
 fs["fuselage_stations"] = rows
 fs["spinner"] = {"tip_z": round(tip_z, 3), "back_z": round(spinner_back, 3), "radius": round(sp_r, 3), "axis_y": round(m["spinner"]["axis_y"], 3)}
-fs["firewall_z"] = round(spinner_back + 0.9, 3)
-fs["cowl_rear_z"] = round(spinner_back + 1.6, 3)
+# The builder places the exhaust row from the nose band to firewall_z - 0.45 m (full size): the drawing shows the
+# stacks between z -1.52 and -0.54 m, so the model's "firewall" (cowl/fuselage split) is at -0.1 and the cowl panels end
+# at the windscreen base.
+fs["firewall_z"] = -0.1
+fs["cowl_rear_z"] = 0.6
 # Scoop stations [z, half_width, bottom]: the dip, with widths estimated from the front view silhouette (not separable
 # from the wing there): 0.30 m half-width at the lip tapering to 0.16 at the exit (unchanged estimate).
 sz = z[scoop_zone]
@@ -94,7 +97,8 @@ cz = z[canopy_zone]
 canopy_pts = [[round(float(zz), 3), round(at(top, zz), 3)] for zz in np.arange(0.7, 3.05, 0.2)]
 fs["canopy"] = {"top": canopy_pts, "frame_z": round(float(cz[np.argmax(top[canopy_zone])]) - 0.25, 3), "halfwidth_fraction": 0.95}
 # Carburettor intake: part of the measured top line already; keep a shallow blend.
-fs["carb_intake"] = {"z0": round(spinner_back + 0.15, 3), "z1": round(spinner_back + 1.1, 3), "half_width": 0.15, "height": 0.03}
+# The carburettor intake is already inside the measured top line: keep only a shallow blend so it does not protrude.
+fs["carb_intake"] = {"z0": round(spinner_back + 0.15, 3), "z1": round(spinner_back + 1.1, 3), "half_width": 0.15, "height": 0.01}
 # Wing from the plan metrology.
 w = m["wing"]
 fs["root_chord_centreline"] = w["root_chord"]; fs["tip_chord"] = w["tip_chord"]
@@ -112,14 +116,18 @@ fs["tail"].update({"stab_y": stab_y, "stab_root_le_z": st["root_le_z"], "stab_ti
                    "fin_root_le_z": 5.7, "dorsal_start_z": 4.6, "fin_top_y": m["fin"]["top_y"], "fin_top_le_z": 6.15, "fin_top_chord": 0.6,
                    "rudder_hinge_z": 6.64, "rudder_te_bottom": [round(tail_z, 3), 0.03]})
 # Gear: wheel bottoms from the drawing (front view: 0.28 m higher than the first estimate), tail wheel at the bump.
-fs["gear"].update({"main_axle": [0.10, -1.37], "tail_axle": [5.0, -0.63]})
-# Pilot under the canopy crown.
+# Main wheel bottom ~82 in below the FRL in the side view (and ~78 in below the spinner axis in the front view): axle at -1.70 m.
+fs["gear"].update({"main_axle": [0.10, -1.70], "tail_axle": [5.13, -0.64]})
+# Pilot under the canopy crown: a fixed template (full-size metres, from the first estimate) placed so the head centre
+# sits 0.15 m behind the crown and the helmet top 0.05 m under it. Absolute, so re-running this script is idempotent.
 crown_z = float(z[canopy_zone][np.argmax(top[canopy_zone])])
-dz = crown_z - 2.72 + 0.1
-dy = float(top[canopy_zone].max()) - 1.02 - 0.03
-for key, v in fs["pilot"].items():
-    if isinstance(v, list):
-        fs["pilot"][key] = [round(v[0] + dz, 3), round(v[1] + dy, 3)]
+crown_y = float(top[canopy_zone].max())
+template = {"cap_top": [2.72, 0.93], "cap_brim_front": [2.56, 0.84], "nose_front": [2.58, 0.76], "head_back": [2.84, 0.80],
+            "chin": [2.62, 0.68], "shoulder_front": [2.55, 0.60], "shoulder_back": [2.95, 0.58]}
+dz = (crown_z + 0.15) - (template["nose_front"][0] + template["head_back"][0]) / 2
+dy = (crown_y - 0.05) - template["cap_top"][1]
+for key, v in template.items():
+    fs["pilot"][key] = [round(v[0] + dz, 3), round(v[1] + dy, 3)]
 src["evidence"]["full_size.profile"] = {"kind": "measured", "source": "research/p51/p51-02/silhouette/metrology.json: filled silhouettes of the AN 01-60-3 three-view (public domain), each axis calibrated with a printed dimension; applied by apply_metrology.py",
                                         "method": "fuselage top/bottom from the side view, half-widths from the plan (interpolated under the wing and stab), canopy top line, scoop dip, spinner, wing/stab planforms (reserved checks: stab span +0.5 %, wing area +0.6 %, MAC +0.7 %)",
                                         "limits": "the drawing's side view is ~3 % anisotropic (heights vs length); scoop and canopy widths are estimates; the wing root LE extension of the D is not modelled; fin and rudder lines are read from the top contour"}
