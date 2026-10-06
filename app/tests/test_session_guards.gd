@@ -110,7 +110,7 @@ func _initialize() -> void:
 		var stage_previous: PackedFloat64Array = stage_sim.previous.duplicate()
 		var stage_aux: PackedFloat64Array = stage_sim.aux.duplicate()
 		var calls := [0]
-		var fail_on_call: int = failing_stage + 1 # loads() is called once before RK, then once for k1…k4.
+		var fail_on_call: int = failing_stage # loads() is called once before RK (H2: that call is also k1), then for k2…k4.
 		stage_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 			calls[0] += 1
 			if calls[0] == fail_on_call:
@@ -122,6 +122,17 @@ func _initialize() -> void:
 			and stage_sim.previous == stage_previous and stage_sim.aux == stage_aux
 			and stage_sim.fault_reason.contains("RK stage loads"),
 			"calls %d, %s" % [calls[0], stage_sim.fault_reason])
+
+	# H2: a tick evaluates the loads four times, not five (stage 1 reuses the tick's own loads).
+	var count_sim := Sim.new()
+	root.add_child(count_sim)
+	count_sim.reset(valid_state)
+	var load_calls := [0]
+	count_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		load_calls[0] += 1
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	count_sim.step()
+	_check("a tick evaluates the loads 4 times (H2: k1 reuses the tick's loads)", load_calls[0] == 4, str(load_calls[0]))
 
 	var aux_sim := Sim.new()
 	root.add_child(aux_sim)

@@ -73,6 +73,9 @@ var input_enabled := true
 var holds := {}
 ## E3a: the field's surfaces as a flat table for the tyre forces (set_field); empty = dry pavement everywhere.
 var ground_surfaces := PackedFloat64Array()
+## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
+var _deflection_key := PackedFloat64Array()
+var _deflection_cache := {}
 ## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
 var ground_field_id := ""
 var surface_error := ""
@@ -269,6 +272,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	trims = prepared.trims.duplicate(true)
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
+	_deflection_key = PackedFloat64Array()
 	sim.loads = _loads
 	sim.pre_step = _pre_step
 	sim.rotor_momentum = rotor_momentum
@@ -522,13 +526,25 @@ func _inputs() -> PackedFloat64Array:
 ## wheel (E3a).
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
-	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
-	var out := Dynamics.loads(s, aircraft.model, Aero.deflections_from_surfaces(surfaces), a[AUX_RPM],
+	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
 		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces)
 	for i in ground.size():
 		out[i] += ground[i]
 	return out
+
+
+## Aerodynamic-convention deflections from the servos' actual positions. The servos change once per tick (in
+## _pre_step), while the loads run five times per tick (H2), so the last result is reused while the positions match.
+## Callers only read the dictionary.
+func _deflections(a: PackedFloat64Array) -> Dictionary:
+	if _deflection_key.size() == 3 and _deflection_key[0] == a[AUX_SERVO] and _deflection_key[1] == a[AUX_SERVO + 1] \
+			and _deflection_key[2] == a[AUX_SERVO + 2]:
+		return _deflection_cache
+	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
+	_deflection_cache = Aero.deflections_from_surfaces(surfaces)
+	_deflection_key = PackedFloat64Array([a[AUX_SERVO], a[AUX_SERVO + 1], a[AUX_SERVO + 2]])
+	return _deflection_cache
 
 
 ## Propeller angular momentum (D9c): J_p·ω along body +x (clockwise seen from behind).

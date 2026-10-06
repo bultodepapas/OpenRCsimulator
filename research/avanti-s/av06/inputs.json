@@ -1,0 +1,899 @@
+{
+ "purpose": "Sourced inputs of the Avanti S physics (AV-06). derive_physics.py turns them, with the visual geometry, into app/data/aircraft/sebart_avanti_s_a200.json. Positions are model axes [z aft, y up, x right] in metres (geometry.json frame).",
+ "airframe": {
+  "span": {
+   "value": 2.0,
+   "unit": "m",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.1: 200 cm"
+  },
+  "dry_mass": {
+   "value": 10.5,
+   "unit": "kg",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.1: weight RTF dry (P100) 10.5 kg"
+  },
+  "cg_aft_of_root_le": {
+   "value": 0.24,
+   "unit": "m",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); photo-manual p.91 step 181"
+  },
+  "mass_range": {
+   "value": [
+    10.0,
+    14.0
+   ],
+   "unit": "kg",
+   "kind": "estimated",
+   "source": "10.5 kg dry (manual) to 13.1 kg with a full 3.2 l tank (docs/research/avanti-s-av06-airframe-data.md)"
+  },
+  "fuselage_width_scale": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "blockout fuselage widths used as they are (no measured width)"
+  },
+  "stab_chord_scale": {
+   "value": 1.0,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "blockout stab used as it is (no published stab area; the owner's 149 g stab half is consistent with it, docs/research/avanti-s-av06-airframe-data.md)"
+  },
+  "wing_forward_shift": {
+   "value": 0.0,
+   "unit": "m",
+   "kind": "estimated",
+   "source": "the AV-02 blockout as drawn (photo-fitted); a forward wing station would balance the inventory without ballast at ~0.125 m but moves the textbook neutral point only +23 mm (derivation sweep, AV-06 report)"
+  }
+ },
+ "stability": {
+  "np_anchor": {
+   "cg": 0.26,
+   "static_margin": 0.03,
+   "source": "the manual's aft-most CG (260 mm, 3D unlimited) taken as near-neutral, 3 % MAC (estimated, 0-6 %); owners fly 240-260 mm (docs/research/avanti-s-av06-airframe-data.md), so the airplane is stable there"
+  }
+ },
+ "start": {
+  "level_speed": {
+   "value": 29.0,
+   "unit": "m/s",
+   "kind": "derived",
+   "source": "1.6 x the clean 1-g stall at the flight mass and CL_max (as for the other aircraft), rounded"
+  }
+ },
+ "controls": {
+  "aileron_up": {
+   "value": 30.0,
+   "unit": "deg",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: ailerons high rate 30 deg up (differential)"
+  },
+  "aileron_down": {
+   "value": 25.0,
+   "unit": "deg",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: ailerons high rate 25 deg down (differential)"
+  },
+  "elevator": {
+   "value": 30.0,
+   "unit": "deg",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: elevator high rate 30 deg up and down"
+  },
+  "rudder": {
+   "value": 30.0,
+   "unit": "deg",
+   "kind": "manual",
+   "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.4: rudder 30 deg left and right"
+  },
+  "servo_full_throw_time": {
+   "value": 0.11,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "JR DS8411 0.15 s/60 deg at 6 V (manufacturer spec via retailers, docs/research/avanti-s-av06-airframe-data.md) x ~45 deg of servo travel for a full surface throw; the D/R and expo of the manual are set on the transmitter"
+  }
+ },
+ "aero": {
+  "kappa": {
+   "value": 0.95,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "section lift slope 0.110/deg of thick symmetric sections at Re ~1e6 (docs/research/avanti-s-av06-aero-references.md): 0.95 x 2 pi with the film-covered wood wing"
+  },
+  "eta_h": {
+   "value": 0.9,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "fuselage-mounted stab out of any jet or prop wash (the tube exits behind it)"
+  },
+  "wing_incidence_deg": {
+   "value": 0.0,
+   "unit": "deg",
+   "kind": "estimated",
+   "source": "pattern practice: symmetric wing and stab at 0/0 (no published incidences)"
+  },
+  "stab_incidence_deg": {
+   "value": 0.0,
+   "unit": "deg",
+   "kind": "estimated",
+   "source": "pattern practice: 0 deg"
+  },
+  "flap_k": {
+   "value": 0.8,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "real/thin-airfoil control effectiveness with gaps and large throws (DATCOM 0.6-0.9), as for the other aircraft"
+  },
+  "thickness_ratio": {
+   "value": 0.14,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "airfoil unknown; thick symmetric pattern-type section 12-15 % (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "excrescence_factor": {
+   "value": 1.15,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "intakes, control gaps, canopy and hatch joints: +10-25 % on the build-up (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "oswald_e": {
+   "value": 0.75,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "Nita-Scholz for AR 5.7, taper 0.46, 17 deg sweep: 0.71-0.77 (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "CL_max": {
+   "value": 0.85,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "DATCOM wing CLmax for a thick symmetric section, swept and tapered, flaps up: 0.85 +- 0.10 (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "stall_blend_width": {
+   "value": 4.0,
+   "unit": "deg",
+   "kind": "estimated",
+   "source": "sharper than the Stik's 6 deg: owners report wing drop in slow flight and a snap out of a loop exit (docs/research/avanti-s-av06-airframe-data.md); section t/c unknown"
+  },
+  "wing_station_incidence": {
+   "value": [
+    -0.02,
+    0.0,
+    0.02
+   ],
+   "unit": "rad",
+   "kind": "estimated",
+   "source": "swept tapered wing loads the tips: local cl/CL about 0.9/1.0/1.12 root to tip at CL_max (Schrenk with sweep), as angle offsets 0.1 CL_max/CLa; the tips stall first"
+  }
+ },
+ "drag_items": {
+  "side intakes, spillage and tube gap": {
+   "value": 0.0025,
+   "unit": "m2",
+   "kind": "estimated",
+   "source": "two side intakes ~0.003 m2 each with lips and a bypass tube: no measured data (docs/research/avanti-s-av06-aero-references.md)"
+  },
+  "canopy and cockpit": {
+   "value": 0.0012,
+   "unit": "m2",
+   "kind": "estimated",
+   "source": "faired canopy, Raymer canopy drag scaled to the frontal area"
+  }
+ },
+ "fuel": {
+  "tank_l": {
+   "value": 3.2,
+   "unit": "l",
+   "kind": "borrowed",
+   "source": "stock A200-16 integrated tank 3.2 l kero + 1.3 l smoke (Ultimate Jets dealer listing; owners report ~3 l), docs/research/avanti-s-av06-airframe-data.md"
+  },
+  "fraction": {
+   "value": 0.5,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "declared flight state: half the main tank (no burn modelled, AV-10); smoke tank empty"
+  },
+  "density": {
+   "value": 0.8,
+   "unit": "kg/l",
+   "kind": "manual",
+   "source": "JetCat catalog 2017: 390 ml/min = 0.312 kg/min, i.e. 0.80 kg/l for Jet-A1 with 5 % oil"
+  },
+  "position_model": {
+   "value": [
+    0.05,
+    -0.03,
+    0.0
+   ],
+   "unit": "m",
+   "kind": "estimated",
+   "source": "mid-fuselage under the turbine rails, ahead of the CG: filling it makes the model nose-heavy (owners, docs/research/avanti-s-av06-airframe-data.md)"
+  }
+ },
+ "balance": {
+  "nose_ballast_z": -0.95,
+  "tail_ballast_z": 1.1,
+  "balance_item_range_z": [
+   -0.8,
+   0.3
+  ]
+ },
+ "structure": {
+  "wing_panel": {
+   "value": 0.626,
+   "unit": "kg",
+   "kind": "measured",
+   "source": "one covered wing panel 22.1 oz = 626 g (owner Kevin_W, RCU build thread #66; docs/research/avanti-s-av06-airframe-data.md)"
+  },
+  "stab_half": {
+   "value": 0.149,
+   "unit": "kg",
+   "kind": "measured",
+   "source": "one stab half 5.25 oz = 149 g (owner Kevin_W, RCU build thread #66; docs/research/avanti-s-av06-airframe-data.md)"
+  },
+  "fuselage_shell": {
+   "value": 2.9,
+   "unit": "kg",
+   "kind": "derived",
+   "source": "airframe as delivered without gear 5.3 kg (owner Kobra, rc-network #194) less wings 1.252, stabs 0.298, fin/rudder 0.20, canopy 0.30, wing tube 0.15 and hardware 0.20 (estimates)"
+  },
+  "fin": {
+   "value": 0.2,
+   "unit": "kg",
+   "kind": "estimated",
+   "source": "composite fin moulded with the fuselage plus a wooden rudder"
+  }
+ },
+ "inventory": [
+  {
+   "name": "canopy, frame and cockpit",
+   "mass": {
+    "value": 0.3,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "moulded canopy and frame of a 2.2 m jet"
+   },
+   "position_model": [
+    -0.45,
+    0.17,
+    0.0
+   ],
+   "position_kind": "derived",
+   "position_source": "canopy stations (geometry.json)"
+  },
+  {
+   "name": "carbon wing tube 25 mm and bolts",
+   "mass": {
+    "value": 0.15,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "25 mm carbon tube (dealer: '400 kg force'), ~1 m"
+   },
+   "position_model": [
+    0.15,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "main spar at ~35 % root chord",
+   "size": [
+    0.04,
+    0.9,
+    0.04
+   ],
+   "attached": "wing"
+  },
+  {
+   "name": "hardware, horns, linkages",
+   "mass": {
+    "value": 0.2,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "clevises, horns, bolts"
+   },
+   "position_model": [
+    0.3,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "spread along the airframe"
+  },
+  {
+   "name": "JetCat P100-RX with valves",
+   "mass": {
+    "value": 1.08,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JetCat catalog 2017: 1080 g incl. valves"
+   },
+   "position_model": [
+    0.54,
+    -0.005,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "geometry engine_center (AV-02 installation)",
+   "size": [
+    0.241,
+    0.097,
+    0.097
+   ]
+  },
+  {
+   "name": "ECU, fuel pump, valves, UAT/hopper",
+   "mass": {
+    "value": 0.3,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "JetCat ECU, pump and valves, ~0.2 l hopper"
+   },
+   "position_model": [
+    0.3,
+    -0.03,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "ahead of the turbine"
+  },
+  {
+   "name": "thrust tube A200-13",
+   "mass": {
+    "value": 0.35,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "stainless/composite double-wall tube ~0.5 m"
+   },
+   "position_model": [
+    0.92,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "engine rear to the exhaust ring (z 0.66-1.17)",
+   "size": [
+    0.5,
+    0.08,
+    0.08
+   ]
+  },
+  {
+   "name": "tank A200-16 (empty)",
+   "mass": {
+    "value": 0.3,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "kero + UAT + smoke tank with lines"
+   },
+   "position_model": [
+    0.05,
+    -0.03,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "under the turbine rails, ahead of the CG (docs/research/avanti-s-av06-airframe-data.md)"
+  },
+  {
+   "name": "main retract left, leg, wheel, brake",
+   "mass": {
+    "value": 0.4,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "pneumatic trailing-link 25 kg-class unit with rubber tyre and pad brake (docs/research/avanti-s-av06-airframe-data.md)"
+   },
+   "position_model": [
+    0.24,
+    -0.02,
+    -0.3
+   ],
+   "position_kind": "estimated",
+   "position_source": "retracted in the wing behind the spar",
+   "attached": "wing"
+  },
+  {
+   "name": "main retract right, leg, wheel, brake",
+   "mass": {
+    "value": 0.4,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "same"
+   },
+   "position_model": [
+    0.24,
+    -0.02,
+    0.3
+   ],
+   "position_kind": "estimated",
+   "position_source": "retracted in the wing behind the spar",
+   "attached": "wing"
+  },
+  {
+   "name": "nose retract with steering",
+   "mass": {
+    "value": 0.3,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "steerable pneumatic nose leg and wheel"
+   },
+   "position_model": [
+    -0.7,
+    -0.06,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "nose bay"
+  },
+  {
+   "name": "air tanks, valves, lines",
+   "mass": {
+    "value": 0.2,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "two air tanks, gear and brake valves (photo-manual pp.69-72)"
+   },
+   "position_model": [
+    -0.25,
+    -0.06,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "forward fuselage"
+  },
+  {
+   "name": "aileron servos (2)",
+   "mass": {
+    "value": 0.13,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JR DS8411 ~65 g each (manual p.2 servo list)"
+   },
+   "position_model": [
+    0.35,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "mid-aileron, y +-0.75",
+   "size": [
+    0.03,
+    1.5,
+    0.03
+   ],
+   "attached": "wing"
+  },
+  {
+   "name": "flap servos (2)",
+   "mass": {
+    "value": 0.15,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JR DS8911 ~75 g each (manual p.2)"
+   },
+   "position_model": [
+    0.33,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "mid-flap, y +-0.35",
+   "size": [
+    0.03,
+    0.7,
+    0.03
+   ],
+   "attached": "wing"
+  },
+  {
+   "name": "elevator servos (2)",
+   "mass": {
+    "value": 0.13,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JR DS8411 ~65 g each (manual p.2)"
+   },
+   "position_model": [
+    0.95,
+    0.06,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "stab roots",
+   "size": [
+    0.03,
+    0.25,
+    0.03
+   ]
+  },
+  {
+   "name": "rudder servo",
+   "mass": {
+    "value": 0.075,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JR DS8911 ~75 g (manual p.2)"
+   },
+   "position_model": [
+    0.85,
+    0.08,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "fin root"
+  },
+  {
+   "name": "nose steering servo",
+   "mass": {
+    "value": 0.065,
+    "unit": "kg",
+    "kind": "manual",
+    "source": "JR DS8411 ~65 g (manual p.2)"
+   },
+   "position_model": [
+    -0.62,
+    -0.02,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "nose bay"
+  },
+  {
+   "name": "receiver batteries 2 x 2S 2500 and ECU battery",
+   "mass": {
+    "value": 0.45,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "two 2S 2500 LiPo (manual p.2) and a 2-3S ECU pack"
+   },
+   "position_model": [
+    -0.78,
+    -0.03,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "nose, ahead of the nose gear (balance)",
+   "balance_item": true
+  },
+  {
+   "name": "PowerBox Cockpit, iGyro, smoke pump, receivers, wiring",
+   "mass": {
+    "value": 0.45,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "manual p.2 recommended electronics"
+   },
+   "position_model": [
+    -0.4,
+    0.0,
+    0.0
+   ],
+   "position_kind": "estimated",
+   "position_source": "under the canopy",
+   "balance_item": true
+  }
+ ],
+ "turbine": {
+  "idle_rpm": {
+   "value": 44000.0,
+   "unit": "rpm",
+   "kind": "manual",
+   "source": "JetCat catalog 2017, P100-RX column: idle 44 000 rpm"
+  },
+  "max_rpm": {
+   "value": 154000.0,
+   "unit": "rpm",
+   "kind": "manual",
+   "source": "JetCat catalog 2017, P100-RX column: maximum 154 000 rpm"
+  },
+  "static_thrust": {
+   "value": [
+    [
+     0,
+     0.0
+    ],
+    [
+     20000,
+     0.171
+    ],
+    [
+     30000,
+     0.608
+    ],
+    [
+     44000,
+     2.007
+    ],
+    [
+     55000,
+     4.026
+    ],
+    [
+     66000,
+     7.111
+    ],
+    [
+     77000,
+     11.502
+    ],
+    [
+     88000,
+     17.447
+    ],
+    [
+     99000,
+     25.195
+    ],
+    [
+     110000,
+     35.001
+    ],
+    [
+     121000,
+     47.122
+    ],
+    [
+     132000,
+     61.82
+    ],
+    [
+     143000,
+     79.357
+    ],
+    [
+     154000,
+     100.0
+    ]
+   ],
+   "unit": "rpm, N",
+   "kind": "derived",
+   "source": "T = 100 (n/154000)^3.12 N through the catalog points 2 N at 44k and 100 N at 154k; JetCat P160/P220 ECU fits give exponents 3.14/3.21 (Momin 2022, arXiv 2205.08330); docs/research/avanti-s-av05-turbine-dynamics.md section 2"
+  },
+  "mass_flow": {
+   "value": [
+    [
+     20000,
+     0.02987
+    ],
+    [
+     30000,
+     0.04481
+    ],
+    [
+     44000,
+     0.06571
+    ],
+    [
+     55000,
+     0.08214
+    ],
+    [
+     66000,
+     0.09857
+    ],
+    [
+     77000,
+     0.115
+    ],
+    [
+     88000,
+     0.13143
+    ],
+    [
+     99000,
+     0.14786
+    ],
+    [
+     110000,
+     0.16429
+    ],
+    [
+     121000,
+     0.18071
+    ],
+    [
+     132000,
+     0.19714
+    ],
+    [
+     143000,
+     0.21357
+    ],
+    [
+     154000,
+     0.23
+    ]
+   ],
+   "unit": "rpm, kg/s",
+   "kind": "derived",
+   "source": "linear in rpm, identified on a P100 (Many 2021, DGLR 550281), 0.23 kg/s at 154k (catalog); docs/research/avanti-s-av05-turbine-dynamics.md section 2"
+  },
+  "fuel_flow": {
+   "value": [
+    [
+     44000,
+     0.001067
+    ],
+    [
+     55000,
+     0.001152
+    ],
+    [
+     66000,
+     0.001282
+    ],
+    [
+     77000,
+     0.001467
+    ],
+    [
+     88000,
+     0.001718
+    ],
+    [
+     99000,
+     0.002045
+    ],
+    [
+     110000,
+     0.002459
+    ],
+    [
+     121000,
+     0.00297
+    ],
+    [
+     132000,
+     0.00359
+    ],
+    [
+     143000,
+     0.004329
+    ],
+    [
+     154000,
+     0.0052
+    ]
+   ],
+   "unit": "rpm, kg/s",
+   "kind": "estimated",
+   "source": "linear in thrust between the catalog's 80 and 390 ml/min at 0.80 kg/l (the catalog's own kg/min); telemetry only; docs/research/avanti-s-av05-turbine-dynamics.md section 2"
+  },
+  "throttle_map": {
+   "value": [
+    [
+     0,
+     44000.0
+    ],
+    [
+     0.005,
+     62809.7
+    ],
+    [
+     0.02,
+     73858.6
+    ],
+    [
+     0.05,
+     84524.3
+    ],
+    [
+     0.1,
+     95057.5
+    ],
+    [
+     0.2,
+     108328.4
+    ],
+    [
+     0.3,
+     117637.6
+    ],
+    [
+     0.4,
+     125048.7
+    ],
+    [
+     0.5,
+     131307.1
+    ],
+    [
+     0.6,
+     136777.6
+    ],
+    [
+     0.7,
+     141669.4
+    ],
+    [
+     0.8,
+     146115.0
+    ],
+    [
+     0.9,
+     150203.8
+    ],
+    [
+     1.0,
+     154000.0
+    ]
+   ],
+   "unit": "1, rpm",
+   "kind": "derived",
+   "source": "JetCat ECU 'ThrStick Curve' factory 3.0 (thrust follows the stick): n = idle + (max - idle) s^(1/3), measured R2 0.9992 on JetCat ECUs (Momin 2022); docs/research/avanti-s-av05-turbine-dynamics.md section 3"
+  },
+  "accel_limit": {
+   "value": [
+    [
+     44000.0,
+     17600.0
+    ],
+    [
+     154000.0,
+     61600.0
+    ]
+   ],
+   "unit": "rpm, rpm/s",
+   "kind": "estimated",
+   "source": "dn/dt <= 0.4 n: idle to 95 % thrust in ~3.6 s, within the P100 identified model and bench traces (2-3.6 s) and JetCat PRO specs scaled; docs/research/avanti-s-av05-turbine-dynamics.md section 4 (+-40 %)"
+  },
+  "decel_limit": {
+   "value": [
+    [
+     44000.0,
+     26400.0
+    ],
+    [
+     154000.0,
+     92400.0
+    ]
+   ],
+   "unit": "rpm, rpm/s",
+   "kind": "estimated",
+   "source": "dn/dt >= -0.6 n: 95 % to 5 % thrust in ~1.4 s (spool-down faster than spool-up, P100 identified model); docs/research/avanti-s-av05-turbine-dynamics.md section 4 (+-40 %)"
+  },
+  "governor_tau": {
+   "value": 0.4,
+   "unit": "s",
+   "kind": "measured",
+   "source": "P100 small-signal corner ~0.4 Hz from multi-sine tests (tau ~0.4 s); docs/research/avanti-s-av05-turbine-dynamics.md section 4"
+  },
+  "installed_factor": {
+   "value": 0.92,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "thrust tube and side intakes: 0.92 of the bare engine (range 0.85-0.97; JetCat: a correctly gapped tube loses 'zero or very small'); docs/research/avanti-s-av05-turbine-dynamics.md section 6"
+  },
+  "ram_flow": {
+   "value": 5.1813e-06,
+   "unit": "s2/m2",
+   "kind": "derived",
+   "source": "mass flow rise with ram pressure at fixed rpm, fitted to a simple turbojet cycle model (9 % thrust lapse at 70 m/s, full power); docs/research/avanti-s-av05-turbine-dynamics.md section 5"
+  },
+  "ram_jet": {
+   "value": [
+    [
+     44000.0,
+     1.0
+    ],
+    [
+     154000.0,
+     3.0
+    ]
+   ],
+   "unit": "rpm, 1",
+   "kind": "derived",
+   "source": "jet velocity rise V_jet^2 = V_j0^2 + k u^2, k 1 at idle to 3 at maximum, same cycle fit; docs/research/avanti-s-av05-turbine-dynamics.md section 5"
+  },
+  "rotor_inertia": {
+   "value": 3.5e-05,
+   "unit": "kg·m2",
+   "kind": "estimated",
+   "source": "compressor + turbine wheels and shaft of a 97 mm engine (range 2e-5 to 6.25e-5; TUM assumes 6.25e-5); docs/research/avanti-s-av05-turbine-dynamics.md section 7"
+  },
+  "rotor_sense": {
+   "value": 1,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "rotation direction not published by JetCat: clockwise seen from behind assumed; the gyroscopic sign is unverified (docs/research/avanti-s-av05-turbine-dynamics.md section 7)"
+  }
+ }
+}

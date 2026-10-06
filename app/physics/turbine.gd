@@ -38,6 +38,17 @@ static func table(t: PackedFloat64Array, x: float) -> float:
 	return t[2 * n - 1]
 
 
+## Piecewise-linear table extended past both ends along its end segments. Only the trim solver reaches there (it probes
+## throttle beyond 0…1 so Newton keeps a gradient and can report "needs throttle 1.03"); flight never leaves the table.
+static func table_extrapolated(t: PackedFloat64Array, x: float) -> float:
+	var n := t.size() / 2
+	if x < t[0]:
+		return t[1] + (t[3] - t[1]) / (t[2] - t[0]) * (x - t[0])
+	if x > t[2 * n - 2]:
+		return t[2 * n - 1] + (t[2 * n - 1] - t[2 * n - 3]) / (t[2 * n - 2] - t[2 * n - 4]) * (x - t[2 * n - 2])
+	return table(t, x)
+
+
 ## Throttle 0…1 → the ECU's shaft-rpm demand.
 static func demand_rpm(throttle: float, prop: Dictionary) -> float:
 	return table(prop.throttle_map, clampf(throttle, 0.0, 1.0))
@@ -61,9 +72,10 @@ static func spool_step(rpm: float, throttle: float, dt: float, prop: Dictionary)
 	return minf(next, demand) if rate > 0.0 else maxf(maxf(next, demand), 0.0)
 
 
-## Steady shaft rpm for a throttle (the governor settles on the demand; airspeed does not change it).
+## Steady shaft rpm for a throttle (the governor settles on the demand; airspeed does not change it). Inside 0…1 this is
+## demand_rpm(); outside it extrapolates for the trim solver (see table_extrapolated).
 static func steady_rpm(throttle: float, prop: Dictionary) -> float:
-	return demand_rpm(throttle, prop)
+	return table_extrapolated(prop.throttle_map, throttle)
 
 
 ## Engine air mass flow (kg/s) at shaft rpm, axial airspeed u (m/s; ram rise for u > 0) and density rho.
@@ -71,15 +83,15 @@ static func mass_flow(rpm: float, prop: Dictionary, rho: float, u := 0.0) -> flo
 	if rpm < STOPPED_RPM:
 		return 0.0
 	var uu := maxf(u, 0.0)
-	return table(prop.mass_flow, rpm) * rho / RHO_REFERENCE * (1.0 + float(prop.get("ram_flow", 0.0)) * uu * uu)
+	return table_extrapolated(prop.mass_flow, rpm) * rho / RHO_REFERENCE * (1.0 + float(prop.get("ram_flow", 0.0)) * uu * uu)
 
 
 ## Installed gross thrust (N) along the nozzle axis at shaft rpm and axial airspeed u: ṁ·V_jet.
 static func gross_thrust(rpm: float, prop: Dictionary, rho: float, u := 0.0) -> float:
 	if rpm < STOPPED_RPM:
 		return 0.0
-	var static_gross: float = float(prop.installed_factor) * table(prop.static_thrust, rpm)
-	var flow0 := table(prop.mass_flow, rpm)
+	var static_gross: float = float(prop.installed_factor) * table_extrapolated(prop.static_thrust, rpm)
+	var flow0 := table_extrapolated(prop.mass_flow, rpm)
 	var vj0 := static_gross / flow0
 	var uu := maxf(u, 0.0)
 	var k_jet := table(prop.ram_jet, rpm) if prop.has("ram_jet") else 0.0

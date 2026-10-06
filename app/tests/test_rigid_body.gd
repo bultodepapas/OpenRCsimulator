@@ -87,5 +87,58 @@ func _initialize() -> void:
 	d = RB.derivative(_state([0, 0, 0], level, [0, 0, 0]), 2.0, j, ji, M.v3(0, 0, 0), M.v3(1, 0, 0), 0.0)
 	_check("Jxz couples roll moment into yaw", absf(d[RB.RATE + 2]) > 1e-3 and d[RB.RATE] > 0, str(d.slice(RB.RATE)))
 
+	# H3: the scalar derivative is bit-identical to the vector-helper form it replaced, signs of zero included.
+	_check_against_reference()
+
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## The derivative as written before H3, kept as the oracle of the scalar version.
+static func derivative_reference(s: PackedFloat64Array, mass: float, j: PackedFloat64Array, j_inv: PackedFloat64Array,
+		force_body: PackedFloat64Array, moment_body: PackedFloat64Array, g: float, h_rotor := PackedFloat64Array()) -> PackedFloat64Array:
+	var vel := M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2])
+	var q := M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+	var w := M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2])
+	var pos_dot := M.q_rotate(q, vel)
+	var gravity_body := M.q_rotate(M.q_conj(q), M.v3(0.0, 0.0, g))
+	var vel_dot := M.sub(M.add(M.scale(force_body, 1.0 / mass), gravity_body), M.cross(w, vel))
+	var q_dot := M.q_mul(q, M.quat(0.0, w[0], w[1], w[2]))
+	for i in 4:
+		q_dot[i] *= 0.5
+	var jw := RB.inertia_mul(j, w)
+	var rate_dot := RB.inertia_mul(j_inv, M.sub(moment_body, M.cross(w, jw if h_rotor.is_empty() else M.add(jw, h_rotor))))
+	return RB.make_state(pos_dot, vel_dot, q_dot, rate_dot)
+
+
+func _check_against_reference() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261006
+	var mismatches := 0
+	var cases := 10000
+	for n in cases:
+		var att := M.q_normalized(M.quat(rng.randf_range(-1, 1), rng.randf_range(-1, 1), rng.randf_range(-1, 1), rng.randf_range(-1, 1)))
+		var s := RB.make_state(M.v3(0, 0, -rng.randf_range(0, 200)),
+			M.v3(rng.randf_range(-40, 40), rng.randf_range(-20, 20), rng.randf_range(-20, 20)), att,
+			M.v3(rng.randf_range(-10, 10), rng.randf_range(-10, 10), rng.randf_range(-10, 10)))
+		var j := PackedFloat64Array([rng.randf_range(0.05, 2.0), rng.randf_range(0.05, 2.0), rng.randf_range(0.1, 3.0),
+			rng.randf_range(-0.01, 0.01), rng.randf_range(-0.05, 0.05), rng.randf_range(-0.01, 0.01)])
+		var ji := RB.inertia_inverse(j)
+		var force := M.v3(rng.randf_range(-100, 100), rng.randf_range(-50, 50), rng.randf_range(-200, 50))
+		var moment := M.v3(rng.randf_range(-5, 5), rng.randf_range(-5, 5), rng.randf_range(-5, 5))
+		var h := PackedFloat64Array() if n % 2 == 0 else M.v3(rng.randf_range(-1, 1), 0.0, 0.0)
+		var mass := rng.randf_range(0.5, 25.0)
+		var g := 9.80665 if n % 3 != 0 else 0.0
+		var got := RB.derivative(s, mass, j, ji, force, moment, g, h)
+		var want := derivative_reference(s, mass, j, ji, force, moment, g, h)
+		if got.to_byte_array() != want.to_byte_array():
+			mismatches += 1
+	# All-zero rates, forces and gravity: the place where a reordered sum would flip a sign of zero.
+	var rest := RB.make_state(M.v3(0, 0, 0), M.v3(0, 0, 0), M.q_identity(), M.v3(0, 0, 0))
+	var unit := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+	var zero := M.v3(0, 0, 0)
+	if RB.derivative(rest, 1.0, unit, unit, zero, zero, 0.0).to_byte_array() \
+			!= derivative_reference(rest, 1.0, unit, unit, zero, zero, 0.0).to_byte_array():
+		mismatches += 1
+	_check("scalar derivative bit-identical to the reference on %d random states and rest" % cases, mismatches == 0,
+		"%d mismatches" % mismatches)

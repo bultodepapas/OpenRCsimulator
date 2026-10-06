@@ -14,8 +14,9 @@ static func axpy(a: PackedFloat64Array, k: float, b: PackedFloat64Array) -> Pack
 	return out
 
 
-static func rk4_step(s: PackedFloat64Array, dt: float, f: Callable) -> PackedFloat64Array:
-	var k1: PackedFloat64Array = f.call(s)
+## k1_given: f(s) when the caller already has it (H2: the tick's own loads), so it is not evaluated twice.
+static func rk4_step(s: PackedFloat64Array, dt: float, f: Callable, k1_given := PackedFloat64Array()) -> PackedFloat64Array:
+	var k1: PackedFloat64Array = f.call(s) if k1_given.is_empty() else k1_given
 	var k2: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k1))
 	var k3: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k2))
 	var k4: PackedFloat64Array = f.call(axpy(s, dt, k3))

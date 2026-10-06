@@ -146,6 +146,12 @@ func step() -> void:
 		return
 	var h: PackedFloat64Array = rotor
 	var stage_error := { message = "" }
+	var derive := func(s: PackedFloat64Array, l: PackedFloat64Array) -> PackedFloat64Array:
+		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, h)
+		if not _array_is_finite(derivative, RB.SIZE):
+			stage_error.message = "RK stage derivative is nonfinite or malformed"
+			return _zero_derivative()
+		return derivative
 	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
 		if not stage_error.message.is_empty():
 			return _zero_derivative()
@@ -156,12 +162,9 @@ func step() -> void:
 		if not _loads_are_valid(l):
 			stage_error.message = "RK stage loads are nonfinite or malformed"
 			return _zero_derivative()
-		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, h)
-		if not _array_is_finite(derivative, RB.SIZE):
-			stage_error.message = "RK stage derivative is nonfinite or malformed"
-			return _zero_derivative()
-		return derivative
-	var next_state := RK.rk4_step(state, dt(), f)
+		return derive.call(s, l)
+	# H2: the loads are a pure function of (state, aux, t), so stage 1 reuses the tick's own evaluation.
+	var next_state := RK.rk4_step(state, dt(), f, derive.call(state, current_loads))
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)
