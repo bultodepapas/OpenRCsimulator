@@ -1,73 +1,104 @@
-# OpenRCsimulator
+# OpenRC Simulator
 
-An open-source RC airplane simulator, developed heavily with AI. It grows from small to large: something simple that works first, then expanding gradually. Choices stay easy to revisit; open questions are invitations to explore.
+[![CI](https://github.com/bultodepapas/OpenRCsimulator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bultodepapas/OpenRCsimulator/actions/workflows/ci.yml)
 
-Two principles guide the project:
+An open-source **RC airplane simulator** built with **Godot 4.7.2**. Fly from the pilot's position with a USB RC radio, gamepad or keyboard. The project grows through small, playable steps, with traceable aircraft data and reproducible flight checks.
 
-1. We are building an RC airplane simulator.
-2. We grow from small to large, starting with something very simple that works and shows a little airplane, then expanding gradually.
+**[Download a test build](https://github.com/bultodepapas/OpenRCsimulator/releases)** · [First launch](docs/FIRST-LAUNCH.md) · [Roadmap](ROADMAP.md) · [Report a problem](https://github.com/bultodepapas/OpenRCsimulator/issues/new/choose) · [Contribute](CONTRIBUTING.md)
 
-## Status (2026-10-05)
+![OpenRC Simulator Home screen: the Ugly Stik above the test field, with aircraft selection and keyboard controls](docs/research/visual-quality-implementation/L6b/ui-home-en.png)
 
-**The alpha (v0.1) is feature-complete and waiting for its first pilots.** The simulator is built with **Godot 4.7** (GDScript) in [`app/`](app/).
+*Actual development capture. The scenery and aircraft are still evolving.*
 
-The first airplane is the **Jensen Das Ugly Stik 60** (Phil Kraft design, 60 in span, .61 two-stroke glow). Its CG, nose and wing were measured on the full-size plan. The visual model is plan-based, built by a parallel model team.
+## Play the alpha
 
-What works today:
-- **Flight physics** at a fixed 240 Hz in 64-bit floats:
-  - six-axis aerodynamics with a full envelope (stall at ~9 m/s, flat-plate flow at any attitude);
-  - asymmetric stall: wing drop, spins;
-  - .61 engine with APC 12×6 thrust, prop torque and gyroscopic precession;
-  - servos;
-  - a six-axis trim, so you start in hands-off level flight.
-- **Controls:** keyboard, or a USB RC radio or gamepad. The radio has arming (the throttle must be seen low), an unplug failsafe and in-app calibration.
-- **Pilot aids:** ground shadow, grass texture, HUD, performance numbers, auto-zoom, live reload of the aircraft data, engine sound, flight traces (CSV), crash and restart.
-- **Flown checks** (not formulas):
-  - trim α 3.7° at 15 m/s;
-  - full-aileron roll 148°/s coordinated and 123°/s with the feet still, at 15 m/s;
-  - dead-stick glide 8.5 : 1;
-  - stall at 8.9 m/s;
-  - spin about 1.2 turns/s, recovered with opposite rudder and the stick forward;
-  - golden-flight regression tests.
-- **Release builds:** Windows, Linux and macOS, built and checked by `app/export.sh` and by CI on `v*` tags. The exported Linux binary flies the trimmed-flight check, and the macOS app is universal and ad-hoc signed. See [docs/FIRST-LAUNCH.md](docs/FIRST-LAUNCH.md) for how to start an unsigned build on each system.
-- **Tests:** about 1,250 automated checks in ~45 s, plus GitHub CI.
+1. Open [Releases](https://github.com/bultodepapas/OpenRCsimulator/releases) and download the ZIP for **Windows**, **Linux x86_64** or **macOS Intel / Apple Silicon**. These are prereleases; choose the newest test build.
+2. Extract the archive and follow the [first-launch guide](docs/FIRST-LAUNCH.md). No Godot installation is needed for a release build. `SHA256SUMS` accompanies each release.
+3. Choose an aircraft on Home and press **Fly**. The airplane starts in the air, trimmed for level flight. **Esc** opens the pause menu. Home and Help support **English and Spanish**.
 
-**Next: Gate 2.** The owner (and ideally 1–2 RC pilots) fly v0.1 with a radio and rate how it feels against a real Stik. See [ROADMAP.md](ROADMAP.md), milestone M1.
+Connect a USB radio before flying, move its throttle to low to arm it, and press **K** to calibrate if needed. While connected, the radio controls flight; menus use the keyboard or mouse. Unplugging the radio pauses the simulation.
 
-## Quick start
+### Aircraft
 
-On Linux; on other systems use Godot 4.7.2 directly:
+| Aircraft | Configuration | Current status |
+| --- | --- | --- |
+| Jensen Das Ugly Stik 60 | 1.52 m · .61 glow | Flyable; flight model under evaluation with RC pilots |
+| Great Planes Extra 300S .60 | 1.63 m · .61 glow | Experimental; first physics estimate from plans |
+| P-51D Mustang 1/4 | 2.82 m · 120 cc gasoline | Experimental; first physics estimate scaled from the full-size aircraft |
+| SebArt Avanti S | 2.00 m · JetCat P100-RX | Visual preview; Fly disabled until turbine propulsion is simulated |
+
+The experimental aircraft have automated checks but have **not been validated against real flight**. See the [aircraft catalog](app/app_state/aircraft_catalog.gd) for the exact status and data files.
+
+### Controls
+
+Keyboard letters refer to physical QWERTY positions; the in-game Help displays labels for your keyboard layout.
+
+| Key | Action |
+| --- | --- |
+| ← / → | Aileron / roll |
+| ↓ / ↑ | Elevator / pitch; ↓ pulls the stick back |
+| A / D | Rudder |
+| W / S | Increase / decrease throttle |
+| Esc | Pause menu; cancel radio calibration |
+| R | Restart flight |
+| P | Resume after a radio failsafe |
+| C | Pilot view / close-up |
+| Z | Toggle auto-zoom |
+| V | Ground shadow: sun / vertical / off |
+| K · Enter | Start radio calibration · advance a step |
+| T | Start / save a flight trace |
+| F3 | Toggle performance numbers |
+
+### What works, and what comes next
+
+- **Flight simulation:** fixed 240 Hz, 64-bit state, six-degree-of-freedom aerodynamics, stall and spin behavior, propeller torque, gyroscopic effects, servos and trimmed starts.
+- **Pilot view:** auto-zoom, HUD, engine sound and a projected ground shadow. A shared field supplies grass, sky, haze, clouds and a deterministic treeline with three tree variants.
+- **Repeatable validation:** unit and input tests, golden flights, trimmed-flight traces, frame-rate independence, capture comparisons and exported-pack checks. [CI results](https://github.com/bultodepapas/OpenRCsimulator/actions) and [visual evidence](docs/research/visual-quality-implementation/L6b/README.md) are public.
+
+This is an **early alpha**. Takeoff, landing and wind are not implemented; touching the ground restarts the flight. Trees are visual scenery without collisions. Pilot acceptance of aircraft visibility against the new trees and performance measurements on real GPUs are still pending. Scalable quality settings are part of the [visual-quality plan](docs/VISUAL-QUALITY-PLAN.md).
+
+The next flight-model milestone is feedback from RC pilots, starting with the Stik. Automated regression checks establish consistency; pilot testing must establish how it feels.
+
+## Run from source
+
+On Linux, with Git, Python 3, curl and unzip available:
 
 ```sh
-app/get-godot.sh                    # downloads the pinned, checksum-verified Godot 4.7.2 into .tools/
-$(app/get-godot.sh) --headless --path app --import  # once after a fresh clone or asset changes
-$(app/get-godot.sh) --path app      # open Home (needs a display)
-app/test.sh                         # all checks, headless
-app/export.sh                       # release builds into dist/ (downloads the 1.28 GB export templates once)
+git clone https://github.com/bultodepapas/OpenRCsimulator.git
+cd OpenRCsimulator
+
+app/get-godot.sh  # downloads the pinned, SHA-512-verified engine into .tools/
+"$(app/get-godot.sh)" --headless --path app --import
+"$(app/get-godot.sh)" --path app
 ```
 
-| Keys | Action |
+The last command needs a display. On Windows or macOS, use **Godot 4.7.2**, import `app/project.godot` in the editor and run the project. The Godot app in `app/` is the simulator; the three.js prototype is archived.
+
+| Task | Command |
 | --- | --- |
-| ← → | aileron |
-| ↓ ↑ | elevator (↓ = stick back = nose up) |
-| A D | rudder |
-| W S | throttle |
-| R | restart |
-| P | resume after a pause |
-| C | camera |
-| T | record a flight trace |
+| Full headless checks | `app/test.sh` |
+| Capture suite, with `xvfb-run` and Mesa installed | `app/capture.sh` |
+| Three-second flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/flight.csv --t=3` |
+| Windows, Linux and macOS release packages | `app/export.sh` |
 
-## Documents
+Exports go to `dist/`, include checksums and use `git describe` as their build identity. The first export downloads about 1.28 GB of verified Godot templates. See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow and [AGENTS.md](AGENTS.md) for the full command reference.
 
-| Document | What it holds |
+## Explore the project
+
+| Location | Contents |
 | --- | --- |
-| [ROADMAP.md](ROADMAP.md) | The route: done phases, milestones M1–M5, each ending in a playable build |
-| [DECISIONS.md](DECISIONS.md) | What was chosen, why, and what would change it |
-| [LEARNINGS.md](LEARNINGS.md) | Practical lessons from building and running things |
-| [STACK.md](STACK.md) | The development stack and the options surveyed |
-| [RESEARCH.md](RESEARCH.md) | Exploratory findings, original sources, open questions |
-| [AGENTS.md](AGENTS.md) | Rules and commands for contributors and AI agents |
-| [docs/UGLY-STIK-PLAN.md](docs/UGLY-STIK-PLAN.md) | The model team's plan for the Ugly Stik visual model (Spanish) |
-| [docs/MENU-PLAN.md](docs/MENU-PLAN.md) | Proposed entry screen, menus, aircraft/scenery selection, settings and staged releases (Spanish) |
+| [`app/`](app/) | Godot app, flight physics, controls, UI, rendering and tests |
+| [`assets/`](assets/) | Aircraft source data, geometry generators and asset provenance |
+| [`docs/`](docs/) | Implementation plans, release notes and research evidence |
+| [`research/`](research/) · [`tools/`](tools/) | Reproducible experiments and asset-processing tools |
+| [`prototypes/stage0/three/`](prototypes/stage0/three/) | Archived three.js bake-off prototype |
 
-Licensed under the [MIT License](LICENSE). Third-party data, if bundled, keeps its own license. Plans and scans used as references stay local in the gitignored `references/` folder.
+[Roadmap](ROADMAP.md) · [Architecture decisions](DECISIONS.md) · [Stack](STACK.md) · [Practical lessons](LEARNINGS.md) · [Research](RESEARCH.md) · [Visual-quality plan](docs/VISUAL-QUALITY-PLAN.md) · [Menu plan](docs/MENU-PLAN.md)
+
+## Contribute
+
+RC pilot feedback, reproducible bug reports, aircraft references and measured performance reports are especially useful. Read the [contribution guide](CONTRIBUTING.md) before changing code or adding assets. Development is heavily AI-assisted; changes still need sources, review and evidence.
+
+## License
+
+Project code is licensed under [MIT](LICENSE). Third-party assets retain their own licenses; see the [landscape provenance](assets/landscape/PROVENANCE.json) and [bundled tree license](app/assets/landscape/trees/LICENSE.txt). Reference plans and scans kept locally in the ignored `references/` folder are not bundled with the simulator.
