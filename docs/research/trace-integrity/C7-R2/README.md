@@ -1,6 +1,6 @@
 # C7-R2 — active flight metadata
 
-2026-10-06 · **Status: implementation in progress.** Scope: [C7-R2](../../../../ROADMAP.md#audit-repairs).
+2026-10-06 · **Status: implemented and verified.** Scope: [C7-R2](../../../../ROADMAP.md#audit-repairs).
 
 ## Verified defect
 
@@ -51,7 +51,7 @@ start snapshot against the first row. Historical unversioned headers fail that
 gate; they remain readable CSV, not newly accepted comparison evidence. Golden
 flight data is unchanged. Unknown metadata schemas require explicit reader work.
 
-## Verification so far
+## Verification
 
 - `test_trace_metadata.gd`: 128 checks pass across four aircraft, reloads,
   recording at tick 12, full layout-to-row mapping, stable snapshots, same-ID
@@ -64,7 +64,9 @@ flight data is unchanged. Unknown metadata schemas require explicit reader work.
 - Isolated Windows/Linux/macOS exports succeed. All four Linux exported flights
   pass the current checker and match source numeric rows and model metadata.
   Windows/macOS packaging checks pass; native gameplay on those OSes was not run.
-- Full suite pending.
+- Full `app/test.sh` passes: 161 scripts parse, 60 GDScript test programs, 11
+  trace process tests, and identical state hashes at 30/60/144 FPS. Static lint
+  stays at zero errors and 11 pre-existing warnings. [Verification record](verification.json).
 
 This verifies evidence plumbing; it does not validate aircraft fidelity, create
 a complete replay checkpoint, or close the owner/GPU/radio gates. No external
