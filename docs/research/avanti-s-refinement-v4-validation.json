@@ -1,0 +1,53 @@
+{
+  "geometry_sha256": "b58041f131d981ef5b9a8810f77574c43174666d3af368a088ba8b13bab671c0",
+  "model_sha256": "b7447494fdfb473cde6088edda9d9063fc52aa3495f8d7f8c032ce3c5d680153",
+  "fresh_local_clone_with_current_source_overlay": true,
+  "references_absent": true,
+  "engine_external_to_clone": true,
+  "checks": {
+    "checks": 18071,
+    "failures": [],
+    "fuselage_length_m": 2.21999979019165,
+    "geometry_sha256": "b58041f131d981ef5b9a8810f77574c43174666d3af368a088ba8b13bab671c0",
+    "godot": "4.7.2-stable (official)",
+    "hinges": 7,
+    "limits": [
+      "Not aerodynamic validation",
+      "No full swept-volume intersection test",
+      "Approximate contours"
+    ],
+    "span_m": 2.0
+  },
+  "captures": [
+    {
+      "group": "original",
+      "identical_pngs": 3
+    },
+    {
+      "group": "additional",
+      "identical_pngs": 3
+    },
+    {
+      "group": "profile",
+      "identical_pngs": 1
+    },
+    {
+      "group": "inspector",
+      "identical_pngs": 9
+    }
+  ],
+  "fence_overlap_mutation_rejected": true,
+  "closed_exhaust_mutation_rejected": true,
+  "ignored_local_files": 65,
+  "app_suite_run": false,
+  "scope": "Isolated Avanti visual study; no app integration or flight validation",
+  "browser": {
+    "engine": "Chromium / Playwright",
+    "views": 7,
+    "broken_overlay_images": 0,
+    "page_errors": [],
+    "opacity_background_outline_controls": true,
+    "mobile_width_px": 390,
+    "mobile_overflow": false
+  }
+}

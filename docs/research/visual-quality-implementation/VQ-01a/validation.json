@@ -1,0 +1,25 @@
+{
+  "tested_private_snapshot": "03d2b985b0a7538004d21b86d0db47c35b626911",
+  "environment": {
+    "godot": "4.7.2-stable",
+    "renderer": "gl_compatibility",
+    "gpu": "llvmpipe",
+    "lp_num_threads": 1,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "files": {
+    "app/main.gd": "f22504ad1c197a0855ba476e3b4d5099d3b2046a65d1ac416647c4df4e88f1fb",
+    "app/capture.sh": "228dfa7361a931857f3b584d0a01854c630fbf887f9fa242eb7dec9468a07131",
+    "app/tests/check_landscape_captures.py": "7571720ecbd1d1957c3e27709ea1f26a533dc0dc1765a78000c22ed0e5422794",
+    "app/tests/capture_runner.py": "2764e363bc221cb71054e120d3bd49948c58e08cb30c0be6f6464292cea6cf71",
+    "app/tests/test_capture_runner.py": "7c3637e3d7503c5405a191ff6bf5742a20fd5ac9544d0285cae90a0c65eaa9bc",
+    "app/tests/fixtures/atmosphere_field.gd": "82e8caa43f0a63fbda3e426044d0a68a4a3c3c4a7f87d2e9f327a108907c608b",
+    "app/tests/fixtures/atmosphere_field.tscn": "acf2bdf3e84337bfca05cac03bba0d5445a6229738cfec6abad2efd2c48eef8f"
+  },
+  "app_test_exit": 0,
+  "capture_exit": 0,
+  "capture_count": 46
+}

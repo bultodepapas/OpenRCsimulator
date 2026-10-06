@@ -1,0 +1,25 @@
+FF
+======================================================================
+FAIL: test_zero_exit_without_artifacts_fails_for_both_capture_kinds (test_capture_runner.CaptureRunnerTests.test_zero_exit_without_artifacts_fails_for_both_capture_kinds) (kind='flight')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-guard-mutation-ge12dbf3/test_capture_runner.py", line 141, in test_zero_exit_without_artifacts_fails_for_both_capture_kinds
+    self.assert_failed_and_clean("no_artifacts", kind=kind)
+  File "/tmp/openrc-guard-mutation-ge12dbf3/test_capture_runner.py", line 119, in assert_failed_and_clean
+    with self.assertRaises(RuntimeError):
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_zero_exit_without_artifacts_fails_for_both_capture_kinds (test_capture_runner.CaptureRunnerTests.test_zero_exit_without_artifacts_fails_for_both_capture_kinds) (kind='ui')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-guard-mutation-ge12dbf3/test_capture_runner.py", line 141, in test_zero_exit_without_artifacts_fails_for_both_capture_kinds
+    self.assert_failed_and_clean("no_artifacts", kind=kind)
+  File "/tmp/openrc-guard-mutation-ge12dbf3/test_capture_runner.py", line 119, in assert_failed_and_clean
+    with self.assertRaises(RuntimeError):
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.257s
+
+FAILED (failures=2)

@@ -12,7 +12,8 @@ const SLOW_FLIGHT := { altitude = 30.0, kp = 1.5, kd = 1.5 } # m; stick per m; s
 ## Rudder gain of the "coordinated" maneuvers: yaw command per radian of sideslip (holds β ≈ 0, like a pilot's feet).
 const COORDINATION_GAIN := 10.0
 
-## name → { mode: "level"/"glide", speed (m/s), duration (s), sticks(t, state) -> { roll, pitch, yaw, throttle_delta } }.
+## name → { mode: "level"/"glide", speed (m/s), duration (s), sticks(t, state) -> { roll, pitch, yaw, throttle_delta } },
+## plus an optional altitude (m above ground, default the trimmed start's 30 m).
 ## Sticks are pilot inputs added to the trims; throttle_delta is added to the trimmed throttle. glide = engine stopped.
 static func all() -> Dictionary:
 	return {
@@ -71,6 +72,8 @@ static func fly(session: Node, m: Dictionary) -> RefCounted:
 	session.input_enabled = false
 	var t: Dictionary = session.trim_at(m.speed, m.mode)
 	assert(t.ok, "maneuver trim failed: %s" % t.message)
+	if m.has("altitude"):
+		session.set_start_altitude(m.altitude) # optional start height (m): room for loops and spins
 	session.reset()
 	var sim: Node = session.sim
 	var rec := Recorder.new(sim)

@@ -1,0 +1,25 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "args": "--capture --t=1.5 --look_az=0 --look_el=0 --out=capture-land-az0-el0.png",
+  "capture_scene": "atmosphere",
+  "draw_calls": {
+    "shadow": 0,
+    "visible": 12
+  },
+  "format": "openrc-capture v1",
+  "godot": "4.7.2-stable (official)",
+  "image": "capture-land-az0-el0.png",
+  "lp_num_threads": "1",
+  "objects": {
+    "shadow": 0,
+    "visible": 12
+  },
+  "primitives": {
+    "shadow": 0,
+    "visible": 2480
+  },
+  "renderer": "gl_compatibility",
+  "sha256": "c995f7b670ecc4996106f14e26393692a63e19545668a0ff29ad9db0f933bd6b",
+  "video_memory_bytes": 53409362
+}

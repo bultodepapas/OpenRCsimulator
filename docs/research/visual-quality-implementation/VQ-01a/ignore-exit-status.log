@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_nonzero_exit_fails_even_after_writing_valid_artifacts (test_capture_runner.CaptureRunnerTests.test_nonzero_exit_fails_even_after_writing_valid_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-guard-mutation-7pxhnggv/test_capture_runner.py", line 131, in test_nonzero_exit_fails_even_after_writing_valid_artifacts
+    self.assert_failed_and_clean("exit42_after_save")
+  File "/tmp/openrc-guard-mutation-7pxhnggv/test_capture_runner.py", line 119, in assert_failed_and_clean
+    with self.assertRaises(RuntimeError):
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.134s
+
+FAILED (failures=1)

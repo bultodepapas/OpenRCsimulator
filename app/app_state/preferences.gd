@@ -3,12 +3,15 @@
 # Every value is validated by type and range: ConfigFile returns whatever type the file holds, not the default's.
 extends RefCounted
 
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+
 const DEFAULT_PATH := "user://settings.cfg"
 const SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
 const LANGUAGES := { "en": "English", "es": "Español" }
-const DEFAULTS := { language = "en", first_flight_hint_seen = false }
+## aircraft: the catalog ID Home offers to fly (UI-05); an ID that is no longer in the catalog falls back to the default.
+const DEFAULTS := { language = "en", first_flight_hint_seen = false, aircraft = Catalog.DEFAULT_ID }
 
 
 ## Returns the preferences: the DEFAULTS keys plus `writable` (false for a file from a newer version, which must
@@ -37,6 +40,9 @@ static func load_from(path: String) -> Dictionary:
 	var hint_seen: Variant = cfg.get_value("ui", "first_flight_hint_seen", DEFAULTS.first_flight_hint_seen)
 	if typeof(hint_seen) == TYPE_BOOL:
 		prefs.first_flight_hint_seen = hint_seen
+	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
+	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
+		prefs.aircraft = aircraft
 	return prefs
 
 
@@ -47,4 +53,5 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("meta", "schema", SCHEMA)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
+	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
 	return cfg.save(path)

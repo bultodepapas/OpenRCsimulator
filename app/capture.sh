@@ -1,24 +1,39 @@
 #!/usr/bin/env bash
 # Capture mode: render t = 3.0 s at 1280x720 under Xvfb (software OpenGL), save PNGs.
 set -euo pipefail
+export PYTHONDONTWRITEBYTECODE=1
 HERE="$(cd "$(dirname "$0")" && pwd)"
+mkdir -p "$HERE/captures/field" # untracked in git: a fresh clone does not have it
+exec 9> "$HERE/captures/.capture.lock"
+flock -n 9 || { echo "another capture run owns $HERE/captures" >&2; exit 1; }
+# The complete-set marker only exists after every capture, image check and trace succeeds.
+rm -f "$HERE/captures/run-manifest.json"
 GODOT="$("$HERE/get-godot.sh")"
-mkdir -p "$HERE/captures" # untracked in git: a fresh clone does not have it
+VPY="$("$HERE/tests/visual-env.sh")"
+"$VPY" "$HERE/tests/test_capture_runner.py"
+CAPTURE_NAMES=()
 # L0b: llvmpipe thread count pinned. 1 and 12 threads gave byte-identical captures on Mesa 25.2.8 (2026-10-05), so
 # this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
 export LP_NUM_THREADS="${LP_NUM_THREADS:-1}"
 COUNTERS="$HERE/captures/landscape-counters.txt"
 : > "$COUNTERS"
-LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
+# VQ-01a: reference captures run the legacy atmosphere fixture. Production field cases use the real app.
 shot() { # shot <file suffix> <user args...>
   local name="capture$1" out="$HERE/captures/capture$1.png"; shift
-  # timeout: a script error must fail the capture, never hang it.
-  timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" \
-    "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy -- --capture "$@" --out="$out" > "$LOG" 2>&1 || true
-  # Shaders only compile with a real renderer, so engine errors (e.g. a broken sky shader) surface here, not in test.sh.
-  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error during capture $name"; exit 1; fi
-  sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "$LOG" >> "$COUNTERS"
-  [ -s "$out" ] || { cat "$LOG"; echo "capture $name failed"; exit 1; }
+  local scene="atmosphere" counters="$COUNTERS"
+  local entry=("res://tests/fixtures/atmosphere_field.tscn")
+  if [[ "$name" == capture-field-* ]]; then
+    scene="field"
+    name="${name/capture-field-/capture-land-}"
+    out="$HERE/captures/field/$name.png"
+    counters="$HERE/captures/field/landscape-counters.txt"
+    entry=()
+  fi
+  "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind flight --scene "$scene" -- \
+    xvfb-run -a -s "-screen 0 1280x720x24" \
+    "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy "${entry[@]}" -- --capture "$@" --out="$out"
+  sed -n "s|^saved .* (error 0) \(draw_calls=.*\)|$name \1|p" "${out%.png}.log" >> "$counters"
+  CAPTURE_NAMES+=("${out#"$HERE/captures/"}")
 }
 # Stage 0/1 views on the scripted circle (stable references).
 shot "" --scripted
@@ -54,22 +69,26 @@ shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane --shadow=off
 shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow=off
 # L0b: straight down from 30 m over the pilot station: ground tiling must be judged from above (investigation 06).
 shot "-land-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30
-# UI-01a (MENU-PLAN): the Home screen with keyboard focus on Fly. Layout and focus drawing, not legibility on a real monitor.
-# UI-01d: English (default) and Spanish, the longer texts.
+# Real field, separate from the fixed sky/ground reference; future trees must appear in these views.
+: > "$HERE/captures/field/landscape-counters.txt"
+for az in 0 90 180 270; do
+  for el in 0 10; do shot "-field-az${az}-el${el}" --t=1.5 --look_az=$az --look_el=$el --hide_airplane; done
+done
+shot "-field-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30 --hide_airplane
+# UI uses the same process/file guards. Its sidecar is harness metadata, not engine render telemetry.
 for lang in en es; do
-  timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
-    --script res://tests/capture_ui.gd -- --out="$HERE/captures/ui-home-$lang.png" --lang=$lang > "$LOG" 2>&1 || true
-  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG" || [ ! -s "$HERE/captures/ui-home-$lang.png" ]; then cat "$LOG"; echo "Home capture ($lang) failed"; exit 1; fi
-  # UI-02: the pause menu over the real, frozen flight (the airplane must stay in view beside the menu).
-  timeout 60 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
-    --script res://tests/capture_ui.gd -- --out="$HERE/captures/ui-pause-$lang.png" --lang=$lang --screen=pause > "$LOG" 2>&1 || true
-  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG" || [ ! -s "$HERE/captures/ui-pause-$lang.png" ]; then cat "$LOG"; echo "Pause capture ($lang) failed"; exit 1; fi
+  for screen in home pause help hint; do
+    out="$HERE/captures/ui-$screen-$lang.png"
+    "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" -- \
+      xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
+      --script res://tests/capture_ui.gd -- --out="$out" --lang="$lang" --screen="$screen"
+    CAPTURE_NAMES+=("${out#"$HERE/captures/"}")
+  done
 done
 echo "render counters per view (draw calls and primitives): $COUNTERS"
 cat "$COUNTERS"
 # Image checks run in the pinned, hashed Python environment (.tools/visual-venv: Pillow, numpy, FLIP), never on the
 # system Python: GitHub's runner has no Pillow (CI failure 2026-10-05, invisible locally and under act).
-VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/check_landscape_captures.py" "$HERE/captures"
 # L0c: airplane readability against its background.
 # Readability (L1b thresholds, investigation 09): contrast ≤ −0.40, ≤ 15 % nearly invisible, ΔE ≥ 30. Background
@@ -78,4 +97,33 @@ VPY="$("$HERE/tests/visual-env.sh")"
 "$VPY" "$HERE/tests/compare_captures.py" readability "$HERE/captures" \
   --require "capture-land-low3m.png:-0.40:0.15:30:18" --require "capture-land-30m.png:-0.40:0.15:30:25"
 # C7: flight trace of the same throw, headless (no display needed).
-timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5
+rm -f "$HERE/captures/trace-physics.csv"
+if timeout 60 "$GODOT" --headless --path "$HERE" --audio-driver Dummy -- --trace="$HERE/captures/trace-physics.csv" --t=1.5 > "$HERE/captures/trace-physics.log" 2>&1; then
+  if grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$HERE/captures/trace-physics.log"; then
+    cat "$HERE/captures/trace-physics.log"; exit 1
+  fi
+else
+  status=$?
+  cat "$HERE/captures/trace-physics.log"; exit "$status"
+fi
+python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
+# Publish exactly this run's inventory, never a glob that can silently include old outputs.
+"$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
+import hashlib, json, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+entries = []
+for name in sys.argv[2:]:
+    png = root / name
+    sidecar = png.with_suffix('.json')
+    data = json.loads(sidecar.read_text())
+    entries.append({'image': name, 'capture_scene': data['capture_scene'],
+                    'sha256': data['sha256'],
+                    'manifest_sha256': hashlib.sha256(sidecar.read_bytes()).hexdigest()})
+trace = hashlib.sha256((root / 'trace-physics.csv').read_bytes()).hexdigest()
+manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace}
+temp = root / 'run-manifest.tmp'
+temp.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+temp.replace(root / 'run-manifest.json')
+print(f'capture set complete: {len(entries)} fresh images + manifests; trace verified')
+PYMANIFEST

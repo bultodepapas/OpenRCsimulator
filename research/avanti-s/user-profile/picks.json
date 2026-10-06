@@ -1,0 +1,57 @@
+{
+  "schema": "openrc-profile-picks-v1",
+  "model_geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+  "landmarks_m": {
+    "nose": [
+      0,
+      0,
+      -1.05
+    ],
+    "rear_body_proxy": [
+      0,
+      0,
+      1.17
+    ],
+    "fin_top": [
+      0,
+      0.51,
+      0.96
+    ],
+    "canopy_top": [
+      0,
+      0.251,
+      -0.28
+    ]
+  },
+  "picked_px": {
+    "nose": [
+      1754,
+      534
+    ],
+    "rear_body_proxy": [
+      117,
+      540
+    ],
+    "fin_top": [
+      126,
+      139
+    ],
+    "canopy_top": [
+      1129,
+      315
+    ]
+  },
+  "photo": "references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png",
+  "photo_sha256": "4ab4d1ba032756c4c0877a00db53162c38cf4ecdfa79d8dedf83d74dbb8977e3",
+  "size_px": [
+    1818,
+    865
+  ],
+  "method": "Orthographic side-view diagnostic: uniform display scale from approximate nose/rear-body horizontal extents; align mean height. No camera roll or image deformation.",
+  "limitations": [
+    "Exact photographed variant and original photographer unknown",
+    "Photo retains perspective; not an orthographic plan",
+    "rear_body_proxy is an inferred visible rear-body landmark, NOT a visible exhaust centre",
+    "Nozzle, wings, gear and fences do not share a common profile plane; no metric accuracy claim"
+  ]
+}

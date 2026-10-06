@@ -76,12 +76,57 @@ func check_lofts(model: Dictionary) -> void:
 	check(flat.mesh.get_faces() == model.canopy.mesh.get_faces(), "Smooth shading moved canopy vertices")
 	parent.free()
 
+func check_details(model: Dictionary) -> void:
+	for index in 2:
+		var frame := model.canopy.get_node("canopy_frame_%s" % index) as MeshInstance3D
+		check(frame != null and frame.is_visible_in_tree(), "Missing canopy frame")
+		model.canopy.hide()
+		check(not frame.is_visible_in_tree(), "Canopy frame leaked into interior view")
+		model.canopy.show()
+	# Slice the actual moving triangles at both faces of each fence. This is
+	# a sampled local clearance check, not a full continuous collision proof.
+	for roll in [-1.0, -.5, 0.0, .5, 1.0]:
+		Model.apply_controls(model, roll, 0, 0, 0)
+		for side in [-1.0, 1.0]:
+			var suffix := "left" if side < 0 else "right"
+			var fence := model.root.get_node("wing_fence_" + suffix) as MeshInstance3D
+			var moving: MeshInstance3D = model.hinges["aileron_" + suffix].node.get_child(0)
+			var faces := moving.mesh.get_faces()
+			for face_x in [fence.mesh.get_aabb().position.x, fence.mesh.get_aabb().end.x]:
+				var found := false
+				var minimum_z := INF
+				for i in range(0, faces.size(), 3):
+					for edge in 3:
+						var a := moving.to_global(faces[i + edge])
+						var b := moving.to_global(faces[i + (edge + 1) % 3])
+						if absf(b.x - a.x) < 1e-8: continue
+						var t: float = (face_x - a.x) / (b.x - a.x)
+						if t < 0 or t > 1: continue
+						found = true
+						minimum_z = minf(minimum_z, a.lerp(b, t).z)
+				check(found and minimum_z > fence.mesh.get_aabb().end.z + .003,
+					"Fence/aileron clearance: %s roll %s" % [suffix, roll])
+	Model.apply_controls(model, 0, 0, 0, 0)
+	var rim := model.root.get_node("exhaust_fixed") as MeshInstance3D
+	# ArrayMesh vertex packing shifts this ring by up to 0.019 mm.
+	for p in rim.mesh.get_faces():
+		check(Vector2(p.x, p.y).length() >= model.data.details.exhaust_inner_radius_m - .00005, "Exhaust rim closes aperture")
+	var throat := model.root.get_node("exhaust_throat") as MeshInstance3D
+	check(absf(throat.mesh.get_aabb().size.z - model.data.details.exhaust_depth_m) < 1e-6, "Exhaust has no depth")
+	var vertices: PackedVector3Array = model.skin.mesh.get_faces()
+	var end_z: float = model.data.fuselage_stations[-1][0]
+	var closed := false
+	for i in range(0, vertices.size(), 3):
+		closed = closed or (absf(vertices[i].z - end_z) < 1e-6 and absf(vertices[i + 1].z - end_z) < 1e-6 and absf(vertices[i + 2].z - end_z) < 1e-6)
+	check(not closed, "Fuselage cap blocks exhaust aperture")
+
 func run() -> void:
 	check_concave_panels()
 	var model := Model.build()
 	get_root().add_child(model.root)
 	await process_frame
 	check_lofts(model)
+	check_details(model)
 	var bounds := vertex_bounds(model.root)
 	check(absf(bounds.size.x - 2.0) < .0001, "Nominal span must be 2m")
 	check(absf(bounds.size.z - 2.22) < .0001, "Overall model length must be 2.22m")

@@ -190,3 +190,30 @@ msgstr "licencia MIT"
 
 msgid "Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"
 msgstr "Jensen Das Ugly Stik diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
+
+msgid "Aircraft %d of %d"
+msgstr "Avión %d de %d"
+
+msgid "Previous aircraft"
+msgstr "Avión anterior"
+
+msgid "Next aircraft"
+msgstr "Avión siguiente"
+
+msgid "High-wing sport trainer · 1.52 m · .61 glow"
+msgstr "Entrenador deportivo de ala alta · 1,52 m · glow .61"
+
+msgid "Low-wing aerobat · 1.63 m · .61 glow"
+msgstr "Acrobático de ala baja · 1,63 m · glow .61"
+
+msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
+msgstr "Reactor deportivo · 2,00 m · turbina JetCat P100-RX"
+
+msgid "Flight model under evaluation."
+msgstr "Modelo de vuelo en evaluación."
+
+msgid "Experimental: first physics estimate from the plans, not yet flight-tested."
+msgstr "Experimental: primera estimación física a partir de los planos, aún sin contrastar en vuelo."
+
+msgid "Preview only: turbine propulsion is not simulated yet."
+msgstr "Solo vista previa: la propulsión por turbina aún no se simula."

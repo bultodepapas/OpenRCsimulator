@@ -1,6 +1,7 @@
 # UI capture (MENU-PLAN UI-01a): renders the Home screen and saves a PNG, for layout and focus review.
 # Needs a renderer (run under Xvfb, see capture.sh):
 #   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/home.png [--lang=es] [--no-ui] [--no-scene] [--screen=pause|help|hint]
+#     [--aircraft=<catalog id>] (Home only: the airplane on the card and in the backdrop)
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
 
@@ -15,7 +16,10 @@ func _initialize() -> void:
 func _run() -> void:
 	var out := "user://home.png"
 	var lang := "en"
+	var aircraft := "jensen-das-ugly-stik-60"
 	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--aircraft="):
+			aircraft = a.trim_prefix("--aircraft=")
 		if a.begins_with("--out="):
 			out = a.trim_prefix("--out=")
 		elif a.begins_with("--lang="):
@@ -52,9 +56,11 @@ func _run() -> void:
 		app.open_pause()
 	else:
 		if not "--no-scene" in OS.get_cmdline_user_args():
-			root.add_child(HomeScene.new())
+			root.add_child(HomeScene.new(aircraft))
 		if not "--no-ui" in OS.get_cmdline_user_args():
-			root.add_child(Home.new())
+			var home: Control = Home.new()
+			home.set_aircraft(aircraft)
+			root.add_child(home)
 	await process_frame
 	await process_frame # deferred initial focus, then a frame drawn with it
 	await RenderingServer.frame_post_draw

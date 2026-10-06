@@ -1,0 +1,28 @@
+{
+  "path": "references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png",
+  "url": "user-attachment:avanti-profile-2026-10-06",
+  "source_kind": "user_supplied_attachment",
+  "source": "Image attached by user in the request to save and use the profile reference",
+  "title": "Avanti S · perfil recortado aportado por el usuario",
+  "purpose": "Cabina, deriva, lomo, vientre y toma; comparación de perfil exploratoria",
+  "variant": "avanti_s_family_exact_variant_unconfirmed",
+  "status": "provided",
+  "content_type": "image/png",
+  "bytes": 785323,
+  "sha256": "4ab4d1ba032756c4c0877a00db53162c38cf4ecdfa79d8dedf83d74dbb8977e3",
+  "width": 1818,
+  "height": 865,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "access_date": "2026-10-06",
+  "usage": "Local reference only; user-provided source; original creator/rights not specified; not a distributable game asset",
+  "limitations": [
+    "Perspective remains in wings and landing gear",
+    "Exact model variant and scale are unconfirmed",
+    "Rear exhaust centre is obscured; alignment uses an approximate visible rear-body point",
+    "Original cutout and edge remnants preserved unchanged"
+  ]
+}

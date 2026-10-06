@@ -1,6 +1,6 @@
 # Segundo avión: Extra 300S .60
 
-2026-10-06 · Revisión 4 · **EX-01 y EX-02 hechos: el Extra existe como vista previa visual en su inspector; todavía no vuela ni se puede seleccionar en la app.** [Informe EX-01/EX-02](research/extra-300-model-v1.md).
+2026-10-06 · Revisión 5 · **EX-00–03, EX-05, EX-07 (en el aire) y EX-11 hechos: el Extra se elige en Inicio y vuela con datos físicos propios, etiquetado experimental ([estado](#volable-en-el-menú-experimental--2026-10-06)).** [Informe EX-01/EX-02](research/extra-300-model-v1.md).
 
 Elegimos el **Great Planes Extra 300S .60, kit GPMA0236, 64 in / 1,6256 m**, con instalación inicial de clase O.S. MAX-61FX. Es un acrobático RC de construcción balsa/contrachapado, con carenado, cabina monoplaza y tren de cola. Será el siguiente paso después del Ugly Stik: otro avión reconocible y un comportamiento propio, construido mediante entregas pequeñas.
 
@@ -110,22 +110,22 @@ También protege una región lineal de ±8° para ambos lados de la pérdida. Si
 
 ## 8. Entregas pequeñas y prueba de cada una
 
-Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **EX-00, EX-01 y EX-02 están hechos** (✅ en la tabla); EX-03–13 siguen propuestos.
+Los IDs EX son tareas del segundo avión vinculadas al roadmap; no sustituyen sus hitos. **EX-00, EX-01, EX-02 y EX-04 están hechos** (✅ en la tabla), además del adelanto EX-10a; el resto sigue propuesto.
 
 | ID / relación | Entrega | Dependencia | Prueba de cierre |
 | --- | --- | --- | --- |
 | EX-00 · preparación D1 | Elegir variante, reunir fuentes y auditar integración | Ninguna | Manual/planos/fotos abiertos, manifiesto con hashes, originales excluidos de Git, documentos enlazados |
 | EX-01 · D1 ✅ | Ficha geométrica inicial y datum | EX-00 | Puntos/escala por vista, incógnitas declaradas y cotas reservadas; una sesión acotada, no esperar metrología perfecta. **2026-10-06:** regla de 36 in (399,88 px/in), siete controles reservados en verde (envergadura −0,13 %, área +0,10 %, longitud +0,67 %, CG 4,116 frente a 4⅛ in), `measure.py --check` reproduce `metrology.json` |
 | EX-02 · D1 visual ✅ | Extra sencillo en inspector independiente | EX-01 | Capturas frente/perfil/planta/oblicua y escala nominal; root/propeller/hinges presentes; Stik sigue funcionando. **2026-10-06:** `verify_extra.gd` (84 comprobaciones en `app/test.sh`, seis mutaciones detectadas), 8 capturas repetibles byte a byte, `verify_model.gd` del Stik sigue en 807/0 |
-| EX-03 · D1 / UI-05 | Registro de modelos y selección de vista previa | EX-02 | Dos IDs resuelven sus propios recursos; ID inválido y Extra aún no volable tratados explícitamente; capturas Stik conservadas |
-| EX-04 · B5/D1 | Articulación con ejes de bisagra propios | EX-02/03 | Neutro/extremos/combinaciones, signos, contención, continuidad; defecto deliberado en copia detectado |
-| EX-05 · D1/D2 | Datos físicos iniciales e inventario | EX-01 | Loader acepta datos con procedencia; masa/inercia válidas; CG, cuerda de referencia y hull cotejados con geometría |
+| EX-03 · D1 / UI-05 ✅ | Registro de modelos y selección de vista previa | EX-02 | Dos IDs resuelven sus propios recursos; ID inválido y Extra aún no volable tratados explícitamente; capturas Stik conservadas |
+| EX-04 · B5/D1 ✅ | Articulación con ejes de bisagra propios | EX-02/03 | Neutro/extremos/combinaciones, signos, contención, continuidad; defecto deliberado en copia detectado. **2026-10-06:** `extra_clearance.gd`, holgura mínima 1,75 mm a los recorridos del manual (0,83 sin bisel), bisagras biseladas libres a 45°, timón limitado a 43,0° por el corte del elevador del plano; tres mutaciones detectadas |
+| EX-05 · D1/D2 ✅ | Datos físicos iniciales e inventario | EX-01 | Loader acepta datos con procedencia; masa/inercia válidas; CG, cuerda de referencia y hull cotejados con geometría |
 | EX-06 · D5/D9c | Instalación y eje de motor | EX-05 | Fuerza/par transformados y signos probados; caso axial Stik sin cambios; limitaciones de hélice/escape documentadas |
-| EX-07 · D3/D4 | Primer vuelo físico del Extra | EX-04–06 | Trim, 30 s sin mando, reinicio, hull, radio/armado/failsafe; trazas con identidad correcta y vuelos repetibles |
+| EX-07 · D3/D4 ✅ (en el aire) | Primer vuelo físico del Extra | EX-04–06 | Trim, 30 s sin mando, reinicio, hull, radio/armado/failsafe; trazas con identidad correcta y vuelos repetibles |
 | EX-08 · D8a/D9/D10 | Envolvente inicial verificada | EX-07 | Nivelado, viraje, tonel, looping, invertido, pérdida; estados finitos y timestep; goldens propios sin regrabar los del Stik |
 | EX-09 · D8b/Gate 2 | Contraste independiente y playtest | EX-08 | Observación del kit/configuración o fuente externa identificada; discrepancias y sensibilidad; si falta, conservar etiqueta experimental |
 | EX-10 · D7/Gate 2 | Acabado y orientación desde tierra | EX-04; puede avanzar en paralelo a física | Mismo conjunto de cámaras/luz; 20/50/100 m, seis actitudes, cielo/suelo; respuestas humanas separadas de hashes |
-| EX-11 · UI-05 / M1 | Selector de avión volable y ciclo de sesión | EX-07, coordinado con menú | Elegir Extra y volver a Stik, restart/reload/pausa; sin nodos/sesiones duplicados; traza y HUD muestran avión correcto |
+| EX-11 · UI-05 / M1 ✅ | Selector de avión volable y ciclo de sesión | EX-07, coordinado con menú | Elegir Extra y volver a Stik, restart/reload/pausa; sin nodos/sesiones duplicados; traza y HUD muestran avión correcto |
 | EX-12 · exportación / Gate 2 | Entrega instalable de los dos aviones | EX-08/10/11 | Suite completa, import/export desde clon limpio sin references ni caché; smoke por avión y medición en hardware objetivo |
 | EX-13 · E0–E2 / Gate F | Ampliar acrobacia y tren convencional | EX-09 + capacidades del roadmap | Ensayos específicos de cola/propwash y suelo; no es bloqueo del primer vuelo en el aire |
 
@@ -164,3 +164,12 @@ Las [doce investigaciones](research/extra-aircraft-tooling/README.md) amplían l
 - **EX-05/09:** XFOIL/AVL son candidatos de contraste offline tras fijar geometría, ejes y referencias de coeficientes. Sus resultados se etiquetan por procedencia y no acreditan pérdida dinámica ni acrobacia avanzada.
 
 Las mejoras comunes se prueban primero con el Stik y luego con ambos modelos. Ninguna herramienta opcional bloquea ver el Extra inicial en el inspector.
+
+## Volable en el menú (experimental) — 2026-10-06
+
+**EX-03, EX-05, EX-07 (en el aire) y EX-11 hechos.** El Extra se elige en Inicio (flechas junto a «Próximo vuelo»), vuela con sus propios datos y vuelve al Stik sin mezclar modelo y física. La ficha lo marca **experimental**.
+
+- **Datos (EX-05):** [`gp_extra_300s_60.json`](../app/data/aircraft/gp_extra_300s_60.json) lo **genera** [`derive_physics.py`](../research/extra-300/ex05/derive_physics.py) desde la geometría medida y el manual; el [informe de derivación](../research/extra-300/ex05/derivation.md) lista cada magnitud intermedia. Helmbold/DATCOM para pendientes, volumen de cola para estabilidad y amortiguamiento, teoría de franjas para alerones y Clp, acumulación de fricción para CD0. Masa de vuelo 3,364 kg (seco 7,10 lb, dentro de las 7–7,5 lb del manual), CG en el punto del manual (30,0 % CMA), margen estático 12,5 % CMA, pérdida 1 g a 10,3 m/s, inicio trimado a 17 m/s, CD0 0,031. Recorridos: los altos del manual p43 (alerón 17,6°, elevador 23,9°, timón 30,0°) como máximo mecánico; la radio reduce con su dual rate. Un cambio en las claves de geometría que lee obliga a regenerar (CI ejecuta `--check`).
+- **Cargador:** `reference.planform = "tapered"` con `root_chord`/`tip_chord`; las franjas de igual área se colocan en sus centroides (el Stik rectangular queda idéntico). `start.level_speed` opcional (el Stik conserva 15 m/s).
+- **Vuelo (EX-07, primera parte de EX-08):** [`test_extra_handling.gd`](../app/tests/test_extra_handling.gd): 30 s sin mandos, alabeo coordinado 213°/s a 17 m/s y 266°/s a 22 m/s (±7 % de la predicción), looping con 0,3 de palanca, pérdida al tirar a fondo con el elevador alto (como avisa el manual), pérdida sin motor y recuperación de barrena. `--aircraft=gp-extra-300s-60` en la ruta directa; la traza nombra el avión y la velocidad.
+- **Límites:** empuje axial (2° derecha y 0,5° abajo del plano pendientes en EX-06); misma hélice y datos que el Stik (APC 12x6); Cnβ del fuselaje omitido por contrato v1; derivadas cruzadas fijadas al CL de inicio; sin propwash ni combustible variable. Es verificación numérica, no validación: EX-08 completo (invertido, viraje, tonel) y EX-09 siguen abiertos.

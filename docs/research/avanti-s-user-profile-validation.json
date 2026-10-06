@@ -1,0 +1,44 @@
+{
+  "original_sha256": "4ab4d1ba032756c4c0877a00db53162c38cf4ecdfa79d8dedf83d74dbb8977e3",
+  "unchanged_original": true,
+  "geometry_unchanged": true,
+  "clean_clone_without_references": true,
+  "capture_sets": [
+    {
+      "set": "user-profile",
+      "identical_renders": 1,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nWARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)\nOpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)\n\nAligned transparent captures: 1\n",
+      "stderr": ""
+    },
+    {
+      "set": "new-angles",
+      "identical_renders": 3,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\nWARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.\n     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)\nOpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)\n\nAligned transparent captures: 3\n",
+      "stderr": ""
+    }
+  ],
+  "browser": {
+    "errors": [],
+    "images": [
+      [
+        1818,
+        865
+      ],
+      [
+        1818,
+        865
+      ]
+    ],
+    "checks": [
+      "3 modes",
+      "opacity",
+      "contour",
+      "anchors",
+      "native image dimensions",
+      "390px mobile overflow"
+    ]
+  },
+  "ignored": [
+    "references/avanti-s/user-profile/avanti-s-perfil-recortado-usuario.png"
+  ]
+}

@@ -38,14 +38,27 @@ echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model t
 run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
 
-echo "== Extra 300S .60 preview contract (aircraft/verify_extra.gd, EX-02: visual only, not flyable)"
+echo "== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)"
 run --script res://aircraft/verify_extra.gd 2>&1 | tee "$LOG" | tail -2
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract failed (see above)"; exit 1; fi
 
-echo "== app: headless --trace starts in trimmed level flight"
+echo "== Avanti S preview contract (aircraft/verify_avanti.gd, AV-03: visual only, no flight data)"
+run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti preview contract failed (see above)"; exit 1; fi
+
+echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=gp-extra-300s-60 --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "gp-extra-300s-60" "$TRACE" || { echo "the Extra trace does not name the Extra"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE"; rm -f "$TRACE"
+echo "== app: a preview or unknown aircraft is refused on the direct route (exit 1, never another airplane)"
+for id in sebart-avanti-s-a200-p100rx no-such-aircraft; do
+  if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
+done
+echo "refused"
 
 echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
 FT="$(mktemp --suffix=.json)"

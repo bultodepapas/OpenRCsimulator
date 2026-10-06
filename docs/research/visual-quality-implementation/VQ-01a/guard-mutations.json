@@ -1,0 +1,12 @@
+[
+  {
+    "mutation": "no-freshness-cleanup",
+    "test_exit": 1,
+    "caught": true
+  },
+  {
+    "mutation": "ignore-exit-status",
+    "test_exit": 1,
+    "caught": true
+  }
+]

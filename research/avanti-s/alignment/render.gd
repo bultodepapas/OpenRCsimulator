@@ -43,7 +43,12 @@ func run() -> void:
 	for view in fit.views:
 		get_root().size = Vector2i(view.size_px[0], view.size_px[1])
 		camera.keep_aspect = Camera3D.KEEP_HEIGHT
-		camera.fov = view.assumed_vertical_fov_deg
+		if view.get("projection", "perspective") == "orthographic":
+			camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+			camera.size = view.orthographic_size_m
+		else:
+			camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+			camera.fov = view.assumed_vertical_fov_deg
 		camera.position = Model.point(view.camera_position_m)
 		var columns: Array = view.camera_basis_columns
 		camera.basis = Basis(Model.point(columns[0]), Model.point(columns[1]), Model.point(columns[2]))

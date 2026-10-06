@@ -1,0 +1,163 @@
+{
+  "provenance": [
+    {
+      "group": "original",
+      "camera_sha256": "acefc6e5965aec92233a59d6c21c91baa1abf82e0e2689621cfbdf5ae96ad2d3",
+      "before_manifest_sha256": "9b263f5b1805c386d4be1a5687a6c6692dff8f08e7c9abf4b3650c0b3976c456",
+      "after_manifest_sha256": "36775ba8b0b10b70092a1df4882ac8c7e55df66e0658eaf953c0295ec199f717"
+    },
+    {
+      "group": "additional",
+      "camera_sha256": "e1cb0840df140c07925c0df24ec9a4388666a05629463b07ecaf8f6cdf24ebed",
+      "before_manifest_sha256": "b0cbda337bb02ad637eb185fe6b81fa04fe5bccc793d45247192e4413b76f271",
+      "after_manifest_sha256": "0debe512017c6b88b9d5cf32e75174ce7339f8ba0f66823d611b3d5622bf9041"
+    },
+    {
+      "group": "profile",
+      "camera_sha256": "8068a89dff150b90ab44f5954b5ee4410222c6c1260cd05a76b469cfc0241b10",
+      "before_manifest_sha256": "c29b9771328259895650e383a8acacd7ee405712f933cac70ece877cf8a1264e",
+      "after_manifest_sha256": "49c394d9900a1610be8fd4b9fc8001de3f7ce01f554ec45117059c64beeee1dd"
+    }
+  ],
+  "profile_metrics": [
+    {
+      "region": "deriva",
+      "x_range": [
+        280,
+        500
+      ],
+      "stride": 5,
+      "samples": 44,
+      "before_mean_abs_y_px": 29.681818181818183,
+      "after_mean_abs_y_px": 15.090909090909092
+    },
+    {
+      "region": "lomo",
+      "x_range": [
+        500,
+        800
+      ],
+      "stride": 5,
+      "samples": 60,
+      "before_mean_abs_y_px": 79.36666666666666,
+      "after_mean_abs_y_px": 80.03333333333333
+    },
+    {
+      "region": "cabina",
+      "x_range": [
+        800,
+        1550
+      ],
+      "stride": 5,
+      "samples": 150,
+      "before_mean_abs_y_px": 49.32666666666667,
+      "after_mean_abs_y_px": 39.986666666666665
+    }
+  ],
+  "profile_method": "Upper alpha>=128 boundary of largest 4-connected component, same image x columns every 5 px. Fin range starts at x280 where both upper outlines are visible; omits unmatched tip at x110–280. Native 1818x865 pixels. Approximate frozen side camera, unknown variant/perspective, gear excluded. Not dimensions, full silhouette error or IoU.",
+  "geometry_sha256": "b58041f131d981ef5b9a8810f77574c43174666d3af368a088ba8b13bab671c0",
+  "model_sha256": "b7447494fdfb473cde6088edda9d9063fc52aa3495f8d7f8c032ce3c5d680153",
+  "original_three_views": {
+    "schema": "openrc-contour-review-v1",
+    "method": "Manual visible-outline samples in original 650x488 photos; selected during refinement, not a blind validation set. Exclude landing gear, fences and hidden boundaries. Approximate pixels; no metric calibration.",
+    "metric": "Unsigned Euclidean distance to nearest alpha>=128 silhouette pixel; SciPy default cross-shaped (4-neighbour) erosion. Samples are not independent and nearest edge may belong to another component. Not a full-mask IoU or aerodynamic/metric accuracy.",
+    "geometry_sha256": "b58041f131d981ef5b9a8810f77574c43174666d3af368a088ba8b13bab671c0",
+    "model_sha256": "b7447494fdfb473cde6088edda9d9063fc52aa3495f8d7f8c032ce3c5d680153",
+    "baseline_geometry_sha256": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+    "baseline_model_sha256": "df6b7efb5a0057bd0a50b7f8b16f6825fda35e948ad5a60d020815a94d1f66c6",
+    "camera_fit_sha256": "acefc6e5965aec92233a59d6c21c91baa1abf82e0e2689621cfbdf5ae96ad2d3",
+    "contour_picks_sha256": "e6dff1d6c8de846b8437a1e7c39b7e271b958268a9c21ab9d6606f83332016e8",
+    "groups": [
+      {
+        "view": "front_high",
+        "group": "wing",
+        "samples": 16,
+        "before_mean_px": 3.5829312892001464,
+        "after_mean_px": 3.5829312892001464,
+        "before_max_px": 7.0,
+        "after_max_px": 7.0
+      },
+      {
+        "view": "front_high",
+        "group": "tail",
+        "samples": 12,
+        "before_mean_px": 2.360069136066119,
+        "after_mean_px": 2.360069136066119,
+        "before_max_px": 5.385164807134504,
+        "after_max_px": 5.385164807134504
+      },
+      {
+        "view": "front_high",
+        "group": "body",
+        "samples": 11,
+        "before_mean_px": 3.272727272727273,
+        "after_mean_px": 3.272727272727273,
+        "before_max_px": 10.0,
+        "after_max_px": 10.0
+      },
+      {
+        "view": "rear_high",
+        "group": "wing",
+        "samples": 17,
+        "before_mean_px": 4.0051824466450645,
+        "after_mean_px": 4.026146754515895,
+        "before_max_px": 11.40175425099138,
+        "after_max_px": 11.40175425099138
+      },
+      {
+        "view": "rear_high",
+        "group": "tail",
+        "samples": 14,
+        "before_mean_px": 11.624177261776591,
+        "after_mean_px": 12.327653420767072,
+        "before_max_px": 35.0,
+        "after_max_px": 35.0
+      },
+      {
+        "view": "rear_high",
+        "group": "body",
+        "samples": 9,
+        "before_mean_px": 7.856406557147242,
+        "after_mean_px": 8.16972835012813,
+        "before_max_px": 13.92838827718412,
+        "after_max_px": 13.92838827718412
+      },
+      {
+        "view": "side",
+        "group": "wing",
+        "samples": 9,
+        "before_mean_px": 13.091599961278863,
+        "after_mean_px": 11.365011922502529,
+        "before_max_px": 24.758836806279895,
+        "after_max_px": 22.627416997969522
+      },
+      {
+        "view": "side",
+        "group": "tail",
+        "samples": 5,
+        "before_mean_px": 8.831041607963183,
+        "after_mean_px": 8.831041607963183,
+        "before_max_px": 12.36931687685298,
+        "after_max_px": 12.36931687685298
+      },
+      {
+        "view": "side",
+        "group": "fin",
+        "samples": 7,
+        "before_mean_px": 5.025341835987661,
+        "after_mean_px": 4.6207787855072775,
+        "before_max_px": 11.40175425099138,
+        "after_max_px": 12.083045973594572
+      },
+      {
+        "view": "side",
+        "group": "body",
+        "samples": 11,
+        "before_mean_px": 6.386823289787879,
+        "after_mean_px": 6.131103172593387,
+        "before_max_px": 12.041594578792296,
+        "after_max_px": 10.295630140987
+      }
+    ]
+  }
+}
