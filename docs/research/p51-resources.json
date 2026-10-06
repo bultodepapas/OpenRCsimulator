@@ -276,6 +276,19 @@
       "redistribution": "public domain (U.S. Government work) per Wikimedia Commons; verify before any redistribution",
       "retrieved_at": "2026-10-06",
       "parsed_ok": true
+    },
+    {
+      "path": "references/p51-mustang/user-photos/p51d-val-halla-oblique-user.png",
+      "url": "user-attachment:2026-10-06",
+      "bytes": 649446,
+      "sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
+      "file_type": "PNG 1579x996 RGBA",
+      "kind": "user-photo",
+      "license": "Unknown photographer; cut-out with transparent background supplied by the project owner. Reference only, never redistributed; composites with it stay under references/.",
+      "use": "Oblique perspective comparison of the model (research/p51/p51-02/silhouette/photo/)",
+      "redistribution": "local-reference-only; not licensed for game redistribution",
+      "retrieved_at": "2026-10-06",
+      "parsed_ok": true
     }
   ],
   "pages": [

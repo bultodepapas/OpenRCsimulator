@@ -1,0 +1,74 @@
+{
+  "schema": "openrc-photo-alignment-picks-v1",
+  "date": "2026-10-06",
+  "photo": "references/p51-mustang/user-photos/p51d-val-halla-oblique-user.png",
+  "photo_sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
+  "size_px": [
+    1579,
+    996
+  ],
+  "provenance": "user attachment 2026-10-06 (cut-out photo of a real P-51D, 'Val-Halla', transparent background, photographer unknown); local reference only, never redistributed",
+  "landmarks_model": {
+    "spinner_tip": "spinner.tip_z on the axis",
+    "wing_tip_left": "-span/2, tip chord plane, mid tip chord",
+    "wing_tip_right": "+span/2, tip chord plane, mid tip chord",
+    "fin_top": "fin_top_y at the fin's top leading corner (the rounded cap's highest point)",
+    "wheel_bottom_left": "-track/2, axle - radius, axle z",
+    "wheel_bottom_right": "+track/2, axle - radius, axle z",
+    "canopy_crown": "highest canopy point",
+    "scoop_lip_bottom": "first scoop station bottom"
+  },
+  "picked_px": {
+    "spinner_tip": [
+      993,
+      457
+    ],
+    "wing_tip_right": [
+      27,
+      600
+    ],
+    "wing_tip_left": [
+      1554,
+      553
+    ],
+    "fin_top": [
+      537,
+      470
+    ],
+    "wheel_bottom_right": [
+      635,
+      820
+    ],
+    "wheel_bottom_left": [
+      1115,
+      805
+    ],
+    "canopy_crown": [
+      762,
+      443
+    ],
+    "scoop_lip_bottom": [
+      800,
+      720
+    ]
+  },
+  "fit": [
+    "spinner_tip",
+    "wing_tip_right",
+    "wing_tip_left",
+    "fin_top",
+    "wheel_bottom_right",
+    "wheel_bottom_left"
+  ],
+  "check": [
+    "canopy_crown",
+    "scoop_lip_bottom"
+  ],
+  "pick_tolerance_px": 6,
+  "initial_camera_m": [
+    3.0,
+    -0.6,
+    -9.0
+  ],
+  "notes": "The nose points to the viewer's right and the airplane is seen from below: the national insignia on the under-surface is on the RIGHT wing, which is the wing on the viewer's left, so the camera is front-right-below and the viewer's-left wing/wheel are the model's +x side. Picked points: spinner apex (the dome's centre as seen, not its silhouette edge), rounded tip extremes, fin cap top, tyre bottoms, canopy frame top, scoop lip bottom. Wheel bottoms are tyre contact points in flight (oleo extended), like the drawing's extended gear. The propeller is motion-blurred: excluded by alpha threshold and boxes."
+}

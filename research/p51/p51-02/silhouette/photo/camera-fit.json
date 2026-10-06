@@ -1,0 +1,272 @@
+{
+  "schema": "openrc-photo-camera-fit-v1",
+  "date": "2026-10-06",
+  "method": "Perspective rigid camera with fitted vertical FOV (7 unknowns, 6 landmarks, 40 random restarts), centred principal point, no lens distortion; geometry never adjusted",
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "picks_sha256": "5b64ef4bef44786673261cccbad0a20cc7a1b34deece92cce1a3861650cd89e7",
+  "model_geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
+  "drawing_sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
+  "limits": [
+    "Six hand-picked landmarks with ~6 px tolerance; wheel contact points depend on tyre compression and the model's gear height from the drawing",
+    "FOV and distance are strongly correlated for a telephoto shot: trust the overlay, not the distance",
+    "Motion-blurred propeller excluded from the comparison"
+  ],
+  "views": [
+    {
+      "id": "photo_oblique",
+      "title": "Foto del usuario \u00b7 oblicua baja frontal-izquierda",
+      "photo": "references/p51-mustang/user-photos/p51d-val-halla-oblique-user.png",
+      "photo_sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
+      "size_px": [
+        1579,
+        996
+      ],
+      "projection": "perspective",
+      "assumed_vertical_fov_deg": 4.000000000000001,
+      "fitted_fov": true,
+      "camera_position_m": [
+        8.751820607315334,
+        -4.478324315651565,
+        -22.53103807759932
+      ],
+      "camera_basis_columns": [
+        [
+          -0.9356749340176965,
+          -0.09650248409998476,
+          -0.3394107959589842
+        ],
+        [
+          -0.025943712458245866,
+          0.9780872593729878,
+          -0.20657259459115399
+        ],
+        [
+          0.3519081437461527,
+          -0.18447922271835818,
+          -0.9176753645763664
+        ]
+      ],
+      "distance_to_origin_m": 24.582461826941092,
+      "fit_rms_px": 8.564501217488116,
+      "check_rms_px": 14.34754430265788,
+      "landmarks": [
+        {
+          "key": "spinner_tip",
+          "role": "fit",
+          "model_m": [
+            0.0,
+            0.0,
+            -0.6686
+          ],
+          "picked_px": [
+            993,
+            457
+          ],
+          "projected_px": [
+            989.6170068476224,
+            443.8174547614798
+          ],
+          "error_px": 13.609707624878126
+        },
+        {
+          "key": "wing_tip_right",
+          "role": "fit",
+          "model_m": [
+            1.41,
+            -0.04484098442844714,
+            0.24569999999999997
+          ],
+          "picked_px": [
+            27,
+            600
+          ],
+          "projected_px": [
+            33.15441263063656,
+            602.590682687863
+          ],
+          "error_px": 6.677456972331006
+        },
+        {
+          "key": "wing_tip_left",
+          "role": "fit",
+          "model_m": [
+            -1.41,
+            -0.04484098442844714,
+            0.24569999999999997
+          ],
+          "picked_px": [
+            1554,
+            553
+          ],
+          "projected_px": [
+            1550.389581979085,
+            557.2413885704665
+          ],
+          "error_px": 5.569963670566545
+        },
+        {
+          "key": "fin_top",
+          "role": "fit",
+          "model_m": [
+            0.0,
+            0.4415,
+            1.5567
+          ],
+          "picked_px": [
+            537,
+            470
+          ],
+          "projected_px": [
+            537.2342170079771,
+            463.4545162054908
+          ],
+          "error_px": 6.54967294687364
+        },
+        {
+          "key": "wheel_bottom_right",
+          "role": "fit",
+          "model_m": [
+            0.451,
+            -0.5105,
+            0.025
+          ],
+          "picked_px": [
+            635,
+            820
+          ],
+          "projected_px": [
+            630.332996598532,
+            827.8299927810674
+          ],
+          "error_px": 9.11535559925568
+        },
+        {
+          "key": "wheel_bottom_left",
+          "role": "fit",
+          "model_m": [
+            -0.451,
+            -0.5105,
+            0.025
+          ],
+          "picked_px": [
+            1115,
+            805
+          ],
+          "projected_px": [
+            1120.2621939447622,
+            810.0584987455293
+          ],
+          "error_px": 7.299253021427142
+        },
+        {
+          "key": "canopy_crown",
+          "role": "check",
+          "model_m": [
+            0.0,
+            0.2366,
+            0.3248
+          ],
+          "picked_px": [
+            762,
+            443
+          ],
+          "projected_px": [
+            775.9617749322509,
+            430.89954517306523
+          ],
+          "error_px": 18.475718288540754
+        },
+        {
+          "key": "scoop_lip_bottom",
+          "role": "check",
+          "model_m": [
+            0.0,
+            -0.2779,
+            0.3063
+          ],
+          "picked_px": [
+            800,
+            720
+          ],
+          "projected_px": [
+            808.0466433607473,
+            717.6328457209378
+          ],
+          "error_px": 8.387603278406878
+        }
+      ],
+      "anchors": {
+        "spinner_tip": {
+          "model_m": [
+            0.0,
+            0.0,
+            -0.6686
+          ],
+          "picked_px": [
+            993,
+            457
+          ]
+        },
+        "wing_tip_right": {
+          "model_m": [
+            1.41,
+            -0.04484098442844714,
+            0.24569999999999997
+          ],
+          "picked_px": [
+            27,
+            600
+          ]
+        },
+        "wing_tip_left": {
+          "model_m": [
+            -1.41,
+            -0.04484098442844714,
+            0.24569999999999997
+          ],
+          "picked_px": [
+            1554,
+            553
+          ]
+        },
+        "fin_top": {
+          "model_m": [
+            0.0,
+            0.4415,
+            1.5567
+          ],
+          "picked_px": [
+            537,
+            470
+          ]
+        },
+        "wheel_bottom_right": {
+          "model_m": [
+            0.451,
+            -0.5105,
+            0.025
+          ],
+          "picked_px": [
+            635,
+            820
+          ]
+        },
+        "wheel_bottom_left": {
+          "model_m": [
+            -0.451,
+            -0.5105,
+            0.025
+          ],
+          "picked_px": [
+            1115,
+            805
+          ]
+        }
+      },
+      "checks": {}
+    }
+  ]
+}
