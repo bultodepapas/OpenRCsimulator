@@ -1,6 +1,6 @@
 # Learnings
 
-Practical lessons from **actually building and running** things, as opposed to reading about them (that is [RESEARCH.md](RESEARCH.md)). Each entry says what happened, what we learned, and what we now do differently. Newest first within each section. Evidence lives in the linked files.
+Practical lessons from **actually building and running** things, as opposed to reading about them (that is [RESEARCH.md](RESEARCH.md)). Each entry says what happened, what we learned, and what we now do differently, with its evidence linked. The thematic sections at the top hold cross-cutting lessons, newest first; after them, each track appends its dated entries at the end of the file under `## YYYY-MM-DD · <step IDs> — title`. Where everything else lives: [docs/README.md](docs/README.md).
 
 ## Process
 
@@ -670,3 +670,71 @@ Prueba: [E1](docs/research/landing-gear-contact-e1.md), `test_ground_contact.gd`
 - El cono de cola debe acabar antes de la charnela: si la termina 6 mm detrás, el timón atraviesa el fuselaje en neutro y nadie lo ve en las capturas; la holgura sí.
 
 Prueba: `verify_p51.gd` 131, `verify_p51_clearance.gd` 12, siluetas perfil 7,7 → 7,2 px con cámara congelada, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v01/index.html).
+
+## 2026-10-06 · Documentación — mapa, registro e índice
+
+- **Un repositorio de dos días puede tener 17 planes, 167 informes y 13 espacios de nombres de pasos sin que nadie sepa dónde está el estado.** La revisión encontró el mismo paso con estado en tres sitios (ROADMAP, VQ-PLAN, LANDSCAPE-PLAN), planes cuya cabecera contradecía su propia tabla (EXTRA-300-PLAN), un plan que auditaba un modelo ya eliminado (WIND tras D9-R2), Gate F decidida sin etiquetar y 228 enlaces a una carpeta ignorada. *Ahora:* [docs/README.md](docs/README.md) registra pistas, planes, prefijos y rutas; el estado de un paso vive en su plan y el ROADMAP lleva una línea por pista; los enlaces se comprueban con un verificador antes de entregar.
+- **Con varias pistas en el mismo árbol, `git status` antes de editar un documento compartido.** ROADMAP, LEARNINGS, DECISIONS y AGENTS cambiaron en disco durante la revisión; las ediciones se hicieron como sustituciones exactas que fallan si el texto no coincide, sin tocar líneas ajenas y sin `git add`. Un lote que movía y borraba ficheros fue bloqueado por el clasificador de permisos: las operaciones de archivo se dejan documentadas con sus comandos para el propietario.
+
+Prueba: [auditoría](docs/research/documentation-audit-2026-10-06.md); verificador de enlaces y anclas sin fallos sobre los 20 documentos tocados; `--check-only` del catálogo editado.
+
+## 2026-10-06 · P51-V02 — raíz alar: densidad de estaciones y una métrica que mentía
+
+- Una tabla medida no sirve de nada si el loft la atraviesa en línea recta: la extensión del borde de ataque, aplicada a un panel con dos estaciones, se convirtió en una cuña desde la raíz hasta el extremo del flap (60 % de la semiala). La imagen de diferencia antes/después de la silueta (azul añadido, rojo quitado) lo mostró en un segundo; las estaciones del panel deben incluir los puntos de la tabla.
+- La métrica de planta llevaba un sesgo fijo de ~5 px: las cajas que excluyen los depósitos del relleno del dibujo recortaban también el ala, y los bordes de las cajas contaban como «contorno real» lejos de cualquier borde del modelo. Ignorar los píxeles de contorno dentro de las cajas (dilatadas 3 px) y descontar su área de ambas máscaras bajó la planta de la revisión 1 de 15,0 a 10,7 px sin tocar el modelo. Las comparaciones archivadas se recalcularon con la misma regla para que sigan siendo comparables.
+- Quitar las cajas «porque los depósitos están dentro del ala» fue peor: sus contornos a trazos se sellan con el cierre de 3 px y se funden con el ala; el residuo del ajuste del borde de ataque subió de 0,1 a 2,2 in. Cajas para el relleno, ignorar para la métrica: dos funciones distintas.
+- Una línea de cota dibujada pegada a la punta derecha del estabilizador cambiaba la semienvergadura medida entre 79,5 y 81,4 in según dónde cayera la rejilla de muestreo de 2 in (medio píxel de diferencia en la columna central bastó). Las comprobaciones reservadas (+2,7 % en vez de +0,5 %) lo delataron; una caja de 9 px sobre la línea lo arregla y la medida queda en +0,3 %.
+- El carenado de raíz como tira plana con material metálico se lee como una hoja cromada aunque sea pequeño: el sombreado plano de `_strip` concentra el brillo. Pendiente para V08 (normales suaves, materiales).
+
+Prueba: `verify_p51.gd` 138, siluetas planta 10,7 px / IoU 0,910 con cámara congelada, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v02/index.html), [diferencia de planta](research/p51/p51-02/review-2026-10-06-v02/plan-diff-v01-to-v02.png).
+
+## 2026-10-06 · P51-V03 — una silueta medida ya contiene los detalles
+
+- La línea superior medida del capó ya incluye la toma de carburador: añadir la toma encima la sacaba de la silueta, y «aplanarla» la hacía invisible. La solución fue restar su perfil de altura a las estaciones del capó y volver a sumarlo con el loft de la toma (misma función g(u) en `apply_metrology.py` y en el builder), con un check que exige que la cima vuelva a la línea medida. Regla: lo que la silueta mide es la suma de piezas; modelar una pieza aparte obliga a rebajar la otra.
+- El canal de capa límite se consigue bajando el borde superior del conducto bajo la piel durante 0,6 m y dejando que el propio techo del conducto sea el suelo del canal; una placa oscura cierra el frente para que se lea como ranura y no como agujero. Comprobar el hueco en el eje, no en el borde lateral, donde la curvatura del vientre lo falsea.
+- Exponente de superelipse por estación (2,6 → 5 → 3) basta para pasar de «barriga de ballena» a conducto de lados rectos sin cambiar las cotas medidas.
+
+Prueba: `verify_p51.gd` 144, siluetas con cámara congelada (perfil 7,1 px, foto IoU 0,813), [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v03/index.html).
+
+## 2026-10-06 · P51-V05/V07 — lo visual que también es físico
+
+- El planform de la pala vive en `geometry.json` y lo lee el modelo de elemento de pala de la derivación física: ensanchar las palas para que parezcan Hamilton Standard bajó el régimen estático de 5.967 a 5.751 rpm sin tocar la física a mano. Es coherente (la hélice visual y la calculada son la misma), pero hay que mirar la salida de `derive_physics.py` en cada paso visual y re-ejecutar el test de manejo.
+- El eje de empuje visual se inclina con una rotación negativa en X (en Godot, −Z adelante sube con rotación positiva); el dato físico sigue axial y queda registrado como diferencia conocida hasta P51-06, en vez de fingir que coinciden.
+- Seis cilindros de 9 cm salientes son todo lo que hace falta para que los escapes dejen de dominar la silueta en planta (tramo 7: 5,1 → 0,9 px).
+
+Prueba: `verify_p51.gd` 147, siluetas con cámara congelada, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v05/index.html).
+
+## 2026-10-06 · P51-V04 — un prisma bajo la línea medida
+
+- El parabrisas del P-51D no es una burbuja: tres paneles planos bajo la misma línea superior medida en el dibujo. Hacerlo como loft de anillos poligonales (25 puntos, mismo conteo que la cúpula) deja las siluetas idénticas y cambia por completo la lectura en perspectiva; el verificador exige que ningún vértice supere la línea medida en más de 3 mm.
+- `render.gd` se niega a renderizar si el hash de la geometría cambió desde el ajuste de cámara: hay que volver a ejecutar `prepare.py` y `photo/fit.py` en cada paso (las anclas no se mueven, la cámara queda igual al píxel; este paso cambió la pose de la foto en 1e-4).
+- Los cierres fallan si el directorio de salida existe: usar siempre un `--output-dir` nuevo.
+
+Prueba: `verify_p51.gd` 162 con dos mutaciones, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v04/index.html), [capturas](research/p51/p51-02/review-2026-10-06-v04/).
+
+## 2026-10-06 · P51-V06 — ruedas huecas y anclajes por iteración
+
+- Un cubo con radios dentro de un `CylinderMesh` macizo es invisible: el neumático tiene que ser un tubo (loft de la sección alrededor del eje, 24 pasos) para que el cubo rehundido, los radios y las tapas se vean. El verificador cuenta los radios, pero solo la captura reveló que no se veían.
+- Con el eje medido en el dibujo y la inclinación como dato, el punto de anclaje en el ala sale de una iteración de tres pasos sobre la piel inferior (la altura de la piel depende de la estación): la primera pasada daba 7,46° en vez de 8°.
+- Una mutación que no cambia la geometría comprobada no demuestra nada: desplazar el centro de la puerta del patín la dejó igual de grande; girarla a 0° sí hizo fallar el check. Hay que mirar qué mide el check antes de elegir la mutación.
+
+Prueba: `verify_p51.gd` 208 con tres mutaciones, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v06/index.html), [recortes](research/p51/p51-02/review-2026-10-06-v06/).
+
+## 2026-10-06 · P51-V10 — detalles que también miden
+
+- El mástil de antena no es solo decoración: el dibujo lo tiene, y ponerlo bajó el tramo 6 de la silueta lateral de 19,9 a 13,1 px. Conviene mirar los tramos malos antes de dar por «ruido» un residuo.
+- Un detalle fino (pitot de 3 mm de radio a 1/4) se ve como una línea de puntos en una captura de 1280 px: es aliasing de la captura, no un error del modelo; se comprueba con un recorte ampliado antes de tocar la geometría.
+- Las piezas que van sobre superficies móviles (tabs, luz de cola) se cuelgan del nodo de bisagra y se expresan en su marco; el verificador comprueba el padre, no la posición absoluta.
+- Una caja recta sobre una superficie que cambia de espesor no se lee como panel: la parte que asoma varía y aparece un escalón. La funda que muestrea la sección propia (semiespesor en el frente del tab, borde de salida) y sale 1,5 mm uniforme sí se lee como tab.
+- Comprobar la fuente antes de copiar el plan: el plan decía «pitot bajo el ala izquierda», las fotos del P-51D lo ponen bajo la derecha. El dato queda con su `source` y la corrección anotada en la tabla de estado.
+
+Prueba: `verify_p51.gd` 240 con tres mutaciones, [comparación](research/p51/p51-02/silhouette/review-2026-10-06-v10/index.html), [recortes](research/p51/p51-02/review-2026-10-06-v10/).
+
+## 2026-10-06 · P51-V08 — metal sin UV
+
+- Un sombreador espacial puede dibujar líneas de panel sin UV: `VERTEX` dentro de `vertex()` está en espacio del objeto, y como cada piel vive en un marco con sentido (fuselaje en el del avión, ala en el diedro, cola en el suyo), las coordenadas ya son metros y fracciones de cuerda. Se ahorró reescribir los lofts para transportar UV, que era lo que el plan daba por necesario.
+- Un material metálico sin entorno es plástico gris: el inspector necesitaba un `Sky` para los reflejos. Se puede dar el cielo a `reflected_light_source` y dejar el fondo plano (`BG_COLOR`), así las capturas siguen comparándose píxel a píxel.
+- La variación de tono por panel al 6 % se lee como tablero de ajedrez en una vista cenital; al 3 % se lee como aluminio. Las piezas pequeñas (elevadores, puertas) no deben llevar variación: el hash por posición produce bloques visibles.
+- Un lomo estrecho visto desde arriba sale oscuro con metal: sus flancos reflejan el horizonte y el suelo en ángulo rasante; es física, no un error de normales (se comprobó muestreando píxeles: el centro del lomo sí refleja el cielo).
+
+Prueba: `verify_p51.gd` 248 con dos mutaciones, [A/B](research/p51/p51-02/review-2026-10-06-v08/ab-oblique-front-left-before-after.png).

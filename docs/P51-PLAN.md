@@ -32,7 +32,7 @@ Cada valor lleva su tipo de evidencia. Tras la revisión 1 por siluetas, las est
 | P51-07 | Vuelo en el bucle real: trimado, 30 s manos fuera, alabeo contra predicción, looping, pérdida, barrena | `tests/test_p51_handling.gd` (15 checks, 11 s): trimado a 22 m/s con 56 % de gas, 30 s manos fuera, alabeo 99°/s y 118°/s frente a 99/122 previstos, looping en 5,4 s, pérdida a 30° de α, barrena recuperada | Hecho 2026-10-06 |
 | P51-08 | Envolvente completa y lectura por un piloto: frenado de hélice, aproximación, tendencia a caer de ala | trazas y revisión | Pendiente |
 | P51-09 | Contraste independiente: cotas del AN 01-60JE-2, polar del perfil, medidas de hélice (Mejzlik/Falcon) | documento | Pendiente |
-| P51-10 | Acabado y formas: ver [P51-VISUAL-PLAN](P51-VISUAL-PLAN.md) (V01 cola, V02 raíz alar, V03 toma, V04 cabina, V05 escapes, V06 tren, V07 hélice, V08 materiales, V09 esquema, V10 detalles), a partir de la [revisión visual 1](research/p51-visual-review-v1.md) | siluetas sin empeorar + capturas | Planificado 2026-10-06 |
+| P51-10 | Acabado y formas: ver [P51-VISUAL-PLAN](P51-VISUAL-PLAN.md) (V01 cola, V02 raíz alar, V03 toma, V04 cabina, V05 escapes, V06 tren, V07 hélice, V08 materiales, V09 esquema, V10 detalles), a partir de la [revisión visual 1](research/p51-visual-review-v1.md) | siluetas sin empeorar + capturas | **V01-V08 y V10 hechos 2026-10-06** ([revisión visual 2](research/p51-visual-review-v2.md): lado 7,7 → 5,9 px, planta IoU 0,907 → 0,914, foto IoU 0,80 → 0,81, `verify_p51` 100 → 248); V09 espera el esquema del propietario |
 | P51-11 | Flaps (15°/45°) y retráctiles cuando la simulación los soporte (ROADMAP E/G) | — | Bloqueado por el motor físico |
 
 ## 4. Límites conocidos de la v1

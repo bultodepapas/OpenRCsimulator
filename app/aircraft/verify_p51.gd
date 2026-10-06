@@ -235,6 +235,30 @@ func _run() -> void:
 	_check("nothing below the wheels", lowest_other > wheel_bottom, "%.4f" % lowest_other)
 	var track: float = airplane.gear.right.position.x - airplane.gear.left.position.x
 	_check("track", absf(track - float(g.track)) < 0.002, "%.4f" % track)
+	# V06: the leg rakes forward by the data angle, ends at the axle, the strut door stays inboard of the leg,
+	# wheels carry spokes, the tail-wheel doors hang below the tail cone.
+	for suffix in ["left", "right"]:
+		var leg := root.find_child("main_strut_" + suffix, true, false) as MeshInstance3D
+		var dir: Vector3 = -(root.global_transform.affine_inverse() * leg.global_transform).basis.y.normalized() # downwards
+		if dir.y > 0.0: dir = -dir
+		var rake := rad_to_deg(atan2(-dir.z, -dir.y))
+		_check("leg rake %s" % suffix, absf(rake - float(g.rake_deg)) < 0.5, "%.2f deg" % rake)
+		var half_len: float = (leg.mesh as CylinderMesh).height / 2.0
+		var foot: Vector3 = leg.position + dir * half_len
+		var axle: Vector3 = airplane.gear[suffix].position
+		_check("leg ends at the axle %s" % suffix, absf(foot.z - axle.z) < 0.002 and absf(foot.y - axle.y) < 0.002, "%.4f %.4f" % [foot.z - axle.z, foot.y - axle.y])
+		var door: MeshInstance3D = meshes.filter(func(m): return m.name == "gear_door_" + suffix)[0]
+		var sgn := 1.0 if suffix == "right" else -1.0
+		var door_out := -INF
+		for v in _vertices(root, door): door_out = maxf(door_out, v.x * sgn)
+		_check("strut door inboard of the leg %s" % suffix, door_out < leg.position.x * sgn - float(g.strut_radius) * 1.5, "%.4f" % door_out)
+		var spokes := meshes.filter(func(m): return String(m.name).begins_with("wheel_%s_spoke_" % suffix))
+		_check("hub spokes %s" % suffix, spokes.size() == 2 * int(g.hub_spokes), str(spokes.size()))
+		var tail_door := meshes.filter(func(m): return m.name == "tail_door_" + suffix)
+		var door_low := INF
+		if tail_door.size() == 1:
+			for v in _vertices(root, tail_door[0]): door_low = minf(door_low, v.y)
+		_check("tail-wheel door hangs open %s" % suffix, tail_door.size() == 1 and door_low < P51.skin_y(float(g.tail_axle[0]), 0.0, false) - 0.02, "%.4f" % door_low)
 	airplane.gear.steering.rotation.y = 0.4
 	_check("tail wheel steers with the pivot", not (root.global_transform.affine_inverse() * airplane.gear.tail.global_transform).basis.x.is_equal_approx(Vector3.RIGHT))
 	airplane.gear.steering.rotation.y = 0.0
@@ -256,6 +280,95 @@ func _run() -> void:
 	_check("fin height", absf(highs.fin - float(t.fin_top_y)) < 0.005 and absf(highs.rudder - float(t.fin_top_y)) < 0.01, "%.4f / %.4f" % [highs.fin, highs.rudder])
 	var stab_box := _bounds(root, [meshes.filter(func(m): return m.name == "stab")[0]] as Array[MeshInstance3D])
 	_check("stab span", absf(stab_box.size.x - 2.0 * float(t.stab_half_span)) < 0.005, "%.4f" % stab_box.size.x)
+	# V04: faceted windscreen under the measured canopy line, opaque frames, hood rails, gunsight; the hood keeps the crown.
+	var ws_mesh := meshes.filter(func(m): return m.name == "windscreen")
+	_check("windscreen present", ws_mesh.size() == 1)
+	var ws_over := 0.0
+	for vtx in _vertices(root, ws_mesh[0]):
+		ws_over = maxf(ws_over, vtx.y - P51.monotone(D.canopy.top, vtx.z))
+	_check("windscreen never above the measured canopy line", ws_over <= 0.003, "%.4f" % ws_over)
+	for name in ["windscreen_frame_1", "windscreen_frame_2", "windscreen_frame_front", "hood_rail_left", "hood_rail_right", "gunsight"]:
+		var found := meshes.filter(func(m): return m.name == name)
+		var opaque: bool = found.size() == 1 and (found[0].mesh.surface_get_material(0) as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED
+		_check("%s present and opaque" % name, opaque)
+	# V10: gun ports on the leading edge, pitot under the right wing, antenna mast above the deck, trim tabs and tail
+	# light on the moving surfaces, navigation lights at the tips.
+	var de: Dictionary = D.details
+	for side in ["left", "right"]:
+		var sgn := 1.0 if side == "right" else -1.0
+		for i in 3:
+			var port := root.find_child("gun_port_%s_%d" % [side, i], true, false) as MeshInstance3D
+			var x: float = sgn * float(de.gun_ports.x[i])
+			var le_z: float = (airplane.frames[side] * P51._wing_skin_point(x, 0.0, true, true)).z
+			var rear := port.position.z + (port.mesh as CylinderMesh).height / 2.0
+			_check("gun port %s %d sits on the leading edge" % [side, i], port != null and absf(rear - 0.01 - le_z) < 0.005 and absf(port.position.x - x) < 0.002, "%.4f vs %.4f" % [rear, le_z])
+		var tab := root.find_child("elevator_tab_" + side, true, false)
+		_check("elevator tab %s hangs from the elevator hinge" % side, tab != null and tab.get_parent().name == "elevator_hinge")
+		var nav := root.find_child("nav_light_" + side, true, false) as MeshInstance3D
+		_check("nav light %s at the tip" % side, nav != null and absf(nav.position.x) > float(D.wing.span) / 2.0 - 0.03, "%.4f" % (nav.position.x if nav else 0.0))
+	var pitot := root.find_child("pitot_tube", true, false) as MeshInstance3D
+	var wing_low: float = (airplane.frames["right"] * P51._wing_skin_point(float(de.pitot.x), float(de.pitot.chord_fraction), false)).y
+	_check("pitot under the right wing", pitot != null and pitot.position.x > 0.0 and pitot.position.y < wing_low - 0.02, "%.4f < %.4f" % [pitot.position.y if pitot else 0.0, wing_low])
+	var mast := root.find_child("antenna_mast", true, false) as MeshInstance3D
+	var mast_top_y: float = mast.position.y + (mast.mesh as CylinderMesh).height / 2.0 * absf(mast.basis.y.y) if mast else 0.0
+	_check("antenna mast rises above the deck", mast != null and mast_top_y > P51.profile(mast.position.z, 2) + 0.08, "%.4f" % mast_top_y)
+	var rtab := root.find_child("rudder_tab", true, false)
+	_check("rudder tab hangs from the rudder hinge", rtab != null and rtab.get_parent().name == "rudder_hinge")
+	var tl := root.find_child("tail_light", true, false)
+	_check("tail light on the rudder", tl != null and tl.get_parent().name == "rudder_hinge")
+	# V05: exhaust stacks stay short (no vertex further than length + 3 mm outboard of the local skin) and sit high on
+	# the flank. V07: cuffed blades (max chord 0.18-0.26 r) and the thrust frame dips by the drawing's down thrust.
+	var worst_protrusion := 0.0
+	var ex: Dictionary = D.exhausts
+	for m in meshes:
+		if String(m.name).begins_with("exhaust_"):
+			for vtx in _vertices(root, m):
+				worst_protrusion = maxf(worst_protrusion, absf(vtx.x) - P51.skin_half_width_at(vtx.z, clampf(vtx.y, -0.05, P51.profile(vtx.z, 2))))
+	_check("exhaust stacks protrude at most their length", worst_protrusion <= float(ex.length) + 0.003, "%.4f vs %.4f" % [worst_protrusion, ex.length])
+	var chord_max := 0.0
+	for row in D.propeller.blade.chord_fraction_of_radius: chord_max = maxf(chord_max, row[1])
+	_check("cuffed paddle blade: max chord between 0.18 and 0.26 of the radius", chord_max >= 0.18 and chord_max <= 0.26, str(chord_max))
+	var thrust_node: Node3D = root.find_child("thrust_frame", true, false)
+	var forward: Vector3 = thrust_node.transform.basis * Vector3(0, 0, -1)
+	_check("thrust axis dips by the drawing's down thrust", absf(forward.y + sin(deg_to_rad(float(D.propeller.down_thrust_deg)))) < 1e-4, str(forward))
+	# V03: scoop duct width = the stations' half-width, gutter slot under the fuselage at the mouth, exit door present, and
+	# the carburettor intake restoring the measured cowl line (cowl stations were lowered by the intake's height profile).
+	var scoop_mesh: MeshInstance3D = meshes.filter(func(m): return m.name == "scoop")[0]
+	var scoop_hw := 0.0
+	var mouth_top := -INF
+	var z_mouth: float = D.scoop_stations[0][0]
+	for vtx in _vertices(root, scoop_mesh):
+		scoop_hw = maxf(scoop_hw, absf(vtx.x))
+		if absf(vtx.z - z_mouth) < 0.003 and absf(vtx.x) < 0.005: mouth_top = maxf(mouth_top, vtx.y) # duct top on the centreline
+	var hw_max := 0.0
+	for row in D.scoop_stations: hw_max = maxf(hw_max, row[1])
+	_check("scoop duct width = stations' half-width", absf(scoop_hw - hw_max) < 0.003, "%.4f vs %.4f" % [scoop_hw, hw_max])
+	var skin_at_mouth: float = P51.skin_y(z_mouth, 0.0, false)
+	_check("boundary-layer gutter: duct top at the mouth sits gutter.gap below the fuselage", absf((skin_at_mouth - mouth_top) - float(D.scoop_gutter.gap)) < 0.002, "%.4f vs gap %.4f" % [skin_at_mouth - mouth_top, D.scoop_gutter.gap])
+	_check("scoop exit door present", meshes.any(func(m): return m.name == "scoop_exit_door"))
+	var intake_mesh: MeshInstance3D = meshes.filter(func(m): return m.name == "carb_intake")[0]
+	var intake_top := -INF
+	var cowl_top_lowered := -INF
+	for vtx in _vertices(root, intake_mesh): intake_top = maxf(intake_top, vtx.y)
+	var ci: Dictionary = D.carb_intake
+	var best := 0.0
+	for k in 101:
+		var z := lerpf(float(ci.z0), float(ci.z1), float(k) / 100.0)
+		var expected: float = P51.profile(z, 2) + float(ci.height) * P51._intake_profile((z - float(ci.z0)) / (float(ci.z1) - float(ci.z0)))
+		best = maxf(best, expected)
+	_check("carburettor intake top = lowered cowl + height profile (measured line restored)", absf(intake_top - best) < 0.006, "%.4f vs %.4f" % [intake_top, best])
+	# V02: root leading-edge extension (measured), hinge lines untouched by it, tip rounded in plan, root fillets present.
+	var root_mesh: MeshInstance3D = meshes.filter(func(m): return m.name == "wing_right_root")[0]
+	var root_min_z := INF
+	for v in _vertices(root, root_mesh): root_min_z = minf(root_min_z, v.z)
+	var ext0: float = D.wing.root_extension[0][1]
+	_check("root leading edge extended forward by the measured kink", absf(root_min_z - (float(D.wing.le_z_root) - ext0)) < 0.004, "%.4f vs %.4f" % [root_min_z, float(D.wing.le_z_root) - ext0])
+	_check("extension ends inboard of the aileron (hinges untouched)", P51._root_ext(float(D.wing.aileron_inner)) == 0.0 and P51._root_ext(float(D.wing.flap_outer)) == 0.0)
+	var tip_plan: Array = P51._tip_plan(float(w.span) / 2.0 - 0.002)
+	_check("wing tip rounded in plan", float(tip_plan[1]) < 0.4, str(tip_plan))
+	for side in ["left", "right"]:
+		var fillet := meshes.filter(func(m): return m.name == "root_fillet_" + side)
+		_check("root fillet %s present with faces" % side, fillet.size() == 1 and fillet[0].mesh.get_surface_count() > 0)
 	# V01: tail shapes from the measured outlines. Fin LE monotone (no loops), stab tip rounded in plan, elevator horn
 	# balance ahead of the hinge at the tip, and clearances of rudder/elevators against their neighbours at the flown
 	# throws and at 45 deg (same checker as the Extra, tail pairs only).
@@ -311,7 +424,15 @@ func _run() -> void:
 	var glass: Material = (root.find_child("canopy", false, false) as MeshInstance3D).mesh.surface_get_material(0)
 	_check("canopy transparent", glass is StandardMaterial3D and glass.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA and is_equal_approx(glass.albedo_color.a, P51.GLASS_ALPHA))
 	var skin: Material = (root.find_child("fuselage", false, false) as MeshInstance3D).mesh.surface_get_material(0)
-	_check("natural-metal fuselage", skin is StandardMaterial3D and skin.metallic >= 0.7)
+	_check("natural-metal fuselage", P51.Finish.metallic_of(skin) >= 0.7, "%.2f" % P51.Finish.metallic_of(skin))
+	# V08: the finish shader draws every fixed skin (fuselage, wing skins, stab, fin) with its own part; it never reads TIME.
+	var finish_parts := {"fuselage": P51.Finish.FUSELAGE, "wing_left_root": P51.Finish.WING, "wing_right_ahead_of_aileron": P51.Finish.WING, "stab": P51.Finish.TAIL_H, "fin": P51.Finish.TAIL_V, "elevator_left": P51.Finish.PLAIN, "aileron_right": P51.Finish.PLAIN}
+	for label in finish_parts:
+		var mesh := root.find_child(label, true, false) as MeshInstance3D
+		var mat: Material = mesh.mesh.surface_get_material(0) if mesh else null
+		var ok: bool = mat is ShaderMaterial and int((mat as ShaderMaterial).get_shader_parameter("part")) == finish_parts[label]
+		_check("finish part on %s" % label, ok)
+	_check("finish shader never reads TIME", not RegEx.create_from_string("(?m)^\\s*[^/\\s].*\\bTIME\\b").search(P51.Finish.SHADER_CODE))
 	var rudder_mat: Material = (root.find_child("rudder", true, false) as MeshInstance3D).mesh.surface_get_material(0)
 	_check("yellow rudder", rudder_mat is StandardMaterial3D and rudder_mat.albedo_color.is_equal_approx(P51.YELLOW))
 

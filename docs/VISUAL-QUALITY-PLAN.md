@@ -19,7 +19,7 @@ La investigación inicial revisó scripts, configuración, planes y fuentes ofic
 | [ground.gdshader](../app/render/ground.gdshader): tile de hierba en coordenadas mundiales con mipmaps y muestreo anisotrópico | Conservar ese filtrado; falta romper repetición, introducir superficies y transiciones |
 | [shadow.gd](../app/render/shadow.gd): máscara planar genérica, geometría/datum propios del Stik | Extra necesita su propia silueta; alabeo extremo y suelo irregular requieren otro tratamiento |
 | [pilot_camera.gd](../app/render/pilot_camera.gd): seguimiento y autozoom; horizonte puede salir del cuadro | Calidad incluye encuadre y lectura del vuelo, además de materiales |
-| [airplane.gd](../app/render/airplane.gd) sigue construyendo Stik; [extra_300s_model.gd](../app/aircraft/extra_300s_model.gd) se declara preview EX-02 | No presentar las capturas del Stik como validación del Extra; coordinar EX-03/04/10 |
+| [airplane.gd](../app/render/airplane.gd) sigue construyendo Stik; [extra_300s_model.gd](../app/aircraft/extra_300s_model.gd) vuela como experimental desde EX-07 (2026-10-06) | No presentar las capturas del Stik como validación del Extra; coordinar EX-03/04/10 |
 | Captura piloto: 101 draw calls visibles, 46.842 primitivas; horizonte: 2 y 4 | El escenario está casi vacío. Medir avión y paisaje por separado; estos números no son FPS ni presupuesto universal |
 
 El árbol contenía cambios concurrentes. El baseline es del 2026-10-05; no retrata el Inicio añadido después. Las capturas corresponden a `--scripted`, 1280 × 720, llvmpipe; no son un benchmark ni un ensayo de vuelo físico. No se modificó `app/` en esta entrega.
@@ -139,7 +139,7 @@ La [investigación de herramientas](research/visual-quality-tools-2026-10-05.md)
 | glTF Transform 4.5.0 + Khronos glTF Validator 2.0.0-dev.3.10 | Inspección, reescritura acotada y validación offline de GLB | **Usados** en §6.2; lockfile y receta conservados. `weld` conserva la captura de las tres muestras; no activar compresión/flatten/simplificación por defecto |
 | Material Maker | Generar texturas PBR de suelo, caucho o pintura | Ensayo offline pequeño; exportar mapas, no incorporar un grafo nuevo al runtime |
 | Poly Haven / ambientCG / cgbookcase | Materiales CC0; Poly Haven también props/HDRI | L9/VQ-02: hasta cuatro familias de superficies a 1K–2K; una por A/B. Pista actual de hierba; asfalto solo para un área que lo necesite. Height no cambia colisión |
-| Kenney / KayKit / Poly Pizza | Props y vegetación como punto de partida | Kenney Nature Kit **ensayado** para L6a/L8: tres fuentes CC0 y adaptación concreta (§6.2). KayKit/Poly Pizza siguen como candidatos L10/L11; no heredan esta validación |
+| Kenney / KayKit / Poly Pizza | Props y vegetación como punto de partida | Kenney Nature Kit **ensayado** para L6a/L8 (L6a eligió finalmente Quaternius, §18): tres fuentes CC0 y adaptación concreta (§6.2). KayKit/Poly Pizza siguen como candidatos L10/L11; no heredan esta validación |
 | Quaternius | Paquetes concretos, con revisión de licencia | No es fuente CC0 por defecto: QAL y fichas antiguas CC0 coexisten. Admitir solo archivos con evidencia de distribución CC0; usar alternativa si hay ambigüedad |
 | Terrain3D | Esculpir/pintar campos grandes en editor | Ensayo condicionado a necesidad de autoría. El render del terreno no reemplaza nuestro sampler físico float64 |
 | HTerrain | Alternativa de terreno para comparar | Un solo ensayo comparativo si el terreno propio limita; no mantener dos addons |
@@ -332,7 +332,7 @@ La primera entrega y el siguiente paso de §4 se mantienen: las bibliotecas ampl
 
 El [segundo aporte de fuentes](research/asset-sources-catalog-2026-10-06.md), integrado el mismo día, añade §6.1 y la búsqueda previa de L6a. Su [texto original](research/asset-sources-user-input-2026-10-06.txt) queda conservado por separado del primer aporte.
 
-El uso práctico posterior de esas herramientas queda integrado en §6.2 y en los criterios L6a/b: [árboles/validación/instancing](research/visual-quality-nature-trial-2026-10-06.md) y [muestra de materiales PBR](research/visual-quality-material-trial-2026-10-06.md). Son prototipos reproducibles, no pasos de la app declarados completos. VQ-01a, VQ-01b y L5 se implementaron después de esos ensayos; el siguiente paso de integración es L6a.
+El uso práctico posterior de esas herramientas queda integrado en §6.2 y en los criterios L6a/b: [árboles/validación/instancing](research/visual-quality-nature-trial-2026-10-06.md) y [muestra de materiales PBR](research/visual-quality-material-trial-2026-10-06.md). Son prototipos reproducibles, no pasos de la app declarados completos. VQ-01a, VQ-01b y L5 se implementaron después de esos ensayos; el siguiente paso de integración fue L6a (hecho, §18).
 
 ## 14. VQ-01a implementado — 2026-10-06
 

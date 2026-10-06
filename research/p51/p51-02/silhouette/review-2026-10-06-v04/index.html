@@ -1,0 +1,28 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P-51D · siluetas sobre la tres vistas AN 01-60-3</title><style>
+*{box-sizing:border-box}body{margin:0;background:#14212d;color:#edf3f6;font:16px system-ui}main{max-width:1600px;margin:auto;padding:24px}
+h1{font-size:24px}h2{font-size:16px;font-weight:500;color:#a8d8e0}p{line-height:1.5;max-width:100ch}.controls{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:16px 0}
+button,select{font:inherit;padding:8px;background:#274357;color:inherit;border:1px solid #7698a9;border-radius:6px}button[aria-pressed=true]{background:#096b70}
+.stage{width:100%;height:auto;display:block;background:#f4f1ea;border-radius:6px}small{color:#a8bfcd}input{accent-color:#2ae1d4}
+</style><main><h1>P-51D 1/4 · siluetas del modelo sobre la tres vistas oficial (AN 01-60-3, dominio público)</h1>
+<p>V04. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
+<div class="controls"><button data-mode="both" aria-pressed="true">Superponer</button><button data-mode="photo" aria-pressed="false">Solo dibujo</button><button data-mode="model" aria-pressed="false">Solo modelo</button>
+<label>Opacidad <input id="opacity" type="range" min="0" max="100" value="45"><output id="value">45%</output></label><label><input id="contour" type="checkbox"> Contorno</label><label><input id="before" type="checkbox"> Mostrar «antes»</label></div>
+<svg width="0" height="0" style="position:absolute"><defs><filter id="edge"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="inner"/><feComposite in="SourceAlpha" in2="inner" operator="out"/></filter>
+<filter id="tint"><feColorMatrix type="matrix" values="1 0 0 0 0.9  0 0 0 0 0.1  0 0 0 0 0.6  0 0 0 1 0"/></filter></defs></svg>
+<section><h2>Perfil · AN 01-60-3 · real→modelo 7.1 px (p90 16.1), IoU 0.872 · antes 7.1 px, IoU 0.872</h2>
+<svg class="stage" viewBox="0 0 1905 495" role="img"><image class="photo" href="drawing_side.png" width="1905" height="495"/>
+<image class="before" href="../../../../../../home/bulto/OpenRCsimulator/research/p51/p51-02/silhouette/renders-v05/side.png" width="1905" height="495" opacity="0" style="filter:url(#tint)"/>
+<image class="after" href="../v04-renders/side.png" width="1905" height="495" opacity=".45"/></svg></section><section><h2>Frontal · AN 01-60-3 (mitad izquierda) · real→modelo 13.7 px (p90 36.3), IoU 0.453 · antes 13.8 px, IoU 0.451</h2>
+<svg class="stage" viewBox="0 0 1550 595" role="img"><image class="photo" href="drawing_front.png" width="1550" height="595"/>
+<image class="before" href="../../../../../../home/bulto/OpenRCsimulator/research/p51/p51-02/silhouette/renders-v05/front.png" width="1550" height="595" opacity="0" style="filter:url(#tint)"/>
+<image class="after" href="../v04-renders/front.png" width="1550" height="595" opacity=".45"/></svg></section><section><h2>Planta · AN 01-60-3 · real→modelo 10.7 px (p90 12.0), IoU 0.914 · antes 10.7 px, IoU 0.914</h2>
+<svg class="stage" viewBox="0 0 1470 1303" role="img"><image class="photo" href="drawing_top.png" width="1470" height="1303"/>
+<image class="before" href="../../../../../../home/bulto/OpenRCsimulator/research/p51/p51-02/silhouette/renders-v05/top.png" width="1470" height="1303" opacity="0" style="filter:url(#tint)"/>
+<image class="after" href="../v04-renders/top.png" width="1470" height="1303" opacity=".45"/></svg></section>
+<p><small>Métrica en metrics.json: distancia euclídea de cada píxel del contorno del dibujo al borde más cercano del alpha del render (y a la inversa), IoU de las máscaras rellenas. La vista frontal es cualitativa: las palas dibujadas no se separan del cuerpo.</small></p></main>
+<script>const $=s=>document.querySelector(s);let mode='both';function update(){const o=Number($('#opacity').value)/100;document.querySelectorAll('.photo').forEach(e=>e.style.display=mode==='model'?'none':'');
+document.querySelectorAll('.after').forEach(e=>{e.setAttribute('opacity',mode==='photo'?0:mode==='model'?1:o);e.setAttribute('filter',$('#contour').checked?'url(#edge)':'none');});
+document.querySelectorAll('.before').forEach(e=>e.setAttribute('opacity',$('#before').checked&&mode!=='photo'?o:0));$('#value').textContent=$('#opacity').value+'%';
+document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===mode));}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;update();});for(const id of ['opacity','contour','before'])$('#'+id).oninput=update;update();</script></html>

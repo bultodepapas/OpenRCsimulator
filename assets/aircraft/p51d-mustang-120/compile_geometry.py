@@ -30,6 +30,10 @@ def validate(d):
     assert 0.1 < w["aileron_chord_fraction"] < 0.4 and 0.1 < w["flap_chord_fraction"] < 0.4
     assert 0 < w["hinge_gap"] < 0.01 and 0 < w["tip_thickness_ratio"] <= w["root_thickness_ratio"] < 0.25
     assert 0 <= w["camber_ratio"] < 0.05 and 0 <= w["dihedral_deg"] < 10
+    ext = w["root_extension"]
+    assert increasing(ext) and all(a[1] >= b[1] for a, b in zip(ext, ext[1:])) and ext[-1][1] == 0.0, "root extension must fall to zero"
+    assert ext[-1][0] <= w["flap_outer"], "the extension must end inboard of the aileron"
+    assert 0 < w["tip_round_plan"] < 0.3 and all(w["root_fillet"][k] > 0 for k in ("radius_le", "radius_te", "te_rise", "length_aft"))
     section = w["section"]
     assert section[0] == [0.0, 0.0] and section[-1][0] == 1.0 and increasing(section)
     assert all(finite(*p) and 0 <= p[1] <= 0.5 for p in section)
@@ -42,9 +46,15 @@ def validate(d):
     assert s["tip_z"] < s["back_z"] <= stations[0][0] and s["radius"] > 0
     assert stations[0][0] < d["firewall_z"] < d["cowl_rear_z"]
     scoop = d["scoop_stations"]
-    assert increasing(scoop) and all(row[1] > 0 for row in scoop)
+    assert increasing(scoop) and all(row[1] > 0 and 2.0 <= row[3] <= 8.0 for row in scoop)
+    assert 0 < d["scoop_gutter"]["gap"] < 0.05 and 0 < d["scoop_gutter"]["length"] < 0.5
+    assert 0 < d["scoop_exit"]["door_length"] < 0.3 and 0 <= d["scoop_exit"]["door_angle_deg"] <= 45
+    assert 0 <= d["carb_intake"]["lip"] < d["carb_intake"]["height"]
     canopy = d["canopy"]["top"]
     assert increasing(canopy) and 0 < d["canopy"]["halfwidth_fraction"] <= 1 and canopy[0][0] < d["canopy"]["frame_z"] < canopy[-1][0]
+    ws = d["canopy"]["windscreen"]
+    assert ws["panels"] == 3 and 0.3 <= ws["centre_fraction"] <= 0.7 and 0 < ws["frame_width"] < 0.02
+    assert all(0 < d["canopy"]["rail"][k] < 0.02 for k in ("height", "width")) and all(0 < d["canopy"]["gunsight"][k] < 0.05 for k in ("length", "height", "width"))
     t = d["tail"]
     assert t["stab_root_le_z"] < t["stab_tip_le_z"] and 0 < t["stab_tip_chord"] < t["stab_root_chord"]
     assert 0.4 < t["elevator_hinge_fraction"] < 0.9 and t["stab_half_span"] > 0
@@ -63,11 +73,28 @@ def validate(d):
     assert 0.5 < h["span_from_fraction"] < 1.0 and 0.2 < h["chord_fraction"] < t["elevator_hinge_fraction"]
     g = d["gear"]
     assert g["main_axle"][1] < w["chord_plane_y"] and g["track"] > 0 and g["main_wheel_diameter"] > g["tail_wheel_diameter"] > 0
+    assert 0 <= g["rake_deg"] <= 15 and 0 < g["scissor"]["length"] < 0.15 and 0 < g["scissor"]["offset"] < 0.05
+    assert increasing(g["strut_door"]) and g["strut_door"][0][0] == 0.0 and g["strut_door"][-1][0] <= 1.0 and all(0 < hw < 0.1 for _, hw in g["strut_door"])
+    assert 0 < g["well_doors"]["inner_x"] < g["track"] / 2 and g["well_doors"]["z0"] < 0 < g["well_doors"]["length"] < w["root_chord"]
+    assert 3 <= g["hub_spokes"] <= 12 and 0 < g["tailwheel_doors"]["length"] < 0.4 and 0 < g["tailwheel_doors"]["width"] < 0.2 and 0 < g["tailwheel_doors"]["open_deg"] <= 90 and 0 <= g["tailwheel_doors"]["aft_fraction"] <= 1
     pr = d["propeller"]
     assert 0.3 < pr["diameter"] < 1.2 and 0.1 < pr["pitch"] < 0.6 and pr["blades"] in (2, 3, 4) and 0 < pr["hub_radius"] < s["radius"]
     for key in ("chord_fraction_of_radius", "thickness_fraction_of_chord"):
         rows = pr["blade"][key]
         assert increasing(rows) and rows[-1][0] == 1.0 and all(0 < row[1] < 0.5 for row in rows), key
+    de = d["details"]
+    gp = de["gun_ports"]
+    assert len(gp["x"]) == 3 and increasing([[x, 0] for x in gp["x"]]) and gp["x"][-1] < w["aileron_inner"] and gp["x"][0] > g["track"] / 2
+    assert 0 < gp["bore_radius"] < 0.02 and len(gp["protrusion"]) == 3 and all(0 <= p < 0.05 for p in gp["protrusion"])
+    assert w["aileron_inner"] < de["pitot"]["x"] < w["span"] / 2 and 0 < de["pitot"]["chord_fraction"] < 1 and 0 < de["pitot"]["drop"] < 0.1 and 0 < de["pitot"]["length"] < 0.2
+    am = de["antenna_mast"]
+    assert 0 < am["z_after_canopy"] < 0.2 and 0.05 < am["height"] < 0.2 and 0 <= am["rake_deg"] <= 30 and 0 < am["wire_radius"] < am["radius"] < 0.01
+    assert 0 < de["nav_lights"]["radius"] < 0.03 and 0 < de["fuel_caps"]["x"] < g["track"] / 2 and 0 < de["fuel_caps"]["radius"] < 0.05
+    assert 0 < de["rudder_tab"]["y0"] and de["rudder_tab"]["y0"] + de["rudder_tab"]["span"] < t["fin_top_y"] and 0 < de["rudder_tab"]["chord"] < 0.1
+    assert 0 <= de["elevator_tab"]["s0"] and de["elevator_tab"]["s0"] + de["elevator_tab"]["span"] < t["stab_half_span"] * t["elevator_horn"]["span_from_fraction"] and 0 < de["elevator_tab"]["chord"] < 0.1
+    ex = d["exhausts"]
+    assert stations[0][0] < ex["z0"] < ex["z1"] < 0 and 0 < ex["y_fraction"] < 1 and ex["count"] >= 1 and 0 < ex["length"] < 0.1 and 0 < ex["radius"] < 0.03 and 0 <= ex["rake_deg"] <= 45
+    assert 0 <= pr["down_thrust_deg"] <= 5
     pl = d["pilot"]
     assert pl["chin"][1] < pl["nose_front"][1] < pl["cap_brim_front"][1] < pl["cap_top"][1] and pl["nose_front"][0] < pl["head_back"][0]
     assert pl["shoulder_front"][0] < pl["shoulder_back"][0] and 0 < pl["head_half_width"] < pl["shoulder_half_width"]

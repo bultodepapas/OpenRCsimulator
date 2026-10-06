@@ -5,7 +5,7 @@ h1{font-size:24px}h2{font-size:16px;font-weight:500;color:#a8d8e0}p{line-height:
 button,select{font:inherit;padding:8px;background:#274357;color:inherit;border:1px solid #7698a9;border-radius:6px}button[aria-pressed=true]{background:#096b70}
 .stage{width:100%;height:auto;display:block;background:#f4f1ea;border-radius:6px}small{color:#a8bfcd}input{accent-color:#2ae1d4}
 </style><main><h1>P-51D 1/4 · siluetas del modelo sobre la tres vistas oficial (AN 01-60-3, dominio público)</h1>
-<p>V01 cola (2026-10-06): deriva, timón y estabilizador por contornos medidos; antes = revisión 1. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
+<p>review-2026-10-06-v01. Cámaras ortográficas fijadas por dos anclas por vista (punta del cono y timón; puntas de ala), escala uniforme, sin deformar el dibujo. El render cian es la silueta del modelo (material plano, sin hélice); «antes» es la primera maqueta en magenta.</p>
 <div class="controls"><button data-mode="both" aria-pressed="true">Superponer</button><button data-mode="photo" aria-pressed="false">Solo dibujo</button><button data-mode="model" aria-pressed="false">Solo modelo</button>
 <label>Opacidad <input id="opacity" type="range" min="0" max="100" value="45"><output id="value">45%</output></label><label><input id="contour" type="checkbox"> Contorno</label><label><input id="before" type="checkbox"> Mostrar «antes»</label></div>
 <svg width="0" height="0" style="position:absolute"><defs><filter id="edge"><feMorphology in="SourceAlpha" operator="erode" radius="2" result="inner"/><feComposite in="SourceAlpha" in2="inner" operator="out"/></filter>
@@ -16,7 +16,7 @@ button,select{font:inherit;padding:8px;background:#274357;color:inherit;border:1
 <image class="after" href="../renders-v01/side.png" width="1905" height="495" opacity=".45"/></svg></section><section><h2>Frontal · AN 01-60-3 (mitad izquierda) · real→modelo 13.6 px (p90 36.0), IoU 0.450 · antes 13.6 px, IoU 0.450</h2>
 <svg class="stage" viewBox="0 0 1550 595" role="img"><image class="photo" href="drawing_front.png" width="1550" height="595"/>
 <image class="before" href="../renders-after/front.png" width="1550" height="595" opacity="0" style="filter:url(#tint)"/>
-<image class="after" href="../renders-v01/front.png" width="1550" height="595" opacity=".45"/></svg></section><section><h2>Planta · AN 01-60-3 · real→modelo 15.2 px (p90 51.1), IoU 0.826 · antes 15.0 px, IoU 0.827</h2>
+<image class="after" href="../renders-v01/front.png" width="1550" height="595" opacity=".45"/></svg></section><section><h2>Planta · AN 01-60-3 · real→modelo 10.8 px (p90 12.0), IoU 0.906 · antes 10.7 px, IoU 0.907</h2>
 <svg class="stage" viewBox="0 0 1470 1303" role="img"><image class="photo" href="drawing_top.png" width="1470" height="1303"/>
 <image class="before" href="../renders-after/top.png" width="1470" height="1303" opacity="0" style="filter:url(#tint)"/>
 <image class="after" href="../renders-v01/top.png" width="1470" height="1303" opacity=".45"/></svg></section>

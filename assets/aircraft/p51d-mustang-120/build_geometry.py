@@ -39,8 +39,8 @@ def main():
     trap_fs = fs["span"] * (cr + ct) / 2
     t = fs["tail"]
     g = fs["gear"]
-    # Scoop: the top of every scoop ring is the fuselage bottom at that station; only [z, half width, bottom].
-    scoop = [[L(z), L(w), L(b)] for z, w, b in fs["scoop_stations"]]
+    # Scoop: the top of every scoop ring is the fuselage bottom at that station; [z, half width, bottom, side exponent].
+    scoop = [[L(z), L(w), L(b), n] for z, w, b, n in fs["scoop_stations"]]
     out = {
         "id": "p51d-mustang-120-v1",
         "kit": kit["name"],
@@ -69,6 +69,10 @@ def main():
             "flap_outer": L(fs["flap"]["outer"]),
             "flap_chord_fraction": fs["flap"]["chord_fraction"],
             "hinge_gap": 0.003,
+            # V02: measured root LE extension (scaled), estimated tip rounding and root fillet
+            "root_extension": [[L(x), L(dz)] for x, dz in fs["root_extension"]],
+            "tip_round_plan": L(fs["tip_round_plan"]),
+            "root_fillet": {k: L(v) for k, v in fs["root_fillet"].items()},
             "section": src["section"]["half_thickness_normalised"],
             "reference": {
                 "trapezoid_area": r(trap_fs * k * k),
@@ -81,11 +85,15 @@ def main():
         },
         "fuselage_stations": [[L(z), L(w), L(top), L(bot), te, be] for z, w, top, bot, te, be in fs["fuselage_stations"]],
         "scoop_stations": scoop,
-        "carb_intake": {"z0": L(fs["carb_intake"]["z0"]), "z1": L(fs["carb_intake"]["z1"]), "half_width": L(fs["carb_intake"]["half_width"]), "height": L(fs["carb_intake"]["height"])},
+        "carb_intake": {"z0": L(fs["carb_intake"]["z0"]), "z1": L(fs["carb_intake"]["z1"]), "half_width": L(fs["carb_intake"]["half_width"]), "height": L(fs["carb_intake"]["height"]), "lip": L(fs["carb_intake"]["lip"])},
+        "scoop_gutter": {"gap": L(fs["scoop_gutter"]["gap"]), "length": L(fs["scoop_gutter"]["length"])},
+        "scoop_exit": {"door_length": L(fs["scoop_exit"]["door_length"]), "door_angle_deg": fs["scoop_exit"]["door_angle_deg"]},
         "spinner": {"tip_z": L(fs["spinner"]["tip_z"]), "back_z": L(fs["spinner"]["back_z"]), "radius": L(fs["spinner"]["radius"])},
         "firewall_z": L(fs["firewall_z"]),
         "cowl_rear_z": L(fs["cowl_rear_z"]),
-        "canopy": {"top": [[L(z), L(y)] for z, y in fs["canopy"]["top"]], "frame_z": L(fs["canopy"]["frame_z"]), "halfwidth_fraction": fs["canopy"]["halfwidth_fraction"]},
+        "canopy": {"top": [[L(z), L(y)] for z, y in fs["canopy"]["top"]], "frame_z": L(fs["canopy"]["frame_z"]), "halfwidth_fraction": fs["canopy"]["halfwidth_fraction"],
+                   "windscreen": {"panels": fs["canopy"]["windscreen"]["panels"], "centre_fraction": fs["canopy"]["windscreen"]["centre_fraction"], "frame_width": L(fs["canopy"]["windscreen"]["frame_width"])},
+                   "rail": {k: L(v) for k, v in fs["canopy"]["rail"].items()}, "gunsight": {k: L(v) for k, v in fs["canopy"]["gunsight"].items()}},
         "tail": {
             "stab_y": L(t["stab_y"]),
             "stab_root_le_z": L(t["stab_root_le_z"]),
@@ -120,6 +128,12 @@ def main():
             "strut_radius": L(g["strut_radius"]),
             "tail_axle": [L(g["tail_axle"][0]), L(g["tail_axle"][1])],
             "tail_wheel_diameter": L(g["tail_wheel_diameter"]),
+            "rake_deg": g["rake_deg"],
+            "scissor": {k: L(v) for k, v in g["scissor"].items()},
+            "strut_door": [[u, L(hw)] for u, hw in g["strut_door"]],
+            "well_doors": {k: L(v) for k, v in g["well_doors"].items()},
+            "hub_spokes": g["hub_spokes"],
+            "tailwheel_doors": {"length": L(g["tailwheel_doors"]["length"]), "width": L(g["tailwheel_doors"]["width"]), "open_deg": g["tailwheel_doors"]["open_deg"], "aft_fraction": g["tailwheel_doors"]["aft_fraction"]},
         },
         "propeller": {
             "diameter": r(kit["propeller"]["diameter_in"] * IN),
@@ -128,15 +142,28 @@ def main():
             "z": L(fs["spinner"]["back_z"] - 0.20),
             "hub_radius": L(fs["spinner"]["radius"] * 0.5),
             "scale_diameter": L(fs["propeller_diameter"]),
-            "blade": {
+            "blade": kit["propeller"].get("blade", {
                 "chord_fraction_of_radius": [[0.2, 0.14], [0.35, 0.17], [0.55, 0.18], [0.75, 0.17], [0.9, 0.13], [1.0, 0.04]],
                 "thickness_fraction_of_chord": [[0.2, 0.18], [0.5, 0.1], [1.0, 0.06]],
-            },
+            }),
+            "down_thrust_deg": fs.get("thrust_down_deg", 0.0),
+        },
+        "exhausts": {"z0": L(fs["exhausts"]["z0"]), "z1": L(fs["exhausts"]["z1"]), "y_fraction": fs["exhausts"]["y_fraction"], "count": fs["exhausts"]["count"],
+                     "length": L(fs["exhausts"]["length"]), "radius": L(fs["exhausts"]["radius"]), "rake_deg": fs["exhausts"]["rake_deg"]},
+        "details": {
+            "gun_ports": {"x": [L(x) for x in fs["details"]["gun_ports"]["x"]], "bore_radius": L(fs["details"]["gun_ports"]["bore_radius"]), "protrusion": [L(p) for p in fs["details"]["gun_ports"]["protrusion"]]},
+            "pitot": {k: (v if k == "chord_fraction" else L(v)) for k, v in fs["details"]["pitot"].items()},
+            "antenna_mast": {k: (v if k == "rake_deg" else L(v)) for k, v in fs["details"]["antenna_mast"].items()},
+            "nav_lights": {"radius": L(fs["details"]["nav_lights"]["radius"])},
+            "fuel_caps": {k: (v if k == "chord_fraction" else L(v)) for k, v in fs["details"]["fuel_caps"].items()},
+            "rudder_tab": {k: L(v) for k, v in fs["details"]["rudder_tab"].items()},
+            "elevator_tab": {k: L(v) for k, v in fs["details"]["elevator_tab"].items()},
         },
         "pilot": {key: ([L(v[0]), L(v[1])] if isinstance(v, list) else L(v)) for key, v in fs["pilot"].items()},
         "evidence": dict(src["evidence"], **{
             "scaling": {"kind": "derived", "source": "assets/aircraft/p51d-mustang-120/build_geometry.py: every full-size length x kit.span / full_size.span", "method": f"factor {k:.5f} (1/{1 / k:.2f})"},
-            "propeller": {"kind": "estimated", "source": "kit propeller size (not the scaled 11 ft 2 in Hamilton Standard, recorded as scale_diameter); paddle-blade planform by eye; pitch for the twist only", "limits": "visual stand-in"},
+            "propeller": {"kind": "estimated", "source": "kit propeller size (not the scaled 11 ft 2 in Hamilton Standard, recorded as scale_diameter); cuffed paddle-blade planform by eye from photos (V07); pitch for the twist only; 1 deg 45 min down thrust printed on the three-view (visual frame only until P51-06)", "limits": "visual stand-in"},
+            "exhausts": {"kind": "estimated", "source": "z range from the three-view side silhouette; stack length, height and rake from photos (V05)", "limits": "no shrouds"},
         }),
     }
     text = json.dumps(out, ensure_ascii=False, indent=2) + "\n"

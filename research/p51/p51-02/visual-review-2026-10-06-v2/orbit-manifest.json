@@ -1,0 +1,1013 @@
+{
+  "aircraft_id": "p51d-mustang-120-v1",
+  "captures": [
+    {
+      "camera_position_m": [
+        0.0,
+        -1.31096184253693,
+        -2.10636687278748
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az000.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "39fb64b572d6db3b31eb18fe71cb7842cc4f9099ad15b668a2157762ec8d25e6",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.40568339824677,
+        -1.31096184253693,
+        -1.72971510887146
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az030.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "7fbf884c1a2c3c4bf5dd3a6dd90c9b8d258d3f39ce6f9a93b6de17b7ed3ad950",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.43471503257751,
+        -1.31096184253693,
+        -0.700683414936066
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az060.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "b7e81b037e107f2c55526f7ee3f194bfe10ef204986051f0a9be22e6ac81f418",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.81136679649353,
+        -1.31096184253693,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az090.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "185d8b6de8ca65d19899e131cff498574d5fe9971c45f41e8afc2d659a3da5fc",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.43471503257751,
+        -1.31096184253693,
+        2.11068344116211
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az120.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "94aaa571e5ed17a3469c9f1663b88dcd5bc8db5e2884a0ead17c933bf4ad2e6a",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.40568339824677,
+        -1.31096184253693,
+        3.13971495628357
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az150.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "d8e5cb24889bcdb81878362ce309ad5a94300aa35c8eaf349b8f218596f089d8",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.000000000000000344293111493541,
+        -1.31096184253693,
+        3.51636672019958
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az180.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "46668d938b4d469c432a1522b184b0afc7ee1b6739c88e150b4d838c802089a0",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.40568339824677,
+        -1.31096184253693,
+        3.13971495628357
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az210.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "2a474ec6b5fcc7d19b5fae21555b914afcb85f73d0791d7580e15d5aa0e3ffe1",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.43471503257751,
+        -1.31096184253693,
+        2.11068344116211
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az240.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "1a0ddb4812af3a9a3891bbb512e8527419a546d0ac02869e04a2254520859db9",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.81136679649353,
+        -1.31096184253693,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az270.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "1cf10927406be0dee6334bc3faad8df0581c0c9ed164eda4c6a78688eca60f90",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.43471503257751,
+        -1.31096184253693,
+        -0.700683414936066
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az300.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "58fae1196af484351bf7cfcea2fc0643b27117b8069004f96aaec006473e4d6a",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.40568339824677,
+        -1.31096184253693,
+        -1.72971510887146
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el-25_az330.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "64ffa4068386eed3a595b866ee25a6d1bb85c31c8d5cf4cdf18f13e514739a0e",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.0,
+        0.538656651973724,
+        -2.34987354278564
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az000.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "2f0492241da1a50cef0da2b2ebc04ce111fa4b2d145784166a31674564389110",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.52743673324585,
+        0.538656651973724,
+        -1.94059824943542
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az030.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "f37276e2f59d649d22c25e00b955a5862fd0abd76b116124086a296e2c4b2d0c",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.64559817314148,
+        0.538656651973724,
+        -0.82243674993515
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az060.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "7e9eb0b780ad599ca2ba19d36c09254b3041b8b0058406ef45267cd38a01eda1",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        3.0548734664917,
+        0.538656651973724,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az090.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "88625b8ea61ae73398ef4d6d3b65d94f2166ed4b28d6d1bb8bb5bd33008db918",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.64559817314148,
+        0.538656651973724,
+        2.2324366569519
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az120.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "a781a28177e52f1d2782102467dfaa3de8dd3ce67834520f38b0b96cb95fe166",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.52743673324585,
+        0.538656651973724,
+        3.35059809684753
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az150.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "d2abca56503f1bcee82edc1500d873b10f3203f50af2b69085574d5b2b772577",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.00000000000000037411412401149,
+        0.538656651973724,
+        3.75987339019775
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az180.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "ec19d1c0f67e9b8673af1198ab0f026bd2d6bff2d9e98f1f9a3a470fce77b4d2",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.52743673324585,
+        0.538656651973724,
+        3.35059809684753
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az210.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "3c0c16ac912fc5d957d387e7c98993b5e353a43d47f39a4b42e144179d0501b2",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.64559817314148,
+        0.538656651973724,
+        2.2324366569519
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az240.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "3eed86a5d9ff86658ca471a4ec86e6421f2a4583d1e825890462f6227d7c4237",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -3.0548734664917,
+        0.538656651973724,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az270.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "ea03e384b73a4a47838b228308606ea9ab97c2fe97b4a517762ce5f79485c968",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.64559817314148,
+        0.538656651973724,
+        -0.82243674993515
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az300.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "dffe8aed0604aeaf056912f11c74fa313778feda181c8c3cae0d53fe85811877",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.52743673324585,
+        0.538656651973724,
+        -1.94059824943542
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+10_az330.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "e3aaf6a558e53bdb375c27cb66a9f52658ba92c5f6bb766cf9f4966ba73fc217",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.0,
+        1.9939272403717,
+        -1.67126989364624
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az000.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "8a8e47dd4985791aae35820705add7b4d5f3ff04e0ca6b9cc792fe6945690d24",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.18813490867615,
+        1.9939272403717,
+        -1.35291004180908
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az030.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "09cf89828aa994b72fe405853b17ce500bce1279d6c5546e7af0f8df7f649f24",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.05790996551514,
+        1.9939272403717,
+        -0.483134925365448
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az060.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "ef09a59ad52e84bfc5a98b0fda0a81c886b5d4de6ace8858b2c4f3e298fe0f45",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.37626981735229,
+        1.9939272403717,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az090.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "1f284fb0b2c085874d1f495ecad020d9304f7e6ded357d3121957e4999ed171f",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        2.05790996551514,
+        1.9939272403717,
+        1.8931348323822
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az120.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "fdad1624178a7d1dd5343184034baeddbd6e55e5eae9c5029de2c9ea79ae7c8d",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        1.18813490867615,
+        1.9939272403717,
+        2.76290988922119
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az150.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "97eb9cd579a7323d3d6bc9475fffe092c8179d06d6dc9129252683e13e5cc776",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        0.00000000000000029100912751797,
+        1.9939272403717,
+        3.08126974105835
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az180.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "edb9427f0ff499b930e7b4bce392a6b1d78a492e75d46ec20a169727909cd4f5",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.18813490867615,
+        1.9939272403717,
+        2.76290988922119
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az210.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "2bac7ca58b42bcb0fb992b33f781a9342a75252cc1f8b1455bef20c9ad4d1955",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.05790996551514,
+        1.9939272403717,
+        1.8931348323822
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az240.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "5b22485b6382e6390564872b59eae4120a37ed37920dec4c8ad16244dc4970e1",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.37626981735229,
+        1.9939272403717,
+        0.704999983310699
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az270.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "17b67ccf114427a7eaeab944d18f5115736326da1aeb3846e2164a0ae065660c",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -2.05790996551514,
+        1.9939272403717,
+        -0.483134925365448
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az300.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "060aff64fb3a0a864fb68685abb97c8c123543463b41e31464cd60cba7d0e0cc",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "camera_position_m": [
+        -1.18813490867615,
+        1.9939272403717,
+        -1.35291004180908
+      ],
+      "controls": {
+        "aileron": 0.0,
+        "elevator": 0.0,
+        "rudder": 0.0
+      },
+      "file": "orbit_el+40_az330.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "63caf1a79dac64e37fb4b30f523de172c6eae3af3f1c8781a2fcbb35c3483357",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.704999983310699
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "0ad29e39456faf0f1c455501ba0249390bab9071503ba119cda6d82e57f1a40b",
+  "image_size": [
+    1280,
+    720
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "reflections": "procedural sky (V08)",
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry review of the first P-51D model; not a pilot readability test.",
+  "model_sha256": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+  "ortho_size_m": 3.384,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "span_m": 2.82,
+  "status": "experimental: first visual model from scaled full-size dimensions",
+  "suite": "orbit",
+  "throws_deg": {
+    "aileron": 16.1,
+    "elevator": 14.7,
+    "rudder": 33.5
+  },
+  "throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
+  "visual_revision": "p51d-mustang-120-v1"
+}

@@ -3,8 +3,8 @@
   "date": "2026-10-06",
   "drawing": "references/p51-mustang/drawings/p51d_3view_AN01-60-3_p30_commons.png",
   "drawing_sha256": "7ab6644d015c7792553e42ccdddfccd8d338c0c31c612603bc559a108052f812",
-  "model_geometry_sha256": "2feb3b4f4a59435a8b83230ee4bf6f3986b07a84486c3579a54215359733dab9",
-  "picks_sha256": "10f9424f26e3a17b681af08586e6a77f6517fd89e7887f41e5dbaeb80d91c6fe",
+  "model_geometry_sha256": "544cd6cf748225dea3279c3c9b042148b0a3f50386b2f2fc46f277d3dc6bb8fb",
+  "picks_sha256": "845722128a24c46fc7df128890872880ff9fdd455ca54e8313db234c56aa0557",
   "method": "Orthographic cameras from two anchors per view (uniform scale, no rotation, no image deformation), as research/avanti-s/user-profile. Side: spinner tip and rudder TE on the fuselage reference line; plan and front: wing tips. The front view's vertical anchor is the wing-tip chord plane (dihedral 5 deg from the drawing).",
   "limits": [
     "The 1945 reproduction is about 3 % anisotropic in the side view (fin height vs length); only the horizontal anchors are used, so vertical positions in the side view carry that error.",
@@ -26,12 +26,12 @@
         495
       ],
       "projection": "orthographic",
-      "orthographic_size_m": 1.0097589211618259,
-      "display_scale_px_per_model_m": 490.216020503641,
+      "orthographic_size_m": 1.009676763485477,
+      "display_scale_px_per_model_m": 490.2559095162537,
       "camera_position_m": [
         -20.0,
-        -0.06833721991701246,
-        0.6236874273858922
+        -0.06833165975103735,
+        0.6235822821576763
       ],
       "camera_basis_columns": [
         [
@@ -66,7 +66,7 @@
           "model_m": [
             0,
             0,
-            1.7895
+            1.7893
           ],
           "picked_px": [
             1524,
@@ -102,11 +102,11 @@
         595
       ],
       "projection": "orthographic",
-      "orthographic_size_m": 1.2053879310344826,
-      "display_scale_px_per_model_m": 493.6170212765958,
+      "orthographic_size_m": 1.206254493170381,
+      "display_scale_px_per_model_m": 493.26241134751774,
       "camera_position_m": [
-        -0.024310344827586206,
-        -0.0138848237892546,
+        -0.025341480948957582,
+        -0.013862569180599534,
         -20.0
       ],
       "camera_basis_columns": [
@@ -145,7 +145,7 @@
             0
           ],
           "picked_px": [
-            763,
+            762,
             null
           ]
         }

@@ -1,7 +1,7 @@
 {
   "schema": "openrc-silhouette-review-v1",
-  "label": "Revisi\u00f3n 1 (2026-10-06): estaciones de fuselaje, cabina, toma ventral (boca en escal\u00f3n), cola, cono y tren medidos en la tres vistas; antes = primera maqueta a ojo",
-  "fit_sha256": "6ec5d52fae86c31288c4418a4435bbe025e2ce58e2b7ae7440fd2d05e5052385",
+  "label": "review-2026-10-06",
+  "fit_sha256": "cd7b9ae3f413092663d116a2c71ee107131a497e60e8426d2e30630dce9100b1",
   "candidate": {
     "geometry_sha256": "469bfbad4bc9a426d557d4bc380b65c41b5917bcfcb5ac5c100ece4b184a6d4f",
     "model_sha256": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c",
@@ -11,7 +11,7 @@
     "geometry_sha256": "28b124fc140f09a7608bdf8f00a3abb718012e1fc7e099c55ce37e8425d92d89",
     "model_sha256": "322c245361193898343534e680cae02330108d6493495043b4d7d5bbf70d3a5c"
   },
-  "metric": "Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels, drop tanks and dimension lines excluded by the drawing silhouette; not metric accuracy per component.",
+  "metric": "Euclidean distance (px) from each drawing-outline pixel to the nearest render-alpha>=128 edge and the reverse; IoU of the filled masks; 8 longitudinal bins nose->tail (side, top) or tip->centre (front). Propeller, wheels and dimension lines excluded by the drawing silhouette; the exclusion boxes (drop tanks, dimension boxes) are removed from both masks and their borders ignored. Not metric accuracy per component.",
   "views": {
     "side": {
       "after": {
@@ -20,7 +20,7 @@
         "model_to_real_mean_px": 17.206755934642764,
         "model_to_real_p90_px": 51.0,
         "iou": 0.8712566027611747,
-        "mean_mm_model": 15.75903604520724,
+        "mean_mm_model": 15.757753832437604,
         "real_to_model_bins_px": [
           3.5419223774640076,
           2.5265946842873537,
@@ -38,7 +38,7 @@
         "model_to_real_mean_px": 27.96069956220258,
         "model_to_real_p90_px": 55.0,
         "iou": 0.6808990918440273,
-        "mean_mm_model": 45.783659002144475,
+        "mean_mm_model": 45.77993387631541,
         "real_to_model_bins_px": [
           9.448225756850935,
           15.086611649572585,
@@ -53,77 +53,77 @@
     },
     "front": {
       "after": {
-        "real_to_model_mean_px": 13.63552845667666,
-        "real_to_model_p90_px": 36.11369398381303,
-        "model_to_real_mean_px": 20.433242657362165,
-        "model_to_real_p90_px": 59.0,
-        "iou": 0.45039966490976996,
-        "mean_mm_model": 27.623699890681163,
+        "real_to_model_mean_px": 13.61711036427967,
+        "real_to_model_p90_px": 36.13445941799415,
+        "model_to_real_mean_px": 19.827399910626998,
+        "model_to_real_p90_px": 55.74530779468501,
+        "iou": 0.45001932468992656,
+        "mean_mm_model": 27.60621943009969,
         "real_to_model_bins_px": [
           3.682905398652561,
           5.0291290407831,
           6.064335389123092,
-          7.018972590305543,
-          22.69366096984065,
-          13.777132899056843,
-          28.899499320014947,
-          7.390295614591423
+          7.0117507024644405,
+          22.388497084184372,
+          13.844157743922786,
+          28.757382877686666,
+          7.383466237499977
         ]
       },
       "before": {
-        "real_to_model_mean_px": 21.615564898973773,
+        "real_to_model_mean_px": 21.62730102007032,
         "real_to_model_p90_px": 58.0,
-        "model_to_real_mean_px": 21.20144795957273,
-        "model_to_real_p90_px": 56.66897392254446,
-        "iou": 0.44571951562940015,
-        "mean_mm_model": 43.790153028093414,
+        "model_to_real_mean_px": 20.82542342984075,
+        "model_to_real_p90_px": 55.59938945140463,
+        "iou": 0.44460378160186953,
+        "mean_mm_model": 43.84542694219863,
         "real_to_model_bins_px": [
           3.7488922266354026,
           5.086754618716152,
           6.107112242353865,
-          7.0647799594510605,
-          24.08580357044198,
-          27.45409080888614,
-          54.84133748414155,
-          10.656210176492108
+          7.059306076352438,
+          23.805997470952452,
+          27.672169123534257,
+          54.03532303126357,
+          10.916006221369404
         ]
       }
     },
     "top": {
       "after": {
-        "real_to_model_mean_px": 14.973336668921712,
-        "real_to_model_p90_px": 51.10869804335985,
-        "model_to_real_mean_px": 19.86798191343945,
-        "model_to_real_p90_px": 53.08483775994799,
-        "iou": 0.8274396006266806,
-        "mean_mm_model": 30.31213884160749,
+        "real_to_model_mean_px": 10.708580601273928,
+        "real_to_model_p90_px": 12.0,
+        "model_to_real_mean_px": 20.789430162980928,
+        "model_to_real_p90_px": 55.00909015790027,
+        "iou": 0.907298853320049,
+        "mean_mm_model": 21.67853359339015,
         "real_to_model_bins_px": [
-          9.721703978390694,
-          7.2169667307943195,
+          10.678382267002364,
+          7.499157744709833,
           2.2039693914730574,
           5.708475102114412,
-          15.199606556152238,
-          18.50642234543369,
-          5.084673513398787,
-          37.54945552247197
+          6.231892920993221,
+          5.159814039368503,
+          2.173937822366603,
+          41.26404197925937
         ]
       },
       "before": {
-        "real_to_model_mean_px": 31.27383533439897,
-        "real_to_model_p90_px": 53.37505867421326,
-        "model_to_real_mean_px": 35.83107349789027,
-        "model_to_real_p90_px": 83.74365647617735,
-        "iou": 0.6034692819414494,
-        "mean_mm_model": 63.310994718596625,
+        "real_to_model_mean_px": 30.739805539647154,
+        "real_to_model_p90_px": 50.039984012787215,
+        "model_to_real_mean_px": 36.8668700169695,
+        "model_to_real_p90_px": 85.0,
+        "iou": 0.6805978666973223,
+        "mean_mm_model": 62.22990066174083,
         "real_to_model_bins_px": [
-          8.057205863647004,
-          30.600773196441274,
+          4.710057349514031,
+          31.46321554723404,
           3.5327258220461215,
           31.691688470493833,
-          30.570181024245322,
-          48.377303369387086,
-          4.25966148525519,
-          41.942967819693344
+          39.663613511914264,
+          34.591726709555154,
+          2.7658410943855967,
+          45.88649545118848
         ]
       }
     }

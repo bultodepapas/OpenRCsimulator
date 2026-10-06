@@ -15,7 +15,7 @@ Distancia media (px, ≈ 490 px por metro de modelo) de cada píxel del contorno
 | Vista | Antes → después (media) | p90 después | IoU antes → después | ≈ mm sobre el modelo |
 | --- | --- | --- | --- | --- |
 | Perfil | 22,4 → **7,8 px** | 16,1 px | 0,681 → **0,871** | 16 mm |
-| Planta | 31,3 → **15,0 px** | 51,1 px | 0,603 → **0,827** | 30 mm |
+| Planta | 31,3 → **15,0 px** (30,7 → **10,7 px** con la métrica corregida de V02, que ignora los bordes de las cajas de exclusión) | 51,1 px (12,0) | 0,603 → **0,827** (0,681 → **0,907**) | 30 mm (22) |
 | Frontal (mitad izquierda, cualitativa) | 21,6 → 13,5 px | 36,1 px | 0,446 → 0,464 | 27 mm |
 
 Por tramos (ocho, de morro a cola): el perfil queda en 2,5-7 px salvo el tramo del patín de cola extendido del dibujo (20 px: el modelo lleva el patín en otra posición y sin puertas). La planta queda en 2-10 px salvo la raíz alar (15-19 px: la extensión del borde de ataque y el carenado de salida del D no están modelados) y el morro (37 px: el cono y el resto de las palas). La frontal no separa las cuatro palas dibujadas del cuerpo: su IoU no es comparable; sirve para ver diedro, vía, altura del tren y de la punta alar, que ahora coinciden.

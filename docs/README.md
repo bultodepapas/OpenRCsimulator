@@ -23,7 +23,7 @@ The way we work is as much part of the project as the code. The principles below
 | You are… | Read, in this order |
 | --- | --- |
 | A player or RC pilot testing a build | [README](../README.md) · [First launch](FIRST-LAUNCH.md) · [release notes](releases/) · how to report: [pilot feedback](../.github/ISSUE_TEMPLATE/pilot_feedback.md), [bug report](../.github/ISSUE_TEMPLATE/bug_report.md) |
-| A developer or assistant starting work | [AGENTS.md](../AGENTS.md) (commands, rules, who owns what) · [CONTRIBUTING.md](../CONTRIBUTING.md) · [ROADMAP: where we are](../ROADMAP.md#where-we-are) · the plan of your track (registry below) · its section in [LEARNINGS.md](../LEARNINGS.md) · the [research index](research/README.md) |
+| A developer or assistant starting work | [AGENTS.md](../AGENTS.md) (commands, rules, who owns what) · [CONTRIBUTING.md](../CONTRIBUTING.md) · [ROADMAP: where we are](../ROADMAP.md#where-we-are) · the plan of your track (registry below) · its dated sections in [LEARNINGS.md](../LEARNINGS.md) · the [research index](research/README.md) |
 | A reviewer of the project's direction | [DECISIONS.md](../DECISIONS.md) · the three plan reviews at the end of [ROADMAP.md](../ROADMAP.md) · [STACK.md](../STACK.md) · the [documentation audit](research/documentation-audit-2026-10-06.md) |
 
 ## One question, one document
@@ -40,7 +40,7 @@ Each question has one canonical document. Other documents may repeat the answer,
 | What are the steps of a track (UI, visual, an aircraft…)? | The track's plan in `docs/` (registry below) | The plan is the source of truth for its own steps |
 | What did we decide, why, and what would change it? | [DECISIONS.md](../DECISIONS.md) | Superseded rows are kept and marked |
 | What stack do we use and why? | [STACK.md](../STACK.md) | Current stack at the top; the pre-Gate-1 survey below it is history |
-| What did we learn by building? | [LEARNINGS.md](../LEARNINGS.md) | Thematic sections first, then dated per-track entries |
+| What did we learn by building? | [LEARNINGS.md](../LEARNINGS.md) | Cross-cutting sections by theme first, then dated entries per track in the order written |
 | What did we read before Gate 1 and in plan review #3? | [RESEARCH.md](../RESEARCH.md) | A frozen notebook; new research goes to `docs/research/` |
 | Which research exists on a topic? | [docs/research/README.md](research/README.md) | Entry points per track |
 | Which aircraft exist and what may the menu offer? | [`app/app_state/aircraft_catalog.gd`](../app/app_state/aircraft_catalog.gd) | IDs, names and the meaning of flyable / experimental / preview |
@@ -54,7 +54,7 @@ State as recorded in each plan and in ROADMAP on 2026-10-06. "Owns" lists the pa
 
 | Track | Plan | Step IDs | State (2026-10-06) | Gate / depends on | Owns | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Physics and simulation** (main line) | [ROADMAP.md](../ROADMAP.md) (en); repairs: [FLIGHT-MODEL-ROBUSTNESS-PLAN](FLIGHT-MODEL-ROBUSTNESS-PLAN.md) (es), [RUDDER-REPAIR-PLAN](RUDDER-REPAIR-PLAN.md) (es) | D1–D10, PT1a–g; E, F, G for M2–M4; `<step>-R<n>` for repairs | M1 done except the owner's steps (D6d radio flight, PT1g on Linux and macOS, Gate 2 ratings). Repair D9-R1/R2, D4-R1, D1-R1, D8a-R1 and D10-R done; Gate 2-R, E0b and G2 open. E1 (gear contact) started 2026-10-06 | Gate 2 (owner), Gate F | `app/physics/`, `app/sim/`, `app/data/aircraft/` (data), `app/tests/`, `app/main.gd` | [flight-robustness/](research/flight-robustness/), [rudder-audit/](research/rudder-audit/), [research/sensitivity](../research/sensitivity/results.md), [research/flight-modes](../research/flight-modes/), `app/tests/golden/` |
+| **Physics and simulation** (main line) | [ROADMAP.md](../ROADMAP.md) (en); repairs: [FLIGHT-MODEL-ROBUSTNESS-PLAN](FLIGHT-MODEL-ROBUSTNESS-PLAN.md) (es), [RUDDER-REPAIR-PLAN](RUDDER-REPAIR-PLAN.md) (es) | D1–D10, PT1a–g; E, F, G for M2–M4; `<step>-R<n>` for repairs | M1 done except the owner's steps (D6d radio flight, PT1g on Linux and macOS, Gate 2 ratings). Repair D9-R1/R2, D4-R1, D1-R1, D8a-R1 and D10-R done (Gate F decided by it); Gate 2-R, E0b and G2 open. M2 under way: E1 gear contacts done 2026-10-06, E2 next | Gate 2 (owner) | `app/physics/`, `app/sim/`, `app/data/aircraft/` (data), `app/tests/`, `app/main.gd` | [flight-robustness/](research/flight-robustness/), [rudder-audit/](research/rudder-audit/), [research/sensitivity](../research/sensitivity/results.md), [research/flight-modes](../research/flight-modes/), `app/tests/golden/` |
 | **Ugly Stik model** (model team) | [UGLY-STIK-PLAN](UGLY-STIK-PLAN.md) (es, rev 7) | US-01…08 | US-01–05 done (geometry v3). US-06 readability form, US-07 E1/E2 handoff and US-08 hardware cost wait for the owner | D1, D7, Gate 2, E1/E2 | `assets/aircraft/ugly-stik-60/`, `app/aircraft/ugly_stik_*`, `verify_model.gd`, `verify_controls.gd`, `inspect_model.gd`, `app/render/airplane.gd` | [ugly-stik-* reports](research/README.md#ugly-stik), [research/ugly-stik/](../research/ugly-stik/) |
 | **Ugly Stik finish** (model team) | [UGLY-STIK-VISUAL-PLAN](UGLY-STIK-VISUAL-PLAN.md) (es, rev 5) | US-V01…08 | All eight done (finish v4, engine v5); human readability answers and GPU cost pending | D7, Gate 2 | `appearance.json` and `compile_appearance.py` next to the geometry | [model v4](research/ugly-stik-model-v4.md), [engine v5](research/ugly-stik-engine-v5.md), [research/ugly-stik/model-v4/](../research/ugly-stik/model-v4/README.md) |
 | **Extra 300S .60** (second aircraft) | [EXTRA-300-PLAN](EXTRA-300-PLAN.md) (es, rev 5) | EX-00…13 | Flyable, **experimental**: EX-00–05, 07, 10a and 11 done; next EX-06 thrust axis, EX-08 envelope, EX-09 independent contrast | D5/D9c, D8–D10, UI-05, Gate 2, Gate F | `assets/aircraft/extra-300s-60/`, `app/aircraft/extra_300s_*`, `extra_clearance.gd`, `verify_extra.gd`, `inspect_extra.gd`; `app/data/aircraft/gp_extra_300s_60.json` is generated by `research/extra-300/ex05/derive_physics.py` | [extra-300-* reports](research/README.md#extra-300s), [research/extra-300/](../research/extra-300/) |
@@ -68,7 +68,7 @@ State as recorded in each plan and in ROADMAP on 2026-10-06. "Owns" lists the pa
 | **Player guide** | [FIRST-LAUNCH.md](FIRST-LAUNCH.md) (en) | none | Current for the v0.1 alpha; also the fallback release notes in CI | PT1g, Gate 2 | — | — |
 | **Releases** | [releases/](releases/) | tags `v*` | rc1 (notes in FIRST-LAUNCH), [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md) | PT1f | — | — |
 | **Tooling record** | [GODOT-SKILLS.md](GODOT-SKILLS.md) (es) + [installation manifest](godot-skills-installation.json) | none | Six third-party Godot agent skills installed outside the repo (`~/.codex/skills/`); not a game dependency | — | — | — |
-| **Archive** | [UGLY-STIK-PLAN-v4](UGLY-STIK-PLAN-v4.md), [UGLY-STIK-PLAN-v5](UGLY-STIK-PLAN-v5.md) (historical revisions); [bake-off spec](../prototypes/stage0/SPEC.md) and [comparison](../prototypes/stage0/COMPARISON.md); [RESEARCH.md](../RESEARCH.md) | — | Frozen; kept for context. Historical plans carry a banner pointing to the current one | — | — | — |
+| **Archive** | [UGLY-STIK-PLAN-v4](UGLY-STIK-PLAN-v4.md), [UGLY-STIK-PLAN-v5](UGLY-STIK-PLAN-v5.md) (historical revisions; to move to `docs/archive/`); [bake-off spec](../prototypes/stage0/SPEC.md) and [comparison](../prototypes/stage0/COMPARISON.md); [RESEARCH.md](../RESEARCH.md) | — | Frozen; kept for context. Historical plans carry a banner pointing to the current one | — | — | — |
 
 Two rules keep this table honest:
 - **A plan owns the status of its steps.** ROADMAP's [where we are](../ROADMAP.md#where-we-are) carries one line per track and links the plan; it does not repeat the step list. LEARNINGS records lessons, not status.
@@ -81,7 +81,7 @@ Two rules keep this table honest:
 | A, B, C | Foundation phases (done) | ROADMAP |
 | D, E, F, G | Steps of milestones M1 (flight), M2 (takeoff and landing), M3 (radio), M4 (nitro) | ROADMAP |
 | PT | Playtest and release steps (PT1a–g, PT2, PT4) | ROADMAP |
-| Gate 1, Gate 2, Gate F | Platform (done), first owner flight (open), flight-model architecture (see below) | ROADMAP, DECISIONS |
+| Gate 1, Gate 2, Gate F | Platform (done), first owner flight (open), flight-model architecture (decided 2026-10-06) | ROADMAP, DECISIONS |
 | `<step>-R<n>` | Repair sub-steps of a ROADMAP step (D9-R1, D4-R1, D10-R1…) | FLIGHT-MODEL-ROBUSTNESS-PLAN, RUDDER-REPAIR-PLAN |
 | M5-W | Wind steps of M5, with Gates W-A and W-B | WIND-PLAN |
 | UI- | Menus and product shell; tiers UI-A/B/C | MENU-PLAN |
@@ -105,7 +105,7 @@ Rules for IDs:
 | --- | --- | --- | --- |
 | Gate 1 | three.js or Godot? | Done: Godot (owner, 2026-10-05) | DECISIONS |
 | Gate 2 | Is v0.1 flyable, readable and fun with a radio? | Open; waits for the owner's session (ratings per axis, readability at 100 m, setup time, frame times) | ROADMAP M1 |
-| Gate F | Keep the whole-aircraft derivative model or grow a component buildup? | The 2026-10-06 flight repair already made wing and tail loads local elements ([report](research/flight-repair-implementation.md)); the DECISIONS entry does not name Gate F. To close: label it, or state what remains open | DECISIONS (unlabeled), ROADMAP |
+| Gate F | Keep the whole-aircraft derivative model or grow a component buildup? | Decided 2026-10-06 by the flight repair ([report](research/flight-repair-implementation.md)): a component buildup grown from the linear oracle, as proposed. Open: E0b propwash, G2 shaft balance | DECISIONS, ROADMAP |
 | Gate L | Does the field read well to a pilot (horizon, trees, airplane)? | Open; L6c numbers recorded, human reading pending | LANDSCAPE-PLAN |
 | Gate W-A, W-B | Wind feel and configuration | Proposed; nothing implemented | WIND-PLAN |
 
@@ -114,7 +114,7 @@ Rules for IDs:
 | Path | What goes there | Rules |
 | --- | --- | --- |
 | Repository root | The eight canonical documents (README, AGENTS, CONTRIBUTING, ROADMAP, DECISIONS, STACK, LEARNINGS, RESEARCH) | English. New top-level documents need a row in this map |
-| `docs/` | Plans (`<TRACK>-PLAN.md`), the player guide, this map | One plan per track; historical revisions get a banner and a `-vN` suffix (candidates for a future `docs/archive/`) |
+| `docs/` | Plans (`<TRACK>-PLAN.md`), the player guide, this map | One plan per track; a historical revision keeps a `-vN` suffix and a banner on line 1 until `docs/archive/` is created |
 | `docs/releases/` | Release notes per tag | `<tag>.md`; fixed once the tag is published |
 | `docs/media/` | Images used by the README, with provenance | Regenerated by `tools/readme/` |
 | `docs/research/` | Research reports and the evidence that proves a step (JSON, logs, PNG, probes) | Indexed in [research/README.md](research/README.md); evidence folders named after the step they prove (`visual-quality-implementation/L6b/`) |
@@ -133,14 +133,14 @@ Rules for IDs:
 3. **Steps are rows:** `ID | step | proof | status (date)`, and a dependency column when steps depend on other tracks. Done rows keep their proof.
 4. **Dates are ISO** (`2026-10-06`). Revisions are integers.
 5. **Research reports** say what was done, with what, what came out and what it does not prove; sources and licenses are listed; the reproducible command is included when it exists. Evidence lives next to the report or in the step's evidence folder.
-6. **Lessons go to LEARNINGS.md** under the track's dated heading, with the proof linked. Facts that change state go to the plan; decisions go to DECISIONS as table rows.
+6. **Lessons go to LEARNINGS.md:** cross-cutting ones in the thematic sections at the top, the rest appended at the end under `## YYYY-MM-DD · <step IDs> — title`, with the proof linked. Facts that change state go to the plan; decisions go to DECISIONS as table rows.
 7. **Links** are relative and resolve from a fresh `git clone`. No links into `references/`, `app/captures/` or other ignored paths. Links to files not yet committed are committed together with the document.
 8. **Status is not duplicated.** One line per track in ROADMAP, the full list in the plan.
-9. **Historical versions** keep a banner on the first line pointing to the current document, and are never updated.
+9. **Historical versions** keep a banner on the first line pointing to the current document and are never updated.
 10. **Generated documents** (geometry tables, physics data, media) name their generator and are regenerated, not edited.
 
 ## Maintaining this map
 
 - Adding a track: add its row to the registry, its prefix to the namespaces table, its gate if any, and a line to [AGENTS.md](../AGENTS.md) (parallel work) with the paths it owns.
-- Closing or archiving a plan: move the row to "Archive" and put the banner on the file.
+- Closing or archiving a plan: put the banner on line 1 and move its row to "Archive".
 - Known gaps and stale statements found on 2026-10-06, with the line numbers to fix, are in the [documentation audit](research/documentation-audit-2026-10-06.md).

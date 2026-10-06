@@ -1,0 +1,53 @@
+{
+  "schema": "openrc-photo-silhouette-review-v1",
+  "label": "V03",
+  "fit_sha256": "42b81b3ef120f8e154980211a65618ba80b26ff1eb4113e0c741e20bf8f9d844",
+  "photo_sha256": "15e031d7beb36d6e28e59d40562f3473e9d28499570fab868678de60ddd4c316",
+  "camera": {
+    "fov_deg": 4.000000000000001,
+    "fit_rms_px": 8.563477969103412,
+    "check_rms_px": 14.34027183320369,
+    "distance_m": 24.58250669242983
+  },
+  "metric": "Photo silhouette = alpha >= 200 (blurred propeller drops out) minus exclusion boxes; distance from each photo-outline pixel to the nearest render-alpha edge and the reverse; IoU; 8 bins left->right. Pixels; the photographed airplane is a real P-51D with pilot, antenna and gear doors not in the model.",
+  "result": {
+    "after": {
+      "real_to_model_mean_px": 8.285922954470468,
+      "real_to_model_p90_px": 17.72004514666935,
+      "model_to_real_mean_px": 8.552835884250404,
+      "model_to_real_p90_px": 18.788294228055936,
+      "iou": 0.8126150511785499,
+      "real_to_model_bins_px_left_to_right": [
+        14.505799389851786,
+        10.56305877228566,
+        9.69067204860864,
+        10.668882978843948,
+        3.892839761682448,
+        8.620849436492259,
+        4.184370226596498,
+        6.069100693097816
+      ],
+      "geometry_sha256": "c42f9b00132982a6750242b1bb3c0dd3aea0977abd618af58cc4c39dc6e978d9",
+      "model_sha256": "fbcf8a222e7f04a684d88727787240107f7130e3778283c9e42658e6a0963a9c"
+    },
+    "before": {
+      "real_to_model_mean_px": 8.533891644421738,
+      "real_to_model_p90_px": 18.0,
+      "model_to_real_mean_px": 8.58905234353021,
+      "model_to_real_p90_px": 18.867962264113206,
+      "iou": 0.8048948964577528,
+      "real_to_model_bins_px_left_to_right": [
+        14.505799389851786,
+        10.56305877228566,
+        9.69067204860864,
+        11.82158418726239,
+        4.520110280328231,
+        8.620849436492259,
+        4.184370226596498,
+        6.069100693097816
+      ],
+      "geometry_sha256": "1f551e99707bfbb0e8316957b7a9bcf48b82088b93d8de10cc6996429e874e8c",
+      "model_sha256": "15fc9ee79a206ecfc55b180912a43cf07df12603f6e22cafcde39595713fdd1f"
+    }
+  }
+}

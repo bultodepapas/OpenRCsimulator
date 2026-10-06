@@ -12,6 +12,7 @@ extends RefCounted
 
 const Geometry := preload("res://aircraft/p51d_geometry.gd")
 const D: Dictionary = Geometry.DATA
+const Finish := preload("res://aircraft/p51d_finish.gd")
 const VISUAL_REVISION := "p51d-mustang-120-v1"
 const ALUMINIUM := Color("c9ccd1")
 const OLIVE := Color("3f4a2a")
@@ -59,6 +60,11 @@ static func material(color: Color, roughness := 0.55, metallic := 0.0) -> Standa
 
 static func _aluminium() -> StandardMaterial3D:
 	return material(ALUMINIUM, 0.35, 0.8)
+
+
+# V08: natural-metal finish with panel lines and rivets (p51d_finish.gd), one shared material per part.
+static func _skin(part: int) -> ShaderMaterial:
+	return Finish.material(part, D)
 
 
 # Dark intake throats are seen from inside their lofts: both faces drawn.
@@ -286,7 +292,7 @@ static func _fuselage(root: Node3D) -> void:
 	_instance("cowl_band", _loft(band_rings, material(RED, 0.35, 0.2), [true, false]), root) # front cap against the spinner back
 	var rings := []
 	for z in _zs(band, z_end): rings.append(_super_ring(z))
-	_instance("fuselage", _loft(rings, _aluminium(), [false, true]), root)
+	_instance("fuselage", _loft(rings, _skin(Finish.FUSELAGE), [false, true]), root)
 	# Anti-glare panel: olive strip 1.2 mm above the cowl top, out to 62 % of the half-width, band to windscreen.
 	var rows := []
 	for z in _zs(band, D.canopy.top[0][0]):
@@ -303,39 +309,39 @@ static func _fuselage(root: Node3D) -> void:
 	_instance("anti_glare", _strip(rows, material(OLIVE, 0.8)), root)
 
 
-# Six exhaust stacks per side on the cowl flank, full-size ~70 mm pipes scaled by D.scale.factor, between the red
-# band and the firewall, angled aft and outward.
+# Exhaust stacks (V05): D.exhausts.count short pipes per side on the cowl flank between z0 and z1, at y_fraction of the
+# local cowl height, protruding `length` outward and raked aft by rake_deg (photos; the drawing gives only the z range).
 static func _exhausts(root: Node3D) -> void:
-	var f: float = D.scale.factor
-	var z0: float = D.spinner.back_z + NOSE_BAND_M + 0.11 * f
-	var z1: float = D.firewall_z - 0.45 * f
-	var radius: float = 0.035 * f
-	var y: float = profile(z0, 2) * 0.45 # cowl flank height, just below the shoulder
+	var e: Dictionary = D.exhausts
+	var n: int = int(e.count)
 	for sign in [-1.0, 1.0]:
-		for k in 6:
-			var z := lerpf(z0, z1, float(k) / 5.0)
+		for k in n:
+			var z := lerpf(float(e.z0), float(e.z1), (float(k) + 0.5) / float(n))
+			var y: float = profile(z, 2) * float(e.y_fraction)
 			var x := skin_half_width_at(z, y) - 0.004
 			var base := Vector3(sign * x, y, z)
-			var tip := base + Vector3(sign * 0.03, -0.004, 0.05) * (6.0 * f)
-			var pipe := _cylinder("exhaust_%s_%d" % ["right" if sign > 0 else "left", k], radius, (tip - base).length(), DARK, root, 10)
+			var rake := deg_to_rad(float(e.rake_deg))
+			var tip := base + Vector3(sign * cos(rake), -0.15, sin(rake)).normalized() * float(e.length)
+			var pipe := _cylinder("exhaust_%s_%d" % ["right" if sign > 0 else "left", k], float(e.radius), (tip - base).length(), DARK, root, 10)
 			pipe.position = (base + tip) * 0.5
 			pipe.quaternion = Quaternion(Vector3.UP, (tip - base).normalized())
 
 
-# Scoop ring: the top edge follows the fuselage bottom contour (4 mm inside the skin, so it reads as attached), the
-# lower part is a rounded-rectangle superellipse (n = 2.6) down to bottom_y.
-static func _scoop_ring(z: float, hw: float, bottom: float) -> Array[Vector3]:
+# V03 scoop ring: the top edge follows the fuselage bottom contour at `top_offset` (negative = below the skin, the
+# boundary-layer gutter; +4 mm = seated inside the skin), the lower part a superellipse of exponent n (2.6 at the oval
+# mouth, ~5 for the duct's nearly straight sides) down to bottom_y.
+static func _scoop_ring(z: float, hw: float, bottom: float, n: float, top_offset: float) -> Array[Vector3]:
 	var ring: Array[Vector3] = []
 	for k in SCOOP_TOP_POINTS + 1:
 		var x := lerpf(-hw, hw, float(k) / SCOOP_TOP_POINTS)
-		ring.append(Vector3(x, skin_y(z, x, false) + 0.004, z))
-	var side_y := skin_y(z, hw, false) + 0.004
+		ring.append(Vector3(x, skin_y(z, x, false) + top_offset, z))
+	var side_y := skin_y(z, hw, false) + top_offset
 	var depth := side_y - bottom
 	for k in range(1, SCOOP_ARC_POINTS):
 		var a := -PI * float(k) / SCOOP_ARC_POINTS
 		var c := cos(a)
 		var s := sin(a)
-		ring.append(Vector3(hw * signf(c) * pow(absf(c), 2.0 / 2.6), side_y - depth * pow(absf(s), 2.0 / 2.6), z))
+		ring.append(Vector3(hw * signf(c) * pow(absf(c), 2.0 / n), side_y - depth * pow(absf(s), 2.0 / n), z))
 	return ring
 
 
@@ -352,31 +358,72 @@ static func _throat(label: String, lip: Array[Vector3], depth: float, parent: No
 	_instance(label, _loft([near, far], _throat_material(), [false, true]), parent)
 
 
+# Belly scoop (V03): straight-sided duct with a boundary-layer gutter over scoop_gutter.length behind the mouth (the duct
+# top sits gutter.gap below the fuselage, then blends back onto the skin), a deep dark throat, and an exit door hinged at
+# the duct's rear bottom, hanging at scoop_exit.door_angle_deg.
 static func _scoop(root: Node3D) -> void:
 	var rows: Array = D.scoop_stations
+	var gutter: Dictionary = D.scoop_gutter
 	var widths := []
 	var bottoms := []
+	var exps := []
 	for r in rows:
 		widths.append([r[0], r[1]])
 		bottoms.append([r[0], r[2]])
+		exps.append([r[0], r[3]])
 	var rings := []
-	var n := ceili((rows[-1][0] - rows[0][0]) / 0.02)
+	var z0: float = rows[0][0]
+	var n := ceili((rows[-1][0] - z0) / 0.02)
 	for k in n + 1:
-		var z: float = lerpf(rows[0][0], rows[-1][0], float(k) / n)
-		rings.append(_scoop_ring(z, monotone(widths, z), monotone(bottoms, z)))
-	_instance("scoop", _loft(rings, _aluminium(), [false, true]), root) # open intake, closed exit
-	_throat("scoop_throat", rings[0], 0.12, root)
+		var z: float = lerpf(z0, rows[-1][0], float(k) / n)
+		var blend := smoothstep(float(gutter.length), float(gutter.length) + 0.08, z - z0)
+		var top_offset := lerpf(-float(gutter.gap), 0.004, blend)
+		rings.append(_scoop_ring(z, monotone(widths, z), monotone(bottoms, z), monotone(exps, z), top_offset))
+	_instance("scoop", _loft(rings, _skin(Finish.PLAIN), [false, true]), root) # open intake, closed exit
+	_throat("scoop_throat", rings[0], 0.25, root)
+	# Gutter roof: the fuselage bottom over the gutter is the skin itself; a dark splitter plate closes the gutter's
+	# forward end so the slot reads as a channel, not a hole.
+	var plate: Array[Vector3] = []
+	var hw0: float = rows[0][1]
+	for k in SCOOP_TOP_POINTS + 1:
+		var x := lerpf(-hw0 * 0.98, hw0 * 0.98, float(k) / SCOOP_TOP_POINTS)
+		plate.append(Vector3(x, skin_y(z0 + 0.03, x, false) - 0.001, z0 + 0.03))
+	var plate_low: Array[Vector3] = []
+	for pnt in plate: plate_low.append(pnt + Vector3(0, -float(gutter.gap) + 0.002, 0))
+	_instance("scoop_gutter_plate", _strip([plate, plate_low], _throat_material()), root)
+	# Exit door.
+	var ex: Dictionary = D.scoop_exit
+	var z_exit: float = rows[-1][0]
+	var z_hinge: float = z_exit - float(ex.door_length)
+	var hw_door: float = monotone(widths, z_hinge) * 0.8
+	var y_hinge: float = monotone(bottoms, z_hinge) - 0.002
+	var ang := deg_to_rad(float(ex.door_angle_deg))
+	var free := Vector3(0, y_hinge - float(ex.door_length) * sin(ang), z_hinge + float(ex.door_length) * cos(ang))
+	var door := []
+	for end in [Vector3(0, y_hinge, z_hinge), free]:
+		var ring: Array[Vector3] = []
+		for corner in [[1.0, -0.0015], [1.0, 0.0015], [-1.0, 0.0015], [-1.0, -0.0015]]:
+			ring.append(end + Vector3(corner[0] * hw_door, corner[1], 0))
+		door.append(ring)
+	_instance("scoop_exit_door", _loft(door, _skin(Finish.PLAIN)), root)
 
 
-# Carburettor intake on the cowl top: half-superellipse loft seated 3 mm into the skin, open at the front, its
-# height fading into the cowl toward z1.
+# Height profile of the carburettor intake along its length (0..1): a short rise, a plateau and a long fade into the
+# cowl. apply_metrology.py lowers the cowl stations by height x this profile, so intake + cowl = the measured top line.
+static func _intake_profile(u: float) -> float:
+	if u <= 0.0 or u >= 1.0: return 0.0
+	return smoothstep(0.0, 0.12, u) * (1.0 - smoothstep(0.35, 1.0, u))
+
+
+# Carburettor intake on the cowl top (V03): half-superellipse loft seated 3 mm into the skin, open at the front with a
+# raised lip over the first 8 % of its length, fading into the cowl toward z1.
 static func _carb_intake(root: Node3D) -> void:
 	var c: Dictionary = D.carb_intake
 	var rings := []
-	for k in 13:
-		var u := float(k) / 12.0
+	for k in 17:
+		var u := float(k) / 16.0
 		var z: float = lerpf(c.z0, c.z1, u)
-		var h: float = c.height * (1.0 - smoothstep(0.35, 1.0, u))
+		var h: float = c.height * _intake_profile(u) + float(c.lip) * (1.0 - smoothstep(0.0, 0.08, u))
 		var hw: float = c.half_width * (1.0 - 0.3 * u)
 		var ring: Array[Vector3] = []
 		for j in 13:
@@ -388,7 +435,7 @@ static func _carb_intake(root: Node3D) -> void:
 			ring.append(Vector3(x, skin_y(z, x) - 0.003, z))
 		rings.append(ring)
 	_instance("carb_intake", _loft(rings, material(OLIVE, 0.8), [false, true]), root)
-	_throat("carb_throat", rings[0], 0.05, root)
+	_throat("carb_throat", rings[0], 0.06, root)
 
 
 # Canopy section: a semi-ellipse whose base follows the skin down to the sill on each side.
@@ -409,23 +456,73 @@ static func _canopy_half(z: float, z0: float, z1: float) -> float:
 	return minf(plan, skin_half_width_at(z, profile(z, 2) - SILL_DEPTH_M))
 
 
+# Windscreen cross-section (V04): three flat panels, a centre panel of centre_fraction of the width and two raked side
+# panels down to the sill, so the glass reads as framed flat glass, not a bubble. Same point count as _canopy_ring.
+static func _windscreen_ring(z: float, top: float, half: float, grow := 0.0) -> Array[Vector3]:
+	var ws: Dictionary = D.canopy.windscreen
+	var base: float = skin_y(z, half, true) - SILL_DEPTH_M
+	var cf: float = float(ws.centre_fraction)
+	var corners := [Vector3(-half - grow, base, z), Vector3(-half * cf - grow, top + grow, z), Vector3(half * cf + grow, top + grow, z), Vector3(half + grow, base, z)]
+	var ring: Array[Vector3] = []
+	var count := 25
+	for k in count:
+		var u := float(k) / float(count - 1) * 3.0 # 0..3 across the three panels
+		var i := mini(int(floor(u)), 2)
+		ring.append(corners[i].lerp(corners[i + 1], u - i))
+	return ring
+
+
 static func _canopy(root: Node3D) -> void:
 	var c: Dictionary = D.canopy
 	var z0: float = c.top[0][0]
 	var z1: float = c.top[-1][0]
+	var zf: float = c.frame_z
+	# Windscreen: faceted prism from the sill to the frame (V04); its top follows the measured canopy line.
+	var ws_rings := []
+	for k in 9:
+		var z := lerpf(z0, zf, float(k) / 8.0)
+		ws_rings.append(_windscreen_ring(z, monotone(c.top, z), _canopy_half(z, z0, z1)))
+	_instance("windscreen", _loft(ws_rings, _glass(), [false, false]), root)
+	# Windscreen frames: dark strips 1.5 mm proud along the two panel joints and the front edge.
+	var fw: float = c.windscreen.frame_width
+	for joint in [1, 2]:
+		var strip := []
+		for k in 9:
+			var z := lerpf(z0, zf, float(k) / 8.0)
+			var ring := _windscreen_ring(z, monotone(c.top, z), _canopy_half(z, z0, z1), 0.0015)
+			var idx: int = 8 * int(joint) # ring point on the joint (25 points over 3 panels)
+			strip.append([ring[maxi(idx - 2, 0)], ring[idx], ring[mini(idx + 2, 24)]])
+		_instance("windscreen_frame_%d" % joint, _strip(strip, material(DARK, 0.6)), root)
+	var front := []
+	for dz in [0.0, fw]:
+		front.append(_windscreen_ring(z0 + dz, monotone(c.top, z0 + dz), _canopy_half(z0 + dz, z0, z1), 0.0015))
+	_instance("windscreen_frame_front", _loft(front, material(DARK, 0.6), [false, false]), root)
+	# Sliding hood: smooth bubble from the frame to the turtle deck.
 	var zs: Array[float] = []
-	for k in 41: zs.append(lerpf(z0, z1, float(k) / 40.0))
+	for k in 33: zs.append(lerpf(zf, z1, float(k) / 32.0))
 	var rings := []
 	for z in zs: rings.append(_canopy_ring(z, monotone(c.top, z), _canopy_half(z, z0, z1)))
 	_instance("canopy", _loft(rings, _glass(), [false, false]), root)
-	# Windscreen/bubble joint: a dark band 1.5 mm proud of the glass.
+	# Hood frame at the windscreen joint: a dark band 1.5 mm proud of the glass.
 	var frame := []
-	for dz in [-0.005, 0.005]:
-		var z: float = c.frame_z + dz
+	for dz in [-fw / 2.0, fw / 2.0]:
+		var z: float = zf + dz
 		frame.append(_canopy_ring(z, monotone(c.top, z), _canopy_half(z, z0, z1), 0.0015))
 	_instance("canopy_frame", _loft(frame, material(DARK, 0.6), [false, false]), root)
+	# Hood rails on both sills (V04): small boxes along the deck from the frame to the hood's end.
+	var rail: Dictionary = c.rail
+	for sgn in [-1.0, 1.0]:
+		var rows := []
+		for z in [zf, z1 - 0.06]:
+			var x: float = sgn * (_canopy_half(z, z0, z1) + 0.002)
+			var y: float = skin_y(z, x, true)
+			var ring: Array[Vector3] = []
+			for corner in [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]:
+				ring.append(Vector3(x + sgn * corner[0] * float(rail.width), y + corner[1] * float(rail.height), z))
+			rows.append(ring)
+		_instance("hood_rail_" + ("right" if sgn > 0 else "left"), _loft(rows, material(METAL, 0.4, 0.6)), root)
 	# Cockpit tub: dark skin over the deck inside the canopy, so the glass shows a cockpit and not bare metal.
-	var rows := []
+	var tub := []
 	var tub_z0 := z0 + 0.012
 	var tub_z1 := z1 - 0.05
 	for k in 17:
@@ -435,15 +532,22 @@ static func _canopy(root: Node3D) -> void:
 		for j in 13:
 			var x := lerpf(-xs, xs, float(j) / 12.0)
 			row.append(Vector3(x, skin_y(z, x) + 0.0015, z))
-		rows.append(row)
-	_instance("cockpit_tub", _strip(rows, material(COCKPIT, 0.9)), root)
-	# Armour plate behind the pilot's head.
+		tub.append(row)
+	_instance("cockpit_tub", _strip(tub, material(COCKPIT, 0.9)), root)
+	# Gunsight (V04): a small dark box on the coaming just behind the windscreen frame.
+	var gs: Dictionary = c.gunsight
+	var sight := BoxMesh.new()
+	sight.size = Vector3(float(gs.width), float(gs.height), float(gs.length))
+	sight.material = material(DARK, 0.5)
+	_instance("gunsight", sight, root, Vector3(0, skin_y(zf + 0.02, 0.0) + float(gs.height) / 2.0, zf + 0.02 + float(gs.length) / 2.0))
+	# Armour plate behind the pilot's head, from the deck to just under the hood.
 	var plate_z: float = D.pilot.head_back[0] + 0.03
 	var deck := profile(plate_z, 2)
+	var plate_top: float = monotone(c.top, plate_z) - 0.012
 	var plate := BoxMesh.new()
-	plate.size = Vector3(0.075, 0.195 - deck + 0.02, 0.008)
+	plate.size = Vector3(0.075, plate_top - deck + 0.02, 0.008)
 	plate.material = material(OLIVE, 0.8)
-	_instance("armour_plate", plate, root, Vector3(0, (0.195 + deck - 0.02) / 2.0, plate_z))
+	_instance("armour_plate", plate, root, Vector3(0, (plate_top + deck - 0.02) / 2.0, plate_z))
 
 
 # Closed ellipsoid (or its part above y_cut) as a latitude-longitude loft, node at the centre.
@@ -521,9 +625,25 @@ static func _chord(span: float) -> float:
 	return lerpf(w.root_chord, w.tip_chord, span / (w.span / 2.0))
 
 
+# Straight (trapezoid) leading edge; the measured root extension is added separately (V02).
 static func _le_z(span: float) -> float:
 	var w: Dictionary = D.wing
 	return lerpf(w.le_z_root, w.le_z_tip, span / (w.span / 2.0))
+
+
+# V02: forward extension of the leading edge at the root (the D's "kink"), measured in the plan view; zero outboard.
+static func _root_ext(span: float) -> float:
+	return monotone(D.wing.root_extension, span)
+
+
+# V02: planform rounding of the tip over the last tip_round_plan of span, about mid chord: returns [le_shift, chord_factor].
+static func _tip_plan(span: float) -> Array:
+	var r: float = D.wing.tip_round_plan
+	var d: float = D.wing.span / 2.0 - span
+	if d >= r: return [0.0, 1.0]
+	var u := 1.0 - d / r
+	var f := sqrt(maxf(1.0 - u * u, 0.0016))
+	return [0.5 * (1.0 - f), f]
 
 
 static func _thickness_ratio(span: float) -> float:
@@ -538,10 +658,21 @@ static func _panel_x(x_projected: float) -> float:
 
 
 # Section ring at the signed projected station x, in the dihedral frame (chord plane at y = 0, LE on the frame's z).
-static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false) -> Array[Vector3]:
+# x0, x1 are fractions of the BASE chord (straight LE to TE), so hinge lines never move. with_ext: the ring's leading
+# edge moves forward by the root extension (fixed panels only; its thickness stays that of the base chord). The tip
+# rounding shrinks the planform about mid chord.
+static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, with_ext := false) -> Array[Vector3]:
 	var span := absf(x)
-	var c := _chord(span)
-	return _foil_ring(_panel_x(x), _le_z(span) - D.wing.le_z_root, c, c * _thickness_ratio(span), D.wing.camber_ratio, x0, x1, bevel_nose,
+	var c_b := _chord(span)
+	var le_b: float = _le_z(span) - D.wing.le_z_root
+	var tip := _tip_plan(span)
+	var e: float = _root_ext(span) if with_ext else 0.0
+	var le: float = le_b + float(tip[0]) * c_b - e
+	var c: float = c_b * float(tip[1]) + e
+	# convert base-chord fractions to fractions of the drawn chord
+	var f0: float = (le_b + x0 * c_b - le) / c if x0 > 0.0 else 0.0
+	var f1: float = (le_b + x1 * c_b - le) / c if x1 < 1.0 else 1.0
+	return _foil_ring(_panel_x(x), le, c, c_b * float(tip[1]) * _thickness_ratio(span), D.wing.camber_ratio, f0, f1, bevel_nose,
 		_round_factor(D.wing.span / 2.0 - span, TIP_ROUND_M))
 
 
@@ -557,8 +688,8 @@ static func _wing_panel(label: String, groups: Array, part: String, parent: Node
 			var c := _chord(station)
 			var ring: Array[Vector3]
 			match part:
-				"full": ring = _wing_ring(sign * station, 0.0, 1.0)
-				"fixed": ring = _wing_ring(sign * station, 0.0, h - g / c)
+				"full": ring = _wing_ring(sign * station, 0.0, 1.0, false, true)
+				"fixed": ring = _wing_ring(sign * station, 0.0, h - g / c, false, true)
 				"moving": ring = _wing_ring(sign * station, h + g / c, 1.0, true)
 			var local: Array[Vector3] = []
 			for p in ring: local.append(to_local * p)
@@ -568,12 +699,16 @@ static func _wing_panel(label: String, groups: Array, part: String, parent: Node
 
 
 # Point on the wing skin at projected station x and chord fraction xc, in the dihedral frame.
-static func _wing_skin_point(x: float, xc: float, upper: bool) -> Vector3:
+static func _wing_skin_point(x: float, xc: float, upper: bool, with_ext := false) -> Vector3:
 	var span := absf(x)
-	var c := _chord(span)
-	var h := _half_thickness(xc) * _thickness_ratio(span) * c
-	var yc: float = 4.0 * D.wing.camber_ratio * xc * (1.0 - xc) * c
-	return Vector3(_panel_x(x), yc + (h if upper else -h), _le_z(span) - D.wing.le_z_root + xc * c)
+	var c_b := _chord(span)
+	var e: float = _root_ext(span) if with_ext else 0.0
+	var le: float = _le_z(span) - D.wing.le_z_root - e
+	var c := c_b + e
+	var f: float = (e + xc * c_b) / c # base-chord fraction -> drawn-chord fraction
+	var h := _half_thickness(f) * _thickness_ratio(span) * c_b
+	var yc: float = 4.0 * D.wing.camber_ratio * f * (1.0 - f) * c
+	return Vector3(_panel_x(x), yc + (h if upper else -h), le + f * c)
 
 
 # Aileron hinge point at a projected station: constant chord fraction, on the camber line, in the dihedral frame.
@@ -601,7 +736,8 @@ static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
 	wing.position = Vector3(0, w.chord_plane_y, w.le_z_root)
 	wing.rotation.x = deg_to_rad(w.incidence_deg) # positive: trailing edge down = nose up
 	root.add_child(wing)
-	var alu := _aluminium()
+	var alu := _skin(Finish.WING) # fixed skins: ribs and spars
+	var plain := _skin(Finish.PLAIN) # moving surfaces: same metal, no lines
 	var yellow := material(YELLOW, 0.4)
 	var band := half - 0.1 # yellow tips: last 0.1 m of span
 	var frames := {}
@@ -613,12 +749,24 @@ static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
 		wing.add_child(frame)
 		frames[suffix] = wing.transform * frame.transform
 		_wing_panel("wing_%s_root" % suffix, [[alu, [0.0, w.flap_inner]]], "full", frame, sign)
-		_wing_panel("wing_%s_ahead_of_flap" % suffix, [[alu, [w.flap_inner, w.flap_outer]]], "fixed", frame, sign)
+		# The fixed panel ahead of the flap carries the root leading-edge extension: its stations follow the measured
+		# extension table so the loft reproduces the measured curve instead of a straight wedge to the flap's outer end.
+		var ahead_stations: Array = [w.flap_inner]
+		for row in w.root_extension:
+			if row[0] > w.flap_inner + 0.005 and row[0] < w.flap_outer - 0.02: ahead_stations.append(row[0])
+		ahead_stations.append(w.flap_outer)
+		_wing_panel("wing_%s_ahead_of_flap" % suffix, [[alu, ahead_stations]], "fixed", frame, sign)
 		# Flap: fixed in the retracted position (no flap channel yet), drawn as its own surface with the hinge gap.
-		_wing_panel("flap_" + suffix, [[alu, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "moving", frame, sign)
+		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "moving", frame, sign)
 		_wing_panel("wing_%s_between" % suffix, [[alu, [w.flap_outer, w.aileron_inner]]], "full", frame, sign)
 		_wing_panel("wing_%s_ahead_of_aileron" % suffix, [[alu, [w.aileron_inner, band]], [yellow, [band, w.aileron_outer]]], "fixed", frame, sign)
-		_wing_panel("wing_%s_tip" % suffix, [[yellow, [w.aileron_outer, half - TIP_ROUND_M, half - 0.02, half - 0.012, half - 0.006, half - 0.002, half]]], "full", frame, sign)
+		var tip_stations: Array = [w.aileron_outer]
+		var r_plan: float = w.tip_round_plan
+		for k in range(0, 9): tip_stations.append(half - r_plan * (1.0 - float(k) / 9.0) ** 1.6 - 0.001 * (8 - k))
+		for s in [half - 0.012, half - 0.006, half - 0.002, half]: tip_stations.append(s)
+		tip_stations.sort()
+		_wing_panel("wing_%s_tip" % suffix, [[yellow, tip_stations]], "full", frame, sign)
+		_root_fillet(root, suffix, sign, wing.transform * frame.transform)
 		# Static frame on the swept hinge line (constant chord fraction): local +X along the hinge toward +X.
 		var inner := _hinge_point(sign * w.aileron_inner)
 		var outer := _hinge_point(sign * w.aileron_outer)
@@ -629,9 +777,47 @@ static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
 		aileron_frame.rotation.y = atan2(-along.z, along.x)
 		frame.add_child(aileron_frame)
 		var pivot := _hinge("aileron_" + suffix, aileron_frame, hinges)
-		_wing_panel("aileron_" + suffix, [[alu, [w.aileron_inner + END_GAP_M, band]], [yellow, [band, w.aileron_outer - END_GAP_M]]], "moving", pivot, sign,
+		_wing_panel("aileron_" + suffix, [[plain, [w.aileron_inner + END_GAP_M, band]], [yellow, [band, w.aileron_outer - END_GAP_M]]], "moving", pivot, sign,
 			aileron_frame.transform.affine_inverse())
 	return frames
+
+
+# V02: wing-root fillet (estimated from photos): a concave quarter-round strip between the wing's upper surface just
+# outboard of the fuselage side and the fuselage skin, its radius growing from the leading edge to the trailing edge;
+# behind the TE it keeps fairing up the fuselage side while the radius shrinks to zero (root_fillet.length_aft, te_rise).
+static func _root_fillet(root: Node3D, suffix: String, sign: float, to_root: Transform3D) -> void:
+	var w: Dictionary = D.wing
+	var fl: Dictionary = w.root_fillet
+	var rows := []
+	var x_side: float = profile(0.3 * w.root_chord, 1) # fuselage half-width near the wing: the fillet's foot station
+	var le_root: float = _le_z(x_side) - w.le_z_root - _root_ext(x_side)
+	var chord_ext: float = _chord(x_side) + _root_ext(x_side)
+	for k in 19:
+		var u := float(k) / 18.0
+		var r: float = lerpf(float(fl.radius_le), float(fl.radius_te), u)
+		var xc_drawn := lerpf(0.02, 0.985, u)
+		var xc_base: float = (xc_drawn * chord_ext - _root_ext(x_side)) / _chord(x_side)
+		var p_w: Vector3 = to_root * _wing_skin_point(sign * (x_side + 0.004), clampf(xc_base, 0.0, 1.0), true, true)
+		rows.append(_fillet_row(p_w, r, sign))
+	var te_point: Vector3 = to_root * _wing_skin_point(sign * (x_side + 0.004), 1.0, true, false)
+	for k in range(1, 9):
+		var u := float(k) / 8.0
+		var r: float = float(fl.radius_te) * (1.0 - u)
+		var p := te_point + Vector3(0, float(fl.te_rise) * u * u, float(fl.length_aft) * u)
+		rows.append(_fillet_row(p, maxf(r, 0.003), sign))
+	_instance("root_fillet_" + suffix, _strip(rows, _skin(Finish.PLAIN)), root)
+
+
+# One fillet row: a quarter arc of 7 points from the wing surface point (tangent horizontal) to the fuselage skin
+# (tangent vertical), concave toward the corner; the foot sits on the skin at height y + r.
+static func _fillet_row(p_w: Vector3, r: float, sign: float) -> Array[Vector3]:
+	var x_f: float = skin_half_width_at(p_w.z, p_w.y + r) * sign
+	var center := Vector3(x_f + sign * r, p_w.y + r, p_w.z)
+	var row: Array[Vector3] = []
+	for k in 7:
+		var a := lerpf(-PI / 2.0, -PI, float(k) / 6.0) # -90 deg: on the wing surface; -180 deg: on the fuselage wall
+		row.append(center + Vector3(sign * r * cos(a), r * sin(a), 0))
+	return row
 
 
 # Horizontal tail section at signed span s, in the tail frame (origin on the elevator hinge). Symmetric section
@@ -751,7 +937,7 @@ static func _stab_ring(s: float, hz: float, part: String) -> Array[Vector3]:
 static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var t: Dictionary = D.tail
 	var hs: float = t.stab_half_span
-	var alu := _aluminium()
+	var alu := _skin(Finish.PLAIN) # elevators
 	# Elevator hinge: straight, parallel to X, at the mean of the measured planform's hinge z over the plain (non-horn)
 	# span (the measured hinge line sweeps < 0.3 deg); the horn balance rotates about the same axis.
 	var f: float = t.elevator_hinge_fraction
@@ -773,7 +959,7 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var rings := []
 	for i in range(stations.size() - 1, 0, -1): rings.append(_stab_ring(-stations[i], hz, "fixed"))
 	for s in stations: rings.append(_stab_ring(s, hz, "fixed"))
-	_instance("stab", _loft(rings, alu), frame)
+	_instance("stab", _loft(rings, _skin(Finish.TAIL_H)), frame)
 	var elevator := _hinge("elevator", frame, hinges)
 	for sign in [-1.0, 1.0]:
 		var el := []
@@ -800,7 +986,7 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	for y in [top - 0.018, top - 0.01, top - 0.005, top - 0.002]: heights.append(y)
 	var fin := []
 	for y in heights: fin.append(_fin_ring(y, "fixed"))
-	_instance("fin", _loft(fin, alu), fin_frame)
+	_instance("fin", _loft(fin, _skin(Finish.TAIL_V)), fin_frame)
 	var rudder := _hinge("rudder", fin_frame, hinges)
 	var rud := []
 	var y_base: float = _tail_lower_y(t.rudder_hinge_z) + 0.003
@@ -828,45 +1014,114 @@ static func _strut(label: String, a: Vector3, b: Vector3, radius: float, parent:
 	rod.quaternion = Quaternion(Vector3.UP, (b - a).normalized())
 
 
-# Wheel pivot (rotation.x spins it): dark tyre and a lighter hub disc.
-static func _wheel(label: String, diameter: float, width: float, center: Vector3, parent: Node3D) -> Node3D:
+# Wheel pivot (rotation.x spins it): dark tyre, a dished rim, hub_spokes spokes and a cap (V06).
+static func _wheel(label: String, diameter: float, width: float, center: Vector3, parent: Node3D, spokes := 0) -> Node3D:
 	var pivot := Node3D.new()
 	pivot.name = label
 	pivot.position = center
 	parent.add_child(pivot)
-	var tire := _cylinder(label + "_tire", diameter / 2.0, width, TIRE, pivot, 24)
-	tire.rotation.z = PI / 2.0
-	var hub := _cylinder(label + "_hub", diameter * 0.27, width + 0.004, HUB, pivot, 16)
+	var rim_r := diameter * 0.27
+	if spokes == 0:
+		var tire := _cylinder(label + "_tire", diameter / 2.0, width, TIRE, pivot, 24)
+		tire.rotation.z = PI / 2.0
+		var hub := _cylinder(label + "_hub", rim_r, width + 0.004, HUB, pivot, 16)
+		hub.rotation.z = PI / 2.0
+		return pivot
+	# Spoked wheel: the tyre is a tube (open centre) so the dished hub, spokes and caps show in the recess.
+	var profile_pts := [[rim_r, -0.5], [diameter / 2.0 - 0.012, -0.5], [diameter / 2.0, -0.3], [diameter / 2.0, 0.3], [diameter / 2.0 - 0.012, 0.5], [rim_r, 0.5]]
+	var tyre_rings := []
+	for k in 25:
+		var a := TAU * float(k) / 24.0
+		var radial := Vector3(0, cos(a), sin(a))
+		var ring: Array[Vector3] = []
+		for pt in profile_pts:
+			ring.append(radial * float(pt[0]) + Vector3(float(pt[1]) * width, 0, 0))
+		tyre_rings.append(ring)
+	_instance(label + "_tire", _loft(tyre_rings, material(TIRE, 0.6), [false, false]), pivot)
+	var hub := _cylinder(label + "_hub", rim_r + 0.001, width * 0.55, HUB, pivot, 16)
 	hub.rotation.z = PI / 2.0
+	if spokes > 0:
+		for side in [-1.0, 1.0]:
+			var face_x: float = float(side) * (width * 0.55 / 2.0)
+			var cap := _cylinder(label + "_cap_" + ("r" if side > 0 else "l"), rim_r * 0.3, 0.006, METAL, pivot, 12)
+			cap.rotation.z = PI / 2.0
+			cap.position.x = face_x + side * 0.004
+			for k in spokes:
+				var a := TAU * float(k) / float(spokes)
+				var spoke := BoxMesh.new()
+				spoke.size = Vector3(0.004, rim_r * 0.72, rim_r * 0.14)
+				spoke.material = material(METAL, 0.4, 0.6)
+				var inst := _instance(label + "_spoke_%s%d" % ["r" if side > 0 else "l", k], spoke, pivot)
+				inst.position = Vector3(face_x + side * 0.002, 0, 0) + Vector3(0, cos(a), sin(a)) * rim_r * 0.5
+				inst.rotation.x = a
 	return pivot
+
+
+# Thin plate from an outline of [point, half_width] rows: a loft of flat rectangles along the rows (V06 doors).
+static func _plate(rows: Array, normal: Vector3, along: Vector3, thickness: float, mat: Material) -> ArrayMesh:
+	var rings := []
+	for row in rows:
+		var centre: Vector3 = row[0]
+		var hw: float = row[1]
+		var ring: Array[Vector3] = []
+		for corner in [[1.0, -1.0], [1.0, 1.0], [-1.0, 1.0], [-1.0, -1.0]]:
+			ring.append(centre + normal * corner[0] * thickness / 2.0 + along * corner[1] * hw)
+		rings.append(ring)
+	return _loft(rings, mat)
 
 
 static func _gear(root: Node3D, frames: Dictionary) -> Dictionary:
 	var g: Dictionary = D.gear
 	var gear := {}
-	for sign in [-1.0, 1.0]:
-		var suffix := "right" if sign > 0 else "left"
-		var x_strut: float = sign * (g.track / 2.0 - 0.03)
+	var rake := deg_to_rad(float(g.rake_deg))
+	for sgn in [-1.0, 1.0]:
+		var suffix := "right" if sgn > 0 else "left"
+		var x_strut: float = sgn * (g.track / 2.0 - 0.03)
 		var to_root: Transform3D = frames[suffix]
-		var top: Vector3 = to_root * _wing_skin_point(x_strut, 0.12, false) + Vector3(0, 0.01, 0) # reaches into the wing
-		var axle := Vector3(sign * g.track / 2.0, g.main_axle[1], g.main_axle[0])
+		var axle := Vector3(sgn * g.track / 2.0, g.main_axle[1], g.main_axle[0])
+		# Leg top inside the wing: the lower skin at the chord station that gives the data rake (axle forward of the top).
+		var le: Vector3 = to_root * _wing_skin_point(x_strut, 0.0, false)
+		var te: Vector3 = to_root * _wing_skin_point(x_strut, 1.0, false)
+		var top: Vector3 = to_root * _wing_skin_point(x_strut, 0.12, false) + Vector3(0, 0.01, 0)
+		for _pass in 3: # the skin height depends on the station; converges in two passes
+			var top_z: float = axle.z + (top.y - axle.y) * tan(rake)
+			var xc: float = clampf((top_z - le.z) / (te.z - le.z), 0.03, 0.5)
+			top = to_root * _wing_skin_point(x_strut, xc, false) + Vector3(0, 0.01, 0)
 		var bottom := Vector3(x_strut, axle.y, axle.z)
-		_strut("main_strut_" + suffix, top, bottom, g.strut_radius, root)
-		_strut("main_oleo_" + suffix, top, top.lerp(bottom, 0.5), g.strut_radius * 1.5, root)
+		var leg := bottom - top
+		_strut("main_strut_" + suffix, top, bottom, g.strut_radius * 0.8, root) # polished piston
+		_strut("main_oleo_" + suffix, top, top + leg * 0.55, g.strut_radius * 1.5, root) # outer cylinder
 		_strut("axle_" + suffix, bottom, axle, g.strut_radius * 0.6, root)
-		gear[suffix] = _wheel("wheel_" + suffix, g.main_wheel_diameter, g.main_wheel_width, axle, root)
-		# Strut fairing door: a flat plate alongside the leg, inboard, following its rake.
-		var door_x: float = x_strut - sign * (g.strut_radius * 1.5 + 0.004)
-		var door_top := Vector3(door_x, top.y - 0.012, top.z)
-		var door_bottom := Vector3(door_x, 0.0, 0.0)
-		door_bottom = door_top.lerp(Vector3(door_x, bottom.y, bottom.z), 0.72)
-		var rings := []
-		for end in [door_top, door_bottom]:
-			var ring: Array[Vector3] = []
-			for corner in [[1.0, -0.065], [1.0, 0.065], [-1.0, 0.065], [-1.0, -0.065]]:
-				ring.append(end + Vector3(corner[0] * 0.0015, 0, corner[1]))
-			rings.append(ring)
-		_instance("gear_door_" + suffix, _loft(rings, _aluminium()), root)
+		# Torque scissor behind the leg: two short links meeting at a knee offset aft.
+		var aft := Vector3(0, 0, 1)
+		var sc: Dictionary = g.scissor
+		var upper_pin: Vector3 = top + leg * 0.55 + aft * g.strut_radius * 1.5
+		var lower_pin: Vector3 = top + leg.normalized() * (leg.length() * 0.55 + float(sc.length)) + aft * g.strut_radius * 0.8
+		var knee: Vector3 = (upper_pin + lower_pin) / 2.0 + aft * float(sc.offset)
+		_strut("scissor_upper_" + suffix, upper_pin, knee, g.strut_radius * 0.35, root)
+		_strut("scissor_lower_" + suffix, knee, lower_pin, g.strut_radius * 0.35, root)
+		gear[suffix] = _wheel("wheel_" + suffix, g.main_wheel_diameter, g.main_wheel_width, axle, root, int(g.hub_spokes))
+		# Strut door: shaped plate inboard of the leg, following its rake; outline [u along the leg, half width].
+		var door_x: float = x_strut - sgn * (g.strut_radius * 1.5 + 0.004)
+		var rows := []
+		for row in g.strut_door:
+			var at: Vector3 = top + leg * float(row[0])
+			rows.append([Vector3(door_x, at.y - 0.012 * (1.0 - float(row[0])), at.z), float(row[1])])
+		_instance("gear_door_" + suffix, _plate(rows, Vector3.RIGHT, Vector3.BACK, 0.003, _skin(Finish.PLAIN)), root)
+		# Inner well doors (closed): a panel 1.5 mm proud of the lower wing skin from the fuselage side to the leg.
+		var wd: Dictionary = g.well_doors
+		var grid := []
+		for i in 5:
+			var z: float = float(wd.z0) + float(wd.length) * float(i) / 4.0
+			var line: Array[Vector3] = []
+			for j in 4:
+				var x: float = sgn * lerpf(float(wd.inner_x), absf(door_x) - 0.012, float(j) / 3.0)
+				var le_x: Vector3 = to_root * _wing_skin_point(x, 0.0, false)
+				var te_x: Vector3 = to_root * _wing_skin_point(x, 1.0, false)
+				var fx: float = clampf((z - le_x.z) / (te_x.z - le_x.z), 0.0, 1.0)
+				line.append(to_root * _wing_skin_point(x, fx, false) + Vector3(0, -0.0015, 0))
+			grid.append(line)
+		_instance("well_door_" + suffix, _strip(grid, _skin(Finish.PLAIN)), root)
 	# Tail wheel: steering pivot (about +Y) on the tail cone bottom above the axle, short strut down to it.
 	var steering := Node3D.new()
 	steering.name = "tail_steering"
@@ -876,6 +1131,17 @@ static func _gear(root: Node3D, frames: Dictionary) -> Dictionary:
 	_strut("tail_strut", Vector3(0, 0.004, 0), axle_local + Vector3(0, 0.004, 0), 0.006, steering)
 	gear["tail"] = _wheel("wheel_tail", g.tail_wheel_diameter, 0.02, axle_local, steering)
 	gear["steering"] = steering
+	# Tail-wheel doors (V06): two plates hinged on the belly either side of the well, hanging open.
+	var td: Dictionary = g.tailwheel_doors
+	for sgn in [-1.0, 1.0]:
+		var hinge_x: float = sgn * 0.02
+		var open := deg_to_rad(float(td.open_deg))
+		var hang := Vector3(sgn * cos(open), -sin(open), 0) * float(td.width)
+		var rows := []
+		for z in [g.tail_axle[0] - float(td.length) * (1.0 - float(td.aft_fraction)), g.tail_axle[0] + float(td.length) * float(td.aft_fraction)]:
+			var hinge := Vector3(hinge_x, skin_y(float(z), hinge_x, false) - 0.002, float(z))
+			rows.append([hinge + hang / 2.0, float(td.width) / 2.0])
+		_instance("tail_door_" + ("right" if sgn > 0 else "left"), _plate(rows, Vector3(sin(open), sgn * cos(open), 0), hang.normalized(), 0.003, _skin(Finish.PLAIN)), root)
 	return gear
 
 
@@ -923,8 +1189,11 @@ static func _propeller(root: Node3D) -> Node3D:
 	var p: Dictionary = D.propeller
 	var s: Dictionary = D.spinner
 	var thrust := Node3D.new()
-	thrust.name = "thrust_frame" # axial: the data has no thrust offsets
+	thrust.name = "thrust_frame"
 	thrust.position = Vector3(0, 0, s.back_z)
+	# V07: the drawing's down thrust tilts the spinner/propeller axis nose-down (forward -Z dips: negative rotation
+	# about +X). Visual only: the physics thrust stays axial until P51-06 records the same angle in the data file.
+	thrust.rotation.x = -deg_to_rad(float(p.down_thrust_deg))
 	root.add_child(thrust)
 	# Spinner: pointed P-51 lathe from the back plate (z = 0 here) to the tip.
 	var rings := []
@@ -954,6 +1223,119 @@ static func manual_throws_deg() -> Dictionary:
 	return {aileron = 16.1, elevator = 14.7, rudder = 33.5} # app/data/aircraft/p51d_mustang_120.json controls.max_throw (V01)
 
 
+# Trim-tab sleeve (V10): for each station the surface's own section is sampled at the tab's front (half thickness
+# there) and at the trailing edge, and a 4-point wedge 1.5 mm proud of it is lofted along the stations. `ring_at`
+# returns the section at a station as [[thickness, chord], ...] pairs (thickness axis first), `te` the chord at the TE.
+static func _tab_sleeve(stations: Array, sections: Array, tes: Array, chord: float, thick_axis: Vector3, span_axis: Vector3, chord_axis: Vector3) -> ArrayMesh:
+	var rings := []
+	for i in stations.size():
+		var te: float = tes[i]
+		var z_f: float = te - chord
+		var h_f := 0.0
+		for pt in sections[i]:
+			if absf(float(pt[1]) - z_f) < chord * 0.35: h_f = maxf(h_f, absf(float(pt[0])))
+		h_f = maxf(h_f, 0.002)
+		var ring: Array[Vector3] = []
+		for corner in [[h_f + 0.0015, z_f], [0.0015, te + 0.001], [-0.0015, te + 0.001], [-(h_f + 0.0015), z_f]]:
+			ring.append(span_axis * float(stations[i]) + thick_axis * float(corner[0]) + chord_axis * float(corner[1]))
+		rings.append(ring)
+	return _loft(rings, material(METAL, 0.45, 0.5))
+
+
+# V10 details: gun ports, pitot, antenna mast and wire, navigation and tail lights, fuel caps, trim tabs. Each is a few
+# primitives placed from the data; the trim tabs hang from the hinge nodes so they move with the surfaces.
+static func _details(root: Node3D, frames: Dictionary, hinges: Dictionary) -> void:
+	var de: Dictionary = D.details
+	var w: Dictionary = D.wing
+	var half: float = w.span / 2.0
+	var t: Dictionary = D.tail
+	for sgn in [-1.0, 1.0]:
+		var side := "right" if sgn > 0 else "left"
+		var to_root: Transform3D = frames[side]
+		# Gun ports: short dark tubes on the leading edge, the inboard barrel protruding.
+		var gp: Dictionary = de.gun_ports
+		for i in 3:
+			var x: float = sgn * float(gp.x[i])
+			var le: Vector3 = to_root * _wing_skin_point(x, 0.0, true, true)
+			var length: float = float(gp.protrusion[i]) + 0.02
+			var tube := _cylinder("gun_port_%s_%d" % [side, i], float(gp.bore_radius), length, DARK, root, 10)
+			tube.rotation.x = PI / 2.0
+			tube.position = le + Vector3(0, 0, 0.01 - length / 2.0) # 1 cm inside the LE, the rest ahead of it
+		# Navigation light on the tip leading edge: red left, green right.
+		var nav := SphereMesh.new()
+		nav.radius = float(de.nav_lights.radius)
+		nav.height = nav.radius * 2.0
+		nav.radial_segments = 10
+		nav.rings = 6
+		nav.material = material(Color("d02020") if sgn < 0 else Color("20b040"), 0.3)
+		var tip_pt: Vector3 = to_root * _wing_skin_point(sgn * (half - 0.012), 0.03, true)
+		_instance("nav_light_" + side, nav, root, tip_pt)
+		# Fuel cap on the upper wing near the root: a flush dark disc.
+		var fc: Dictionary = de.fuel_caps
+		var cap_pt: Vector3 = to_root * _wing_skin_point(sgn * float(fc.x), float(fc.chord_fraction), true)
+		var cap := _cylinder("fuel_cap_" + side, float(fc.radius), 0.002, DARK, root, 12)
+		cap.position = cap_pt + Vector3(0, 0.001, 0)
+		# Elevator trim tab: a thin box on the inboard trailing edge, following the TE sweep, child of the hinge.
+		var et: Dictionary = de.elevator_tab
+		var inner: float = t.fin_thickness / 2.0 + 0.006 + float(et.s0)
+		var s0: float = inner
+		var s1: float = inner + float(et.span)
+		var tail_frame: Node3D = hinges.elevator.get_parent()
+		var hz: float = tail_frame.position.z
+		var e_stations := []
+		var e_sections := []
+		var e_tes := []
+		for k in 4:
+			var sp: float = lerpf(s0, s1, float(k) / 3.0)
+			var sec := []
+			for v in _stab_ring(sgn * sp, hz, "moving"): sec.append([v.y, v.z])
+			e_stations.append(sgn * sp)
+			e_sections.append(sec)
+			e_tes.append(_stab_plan(sp)[1] - hz)
+		_instance("elevator_tab_" + side, _tab_sleeve(e_stations, e_sections, e_tes, float(et.chord), Vector3.UP, Vector3.RIGHT, Vector3.BACK), hinges.elevator)
+	# Pitot under the right wing: a drop and a forward-pointing tube.
+	var pi: Dictionary = de.pitot
+	var under: Vector3 = frames["right"] * _wing_skin_point(float(pi.x), float(pi.chord_fraction), false)
+	var foot := under + Vector3(0, -float(pi.drop), 0)
+	_strut("pitot_mast", under + Vector3(0, 0.005, 0), foot, float(pi.radius), root)
+	_strut("pitot_tube", foot, foot + Vector3(0, 0, -float(pi.length)), float(pi.radius) * 0.7, root)
+	# Antenna mast on the spine aft of the hood, raked forward, with the wire to the fin's leading edge near the top.
+	var am: Dictionary = de.antenna_mast
+	var zm: float = float(D.canopy.top[-1][0]) + float(am.z_after_canopy)
+	var base := Vector3(0, profile(zm, 2) - 0.005, zm)
+	var rake := deg_to_rad(float(am.rake_deg))
+	var mast_top := base + Vector3(0, cos(rake), -sin(rake)) * float(am.height)
+	_strut("antenna_mast", base, mast_top, float(am.radius), root)
+	var fin_y: float = _fin_top_y() - 0.03
+	var wire_end := Vector3(0, fin_y, _upper_z_at(fin_y, true) + 0.003)
+	var wire := _cylinder("antenna_wire", float(am.wire_radius), (wire_end - mast_top).length(), DARK, root, 6)
+	wire.position = (mast_top + wire_end) / 2.0
+	wire.quaternion = Quaternion(Vector3.UP, (wire_end - mast_top).normalized())
+	# Rudder trim tab on the trailing edge, following the rake, child of the rudder hinge; tail light at the rudder base.
+	var rt: Dictionary = de.rudder_tab
+	var y_base: float = _tail_lower_y(t.rudder_hinge_z) + 0.003
+	var y0: float = maxf(y_base + float(rt.y0), float(t.rudder_te_bottom[1]) + 0.005) # above the base bevel: the tab follows one straight TE
+	var y1: float = y0 + float(rt.span)
+	var r_stations := []
+	var r_sections := []
+	var r_tes := []
+	for k in 5:
+		var yk: float = lerpf(y0, y1, float(k) / 4.0)
+		var sec := []
+		for v in _fin_ring(yk, "moving"): sec.append([v.x, v.z])
+		r_stations.append(yk)
+		r_sections.append(sec)
+		r_tes.append(_rudder_te(yk) - t.rudder_hinge_z)
+	_instance("rudder_tab", _tab_sleeve(r_stations, r_sections, r_tes, float(rt.chord), Vector3.RIGHT, Vector3.UP, Vector3.BACK), hinges.rudder)
+	var tail_light := SphereMesh.new()
+	tail_light.radius = 0.008
+	tail_light.height = 0.016
+	tail_light.radial_segments = 8
+	tail_light.rings = 5
+	tail_light.material = material(Color("f4f4f0"), 0.2)
+	_instance("tail_light", tail_light, hinges.rudder, Vector3(0, float(t.rudder_te_bottom[1]) + 0.012, _rudder_te(float(t.rudder_te_bottom[1]) + 0.012) - t.rudder_hinge_z - 0.008))
+
+
 static func build() -> Dictionary:
 	var root := Node3D.new()
 	root.name = "airplane"
@@ -971,5 +1353,6 @@ static func build() -> Dictionary:
 	var frames := _wings(root, hinges)
 	_tail(root, hinges)
 	var gear := _gear(root, frames)
+	_details(root, frames, hinges)
 	var propeller := _propeller(root)
-	return {root = root, propeller = propeller, hinges = hinges, gear = gear}
+	return {root = root, propeller = propeller, hinges = hinges, gear = gear, frames = frames}

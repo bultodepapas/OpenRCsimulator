@@ -2,7 +2,7 @@
 
 > Actualización 2026-10-06: reparación implementada en el árbol de trabajo. Ver [cambios, pruebas y límites](research/flight-repair-implementation.md). D9-R1/R2, D4-R1, D1-R1 y D8a-R1 tienen implementación y regresiones; el rudder usa superficies/derivadas enlazadas. Gate 2 (validación con piloto), propwash y equilibrio de eje siguen abiertos. El texto fechado 2026-10-05 se conserva como plan original.
 
-2026-10-05 · Propuesta de continuación de D8b, D9, D10, Gate F y E0. **Investigación completada; cambios de física pendientes.**
+2026-10-05 · Propuesta de continuación de D8b, D9, D10, Gate F y E0. **Implementado el 2026-10-06 (nota superior); pendientes Gate 2-R (piloto), E0b, G2 y D8b-R1 (matriz de manejo multi-eje).**
 
 [Evidencia y límites](research/flight-model-robustness-audit.md) · [Mediciones reproducibles](research/flight-robustness/results.json) · [Plan específico del rudder](RUDDER-REPAIR-PLAN.md).
 
@@ -93,4 +93,4 @@ Separar área de ala, cuerda media geométrica y cuerda aerodinámica media ante
 
 Primera entrega: pruebas rojas reproducibles de discontinuidad/energía/trim y sus correcciones pequeñas. Segunda: autoridad del rudder calibrada sin romper maniobras cruzadas. Tercera: superficies y propulsión ampliadas con evidencia. En cada entrega, conservar comparación antes/después y actualizar goldens solo por cambios deliberados aceptados.
 
-Ejecutar checks dirigidos tras cada cambio y `app/test.sh` antes de integrar scripts en `app/`. Medir coste por tick si cambia aerodinámica. Evaluar con el piloto después de cada cambio de manejo. El trabajo actual entrega análisis y plan; no aplica aún estas modificaciones a producción.
+Ejecutar checks dirigidos tras cada cambio y `app/test.sh` antes de integrar scripts en `app/`. Medir coste por tick si cambia aerodinámica. Evaluar con el piloto después de cada cambio de manejo. Las modificaciones están en producción desde el 2026-10-06; este texto conserva el plan original.
