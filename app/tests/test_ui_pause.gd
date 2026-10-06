@@ -153,6 +153,7 @@ func _run() -> void:
 	await ui.settle()
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_DOWN)
 	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var note: String = recorder.note

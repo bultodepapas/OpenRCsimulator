@@ -1,0 +1,14 @@
+config_version=5
+
+[application]
+config/name="OpenRC isolated nature trial"
+
+[display]
+window/size/viewport_width=960
+window/size/viewport_height=540
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2
+environment/defaults/default_clear_color=Color(0.58, 0.7, 0.82, 1)

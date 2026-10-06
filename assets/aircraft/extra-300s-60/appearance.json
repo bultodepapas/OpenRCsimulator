@@ -70,5 +70,14 @@
   ]
  },
  "roughness": 0.4,
- "fuselage_note": "Side band: straight line in model height (metres) from the cowl joint to the tail post, as in the photo; the cowl carries a lower white panel with three stars."
+ "fuselage_note": "Side band: straight line in model height (metres) from the cowl joint to the tail post, as in the photo; the cowl carries a lower white panel with three stars.",
+ "canopy": {
+  "alpha": 0.45,
+  "note": "Tinted transparent canopy (EX-10 test): set alpha to 1.0 for the opaque fallback if transparency shows sorting defects."
+ },
+ "pilot_colors": {
+  "skin": "#d9a57e",
+  "cap": "#1d2a4a",
+  "shirt": "#e6e8ec"
+ }
 }

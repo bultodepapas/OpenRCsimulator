@@ -327,6 +327,7 @@ def measure(picks):
         'wheel_pant_z': [r6(z_side(x)) for x in f['wheel_pant_x']['px']],
         'wheel_pant_profile': pant_profile(f, z_side, y_side),
         'main_leg': main_leg(f, z_side, y_side),
+        'pilot': {key.replace('_px', ''): [r6(z_side(v[0])), r6(y_side(v[1]))] for key, v in f['pilot_figure'].items() if isinstance(v, list)},
         'wheel_pant_y': [r6(y_side(y)) for y in f['wheel_pant_y']['px']],
         'rudder_te_z': r6(z_side(f['rudder_te_max']['px'][0])),
     }

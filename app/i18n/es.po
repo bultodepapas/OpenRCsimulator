@@ -88,3 +88,105 @@ msgstr "No se pudo guardar la traza del vuelo (error %d). Pulsa Terminar vuelo o
 
 msgid "Could not save the flight trace (error %d). Press Quit again to quit without it."
 msgstr "No se pudo guardar la traza del vuelo (error %d). Pulsa Salir otra vez para salir sin ella."
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "WHILE FLYING"
+msgstr "DURANTE EL VUELO"
+
+msgid "RADIO"
+msgstr "RADIO"
+
+msgid "RIGHT NOW"
+msgstr "POR AHORA"
+
+msgid "ABOUT"
+msgstr "ACERCA DE"
+
+msgid "Keys are shown as your keyboard layout prints them."
+msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
+
+msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it."
+msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra."
+
+msgid "The flight starts in the air; touching the ground restarts the airplane. No take-offs, landings or wind yet."
+msgstr "El vuelo empieza en el aire; el contacto con el suelo reinicia el avión. Aún no hay despegues, aterrizajes ni viento."
+
+msgid "Pause menu (in the radio calibration: cancel it)"
+msgstr "Menú de pausa (en la calibración: cancelarla)"
+
+msgid "Restart the flight"
+msgstr "Reiniciar el vuelo"
+
+msgid "Resume after a radio failsafe"
+msgstr "Reanudar tras un failsafe de la radio"
+
+msgid "Camera: pilot view or close-up"
+msgstr "Cámara: vista del piloto o de cerca"
+
+msgid "Auto-zoom on or off"
+msgstr "Autozoom sí o no"
+
+msgid "Ground shadow: sun, vertical or off"
+msgstr "Sombra en el suelo: sol, vertical o ninguna"
+
+msgid "Record a flight trace (press again to save it)"
+msgstr "Grabar una traza (otra vez: guardarla)"
+
+msgid "Calibrate the radio"
+msgstr "Calibrar la radio"
+
+msgid "Next radio calibration step"
+msgstr "Siguiente paso de la calibración de la radio"
+
+msgid "Performance numbers"
+msgstr "Cifras de rendimiento"
+
+msgid "Reload the aircraft data file"
+msgstr "Recargar el archivo de datos del avión"
+
+msgid "Fly with the arrows"
+msgstr "Vuela con las flechas"
+
+msgid "Pause"
+msgstr "Pausa"
+
+msgid "Esc"
+msgstr "Esc"
+
+msgid "Enter"
+msgstr "Intro"
+
+msgid "Num Enter"
+msgstr "Intro num."
+
+msgid "Left arrow"
+msgstr "Flecha izquierda"
+
+msgid "Right arrow"
+msgstr "Flecha derecha"
+
+msgid "Up arrow"
+msgstr "Flecha arriba"
+
+msgid "Down arrow"
+msgstr "Flecha abajo"
+
+msgid "OpenRC Simulator %s (build %s, commit %s%s, %s)"
+msgstr "OpenRC Simulator %s (build %s, commit %s%s, %s)"
+
+msgid ", with local changes"
+msgstr ", con cambios locales"
+
+msgid "OpenRC Simulator %s, development build (run from the source tree)"
+msgstr "OpenRC Simulator %s, versión de desarrollo (ejecutada desde el código fuente)"
+
+msgid "MIT licence"
+msgstr "licencia MIT"
+
+msgid "Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"
+msgstr "Jensen Das Ugly Stik diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"

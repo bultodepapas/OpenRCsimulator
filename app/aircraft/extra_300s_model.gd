@@ -7,10 +7,11 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-ex02b-red-stars"
+const VISUAL_REVISION := "gp-extra-300s-60-ex04-pilot"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const GLASS := Color("1c2733")
+const COCKPIT := Color("1a1d22")
 const METAL := Color("8b9299")
 const TIRE := Color("1a1c20")
 const PROP := Color("24262b")
@@ -243,7 +244,77 @@ static func _canopy(root: Node3D) -> void:
 			var angle := PI * float(k) / 24.0
 			ring.append(Vector3(half * cos(angle), base + maxf(top - base, 0.0) * sin(angle), z))
 		rings.append(ring)
-	_instance("canopy", _loft(rings, material(GLASS, 0.12, 0.2), [false, false]), root)
+	_instance("canopy", _loft(rings, _glass(), [false, false]), root)
+	# Dark cockpit floor just above the skin under the canopy, so the transparent canopy shows a cockpit.
+	var floor_rings: Array = []
+	for ring in rings:
+		var left: Vector3 = ring[ring.size() - 1]
+		var right: Vector3 = ring[0]
+		floor_rings.append([left + Vector3(0.002, 0.003, 0), right + Vector3(-0.002, 0.003, 0)])
+	var st := _surface(material(COCKPIT, 0.9))
+	for i in floor_rings.size() - 1:
+		var fa: Vector3 = floor_rings[i][0]
+		var fb: Vector3 = floor_rings[i][1]
+		var fc: Vector3 = floor_rings[i + 1][1]
+		var fd: Vector3 = floor_rings[i + 1][0]
+		_tri(st, fa, fb, fc, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP)
+		_tri(st, fa, fc, fd, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP)
+	_instance("cockpit_floor", st.commit(), root)
+
+
+# Tinted canopy: transparency from appearance.json (alpha 1.0 = opaque fallback).
+static func _glass() -> StandardMaterial3D:
+	var alpha: float = Finish.A.canopy.alpha
+	if alpha >= 1.0: return material(GLASS, 0.12, 0.2)
+	if not _materials.has("glass"):
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(GLASS, alpha)
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.roughness = 0.05
+		m.metallic = 0.3
+		m.metallic_specular = 0.8
+		_materials["glass"] = m
+	return _materials["glass"]
+
+
+# Closed ellipsoid (or its part above y_cut) as a latitude-longitude loft. The node sits at the centre, so a
+# rotation set on it turns the shape about its own centre.
+static func _ellipsoid(label: String, center: Vector3, radii: Vector3, color: Color, parent: Node3D, y_cut := -INF) -> MeshInstance3D:
+	var rings: Array = []
+	var lowest := -PI / 2.0 if y_cut == -INF else asin(clampf((y_cut - center.y) / radii.y, -1.0, 1.0))
+	for i in 13:
+		var lat := lerpf(lowest, PI / 2.0, float(i) / 12.0)
+		var ring: Array[Vector3] = []
+		for k in 20:
+			var lon := TAU * k / 20.0
+			ring.append(Vector3(radii.x * cos(lat) * cos(lon), radii.y * sin(lat), radii.z * cos(lat) * sin(lon)))
+		rings.append(ring)
+	return _instance(label, _loft(rings, material(color, 0.6), [y_cut != -INF, false]), parent, center)
+
+
+# Stylised pilot from the plan side view: head, cap with brim, neck and torso down into the cockpit.
+static func _pilot(root: Node3D) -> void:
+	var p: Dictionary = D.pilot
+	var colors: Dictionary = Finish.A.pilot_colors
+	var node := Node3D.new()
+	node.name = "pilot"
+	root.add_child(node)
+	var head_z: float = (p.nose_front[0] + p.head_back[0]) / 2.0
+	var head_y: float = (p.chin[1] + p.cap_brim_front[1]) / 2.0 + 0.004
+	var head := Vector3(0, head_y, head_z)
+	var head_radii := Vector3(p.head_half_width, (p.cap_brim_front[1] - p.chin[1]) / 2.0 + 0.006, (p.head_back[0] - p.nose_front[0]) / 2.0)
+	_ellipsoid("pilot_head", head, head_radii, Color(colors.skin), node)
+	var brim_y: float = p.cap_brim_front[1]
+	var cap_radii := Vector3(p.head_half_width + 0.002, p.cap_top[1] - brim_y, head_radii.z + 0.002)
+	_ellipsoid("pilot_cap", Vector3(0, brim_y, head_z), cap_radii, Color(colors.cap), node, brim_y)
+	var brim := _ellipsoid("pilot_cap_brim", Vector3(0, brim_y - 0.001, (p.cap_brim_front[0] + head_z) / 2.0 - 0.004),
+		Vector3(p.head_half_width * 0.9, 0.0025, (head_z - p.cap_brim_front[0]) / 2.0 + 0.006), Color(colors.cap), node)
+	brim.rotation.x = deg_to_rad(-8.0)
+	var shoulder_y: float = (p.shoulder_front[1] + p.shoulder_back[1]) / 2.0
+	var torso_z: float = (p.shoulder_front[0] + p.shoulder_back[0]) / 2.0
+	_ellipsoid("pilot_neck", Vector3(0, (p.chin[1] + shoulder_y) / 2.0, head_z + 0.006), Vector3(0.009, 0.012, 0.01), Color(colors.skin), node)
+	_ellipsoid("pilot_torso", Vector3(0, shoulder_y - 0.03, torso_z), Vector3(p.shoulder_half_width, 0.034, (p.shoulder_back[0] - p.shoulder_front[0]) / 2.0),
+		Color(colors.shirt), node)
 
 
 # Symmetric section: half-thickness/chord at chord fraction x, linearly interpolated from the traced table.
@@ -363,37 +434,62 @@ static func _wings(root: Node3D, hinges: Dictionary) -> void:
 
 
 # Flat outline extruded symmetrically; outline points are [u, v] mapped by `axes` to the node's local frame.
+# Flat surface from an outline of [u, v] points (horizontal: x, z; vertical: y, z), extruded symmetrically.
 # part >= 0 selects the procedural finish, with the outline coordinates as UV.
-static func _plate(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, part := -1) -> MeshInstance3D:
+# bevel = {edge_v, below_u}: the strip v in [edge_v, edge_v + thickness/2] where u < below_u gets a 45 deg V-bevel
+# (half-thickness = v - edge_v), so a moving surface can turn about its hinge line past its own half-thickness.
+static func _plate(label: String, outline: Array, thickness: float, color: Color, parent: Node3D, vertical := false, part := -1, bevel := {}) -> MeshInstance3D:
 	var polygon := PackedVector2Array()
 	for p in outline: polygon.append(Vector2(p[0], p[1]))
-	var triangles := Geometry2D.triangulate_polygon(polygon)
-	if triangles.is_empty():
+	var pieces := [[polygon, false]]
+	if not bevel.is_empty():
+		var v0: float = bevel.edge_v
+		var v1: float = v0 + thickness / 2.0
+		var u1: float = bevel.below_u
+		var strip := PackedVector2Array([Vector2(-10.0, v0 - 0.01), Vector2(u1, v0 - 0.01), Vector2(u1, v1), Vector2(-10.0, v1)])
+		pieces = []
+		for piece in Geometry2D.intersect_polygons(polygon, strip): pieces.append([piece, true])
+		for piece in Geometry2D.clip_polygons(polygon, strip): pieces.append([piece, false])
+	var st := _surface(material(color, 0.4) if part < 0 else Finish.material(part))
+	var built := false
+	for entry in pieces:
+		built = _plate_piece(st, entry[0], thickness, vertical, bevel, entry[1]) or built
+	if not built:
 		# An assert would stop a headless run in the debugger; an engine error fails app/test.sh instead.
 		push_error("Extra model: outline %s does not triangulate" % label)
 		return _instance(label, ArrayMesh.new(), parent)
+	return _instance(label, st.commit(), parent)
+
+
+static func _plate_piece(st: SurfaceTool, polygon: PackedVector2Array, thickness: float, vertical: bool, bevel: Dictionary, beveled: bool) -> bool:
+	var triangles := Geometry2D.triangulate_polygon(polygon)
+	if triangles.is_empty(): return false
+	var half := func(p: Vector2) -> float:
+		return clampf(p.y - float(bevel.edge_v), 0.0003, thickness / 2.0) if beveled else thickness / 2.0
 	var to3 := func(p: Vector2, side: float) -> Vector3:
-		return Vector3(side * thickness / 2.0, p.x, p.y) if vertical else Vector3(p.x, side * thickness / 2.0, p.y)
-	var st := _surface(material(color, 0.4) if part < 0 else Finish.material(part))
+		var h: float = half.call(p) * side
+		return Vector3(h, p.x, p.y) if vertical else Vector3(p.x, h, p.y)
 	for side in [-1.0, 1.0]:
-		var n := Vector3(side, 0, 0) if vertical else Vector3(0, side, 0)
+		var axis := Vector3(side, 0, 0) if vertical else Vector3(0, side, 0)
 		for i in range(0, triangles.size(), 3):
 			var face_uv := [polygon[triangles[i]], polygon[triangles[i + 1]], polygon[triangles[i + 2]]]
-			_tri(st, to3.call(face_uv[0], side), to3.call(face_uv[1], side), to3.call(face_uv[2], side), n, n, n, n, face_uv)
-	var center := Vector2.ZERO
-	for p in polygon: center += p
-	center /= polygon.size()
+			var a: Vector3 = to3.call(face_uv[0], side)
+			var b: Vector3 = to3.call(face_uv[1], side)
+			var c: Vector3 = to3.call(face_uv[2], side)
+			var n := (c - a).cross(b - a).normalized()
+			if n.dot(axis) < 0.0: n = -n
+			_tri(st, a, b, c, n, n, n, n, face_uv)
 	for i in polygon.size():
 		var p := polygon[i]
 		var q := polygon[(i + 1) % polygon.size()]
-		var mid := (p + q) * 0.5
 		var edge := q - p
+		if edge.length_squared() < 1e-12: continue
 		var n2 := Vector2(edge.y, -edge.x).normalized()
-		if n2.dot(mid - center) < 0.0: n2 = -n2
+		if Geometry2D.is_point_in_polygon((p + q) * 0.5 + n2 * 1e-5, polygon): n2 = -n2
 		var n := Vector3(0, n2.x, n2.y) if vertical else Vector3(n2.x, 0, n2.y)
 		_tri(st, to3.call(p, -1.0), to3.call(q, -1.0), to3.call(q, 1.0), n, n, n, n, [p, q, q])
 		_tri(st, to3.call(p, -1.0), to3.call(q, 1.0), to3.call(p, 1.0), n, n, n, n, [p, q, p])
-	return _instance(label, st.commit(), parent)
+	return true
 
 
 static func _tail(root: Node3D, hinges: Dictionary) -> void:
@@ -414,7 +510,7 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var corner: Array = t.elevator_root_corner
 	for sign in [-1.0, 1.0]:
 		var outline := [[sign * inner[0], g], [sign * hs, g], [sign * hs, t.elevator_tip_te_z - hz], [sign * corner[0], corner[1] - hz], [sign * inner[0], inner[1] - hz]]
-		_plate("elevator_" + ("right" if sign > 0 else "left"), outline, t.stab_thickness * 0.8, RED, elevator, false, Finish.HORIZONTAL_TAIL)
+		_plate("elevator_" + ("right" if sign > 0 else "left"), outline, t.stab_thickness * 0.8, RED, elevator, false, Finish.HORIZONTAL_TAIL, {edge_v = g, below_u = 10.0})
 	# Fin and rudder: outlines are [height y, z] in a frame on the rudder hinge line.
 	var rz: float = t.rudder_hinge_z
 	var rudder_frame := Node3D.new()
@@ -430,7 +526,7 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	var bottom_corner: Array = t.rudder_bottom_corner
 	var bottom_hinge: Array = t.rudder_bottom_hinge
 	var outline := [[bottom_hinge[1], g], [bal_y + g, g], [bal_y + g, t.balance_front_z - rz], [t.fin_top_y, t.fin_le_top_z - rz], [t.fin_top_y, t.rudder_top_te_z - rz], [low[1], low[0] - rz], [bottom_corner[1], bottom_corner[0] - rz]]
-	_plate("rudder", outline, t.fin_thickness, RED, rudder, true, Finish.VERTICAL_TAIL)
+	_plate("rudder", outline, t.fin_thickness, RED, rudder, true, Finish.VERTICAL_TAIL, {edge_v = g, below_u = bal_y + g})
 
 
 static func _cylinder(label: String, radius: float, length: float, color: Color, parent: Node3D, segments := 16) -> MeshInstance3D:
@@ -547,17 +643,60 @@ static func _propeller(root: Node3D) -> Node3D:
 	propeller.name = "propeller"
 	propeller.position = Vector3(0, 0, p.z - s.back_z)
 	thrust.add_child(propeller)
-	for side in [-1.0, 1.0]:
-		var blade := MeshInstance3D.new()
-		blade.name = "blade_" + ("a" if side > 0 else "b")
-		var box := BoxMesh.new()
-		box.size = Vector3(p.diameter / 2.0 - 0.02, 0.024, 0.004)
-		box.material = material(PROP, 0.5)
-		blade.mesh = box
-		blade.position = Vector3(side * (p.diameter / 4.0 + 0.01), 0, 0)
-		blade.rotation.x = side * deg_to_rad(18.0)
-		propeller.add_child(blade)
+	var blade := _blade_mesh()
+	for k in int(p.blades):
+		var node := _instance("blade_" + "ab"[k], blade, propeller)
+		node.rotation.z = PI * k # second blade: same mesh turned half a revolution about the shaft
 	return propeller
+
+
+static func _table(rows: Array, x: float) -> float:
+	if x <= rows[0][0]: return rows[0][1]
+	for i in rows.size() - 1:
+		if x <= rows[i + 1][0]:
+			return lerpf(rows[i][1], rows[i + 1][1], (x - rows[i][0]) / (rows[i + 1][0] - rows[i][0]))
+	return rows[-1][1]
+
+
+# One blade along +X in the propeller frame (shaft along Z, flight toward -Z). Sections twist to atan(P / 2 pi r);
+# the flat face looks aft and the cambered face forward, the leading edge leads toward +Y. Sections bunch toward
+# the tip so the planform closes round.
+static func _blade_mesh() -> ArrayMesh:
+	var p: Dictionary = D.propeller
+	var tip: float = p.diameter / 2.0
+	var root: float = p.hub_radius
+	var rings: Array = []
+	var stations := 18
+	for i in stations + 1:
+		var r := lerpf(root, tip, sin(PI / 2.0 * float(i) / stations))
+		var x := r / tip
+		var chord := _table(p.blade.chord_fraction_of_radius, x) * tip
+		var thickness := _table(p.blade.thickness_fraction_of_chord, x) * chord
+		var beta := atan(float(p.pitch) / (TAU * r))
+		var along := Vector3(0, cos(beta), -sin(beta)) # trailing edge -> leading edge
+		var face := Vector3(0, -sin(beta), -cos(beta)) # forward (cambered) face normal
+		var ring: Array[Vector3] = []
+		for k in 21:
+			var s := float(k) / 20.0 # 0 leading edge ... 1 trailing edge, then back along the flat face
+			var bump := sqrt(s) * (1.0 - s) / 0.385
+			ring.append(Vector3(r, 0, 0) + along * (0.35 - s) * chord + face * thickness * bump)
+		for k in range(19, 0, -1):
+			var s := float(k) / 20.0
+			ring.append(Vector3(r, 0, 0) + along * (0.35 - s) * chord - face * thickness * 0.08 * sqrt(s) * (1.0 - s) / 0.385)
+		rings.append(ring)
+	return _loft(rings, material(PROP, 0.45))
+
+
+## Manual p43 high rates (inches at the widest part of each surface) as hinge angles: delta = asin(d / r), with r the
+## widest chord of that surface in this geometry. Visual and clearance use only; flight throws come with EX-05.
+static func manual_throws_deg() -> Dictionary:
+	var t: Dictionary = D.tail
+	var widest := {aileron = float(D.wing.aileron_chord), elevator = float(t.elevator_root_corner[1]) - float(t.elevator_hinge_z),
+		rudder = float(t.rudder_te_low[0]) - float(t.rudder_hinge_z)}
+	var inches := {aileron = 0.625, elevator = 1.25, rudder = 2.5}
+	var out := {}
+	for k in widest: out[k] = rad_to_deg(asin(minf(inches[k] * 0.0254 / widest[k], 1.0)))
+	return out
 
 
 static func build() -> Dictionary:
@@ -570,6 +709,7 @@ static func build() -> Dictionary:
 	var hinges := {}
 	_fuselage(root)
 	_canopy(root)
+	_pilot(root)
 	_wings(root, hinges)
 	_tail(root, hinges)
 	var gear := _gear(root)

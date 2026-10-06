@@ -9,14 +9,20 @@ func _initialize() -> void:
 func run() -> void:
 	var output := ""
 	var compare_geometry := false
+	var fit_path := "res://../alignment/camera-fit.json"
+	var picks_path := "res://../alignment/picks.json"
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--output-dir="): output = arg.trim_prefix("--output-dir=")
 		if arg == "--compare-geometry": compare_geometry = true
+		if arg.begins_with("--fit="): fit_path = arg.trim_prefix("--fit=")
+		if arg.begins_with("--picks="): picks_path = arg.trim_prefix("--picks=")
 	if output.is_empty() or DirAccess.dir_exists_absolute(output):
 		push_error("Provide a new --output-dir=PATH"); quit(2); return
 	DirAccess.make_dir_recursive_absolute(output)
-	var fit: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../alignment/camera-fit.json"))
-	var picks: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../alignment/picks.json"))
+	var fit: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(fit_path))
+	var picks: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(picks_path))
+	if FileAccess.get_sha256(picks_path) != fit.picks_sha256:
+		push_error("Camera and picks do not belong to the same fit"); quit(2); return
 	var geometry_sha := FileAccess.get_sha256("res://geometry.json")
 	if geometry_sha != fit.model_geometry_sha256 and not compare_geometry:
 		push_error("Geometry changed after camera fit"); quit(2); return
@@ -61,7 +67,7 @@ func run() -> void:
 		geometry_sha256 = geometry_sha, calibration_geometry_sha256 = fit.model_geometry_sha256,
 		comparison_with_frozen_camera = compare_geometry,
 		projection_check_scope = "Original calibration anchors; not updated mesh landmark accuracy",
-		fit_sha256 = FileAccess.get_sha256("res://../alignment/camera-fit.json"),
+		fit_sha256 = FileAccess.get_sha256(fit_path),
 		model_sha256 = FileAccess.get_sha256("res://model.gd"), captures = records}, "\t") + "\n")
 	print("Aligned transparent captures: %s" % records.size())
 	quit()

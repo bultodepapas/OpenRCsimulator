@@ -26,6 +26,7 @@ def validate(d):
     assert a < f['cowl_star_y_m'] < b and abs(b - (f['side_band_center_y_m'][0][1] + f['side_band_half_height_m'])) < 0.002, \
         'the cowl panel top must continue the side band top'
     assert d['wing_bottom']['stripe_period_m'] > 0 and d['stab_bottom']['stripe_period_m'] > 0
+    assert 0.2 <= d['canopy']['alpha'] <= 1.0 and all(re.fullmatch(r'#[0-9a-f]{6}', c) for c in d['pilot_colors'].values())
 
 
 def main():

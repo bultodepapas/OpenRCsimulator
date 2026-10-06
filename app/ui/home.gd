@@ -7,6 +7,7 @@ extends Control
 
 const UiTheme := preload("res://ui/ui_theme.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
+const Reference := preload("res://ui/controls_reference.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -16,16 +17,17 @@ signal fly_requested
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
+## The player asked for Help (it returns the focus to `from` when it closes).
+signal help_requested(from: Control)
 
 const SIDEBAR_WIDTH := 440
 ## What Fly starts, until the catalog (UI-05/06) reads it from installed content. Presentation only: no physical
 ## parameter is copied here.
 const AIRCRAFT_NAME := "Jensen Das Ugly Stik 60"
-## Keyboard legend: keys (QWERTY physical positions, as keyboard.gd reads them) and what they do.
-const KEYS := [[["left", "right"], "Roll"], [["up", "down"], "Pitch"], [["A", "D"], "Rudder"], [["W", "S"], "Throttle"]]
 
 var fly_button: Button
 var language_button: Button
+var help_button: Button
 var quit_button: Button
 var control_label: Label
 var keys_legend: GridContainer
@@ -95,9 +97,14 @@ func _init() -> void:
 	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
 	row.add_child(language_button)
+	help_button = _button("Help", "")
+	help_button.name = "Help"
+	help_button.custom_minimum_size.x = 92
+	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
+	row.add_child(help_button)
 	quit_button = _button("Quit", "")
 	quit_button.name = "Quit"
-	quit_button.custom_minimum_size.x = 120
+	quit_button.custom_minimum_size.x = 92
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	row.add_child(quit_button)
 	column.add_child(row)
@@ -117,21 +124,13 @@ func _init() -> void:
 	keys_legend.columns = 2
 	keys_legend.add_theme_constant_override("h_separation", 18)
 	keys_legend.add_theme_constant_override("v_separation", 8)
-	for k in KEYS:
-		var caps := HBoxContainer.new()
-		caps.add_theme_constant_override("separation", 4)
-		for key in k[0]:
-			caps.add_child(KeyCap.make(key))
-		var pair := HBoxContainer.new()
-		pair.add_theme_constant_override("separation", 10)
-		pair.add_child(caps)
-		var action := _label(k[1], "SecondaryLabel")
-		pair.add_child(action)
-		keys_legend.add_child(pair)
+	_fill_legend()
 	column.add_child(keys_legend)
 
 
 func _ready() -> void:
+	# Down from Fly lands on the row's first button (geometry alone picks the middle one, Help).
+	fly_button.focus_neighbor_bottom = fly_button.get_path_to(language_button)
 	Input.joy_connection_changed.connect(_on_joy_changed)
 	_update_texts()
 	fly_button.grab_focus.call_deferred() # keyboard focus starts on Fly, visible
@@ -140,6 +139,25 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_update_texts()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN and is_node_ready():
+		_fill_legend() # the player may have switched keyboard layout meanwhile (no engine signal for it, research 25)
+
+
+## The keyboard legend from the shared table (ui/controls_reference.gd), keys named as the current layout prints them.
+func _fill_legend() -> void:
+	for c in keys_legend.get_children():
+		keys_legend.remove_child(c)
+		c.queue_free()
+	for k in Reference.FLIGHT:
+		var caps := HBoxContainer.new()
+		caps.add_theme_constant_override("separation", 4)
+		for key in k[0]:
+			caps.add_child(KeyCap.for_key(key))
+		var pair := HBoxContainer.new()
+		pair.add_theme_constant_override("separation", 10)
+		pair.add_child(caps)
+		pair.add_child(_label(k[1], "SecondaryLabel"))
+		keys_legend.add_child(pair)
 
 
 ## A one-line message under the buttons (e.g. a settings file that could not be saved); "" hides it.

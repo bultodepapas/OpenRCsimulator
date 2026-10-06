@@ -95,11 +95,29 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	var span = _q(errors, "reference.wing_span", ref.get("wing_span"), "m", 0.3, 4.0)
 	var chord = _q(errors, "reference.mean_chord", ref.get("mean_chord"), "m", 0.05, 1.0)
 	var arp = _q(errors, "reference.aero_reference_point", ref.get("aero_reference_point"), "m", -2.0, 2.0, 3)
-	if ref.get("planform", "rectangular") == "rectangular" and area != null and span != null and chord != null and absf(span * chord - area) / area > 0.01:
+	# mean_chord is the coefficient reference length S/b for every planform (v1 contract); a tapered wing declares its
+	# MAC separately in the evidence, never in this field.
+	if area != null and span != null and chord != null and absf(span * chord - area) / area > 0.01:
 		errors.append("reference: span × mean_chord = %.4f m2 differs from wing_area %.4f m2 by more than 1 %%" % [span * chord, area])
-
-	if ref.get("planform", "rectangular") != "rectangular":
-		errors.append("reference.planform: local wing elements currently require rectangular; tapered wings need their own area distribution")
+	var planform: Variant = ref.get("planform", "rectangular")
+	var chords := PackedFloat64Array() # [root, tip] for a tapered wing; empty = rectangular
+	if planform == "tapered":
+		var root = _q(errors, "reference.root_chord", ref.get("root_chord"), "m", 0.05, 1.0)
+		var tip = _q(errors, "reference.tip_chord", ref.get("tip_chord"), "m", 0.02, 1.0)
+		if root != null and tip != null:
+			if tip > root:
+				errors.append("reference: tip_chord %s must not exceed root_chord %s" % [tip, root])
+			elif area != null and span != null and absf(span * (root + tip) / 2.0 - area) / area > 0.01:
+				errors.append("reference: trapezoid span × (root + tip) / 2 = %.4f m2 differs from wing_area %.4f m2 by more than 1 %%" % [span * (root + tip) / 2.0, area])
+			chords = PackedFloat64Array([root, tip])
+	elif planform != "rectangular":
+		errors.append("reference.planform: '%s' is not 'rectangular' or 'tapered'" % planform)
+	var start_speed := 15.0 # the Stik's validated start (D5); other aircraft declare theirs
+	if raw.has("start"):
+		var start_node := _dictionary(errors, "start", raw.get("start"))
+		var v = _q(errors, "start.level_speed", start_node.get("level_speed"), "m/s", 5.0, 60.0)
+		if v != null:
+			start_speed = v
 	var bal := _dictionary(errors, "balance", raw.get("balance", {}))
 	var plan_cg = _q(errors, "balance.plan_cg", bal.get("plan_cg"), "m", -2.0, 2.0, 3)
 	_q(errors, "balance.firewall", bal.get("firewall"), "m", -2.0, 2.0, 3)
@@ -140,13 +158,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 
 	var envelope := _envelope(errors, aero_node.get("envelope"), aero) if errors.is_empty() else {}
 	if not envelope.is_empty():
-		# Equal-area wing strips for the asymmetric stall (D9b): centres at ±(k + ½)/n of the semi-span.
-		var n: int = Aero.WING_STATIONS_PER_SIDE
-		var ys := PackedFloat64Array()
-		for side in [-1.0, 1.0]:
-			for k in n:
-				ys.append(side * (k + 0.5) / n * span / 2.0)
-		envelope.station_ys = ys
+		envelope.station_ys = station_ys(span, chords)
 	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope)
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
@@ -185,7 +197,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		inertia = j,
 		cg_le = cg_inv,
 		cg_inventory_le = cg_inv,
-		reference = { S = area, b = span, c = chord, geometric_chord = area/span, arp_le = arp },
+		reference = { S = area, b = span, c = chord, geometric_chord = area/span, arp_le = arp, planform = planform, chords = chords },
+		start_speed = start_speed,
 		aero = aero,
 		envelope = envelope,
 		surfaces = surfaces,
@@ -195,6 +208,36 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		crash_hull = _hull_body(hull, cg_inv),
 	}
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
+
+
+## Spanwise positions (m, ±) of the equal-area wing strips for the asymmetric stall (D9b), left side first.
+## chords = [root, tip] (linear taper to the tip) or empty (rectangular). Each strip carries S / (2n) and its load
+## acts at the strip's area centroid, so the strips' rolling moments add up to the wing's. Rectangular: ±(k + ½)/n.
+static func station_ys(span: float, chords: PackedFloat64Array) -> PackedFloat64Array:
+	var n: int = Aero.WING_STATIONS_PER_SIDE
+	var h := span / 2.0
+	var centres := PackedFloat64Array()
+	if chords.is_empty() or is_equal_approx(chords[0], chords[1]):
+		for k in n:
+			centres.append((k + 0.5) / n * h)
+	else:
+		var cr := chords[0]
+		var slope := (chords[1] - cr) / h # chord change per metre of semi-span
+		var area := func(y: float) -> float: return cr * y + slope * y * y / 2.0
+		var moment := func(y: float) -> float: return cr * y * y / 2.0 + slope * y * y * y / 3.0
+		var total: float = area.call(h)
+		var y0 := 0.0
+		for k in n:
+			# Strip edge where the area from the root reaches (k + 1)/n of the semi-span's: slope/2·y² + cr·y − A = 0.
+			var target := total * (k + 1) / n
+			var y1 := h if k == n - 1 else (-cr + sqrt(cr * cr + 2.0 * slope * target)) / slope
+			centres.append((moment.call(y1) - moment.call(y0)) / (area.call(y1) - area.call(y0)))
+			y0 = y1
+	var ys := PackedFloat64Array()
+	for k in range(n - 1, -1, -1):
+		ys.append(-centres[k])
+	ys.append_array(centres)
+	return ys
 
 
 ## Inertia tensor entries [Jxx Jyy Jzz Jxy Jxz Jyz] in body FRD about `point` (le frame).

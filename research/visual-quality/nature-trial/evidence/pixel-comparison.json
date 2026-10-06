@@ -1,0 +1,29 @@
+[
+  {
+    "a": "source",
+    "b": "optimized",
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0,
+    "different_pixels": 0,
+    "limit": 0,
+    "passed": true
+  },
+  {
+    "a": "source",
+    "b": "merged-colors",
+    "max_channel_difference_8bit": 1,
+    "mean_absolute_channel_difference_8bit": 0.011078960905349794,
+    "different_pixels": 13433,
+    "limit": 1,
+    "passed": true
+  },
+  {
+    "a": "multimesh-source",
+    "b": "multimesh-merged",
+    "max_channel_difference_8bit": 1,
+    "mean_absolute_channel_difference_8bit": 0.043426568930041154,
+    "different_pixels": 47493,
+    "limit": 1,
+    "passed": true
+  }
+]

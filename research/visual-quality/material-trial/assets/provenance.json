@@ -1,0 +1,43 @@
+{
+  "asset_id": "Grass001",
+  "asset_page": "https://ambientcg.com/view?id=Grass001",
+  "download_date": "2026-10-06",
+  "download_endpoint": "https://ambientcg.com/get?file=Grass001_1K-JPG.zip",
+  "resolved_download_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Grass001_lmIxuoR7/Grass001_1K-JPG.zip",
+  "archive_retained": false,
+  "archive_bytes": 10710313,
+  "archive_sha256": "902f447a64171c8099589642d5bf2d1d6e52c40e94d957eb78eae722084b0cfb",
+  "license": {
+    "name": "Creative Commons CC0 1.0 Universal",
+    "url": "https://docs.ambientcg.com/license/",
+    "asset_page_license_statement": "https://ambientcg.com/view?id=Grass001",
+    "verified_date": "2026-10-06"
+  },
+  "approximate_tile_size_m": [1.4, 1.4],
+  "maps": [
+    {
+      "file": "Grass001_1K-JPG_Color.jpg",
+      "role": "albedo",
+      "dimensions_px": [1024, 1024],
+      "channels": "RGB",
+      "bytes": 1764300,
+      "sha256": "b9b6d61bc3b6137b868a3447eef18737896acd26d58fe2f4b83ce8c0e9d3f8ad"
+    },
+    {
+      "file": "Grass001_1K-JPG_NormalGL.jpg",
+      "role": "OpenGL tangent-space normal (+Y)",
+      "dimensions_px": [1024, 1024],
+      "channels": "RGB",
+      "bytes": 2338245,
+      "sha256": "eef0b56db5f00a6fcb3d0e0f8463e4e141e88aa85b26527a04d617b75a4ab5d2"
+    },
+    {
+      "file": "Grass001_1K-JPG_Roughness.jpg",
+      "role": "roughness; sampled from red channel",
+      "dimensions_px": [1024, 1024],
+      "channels": "grayscale",
+      "bytes": 823623,
+      "sha256": "8810effd44756341170d551501b7d0c645dc2395dbce46a8c7f1e61045258a06"
+    }
+  ]
+}

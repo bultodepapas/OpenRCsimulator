@@ -9,6 +9,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 signal continue_requested
 signal restart_requested
 signal end_requested
+signal help_requested(from: Control)
 signal quit_requested
 
 const LAYER := 10 # above the flight's HUD/panel CanvasLayers
@@ -17,6 +18,7 @@ const WIDTH := 400
 var continue_button: Button
 var restart_button: Button
 var end_button: Button
+var help_button: Button
 var quit_button: Button
 var status_label: Label
 var note_label: Label
@@ -61,6 +63,9 @@ func _init(can_end := true) -> void:
 	restart_button = _button("Restart flight", "", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
+	help_button = _button("Help", "", "Help")
+	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
+	column.add_child(help_button)
 	end_button = _button("End flight", "", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end

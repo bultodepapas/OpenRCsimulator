@@ -95,6 +95,17 @@
       "what": "outer edge of the double outline line of the root rib drawn at 0 deg in the side view, read from single-column run scans (upper = run start, lower = run end)",
       "x_upper_lower_px": [[5120, 5405, 5626], [5250, 5355, 5675], [5500, 5286, 5744], [6000, 5229, 5799], [6500, 5237, 5792], [7000, 5270, 5758], [7500, 5316, 5709], [8000, 5365, 5660], [8500, 5414, 5614], [9200, 5479, 5547], [9300, 5488, 5538]]
     },
+    "pilot_figure": {
+      "uncertainty_px": 15,
+      "what": "pilot figure drawn in the side view (manual p3: DGA 1/4-scale sportsman pilot in the prototype), read on a 1:2 crop",
+      "cap_top_px": [9660, 3420],
+      "cap_brim_front_px": [9290, 3640],
+      "nose_front_px": [9460, 3920],
+      "head_back_px": [10030, 3720],
+      "chin_px": [9550, 4110],
+      "shoulder_front_px": [9610, 4180],
+      "shoulder_back_px": [10120, 4260]
+    },
     "canopy_top": {
       "uncertainty_px": 25,
       "px": [[7200, 4008], [7800, 3640], [8400, 3460], [9000, 3390], [9600, 3370], [10200, 3442], [10850, 3512]]

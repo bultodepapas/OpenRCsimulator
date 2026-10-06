@@ -1,0 +1,23 @@
+[
+  {
+    "name": "tree_default.glb",
+    "source_bytes": 9428,
+    "weld_bytes": 8708,
+    "source_sha256": "562d29638c902de3c7bee465d3a53bb77117efbc392ae04ed894faf6b5dc691d",
+    "weld_sha256": "22a492383118cfbba43928db4bedc51aba14edfdb1331014ac8fce247a1b2f1b"
+  },
+  {
+    "name": "tree_oak.glb",
+    "source_bytes": 14644,
+    "weld_bytes": 13444,
+    "source_sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3",
+    "weld_sha256": "0173c31f6ed76ceca0bb6712fb12a791f294b66ae769f9b1b171fac0143f1882"
+  },
+  {
+    "name": "tree_pineTallA.glb",
+    "source_bytes": 7200,
+    "weld_bytes": 6700,
+    "source_sha256": "e0a56eb196d8a64ba86c7304d607136e17e6f9ad748dffcf86bd53b18b91b196",
+    "weld_sha256": "76b08d63cf3093ea315b5e1709133b751b7cf8da986951c34c86c208999d182c"
+  }
+]

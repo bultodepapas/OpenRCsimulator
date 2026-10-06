@@ -50,8 +50,16 @@ def validate(d):
     assert all(a[0] < b[0] for a, b in zip(pant, pant[1:])) and all(row[1] >= row[2] for row in pant)
     assert pant[0][0] < g['main_axle'][0] < pant[-1][0] and 0 < g['leg']['thickness'] < 0.01
     assert g['leg']['root'][0] < g['leg']['root'][1] and g['leg']['tip'][0] < g['leg']['tip'][1] and g['leg']['tip'][2] < g['leg']['root'][2]
+    pr = d['propeller']
+    assert 0.2 < pr['diameter'] < 0.4 and 0.05 < pr['pitch'] < 0.4 and pr['blades'] == 2 and 0 < pr['hub_radius'] < pr['diameter'] / 4
+    for key in ('chord_fraction_of_radius', 'thickness_fraction_of_chord'):
+        rows = pr['blade'][key]
+        assert all(a[0] < b[0] for a, b in zip(rows, rows[1:])) and rows[-1][0] == 1.0 and all(0 < r[1] < 0.5 for r in rows), key
+    pl = d['pilot']
+    assert pl['chin'][1] < pl['nose_front'][1] < pl['cap_brim_front'][1] < pl['cap_top'][1] and pl['nose_front'][0] < pl['head_back'][0]
+    assert pl['shoulder_front'][0] < pl['shoulder_back'][0] and 0 < pl['head_half_width'] < pl['shoulder_half_width'] < 0.06
     groups = {key.split('.')[0] for key in d['evidence']}
-    for required in ['wing', 'fuselage_stations', 'canopy', 'tail', 'gear', 'propeller']:
+    for required in ['wing', 'fuselage_stations', 'canopy', 'tail', 'gear', 'propeller', 'pilot']:
         assert required in groups, f'missing evidence for {required}'
     for key, record in d['evidence'].items():
         assert record['kind'] in {'manual', 'measured', 'borrowed', 'estimated', 'derived'}, key
@@ -78,6 +86,7 @@ def check_against_metrology(d):
     pairs += [(x, y) for row, ref in zip(d['canopy']['top'], a['canopy_top']) for x, y in zip(row, ref)]
     pairs += [(x, y) for row, ref in zip(g['pant_profile'], a['wheel_pant_profile']) for x, y in zip(row, ref)]
     pairs += [(x, y) for key in ('root', 'tip') for x, y in zip(g['leg'][key], a['main_leg'][key])]
+    pairs += [(x, y) for key in a['pilot'] for x, y in zip(d['pilot'][key], a['pilot'][key])]
     assert len(g['pant_profile']) == len(a['wheel_pant_profile'])
     assert len(d['fuselage_stations']) == len(a['fuselage_stations']) and len(d['canopy']['top']) == len(a['canopy_top'])
     worst = max(abs(x - y) for x, y in pairs)

@@ -484,7 +484,84 @@
   "diameter": 0.3048,
   "z": -0.3747,
   "right_thrust_deg": 2.0,
-  "down_thrust_deg": 0.5
+  "down_thrust_deg": 0.5,
+  "pitch": 0.2032,
+  "blades": 2,
+  "hub_radius": 0.012,
+  "blade": {
+   "chord_fraction_of_radius": [
+    [
+     0.12,
+     0.11
+    ],
+    [
+     0.3,
+     0.16
+    ],
+    [
+     0.55,
+     0.17
+    ],
+    [
+     0.8,
+     0.13
+    ],
+    [
+     0.95,
+     0.08
+    ],
+    [
+     1.0,
+     0.03
+    ]
+   ],
+   "thickness_fraction_of_chord": [
+    [
+     0.12,
+     0.16
+    ],
+    [
+     0.5,
+     0.09
+    ],
+    [
+     1.0,
+     0.06
+    ]
+   ]
+  }
+ },
+ "pilot": {
+  "cap_top": [
+   0.2895,
+   0.1242
+  ],
+  "cap_brim_front": [
+   0.2582,
+   0.1056
+  ],
+  "nose_front": [
+   0.2726,
+   0.082
+  ],
+  "head_back": [
+   0.3207,
+   0.0989
+  ],
+  "chin": [
+   0.2802,
+   0.0659
+  ],
+  "shoulder_front": [
+   0.2852,
+   0.06
+  ],
+  "shoulder_back": [
+   0.3283,
+   0.0532
+  ],
+  "head_half_width": 0.021,
+  "shoulder_half_width": 0.04
  },
  "evidence": {
   "wing.planform": {
@@ -554,12 +631,18 @@
   "propeller": {
    "kind": "estimated",
    "source": "manual p3 refers to the engine instructions for prop size",
-   "method": "12 in visual stand-in, plane 4 mm ahead of the spinner back. 2 deg right and 0.5 deg down thrust are plan notes, applied to the visual spinner/prop only; physics thrust stays axial until EX-06."
+   "method": "12x8 in two-blade visual stand-in (a common .61 sport size; the kit manual defers to the engine's instructions): blade angle atan(pitch / (2 pi r)), generic tapered planform with a rounded tip and a flat-bottom section. Plane 4 mm ahead of the spinner back. 2 deg right and 0.5 deg down thrust are plan notes, applied to the visual spinner/prop only; physics thrust stays axial until EX-06."
   },
   "p47_two_view": {
    "kind": "estimated",
    "source": "manual p47 vector sketch",
    "method": "Not used for dimensions: compared with the plan it misplaces the tail wheel by 1.2 in and the main axle by ~0.5 in."
+  },
+  "pilot": {
+   "kind": "measured",
+   "source": "research/extra-300/ex01/metrology.json",
+   "method": "Cap top, brim, nose, back of head, chin and shoulders picked on the pilot drawn in the plan side view (manual p3: DGA 1/4-scale sportsman pilot in the prototype).",
+   "limits": "Head and shoulder half-widths (0.021 m, 0.040 m) are ESTIMATED: no front view. Stylised figure (cap, head, torso), not a likeness."
   }
  }
 }
