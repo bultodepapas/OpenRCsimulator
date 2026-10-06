@@ -21,7 +21,7 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | reference | quarter-chord sweep (deg) | 0.09956 | unswept by construction (source.json) |
 | reference | half-chord sweep (deg) | -3.551 | forward: the TE sweeps forward |
 | balance | CG (% MAC) | 27 | kit placeholder balance point (source.json); model z 0.1778 |
-| fuselage | max width / depth / length (m) | 0.2288, 0.3465, 2.333 | spinner tip to tail post; scoop adds 0.496 m of depth |
+| fuselage | max width / depth / length (m) | 0.2288, 0.3465, 2.333 | spinner tip to tail post; scoop adds 0.495 m of depth |
 | tail | Sh (m2) | 0.2541 | stab + elevators trapezoid through the fuselage |
 | tail | horizontal ac (model z) | 1.392 | quarter chord of the stab MAC |
 | tail | elevator chord fraction | 0.35 | hinge at a constant chord fraction |
@@ -72,7 +72,7 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | lateral | Clb dihedral (1/rad) | -0.08199 | strip theory: -CLa_w Gamma (1 + 2 lambda) / (6 (1 + lambda)); 5 deg geometric dihedral |
 | lateral | Clb low-wing interference (1/rad) | 0.03578 | DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing |
 | lateral | Clb wing sweep/taper at CL_ref (1/rad) | -0.01317 | DATCOM Clb/CL ~ -0.0005/deg for an unswept AR 5.8 taper 0.48 wing (estimated) |
-| drag | CD0 | 0.045 | skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: wing 0.0117 m2, tails 0.0040 m2, fuselage 0.0091 m2, belly scoop (wetted + inlet spill) 0.0053 m2, gear down: wheels, struts, doors 0.0200 m2, cooling flow, exhausts, cowl leaks 0.0060 m2 |
+| drag | CD0 | 0.04503 | skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: wing 0.0117 m2, tails 0.0040 m2, fuselage 0.0091 m2, belly scoop (wetted + inlet spill) 0.0053 m2, gear down: wheels, struts, doors 0.0200 m2, cooling flow, exhausts, cowl leaks 0.0060 m2 |
 | drag | Oswald e | 0.8 | estimated: taper 0.48 near the optimum; fuselage and scoop interference |
 | propulsion | engine peak power (W) | 8725 | DA-120: 11.7 hp (desertaircraft.com/products/da-120); rpm range 1300-6900 |
 | propulsion | static rpm | 5967 | BEM Cp0 0.0566 meets the engine power curve; static thrust 320 N (32.7 kgf) |
@@ -91,7 +91,7 @@ Propeller: static 5967 rpm, static thrust 320 N (32.7 kgf), thrust/weight 1.79, 
 | CLq | 5.524 | derived |
 | CLde | 0.34465 | derived |
 | CLda_each | 0.30617 | derived |
-| CD0 | 0.045002 | derived |
+| CD0 | 0.045031 | derived |
 | CL_minD | 0.092272 | estimated |
 | k_induced | 0.068643 | derived |
 | CDda_each | 0.0151 | borrowed |

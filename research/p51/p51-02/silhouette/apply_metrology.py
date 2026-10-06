@@ -85,12 +85,17 @@ fs["cowl_rear_z"] = 0.6
 # Scoop stations [z, half_width, bottom]: the dip, with widths estimated from the front view silhouette (not separable
 # from the wing there): 0.30 m half-width at the lip tapering to 0.16 at the exit (unchanged estimate).
 sz = z[scoop_zone]
-lip, exit_ = float(sz.min()) - 0.1, float(sz.max()) + 0.1
+# The intake mouth is a step, not a ramp (the user's photo and the drawing's near-vertical lip line): the first station
+# sits where the dip reaches 80 % of its depth and already carries that depth; the exit tapers to the fuselage line.
+deep = sz[(np.array([at(bot_f, q) for q in sz]) < np.interp(sz, [1.0, 4.2], [at(bot_f, 1.0), at(bot_f, 4.2)]) - 0.8 * 0.3)]
+lip = float(deep.min()) - 0.06 if len(deep) else float(sz.min())
+exit_ = float(sz.max()) + 0.1
 scoop = []
-for zz in np.linspace(lip, exit_, 7):
+for i, zz in enumerate(np.linspace(lip, exit_, 8)):
     frac = (zz - lip) / (exit_ - lip)
     width = 0.30 if frac < 0.5 else 0.30 - 0.14 * (frac - 0.5) / 0.5
-    scoop.append([round(float(zz), 3), round(width, 3), round(at(bot_f, zz) - 0.01, 3)])
+    bottom = at(bot_f, lip + 0.12) if i == 0 else at(bot_f, zz)
+    scoop.append([round(float(zz), 3), round(width, 3), round(bottom - 0.01, 3)])
 fs["scoop_stations"] = scoop
 # Canopy top line from the measured contour; the frame (windscreen/bubble joint) at the crown's start.
 cz = z[canopy_zone]

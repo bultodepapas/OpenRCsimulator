@@ -887,9 +887,9 @@
         0.2366
       ],
       [
-        0.5375,
+        0.51,
         0.0,
-        -0.2898
+        -0.2918
       ]
     ],
     "unit": "m",
@@ -1029,7 +1029,7 @@
         "source": "research/p51/p51-05/derive_physics.py: strip theory over the aileron span"
       },
       "CD0": {
-        "value": 0.045002,
+        "value": 0.045031,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: component drag build-up at 22 m/s with the gear DOWN (retracts not simulated), see derivation.md"
