@@ -19,6 +19,7 @@ const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -68,6 +69,11 @@ var input_enabled := true
 ## Holds by name (UI-02: "menu"). While any is set the session is frozen: no input sampling, no crash countdown,
 ## the simulation paused. Releasing the last hold does not resume: continuing stays the pilot's explicit resume().
 var holds := {}
+## E3a: the field's surfaces as a flat table for the tyre forces (set_field); empty = dry pavement everywhere.
+var ground_surfaces := PackedFloat64Array()
+## The field id the surfaces came from ("" = none: pavement), and why they could not be built ("" = fine).
+var ground_field_id := ""
+var surface_error := ""
 ## false: no aircraft physics (the Stage 0/1 scripted circle). The simulation is disabled; input still shapes commands.
 var physics_enabled := true
 
@@ -163,6 +169,24 @@ func hold(reason: String) -> void:
 ## Lifts one hold. The flight stays paused until resume() (or the crash hold ends and restarts it).
 func release(reason: String) -> void:
 	holds.erase(reason)
+
+
+## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
+## flight (like invalid aircraft data). Returns false on failure; call reset() afterwards to restart on them.
+func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
+	var table := GroundSurfaces.load_table(table_path)
+	var built := GroundSurfaces.build(table.table, field) if table.ok else table
+	if not built.ok:
+		surface_error = "ground surfaces invalid: " + str(built.errors[0] if not built.errors.is_empty() else "unknown")
+		ground_surfaces = PackedFloat64Array()
+		pause_reason = surface_error
+		sim.set_paused(true)
+		printerr(surface_error)
+		return false
+	surface_error = ""
+	ground_surfaces = built.rects
+	ground_field_id = str(field.get("id", "?"))
+	return true
 
 
 ## Whether this flight can fly at all: valid aircraft and start, no simulation fault (menus disable Continue).
@@ -307,6 +331,8 @@ func _candidate_loads_are_valid(model: Dictionary, candidate_start: Dictionary, 
 
 
 func _start_failure_reason() -> String:
+	if not surface_error.is_empty():
+		return surface_error
 	if not aircraft.get("ok", false):
 		return "aircraft data is invalid"
 	return "trimmed starting condition is invalid: " + str(start.get("message", "no valid trim"))
@@ -453,7 +479,7 @@ func reset() -> void:
 
 
 func _has_valid_start() -> bool:
-	return aircraft.get("ok", false) and start.get("ok", false) and sim != null
+	return aircraft.get("ok", false) and start.get("ok", false) and sim != null and surface_error.is_empty()
 
 
 func _flight_ready() -> bool:
@@ -489,13 +515,15 @@ func _inputs() -> PackedFloat64Array:
 
 
 ## Simulation loads: aerodynamics (D3) + propulsion (D5) from the servos' actual positions, in calm air, plus the
-## landing gear's ground contacts (E1) while a wheel pushes on the ground (nothing is added in the air).
+## landing gear's ground contacts (E1) while a wheel pushes on the ground (nothing is added in the air), with tyre
+## friction and the nose wheel steered by the rudder servo's actual position (E2), scaled by the surface under each
+## wheel (E3a).
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
 	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
 	var out := Dynamics.loads(s, aircraft.model, Aero.deflections_from_surfaces(surfaces), a[AUX_RPM],
 		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
-	var ground := Ground.loads(s, aircraft.model.landing_gear)
+	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces)
 	for i in ground.size():
 		out[i] += ground[i]
 	return out
@@ -525,7 +553,7 @@ func trace_meta() -> Dictionary:
 		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "local-surfaces-v1 with bounded attached oracle; no propwash",
-		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1), normal force only" % aircraft.model.landing_gear.contacts.size() if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
+		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2), on %s" % [aircraft.model.landing_gear.contacts.size(), "field '%s' surfaces (E3a)" % ground_field_id if not ground_surfaces.is_empty() else "dry pavement"] if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
 		dt_s = sim.dt(),

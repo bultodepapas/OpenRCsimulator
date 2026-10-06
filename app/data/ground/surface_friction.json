@@ -1,0 +1,48 @@
+{
+  "format": "openrc-surfaces v1",
+  "description": "E3a: how each field surface type (app/data/fields/*.json: runway, mown, rough) changes the tyre forces of physics/ground_contact.gd. Like JSBSim/FlightGear, the aircraft's landing_gear coefficients are for a tyre on dry pavement and the surface multiplies them: mu_eff = side_friction x friction_factor, C_rr_eff = rolling_resistance x rolling_factor. Our field's runway is a mown grass strip (LANDSCAPE-PLAN L9c: runway with mown stripes).",
+  "surfaces": {
+    "runway": {
+      "friction_factor": {
+        "value": 0.8,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata Materials/default/global.xml, material grass_rwy: friction-factor 0.8 (branch next, read 2026-10-06; asphalt is 1.0)"
+      },
+      "rolling_factor": {
+        "value": 2.5,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear grass_rwy rolling-friction 0.05 over the 0.02 of dry asphalt (Docs/README.materials default), the way FlightGear scales JSBSim's rolling friction. Stik: 0.04 x 2.5 = 0.10, so 2.8 N of rolling resistance against 2.6 N of idle thrust"
+      }
+    },
+    "mown": {
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata Materials/default/global-summer.xml, material Grass/Airport/Greenspace: friction-factor 0.7"
+      },
+      "rolling_factor": {
+        "value": 5.0,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear Grass rolling-friction 0.1 over asphalt's 0.02. Stik: C_rr 0.20"
+      }
+    },
+    "rough": {
+      "friction_factor": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "FlightGear fgdata global-summer.xml, material Grassland/CropGrass: friction-factor 0.7"
+      },
+      "rolling_factor": {
+        "value": 7.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FlightGear Grassland keeps rolling-friction 0.1 (5x) for full-size tyres but is bumpier (0.3 vs 0.1); a 76 mm RC wheel sinks into uncut grass, so 1.5x more (Stik: C_rr 0.30). Guess, not measured"
+      }
+    }
+  }
+}

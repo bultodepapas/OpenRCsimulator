@@ -677,3 +677,27 @@ Prueba: `verify_p51.gd` 131, `verify_p51_clearance.gd` 12, siluetas perfil 7,7 �
 - **With several tracks in one working tree, run `git status` before editing a shared document.** ROADMAP, LEARNINGS, DECISIONS and AGENTS changed on disk during the review; edits were exact-match replacements that fail when the text differs, never touching another track's lines. A batch that moved and deleted files was refused by the permission classifier; split into single-purpose commands it went through.
 
 Proof: [audit](docs/research/documentation-audit-2026-10-06.md); link and anchor checker clean on every touched document; `--check-only` on the edited catalog script.
+
+## 2026-10-06 · E2 — tyre friction and nose-wheel steering
+
+- **A first-order error ratio is a symptom, not a tolerance problem.** The h vs h/2 turn disagreed by 7.6 mm and halving again gave a ratio of 2.0 where RK4 gives 16. The cause was not the tyre law: at 2 m/s the test airplane was rolling over, and a wheel bouncing on and off the ground is a discontinuity every few ticks. Before loosening a tolerance, measure the convergence order and look at what the body is doing.
+- **Check a quasi-static oracle in the limit where it holds.** The inside wheel unloaded at 78 % of the rigid tip-over oracle g·d/h. Making the gear 4×, 16× and 64× stiffer converged to 4.50 vs 4.47 m/s², so the gap is the springs' roll compliance (18 mm sag), not a bug. The stiff-limit run became the test; the real gear is checked to be below it.
+- **A snap input and a steady state are different experiments.** The first tip-over looked like 2 m/s; the steady full-steer turn held to 1.85 m/s only when the speed was ramped slowly, and an instant reversal tipped earlier. Test pilots need a stick rate (the test uses one throw per second).
+- **Regularised friction needs a stated stability bound, and here it is airplane-independent:** ΣN = m·g makes the low-speed side-force rate μ·g/(tan α_peak·v_floor) for any mass, so the loader can check it like E1's ω·dt rule.
+- **The closure test of a figure-eight must match the physics.** At idle the airplane keeps accelerating, so the second loop opens; checking "returns to where the leg began" measured the stick reversal, not the tyres. The test now checks the right loop closes (1.7 cm) and the left loop passes back by the crossing.
+- **A mutation that survives names a missing test:** dropping `abs()` from the slip-angle floor passed all checks because nothing rolled backwards; a reversing hand-computed case now catches it.
+- The E1 drift probe ("the CG cannot move horizontally") stopped being true with friction; it now runs on a normal-only copy of the gear instead of being deleted or loosened.
+
+Proof: [E2](docs/research/ground-friction-e2.md), `test_ground_friction.gd` (26), `test_aircraft_data.gd` (72), `test_ground_contact.gd` (22), trace rows identical, goldens unchanged, 6 mutations caught.
+
+## 2026-10-06 · E3a — field surfaces under the wheels
+
+- **Read the other tracks' plans before trusting your own default.** E2 tuned "dry pavement" and found idle rolling the airplane away; the landscape plan had always drawn the runway as a mown grass strip whose rectangles were meant to feed ground physics. On grass the idle balance flips (2.6 N thrust vs 2.8 N rolling) and the "finding" mostly dissolves.
+- **Borrow the convention, not only the numbers.** JSBSim/FlightGear keep tyre coefficients on the aircraft (pavement) and let the surface scale them; copying that split keeps one aircraft file valid on any field. FlightGear's material values changed between revisions (`grass_rwy` friction 0.9 in an old commit, 0.8 on `next`): cite the branch and the date read.
+- **A regularised law has a signature you can predict:** above C_rr 0.1 the creep speed scales with C_rr, so the creep under a steady push is 0.1·F/(m·g) on every surface (0.92 cm/s on the runway and on the rough alike). A number identical across surfaces was the clue it is numerical, not physical; the fix (stiction with per-wheel state) is a step of its own, not a tolerance.
+- **Test the lookup where the bug would hide:** a contact under the CG cannot tell a CG lookup from a wheel lookup; a wheel 0.3 m ahead of a CG near the runway's end can (the mutation proved it).
+- **Wiring checks belong in the app trace:** a unit test cannot see `main.gd` forgetting `set_field`; the trace header can, so `check_trimmed_flight.py` now fails on gear without the field's surfaces.
+- `FileAccess.get_file_as_string` on a missing file prints an engine `ERROR:` that `test.sh` treats as a failure; check `file_exists` first when a missing file is an expected, handled case.
+
+Proof: [E3a](docs/research/ground-surfaces-e3a.md), `test_ground_surfaces.gd` (28), E1/E2 tests unchanged, trace rows identical, 5 mutations caught.
+
