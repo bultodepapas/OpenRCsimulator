@@ -1,0 +1,141 @@
+{
+  "aircraft_id": "gp-extra-300s-60-v1",
+  "captures": [
+    {
+      "airplane_rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "area": "",
+      "camera_position_m": [
+        -6.0,
+        0.0,
+        0.25
+      ],
+      "controls": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "file": "scale_side_left.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.9,
+      "png_sha256": "308642f6562ceeb5a8185b311b0eca6dc8d0b9c9763c5ce4d797b07610a527c9",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "airplane_rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "area": "",
+      "camera_position_m": [
+        0.0,
+        6.0,
+        0.25
+      ],
+      "controls": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "file": "scale_top.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.9,
+      "png_sha256": "da29e1fcb02cc8541e6659d493ed252700e6234f4559ac286ad8f8db65bb7aa0",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "airplane_rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "area": "",
+      "camera_position_m": [
+        0.0,
+        0.0,
+        -6.0
+      ],
+      "controls": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "file": "scale_front.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.9,
+      "png_sha256": "ef257e3ca573ec5bda39440d89c5e4838340c71c9cf71de43db103f248b1fb10",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "e792e424f76aa3ae3dc4b390ec5df57364f0b219374eeefbe3026957fb27c2f6",
+  "image_size": [
+    3840,
+    2160
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry review; they are not a pilot readability test (EX-10).",
+  "model_sha256": "865db125395a097c75e5bdd9ac03c4158e55791d08b5aae342907a52c3e3f97e",
+  "ortho_size_m": 1.9,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "status": "preview: visual only, not flyable",
+  "suite": "scale",
+  "throws_deg": {
+    "aileron": 17.6006649098975,
+    "elevator": 23.92194317248,
+    "rudder": 30.0260709855021
+  },
+  "throws_source": "manual p43 high rates converted with asin(d/r) at the widest chord of each surface in geometry.json; visual only until EX-05",
+  "visual_revision": "gp-extra-300s-60-ex02-preview"
+}

@@ -22,6 +22,9 @@ const Hud := preload("res://render/hud.gd")
 const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
 
+## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
+signal pause_requested
+
 var session: Node
 var recorder: RefCounted
 var _airplane: Dictionary
@@ -128,9 +131,16 @@ func _process(delta: float) -> void:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
 	var sim: Node = session.sim
 	_t += dt
-	_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
+	# Any pause (menu, focus, failsafe, calibration, crash) freezes the picture and the sound with the simulation:
+	# the propeller stops where it is and the engine's generator stops being drained (stream_paused), so no stale
+	# buzz at flying rpm plays on (UI-02, research 19).
+	var frozen: bool = sim.paused and not _scripted
+	if not frozen:
+		_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
 	if _engine_audio != null:
-		_engine_phase = EngineSound.update(_engine_audio, _engine_phase, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
+		_engine_audio.stream_paused = frozen
+		if not frozen:
+			_engine_phase = EngineSound.update(_engine_audio, _engine_phase, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_render_pose(_current_pose(), surfaces, _prop_angle)
@@ -217,7 +227,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_ENTER, KEY_KP_ENTER:
 				session.advance_calibration()
 			KEY_ESCAPE:
-				session.cancel_calibration()
+				if session.calibration != null:
+					session.cancel_calibration() # Esc leaves the wizard first; the pause menu comes on the next press
+				else:
+					pause_requested.emit()
 			KEY_Z:
 				_auto_zoom = not _auto_zoom
 			KEY_V:
@@ -230,11 +243,27 @@ func _unhandled_input(event: InputEvent) -> void:
 				print(_note)
 
 
+## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then
+## shows the airplane alone, and the panel's "[P] resume" never contradicts the menu.
+func set_overlays_visible(on: bool) -> void:
+	for label in [_panel, _hud]:
+		var n: Node = label
+		while n != null and not n is CanvasLayer:
+			n = n.get_parent()
+		if n != null:
+			n.visible = on
+
+
 ## One file never mixes two flights.
 func _on_resetting() -> void:
 	_t = 0.0
 	if recorder.recording:
 		recorder.stop()
+	if _engine_audio != null and _engine_audio.playing:
+		# A new flight: drop the ~0.19 s of queued sound from the old one (clear_buffer() fails while playing).
+		_engine_audio.stop()
+		_engine_audio.play()
+		_engine_phase = 0.0
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,

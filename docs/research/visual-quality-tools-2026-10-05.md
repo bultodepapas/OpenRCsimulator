@@ -64,6 +64,8 @@ Empezar con 1K o 2K por textura y subir solo donde se vea una mejora en captura.
 
 ### Kenney y Quaternius
 
+**Actualización 2026-10-06:** la [licencia general QAL](https://quaternius.com/license.html) restringe redistribución independiente; la ficha enlazada abajo sigue mostrando CC0. Conservar evidencia del paquete/archivo antes de admitirlo, sin generalizar CC0 al catálogo ni presumir revocación de una licencia ya demostrada. La [integración del nuevo aporte](visual-quality-supplement-2026-10-06.md) añade KayKit como alternativa y revisa Sky3D, agua, carreteras y otros candidatos.
+
 El [Car Kit de Kenney](https://kenney.nl/assets/car-kit) declara CC0 y ofrece vehículos sencillos para dar escala al aparcamiento. [Ultimate Nature Pack de Quaternius](https://quaternius.com/packs/ultimatenature.html) declara CC0 y formatos FBX, OBJ y Blend: exportar una selección pequeña a GLB si se adopta, sin asumir que ya incluye ese formato. Son candidatos para L10/L11, no assets descargados o probados en esta ronda. Mantener una paleta común y revisar silueta, tamaño, normales y coste antes de poblar el campo. La licencia verificada corresponde a esos packs concretos, no a todo producto presente o futuro de sus autores.
 
 ### ProtonScatter

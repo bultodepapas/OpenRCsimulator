@@ -90,11 +90,59 @@ def fidelity(scale_dir, geometry):
             rows.append({'span_m': sign * span, 'le_mm': round((0.25 + (column.min() - cy) / k - le) * 1000, 2),
                          'te_mm': round((0.25 + (column.max() + 1 - cy) / k - le - chord) * 1000, 2)})
     out['wing_edge_residuals'] = rows
-    values = [abs(v) for group in ('side_profile_residuals', 'top_width_residuals', 'wing_edge_residuals')
+    # The raw side-view picks (not the resampled stations): checks the smoothing between stations.
+    picks = json.loads((ROOT / 'research/extra-300/ex01/picks.json').read_text())['fuselage_side']
+    scales = json.loads((ROOT / 'research/extra-300/ex01/metrology.json').read_text())['scales']
+    s_f = scales['fuselage_sheet_px_per_in']
+    le_x = picks['root_airfoil_le']['px'][0]
+    y_axis = picks['spinner_tip']['px'][1]
+    rows = []
+    for key, edge in (('top_profile', 'top'), ('bottom_profile', 'bottom')):
+        for px, py in picks[key]['px']:
+            z = ((px - le_x) / s_f - 4.125) * IN
+            y = -(py - y_axis) / s_f * IN
+            if z <= stations[0][0] + 0.005 or z >= stations[-1][0] - 0.005 or -0.22 < z < 0.06:
+                continue  # cowl face, tail post, main gear
+            if edge == 'top' and (canopy[0][0] - 0.01 < z < canopy[-1][0] + 0.005 or z > geometry['tail']['fin_root_le'][0]):
+                continue  # under the canopy the pick is the sill, not the silhouette; aft of the fin LE the fin is
+            column = np.nonzero(side[:, int(round(cx + (z - 0.25) * k))])[0]
+            measured = (cy - column.min()) / k if edge == 'top' else (cy - column.max() - 1) / k
+            rows.append({'z_m': round(z, 4), 'edge': edge, 'residual_mm': round((measured - y) * 1000, 2)})
+    out['raw_pick_residuals'] = rows
+    values = [abs(v) for group in ('side_profile_residuals', 'top_width_residuals', 'wing_edge_residuals', 'raw_pick_residuals')
               for r in out[group] for key, v in r.items() if key.endswith('_mm')]
     out['max_abs_mm'] = float(max(values))
     out['allowance_mm'] = round(max(2.5 * 1000 / k, 2.5), 2)  # 2.5 px of edge quantisation/antialiasing, at least 2.5 mm
     out['ok'] = bool(out['max_abs_mm'] <= out['allowance_mm'])
+    return out
+
+
+def orientation_contrast(capture_dir, names):
+    """Upper vs lower surface seen from the ground: mean luminance of unsaturated (white/grey wing) pixels at
+    +60 and -60 deg roll. A near-zero difference means the pilot cannot tell top from bottom by tone (EX-10)."""
+    out = {}
+    for tag in sorted({n.split('_')[1] for n in names if n.startswith('distance_')}):
+        tone = {}
+        for roll in ('roll_plus60', 'roll_minus60'):
+            image = Image.open(capture_dir / f'distance_{tag}_{roll}.png').convert('RGB')
+            a = np.asarray(image).astype(float)
+            unsaturated = silhouette(image) & ((a.max(axis=2) - a.min(axis=2)) < 40)
+            luminance = (0.2126 * a[..., 0] + 0.7152 * a[..., 1] + 0.0722 * a[..., 2])[unsaturated]
+            body = silhouette(image)
+            # Interior pixels only: edge pixels blend with the blue sky and would count as 'blue'.
+            body = body & np.roll(body, 1, 0) & np.roll(body, -1, 0) & np.roll(body, 1, 1) & np.roll(body, -1, 1)
+            r, g, b = a[..., 0], a[..., 1], a[..., 2]
+            blue = body & (b > r + 40) & (b > g + 20)
+            red = body & (r > g + 60) & (r > b + 40)
+            tone[roll] = {'pixels': int(unsaturated.sum()), 'mean_luminance': round(float(luminance.mean()), 1) if luminance.size else None,
+                          'blue_share': round(float(blue.sum() / max(body.sum(), 1)), 3), 'red_share': round(float(red.sum() / max(body.sum(), 1)), 3)}
+        a, b = tone['roll_plus60']['mean_luminance'], tone['roll_minus60']['mean_luminance']
+        tone['difference'] = round(a - b, 1) if a is not None and b is not None else None
+        # Hue signature: the lower surface (roll -60 from the ground) should read blue, the upper one should not.
+        tone['blue_share_difference'] = round(tone['roll_minus60']['blue_share'] - tone['roll_plus60']['blue_share'], 3)
+        out[tag] = tone
+    # Acceptance (EX-10a): at every distance the lower surface reads clearly bluer than the upper one.
+    out['ok'] = all(v['blue_share_difference'] >= 0.10 for v in out.values())
     return out
 
 
@@ -217,6 +265,7 @@ def main():
         'tools': {'python_pillow': PIL.__version__, 'numpy': np.__version__},
         'cropped_non_detail_views': cropped,
         'distance_footprint': distance,
+        'orientation_contrast': orientation_contrast(capture_dir, [r['file'] for r in manifest['captures']]),
         'scale_views': str(scale_dir.relative_to(capture_dir)) or '.',
         'render_vs_geometry': fidelity(scale_dir, geometry),
         'plan_overlays': overlays(scale_dir, out_dir),
@@ -249,10 +298,10 @@ def main():
     (out_dir / 'review.html').write_text(
         '<!doctype html><meta charset="utf-8"><title>Extra 300S preview review</title>'
         '<style>body{font:14px sans-serif;margin:16px;background:#fff;color:#111}img{max-width:100%;border:1px solid #ccc}</style>'
-        f'<h1>Extra 300S .60 preview: {len(names)} captures</h1><pre>{html.escape(json.dumps({k: report[k] for k in ("throws_deg", "cropped_non_detail_views", "distance_footprint")}, indent=1))}</pre>'
+        f'<h1>Extra 300S .60 preview: {len(names)} captures</h1><pre>{html.escape(json.dumps({k: report[k] for k in ("throws_deg", "cropped_non_detail_views", "distance_footprint", "orientation_contrast")}, indent=1))}</pre>'
         f'{sections}\n')
     fid = report['render_vs_geometry']
-    print(f"{len(names)} captures; render vs geometry max {fid['max_abs_mm']:.2f} mm (allowance {fid['allowance_mm']} mm, ok={fid['ok']}); "
+    print(f"{len(names)} captures; orientation ok={report['orientation_contrast'].get('ok')}; render vs geometry max {fid['max_abs_mm']:.2f} mm (allowance {fid['allowance_mm']} mm, ok={fid['ok']}); "
           f"cropped views: {cropped or 'none'}; overlays: {list(report['plan_overlays'])}")
     print(out_dir / 'review.html')
 

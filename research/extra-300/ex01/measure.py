@@ -11,6 +11,7 @@ Requires poppler-utils (pdfimages), Pillow and NumPy. Raster cache stays in refe
 import argparse
 import hashlib
 import json
+import math
 import subprocess
 from pathlib import Path
 
@@ -135,6 +136,32 @@ def interp(points, x):
 
 def r6(v):
     return round(float(v), 6)
+
+
+def pant_profile(f, z_side, y_side, samples=24):
+    """[z, top_y, bottom_y] rows along the pant, from its picked side outline (nose and tail rows have zero height).
+    Cosine spacing puts more rows at the blunt nose and the truncated tail, where the outline turns fastest."""
+    top, bottom = f['wheel_pant_outline']['top_px'], f['wheel_pant_outline']['bottom_px']
+    x0, x1 = top[0][0], max(top[-1][0], bottom[-1][0])
+    rows = []
+    for i in range(samples + 1):
+        x = x0 + (x1 - x0) * (1 - math.cos(math.pi * i / samples)) / 2
+        t = interp(top, min(x, top[-1][0])) if x <= top[-1][0] else interp([bottom[-2], bottom[-1]], x)
+        b = interp(bottom, x)
+        rows.append([r6(z_side(x)), r6(y_side(min(t, b))), r6(y_side(b))])
+    return rows
+
+
+def main_leg(f, z_side, y_side):
+    """Strap edges at the fuselage bottom (root) and at the pant top (tip): [front_z, rear_z, y]."""
+    e = f['main_leg_edges']
+    def at(edge, y):
+        (xa, ya), (xb, yb) = e[edge]
+        return xa + (xb - xa) * (y - ya) / (yb - ya)
+    root_y = interp(f['bottom_profile']['px'], (at('front_px', 6150) + at('rear_px', 6150)) / 2)
+    tip_y = f['wheel_pant_outline']['top_px'][4][1] + 10  # just inside the pant top, above the axle block
+    return {'root': [r6(z_side(at('front_px', root_y))), r6(z_side(at('rear_px', root_y))), r6(y_side(root_y))],
+            'tip': [r6(z_side(at('front_px', tip_y))), r6(z_side(at('rear_px', tip_y))), r6(y_side(tip_y))]}
 
 
 def measure(picks):
@@ -298,6 +325,8 @@ def measure(picks):
         'main_axle': side_point('main_axle'),
         'main_leg_root': side_point('main_leg_root'),
         'wheel_pant_z': [r6(z_side(x)) for x in f['wheel_pant_x']['px']],
+        'wheel_pant_profile': pant_profile(f, z_side, y_side),
+        'main_leg': main_leg(f, z_side, y_side),
         'wheel_pant_y': [r6(y_side(y)) for y in f['wheel_pant_y']['px']],
         'rudder_te_z': r6(z_side(f['rudder_te_max']['px'][0])),
     }

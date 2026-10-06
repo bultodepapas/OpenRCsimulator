@@ -67,6 +67,18 @@
     "main_axle": {"px": [5167, 7658], "uncertainty_px": 10},
     "main_leg_root": {"px": [5420, 6150], "uncertainty_px": 40},
     "wheel_pant_x": {"px": [4255, 6475], "uncertainty_px": 20},
+    "wheel_pant_outline": {
+      "uncertainty_px": 12,
+      "what": "outer edge of the wheel pant in the side view, read on a 1:2 crop with a 50 px grid: blunt rounded nose, arched top, truncated tail, flat bottom",
+      "top_px": [[4240, 7450], [4280, 7370], [4360, 7310], [4600, 7210], [4900, 7160], [5100, 7150], [5400, 7160], [5700, 7200], [6000, 7270], [6300, 7370], [6460, 7430]],
+      "bottom_px": [[4240, 7450], [4280, 7590], [4400, 7670], [4600, 7740], [4900, 7775], [5300, 7780], [5700, 7765], [6100, 7715], [6420, 7650], [6476, 7470]]
+    },
+    "main_leg_edges": {
+      "uncertainty_px": 15,
+      "what": "aluminium strap seen edge-on in the side view: front and rear edges, from the gear support to the pant top",
+      "front_px": [[5250, 6030], [5120, 7150]],
+      "rear_px": [[5620, 6170], [5396, 7160]]
+    },
     "wheel_pant_y": {"px": [7160, 7760], "uncertainty_px": 20},
     "top_profile": {
       "uncertainty_px": 20,

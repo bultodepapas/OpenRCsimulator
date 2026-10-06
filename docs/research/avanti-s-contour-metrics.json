@@ -1,0 +1,101 @@
+{
+  "schema": "openrc-contour-review-v1",
+  "method": "Manual visible-outline samples in original 650x488 photos; selected during refinement, not a blind validation set. Exclude landing gear, fences and hidden boundaries. Approximate pixels; no metric calibration.",
+  "metric": "Unsigned distance to nearest alpha>=128 silhouette pixel, 8-neighbour erosion. Samples are not independent and nearest edge may belong to another component. Not a full-mask IoU or aerodynamic/metric accuracy.",
+  "geometry_sha256": "bfbf4e3cfff330dd0882f2c690093b204b093d43822c3c6700880355c753ab16",
+  "model_sha256": "46f3a51b85da3a224e96dee0b4bf29296e2ed1d3800facea28ec67c0fb7e607f",
+  "camera_fit_sha256": "acefc6e5965aec92233a59d6c21c91baa1abf82e0e2689621cfbdf5ae96ad2d3",
+  "contour_picks_sha256": "e6dff1d6c8de846b8437a1e7c39b7e271b958268a9c21ab9d6606f83332016e8",
+  "groups": [
+    {
+      "view": "front_high",
+      "group": "wing",
+      "samples": 16,
+      "before_mean_px": 7.320194101601103,
+      "after_mean_px": 3.5829312892001464,
+      "before_max_px": 16.0,
+      "after_max_px": 7.0
+    },
+    {
+      "view": "front_high",
+      "group": "tail",
+      "samples": 12,
+      "before_mean_px": 5.30669318799339,
+      "after_mean_px": 2.360069136066119,
+      "before_max_px": 14.0,
+      "after_max_px": 5.385164807134504
+    },
+    {
+      "view": "front_high",
+      "group": "body",
+      "samples": 11,
+      "before_mean_px": 5.410082926032006,
+      "after_mean_px": 5.490042966293636,
+      "before_max_px": 14.560219778561036,
+      "after_max_px": 15.0
+    },
+    {
+      "view": "rear_high",
+      "group": "wing",
+      "samples": 17,
+      "before_mean_px": 9.418789300573733,
+      "after_mean_px": 4.0051824466450645,
+      "before_max_px": 25.179356624028344,
+      "after_max_px": 11.40175425099138
+    },
+    {
+      "view": "rear_high",
+      "group": "tail",
+      "samples": 14,
+      "before_mean_px": 13.972651056479519,
+      "after_mean_px": 11.624177261776591,
+      "before_max_px": 34.48187929913333,
+      "after_max_px": 35.0
+    },
+    {
+      "view": "rear_high",
+      "group": "body",
+      "samples": 9,
+      "before_mean_px": 9.64421727505599,
+      "after_mean_px": 9.658063030333558,
+      "before_max_px": 20.0,
+      "after_max_px": 20.12461179749811
+    },
+    {
+      "view": "side",
+      "group": "wing",
+      "samples": 9,
+      "before_mean_px": 18.93331402990528,
+      "after_mean_px": 13.71398557336058,
+      "before_max_px": 39.20459156782532,
+      "after_max_px": 24.758836806279895
+    },
+    {
+      "view": "side",
+      "group": "tail",
+      "samples": 5,
+      "before_mean_px": 9.724753915533455,
+      "after_mean_px": 8.831041607963183,
+      "before_max_px": 21.37755832643195,
+      "after_max_px": 12.36931687685298
+    },
+    {
+      "view": "side",
+      "group": "fin",
+      "samples": 7,
+      "before_mean_px": 8.003926585699363,
+      "after_mean_px": 5.025341835987661,
+      "before_max_px": 18.601075237738275,
+      "after_max_px": 11.40175425099138
+    },
+    {
+      "view": "side",
+      "group": "body",
+      "samples": 11,
+      "before_mean_px": 6.358747194691232,
+      "after_mean_px": 6.358747194691232,
+      "before_max_px": 12.041594578792296,
+      "after_max_px": 12.041594578792296
+    }
+  ]
+}

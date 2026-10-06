@@ -6,6 +6,7 @@ const Commands := preload("res://input/commands.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Extra := preload("res://aircraft/extra_300s_model.gd")
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
+const Finish := preload("res://aircraft/extra_300s_finish.gd")
 
 const SURFACE_NAMES := ["aileron_left", "aileron_right", "elevator", "rudder"]
 const KIT_SPAN_M := 64.0 * 0.0254 # plan title block, 64 in
@@ -144,6 +145,19 @@ func _run() -> void:
 	for k in SURFACE_NAMES:
 		_check("%s back to rest" % k, airplane.hinges[k].transform.is_equal_approx(Transform3D.IDENTITY))
 
+	# Procedural finish (EX-10a): each painted part carries its shared material and model-space UVs.
+	var expected_parts := {"fuselage": Finish.FUSELAGE, "wing_right_root": Finish.WING, "wing_left_tip": Finish.WING,
+		"aileron_right": Finish.AILERON, "aileron_left": Finish.AILERON, "stab": Finish.HORIZONTAL_TAIL,
+		"elevator_right": Finish.HORIZONTAL_TAIL, "fin": Finish.VERTICAL_TAIL, "rudder": Finish.VERTICAL_TAIL}
+	for m in meshes:
+		if not expected_parts.has(String(m.name)): continue
+		var mat := m.mesh.surface_get_material(0)
+		_check("%s finish material" % m.name, mat is ShaderMaterial and int(mat.get_shader_parameter("part")) == expected_parts[String(m.name)])
+		var arrays := m.mesh.surface_get_arrays(0)
+		var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV] if arrays[Mesh.ARRAY_TEX_UV] != null else PackedVector2Array()
+		_check("%s has model-space UVs" % m.name, uv.size() == (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size())
+	_check("builder red = appearance red", Extra.RED.is_equal_approx(Color(Finish.A.colors.red)))
+	_check("finish never reads TIME", not Finish.SHADER_CODE.contains("TIME"))
 	print("extra preview: %d meshes, %d triangles, extent %.3f x %.3f x %.3f m" % [meshes.size(), triangles, box.size.x, box.size.y, box.size.z])
 	print("verify_extra: %d checks, %d failures%s" % [_checks, _failures, "" if _failures == 0 else " FAIL"])
 	stik.root.free()

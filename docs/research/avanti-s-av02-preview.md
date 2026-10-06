@@ -55,3 +55,5 @@ Comparar los contornos de la maqueta con las vistas nuevas, revisando cabina, tr
 Antes de incorporar el constructor a `app/`, verificar volúmenes barridos y uniones, acordar el contrato de catálogo con el Extra y ejecutar regresión del Stik. AV-02 sigue pendiente de integración; AV-04 no se declara completo por tener siete pivotes. El primer vuelo continúa dependiendo de la rama de turbina AV-05 y de datos de masa, área y trim propios.
 
 Comparación posterior: [transparencias y contornos sobre tres fotos](avanti-s-transparency-comparison.md), con cámaras ajustadas y geometría sin cambios.
+
+Afinado posterior: [segunda revisión de contornos](avanti-s-contour-refinement.md), con cambios de geometría y las mismas cámaras. Los informes y capturas descritos arriba corresponden a la primera maqueta.

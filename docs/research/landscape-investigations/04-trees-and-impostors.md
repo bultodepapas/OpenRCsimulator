@@ -1,5 +1,7 @@
 # 04 · Procedural trees, low-poly tree assets and billboard impostors
 
+**License update (2026-10-06):** Quaternius references below describe individual pack listings, not a blanket CC0 license. Verify the exact file/distribution against the current QAL and retained CC0 evidence before reuse; see the [verified supplement](../visual-quality-supplement-2026-10-06.md#correcciones-de-licencia-y-alcance).
+
 Date: 2026-10-05. **Question:** what is the cheapest way to get a believable treeline 250–600 m from a fixed pilot, plus scattered trees, in Godot 4.7.2 Compatibility, with permissive licenses and repeatable captures?
 
 ## Findings

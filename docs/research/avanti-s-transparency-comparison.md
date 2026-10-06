@@ -44,3 +44,5 @@ La siguiente iteración debe modificar un grupo de geometría cada vez y compara
 Se verificaron la transparencia real de los PNG, la conversión de proyecciones, los hashes de originales y geometría, y los controles de opacidad, modos, corrección manual, reinicio y exportación JSON en navegador. La página se revisó también a 390 px de ancho. Una copia sobre clon limpio puede volver a renderizar la geometría con las cámaras guardadas sin disponer de las fotos; el comparador sí necesita esos originales locales.
 
 Las fotos, renders y comparaciones quedan en `references/avanti-s/alignment/` o en sus rutas originales, ignorados por Git. Solo código, puntos, cámaras y documentación propia se preparan para versionado. No se modificó la app ni se probó vuelo.
+
+Continuación: [afinamiento de la geometría con estas mismas cámaras](avanti-s-contour-refinement.md). La comparación inicial y sus renders se conservan intactos como referencia.

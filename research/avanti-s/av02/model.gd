@@ -36,13 +36,14 @@ static func triangle(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, outwar
 		st.set_normal(normal.normalized())
 		st.add_vertex(v)
 
-static func loft(rows: Array, parent: Node3D, label: String, color: Color) -> MeshInstance3D:
+static func loft(rows: Array, parent: Node3D, label: String, color: Color, side: float = 1.0) -> MeshInstance3D:
 	var rings: Array = []
 	for row in rows:
 		var ring: Array[Vector3] = []
 		for j in 32:
 			var a := TAU * j / 32.0
-			ring.append(Vector3(row[1] * cos(a), (row[2] + row[3]) * .5 + (row[2] - row[3]) * .5 * sin(a), row[0]))
+			var center_x: float = float(row[4]) * side if row.size() > 4 else 0.0
+			ring.append(Vector3(center_x + row[1] * cos(a), (row[2] + row[3]) * .5 + (row[2] - row[3]) * .5 * sin(a), row[0]))
 		rings.append(ring)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -53,7 +54,8 @@ static func loft(rows: Array, parent: Node3D, label: String, color: Color) -> Me
 			triangle(st, rings[i][j], rings[i][k], rings[i + 1][k], hint)
 			triangle(st, rings[i][j], rings[i + 1][k], rings[i + 1][j], hint)
 	for end in [0, rings.size() - 1]:
-		var center := Vector3(0, (rows[end][2] + rows[end][3]) * .5, rows[end][0])
+		var center_x: float = float(rows[end][4]) * side if rows[end].size() > 4 else 0.0
+		var center := Vector3(center_x, (rows[end][2] + rows[end][3]) * .5, rows[end][0])
 		for j in 32:
 			triangle(st, center, rings[end][j], rings[end][(j + 1) % 32], Vector3.FORWARD if end == 0 else Vector3.BACK)
 	return instance(label, st.commit(), parent, color)
@@ -62,15 +64,25 @@ static func loft(rows: Array, parent: Node3D, label: String, color: Color) -> Me
 static func slab(vertices: Array, half_thickness: Vector3, parent: Node3D, label: String, color: Color) -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var center := Vector3.ZERO
-	for p in vertices: center += p
-	center /= vertices.size()
+	# Ear clipping also supports the concave fin-to-fuselage fairing.
+	var polygon := PackedVector2Array()
+	for p in vertices:
+		polygon.append(Vector2(p.z, p.y) if half_thickness.x != 0 else Vector2(p.x, p.z))
+	var indices := Geometry2D.triangulate_polygon(polygon)
+	assert(not indices.is_empty(), "Invalid panel polygon: " + label)
+	for i in range(0, indices.size(), 3):
+		var a: Vector3 = vertices[indices[i]]
+		var b: Vector3 = vertices[indices[i + 1]]
+		var c: Vector3 = vertices[indices[i + 2]]
+		triangle(st, a + half_thickness, b + half_thickness, c + half_thickness, half_thickness)
+		triangle(st, a - half_thickness, b - half_thickness, c - half_thickness, -half_thickness)
 	for j in vertices.size():
 		var a: Vector3 = vertices[j]
 		var b: Vector3 = vertices[(j + 1) % vertices.size()]
-		triangle(st, center + half_thickness, a + half_thickness, b + half_thickness, half_thickness)
-		triangle(st, center - half_thickness, a - half_thickness, b - half_thickness, -half_thickness)
-		var hint := (a + b) * .5 - center
+		# Edge orientation, not radial direction, is reliable on concave outlines.
+		var edge := b - a
+		var hint := edge.cross(half_thickness).normalized()
+		if not Geometry2D.is_polygon_clockwise(polygon): hint = -hint
 		triangle(st, a + half_thickness, a - half_thickness, b - half_thickness, hint)
 		triangle(st, a + half_thickness, b - half_thickness, b + half_thickness, hint)
 	return instance(label, st.commit(), parent, color)
@@ -98,6 +110,12 @@ static func hinge(root: Node3D, hinges: Dictionary, label: String, a: Vector3, b
 	# Store the axis and rest basis, so deflection never replaces a future static orientation.
 	hinges[label] = {node = pivot, axis = axis, rest = pivot.basis, end_a = a, end_b = b, witness = local[2]}
 
+# A curved planform must still rotate around one straight physical hinge.
+static func hinge_point(panel: Dictionary, span: Array, x: float, side: float) -> Vector3:
+	var a := plan_point(panel, span[1], panel.hinge_fraction, side)
+	var b := plan_point(panel, span[2], panel.hinge_fraction, side)
+	return a.lerp(b, (x - float(span[1])) / (float(span[2]) - float(span[1])))
+
 static func lifting_surface(root: Node3D, hinges: Dictionary, panel: Dictionary, side: float, tail: bool) -> void:
 	var suffix := "left" if side < 0 else "right"
 	var spans: Array = [["elevator_" + suffix, panel.stations[0][0], panel.stations[-1][0]]] if tail else [
@@ -112,15 +130,16 @@ static func lifting_surface(root: Node3D, hinges: Dictionary, panel: Dictionary,
 	for i in cuts.size() - 1:
 		var start: float = cuts[i]
 		var end: float = cuts[i + 1]
-		var moving := false
+		var moving_span: Array = []
 		for s in spans:
-			if (start + end) * .5 >= float(s[1]) and (start + end) * .5 <= float(s[2]): moving = true
-		var stop: float = panel.hinge_fraction if moving else 1.0
+			if (start + end) * .5 >= float(s[1]) and (start + end) * .5 <= float(s[2]): moving_span = s
 		var aa := plan_point(panel, start, 0, side)
 		var bb := plan_point(panel, end, 0, side)
-		var cc := plan_point(panel, end, stop, side)
-		var dd := plan_point(panel, start, stop, side)
-		if moving:
+		var cc := plan_point(panel, end, 1, side)
+		var dd := plan_point(panel, start, 1, side)
+		if not moving_span.is_empty():
+			cc = hinge_point(panel, moving_span, end, side)
+			dd = hinge_point(panel, moving_span, start, side)
 			cc.z -= float(panel.gap_m) * .5
 			dd.z -= float(panel.gap_m) * .5
 		slab([aa, bb, cc, dd], Vector3(0, float(panel.slab_thickness_m) * .5, 0), root,
@@ -128,11 +147,14 @@ static func lifting_surface(root: Node3D, hinges: Dictionary, panel: Dictionary,
 	for s in spans:
 		var a := plan_point(panel, s[1], panel.hinge_fraction, side)
 		var b := plan_point(panel, s[2], panel.hinge_fraction, side)
-		var c := plan_point(panel, s[2], 1, side)
-		var d := plan_point(panel, s[1], 1, side)
 		# Gap behind the hinge is geometric clearance; the physical hinge remains at a/b.
 		var gap := Vector3(0, 0, float(panel.gap_m) * .5)
-		hinge(root, hinges, s[0], a, a + (b - a) * side, [a + gap, b + gap, c, d], Vector3(0, float(panel.control_thickness_m) * .5, 0))
+		var outline: Array = [a + gap, b + gap, plan_point(panel, s[2], 1, side)]
+		for j in range(panel.stations.size() - 1, -1, -1):
+			var x: float = panel.stations[j][0]
+			if x > float(s[1]) and x < float(s[2]): outline.append(plan_point(panel, x, 1, side))
+		outline.append(plan_point(panel, s[1], 1, side))
+		hinge(root, hinges, s[0], a, a + (b - a) * side, outline, Vector3(0, float(panel.control_thickness_m) * .5, 0))
 
 static func cylinder(root: Node3D, label: String, radius: float, length: float, center: Vector3, color: Color) -> MeshInstance3D:
 	var mesh := CylinderMesh.new()
@@ -160,19 +182,19 @@ static func build() -> Dictionary:
 	var a := Vector3(0, fin.hinge_bottom_yz[0], fin.hinge_bottom_yz[1])
 	var b := Vector3(0, fin.hinge_top_yz[0], fin.hinge_top_yz[1])
 	var outline: Array = []
-	for i in 4: outline.append(Vector3(0, fin.outline_yz[i][0], fin.outline_yz[i][1]))
+	for i in int(fin.leading_outline_count): outline.append(Vector3(0, fin.outline_yz[i][0], fin.outline_yz[i][1]))
 	outline.append(b)
 	outline.append(a)
 	slab(outline, Vector3(fin.thickness_m * .5, 0, 0), root, "fin", WHITE)
 	hinge(root, hinges, "rudder", a, b, [a + Vector3(0, 0, .003), b + Vector3(0, 0, .003),
-		Vector3(0, fin.outline_yz[4][0], fin.outline_yz[4][1]), Vector3(0, fin.outline_yz[5][0], fin.outline_yz[5][1])], Vector3(.005, 0, 0))
+		Vector3(0, fin.outline_yz[-2][0], fin.outline_yz[-2][1]), Vector3(0, fin.outline_yz[-1][0], fin.outline_yz[-1][1])], Vector3(.005, 0, 0))
 	var motor := cylinder(root, "p100rx_nominal_envelope", data.nominal.engine_diameter_m * .5,
 		data.nominal.engine_length_m, point(data.installation.engine_center), Color("a8b2b7"))
 	motor.visible = false
-	for i in data.installation.intake_centers.size():
-		var center := point(data.installation.intake_centers[i])
-		cylinder(root, "intake_lip_%s" % i, data.installation.intake_radius_m, .10, center, WHITE)
-		cylinder(root, "intake_shadow_%s" % i, data.installation.intake_radius_m * .81, .003, center + Vector3(0, 0, -.052), DARK)
+	for side in [-1.0, 1.0]:
+		var suffix := "left" if side < 0 else "right"
+		loft(data.installation.intake_stations, root, "intake_fairing_" + suffix, WHITE, side)
+		loft(data.installation.intake_shadow_stations, root, "intake_shadow_" + suffix, DARK, side)
 	cylinder(root, "exhaust_fixed", data.installation.outlet_radius_m, .003, Vector3(0, 0, 1.1685), DARK)
 	var propeller := Node3D.new()
 	propeller.name = "propeller"

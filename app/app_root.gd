@@ -3,13 +3,16 @@
 #   the flight scene starts at once, exactly as before, in English, without reading or writing preferences;
 # - no user arguments: the Home screen in the saved language (English by default, whatever the OS locale);
 #   Fly creates the flight scene, Quit closes the app.
-# The flight lives under this node, so later steps (UI-03) can free it and show Home again.
+# The flight lives under this node: Esc (or losing focus) opens the pause menu over it (UI-02), and "End flight"
+# frees it and shows Home again (UI-03). Menus hold the session; continuing is always an explicit action.
 extends Node
 
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const PauseMenu := preload("res://ui/pause_menu.gd")
+const HeldKeys := preload("res://ui/held_keys.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
@@ -19,6 +22,11 @@ var preferences := {}
 var home: Control
 var home_scene: Node3D
 var flight: Node
+var pause_menu: CanvasLayer
+## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
+var has_home := false
+## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
+var _keyboard_reader: Callable
 
 
 func _ready() -> void:
@@ -28,6 +36,7 @@ func _ready() -> void:
 		TranslationServer.set_locale("en")
 		start_flight()
 		return
+	has_home = true
 	preferences = Preferences.load_from(preferences_path)
 	if preferences.note != "":
 		print("settings: ", preferences.note)
@@ -73,3 +82,96 @@ func start_flight() -> void:
 	home_scene = null
 	flight = load(FLIGHT_SCENE).instantiate()
 	add_child(flight)
+	if flight.session != null:
+		flight.pause_requested.connect(open_pause)
+		_keyboard_reader = flight.session.read_raw
+
+
+func _notification(what: int) -> void:
+	# Losing focus already pauses the simulation (simulation.gd); show the menu so continuing is one visible action.
+	# Never during captures and traces (their sessions take no input).
+	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and flight != null and flight.session != null and flight.session.input_enabled:
+		open_pause.call_deferred()
+
+
+## Freezes the flight under the pause menu. A running calibration is cancelled first (Esc already does that).
+func open_pause() -> void:
+	if flight == null or pause_menu != null:
+		return
+	var session: Node = flight.session
+	session.cancel_calibration()
+	session.hold("menu")
+	pause_menu = PauseMenu.new(has_home)
+	pause_menu.continue_requested.connect(continue_flight)
+	pause_menu.restart_requested.connect(restart_flight)
+	pause_menu.end_requested.connect(end_flight)
+	pause_menu.quit_requested.connect(quit_app)
+	add_child(pause_menu)
+	pause_menu.show_for(session)
+	flight.set_overlays_visible(false)
+
+
+## Continue (or Esc): back to the flight. The session decides whether it flies again (never over a crash being
+## shown, invalid data or a fault); keys still held from the menu stay masked until released.
+func continue_flight() -> void:
+	if pause_menu == null:
+		return
+	var session: Node = flight.session
+	if not session.is_flyable():
+		return # nothing to go back to: the menu stays, Continue is disabled and says why
+	_close_pause()
+	session.resume()
+
+
+func restart_flight() -> void:
+	if pause_menu == null:
+		return
+	_close_pause()
+	flight.session.reset() # a fresh trimmed start; the recorder closes its file on reset
+
+
+## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
+## ends without it (an explicit discard).
+func end_flight() -> void:
+	if flight == null or not has_home or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
+		return
+	if pause_menu != null:
+		remove_child(pause_menu)
+		pause_menu.queue_free()
+		pause_menu = null
+	flight.recorder.detach()
+	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
+	flight.queue_free()
+	flight = null
+	show_home()
+
+
+func quit_app() -> void:
+	if flight != null and not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press Quit again to quit without it."):
+		return
+	get_tree().quit()
+
+
+func _close_pause() -> void:
+	var session: Node = flight.session
+	session.release("menu")
+	flight.set_overlays_visible(true)
+	remove_child(pause_menu)
+	pause_menu.queue_free()
+	pause_menu = null
+	HeldKeys.mask(session, _keyboard_reader)
+
+
+## True when no trace is recording, or it was just saved. A failed save shows `message` and returns false once;
+## the recorder has stopped, so the next press goes through.
+func _trace_saved_or_discarded(message: String) -> bool:
+	var recorder: RefCounted = flight.recorder
+	if not recorder.recording:
+		return true
+	var err: Error = recorder.stop()
+	if err == OK:
+		return true
+	if pause_menu != null:
+		pause_menu.set_note(tr(message) % err)
+	return false

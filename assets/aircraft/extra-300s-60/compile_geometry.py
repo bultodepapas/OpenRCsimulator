@@ -45,8 +45,11 @@ def validate(d):
     assert t['fin_root_le'][0] < t['balance_front_z'] < t['fin_le_top_z'] < t['rudder_hinge_z'] < t['rudder_top_te_z']
     assert t['rudder_bottom_hinge'][1] < t['fin_root_le'][1] < t['balance_bottom_y'] < t['fin_top_y']
     g = d['gear']
-    assert g['main_axle'][1] < g['main_leg_root'][1] and g['track'] > 2 * g['leg_root_half_spacing']
-    assert g['pant_z'][0] < g['main_axle'][0] < g['pant_z'][1]
+    assert g['main_axle'][1] < g['leg']['tip'][2] and g['track'] > 2 * g['leg_root_half_spacing']
+    pant = g['pant_profile']
+    assert all(a[0] < b[0] for a, b in zip(pant, pant[1:])) and all(row[1] >= row[2] for row in pant)
+    assert pant[0][0] < g['main_axle'][0] < pant[-1][0] and 0 < g['leg']['thickness'] < 0.01
+    assert g['leg']['root'][0] < g['leg']['root'][1] and g['leg']['tip'][0] < g['leg']['tip'][1] and g['leg']['tip'][2] < g['leg']['root'][2]
     groups = {key.split('.')[0] for key in d['evidence']}
     for required in ['wing', 'fuselage_stations', 'canopy', 'tail', 'gear', 'propeller']:
         assert required in groups, f'missing evidence for {required}'
@@ -73,6 +76,9 @@ def check_against_metrology(d):
     ]
     pairs += [(x, y) for row, ref in zip(d['fuselage_stations'], a['fuselage_stations']) for x, y in zip(row[:4], ref)]
     pairs += [(x, y) for row, ref in zip(d['canopy']['top'], a['canopy_top']) for x, y in zip(row, ref)]
+    pairs += [(x, y) for row, ref in zip(g['pant_profile'], a['wheel_pant_profile']) for x, y in zip(row, ref)]
+    pairs += [(x, y) for key in ('root', 'tip') for x, y in zip(g['leg'][key], a['main_leg'][key])]
+    assert len(g['pant_profile']) == len(a['wheel_pant_profile'])
     assert len(d['fuselage_stations']) == len(a['fuselage_stations']) and len(d['canopy']['top']) == len(a['canopy_top'])
     worst = max(abs(x - y) for x, y in pairs)
     assert worst <= 0.00006, f'geometry.json differs from metrology.json by {worst} m'

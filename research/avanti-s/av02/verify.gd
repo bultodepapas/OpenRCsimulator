@@ -27,7 +27,24 @@ func vertex_bounds(node: Node3D) -> AABB:
 func witness(h: Dictionary) -> Vector3:
 	return h.node.to_global(h.witness)
 
+func check_concave_panels() -> void:
+	# A C has area 7 and its vertex centroid lies outside the polygon.
+	# A centroid triangle fan overlaps its recess; ear clipping must not.
+	for vertical in [false, true]:
+		var outline: Array = []
+		for p in [Vector2(0, 0), Vector2(3, 0), Vector2(3, 1), Vector2(1, 1), Vector2(1, 2), Vector2(3, 2), Vector2(3, 3), Vector2(0, 3)]:
+			outline.append(Vector3(0, p.y, p.x) if vertical else Vector3(p.x, 0, p.y))
+		var parent := Node3D.new()
+		var mesh := Model.slab(outline, Vector3(.01, 0, 0) if vertical else Vector3(0, .01, 0), parent, "concave_probe", Color.WHITE)
+		var vertices := mesh.mesh.get_faces()
+		var volume := 0.0
+		for i in range(0, vertices.size(), 3):
+			volume -= vertices[i].dot(vertices[i + 1].cross(vertices[i + 2])) / 6.0
+		check(absf(volume - .14) < .000001, "Concave panel triangulation/winding: %s" % volume)
+		parent.free()
+
 func run() -> void:
+	check_concave_panels()
 	var model := Model.build()
 	get_root().add_child(model.root)
 	await process_frame
@@ -37,6 +54,14 @@ func run() -> void:
 	check(absf(model.skin.mesh.get_aabb().size.z - 2.22) < .0001, "Fuselage must be 2.22m")
 	check(absf(bounds.position.x + bounds.end.x) < .0001, "Neutral lateral symmetry")
 	check(model.hinges.size() == 7, "Need 2 flaps, 2 ailerons, 2 elevators, rudder")
+	# Intermediate tail stations must meet the same straight elevator hinge.
+	for side in [-1.0, 1.0]:
+		var panel: Dictionary = model.data.tail
+		var span: Array = ["probe", panel.stations[0][0], panel.stations[-1][0]]
+		var h: Dictionary = model.hinges["elevator_left" if side < 0 else "elevator_right"]
+		for row in panel.stations:
+			var p := Model.hinge_point(panel, span, row[0], side)
+			check((p - h.end_a).cross(h.axis).length() < .000001, "Curved tail bent hinge axis")
 	check(model.propeller.get_child_count() == 0 and not model.has_propeller, "Jet must have no propeller geometry")
 	check(absf(model.motor.mesh.height - .241) < .00001, "P100 length")
 	check(absf(model.motor.mesh.top_radius * 2 - .097) < .00001, "P100 diameter")

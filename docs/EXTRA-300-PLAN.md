@@ -151,6 +151,8 @@ La siguiente acción concreta es **EX-01 → EX-02: fijar datum y unas pocas cot
 
 **Actualización 2026-10-06:** EX-01 y EX-02 hechos ([informe](research/extra-300-model-v1.md)). La hoja de fuselaje está a escala reducida (300,56 px/in) y se calibra con la cuerda de raíz; el dibujo p.47 resultó un croquis con errores de hasta 1,2 in y no se usa para cotas. El alerón en flecha se resolvió con un marco fijo sobre la bisagra, sin cambiar `apply_surfaces()`. Siguen estimados: vía del tren, carenas, hélice y redondeo de las cuadernas. Siguiente: EX-03 (registro de dos aviones) o EX-04 (holguras de articulación).
 
+**Revisión visual 2026-10-06** ([informe](research/extra-300-visual-review-v1.md)): 79 vistas automáticas más 6 a escala, superposición del plano y métricas. La forma coincide con el plano; el defecto más relevante es que extradós e intradós no se distinguen desde tierra (H1, adelantar el intradós de EX-10). Propuesto EX-02b: suavizado del fuselaje, cabina y tren. **Hecho el mismo día:** EX-02b (fuselaje suave por interpolación monótona, cabina corregida, tren en gota y pletina desde el plano) y **EX-10a**, el adelanto de EX-10 centrado en la orientación: decoración procedural roja/blanca con estrellas e intradós azul/blanco. Desde tierra el intradós da un 23–31 % de azul y el extradós un 0 % a 20–100 m. EX-10 conserva la prueba humana de orientación y el acabado final.
+
 ## 10. Herramientas investigadas y orden de adopción
 
 Las [doce investigaciones](research/extra-aircraft-tooling/README.md) amplían la preparación EX-00. Aplicarlas mediante los pasos existentes:

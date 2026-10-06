@@ -44,6 +44,7 @@ jobs:
         run: |
           python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
           python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
+          python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

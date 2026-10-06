@@ -2,6 +2,19 @@
 
 Written **2026-10-05**, revised the same day after [11 focused investigations](research/landscape-investigations/README.md) (5 with spikes on scratch copies). Evidence and sources: [docs/research/landscape-research.md](research/landscape-research.md) and the investigations. Follows the [ROADMAP](../ROADMAP.md) rules: one small step per change, one objective proof per step, guessed numbers labeled, lessons to LEARNINGS.md.
 
+## Implementation alignment (senior review, 2026-10-06)
+
+The [visual execution plan](VISUAL-QUALITY-PLAN.md#4-secuencia-de-implementación-y-cierre) narrows the next delivery to VQ-01a/b → L5 → L6a/b/c. It keeps existing L IDs and completed proofs. These clarifications apply to the pending steps below:
+
+- VQ-01a preserves L1–L4 checks in an empty-atmosphere fixture and adds full-field views; a failed capture must not pass by finding an old PNG. VQ-01b extends the existing logger, not a second benchmark framework.
+- L5 shares the field builder between flight and the new Home backdrop. It preserves today's runway/pilot numbers, marks their real provenance, and changes no collision behavior. New `collides=true` fields are refused until the capability exists in L14.
+- L6a starts with an offline ez-tree export trial, pins its exact revision before incorporating files, and falls back to a coherent Kenney CC0 family if the bounded trial fails. No proctree port or runtime tree plugin in the first delivery. Bake repeatability is checked within a fixed renderer environment.
+- L7 explicitly waits for the hill output of L13a; it is outside the first treeline delivery. L9a verifies the shader parity already partly supplied by L2; it does not rebuild it. Keep L11a before L10/L11b so runway checks include grass.
+- Source assets/provenance stay in `assets/landscape/`; distributable derivatives live in `app/assets/landscape/` under `res://`. Validate all three export presets from a clean clone, including data and license files.
+- The three initial quality presets keep landmark positions and shared textures. Vegetation density only removes ornament; higher texture resolutions and Forward+ need their own measured gates. See [contracts and acceptance](VISUAL-QUALITY-PLAN.md#11-contratos-para-implementar-sin-inventar-otra-arquitectura).
+
+The owner's [additional resource selection](research/visual-quality-supplement-2026-10-06.md) is integrated into the visual plan §6: prefer reusable CC0 surfaces/props, investigate new tools in their existing L steps, and retain the first-delivery sequence. Quaternius is no longer a blanket CC0 source; source-package evidence is required. Water and road tools are conditional future authoring options, not new acceptance requirements for L6c.
+
 ## Why, in one picture
 
 Today the pilot view at 30 m is **~98 % flat blue sky** with a 10 px green strip at the bottom. The scripted circle shows no ground at all. The camera tracks the airplane upward, so **the sky is the background of nearly every frame**, and today it carries no information. When the pilot watches an airplane in flight, only the ground within ~11 m of their feet is on screen ([05](research/landscape-investigations/05-grass-rendering.md), calculated).
@@ -59,7 +72,7 @@ Only the chase and inspect cameras need anything dynamic.
 | Terrain data | **`openrc-terrain v1`**: int16 little-endian `.bin` (height × 256, i.e. 1/256 m steps) + JSON sidecar (size, spacing, origin, diagonal rule, min/max, SHA-256, seed, parameters, source, license) | Exact in float32 and float64; 3.1 MB for 5 km at 4 m; `FileAccess` reads little-endian | — |
 | Generation | **Offline, integer-only Python** (`tools/terrain/gen_terrain.py`, stdlib only, NumPy optional with identical bytes); output committed with SHA-256; CI re-runs it with `--check` | FastNoiseLite is float32 and not guaranteed bit-identical across OS/arch | — |
 | Trees | **Offline-generated meshes** (proctree.js port, BSD-3; or ez-tree v1.1.0, MIT) ≤ 1k triangles; far trees as crossed-quad cards from a 1024² atlas baked offline; placement files store positions only | Small, deterministic, ours; no impostor plugin needed for a static pilot | — |
-| Assets | **CC0 first** (Poly Haven, ambientCG, Kenney, Quaternius); CC-BY only with an in-game credit; never Textures.com, GPL/AGPL art or tools in the build. Every file gets a provenance entry (URL, license, author, date, SHA-256) | Open-source repo and redistributed builds | — |
+| Assets | **CC0 first** (Poly Haven, ambientCG, Kenney, individually verified KayKit packs); Quaternius only with archived evidence for the exact CC0 distribution; CC-BY only with an in-game credit; never Textures.com, GPL/AGPL art or tools in the build. Every file gets a provenance entry (URL, license, author, date, SHA-256) | Open-source repo and redistributed builds | — |
 | Field data | `app/data/fields/*.json`, format `openrc-field v1`, every value `{value, unit, kind, source}`; each object carries `visible` and `collides` flags (CRRCSim's separation); surface rectangles (runway, mown, rough) feed both the ground shader and later ground physics | Same discipline as physics data; layout distances from AMA/BMFA; one source for what is drawn and what is hit | — |
 | Visual testing | **Two tiers:** SHA-256 when the renderer string matches the golden's; otherwise FLIP 1.7 bad-pixel count (FLIP > 0.1). Readability measured as the airplane's contrast against its local background | Byte equality only holds for one pinned Mesa and thread count; mean metrics miss a 15 px airplane | — |
 
@@ -147,7 +160,7 @@ Step IDs are `L*`. Each row is one small change that keeps `app/test.sh` green. 
 | L9c | **Field surfaces in the shader** [06], from the L5 rectangles: runway with mown stripes, a mown area and a darker rough beyond it. The separate runway mesh is removed. Stripe amplitude ≤ half the runway edge step. First find out why the far edge step is only 6 % today (the same texture through a shader gives 27 %) | Edge-contrast pixel test at 100 m above an L0c-derived threshold; low-pass capture |
 | L11a | **Near-field grass blades** [05] (moved up so the runway proof is measured with and without grass). Opaque 7-blade clumps (no alpha) within 30 m of the pilot, shrinking to nothing between 22 and 30 m, none on the runway, ≤ 4 chunks, no shadow casting. Placement generated offline and committed with a SHA-256; sway from `sim_clock` and `wind_vec` | ≤ +5 draw calls and ≤ +100k primitives; bytes repeat; no visible seam in the 25–35 m band (FLIP mask) |
 | L10 | **Known-size objects** from the field file: pilot stations, orange safety fence, pit tables/canopy, 3–4 cars (Kenney Car Kit, CC0), flag pole and a **windsock built to FAA AC 150/5345-27E Size 1** (2.5 m × 0.45 m throat, 5 stripe segments [11]), static until L15a. Built from primitives in code where no CC0 model exists | Captures; each object's size is checked against the field file in a test; provenance lists every asset |
-| L11b | **Bushes and flowers** [05]: CC0 low-poly geometry (Quaternius/Kenney), no alpha | Counters within budget; bytes repeat |
+| L11b | **Bushes and flowers** [05]: CC0 low-poly geometry (Kenney or a verified KayKit pack; Quaternius only with exact-file CC0 evidence), no alpha | Counters within budget; bytes repeat |
 | L9d | *(Optional)* **Photo grass**: ambientCG Grass001–004 (CC0, 1.4 m tile) with Mikkelsen hex-tiling (MIT) [06] | Only if Gate L says the procedural ground looks too synthetic; the L9b repeat test still passes |
 | **Gate L** | **"Does the landscape help or hurt flying?"** The owner flies the Gate 2 maneuver list in the new field. Measured: orientation read correctly at 100 m against sky and against the treeline; landing approaches using the treeline as the turn reference; frame time p95 with the L0e logger on the slowest machine; draw calls; video memory; download delta | Notes and ratings recorded; budgets adjusted in this file; anything that hurts readability is reverted or toned down |
 
@@ -193,7 +206,7 @@ Step IDs are `L*`. Each row is one small change that keeps `app/test.sh` green. 
 | RenderDoc | v1.46 | MIT | manual frame inspection, never in CI |
 
 **Excluded:**
-- Sky3D, Universal Sky, MMqd Nishita: they read `TIME`, need passes Compatibility lacks, or need textures. Ideas only.
+- Sky3D stays a study candidate for L19, not a dependency of the first field: its v2.1.0 README does declare Compatibility, but its clock/sky needs adaptation and star maps have separate CC BY 4.0 attribution. Universal Sky/MMqd Nishita remain references subject to their own shader constraints. See the [verified supplement](research/visual-quality-supplement-2026-10-06.md).
 - godot-imposter: no mipmaps, unverified on 4.7.
 - Gaea and World Machine: non-commercial licenses.
 - Blender A.N.T.: GPL, sketching only.

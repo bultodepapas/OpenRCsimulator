@@ -58,3 +58,33 @@ msgstr "Acelerador"
 
 msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."
+
+msgid "PAUSED"
+msgstr "PAUSA"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Restart flight"
+msgstr "Reiniciar vuelo"
+
+msgid "End flight"
+msgstr "Terminar vuelo"
+
+msgid "This flight cannot continue: %s"
+msgstr "Este vuelo no puede continuar: %s"
+
+msgid "Crashed. The flight restarts by itself after you continue."
+msgstr "Accidente. El vuelo se reinicia solo al continuar."
+
+msgid "The radio was disconnected: engine at idle, sticks centred. Continue flies with the keyboard, or plug the radio back in."
+msgstr "La radio se desconectó: motor al ralentí y mandos centrados. Continuar vuela con el teclado, o vuelve a conectar la radio."
+
+msgid "Radio calibration cancelled; the previous profile stays."
+msgstr "Calibración de la radio cancelada; se mantiene el perfil anterior."
+
+msgid "Could not save the flight trace (error %d). Press End flight again to end without it."
+msgstr "No se pudo guardar la traza del vuelo (error %d). Pulsa Terminar vuelo otra vez para terminar sin ella."
+
+msgid "Could not save the flight trace (error %d). Press Quit again to quit without it."
+msgstr "No se pudo guardar la traza del vuelo (error %d). Pulsa Salir otra vez para salir sin ella."
