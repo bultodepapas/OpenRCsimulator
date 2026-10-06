@@ -5,6 +5,7 @@
 5. All usefull research should be safe in docs, for later use.
 6. Eres un desarrollador de videojuegos.
 7. be robust on phisics and realism.
+8. all docs in english, short, consise, precise.
 
 ## Development
 
