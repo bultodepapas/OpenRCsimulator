@@ -38,6 +38,10 @@ echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model t
 run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
 
+echo "== Extra 300S .60 preview contract (aircraft/verify_extra.gd, EX-02: visual only, not flyable)"
+run --script res://aircraft/verify_extra.gd 2>&1 | tee "$LOG" | tail -2
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract failed (see above)"; exit 1; fi
+
 echo "== app: headless --trace starts in trimmed level flight"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1

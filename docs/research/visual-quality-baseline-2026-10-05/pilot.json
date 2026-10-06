@@ -1,0 +1,22 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "args": "--capture --scripted --out=pilot.png",
+  "draw_calls": {
+    "shadow": 0,
+    "visible": 101
+  },
+  "godot": "4.7.2-stable (official)",
+  "image": "pilot.png",
+  "lp_num_threads": "1",
+  "objects": {
+    "shadow": 0,
+    "visible": 101
+  },
+  "primitives": {
+    "shadow": 0,
+    "visible": 46842
+  },
+  "sha256": "2266ec0dfca33fd498fe00bab6946c046a27d3232e506fb3b1a6d4bb7c82d467",
+  "video_memory_bytes": 53409362
+}

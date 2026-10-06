@@ -34,7 +34,8 @@
       "unit": "m",
       "kind": "derived",
       "source": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)"
-    }
+    },
+    "planform": "rectangular"
   },
   "balance": {
     "plan_cg": {
@@ -57,11 +58,12 @@
       "kind": "manual",
       "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE"
     },
-    "mismatch_warning_mac": {
-      "value": 0.15,
-      "unit": "1",
+    "configuration": "virtual-balanced-reference-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
       "kind": "estimated",
-      "source": "warn when the inventory CG differs from the plan CG by more than 15 % of the mean chord"
+      "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
     }
   },
   "inventory": [
@@ -505,20 +507,89 @@
         "kind": "estimated",
         "source": "spread along the fuselage"
       }
+    },
+    {
+      "name": "virtual reference-build balancing mass",
+      "mass": {
+        "value": 0.2840582910437526,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      },
+      "position": {
+        "value": [
+          0.85,
+          -0.03168363777353627,
+          -0.07058410415104471
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      },
+      "size": {
+        "value": [
+          0.025,
+          0.025,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      }
     }
   ],
   "crash_hull": {
     "value": [
-      [0.15, -0.762, 0.05],
-      [0.15, 0.762, 0.05],
-      [-0.33, 0.0, 0.0],
-      [0.99, 0.0, 0.02],
-      [0.93, -0.28, 0.02],
-      [0.93, 0.28, 0.02],
-      [0.97, 0.0, 0.26],
-      [0.215, -0.18, -0.253],
-      [0.215, 0.18, -0.253],
-      [-0.136, 0.0, -0.25]
+      [
+        0.15,
+        -0.762,
+        0.05
+      ],
+      [
+        0.15,
+        0.762,
+        0.05
+      ],
+      [
+        -0.33,
+        0.0,
+        0.0
+      ],
+      [
+        0.99,
+        0.0,
+        0.02
+      ],
+      [
+        0.93,
+        -0.28,
+        0.02
+      ],
+      [
+        0.93,
+        0.28,
+        0.02
+      ],
+      [
+        0.97,
+        0.0,
+        0.26
+      ],
+      [
+        0.215,
+        -0.18,
+        -0.253
+      ],
+      [
+        0.215,
+        0.18,
+        -0.253
+      ],
+      [
+        -0.136,
+        0.0,
+        -0.25
+      ]
     ],
     "unit": "m",
     "kind": "estimated",
@@ -601,7 +672,10 @@
         "source": "Flat-plate drag of the finite wing at 90 deg: Viterna CDmax = 1.11 + 0.018 AR with AR = b^2/S = 5.0 (NASA CR-1983, RESEARCH.md plan review #3)"
       },
       "sideslip_blend": {
-        "value": [15.0, 25.0],
+        "value": [
+          15.0,
+          25.0
+        ],
         "unit": "deg",
         "kind": "estimated",
         "source": "Sideslip range where the linear beta terms (CYb, Clb, Cnb) give way to their sin(beta) form, finite and restoring up to knife edge"
@@ -708,10 +782,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CYdr": {
-        "value": 0.1913,
+        "value": 0.13753700095798843,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
       },
       "Clb": {
         "value": -0.0545,
@@ -744,10 +818,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cldr": {
-        "value": 0.0115,
+        "value": 0.00045123687978342573,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
       },
       "Cm0": {
         "value": -0.0278,
@@ -780,10 +854,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnb": {
-        "value": 0.0723,
+        "value": 0.1214237421962675,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
       },
       "Cnp": {
         "value": 0.118,
@@ -810,10 +884,126 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cndr": {
-        "value": -0.1811,
+        "value": -0.06678305820794714,
         "unit": "1/rad",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+      }
+    },
+    "surfaces": {
+      "wing_aileron_effectiveness": {
+        "value": 0.144,
+        "unit": "1",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; |Clda_right|/(0.125*CLa), rounded"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; retained small-angle oracle validity limit"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; complete local loads before tail stall"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; symmetric tail blend width 12 deg"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data"
+      },
+      "tail_CD90": {
+        "value": 1.2,
+        "unit": "1",
         "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; same flat-plate approximation as wing"
+      },
+      "horizontal": {
+        "area": {
+          "value": 0.0956,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+        },
+        "position": {
+          "value": [
+            0.8409,
+            0,
+            -0.04564
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+        },
+        "lift_slope": {
+          "value": 1.75,
+          "unit": "1/rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; effective finite-span surface slope"
+        },
+        "control_effectiveness": {
+          "value": 1.174,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data ; effective whole-tail calibration Cmde/Cma including omitted downwash"
+        },
+        "incidence": {
+          "value": 0.03845,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+        }
+      },
+      "vertical": {
+        "area": {
+          "value": 0.0484,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+        },
+        "position": {
+          "value": [
+            0.8609,
+            0,
+            0.075
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+        },
+        "lift_slope": {
+          "value": 2.4,
+          "unit": "1/rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; effective finite-span surface slope"
+        },
+        "control_effectiveness": {
+          "value": 0.55,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; finite-span rudder effectiveness, provisional handling calibration"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+        }
       }
     }
   },

@@ -17,6 +17,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Dynamics := preload("res://physics/dynamics.gd")
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -75,15 +76,16 @@ func _init() -> void:
 func setup(path := Scenarios.AIRCRAFT) -> void:
 	aircraft_path = path
 	sim = Sim.new()
-	_apply(AircraftData.load_file(path))
-	if not aircraft.ok:
-		for e in aircraft.errors:
-			push_error("aircraft data: " + e)
-	elif not start.ok:
-		push_error("trim: " + start.message)
+	sim.faulted.connect(_on_sim_faulted)
+	var prepared := _prepare_aircraft(AircraftData.load_file(path))
+	if prepared.ok:
+		_commit_aircraft(prepared)
+	else:
+		_set_initial_failure(prepared)
 	if not physics_enabled:
 		sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
+	reset()
 
 
 func _ready() -> void:
@@ -150,28 +152,139 @@ func _failsafe(reason: String) -> void:
 
 ## The pilot's explicit "continue" (never automatic).
 func resume() -> void:
+	if not _has_valid_start():
+		sim.set_paused(true)
+		if pause_reason.is_empty():
+			pause_reason = _start_failure_reason()
+		return
+	if not sim.fault_reason.is_empty():
+		sim.set_paused(true)
+		pause_reason = "simulation fault: " + sim.fault_reason
+		return
 	pause_reason = ""
 	sim.set_paused(false)
 
 
-## Uses loaded aircraft data: mass properties, loads, trimmed start and trims.
-func _apply(data: Dictionary) -> void:
-	aircraft = data
-	start = {}
-	trims = { roll = 0.0, pitch = 0.0, yaw = 0.0 }
-	for w in aircraft.warnings:
-		print("aircraft data warning: ", w)
-	if not aircraft.ok:
-		return
-	var m: Dictionary = aircraft.model
-	sim.mass = m.mass_kg
-	sim.inertia = m.inertia
+## Prepares the complete aircraft/trim candidate without changing the active flight.
+func _prepare_aircraft(data: Dictionary) -> Dictionary:
+	var neutral_trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
+	if not data.get("ok", false):
+		var error_text := "aircraft data invalid"
+		if not data.get("errors", []).is_empty():
+			error_text += ": " + str(data.errors[0])
+		return { ok = false, data = data, start = { ok = false, message = error_text }, trims = neutral_trims, message = error_text }
+	var model: Dictionary = data.get("model", {})
+	if not _model_is_valid(model):
+		var invalid_model := "aircraft model has invalid mass properties or control throws"
+		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
+	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad)
+	if not candidate_start.get("ok", false):
+		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
+		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }
+	if not Sim.state_is_valid(candidate_start.state):
+		var invalid_state := "trim produced a nonfinite or malformed starting state"
+		return { ok = false, data = data, start = { ok = false, message = invalid_state }, trims = neutral_trims, message = invalid_state }
+	var candidate_trims := {
+		roll = float(candidate_start.roll_command),
+		pitch = float(candidate_start.pitch_command),
+		yaw = float(candidate_start.get("yaw_command", 0.0)),
+	}
+	for value in [candidate_start.get("throttle", NAN), candidate_start.get("rpm", NAN), candidate_trims.roll, candidate_trims.pitch, candidate_trims.yaw]:
+		if not is_finite(value):
+			var nonfinite_trim := "trim produced a nonfinite throttle, rpm, or control trim"
+			return { ok = false, data = data, start = { ok = false, message = nonfinite_trim }, trims = neutral_trims, message = nonfinite_trim }
+	if not _candidate_loads_are_valid(model, candidate_start, candidate_trims):
+		var bad_loads := "trimmed aircraft produces nonfinite or malformed initial loads"
+		return { ok = false, data = data, start = { ok = false, message = bad_loads }, trims = neutral_trims, message = bad_loads }
+	return { ok = true, data = data, start = candidate_start, trims = candidate_trims, message = "prepared" }
+
+
+## Compatibility helper for in-memory callers. Invalid candidates leave the active flight untouched.
+func _apply(data: Dictionary) -> bool:
+	var prepared := _prepare_aircraft(data)
+	if not prepared.ok:
+		return false
+	_commit_aircraft(prepared)
+	return true
+
+
+func _commit_aircraft(prepared: Dictionary) -> void:
+	aircraft = prepared.data
+	start = prepared.start
+	trims = prepared.trims.duplicate(true)
+	sim.mass = aircraft.model.mass_kg
+	sim.inertia = aircraft.model.inertia.duplicate()
 	sim.loads = _loads
 	sim.pre_step = _pre_step
 	sim.rotor_momentum = rotor_momentum
-	start = Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad)
-	if start.ok:
-		trims = { roll = start.roll_command, pitch = start.pitch_command, yaw = start.yaw_command }
+	for warning in aircraft.warnings:
+		print("aircraft data warning: ", warning)
+
+
+func _set_initial_failure(prepared: Dictionary) -> void:
+	aircraft = prepared.get("data", {})
+	start = prepared.get("start", { ok = false, message = prepared.get("message", "aircraft unavailable") })
+	trims = prepared.get("trims", { roll = 0.0, pitch = 0.0, yaw = 0.0 }).duplicate(true)
+	engine_running = false
+	pause_reason = str(prepared.get("message", "aircraft unavailable"))
+	printerr(pause_reason)
+
+
+func _model_is_valid(model: Dictionary) -> bool:
+	if not model.has("mass_kg") or not is_finite(float(model.mass_kg)) or model.mass_kg <= 0.0:
+		return false
+	var inertia: PackedFloat64Array = model.get("inertia", PackedFloat64Array())
+	if inertia.size() != 6:
+		return false
+	for value in inertia:
+		if not is_finite(value):
+			return false
+	var minor2 := inertia[0] * inertia[1] - inertia[3] * inertia[3]
+	var determinant := inertia[0] * (inertia[1] * inertia[2] - inertia[5] * inertia[5]) \
+		- inertia[3] * (inertia[3] * inertia[2] - inertia[4] * inertia[5]) \
+		+ inertia[4] * (inertia[3] * inertia[5] - inertia[4] * inertia[1])
+	if inertia[0] <= 0.0 or minor2 <= 0.0 or determinant <= 0.0 \
+			or not is_finite(minor2) or not is_finite(determinant):
+		return false
+	var controls: Dictionary = model.get("controls", {})
+	var throws: Dictionary = controls.get("throw_rad", {})
+	for axis in ["aileron", "elevator", "rudder"]:
+		if not throws.has(axis) or not is_finite(float(throws[axis])) or throws[axis] <= 0.0:
+			return false
+	return true
+
+
+func _candidate_loads_are_valid(model: Dictionary, candidate_start: Dictionary, candidate_trims: Dictionary) -> bool:
+	var f := Commands.neutral_commands()
+	f.roll = candidate_trims.roll
+	f.pitch = candidate_trims.pitch
+	f.yaw = candidate_trims.yaw
+	f.throttle = candidate_start.throttle
+	var surfaces := Commands.surface_deflections_deg(f, model.controls.throw_deg)
+	var deflections := Aero.deflections_from_surfaces(surfaces)
+	var wind := PackedFloat64Array([0.0, 0.0, 0.0])
+	var result: PackedFloat64Array = Dynamics.loads(candidate_start.state, model, deflections,
+		candidate_start.rpm, Air.RHO_SEA_LEVEL, wind)
+	if result.size() != 6:
+		return false
+	for value in result:
+		if not is_finite(value):
+			return false
+	var rotor := Dynamics.rotor_momentum(model, candidate_start.rpm)
+	for value in rotor:
+		if not is_finite(value):
+			return false
+	return true
+
+
+func _start_failure_reason() -> String:
+	if not aircraft.get("ok", false):
+		return "aircraft data is invalid"
+	return "trimmed starting condition is invalid: " + str(start.get("message", "no valid trim"))
+
+
+func _on_sim_faulted(reason: String) -> void:
+	pause_reason = "simulation fault: " + reason
 
 
 ## Re-trims at another condition ("level" at `speed`, or "glide" power-off) and makes it the start. For scripted
@@ -188,7 +301,7 @@ func trim_at(speed: float, mode := "level") -> Dictionary:
 
 ## Moves the trimmed start to another altitude (m above ground), same trim. For captures and scripted checks.
 func set_start_altitude(altitude: float) -> void:
-	if start.get("ok", false):
+	if start.get("ok", false) and is_finite(altitude) and Sim.state_is_valid(start.state):
 		var s: PackedFloat64Array = start.state
 		s[RB.POS + 2] = -altitude
 		start.state = s
@@ -197,12 +310,14 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
-	var data := AircraftData.load_file(aircraft_path)
-	if not data.ok:
-		return "reload failed, still flying the previous data: %s" % data.errors[0]
-	_apply(data)
+	var prepared := _prepare_aircraft(AircraftData.load_file(aircraft_path))
+	if not prepared.ok:
+		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
+	_commit_aircraft(prepared)
 	reset()
-	return "aircraft reloaded: %s" % ("trimmed at 15 m/s, throttle %d %%" % roundi(start.throttle * 100.0) if start.ok else "TRIM FAILED (%s)" % start.message)
+	if not sim.fault_reason.is_empty():
+		return "aircraft reload failed during reset; simulation paused: %s" % sim.fault_reason
+	return "aircraft reloaded: trimmed at 15 m/s, throttle %d %%" % roundi(start.throttle * 100.0)
 
 
 func _physics_process(_delta: float) -> void:
@@ -225,12 +340,14 @@ func _physics_process(_delta: float) -> void:
 		if crash.ticks_left <= 0:
 			reset()
 		return
-	if physics_enabled and not sim.paused and aircraft.get("ok", false) and touches_ground(sim.state):
+	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state) and touches_ground(sim.state):
 		_crash()
 
 
 ## True when any crash-hull point of the airplane at state `s` is at or below the ground (NED down ≥ 0).
 func touches_ground(s: PackedFloat64Array) -> bool:
+	if not Sim.state_is_valid(s) or not aircraft.get("ok", false):
+		return false
 	var hull: PackedFloat64Array = aircraft.model.crash_hull
 	var q := PackedFloat64Array([s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3]])
 	for i in range(0, hull.size(), 3):
@@ -259,16 +376,38 @@ func reset() -> void:
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	commands = Commands.neutral_commands()
-	if start.get("ok", false):
+	if _has_valid_start():
 		commands.throttle = start.throttle
-	engine_running = start.get("mode", "level") != "glide"
+		engine_running = start.get("mode", "level") != "glide"
+	else:
+		engine_running = false
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()
 	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
-	sim.aux = PackedFloat64Array([start.get("rpm", 0.0), sim.inputs[0], sim.inputs[1], sim.inputs[2]])
-	sim.reset(start.state if start.get("ok", false) else Scenarios.throw_across_view())
-	# Never fly on invalid aircraft data: stay paused and show why.
-	sim.set_paused(not aircraft.ok)
+	sim.aux = PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	if _has_valid_start():
+		if not sim.reset(start.state):
+			sim.set_paused(true)
+			return
+		pause_reason = ""
+		sim.set_paused(false)
+	else:
+		# An invalid initial candidate is parked in a valid, inert state. It never enters the throw/flying fallback.
+		if not Sim.state_is_valid(sim.state):
+			sim.reset(PackedFloat64Array([0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]))
+		if pause_reason.is_empty():
+			pause_reason = _start_failure_reason()
+		sim.set_paused(true)
+		# Trace/capture helpers may call step() directly, so the invalid initial condition must also block raw stepping.
+		sim.fault_reason = pause_reason
+
+
+func _has_valid_start() -> bool:
+	return aircraft.get("ok", false) and start.get("ok", false) and sim != null
+
+
+func _flight_ready() -> bool:
+	return _has_valid_start() and sim.fault_reason.is_empty()
 
 
 ## Stick commands plus trims: what the surfaces actually do (and what the physics sees).
@@ -303,17 +442,13 @@ func _inputs() -> PackedFloat64Array:
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
 	var surfaces := Commands.surface_deflections_deg({ roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2] }, throws_deg())
-	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]))
-	var l := Aero.loads(s, air, Aero.deflections_from_surfaces(surfaces), aircraft.model, Air.RHO_SEA_LEVEL)
-	var p := Propulsion.loads(air.v_air, a[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
-	for k in 6:
-		l[k] += p[k]
-	return l
+	return Dynamics.loads(s, aircraft.model, Aero.deflections_from_surfaces(surfaces), a[AUX_RPM],
+		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
 
 
 ## Propeller angular momentum (D9c): J_p·ω along body +x (clockwise seen from behind).
 func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
-	return PackedFloat64Array([float(aircraft.model.propulsion.rotor_inertia) * aux[AUX_RPM] * TAU / 60.0, 0.0, 0.0])
+	return Dynamics.rotor_momentum(aircraft.model, aux[AUX_RPM])
 
 
 ## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5);
@@ -331,7 +466,10 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 func trace_meta() -> Dictionary:
 	return {
 		scenario = "trimmed level flight across view at 15 m/s (D5: engine, six-axis trim, calm air)",
-		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), Scenarios.AIRCRAFT],
+		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), aircraft_path],
+		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
+		configuration = aircraft.model.get("configuration", "unspecified"),
+		aero_model = "local-surfaces-v1 with bounded attached oracle; no propwash",
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
 		dt_s = sim.dt(),

@@ -1,16 +1,16 @@
 {
   "schema": "openrc-avanti-reference-validation-v1",
-  "date": "2026-10-05",
-  "head_at_validation": "83f2035876cbc92237b3a7b8fd4b7722bd1397ac",
-  "downloaded": 42,
+  "date": "2026-10-06",
+  "head_at_validation": "59cca5613fd235d9c6360eee3531a398851ec075",
+  "downloaded": 76,
   "failed_downloads": 2,
-  "downloaded_bytes": 72880914,
+  "downloaded_bytes": 105598835,
   "original_counts": {
     ".pdf": 11,
-    ".jpg": 27,
-    ".html": 4
+    ".jpg": 57,
+    ".html": 8
   },
-  "local_files_including_derivatives": 58,
+  "local_files_including_derivatives": 329,
   "all_local_files_ignored": true,
   "tracked_reference_files": [],
   "original_file_checks": [
@@ -300,12 +300,352 @@
       "path": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
       "sha256_verified": true,
       "pdf_pages": 39
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-official-page.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-01.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-02.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-03.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-04.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-05.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-06.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-07.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-08.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-09.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-10.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-11.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-12.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-13.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-official-page.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-00.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        700,
+        292
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-01.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-02.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-03.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-04.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-05.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-06.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-07.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-08.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-09.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        696,
+        390
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-01-perfil-izquierdo-atardecer.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-02-oblicua-frontal-derecha.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-03-oblicua-frontal-izquierda.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-04-perfil-oblicuo-presentacion.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-05-cabina-detalle.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-familia-tubos-01-sin-cotas.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        300,
+        375
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-familia-tubos-02-sin-cotas.jpg",
+      "sha256_verified": true,
+      "image_size_px": [
+        620,
+        434
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/sebart-downloads.html",
+      "sha256_verified": true
+    },
+    {
+      "path": "references/avanti-s/high-resolution/sebart-accessories.html",
+      "sha256_verified": true
     }
   ],
   "generated_files": [
     {
+      "path": "references/avanti-s/av02/captures-v1/bottom-flap0.png",
+      "sha256": "11e12ca5a4203ecab8bca383abf65630f27528cba4252d31a177d8ecae866859"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/front-flap0.png",
+      "sha256": "2254017b2f180632587108471f49f5d899146e5f1106d6bbb8d5565f78c55ed6"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/manifest.json",
+      "sha256": "b65d74b7d4cb5f33e0847c4908d221f494d1b91ab62399c009a66781ff55d225"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/oblique-flap0-inside.png",
+      "sha256": "bd00d349a128568b3c9807e68ca27b7843f23e68f5f85b1ca8cc38fd38a2fc27"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/oblique-flap0.png",
+      "sha256": "d818b06f3f18b2ea26bb87b7da866d11220c7c87181ba26b8ffbeeb10a794756"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/rear-flap0.png",
+      "sha256": "9f33e4e5dde62ac095fc0e561fae9cc001cd99a2590122933e3c8135760a29a2"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/rear-flap20.png",
+      "sha256": "f3f5393e3c832b609703ba8d31e472c3d4f510f1f8a58000d8ca845aa4430eeb"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/rear-flap50.png",
+      "sha256": "30b9d47201cbfaeb64b04dd4280fb3fd7817939d1680df58dddf1621f2024f97"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/side-flap0.png",
+      "sha256": "e26331e8e1e2aa8ba804a66d71dd3777019133a40575fc299a17da62e6112b67"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v1/top-flap0.png",
+      "sha256": "114790272d7a514f3fa4b029f09965ba2f5a7cc670bf198f3e7de624e7ba82f3"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/bottom-flap0.png",
+      "sha256": "575e56930653a5324fbc0de01d6cb6fe0690349970f579dd574945ed251b324d"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/front-flap0.png",
+      "sha256": "e4fd48ea71dc1d27ebfc8a9f2a30880442773256bbc03b64738ffd6b0cfd54db"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/manifest.json",
+      "sha256": "acd846c9f5febafc70018475f22cfeb11f8937c860b1311e3410a26a3ea0df4a"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/oblique-flap0-inside.png",
+      "sha256": "bd00d349a128568b3c9807e68ca27b7843f23e68f5f85b1ca8cc38fd38a2fc27"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/oblique-flap0.png",
+      "sha256": "d818b06f3f18b2ea26bb87b7da866d11220c7c87181ba26b8ffbeeb10a794756"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/rear-flap0.png",
+      "sha256": "9f33e4e5dde62ac095fc0e561fae9cc001cd99a2590122933e3c8135760a29a2"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/rear-flap20.png",
+      "sha256": "f3f5393e3c832b609703ba8d31e472c3d4f510f1f8a58000d8ca845aa4430eeb"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/rear-flap50.png",
+      "sha256": "30b9d47201cbfaeb64b04dd4280fb3fd7817939d1680df58dddf1621f2024f97"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/side-flap0.png",
+      "sha256": "d663aa9d556df102df5688d5544a861b22feb8d5582e92b7683d6cd36bbbf6a4"
+    },
+    {
+      "path": "references/avanti-s/av02/captures-v2/top-flap0.png",
+      "sha256": "6d74189832cb33da3012b1a2db3d1eaee5b2b91b1c8f4fdd49150100f689e872"
+    },
+    {
+      "path": "references/avanti-s/av02/index.html",
+      "sha256": "3c68a8f77d74767222f29a7d62c7d3348b8e275ed49135e84d3fbc8f86d9bbf7"
+    },
+    {
       "path": "references/avanti-s/index.html",
-      "sha256": "a64f6e8556efccdad2d169f400e6906e1579b1a8093b99ea16d9921c91680d2a"
+      "sha256": "824695bfd73697658f478c16403ee5ea9bd8858251b86a20eef88870d26f2725"
     },
     {
       "path": "references/avanti-s/inspection/assembly-contact-sheet.jpg",
@@ -366,16 +706,896 @@
     {
       "path": "references/avanti-s/inspection/photo-contact-sheet.jpg",
       "sha256": "f421699a62bcee3ceb437faf8927bda063d7b44766213eec595e729feba3a4ff"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-01.jpg",
+      "sha256": "204be5eede29aed3abed17c7a3469258364a184acc6d431cf702b67c56f5af3c"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-02.jpg",
+      "sha256": "e3975f07a3e8e0ebd06582477be36d1f545e3357083b45340af02b879bd4513c"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-03.jpg",
+      "sha256": "eff9ad1044c45ef42ed311a51aebfa47f13c7e5d3015255f01eab1804853d70a"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-04.jpg",
+      "sha256": "25c0f6f639d36230e3c716f3c8d3a06388144c7754a204b263ba8ce01e9ce5c1"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-05.jpg",
+      "sha256": "2a81ade132adb5ec61bdc6205e19e90f4062ca90042b71eb45c698508f2a3b81"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-06.jpg",
+      "sha256": "2892870a78ee8a06790e210d2fbdf5422810abffc77916dca6be8f59f0cc7c31"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-07.jpg",
+      "sha256": "fa09e25dfcc7a800f98aa8e328a7fdc1640fad2d4ed7b1b194a9559f3d6ed1a2"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-08.jpg",
+      "sha256": "3e334c1b5499932028722854fa873a9d21e0552b49d35765459d1f398b20f4ee"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-09.jpg",
+      "sha256": "b0cec5ed682d88231607b966e6fcec913c5dd97d2e9c2f05ca6cfbde0bbcec53"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-10.jpg",
+      "sha256": "018f09168a9e4324a73da679f8e66a3f0ad74bfc20ff4e2ecd6755f582963853"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-11.jpg",
+      "sha256": "9a3200cce4bb0eccd97f9f1a82c54bc48f768eefed8b725fe3f66d2abab393e2"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-12.jpg",
+      "sha256": "6d2acfeac3746ccb2fa58ffe765b7218642ae61d9154f712b595db2870929432"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-13.jpg",
+      "sha256": "3ef15b642f65888f66bd234aad644be295f3a7810521a0873b5978f84498d02e"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-14.jpg",
+      "sha256": "af0c8280e839e1b408765654fb35e4d021d2e19eb55fd586536b3b9d052203fe"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-15.jpg",
+      "sha256": "5a78087ef14768e6f06fed7c6e5a1f29f3697cd7eb42e6c0c1d1708694438b47"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-16.jpg",
+      "sha256": "929695eede3d3d90c852081c28849c7abf46d30ba94a717d772b97e3d281f73a"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-17.jpg",
+      "sha256": "786b62c6fa612ddfcc3c613a9e04af8ad676ee53638fdc393d449f9a8465dd29"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-18.jpg",
+      "sha256": "60a6fe5cb115ce00eb293b45a56021e51cade082f6a11c0a57fcf4e43c3bf71c"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-19.jpg",
+      "sha256": "e04c967d3b611b8db4632e9379032685c3b5bf6762d696728ab5e89f8dc967bd"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-20.jpg",
+      "sha256": "239b6565f4e5289d09ad074a278ebe35aab6c5523736cbe388de150fd62bcf30"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-21.jpg",
+      "sha256": "2c860be2d6059896a07c2f8a21ea3c93cbc410b7aa31c5b8cdcb72355275de26"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-22.jpg",
+      "sha256": "d69744c51d28309e55ce5b4eeb4d3dda0ff582765e4c6afa1f5a11d262f5719b"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-23.jpg",
+      "sha256": "7b537b6d7cd954c2703d5d4cacc170d3f97b86ef041bf7ce455014ae45853603"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-24.jpg",
+      "sha256": "6b6609bcd34bd0542bf91a03c7c5d2bb2c330713f76ff20af8fa2ed6e0cf70e2"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-25.jpg",
+      "sha256": "1fb0bdb25ebd3f3720af93cfd9f1d80f5724bbb28f5473c2ac2b220bb75171a9"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-26.jpg",
+      "sha256": "2e3a7e7b7f0048ce642ebf99e993362417f74c3c7203c986059ab327519586a5"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-27.jpg",
+      "sha256": "596e951fd4302eedf0917928c9be1b26bc50f785c21b79223f4825023e34aac8"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-28.jpg",
+      "sha256": "e84c423c6f19b17b13bf3195702665eb1ead727cdaccac799b8419c1b9edec1f"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-29.jpg",
+      "sha256": "e3503b41d00ef16f4aa589faaa0ef946bb945df01464fa3478ca37353af5e18a"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-30.jpg",
+      "sha256": "7007b5fdac2f1b1621cbd306fd67bbfa0965ffc5f9a4f2060f6872d2c782c368"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-31.jpg",
+      "sha256": "77922fe3797e585b0bb425580d232b596f4775252f92a30db034eaa88ef94c24"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-32.jpg",
+      "sha256": "f19d65ae6aea608d54dea61e0c41ab90cf1955d5f52d792de44abfe7e9b7db52"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-33.jpg",
+      "sha256": "970431f6721ac5de0a8a242fecd59d0c52f2c6e17a2534d810c4f161b70c42ce"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-34.jpg",
+      "sha256": "80adaaac5a0a2c34219858177b345934ea84b7c0843af7b92ebb4229a9ece164"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-35.jpg",
+      "sha256": "88a4988c95dcd4e9ac839d8e9b0bc270e6ba59ace8cab1f3408a9ca5d22d981f"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-36.jpg",
+      "sha256": "fe05239b306b868f74c979995f4249ecb4f679f9ad31f54b4056a1f29ac7f736"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-37.jpg",
+      "sha256": "c208191abd4e9660f41ef191c31d4de52e2b67671bc8cf049d13197e9cd6a674"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-38.jpg",
+      "sha256": "2de7a56ef9f6ead2c2242838d56733dcbf05c7dc69bcb04aa92478d6aed6ef46"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-39.jpg",
+      "sha256": "758553c0fec481842845abc7c6233e7b980282dd3824699bd52a7d2dd62eb263"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-40.jpg",
+      "sha256": "e94473d58c03ab9c97768899b02a1a6c67c1ff761e05e9157613b1736a6b9ee4"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-41.jpg",
+      "sha256": "9b5c80893d5c37803496beec49945745d205845f33fd0e32bc6de1e80dbd15f9"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-42.jpg",
+      "sha256": "9bd9eb40d0449a3de111c868373453c7e05a92a7e2b02600a267bcfa618aaac8"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-43.jpg",
+      "sha256": "e984b3a8ae88a0880cc073944a4d89090a2d364c6af86ed0664905567ef6b1b8"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-44.jpg",
+      "sha256": "7786a6c50bf5b8313eea2f4e55c717220e8a91f03530cece7e7eaeb885d33466"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-45.jpg",
+      "sha256": "397740cd27c696f2505c1e976cfe37036c6884c7fc3adcadcd81a9cfc9b35a0c"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-46.jpg",
+      "sha256": "1fe327743f44427fca829c6f3f883fca4771ef02e040f58117caf9780516a3b9"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-47.jpg",
+      "sha256": "8387d94ca00287eae57c5d3b6bf323ea7da776e4f2be814fdc14dc4bf7ed4a6f"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-48.jpg",
+      "sha256": "98532bb7ed08ecba7baead0b4365f9aa0a7e03cc2d3046dd63db7a3037b3de40"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-49.jpg",
+      "sha256": "cba3296a678b1938a5ad6f17430d4f161029dea866d05b400fb55abf90d184ba"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-50.jpg",
+      "sha256": "64ac0d510465284a94568a00dcdcbcff1c0f076662dd8667da14d25664b444af"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-51.jpg",
+      "sha256": "8bd5ea415a6bd05f088a76c38aa5ce96c1dbcc74b0d89b2bb06445918da13397"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-52.jpg",
+      "sha256": "748929ad51e77eb1697ac568201bfefed3d37c6b94097724b195f0c705617cb0"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-53.jpg",
+      "sha256": "b26eeec8df09972ff5c236c7eb21d8a3e9b6f4492cba4885157a040a0a89059e"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-54.jpg",
+      "sha256": "c073aea8482e3304f11912da02fe54b7130ac5f37d44d85cf9f5b0aa2cf4cad4"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-55.jpg",
+      "sha256": "a0c1458e09f5568547d89e3a39e3e40809813eafc4cba83619d16c07f32c0f07"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-56.jpg",
+      "sha256": "1ce69ab668526babbbca97d159d8e37bba803478366cbe2bc11c2ad65878a632"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-57.jpg",
+      "sha256": "cc3ad73ef0841da64e882388a47588673b658094c15a986aebbf961744422855"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-58.jpg",
+      "sha256": "09337d8103bdb79619524b3f99f151df65c334c1f954931402a0b3853bef6cd8"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-59.jpg",
+      "sha256": "f029271ab8254505192626815df3cfae6c3ea5f55e97029cbae7a38bc5dd4e6c"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-60.jpg",
+      "sha256": "136a683254174bf942d14093fa7ebf9c0a1f6eb086719c57d8656d913aa9d83d"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-61.jpg",
+      "sha256": "d1bd22c16e1988a9c22f547e9f525387dfbe71d5c0c272b55c7c7c4a4c7304ac"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-62.jpg",
+      "sha256": "91fd32cceba524e254f2585126dcd2ef31daa8b607cc60cdb24332fed20b6860"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-63.jpg",
+      "sha256": "04110d08a4289ad2fe7edeba8d578d49e78cc530eabb0d14051f5f1b54d7c817"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-64.jpg",
+      "sha256": "4834914f58a8ca06dc3f9cbdb49094d89e1743f5db3fe80fdf0f74b0838b7d45"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-65.jpg",
+      "sha256": "09e0d04ac2ec07ec1b0d75b6f5168612fc775f0cfb55bc2d28d1775677cc8ede"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-66.jpg",
+      "sha256": "2ac4a7bb1fbc5b952c3d8702c0128ceae3df70c1d9845865a4c1880a8aacdfd1"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-67.jpg",
+      "sha256": "5bbfa58525f5a6f812f068717b570e1a916831bf2ed17162f55645d6d940fefc"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-68.jpg",
+      "sha256": "4cbf52beedbbcecfe4b5039475ca7c56afa2d30423d48a557b1e5f2144cb03ef"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-69.jpg",
+      "sha256": "85b7d718e75da83a1c99aeed1737f70438360367003cf712353ca87b51aaf5c7"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-70.jpg",
+      "sha256": "6e9ec3de8f483db2ee1e364bb252ce08a8c7f951d25eacdc4190d649817f137a"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-71.jpg",
+      "sha256": "cd93564a5f832b4f62d6c421a897cce04a3d5338312624a361118954ed8d7703"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-72.jpg",
+      "sha256": "5f3a0f223a85ab3009bdc67072c717f441612cebcb503fd283a23aaa74286d69"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-73.jpg",
+      "sha256": "5a6eae564c539aa8242c8b733aa8cdb15a888652c47a5e7caf3165348cee5853"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-74.jpg",
+      "sha256": "db03195f066c3250957af993a2fe8ecfda0208ddf8d00bcedbc3b94906e85fd0"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-75.jpg",
+      "sha256": "1e11fba26313f69c391af31d86686c86dfa02993f5f6d3b2358a789c9a79a1e3"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-76.jpg",
+      "sha256": "c7a9f8ba51413a2c21ec917bf00cf7e2afe5bc345d6f991ef2dc15a4d09afa37"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-77.jpg",
+      "sha256": "42c6ee3b74ab49b41db2289754ff5075ebec372e1f168281b6ee294a1323a0fa"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-78.jpg",
+      "sha256": "2bafb78247f0328ceb3611eb491001c49e0073d1516fa9b6730a21df3378f458"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-79.jpg",
+      "sha256": "09b20842d9ae06ef4e5063ea21661c8d57c13355e1c882a1eab8e21422dabff0"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-80.jpg",
+      "sha256": "572df73f016d3d4b81396a2c0527dc7b523fcd2a50d63b5e29f43ef816e463fa"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-81.jpg",
+      "sha256": "2d37b9445fc6a2734fd45cd6e91a400013a1de7f7d3b25b74bd295f61336f7ab"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-82.jpg",
+      "sha256": "5a63330d3f9734fe30bfea7fb84ce61d7985fe2eb05e9ccc5541c114b9148888"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-83.jpg",
+      "sha256": "312f18bf9e4bb3abfe1ad99de4dc93e7ab8e7ad2bccdf2bb6b0eb1682cf06a7f"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-84.jpg",
+      "sha256": "6da590c2a0ed3e9f766d61bca18d2139816b61374af0016a94c443b9785fceb2"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-85.jpg",
+      "sha256": "9072cf6461ac10fef78827300372ad42d6e9a61f1cc8cdf92a950c8b2d9224c8"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-86.jpg",
+      "sha256": "c710f610a9f56b1370ecf84f8768be68bbe3bafd6796c0932bb028e2604b52b5"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-87.jpg",
+      "sha256": "5901cfdd3e5a09b19b14f81adf87c4549da2205177569ec263247660c4db6146"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-88.jpg",
+      "sha256": "96ed0f82cb423dfd02e8c98f0f06df66849a488aac1a50b8566a883c396b2d0d"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-89.jpg",
+      "sha256": "b5de10657d911b591f65b8d00692fe699e6ef3a08c999ad5554022d83a194437"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-90.jpg",
+      "sha256": "be822c562b0aa1c6770ecaf935cf8206ff76832ec2cb98b136597cbb67e6649f"
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-91.jpg",
+      "sha256": "b93c539551886fc4a4d424443642a4e6c49be1d30285e6c61e4be9badc42b930"
+    },
+    {
+      "path": "references/avanti-s/organized/catalog.json",
+      "sha256": "4090c2af3c2c22cf0de402ad95239d4f50ddf7a53084a7292d9df92dea179ff8"
+    },
+    {
+      "path": "references/avanti-s/organized/details/02-canopy/cabina-acceso-p090-s179.png",
+      "sha256": "d9761775aa727cc8e149b0a98f01c216afbcc198b93e09de77cb6bcc5bba0930"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/ala-flaps-alerones-desmontados-p001-s001.png",
+      "sha256": "3b100da277a25e264cd0a11884779719ba984170dd39a521d5e1441d2615667b"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/aleron-bisagras-p004-s007.png",
+      "sha256": "a8d0ba80f9d26eb9f47351baa35359fd0e95b9f7f9d0e9942ed0ae5a02d05834"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/aleron-varilla-cota-60mm-p008-s016.png",
+      "sha256": "c5e546ca7115e861447e1e64a439368355998992078a4de41ecac5cdf33e86e9"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-piezas-p037-s073.png",
+      "sha256": "13098d4f3a36f21e281353a280588b0681bb1c746c373d5f6da1f3827658445f"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-servo-p040-s079.png",
+      "sha256": "b1e34860f21de22a42c28d3eae36452a0fa2d4b170b1d77a3e4aead00a3691b5"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-varilla-cota-34mm-p044-s087.png",
+      "sha256": "05fbee8984e12eaf59edc0cdfd7873871348da9a3c9bbe1625f8aacf8096752a"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-bisagras-p002-s003.png",
+      "sha256": "a861e761bd6f33209789168d6064f413f1f779a6f57633034db2a048b2456e7f"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-brazo-cota-13mm-p014-s028.png",
+      "sha256": "6c2c023a64331b4df52abbec4789cb21d71f92c9fbe310fd4ae63fee92905cee"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-eje-palanca-p021-s041.png",
+      "sha256": "a6cac9ace160af29f382fad75e07a0b6a34b6f034c3a93e8686062ea5541561e"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-aterrizaje-p022-s044.png",
+      "sha256": "9d360323fbb47087d8b103bf3acbe4e0be2f75e50d3b90707da694be0798c88c"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-despegue-p022-s043.png",
+      "sha256": "3afdfbe67f950fcae1af48831ae45e0d97e10846dc154296cf764d25cdc1eb9e"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-vuelo-p021-s042.png",
+      "sha256": "50eadb2133055d1a094a3aaf74da53d9be4a909cdf095211b94640b7f55f564e"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-servo-varillaje-p020-s039.png",
+      "sha256": "24ce7875dcc04cedee4120bf07172320a71f97deab49d835a053b26582c94d54"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-varilla-cota-52mm-p015-s029.png",
+      "sha256": "9fe8489ae075c3cbf2c88d16bc57ab6fc0a7e1f198608a68f8f3f05b2e9f1a49"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/timon-piezas-p046-s091.png",
+      "sha256": "f67f77dd1e0ecc5a31cf1fc2aadc2d8cfb6b9fd44a991a06a66be010fbc3cbdd"
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/timon-varilla-cota-39mm-p050-s099.png",
+      "sha256": "5fca08cada268358699aa5a15025eedf9923b2d6c7c50d799013fded248a67cb"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-circuito-p069-s138.png",
+      "sha256": "b7248ddd1cfd60f1b41bd3a6f808b5d018a51925da6c09264f4de5e81a1d5810"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-fijacion-p070-s139.png",
+      "sha256": "c94cd43a2b7e2fa176f795c5806a59f5ca28fb012a00765ef83525f41512f055"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-instalados-p072-s143.png",
+      "sha256": "51e53e0be7e0ab4325a27d612979ca1b32c1f37f116532919a4c59b61f9892c7"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/neumatica-entrada-alas-p071-s141.png",
+      "sha256": "2dbd139e6b9c2299bf4ccd0df41213e45b7195f2d229f32d66c267938545a67c"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/puerta-brazo-cota-13mm-p034-s068.png",
+      "sha256": "0174b7d61e9f9806fb01343026dc3a16921bdeff7738bf7127f43283cba2c72c"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/puerta-tren-delantero-p034-s067.png",
+      "sha256": "ed6eeb338b2734b72a2afd3e5b1d544ee1c7053900fa88d2e49bbe28e0fa5c64"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-delantero-componentes-p030-s059.png",
+      "sha256": "9b9f8aa22cee91fcb584df19be7271484a9a921cdc93909375f13526743dd66f"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-delantero-pata-p030-s060.png",
+      "sha256": "b9e9bdbb4167bf94efdeff31f521e8bb31c2fb3cbfc8d57b2e424bc42ae381a1"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-principal-freno-p027-s053.png",
+      "sha256": "86630b2ab09464b535b71a1a9e9b37ed6401ee29be379acbfd6141fce0d07f58"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-principal-racores-p025-s050.png",
+      "sha256": "2764c29d192d5788afa2b9673e95f8288f775d22bba0bfb455bdd108c0f3bac9"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tuberia-aire-4mm-p060-s119.png",
+      "sha256": "6082aacc67c46b2117f7dc26ae03bd0b7e2d2ec13a82a53a1dd1c222d217a7d6"
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/valvulas-aire-tren-freno-p072-s144.png",
+      "sha256": "ec229a83245160a7fb58b8b768e77df12898314e5ac2c2389b142728875eafdf"
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/bancada-turbina-p067-s134.png",
+      "sha256": "ce0e5ba1d81a20864f6b9f807a1b8c67bb822aa41294cd3bc9d549b25860f751"
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/conducto-en-fuselaje-p067-s133.png",
+      "sha256": "82561f7d2a120d7ff3957c7b23ae5b458489a22869f172fed0367da3d6fb0634"
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/conducto-escape-campana-p066-s131.png",
+      "sha256": "dbdda5d183611e1877fa8c4962c1cf2fdf10b0b81d0f2a6a49bb60d607a14369"
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/turbina-foto-no-identificar-como-p100-p066-s132.png",
+      "sha256": "bfee680991863a0ef5e4815d4edea5b6e823a516b1de4a141c24d28ecf8576ee"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/baterias-receptor-p075-s149.png",
+      "sha256": "b50fdb54410c3821d8944b5a363a89a4cdcab5c1f4c0f6deff88ba9473d3f247"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/bomba-humo-p065-s129.png",
+      "sha256": "a0c28fc21b14f29b039931f8a77167104273b216034eeba15b0a4e3189b5ef8a"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/bomba-instalacion-p068-s136.png",
+      "sha256": "63dd4d2939908ae8281d92f29abed12fafaa07d0871e93011cb51b686c46a79e"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/circuito-humo-p064-s127.png",
+      "sha256": "1f531c9d572306aab69500c699eb71de71fe7fb3fb7c4dedb7e2b69feb51cbc7"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/extensiones-cola-p053-s105.png",
+      "sha256": "40cf15c242f451bfb97154bfee40a8a24a24c1b6ccfed5417aa68ed48ae071fb"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tanque-conexion-humo-p073-s145.png",
+      "sha256": "8a0c70bc2b2cf4e7e0b2d82efead5e9547ea9ca7b969ae7ae426d4f6c8150cff"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tanque-queroseno-humo-conexiones-p073-s146.png",
+      "sha256": "37e87c607b5462f1a77c48459efdf999dee3835c1ff83a4e33af9d157655ee03"
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tubos-humo-cerca-turbina-p068-s135.png",
+      "sha256": "791b0ff16f08b17550508a94f615e766ee820dcd13c22912f53448a121bbc6b5"
+    },
+    {
+      "path": "references/avanti-s/organized/details/07-datum/cg-desde-borde-ataque-raiz-p091-s181.png",
+      "sha256": "3fc5a450420b1b6afd6abf65974a14ca448d383e7a496580cf1251ef0a3b2bd4"
+    },
+    {
+      "path": "references/avanti-s/organized/details/datum-cg.png",
+      "sha256": "256d7a7f131f3e0f539ec4f8b573c94e121a560b058c956ff3ecef44b453d39b"
+    },
+    {
+      "path": "references/avanti-s/organized/details/p100rx-cotas.png",
+      "sha256": "af84a5811dd24cb82aab58a1cf8cb359b7177e8d04a97de505e2eb9aed1c0fc6"
+    },
+    {
+      "path": "references/avanti-s/organized/details/p100rx-tabla-catalogo.png",
+      "sha256": "821ab21549c7fdde6aa0d25d350a66b408bb3acf0be2148efb4f6ce5bdc070ac"
+    },
+    {
+      "path": "references/avanti-s/organized/details/recorridos-mandos.png",
+      "sha256": "4fddbf9c18e2e32ec181c12be8ea691c2c4cc42bab7c99489623dc0c492e4156"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/a200-01-dimensiones-mandos-cg.pdf",
+      "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/a200-02-montaje-fotografico-91-paginas.pdf",
+      "sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/jetcat-rx-manual-historico-2011-comparacion.pdf",
+      "sha256": "abbe031b5f6034ed92fa7cce98823b87d738bddfab407a5b4e9b64eb2a3757e9"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-catalogo-2017-tabla-pdf-p15.pdf",
+      "sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-plano-abrazadera.pdf",
+      "sha256": "eed3c956325a32a1b18132861304dcb69f23a985ce4a542371e1e2b87028e862"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-plano-dimensiones-241x97mm.pdf",
+      "sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-vistas-ilustradas-no-tabla-prestaciones.pdf",
+      "sha256": "37847d8a91833ceb69e652a101b961d799c10879e14e4652450bf983ae5c66af"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/avanti-xs-manual.pdf",
+      "sha256": "55dbe41061d0b4a4b329b896e3611fc7cba37cd9d7b920eaed71e77a07f99aa1"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/mini-avanti-assembly.pdf",
+      "sha256": "feeebbace7d8bfeec1e9c42c6ac4fa83934c50afb67dd36e3f39d2fb815c4ee3"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/mini-avanti-intro.pdf",
+      "sha256": "649b0eb8938ffb31d032d854af44d167d7f8bd8fddb1c0995c6766538cae7ded"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/sebart-price-list.pdf",
+      "sha256": "9083b9b5b3b83edb3902331d4437c7befd0558b3917bb94ef229fee21ae2ae37"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/a200-01-dimensiones-mandos-cg.txt",
+      "sha256": "bf9c2e23cb5cbcaca3a83b4ab7b75999b4d4c54424775ec76b44ec409a8b1391"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/a200-02-montaje-fotografico-91-paginas.txt",
+      "sha256": "52e73bf1aa3a0f6cfdb0535e0d85b020b75de4beb9ffbfa9a4bf4e491ed731e8"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/avanti-xs-manual.txt",
+      "sha256": "7b2aa16484b6ad79ef5bec51da3501f5079367b625da44bf97468422d27e8e95"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/jetcat-rx-manual-historico-2011-comparacion.txt",
+      "sha256": "f717bd60fd456a0884b9f8691c9a25cf0c8305be7141a838731114eb45662127"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/mini-avanti-assembly.txt",
+      "sha256": "0c501b78ee391180f2f5c9236fd65b5f578aabbfe30d90eac351b366a2c81ad7"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/mini-avanti-intro.txt",
+      "sha256": "4a62363eb3662a86696d43785c3faeaba8527acb3badab1a79850da22c155014"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-catalogo-2017-tabla-pdf-p15.txt",
+      "sha256": "898046616d791605f7ca3deacfb93112dc8bb949f297d13cc27f0ac964f7a094"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-plano-abrazadera.txt",
+      "sha256": "ef6cbd2161eaea7943ce8693b9824d23d1793ffb1c0fca05b600d3899b44c977"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-plano-dimensiones-241x97mm.txt",
+      "sha256": "0a115e4ffb74b61898e8bb92ac0deffeb2957681156d6d81e725b0342663b659"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-vistas-ilustradas-no-tabla-prestaciones.txt",
+      "sha256": "9478ac3ef61ae9df286d951edbfce4c24049f65e860f053ed9eb2c3fbd78d051"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/sebart-price-list.txt",
+      "sha256": "5543a46f69ec7c381a161705ef99954bede8e4f8ef548802cfb24a403616339c"
+    },
+    {
+      "path": "references/avanti-s/organized/gallery-flaps.png",
+      "sha256": "51e1c072d97751cda49f3a31b38767369fb5c0516c4c08587a3a2dee0890cae7"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-frente-alto-perspectiva.jpg",
+      "sha256": "ccecba73a557c04c2e5ca0b6fb97d8a5315d5220c7fb708466ac0553a490ca2f"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-oblicua-superior.jpg",
+      "sha256": "f7851fd613692558a63804a114213049fe920b6195b7638fddade5f2c71063cd"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-perfil-oblicuo-derecha.jpg",
+      "sha256": "a5927d2edbf0470bacdd74ea50c152cea6be1bfdb72eef8644fcb662978a5411"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-presentacion-lateral.jpg",
+      "sha256": "e50cabd8b46e25d86490691d251f797cdfdbbca09b520e538ccf11a609168058"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-presentacion-persona-no-cenital.jpg",
+      "sha256": "10b136fe9159c531fa2674eda8f7c3a52b79775692ac96d43ebdc22fb7c1b003"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-delantera-oblicua.jpg",
+      "sha256": "a8d5b04e7662fb2ef28e50f7773089893cb2aa31ea6e918442d48ab8d78c2fda"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-oblicua-presentacion.jpg",
+      "sha256": "57d8a4f8a82dfd1239177fe90c9b3e9fe5e590c62f03c9c6fb7060e12e95b32a"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-trasera-alta.jpg",
+      "sha256": "a69649ea35e5d237b2ef372e8a6658d0fcfbd841f2211c8cab5555e90ef0d7ae"
+    },
+    {
+      "path": "references/avanti-s/organized/images/02-canopy/a200-cabina-lateral-detalle.jpg",
+      "sha256": "eb155f44d449699a926697de276aa257761d3a4e14876e0ffb79cc19912a2b23"
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-frente-tren-visible.jpg",
+      "sha256": "f7add36f67aa620c6e8f08890cc912edb0da9f5afbcf692c9bbd1e5c2a18a7cc"
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-nariz-tomas-tren-frontal.jpg",
+      "sha256": "d184a1bed9dbec175b48e15d60bc59bbfc1e33a02eab4db000341de8a9312a95"
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-tren-visible-lateral.jpg",
+      "sha256": "2507dd34c8f26c07bba62d24713907c7b92c17d1686c429f866e7e63359449ab"
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-tren-visible-oblicua.jpg",
+      "sha256": "ebb0b4d750afb92e00cc4fabe0bf03e64b9c7c7de995c0989a922ab9d9e2de21"
+    },
+    {
+      "path": "references/avanti-s/organized/images/05-propulsion/a200-turbina-interna-modelo-no-identificado.jpg",
+      "sha256": "19bbc9a0481d47e75e4398119d492a48ccb771c3a8565f1461d485ae269c80c2"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/a200-compartimentos-vista-alta-abiertos.jpg",
+      "sha256": "093f0af0bd37b05fd59c405fedf6475060e69c92c95e08ea8bfffb1d8d9b70fa"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/a200-electronica-cableado.jpg",
+      "sha256": "d2d8638eeeb0362c2a9fceff9b9c61fe8518d52106c13d6590081ca1d16ac0ae"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-01-kit-deposito-racores.jpg",
+      "sha256": "4e499441ff346e1ab29e0e05e4d007c540ea04fec385a4ec131951d3143c30c4"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-02-pendulo-tubo-flexible.jpg",
+      "sha256": "34df72474b49caf82206d8a39df67af6d8a4722d3bed8d6a333de4a182a0ab58"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-03-toma-regla-no-calibrada.jpg",
+      "sha256": "3161f7ce763d85b22b314d2d76bae6049828cd741938b537ebb2c9f912fca431"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-04-tapon-tubo-rigido.jpg",
+      "sha256": "1c648eb03b4355cb7e937a799535dddb2481f8551c725cb7b43afb7b7ea9379a"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-05-apriete-tapon.jpg",
+      "sha256": "52e3520e9ec2003ab160ca9fa68b71924bdd55c9b84280f00ac2642c7f579a8f"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-06-conjunto-pendulo.jpg",
+      "sha256": "f37843f717d320298ea72493d990dae950e37c107b115c4c03076a457afae3c4"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-07-introduccion-toma.jpg",
+      "sha256": "fb31ea9c88b89110b5183dfa566685e1429e8afc16a235c3365ab9ed5b95cb13"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-08-tubo-rigido-union.jpg",
+      "sha256": "b4c1b6b94e91444db2e8a368e84b3fffaf7e6a99eef4e124d39a74a9a4d517dd"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-09-tubo-regla-no-calibrada.jpg",
+      "sha256": "e3a6d41f0533ac5a26b68094a0f79ad7bfafce29771a69365440b5957004c25b"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-10-montaje-toma-rigida.jpg",
+      "sha256": "95ce48ba469761a92222bb0724057df72913084af40204d9def736e131195d27"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-11-cierre-tapon-01.jpg",
+      "sha256": "6be0298428b32afb270758f4126e2a1d78ba12aa6043435a91d28731a139df05"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-12-cierre-tapon-02.jpg",
+      "sha256": "aa83aee171a33176fe54893ab31eda70febe135897cb05d6d81b49e8acffe225"
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-13-conexion-exterior.jpg",
+      "sha256": "38f59df21d4fdb8606cf0e2119457fd14362680c41adeaf15705cdc699a64736"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-ala-en-alabeo-perspectiva.jpg",
+      "sha256": "6df636c91a18c1279ac51066e6f356464d37cb5e6dbcdd2b73209db9af21fb7c"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-intrados-alabeo.jpg",
+      "sha256": "689d4935149b30742a814d641eaf12ae5c58e8e2a884a5d4198058af90680f17"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-amarilla-presentacion.jpg",
+      "sha256": "a9e4f549e8feb268490c4fb8a9152a7567e348bfd58d1b6269ffcc3777df2405"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-clasica-presentacion.jpg",
+      "sha256": "e4cb43ca93a82b9bc50a74818232631eb4e5078242128c8f65f64b3a79c980db"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-clasica-vuelo.jpg",
+      "sha256": "40aa279a6f7231d7eb62cf878440b12336b95451ef21d3fd509d521e0287a8d7"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-silueta-atardecer.jpg",
+      "sha256": "1bcd3b25bbe98befb5af207e78d9aef25b8a765dd218707bb396727877bba2b3"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-suelo-humo.jpg",
+      "sha256": "4ad2db4b74260bef2efd95ab302829fcfc06e4fdd7d4eb0853ce8076f2d1e346"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-suelo-presentacion.jpg",
+      "sha256": "297ed73655ea3f1fe3e64f58cfd01dee809448b06c8e3579fb741b44b43b1936"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-lateral-humo-01.jpg",
+      "sha256": "49c3e0def3831f6aeaa528dd527e033e34f4463d83ee46788f72472cdc4f2e91"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-lateral-humo-02.jpg",
+      "sha256": "616c5f876c5c1e39d320669c59d1f66a13ec733c6d98064369751830303700f0"
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-oblicuo-humo.jpg",
+      "sha256": "bbd05772a6041404cf910faa6920dd52da3f410cfe0ecdc078ad5e3dd3375509"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-00.jpg",
+      "sha256": "cd22ad503a0ae1f07078fa4279a8ef60a8d31bad2e69977823de86cca3d20d31"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-01.jpg",
+      "sha256": "544207ec5505e45aa15548d4f0a0f4d80ef68b3c558519e20884172f825f41cb"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-02.jpg",
+      "sha256": "b4198550aada3d31da79dfb9a2bbae27ace3b907490b4b927fcacf2afae38876"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-03.jpg",
+      "sha256": "dd183654c158162edfed47354ef22a151211434fa4181b6bb63c5b1753161db3"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-04.jpg",
+      "sha256": "438071565a34d4342b53ef4289c4e1cb64ef4028c6a3695af35c10725d57b5a0"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-05.jpg",
+      "sha256": "83c6f00aeef0e0920e68ed6b6f1c8e6aaf8704f75515c840e5f6625c12ae3b34"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-06.jpg",
+      "sha256": "baece120b3b7ac46fdca93497ecf198349d49218d4c3bc485460ec1bf2044481"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-07.jpg",
+      "sha256": "90f0111b9ef0f1641fd9631eb87038b9c8a5f68ee0269996ab349f22f3738140"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-08.jpg",
+      "sha256": "6ef5abdc5ce7a19616b58e65d9f6c565345fa5fd04639d53757dd49a6691ccaf"
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-09.jpg",
+      "sha256": "c213d1cae0b9955f1964d9e80cb1cdbb6022ffe7325802d4e7f47c41c1259593"
+    },
+    {
+      "path": "references/avanti-s/organized/index.html",
+      "sha256": "74244299e993f90c27b830dc82e01d6be4effee9939792168500413855ed797b"
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/download-manifest.json",
+      "sha256": "e7798f74388af44ae56e84b01f1026f77899e4064ae7359d8a930bb9b4719ce7"
+    },
+    {
+      "path": "references/avanti-s/organized/study-board-desktop.png",
+      "sha256": "42e0dfc8eb2a209ee15165db06ad16a5d28c4b6cb747106900fbb038cc599620"
+    },
+    {
+      "path": "references/avanti-s/organized/study-board-mobile.png",
+      "sha256": "3f702730c73cf44a71de587b44dc26d7732f590b22aacfda0b6c0542ebddbce9"
+    },
+    {
+      "path": "references/avanti-s/organized/study-board.html",
+      "sha256": "3465bcf74a3ff78a752c984329de7abe67aae7350085d13c6eb6b9c9854695cb"
     }
   ],
   "authored_documents": [
     {
       "path": "docs/AVANTI-S-PLAN.md",
-      "sha256": "863ebd9b70fb2b4692d83ff2774b1a7b567797e52de762266d784ad4a75431d2"
+      "sha256": "317fa7bc15319dd71503ad8ca9d3ce62d16e79d7778d76b018c507af9bb545e7"
+    },
+    {
+      "path": "docs/research/avanti-s-av01-metrology.md",
+      "sha256": "3a6bc41d4e8b9c438b6608578691507da948e5c03bccf6e891aa00ad3da6e8ad"
+    },
+    {
+      "path": "docs/research/avanti-s-av02-preview.md",
+      "sha256": "19d5ad1f6305444658a1f7a9b884b1bb5c0468e12b7110329f14c85eddb00d4c"
+    },
+    {
+      "path": "docs/research/avanti-s-controls-and-installation.md",
+      "sha256": "34d8df95570dd46031399fe4e727c532d62365cdbd4184afd710587cc3392a4a"
     },
     {
       "path": "docs/research/avanti-s-family-research.md",
       "sha256": "f3a5a43e445d67f410ebe971ff3c6c7b90cf6f4e49cd14eb0caf85bda199d0b5"
+    },
+    {
+      "path": "docs/research/avanti-s-geometry-followup.md",
+      "sha256": "c8589999b9b6cfa8f4ca80efdc9ef17fa76fcf16fe5395d5a89a728437b0be9e"
     },
     {
       "path": "docs/research/avanti-s-integration-audit.md",
@@ -383,7 +1603,7 @@
     },
     {
       "path": "docs/research/avanti-s-resources.md",
-      "sha256": "38065740231797c950a9a259caa9b9b35a1ef9f825b9058670110ae1e6daad3d"
+      "sha256": "0e875993b2ebc922877854b1ba47702cecbfa10f9c96833a9648ab3ee25a8528"
     },
     {
       "path": "docs/research/avanti-s-turbine-research.md",
@@ -405,7 +1625,7 @@
     },
     {
       "path": "app/physics/aircraft_data.gd",
-      "sha256": "349f5ffd96511d6ba6d08deeb4e1a3c6b8701cd100c459cbbd78d089f2652019"
+      "sha256": "ae7bea4fe77b7bcb4d3e9d9c02e1ad4a80dd4637365919b39f4bec9b33b80258"
     },
     {
       "path": "app/physics/propulsion.gd",
@@ -413,11 +1633,11 @@
     },
     {
       "path": "app/physics/trim.gd",
-      "sha256": "d8dd5962b42381b2397b5e6762e5f45efeedb5cd10163083fce77661364d9f01"
+      "sha256": "7700128d43c21d31a5af86d7ded108d6480f22376181a442382f1ac7857d7f1e"
     },
     {
       "path": "app/sim/flight_session.gd",
-      "sha256": "50b5931d0f04a40dc070beff7eeed04a9305aa36d77a41486e3fc87e71be3318"
+      "sha256": "789deb057d3ae3f9bf21a496f46f6d25f7345a1784fc37a63846bbeee5f53414"
     },
     {
       "path": "app/sim/trace.gd",
@@ -428,7 +1648,7 @@
       "sha256": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc"
     }
   ],
-  "local_document_links_checked": 93,
+  "local_document_links_checked": 146,
   "missing_local_links": [],
   "local_gallery_links": "passed",
   "runtime_tests_run": false,

@@ -274,3 +274,78 @@ Prueba de esta entrega: archivos abiertos/inspeccionados, hashes y exclusión Gi
 - Godot 4.6+ no dibuja el foco ganado con ratón, `ScrollContainer.follow_focus` es falso por defecto, un `.tres` guardado dos veces cambia 16 líneas por ids aleatorios y `Window.theme` no atraviesa un `CanvasLayer`. Las plantillas de menús revisadas escribieron preferencias (ventana 64 × 64) al ejecutarse headless.
 
 Fuentes, sondas y límites: [doce investigaciones de la ronda 3](docs/research/menu-investigations/README.md#ronda-3-doce-preguntas-más-motor-herramientas-librerías-ejemplos), [plan revisado](docs/MENU-PLAN.md). Documentación y sondas fuera de `app/`; no se implementó ninguna pantalla ni se corrigió el defecto de audio.
+
+## 2026-10-05 · AV-01 parcial — archivo y cotas Avanti
+
+- Extraer imágenes incrustadas del PDF pierde las cotas y flechas vectoriales superpuestas. Se extrajeron regiones de página a 144 dpi, conservando anotaciones y número de paso, y se mantuvieron las 91 páginas completas como contexto.
+- Las cotas 60/52/34/39 mm de varillaje tienen extremos distintos: no equivalen todas a distancia entre centros de rótulas. El archivo conserva los recortes para revisar el tramo medido antes de construir articulaciones.
+- La secuencia p.69–72 identifica los dos cilindros blancos como depósitos neumáticos por continuidad visual y conexiones rotuladas del tren/freno. El tanque de queroseno/humo de p.73 es distinto; ninguna de esas fotos acredita capacidad en litros.
+- La envergadura de 2000 mm, longitud de 2220 mm y motor de 241 × 97 mm permiten controles de escala; no identifican área alar, posición de bancada ni ejes de bisagra. AV-01 sigue parcial, con 30 datos trazables y cuatro cocientes separados de la futura física.
+- La mesa local organiza 67 originales acumulados y 209 entradas derivadas/copiadas; ninguna referencia se incorpora al runtime. El panel permite comprobar recorridos geométricos de flap y diferencial de alerones, sin presentarlos como respuesta aerodinámica.
+
+Evidencia y límites: [ficha AV-01](docs/research/avanti-s-av01-metrology.md), [catálogo](docs/research/avanti-s-organized-catalog.json) y [validación](docs/research/avanti-s-av01-validation.json). No se modificó la app ni se hicieron pruebas nuevas de vuelo.
+
+## 2026-10-05 · UI-00/01a/01b — Inicio y radio aislada de los menús
+
+- Una nueva escena de entrada puede convivir con toda la automatización si decide la ruta antes de crear nada e instancia la escena de vuelo **en el mismo frame**: la traza de 3 s y la captura de vuelo salieron idénticas byte a byte. La regla «cualquier argumento tras `--` = vuelo directo» evitó tocar `capture.sh`, `export.sh` y las pruebas que cargan `main.tscn`.
+- Una prueba que pasa a la primera no prueba nada hasta mutarla. La del doble Enter siguió en verde al quitar la protección de Inicio, porque `disabled = true` y la de `app_root` protegían por su cuenta; solo sin las tres salieron 2 sesiones. Se mantienen las tres, como defensa en profundidad.
+- La precondición de la prueba de radio (sin aislar, el eje 1 mueve el foco) es lo que la hace significativa: si un cambio futuro del motor quitara esos eventos, la prueba lo diría en lugar de pasar en falso. Hay que cargar el InputMap del proyecto (`InputMap.load_from_project_settings()`).
+- Los colores de hover del botón rojo deben oscurecerse: aclararlo bajó el contraste del texto a 4,66:1 y oscurecerlo lo subió a 6,06:1. Open Sans a 16 px mide 23 px de ascendente a descendente, por encima del objetivo de 17 px a 720p.
+- `test.sh` se detiene en el primer fallo, así que un test en curso de otro agente oculta todos los posteriores. Verificar en un `git clone` local con solo los cambios propios mostró además que el HEAD `59cca56` no parsea (`aircraft/extra_300s_model.gd`, corregido sin commit por su dueño).
+
+Prueba: [registro de ejecución del plan](docs/MENU-PLAN.md#registro-de-ejecución), `tests/test_ui_home.gd`, `tests/test_ui_input.gd`, `ui-home.png` de `capture.sh`.
+
+## 2026-10-05 · VQ-00 — auditoría y plan de calidad visual
+
+- Tres capturas nuevas de la app (piloto, inspección y horizonte, trayectoria scripted) confirman que cielo/bruma/nubes ya están integrados, pero el escenario construido sigue siendo suelo y pista planos sin arbolado. Priorizar L5–L11 aporta contexto y escala antes de más detalle del avión. Son observaciones de imagen, no un playtest ni un benchmark de GPU.
+- `msaa_3d=2` significa MSAA 4×, no 2×. La documentación Godot 4.7 también confirma SSAO simplificado y glow en Compatibility; recomendar esos efectos requiere revisar el backend y la versión, no repetir limitaciones antiguas.
+- Los contadores visibles del manifiesto y los totales de consola tienen distinto alcance: la vista piloto registró 101 draw calls visibles y 46.842 primitivas visibles. Los logs, PNG y hashes se conservaron juntos. llvmpipe sirve para comprobar render y errores, no para estimar FPS en la RTX 3090 del propietario.
+- El propietario quiere una mezcla de realismo y presentación limpia, con ajustes desde equipos modestos hasta potentes; dispone de Ryzen 5900X, RTX 3090 y 64 GB para probar. Ese equipo permite comparar Alto/Forward+, pero no valida el perfil modesto; faltan mediciones de ambos y resolución objetivo.
+
+Entrega documental: [plan visual](docs/VISUAL-QUALITY-PLAN.md), [herramientas](docs/research/visual-quality-tools-2026-10-05.md), [evidencia nueva](docs/research/visual-quality-baseline-2026-10-05/README.md). Tres capturas completadas sin errores de motor/script/shader y SHA-256 comprobados; sin cambios a `app/`, instalación de addons ni mediciones nuevas de vuelo físico.
+
+## 2026-10-06 · EX-01/EX-02 — metrología del Extra 300S .60 y vista previa en Godot
+
+- Las dos hojas del mismo plano no tienen la misma escala: la hoja de ala está a tamaño real (la regla impresa da 399,88 px/in), pero la de fuselaje está reducida (300,56 px/in). Calibrar cada vista con algo que ya esté medido en otra (la cuerda de raíz dibujada en la lateral) y reservar la longitud total como control. Ese control también decidió qué costilla está dibujada: la de ℄ habría dado +5,6 % de longitud.
+- Un dibujo vectorial limpio no es un dibujo a escala. Las dos vistas de la p.47 del manual (para planificar la decoración) desplazan la rueda de cola 1,2 in respecto al plano. Medir sus residuos frente a puntos no usados antes de tomarle una cota.
+- El área publicada del ala (744 in²) es la del trapecio prolongado hasta ℄, no la expuesta: coincidió al 0,10 %. Con el área expuesta habría parecido un error de escala.
+- «CG en la costilla 2D» se resolvió localizando 2D (lateral del fuselaje, 3,39 in de ℄) y comprobando el símbolo del plano (4,116 in frente a 4⅛). El CG nominal queda al 30,0 % de una CMA de 12,03 in. `S/b` (11,65 in) sigue siendo la cuerda de referencia del cargador v1.
+- Un alerón con bisagra en flecha no necesita cambiar `apply_surfaces()`: basta un marco fijo orientado sobre la bisagra y un hijo `*_hinge` que solo recibe la deflexión, el mismo patrón que el diedro del Stik. La prueba compara el sentido del movimiento del borde de salida con el del Stik para el mismo mando, y una mutación que voltea el marco la detecta.
+- Un `assert()` o un error de ejecución en un script `SceneTree` deja Godot headless parado en el depurador (exit 124 por timeout). En constructores y verificaciones: `push_error` y seguir, para que la prueba falle rápido y con causa.
+- **Error propio:** escribí el constructor directamente en `app/` y el propietario hizo commit (`59cca56`) en los segundos en que no parseaba. Con commits `git add -A` en paralelo, los borradores van fuera de `app/` y se copian solo tras `--check-only`, como ya dice AGENTS.md.
+- `app/test.sh` se para en el primer fallo: un test sin seguimiento de otro agente (`test_physical_envelope.gd`) ocultaba el resto. Hubo que correr por separado los pasos siguientes para demostrar que este cambio no rompe nada.
+
+Prueba: [informe](docs/research/extra-300-model-v1.md), `research/extra-300/ex01/measure.py --check`, `compile_geometry.py --check` (116 valores frente a la metrología), `aircraft/verify_extra.gd` (84 comprobaciones, seis mutaciones), capturas repetibles en `research/extra-300/ex02/captures/`.
+
+## 2026-10-06 · UI-01d — inglés por defecto y multiidioma
+
+- Godot arranca en el idioma del sistema operativo (`es_ES` con `LANG=es_ES.UTF-8`), así que «inglés por defecto» exige fijarlo en el código; si no, un catálogo español cargado se aplica solo en un equipo en español. La ruta directa también lo fija: la traza siguió idéntica con el sistema en español.
+- Un `.po` listado en `internationalization/locale/translations` carga desde un clon sin importar y entra en `--export-pack` con `all_resources`, sin `include_filter` (sonda 23). Es la razón práctica para preferirlo a CSV, además de ser el formato de las herramientas de traducción.
+- Labels y Buttons se traducen solos al dibujarse, pero su propiedad `text` conserva el texto fuente: las pruebas deben leer `atr(text)`. Las frases construidas en ejecución desactivan la traducción automática (para no traducir dos veces) y se rehacen en `NOTIFICATION_TRANSLATION_CHANGED`; la mutación que quita ese manejador dejó el botón de idioma en inglés.
+- `ConfigFile.get_value()` sin valor por defecto imprime `ERROR` cuando falta la clave, y `test.sh` lo cuenta como fallo: siempre pasar un centinela.
+- Las pruebas que crean `app_root` deben inyectar una ruta de preferencias propia: `user://` es la misma carpeta que usa la app al ejecutarse desde el código, y una prueba escribiría los ajustes reales del desarrollador.
+
+Prueba: `tests/test_ui_language.gd` (22 comprobaciones, mutadas), suite completa en un clon limpio, capturas `ui-home-en.png`/`ui-home-es.png`.
+
+
+### 2026-10-06 — Reparación del rudder y robustez transversal
+
+- **D9-R1/R2:** continuidad de coeficientes estáticos no garantiza continuidad de cargas con rates. El probe original detectaba 46/925 estados con potencia positiva y un salto de ~1.842 N; elementos locales con el mismo flujo/fuerza/brazo eliminan esos casos. V_COM=0 no significa aire inmóvil en un ala que rota.
+- **D10-R:** bajar solo `Cndr` mejoraba un pulso y rompía recuperación. Enlazar fuerza y brazo, modelar la pérdida local de las colas y conservar el recorrido permite reparar ambas maniobras. Al derivar `Cldr`, la altura es respecto al ARP antes de la transferencia al CG; usar altura respecto al CG cuenta esa palanca dos veces.
+- **D1-R1:** un tensor calculado alrededor del centro de un inventario no corresponde a un avión cuyo CG se declara en otro punto. La masa virtual de balance explicita una configuración consistente y cambia trim/modos; sigue siendo estimación, no medición del hardware.
+- **D4-R1:** no basta validar el JSON ni el primer cálculo de cargas. El trim debe formar parte de la aceptación y las etapas intermedias de RK también pueden fallar. En GDScript, cambiar un String capturado por una lambda no comunica el fallo al caller; una caja Dictionary compartida sí. Tres pruebas específicas detectaron k2/k3/k4. Cambiar una inercia válida exige actualizar su inversa cacheada.
+- **D4-R1 / datos:** JSON sintácticamente válido con una sección Array donde se esperaba Dictionary provocaba errores de script y podía terminar con `ok=true`. Comprobar formas antes de acceder y tipos numéricos antes de convertir evita ese falso éxito; NaN en hull necesita `is_finite`, no solo comparar límites.
+- **D8a-R1:** un Jacobiano por ejes puede esconder acoplamientos del rotor/inercia. Conservar la matriz completa y etiquetar proyecciones evita presentar sus autovalores como los del vuelo completo. A 25 m/s la raíz espiral proyectada y la completa tienen distinto signo.
+- Los goldens y bandas calculados por el propio simulador sirven como regresión. Actualizarlos exige explicar el cambio físico; no se mantienen expectativas de barrena provenientes del modelo que creaba energía como si fueran datos externos.
+
+Pruebas y procedencia: [implementación](docs/research/flight-repair-implementation.md), `test_physical_envelope`, `test_rudder_authority`, `test_session_guards`, `test_dynamics` y comprobaciones de masa/datos, trim, manejo y recuperación. Gate 2 sigue esperando vuelo comparativo real.
+
+## 2026-10-06 · AV-02 aislado — geometría y mandos Avanti
+
+- Un inspector fuera de `app/` permite avanzar una forma aproximada y probar bisagras sin interferir con menú, Extra o física en edición. Funciona con Godot 4.7.2 Compatibility y no necesita los PDF/fotos locales.
+- Las siete superficies se verifican por el desplazamiento de puntos del borde de salida. La inversión deliberada del flap derecho en un clon temporal falla; así se comprueba que la prueba detecta un mando invertido y no solo valores finitos.
+- Mantener la envergadura y longitud nominales no valida secciones, perfiles ni área. La maqueta declara espesores constantes de panel, ejes y posiciones de equipo como estimaciones; no genera datos de vuelo.
+- La primera captura en planta dejó la nariz bajo los controles del inspector. Se amplió la escala de encuadre ortográfico y se repitieron las nueve capturas; el manifiesto registra las cámaras finales.
+- Las cinco nuevas fotos oficiales de 4320 × 3240 aclaran cabina, tomas y placas de ala, pero mantienen perspectiva. A200-13 se identifica como tubo original P100 de doble pared; no aparecieron dimensiones que permitan calibrar su instalación.
+
+Prueba: [maqueta y resultados](docs/research/avanti-s-av02-preview.md), [clon sin referencias y defecto detectado](docs/research/avanti-s-av02-clone-check.json). No es validación aerodinámica, rendimiento de GPU real ni integración del Avanti en la app.

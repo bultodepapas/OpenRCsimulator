@@ -1,0 +1,3458 @@
+{
+  "schema": "openrc-avanti-organized-v1",
+  "date": "2026-10-05",
+  "tools": {
+    "pdftoppm": "pdftoppm version 24.02.0"
+  },
+  "preservation": "Original files unchanged; copies byte identical; PDF crops retain annotations",
+  "items": [
+    {
+      "path": "references/avanti-s/organized/documents/baseline/a200-01-dimensiones-mandos-cg.pdf",
+      "source": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+      "source_sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134",
+      "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134",
+      "bytes": 130021,
+      "operation": "byte_identical_copy",
+      "purpose": "Manual oficial: dimensiones, CG, mandos"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/a200-01-dimensiones-mandos-cg.txt",
+      "source": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+      "source_sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134",
+      "sha256": "bf9c2e23cb5cbcaca3a83b4ab7b75999b4d4c54424775ec76b44ec409a8b1391",
+      "bytes": 7009,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/a200-02-montaje-fotografico-91-paginas.pdf",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "bytes": 27060939,
+      "operation": "byte_identical_copy",
+      "purpose": "Montaje fotográfico oficial; estructura y articulaciones"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/a200-02-montaje-fotografico-91-paginas.txt",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "52e73bf1aa3a0f6cfdb0535e0d85b020b75de4beb9ffbfa9a4bf4e491ed731e8",
+      "bytes": 7766,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/mini-avanti-intro.pdf",
+      "source": "references/avanti-s/comparison/mini-avanti-intro.pdf",
+      "source_url": "https://www.sebart.it/download/2015-manuali%20MiniAvanti/Mini%20Avanti%20JET%20ARF%20manual%20intro.pdf",
+      "source_sha256": "649b0eb8938ffb31d032d854af44d167d7f8bd8fddb1c0995c6766538cae7ded",
+      "sha256": "649b0eb8938ffb31d032d854af44d167d7f8bd8fddb1c0995c6766538cae7ded",
+      "bytes": 113257,
+      "operation": "byte_identical_copy",
+      "purpose": "Comparación dimensional; no mezclar con A200"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/mini-avanti-intro.txt",
+      "source": "references/avanti-s/comparison/mini-avanti-intro.pdf",
+      "source_url": "https://www.sebart.it/download/2015-manuali%20MiniAvanti/Mini%20Avanti%20JET%20ARF%20manual%20intro.pdf",
+      "source_sha256": "649b0eb8938ffb31d032d854af44d167d7f8bd8fddb1c0995c6766538cae7ded",
+      "sha256": "4a62363eb3662a86696d43785c3faeaba8527acb3badab1a79850da22c155014",
+      "bytes": 7023,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/mini-avanti-assembly.pdf",
+      "source": "references/avanti-s/comparison/mini-avanti-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/2015-manuali%20MiniAvanti/Mini%20Avanti%20JET%20Assembly%20Manual.pdf",
+      "source_sha256": "feeebbace7d8bfeec1e9c42c6ac4fa83934c50afb67dd36e3f39d2fb815c4ee3",
+      "sha256": "feeebbace7d8bfeec1e9c42c6ac4fa83934c50afb67dd36e3f39d2fb815c4ee3",
+      "bytes": 15643075,
+      "operation": "byte_identical_copy",
+      "purpose": "Comparación EDF/P20 instalación"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/mini-avanti-assembly.txt",
+      "source": "references/avanti-s/comparison/mini-avanti-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/2015-manuali%20MiniAvanti/Mini%20Avanti%20JET%20Assembly%20Manual.pdf",
+      "source_sha256": "feeebbace7d8bfeec1e9c42c6ac4fa83934c50afb67dd36e3f39d2fb815c4ee3",
+      "sha256": "0c501b78ee391180f2f5c9236fd65b5f578aabbfe30d90eac351b366a2c81ad7",
+      "bytes": 4363,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/sebart-price-list.pdf",
+      "source": "references/avanti-s/comparison/sebart-price-list.pdf",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "source_sha256": "9083b9b5b3b83edb3902331d4437c7befd0558b3917bb94ef229fee21ae2ae37",
+      "sha256": "9083b9b5b3b83edb3902331d4437c7befd0558b3917bb94ef229fee21ae2ae37",
+      "bytes": 386056,
+      "operation": "byte_identical_copy",
+      "purpose": "Catálogo actual; documentar discrepancia 2.3m nomenclatura"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/sebart-price-list.txt",
+      "source": "references/avanti-s/comparison/sebart-price-list.pdf",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "source_sha256": "9083b9b5b3b83edb3902331d4437c7befd0558b3917bb94ef229fee21ae2ae37",
+      "sha256": "5543a46f69ec7c381a161705ef99954bede8e4f8ef548802cfb24a403616339c",
+      "bytes": 52869,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-vistas-ilustradas-no-tabla-prestaciones.pdf",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-spec.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX.PDF",
+      "source_sha256": "37847d8a91833ceb69e652a101b961d799c10879e14e4652450bf983ae5c66af",
+      "sha256": "37847d8a91833ceb69e652a101b961d799c10879e14e4652450bf983ae5c66af",
+      "bytes": 1801772,
+      "operation": "byte_identical_copy",
+      "purpose": "Lámina ilustrada/CAD P100-RX; no tabla de prestaciones (nombre local spec conservado)"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-vistas-ilustradas-no-tabla-prestaciones.txt",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-spec.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX.PDF",
+      "source_sha256": "37847d8a91833ceb69e652a101b961d799c10879e14e4652450bf983ae5c66af",
+      "sha256": "9478ac3ef61ae9df286d951edbfce4c24049f65e860f053ed9eb2c3fbd78d051",
+      "bytes": 3,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-plano-dimensiones-241x97mm.pdf",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+      "source_sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5",
+      "sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5",
+      "bytes": 579870,
+      "operation": "byte_identical_copy",
+      "purpose": "Plano acotado turbina"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-plano-dimensiones-241x97mm.txt",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+      "source_sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5",
+      "sha256": "0a115e4ffb74b61898e8bb92ac0deffeb2957681156d6d81e725b0342663b659",
+      "bytes": 295,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-plano-abrazadera.pdf",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-mount.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/zubehoer/Turbinenbefestigungsschellen/P100%20RX/P100%20RX%20Turbinenbefestigungsschelle.PDF",
+      "source_sha256": "eed3c956325a32a1b18132861304dcb69f23a985ce4a542371e1e2b87028e862",
+      "sha256": "eed3c956325a32a1b18132861304dcb69f23a985ce4a542371e1e2b87028e862",
+      "bytes": 75945,
+      "operation": "byte_identical_copy",
+      "purpose": "Plano acotado abrazadera"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-plano-abrazadera.txt",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-mount.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/zubehoer/Turbinenbefestigungsschellen/P100%20RX/P100%20RX%20Turbinenbefestigungsschelle.PDF",
+      "source_sha256": "eed3c956325a32a1b18132861304dcb69f23a985ce4a542371e1e2b87028e862",
+      "sha256": "ef6cbd2161eaea7943ce8693b9824d23d1793ffb1c0fca05b600d3899b44c977",
+      "bytes": 1,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/jetcat-rx-manual-historico-2011-comparacion.pdf",
+      "source": "references/avanti-s/turbine/jetcat-rx-manual-de.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf",
+      "source_sha256": "abbe031b5f6034ed92fa7cce98823b87d738bddfab407a5b4e9b64eb2a3757e9",
+      "sha256": "abbe031b5f6034ed92fa7cce98823b87d738bddfab407a5b4e9b64eb2a3757e9",
+      "bytes": 4206589,
+      "operation": "byte_identical_copy",
+      "purpose": "Manual ECU/familia RX; referencia estados no curva identificada"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/jetcat-rx-manual-historico-2011-comparacion.txt",
+      "source": "references/avanti-s/turbine/jetcat-rx-manual-de.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf",
+      "source_sha256": "abbe031b5f6034ed92fa7cce98823b87d738bddfab407a5b4e9b64eb2a3757e9",
+      "sha256": "f717bd60fd456a0884b9f8691c9a25cf0c8305be7141a838731114eb45662127",
+      "bytes": 141099,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/comparison/avanti-xs-manual.pdf",
+      "source": "references/avanti-s/comparison/avanti-xs-manual.pdf",
+      "source_url": "https://www.sebartusa.com/uploads/1/4/3/1/143147227/avanti_xs-_manual.pdf",
+      "source_sha256": "55dbe41061d0b4a4b329b896e3611fc7cba37cd9d7b920eaed71e77a07f99aa1",
+      "sha256": "55dbe41061d0b4a4b329b896e3611fc7cba37cd9d7b920eaed71e77a07f99aa1",
+      "bytes": 1140544,
+      "operation": "byte_identical_copy",
+      "purpose": "Manual XS; conflictos de dimensiones frente a ficha, comparación"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/avanti-xs-manual.txt",
+      "source": "references/avanti-s/comparison/avanti-xs-manual.pdf",
+      "source_url": "https://www.sebartusa.com/uploads/1/4/3/1/143147227/avanti_xs-_manual.pdf",
+      "source_sha256": "55dbe41061d0b4a4b329b896e3611fc7cba37cd9d7b920eaed71e77a07f99aa1",
+      "sha256": "7b2aa16484b6ad79ef5bec51da3501f5079367b625da44bf97468422d27e8e95",
+      "bytes": 6,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/baseline/p100rx-catalogo-2017-tabla-pdf-p15.pdf",
+      "source": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf",
+      "source_sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5",
+      "sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5",
+      "bytes": 19620535,
+      "operation": "byte_identical_copy",
+      "purpose": "Tabla P100-RX sin BL de 2017; baseline propuesto, distinta del manual 2011"
+    },
+    {
+      "path": "references/avanti-s/organized/documents/text/p100rx-catalogo-2017-tabla-pdf-p15.txt",
+      "source": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf",
+      "source_sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5",
+      "sha256": "898046616d791605f7ca3deacfb93112dc8bb949f297d13cc27f0ac964f7a094",
+      "bytes": 235369,
+      "operation": "pdf_text_extraction",
+      "purpose": "Índice de búsqueda; cotejar cotas con imagen"
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-oblicua-presentacion.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7297.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7297.JPG",
+      "source_sha256": "57d8a4f8a82dfd1239177fe90c9b3e9fe5e590c62f03c9c6fb7060e12e95b32a",
+      "sha256": "57d8a4f8a82dfd1239177fe90c9b3e9fe5e590c62f03c9c6fb7060e12e95b32a",
+      "bytes": 77554,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/a200-compartimentos-vista-alta-abiertos.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7299.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7299.JPG",
+      "source_sha256": "093f0af0bd37b05fd59c405fedf6475060e69c92c95e08ea8bfffb1d8d9b70fa",
+      "sha256": "093f0af0bd37b05fd59c405fedf6475060e69c92c95e08ea8bfffb1d8d9b70fa",
+      "bytes": 87152,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        488,
+        650
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/05-propulsion/a200-turbina-interna-modelo-no-identificado.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7305.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7305.JPG",
+      "source_sha256": "19bbc9a0481d47e75e4398119d492a48ccb771c3a8565f1461d485ae269c80c2",
+      "sha256": "19bbc9a0481d47e75e4398119d492a48ccb771c3a8565f1461d485ae269c80c2",
+      "bytes": 58107,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        488,
+        650
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/a200-electronica-cableado.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7307.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7307.JPG",
+      "source_sha256": "d2d8638eeeb0362c2a9fceff9b9c61fe8518d52106c13d6590081ca1d16ac0ae",
+      "sha256": "d2d8638eeeb0362c2a9fceff9b9c61fe8518d52106c13d6590081ca1d16ac0ae",
+      "bytes": 82700,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-perfil-oblicuo-derecha.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7310.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7310.JPG",
+      "source_sha256": "a5927d2edbf0470bacdd74ea50c152cea6be1bfdb72eef8644fcb662978a5411",
+      "sha256": "a5927d2edbf0470bacdd74ea50c152cea6be1bfdb72eef8644fcb662978a5411",
+      "bytes": 73263,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-trasera-alta.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7313.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7313.JPG",
+      "source_sha256": "a69649ea35e5d237b2ef372e8a6658d0fcfbd841f2211c8cab5555e90ef0d7ae",
+      "sha256": "a69649ea35e5d237b2ef372e8a6658d0fcfbd841f2211c8cab5555e90ef0d7ae",
+      "bytes": 72750,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/02-canopy/a200-cabina-lateral-detalle.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7316.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7316.JPG",
+      "source_sha256": "eb155f44d449699a926697de276aa257761d3a4e14876e0ffb79cc19912a2b23",
+      "sha256": "eb155f44d449699a926697de276aa257761d3a4e14876e0ffb79cc19912a2b23",
+      "bytes": 66259,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-vista-delantera-oblicua.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7319.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7319.JPG",
+      "source_sha256": "a8d5b04e7662fb2ef28e50f7773089893cb2aa31ea6e918442d48ab8d78c2fda",
+      "sha256": "a8d5b04e7662fb2ef28e50f7773089893cb2aa31ea6e918442d48ab8d78c2fda",
+      "bytes": 69565,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-frente-alto-perspectiva.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7321.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7321.JPG",
+      "source_sha256": "ccecba73a557c04c2e5ca0b6fb97d8a5315d5220c7fb708466ac0553a490ca2f",
+      "sha256": "ccecba73a557c04c2e5ca0b6fb97d8a5315d5220c7fb708466ac0553a490ca2f",
+      "bytes": 64561,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-oblicua-superior.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7325.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7325.JPG",
+      "source_sha256": "f7851fd613692558a63804a114213049fe920b6195b7638fddade5f2c71063cd",
+      "sha256": "f7851fd613692558a63804a114213049fe920b6195b7638fddade5f2c71063cd",
+      "bytes": 64986,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-nariz-tomas-tren-frontal.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7344.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7344.JPG",
+      "source_sha256": "d184a1bed9dbec175b48e15d60bc59bbfc1e33a02eab4db000341de8a9312a95",
+      "sha256": "d184a1bed9dbec175b48e15d60bc59bbfc1e33a02eab4db000341de8a9312a95",
+      "bytes": 61639,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-presentacion-lateral.jpg",
+      "source": "references/avanti-s/photos/ground-CIMG7349.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/CIMG7349.JPG",
+      "source_sha256": "e50cabd8b46e25d86490691d251f797cdfdbbca09b520e538ccf11a609168058",
+      "sha256": "e50cabd8b46e25d86490691d251f797cdfdbbca09b520e538ccf11a609168058",
+      "bytes": 77206,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/01-airframe/a200-presentacion-persona-no-cenital.jpg",
+      "source": "references/avanti-s/photos/ground-top.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/top.JPG",
+      "source_sha256": "10b136fe9159c531fa2674eda8f7c3a52b79775692ac96d43ebdc22fb7c1b003",
+      "sha256": "10b136fe9159c531fa2674eda8f7c3a52b79775692ac96d43ebdc22fb7c1b003",
+      "bytes": 72899,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-silueta-atardecer.jpg",
+      "source": "references/avanti-s/photos/ground-top-2.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet/images/top%202.JPG",
+      "source_sha256": "1bcd3b25bbe98befb5af207e78d9aef25b8a765dd218707bb396727877bba2b3",
+      "sha256": "1bcd3b25bbe98befb5af207e78d9aef25b8a765dd218707bb396727877bba2b3",
+      "bytes": 45091,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        488
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-suelo-humo.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO.JPG",
+      "source_sha256": "4ad2db4b74260bef2efd95ab302829fcfc06e4fdd7d4eb0853ce8076f2d1e346",
+      "sha256": "4ad2db4b74260bef2efd95ab302829fcfc06e4fdd7d4eb0853ce8076f2d1e346",
+      "bytes": 119116,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        433
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-suelo-presentacion.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-OK.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO%20OK.JPG",
+      "source_sha256": "297ed73655ea3f1fe3e64f58cfd01dee809448b06c8e3579fb741b44b43b1936",
+      "sha256": "297ed73655ea3f1fe3e64f58cfd01dee809448b06c8e3579fb741b44b43b1936",
+      "bytes": 94654,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        442
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-frente-tren-visible.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-1.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-1.JPG",
+      "source_sha256": "f7add36f67aa620c6e8f08890cc912edb0da9f5afbcf692c9bbd1e5c2a18a7cc",
+      "sha256": "f7add36f67aa620c6e8f08890cc912edb0da9f5afbcf692c9bbd1e5c2a18a7cc",
+      "bytes": 82895,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        400
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-intrados-alabeo.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-10.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-10.JPG",
+      "source_sha256": "689d4935149b30742a814d641eaf12ae5c58e8e2a884a5d4198058af90680f17",
+      "sha256": "689d4935149b30742a814d641eaf12ae5c58e8e2a884a5d4198058af90680f17",
+      "bytes": 25884,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        418
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-lateral-humo-01.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-12.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-12.JPG",
+      "source_sha256": "49c3e0def3831f6aeaa528dd527e033e34f4463d83ee46788f72472cdc4f2e91",
+      "sha256": "49c3e0def3831f6aeaa528dd527e033e34f4463d83ee46788f72472cdc4f2e91",
+      "bytes": 22232,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        429
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-oblicuo-humo.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-14.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-14.JPG",
+      "source_sha256": "bbd05772a6041404cf910faa6920dd52da3f410cfe0ecdc078ad5e3dd3375509",
+      "sha256": "bbd05772a6041404cf910faa6920dd52da3f410cfe0ecdc078ad5e3dd3375509",
+      "bytes": 27693,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        419
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-ala-en-alabeo-perspectiva.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-18.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-18.JPG",
+      "source_sha256": "6df636c91a18c1279ac51066e6f356464d37cb5e6dbcdd2b73209db9af21fb7c",
+      "sha256": "6df636c91a18c1279ac51066e6f356464d37cb5e6dbcdd2b73209db9af21fb7c",
+      "bytes": 35668,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        444
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-vuelo-lateral-humo-02.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-20.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-20.JPG",
+      "source_sha256": "616c5f876c5c1e39d320669c59d1f66a13ec733c6d98064369751830303700f0",
+      "sha256": "616c5f876c5c1e39d320669c59d1f66a13ec733c6d98064369751830303700f0",
+      "bytes": 47525,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        433
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-tren-visible-oblicua.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-24.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-24.JPG",
+      "source_sha256": "ebb0b4d750afb92e00cc4fabe0bf03e64b9c7c7de995c0989a922ab9d9e2de21",
+      "sha256": "ebb0b4d750afb92e00cc4fabe0bf03e64b9c7c7de995c0989a922ab9d9e2de21",
+      "bytes": 97443,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        443
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/04-gear/a200-tren-visible-lateral.jpg",
+      "source": "references/avanti-s/photos/flight-VOLO-26.jpg",
+      "source_url": "https://www.sebart.it/img-photogallery/2012-Avanti-jet2/images/VOLO-26.JPG",
+      "source_sha256": "2507dd34c8f26c07bba62d24713907c7b92c17d1686c429f866e7e63359449ab",
+      "sha256": "2507dd34c8f26c07bba62d24713907c7b92c17d1686c429f866e7e63359449ab",
+      "bytes": 91681,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        650,
+        412
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-clasica-vuelo.jpg",
+      "source": "references/avanti-s/photos/product-00.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Avanti-S-00.jpg",
+      "source_sha256": "40aa279a6f7231d7eb62cf878440b12336b95451ef21d3fd509d521e0287a8d7",
+      "sha256": "40aa279a6f7231d7eb62cf878440b12336b95451ef21d3fd509d521e0287a8d7",
+      "bytes": 40326,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        670,
+        500
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-amarilla-presentacion.jpg",
+      "source": "references/avanti-s/photos/product-01.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Avanti-S-01.jpg",
+      "source_sha256": "a9e4f549e8feb268490c4fb8a9152a7567e348bfd58d1b6269ffcc3777df2405",
+      "sha256": "a9e4f549e8feb268490c4fb8a9152a7567e348bfd58d1b6269ffcc3777df2405",
+      "bytes": 29234,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        300,
+        225
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/08-livery/a200-librea-clasica-presentacion.jpg",
+      "source": "references/avanti-s/photos/product-02.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Avanti-S-02.jpg",
+      "source_sha256": "e4cb43ca93a82b9bc50a74818232631eb4e5078242128c8f65f64b3a79c980db",
+      "sha256": "e4cb43ca93a82b9bc50a74818232631eb4e5078242128c8f65f64b3a79c980db",
+      "bytes": 26786,
+      "operation": "byte_identical_copy",
+      "purpose": "Perspectiva de estudio; sin escala métrica transferible",
+      "size_px": [
+        300,
+        225
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-01-kit-deposito-racores.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-01.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/01.jpg",
+      "source_sha256": "4e499441ff346e1ab29e0e05e4d007c540ea04fec385a4ec131951d3143c30c4",
+      "sha256": "4e499441ff346e1ab29e0e05e4d007c540ea04fec385a4ec131951d3143c30c4",
+      "bytes": 21855,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-02-pendulo-tubo-flexible.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-02.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/02.jpg",
+      "source_sha256": "34df72474b49caf82206d8a39df67af6d8a4722d3bed8d6a333de4a182a0ab58",
+      "sha256": "34df72474b49caf82206d8a39df67af6d8a4722d3bed8d6a333de4a182a0ab58",
+      "bytes": 35498,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-03-toma-regla-no-calibrada.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-03.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/03.jpg",
+      "source_sha256": "3161f7ce763d85b22b314d2d76bae6049828cd741938b537ebb2c9f912fca431",
+      "sha256": "3161f7ce763d85b22b314d2d76bae6049828cd741938b537ebb2c9f912fca431",
+      "bytes": 33073,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-04-tapon-tubo-rigido.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-04.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/04.jpg",
+      "source_sha256": "1c648eb03b4355cb7e937a799535dddb2481f8551c725cb7b43afb7b7ea9379a",
+      "sha256": "1c648eb03b4355cb7e937a799535dddb2481f8551c725cb7b43afb7b7ea9379a",
+      "bytes": 35255,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-05-apriete-tapon.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-05.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/05.jpg",
+      "source_sha256": "52e3520e9ec2003ab160ca9fa68b71924bdd55c9b84280f00ac2642c7f579a8f",
+      "sha256": "52e3520e9ec2003ab160ca9fa68b71924bdd55c9b84280f00ac2642c7f579a8f",
+      "bytes": 39867,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-06-conjunto-pendulo.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-06.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/06.jpg",
+      "source_sha256": "f37843f717d320298ea72493d990dae950e37c107b115c4c03076a457afae3c4",
+      "sha256": "f37843f717d320298ea72493d990dae950e37c107b115c4c03076a457afae3c4",
+      "bytes": 30795,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-07-introduccion-toma.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-07.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/07.jpg",
+      "source_sha256": "fb31ea9c88b89110b5183dfa566685e1429e8afc16a235c3365ab9ed5b95cb13",
+      "sha256": "fb31ea9c88b89110b5183dfa566685e1429e8afc16a235c3365ab9ed5b95cb13",
+      "bytes": 24866,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-08-tubo-rigido-union.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-08.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/08.jpg",
+      "source_sha256": "b4c1b6b94e91444db2e8a368e84b3fffaf7e6a99eef4e124d39a74a9a4d517dd",
+      "sha256": "b4c1b6b94e91444db2e8a368e84b3fffaf7e6a99eef4e124d39a74a9a4d517dd",
+      "bytes": 24347,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-09-tubo-regla-no-calibrada.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-09.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/09.jpg",
+      "source_sha256": "e3a6d41f0533ac5a26b68094a0f79ad7bfafce29771a69365440b5957004c25b",
+      "sha256": "e3a6d41f0533ac5a26b68094a0f79ad7bfafce29771a69365440b5957004c25b",
+      "bytes": 28455,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-10-montaje-toma-rigida.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-10.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/10.jpg",
+      "source_sha256": "95ce48ba469761a92222bb0724057df72913084af40204d9def736e131195d27",
+      "sha256": "95ce48ba469761a92222bb0724057df72913084af40204d9def736e131195d27",
+      "bytes": 22239,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-11-cierre-tapon-01.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-11.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/11.jpg",
+      "source_sha256": "6be0298428b32afb270758f4126e2a1d78ba12aa6043435a91d28731a139df05",
+      "sha256": "6be0298428b32afb270758f4126e2a1d78ba12aa6043435a91d28731a139df05",
+      "bytes": 19893,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-12-cierre-tapon-02.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-12.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/12.jpg",
+      "source_sha256": "aa83aee171a33176fe54893ab31eda70febe135897cb05d6d81b49e8acffe225",
+      "sha256": "aa83aee171a33176fe54893ab31eda70febe135897cb05d6d81b49e8acffe225",
+      "bytes": 20131,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/06-installation/tanque-a200-13-conexion-exterior.jpg",
+      "source": "references/avanti-s/organized/new-sources/fuel-13.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/Tank/13.jpg",
+      "source_sha256": "38f59df21d4fdb8606cf0e2119457fd14362680c41adeaf15705cdc699a64736",
+      "sha256": "38f59df21d4fdb8606cf0e2119457fd14362680c41adeaf15705cdc699a64736",
+      "bytes": 17214,
+      "operation": "byte_identical_copy",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-00.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-00.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-00.jpg",
+      "source_sha256": "cd22ad503a0ae1f07078fa4279a8ef60a8d31bad2e69977823de86cca3d20d31",
+      "sha256": "cd22ad503a0ae1f07078fa4279a8ef60a8d31bad2e69977823de86cca3d20d31",
+      "bytes": 40216,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        700,
+        292
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-01.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-01.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-01.jpg",
+      "source_sha256": "544207ec5505e45aa15548d4f0a0f4d80ef68b3c558519e20884172f825f41cb",
+      "sha256": "544207ec5505e45aa15548d4f0a0f4d80ef68b3c558519e20884172f825f41cb",
+      "bytes": 21416,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-02.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-02.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-02.jpg",
+      "source_sha256": "b4198550aada3d31da79dfb9a2bbae27ace3b907490b4b927fcacf2afae38876",
+      "sha256": "b4198550aada3d31da79dfb9a2bbae27ace3b907490b4b927fcacf2afae38876",
+      "bytes": 22697,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-03.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-03.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-03.jpg",
+      "source_sha256": "dd183654c158162edfed47354ef22a151211434fa4181b6bb63c5b1753161db3",
+      "sha256": "dd183654c158162edfed47354ef22a151211434fa4181b6bb63c5b1753161db3",
+      "bytes": 24609,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-04.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-04.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-04.jpg",
+      "source_sha256": "438071565a34d4342b53ef4289c4e1cb64ef4028c6a3695af35c10725d57b5a0",
+      "sha256": "438071565a34d4342b53ef4289c4e1cb64ef4028c6a3695af35c10725d57b5a0",
+      "bytes": 28184,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-05.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-05.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-05.jpg",
+      "source_sha256": "83c6f00aeef0e0920e68ed6b6f1c8e6aaf8704f75515c840e5f6625c12ae3b34",
+      "sha256": "83c6f00aeef0e0920e68ed6b6f1c8e6aaf8704f75515c840e5f6625c12ae3b34",
+      "bytes": 24904,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-06.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-06.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-06.jpg",
+      "source_sha256": "baece120b3b7ac46fdca93497ecf198349d49218d4c3bc485460ec1bf2044481",
+      "sha256": "baece120b3b7ac46fdca93497ecf198349d49218d4c3bc485460ec1bf2044481",
+      "bytes": 23505,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-07.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-07.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-07.jpg",
+      "source_sha256": "90f0111b9ef0f1641fd9631eb87038b9c8a5f68ee0269996ab349f22f3738140",
+      "sha256": "90f0111b9ef0f1641fd9631eb87038b9c8a5f68ee0269996ab349f22f3738140",
+      "bytes": 28966,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-08.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-08.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-08.jpg",
+      "source_sha256": "6ef5abdc5ce7a19616b58e65d9f6c565345fa5fd04639d53757dd49a6691ccaf",
+      "sha256": "6ef5abdc5ce7a19616b58e65d9f6c565345fa5fd04639d53757dd49a6691ccaf",
+      "bytes": 22231,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/images/09-optional-vector/vectorial-fuera-baseline-secuencia-09.jpg",
+      "source": "references/avanti-s/organized/new-sources/optional-vector-ves-09.jpg",
+      "source_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-09.jpg",
+      "source_sha256": "c213d1cae0b9955f1964d9e80cb1cdbb6022ffe7325802d4e7f47c41c1259593",
+      "sha256": "c213d1cae0b9955f1964d9e80cb1cdbb6022ffe7325802d4e7f47c41c1259593",
+      "bytes": 57143,
+      "operation": "byte_identical_copy",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "size_px": [
+        696,
+        390
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-01.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "204be5eede29aed3abed17c7a3469258364a184acc6d431cf702b67c56f5af3c",
+      "bytes": 48928,
+      "operation": "pdf_page_render",
+      "pdf_page": 1,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-02.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e3975f07a3e8e0ebd06582477be36d1f545e3357083b45340af02b879bd4513c",
+      "bytes": 55693,
+      "operation": "pdf_page_render",
+      "pdf_page": 2,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-03.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "eff9ad1044c45ef42ed311a51aebfa47f13c7e5d3015255f01eab1804853d70a",
+      "bytes": 63214,
+      "operation": "pdf_page_render",
+      "pdf_page": 3,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-04.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "25c0f6f639d36230e3c716f3c8d3a06388144c7754a204b263ba8ce01e9ce5c1",
+      "bytes": 55112,
+      "operation": "pdf_page_render",
+      "pdf_page": 4,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-05.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2a81ade132adb5ec61bdc6205e19e90f4062ca90042b71eb45c698508f2a3b81",
+      "bytes": 44707,
+      "operation": "pdf_page_render",
+      "pdf_page": 5,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-06.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2892870a78ee8a06790e210d2fbdf5422810abffc77916dca6be8f59f0cc7c31",
+      "bytes": 32321,
+      "operation": "pdf_page_render",
+      "pdf_page": 6,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-07.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "fa09e25dfcc7a800f98aa8e328a7fdc1640fad2d4ed7b1b194a9559f3d6ed1a2",
+      "bytes": 54353,
+      "operation": "pdf_page_render",
+      "pdf_page": 7,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-08.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "3e334c1b5499932028722854fa873a9d21e0552b49d35765459d1f398b20f4ee",
+      "bytes": 24088,
+      "operation": "pdf_page_render",
+      "pdf_page": 8,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-09.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b0cec5ed682d88231607b966e6fcec913c5dd97d2e9c2f05ca6cfbde0bbcec53",
+      "bytes": 57485,
+      "operation": "pdf_page_render",
+      "pdf_page": 9,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-10.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "018f09168a9e4324a73da679f8e66a3f0ad74bfc20ff4e2ecd6755f582963853",
+      "bytes": 56897,
+      "operation": "pdf_page_render",
+      "pdf_page": 10,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-11.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9a3200cce4bb0eccd97f9f1a82c54bc48f768eefed8b725fe3f66d2abab393e2",
+      "bytes": 35371,
+      "operation": "pdf_page_render",
+      "pdf_page": 11,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-12.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6d2acfeac3746ccb2fa58ffe765b7218642ae61d9154f712b595db2870929432",
+      "bytes": 37351,
+      "operation": "pdf_page_render",
+      "pdf_page": 12,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-13.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "3ef15b642f65888f66bd234aad644be295f3a7810521a0873b5978f84498d02e",
+      "bytes": 57010,
+      "operation": "pdf_page_render",
+      "pdf_page": 13,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-14.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "af0c8280e839e1b408765654fb35e4d021d2e19eb55fd586536b3b9d052203fe",
+      "bytes": 38408,
+      "operation": "pdf_page_render",
+      "pdf_page": 14,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-15.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5a78087ef14768e6f06fed7c6e5a1f29f3697cd7eb42e6c0c1d1708694438b47",
+      "bytes": 39386,
+      "operation": "pdf_page_render",
+      "pdf_page": 15,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-16.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "929695eede3d3d90c852081c28849c7abf46d30ba94a717d772b97e3d281f73a",
+      "bytes": 52429,
+      "operation": "pdf_page_render",
+      "pdf_page": 16,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-17.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "786b62c6fa612ddfcc3c613a9e04af8ad676ee53638fdc393d449f9a8465dd29",
+      "bytes": 59627,
+      "operation": "pdf_page_render",
+      "pdf_page": 17,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-18.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "60a6fe5cb115ce00eb293b45a56021e51cade082f6a11c0a57fcf4e43c3bf71c",
+      "bytes": 48549,
+      "operation": "pdf_page_render",
+      "pdf_page": 18,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-19.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e04c967d3b611b8db4632e9379032685c3b5bf6762d696728ab5e89f8dc967bd",
+      "bytes": 55432,
+      "operation": "pdf_page_render",
+      "pdf_page": 19,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-20.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "239b6565f4e5289d09ad074a278ebe35aab6c5523736cbe388de150fd62bcf30",
+      "bytes": 59127,
+      "operation": "pdf_page_render",
+      "pdf_page": 20,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-21.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2c860be2d6059896a07c2f8a21ea3c93cbc410b7aa31c5b8cdcb72355275de26",
+      "bytes": 64025,
+      "operation": "pdf_page_render",
+      "pdf_page": 21,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-22.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "d69744c51d28309e55ce5b4eeb4d3dda0ff582765e4c6afa1f5a11d262f5719b",
+      "bytes": 59809,
+      "operation": "pdf_page_render",
+      "pdf_page": 22,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-23.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "7b537b6d7cd954c2703d5d4cacc170d3f97b86ef041bf7ce455014ae45853603",
+      "bytes": 55391,
+      "operation": "pdf_page_render",
+      "pdf_page": 23,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-24.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6b6609bcd34bd0542bf91a03c7c5d2bb2c330713f76ff20af8fa2ed6e0cf70e2",
+      "bytes": 56892,
+      "operation": "pdf_page_render",
+      "pdf_page": 24,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-25.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1fb0bdb25ebd3f3720af93cfd9f1d80f5724bbb28f5473c2ac2b220bb75171a9",
+      "bytes": 60208,
+      "operation": "pdf_page_render",
+      "pdf_page": 25,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-26.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2e3a7e7b7f0048ce642ebf99e993362417f74c3c7203c986059ab327519586a5",
+      "bytes": 55015,
+      "operation": "pdf_page_render",
+      "pdf_page": 26,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-27.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "596e951fd4302eedf0917928c9be1b26bc50f785c21b79223f4825023e34aac8",
+      "bytes": 58575,
+      "operation": "pdf_page_render",
+      "pdf_page": 27,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-28.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e84c423c6f19b17b13bf3195702665eb1ead727cdaccac799b8419c1b9edec1f",
+      "bytes": 61527,
+      "operation": "pdf_page_render",
+      "pdf_page": 28,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-29.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e3503b41d00ef16f4aa589faaa0ef946bb945df01464fa3478ca37353af5e18a",
+      "bytes": 56862,
+      "operation": "pdf_page_render",
+      "pdf_page": 29,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-30.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "7007b5fdac2f1b1621cbd306fd67bbfa0965ffc5f9a4f2060f6872d2c782c368",
+      "bytes": 43487,
+      "operation": "pdf_page_render",
+      "pdf_page": 30,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-31.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "77922fe3797e585b0bb425580d232b596f4775252f92a30db034eaa88ef94c24",
+      "bytes": 47181,
+      "operation": "pdf_page_render",
+      "pdf_page": 31,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-32.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "f19d65ae6aea608d54dea61e0c41ab90cf1955d5f52d792de44abfe7e9b7db52",
+      "bytes": 59436,
+      "operation": "pdf_page_render",
+      "pdf_page": 32,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-33.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "970431f6721ac5de0a8a242fecd59d0c52f2c6e17a2534d810c4f161b70c42ce",
+      "bytes": 64772,
+      "operation": "pdf_page_render",
+      "pdf_page": 33,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-34.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "80adaaac5a0a2c34219858177b345934ea84b7c0843af7b92ebb4229a9ece164",
+      "bytes": 38595,
+      "operation": "pdf_page_render",
+      "pdf_page": 34,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-35.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "88a4988c95dcd4e9ac839d8e9b0bc270e6ba59ace8cab1f3408a9ca5d22d981f",
+      "bytes": 71729,
+      "operation": "pdf_page_render",
+      "pdf_page": 35,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-36.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "fe05239b306b868f74c979995f4249ecb4f679f9ad31f54b4056a1f29ac7f736",
+      "bytes": 70772,
+      "operation": "pdf_page_render",
+      "pdf_page": 36,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-37.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c208191abd4e9660f41ef191c31d4de52e2b67671bc8cf049d13197e9cd6a674",
+      "bytes": 48100,
+      "operation": "pdf_page_render",
+      "pdf_page": 37,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-38.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2de7a56ef9f6ead2c2242838d56733dcbf05c7dc69bcb04aa92478d6aed6ef46",
+      "bytes": 53694,
+      "operation": "pdf_page_render",
+      "pdf_page": 38,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-39.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "758553c0fec481842845abc7c6233e7b980282dd3824699bd52a7d2dd62eb263",
+      "bytes": 52127,
+      "operation": "pdf_page_render",
+      "pdf_page": 39,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-40.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e94473d58c03ab9c97768899b02a1a6c67c1ff761e05e9157613b1736a6b9ee4",
+      "bytes": 47601,
+      "operation": "pdf_page_render",
+      "pdf_page": 40,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-41.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9b5c80893d5c37803496beec49945745d205845f33fd0e32bc6de1e80dbd15f9",
+      "bytes": 43059,
+      "operation": "pdf_page_render",
+      "pdf_page": 41,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-42.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9bd9eb40d0449a3de111c868373453c7e05a92a7e2b02600a267bcfa618aaac8",
+      "bytes": 53320,
+      "operation": "pdf_page_render",
+      "pdf_page": 42,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-43.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "e984b3a8ae88a0880cc073944a4d89090a2d364c6af86ed0664905567ef6b1b8",
+      "bytes": 54392,
+      "operation": "pdf_page_render",
+      "pdf_page": 43,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-44.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "7786a6c50bf5b8313eea2f4e55c717220e8a91f03530cece7e7eaeb885d33466",
+      "bytes": 28270,
+      "operation": "pdf_page_render",
+      "pdf_page": 44,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-45.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "397740cd27c696f2505c1e976cfe37036c6884c7fc3adcadcd81a9cfc9b35a0c",
+      "bytes": 59972,
+      "operation": "pdf_page_render",
+      "pdf_page": 45,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-46.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1fe327743f44427fca829c6f3f883fca4771ef02e040f58117caf9780516a3b9",
+      "bytes": 43532,
+      "operation": "pdf_page_render",
+      "pdf_page": 46,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-47.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "8387d94ca00287eae57c5d3b6bf323ea7da776e4f2be814fdc14dc4bf7ed4a6f",
+      "bytes": 50941,
+      "operation": "pdf_page_render",
+      "pdf_page": 47,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-48.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "98532bb7ed08ecba7baead0b4365f9aa0a7e03cc2d3046dd63db7a3037b3de40",
+      "bytes": 49954,
+      "operation": "pdf_page_render",
+      "pdf_page": 48,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-49.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "cba3296a678b1938a5ad6f17430d4f161029dea866d05b400fb55abf90d184ba",
+      "bytes": 50188,
+      "operation": "pdf_page_render",
+      "pdf_page": 49,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-50.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "64ac0d510465284a94568a00dcdcbcff1c0f076662dd8667da14d25664b444af",
+      "bytes": 27629,
+      "operation": "pdf_page_render",
+      "pdf_page": 50,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-51.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "8bd5ea415a6bd05f088a76c38aa5ce96c1dbcc74b0d89b2bb06445918da13397",
+      "bytes": 47884,
+      "operation": "pdf_page_render",
+      "pdf_page": 51,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-52.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "748929ad51e77eb1697ac568201bfefed3d37c6b94097724b195f0c705617cb0",
+      "bytes": 59388,
+      "operation": "pdf_page_render",
+      "pdf_page": 52,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-53.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b26eeec8df09972ff5c236c7eb21d8a3e9b6f4492cba4885157a040a0a89059e",
+      "bytes": 53957,
+      "operation": "pdf_page_render",
+      "pdf_page": 53,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-54.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c073aea8482e3304f11912da02fe54b7130ac5f37d44d85cf9f5b0aa2cf4cad4",
+      "bytes": 47174,
+      "operation": "pdf_page_render",
+      "pdf_page": 54,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-55.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "a0c1458e09f5568547d89e3a39e3e40809813eafc4cba83619d16c07f32c0f07",
+      "bytes": 58768,
+      "operation": "pdf_page_render",
+      "pdf_page": 55,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-56.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1ce69ab668526babbbca97d159d8e37bba803478366cbe2bc11c2ad65878a632",
+      "bytes": 63000,
+      "operation": "pdf_page_render",
+      "pdf_page": 56,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-57.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "cc3ad73ef0841da64e882388a47588673b658094c15a986aebbf961744422855",
+      "bytes": 79526,
+      "operation": "pdf_page_render",
+      "pdf_page": 57,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-58.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "09337d8103bdb79619524b3f99f151df65c334c1f954931402a0b3853bef6cd8",
+      "bytes": 55346,
+      "operation": "pdf_page_render",
+      "pdf_page": 58,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-59.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "f029271ab8254505192626815df3cfae6c3ea5f55e97029cbae7a38bc5dd4e6c",
+      "bytes": 94739,
+      "operation": "pdf_page_render",
+      "pdf_page": 59,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-60.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "136a683254174bf942d14093fa7ebf9c0a1f6eb086719c57d8656d913aa9d83d",
+      "bytes": 69921,
+      "operation": "pdf_page_render",
+      "pdf_page": 60,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-61.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "d1bd22c16e1988a9c22f547e9f525387dfbe71d5c0c272b55c7c7c4a4c7304ac",
+      "bytes": 53939,
+      "operation": "pdf_page_render",
+      "pdf_page": 61,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-62.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "91fd32cceba524e254f2585126dcd2ef31daa8b607cc60cdb24332fed20b6860",
+      "bytes": 57938,
+      "operation": "pdf_page_render",
+      "pdf_page": 62,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-63.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "04110d08a4289ad2fe7edeba8d578d49e78cc530eabb0d14051f5f1b54d7c817",
+      "bytes": 63799,
+      "operation": "pdf_page_render",
+      "pdf_page": 63,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-64.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "4834914f58a8ca06dc3f9cbdb49094d89e1743f5db3fe80fdf0f74b0838b7d45",
+      "bytes": 77945,
+      "operation": "pdf_page_render",
+      "pdf_page": 64,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-65.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "09e0d04ac2ec07ec1b0d75b6f5168612fc775f0cfb55bc2d28d1775677cc8ede",
+      "bytes": 57377,
+      "operation": "pdf_page_render",
+      "pdf_page": 65,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-66.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2ac4a7bb1fbc5b952c3d8702c0128ceae3df70c1d9845865a4c1880a8aacdfd1",
+      "bytes": 43979,
+      "operation": "pdf_page_render",
+      "pdf_page": 66,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-67.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5bbfa58525f5a6f812f068717b570e1a916831bf2ed17162f55645d6d940fefc",
+      "bytes": 83335,
+      "operation": "pdf_page_render",
+      "pdf_page": 67,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-68.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "4cbf52beedbbcecfe4b5039475ca7c56afa2d30423d48a557b1e5f2144cb03ef",
+      "bytes": 75505,
+      "operation": "pdf_page_render",
+      "pdf_page": 68,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-69.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "85b7d718e75da83a1c99aeed1737f70438360367003cf712353ca87b51aaf5c7",
+      "bytes": 44063,
+      "operation": "pdf_page_render",
+      "pdf_page": 69,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-70.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6e9ec3de8f483db2ee1e364bb252ce08a8c7f951d25eacdc4190d649817f137a",
+      "bytes": 58405,
+      "operation": "pdf_page_render",
+      "pdf_page": 70,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-71.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "cd93564a5f832b4f62d6c421a897cce04a3d5338312624a361118954ed8d7703",
+      "bytes": 66263,
+      "operation": "pdf_page_render",
+      "pdf_page": 71,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-72.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5f3a0f223a85ab3009bdc67072c717f441612cebcb503fd283a23aaa74286d69",
+      "bytes": 69092,
+      "operation": "pdf_page_render",
+      "pdf_page": 72,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-73.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5a6eae564c539aa8242c8b733aa8cdb15a888652c47a5e7caf3165348cee5853",
+      "bytes": 76465,
+      "operation": "pdf_page_render",
+      "pdf_page": 73,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-74.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "db03195f066c3250957af993a2fe8ecfda0208ddf8d00bcedbc3b94906e85fd0",
+      "bytes": 77295,
+      "operation": "pdf_page_render",
+      "pdf_page": 74,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-75.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1e11fba26313f69c391af31d86686c86dfa02993f5f6d3b2358a789c9a79a1e3",
+      "bytes": 90235,
+      "operation": "pdf_page_render",
+      "pdf_page": 75,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-76.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c7a9f8ba51413a2c21ec917bf00cf7e2afe5bc345d6f991ef2dc15a4d09afa37",
+      "bytes": 47505,
+      "operation": "pdf_page_render",
+      "pdf_page": 76,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-77.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "42c6ee3b74ab49b41db2289754ff5075ebec372e1f168281b6ee294a1323a0fa",
+      "bytes": 53745,
+      "operation": "pdf_page_render",
+      "pdf_page": 77,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-78.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2bafb78247f0328ceb3611eb491001c49e0073d1516fa9b6730a21df3378f458",
+      "bytes": 56024,
+      "operation": "pdf_page_render",
+      "pdf_page": 78,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-79.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "09b20842d9ae06ef4e5063ea21661c8d57c13355e1c882a1eab8e21422dabff0",
+      "bytes": 64527,
+      "operation": "pdf_page_render",
+      "pdf_page": 79,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-80.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "572df73f016d3d4b81396a2c0527dc7b523fcd2a50d63b5e29f43ef816e463fa",
+      "bytes": 61588,
+      "operation": "pdf_page_render",
+      "pdf_page": 80,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-81.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2d37b9445fc6a2734fd45cd6e91a400013a1de7f7d3b25b74bd295f61336f7ab",
+      "bytes": 73816,
+      "operation": "pdf_page_render",
+      "pdf_page": 81,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-82.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5a63330d3f9734fe30bfea7fb84ce61d7985fe2eb05e9ccc5541c114b9148888",
+      "bytes": 55198,
+      "operation": "pdf_page_render",
+      "pdf_page": 82,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-83.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "312f18bf9e4bb3abfe1ad99de4dc93e7ab8e7ad2bccdf2bb6b0eb1682cf06a7f",
+      "bytes": 51397,
+      "operation": "pdf_page_render",
+      "pdf_page": 83,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-84.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6da590c2a0ed3e9f766d61bca18d2139816b61374af0016a94c443b9785fceb2",
+      "bytes": 47190,
+      "operation": "pdf_page_render",
+      "pdf_page": 84,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-85.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9072cf6461ac10fef78827300372ad42d6e9a61f1cc8cdf92a950c8b2d9224c8",
+      "bytes": 39556,
+      "operation": "pdf_page_render",
+      "pdf_page": 85,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-86.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c710f610a9f56b1370ecf84f8768be68bbe3bafd6796c0932bb028e2604b52b5",
+      "bytes": 33191,
+      "operation": "pdf_page_render",
+      "pdf_page": 86,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-87.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5901cfdd3e5a09b19b14f81adf87c4549da2205177569ec263247660c4db6146",
+      "bytes": 38956,
+      "operation": "pdf_page_render",
+      "pdf_page": 87,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-88.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "96ed0f82cb423dfd02e8c98f0f06df66849a488aac1a50b8566a883c396b2d0d",
+      "bytes": 38286,
+      "operation": "pdf_page_render",
+      "pdf_page": 88,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-89.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b5de10657d911b591f65b8d00692fe699e6ef3a08c999ad5554022d83a194437",
+      "bytes": 54304,
+      "operation": "pdf_page_render",
+      "pdf_page": 89,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-90.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "be822c562b0aa1c6770ecaf935cf8206ff76832ec2cb98b136597cbb67e6649f",
+      "bytes": 52787,
+      "operation": "pdf_page_render",
+      "pdf_page": 90,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/assembly-pages/a200-montaje-p-91.jpg",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b93c539551886fc4a4d424443642a4e6c49be1d30285e6c61e4be9badc42b930",
+      "bytes": 37986,
+      "operation": "pdf_page_render",
+      "pdf_page": 91,
+      "dpi": 60,
+      "purpose": "Página completa, contexto",
+      "size_px": [
+        497,
+        702
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/ala-flaps-alerones-desmontados-p001-s001.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "3b100da277a25e264cd0a11884779719ba984170dd39a521d5e1441d2615667b",
+      "bytes": 854077,
+      "operation": "pdf_region_render",
+      "pdf_page": 1,
+      "step": 1,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "ala-flaps-alerones-desmontados",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-bisagras-p002-s003.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "a861e761bd6f33209789168d6064f413f1f779a6f57633034db2a048b2456e7f",
+      "bytes": 897444,
+      "operation": "pdf_region_render",
+      "pdf_page": 2,
+      "step": 3,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "flap-bisagras",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/aleron-bisagras-p004-s007.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "a8d0ba80f9d26eb9f47351baa35359fd0e95b9f7f9d0e9942ed0ae5a02d05834",
+      "bytes": 977894,
+      "operation": "pdf_region_render",
+      "pdf_page": 4,
+      "step": 7,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "aleron-bisagras",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/aleron-varilla-cota-60mm-p008-s016.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c5e546ca7115e861447e1e64a439368355998992078a4de41ecac5cdf33e86e9",
+      "bytes": 260403,
+      "operation": "pdf_region_render",
+      "pdf_page": 8,
+      "step": 16,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "aleron-varilla-cota-60mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-brazo-cota-13mm-p014-s028.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6c2c023a64331b4df52abbec4789cb21d71f92c9fbe310fd4ae63fee92905cee",
+      "bytes": 302639,
+      "operation": "pdf_region_render",
+      "pdf_page": 14,
+      "step": 28,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "flap-brazo-cota-13mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-varilla-cota-52mm-p015-s029.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9fe8489ae075c3cbf2c88d16bc57ab6fc0a7e1f198608a68f8f3f05b2e9f1a49",
+      "bytes": 712199,
+      "operation": "pdf_region_render",
+      "pdf_page": 15,
+      "step": 29,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "flap-varilla-cota-52mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-servo-varillaje-p020-s039.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "24ce7875dcc04cedee4120bf07172320a71f97deab49d835a053b26582c94d54",
+      "bytes": 901168,
+      "operation": "pdf_region_render",
+      "pdf_page": 20,
+      "step": 39,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "flap-servo-varillaje",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-eje-palanca-p021-s041.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "a6cac9ace160af29f382fad75e07a0b6a34b6f034c3a93e8686062ea5541561e",
+      "bytes": 863663,
+      "operation": "pdf_region_render",
+      "pdf_page": 21,
+      "step": 41,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "flap-eje-palanca",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-vuelo-p021-s042.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "50eadb2133055d1a094a3aaf74da53d9be4a909cdf095211b94640b7f55f564e",
+      "bytes": 745297,
+      "operation": "pdf_region_render",
+      "pdf_page": 21,
+      "step": 42,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "flap-posicion-vuelo",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-despegue-p022-s043.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "3afdfbe67f950fcae1af48831ae45e0d97e10846dc154296cf764d25cdc1eb9e",
+      "bytes": 762541,
+      "operation": "pdf_region_render",
+      "pdf_page": 22,
+      "step": 43,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "flap-posicion-despegue",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/flap-posicion-aterrizaje-p022-s044.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9d360323fbb47087d8b103bf3acbe4e0be2f75e50d3b90707da694be0798c88c",
+      "bytes": 1023817,
+      "operation": "pdf_region_render",
+      "pdf_page": 22,
+      "step": 44,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "flap-posicion-aterrizaje",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-principal-racores-p025-s050.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2764c29d192d5788afa2b9673e95f8288f775d22bba0bfb455bdd108c0f3bac9",
+      "bytes": 654517,
+      "operation": "pdf_region_render",
+      "pdf_page": 25,
+      "step": 50,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "tren-principal-racores",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-principal-freno-p027-s053.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "86630b2ab09464b535b71a1a9e9b37ed6401ee29be379acbfd6141fce0d07f58",
+      "bytes": 782795,
+      "operation": "pdf_region_render",
+      "pdf_page": 27,
+      "step": 53,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "tren-principal-freno",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-delantero-componentes-p030-s059.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "9b9f8aa22cee91fcb584df19be7271484a9a921cdc93909375f13526743dd66f",
+      "bytes": 836959,
+      "operation": "pdf_region_render",
+      "pdf_page": 30,
+      "step": 59,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "tren-delantero-componentes",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tren-delantero-pata-p030-s060.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b9e9bdbb4167bf94efdeff31f521e8bb31c2fb3cbfc8d57b2e424bc42ae381a1",
+      "bytes": 928692,
+      "operation": "pdf_region_render",
+      "pdf_page": 30,
+      "step": 60,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "tren-delantero-pata",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/puerta-tren-delantero-p034-s067.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "ed6eeb338b2734b72a2afd3e5b1d544ee1c7053900fa88d2e49bbe28e0fa5c64",
+      "bytes": 853384,
+      "operation": "pdf_region_render",
+      "pdf_page": 34,
+      "step": 67,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "puerta-tren-delantero",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/puerta-brazo-cota-13mm-p034-s068.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "0174b7d61e9f9806fb01343026dc3a16921bdeff7738bf7127f43283cba2c72c",
+      "bytes": 718750,
+      "operation": "pdf_region_render",
+      "pdf_page": 34,
+      "step": 68,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "puerta-brazo-cota-13mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-piezas-p037-s073.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "13098d4f3a36f21e281353a280588b0681bb1c746c373d5f6da1f3827658445f",
+      "bytes": 996497,
+      "operation": "pdf_region_render",
+      "pdf_page": 37,
+      "step": 73,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "elevador-piezas",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-servo-p040-s079.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b1e34860f21de22a42c28d3eae36452a0fa2d4b170b1d77a3e4aead00a3691b5",
+      "bytes": 957150,
+      "operation": "pdf_region_render",
+      "pdf_page": 40,
+      "step": 79,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "elevador-servo",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/elevador-varilla-cota-34mm-p044-s087.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "05fbee8984e12eaf59edc0cdfd7873871348da9a3c9bbe1625f8aacf8096752a",
+      "bytes": 287939,
+      "operation": "pdf_region_render",
+      "pdf_page": 44,
+      "step": 87,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "elevador-varilla-cota-34mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/timon-piezas-p046-s091.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "f67f77dd1e0ecc5a31cf1fc2aadc2d8cfb6b9fd44a991a06a66be010fbc3cbdd",
+      "bytes": 768936,
+      "operation": "pdf_region_render",
+      "pdf_page": 46,
+      "step": 91,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "timon-piezas",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/03-controls/timon-varilla-cota-39mm-p050-s099.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "5fca08cada268358699aa5a15025eedf9923b2d6c7c50d799013fded248a67cb",
+      "bytes": 287578,
+      "operation": "pdf_region_render",
+      "pdf_page": 50,
+      "step": 99,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "timon-varilla-cota-39mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/extensiones-cola-p053-s105.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "40cf15c242f451bfb97154bfee40a8a24a24c1b6ccfed5417aa68ed48ae071fb",
+      "bytes": 996640,
+      "operation": "pdf_region_render",
+      "pdf_page": 53,
+      "step": 105,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "extensiones-cola",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/tuberia-aire-4mm-p060-s119.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "6082aacc67c46b2117f7dc26ae03bd0b7e2d2ec13a82a53a1dd1c222d217a7d6",
+      "bytes": 1024370,
+      "operation": "pdf_region_render",
+      "pdf_page": 60,
+      "step": 119,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "tuberia-aire-4mm",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/circuito-humo-p064-s127.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "1f531c9d572306aab69500c699eb71de71fe7fb3fb7c4dedb7e2b69feb51cbc7",
+      "bytes": 1183617,
+      "operation": "pdf_region_render",
+      "pdf_page": 64,
+      "step": 127,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "circuito-humo",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/bomba-humo-p065-s129.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "a0c28fc21b14f29b039931f8a77167104273b216034eeba15b0a4e3189b5ef8a",
+      "bytes": 990657,
+      "operation": "pdf_region_render",
+      "pdf_page": 65,
+      "step": 129,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "bomba-humo",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/conducto-escape-campana-p066-s131.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "dbdda5d183611e1877fa8c4962c1cf2fdf10b0b81d0f2a6a49bb60d607a14369",
+      "bytes": 732250,
+      "operation": "pdf_region_render",
+      "pdf_page": 66,
+      "step": 131,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "conducto-escape-campana",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/turbina-foto-no-identificar-como-p100-p066-s132.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "bfee680991863a0ef5e4815d4edea5b6e823a516b1de4a141c24d28ecf8576ee",
+      "bytes": 1058166,
+      "operation": "pdf_region_render",
+      "pdf_page": 66,
+      "step": 132,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "turbina-foto-no-identificar-como-p100",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/conducto-en-fuselaje-p067-s133.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "82561f7d2a120d7ff3957c7b23ae5b458489a22869f172fed0367da3d6fb0634",
+      "bytes": 1093728,
+      "operation": "pdf_region_render",
+      "pdf_page": 67,
+      "step": 133,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "conducto-en-fuselaje",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/05-propulsion/bancada-turbina-p067-s134.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "ce0e5ba1d81a20864f6b9f807a1b8c67bb822aa41294cd3bc9d549b25860f751",
+      "bytes": 1329086,
+      "operation": "pdf_region_render",
+      "pdf_page": 67,
+      "step": 134,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "bancada-turbina",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tubos-humo-cerca-turbina-p068-s135.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "791b0ff16f08b17550508a94f615e766ee820dcd13c22912f53448a121bbc6b5",
+      "bytes": 1169806,
+      "operation": "pdf_region_render",
+      "pdf_page": 68,
+      "step": 135,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "tubos-humo-cerca-turbina",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/bomba-instalacion-p068-s136.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "63dd4d2939908ae8281d92f29abed12fafaa07d0871e93011cb51b686c46a79e",
+      "bytes": 1060412,
+      "operation": "pdf_region_render",
+      "pdf_page": 68,
+      "step": 136,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "bomba-instalacion",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-circuito-p069-s138.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b7248ddd1cfd60f1b41bd3a6f808b5d018a51925da6c09264f4de5e81a1d5810",
+      "bytes": 699722,
+      "operation": "pdf_region_render",
+      "pdf_page": 69,
+      "step": 138,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "depositos-neumaticos-circuito",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-fijacion-p070-s139.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "c94cd43a2b7e2fa176f795c5806a59f5ca28fb012a00765ef83525f41512f055",
+      "bytes": 1130657,
+      "operation": "pdf_region_render",
+      "pdf_page": 70,
+      "step": 139,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "depositos-neumaticos-fijacion",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/neumatica-entrada-alas-p071-s141.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "2dbd139e6b9c2299bf4ccd0df41213e45b7195f2d229f32d66c267938545a67c",
+      "bytes": 967654,
+      "operation": "pdf_region_render",
+      "pdf_page": 71,
+      "step": 141,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "neumatica-entrada-alas",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/depositos-neumaticos-instalados-p072-s143.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "51e53e0be7e0ab4325a27d612979ca1b32c1f37f116532919a4c59b61f9892c7",
+      "bytes": 1060478,
+      "operation": "pdf_region_render",
+      "pdf_page": 72,
+      "step": 143,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "depositos-neumaticos-instalados",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/04-gear/valvulas-aire-tren-freno-p072-s144.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "ec229a83245160a7fb58b8b768e77df12898314e5ac2c2389b142728875eafdf",
+      "bytes": 995759,
+      "operation": "pdf_region_render",
+      "pdf_page": 72,
+      "step": 144,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "valvulas-aire-tren-freno",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tanque-conexion-humo-p073-s145.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "8a0c70bc2b2cf4e7e0b2d82efead5e9547ea9ca7b969ae7ae426d4f6c8150cff",
+      "bytes": 1040127,
+      "operation": "pdf_region_render",
+      "pdf_page": 73,
+      "step": 145,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "tanque-conexion-humo",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/tanque-queroseno-humo-conexiones-p073-s146.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "37e87c607b5462f1a77c48459efdf999dee3835c1ff83a4e33af9d157655ee03",
+      "bytes": 1040788,
+      "operation": "pdf_region_render",
+      "pdf_page": 73,
+      "step": 146,
+      "box_px": [
+        0,
+        852,
+        1191,
+        833
+      ],
+      "dpi": 144,
+      "purpose": "tanque-queroseno-humo-conexiones",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        833
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/06-installation/baterias-receptor-p075-s149.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "b50fdb54410c3821d8944b5a363a89a4cdcab5c1f4c0f6deff88ba9473d3f247",
+      "bytes": 1131600,
+      "operation": "pdf_region_render",
+      "pdf_page": 75,
+      "step": 149,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "baterias-receptor",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/02-canopy/cabina-acceso-p090-s179.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "d9761775aa727cc8e149b0a98f01c216afbcc198b93e09de77cb6bcc5bba0930",
+      "bytes": 684389,
+      "operation": "pdf_region_render",
+      "pdf_page": 90,
+      "step": 179,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "cabina-acceso",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/07-datum/cg-desde-borde-ataque-raiz-p091-s181.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "source_sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a",
+      "sha256": "3fc5a450420b1b6afd6abf65974a14ca448d383e7a496580cf1251ef0a3b2bd4",
+      "bytes": 876673,
+      "operation": "pdf_region_render",
+      "pdf_page": 91,
+      "step": 181,
+      "box_px": [
+        0,
+        0,
+        1191,
+        838
+      ],
+      "dpi": 144,
+      "purpose": "cg-desde-borde-ataque-raiz",
+      "caveat": "Perspectiva y rótulos originales; cotas solo donde están dibujadas",
+      "size_px": [
+        1191,
+        838
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/recorridos-mandos.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+      "source_sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134",
+      "sha256": "4fddbf9c18e2e32ec181c12be8ea691c2c4cc42bab7c99489623dc0c492e4156",
+      "bytes": 146985,
+      "operation": "pdf_page_render",
+      "pdf_page": 4,
+      "dpi": 120,
+      "purpose": "recorridos-mandos",
+      "size_px": [
+        992,
+        1404
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/datum-cg.png",
+      "source": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "source_url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+      "source_sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134",
+      "sha256": "256d7a7f131f3e0f539ec4f8b573c94e121a560b058c956ff3ecef44b453d39b",
+      "bytes": 139766,
+      "operation": "pdf_page_render",
+      "pdf_page": 5,
+      "dpi": 120,
+      "purpose": "datum-cg",
+      "size_px": [
+        992,
+        1404
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/p100rx-cotas.png",
+      "source": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+      "source_sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5",
+      "sha256": "af84a5811dd24cb82aab58a1cf8cb359b7177e8d04a97de505e2eb9aed1c0fc6",
+      "bytes": 724343,
+      "operation": "pdf_page_render",
+      "pdf_page": 1,
+      "dpi": 120,
+      "purpose": "p100rx-cotas",
+      "size_px": [
+        1985,
+        1404
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/details/p100rx-tabla-catalogo.png",
+      "source": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
+      "source_url": "https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf",
+      "source_sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5",
+      "sha256": "821ab21549c7fdde6aa0d25d350a66b408bb3acf0be2148efb4f6ce5bdc070ac",
+      "bytes": 1114373,
+      "operation": "pdf_page_render",
+      "pdf_page": 15,
+      "dpi": 120,
+      "purpose": "p100rx-tabla-catalogo",
+      "size_px": [
+        2684,
+        1012
+      ]
+    }
+  ]
+}

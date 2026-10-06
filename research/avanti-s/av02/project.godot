@@ -1,0 +1,13 @@
+config_version=5
+
+[application]
+config/name="Avanti S — isolated visual study"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=800
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.75, 0.83, 0.89, 1)

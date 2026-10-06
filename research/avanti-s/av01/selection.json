@@ -1,0 +1,305 @@
+{
+  "photos": {
+    "ground-CIMG7297": "01-airframe/a200-vista-oblicua-presentacion",
+    "ground-CIMG7299": "06-installation/a200-compartimentos-vista-alta-abiertos",
+    "ground-CIMG7305": "05-propulsion/a200-turbina-interna-modelo-no-identificado",
+    "ground-CIMG7307": "06-installation/a200-electronica-cableado",
+    "ground-CIMG7310": "01-airframe/a200-perfil-oblicuo-derecha",
+    "ground-CIMG7313": "01-airframe/a200-vista-trasera-alta",
+    "ground-CIMG7316": "02-canopy/a200-cabina-lateral-detalle",
+    "ground-CIMG7319": "01-airframe/a200-vista-delantera-oblicua",
+    "ground-CIMG7321": "01-airframe/a200-frente-alto-perspectiva",
+    "ground-CIMG7325": "01-airframe/a200-oblicua-superior",
+    "ground-CIMG7344": "04-gear/a200-nariz-tomas-tren-frontal",
+    "ground-CIMG7349": "01-airframe/a200-presentacion-lateral",
+    "ground-top": "01-airframe/a200-presentacion-persona-no-cenital",
+    "ground-top-2": "08-livery/a200-silueta-atardecer",
+    "flight-VOLO": "08-livery/a200-suelo-humo",
+    "flight-VOLO-OK": "08-livery/a200-suelo-presentacion",
+    "flight-VOLO-1": "04-gear/a200-frente-tren-visible",
+    "flight-VOLO-10": "08-livery/a200-intrados-alabeo",
+    "flight-VOLO-12": "08-livery/a200-vuelo-lateral-humo-01",
+    "flight-VOLO-14": "08-livery/a200-vuelo-oblicuo-humo",
+    "flight-VOLO-18": "08-livery/a200-ala-en-alabeo-perspectiva",
+    "flight-VOLO-20": "08-livery/a200-vuelo-lateral-humo-02",
+    "flight-VOLO-24": "04-gear/a200-tren-visible-oblicua",
+    "flight-VOLO-26": "04-gear/a200-tren-visible-lateral",
+    "product-00": "08-livery/a200-librea-clasica-vuelo",
+    "product-01": "08-livery/a200-librea-amarilla-presentacion",
+    "product-02": "08-livery/a200-librea-clasica-presentacion"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "page": 1,
+      "half": "top",
+      "name": "03-controls/ala-flaps-alerones-desmontados"
+    },
+    {
+      "step": 3,
+      "page": 2,
+      "half": "top",
+      "name": "03-controls/flap-bisagras"
+    },
+    {
+      "step": 7,
+      "page": 4,
+      "half": "top",
+      "name": "03-controls/aleron-bisagras"
+    },
+    {
+      "step": 16,
+      "page": 8,
+      "half": "bottom",
+      "name": "03-controls/aleron-varilla-cota-60mm"
+    },
+    {
+      "step": 28,
+      "page": 14,
+      "half": "bottom",
+      "name": "03-controls/flap-brazo-cota-13mm"
+    },
+    {
+      "step": 29,
+      "page": 15,
+      "half": "top",
+      "name": "03-controls/flap-varilla-cota-52mm"
+    },
+    {
+      "step": 39,
+      "page": 20,
+      "half": "top",
+      "name": "03-controls/flap-servo-varillaje"
+    },
+    {
+      "step": 41,
+      "page": 21,
+      "half": "top",
+      "name": "03-controls/flap-eje-palanca"
+    },
+    {
+      "step": 42,
+      "page": 21,
+      "half": "bottom",
+      "name": "03-controls/flap-posicion-vuelo"
+    },
+    {
+      "step": 43,
+      "page": 22,
+      "half": "top",
+      "name": "03-controls/flap-posicion-despegue"
+    },
+    {
+      "step": 44,
+      "page": 22,
+      "half": "bottom",
+      "name": "03-controls/flap-posicion-aterrizaje"
+    },
+    {
+      "step": 50,
+      "page": 25,
+      "half": "bottom",
+      "name": "04-gear/tren-principal-racores"
+    },
+    {
+      "step": 53,
+      "page": 27,
+      "half": "top",
+      "name": "04-gear/tren-principal-freno"
+    },
+    {
+      "step": 59,
+      "page": 30,
+      "half": "top",
+      "name": "04-gear/tren-delantero-componentes"
+    },
+    {
+      "step": 60,
+      "page": 30,
+      "half": "bottom",
+      "name": "04-gear/tren-delantero-pata"
+    },
+    {
+      "step": 67,
+      "page": 34,
+      "half": "top",
+      "name": "04-gear/puerta-tren-delantero"
+    },
+    {
+      "step": 68,
+      "page": 34,
+      "half": "bottom",
+      "name": "04-gear/puerta-brazo-cota-13mm"
+    },
+    {
+      "step": 73,
+      "page": 37,
+      "half": "top",
+      "name": "03-controls/elevador-piezas"
+    },
+    {
+      "step": 79,
+      "page": 40,
+      "half": "top",
+      "name": "03-controls/elevador-servo"
+    },
+    {
+      "step": 87,
+      "page": 44,
+      "half": "top",
+      "name": "03-controls/elevador-varilla-cota-34mm"
+    },
+    {
+      "step": 91,
+      "page": 46,
+      "half": "top",
+      "name": "03-controls/timon-piezas"
+    },
+    {
+      "step": 99,
+      "page": 50,
+      "half": "top",
+      "name": "03-controls/timon-varilla-cota-39mm"
+    },
+    {
+      "step": 105,
+      "page": 53,
+      "half": "top",
+      "name": "06-installation/extensiones-cola"
+    },
+    {
+      "step": 119,
+      "page": 60,
+      "half": "top",
+      "name": "04-gear/tuberia-aire-4mm"
+    },
+    {
+      "step": 127,
+      "page": 64,
+      "half": "top",
+      "name": "06-installation/circuito-humo"
+    },
+    {
+      "step": 129,
+      "page": 65,
+      "half": "top",
+      "name": "06-installation/bomba-humo"
+    },
+    {
+      "step": 131,
+      "page": 66,
+      "half": "top",
+      "name": "05-propulsion/conducto-escape-campana"
+    },
+    {
+      "step": 132,
+      "page": 66,
+      "half": "bottom",
+      "name": "05-propulsion/turbina-foto-no-identificar-como-p100"
+    },
+    {
+      "step": 133,
+      "page": 67,
+      "half": "top",
+      "name": "05-propulsion/conducto-en-fuselaje"
+    },
+    {
+      "step": 134,
+      "page": 67,
+      "half": "bottom",
+      "name": "05-propulsion/bancada-turbina"
+    },
+    {
+      "step": 135,
+      "page": 68,
+      "half": "top",
+      "name": "06-installation/tubos-humo-cerca-turbina"
+    },
+    {
+      "step": 136,
+      "page": 68,
+      "half": "bottom",
+      "name": "06-installation/bomba-instalacion"
+    },
+    {
+      "step": 138,
+      "page": 69,
+      "half": "bottom",
+      "name": "04-gear/depositos-neumaticos-circuito"
+    },
+    {
+      "step": 139,
+      "page": 70,
+      "half": "top",
+      "name": "04-gear/depositos-neumaticos-fijacion"
+    },
+    {
+      "step": 141,
+      "page": 71,
+      "half": "top",
+      "name": "04-gear/neumatica-entrada-alas"
+    },
+    {
+      "step": 143,
+      "page": 72,
+      "half": "top",
+      "name": "04-gear/depositos-neumaticos-instalados"
+    },
+    {
+      "step": 144,
+      "page": 72,
+      "half": "bottom",
+      "name": "04-gear/valvulas-aire-tren-freno"
+    },
+    {
+      "step": 145,
+      "page": 73,
+      "half": "top",
+      "name": "06-installation/tanque-conexion-humo"
+    },
+    {
+      "step": 146,
+      "page": 73,
+      "half": "bottom",
+      "name": "06-installation/tanque-queroseno-humo-conexiones"
+    },
+    {
+      "step": 149,
+      "page": 75,
+      "half": "top",
+      "name": "06-installation/baterias-receptor"
+    },
+    {
+      "step": 179,
+      "page": 90,
+      "half": "top",
+      "name": "02-canopy/cabina-acceso"
+    },
+    {
+      "step": 181,
+      "page": 91,
+      "half": "top",
+      "name": "07-datum/cg-desde-borde-ataque-raiz"
+    }
+  ],
+  "crop_method": {
+    "dpi": 144,
+    "page_size_points": [
+      595.32,
+      842.04
+    ],
+    "top_box_px": [
+      0,
+      0,
+      1191,
+      838
+    ],
+    "bottom_box_px": [
+      0,
+      852,
+      1191,
+      833
+    ],
+    "note": "Cortes alrededor de la franja central blanca. Conservar etiquetas de step al pie; cotejar con página completa."
+  }
+}

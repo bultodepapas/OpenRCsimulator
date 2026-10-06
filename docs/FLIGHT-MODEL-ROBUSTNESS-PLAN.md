@@ -1,5 +1,7 @@
 # Plan de robustez y realismo del modelo de vuelo
 
+> Actualización 2026-10-06: reparación implementada en el árbol de trabajo. Ver [cambios, pruebas y límites](research/flight-repair-implementation.md). D9-R1/R2, D4-R1, D1-R1 y D8a-R1 tienen implementación y regresiones; el rudder usa superficies/derivadas enlazadas. Gate 2 (validación con piloto), propwash y equilibrio de eje siguen abiertos. El texto fechado 2026-10-05 se conserva como plan original.
+
 2026-10-05 · Propuesta de continuación de D8b, D9, D10, Gate F y E0. **Investigación completada; cambios de física pendientes.**
 
 [Evidencia y límites](research/flight-model-robustness-audit.md) · [Mediciones reproducibles](research/flight-robustness/results.json) · [Plan específico del rudder](RUDDER-REPAIR-PLAN.md).

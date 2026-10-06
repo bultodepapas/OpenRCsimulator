@@ -4,7 +4,8 @@ config_version=5
 [application]
 
 config/name="OpenRC Simulator"
-run/main_scene="res://main.tscn"
+; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
+run/main_scene="res://app_root.tscn"
 config/features=PackedStringArray("4.7")
 
 [display]
@@ -27,3 +28,9 @@ renderer/rendering_method.mobile="gl_compatibility"
 anti_aliasing/quality/msaa_3d=2
 ; Required by Godot's macOS exporter for universal/arm64 builds (PT1); the app imports no textures, so nothing else changes.
 textures/vram_compression/import_etc2_astc=true
+
+[internationalization]
+
+; UI-01d: English is the source and default language (set by app_root, not the OS locale); one gettext .po per
+; other language. .po files load without an import step and are exported with all_resources (probe 23).
+locale/translations=PackedStringArray("res://i18n/es.po")

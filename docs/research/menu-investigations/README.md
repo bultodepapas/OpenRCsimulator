@@ -36,6 +36,8 @@
 | 21 | [Versión de build en el export](21-version-build-export.md) | ¿Cómo mostrar la misma versión que el ZIP sin Git en el ejecutable? | [sonda de export PCK](probes/21-build-info-probe.sh) |
 | 22 | [Referencias UX de videojuegos](22-referencias-ux-juegos.md) | ¿Qué guías de la industria refuerzan, matizan o contradicen el plan? | lectura de guías |
 
+Después de la ronda, la [sonda 23](probes/23-po-translation-probe.sh) comprobó el formato de traducción elegido para UI-01d: un `.po` carga sin importar, entra en el PCK sin filtro de inclusión, y el motor arranca en el idioma del sistema operativo.
+
 Las sondas viven en [probes/](probes/), **fuera de `app/`**: `app/test.sh` no las parsea y no pueden romper el trabajo paralelo. Cada una indica en su cabecera cómo ejecutarla con `.tools/Godot_v4.7.2-stable_linux.x86_64`. Se ejecutaron sin GPU, sin pantalla real, sin sonido y sin radio conectada: lo que dependa de hardware sigue marcado como **Pendiente** en cada informe.
 
 ### Decisiones de la ronda 3

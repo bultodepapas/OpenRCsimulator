@@ -687,6 +687,593 @@
       "usage": "Local reference only; not a distributable game asset; original rights retained",
       "status": "failed",
       "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-official-page.html",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/tank-foto.html",
+      "content_type": "text/html",
+      "bytes": 5145,
+      "sha256": "af44aca95581389573bf082f5335bbae606bca8ff0578f0e70e9d3a05bde787b",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/tank-foto.html"
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-01.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/01.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 21855,
+      "sha256": "4e499441ff346e1ab29e0e05e4d007c540ea04fec385a4ec131951d3143c30c4",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/01.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-02.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/02.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 35498,
+      "sha256": "34df72474b49caf82206d8a39df67af6d8a4722d3bed8d6a333de4a182a0ab58",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/02.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-03.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/03.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 33073,
+      "sha256": "3161f7ce763d85b22b314d2d76bae6049828cd741938b537ebb2c9f912fca431",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/03.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-04.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/04.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 35255,
+      "sha256": "1c648eb03b4355cb7e937a799535dddb2481f8551c725cb7b43afb7b7ea9379a",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/04.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-05.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/05.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 39867,
+      "sha256": "52e3520e9ec2003ab160ca9fa68b71924bdd55c9b84280f00ac2642c7f579a8f",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/05.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-06.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/06.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 30795,
+      "sha256": "f37843f717d320298ea72493d990dae950e37c107b115c4c03076a457afae3c4",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/06.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-07.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/07.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 24866,
+      "sha256": "fb31ea9c88b89110b5183dfa566685e1429e8afc16a235c3365ab9ed5b95cb13",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/07.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-08.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/08.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 24347,
+      "sha256": "b4c1b6b94e91444db2e8a368e84b3fffaf7e6a99eef4e124d39a74a9a4d517dd",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/08.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-09.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/09.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 28455,
+      "sha256": "e3a6d41f0533ac5a26b68094a0f79ad7bfafce29771a69365440b5957004c25b",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/09.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-10.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/10.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 22239,
+      "sha256": "95ce48ba469761a92222bb0724057df72913084af40204d9def736e131195d27",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/10.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-11.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/11.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 19893,
+      "sha256": "6be0298428b32afb270758f4126e2a1d78ba12aa6043435a91d28731a139df05",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/11.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-12.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/12.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 20131,
+      "sha256": "aa83aee171a33176fe54893ab31eda70febe135897cb05d6d81b49e8acffe225",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/12.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/fuel-13.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/Tank/13.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 17214,
+      "sha256": "38f59df21d4fdb8606cf0e2119457fd14362680c41adeaf15705cdc699a64736",
+      "group": "fuel",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_kero_smoke_tank",
+      "purpose": "Secuencia oficial del depósito queroseno/humo; volumen no publicado",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/Tank/13.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-official-page.html",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/vector%20thrust.html",
+      "content_type": "text/html",
+      "bytes": 4748,
+      "sha256": "144e85eb59fe26a29313e34f2e70479d5382c80da1f0a4811153ac2dd5b06ab8",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/vector%20thrust.html"
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-00.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-00.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 40216,
+      "sha256": "cd22ad503a0ae1f07078fa4279a8ef60a8d31bad2e69977823de86cca3d20d31",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-00.jpg",
+      "image_size_px": [
+        700,
+        292
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-01.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-01.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 21416,
+      "sha256": "544207ec5505e45aa15548d4f0a0f4d80ef68b3c558519e20884172f825f41cb",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-01.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-02.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-02.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 22697,
+      "sha256": "b4198550aada3d31da79dfb9a2bbae27ace3b907490b4b927fcacf2afae38876",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-02.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-03.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-03.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 24609,
+      "sha256": "dd183654c158162edfed47354ef22a151211434fa4181b6bb63c5b1753161db3",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-03.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-04.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-04.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 28184,
+      "sha256": "438071565a34d4342b53ef4289c4e1cb64ef4028c6a3695af35c10725d57b5a0",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-04.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-05.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-05.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 24904,
+      "sha256": "83c6f00aeef0e0920e68ed6b6f1c8e6aaf8704f75515c840e5f6625c12ae3b34",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-05.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-06.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-06.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 23505,
+      "sha256": "baece120b3b7ac46fdca93497ecf198349d49218d4c3bc485460ec1bf2044481",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-06.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-07.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-07.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 28966,
+      "sha256": "90f0111b9ef0f1641fd9631eb87038b9c8a5f68ee0269996ab349f22f3738140",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-07.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-08.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-08.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 22231,
+      "sha256": "6ef5abdc5ce7a19616b58e65d9f6c565345fa5fd04639d53757dd49a6691ccaf",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-08.jpg",
+      "image_size_px": [
+        330,
+        246
+      ]
+    },
+    {
+      "path": "references/avanti-s/organized/new-sources/optional-vector-ves-09.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/VES/ves-09.jpg",
+      "content_type": "image/jpeg",
+      "bytes": 57143,
+      "sha256": "c213d1cae0b9955f1964d9e80cb1cdbb6022ffe7325802d4e7f47c41c1259593",
+      "group": "optional-vector",
+      "access_date": "2026-10-05",
+      "usage": "Local study only; original rights retained",
+      "status": "downloaded",
+      "variant": "a200_optional_vector_not_baseline",
+      "purpose": "Instalación vectorial opcional; comparación fuera del P100 fijo",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/VES/ves-09.jpg",
+      "image_size_px": [
+        696,
+        390
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-01-perfil-izquierdo-atardecer.jpg",
+      "url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-01.JPG",
+      "resolved_url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-01.JPG",
+      "purpose": "Foto oficial 4320x3240: perfil-izquierdo-atardecer; perspectiva, sin calibración",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 8205613,
+      "sha256": "beca795f29a65a0d71a772b1fb686aba2889387d44266e7db1606fe6a0f70446",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-02-oblicua-frontal-derecha.jpg",
+      "url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-02.JPG",
+      "resolved_url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-02.JPG",
+      "purpose": "Foto oficial 4320x3240: oblicua-frontal-derecha; perspectiva, sin calibración",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 6235887,
+      "sha256": "3b849bd1d9821160439a195cee2d6b4b646c3d34249701248a0c0299fa5cb1cd",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-03-oblicua-frontal-izquierda.jpg",
+      "url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-03.JPG",
+      "resolved_url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-03.JPG",
+      "purpose": "Foto oficial 4320x3240: oblicua-frontal-izquierda; perspectiva, sin calibración",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 5833154,
+      "sha256": "5f61a09fd8d6a98fd27905a679ce3b3bea48da3528be306a73ed483130a92f44",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-04-perfil-oblicuo-presentacion.jpg",
+      "url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-04.JPG",
+      "resolved_url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-04.JPG",
+      "purpose": "Foto oficial 4320x3240: perfil-oblicuo-presentacion; perspectiva, sin calibración",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 5897529,
+      "sha256": "72c371cdb8e34bd0a88189c88202ac8f251ce42d0018c38907a35ba198a3ca7b",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-hq-05-cabina-detalle.jpg",
+      "url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-05.JPG",
+      "resolved_url": "https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-05.JPG",
+      "purpose": "Foto oficial 4320x3240: cabina-detalle; perspectiva, sin calibración",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 5718523,
+      "sha256": "5366c31453a5631c379978e5c9b8103b9bca4d7ff42889afb0ab0352b47c65f8",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        4320,
+        3240
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-familia-tubos-01-sin-cotas.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/3tubi-01.jpg",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/3tubi-01.jpg",
+      "purpose": "Comparación oficial de tubos; no identifica dimensión individual A200-13",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 27893,
+      "sha256": "6d39f4015ccf3800ad7846973caa4f80a20d3c91a180437226a60826f66a1e43",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        300,
+        375
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/a200-familia-tubos-02-sin-cotas.jpg",
+      "url": "https://www.sebart.it/img-jets/Avanti/3tubi-02.jpg",
+      "resolved_url": "https://www.sebart.it/img-jets/Avanti/3tubi-02.jpg",
+      "purpose": "Comparación oficial de tubos; no identifica dimensión individual A200-13",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 44354,
+      "sha256": "40a131a3ea8eb7dc45f10cf9dd7106c3d4644d175ccb3ce57d9566842eda02e1",
+      "content_type": "image/jpeg",
+      "usage": "Local reference only; original rights retained; not a distributable game asset",
+      "image_size_px": [
+        620,
+        434
+      ]
+    },
+    {
+      "path": "references/avanti-s/high-resolution/sebart-downloads.html",
+      "url": "https://www.sebart.it/download/",
+      "resolved_url": "https://www.sebart.it/download/",
+      "purpose": "Procedencia oficial de fotografías/opción A200-13",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 31926,
+      "sha256": "dd8462e65bcad7ed7bbc1e4ca04c346d9d04af7626b7e45f2e0094cd8d7d3299",
+      "content_type": "text/html",
+      "usage": "Local reference only; original rights retained; not a distributable game asset"
+    },
+    {
+      "path": "references/avanti-s/high-resolution/sebart-accessories.html",
+      "url": "https://www.sebart.it/accessories.html",
+      "resolved_url": "https://www.sebart.it/accessories.html",
+      "purpose": "Procedencia oficial de fotografías/opción A200-13",
+      "variant": "sebart_avanti_s_a200_original",
+      "status": "downloaded",
+      "access_date": "2026-10-06",
+      "bytes": 65790,
+      "sha256": "fc7a10fcf0c1ea7c2cb58f69f001167d3a161c680940d1c75ab0825672e63553",
+      "content_type": "text/html",
+      "usage": "Local reference only; original rights retained; not a distributable game asset"
     }
   ]
 }

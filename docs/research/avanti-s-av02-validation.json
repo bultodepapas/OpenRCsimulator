@@ -1,0 +1,226 @@
+{
+  "schema": "openrc-avanti-av02-validation-v1",
+  "date": "2026-10-06",
+  "scope": "Isolated native Godot visual prototype, not application integration or flight validation",
+  "authored_files": [
+    {
+      "path": "research/avanti-s/av02/README.md",
+      "sha256": "3742b689b200c0f2b37539aa5e20cb6ec08ebf56b8dcf522ebc79f98f9ffb628"
+    },
+    {
+      "path": "research/avanti-s/av02/geometry.json",
+      "sha256": "a82624d3765d04dd55fa3531c9e54a1166467ded130577ec1ec9b9145815ed7a"
+    },
+    {
+      "path": "research/avanti-s/av02/inspect.gd",
+      "sha256": "e598fcecb5e38cb4b3b4d957e60ef67a728f57422a7741d3c5d5c7f47872f7a6"
+    },
+    {
+      "path": "research/avanti-s/av02/model.gd",
+      "sha256": "72fe03c5c47d9f72adee9a8caea79e41a4b2d1c0f614cd9710fd8cba8e8a7bab"
+    },
+    {
+      "path": "research/avanti-s/av02/project.godot",
+      "sha256": "2ee6f52f38f6d7ee5986da3310161f389e08a588610aadfe2669c3d471e885cf"
+    },
+    {
+      "path": "research/avanti-s/av02/verify.gd",
+      "sha256": "1dcdd6d2fb43eec7317a97349eb3077a95817829d37486a77f45e6726f262d73"
+    }
+  ],
+  "capture_manifest": {
+    "captures": [
+      {
+        "camera_position_m": [
+          -2.59999990463257,
+          1.60000002384186,
+          -2.79999995231628
+        ],
+        "file": "oblique-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 0,
+        "sha256": "d818b06f3f18b2ea26bb87b7da866d11220c7c87181ba26b8ffbeeb10a794756",
+        "view": "oblique"
+      },
+      {
+        "camera_position_m": [
+          0.0,
+          5.0,
+          0.0500000007450581
+        ],
+        "file": "top-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 1,
+        "sha256": "6d74189832cb33da3012b1a2db3d1eaee5b2b91b1c8f4fdd49150100f689e872",
+        "view": "top"
+      },
+      {
+        "camera_position_m": [
+          -5.0,
+          0.0,
+          0.0500000007450581
+        ],
+        "file": "side-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 1,
+        "sha256": "d663aa9d556df102df5688d5544a861b22feb8d5582e92b7683d6cd36bbbf6a4",
+        "view": "side"
+      },
+      {
+        "camera_position_m": [
+          0.0,
+          0.0,
+          -5.0
+        ],
+        "file": "front-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 1,
+        "sha256": "e4fd48ea71dc1d27ebfc8a9f2a30880442773256bbc03b64738ffd6b0cfd54db",
+        "view": "front"
+      },
+      {
+        "camera_position_m": [
+          0.0,
+          -5.0,
+          0.0500000007450581
+        ],
+        "file": "bottom-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 1,
+        "sha256": "575e56930653a5324fbc0de01d6cb6fe0690349970f579dd574945ed251b324d",
+        "view": "bottom"
+      },
+      {
+        "camera_position_m": [
+          2.59999990463257,
+          1.60000002384186,
+          2.79999995231628
+        ],
+        "file": "rear-flap0.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 0,
+        "sha256": "9f33e4e5dde62ac095fc0e561fae9cc001cd99a2590122933e3c8135760a29a2",
+        "view": "rear"
+      },
+      {
+        "camera_position_m": [
+          2.59999990463257,
+          1.60000002384186,
+          2.79999995231628
+        ],
+        "file": "rear-flap20.png",
+        "flap_deg": 20.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 0,
+        "sha256": "f3f5393e3c832b609703ba8d31e472c3d4f510f1f8a58000d8ca845aa4430eeb",
+        "view": "rear"
+      },
+      {
+        "camera_position_m": [
+          2.59999990463257,
+          1.60000002384186,
+          2.79999995231628
+        ],
+        "file": "rear-flap50.png",
+        "flap_deg": 50.0,
+        "fov_deg": 40.0,
+        "interior": false,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 0,
+        "sha256": "30b9d47201cbfaeb64b04dd4280fb3fd7817939d1680df58dddf1621f2024f97",
+        "view": "rear"
+      },
+      {
+        "camera_position_m": [
+          -2.59999990463257,
+          1.60000002384186,
+          -2.79999995231628
+        ],
+        "file": "oblique-flap0-inside.png",
+        "flap_deg": 0.0,
+        "fov_deg": 40.0,
+        "interior": true,
+        "ortho_size_m": 3.20000004768372,
+        "projection": 0,
+        "sha256": "bd00d349a128568b3c9807e68ca27b7843f23e68f5f85b1ca8cc38fd38a2fc27",
+        "view": "oblique"
+      }
+    ],
+    "geometry_sha256": "a82624d3765d04dd55fa3531c9e54a1166467ded130577ec1ec9b9145815ed7a",
+    "godot": "4.7.2-stable (official)",
+    "image_size": [
+      1280,
+      800
+    ],
+    "inspector_sha256": "e598fcecb5e38cb4b3b4d957e60ef67a728f57422a7741d3c5d5c7f47872f7a6",
+    "model_sha256": "72fe03c5c47d9f72adee9a8caea79e41a4b2d1c0f614cd9710fd8cba8e8a7bab",
+    "revision": "a200-av02-blockout-01",
+    "status": "isolated visual study; not calibrated, not flyable"
+  },
+  "reference_originals_verified": 76,
+  "new_originals": 9,
+  "high_resolution_photos": 5,
+  "high_resolution_size_px": [
+    4320,
+    3240
+  ],
+  "local_gallery_links_checked": 35,
+  "model_checks": {
+    "checks": 10240,
+    "failures": [],
+    "fuselage_length_m": 2.21999979019165,
+    "geometry_sha256": "a82624d3765d04dd55fa3531c9e54a1166467ded130577ec1ec9b9145815ed7a",
+    "godot": "4.7.2-stable (official)",
+    "hinges": 7,
+    "limits": [
+      "Not aerodynamic validation",
+      "No full swept-volume intersection test",
+      "Approximate contours"
+    ],
+    "span_m": 2.0
+  },
+  "clean_clone": {
+    "date": "2026-10-06",
+    "method": "Fresh local git clone with current authored AV02 directory overlaid; ignored references and Godot cache not copied",
+    "head": "59cca5613fd235d9c6360eee3531a398851ec075",
+    "references_absent": true,
+    "headless_exit": 0,
+    "headless_stderr": "",
+    "mutation": "In temporary clone only, invert right flap sign",
+    "mutation_exit": 1,
+    "detected": "flap_right must go DOWN",
+    "godot_binary": "Repository pinned 4.7.2, supplied externally to clone"
+  },
+  "visual_review": [
+    "Oblique, side, top, rear flap50 inspected in initial capture",
+    "Top reframed in final series to clear UI",
+    "No calibrated photo-to-mesh fit claimed"
+  ],
+  "capture_environment": "Xvfb, Mesa llvmpipe, OpenGL Compatibility, Dummy audio; VSync unsupported warning",
+  "limitations": [
+    "No app integration, flight data or aerodynamic validation",
+    "Estimated sections and hinge positions; constant-thickness wing panels",
+    "No swept-volume intersection certification",
+    "Gear fixed retracted, fences and detailed livery pending"
+  ]
+}

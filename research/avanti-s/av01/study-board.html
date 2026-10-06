@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Avanti S A200 · dimensiones y mandos</title>
+<style>
+body{font:17px system-ui,sans-serif;margin:0;background:#eef2f5;color:#183044}main{max-width:1080px;margin:auto;padding:2rem}section{background:white;border-radius:12px;padding:1.5rem;margin:1.4rem 0}h1{margin-bottom:.4rem}h2{font-size:1.3rem}p{max-width:80ch;line-height:1.5}svg{width:100%;height:auto}text{font:18px system-ui;fill:#183044}button{font:inherit;padding:.7rem 1rem;margin:.3rem;border:1px solid #17628e;border-radius:6px;background:white;color:#174869;cursor:pointer}button[aria-pressed=true]{background:#17628e;color:white}a{color:#175c87}table{border-collapse:collapse;width:100%}td,th{padding:.6rem;border-bottom:1px solid #ddd;text-align:left}.note{color:#546675;font-size:.95rem}output{display:block;padding:1rem 0;font-weight:bold}input{width:80%}
+</style>
+<style>
+*{box-sizing:border-box}table{table-layout:fixed}td,th{overflow-wrap:anywhere}
+@media(max-width:600px){main{padding:1rem}section{padding:1rem}td,th{padding:.4rem;font-size:13px}button{font-size:15px}}
+</style>
+<main>
+<a href="index.html">← Galería de referencias</a>
+<h1>Avanti S A200</h1>
+<p>Dimensiones nominales y estudio de mandos · P100-RX, catálogo 2017 · AV-01 parcial</p>
+<section>
+<h2>Dimensiones a una misma escala</h2>
+<p>Las barras comparan longitudes. No son la silueta del avión ni la ubicación del motor en el fuselaje.</p>
+<svg id="sizes" viewBox="0 0 960 290" role="img" aria-label="Comparación a escala de longitud, envergadura y turbina"></svg>
+<p id="ratios"></p>
+<p class="note">El diámetro de 60 mm es la salida del motor. La salida del conducto Avanti y la posición longitudinal de la bancada siguen pendientes.</p>
+</section>
+<section>
+<h2>Flaps: tres posiciones documentadas</h2>
+<div id="presets"><button data-angle="0" aria-pressed="true">Vuelo · 0°</button><button data-angle="20" aria-pressed="false">Despegue · 20°</button><button data-angle="50" aria-pressed="false">Aterrizaje · 50°</button></div>
+<svg viewBox="0 0 900 380" role="img" aria-label="Esquema lateral de giro de flap sobre su bisagra">
+<path d="M70 110 L430 110" stroke="#516d80" stroke-width="14"/>
+<path d="M430 110 H770" stroke="#a1b5c3" stroke-dasharray="8 8"/>
+<g id="flap"><path d="M430 110 L690 110" stroke="#df692e" stroke-width="17" stroke-linecap="round"/></g>
+<circle cx="430" cy="110" r="9" fill="#183044"/>
+<text x="80" y="65">Superficie fija</text><text x="400" y="80">Bisagra</text>
+<text x="72" y="355">Longitud dibujada arbitraria; se demuestra solo el ángulo.</text>
+</svg>
+<output id="flap-info"></output>
+<p class="note">Las mezclas 8%/20% son ajustes recomendados de emisora hacia elevador abajo. No equivalen a 8°/20°, ni calculan sustentación o trim. El flap conserva su geometría neutra y gira alrededor de su eje local; el eje real del A200 aún debe medirse.</p>
+</section>
+<section>
+<h2>Diferencial de alerones</h2>
+<label>Orden normalizada de alabeo: <input id="roll" type="range" min="-1" max="1" value="0" step=".01"></label>
+<output id="roll-info"></output>
+<p class="note">Esquema de recorrido alto: +orden baja el alerón izquierdo y sube el derecho. Convención propuesta para comprobar en el rig; no añade expo ni mezcla desde la emisora.</p>
+</section>
+<section>
+<h2>Centro de gravedad y masas</h2>
+<p>Datum longitudinal: borde de ataque junto al fuselaje. Referencias de CG hacia atrás: <strong>240 / 250 / 260 mm</strong>. La distancia nariz → datum y la altura del CG todavía no están medidas.</p>
+<p id="weight"></p><p class="note">El cociente de empuje/peso usa valores estáticos nominales y masa seca. No estima ascenso vertical, velocidad máxima ni autonomía.</p>
+</section>
+<section><h2>Cotas y trazabilidad</h2><table><thead><tr><th>Dato</th><th>Valor</th><th>Fuente</th></tr></thead><tbody id="facts"></tbody></table>
+<p class="note">Faltan planta calibrada, área alar, cuerdas y perfiles, secciones, ejes de bisagra, volumen/posición de combustible, inercias y curvas de turbina instalada. Sin esos datos no se declara cerrado AV-01 ni se configura el vuelo.</p></section>
+</main>
+<script>
+const D=__STUDY_DATA__;
+const val=k=>D.facts[k].value;
+const ns='http://www.w3.org/2000/svg';
+const svg=document.querySelector('#sizes');
+function element(tag,attrs,text){const e=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text)e.textContent=text;svg.append(e);}
+for(const [i,key,label]of [[0,'length','Longitud avión'],[1,'span','Envergadura'],[2,'engine_length','Longitud P100'],[3,'engine_body_diameter','Diámetro P100']]){let y=35+i*65;element('text',{x:15,y:y+7},label);element('rect',{x:240,y:y-12,width:val(key)*.24,height:24,fill:i<2?'#267ba5':'#df692e',rx:3});element('text',{x:255+val(key)*.24,y:y+7},`${val(key)} mm`);}
+document.querySelector('#ratios').textContent=`Longitud/envergadura: ${D.ratios.length_over_span.value.toFixed(2)}. Longitud del motor/longitud del avión: ${(100*D.ratios.engine_length_over_airframe_length.value).toFixed(2)}%.`;
+function flap(angle){document.querySelector('#flap').setAttribute('transform',`rotate(${angle} 430 110)`);document.querySelectorAll('[data-angle]').forEach(b=>b.setAttribute('aria-pressed',Number(b.dataset.angle)===angle));document.querySelector('#flap-info').textContent=`Flap ${angle}° abajo · mezcla recomendada de elevador: ${angle===20?val('flap_takeoff_elevator_mix'):angle===50?val('flap_landing_elevator_mix'):0}% abajo.`;}
+document.querySelectorAll('[data-angle]').forEach(b=>b.addEventListener('click',()=>flap(Number(b.dataset.angle))));flap(0);
+function roll(){let u=Number(document.querySelector('#roll').value),a=Math.abs(u);const up=(val('aileron_up')*a).toFixed(1),down=(val('aileron_down')*a).toFixed(1);document.querySelector('#roll-info').textContent=u===0?'Ambos neutros':`Izquierdo: ${u>0?down+'° abajo':up+'° arriba'} · derecho: ${u>0?up+'° arriba':down+'° abajo'}`;}
+document.querySelector('#roll').addEventListener('input',roll);roll();
+document.querySelector('#weight').textContent=`Masa seca con P100: ${val('mass_dry_p100')} kg. Turbina de referencia: ${val('engine_mass')} kg, ya incluida en la masa seca. Empuje nominal máximo: ${val('thrust_max')} N. Empuje/peso seco: ${D.ratios.thrust_to_dry_weight.value.toFixed(3)}.`;
+const body=document.querySelector('#facts');for(const [k,f] of Object.entries(D.facts)){const row=body.insertRow();row.insertCell().textContent=k;row.insertCell().textContent=`${f.value} ${f.unit}`;const a=document.createElement('a');a.href=D.sources[f.source.id].url+`#page=${f.source.pdf_page}`;a.textContent=`${f.source.id} · PDF p.${f.source.pdf_page}${f.source.step?' · paso '+f.source.step:''}`;row.insertCell().append(a);row.title=f.note;}
+</script>
+</html>

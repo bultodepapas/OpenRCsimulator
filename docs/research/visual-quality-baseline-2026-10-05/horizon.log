@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+aircraft data warning: balance: inventory CG is 0.080 m ahead of the plan CG (26 % of the mean chord). A real build would move the battery or add ballast; the simulation flies at the plan CG.
+saved /tmp/openrc-visual-audit/horizon.png (error 0) draw_calls=6 primitives=470 sun_px=behind sim_clock=3.0 shadow_px=-764.5,386.1 below_px=-1012.4,396.4

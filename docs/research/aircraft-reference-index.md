@@ -12,7 +12,7 @@ The local files [`references/.61 ENGINE NITRO OS.png`](<../../references/.61 ENG
 
 ## Planned second aircraft: Extra 300S .60
 
-The selected reference is Great Planes GPMA0236, a 64 in nitro sport-scale Extra 300S. [Implementation plan](../EXTRA-300-PLAN.md), [family comparison](extra-300-family-research.md), [local resources and inspection](extra-300-resources.md), [download hashes](extra-300-resources.json), and [integration audit](extra-300-integration-audit.md) record the selection and its limits. Thirty-four downloads and the owner's photo remain in ignored [`references/extra-300/`](../../references/extra-300/); the [local gallery](../../references/extra-300/index.html) opens them. [Round 2](extra-300-round2.md) adds the .40 photo context, underside references, CAD inspection and a firsthand .60 build report. Modeling and flight implementation are still pending. The .40 kit, real Extra 300L/330 series and electric Extra 300 EXP are comparisons, not interchangeable source geometry or flight data.
+The selected reference is Great Planes GPMA0236, a 64 in nitro sport-scale Extra 300S. [Implementation plan](../EXTRA-300-PLAN.md), [family comparison](extra-300-family-research.md), [local resources and inspection](extra-300-resources.md), [download hashes](extra-300-resources.json), and [integration audit](extra-300-integration-audit.md) record the selection and its limits. Thirty-four downloads and the owner's photo remain in ignored [`references/extra-300/`](../../references/extra-300/); the [local gallery](../../references/extra-300/index.html) opens them. [Round 2](extra-300-round2.md) adds the .40 photo context, underside references, CAD inspection and a firsthand .60 build report. EX-01/EX-02 measured the plan and built a visual preview: [metrology and model report](extra-300-model-v1.md). Physics data and flight are still pending. The .40 kit, real Extra 300L/330 series and electric Extra 300 EXP are comparisons, not interchangeable source geometry or flight data.
 
 The [twelve Godot/tooling investigations](extra-aircraft-tooling/README.md) compare CAD extraction, geometry checks, rigging, editor aids, materials, canopy rendering, propeller representation, inspection, asset loading and offline aero tools. They include improvements for the existing Stik and proposed acceptance experiments; no tool adoption or new runtime validation is implied.
 
@@ -28,3 +28,11 @@ The owner-supplied RHB/Horizon material describes Ultra Stick 120 Light/Lite con
 ## Planned turbine aircraft: SebArt Avanti S A200
 
 The [Avanti S plan](../AVANTI-S-PLAN.md) selects the original 200 cm span / 222 cm length A200 with a P100-RX turbine referenced to JetCat's 2017 specification. [Family comparison](avanti-s-family-research.md), [code integration audit](avanti-s-integration-audit.md), [turbine findings](avanti-s-turbine-research.md), and [local resource inventory](avanti-s-resources.md) distinguish this version from Avanti XS, Mini, Freewing EDF and current RX-BL equipment. Originals remain ignored under [references/avanti-s/](../../references/avanti-s/); the [local gallery](../../references/avanti-s/index.html) includes assembly photographs and dimensioned turbine drawings. No complete calibrated A200 airframe plan was found. This is research and a staged implementation proposal, not an integrated or validated jet.
+
+### Avanti S: mesa de trabajo AV-01
+
+[Archivo por componentes y recortes](../../references/avanti-s/organized/index.html) · [dimensiones/flaps interactivos](../../references/avanti-s/organized/study-board.html) · [ficha AV-01](avanti-s-av01-metrology.md) · [mandos e instalación](avanti-s-controls-and-installation.md). Acumulado: 67 originales locales; los derivados conservan procedencia y quedan excluidos de Git. AV-01 permanece parcial hasta cerrar geometría y ejes de bisagra.
+
+### Avanti S: primera maqueta AV-02
+
+[Inspector Godot y evidencia](avanti-s-av02-preview.md) · [capturas y fotos grandes](../../references/avanti-s/av02/index.html) · [investigación geométrica](avanti-s-geometry-followup.md). Acumulado: 76 originales locales. El modelo es aproximado, aislado y no volable.

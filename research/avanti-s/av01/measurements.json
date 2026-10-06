@@ -1,0 +1,410 @@
+{
+  "schema": "openrc-avanti-study-v1",
+  "date": "2026-10-05",
+  "variant": "sebart_avanti_s_a200_original_p100rx_2017",
+  "status": "AV-01 partial; not runtime aircraft data",
+  "sources": {
+    "a200-intro": {
+      "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+      "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+      "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+    },
+    "a200-assembly": {
+      "path": "references/avanti-s/manuals/avanti-s-200-assembly.pdf",
+      "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf",
+      "sha256": "1383de1d059d3743f2881da36b5c61f4db14d71da1f7d0f0adee791baa7b226a"
+    },
+    "p100-2017": {
+      "path": "references/avanti-s/turbine/jetcat-catalog-2017.pdf",
+      "url": "https://www.jetcat.de/jetcat/Kataloge/JetCat%20Lieferprogramm%202017_web.pdf",
+      "sha256": "1f085e7067a090602525388fab9a04fd25b365985252670699689bd49f9b26b5"
+    },
+    "p100-drawing": {
+      "path": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+      "url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+      "sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5"
+    }
+  },
+  "facts": {
+    "span": {
+      "value": 2000,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 1
+      },
+      "note": ""
+    },
+    "length": {
+      "value": 2220,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 1
+      },
+      "note": ""
+    },
+    "mass_dry_p100": {
+      "value": 10.5,
+      "unit": "kg",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 1
+      },
+      "note": "RTF seca incluye P100; no sumar otra vez motor."
+    },
+    "cg_beginner": {
+      "value": 240,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 5
+      },
+      "note": "Distancia hacia atrás desde borde de ataque junto al fuselaje; no desde nariz ni porcentaje de MAC."
+    },
+    "cg_reference": {
+      "value": 250,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 5
+      },
+      "note": "Distancia hacia atrás desde borde de ataque junto al fuselaje; no desde nariz ni porcentaje de MAC."
+    },
+    "cg_3d": {
+      "value": 260,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 5
+      },
+      "note": "Distancia hacia atrás desde borde de ataque junto al fuselaje; no desde nariz ni porcentaje de MAC."
+    },
+    "flap_cruise": {
+      "value": 0,
+      "unit": "deg_down",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "flap_takeoff": {
+      "value": 20,
+      "unit": "deg_down",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "flap_landing": {
+      "value": 50,
+      "unit": "deg_down",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "aileron_up": {
+      "value": 30,
+      "unit": "deg_up",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "aileron_down": {
+      "value": 25,
+      "unit": "deg_down",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "elevator_up": {
+      "value": 30,
+      "unit": "deg_up",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "elevator_down": {
+      "value": 30,
+      "unit": "deg_down",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "rudder_each_side": {
+      "value": 30,
+      "unit": "deg",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": ""
+    },
+    "flap_takeoff_elevator_mix": {
+      "value": 8,
+      "unit": "percent_radio",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": "Mezcla hacia abajo de la emisora; no es ángulo ni coeficiente aerodinámico."
+    },
+    "flap_landing_elevator_mix": {
+      "value": 20,
+      "unit": "percent_radio",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "a200-intro",
+        "pdf_page": 4
+      },
+      "note": "Mezcla hacia abajo de la emisora; no es ángulo ni coeficiente aerodinámico."
+    },
+    "engine_length": {
+      "value": 241,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-drawing",
+        "pdf_page": 1
+      },
+      "note": ""
+    },
+    "engine_body_diameter": {
+      "value": 97,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-drawing",
+        "pdf_page": 1
+      },
+      "note": ""
+    },
+    "engine_outlet_diameter": {
+      "value": 60,
+      "unit": "mm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-drawing",
+        "pdf_page": 1
+      },
+      "note": "El diámetro de salida del motor no es el diámetro de salida del conducto Avanti."
+    },
+    "engine_mass": {
+      "value": 1.08,
+      "unit": "kg",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada. Incluye válvulas (nota 2); inventario ECU/bomba aparte."
+    },
+    "thrust_idle": {
+      "value": 2,
+      "unit": "N",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "thrust_max": {
+      "value": 100,
+      "unit": "N",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "rpm_idle": {
+      "value": 44000,
+      "unit": "rpm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "rpm_max": {
+      "value": 154000,
+      "unit": "rpm",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "fuel_idle": {
+      "value": 80,
+      "unit": "ml/min",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "fuel_max": {
+      "value": 390,
+      "unit": "ml/min",
+      "kind": "manufacturer_nominal",
+      "source": {
+        "id": "p100-2017",
+        "pdf_page": 15
+      },
+      "note": "P100-RX de catálogo 2017; datos nominales de banco a 15 °C, 1013 mbar, ±3%; no curva instalada."
+    },
+    "aileron_linkage_marked": {
+      "value": 60,
+      "unit": "mm",
+      "kind": "manufacturer_annotated_photo",
+      "source": {
+        "id": "a200-assembly",
+        "pdf_page": 8,
+        "step": 16
+      },
+      "note": "Entre límites internos de terminales: no entre centros de rótulas. No transferir esta escala a otras fotos."
+    },
+    "flap_linkage_marked": {
+      "value": 52,
+      "unit": "mm",
+      "kind": "manufacturer_annotated_photo",
+      "source": {
+        "id": "a200-assembly",
+        "pdf_page": 15,
+        "step": 29
+      },
+      "note": "Desde centro de pasador de horquilla hasta comienzo del terminal negro: no longitud entre centros completa. No transferir esta escala a otras fotos."
+    },
+    "elevator_linkage_marked": {
+      "value": 34,
+      "unit": "mm",
+      "kind": "manufacturer_annotated_photo",
+      "source": {
+        "id": "a200-assembly",
+        "pdf_page": 44,
+        "step": 87
+      },
+      "note": "Entre límites internos de terminales: no longitud total. No transferir esta escala a otras fotos."
+    },
+    "rudder_linkage_marked": {
+      "value": 39,
+      "unit": "mm",
+      "kind": "manufacturer_annotated_photo",
+      "source": {
+        "id": "a200-assembly",
+        "pdf_page": 50,
+        "step": 99
+      },
+      "note": "Tramo marcado por las flechas del manual; no asumir distancia entre centros. No transferir esta escala a otras fotos."
+    }
+  },
+  "ratios": {
+    "length_over_span": {
+      "value": 1.11,
+      "unit": "1",
+      "kind": "derived",
+      "inputs": [
+        "length",
+        "span"
+      ],
+      "operation": "divide"
+    },
+    "engine_length_over_airframe_length": {
+      "value": 0.10855855855855856,
+      "unit": "1",
+      "kind": "derived",
+      "inputs": [
+        "engine_length",
+        "length"
+      ],
+      "operation": "divide"
+    },
+    "engine_diameter_over_span": {
+      "value": 0.0485,
+      "unit": "1",
+      "kind": "derived",
+      "inputs": [
+        "engine_body_diameter",
+        "span"
+      ],
+      "operation": "divide"
+    },
+    "thrust_to_dry_weight": {
+      "value": 0.9711582980742174,
+      "unit": "1",
+      "kind": "derived",
+      "inputs": [
+        "thrust_max",
+        "mass_dry_p100"
+      ],
+      "operation": "divide_by_mass_g0",
+      "g0_m_s2": 9.80665,
+      "note": "Referencia estática seca: cae al añadir combustible o pérdidas de instalación. No prueba ascenso vertical."
+    }
+  },
+  "axes_proposal": {
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y",
+    "unit": "m",
+    "origin": "Proyección sobre plano de simetría del datum longitudinal LE junto al fuselaje; Y del origen pendiente de elección visual",
+    "cg_z_m": [
+      0.24,
+      0.25,
+      0.26
+    ],
+    "cg_x_m": null,
+    "cg_y_m": null,
+    "note": "Convención propuesta compatible con render Stik; no implica que LE de ambas semialas continúe recto por dentro del fuselaje."
+  },
+  "unknown": [
+    "nose_to_root_le_mm",
+    "wing_area_m2",
+    "root_and_tip_chords_mm",
+    "sweep_dihedral_incidence",
+    "airfoil",
+    "fuselage_sections",
+    "hinge_endpoints",
+    "flap_chord_and_span",
+    "fuel_capacity_l",
+    "tank_and_engine_positions",
+    "loaded_mass_cg_inertia",
+    "installed_thrust_map",
+    "spool_up_down_times",
+    "drag_and_lift_vs_flap",
+    "gear_extension_times"
+  ]
+}

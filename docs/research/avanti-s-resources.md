@@ -2,9 +2,9 @@
 
 2026-10-05 · Referencia seleccionada: **SebArt Avanti S A200 original, 200 cm de ala / 222 cm de largo**, instalación propuesta P100-RX con datos de referencia 2017. [Plan de implementación](../AVANTI-S-PLAN.md) · [familia](avanti-s-family-research.md) · [turbina](avanti-s-turbine-research.md).
 
-Se descargaron **42 recursos, 72.880.914 bytes**: **11 PDF, 27 JPEG y 4 HTML**. Son referencias de estudio; todos los originales y vistas derivadas quedan bajo [`references/avanti-s/`](../../references/avanti-s/), ignorado por la regla existente de Git. No se incorporan como texturas, modelos o documentación redistribuida del juego. [Manifiesto con URL, variante, bytes y SHA-256](avanti-s-resources.json) · [comprobación local](avanti-s-validation.json).
+Se descargaron **76 recursos, 105.598.835 bytes**: **11 PDF, 57 JPEG y 8 HTML**. Son referencias de estudio; todos los originales y vistas derivadas quedan bajo [`references/avanti-s/`](../../references/avanti-s/), ignorado por la regla existente de Git. No se incorporan como texturas, modelos o documentación redistribuida del juego. [Manifiesto con URL, variante, bytes y SHA-256](avanti-s-resources.json) · [comprobación local](avanti-s-validation.json).
 
-Abrir la [galería local](../../references/avanti-s/index.html), la [lámina de fotos](../../references/avanti-s/inspection/photo-contact-sheet.jpg) o la [muestra del montaje](../../references/avanti-s/inspection/assembly-contact-sheet.jpg). La galería funciona con archivos locales; los enlaces de procedencia apuntan a las páginas originales.
+Abrir la nueva [mesa organizada por componentes](../../references/avanti-s/organized/index.html), el [panel de dimensiones y mandos](../../references/avanti-s/organized/study-board.html), la [galería local](../../references/avanti-s/index.html), la [lámina de fotos](../../references/avanti-s/inspection/photo-contact-sheet.jpg) o la [muestra del montaje](../../references/avanti-s/inspection/assembly-contact-sheet.jpg). La galería funciona con archivos locales; los enlaces de procedencia apuntan a las páginas originales.
 
 ## Manuales y planos descargados
 
@@ -55,10 +55,24 @@ Se buscaron `Avanti S 3 view drawing`, `Avanti S blueprint drawing plans filetyp
 
 Los planos acotados recuperados corresponden **a la turbina y su soporte**. Para una réplica dimensional del avión siguen pendientes planta calibrada, cuerdas, secciones, perfil, incidencias y posiciones de bisagras. Una primera forma visual puede hacerse con incertidumbres declaradas; la física no debe atribuirle precisión inexistente.
 
-Dos intentos adicionales de recuperar copias del manual Freewing 80 mm, en Lindinger y freewing-model.com, respondieron **HTTP 403** en la descarga directa. Quedaron registrados como fallidos, sin archivos ni enlaces locales ficticios, y no forman parte de las 42 descargas. El visor web permitió consultar la segunda copia para la comparación, pero eso no equivale a tenerla en disco. No es un bloqueo para el A200 de turbina elegido.
+Dos intentos de la ronda inicial de recuperar copias del manual Freewing 80 mm, en Lindinger y freewing-model.com, respondieron **HTTP 403** en la descarga directa. Quedaron registrados como fallidos, sin archivos ni enlaces locales ficticios, y no forman parte de las 76 descargas acumuladas. El visor web permitió consultar la segunda copia para la comparación, pero eso no equivale a tenerla en disco. No es un bloqueo para el A200 de turbina elegido.
 
 ## Uso local y verificación
 
 [avanti-s-validation.json](avanti-s-validation.json) recoge tipos de archivo, páginas PDF, dimensiones JPEG, hashes y comprobación de exclusión de Git. Los derivados de inspección también permanecen locales. Solo se preparan para versionado los documentos redactados y manifiestos; no se ejecutó `git add`, commit o push en esta tarea.
 
-No se implementó un avión, no se midió rendimiento y no se ejecutó una prueba de vuelo. La siguiente sesión debe usar estas referencias para AV-01/02 del plan, manteniendo el Stik como caso de regresión.
+La ronda AV-00 no implementó un avión. AV-02 añade una maqueta aislada, descrita más abajo; no se midió rendimiento ni se ejecutó una prueba de vuelo. AV-01 ya tiene cotas, archivo organizado y panel de estudio; faltan los contornos y la geometría mínima antes de AV-02. Se mantiene el Stik como caso de regresión.
+
+## Ampliación AV-01: componentes y recortes
+
+La nueva [ficha dimensional](avanti-s-av01-metrology.md) detalla 30 datos con fuente y cuatro cocientes calculados. El [estudio de mandos e instalación](avanti-s-controls-and-installation.md) identifica los pasos de flaps, alerones, elevadores, timón, tren y depósitos. Los dos cilindros blancos de p.69–72 corresponden al circuito neumático, por continuidad visual y conexiones rotuladas de aire/tren/freno; el tanque de queroseno/humo de p.73 es otro conjunto.
+
+Se añadieron 13 fotos del [tanque oficial](https://www.sebart.it/img-jets/Avanti/Tank/tank-foto.html), 10 del [escape vectorial opcional](https://www.sebart.it/img-jets/Avanti/VES/vector%20thrust.html) y sus dos páginas HTML. El vectorial queda separado del P100 con tubo fijo seleccionado. No se acreditó capacidad del tanque.
+
+El [catálogo organizado](avanti-s-organized-catalog.json) contiene 209 entradas: 11 copias de PDF con nombres descriptivos, sus 11 extracciones de texto, 50 fotos nombradas por vista/componente, 91 páginas completas, 42 recortes por paso y cuatro láminas de cotas/mandos. Los recortes conservan etiquetas y flechas originales. No se alteraron los archivos anteriores; las copias y derivados también están ignorados por Git. [Reproducción](../../research/avanti-s/av01/README.md) · [validación AV-01](avanti-s-av01-validation.json).
+
+## Ampliación AV-02: fotos de alta resolución y maqueta
+
+Se añadieron cinco fotos oficiales de 4320 × 3240, dos fotografías de tubos y dos páginas de procedencia; todas están en [high-resolution/](../../references/avanti-s/high-resolution/). Los 209 elementos de la mesa AV-01 se conservan como selección anterior. La nueva [galería AV-02](../../references/avanti-s/av02/index.html) reúne las fotos adicionales y nueve capturas de la maqueta Godot aislada.
+
+[Investigación geométrica complementaria](avanti-s-geometry-followup.md) · [maqueta y límites](avanti-s-av02-preview.md). El prototipo usa geometría propia y no necesita las referencias para ejecutarse. No se encontró plano ortográfico acotado del A200 ni dimensiones del tubo A200-13.

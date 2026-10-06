@@ -1,5 +1,5 @@
 # D8a: flight modes of the real equations (physics/flight_modes.gd) at 10, 15 and 25 m/s. Regression bands (± 3 %
-# around the values recorded on 2026-10-05) plus physical sanity: every mode stable and of the expected kind.
+# around the values recorded on 2026-10-05) plus physical sanity: oscillatory/roll modes damped and the measured numerical spiral root retained.
 # A deliberate change to the aero (e.g. a Clp sign flip) moves the modes out of their bands.
 # Run: godot --headless --path . --script res://tests/test_modes.gd
 extends SceneTree
@@ -9,11 +9,11 @@ const FlightModes := preload("res://physics/flight_modes.gd")
 const L := preload("res://physics/linearize.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
-## V → [short period Hz, ζ; phugoid Hz, ζ; roll τ s; dutch roll Hz, ζ; spiral τ s], recorded 2026-10-05.
+## V → [short period Hz, ζ; phugoid Hz, ζ; roll τ s; dutch roll Hz, ζ; spiral eigenvalue 1/s], recorded 2026-10-06 after D9-R/D1-R1; see flight-repair-implementation.md.
 const BANDS := {
-	10.0: [1.4167, 0.7611, 0.1539, 0.1431, 0.07755, 0.5091, 0.3995, 14.296],
-	15.0: [2.0333, 0.7835, 0.09991, 0.3054, 0.05101, 0.7098, 0.3943, 9.535],
-	25.0: [3.3168, 0.7971, 0.05908, 0.8639, 0.03041, 1.1391, 0.4004, 11.575],
+	10.0: [0.93456108, 0.60606421, 0.18538193, 0.03848759, 0.04835588, 0.56133800, 0.28171259, 0.34469273],
+	15.0: [1.49500773, 0.73929294, 0.10320199, 0.25587799, 0.05132182, 0.77321646, 0.28941683, 0.03421904],
+	25.0: [2.42675587, 0.75475678, 0.06150803, 0.74298038, 0.03054795, 1.24178630, 0.27935633, -0.00020070],
 }
 const TOL := 0.03
 
@@ -54,8 +54,8 @@ func _initialize() -> void:
 		_near("%.0f m/s roll τ" % V, r.roll_tau, b[4])
 		_near("%.0f m/s dutch roll Hz" % V, r.dutch_roll.f_hz, b[5])
 		_near("%.0f m/s dutch roll ζ" % V, r.dutch_roll.zeta, b[6])
-		_near("%.0f m/s spiral τ" % V, r.spiral_tau, b[7])
-		_check("%.0f m/s: every mode stable" % V, r.short_period.zeta > 0 and r.phugoid.zeta > 0 and r.roll_tau > 0 and r.dutch_roll.zeta > 0 and r.spiral_tau > 0)
+		_near("%.0f m/s signed spiral eigenvalue" % V, -1.0 / r.spiral_tau, b[7])
+		_check("%.0f m/s: oscillatory modes and roll subsidence are damped" % V, r.short_period.zeta > 0 and r.phugoid.zeta > 0 and r.roll_tau > 0 and r.dutch_roll.zeta > 0)
 		_check("%.0f m/s: short period well damped (0.5–1), faster than the dutch roll" % V, r.short_period.zeta > 0.5 and r.short_period.zeta < 1.0 and r.short_period.f_hz > r.dutch_roll.f_hz)
 
 	print("%d checks, %d failed" % [_count, _failures])

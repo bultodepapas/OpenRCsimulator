@@ -48,7 +48,7 @@ func _initialize() -> void:
 	_check("triangle inequalities (a real body)", j[0] + j[1] >= j[2] and j[1] + j[2] >= j[0] and j[0] + j[2] >= j[1], str(j))
 	_check("airplane-like ordering Jzz > Jyy > Jxx", j[2] > j[1] and j[1] > j[0], str(j))
 	_check("plan CG 4.76 in aft of LE (39 % chord)", absf(m.cg_le[0] - 0.1209) < 1e-9 and absf(m.cg_le[0] / m.reference.c - 0.397) < 0.01)
-	_check("balance mismatch is reported, not hidden", r.warnings.size() > 0 and "balance" in r.warnings[0], str(r.warnings))
+	_check("flight CG and inertia share inventory centre", m.cg_le == m.cg_inventory_le and absf(m.cg_le[1]) < 1e-12 and absf(m.cg_le[2]) < 1e-12)
 
 	# Inertia of a known shape: a 1 kg box 0.3 × 1.5 × 0.04 m about its centre (body axes).
 	var box := AD.inertia_about([[1.0, PackedFloat64Array([0, 0, 0]), PackedFloat64Array([0.3, 1.5, 0.04])]], PackedFloat64Array([0, 0, 0]))
@@ -88,6 +88,19 @@ func _initialize() -> void:
 	_rejects("missing elevator throw", func(d): d.controls.max_throw.erase("elevator"), "controls.max_throw.elevator")
 	_rejects("implausible throw", func(d): d.controls.max_throw.aileron.value = 90.0, "outside")
 	_rejects("servo time in milliseconds", func(d): d.controls.servo_full_throw_time.unit = "ms", "unit 'ms'")
+	_rejects("unbalanced build", func(d): d.inventory.pop_back(), "balance")
+	_rejects("rudder moment multiplied tenfold", func(d): d.aero.coefficients.Cndr.value *= 10, "vertical surface force/arm")
+	_rejects("missing local surfaces", func(d): d.aero.erase("surfaces"), "surfaces")
+	_rejects("reversed tail blend", func(d): d.aero.surfaces.tail_stall_end.value = 11, "strictly ordered")
+	_rejects("tail source missing", func(d): d.aero.surfaces.vertical.area.source = "", "empty source")
+	_rejects("reference wrong type", func(d): d.reference = [], "expected an object")
+	_rejects("inventory wrong type", func(d): d.inventory = {}, "expected an array")
+	_rejects("aero wrong type", func(d): d.aero = [], "expected an object")
+	_rejects("tail wrong type", func(d): d.aero.surfaces.horizontal = [], "expected an object")
+	_rejects("hull NaN", func(d): d.crash_hull.value[0][0] = NAN, "finite point")
+	_rejects("prop table numeric strings", func(d): d.propulsion.propeller.ct_table.value[0] = ["0", "0.1"], "finite numbers")
+	_rejects("prop table empty source", func(d): d.propulsion.propeller.cp_table.source = "", "empty source")
+	_check("data fingerprint is available for traces", m.data_sha256.length() == 64)
 	var bad := AD.validate_and_derive({ format = "nope" })
 	_check("rejects garbage", not bad.ok)
 

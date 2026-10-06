@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-05",
+  "head_at_capture": "59cca5613fd235d9c6360eee3531a398851ec075",
+  "working_tree": "Concurrent uncommitted changes present; captures are a working-tree snapshot, not a clean-commit baseline.",
+  "engine_version": "4.7.2.stable.official.ed1daf0bf",
+  "mode": "scripted, t=3 s; Ugly Stik current main renderer",
+  "resolution": [
+    1280,
+    720
+  ],
+  "performance_benchmark": false,
+  "fresh_captures": 3,
+  "sha256_verified": true,
+  "captures_repeated": false,
+  "images": [
+    {
+      "view": "pilot",
+      "sha256": "2266ec0dfca33fd498fe00bab6946c046a27d3232e506fb3b1a6d4bb7c82d467",
+      "visible_draw_calls": 101,
+      "visible_primitives": 46842,
+      "godot_video_memory_bytes": 53409362
+    },
+    {
+      "view": "inspect",
+      "sha256": "fec8c51976fece69a5ef7f01cf1718182f973dd3986957aac8f54ea2d4180a4a",
+      "visible_draw_calls": 102,
+      "visible_primitives": 46844,
+      "godot_video_memory_bytes": 53409362
+    },
+    {
+      "view": "horizon",
+      "sha256": "9d0d79030cf54ab39c3b4082e4daea3fd532a43183f63b2b9a8c93d87c236b6d",
+      "visible_draw_calls": 2,
+      "visible_primitives": 4,
+      "godot_video_memory_bytes": 53409362
+    }
+  ]
+}

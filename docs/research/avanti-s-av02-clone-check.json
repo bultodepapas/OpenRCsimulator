@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-06",
+  "method": "Fresh local git clone with current authored AV02 directory overlaid; ignored references and Godot cache not copied",
+  "head": "59cca5613fd235d9c6360eee3531a398851ec075",
+  "references_absent": true,
+  "headless_exit": 0,
+  "headless_stderr": "",
+  "mutation": "In temporary clone only, invert right flap sign",
+  "mutation_exit": 1,
+  "detected": "flap_right must go DOWN",
+  "godot_binary": "Repository pinned 4.7.2, supplied externally to clone"
+}

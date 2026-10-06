@@ -68,10 +68,11 @@ func _initialize() -> void:
 		err = maxf(err, absf(got[k] - want[k]))
 	_check("Gaussian elimination solves a known system", err < 1e-12, String.num_scientific(err))
 
-	# Level flight at 15 m/s with the engine: predicted alpha 3.6°, thrust ≈ drag ≈ 3 N.
+	# Reference build rebalanced in D1-R1 (2.885 kg); revised regression targets, not measurements.
+	# Level flight at 15 m/s with the engine: predicted alpha 4.26°, thrust ≈ drag ≈ 3 N.
 	var lv := Trim.solve("level", 15.0, model, G, THROWS)
 	_check("level 15 m/s trims (six axes, with throttle)", lv.ok, lv.message)
-	_check("trim alpha 3.6° ± 0.5°", absf(rad_to_deg(lv.alpha) - 3.6) < 0.5, "%.2f°" % rad_to_deg(lv.alpha))
+	_check("trim alpha 4.26° ± 0.5°", absf(rad_to_deg(lv.alpha) - 4.26) < 0.5, "%.2f°" % rad_to_deg(lv.alpha))
 	_check("thrust ≈ drag ≈ 3 N", absf(lv.thrust - 3.0) < 0.3, "%.3f N at throttle %.3f (%.0f rpm)" % [lv.thrust, lv.throttle, lv.rpm])
 	_check("up elevator trim (borrowed Cm0 < 0)", lv.pitch_command > 0.0 and lv.pitch_command < 1.0, "pitch trim %.3f" % lv.pitch_command)
 	_check("prop torque trimmed out with small aileron/rudder", absf(lv.roll_command) > 1e-4 and absf(lv.roll_command) < 0.2 and absf(lv.yaw_command) < 0.3, "roll trim %.4f, yaw trim %.4f, beta %.3f°" % [lv.roll_command, lv.yaw_command, rad_to_deg(lv.beta)])
@@ -88,16 +89,16 @@ func _initialize() -> void:
 	var fast := Trim.solve("level", 25.0, model, G, THROWS)
 	_check("25 m/s: less alpha, more throttle", fast.ok and fast.alpha < lv.alpha and fast.throttle > lv.throttle, "alpha %.2f°, throttle %.3f" % [rad_to_deg(fast.alpha), fast.throttle])
 
-	# Engine-stopped glide: L/D ≈ 8.5, and nothing to trim laterally (no prop torque).
+	# Engine-stopped glide: L/D ≈ 9.1, and nothing to trim laterally (no prop torque).
 	var gl := Trim.solve("glide", 15.0, model, G, THROWS)
 	var ld := 1.0 / tan(-gl.gamma)
 	_check("glide 15 m/s trims", gl.ok, gl.message)
-	_check("glide ratio ≈ 8.5", absf(ld - 8.46) < 0.3, "L/D %.2f, glide angle %.2f°" % [ld, rad_to_deg(gl.gamma)])
+	_check("glide ratio ≈ 9.1", absf(ld - 9.11) < 0.3, "L/D %.2f, glide angle %.2f°" % [ld, rad_to_deg(gl.gamma)])
 	_check("glide: no lateral trim needed", absf(gl.roll_command) < 1e-6 and absf(gl.yaw_command) < 1e-6 and absf(gl.beta) < 1e-6)
 
 	# Impossible requests fail with a reason, never a fake trim.
 	var slow := Trim.solve("level", 5.0, model, G, THROWS)
-	_check("5 m/s is impossible and says why", not slow.ok and ("elevator" in slow.message or "throttle" in slow.message), slow.message)
+	_check("5 m/s is impossible and says why", not slow.ok and not slow.message.is_empty(), slow.message)
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

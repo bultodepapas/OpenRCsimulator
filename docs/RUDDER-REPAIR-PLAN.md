@@ -1,5 +1,7 @@
 # Reparación de la autoridad del rudder — Ugly Stik
 
+> Actualización 2026-10-06: reparación implementada en el árbol de trabajo. Ver [cambios, pruebas y límites](research/flight-repair-implementation.md). D9-R1/R2, D4-R1, D1-R1 y D8a-R1 tienen implementación y regresiones; el rudder usa superficies/derivadas enlazadas. Gate 2 (validación con piloto), propwash y equilibrio de eje siguen abiertos. El texto fechado 2026-10-05 se conserva como plan original.
+
 2026-10-05 · Estado: **diagnosticado en simulación; reparación pendiente**.
 
 **Ampliación posterior:** [auditoría del modelo completo](research/flight-model-robustness-audit.md) y [plan de robustez](FLIGHT-MODEL-ROBUSTNESS-PLAN.md). La variante `Cndr ×0,3` rompe la secuencia de recuperación de barrena existente (p/r residual máximo después de 6 s: 6,49 rad/s frente a 0,22); no adoptarla como parche aislado. Se localizaron además discontinuidades de la mezcla por franjas y estados con potencia aerodinámica positiva, que necesitan sus propias correcciones.
