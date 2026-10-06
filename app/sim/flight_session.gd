@@ -13,10 +13,12 @@ const RcCalibration := preload("res://input/rc_calibration.gd")
 const Sim := preload("res://sim/simulation.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const M := preload("res://physics/math3d.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const Turbine := preload("res://physics/turbine.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
@@ -534,10 +536,22 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 	return Dynamics.rotor_momentum(aircraft.model, aux[AUX_RPM])
 
 
-## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5);
+## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5), or
+## the shaft torque balance when the aircraft declares one (P51-06);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
-	var rpm := Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, aircraft.model.propulsion) if engine_running else 0.0
+	var prop: Dictionary = aircraft.model.propulsion
+	var rpm := 0.0
+	if engine_running and Turbine.is_turbine(prop):
+		# AV-05: the turbine spools toward the ECU demand within its acceleration/deceleration schedules.
+		rpm = Turbine.spool_step(aux[AUX_RPM], inputs[3], dt, prop)
+	elif engine_running and Propulsion.has_shaft(prop):
+		# G2 first slice (P51-06): torque balance at the current axial airspeed (calm air, as _loads).
+		var s: PackedFloat64Array = sim.state
+		var u := M.dot(M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]), Propulsion.axis(prop))
+		rpm = Propulsion.shaft_step(aux[AUX_RPM], inputs[3], u, dt, prop, Air.RHO_SEA_LEVEL)
+	elif engine_running:
+		rpm = Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, prop)
 	var out := PackedFloat64Array([rpm, 0.0, 0.0, 0.0])
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:

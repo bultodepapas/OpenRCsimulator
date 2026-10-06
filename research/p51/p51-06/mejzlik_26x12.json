@@ -1,0 +1,118 @@
+{
+ "source": "Mejzlik Propellers datasheets (manufacturer-SIMULATED data at 5400 rpm, Rev. 3.0 2025-12-18), downloaded 2026-10-06; PDFs kept in the gitignored references/p51-mustang/propellers/",
+ "props": {
+  "26x12 2B GAS": {
+   "url": "https://www.mejzlik.eu/files/26x12-2b-gas-datasheet.pdf",
+   "file": "references/p51-mustang/propellers/mejzlik_26x12-2b-gas-datasheet.pdf",
+   "sha256": "cd1ab93174666af532f1851eb89af1ac210bf899bc83ad17f9f3334ce9666851",
+   "blades": 2,
+   "mass_kg": 0.197,
+   "inertia_kgm2": 0.00716,
+   "inertia_note": "manufacturer estimate I = 24 mass D^2 blades (datasheet footnote)",
+   "J": [
+    0.0,
+    0.0841,
+    0.1682,
+    0.2524,
+    0.3365,
+    0.4206,
+    0.5047,
+    0.5889,
+    0.673,
+    0.7571,
+    0.8412,
+    0.9254
+   ],
+   "Ct": [
+    0.0889,
+    0.086,
+    0.0799,
+    0.0716,
+    0.0612,
+    0.0491,
+    0.0361,
+    0.0223,
+    0.0081,
+    -0.0052,
+    -0.0139,
+    -0.0212
+   ],
+   "Cp": [
+    0.0316,
+    0.0335,
+    0.0342,
+    0.034,
+    0.0325,
+    0.0295,
+    0.0254,
+    0.0197,
+    0.0127,
+    0.0063,
+    0.0042,
+    0.0027
+   ]
+  },
+  "26x12 3B GAS N": {
+   "url": "https://www.mejzlik.eu/files/26x12-3b-gas-n-datasheet.pdf",
+   "file": "references/p51-mustang/propellers/mejzlik_26x12-3b-gas-n-datasheet.pdf",
+   "sha256": "ce084e9e6ba21137fd8c5434c3b8aabc411f465e45729cd203557d061bc044a8",
+   "blades": 3,
+   "mass_kg": 0.261,
+   "inertia_kgm2": 0.0142,
+   "inertia_note": "manufacturer estimate I = 24 mass D^2 blades (datasheet footnote)",
+   "J": [
+    0.0,
+    0.0841,
+    0.1682,
+    0.2524,
+    0.3365,
+    0.4206,
+    0.5047,
+    0.5889,
+    0.673,
+    0.7571,
+    0.8412,
+    0.9254
+   ],
+   "Ct": [
+    0.116,
+    0.1136,
+    0.1047,
+    0.0938,
+    0.0812,
+    0.0669,
+    0.0511,
+    0.034,
+    0.017,
+    0.0035,
+    -0.0064,
+    -0.015
+   ],
+   "Cp": [
+    0.0442,
+    0.0466,
+    0.0476,
+    0.0472,
+    0.0453,
+    0.042,
+    0.0372,
+    0.0309,
+    0.0242,
+    0.0204,
+    0.0193,
+    0.0186
+   ]
+  }
+ },
+ "anchor_28x10_2B": {
+  "url": "https://www.mejzlik.eu/files/28x10-2b-gas-datasheet.pdf",
+  "file": "references/p51-mustang/propellers/mejzlik_28x10-2b-gas-datasheet.pdf",
+  "sha256": "d74faafe9d320e64a6965cc8c9434a66e3ffad188b966acf3aa1a5cbb8b0d556",
+  "static_Ct": 0.0751,
+  "static_Cp": 0.0238,
+  "diameter_m": 0.7112,
+  "static_rpm_on_DA120": 6550,
+  "static_rpm_source": "Falcon 28x10 on a DA-120: 6550 rpm, 67 lb (FlyingGiants threads t=200294, t=53861, search summaries); Mejzlik 28x10 6400-6850 rpm and DLE-120 6350-6450 rpm in the same class (snippets): three consistent reports, none read in full",
+  "note": "Ct 0.0751 at 6550 rpm gives 280 N (28.6 kgf) against the 30.4 kgf quoted for the Falcon: the two agree within 6 %"
+ }
+}

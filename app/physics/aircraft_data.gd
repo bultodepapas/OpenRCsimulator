@@ -221,7 +221,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 ## explicit integrator resolves the spring instead of exciting it); each damping ratio ζ = c / (2·sqrt(k·m/n)) in
 ## 0.05–2 (a wire leg and a tyre, not a shock absorber, and never negative).
 ## E2: tyre friction is required with the gear (a gear without it slides forever): rolling_resistance C_rr (0–0.3),
-## side_friction μ (0.1–1.5), peak_slip_angle (1–30°), and per contact an optional max_steering (0–45°, default 0).
+## side_friction μ (0.1–1.5), peak_slip_angle (1–30°), and per contact an optional max_steering (−45–45°, default 0;
+## negative for a tail wheel, which turns against the rudder's trailing edge: right rudder points its front left).
 ## The side force's low-speed damping rate must satisfy μ·g·dt / (tan α_peak · SLIP_FLOOR) ≤ SIDE_LAMBDA_DT_MAX.
 ## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression, max_steering
 ## (rad) }], reach, heave_omega, static_sag, rolling_resistance, side_friction, tan_peak_slip } or {} when absent.
@@ -249,7 +250,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		var k = _q(errors, label + ".stiffness", c.get("stiffness"), "N/m", 1.0, 1.0e6)
 		var damping = _q(errors, label + ".damping", c.get("damping"), "N·s/m", 0.0, 1.0e4)
 		var travel = _q(errors, label + ".max_compression", c.get("max_compression"), "m", 0.005, 0.5)
-		var steering = 0.0 if c.get("max_steering") == null else _q(errors, label + ".max_steering", c.get("max_steering"), "deg", 0.0, 45.0)
+		var steering = 0.0 if c.get("max_steering") == null else _q(errors, label + ".max_steering", c.get("max_steering"), "deg", -45.0, 45.0)
 		if position == null or k == null or damping == null or travel == null or steering == null:
 			continue
 		if typeof(c.get("name")) != TYPE_STRING or str(c.name).strip_edges().is_empty():
@@ -387,6 +388,13 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("propulsion: missing")
 		return {}
+	# AV-05: `kind` selects the branch; absent = the glow engine and propeller (every file before AV-05).
+	var kind: Variant = node.get("kind", "glow_prop")
+	if kind == "turbine":
+		return _turbine(errors, node)
+	if kind != "glow_prop":
+		errors.append("propulsion.kind: '%s' is not 'glow_prop' or 'turbine'" % kind)
+		return {}
 	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
 	var pr := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
 	var max_rpm = _q(errors, "propulsion.engine.max_rpm_static", e.get("max_rpm_static"), "rpm", 1000.0, 50000.0)
@@ -398,12 +406,184 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	var offset = _q(errors, "propulsion.propeller.thrust_line_offset", pr.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
 	var rotor = _q(errors, "propulsion.propeller.rotating_inertia", pr.get("rotating_inertia"), "kg·m2", 0.0, 0.1)
 	var ct := _table(errors, "propulsion.propeller.ct_table", pr.get("ct_table"), -0.5, 0.5)
-	var cp := _table(errors, "propulsion.propeller.cp_table", pr.get("cp_table"), 0.0, 0.5)
+	# Cp below 0 = the windmilling branch (the air drives the propeller); only a shaft model may use it.
+	var cp := _table(errors, "propulsion.propeller.cp_table", pr.get("cp_table"), -0.3 if e.has("shaft") else 0.0, 0.5)
 	if max_rpm != null and idle != null and idle >= max_rpm:
 		errors.append("propulsion.engine: idle_rpm %s must be below max_rpm_static %s" % [idle, max_rpm])
 	if not ct.is_empty() and ct[1] <= 0.0:
 		errors.append("propulsion.propeller.ct_table: static Ct must be positive (a propeller that pushes)")
-	return { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp, rotor_inertia = rotor }
+	if not cp.is_empty() and cp[1] <= 0.0:
+		errors.append("propulsion.propeller.cp_table: static Cp must be positive (a propeller that absorbs power)")
+	var out := { max_rpm = max_rpm, idle_rpm = idle, lag = lag, diameter = diameter, offset = offset, ct = ct, cp = cp, rotor_inertia = rotor }
+	# Optional (P51-06/12): each absent key leaves the D5 behaviour bit for bit.
+	if e.has("shaft"):
+		out.shaft = _shaft(errors, e.get("shaft"), rotor)
+		var cp_min := 0.0
+		for i in range(1, cp.size(), 2):
+			cp_min = minf(cp_min, cp[i])
+		out.cp_min = cp_min
+	if pr.has("thrust_angles"):
+		var angles = _q(errors, "propulsion.propeller.thrust_angles", pr.get("thrust_angles"), "deg", -10.0, 10.0, 2)
+		if angles != null:
+			var down := deg_to_rad(angles[0])
+			var right := deg_to_rad(angles[1])
+			out.axis = PackedFloat64Array([cos(down) * cos(right), cos(down) * sin(right), sin(down)])
+	if pr.has("normal_force"):
+		if not out.has("axis"):
+			errors.append("propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)")
+		out.normal_force = _table(errors, "propulsion.propeller.normal_force", pr.get("normal_force"), 0.0, 1.0)
+	if pr.has("pfactor_moment"):
+		if not out.has("axis"):
+			errors.append("propulsion.propeller.pfactor_moment: needs thrust_angles (give [0, 0] for an axial shaft)")
+		out.pfactor_moment = _table(errors, "propulsion.propeller.pfactor_moment", pr.get("pfactor_moment"), 0.0, 1.0)
+	if pr.has("slipstream"):
+		if not out.has("axis"):
+			errors.append("propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)")
+		out.slipstream = _slipstream(errors, pr.get("slipstream"))
+	return out
+
+
+## Shaft balance (G2 first slice, P51-06): { power_curve [rpm0, W0, …] (full-throttle brake power), friction
+## [N·m, N·m per 1000 rpm], idle_power and peak_indicated_power (W, admitted by the closed and the open throttle) }.
+static func _shaft(errors: PackedStringArray, node: Variant, rotor: Variant) -> Dictionary:
+	var sh := _dictionary(errors, "propulsion.engine.shaft", node)
+	var curve := PackedFloat64Array()
+	var c: Variant = sh.get("power_curve")
+	if typeof(c) != TYPE_DICTIONARY or c.get("unit") != "rpm, W" or typeof(c.get("value")) != TYPE_ARRAY or c.value.size() < 2:
+		errors.append("propulsion.engine.shaft.power_curve: expected {value: [[rpm, W], …] (2+ rows), unit 'rpm, W', kind, source}")
+	else:
+		for row in c.value:
+			if typeof(row) != TYPE_ARRAY or row.size() != 2 or float(row[0]) <= (curve[curve.size() - 2] if curve.size() > 0 else 0.0) or float(row[1]) <= 0.0:
+				errors.append("propulsion.engine.shaft.power_curve: rows must be [rpm, W] with rpm increasing from > 0 and W > 0")
+				break
+			curve.append(float(row[0]))
+			curve.append(float(row[1]))
+	var friction = _q(errors, "propulsion.engine.shaft.friction_torque", sh.get("friction_torque"), "N·m, N·m/krpm", 0.0, 20.0, 2)
+	var idle = _q(errors, "propulsion.engine.shaft.idle_power", sh.get("idle_power"), "W", 0.0, 20000.0)
+	var peak = _q(errors, "propulsion.engine.shaft.peak_indicated_power", sh.get("peak_indicated_power"), "W", 10.0, 30000.0)
+	if rotor != null and rotor <= 0.0:
+		errors.append("propulsion.propeller.rotating_inertia: a shaft model needs a positive rotating inertia")
+	if not errors.is_empty():
+		return {}
+	if idle >= peak:
+		errors.append("propulsion.engine.shaft: idle_power must be below peak_indicated_power")
+	return { power_curve = curve, friction = friction, idle_power = idle, peak_indicated_power = peak }
+
+
+## Tail slipstream (E0b first slice, P51-12): { hub (le), wash_factor [static, forward] (× disc induced velocity), swirl_factor, vertical_drift, pieces: [{ surface
+## ("horizontal"/"vertical"), area (m2), root (le), span_dir (le unit vector), span (m), chords [root, tip] (m) }] }.
+static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var ss := _dictionary(errors, "propulsion.propeller.slipstream", node)
+	var out := {
+		hub = _q(errors, "propulsion.propeller.slipstream.hub", ss.get("hub"), "m", -2.0, 2.0, 3),
+		wash_factor = _q(errors, "propulsion.propeller.slipstream.wash_factor", ss.get("wash_factor"), "1", 0.0, 2.0, 2),
+		swirl_factor = _q(errors, "propulsion.propeller.slipstream.swirl_factor", ss.get("swirl_factor"), "1", 0.0, 1.0),
+		vertical_drift = _q(errors, "propulsion.propeller.slipstream.vertical_drift", ss.get("vertical_drift"), "1", 0.0, 1.0),
+		pieces = [],
+	}
+	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
+	for i in raw.size():
+		var label := "propulsion.propeller.slipstream.pieces[%d]" % i
+		var pc := _dictionary(errors, label, raw[i])
+		var surface: Variant = pc.get("surface")
+		if not (surface in ["horizontal", "vertical"]):
+			errors.append("%s.surface: '%s' is not 'horizontal' or 'vertical'" % [label, surface])
+		var piece := {
+			surface = str(surface),
+			area = _q(errors, label + ".area", pc.get("area"), "m2", 0.001, 1.0),
+			root = _q(errors, label + ".root", pc.get("root"), "m", -3.0, 3.0, 3),
+			span_dir = _q(errors, label + ".span_dir", pc.get("span_dir"), "1", -1.0, 1.0, 3),
+			span = _q(errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
+			chords = _q(errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2),
+		}
+		if piece.span_dir != null and absf(sqrt(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
+			errors.append("%s.span_dir: must be a unit vector" % label)
+		out.pieces.append(piece)
+	return out if errors.is_empty() else {}
+
+
+## Turbojet (AV-05, physics/turbine.gd). engine: idle_rpm < max_rpm; tables as {value: [[x, y], …], unit "<x>, <y>",
+## kind, source} with x strictly increasing: static_thrust ("rpm, N", bench at STP, ≥ 0), mass_flow ("rpm, kg/s",
+## > 0), fuel_flow ("rpm, kg/s", ≥ 0), throttle_map ("1, rpm": throttle 0 → idle_rpm, 1 → max_rpm, rpm increasing),
+## accel_limit / decel_limit ("rpm, rpm/s", > 0); installed_factor (0.5–1), governor_tau (s), rotor_inertia (kg·m2),
+## rotor_sense (+1 clockwise from behind, −1 counter-clockwise). thrust_line_offset and intake_offset (centroid of the
+## intakes), [x_aft, y_right, z_up] from the CG; optional thrust_angles ([down, right] deg) as for a propeller. Returns the model dict Turbine reads, with max_rpm/idle_rpm for telemetry.
+static func _turbine(errors: PackedStringArray, node: Dictionary) -> Dictionary:
+	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
+	var p := "propulsion.engine."
+	var idle = _q(errors, p + "idle_rpm", e.get("idle_rpm"), "rpm", 1000.0, 300000.0)
+	var max_rpm = _q(errors, p + "max_rpm", e.get("max_rpm"), "rpm", 1000.0, 300000.0)
+	var out := {
+		kind = "turbine",
+		idle_rpm = idle,
+		max_rpm = max_rpm,
+		static_thrust = _xy_table(errors, p + "static_thrust", e.get("static_thrust"), "rpm, N", 0.0, 5000.0),
+		mass_flow = _xy_table(errors, p + "mass_flow", e.get("mass_flow"), "rpm, kg/s", 1e-4, 20.0),
+		fuel_flow = _xy_table(errors, p + "fuel_flow", e.get("fuel_flow"), "rpm, kg/s", 0.0, 1.0),
+		throttle_map = _xy_table(errors, p + "throttle_map", e.get("throttle_map"), "1, rpm", 0.0, 300000.0),
+		accel_limit = _xy_table(errors, p + "accel_limit", e.get("accel_limit"), "rpm, rpm/s", 1.0, 1.0e6),
+		decel_limit = _xy_table(errors, p + "decel_limit", e.get("decel_limit"), "rpm, rpm/s", 1.0, 1.0e6),
+		installed_factor = _q(errors, p + "installed_factor", e.get("installed_factor"), "1", 0.5, 1.0),
+		governor_tau = _q(errors, p + "governor_tau", e.get("governor_tau"), "s", 0.02, 2.0),
+		rotor_inertia = _q(errors, p + "rotor_inertia", e.get("rotor_inertia"), "kg·m2", 0.0, 0.01),
+		rotor_sense = _q(errors, p + "rotor_sense", e.get("rotor_sense"), "1", -1.0, 1.0),
+		offset = _q(errors, "propulsion.thrust_line_offset", node.get("thrust_line_offset"), "m", -1.0, 1.0, 3),
+		intake_offset = _q(errors, "propulsion.intake_offset", node.get("intake_offset"), "m", -1.0, 1.0, 3),
+		axis = PackedFloat64Array([1.0, 0.0, 0.0]),
+	}
+	# Optional ram recovery (fitted to a cycle model): ṁ grows by (1 + ram_flow·u²), V_jet² by ram_jet(N)·u².
+	if e.has("ram_flow"):
+		out.ram_flow = _q(errors, p + "ram_flow", e.get("ram_flow"), "s2/m2", 0.0, 1e-3)
+	if e.has("ram_jet"):
+		out.ram_jet = _xy_table(errors, p + "ram_jet", e.get("ram_jet"), "rpm, 1", 0.0, 10.0)
+	for key in ["propeller", "diameter", "ct_table", "cp_table", "shaft", "slipstream"]:
+		if node.has(key) or e.has(key):
+			errors.append("propulsion: '%s' does not apply to a turbine" % key)
+	if node.has("thrust_angles"):
+		var angles = _q(errors, "propulsion.thrust_angles", node.get("thrust_angles"), "deg", -10.0, 10.0, 2)
+		if angles != null:
+			var down := deg_to_rad(angles[0])
+			var right := deg_to_rad(angles[1])
+			out.axis = PackedFloat64Array([cos(down) * cos(right), cos(down) * sin(right), sin(down)])
+	if not errors.is_empty():
+		return {}
+	if idle >= max_rpm:
+		errors.append("propulsion.engine: idle_rpm %s must be below max_rpm %s" % [idle, max_rpm])
+	var tm: PackedFloat64Array = out.throttle_map
+	if tm[0] != 0.0 or tm[tm.size() - 2] != 1.0 or absf(tm[1] - idle) > 1.0 or absf(tm[tm.size() - 1] - max_rpm) > 1.0:
+		errors.append("propulsion.engine.throttle_map: must run from [0, idle_rpm] to [1, max_rpm]")
+	for i in range(3, tm.size(), 2):
+		if tm[i] <= tm[i - 2]:
+			errors.append("propulsion.engine.throttle_map: rpm must increase with throttle")
+			break
+	if absf(out.rotor_sense) != 1.0:
+		errors.append("propulsion.engine.rotor_sense: must be +1 or -1")
+	return out if errors.is_empty() else {}
+
+
+## A data table {value: [[x, y], …] (2+ rows, x strictly increasing), unit, kind, source} → [x0, y0, x1, y1, …].
+static func _xy_table(errors: PackedStringArray, path: String, node: Variant, unit: String, lo: float, hi: float) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	if typeof(node) != TYPE_DICTIONARY or typeof(node.get("value")) != TYPE_ARRAY or (node.value as Array).size() < 2:
+		errors.append("%s: expected {value: [[x, y], …] (2+ rows), unit, kind, source}" % path)
+		return out
+	if node.get("unit") != unit:
+		errors.append("%s: unit '%s', expected '%s'" % [path, node.get("unit"), unit])
+	if not (node.get("kind") in KINDS) or typeof(node.get("source")) != TYPE_STRING or str(node.get("source")).strip_edges().is_empty():
+		errors.append("%s: invalid evidence kind or empty source" % path)
+	for row in node.value:
+		if typeof(row) != TYPE_ARRAY or row.size() != 2 or typeof(row[0]) not in [TYPE_INT, TYPE_FLOAT] or typeof(row[1]) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(row[0])) or not is_finite(float(row[1])):
+			errors.append("%s: each row must be two finite numbers" % path)
+			return PackedFloat64Array()
+		if out.size() > 0 and float(row[0]) <= out[out.size() - 2]:
+			errors.append("%s: x must increase strictly" % path)
+			return PackedFloat64Array()
+		if float(row[1]) < lo or float(row[1]) > hi:
+			errors.append("%s: %s outside [%s, %s]" % [path, row[1], lo, hi])
+		out.append(float(row[0]))
+		out.append(float(row[1]))
+	return out
 
 
 ## Maximum surface throws (each surface's deflection at full stick), degrees in the file.
@@ -419,6 +599,14 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 		if x != null:
 			deg[surface] = x
 			rad[surface] = deg_to_rad(x)
+	# Optional (AV-06): differential ailerons, the down-going aileron's maximum (≤ the up throw, `aileron`).
+	if throws.has("aileron_down"):
+		var down = _q(errors, "controls.max_throw.aileron_down", throws.get("aileron_down"), "deg", 1.0, 60.0)
+		if down != null and deg.has("aileron") and down > deg.aileron:
+			errors.append("controls.max_throw.aileron_down %s exceeds the up throw %s (a differential throws less down)" % [down, deg.aileron])
+		elif down != null:
+			deg.aileron_down = down
+			rad.aileron_down = deg_to_rad(down)
 	var t = _q(errors, "controls.servo_full_throw_time", node.get("servo_full_throw_time"), "s", 0.01, 2.0)
 	return { throw_deg = deg, throw_rad = rad, servo_rate = 1.0 / t if t != null else 0.0 }
 
@@ -538,6 +726,23 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var value = _q(errors, "aero.surfaces." + key, node.get(key), spec[0], spec[1], spec[2])
 		if value != null:
 			out[key] = deg_to_rad(value) if spec[0] == "deg" else value
+	# Optional (P51-12): per-strip angle offsets root → tip (rad, equal-area strips, zero mean so the attached lift and
+	# the linear oracle are unchanged): washout and the spanwise stall margin decide which strip stalls first.
+	if node.has("wing_station_incidence"):
+		var n: int = Aero.WING_STATIONS_PER_SIDE
+		var inc = _q(errors, "aero.surfaces.wing_station_incidence", node.get("wing_station_incidence"), "rad", -0.2, 0.2, n)
+		if inc != null:
+			var mean := 0.0
+			for x in inc:
+				mean += x / n
+			if absf(mean) > 1e-6:
+				errors.append("aero.surfaces.wing_station_incidence: mean %.2e rad must be 0 (equal-area strips; CL0 carries the mean)" % mean)
+			var per_station := PackedFloat64Array()
+			for k in range(n - 1, -1, -1):
+				per_station.append(inc[k]) # station_ys: left tip … left root, then right root … right tip
+			for k in n:
+				per_station.append(inc[k])
+			out.station_incidence = per_station
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name

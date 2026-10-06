@@ -24,13 +24,13 @@
     "chord_plane_y": -0.1682,
     "dihedral_deg": 5.0,
     "incidence_deg": 1.0,
-    "washout_deg": 0.0,
+    "washout_deg": 1.88,
     "root_thickness_ratio": 0.1651,
     "tip_thickness_ratio": 0.1142,
     "camber_ratio": 0.0128,
-    "aileron_inner": 0.8121,
+    "aileron_inner": 0.8438,
     "aileron_outer": 1.3743,
-    "aileron_chord_fraction": 0.21,
+    "aileron_chord_fraction": 0.19,
     "flap_inner": 0.1249,
     "flap_outer": 0.7996,
     "flap_chord_fraction": 0.21,
@@ -650,7 +650,7 @@
     "stab_tip_chord": 0.1805,
     "elevator_hinge_fraction": 0.65,
     "stab_thickness": 0.0253,
-    "stab_incidence_deg": 0.0,
+    "stab_incidence_deg": 2.0,
     "fin_root_le_z": 1.4242,
     "dorsal_start_z": 1.1494,
     "fin_top_y": 0.4415,
@@ -1545,6 +1545,11 @@
     "shoulder_half_width": 0.06
   },
   "evidence": {
+    "full_size.aileron": {
+      "kind": "measured",
+      "source": "P51-13: each aileron 6 ft 11.6 in long (2.123 m, so inner end 5.5 - 2.123 m), chord 0.187-0.189 of the wing chord (NACA XP-51 flying-qualities report 1942, ntrs.nasa.gov/citations/19930092575, dimension table; NACA wing-section tunnel report 1943, ntrs.nasa.gov/citations/19930092825)",
+      "limits": "Outer end at 5.5 m kept from the three-view; the chord fraction is taken constant."
+    },
     "full_size.overall": {
       "kind": "measured",
       "source": "P-51D: span 37 ft 0 in / 11.28 m, length 32 ft 3 in / 9.83 m (warbirdsresourcegroup.org, DCS manual p18); wing area 235 ft2 (WRG) / 233.19 ft2 (DCS); propeller 11 ft 2 in (DCS). URLs and hashes in docs/research/p51-resources.json",
@@ -1553,7 +1558,7 @@
     "full_size.wing": {
       "kind": "measured",
       "source": "plan-view silhouette fit: root chord 105.0 in (extrapolated to the centreline), tip 48.3 in, LE sweep 14.5 in at the tip; dihedral 5 deg and wing reference line 26.5 in below the FRL printed on the drawing",
-      "limits": "Washout 0 is an assumption."
+      "limits": "Washout 1.88 deg (P51-13): root +1 deg 00 min, tip -0 deg 53 min measured on the P-51B (NACA ACR 4K02 dimension table, ntrs.nasa.gov/citations/19930092458); NAA quotes 2 deg (Gehrkens 1944). Applied linearly root to tip."
     },
     "full_size.tail": {
       "kind": "borrowed",

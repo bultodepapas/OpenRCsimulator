@@ -1,0 +1,25 @@
+{
+  "source": "research/p51/p51-13/section_camber.py: thin-airfoil integrals over the UIUC P-51D ordinates (m-selig.ae.illinois.edu/ads/coord_database.html)",
+  "root": {
+    "file": "references/p51-mustang/airfoils/p51droot-il-selig.dat",
+    "sha256": "dc40b8882e5311d70b007622ef7300ea36f2c6461097eafe9ca909980ff45fde",
+    "thickness": 0.1651,
+    "thickness_x": 0.388,
+    "camber": 0.0126,
+    "camber_x": 0.683,
+    "upper_ordinate_1.25pct": 0.0215,
+    "alpha0_deg": -1.481,
+    "cm_ac": -0.0396
+  },
+  "tip": {
+    "file": "references/p51-mustang/airfoils/p51dtip-il-selig.dat",
+    "sha256": "6b99dd146c460a8411bff2afb2255d223ea0115ecd146f15137286bdf4fddd59",
+    "thickness": 0.1142,
+    "thickness_x": 0.463,
+    "camber": 0.013,
+    "camber_x": 0.463,
+    "upper_ordinate_1.25pct": 0.0119,
+    "alpha0_deg": -1.218,
+    "cm_ac": -0.0309
+  }
+}

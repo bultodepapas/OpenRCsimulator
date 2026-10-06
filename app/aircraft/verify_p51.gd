@@ -169,7 +169,8 @@ func _run() -> void:
 		_check("%s axis along the swept hinge" % side[0], axis.x > 0.98 and absf(axis.z / axis.x - side[1] * slope) < 0.01 and signf(axis.y) == side[1],
 			"%s, expected dz/dx %.4f" % [axis, side[1] * slope])
 	var el_axis: Vector3 = (root.global_transform.affine_inverse() * airplane.hinges.elevator.global_transform).basis.x
-	_check("elevator axis parallel to X", absf(el_axis.z) < 1e-6 and absf(el_axis.y - sin(deg_to_rad(float(t.stab_incidence_deg)))) < 1e-6, str(el_axis))
+	# The stab incidence rotates the tail frame about X, which leaves the hinge axis on X.
+	_check("elevator axis parallel to X", absf(el_axis.z) < 1e-6 and absf(el_axis.y) < 1e-6, str(el_axis))
 	var rud_axis: Vector3 = (root.global_transform.affine_inverse() * airplane.hinges.rudder.global_transform).basis.y
 	_check("rudder axis vertical", rud_axis.is_equal_approx(Vector3.UP), str(rud_axis))
 

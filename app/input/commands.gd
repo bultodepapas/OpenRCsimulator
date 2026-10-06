@@ -47,15 +47,21 @@ static func data_throws_deg() -> Dictionary:
 
 
 ## Trailing-edge deflections in degrees: positive = up (ailerons, elevator) or right (rudder).
-## throws_deg: { aileron, elevator, rudder } maximum throws; empty = the data file's.
+## throws_deg: { aileron, elevator, rudder } maximum throws, plus an optional aileron_down (differential ailerons: the
+## down-going aileron's maximum; absent = symmetric); empty = the data file's.
 static func surface_deflections_deg(c: Dictionary, throws_deg := {}) -> Dictionary:
 	var t: Dictionary = throws_deg if not throws_deg.is_empty() else data_throws_deg()
 	return {
-		aileron_right = c.roll * t.aileron,
-		aileron_left = -c.roll * t.aileron,
+		aileron_right = _aileron(c.roll, t),
+		aileron_left = _aileron(-c.roll, t),
 		elevator = c.pitch * t.elevator,
 		rudder = c.yaw * t.rudder,
 	}
+
+
+## One aileron's trailing-edge angle (degrees, + = up) for its own command x (+ = this aileron's trailing edge up).
+static func _aileron(x: float, t: Dictionary) -> float:
+	return x * (t.aileron if x >= 0.0 else t.get("aileron_down", t.aileron))
 
 
 ## Hinge rotations in model axes (radians). Surfaces extend aft (+z) from the hinge.
