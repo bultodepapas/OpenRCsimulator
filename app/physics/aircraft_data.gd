@@ -10,6 +10,7 @@ extends RefCounted
 
 const FORMAT := "openrc-aircraft v1"
 const Aero := preload("res://physics/aero.gd")
+const Ground := preload("res://physics/ground_contact.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
@@ -219,8 +220,11 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 ## the heave frequency ω = sqrt(Σk / m) must satisfy ω·dt < 0.1 at the project's physics tick (ROADMAP E1: an
 ## explicit integrator resolves the spring instead of exciting it); each damping ratio ζ = c / (2·sqrt(k·m/n)) in
 ## 0.05–2 (a wire leg and a tyre, not a shock absorber, and never negative).
-## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression }],
-## reach, heave_omega, static_sag } or {} when absent.
+## E2: tyre friction is required with the gear (a gear without it slides forever): rolling_resistance C_rr (0–0.3),
+## side_friction μ (0.1–1.5), peak_slip_angle (1–30°), and per contact an optional max_steering (0–45°, default 0).
+## The side force's low-speed damping rate must satisfy μ·g·dt / (tan α_peak · SLIP_FLOOR) ≤ SIDE_LAMBDA_DT_MAX.
+## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression, max_steering
+## (rad) }], reach, heave_omega, static_sag, rolling_resistance, side_friction, tan_peak_slip } or {} when absent.
 static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFloat64Array, mass: float) -> Dictionary:
 	if node == null:
 		return {}
@@ -245,7 +249,8 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		var k = _q(errors, label + ".stiffness", c.get("stiffness"), "N/m", 1.0, 1.0e6)
 		var damping = _q(errors, label + ".damping", c.get("damping"), "N·s/m", 0.0, 1.0e4)
 		var travel = _q(errors, label + ".max_compression", c.get("max_compression"), "m", 0.005, 0.5)
-		if position == null or k == null or damping == null or travel == null:
+		var steering = 0.0 if c.get("max_steering") == null else _q(errors, label + ".max_steering", c.get("max_steering"), "deg", 0.0, 45.0)
+		if position == null or k == null or damping == null or travel == null or steering == null:
 			continue
 		if typeof(c.get("name")) != TYPE_STRING or str(c.name).strip_edges().is_empty():
 			errors.append("%s: missing name" % label)
@@ -261,7 +266,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		var body := PackedFloat64Array([-(position[0] - cg[0]), position[1] - cg[1], -(position[2] - cg[2])])
 		reach = maxf(reach, sqrt(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
 		total_k += k
-		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel) })
+		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel), max_steering = deg_to_rad(steering) })
 	if not errors.is_empty() or contacts.size() < 3:
 		return {}
 	if not (x_min < cg[0] and cg[0] < x_max):
@@ -272,9 +277,18 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	var omega := sqrt(total_k / mass)
 	if omega * dt >= 0.1:
 		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) is not < 0.1; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt])
+	var c_rr = _q(errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
+	var mu = _q(errors, "landing_gear.side_friction", gear.get("side_friction"), "1", 0.1, 1.5)
+	var peak = _q(errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
 	if not errors.is_empty():
 		return {}
-	return { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k }
+	var tan_peak := tan(deg_to_rad(peak))
+	var side_lambda_dt: float = mu * 9.80665 * dt / (tan_peak * Ground.SLIP_FLOOR)
+	if side_lambda_dt > Ground.SIDE_LAMBDA_DT_MAX:
+		errors.append("landing_gear: side-force damping λ·dt = %.2f (μ·g / (tan α_peak · %.1f m/s) at %.0f Hz) is above %.1f; raise peak_slip_angle or the tick" % [side_lambda_dt, Ground.SLIP_FLOOR, 1.0 / dt, Ground.SIDE_LAMBDA_DT_MAX])
+		return {}
+	return { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
+		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak }
 
 
 ## Spanwise positions (m, ±) of the equal-area wing strips for the asymmetric stall (D9b), left side first.

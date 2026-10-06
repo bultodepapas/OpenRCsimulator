@@ -43,8 +43,12 @@ func _energy(s: PackedFloat64Array, mass: float, j: PackedFloat64Array, gear: Di
 
 
 ## Drops the Stik (gear only, no air) from `alt` for `seconds`; returns { state, max_gain (J per tick), ticks }.
-func _drop(model: Dictionary, alt: float, seconds: float) -> Dictionary:
+## normal_only: drop the E2 tyre friction (μ = 0), leaving the vertical spring-dampers alone.
+func _drop(model: Dictionary, alt: float, seconds: float, normal_only := false) -> Dictionary:
 	var gear: Dictionary = model.landing_gear
+	if normal_only:
+		gear = gear.duplicate()
+		gear.side_friction = 0.0
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
@@ -124,11 +128,16 @@ func _initialize() -> void:
 		dq = maxf(dq, absf(h.state[RB.ATT + i] - h2.state[RB.ATT + i]))
 	var dv: float = absf(h.state[RB.VEL + 2] - h2.state[RB.VEL + 2])
 	_check("h vs h/2 after 1 s of bouncing: altitude within 1 mm, attitude within 1e-3, sink within 1 cm/s", dz < 1e-3 and dq < 1e-3 and dv < 1e-2, "Δz %s m, Δq %s, Δw %s m/s (h2 ticks %d)" % [dz, dq, dv, h2.ticks])
-	# The contact force is vertical in NED, so the CG must not move horizontally. RK4 on body-axis velocities leaves a
-	# truncation drift during the bounce; it is integration error, not a force, if it shrinks ≥ 8× at h/2 (4th order: 16×).
-	var drift_h: float = absf(h.state[RB.POS])
-	var drift_h2: float = absf(h2.state[RB.POS])
-	_check("horizontal drift is integration error: ≤ 0.1 mm at h and ≥ 8× smaller at h/2", drift_h < 1e-4 and drift_h2 * 8.0 <= drift_h, "north %s m at h, %s m at h/2" % [drift_h, drift_h2])
+	# Without tyre friction (E2) the contact force is vertical in NED, so the CG must not move horizontally. RK4 on
+	# body-axis velocities leaves a truncation drift during the bounce; it is integration error, not a force, if it
+	# shrinks ≥ 8× at h/2 (4th order: 16×). With friction the rocking wheels scrub and really move the CG.
+	var n_h := _drop(model, 0.5, 1.0, true)
+	Engine.physics_ticks_per_second = 480
+	var n_h2 := _drop(model, 0.5, 1.0, true)
+	Engine.physics_ticks_per_second = saved
+	var drift_h: float = absf(n_h.state[RB.POS])
+	var drift_h2: float = absf(n_h2.state[RB.POS])
+	_check("normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2", drift_h < 1e-4 and drift_h2 * 8.0 <= drift_h, "north %s m at h, %s m at h/2" % [drift_h, drift_h2])
 
 	# The real session: nothing changes in the air (loads bit-identical to the air-only evaluator at the trimmed
 	# start), a low drop is a landing, a high drop breaks the gear, and the hull still crashes the rest.

@@ -125,6 +125,14 @@ func _initialize() -> void:
 	_rejects("two wheels only", func(d): d.landing_gear.contacts.pop_back(), "fewer than 3")
 	_rejects("gear travel missing", func(d): d.landing_gear.contacts[2].erase("max_compression"), "max_compression")
 	_rejects("unnamed contact", func(d): d.landing_gear.contacts[0].erase("name"), "missing name")
+	# E2: tyre friction is required with the gear; steering is optional per contact.
+	_check("E2 tyre data derived: C_rr 0.04, μ 0.8, tan 6°, nose steers 20°, mains fixed", absf(gear.rolling_resistance - 0.04) < 1e-12 and absf(gear.side_friction - 0.8) < 1e-12
+		and absf(gear.tan_peak_slip - tan(deg_to_rad(6.0))) < 1e-12 and absf(gear.contacts[2].max_steering - deg_to_rad(20.0)) < 1e-12 and gear.contacts[0].max_steering == 0.0, str(gear))
+	_rejects("gear without tyre friction (it would slide forever)", func(d): d.landing_gear.erase("side_friction"), "side_friction")
+	_rejects("side force too stiff for the tick (peak slip 2°)", func(d): d.landing_gear.peak_slip_angle.value = 2.0, "λ·dt")
+	_rejects("steering in radians", func(d): d.landing_gear.contacts[2].max_steering.unit = "rad", "unit 'rad'")
+	_rejects("steering beyond 45°", func(d): d.landing_gear.contacts[2].max_steering.value = 60.0, "outside")
+	_rejects("rolling resistance of a brake (0.5)", func(d): d.landing_gear.rolling_resistance.value = 0.5, "outside")
 	_rejects("prop table numeric strings", func(d): d.propulsion.propeller.ct_table.value[0] = ["0", "0.1"], "finite numbers")
 	_rejects("prop table empty source", func(d): d.propulsion.propeller.cp_table.source = "", "empty source")
 	_check("data fingerprint is available for traces", m.data_sha256.length() == 64)

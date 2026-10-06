@@ -145,6 +145,7 @@ func _ready() -> void:
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
 	session.setup(Catalog.entry(aircraft_id).data)
+	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
 	_update_cg_model()
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
@@ -155,9 +156,9 @@ func _ready() -> void:
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
 	if args.has("trace"):
-		if not session.aircraft.ok:
+		if not session.aircraft.ok or not session.surface_error.is_empty():
 			# Never record a "flight" on invalid data (it would be a ballistic throw): fail the run instead.
-			push_error("--trace refused: aircraft data invalid")
+			push_error("--trace refused: %s" % ("aircraft data invalid" if not session.aircraft.ok else session.surface_error))
 			get_tree().quit(1)
 			return
 		# Headless trace: record from the start to t, save, quit. No window needed.

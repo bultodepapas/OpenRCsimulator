@@ -586,7 +586,7 @@
     "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, belly under the CG (fuselage bottom 0.053 m below the thrust line, from the model team's fuselage stations). Read from the Jensen plan and the visual model. Since E1 the wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash"
   },
   "landing_gear": {
-    "description": "E1: the wheels as spring-damper contacts with the flat ground (physics/ground_contact.gd): F_up = max(0, k·compression + c·rate) at each wheel bottom, normal force only (rolling friction, steering and brakes: E2). Stiffness from the ROADMAP E1 rule ω·dt < 0.1 (ω = sqrt(Σk/m) at the 240 Hz tick), checked by the loader; the CG must lie inside the wheel footprint.",
+    "description": "E1: the wheels as spring-damper contacts with the flat ground (physics/ground_contact.gd): F_up = max(0, k·compression + c·rate) at each wheel bottom. Stiffness from the ROADMAP E1 rule ω·dt < 0.1 (ω = sqrt(Σk/m) at the 240 Hz tick), checked by the loader; the CG must lie inside the wheel footprint. E2: tyre forces in the ground plane along each wheel's heading: rolling resistance C_rr·N and a slip-angle side force saturating at μ·N (friction circle); the nose wheel steers with the rudder servo. Coefficients are for a tyre on dry pavement; per-surface factors (grass) come with the field surfaces (E3). Brakes: none.",
     "contacts": [
       {
         "name": "main_left",
@@ -679,9 +679,33 @@
           "unit": "m",
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        },
+        "max_steering": {
+          "value": 20.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "Nose wheel steering at full rudder, linked to the rudder servo. RC tricycle setups use about 15-25° (less throw than the rudder's, to avoid swerving at speed); 20° gives a kinematic turn radius of wheelbase/tan 20° = 0.351/0.364 = 0.96 m at walking speed. Guess, not measured; JSBSim's full-size C172 uses 10°"
         }
       }
-    ]
+    ],
+    "rolling_resistance": {
+      "value": 0.04,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Rolling resistance coefficient on dry pavement. Borrowed base 0.022 (JSBSim c172x rolling_friction, a full-size tyre on concrete), doubled for a 76 mm RC wheel (resistance grows as the wheel shrinks: deformation and bumps are larger relative to the radius). Guess; a coast-down on the owner's field would measure it (E2 report)"
+    },
+    "side_friction": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Peak tyre friction coefficient μ on dry pavement: JSBSim c172x static_friction 0.8 (github.com/JSBSim-Team/jsbsim, aircraft/c172x/c172x.xml). One value for side force and friction circle (JSBSim's 0.5 dynamic friction for a skid is not modelled). Grass is lower (E3, field surfaces)"
+    },
+    "peak_slip_angle": {
+      "value": 6.0,
+      "unit": "deg",
+      "kind": "borrowed",
+      "source": "Slip angle where the side force reaches μ·N in our linear-then-saturated law. Matches the initial slope of JSBSim's default Pacejka side-force curve (FGLGear: stiffness 0.06/deg, shape 2.8, curvature 1.03; slope at zero μ·2.8·0.06 per degree, so μ is reached linearly at 1/0.168 = 5.95°). A small RC wheel's real curve is unmeasured. Also sets the low-speed damping the loader checks: μ·g·dt/(tan 6°·1 m/s) = 0.31 at 240 Hz"
+    }
   },
   "plausibility": {
     "mass_range": {
