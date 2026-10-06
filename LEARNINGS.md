@@ -747,3 +747,23 @@ Proof: [flight realism report](docs/research/p51-flight-realism.md), `tests/test
 - **Pin a known defect instead of committing a red test.** `test_damping_regimes.gd` measures the regime jump (Clp × 1.73, Cmq × 0.28, Cnr × 0.72, CLα × 1.34 over α 0–11°) and fails if it changes either way; the fix flips one flag and the same measurements become the acceptance test.
 
 Proof: ROADMAP H1–H3, D11a, D11b rows; `test_rigid_body.gd` (15), `test_session_guards.gd` (32), `test_damping_regimes.gd` (17); [`research/sensitivity/results.md`](research/sensitivity/results.md); `app/test.sh` green.
+
+## 2026-10-06 · H, D11, E3b, G2, DATA — whole-project audit
+
+- The full regression suite can pass while deliberately preserving a known aerodynamic defect; report verification and fidelity acceptance separately.
+- Mutation checks found that the trimmed-flight smoke accepts one row and NaN end values. Require finite samples and completed time/ticks before checking flight drift.
+- Measure every active aircraft: the experimental P-51 cost about three times the Stik physics tick on this shared host. Target-machine acceptance remains open.
+- The frozen-aux rigid-body kernel is fourth-order; a current P-51 shaft transient showed first-order refinement. Define coupled state and stage time before anchors, shaft, wind or damage grow.
+- Recheck historical findings against current code: the reported Stik gear mismatch was a datum error; exit-time audio warnings did not reproduce as cumulative Home/flight leaks.
+
+Proof and recommendations: [project audit](docs/research/project-audit-2026-10-06/README.md), including runtime logs, clean-clone exports and reproducible probes. No simulator behavior changed.
+
+## 2026-10-06 · H8, D11, E3b, DATA, CR — roadmap revision after the audit
+
+- Put the continuous/sampled/discrete state contract before wheel anchors, coupled shafts, flow lags, wind, fuel and persistent damage; a feature list alone hides these dependencies.
+- A known-defect characterization stays open for fidelity acceptance. The approach gate covers fin Cnr as well as wing Clp/CLα and tail Cmq, with physically justified bands.
+- Profile every active aircraft before optimizing or changing language. Shared-host measurements locate expensive paths; only target hardware can close the performance gate.
+- Optional schema v2, contributor interfaces and a custom VLM need concrete consumers. The next product outcome is one independently checked Stik ground circuit.
+- Crash impact ranking does not supply material thresholds. Start with a factual contact snapshot; defer damage until contact/state/mass contracts and threshold evidence exist.
+
+Proof: [ROADMAP revision 5](ROADMAP.md#execution-order-and-release-gates), [crash plan](docs/CRASH-DAMAGE-PLAN.md), reconciled research and track registry. Documentation-only change; simulator fixes remain planned and owner gates remain open.

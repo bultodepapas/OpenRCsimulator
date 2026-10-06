@@ -1,8 +1,18 @@
 # 09 — Aircraft configuration, data schema and the geometry-to-physics pipeline
 
-**Status:** research knowledge base, 2026-10-06. **Serves:** every aircraft track (Ugly Stik D1/D1-R1, Extra EX-05/06/09, Avanti AV-05/06, P-51 P51-05/06/11/12), Gate F follow-ups (E0a/E0b local surfaces), M4 G2/G4 (shaft, fuel), the `openrc-aircraft` format's evolution v1 → v2, menu/catalog (UI-05), future user-made aircraft. Cross-cutting: proposed step prefix `X-DATA-`. **Read with:** [aircraft_data.gd](../../../app/physics/aircraft_data.gd), [aircraft_catalog.gd](../../../app/app_state/aircraft_catalog.gd), [test_aircraft_data.gd](../../../app/tests/test_aircraft_data.gd), [Extra derivation](../../../research/extra-300/ex05/derivation.md), [P-51 derivation](../../../research/p51/p51-05/derivation.md), [Extra integration audit](../extra-300-integration-audit.md), [Avanti integration audit](../avanti-s-integration-audit.md), [extra-aircraft-tooling 11–12](../extra-aircraft-tooling/10-12-inspection-loading-aero.md) (ResourceLoader, XFOIL/AVL), [RESEARCH.md](../../../RESEARCH.md) ("JSBSim is a physics component…", "glTF is a candidate interchange format…", "Community aircraft packages and format evolution").
+**Status:** research knowledge base, 2026-10-06. **Serves:** every aircraft track (Ugly Stik D1/D1-R1, Extra EX-05/06/09, Avanti AV-05/06, P-51 P51-05/06/11/12), Gate F follow-ups (E0a/E0b local surfaces), M4 G2/G4 (shaft, fuel), the `openrc-aircraft` format's evolution v1 → v2, menu/catalog (UI-05), future user-made aircraft. Cross-cutting: registered step prefix `DATA-` (the original research tables below used `X-DATA-`). **Read with:** [aircraft_data.gd](../../../app/physics/aircraft_data.gd), [aircraft_catalog.gd](../../../app/app_state/aircraft_catalog.gd), [test_aircraft_data.gd](../../../app/tests/test_aircraft_data.gd), [Extra derivation](../../../research/extra-300/ex05/derivation.md), [P-51 derivation](../../../research/p51/p51-05/derivation.md), [Extra integration audit](../extra-300-integration-audit.md), [Avanti integration audit](../avanti-s-integration-audit.md), [extra-aircraft-tooling 11–12](../extra-aircraft-tooling/10-12-inspection-loading-aero.md) (ResourceLoader, XFOIL/AVL), [RESEARCH.md](../../../RESEARCH.md) ("JSBSim is a physics component…", "glTF is a candidate interchange format…", "Community aircraft packages and format evolution").
 
-## Summary
+## Current execution policy — audit reconciliation, 2026-10-06
+
+[ROADMAP revision 5](../../../ROADMAP.md#execution-order-and-release-gates) supersedes the mandatory v2/unified-tool proposals below. The detailed code counts, aircraft table and uncommitted-work notes are a **pre-integration snapshot**, not the current catalog. P-51 shaft/slipstream and Avanti turbine are committed; four aircraft load. The [project audit](../project-audit-2026-10-06/README.md) verified current P-51 generated outputs are fresh, but their missing CI freshness checks remain DATA-1.
+
+- Repair nested shaft provenance/numeric validation (D1-R2) and ground-support validation (D1-R3); the loader's quantity contract is sound, but not applied uniformly yet.
+- Add exact input hashing and honest trace metadata (DATA-3/C7-R2) before collecting reference datasets.
+- Extract proven duplicated helpers incrementally (DATA-5). Preserve independent aircraft derivations and generated-output checks.
+- DATA-8 requires a concrete consumer that v1 cannot represent cleanly. H8 state ownership, PT2, additional v1 aircraft and per-strip polars do not depend on a component-tree migration.
+- The v2 sketches, mass shapes, packages and solver ideas below remain research options. Choose a bounded consumer before turning an option into required architecture.
+
+## Summary (original research snapshot)
 
 - **v1 works and is strict:** every number is `{value, unit, kind, source}`, one fixed unit per field, per-field ranges, sign rules for a statically stable airplane, and cross-checks (span × c = S, fin derivatives = fin force × arm, inventory CG = flight CG, gear ω·dt < 0.1). Keep this contract in v2; it is the project's best asset.
 - **v1 encodes one airplane shape:** one trapezoid wing (3 strips per side), exactly one horizontal and one vertical tail, three named controls (aileron/elevator/rudder), one engine + one propeller, a fixed list of 33 whole-aircraft derivatives. V-tails, elevons, flaps, retracts, twins, biplanes and gliders cannot be described without new code paths.
@@ -15,7 +25,7 @@
 - **Mods:** JSON + glTF only, under `user://aircraft/<id>/`; never `.tres/.res/.pck` from users (embedded scripts execute on load; packs replace `res://` paths by default). License metadata per layer: data, model, livery.
 - **Schema tooling:** JSON Schema 2020-12 for editor IntelliSense and CI; the GDScript loader stays the authority (physics rules a schema cannot express). Test that both reject the same mutations.
 
-## Where the code stands
+## Code snapshot before aircraft integration
 
 **Loader** ([aircraft_data.gd](../../../app/physics/aircraft_data.gd), 565 lines committed; +195 uncommitted lines from AV-05/P51-06/12 at writing time):
 

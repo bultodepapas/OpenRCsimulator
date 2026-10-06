@@ -1,0 +1,13 @@
+Command:
+.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path app --script /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/physics-validator-probe.gd
+
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+
+Output:
+outside_support_polygon_accepted=true errors=[]
+shaft_string_rpm_missing_provenance_accepted=true errors=[]
+shaft_nan_string_accepted=false errors=["propulsion.engine.shaft.power_curve: rows must be [rpm, W] with rpm increasing from > 0 and W > 0"]
+
+The temporary probe mutated a parsed Stik/P-51 data dictionary in memory; it did not change app code or checked-in aircraft data. The Stik's three gear contacts were moved to le-frame [x_aft, y_right] points (0, -0.18), (1, 0.18), (1, 0). Its CG (.1209, 0) is inside both x/y min/max bounds but outside the support triangle. The P-51's shaft first RPM entry became the string "1000", and power_curve.kind/source were removed. Both malformed candidates were accepted.
+
+Follow-up: a string "nan" in the first RPM slot was rejected by the positive/increasing row checks. This audit did not find a way for a non-finite curve value to reach the model; the verified issues are type coercion and missing table provenance enforcement.

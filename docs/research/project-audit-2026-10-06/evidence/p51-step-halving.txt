@@ -1,0 +1,26 @@
+Command:
+.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path app --script /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/p51-step-halving.gd
+
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+
+Setup: P-51 session, trimmed level at 35 m/s, 500 m altitude; shaft initialized to steady RPM at 20% throttle, then throttle set to full. Each fixed-rate run lasted 0.5 s. Compared all state and aux array values with the 3840 Hz result using a simple Euclidean norm (mixed SI units; only the refinement ratio is interpreted).
+
+Output:
+rate=240 rpm=5579.822994 V=35.514112107 alpha=0.015795338
+rate=480 rpm=5578.307293 V=35.508420454 alpha=0.015916192
+rate=960 rpm=5577.551391 V=35.505580715 alpha=0.015976485
+rate=1920 rpm=5577.173847 V=35.504162247 alpha=0.016006603
+rate=3840 rpm=5576.985203 V=35.503453397 alpha=0.016021653
+error_to_3840Hz[240Hz]=2.83782797062576
+error_to_3840Hz[480Hz]=1.32210748807539
+error_to_3840Hz[960Hz]=0.56619552758397
+error_to_3840Hz[1920Hz]=0.18864656352984
+halving_ratio_240_to_480=2.14644270320019
+halving_ratio_480_to_960=2.33507229157565
+halving_ratio_960_to_1920=3.00135617097748
+adjacent_state_error_240_to_480=1.5157204825974
+adjacent_state_error_480_to_960=0.75591196049633
+adjacent_state_error_960_to_1920=0.37754896405453
+adjacent_state_error_1920_to_3840=0.18864656352984
+
+Interpretation: successive resolution-to-resolution differences fall by ~2×. This is evidence for first-order behavior in this P-51 throttle transient and consistent with explicit once-per-tick shaft stepping; it is not a whole-model order proof or an estimate of absolute flight error.

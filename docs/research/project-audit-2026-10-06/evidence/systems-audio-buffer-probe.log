@@ -1,0 +1,20 @@
+WorkerThreadPool: 12 threads, 3 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-audio-buffer-probe.gd remapped: /home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-audio-buffer-probe.gd
+Completed load for: '/home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-audio-buffer-probe.gd' remapped '/home/bulto/OpenRCsimulator/docs/research/project-audit-2026-10-06/evidence/systems-audio-buffer-probe.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+mix_rate=22050 buffer_length=0.150 requested_frames=3307.5 capacity=4096 empty_writable=4095 push_ok=true full_writable=0 queued_frames=4095 queued_seconds=0.185714
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

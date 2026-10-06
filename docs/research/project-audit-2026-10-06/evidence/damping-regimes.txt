@@ -1,0 +1,10 @@
+Command:
+.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path app --script res://tests/test_damping_regimes.gd
+
+Engine: Godot 4.7.2.stable.official.ed1daf0bf
+
+Result: 17 checks, 0 failed. The test's documented KNOWN_DEFECT path passed.
+
+worst ratio to the oracle over α 0…11°: { "Clp": 1.72579238835595, "Cmq": 0.2780833661858, "Cnr": 0.72445540553103, "CLa": 1.34140248692967 }
+
+The passing result means these values still match the test's pinned characterization. It does not show that matching the α=2° oracle across 0–11° is physically correct; independent validation is absent.

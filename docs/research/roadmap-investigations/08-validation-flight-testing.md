@@ -1,12 +1,12 @@
 # 08 — Validating the simulator against real RC aircraft: measurement, flight testing, system identification and pilot evaluation
 
-**Status:** research knowledge base, 2026-10-06. **Serves:** ROADMAP rule 6 (verification ≠ validation), Gate 2 and Gate 2-R, D8b (independent validation), D10 (sensitivity → what to measure next), EX-09 and P51-09 (independent contrast), E3b/E3c proofs (takeoff and landing roll), G1/G2 (propeller, engine), M5 wind. **Read with:** [ROADMAP](../../../ROADMAP.md), [RESEARCH.md § Verification and real-world validation](../../../RESEARCH.md#verification-and-real-world-validation-are-different-and-both-can-start-cheaply), [RESEARCH.md § transfer](../../../RESEARCH.md#5-does-simulator-practice-transfer-to-real-rc-flying), [RESEARCH.md § learning parameters](../../../RESEARCH.md#10-learning-flight-model-parameters-from-recorded-data), [sensitivity results](../../../research/sensitivity/results.md), [flight-repair report](../flight-repair-implementation.md), [06 radio and latency](06-radio-input-servos-latency.md).
+**Status:** research knowledge base, initially observed 2026-10-06; current validation status reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP rule 6 (verification ≠ validation), Gate 2 and Gate 2-R, D8b (independent validation), D10 (sensitivity → what to measure next), EX-09 and P51-09 (independent contrast), E3b/E3c proofs (takeoff and landing roll), G1/G2 (propeller, engine), M5 wind. **Read with:** [ROADMAP](../../../ROADMAP.md), [RESEARCH.md § Verification and real-world validation](../../../RESEARCH.md#verification-and-real-world-validation-are-different-and-both-can-start-cheaply), [RESEARCH.md § transfer](../../../RESEARCH.md#5-does-simulator-practice-transfer-to-real-rc-flying), [RESEARCH.md § learning parameters](../../../RESEARCH.md#10-learning-flight-model-parameters-from-recorded-data), [sensitivity results](../../../research/sensitivity/results.md), [flight-repair report](../flight-repair-implementation.md), [06 radio and latency](06-radio-input-servos-latency.md).
 
 ## Summary
 
-- **`research/sensitivity/results.md` is stale.** It predates the flight repair (D9-R, D1-R1, D10-R). Re-run on 2026-10-06 (measured, `sensitivity.gd` unchanged): at 13.8 m/s SP 1.39 Hz (1.07× US120, was 1.45×), roll τ 0.056 s (still **2.07× faster**), DR 0.72 Hz (1.26×), spiral now **unstable** (τ −21 s), full-rudder β 14° (was 63°). The sweep now **refuses the Cnβ, mass and CG variants**, so three of D10's top rows are empty.
+- **D11a's rerun is complete.** The generated [`research/sensitivity/results.md`](../../../research/sensitivity/results.md) contains D8b, the like-for-like 25e comparison and the repaired D10 sweep; there are no refused variants. Current roll-pole gaps are 2.07× against the Froude-scaled US120 and 2.37× against the 25e. The earlier refusals and stale values describe the pre-D11a state only.
 - **The Ultra Stick 25e flight identification is freely readable.** A UMN course page hosts a preprint of Dorobantu et al., the paper ROADMAP lists as "paywalled". At 19 m/s: SP 16.33 rad/s, ζ 0.83; roll pole 12.53 s⁻¹; dutch roll 4.96 rad/s, ζ 0.33; servo 50.3 rad/s second order plus 50 ms delay; swing-test inertia Ixx/Iyy/Izz 0.089/0.144/0.162 kg·m² [1].
-- **The two independent flight IDs agree: the sim rolls 2–2.4× too fast.** Nondimensionalised at equal CL, the sim against the 25e gives roll 2.38×, SP 0.88× and DR 1.46× (derived). Most of the roll gap comes from the inertia ratio Ixx/(ρSb³): 0.057 in the sim against 0.114 on the 25e. Clp explains about 1.17×: the borrowed −0.45 against −0.38 identified in flight.
+- **The two independent flight IDs agree: the sim rolls 2–2.4× too fast.** In the current D11a like-for-like result at equal CL, the sim against the 25e gives roll 2.37×, SP 0.87× and DR 1.46× (derived). Most of the roll gap comes from the inertia ratio Ixx/(m·b²): 0.0172 in the sim against 0.0282 on the 25e swing-test model. The borrowed Clp remains less damped than the flight-identified 25e value.
 - **OpenFlightSim's 25e inertia is not UMN's own swing-test value.** Iyy 0.0864 against 0.144 kg·m². Our plausibility warning ("Jyy 2.11× the scaled 25e") compares against the weaker number.
 - **The #1 measurement is a bifilar swing test for Ixx.** It costs about $10 and 2 h. Even with Ixx and Iyy measured, flight data only identifies ratios such as Lp = q̄Sb²Clp/(2V·Ixx). The swing test is therefore the prerequisite for any coefficient identification.
 - **Apparent (added) mass is large on a light RC wing.** In roll, the wing's added inertia is ρπc²/4·b³/12 ≈ 0.026 kg·m², i.e. 23 % of the sim's Ixx (derived). A swing test in air measures it (NACA TR 467 corrects for it [10]), and the real roll mode feels it. The sim has no such term.
@@ -23,10 +23,10 @@
 | --- | --- | --- |
 | Verification of handling | [`test_handling.gd`](../../../app/tests/test_handling.gd): trim α 4.26° ± 0.5, coordinated roll 144/192 °/s ± 7 %, glide L/D 9.1 ± 2 %. These come from the same coefficients the sim uses (circular, rule 6) | No independent reference in CI |
 | Flight modes | [`linearize.gd`](../../../app/physics/linearize.gd) (central differences, Faddeev–LeVerrier, Durand–Kerner); [`test_modes.gd`](../../../app/tests/test_modes.gd) bands ± 3 % at 10/15/25 m/s, recorded 2026-10-06. At 15 m/s: SP 1.495 Hz ζ 0.739, phugoid 0.103 Hz ζ 0.256, roll τ 0.0513 s, DR 0.773 Hz ζ 0.289, spiral eigenvalue +0.034 s⁻¹ | Regression only, not truth |
-| D8b table | [`research/sensitivity/sensitivity.gd`](../../../research/sensitivity/sensitivity.gd) prints the US120 comparison; [`results.md`](../../../research/sensitivity/results.md) is **pre-repair**. Re-run today on committed physics (15 m/s baseline equals the `test_modes` bands; the E0b slipstream work in progress may move it): roll τ 2.07×, SP 1.07×, DR 1.26×, spiral unstable, β(full rudder) 14° | Stale file; no 25e row; nothing guards against staleness |
-| D10 sweep | Today's run: Cnr dominates the spiral (−52 % / −2390 %: the spiral root crosses zero), then Clp 30 %, CD0 22 %, Ixx 20 %, Iyy 12 %, Izz 11 %, CL_max 7 %, Cmq 6 %. **Cnb, mass and CG rows are "refused"** by the new loader (derived rudder data, virtual balanced build with `cg_tolerance` 0.001 m) | The sweep must perturb these through valid paths |
+| D8b / D11a references | [`sensitivity.gd`](../../../research/sensitivity/sensitivity.gd) and generated [`results.md`](../../../research/sensitivity/results.md) contain US120 and the like-for-like 25e comparison. The D11a 15 m/s baseline matches `test_modes`; current roll gaps are 2.07× (US120) and 2.37× (25e) | Re-run after physics/data changes; there is not yet an automatic stale-result guard |
+| D10 sweep | D11a repaired the mass, CG and fin-area perturbations through valid data paths. The generated table has no refused rows; Cnr still dominates the spiral crossing, followed by Clp, CD0, Ixx, Iyy, Izz, CLmax and Cmq | Preserve the no-refused-rows/output-count check on future runs |
 | Golden flights | [`app/tests/golden/`](../../../app/tests/golden/): `glide_15`, `pull_throttle`, `roll_15`, `rudder_doublet`; replay tolerance 1e-6 m, m/s, rad/s; 1e-9 quaternion | Good regression net; no circuit (E4) |
-| Trace | CSV `openrc-trace v2`, one row per 240 Hz tick; T key records in-app | No importer for real logs; no replay of recorded stick inputs |
+| Trace | CSV `openrc-trace v3`, one row per 240 Hz tick; T key records in-app | No importer for real logs; no replay of recorded stick inputs. The audit also found active-model metadata can say “no propwash” for the P-51 and replay configuration omits initial auxiliary state; repair before identification/replay use ([audit evidence](../project-audit-2026-10-06/README.md#verified-lead-findings)) |
 | Pilot feedback | [`.github/ISSUE_TEMPLATE/pilot_feedback.md`](../../../.github/ISSUE_TEMPLATE/pilot_feedback.md): free text on handling, visibility, setup | No task, standard or rating scale |
 | Data provenance | Each number has {value, unit, kind, source}; kinds manual/measured/borrowed/estimated/derived | No `uncertainty` field (blocks Monte-Carlo); no "identified" kind |
 | Measured hardware | Plan CG, plan nose and engine catalog values only. Throws, inertia, thrust, rpm, C_rr (0.10/0.20/0.30 FlightGear-scaled guesses in `app/data/ground/surface_friction.json`) and servo time are estimates | Everything below |
@@ -38,7 +38,7 @@
 | Level | Evidence | Answers | State |
 | --- | --- | --- | --- |
 | L0 verification | Known answers, golden flights, metamorphic and property tests | "Does the code solve our equations?" | Strong; add metamorphic tests |
-| L1 public references | Flight-identified modes of related airframes (US120, 25e); public flight logs replayed | "Is the model the right class of airplane?" | US120 done; 25e possible now |
+| L1 public references | Flight-identified modes of related airframes (US120, 25e); public flight logs replayed | "Is the model the right class of airplane?" | US120 and 25e comparisons incorporated in D11a; public log replay remains open |
 | L2 owner measurements | Mass, CG, inertia, throws, thrust, C_rr; tripod-video flight metrics | "Are the inputs right?" | None yet |
 | L3 instrumented flight | Logged flights, system ID, tolerance tables, pilot-in-the-loop ratings | "Does it fly like the real Stik?" | Gate 2 / 2-R |
 
@@ -90,11 +90,11 @@ Rule: fit on one maneuver set, validate on another, and record in the reference 
 - **Reynolds number**: Stik at 15 m/s, c 0.305 m → Re ≈ 3.1·10⁵; 25e at 19 m/s, c 0.25 m → 3.25·10⁵ (ν 1.46·10⁻⁵ m²/s; derived). The 25e is Reynolds-matched; airfoils differ.
 - **Results of the like-for-like scaling** (derived: ω̂ = ω·L/2V with L = c for pitch and b for lateral modes, Stik at the 25e trim CL):
 
-| Mode | 25e flight ID, 19 m/s [1] | Nondim 25e | Sim at 17.9 m/s (same CL 0.28) | Nondim sim | Sim / 25e |
+| Mode | 25e flight ID, 19 m/s [1] | Nondim 25e | D11a sim at 18.8 m/s (same CL 0.28) | Nondim sim | Sim / 25e |
 | --- | --- | --- | --- | --- | --- |
-| Short period | 16.33 rad/s, ζ 0.83 | ωc/2V 0.107 | 1.76 Hz, ζ 0.75 | 0.094 | 0.88 |
-| Roll subsidence | 12.53 s⁻¹ | λb/2V 0.419 | τ 0.043 s | 0.996 | **2.38** |
-| Dutch roll | 4.96 rad/s, ζ 0.33 | ωb/2V 0.166 | 0.91 Hz, ζ 0.28 | 0.243 | 1.46 |
+| Short period | 16.33 rad/s, ζ 0.83 | ωc/2V 0.1074 | 11.62 rad/s, ζ 0.75 | 0.0940 | 0.87 |
+| Roll subsidence | 12.53 s⁻¹ | λb/2V 0.4188 | 24.58 s⁻¹ | 0.9944 | **2.37** |
+| Dutch roll | 4.96 rad/s, ζ 0.33 | ωb/2V 0.1658 | 5.97 rad/s, ζ 0.28 | 0.2417 | 1.46 |
 
 The flight data also checks the 25e model itself. Clp −0.4496 with OpenFlightSim's Ixx 0.0715 predicts a 25e roll pole of 18.3 s⁻¹, 1.46× the 12.53 measured; with the swing-test Ixx 0.089 it predicts 14.7 s⁻¹ (1.17×). The borrowed coefficient set is itself 15–45 % too crisp in roll before any transfer to the Stik. For nondimensional roll equality the Stik would need Ixx ≈ 0.27 kg·m² with the current Clp, or ≈ 0.23 with the flight-identified Clp. That means Rx ≈ 0.39 against 0.27 now and 0.34 for the 25e: a real airframe-dependent unknown that only a swing test resolves.
 
@@ -102,7 +102,7 @@ The flight data also checks the 25e model itself. Clp −0.4496 with OpenFlightS
 
 | Option | Cost | Gives | Limits | Verdict |
 | --- | --- | --- | --- | --- |
-| Public mode tables (US120, 25e) | 0 | Class check, gap direction | Other airframes, other inertia | Do now (X-VAL-1/2) |
+| Public mode tables (US120, 25e) | 0 | Class check, gap direction | Other airframes, other inertia | Completed for current Stik data in D11a |
 | Public log replay (Thor 44/45) | 0 + tooling | Time-history TIC, tooling test bed | 25e, not Stik; licence unstated | Do after the replay harness |
 | Ground measurements | $0–40, 1 day | Measured mass, CG, inertia, throws, thrust, C_rr | Inputs only, not handling | **Highest value per cost** |
 | Tripod phone video (240 fps) | $0 | Roll rate, top speed, takeoff and landing roll, spin rate, stall behaviour | No rates or τ; perspective error; wind | Next after ground |
@@ -112,21 +112,21 @@ The flight data also checks the 25e model itself. Clp −0.4496 with OpenFlightS
 | Python ID (numpy/scipy, OpenFlightAnalysis MIT) | 0 | Equation error, FRE, multisines | Our own code to verify | **Recommended** |
 | Pilot ratings only | 0 | Feel | Subjective, one pilot | Complement, never alone |
 
-**Recommendation:** L1 now (fix the stale D8b/D10, add the 25e like-for-like comparison), then L2 ground measurements in one owner day, then tripod video, then a passive logger. Python tooling lives in `research/validation/` (outside `app/`, like `sensitivity.gd`). One generated dashboard per release.
+**Recommendation:** D11a closed the current L1 sensitivity/reference rerun. Next, collect L2 ground measurements, then tripod-video metrics, then consider passive logging. Keep Python tooling outside `app/`; add a generated dashboard only when its schema and release use are scheduled.
 
 ## Godot / GDScript notes
 
-- **Run validation scripts outside `res://`.** `sensitivity.gd` already does `--script "$PWD/research/..."`; keep it that way so `app/test.sh` never parses validation drafts. Today's re-run took about 2 min headless and left the tree clean.
+- **Run validation scripts outside `res://`.** `sensitivity.gd` already runs through `--script "$PWD/research/..."`; keep it that way so `app/test.sh` never parses validation drafts. The completed D11a rerun took about 2 min headless and left the tree clean.
 - **Replay determinism.** Replaying a real log at 240 Hz needs the log's 50–400 Hz inputs held or interpolated per tick. Use zero-order hold, matching how the radio is read once per tick (doc 06). Any interpolation choice must be explicit and also used in the synthetic round-trip test.
 - **float64 everywhere.** Read CSV with `FileAccess.get_csv_line()` and `String.to_float()` (64-bit). Never pass through `Vector3`. HDF5 and `.mat` cannot be read in GDScript: convert to CSV in Python (h5py, scipy.io) first.
 - **Monte-Carlo reproducibility.** Use a seeded `RandomNumberGenerator` (`seed` property, PCG32) per run and record the seed in the output. Cost: a 20 s flight is 4,800 ticks × ~0.5 ms ≈ 2.4 s, so 200 runs × 3 maneuvers ≈ 25 min headless. Mode analysis alone takes milliseconds per run, so do Monte-Carlo on modes first.
-- **The loader refuses invalid variants.** Perturbation code must go through valid data paths (ballast position for CG, tail area for Cnβ), or it silently loses rows, as happened today.
+- **Keep sensitivity variants valid and count the outputs.** D11a perturbs CG, mass and Cnβ through valid data paths and produces no refused rows. Preserve an explicit row-count/refusal check so a future loader change cannot silently reduce the sweep.
 
 ## Reusable libraries, tools, code and datasets
 
 | Name | Gives us | Licence | Link | Use here |
 | --- | --- | --- | --- | --- |
-| Dorobantu et al. preprint | 25e flight-ID modes, swing inertia, servo model, TIC values, input design | Paper (read, cite) | [1] | X-VAL-2 reference rows |
+| Dorobantu et al. preprint | 25e flight-ID modes, swing inertia, servo model, TIC values, input design | Paper (read, cite) | [1] | D11a reference rows; future flight-log replay |
 | Dorobantu, Seiler, Balas 2013 | TIC + Monte-Carlo validation of an uncertain model | Paper | [2] | X-VAL-13 method |
 | UMN Flight Data (Thor, Baldr, …) | HDF5/.mat flight logs with notes; Thor 44/45 doublets; Baldr 12/13 US120 stalls and spins | **Not stated** (cite; do not redistribute) | [3][4][5] | X-VAL-10 replay; spin qualitative check |
 | OpenFlightAnalysis (UASLab) | Python frequency response, chirps, multisines, OMS, air-data calibration, servo model | MIT | [7] | Port or reuse in `research/validation/` |
@@ -233,7 +233,7 @@ Adapted from 14 CFR Part 60 Appendix A, Table A2A [12] (airliner values; RC adap
 
 ## Pitfalls and risks
 
-1. **Stale validation numbers** (found today) → the dashboard is regenerated from code, with a guard against `test_modes` bands; never hand-edit results.
+1. **Stale validation numbers:** D11a repaired this snapshot's D8b/D10 output. Physics or data changes can stale generated results again; regenerate from source, compare the 15 m/s baseline with `test_modes`, and retain the no-refused-rows check. Never hand-edit generated results.
 2. **Mismatched condition** (mass, CG, throws, prop, rpm, speed) → every reference carries its conditions; the sim is flown in the same configuration, logger mass included.
 3. **Circular tuning** (fitting to a reference, then "validating" on it) → `used_for_tuning` flag; held-out maneuvers.
 4. **Wind and turbulence** bias glide, stall and top speed → wind < 3 m/s, reciprocal headings, averages, anemometer at 2 m.
@@ -253,8 +253,8 @@ Adapted from 14 CFR Part 60 Appendix A, Table A2A [12] (airliner values; RC adap
 
 | ID | Step | Proof | Depends on | Feeds |
 | --- | --- | --- | --- | --- |
-| X-VAL-1 | Repair the D10 sweep after the flight repair (perturb CG via ballast, Cnβ via fin area, mass with re-balance); regenerate `results.md` | No "refused" rows; 15 m/s baseline equals the `test_modes` bands | — | D8b, D10 |
-| X-VAL-2 | Like-for-like 25e: test-only aircraft from OpenFlightSim 25e (OFS and swing inertia variants); modes at 19 m/s vs Dorobantu | Table with ratios (SP, roll, DR) for both inertias | X-VAL-1 | D8b |
+| X-VAL-1 | **Complete via D11a:** repaired D10 perturbations (CG, Cnβ, mass) and regenerated `results.md` | No refused rows; 15 m/s baseline equals the `test_modes` bands | — | D8b, D10 |
+| X-VAL-2 | **Complete via D11a for the current reference comparison:** 25e flight-ID modes compared like-for-like with the Stik at equal CL | Generated table with current SP, roll and DR ratios; see `results.md` | X-VAL-1 | D8b |
 | X-VAL-3 | `openrc-reference v1` file plus generated `research/validation/dashboard.md` (sim, ref, ratio, band, status, source, kind, used_for_tuning) | Dashboard lists US120 and 25e rows; Clp × 2 turns roll rows red | X-VAL-2 | Gate 2, releases |
 | X-VAL-4 | Metamorphic tests: mirror symmetry, Froude invariance, energy non-increase | Pass at 1e-12 / 1e-9; the named mutations fail | — | Rule 6 (verification) |
 | X-VAL-5 | Owner ground kit 1: weigh, three-scale CG (+ tilt), throws at 5 stick positions, post-flight trim, servo speed at 240 fps, tyre tow test on 3 surfaces | Measurements JSON + photos in `research/validation/X-VAL-5/`; kind "measured" | — | D10, E3b, Gate 2 |
@@ -275,7 +275,7 @@ Adapted from 14 CFR Part 60 Appendix A, Table A2A [12] (airliner values; RC adap
 2. **Uncertainty field in aircraft data.** Add an optional `uncertainty` ({σ} or {min, max}) to `{value, unit, kind, source}`; the loader validates it. Without it Monte-Carlo invents ranges. Consider a kind **"identified"** for flight-estimated values with their CR bounds. *Recommended:* add both while the schema is v1.
 3. **Rigid vs apparent inertia.** Keep the data's inertia rigid-body and add a separate derived `apparent_inertia` term later (an added-mass model), rather than folding 23 % into Ixx silently. *Recommended:* decide before X-VAL-6 reports numbers.
 4. **Passive-logger architecture.** The FC never commands surfaces during validation flights. *Recommended:* yes (safety, and the test does not change the airplane).
-5. **Flight-log format aligned with `openrc-trace v2`.** Same column names and units where they overlap (p_radps, alt_m, speed_mps …), so one comparison tool serves both. *Recommended:* define `openrc-flightlog v1` in X-VAL-9.
+5. **Flight-log format aligned with `openrc-trace v3`.** Same column names and units where they overlap (p_radps, alt_m, speed_mps …), so one comparison tool serves both. *Recommended:* define `openrc-flightlog v1` in X-VAL-9.
 6. **Validation is reported, not gating.** CI fails on verification (L0) and on stale dashboards. Misses against references are shown red in the release dashboard, not as build failures. *Recommended:* yes; otherwise every new reference breaks CI.
 7. **Gate 2 sheet.** Replace the free-text pilot template with tasks, standards and both scales (X-VAL-14). This is an owner decision on the time per session (~45 min estimated).
 

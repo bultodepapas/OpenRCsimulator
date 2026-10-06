@@ -1,19 +1,19 @@
 # 01 — Numerical integration, simulation architecture, determinism and performance
 
-**Status:** research knowledge base, 2026-10-06. **Serves:** ROADMAP rule 7 (budget), M2 (E1–E4 contacts, E3b stiction, E4 circuit golden), M4 (G2 shaft dynamics, G4 fuel), M5 (wind/turbulence, M5-W…), Gate F follow-ups, any future GDExtension port. **Read with:** [ROADMAP](../../../ROADMAP.md), [DECISIONS](../../../DECISIONS.md), [STACK](../../../STACK.md) (escape hatch), [RESEARCH § Simulation timing](../../../RESEARCH.md#simulation-timing-reproducibility-and-useful-observations), [E1 gear](../landing-gear-contact-e1.md), [E2 friction](../ground-friction-e2.md), [flight repair](../flight-repair-implementation.md), [WIND-PLAN](../../WIND-PLAN.md).
+**Status:** research knowledge base, initially measured 2026-10-06; current-state notes reconciled against the project audit dated 2026-10-06. **Serves:** ROADMAP rule 7 (budget), M2 (E1–E4 contacts, E3b stiction, E4 circuit golden), M4 (G2 shaft dynamics, G4 fuel), M5 (wind/turbulence, M5-W…), Gate F follow-ups, any future GDExtension port. **Read with:** [ROADMAP](../../../ROADMAP.md), [DECISIONS](../../../DECISIONS.md), [STACK](../../../STACK.md) (escape hatch), [RESEARCH § Simulation timing](../../../RESEARCH.md#simulation-timing-reproducibility-and-useful-observations), [E1 gear](../landing-gear-contact-e1.md), [E2 friction](../ground-friction-e2.md), [flight repair](../flight-repair-implementation.md), [WIND-PLAN](../../WIND-PLAN.md).
 
 ## Summary
 
 - **RK4 at 240 Hz is the right integrator for flight.** Same evaluation budget as Euler at 960 Hz but ~100× more accurate on a 2 Hz oscillation (7.9e-6 vs 9.0e-4, derived). JSBSim (AB2/trapezoidal, 120 Hz), CRRCSim (AB2/trapezoidal, 333 Hz), ArduPilot SITL (Euler, 1200 Hz) and PX4 SIH (Euler, 250/400 Hz) all use lower-order schemes at similar or higher rates.
-- **The gear rule `ω·dt < 0.1` is 27× inside RK4's stability limit** (|λ|·dt ≤ 2.70 at ζ 0.4). At 0.1 the per-period amplitude error is 5e-6; at 0.3 it is 5e-4. The real numerical problem is the **touchdown force jump** (`c·δ̇` ≠ 0 at δ = 0: 107 N = 3.8 g for the Stik at 2 m/s sink), which drops RK4 to first order and makes golden replays fragile. Fix: Hunt–Crossley damping (force ∝ δ·δ̇).
+- **Contact onset needs an evidence-led law, not a solver slogan.** The original calculation found a touchdown force jump from `c·δ̇` at δ = 0 (107 N = 3.8 g for the Stik at 2 m/s sink). E1b now asks for a continuous onset law selected by energy and refinement evidence (Hunt–Crossley and ramped damping remain candidates); switching contacts can still lower global order, so require fourth-order convergence only on smooth intervals.
 - **The rule is mass-dependent:** ω = √(Σk/m) = √(g/static sag). At 240 Hz it forces ≥ 17 mm static sag on *any* airplane; a 2.6 kg Stik with today's springs gives ω·dt = 0.102 and would be **refused** by the loader. A stiff giant-scale gear (5 mm sag) needs 443 Hz under the rule; 16 Hz for bare stability.
-- **Operator splitting of rpm is first order.** Toy shaft model (I·dω/dt = Q_e − Q_p(J)): split scheme error 9.6e-3 m/s after 3 s at 240 Hz, halving per halving of dt; extended-state RK4 6.2e-11 m/s, ×16 per halving. G2 must put rotor speed **inside** the integrated state. The shaft is not stiff (τ ≈ 0.18 s, λ·dt 0.023).
+- **The RK4 claim applies to the rigid-body kernel with frozen auxiliaries.** The original toy shaft comparison found O(dt) splitting error versus fourth-order extended-state RK4. The independent P-51 full-session throttle-step probe also converged at first order, while body-only refinement remained fourth order ([audit T1](../project-audit-2026-10-06/physics.md#t1--the-full-flight-session-is-split-order-time-dependent-rk-stage-loads-are-not-wired-through)). H8 should establish the minimum state contract before anchors or coupled shaft work; G2 should integrate coupled rotor speed through RK stages and test the full session.
 - **Quaternions:** RK4 + renormalization is enough at 240 Hz (largest per-step correction 6e-14). Lie-group/exponential integrators buy nothing measurable here.
 - **Determinism:** GDScript arithmetic is IEEE double, op by op (no FMA fusion across VM ops), so cross-platform differences come from libm (`sin`, `atan2`, `exp`, `pow` → `std::` → glibc / Windows CRT / Apple libm) and C++ helpers compiled with FMA contraction on arm64 (`lerpf`, `wrapf`). Measured: a 1-ulp change in atan2 moves 60 s of stalled flight, a held spin and a glide by ≤ 1.4e-12 m — the current dynamics is not chaotic; tolerance goldens (1e-6 m) have ~6 orders of margin **except across discrete branches** (contact on/off, crash, `blend == 1.0`).
-- **Performance today (VM, measured):** 505–560 µs per tick (load-dependent). Breakdown: `_loads` 69 µs × **5** calls (one is redundant), `RB.derivative` 21 µs × 4, validation and allocation the rest. Post-stall `_loads` is 106–112 µs → ~570 µs/tick.
-- **Flattening works:** an allocation-free `RB.derivative` is **11× faster (21 → 1.9 µs) and bit-identical** (max diff 0.0). Native C++ (-O2, `-ffp-contract=off`): 0.037 µs, ~570× the current GDScript. Callable overhead is negligible (0.10 µs).
-- **Cheap fixes first, then a gated GDExtension spike** with the GDScript code kept as the test oracle. Expected after flattening: ~100–150 µs/tick (estimated), enough headroom for propwash, ground effect and turbulence in GDScript.
-- **Architecture:** make the state vector generic (rigid body 13 + continuous extras), classify every state (A: continuous, in RK4; B: discrete, per tick; C: modes/events), and replace the hard-coded aero + propulsion + gear sum with a list of load contributors. Do this before G2 and M5 wind.
+- **Audit performance reference (exploratory):** on a shared Linux host under concurrent audit load and with a pre-existing renderer, best of three runs measured Stik 408/370, Extra 448/457, P-51 1,256/1,187 and Avanti 412/404 µs/tick (trimmed / α=15°). This is not a controlled regression comparison or a target-machine certificate; the P-51 cost makes one-aircraft headroom claims insufficient. See the full [audit context and evidence](../project-audit-2026-10-06/README.md#verified-lead-findings).
+- **H1–H3 are complete:** H1 adds per-component measurements to the physics bench; H2 reuses stage-1 loads and caches deflections (four rather than five load evaluations per tick); H3 replaces the vector-heavy rigid-body derivative with a scalar implementation using one result allocation. The derivative remains byte-identical in 10,000 seeded cases and measured 21.2 → 2.8 µs/call on the development VM. The scratch C++ comparison used the pre-H3 GDScript cost and is not a current speedup ratio.
+- **Performance:** preserve GDScript until representative all-aircraft, all-regime measurements on the owner’s slowest supported machine show a need. The all-aircraft audit figures above are exploratory and under contention; the single-model component profile below is an older diagnostic snapshot. H4/H5 profile and optimize measured hot paths; Gate P uses 500 µs/tick or a documented near-term reserve, not a 250 µs migration threshold.
+- **Architecture:** before E3b anchors or coupled G2 shaft work, H8 should define only the state semantics those consumers need: continuous state in RK4, sampled state advanced per tick and held over stages, discrete modes at tick boundaries, per-stage time, trace/reset behavior and fault rollback. Do not require a general state/plugin registry or load-contributor framework for this step.
 - **Latency:** Godot delivers input once per rendered frame; at 60 fps four 240 Hz ticks share one sample. Built-in 3D physics interpolation (Godot ≥ 4.4) does not apply to our custom state; our own lerp/nlerp adds ≈ 1 tick (4.2 ms) of display delay.
 
 ## Where the code stands
@@ -22,19 +22,19 @@
 | --- | --- |
 | RK4 on 13 float64 states, quaternion renormalized after every step; `axpy` allocates a new array per stage | [integrator.gd](../../../app/physics/integrator.gd) |
 | Fixed tick = `Engine.physics_ticks_per_second` (240), `max_physics_steps_per_frame` 12 (real time down to 20 fps, then slow motion); `physics_jitter_fix` left at default 0.5 | [project.godot](../../../app/project.godot) |
-| `step()`: `pre_step(aux)` once → `loads(state)` for the trace → RK4 whose k1 calls `loads(state)` **again** → 5 load evaluations per tick. Time `t` is the same for all four stages | [simulation.gd](../../../app/sim/simulation.gd) |
+| `step()`: `pre_step(aux)` once → `loads(state)` reused for trace and RK4 k1 → 4 load evaluations per tick. Time `t` is still the same for all four stages pending H8 stage-time support | [simulation.gd](../../../app/sim/simulation.gd) |
 | Every stage validates state, loads and derivative (`is_finite` loops), and a fault rolls back to the last valid tick | same |
-| Aux = [rpm, servo roll, pitch, yaw], advanced by exact first-order lag (rpm) and slew limit (servos), **held constant over RK4 stages**; rotor momentum h = J_p·ω also held | [flight_session.gd](../../../app/sim/flight_session.gd) `_pre_step`, [propulsion.gd](../../../app/physics/propulsion.gd) `rpm_step` |
+| Aux = [rpm, servo roll, pitch, yaw], advanced once per tick by lag/shaft/turbine rules and servo slew, then **frozen over RK4 stages**; rotor momentum h is frozen too. This makes the current P-51 coupled shaft/session path first order even though the rigid-body kernel is RK4 | [flight_session.gd](../../../app/sim/flight_session.gd) `_pre_step`, [propulsion.gd](../../../app/physics/propulsion.gd), [turbine.gd](../../../app/physics/turbine.gd) |
 | Loads = `Dynamics.loads` (air data + aero + propulsion) + `Ground.loads`, hard-coded sum; surface deflections rebuilt from Dictionaries in every stage | `flight_session._loads`, [dynamics.gd](../../../app/physics/dynamics.gd) |
-| Rigid-body derivative builds ~20 small `PackedFloat64Array`s per call (`M.v3`, `q_mul`, `cross`…) | [rigid_body.gd](../../../app/physics/rigid_body.gd), [math3d.gd](../../../app/physics/math3d.gd) |
+| H3's rigid-body derivative preserves operation order in scalar arithmetic and returns one `PackedFloat64Array`; RK4 stage allocation remains for later profiling | [rigid_body.gd](../../../app/physics/rigid_body.gd), [math3d.gd](../../../app/physics/math3d.gd) |
 | Aero reads a nested `model` Dictionary (`model.aero.CLa`: 0.22 µs per read); `local_flow_weight` evaluates the 6 wing stations + 2 tails even when the result is 0 | [aero.gd](../../../app/physics/aero.gd) |
 | Gear: per-wheel spring-damper `F = max(0, kδ + cδ̇)`, regularized tyre forces; loader enforces `ω·dt < 0.1`, side `λ·dt ≤ 0.5` | [ground_contact.gd](../../../app/physics/ground_contact.gd), [E1](../landing-gear-contact-e1.md), [E2](../ground-friction-e2.md) |
-| "All trig through math3d" ([DECISIONS](../../../DECISIONS.md) 2026-10-05) is **no longer true**: direct `sin/cos/atan2/pow/exp` calls in aero (11), propulsion (5), ground_contact (4), air_data (2), and the uncommitted `slipstream.gd` (5) | grep of `app/physics/` |
+| "All trig through math3d" ([DECISIONS](../../../DECISIONS.md) 2026-10-05) is **no longer true**: direct transcendental calls remain in aero, propulsion, ground contact, air data and the committed `slipstream.gd` | grep of `app/physics/` |
 | Goldens: 4 maneuvers of 2.5–5 s (≤ 1200 ticks), checkpoints every 60 ticks, tolerances 1e-6 m, 1e-6 m/s, 1e-9 (quaternion), 1e-6 rad/s | [golden_flights.gd](../../../app/tests/golden_flights.gd) |
 | Render: `interpolated(Engine.get_physics_interpolation_fraction())` lerps position and nlerps attitude between `previous` and `state` | `simulation.gd`, `main.gd` |
 | Radio read once per tick with `Input.use_accumulated_input = false` | `main.gd`, `flight_session.gd` |
 
-**Measured tick breakdown** (this VM: i5-10500, shared, load ≈ 3.4; Godot 4.7.2 headless; working tree of 2026-10-06 incl. other tracks' uncommitted edits; scratch copy of `app/`, best of 3 × 20 000 calls):
+**Historical single-model component profile** (i5-10500 shared VM; Godot 4.7.2 headless; 2026-10-06 scratch copy included other tracks' then-uncommitted edits; best of 3 × 20,000 calls). Keep as diagnostic evidence only; the current performance reference is the four-aircraft audit table above.
 
 | Item | µs/call | Calls/tick | µs/tick |
 | --- | --- | --- | --- |
@@ -45,13 +45,13 @@
 | `RB.derivative` | 21.0 | 4 | 84 |
 | `RK.axpy` (13 values, allocates) | 1.05 | 3 | 3 |
 | `state_is_valid` + finiteness checks | ~0.9 each | ~15 | ~15 |
-| **Full `sim.step()`, trimmed** | | | **505–525** (bench: 505–562 by load) |
+| **Full `sim.step()`, trimmed** | | | **505–525** (bench: 505–562 by load; historical snapshot) |
 | `_loads` at α 13°/30° (local path, 5 surfaces) | 106–112 | 5 | ~550 |
 | `sim.step()` for 1 s from α 30° | | | **573** |
 | `Ground.loads`, 3 wheels touching / in the air | 8.3 / 0.6 | 5 | 41 / 3 |
 | Per wing/tail element in `_local_loads` | ~15.6 | | |
 
-Missing: generic state vector, stage time, contact substeps, profiler monitors, a deterministic-math guard, any per-feature cost table.
+Remaining Phase H work includes H4/H5 profiling-led optimization, H6/H7 deterministic-math checks, H8's bounded state/time/rollback contract, H9 tolerance-golden policy, and H11 contact stability/accuracy policy. H1–H3's cost bench, redundant-load removal, and scalar derivative are complete; use ROADMAP for active steps and gates.
 
 ## Theory and models
 
@@ -106,7 +106,7 @@ First-order tyre terms (real axis, limit 2.785): side force λ·dt = 0.31, rolli
 
 ### Operator splitting of aux states (G2)
 
-Current: rpm and servos advance once per tick (exact), then are frozen across k1…k4. For rpm independent of the airplane state (D5 lag), the error is a half-tick time shift (≈ 2.1 ms vs τ 250 ms). With G2, Q_prop depends on J = V/(nD), so rpm and airspeed are **coupled**; splitting becomes Lie splitting with first-order global error.
+Current: rpm and servos advance once per tick, then are frozen across k1…k4. The rigid-body kernel therefore remains RK4 for this frozen-auxiliary RHS. Once shaft rpm depends on airspeed through `J = V/(nD)`, the full session is coupled and the split update is only first order. The audit's isolated P-51 throttle-step probe measured adjacent-resolution RPM differences of 1.516, 0.756, 0.378 and 0.189 rpm from 240 through 3840 Hz, with the same halving trend in combined state/aux differences ([probe and output](../project-audit-2026-10-06/evidence/p51-step-halving.gd), [log](../project-audit-2026-10-06/evidence/p51-step-halving.txt)). This confirms an integration-order issue; it does not establish that the 240 Hz error is large enough to require an emergency rewrite.
 
 Scratch toy model (1-D Stik: m 2.885 kg, I 3.5e-4 kg·m², Ct/Cp linear in J shaped like an APC 12×6 (estimated), throttle step 25 → 100 % at 0.5 s, error at 3 s vs RK4 at 1/15 360 s):
 
@@ -118,15 +118,15 @@ Scratch toy model (1-D Stik: m 2.885 kg, I 3.5e-4 kg·m², Ct/Cp linear in J sha
 
 Errors are small physically but they turn the convergence test into a first-order test that hides other first-order bugs, and they make `h` vs `h/2` goldens disagree. Shaft τ = 2πI/(∂Q_p/∂n − ∂Q_e/∂n) ≈ 183 ms at 11 000 rpm (λ·dt 0.023): not stiff, costs one more state.
 
-**Extended state vector (recommendation).** State = `[rigid body 13 | class-A extras]`, with a layout table (name, unit, class, tolerance):
+**Minimal H8 state contract (recommendation).** Extend the current state only for actual near-term consumers. Record each value's name, unit, class and tolerance; define initialization/reset, trace/checkpoint layout and fault rollback before adding wheel anchors or further coupled shaft dynamics.
 
 | Class | Rule | Examples |
 | --- | --- | --- |
-| A — continuous, coupled to the airframe | In the RK4 vector; derivative computed in the same evaluation as the loads | rotor speed per rotor (G2), downwash lag (E0a uses `CLadot` later), dynamic-stall lag per strip (M5), wheel spin with brakes (E3+), turbine spool (AV-05), battery SOC + RC polarization (electrics), fuel mass (G4, slow) |
-| B — discrete by nature, per tick | `pre_step`, exact discretization, zero-order hold over the stages | servo command frames and slew (real servos get pulses every 7–20 ms), radio sampling, turbulence filters driven by white noise (exact Ornstein–Uhlenbeck/Dryden update; RK4 on a noise-driven SDE is meaningless), RNG |
-| C — modes and events | Tick-boundary state machine, never inside a stage | engine running/stopped, crash, gear collapse, stiction anchor per wheel (E3b), flaps/retracts position if discrete |
+| Continuous | In the RK4 state when coupled to rigid-body loads; evaluate derivatives and loads at the same stage | coupled rotor speed (G2); add other continuous states only when a feature needs them |
+| Sampled | Advance at the tick/sample boundary and hold explicitly over stages, or evaluate a prescribed input at RK stage time | radio/input samples, servo command frames, seeded turbulence filters |
+| Discrete | Tick-boundary state machine with explicit transition and rollback rules | engine running/stopped, crash, gear collapse and wheel-anchor mode |
 
-Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated) → λ·dt > 2.7 at 240 Hz: model current algebraically (quasi-static), keep only ω as a state. Time-dependent inputs inside a stage (gust schedules) need stage time `t + c_i·dt`; today `t` is passed unchanged to all stages — harmless while loads are autonomous.
+Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated), so model current algebraically unless a future electrical transient requires otherwise. Time-dependent inputs inside a stage (gust schedules) need stage time `t + c_i·dt`; today `t` is passed unchanged to all stages. That is harmless only while loads remain autonomous.
 
 **Trace/golden evolution:** trace header gains `state_layout` (names + units + class) so columns follow the layout; goldens v2 store the full extended state, per-component tolerances, the recording platform (OS, arch, Godot build, `git describe`) and the margin to the nearest discrete threshold.
 
@@ -143,7 +143,7 @@ Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated) → λ·dt
 - **Across OS/CPU with GDScript:** each VM op is a separate IEEE-754 double operation (SSE2 on x86-64, NEON/FP on arm64), so `+ − × ÷ sqrt` agree. Differences come from (a) `Math::sin/cos/atan2/exp/pow` = thin wrappers over `std::` (Godot `math_funcs.h`) → the platform libm, which glibc says is not correctly rounded (errors "within a few ulp"); (b) C++ helpers like `lerp` (`from + (to − from)·weight`) and `wrapf`, which Clang may contract into FMA on arm64 (Clang default `-ffp-contract=on`; GCC default `fast` in GNU mode); x86-64 baseline has no FMA, so contraction only bites on arm64 (Apple Silicon, Linux arm64). Godot's SConstruct sets no fp-contract flag (fetched). Which toolchain builds official Windows binaries was not verified.
 - **Lockstep practice:** Gaffer/Dawson: possible with discipline (strict fp model, no FMA, own transcendental functions); Box2D v3 is cross-platform deterministic with `-ffp-contract=off` and its own `atan2`/sin/cos; Jolt offers a cross-platform deterministic mode. CORE-MATH (MIT) provides correctly rounded double functions — the clean way to get identical `sin/exp/atan2` everywhere in a C++ port.
 - **Measured sensitivity** (scratch copy: atan2 output × (1 + 2⁻⁵²), all atan2 calls routed through `M.atan2_`): divergence after 60 s — slow flight 8e-13 m, held spin 4e-13 m (max 1.4e-12), glide 4.5e-13 m; quaternions ≤ 4e-14. The flight model is dissipative (stall and spin are attractors), so 1-ulp differences do not grow exponentially in these regimes. The current tolerances (1e-6 m) hold ~6 orders of margin.
-- **The real risk is discrete branches:** `compression > 0`, `f_up <= 0`, crash hull `>= 0`, `blend == 1.0` early exit, `rpm < STOPPED_RPM`, `surface_at` edges. A 1-ulp flip at touchdown with `cδ̇` changes one stage's force by ~107 N → Δv ≈ 107·(dt/6)/2.885 ≈ 0.026 m/s: an E4 circuit golden with a landing could fail across platforms. Hunt–Crossley makes this flip harmless (force ≈ 0 at δ ≈ 0).
+- **The real risk is discrete branches:** `compression > 0`, `f_up <= 0`, crash hull `>= 0`, `blend == 1.0` early exit, `rpm < STOPPED_RPM`, `surface_at` edges. A 1-ulp flip at touchdown with `cδ̇` changes one stage's force by ~107 N → Δv ≈ 107·(dt/6)/2.885 ≈ 0.026 m/s: an E4 circuit golden with a landing could fail across platforms. E1b should select a continuous onset law; switching may still reduce global order.
 
 ## Implementation options and trade-offs
 
@@ -151,9 +151,9 @@ Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated) → λ·dt
 | --- | --- | --- | --- |
 | Base integrator | Keep RK4 240 Hz; AB2 at 120–333 Hz; semi-implicit Euler at 1 kHz | AB2 is 4× cheaper per step but grows on undamped modes and needs history (reset/fault rollback complexity); Euler needs ~1 kHz | **Keep RK4 240 Hz** |
 | Global tick | 240 / 480 / 1000 Hz | Cost ∝ rate; helps only contacts | Keep 240; substep contacts |
-| Gear rule | ω·dt < 0.1 (heave) / eigenvalue |λ|max·dt ≤ 0.3 / substeps | 0.1 is mass-dependent and over-strict; eigenvalue rule covers pitch/roll modes of odd layouts | **Eigenvalue rule ≤ 0.3**, substeps N = ⌈|λ|max·dt/0.3⌉ when in reach |
-| Contact law | `kδ + cδ̇` / Hunt–Crossley / event location / implicit contact | HC: continuous, physical restitution, one line | **Hunt–Crossley** (E1b) |
-| Static friction (E3b) | Regularized (today), anchor spring per wheel, LCP/PGS like JSBSim (50 PGS iterations, Catto 2005) | Anchor spring = class-C anchor + class-A spring, stays in RK4; PGS needs velocity-level solve between stages | Anchor spring (bounded by the same λ rule) |
+| Gear/contact policy | Current heuristic / coupled-mode bound / contact substeps | A scalar cutoff alone does not establish accuracy through switching; use H11 ring-down, no-energy-gain and refinement evidence | **H11 derives supported policy; no universal 0.3 bound preselected** |
+| Contact law | `kδ + cδ̇` / ramped damping / Hunt–Crossley / event location | Select by energy and refinement evidence; contact switching may reduce global order | **E1b evidence-led choice** |
+| Static friction (E3b) | Regularized (today), anchor spring per wheel, LCP/PGS like JSBSim (50 PGS iterations, Catto 2005) | Anchors require H8 state ownership; contact policy and thresholds need separate evidence | Anchor candidate after H8; calibrate static resistance separately |
 | Aux states | Split (today) / extended state | Split = 1st order once coupled | **Extended state from G2 on** |
 | Quaternion | RK4+normalize / exp map / RKMK | No measurable gain | Keep |
 | Golden policy | Bit-exact everywhere / tolerance / per-platform recordings | Bit-exact breaks on libm and on any port; per-platform files multiply | **Tolerance goldens recorded on one CI reference platform (Linux x86-64) + bit-exact hash only as same-platform diagnostic** |
@@ -185,7 +185,7 @@ Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated) → λ·dt
 | Box2D v3 determinism notes | Recipe: no FMA, own trig, CI on x64/ARM | MIT | box2d.org/posts/2024/08/determinism/ | Policy for a C++ port |
 | CORE-MATH | Correctly rounded binary64 sin/cos/exp/log/atan… | MIT | core-math.gitlabpages.inria.fr | Deterministic math in a GDExtension |
 | Jolt Physics | Cross-platform deterministic mode reference | MIT | github.com/jrouwe/JoltPhysics | Reference only |
-| godot-cpp / godot-cpp-template | GDExtension bindings, CI template | MIT (godot-cpp); template unverified | github.com/godotengine/godot-cpp | X-PERF-7 spike |
+| godot-cpp / godot-cpp-template | GDExtension bindings, CI template | MIT (godot-cpp); template unverified | github.com/godotengine/godot-cpp | Conditional Gate P follow-up only |
 | godot-benchmarks | Engine benchmark harness incl. GDScript/C#/GDExtension | MIT (unverified) | github.com/godotengine/godot-benchmarks | Method for our own per-feature table |
 | Tracy | Frame/zone profiler | BSD-3 | github.com/wolfpld/tracy | Only with a custom engine/GDExtension build |
 | SciPy `solve_ivp` (DOP853, Radau) | Offline high-accuracy reference | BSD-3 | docs.scipy.org | Verify RK4 trajectories of new class-A states |
@@ -210,12 +210,12 @@ Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated) → λ·dt
 | Shaft time constant at full throttle (Stik) | ≈ 0.18 | s | estimated (toy model) | this doc |
 | Electric motor L/R | 0.1–1 | ms | estimated | — |
 | Servo frame period (analog / digital / bus) | 20 / 3–14 | ms | estimated | — |
-| Tick cost now (VM) | 505–562 | µs | measured | bench_physics.gd |
+| Historical single-model tick cost (VM) | 505–562 | µs | measured, 2026-10-06 scratch baseline | bench_physics.gd |
 | Budget | 500 | µs/tick | manual | ROADMAP rule 7 |
 | Flat vs current `RB.derivative` | 1.9 vs 21–22 | µs | measured | scratch bench |
 | Native C++ derivative / RK4 rigid-body step | 0.037 / 0.16 | µs | measured (g++ -O2) | scratch bench |
 
-Estimated per-feature cost (GDScript, current style → flattened; estimated from the measured element cost 15.6 µs and the 11× flattening ratio, to be measured per step):
+Historical per-feature estimates (GDScript, current style → flattened; estimated from the then-measured element cost 15.6 µs and 11× derivative flattening ratio; these are hypotheses, not current all-aircraft measurements):
 
 | Feature | Current style µs/tick | Flattened µs/tick |
 | --- | --- | --- |
@@ -232,7 +232,7 @@ Estimated per-feature cost (GDScript, current style → flattened; estimated fro
 Verification (known answers):
 1. RK4 on the linear oscillator at ωdt 0.1/0.3/0.5: per-period amplitude error equals R(z) analysis to 1e-12.
 2. Gear eigen-analysis: drop test ring-down frequency and decay equal the M⁻¹K, M⁻¹C eigenvalues (heave 23.25 rad/s, ζ 0.40) within 1 %.
-3. Hunt–Crossley: contact force continuous at δ = 0 (|F| < 1e-9 N at δ = 1e-12 m, any δ̇); restitution vs impact speed matches the closed form.
+3. E1b candidate-law validation: continuous force at δ = 0 and no energy gain; compare h/h₂ through touchdown and report smooth-interval order separately.
 4. G2: `h`/`h/2`/`h/4` on a throttle step → ratio ≈ 16 (today's split scheme gives ≈ 2).
 5. Quaternion: max per-tick renormalization correction < 1e-12 on all goldens (diagnostic).
 6. Flattened functions: bit-identical to the reference implementation on 10 000 random states (0.0 diff, as measured for `RB.derivative`).
@@ -241,57 +241,53 @@ Verification (known answers):
 
 Independent validation (real RC behaviour): bounce frequency and number of bounces of a dropped Stik (phone video at 240 fps) vs the gear modes; throttle-step rpm trace from an optical tachometer (G2); owner perception of latency (blind A/B with an added 16 ms delay) — the only real "realism" test for timing.
 
-Mutation tests that must fail: substeps disabled for a 5 mm-sag gear (energy gain / instability); rpm moved back to `pre_step` (convergence ratio drops); a direct `sin(` added in `app/physics/` (guard); golden tolerance set to 0 on another platform (CI); `cδ̇` restored instead of Hunt–Crossley (continuity test).
+Proposed mutation checks: test any H11-selected contact bound/substep policy; move shaft rpm back to `pre_step` (full-session convergence degrades); inject a direct `sin(` (H6 guard); exceed an accepted cross-platform golden tolerance; restore a discontinuous damping law after E1b.
 
 ## Pitfalls and risks
 
-1. **Lighter build refused** by the mass-dependent gear rule (2.6 kg Stik: 0.102). Mitigation: eigenvalue rule ≤ 0.3, or derive k from target sag.
-2. **Golden fragility at discrete branches** (touchdown, crash, stall blend saturation). Mitigation: Hunt–Crossley; recorder stores margin to thresholds; keep goldens ≥ 1 mm/1e-3 away from them.
+1. **Historical lighter-build concern:** the 2.6 kg estimate exceeded the old ω·dt < 0.1 heuristic (0.102). H11 now owns the contact policy; assess representative coupled modes and refinement before changing the loader rule.
+2. **Golden fragility at discrete branches** (touchdown, crash, stall blend saturation). E1b selects a continuous onset law from energy/refinement evidence; preserve threshold-margin diagnostics and rollback/replay checks.
 3. **First-order coupling hidden by splitting** once rpm depends on airspeed. Mitigation: extended state at G2.
 4. **Optimizations that change operation order** break bit-identity and force golden re-records. Mitigation: flatten with identical order, verify 0.0 diff before merging; re-record only on deliberate physics changes.
 5. **"All trig in math3d" silently eroded.** Mitigation: test.sh grep guard for bare transcendental calls in `app/physics`, `app/sim`.
-6. **Post-stall cost spike** (local path 110 µs/eval) exceeds budget during spins. Mitigation: skip `local_flow_weight` surface loop when the α/β pre-check is far from limits; flatten `_local_loads`.
-7. **Redundant k1 evaluation** (14 % of the tick). Mitigation: reuse `current_loads` as the loads of stage 1.
+6. **Post-stall cost spike** (local path 110 µs/eval in the historical profile) may exceed budget during spins. H1 now measures stalled states; H4/H5 decide whether skipping `local_flow_weight` work or flattening `_local_loads` is justified.
+7. **Redundant k1 evaluation** (14 % of the tick). Resolved by H2: reuse stage-1 loads and cache deflections.
 8. **arm64 FMA in engine helpers** (`lerpf`, `wrapf`) gives macOS-ARM vs x86 differences. Mitigation: tolerance goldens; in C++ use `-ffp-contract=off`; avoid `lerpf` in physics (write `a + (b − a)·t` in GDScript, which cannot fuse).
 9. **Noise-driven filters inside RK4** (turbulence) would be wrong and non-reproducible. Mitigation: class B, exact discrete update, seeded integer RNG (`randfn` uses transcendental functions — implement Box–Muller through math3d).
 10. **Threading the single-aircraft step** adds sync cost and nondeterminism risk. Mitigation: stay on the main thread.
-11. **GDExtension maintenance** (3 OS + universal macOS + web). Mitigation: gate on measured need; keep the GDScript implementation as the oracle and fallback.
+11. **GDExtension maintenance** (3 OS + universal macOS + web). Gate P uses the 500 µs/tick budget or documented near-term reserve on the owner’s slowest supported machine; retain GDScript as oracle/fallback.
 12. **VM noise** (±10 % measured between runs). Mitigation: per-component microbenchmarks and best-of-N; decide on the owner's hardware (D7 overlay).
 
-## Proposed roadmap steps
+## Research proposals reconciled to the current roadmap
+
+The original X-prefixed proposals below are superseded. ROADMAP owns active IDs, sequencing and acceptance criteria; the mapping here preserves useful evidence without retaining old performance gates or implementation mandates.
 
 | Proposed ID | Step | Proof | Depends on |
 | --- | --- | --- | --- |
-| X-PERF-1 | Custom monitors `physics/tick_us`, `physics/loads_us`; commit a per-component bench (like the scratch `bench_breakdown`) | Monitors visible; table of µs per component in the commit | — |
-| X-PERF-2 | Reuse the tick's `current_loads` as stage-1 loads; build deflections once per tick | Goldens bit-identical; tick −60…70 µs | X-PERF-1 |
-| X-PERF-3 | Allocation-free `RB.derivative` and in-place RK4 stages (preallocated k1…k4) | 0.0 diff on 10 000 random states; goldens bit-identical; −80 µs | X-PERF-1 |
-| X-PERF-4 | Compile `model` into a flat pack with index constants; flatten `Air`, `_global_loads`, `local_flow_weight` early-out | Goldens bit-identical; tick ≤ 250 µs trimmed | X-PERF-3 |
-| X-PERF-5 | Flatten `_local_loads` and `Ground.loads` | Spin tick ≤ 250 µs; goldens bit-identical | X-PERF-4 |
-| X-DET-1 | Route every transcendental call in `app/physics`, `app/sim` through math3d; test.sh guard | Guard fails on an injected `sin(`; goldens bit-identical | — |
-| X-DET-2 | 1-ulp sensitivity test (perturb `M.atan2_`/`sin_`, replay goldens, require < tol/1000) | Test passes; fails if a golden crosses a branch | X-DET-1 |
-| X-NUM-1 | Loader gear rule from the eigenvalues of the gear's M⁻¹K, M⁻¹C, limit |λ|max·dt ≤ 0.3 | Stik unchanged; 2.6 kg variant accepted; ring-down matches eigenvalues ±1 % | — |
-| E1b | Hunt–Crossley damping in `ground_contact.gd` (data keeps ζ; c_h derived) | Force continuous at δ = 0; touchdown `h/h/2` ratio ≥ 8 (was ~2); drop test no energy gain | X-NUM-1 |
-| X-NUM-2 | Contact substeps N = ⌈|λ|max·dt/0.3⌉ while any contact is within reach | P-51 test gear with 5 mm sag lands without energy gain; air path bit-identical; ground cost measured | E1b |
-| X-ARCH-1 | Generic state: `RB.SIZE + extras` with a layout table (name, unit, class, tolerance); trace header `state_layout`; golden v2 reader keeps v1 | Old goldens replay; trace header lists layout | — |
-| G2a | Rotor speed as a class-A state; shaft balance I·dω/dt = Q_e − Q_p(J); rotor momentum per stage | Throttle-step convergence ratio ≈ 16; trace | X-ARCH-1 |
-| X-ARCH-2 | Load-contributor list (`aero`, `propulsion`, `gear`, `slipstream`): `prepare(model) → pack`, `add_loads(state, ctx, out)` | Goldens bit-identical; adding a no-op contributor changes nothing | X-PERF-4 |
-| X-LAT-1 | Measure input timing: per-tick input trace at 30/60/144 fps; try `agile_event_flushing`; record budget | Trace shows sampling staircase; decision recorded | — |
-| X-DET-3 | Golden v2 policy: CI reference platform, per-component tolerances, platform stamp, threshold margin | CI fails on a mutated tolerance; macOS/Windows runs reported, not gating | X-ARCH-1, X-DET-2 |
-| M5-W-num | Stage time `t + c_i·dt` to loads; turbulence filters as class B with seeded RNG through math3d | Frozen-field test: same seed → identical trace; filter variance matches theory ±5 % | X-ARCH-1, X-ARCH-2 |
-| X-ARCH-3 | `Aircraft` instance object (state, aux, pack, contributors) so N aircraft step in one session | Two aircraft: each bit-identical to flying alone | X-ARCH-2 |
-| X-PERF-6 (gate) | Decide GDExtension: only if flattened tick > 250 µs with planned M2–M5 features on the owner's slowest machine | Measured table + DECISIONS row | X-PERF-5 |
-| X-PERF-7 | GDExtension spike: RB derivative + RK4 in C++ (godot-cpp pinned, `-ffp-contract=off`), GDScript kept as oracle; CI builds Linux/Windows/macOS universal | Derivative agreement ≤ 1e-14 rel. on 10 000 states; goldens within tolerance; per-OS smoke | X-PERF-6 |
+| H1–H3 ✅ | Per-component bench; reuse stage-1 loads/cache deflections; scalar rigid-body derivative | Completed with component timings, 4 loads/tick, and byte-identical derivative checks; see ROADMAP Phase H | — |
+| H4–H5 | Profile all active aircraft and optimize hot aero/local/ground paths only where measured | Same-host per-aircraft and per-regime before/after evidence; preserve same-machine trajectories; no fixed 250 µs target | H1–H3 |
+| H6 | Route every transcendental call in `physics/` and `sim/` through math3d; guard in `test.sh` | Guard fails on an injected `sin(`; goldens bit-identical | — |
+| H7 | 1-ulp sensitivity test (perturb `atan2_`/`sin_`, replay the goldens) | Air goldens stay below tolerance/1000; test detects a golden crossing a branch | H6 |
+| H11 | Establish contact stability/accuracy policy from coupled contact modes; consider substeps only outside supported 240 Hz range | Ring-down, no-energy-gain and h/h₂ refinement over representative masses/stiffnesses; scalar eigenvalue heuristic alone does not justify a policy switch | H1–H3 |
+| E1b | Select continuous touchdown damping/contact onset (for example ramped damping or Hunt–Crossley) from energy/refinement evidence | No force jump or energy gain; h/h₂ touchdown/rollout errors against a declared budget; fourth order only on smooth intervals | H11 |
+| H8 | Minimal bounded state contract for continuous/sampled/discrete values, stage time, tick-boundary transitions, reset, rollback and checkpoint/replay | See ROADMAP H8; precedes E3b1 anchors and G2a coupled shaft work | — |
+| G2a | After H8, migrate optional shaft speed into coupled RK4 loads and rotor momentum | Full-session h/h₂/h₄ convergence, actual 240 Hz error, trace records rpm; aircraft without shaft data unchanged | H8 |
+| H10 (conditional) | Extract a load-contributor interface only for a demonstrated consumer/coupling problem | Name the duplication or coupling removed; trajectories unchanged and overhead measured | Concrete use case |
+| Gate P | Consider GDExtension only after H4/H5 and target-machine measurements show the 500 µs/tick budget or documented near-term reserve cannot be met | All active aircraft and required regimes measured on owner’s slowest supported machine; preserve GDScript oracle | H4–H5 |
+| H9 | Extend tolerance-golden policy with per-component scales and platform/build stamps | Mutation beyond accepted tolerance fails; CI reference platform and non-gating platform results are explicit | H8 |
+| M5 wind | Use H8 stage time for time-varying wind and explicit sample boundaries for seeded stochastic filters | Same seed gives identical trace; filter variance matches theory within a declared band | H8 |
+| Gate P follow-up (conditional) | If Gate P shows a target-machine shortfall, spike only the measured hot path in a pinned GDExtension while keeping GDScript as oracle | Numerical agreement, trajectory tolerance, per-OS smoke and measured improvement | Gate P decision |
 
 ## Decisions to take now
 
-1. **State vector is extensible before G2** (X-ARCH-1): class A in RK4, class B per tick, class C events. Retrofitting after G2/M5 means re-recording every golden twice.
+1. **Settle minimal state semantics before E3b anchors and further coupled G2 shaft work** (H8): distinguish continuous RK4 state, sampled per-tick inputs and discrete modes; include stage time, trace/reset behavior and fault rollback. Do not build a general registry without a consumer.
 2. **Golden policy:** tolerance-based, recorded and gating on one CI reference platform; bit-exact only as a same-binary diagnostic. Survives a C++ port and libm changes.
-3. **Keep RK4 at 240 Hz**; replace the heave rule with an eigenvalue rule (≤ 0.3) and handle stiff contacts with substeps, not a global tick increase.
-4. **Hunt–Crossley contact damping** for every new contact (gear, hull scrape, stiction anchor).
+3. **Keep RK4 at 240 Hz** for the current airborne kernel; H11 derives supported contact bounds from coupled modes and refinement rather than adopting a universal scalar cutoff.
+4. **Choose contact onset through E1b evidence.** Hunt–Crossley is one candidate; do not assume contact switching preserves fourth-order convergence.
 5. **math3d is the only door to transcendental functions** (guarded), so a deterministic library (CORE-MATH) can be swapped in for multiplayer/replay sharing.
-6. **Performance order:** flatten (X-PERF-2…5) before any GDExtension; GDExtension only through the X-PERF-6 gate. Owner input needed: tick cost on the slowest machine (D7 overlay).
+6. **Performance order:** H1–H3 are complete; H4/H5 optimize measured hot paths. Gate P uses 500 µs/tick or a documented near-term reserve on the owner’s slowest machine; 250 µs is not an automatic migration trigger.
 7. **Physics stays on the main thread**; threads only for multiple aircraft or asset preparation.
-8. Set `physics_jitter_fix = 0`? Recommended by Godot for custom interpolation; needs a frame-pacing check (VQ-01b logger) before changing — owner's call after X-LAT-1.
+8. Revisit `physics_jitter_fix = 0` only after a frame-pacing measurement with custom interpolation (VQ-01b); do not change it based on the historical recommendation alone.
 
 ## Sources
 

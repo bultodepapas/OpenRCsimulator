@@ -13,11 +13,21 @@ Aircraft tracks keep the report here and the scripts, picks and renders under `r
 
 Some scripts under `research/` read the gitignored `references/` folder (plans, scans and photos with unknown licenses) and cannot be rerun from a fresh clone. Their reports say so; the measured numbers they produced are committed.
 
+## Whole-project audit
+
+[Project technical audit — 2026-10-06](project-audit-2026-10-06/README.md): independent code, physics, runtime, tests, export and roadmap review at `eaa8979`; verified findings, counterevidence, saved probes and a corrected dependency order. Supporting reports cover physics, runtime systems and roadmap/research.
+
+The audit is a fixed evidence snapshot. [ROADMAP revision 5](../../ROADMAP.md#execution-order-and-release-gates) turns its recommendations into planned work; this does not mark the simulator findings fixed.
+
 ## Entry points per track
 
 ### Roadmap knowledge base (all phases)
 
 [roadmap-investigations/README.md](roadmap-investigations/README.md) (plan review #4, 2026-10-06): ten documents that do the research in advance for each phase. 01 numerics, architecture and performance · 02 aerodynamics at RC scale · 03 propeller and propwash · 04 ground handling and collisions · 05 propulsion (glow, gas, electric, turbine) · 06 radio, servos and latency · 07 atmosphere, wind and turbulence · 08 validation and flight testing · 09 aircraft data and pipeline · 10 audio, perception and presentation. Read the phase's document before starting a step.
+
+### Crash and damage
+
+[crash-damage-investigations/README.md](crash-damage-investigations/README.md) indexes reports 01/02/04/05 and the pending material-threshold research (03, owned by CR-07). The [plan](../CRASH-DAMAGE-PLAN.md) starts with a typed contact snapshot and cause; effective-mass ranking is not structural validation.
 
 ### Flight model and simulation
 
