@@ -23,5 +23,5 @@ Las estaciones de fuselaje del JSON pueden guiar el volumen visual de esa pieza.
 ## Archivos
 
 - [Puntos y conversiones en JSON](../../research/ugly-stik/calibration-v1/jensen-contours.json)
-- [PDF Jensen local](../../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf)
+- PDF Jensen local (`references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf`, local only)
 - Los renders de revisión y sus crops están en `references/ugly-stik/calibration-v1/renders/` (artefactos locales ignorados por Git).

@@ -44,7 +44,7 @@ Para el vuelo inicial, la opción trazable es P100 con empuje máximo de referen
 
 ## Planos, fotos y copias locales
 
-El paquete de inspiración descargado y excluido de Git está en [`references/avanti-s/`](../../references/avanti-s/); abrir el [índice local](../../references/avanti-s/index.html). Incluye manuales, manual fotográfico de montaje, fotos oficiales en tierra y vuelo, capturas de inspección, ficha del P100-RX y su plano dimensional. La [lámina local de fotos](../../references/avanti-s/inspection/photo-contact-sheet.jpg) ayuda a comparar acabados y siluetas; las fotos de vuelo son perspectiva, no base para medir.
+El paquete de inspiración descargado y excluido de Git está en `references/avanti-s/` (`references/avanti-s/`, local only); abrir el índice local (`references/avanti-s/index.html`, local only). Incluye manuales, manual fotográfico de montaje, fotos oficiales en tierra y vuelo, capturas de inspección, ficha del P100-RX y su plano dimensional. La lámina local de fotos (`references/avanti-s/inspection/photo-contact-sheet.jpg`, local only) ayuda a comparar acabados y siluetas; las fotos de vuelo son perspectiva, no base para medir.
 
 Fuentes de fabricante que conservan las descargas originales:
 

@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-06. Revisión `a200-av02-contours-details-04`. Continúa la maqueta aislada de SebArt Avanti S A200 en `research/avanti-s/av02/`; todavía no está integrada ni vuela en la aplicación.
 
-[Comparador local de siete vistas](../../references/avanti-s/refinement-v4/index.html) · [Modelo con materiales](../../references/avanti-s/refinement-v4/final/inspector/oblique-flap0.png) · [Comprobaciones](avanti-s-refinement-v4-checks.json) · [Métricas](avanti-s-refinement-v4-metrics.json) · [Reproducción](avanti-s-refinement-v4-validation.json).
+Comparador local de siete vistas (`references/avanti-s/refinement-v4/index.html`, local only) · Modelo con materiales (`references/avanti-s/refinement-v4/final/inspector/oblique-flap0.png`, local only) · [Comprobaciones](avanti-s-refinement-v4-checks.json) · [Métricas](avanti-s-refinement-v4-metrics.json) · [Reproducción](avanti-s-refinement-v4-validation.json).
 
 ## Cambios construidos
 

@@ -1,8 +1,8 @@
-> Archivo histórico de la revisión 5, anterior a la ejecución. La pausa descrita aquí terminó: el [plan vigente](UGLY-STIK-PLAN.md) registra la geometría v3 y el [plan visual](UGLY-STIK-VISUAL-PLAN.md) registra el acabado v4 integrado.
+> Archivo histórico de la revisión 5, anterior a la ejecución. La pausa descrita aquí terminó: el [plan vigente](../UGLY-STIK-PLAN.md) registra la geometría v3 y el [plan visual](../UGLY-STIK-VISUAL-PLAN.md) registra el acabado v4 integrado.
 
 # Ugly Stik .61: plan de modelado en paralelo
 
-Revisión 5 · 2026-10-05 · **Pausa de implementación solicitada por el propietario; revisión y planificación completadas.** Base actual: Jensen Ugly Stik 60 in / nitro .61, modelo v2. [Revisión crítica y evidencia](research/ugly-stik-model-review-v2.md) · [Entrega v2](research/ugly-stik-model-v2.md) · [Plan anterior y notas de integración](UGLY-STIK-PLAN-v4.md).
+Revisión 5 · 2026-10-05 · **Pausa de implementación solicitada por el propietario; revisión y planificación completadas.** Base actual: Jensen Ugly Stik 60 in / nitro .61, modelo v2. [Revisión crítica y evidencia](../research/ugly-stik-model-review-v2.md) · [Entrega v2](../research/ugly-stik-model-v2.md) · [Plan anterior y notas de integración](UGLY-STIK-PLAN-v4.md).
 
 El objetivo es un avión reconocible, articulado y legible para el primer playtest del simulador. Después se aumenta su fidelidad con medidas identificables del Jensen. **La calibración completa no bloquea M1/PT1.** Mini y gigante quedan para después; el paquete Ultra Stick 120 se conserva como referencia de otra configuración.
 
@@ -10,7 +10,7 @@ El objetivo es un avión reconocible, articulado y legible para el primer playte
 
 | Frente | Estado | Evidencia y límite |
 | --- | --- | --- |
-| Investigación y organización | Hecho | [Diez investigaciones](research/ugly-stik-investigations/README.md), [índice por avión](research/aircraft-reference-index.md), 31 archivos nuevos con hashes conservados |
+| Investigación y organización | Hecho | [Diez investigaciones](../research/ugly-stik-investigations/README.md), [índice por avión](../research/aircraft-reference-index.md), 31 archivos nuevos con hashes conservados |
 | Constructor e integración | Hecho | Fuente JSON → constantes Godot → constructor nativo → adaptador `airplane.gd`; no falta una importación GLB |
 | Articulación y ensamblaje | Base comprobada | 453 comprobaciones en la ejecución v2; signos, pivotes, asiento alar, envergadura y morro. No certifican todos los contornos ni ausencia de intersecciones |
 | Morro | Corrección v2 realizada | F1–borde de ataque: 176,276 mm, tolerancia visual 2 mm; apoyo local por cuerda, no calibración de todo el escaneo |
@@ -20,7 +20,7 @@ El objetivo es un avión reconocible, articulado y legible para el primer playte
 | Lectura desde tierra | Capturas disponibles, aceptación pendiente | Serie 20/50/100 m; falta probar orientaciones y fondos con el propietario |
 | Física | Otro frente | D1 completado según el roadmap; M1 sigue su propio desarrollo. No inferir vuelo validado de una captura en modo scripted |
 
-Los resultados de pruebas son los del [registro v2](research/ugly-stik-investigations/evidence/model-v2-validation.json), cuyos cinco hashes revisados siguen coincidiendo. No se ejecutó una suite nueva durante esta revisión documental. El total de pruebas de física puede variar con el trabajo paralelo.
+Los resultados de pruebas son los del [registro v2](../research/ugly-stik-investigations/evidence/model-v2-validation.json), cuyos cinco hashes revisados siguen coincidiendo. No se ejecutó una suite nueva durante esta revisión documental. El total de pruebas de física puede variar con el trabajo paralelo.
 
 ## Criterios de aceptación separados
 
@@ -32,7 +32,7 @@ Los resultados de pruebas son los del [registro v2](research/ugly-stik-investiga
 
 ## Próximas entregas pequeñas
 
-Los IDs US son tareas del frente de modelado vinculadas al [roadmap](../ROADMAP.md), no nuevos hitos del simulador. Cada fila se entrega por separado y conserva el avión funcionando. Todas están **pendientes** al cerrar esta pausa.
+Los IDs US son tareas del frente de modelado vinculadas al [roadmap](../../ROADMAP.md), no nuevos hitos del simulador. Cada fila se entrega por separado y conserva el avión funcionando. Todas están **pendientes** al cerrar esta pausa.
 
 | ID / relación | Objetivo y dependencia | Resultado y prueba de cierre |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ Los IDs US son tareas del frente de modelado vinculadas al [roadmap](../ROADMAP.
 
 ## Protocolo dimensional de US-02
 
-1. Usar como fuente principal el [Jensen firmado](../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf); separar planta, perfil, costilla y detalles. Registrar hash, página, resolución y puntos antes de convertirlos a metros.
+1. Usar como fuente principal el Jensen firmado (`references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf`, local only); separar planta, perfil, costilla y detalles. Registrar hash, página, resolución y puntos antes de convertirlos a metros.
 2. Adoptar el borde de ataque y la línea de empuje como referencias de intercambio con física. Describir también el origen de cada detalle; no trasladar la escala de una vista ampliada a la vista montada.
 3. Comprobar escala en ambos ejes cuando haya controles válidos. Tratar el tamaño PDF como candidato, la rueda como dibujo posiblemente esquemático y la cuerda como control local. No forzar concordancia mediante escalas independientes por pieza.
 4. Para fuselaje, identificar extremo delantero/trasero, techo, vientre y anchos de estaciones comunes. Para cola, separar estructura fija, superficie móvil y líneas de varillaje. Marcar los tramos ocultos por el ala; no completarlos como si estuvieran medidos.
@@ -64,7 +64,7 @@ Los IDs US son tareas del frente de modelado vinculadas al [roadmap](../ROADMAP.
 | Física/simulación | `app/physics/`, `app/sim/`, `app/data/aircraft/`, pruebas de simulación, escena principal y roadmap |
 | Intercambio | Avisar mediante documentación de cambios que afecten envergadura, cuerda, borde de ataque o línea de empuje; entregar evidencia y comprobar integración. No editar silenciosamente parámetros del otro frente |
 
-La fuente única de geometría visual es [geometry.json](../assets/aircraft/ugly-stik-60/geometry.json), compilada a [ugly_stik_geometry.gd](../app/aircraft/ugly_stik_geometry.gd). La física coteja envergadura/cuerda y el render usa borde de ataque/línea de empuje para transformar el CG; por eso un cambio de datum tiene efectos fuera del constructor. CG físico y origen visual son distintos.
+La fuente única de geometría visual es [geometry.json](../../assets/aircraft/ugly-stik-60/geometry.json), compilada a [ugly_stik_geometry.gd](../../app/aircraft/ugly_stik_geometry.gd). La física coteja envergadura/cuerda y el render usa borde de ataque/línea de empuje para transformar el CG; por eso un cambio de datum tiene efectos fuera del constructor. CG físico y origen visual son distintos.
 
 Conservar `build()` → `{root, propeller, hinges}`, raíz `airplane`, hélice `propeller` y bisagras `aileron_left`, `aileron_right`, `elevator`, `rudder`. Ejes: metros, +X derecha, +Y arriba, −Z morro. Los marcos alares contienen el diedro estático y sus bisagras solo la deflexión. Las órdenes positivas mantienen roll derecho, pitch arriba y yaw derecho según las pruebas existentes.
 
@@ -82,8 +82,8 @@ Preservar v1/v2 como evidencia histórica. Las próximas capturas deben guardar 
 
 ## Decisiones conservadas y trabajo aplazado
 
-El [índice de investigaciones](research/ugly-stik-investigations/README.md) conserva fuentes y experimentos: Jensen firmado 60 in / 720 in² / .45–.61; perfil cualitativo semisimétrico; morro y CG leídos localmente; masa/recorridos reales y coordenadas de perfil aún sin validar para una construcción concreta. La longitud de 52 in de otra miniatura no se convierte en longitud confirmada de este plano.
+El [índice de investigaciones](../research/ugly-stik-investigations/README.md) conserva fuentes y experimentos: Jensen firmado 60 in / 720 in² / .45–.61; perfil cualitativo semisimétrico; morro y CG leídos localmente; masa/recorridos reales y coordenadas de perfil aún sin validar para una construcción concreta. La longitud de 52 in de otra miniatura no se convierte en longitud confirmada de este plano.
 
-O.S. 61FX sirve de referencia provisional, sin elegir marca. REFLEX, Great Big Stik y Ultra Stick 120 aportan comparaciones, no geometría Jensen intercambiable. MoJo sigue sin identidad geométrica confirmada. [Catálogo y clasificación](research/aircraft-reference-index.md).
+O.S. 61FX sirve de referencia provisional, sin elegir marca. REFLEX, Great Big Stik y Ultra Stick 120 aportan comparaciones, no geometría Jensen intercambiable. MoJo sigue sin identidad geométrica confirmada. [Catálogo y clasificación](../research/aircraft-reference-index.md).
 
 Quedan aplazados: mini/gigante, estructura interna, conversión completa de CAD, instalación comercial exacta mientras falte elección, acabado fotorrealista y LOD sin medición. El vuelo realista, contacto con suelo, sonido y entrada de radio avanzan según el roadmap del desarrollador principal.

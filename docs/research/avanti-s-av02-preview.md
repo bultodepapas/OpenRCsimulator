@@ -2,7 +2,7 @@
 
 2026-10-06 · **AV-02 iniciado como inspector aislado.** Ya existe un modelo procedural visible y articulado; falta refinar su forma e integrarlo en el inspector de la app. No es un avión volable y no se declara cerrada la metrología AV-01.
 
-[Galería de capturas y fotos nuevas](../../references/avanti-s/av02/index.html) · [maqueta oblicua](../../references/avanti-s/av02/captures-v2/oblique-flap0.png) · [planta](../../references/avanti-s/av02/captures-v2/top-flap0.png) · [flaps a 50°](../../references/avanti-s/av02/captures-v2/rear-flap50.png) · [código e instrucciones](../../research/avanti-s/av02/README.md).
+Galería de capturas y fotos nuevas (`references/avanti-s/av02/index.html`, local only) · maqueta oblicua (`references/avanti-s/av02/captures-v2/oblique-flap0.png`, local only) · planta (`references/avanti-s/av02/captures-v2/top-flap0.png`, local only) · flaps a 50° (`references/avanti-s/av02/captures-v2/rear-flap50.png`, local only) · [código e instrucciones](../../research/avanti-s/av02/README.md).
 
 ## Qué se construyó
 
@@ -33,7 +33,7 @@ La fuente del modelo es [geometry.json](../../research/avanti-s/av02/geometry.js
 
 ## Qué añadió esta investigación
 
-Se conservaron **cinco fotos oficiales de 4320 × 3240**, dos fotos de la familia de tubos y dos páginas HTML de procedencia. Son nueve descargas adicionales; el archivo acumulado alcanza **76 originales, 105.598.835 bytes**. Los originales nuevos están en [`high-resolution/`](../../references/avanti-s/high-resolution/), con nombres por vista. [Manifiesto](avanti-s-resources.json).
+Se conservaron **cinco fotos oficiales de 4320 × 3240**, dos fotos de la familia de tubos y dos páginas HTML de procedencia. Son nueve descargas adicionales; el archivo acumulado alcanza **76 originales, 105.598.835 bytes**. Los originales nuevos están en `high-resolution/` (`references/avanti-s/high-resolution/`, local only), con nombres por vista. [Manifiesto](avanti-s-resources.json).
 
 Las fotos de alta resolución permiten estudiar mejor los bordes de cabina, las tomas, las uniones y las placas verticales del ala. Siguen siendo perspectivas. Se inspeccionaron las cinco y no se utilizó una regla píxel/metro global para reconstruir el avión. [Descargas oficiales](https://www.sebart.it/download/).
 
@@ -43,7 +43,7 @@ La página de accesorios confirma A200-13 como opción original P100 de doble pa
 
 - [Verificación headless](avanti-s-av02-checks.json): escala sobre la malla, siete bisagras, geometría finita, dimensiones de turbina, signos de mandos, reinicio e independencia de dos instancias; sin fallos. El contador incluye comprobaciones por vértice y no representa miles de casos de vuelo.
 - [Clon limpio y fallo deliberado](avanti-s-av02-clone-check.json): copia del código nuevo sobre un clon local sin referencias ni caché Godot; verificación correcta. Invertir el signo del flap derecho **solo en ese clon temporal** produjo el fallo esperado. No se dejó código roto en el árbol compartido.
-- Nueve capturas con renderer Compatibility mediante Mesa/llvmpipe: frente, perfil, planta, inferior, dos oblicuas, flaps 20°/50° e interior. [Manifiesto de capturas](../../references/avanti-s/av02/captures-v2/manifest.json) con motor, cámaras, hashes y estado. No es medición de rendimiento en GPU real.
+- Nueve capturas con renderer Compatibility mediante Mesa/llvmpipe: frente, perfil, planta, inferior, dos oblicuas, flaps 20°/50° e interior. Manifiesto de capturas (`references/avanti-s/av02/captures-v2/manifest.json`, local only) con motor, cámaras, hashes y estado. No es medición de rendimiento en GPU real.
 - La primera captura reveló que la nariz en planta quedaba bajo los controles del inspector: se amplió el encuadre y se repitió la serie final. El audio se desactiva mediante driver Dummy; este estudio no genera sonido.
 
 Los resultados de esta ronda se resumen en [avanti-s-av02-validation.json](avanti-s-av02-validation.json). No se modificó `app/` en esta tarea ni se ejecutó su suite durante las ediciones concurrentes; las comprobaciones pertenecen al proyecto aislado.

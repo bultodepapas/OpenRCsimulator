@@ -1,6 +1,6 @@
 # Ugly Stik .61: plan de modelado en paralelo
 
-Revisión 7 · 2026-10-05 · **Geometría v3 y acabado visual v4 integrados; aceptación humana y rendimiento en hardware pendientes.** Variante: Jensen Ugly Stik 60 in / nitro .61. [Entrega y pruebas v3](research/ugly-stik-model-v3.md) · [Plan revisado antes de ejecutar](UGLY-STIK-PLAN-v5.md) · [Entrega v2](research/ugly-stik-model-v2.md).
+Revisión 7 · 2026-10-05 · **Geometría v3 y acabado visual v4 integrados; aceptación humana y rendimiento en hardware pendientes.** Variante: Jensen Ugly Stik 60 in / nitro .61. [Entrega y pruebas v3](research/ugly-stik-model-v3.md) · [Plan revisado antes de ejecutar](archive/UGLY-STIK-PLAN-v5.md) · [Entrega v2](research/ugly-stik-model-v2.md).
 
 El objetivo es un avión reconocible, articulado y legible para el primer playtest. La ejecución ha completado el trabajo de código, medición y preparación que podía comprobarse en este entorno. No convierte las medidas del escaneo en certificación de un avión real ni sustituye la evaluación del piloto. Mini y gigante siguen para después.
 
@@ -42,7 +42,7 @@ Para PT1: interfaz y signos correctos, ensamblaje coherente y orientación evalu
 
 ## Protocolo dimensional de US-02
 
-1. Usar como fuente principal el [Jensen firmado](../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf); separar planta, perfil, costilla y detalles. Registrar hash, página, resolución y puntos antes de convertirlos a metros.
+1. Usar como fuente principal el Jensen firmado (`references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf`, local only); separar planta, perfil, costilla y detalles. Registrar hash, página, resolución y puntos antes de convertirlos a metros.
 2. Adoptar el borde de ataque y la línea de empuje como referencias de intercambio con física. Describir también el origen de cada detalle; no trasladar la escala de una vista ampliada a la vista montada.
 3. Comprobar escala en ambos ejes cuando haya controles válidos. Tratar el tamaño PDF como candidato, la rueda como dibujo posiblemente esquemático y la cuerda como control local. No forzar concordancia mediante escalas independientes por pieza.
 4. Para fuselaje, identificar extremo delantero/trasero, techo, vientre y anchos de estaciones comunes. Para cola, separar estructura fija, superficie móvil y líneas de varillaje. Marcar los tramos ocultos por el ala; no completarlos como si estuvieran medidos.

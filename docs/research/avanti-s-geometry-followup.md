@@ -20,7 +20,7 @@ La maqueta visual puede avanzar con los 2,00 m de envergadura y los 2,22 m de lo
 | [Lista de precios SebArt 2026, PDF](https://www.sebart.it/download/sebart-pricelist.pdf) | Muestra el producto A200 actual con etiqueta 2,3 m y opciones de la revisión vigente. | Su nomenclatura no debe combinarse automáticamente con el manual original de 2,2 m. |
 | [Plano dimensional JetCat P100-RX](https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF) | Cotas del motor, entre ellas 241 mm de largo, 97 mm de diámetro del cuerpo y 60 mm en la salida del motor. | Es el motor, no el conducto A200-13 ni la salida del tubo instalado. |
 
-La revisión local del manual oficial de montaje está en [la copia original](../../references/avanti-s/manuals/avanti-s-200-assembly.pdf), con páginas renderizadas en [`organized/assembly-pages/`](../../references/avanti-s/organized/assembly-pages/). Las cotas generales, CG y mandos ya consolidados están en [AV-01 metrología](avanti-s-av01-metrology.md) y [mandos e instalación](avanti-s-controls-and-installation.md); este documento registra el hueco de geometría que esos datos todavía no cierran.
+La revisión local del manual oficial de montaje está en la copia original (`references/avanti-s/manuals/avanti-s-200-assembly.pdf`, local only), con páginas renderizadas en `organized/assembly-pages/` (`references/avanti-s/organized/assembly-pages/`, local only). Las cotas generales, CG y mandos ya consolidados están en [AV-01 metrología](avanti-s-av01-metrology.md) y [mandos e instalación](avanti-s-controls-and-installation.md); este documento registra el hueco de geometría que esos datos todavía no cierran.
 
 ## Huecos por componente
 
@@ -59,7 +59,7 @@ La página de descargas enlaza cinco JPEG de alta resolución, cada uno de 4320 
 | Avanti S-Jet 04 | [JPG](https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-04.JPG) | Vista lateral oblicua con persona; escala humana aproximada, sin control de distancia. |
 | Avanti S-Jet 05 | [JPG](https://www.sebart.it/download/planes/Avanti%20S%20Jet/Avanti%20S_Jet-05.JPG) | Detalle de cabina y morro. |
 
-Estas cinco URL se comprobaron como recursos JPEG del dominio oficial. Se conservaron los originales en [high-resolution/](../../references/avanti-s/high-resolution/), con URL, fecha, hash y aviso de perspectiva en el [manifiesto](avanti-s-resources.json). La foto 03 es otra vista frontal oblicua, desde el lado contrario a la 02.
+Estas cinco URL se comprobaron como recursos JPEG del dominio oficial. Se conservaron los originales en high-resolution/ (`references/avanti-s/high-resolution/`, local only), con URL, fecha, hash y aviso de perspectiva en el [manifiesto](avanti-s-resources.json). La foto 03 es otra vista frontal oblicua, desde el lado contrario a la 02.
 
 ## Qué puede avanzar con rigor
 

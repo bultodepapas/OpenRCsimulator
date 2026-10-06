@@ -2,7 +2,7 @@
 
 2026-10-06 UTC · **AV-02, revisión `a200-av02-contours-02`.** Se afinó la maqueta Godot aislada utilizando las tres cámaras de la comparación anterior, sin volver a ajustarlas. Sigue siendo un estudio visual aproximado, no volable.
 
-[Comparador local antes/después](../../references/avanti-s/refinement-v2/index.html) · [vista oblicua actual](../../references/avanti-s/refinement-v2/inspector-final/oblique-flap0.png) · [planta](../../references/avanti-s/refinement-v2/inspector-final/top-flap0.png) · [flaps 50°](../../references/avanti-s/refinement-v2/inspector-final/rear-flap50.png) · [reproducción](../../research/avanti-s/refinement/README.md).
+Comparador local antes/después (`references/avanti-s/refinement-v2/index.html`, local only) · vista oblicua actual (`references/avanti-s/refinement-v2/inspector-final/oblique-flap0.png`, local only) · planta (`references/avanti-s/refinement-v2/inspector-final/top-flap0.png`, local only) · flaps 50° (`references/avanti-s/refinement-v2/inspector-final/rear-flap50.png`, local only) · [reproducción](../../research/avanti-s/refinement/README.md).
 
 ## Cambios de forma
 

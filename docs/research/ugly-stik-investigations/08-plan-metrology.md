@@ -4,7 +4,7 @@ Fecha: 2026-10-05. Paso: D1, preparación de geometría. **Pregunta:** ¿podemos
 
 ## Evidencia reunida
 
-Se inspeccionaron las dos hojas del [plano Jensen oz1253](https://outerzone.co.uk/plan_details.asp?ID=1253), ahora [descargado localmente](../../../references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf). `pdfimages -list` identifica imágenes monocromas de 19316×14400 y 19144×14400 píxeles, declaradas a 400 ppp. El documento contiene imágenes, no contornos vectoriales que puedan importarse directamente como geometría.
+Se inspeccionaron las dos hojas del [plano Jensen oz1253](https://outerzone.co.uk/plan_details.asp?ID=1253), ahora descargado localmente (`references/ugly-stik/downloads/jensen/Das_Ugly_Stik_Jensen_oz1253.pdf`, local only). `pdfimages -list` identifica imágenes monocromas de 19316×14400 y 19144×14400 píxeles, declaradas a 400 ppp. El documento contiene imágenes, no contornos vectoriales que puedan importarse directamente como geometría.
 
 La calibración espacial requiere una distancia conocida; también hay que comprobar por separado la escala horizontal y vertical. El manual de ImageJ describe ambas operaciones y el uso de una referencia de aspecto conocido. Es un método de medición, no prueba de que un dibujo esté a escala. [ImageJ: Set Scale](https://imagej.net/ij/docs/guide/146-30.html#sub:Set-Scale...). Para la conversión, una pulgada internacional equivale exactamente a 25.4 mm. [NIST](https://www.nist.gov/pml/owm/si-units-length).
 

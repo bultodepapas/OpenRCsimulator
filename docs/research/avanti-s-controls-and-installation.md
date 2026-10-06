@@ -4,7 +4,7 @@
 
 ## Referencias que sí da el fabricante
 
-La página PDF 1 de la introducción fija 200 cm de envergadura, 222 cm de longitud y 10,5 kg de peso RTF seco con P100. Describe fuselaje compuesto y alas/estabilizadores de madera. Son cotas generales de identidad; el documento no publica área alar, cuerda, MAC, perfiles, incidencias ni una planta dimensionada. [SebArt, ficha de producto](https://www.sebart.it/jets-L.html) · [Introducción oficial A200 (PDF)](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf) · [copia local](../../references/avanti-s/manuals/avanti-s-200-intro.pdf).
+La página PDF 1 de la introducción fija 200 cm de envergadura, 222 cm de longitud y 10,5 kg de peso RTF seco con P100. Describe fuselaje compuesto y alas/estabilizadores de madera. Son cotas generales de identidad; el documento no publica área alar, cuerda, MAC, perfiles, incidencias ni una planta dimensionada. [SebArt, ficha de producto](https://www.sebart.it/jets-L.html) · [Introducción oficial A200 (PDF)](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf) · copia local (`references/avanti-s/manuals/avanti-s-200-intro.pdf`, local only).
 
 La PDF p. 2 enumera 9 canales mínimos y 8 servos digitales estándar: cinco DS8411 para alerones, elevadores y dirección de rueda; tres DS8911 para flaps y timón. Esto corresponde a dos alerones, dos mitades de elevador, dirección de rueda de morro, dos flaps y timón. Es una lectura de la lista de equipos, no una asignación oficial de canales del transmisor. Dos DS8915 y el tubo vectorial aparecen como **opcionales**. La selección de este plan usa P100 y tubo fijo; el fabricante asocia su opción vectorial al conjunto P180/vector A200-15. [Introducción, PDF p. 2](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf#page=2) · [página oficial de accesorios y fotos del tubo vectorial](https://www.sebart.it/img-jets/Avanti/VES/vector%20thrust.html).
 
@@ -23,7 +23,7 @@ Los `D/R` y `Expo` también impresos en p. 4 son ajustes de radio, no geometría
 
 ## Mapa verificable del fotomanual
 
-La [fotoinstrucción oficial de 91 páginas](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf) organiza dos fotos por página y rotula los pasos. Para seleccionar recortes locales, conserva juntas ambas cosas: imagen del componente y rótulo `step`; en las páginas con una cota, no recortes la cota ni sus flechas. La [copia local](../../references/avanti-s/manuals/avanti-s-200-assembly.pdf) sirve como origen estable de página y paso.
+La [fotoinstrucción oficial de 91 páginas](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Photoinstriction.pdf) organiza dos fotos por página y rotula los pasos. Para seleccionar recortes locales, conserva juntas ambas cosas: imagen del componente y rótulo `step`; en las páginas con una cota, no recortes la cota ni sus flechas. La copia local (`references/avanti-s/manuals/avanti-s-200-assembly.pdf`, local only) sirve como origen estable de página y paso.
 
 | Parte | Página PDF y pasos útiles | Qué muestra y qué no demuestra |
 | --- | --- | --- |
