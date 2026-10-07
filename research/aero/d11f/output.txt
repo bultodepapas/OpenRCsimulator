@@ -1,0 +1,15 @@
+Wing yaw damping, Weissinger reference (3 strips per side, a0 6.0818, CD0 0.0434):
+  CL      Cnr      profile   lift-induced  lift-induced/CL^2
+  0.147   -0.0141   -0.0141    0.0000        0.0004
+  0.294   -0.0140   -0.0141    0.0000        0.0004
+  0.439   -0.0140   -0.0141    0.0001        0.0004
+  0.582   -0.0139   -0.0141    0.0001        0.0004
+  0.722   -0.0139   -0.0141    0.0002        0.0004
+Induced drag factor k_i = CD_i/CL^2 of the AR 5.0 rectangular wing (Weissinger, KJ at the bound vortex):
+   3 strips/side, a0 6.283: k_i 0.0553 (span efficiency e = 1.151)
+   3 strips/side, a0 6.082: k_i 0.0554 (span efficiency e = 1.150)
+  10 strips/side, a0 6.283: k_i 0.0615 (span efficiency e = 1.035)
+  10 strips/side, a0 6.082: k_i 0.0616 (span efficiency e = 1.034)
+  40 strips/side, a0 6.283: k_i 0.0638 (span efficiency e = 0.998)
+  40 strips/side, a0 6.082: k_i 0.0638 (span efficiency e = 0.997)
+Borrowed whole-airplane polar: k 0.0815 about CL_minD 0.23 (e 0.78 incl. tail, fuselage, profile drag rise)
