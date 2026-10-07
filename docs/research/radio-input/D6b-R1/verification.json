@@ -1,0 +1,44 @@
+{
+  "step": "D6b-R1",
+  "date": "2026-10-07",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "baseline_commit": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "isolation": "Local clone of tracked HEAD, with only the five D6b-R1 code/test paths applied; shared parallel WIP excluded.",
+  "suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "gd_test_programs": 85,
+    "engine_errors": 0,
+    "log": "suite.log",
+    "sha256": "6e0ef6f5d949847071410111bb4b2879d3d77d8ba8c4bc729585d4a7c3bf335f",
+    "four_aircraft_trimmed_flights": true,
+    "frame_rate_hash_30_60_144_identical": true
+  },
+  "focused_shared_workspace": {
+    "profile_checks": 720,
+    "wizard_checks": 19,
+    "e2e_radio": "passed",
+    "unreadable_config": "rejected on load; save returns ERR_PARSE_ERROR (43); bytes preserved"
+  },
+  "shared_suite_baseline": {
+    "exit_code": 1,
+    "reason": "Committed placement differs from offline recipe (L6b, before own edits)"
+  },
+  "lint": {
+    "errors_before": 0,
+    "errors_after": 0,
+    "warnings_before": 12,
+    "warnings_after": 12
+  },
+  "source_sha256": {
+    "app/input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+    "app/tests/test_rc_calibration.gd": "14105b4a1141934d7ec512bd417906efca9f401fca768b6159ad1e34b2f880cd",
+    "app/tests/test_e2e_radio.gd": "36e0f3e7fc009074e49c7bdbe83e49f7e4719acfccee99cfa56599cc12f732cd",
+    "app/tests/test_rc_profile_validation.gd": "a9d7042428d4470fbc7143c271cbbeebc893481b3341b74e78d865bf1c20cc54",
+    "app/tests/test_rc_profile_validation.gd.uid": "6597b6eda738a9e1ca366ca5e89f02d980c0faff929387c95f46d642fe758ea0"
+  },
+  "limitations": [
+    "No physical-radio, target GPU, or owner Gate 2 acceptance claimed.",
+    "No claim that other tracks' uncommitted work passes the full suite."
+  ]
+}

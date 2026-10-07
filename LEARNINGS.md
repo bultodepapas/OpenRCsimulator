@@ -964,3 +964,78 @@ The model's shaft at visual y = -5 mm is physics z = 0: the existing render adap
 ## 2026-10-07 · E0b3a — a flow increment must use one tail law on both sides
 
 After E0a2, the Stik's free tail used a free lift slope, separate elevator effectiveness and lagged wing downwash, but the propwash increment still used the old effective slope/incidence. Pass the same sampled wing CL to both sides of washed-minus-free and verify against the existing local tail before enabling geometry. A whole-session check with lag deliberately displaced from instantaneous CL caught disconnecting Dynamics' lag argument; helper-only tests would miss it. Preserve the legacy branch to prove the P-51 unchanged. Sharing an angular downwash offset is a stated approximation, not a resolved propwash/downwash velocity field; keep that uncertainty separate from software consistency. The manufactured enabled session still costs 562–566 µs/tick in forward/stall after the suite exits: unchanged default fingerprints do not prove budget headroom for a newly enabled model. [Evidence](docs/research/propwash/E0b3a/README.md).
+
+## 2026-10-07 · E0b3b — exact coverage moments do not make centroid loads exact
+
+Summing polygon chord sections preserves hinge relief, notch discontinuities and span moments in three groups; integrate the smooth edge separately from the nonlinear tail law. Keep geometric coverage and aerodynamic pressure planes distinct instead of silently moving a baseline load arm. Dense local-load comparison agreed within 0.2% in the sampled zero-swirl cases but differed by up to 206% in moment with estimated swirl 0.4: a single centroid cannot represent that varying velocity field. Exact geometry also adds cost (active-wash cases 598–838 µs/tick), so unchanged default fingerprints do not justify production enablement. Keep the estimated configuration in tests until calibration, integration accuracy and the performance budget are resolved. [Evidence](docs/research/propwash/E0b3b/README.md).
+
+## 2026-10-07 · E0b4 — centreline speed does not determine whole-tail effectiveness
+
+A source factor multiplying disc-induced speed is neither a total-speed multiplier nor a tail-area pressure multiplier. Keep the radial profile and actual tail geometry when transferring a donor model; an exact geometry integral cannot make another propeller’s fit a Stik measurement. Compare wash on/off at identical state, controls and rpm before separately retrimming. With downwash lag, quasi-static and lag-held alpha partials can even have different signs at an untrimmed point; neither alone establishes dynamic stability. The sampled cruise authority changes exceed an old +12% allowance, so that allowance cannot justify tuning away the evidence. Verify numerical identities and source freshness, then keep calibration and production enablement open until matching observations exist. [Evidence](docs/research/propwash/E0b4/README.md).
+
+## 2026-10-07 · DT-00 — desktop export is not native launch acceptance
+
+The pipeline executes Linux but only inspects Windows/macOS packages; native launch, fullscreen, DPI and trust prompts need their own evidence. A new app argument after `--` currently skips Home, so display recovery must respect the existing route contract. Fullscreen at 4K has nine times the pixels of the 720p window, making GPU cost and aircraft readability part of the same acceptance step. UI-07/09 already owns display preferences: desktop work should add exported acceptance, not a competing settings system. [Code audit, engine CLI probe and primary sources](docs/research/desktop-delivery-investigations/DT-00/README.md). No new performance or native platform result is claimed.
+
+## 2026-10-07 · E0b5 — continuous transport needs continuous coupling
+
+Keep a wash-speed lag in the same RK stages as the body it affects; advancing it once before the body recreates a first-order split. Pack the continuous variables only in the integrator workspace so rendering and the 13-value body contract stay intact. A first-order lag reaches 63.2% at its time constant; it does not reproduce a pure transport dead time. Hold the older sampled RPM, servo and downwash states when measuring this new coupling's order, and do not claim fourth-order convergence for the complete aircraft. Engine stop must leave a decaying wake, not erase its speed state. Include that state in failed-tick rollback and exact replay; body-only frame hashes cannot prove it deterministic. Test runway resets on the configured field. [Evidence](docs/research/propwash/E0b5/README.md).
+
+## 2026-10-07 · D6b-R1 — validate persisted calibration before applying it
+
+The wizard's constraints do not protect hand-edited or stale saved profiles. Validate complete radio mappings at the persistence boundary: unique integer axes, finite raw-range endpoints, ordered centers and exact string device identity. Throttle center may equal an endpoint because its normalization ignores center; requiring every center to be interior rejects valid wizard output. A wrong-typed identity can produce a Godot runtime error while the process exits zero, so test runners must inspect engine errors as well as assertion counts. Refused saves must preserve existing devices' bytes. [Evidence and isolated verification](docs/research/radio-input/D6b-R1/README.md).
+
+## 2026-10-07 · L7 / L13a visual slice — Distant relief without changing flight physics
+
+- Replace the large rough plane with one contiguous mesh; overlapping shallow hills at kilometre distances invite depth fighting. Shared indexed borders and a periodic azimuth close the seams without skirts. The visual hill grid reads back exactly in 1/256 m increments; the first 1.5 km remains flat.
+- A positive height bias enabled too early makes a plateau. Moving the hill rise from 1.5–2 km to 1.5–3 km lowered the north skyline's mean angle from 1.834° to 1.480° and raised its angular variation from 0.095° to 0.212°.
+- Separate coordinate packing from appearance hashing when expanding vegetation range. Larger packing offsets can preserve every existing tree's identity while adding distant negative south/west coordinates. The eight existing sector groups hold both near and far patches.
+- A rim fade that works at 23 km visibility can leave a visible band at 40 km. Moving the distance-space fade merely moved the band. Inverse-distance interpolation spreads the clear preset's closure across projected rows; keep the full-band pixel gate, not only the outermost edge check.
+- Validate visual changes against frozen physics. The isolated L7 comparison preserves every state in the 721-sample flight and all 51 runway-scenario frames. Ignore only the trace creation timestamp; do not compare against a concurrently edited physics tree.
+
+Proof and limits: [L7 evidence](docs/research/visual-quality-implementation/L7/README.md). These are visual estimates and software-render measurements; physical terrain, human acceptance and target-GPU frame times remain separate work.
+
+## 2026-10-07 · DT-00-R1 — prove desktop state and final artifact behavior
+
+- A copied production-module probe reproduced a lost update: a stale aircraft-preference writer restored English after another writer saved Spanish. Atomic replacement alone cannot solve competing writers. Future-schema refusal preserved the original bytes; keep that protection when adding display state.
+- A disposable Git probe confirmed that a new untracked file leaves `git describe --dirty` unchanged. Public release identity needs a complete input inventory and a clean candidate, with the tested final bytes promoted without rebuilding.
+- Static inspection found native close bypasses the current trace-save guard; forwarding it to Quit alone still leaves failed saves invisible and non-retryable. Test the complete close/error interaction on each target OS.
+- Different prerelease builds can share the same PE numeric version; verify actual executable replacement during installer upgrade. A signed macOS ZIP and DMG need different staple/repack recipes. Neither export success nor documentation proves native trust acceptance.
+- Process-loop percentiles are not display presentation or input latency. Three runs screen variability; they do not establish a population guarantee. Compatibility shader preparation must use its actual renderer path, not unsupported shader-baker settings.
+
+[The twelve investigations, probe results and revised acceptance map](docs/research/desktop-delivery-investigations/DT-00-R1/README.md). No application, installer, native GUI/radio or performance result is claimed from these documentation changes.
+
+## 2026-10-07 · F1 — diagnostic timing must name its observation point
+
+Per-axis callback spacing cannot identify the USB report interval or RF state: multiple axes and queued events arrive in batches, and Godot exposes no hardware timestamp on the motion event. Preserve null for unseen axes and single-sample intervals; never seed minima with a polled startup zero. Keep reconnects as separate sessions when device IDs are reused. The pinned SDL backend returns VID/PID as decimal strings, so fake metadata must exercise that shape before normalizing to integer report fields. An early diagnostic route can collect evidence without loading a field, aircraft or calibration. [Implementation, sources and proof](docs/research/radio-input/F1/README.md).
+
+## 2026-10-07 · E0b6 — resolve swirl locally and audit the torque claim
+
+A centroid can integrate neutral area exactly and still misrepresent a swirling load by more than 200%. Add the distributed swirl-minus-axial correction to the established axial baseline so the zero-swirl limit stays continuous and the old baseline remains explicit. Split numerical quadrature at geometry, occupancy and core boundaries. Verify the correction against independent dense integration, then measure whole ticks: an accurate 12-point reference cost about 60 ms/tick; cancelling duplicate free-load work and using five points reduced it to 16–24 ms, still far over budget. The next step must address that measured cost before enablement. A core clamp and axial-speed attenuation change the wake's torque flux; name those approximations instead of claiming conservation. Khan's 40% residual reaction references Selig and is not a second measurement or a universal swirl coefficient. [Evidence](docs/research/propwash/E0b6/README.md).
+
+## 2026-10-07 · DT-00-R2 — Apple Silicon support needs runtime and sustained evidence
+
+- The current Mac project selects Compatibility/OpenGL, not native Metal. MSAA enum 2 is 4×, and actual Retina backing pixels must be recorded separately from logical size/UI scale. A renderer comparison must log the actual driver, which the current frame report omits.
+- Static inspection of the existing universal export found ARM64 macOS 13 in its bundle metadata but macOS 11 in its Mach-O load command. Neither a lower load-command floor nor an ARM64 slice proves supported native launch. Freeze the bundle/engine floor and verify it on the advertised OS.
+- The real Python export checker accepted synthetic ad-hoc signature metadata without executable code and rejected non-ad-hoc flags. This proves its structural scope and current policy, not macOS cryptographic trust. Preserve structural checks while introducing native Developer ID verification.
+- A proposed 30-minute Mac soak cannot use the current frame logger unchanged: it permits at most 300 seconds and exits afterward. Record power/thermal/memory conditions and preserve the distinction between full-soak observation and sampled timing windows.
+- Native ARM64 physics must keep existing float64 boundaries and H9 numerical budgets. A faster Linux C++ experiment and strict compiler flags do not establish Mac accuracy or the whole-fleet timing budget.
+
+[Twelve investigations, static/synthetic probes and the revised qualification sequence](docs/research/desktop-delivery-investigations/DT-00-R2/README.md). No Mac launch, GPU benchmark, radio/audio test or signing operation was performed.
+
+## 2026-10-07 · E0b6p — remove allocation overhead without changing the quadrature
+
+Freeze the slow implementation before scalarizing its inner force loop. Preserving arithmetic and summation order kept all 200 seeded correction cases and every boundary in 12 experimental trajectories exactly equal. Hoisting tail constants and removing per-node helper arrays improved the interleaved correction profile by 3.76–4.31×, without fewer quadrature points or frozen RK geometry. Separate direct component cost from whole-tick timing: shared-host contention also slowed the unchanged zero-swirl cases. The remaining correction and axial occupancy still exceed the total 500 µs budget, so a successful optimization is not budget acceptance. Keep both the frozen reference and the independent dense integration when investigating the next implementation. [Evidence](docs/research/propwash/E0b6p/README.md).
+
+## 2026-10-07 · L4b/L15d — preserve the actual renderer path and bound visual evidence storage
+
+- A custom Compatibility shader without an explicit `diffuse_burley` mode falls back to Lambert. StandardMaterial defaults are not proof of that shader path. The zero-strength comparison against frozen L7 caught a ground-lighting change; matching the old fallback restored pixel identity.
+- Share both cloud density and displacement. A ground material clone does not receive later local-uniform updates; a single global displacement reaches rough, mown and runway surfaces. Wrap displacement at the noise period, not at the general shader clock period. Changing wind later needs integrated displacement, with the sampling sign accounted for.
+- Old capture outputs had grown to 907 MB, including one repeated-error log of 507 MiB, and Godot had duplicated capture PNGs into 227 MB of imported textures. Put `.gdignore` in the generated capture directory before import. The owner-authorized cleanup preserved 1,013 small reports and a bounded error excerpt, then removed 1.64 GB of reproducible outputs/dependencies.
+- A local clone can inherit an existing alternate object store even with `--no-hardlinks`. Use `--dissociate` before deleting parent validation snapshots. Source hashes and reconstructed tree identity distinguish a temporary repository-metadata problem from a runtime change.
+
+[Implementation and proof](docs/research/visual-quality-implementation/L4b/README.md); [cleanup inventory](docs/research/visual-quality-implementation/L4b/storage-cleanup.json).
+
+## 2026-10-07 · F6a — measure the observed input, preserve the flight
+
+A latency square must read the same raw-axis buffer after the flight polls it, then update before rendering. Test that ordering with a changing backend value: injecting only cached events can hide a one-tick error. A second simultaneous flight without the marker provides exact checkpoint evidence that the diagnostic does not change simulation state. Keep unknown and inactive samples gray; a polled startup zero is not evidence that a radio reported. Calibration already pauses flight, so its explanatory status must precede generic pause handling. Film a physical position corresponding to the raw threshold, not an assumed centered stick after radio trims/mixes. Same-tick software checks and pixel readbacks validate the tool; only physical camera trials can close F6. [Implementation, mutation proofs and camera protocol](docs/research/radio-input/F6a/README.md).

@@ -1,0 +1,489 @@
+{
+  "archive_member": "OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator",
+  "archive_member_mode": "0o755",
+  "archive_member_size": 170963648,
+  "archive_path": "dist/macos/OpenRC Simulator.zip",
+  "archive_sha256": "801760a90e71d678c76aba1c28725c81eda68865ed4f90d7b475f5b4a8697a55",
+  "binary_size": 170963648,
+  "info_plist": {
+    "CFBundleExecutable": "OpenRC Simulator",
+    "CFBundleIdentifier": "io.github.bultodepapas.openrcsimulator",
+    "LSArchitecturePriority": [
+      "arm64",
+      "x86_64"
+    ],
+    "LSMinimumSystemVersion": null,
+    "LSMinimumSystemVersionByArchitecture": {
+      "arm64": "13.00",
+      "x86_64": "11.00"
+    },
+    "LSRequiresNativeExecution": null,
+    "NSHighResolutionCapable": true
+  },
+  "probe": "macos-macho-static-v1",
+  "scope": "main Mach-O load commands including LC_UUID, Info.plist deployment/identity fields, and embedded CodeDirectory flags; no cryptographic verification, dependency resolution, or macOS execution",
+  "slices": [
+    {
+      "architecture": "x86_64",
+      "cpu_subtype": 3,
+      "cpu_type": "x86_64",
+      "file_type": 2,
+      "flags": "0x00a18085",
+      "load_commands": [
+        {
+          "name": "LC_UUID",
+          "uuid": "045e6b99-5b7e-3e28-8a95-f981ddd2c7e4"
+        },
+        {
+          "load_command": "LC_VERSION_MIN_MACOSX",
+          "minimum": "10.13.0",
+          "name": "LC_VERSION_MIN_MACOSX",
+          "platform": "macOS",
+          "sdk": "26.1.0"
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/ForceFeedback.framework/Versions/A/ForceFeedback",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AudioUnit.framework/Versions/A/AudioUnit",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/GameController.framework/Versions/A/GameController",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libSystem.B.dylib",
+          "size": 56
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libz.1.dylib",
+          "size": 48
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libc++.1.dylib",
+          "size": 48
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+          "size": 112
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libobjc.A.dylib",
+          "size": 56
+        },
+        {
+          "command": "0x8000001c",
+          "name": "LC_RPATH",
+          "path": "@executable_path/../Frameworks",
+          "size": 48
+        },
+        {
+          "command": "0x8000001c",
+          "name": "LC_RPATH",
+          "path": "@executable_path",
+          "size": 32
+        },
+        {
+          "data_size": 1114112,
+          "name": "LC_CODE_SIGNATURE"
+        }
+      ],
+      "mach_header": "64-bit",
+      "minimum_os": {
+        "load_command": "LC_VERSION_MIN_MACOSX",
+        "minimum": "10.13.0",
+        "platform": "macOS",
+        "sdk": "26.1.0"
+      },
+      "signature_flags": {
+        "code_directories": [
+          {
+            "adhoc_flag": true,
+            "flags": "0x10002",
+            "hardened_runtime_flag": true,
+            "slot_type": 0,
+            "version": "0x20500"
+          },
+          {
+            "adhoc_flag": true,
+            "flags": "0x10002",
+            "hardened_runtime_flag": true,
+            "slot_type": 0,
+            "version": "0x20500"
+          }
+        ],
+        "superblob_magic": "0xfade0cc0"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "cpu_subtype": 0,
+      "cpu_type": "arm64",
+      "file_type": 2,
+      "flags": "0x00a18085",
+      "load_commands": [
+        {
+          "name": "LC_UUID",
+          "uuid": "fd76bc91-ddfc-38c7-93f7-c0133539973c"
+        },
+        {
+          "load_command": "LC_BUILD_VERSION",
+          "minimum": "11.0.0",
+          "name": "LC_BUILD_VERSION",
+          "platform": 1,
+          "sdk": "26.1.0",
+          "tools": 2
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/ForceFeedback.framework/Versions/A/ForceFeedback",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AudioUnit.framework/Versions/A/AudioUnit",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/GameController.framework/Versions/A/GameController",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreHaptics.framework/Versions/A/CoreHaptics",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+          "size": 120
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/MetalFX.framework/Versions/A/MetalFX",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/MetalKit.framework/Versions/A/MetalKit",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libSystem.B.dylib",
+          "size": 56
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libz.1.dylib",
+          "size": 48
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libc++.1.dylib",
+          "size": 48
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+          "size": 88
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+          "size": 112
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+          "size": 104
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+          "size": 96
+        },
+        {
+          "command": "0x0000000c",
+          "name": "LC_LOAD_DYLIB",
+          "path": "/usr/lib/libobjc.A.dylib",
+          "size": 56
+        },
+        {
+          "command": "0x8000001c",
+          "name": "LC_RPATH",
+          "path": "@executable_path/../Frameworks",
+          "size": 48
+        },
+        {
+          "command": "0x8000001c",
+          "name": "LC_RPATH",
+          "path": "@executable_path",
+          "size": 32
+        },
+        {
+          "data_size": 1048576,
+          "name": "LC_CODE_SIGNATURE"
+        }
+      ],
+      "mach_header": "64-bit",
+      "minimum_os": {
+        "load_command": "LC_BUILD_VERSION",
+        "minimum": "11.0.0",
+        "platform": 1,
+        "sdk": "26.1.0",
+        "tools": 2
+      },
+      "signature_flags": {
+        "code_directories": [
+          {
+            "adhoc_flag": true,
+            "flags": "0x10002",
+            "hardened_runtime_flag": true,
+            "slot_type": 0,
+            "version": "0x20500"
+          },
+          {
+            "adhoc_flag": true,
+            "flags": "0x10002",
+            "hardened_runtime_flag": true,
+            "slot_type": 0,
+            "version": "0x20500"
+          }
+        ],
+        "superblob_magic": "0xfade0cc0"
+      }
+    }
+  ]
+}

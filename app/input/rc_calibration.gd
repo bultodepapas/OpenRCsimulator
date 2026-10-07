@@ -106,8 +106,12 @@ func _reset_sweep() -> void:
 
 ## Saves a profile for a device. Sections are keyed by an MD5 of the device key (ConfigFile-safe).
 static func save_profile(path: String, device_key: String, p: Dictionary) -> Error:
+	if device_key.is_empty() or not valid(p):
+		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
-	cfg.load(path) # missing file = empty config
+	var err: Error = cfg.load(path)
+	if err != OK and err != ERR_FILE_NOT_FOUND:
+		return err # Do not overwrite other devices when the existing file cannot be read.
 	var section := device_key.md5_text()
 	cfg.set_value(section, "device_key", device_key)
 	cfg.set_value(section, "profile", p)
@@ -117,27 +121,46 @@ static func save_profile(path: String, device_key: String, p: Dictionary) -> Err
 
 ## The saved profile for a device, or {} if none (or the file is unreadable).
 static func load_profile(path: String, device_key: String) -> Dictionary:
+	if device_key.is_empty():
+		return {}
 	var cfg := ConfigFile.new()
 	if cfg.load(path) != OK:
 		return {}
 	var section := device_key.md5_text()
-	if cfg.get_value(section, "device_key", "") != device_key:
+	var identity: Variant = cfg.get_value(section, "device_key", "")
+	if typeof(identity) != TYPE_STRING or identity != device_key:
 		return {}
 	var p = cfg.get_value(section, "profile", {})
 	return p if valid(p) else {}
 
 
-## A usable profile: four channels, each with an axis in 0…9 and numeric endpoints with min < max.
+## Persisted wizard profiles are radios; the built-in gamepad rate profile is not a calibration.
+## Reject the whole profile before it reaches RcInput. Throttle ignores center, so its endpoints are allowed;
+## centred sticks require min < center < max. Do not coerce malformed types into plausible control mappings.
 static func valid(p: Variant) -> bool:
 	if typeof(p) != TYPE_DICTIONARY:
 		return false
+	if typeof(p.get("kind")) != TYPE_STRING or p.kind != "radio":
+		return false
+	var used_axes: Dictionary = {}
 	for name in ["throttle", "roll", "pitch", "yaw"]:
-		var ch = p.get(name)
+		var ch: Variant = p.get(name)
 		if typeof(ch) != TYPE_DICTIONARY:
 			return false
-		for key in ["axis", "min", "center", "max"]:
-			if not (typeof(ch.get(key)) in [TYPE_INT, TYPE_FLOAT]):
+		if typeof(ch.get("axis")) != TYPE_INT or typeof(ch.get("invert")) != TYPE_BOOL:
+			return false
+		var axis: int = ch.axis
+		if axis < 0 or axis >= RcInput.AXES or used_axes.has(axis):
+			return false
+		used_axes[axis] = true
+		for key in ["min", "center", "max"]:
+			var value: Variant = ch.get(key)
+			if not (typeof(value) in [TYPE_INT, TYPE_FLOAT]):
 				return false
-		if typeof(ch.get("invert")) != TYPE_BOOL or int(ch.axis) < 0 or int(ch.axis) >= RcInput.AXES or float(ch.min) >= float(ch.max):
+			if not is_finite(float(value)) or float(value) < -1.0 or float(value) > 1.0:
+				return false
+		if ch.min >= ch.max or ch.center < ch.min or ch.center > ch.max:
+			return false
+		if name != "throttle" and (ch.center == ch.min or ch.center == ch.max):
 			return false
 	return true

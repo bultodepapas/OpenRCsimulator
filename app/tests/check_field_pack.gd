@@ -48,9 +48,18 @@ func _initialize() -> void:
 			return
 	var builder: Script = load("res://render/field.gd")
 	var field: Node3D = builder.build(result.field)
+	var horizon: Script = load("res://render/horizon.gd")
+	var rough: MeshInstance3D = field.get_node_or_null("rough") as MeshInstance3D
+	if horizon == null or horizon.profile().is_empty() or rough == null or not rough.mesh is ArrayMesh \
+		or rough.mesh.get_aabb().size.y <= 30.0:
+		printerr("Pack missing or invalid L7 hill profile/mesh")
+		field.free()
+		quit(1)
+		return
+	print("Pack L7 hill profile checksum and rendered relief validated")
 	var grove: Node3D = field.get_node_or_null("treeline")
 	if grove == null or grove.get_child_count() != 8:
-		printerr("Pack missing L6b treeline/shader or sector groups")
+		printerr("Pack missing L7 treeline/shader or sector groups")
 		field.free()
 		quit(1)
 		return
@@ -64,9 +73,10 @@ func _initialize() -> void:
 			quit(1)
 			return
 	field.free()
-	if count != 480:
+	var expected_count: int = result.field.objects[0].positions.size()
+	if count != expected_count:
 		printerr("Pack tree count mismatch: ", count)
 		quit(1)
 		return
-	print("Pack tree catalog, imported atlas, license and 480-tree field validated")
+	print("Pack tree catalog, imported atlas, license and %d-tree field validated" % expected_count)
 	quit(0)

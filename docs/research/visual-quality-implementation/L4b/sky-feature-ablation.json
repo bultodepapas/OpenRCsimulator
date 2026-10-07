@@ -1,0 +1,90 @@
+{
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "renderer": "Compatibility / llvmpipe (LLVM 20.1.2, Mesa 25.2.8-0ubuntu0.24.04.2)",
+  "resolution_px": [
+    1280,
+    720
+  ],
+  "defaults": {
+    "cloud_coverage": 0.35,
+    "cluster_strength": 0.35,
+    "cirrus_strength": 0.12,
+    "cirrus_coverage": 0.34,
+    "silver_strength": 0.18,
+    "cloud_seed": 1253,
+    "cloud_offset_cells": [
+      0,
+      0
+    ]
+  },
+  "comparison": "Default features on vs each single feature set to zero; all other shader uniforms and camera state held fixed. Pixel metrics are RGB channel deltas from saved PNGs.",
+  "views": {
+    "sun_225_up_45": {
+      "view": {
+        "azimuth_deg": 225,
+        "elevation_deg": 45,
+        "toward": "sun"
+      },
+      "ablations": {
+        "cluster": {
+          "changed_pixels": 227215,
+          "pixels_over_1_level": 206359,
+          "pixels_over_2_levels": 193897,
+          "max_channel_delta_8bit": 123,
+          "mean_channel_delta_8bit": 6.856394675925926,
+          "p95_pixel_max_delta_8bit": 70.0
+        },
+        "cirrus": {
+          "changed_pixels": 134891,
+          "pixels_over_1_level": 107538,
+          "pixels_over_2_levels": 94430,
+          "max_channel_delta_8bit": 38,
+          "mean_channel_delta_8bit": 0.979156177662037,
+          "p95_pixel_max_delta_8bit": 11.0
+        },
+        "silver": {
+          "changed_pixels": 32617,
+          "pixels_over_1_level": 3055,
+          "pixels_over_2_levels": 0,
+          "max_channel_delta_8bit": 2,
+          "mean_channel_delta_8bit": 0.02353153935185185,
+          "p95_pixel_max_delta_8bit": 0.0
+        }
+      }
+    },
+    "anti_045_up_45": {
+      "view": {
+        "id": "anti_045_up_45",
+        "azimuth_deg": 45,
+        "elevation_deg": 45,
+        "toward": "anti-sun"
+      },
+      "ablations": {
+        "cluster": {
+          "changed_pixels": 234910,
+          "pixels_over_1_level": 220278,
+          "pixels_over_2_levels": 212109,
+          "max_channel_delta_8bit": 123,
+          "mean_channel_delta_8bit": 7.723254846643519,
+          "p95_pixel_max_delta_8bit": 77.0
+        },
+        "cirrus": {
+          "changed_pixels": 103874,
+          "pixels_over_1_level": 73121,
+          "pixels_over_2_levels": 60617,
+          "max_channel_delta_8bit": 41,
+          "mean_channel_delta_8bit": 0.6481980613425926,
+          "p95_pixel_max_delta_8bit": 5.0
+        },
+        "silver": {
+          "changed_pixels": 0,
+          "pixels_over_1_level": 0,
+          "pixels_over_2_levels": 0,
+          "max_channel_delta_8bit": 0,
+          "mean_channel_delta_8bit": 0.0,
+          "p95_pixel_max_delta_8bit": 0.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "format": "openrc-l4b-final-validation v1",
+  "date": "2026-10-07",
+  "engine": "Godot 4.7.2 Compatibility / Mesa llvmpipe",
+  "scope": "Final frozen landscape snapshot; concurrent physics, radio and desktop-delivery changes excluded.",
+  "final_source_sha256": {
+    "render/atmosphere.gd": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70",
+    "render/ground.gdshader": "11a08b9e9d2e3d8113e969cd8c02d6c96446a45951d13aba86fed18e974e9eb0",
+    "render/sky.gdshader": "e05c62adedf0cf4cb03f22917718c551e000260f2df55c136466dd7fb3609769",
+    "render/cloud_field.gdshaderinc": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+    "spec.gd": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b",
+    "tests/test_atmosphere.gd": "606b753590922064de5198d4b908343bb0ab3574179f96ed8072bd5e0c3d6dcc",
+    "tests/fixtures/atmosphere_field.gd": "13bc2a593ca4147c3a5b88d9f1a12d0de4445f532d4e6fc038a08231375d9634"
+  },
+  "trace": {
+    "sample_rows": 721,
+    "identical_except_created_utc": true
+  },
+  "exports": {
+    "exit_code": 0,
+    "platforms": [
+      "Linux x86_64",
+      "Windows x86_64",
+      "macOS universal"
+    ],
+    "proof": "exports.log",
+    "limits": "Linux runtime and pack tests; Windows/macOS exports and structural checks, not native runs."
+  },
+  "exported_linux_frame": {
+    "byte_identical": true,
+    "case": "l6c-game-ground-level",
+    "sha256": "5e629100984b3a921933f23fb6ab3abd42c7a95de14d9b481626823ac9190876"
+  },
+  "reference_captures": {
+    "exit_code": 0,
+    "captures": 29,
+    "cloud_drift_sky_pixels_gt_3_levels": 9756,
+    "cloud_drift_ground_max_levels": 1,
+    "proof": "reference-captures.log",
+    "fixture": "Cloud shadows disabled to isolate the original sky/radiance contract; production shadows checked separately."
+  },
+  "fresh_clone_capture_imports": {
+    "capture_pngs": 29,
+    "gdignore_exists": true,
+    "capture_import_files": 0
+  },
+  "linter": {
+    "errors_before": 0,
+    "errors_after": 0,
+    "existing_warnings": 12
+  },
+  "headless_suite": {
+    "status": "awaiting final process completion"
+  }
+}

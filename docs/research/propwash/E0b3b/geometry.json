@@ -1,0 +1,550 @@
+{
+  "format": "openrc-stik-wash-profile-e0b3b v1",
+  "generator": "research/propwash/e0b3b/derive_profile.py",
+  "status": "Research geometry handoff only; no runtime aircraft configuration, wash coefficient or enablement.",
+  "source_geometry_id": "jensen-60-nitro-61-v3",
+  "source_geometry": "docs/research/propwash/E0b2/geometry.json",
+  "axes": "LE [aft,right,up], metres; profile offsets are positive outward from each piece root.",
+  "representation": "Three area-equivalent station-profile groups: mirrored horizontal halves and one vertical fin/rudder group. Each profile row is [span_start, span_end, one-sided chord_start, one-sided chord_end]. Aggregate chord is the sum of disjoint polygon widths at that span station; the source polygons remain authoritative for chordwise gaps and the open elevator notch.",
+  "pieces": [
+    {
+      "name": "horizontal_left",
+      "surface": "horizontal",
+      "root_le": {
+        "value": [
+          0.8409,
+          0.0,
+          -0.04064
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration; root x uses existing aerodynamic reference, horizontal z uses neutral coverage plane"
+      },
+      "span_dir_le": {
+        "value": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration; positive profile offsets run outward from root"
+      },
+      "span": {
+        "value": 0.2794,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration"
+      },
+      "area": {
+        "value": 0.046294578649999994,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration"
+      },
+      "span_centroid_offset": {
+        "value": 0.13136084936832015,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration; exact first moment of projected contour area"
+      },
+      "profile": {
+        "value": [
+          [
+            -0.0,
+            0.03,
+            0.166558,
+            0.166558
+          ],
+          [
+            0.03,
+            0.2159,
+            0.179388,
+            0.179388
+          ],
+          [
+            0.2159,
+            0.2413,
+            0.179388,
+            0.174816
+          ],
+          [
+            0.2413,
+            0.254,
+            0.174816,
+            0.118682
+          ],
+          [
+            0.254,
+            0.2667,
+            0.118682,
+            0.062802
+          ],
+          [
+            0.2667,
+            0.27305,
+            0.062802,
+            0.03483
+          ],
+          [
+            0.27305,
+            0.2794,
+            0.03483,
+            0.004572
+          ]
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration; rows [span_start, span_end, one-sided chord_start, one-sided chord_end]; aggregate area-equivalent width; source polygons retain chordwise gaps"
+      },
+      "profile_segment_count": {
+        "before_collinear_merge": 7,
+        "after_collinear_merge": 7,
+        "unit": "segments",
+        "source": "research/propwash/e0b3b/derive_profile.py; merge tolerance 1e-12 m and 1e-12 m/m, with endpoint continuity required"
+      },
+      "source_footprints": [
+        "stabilizer",
+        "elevator_inner",
+        "elevator_outer"
+      ],
+      "source_geometry": "docs/research/propwash/E0b2/geometry.json#/pieces/horizontal_left",
+      "load_reference_le": {
+        "value": [
+          0.8409,
+          0,
+          -0.04564
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+      },
+      "coverage_plane_le": {
+        "value": [
+          0.8409,
+          0.0,
+          -0.04064
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration"
+      }
+    },
+    {
+      "name": "horizontal_right",
+      "surface": "horizontal",
+      "root_le": {
+        "value": [
+          0.8409,
+          0.0,
+          -0.04064
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration; root x uses existing aerodynamic reference, horizontal z uses neutral coverage plane"
+      },
+      "span_dir_le": {
+        "value": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration; positive profile offsets run outward from root"
+      },
+      "span": {
+        "value": 0.2794,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration"
+      },
+      "area": {
+        "value": 0.046294578649999994,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration"
+      },
+      "span_centroid_offset": {
+        "value": 0.13136084936832015,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration; exact first moment of projected contour area"
+      },
+      "profile": {
+        "value": [
+          [
+            0.0,
+            0.03,
+            0.166558,
+            0.166558
+          ],
+          [
+            0.03,
+            0.2159,
+            0.179388,
+            0.179388
+          ],
+          [
+            0.2159,
+            0.2413,
+            0.179388,
+            0.174816
+          ],
+          [
+            0.2413,
+            0.254,
+            0.174816,
+            0.118682
+          ],
+          [
+            0.254,
+            0.2667,
+            0.118682,
+            0.062802
+          ],
+          [
+            0.2667,
+            0.27305,
+            0.062802,
+            0.03483
+          ],
+          [
+            0.27305,
+            0.2794,
+            0.03483,
+            0.004572
+          ]
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration; rows [span_start, span_end, one-sided chord_start, one-sided chord_end]; aggregate area-equivalent width; source polygons retain chordwise gaps"
+      },
+      "profile_segment_count": {
+        "before_collinear_merge": 7,
+        "after_collinear_merge": 7,
+        "unit": "segments",
+        "source": "research/propwash/e0b3b/derive_profile.py; merge tolerance 1e-12 m and 1e-12 m/m, with endpoint continuity required"
+      },
+      "source_footprints": [
+        "stabilizer",
+        "elevator_inner",
+        "elevator_outer"
+      ],
+      "source_geometry": "docs/research/propwash/E0b2/geometry.json#/pieces/horizontal_right",
+      "load_reference_le": {
+        "value": [
+          0.8409,
+          0,
+          -0.04564
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+      },
+      "coverage_plane_le": {
+        "value": [
+          0.8409,
+          0.0,
+          -0.04064
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_right, exact polygon section integration"
+      }
+    },
+    {
+      "name": "vertical",
+      "surface": "vertical",
+      "root_le": {
+        "value": [
+          0.8609,
+          0.0,
+          -0.02667
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration; root x uses existing aerodynamic reference, horizontal z uses neutral coverage plane"
+      },
+      "span_dir_le": {
+        "value": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration; positive profile offsets run outward from root"
+      },
+      "span": {
+        "value": 0.209804,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration"
+      },
+      "area": {
+        "value": 0.047588839290000004,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration"
+      },
+      "span_centroid_offset": {
+        "value": 0.09984867111843791,
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration; exact first moment of projected contour area"
+      },
+      "profile": {
+        "value": [
+          [
+            0.0,
+            0.000508,
+            0.0,
+            0.0022784
+          ],
+          [
+            0.000508,
+            0.00635,
+            0.0022784,
+            0.066766929825
+          ],
+          [
+            0.00635,
+            0.01524,
+            0.066766929825,
+            0.150429649123
+          ],
+          [
+            0.01524,
+            0.02667,
+            0.150429649123,
+            0.245658859649
+          ],
+          [
+            0.02667,
+            0.029464,
+            0.245658859649,
+            0.267018
+          ],
+          [
+            0.029464,
+            0.04064,
+            0.267018,
+            0.281870952381
+          ],
+          [
+            0.04064,
+            0.0508,
+            0.281870952381,
+            0.28937
+          ],
+          [
+            0.0508,
+            0.05842,
+            0.28937,
+            0.293815
+          ],
+          [
+            0.05842,
+            0.06604,
+            0.293815,
+            0.296528181818
+          ],
+          [
+            0.06604,
+            0.07239,
+            0.296528181818,
+            0.297201666667
+          ],
+          [
+            0.07239,
+            0.08128,
+            0.297201666667,
+            0.296707777778
+          ],
+          [
+            0.08128,
+            0.08382,
+            0.296707777778,
+            0.296143333333
+          ],
+          [
+            0.08382,
+            0.09271,
+            0.296143333333,
+            0.29191
+          ],
+          [
+            0.09271,
+            0.09652,
+            0.29191,
+            0.289977391304
+          ],
+          [
+            0.09652,
+            0.11176,
+            0.289977391304,
+            0.279706956522
+          ],
+          [
+            0.11176,
+            0.12192,
+            0.279706956522,
+            0.271166666667
+          ],
+          [
+            0.12192,
+            0.127,
+            0.271166666667,
+            0.265748
+          ],
+          [
+            0.127,
+            0.14224,
+            0.265748,
+            0.246952
+          ],
+          [
+            0.14224,
+            0.14732,
+            0.246952,
+            0.23984
+          ],
+          [
+            0.14732,
+            0.15748,
+            0.23984,
+            0.223703529412
+          ],
+          [
+            0.15748,
+            0.16891,
+            0.223703529412,
+            0.202432727273
+          ],
+          [
+            0.16891,
+            0.17145,
+            0.202432727273,
+            0.197168
+          ],
+          [
+            0.17145,
+            0.18288,
+            0.197168,
+            0.170244
+          ],
+          [
+            0.18288,
+            0.18796,
+            0.170244,
+            0.154891111111
+          ],
+          [
+            0.18796,
+            0.19431,
+            0.154891111111,
+            0.129491111111
+          ],
+          [
+            0.19431,
+            0.19939,
+            0.129491111111,
+            0.102317142857
+          ],
+          [
+            0.19939,
+            0.201422,
+            0.102317142857,
+            0.089039259259
+          ],
+          [
+            0.201422,
+            0.206248,
+            0.089039259259,
+            0.051759047619
+          ],
+          [
+            0.206248,
+            0.206756,
+            0.051759047619,
+            0.046286666667
+          ],
+          [
+            0.206756,
+            0.209296,
+            0.046286666667,
+            0.014086666667
+          ],
+          [
+            0.209296,
+            0.209804,
+            0.014086666667,
+            0.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration; rows [span_start, span_end, one-sided chord_start, one-sided chord_end]; aggregate area-equivalent width; source polygons retain chordwise gaps"
+      },
+      "profile_segment_count": {
+        "before_collinear_merge": 31,
+        "after_collinear_merge": 31,
+        "unit": "segments",
+        "source": "research/propwash/e0b3b/derive_profile.py; merge tolerance 1e-12 m and 1e-12 m/m, with endpoint continuity required"
+      },
+      "source_footprints": [
+        "fin",
+        "rudder"
+      ],
+      "source_geometry": "docs/research/propwash/E0b2/geometry.json#/pieces/vertical",
+      "load_reference_le": {
+        "value": [
+          0.8609,
+          0,
+          0.075
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+      },
+      "coverage_plane_le": {
+        "value": [
+          0.8609,
+          0.0,
+          -0.02667
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group vertical, exact polygon section integration"
+      }
+    }
+  ],
+  "horizontal_reference_discrepancy": {
+    "neutral_coverage_z": {
+      "value": -0.04064,
+      "unit": "m",
+      "kind": "derived",
+      "source": "docs/research/propwash/E0b2/geometry.json: generated from estimated visual installation geometry; derived, not measured on the owner’s airframe; source group horizontal_left, exact polygon section integration; root x uses existing aerodynamic reference, horizontal z uses neutral coverage plane"
+    },
+    "existing_aerodynamic_load_reference_z": {
+      "value": -0.04564,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+    },
+    "load_minus_coverage": {
+      "value": -0.0049999999999999975,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from E0b2 neutral outline and existing aerodynamic surface data; geometry plane is 5 mm above the aerodynamic load reference."
+    },
+    "instruction": "Use neutral_coverage_z for wake-circle intersection. Preserve existing_aerodynamic_load_reference_z for force and moment arms; do not move the calibrated aerodynamic pressure reference."
+  },
+  "limits": [
+    "The profile exactly preserves polygon projected area and spanwise first moment, including the hinge relief, split elevator boundary and notch area.",
+    "A single runtime piece uses the existing aerodynamic reference x for wake-centre drift and load application; the span profile collapses chordwise-separated material to an aggregate chord. The E0b2 polygons preserve exact chordwise gaps, but this profile does not resolve chordwise wake coverage.",
+    "Footprints and profile are derived from estimated visual geometry, not measured aircraft dimensions or validated propwash coverage.",
+    "No wake strength, edge smoothing, reverse-flow fade, shielding, control deflection, decay or transport is specified."
+  ]
+}

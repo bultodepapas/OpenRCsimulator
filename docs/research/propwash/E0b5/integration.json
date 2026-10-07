@@ -1,0 +1,71 @@
+{
+  "format": "openrc-e0b5-integration v1",
+  "validation": {
+    "ok": true,
+    "counts": {
+      "total": 184,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 184,
+      "info": 0
+    },
+    "node_config": {
+      "ran": true,
+      "counts": {
+        "warnings": 0,
+        "hints": 0
+      },
+      "hints": [],
+      "physics_layers": {
+        "2d": {
+          "layers": []
+        },
+        "3d": {
+          "layers": []
+        },
+        "finding_count": 0,
+        "findings": [],
+        "truncated": false
+      }
+    },
+    "new_script_diagnostics": []
+  },
+  "scene_smoke": {
+    "ok": true,
+    "counts": {
+      "scenes": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 270,
+      "findings": 0
+    }
+  },
+  "static_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "note": "Whole-project warning inventory predates this step (including shadowing and static external-path lint warnings). New E0b5 scripts must have zero diagnostics. Scene smoke ran all three scenes with input fuzzing; warnings remain outside this change.",
+  "source_sha256": {
+    "app/physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+    "app/physics/aircraft_data.gd": "992843aadd36607b2a220309ddb260924b00e6f5429de7666fbe0700e3512d6e",
+    "app/physics/slipstream.gd": "94e8e0fd757d6556c8ec9a42ff61bbc171cb723601db8fbe7d652053837a6783",
+    "app/physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+    "app/sim/simulation.gd": "5a885173d805996ad74dbbb1b26dfeb0c824417e35f40e885c47c4d771223b64",
+    "app/sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+    "app/tests/test_continuous_state.gd": "d54e0ea2f35a77b7adaa788ee0f50ed45dd5583c864b179e9a79df9fc2baa7ce",
+    "app/tests/test_wash_transport.gd": "95a966fa8089bd2db38eed5bee774879e8604f8da005c25f477506c19b56a2ec",
+    "research/propwash/e0b5/frame_driver.gd": "ebbb07f2cd1dc97708bcab927b3fb9ab8546706cac668f5311bbf43a082b7435",
+    "research/propwash/e0b5/check_frames.py": "77aa5922c015c0c43193b73109a533290b89a7e7b7f37831087da3f540832655",
+    "research/propwash/e0b5/check_mutations.py": "9ab2b730ac3a972e48666fc22af3a3e589e31d4d475d2b8064e4b78e3e87cd31"
+  },
+  "full_suite": {
+    "exit_code": 0,
+    "sections": 112,
+    "gdscript_test_programs": 87,
+    "scope": "fresh clone plus E0b3b/E0b4/E0b5; no import cache; unrelated concurrent work excluded",
+    "summary": "suite-summary.log"
+  }
+}

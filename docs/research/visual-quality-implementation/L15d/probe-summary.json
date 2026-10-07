@@ -1,0 +1,72 @@
+{
+  "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "capture": {
+    "atlas_dimensions": [
+      3072,
+      256
+    ],
+    "png_sha256": "1ca3a0ffe6c4b2c798c7d1ef585b591c6721c386d097c8782c0924bf2f8f81c0",
+    "pngs_byte_identical": true,
+    "quantization_tolerance_levels": 2,
+    "repeat_count": 2
+  },
+  "cloud_include_sha256": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+  "complete": true,
+  "format": "openrc-cloud-density-probe-review v1",
+  "godot": "4.7.2-stable (official)",
+  "measurements": {
+    "base_byte_stddev": 97.808,
+    "base_density_byte_range": [
+      0,
+      255
+    ],
+    "base_unique_byte_values": 256,
+    "bounds_sentinel_failures": 0,
+    "drift_wrap_continuity": {
+      "changed_sample_fraction": 0.19898987,
+      "max_byte_delta": 5,
+      "mean_abs_byte_delta": 0.253922,
+      "p99_sample_delta": 2.0
+    },
+    "periodicity": {
+      "negative_x_64_cells": {
+        "changed_sample_fraction": 0.0,
+        "max_byte_delta": 0,
+        "mean_abs_byte_delta": 0.0,
+        "p99_sample_delta": 0.0
+      },
+      "negative_y_64_cells": {
+        "changed_sample_fraction": 0.0,
+        "max_byte_delta": 0,
+        "mean_abs_byte_delta": 0.0,
+        "p99_sample_delta": 0.0
+      },
+      "positive_x_64_cells": {
+        "changed_sample_fraction": 0.00100708,
+        "max_byte_delta": 1,
+        "mean_abs_byte_delta": 0.001007,
+        "p99_sample_delta": 0.0
+      },
+      "positive_y_64_cells": {
+        "changed_sample_fraction": 0.00082397,
+        "max_byte_delta": 1,
+        "mean_abs_byte_delta": 0.000824,
+        "p99_sample_delta": 0.0
+      }
+    },
+    "projection_ground_vs_sky": {
+      "changed_sample_fraction": 0.00042725,
+      "max_byte_delta": 1,
+      "mean_abs_byte_delta": 0.000427,
+      "p99_sample_delta": 0.0
+    },
+    "wrong_sign_mutation_control": {
+      "changed_sample_fraction": 0.92533875,
+      "max_byte_delta": 255,
+      "mean_abs_byte_delta": 151.871521,
+      "p99_sample_delta": 255.0
+    },
+    "zero_coverage_max_byte": 0
+  },
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)"
+}

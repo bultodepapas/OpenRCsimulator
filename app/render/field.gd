@@ -4,6 +4,7 @@ extends RefCounted
 const Frames = preload("res://render/frames.gd")
 const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
+const Horizon = preload("res://render/horizon.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
 # Visual separation only, never terrain height or collision geometry. Higher priority wins overlaps.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
@@ -28,6 +29,10 @@ static func build(field: Dictionary) -> Node3D:
 			plane.subdivide_width = GROUND_SUBDIVISIONS
 			plane.subdivide_depth = GROUND_SUBDIVISIONS
 		mesh_instance.mesh = plane
+		# L7: replace the default footprint, never stack hills over the old plane. Small/custom rectangles
+		# retain L5's flat contract. No collision or simulation heights are introduced by this renderer.
+		if surface.type == "rough" and plane.size == Vector2(40000.0, 40000.0):
+			mesh_instance.mesh = Horizon.mesh()
 		mesh_instance.position = Frames.ned_to_render([surface.center_north, surface.center_east, -float(SURFACE_LIFT[surface.type])])
 		var half := Vector2(surface.length_east_west, surface.width_north_south) / 2.0
 		mesh_instance.material_override = grass if surface.type == "rough" \

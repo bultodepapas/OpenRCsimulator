@@ -1,0 +1,94 @@
+{
+  "format": "openrc-l7-validation v1",
+  "base_revision": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "trace": {
+    "duration_s": 3,
+    "samples": 721,
+    "physics_metadata_and_samples_identical": true,
+    "excluded_header": "created_utc"
+  },
+  "scenario": {
+    "verdict": "visual-only change",
+    "frames": 51,
+    "state_changes": 0,
+    "changed": 49,
+    "identical": 2,
+    "sync_checks": [
+      {
+        "check": "sim_clock equals simulation time",
+        "ok": true,
+        "detail": "worst |sim_clock \u2212 t| = 0.00e+00 s"
+      },
+      {
+        "check": "frames on simulation ticks",
+        "ok": true,
+        "detail": "worst |tick\u00b7dt \u2212 t| = 1.07e-14 s"
+      },
+      {
+        "check": "all cameras of an instant share one state",
+        "ok": true,
+        "detail": "largest spread 0.00e+00"
+      },
+      {
+        "check": "propeller angle follows the rpm",
+        "ok": true,
+        "detail": "worst error 7.36e-12 deg (constant-rpm intervals)"
+      },
+      {
+        "check": "pilot camera centred on the airplane",
+        "ok": true,
+        "detail": "worst offset 0.00 px"
+      },
+      {
+        "check": "shadow under the airplane while rolling",
+        "ok": true,
+        "detail": "worst shadow\u2013CG distance 35.5 px (chase, on the ground)"
+      },
+      {
+        "check": "still at the threshold while idling",
+        "ok": true,
+        "detail": "max idle speed 3.15e-14 m/s"
+      },
+      {
+        "check": "airborne at the end",
+        "ok": true,
+        "detail": "height 42.6 m at t = 12.0 s"
+      },
+      {
+        "check": "runway heading held",
+        "ok": true,
+        "detail": "max heading error 1.13 deg"
+      }
+    ]
+  },
+  "headless_suite": {
+    "exit_code": 0,
+    "log_sha256": "88444bf9ff3e3d81a2919499672b1943bcfa150e9856078574dc98d6e0fd2e45"
+  },
+  "exports": {
+    "platforms": [
+      "Linux",
+      "Windows",
+      "macOS"
+    ],
+    "empty_project_hill_and_forest_pack_probes": true,
+    "final_log_sha256": "33cec1aa85e0cab824eb9057820323c1d8b9c4a3c85a9b4e87e9cdd162cf4fa8"
+  },
+  "note": "Fresh-clone isolation excluded unrelated uncommitted physics/radio work. Final clear-rim shader additionally checked by horizon renders and unit checks.",
+  "readability": {
+    "cases": 48,
+    "mean_delta_e_min_game": 43.45,
+    "delta_e_p10_min": 8.88,
+    "max_low_contrast_share": 0.2037,
+    "below_proposed_delta_e_threshold": [
+      [
+        "fixed-ground",
+        "level",
+        29.45
+      ]
+    ],
+    "max_delta_e_change": 0.0,
+    "capture_count": 64,
+    "complete_manifest_sha256": "339662d0c9b71d1c790138a75eb85f4f9fc881cf75e5c68f2a7b7fefc59e1749"
+  }
+}

@@ -124,6 +124,11 @@ func is_rate_throttle() -> bool:
 	return profile.get("kind", "radio") == "gamepad"
 
 
+## Whether this raw axis has reported since the current connection; polling zero is not evidence.
+func has_axis_sample(axis: int) -> bool:
+	return connected and axis >= 0 and axis < AXES and _seen.has(axis)
+
+
 ## Polls every axis once per physics tick. read_axis(device_id, axis) -> float, e.g. Input.get_joy_axis.
 func poll(read_axis: Callable, dt: float) -> void:
 	if not connected:

@@ -124,7 +124,7 @@ func _initialize() -> void:
 		if default_objects.size() == 1:
 			var default_tree: Dictionary = default_objects[0]
 			var default_positions: Array = default_tree["positions"]
-			_check("default field normalizes all 480 positions", default_positions.size() == 480)
+			_check("default field normalizes all 1,680 positions", default_positions.size() == 1680)
 
 	var valid: Dictionary = Loader.validate(_with_treeline([[300.0, 0.0, 0.0]]))
 	_check("valid treeline is accepted", bool(valid["ok"]), str(valid["errors"]))
@@ -203,13 +203,13 @@ func _initialize() -> void:
 	_rejects("positions value must be an array", data, "positions.value: expected an array")
 
 	data = _with_treeline([])
-	_rejects("empty positions rejected", data, "expected 1..800 positions, got 0")
+	_rejects("empty positions rejected", data, "expected 1..1680 positions, got 0")
 
 	var malformed_positions: Array = []
-	for index: int in range(801):
+	for index: int in range(1681):
 		malformed_positions.append([])
 	data = _with_treeline(malformed_positions)
-	var too_many_positions: Dictionary = _rejects("more than 800 positions are rejected before point checks", data, "expected 1..800 positions, got 801")
+	var too_many_positions: Dictionary = _rejects("more than 1,680 positions are rejected before point checks", data, "expected 1..1680 positions, got 1681")
 	_check("position count limit precedes nested validation", not _has_error(too_many_positions["errors"], "positions.value[0]"), str(too_many_positions["errors"]))
 
 	data = _with_treeline([{}])
@@ -231,10 +231,13 @@ func _initialize() -> void:
 	_rejects("treeline must lie on flat ground", data, "treeline positions must be flat at 0 m")
 
 	data = _with_treeline([[249.75, 0.0, 0.0]])
-	_rejects("radius below 250 metres is rejected", data, "horizontal radius must be 250..600 m")
+	_rejects("radius below 250 metres is rejected", data, "horizontal radius must be 250..1500 m")
 
-	data = _with_treeline([[600.25, 0.0, 0.0]])
-	_rejects("radius above 600 metres is rejected", data, "horizontal radius must be 250..600 m")
+	data = _with_treeline([[1500.25, 0.0, 0.0]])
+	_rejects("radius above 1,500 metres is rejected", data, "horizontal radius must be 250..1500 m")
+
+	var far_edge: Dictionary = Loader.validate(_with_treeline([[1500.0, 0.0, 0.0]]))
+	_check("far ring includes a tree at exactly 1,500 metres", bool(far_edge["ok"]), str(far_edge["errors"]))
 
 	data = _with_treeline([[300.0, 0.0, 0.0], [300.0, 0.0, 0.0]])
 	_rejects("duplicate positions are rejected", data, "duplicate position")
@@ -273,11 +276,11 @@ func _initialize() -> void:
 	var shifted: Dictionary = Loader.validate(data)
 	_check("trees use pilot-relative positions at a shifted pilot station", bool(shifted["ok"]), str(shifted["errors"]))
 
-	var maximum_positions: Array = _unique_ring_positions(800)
+	var maximum_positions: Array = _unique_ring_positions(1680)
 	data = _with_treeline(maximum_positions)
 	_surface_quantity(data, 1, "center_north")["value"] = 2000.0
 	var maximum: Dictionary = Loader.validate(data)
-	_check("exactly 800 valid positions are accepted", bool(maximum["ok"]), str(maximum["errors"]))
+	_check("exactly 1,680 valid positions are accepted", bool(maximum["ok"]), str(maximum["errors"]))
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

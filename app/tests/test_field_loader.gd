@@ -64,7 +64,7 @@ func _initialize() -> void:
 		if objects.size() == 1:
 			var treeline: Dictionary = objects[0]
 			var tree_positions: Array = treeline["positions"]
-			_check("default treeline normalizes to renderer-neutral fields", treeline.keys().size() == 4 and treeline["id"] == "treeline" and treeline["type"] == "treeline" and treeline["collides"] == false and tree_positions.size() == 480)
+			_check("default treeline normalizes to renderer-neutral fields", treeline.keys().size() == 4 and treeline["id"] == "treeline" and treeline["type"] == "treeline" and treeline["collides"] == false and tree_positions.size() == 1680)
 	_check("default source records historical Spec rather than AMA", _default_sources_are_clear())
 
 	var direct_invalid: Dictionary = Loader.validate("not a field")

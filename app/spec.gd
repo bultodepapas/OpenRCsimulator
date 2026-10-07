@@ -51,6 +51,9 @@ const ATMOSPHERE := {
 	# the sky radiance).
 	cloud_coverage = 0.35, cloud_scale = 6.0, cloud_seed = 1253, cloud_color = Color("#f2f4f7"),
 	cloud_drift_cells_per_s = Vector2(0.004, 0.0015), cloud_update_s = 1.0,
+	# L4b/L15d: artistic fair-weather estimates, captured in visual-quality-implementation/L4b.
+	cloud_cluster_strength = 0.35, cloud_cirrus_strength = 0.12, cloud_silver_strength = 0.18,
+	cloud_deck_m = 1500.0, cloud_shadow_strength = 0.22,
 }
 
 const CAMERA := { eye_height = 1.7, fov_deg = 50.0, near = 0.1, far = 21000.0 } # far ≥ 1.05 × the ground's rim (L2)

@@ -1,0 +1,334 @@
+{
+  "format": "openrc-e0b6p-comparison v1",
+  "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "godot": "4.7.2-stable (official)",
+  "ticks_per_timed_batch": 24,
+  "trajectory_ticks": 240,
+  "trajectory_tolerance": "1e-9 * max(1, abs(reference)) per component; zero swirl exact",
+  "rows": [
+    {
+      "regime": "forward",
+      "swirl_factor": 0.0,
+      "before_median_us": 911.9583333333334,
+      "after_median_us": 1330.5,
+      "before_batches_us": [
+        905.4166666666666,
+        908.0,
+        911.9583333333334,
+        1005.4166666666666,
+        1057.2916666666667
+      ],
+      "after_batches_us": [
+        1277.6666666666667,
+        1281.7083333333333,
+        1330.5,
+        1334.8333333333333,
+        1540.1666666666667
+      ],
+      "speedup": 0.6854252787172742,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "forward",
+      "swirl_factor": 0.4,
+      "before_median_us": 24458.333333333332,
+      "after_median_us": 12979.833333333334,
+      "before_batches_us": [
+        23068.208333333332,
+        23271.791666666668,
+        24458.333333333332,
+        24461.833333333332,
+        25636.291666666668
+      ],
+      "after_batches_us": [
+        10381.583333333334,
+        10732.958333333334,
+        12979.833333333334,
+        13839.333333333334,
+        17910.375
+      ],
+      "speedup": 1.884333388975205,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "stall",
+      "swirl_factor": 0.0,
+      "before_median_us": 1025.0833333333333,
+      "after_median_us": 2187.375,
+      "before_batches_us": [
+        834.8333333333334,
+        896.5416666666666,
+        1025.0833333333333,
+        1106.0833333333333,
+        1342.1666666666667
+      ],
+      "after_batches_us": [
+        1232.25,
+        1252.4583333333333,
+        2187.375,
+        2314.875,
+        4207.5
+      ],
+      "speedup": 0.4686363030268396,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "stall",
+      "swirl_factor": 0.4,
+      "before_median_us": 21873.125,
+      "after_median_us": 11577.916666666666,
+      "before_batches_us": [
+        21363.916666666668,
+        21589.666666666668,
+        21873.125,
+        22387.791666666668,
+        22760.0
+      ],
+      "after_batches_us": [
+        10472.958333333334,
+        11468.875,
+        11577.916666666666,
+        15713.625,
+        21418.125
+      ],
+      "speedup": 1.8892107820203694,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "static",
+      "swirl_factor": 0.0,
+      "before_median_us": 891.875,
+      "after_median_us": 1234.625,
+      "before_batches_us": [
+        874.2083333333334,
+        889.0416666666666,
+        891.875,
+        936.2083333333334,
+        979.25
+      ],
+      "after_batches_us": [
+        1173.4166666666667,
+        1209.5833333333333,
+        1234.625,
+        1283.4166666666667,
+        1677.9583333333333
+      ],
+      "speedup": 0.7223853396780399,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "static",
+      "swirl_factor": 0.4,
+      "before_median_us": 19517.958333333332,
+      "after_median_us": 9070.041666666666,
+      "before_batches_us": [
+        18527.75,
+        19098.041666666668,
+        19517.958333333332,
+        19863.208333333332,
+        20145.416666666668
+      ],
+      "after_batches_us": [
+        8484.708333333334,
+        8658.375,
+        9070.041666666666,
+        10339.916666666666,
+        15141.666666666666
+      ],
+      "speedup": 2.1519149581268002,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "spin",
+      "swirl_factor": 0.0,
+      "before_median_us": 1188.2916666666667,
+      "after_median_us": 1331.75,
+      "before_batches_us": [
+        893.625,
+        1133.375,
+        1188.2916666666667,
+        1196.6666666666667,
+        1257.3333333333333
+      ],
+      "after_batches_us": [
+        1248.9583333333333,
+        1313.2083333333333,
+        1331.75,
+        1468.9583333333333,
+        1481.7083333333333
+      ],
+      "speedup": 0.8922783305174896,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "spin",
+      "swirl_factor": 0.4,
+      "before_median_us": 23270.25,
+      "after_median_us": 13160.0,
+      "before_batches_us": [
+        22131.125,
+        22280.041666666668,
+        23270.25,
+        23345.833333333332,
+        23754.5
+      ],
+      "after_batches_us": [
+        11698.0,
+        12988.708333333334,
+        13160.0,
+        14127.25,
+        15746.708333333334
+      ],
+      "speedup": 1.7682560790273556,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "reverse_fade",
+      "swirl_factor": 0.0,
+      "before_median_us": 981.9583333333334,
+      "after_median_us": 1210.1666666666667,
+      "before_batches_us": [
+        692.3333333333334,
+        718.0,
+        981.9583333333334,
+        999.25,
+        1053.25
+      ],
+      "after_batches_us": [
+        1186.625,
+        1201.7916666666667,
+        1210.1666666666667,
+        1212.2083333333333,
+        1742.7916666666667
+      ],
+      "speedup": 0.8114240462746178,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "reverse_fade",
+      "swirl_factor": 0.4,
+      "before_median_us": 22370.541666666668,
+      "after_median_us": 10197.0,
+      "before_batches_us": [
+        20702.791666666668,
+        20878.666666666668,
+        22370.541666666668,
+        26380.041666666668,
+        26674.791666666668
+      ],
+      "after_batches_us": [
+        10028.125,
+        10038.375,
+        10197.0,
+        10270.541666666666,
+        14825.291666666666
+      ],
+      "speedup": 2.1938356052433723,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "reverse_off",
+      "swirl_factor": 0.0,
+      "before_median_us": 514.0416666666666,
+      "after_median_us": 633.5416666666666,
+      "before_batches_us": [
+        480.2083333333333,
+        505.1666666666667,
+        514.0416666666666,
+        572.4166666666666,
+        573.375
+      ],
+      "after_batches_us": [
+        590.75,
+        594.375,
+        633.5416666666666,
+        650.125,
+        761.125
+      ],
+      "speedup": 0.8113778362380796,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    },
+    {
+      "regime": "reverse_off",
+      "swirl_factor": 0.4,
+      "before_median_us": 419.9166666666667,
+      "after_median_us": 777.1666666666666,
+      "before_batches_us": [
+        356.25,
+        398.9583333333333,
+        419.9166666666667,
+        433.125,
+        447.2083333333333
+      ],
+      "after_batches_us": [
+        709.5,
+        763.0833333333334,
+        777.1666666666666,
+        912.375,
+        1385.5416666666667
+      ],
+      "speedup": 0.5403173922367575,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      }
+    }
+  ]
+}

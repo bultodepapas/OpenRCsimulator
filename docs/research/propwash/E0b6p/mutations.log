@@ -1,0 +1,7 @@
+baseline passes: test_swirl_accuracy.gd
+baseline passes: test_swirl_torque.gd
+rejected: omit distributed correction
+rejected: reverse swirl direction
+rejected: retain axial load in correction
+rejected: wrong torque strength
+4 swirl mutations rejected by assertions; shared tree unchanged

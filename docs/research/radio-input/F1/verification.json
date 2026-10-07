@@ -1,0 +1,48 @@
+{
+  "step": "F1",
+  "date": "2026-10-07",
+  "baseline_commit": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "isolation": "Tracked baseline plus the preceding D6b-R1 repair and F1; other uncommitted tracks excluded.",
+  "suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "gd_test_programs": 88,
+    "engine_errors": 0,
+    "log": "suite.log",
+    "log_sha256": "db87bac8df2b25aedb516dde2ab456305dfde8ec39f8d5b4a4a6e785a70971d0",
+    "four_aircraft_trimmed_traces": true,
+    "frame_rate_state_hash_30_60_144_identical": true
+  },
+  "f1_checks": {
+    "collector_and_options": 53,
+    "event_dispatch_and_routing": 18,
+    "linux_cli_processes": 31,
+    "total": 102,
+    "failed": 0
+  },
+  "lint": {
+    "errors_before": 0,
+    "errors_after": 0,
+    "existing_warnings_before": 12,
+    "existing_warnings_after": 12
+  },
+  "review": "Read-only Luna Max review; decimal-string VID/PID issue fixed and covered with backend-shaped fixtures.",
+  "source_sha256": {
+    "app/app_root.gd": "afe8087f5e08a5903aa77d9b2849509d01c81101f6e24b2a072a4c9e06488409",
+    "app/input/input_report.gd": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb",
+    "app/input/input_report.gd.uid": "4cdfb5a110f22a0565a5e30538f99a7f833ff0f31b7c390e1f6fb2a89147b0b6",
+    "app/input/input_report_data.gd": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d",
+    "app/input/input_report_data.gd.uid": "4f82c98036e7b6b1bad4a89542ea217fe3e82826d7062a9fbb0a211629cef9d3",
+    "app/tests/test_input_report.gd": "003fee9bf65953f71c2611a90eb5288877046dd8bdc05ea88645d3aff135c1ce",
+    "app/tests/test_input_report.gd.uid": "26a612a28e46fd4a5c0a3eb73827904a0270e73fd311b6a07128c736cf8f2723",
+    "app/tests/test_input_report_cli.gd": "a80fb053d516d438c18922c5fb02a19e2548266fe4589e391982152f5e4da979",
+    "app/tests/test_input_report_cli.gd.uid": "091d0cc4f0e6045671669a4b284189f14b092d79034b948c70a26dc1e5a7597d",
+    "app/tests/test_input_report_e2e.gd": "64b859df80f928789ec0089e934df0a1da082acd63bce0d922786327ccc2de99",
+    "app/tests/test_input_report_e2e.gd.uid": "4eb16d684533e010c70b416e890844c9fa7061f78773ae6f0394094ea6a64f68"
+  },
+  "limitations": [
+    "No physical transmitter was available; owner D6d/F4 acceptance remains open.",
+    "Observed callback spacing does not measure USB report interval, RF state, or end-to-end latency.",
+    "Development builds have no exported commit identity."
+  ]
+}

@@ -20,6 +20,7 @@ const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const WashTransport := preload("res://physics/wash_transport.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
@@ -286,6 +287,8 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	sim.inertia = aircraft.model.inertia.duplicate()
 	_deflection_key = PackedFloat64Array()
 	sim.loads = _loads
+	sim.continuous_loads = _wash_loads
+	sim.continuous_derivative = _wash_derivative
 	sim.pre_step = _pre_step
 	sim.rotor_momentum = rotor_momentum
 	for warning in aircraft.warnings:
@@ -502,6 +505,7 @@ func reset() -> void:
 		aux.append(_wing_cl(start.state, aux)) # E0a2b: start settled, no downwash transient
 	sim.aux = aux
 	if _has_valid_start():
+		sim.continuous = _settled_wash(start.state, aux)
 		if not sim.reset(start.state):
 			sim.set_paused(true)
 			return
@@ -558,16 +562,37 @@ func _inputs() -> PackedFloat64Array:
 ## landing gear's ground contacts (E1) while a wheel pushes on the ground (nothing is added in the air), with tyre
 ## friction and the nose wheel steered by the rudder servo's actual position (E2), scaled by the surface under each
 ## wheel (E3a).
-func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	return _wash_loads(s, sim.continuous, t)
+
+
+func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	var prop: Dictionary = aircraft.model.propulsion
+	var expected: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	if transported_dv.size() != expected:
+		return PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN]) # Simulation rejects before any piece indexing.
 	var a: PackedFloat64Array = sim.aux
 	var lag := downwash_index()
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]), a[lag] if lag >= 0 and lag < a.size() else NAN)
+		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
 		a.slice(AUX_ANCHORS) if a.size() > AUX_ANCHORS else PackedFloat64Array())
 	for i in ground.size():
 		out[i] += ground[i]
 	return out
+
+
+## Continuous wash uses stage airspeed and state, with the existing sampled RPM/servo policy.
+func _wash_derivative(s: PackedFloat64Array, lagged: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	var air: Dictionary = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+	return WashTransport.derivative(air.v_air, sim.aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL, lagged)
+
+
+func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	if not WashTransport.enabled(aircraft.model.propulsion):
+		return PackedFloat64Array()
+	var air: Dictionary = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
 
 
 ## Aerodynamic-convention deflections from the servos' actual positions. The servos change once per tick (in
@@ -672,6 +697,7 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 	if downwash_index() >= 0:
 		aux.append(_wing_cl(solved.state, aux)) # E0a2b: at rest, settled
 	sim.aux = aux
+	sim.continuous = _settled_wash(solved.state, aux)
 	if not sim.reset(solved.state):
 		reset()
 		return false
@@ -700,7 +726,9 @@ func trace_meta() -> Dictionary:
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else "local-surfaces-v1 with bounded attached oracle",
 		propulsion_model = propulsion_model,
-		propwash_model = "none" if prop.get("slipstream", {}).is_empty() else "tail-slipstream-increment-v1",
+		propwash_model = "tail-slipstream-axial-transport-v1" if WashTransport.enabled(prop) else (
+			"none" if prop.get("slipstream", {}).is_empty() else "tail-slipstream-increment-v1"),
+		continuous_layout = "axial wash increment m/s, slipstream.pieces order; RK4 coupled; checkpoint only" if WashTransport.enabled(prop) else "none",
 		propulsion_features = JSON.stringify({
 			propeller_normal_force = not turbine and prop.has("axis") and not prop.get("normal_force", PackedFloat64Array()).is_empty(),
 			propeller_pfactor = not turbine and prop.has("axis") and not prop.get("pfactor_moment", PackedFloat64Array()).is_empty(),

@@ -101,3 +101,22 @@ To measure beyond your screen's refresh rate, add `--disable-vsync` before the `
 3. Note whether you can tell which way the airplane is facing at 100 m, with and without auto-zoom (Z).
 4. Note how long the radio took to set up.
 5. Note the numbers on the performance line (F3).
+
+## 7. Record a controller diagnostic (F1)
+
+In builds containing F1 (or the current source tree), run from a terminal:
+
+- **Windows:** `"OpenRC Simulator.exe" -- --input-report=input-report.json --t=20`
+- **Linux:** `./openrc-simulator.x86_64 -- --input-report=input-report.json --t=20`
+- **macOS:** `"OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator" -- --input-report=input-report.json --t=20`
+- **Source:** `$(app/get-godot.sh) --path app -- --input-report=input-report.json --t=20`
+
+Move every stick through its full range during those 20 seconds. The diagnostic collects controller events, writes the JSON report and closes; no flight starts and no settings or calibration change. The output folder must already exist. Without a path, `--input-report` prints JSON to the terminal; the default duration is 10 seconds.
+
+The report lists all detected controllers, reconnects, observed axes and ranges. Unseen axes remain unknown. Its event spacing describes callbacks observed by Godot, not USB report timing or stick-to-screen latency. Include the radio firmware and USB mode separately when sharing the file; physical compatibility still needs a flight test.
+
+## 8. Film stick-to-screen latency (F6a)
+
+In builds containing F6a, add `-- --latency-patch` to the executable command (source: `$(app/get-godot.sh) --path app -- --latency-patch`). This starts a normal flight with a black/white square. Move raw axis 0 first; black means below raw zero, white means at or above it. Gray means the measurement is inactive, including pause, calibration, crash or disconnection.
+
+Optional `--latency-axis=0..9` and `--latency-threshold=0.5` select another raw axis or crossing. These values precede calibration and servo response. Film the stick and screen together at 240 fps; the marker itself does not record or calculate latency. Follow the [F6 camera protocol](research/radio-input/F6a/README.md#owner-camera-protocol-f6-still-pending) for at least 20 trials per display condition and retain the original footage. Physical F6 acceptance remains open.

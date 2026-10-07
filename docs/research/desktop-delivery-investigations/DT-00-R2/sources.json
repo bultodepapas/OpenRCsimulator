@@ -1,0 +1,452 @@
+{
+  "format": "openrc-desktop-source-inventory v1",
+  "step": "DT-00-R2",
+  "consulted_date": "2026-10-07",
+  "scope": "Cited references deduplicated without URL fragments; access limits remain in reports. Not an automated remote availability check.",
+  "sources": [
+    {
+      "url": "https://clang.llvm.org/docs/UsersManual.html",
+      "reports": [
+        "11-arm64-physics-numerics.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/going-full-screen",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/design/human-interface-guidelines/keyboards",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/BundleResources/Entitlements/com.apple.security.cs.disable-library-validation",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/appkit/nsscreen/safeareainsets",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/appkit/nsscreen/visibleframe",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment",
+      "reports": [
+        "04-arm64-native-dependencies.md",
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/apple-silicon/addressing-architectural-differences-in-your-macos-code",
+      "reports": [
+        "11-arm64-physics-numerics.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary",
+      "reports": [
+        "04-arm64-native-dependencies.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/apple-silicon/porting-your-macos-apps-to-apple-silicon",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "02-retina-fillrate-memory.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/coreaudio/audiohardwaredevice",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/foundation/processinfo/thermalstate-swift.enum",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/metal/mtlgpufamily",
+      "reports": [
+        "01-renderer-metal-opengl.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/building-your-app-to-include-debugging-information",
+      "reports": [
+        "12-macos-diagnostics-symbols.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/creating-distribution-signed-code-for-the-mac",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/embedding-nonstandard-code-structures-in-a-bundle",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/locating-a-missing-debug-symbol-file",
+      "reports": [
+        "12-macos-diagnostics-symbols.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/packaging-mac-software-for-distribution",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/AppNap.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md",
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/MonitoringEnergyUsage.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/RespondToThermalStateChanges.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/technotes/tn2206/",
+      "reports": [
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/metal/feature-sets/",
+      "reports": [
+        "01-renderer-metal-opengl.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/news/?id=w5ngl9k2",
+      "reports": [
+        "04-arm64-native-dependencies.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "reports": [
+        "10-native-ci-qualification.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/larger-runners",
+      "reports": [
+        "10-native-ci-qualification.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/about/list_of_features.html",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/about/system_requirements.html",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "04-arm64-native-dependencies.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_audioserver.html",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_audiostreamgenerator.html",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_audiostreamgeneratorplayback.html",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_displayserver.html",
+      "reports": [
+        "03-promotion-frame-pacing.md",
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_editorexportplatformmacos.html",
+      "reports": [
+        "04-arm64-native-dependencies.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_engine.html",
+      "reports": [
+        "04-arm64-native-dependencies.md",
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_float.html",
+      "reports": [
+        "11-arm64-physics-numerics.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_input.html",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_performance.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_projectsettings.html",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "02-retina-fillrate-memory.md",
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html",
+      "reports": [
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_time.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md",
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_viewport.html",
+      "reports": [
+        "02-retina-fillrate-memory.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_window.html",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/architecture/internal_rendering_architecture.html",
+      "reports": [
+        "01-renderer-metal-opengl.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/engine_api/gdextension/gdextension_file.html",
+      "reports": [
+        "04-arm64-native-dependencies.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html",
+      "reports": [
+        "10-native-ci-qualification.md",
+        "12-macos-diagnostics-symbols.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_macos.html",
+      "reports": [
+        "04-arm64-native-dependencies.md",
+        "06-signing-quarantine-updates.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md",
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/io/data_paths.html",
+      "reports": [
+        "06-signing-quarantine-updates.md",
+        "10-native-ci-qualification.md",
+        "12-macos-diagnostics-symbols.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/physics/large_world_coordinates.html",
+      "reports": [
+        "11-arm64-physics-numerics.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/jitter_stutter.html",
+      "reports": [
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html",
+      "reports": [
+        "02-retina-fillrate-memory.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/renderers.html",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "02-retina-fillrate-memory.md",
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/output_panel.html",
+      "reports": [
+        "12-macos-diagnostics-symbols.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/coreaudio/audio_driver_coreaudio.mm",
+      "reports": [
+        "09-coreaudio-device-sleep-recovery.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/main/main.cpp",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/macos/display_server_macos.mm",
+      "reports": [
+        "01-renderer-metal-opengl.md",
+        "02-retina-fillrate-memory.md",
+        "03-promotion-frame-pacing.md",
+        "04-arm64-native-dependencies.md",
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/macos/godot_window_delegate.mm",
+      "reports": [
+        "04-arm64-native-dependencies.md",
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/scene/main/viewport.h",
+      "reports": [
+        "02-retina-fillrate-memory.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/edgetx-how-to/configure-advanced-joystick-with-edgetx",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-us/101613",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-us/102282",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-us/111883",
+      "reports": [
+        "02-retina-fillrate-memory.md",
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-us/111901",
+      "reports": [
+        "02-retina-fillrate-memory.md",
+        "03-promotion-frame-pacing.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-us/guide/mac-help/mchl4cedafb6/mac",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/en-za/guide/mac-help/mchlp2596/mac",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac",
+      "reports": [
+        "05-spaces-retina-input.md"
+      ]
+    },
+    {
+      "url": "https://wiki.libsdl.org/SDL3/CategoryJoystick",
+      "reports": [
+        "08-macos-usb-radio-access.md"
+      ]
+    },
+    {
+      "url": "https://www.apple.com/newsroom/2020/11/introducing-the-next-generation-of-mac/",
+      "reports": [
+        "07-apple-silicon-thermal-energy-soak.md"
+      ]
+    }
+  ]
+}

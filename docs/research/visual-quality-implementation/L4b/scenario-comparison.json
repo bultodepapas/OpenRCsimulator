@@ -1,0 +1,516 @@
+{
+ "previous": "/tmp/l4b-scenario-verified/previous",
+ "verdict": "visual-only change",
+ "frames": [
+  {
+   "image": "pilot/t000.0.png",
+   "status": "changed",
+   "changed_pixels": 28069,
+   "changed_share": 0.03046,
+   "max_level": 54,
+   "diff": "diff/pilot_t000.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t000.0.png"
+  },
+  {
+   "image": "chase/t000.0.png",
+   "status": "changed",
+   "changed_pixels": 152,
+   "changed_share": 0.00016,
+   "max_level": 14,
+   "diff": "diff/chase_t000.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t000.0.png"
+  },
+  {
+   "image": "side/t000.0.png",
+   "status": "changed",
+   "changed_pixels": 6147,
+   "changed_share": 0.00667,
+   "max_level": 30,
+   "diff": "diff/side_t000.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t000.0.png"
+  },
+  {
+   "image": "wide/t000.0.png",
+   "status": "changed",
+   "changed_pixels": 29781,
+   "changed_share": 0.03231,
+   "max_level": 62,
+   "diff": "diff/wide_t000.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t000.0.png"
+  },
+  {
+   "image": "closeup/t000.0.png",
+   "status": "changed",
+   "changed_pixels": 66,
+   "changed_share": 7e-05,
+   "max_level": 11,
+   "diff": "diff/closeup_t000.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/closeup/t000.0.png"
+  },
+  {
+   "image": "pilot/t001.0.png",
+   "status": "changed",
+   "changed_pixels": 28063,
+   "changed_share": 0.03045,
+   "max_level": 54,
+   "diff": "diff/pilot_t001.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t001.0.png"
+  },
+  {
+   "image": "chase/t001.0.png",
+   "status": "changed",
+   "changed_pixels": 152,
+   "changed_share": 0.00016,
+   "max_level": 14,
+   "diff": "diff/chase_t001.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t001.0.png"
+  },
+  {
+   "image": "side/t001.0.png",
+   "status": "changed",
+   "changed_pixels": 6136,
+   "changed_share": 0.00666,
+   "max_level": 30,
+   "diff": "diff/side_t001.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t001.0.png"
+  },
+  {
+   "image": "wide/t001.0.png",
+   "status": "changed",
+   "changed_pixels": 29831,
+   "changed_share": 0.03237,
+   "max_level": 62,
+   "diff": "diff/wide_t001.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t001.0.png"
+  },
+  {
+   "image": "pilot/t002.0.png",
+   "status": "changed",
+   "changed_pixels": 28064,
+   "changed_share": 0.03045,
+   "max_level": 54,
+   "diff": "diff/pilot_t002.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t002.0.png"
+  },
+  {
+   "image": "chase/t002.0.png",
+   "status": "changed",
+   "changed_pixels": 160,
+   "changed_share": 0.00017,
+   "max_level": 14,
+   "diff": "diff/chase_t002.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t002.0.png"
+  },
+  {
+   "image": "side/t002.0.png",
+   "status": "changed",
+   "changed_pixels": 6119,
+   "changed_share": 0.00664,
+   "max_level": 30,
+   "diff": "diff/side_t002.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t002.0.png"
+  },
+  {
+   "image": "wide/t002.0.png",
+   "status": "changed",
+   "changed_pixels": 29845,
+   "changed_share": 0.03238,
+   "max_level": 62,
+   "diff": "diff/wide_t002.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t002.0.png"
+  },
+  {
+   "image": "closeup/t002.0.png",
+   "status": "changed",
+   "changed_pixels": 66,
+   "changed_share": 7e-05,
+   "max_level": 11,
+   "diff": "diff/closeup_t002.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/closeup/t002.0.png"
+  },
+  {
+   "image": "pilot/t003.0.png",
+   "status": "changed",
+   "changed_pixels": 28177,
+   "changed_share": 0.03057,
+   "max_level": 54,
+   "diff": "diff/pilot_t003.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t003.0.png"
+  },
+  {
+   "image": "chase/t003.0.png",
+   "status": "changed",
+   "changed_pixels": 156,
+   "changed_share": 0.00017,
+   "max_level": 14,
+   "diff": "diff/chase_t003.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t003.0.png"
+  },
+  {
+   "image": "side/t003.0.png",
+   "status": "changed",
+   "changed_pixels": 5982,
+   "changed_share": 0.00649,
+   "max_level": 30,
+   "diff": "diff/side_t003.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t003.0.png"
+  },
+  {
+   "image": "wide/t003.0.png",
+   "status": "changed",
+   "changed_pixels": 29813,
+   "changed_share": 0.03235,
+   "max_level": 62,
+   "diff": "diff/wide_t003.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t003.0.png"
+  },
+  {
+   "image": "pilot/t004.0.png",
+   "status": "changed",
+   "changed_pixels": 30672,
+   "changed_share": 0.03328,
+   "max_level": 58,
+   "diff": "diff/pilot_t004.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t004.0.png"
+  },
+  {
+   "image": "chase/t004.0.png",
+   "status": "changed",
+   "changed_pixels": 156,
+   "changed_share": 0.00017,
+   "max_level": 14,
+   "diff": "diff/chase_t004.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t004.0.png"
+  },
+  {
+   "image": "side/t004.0.png",
+   "status": "changed",
+   "changed_pixels": 2913,
+   "changed_share": 0.00316,
+   "max_level": 25,
+   "diff": "diff/side_t004.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t004.0.png"
+  },
+  {
+   "image": "wide/t004.0.png",
+   "status": "changed",
+   "changed_pixels": 29820,
+   "changed_share": 0.03236,
+   "max_level": 62,
+   "diff": "diff/wide_t004.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t004.0.png"
+  },
+  {
+   "image": "closeup/t004.0.png",
+   "status": "changed",
+   "changed_pixels": 74,
+   "changed_share": 8e-05,
+   "max_level": 13,
+   "diff": "diff/closeup_t004.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/closeup/t004.0.png"
+  },
+  {
+   "image": "pilot/t005.0.png",
+   "status": "changed",
+   "changed_pixels": 33938,
+   "changed_share": 0.03683,
+   "max_level": 59,
+   "diff": "diff/pilot_t005.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t005.0.png"
+  },
+  {
+   "image": "chase/t005.0.png",
+   "status": "changed",
+   "changed_pixels": 168,
+   "changed_share": 0.00018,
+   "max_level": 14,
+   "diff": "diff/chase_t005.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t005.0.png"
+  },
+  {
+   "image": "side/t005.0.png",
+   "status": "changed",
+   "changed_pixels": 524,
+   "changed_share": 0.00057,
+   "max_level": 17,
+   "diff": "diff/side_t005.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t005.0.png"
+  },
+  {
+   "image": "wide/t005.0.png",
+   "status": "changed",
+   "changed_pixels": 29852,
+   "changed_share": 0.03239,
+   "max_level": 62,
+   "diff": "diff/wide_t005.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t005.0.png"
+  },
+  {
+   "image": "pilot/t006.0.png",
+   "status": "changed",
+   "changed_pixels": 43904,
+   "changed_share": 0.04764,
+   "max_level": 63,
+   "diff": "diff/pilot_t006.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t006.0.png"
+  },
+  {
+   "image": "chase/t006.0.png",
+   "status": "changed",
+   "changed_pixels": 180,
+   "changed_share": 0.0002,
+   "max_level": 14,
+   "diff": "diff/chase_t006.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t006.0.png"
+  },
+  {
+   "image": "side/t006.0.png",
+   "status": "changed",
+   "changed_pixels": 44925,
+   "changed_share": 0.04875,
+   "max_level": 57,
+   "diff": "diff/side_t006.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t006.0.png"
+  },
+  {
+   "image": "wide/t006.0.png",
+   "status": "changed",
+   "changed_pixels": 29844,
+   "changed_share": 0.03238,
+   "max_level": 62,
+   "diff": "diff/wide_t006.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t006.0.png"
+  },
+  {
+   "image": "pilot/t007.0.png",
+   "status": "changed",
+   "changed_pixels": 77889,
+   "changed_share": 0.08451,
+   "max_level": 100,
+   "diff": "diff/pilot_t007.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t007.0.png"
+  },
+  {
+   "image": "chase/t007.0.png",
+   "status": "changed",
+   "changed_pixels": 174,
+   "changed_share": 0.00019,
+   "max_level": 15,
+   "diff": "diff/chase_t007.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t007.0.png"
+  },
+  {
+   "image": "side/t007.0.png",
+   "status": "changed",
+   "changed_pixels": 57435,
+   "changed_share": 0.06232,
+   "max_level": 70,
+   "diff": "diff/side_t007.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t007.0.png"
+  },
+  {
+   "image": "wide/t007.0.png",
+   "status": "changed",
+   "changed_pixels": 29827,
+   "changed_share": 0.03236,
+   "max_level": 62,
+   "diff": "diff/wide_t007.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t007.0.png"
+  },
+  {
+   "image": "pilot/t008.0.png",
+   "status": "changed",
+   "changed_pixels": 75569,
+   "changed_share": 0.082,
+   "max_level": 86,
+   "diff": "diff/pilot_t008.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t008.0.png"
+  },
+  {
+   "image": "chase/t008.0.png",
+   "status": "changed",
+   "changed_pixels": 170,
+   "changed_share": 0.00018,
+   "max_level": 16,
+   "diff": "diff/chase_t008.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t008.0.png"
+  },
+  {
+   "image": "side/t008.0.png",
+   "status": "changed",
+   "changed_pixels": 63596,
+   "changed_share": 0.06901,
+   "max_level": 75,
+   "diff": "diff/side_t008.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t008.0.png"
+  },
+  {
+   "image": "wide/t008.0.png",
+   "status": "changed",
+   "changed_pixels": 29854,
+   "changed_share": 0.03239,
+   "max_level": 62,
+   "diff": "diff/wide_t008.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t008.0.png"
+  },
+  {
+   "image": "pilot/t009.0.png",
+   "status": "changed",
+   "changed_pixels": 93919,
+   "changed_share": 0.10191,
+   "max_level": 86,
+   "diff": "diff/pilot_t009.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t009.0.png"
+  },
+  {
+   "image": "chase/t009.0.png",
+   "status": "changed",
+   "changed_pixels": 163,
+   "changed_share": 0.00018,
+   "max_level": 14,
+   "diff": "diff/chase_t009.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t009.0.png"
+  },
+  {
+   "image": "side/t009.0.png",
+   "status": "changed",
+   "changed_pixels": 71881,
+   "changed_share": 0.078,
+   "max_level": 78,
+   "diff": "diff/side_t009.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t009.0.png"
+  },
+  {
+   "image": "wide/t009.0.png",
+   "status": "changed",
+   "changed_pixels": 29852,
+   "changed_share": 0.03239,
+   "max_level": 62,
+   "diff": "diff/wide_t009.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t009.0.png"
+  },
+  {
+   "image": "pilot/t010.0.png",
+   "status": "changed",
+   "changed_pixels": 99242,
+   "changed_share": 0.10768,
+   "max_level": 75,
+   "diff": "diff/pilot_t010.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t010.0.png"
+  },
+  {
+   "image": "chase/t010.0.png",
+   "status": "changed",
+   "changed_pixels": 163,
+   "changed_share": 0.00018,
+   "max_level": 14,
+   "diff": "diff/chase_t010.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t010.0.png"
+  },
+  {
+   "image": "side/t010.0.png",
+   "status": "changed",
+   "changed_pixels": 76990,
+   "changed_share": 0.08354,
+   "max_level": 79,
+   "diff": "diff/side_t010.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t010.0.png"
+  },
+  {
+   "image": "wide/t010.0.png",
+   "status": "changed",
+   "changed_pixels": 29855,
+   "changed_share": 0.03239,
+   "max_level": 62,
+   "diff": "diff/wide_t010.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t010.0.png"
+  },
+  {
+   "image": "pilot/t012.0.png",
+   "status": "changed",
+   "changed_pixels": 122358,
+   "changed_share": 0.13277,
+   "max_level": 62,
+   "diff": "diff/pilot_t012.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/pilot/t012.0.png"
+  },
+  {
+   "image": "chase/t012.0.png",
+   "status": "changed",
+   "changed_pixels": 160,
+   "changed_share": 0.00017,
+   "max_level": 14,
+   "diff": "diff/chase_t012.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/chase/t012.0.png"
+  },
+  {
+   "image": "side/t012.0.png",
+   "status": "changed",
+   "changed_pixels": 83964,
+   "changed_share": 0.09111,
+   "max_level": 80,
+   "diff": "diff/side_t012.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/side/t012.0.png"
+  },
+  {
+   "image": "wide/t012.0.png",
+   "status": "changed",
+   "changed_pixels": 29879,
+   "changed_share": 0.03242,
+   "max_level": 62,
+   "diff": "diff/wide_t012.0.png",
+   "state_changes": {},
+   "previous": "/tmp/l4b-scenario-verified/previous/wide/t012.0.png"
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60
+60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120
+144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288
+E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps

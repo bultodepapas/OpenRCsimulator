@@ -10,11 +10,31 @@ const Frames := preload("res://render/frames.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const GROUND_SHADER := preload("res://render/ground.gdshader")
 
-## The cloud noise's lattice period in cells (render/sky.gdshader CLOUD_PERIOD).
+## The cloud noise's lattice period in cells (render/cloud_field.gdshaderinc CLOUD_PERIOD).
 const CLOUD_PERIOD := 64.0
+
+# L15d: one active flight environment, like ShaderClock. A global offset also reaches duplicated
+# mown/runway materials. Register lazily before any ground material is rendered.
+static var _cloud_registered := false
+static var last_cloud_offset := Vector2.ZERO
+
 
 ## Koschmieder: visual range = 3.912 / β (2 % contrast threshold).
 const KOSCHMIEDER := 3.912
+
+## L7 artistic weather presets, metres of meteorological visibility; default preserves L2 calibration.
+const VISIBILITY_PRESETS: Dictionary = {"default": 23000.0, "hazy": 12000.0, "clear": 40000.0}
+static var visibility_m: float = _visibility_from_args()
+
+
+static func _visibility_from_args() -> float:
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--visibility="):
+			var preset: String = arg.trim_prefix("--visibility=")
+			if VISIBILITY_PRESETS.has(preset):
+				return float(VISIBILITY_PRESETS[preset])
+			push_warning("Unknown visibility preset '%s'; using default (default/hazy/clear)" % preset)
+	return Spec.ATMOSPHERE.visibility_m
 
 ## Engine (PSSM) sun shadows: off by default. In Compatibility they double every lit object's draw calls, clip white
 ## surfaces and shift hues (the shadowed light is blended in sRGB after tonemapping: Godot #90259); the sun shadow is
@@ -31,7 +51,7 @@ static func sun_direction() -> Vector3:
 
 ## Haze extinction coefficient β (1/m) from the visual range.
 static func beta() -> float:
-	return KOSCHMIEDER / Spec.ATMOSPHERE.visibility_m
+	return KOSCHMIEDER / visibility_m
 
 
 ## Fraction of an object's own light that reaches the eye through d metres of haze (64-bit mirror of the shaders).
@@ -87,8 +107,21 @@ static func sky_material() -> ShaderMaterial:
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
 	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
 	mat.set_shader_parameter("cloud_offset", cloud_offset(0.0))
+	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
+	mat.set_shader_parameter("cirrus_strength", a.cloud_cirrus_strength)
+	mat.set_shader_parameter("silver_strength", a.cloud_silver_strength)
+	_set_cloud_offset(cloud_offset(0.0))
 	_set_haze_uniforms(mat)
 	return mat
+
+
+static func _set_cloud_offset(off: Vector2) -> void:
+	if not _cloud_registered:
+		RenderingServer.global_shader_parameter_add(&"cloud_drift_offset", RenderingServer.GLOBAL_VAR_TYPE_VEC2, off)
+		_cloud_registered = true
+	elif last_cloud_offset != off:
+		RenderingServer.global_shader_parameter_set(&"cloud_drift_offset", off)
+	last_cloud_offset = off
 
 
 ## L4: cloud drift for a simulation time (s): quantised to cloud_update_s and wrapped in float64 to the noise period,
@@ -105,6 +138,7 @@ static func cloud_offset(sim_time: float) -> Vector2:
 static func update_clouds(env: Environment, sim_time: float) -> bool:
 	var mat: ShaderMaterial = env.sky.sky_material
 	var off := cloud_offset(sim_time)
+	_set_cloud_offset(off) # also updates all ground surfaces, even when the sky is already at this time
 	if mat.get_shader_parameter("cloud_offset") == off:
 		return false
 	mat.set_shader_parameter("cloud_offset", off)
@@ -115,12 +149,22 @@ static func update_clouds(env: Environment, sim_time: float) -> bool:
 static func ground_material(grass: Texture2D) -> ShaderMaterial:
 	var a: Dictionary = Spec.ATMOSPHERE
 	var mat := ShaderMaterial.new()
+	_set_cloud_offset(last_cloud_offset) # register before assigning a shader, also in an empty-project pack probe
 	mat.shader = GROUND_SHADER
+	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
+	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
+	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
+	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
+	mat.set_shader_parameter("cloud_deck_m", a.cloud_deck_m)
+	mat.set_shader_parameter("cloud_shadow_strength", a.cloud_shadow_strength)
 	mat.set_shader_parameter("grass", grass)
 	mat.set_shader_parameter("tile_m", Spec.GROUND.tile_m)
 	mat.set_shader_parameter("beta", beta())
-	mat.set_shader_parameter("rim_start", a.rim_start_m)
+	# L7: 40 km visibility retains ~14% contrast at the 20 km mesh edge. Spread the artistic rim
+	# closure in inverse distance (estimated, capture-checked), instead of a sharp distance-space band.
+	mat.set_shader_parameter("rim_start", a.rim_start_m if visibility_m <= a.visibility_m else 3000.0)
 	mat.set_shader_parameter("rim_end", a.rim_end_m)
+	mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
 	_set_haze_uniforms(mat)
 	return mat
 

@@ -1,0 +1,15 @@
+{
+  "format": "openrc-git-untracked-identity-probe v1",
+  "git_version": "git version 2.43.0",
+  "repository": "temporary disposable repository; removed automatically",
+  "commands": {
+    "identity": "git describe --tags --always --dirty",
+    "status": "git status --porcelain=v1 --untracked-files=all"
+  },
+  "describe_before_untracked_file": "v0.1.0",
+  "status_before_untracked_file": "",
+  "describe_after_untracked_file": "v0.1.0",
+  "status_after_untracked_file": "?? new-resource.json",
+  "passed": true,
+  "scope": "Shows Git identity/status behavior only; does not show that the untracked file affects a Godot export."
+}

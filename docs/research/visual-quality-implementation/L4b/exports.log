@@ -1,0 +1,35 @@
+== build identity: a0774ad (commit a0774ad906f6fb1e97f77ed067e436ca566a1261, 2026-10-07T23:08:51+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s
+exported binary reports build a0774ad
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+== packages
+dd5c2d011acabc90d3630f8004440dd4ec0fe2aab1e636acf1c344e4ce6a7ff2  openrc-simulator-a0774ad-linux-x86_64.zip
+06d6faf0b0f91853084ad522f1f9c9fec45560877d2093e9dae74725ee3b357f  openrc-simulator-a0774ad-macos-universal.zip
+322f3106aa48366d16545506d5449b7b256dc8698bc0fa5193a3d73f3f737315  openrc-simulator-a0774ad-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29508711 Oct  7 23:09 openrc-simulator-a0774ad-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61658157 Oct  7 23:09 openrc-simulator-a0774ad-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 39033395 Oct  7 23:09 openrc-simulator-a0774ad-windows-x86_64.zip

@@ -1,0 +1,25 @@
+{
+  "format": "openrc-l15d-initialization-parity v1",
+  "complete": true,
+  "comparison": "Frozen visual candidate vs final registration-before-shader assignment; same production field/cameras/times.",
+  "captures": 15,
+  "mismatches": [],
+  "atmosphere_sha256": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70",
+  "images": {
+    "capture-enhanced-ground-down15-t010.png": "3982f809f22f8f443538f8854e6f1450f794d4340158d9b7055fb83db0a1fdbc",
+    "capture-enhanced-sun-up45-t000.png": "a6d2d311b2abe5da3a950b2d8c4a57e8c31b961a368deb0ac896e8d57d6385cd",
+    "capture-enhanced-ground-down15-t120.png": "503a780a9a8efc97ace8ed6708ff1bbc06169b893091fe4bfb2cd6780089b264",
+    "capture-enhanced-antisun-up10-t010.png": "3d1919c135c53c7bfcc5b7b72dbe09928503c6ac657705c2f26e1a50f2b2ebc5",
+    "capture-enhanced-antisun-up45-t120.png": "acd6d28e0e93a2dd3056f9d56849808c4b895d1c8667ed761121f7b02e792198",
+    "capture-enhanced-sun-up10-t010.png": "fd06a4e7617ca5f111110a1b01215c47021c90b4eb9400d92ff213314689ffda",
+    "capture-enhanced-antisun-up10-t000.png": "7830f485b4f4c64dbf81b1b51bbc4486992aa4146f6354725879b983d2e63a67",
+    "capture-enhanced-ground-down15-t000.png": "fd37615c029800e2578b716d83fb02f3cb9c7e6ed158bdfe0435d370c3230127",
+    "capture-enhanced-sun-up10-t000.png": "f25682def7f6e3f42357e1ce776ace46fa12a46228b30a8d18ed139b73ee2df0",
+    "capture-enhanced-sun-up10-t120.png": "af8139b5a6c6525e1b195a7e3ac313dde176780be4a9e017fc61655b5ec1a9af",
+    "capture-enhanced-sun-up45-t010.png": "0e50d481631672f20c3843bd1a0526e2e924c5646c28172041c0f8a39201a0d0",
+    "capture-enhanced-antisun-up45-t000.png": "e06fc2239c5dc946ba9ea6c21b52f6a338ffa6bd03c1c9167c1d77944b915e14",
+    "capture-enhanced-antisun-up45-t010.png": "369b12b12271768742d8cc2bb3bdcf19149b8ff076df6f3e4fe9e25578a86426",
+    "capture-enhanced-antisun-up10-t120.png": "a8136d43c22b0d2acce4183d9557fa4af1bff4f1761bd9b81639bae64591887d",
+    "capture-enhanced-sun-up45-t120.png": "127aaf5eaae7f4c47bd892c5a84c3e24408f7bef26921f80103ef1d6f7c45d2c"
+  }
+}

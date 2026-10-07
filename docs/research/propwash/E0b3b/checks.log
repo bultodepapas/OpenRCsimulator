@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok profile fixture passes provenance and geometry validation []
+ok 13 invalid profiles/mode combinations are refused
+ok full coverage preserves polygon area: horizontal
+ok full coverage preserves polygon area: horizontal
+ok full coverage preserves polygon area: vertical
+ok 72 weighted integrals agree with independent dense integration 0.00000000980108
+ok weighted area and centroid stay within geometry bounds
+ok outer tangency has vanishing load derivative [0.0004495447817, 0.00015919895091]
+ok outer boundary returns exact zero
+ok reverse cutoff removes every load component
+ok stopped propeller is exact zero
+ok zero wash coefficients preserve exact zero
+ok reverse fade endpoints have continuous loads and matching slopes
+ok static elevator produces differential pitch
+ok static rudder produces opposite yaw signs
+ok mirrored horizontal profiles cancel roll in axial wash
+ok full-angle/rate sweep is finite
+ok scalar loads agree with independent helper composition 0.0
+ok horizontal coverage height does not move aerodynamic pressure arm
+ok default Stik remains unconfigured
+E0b3b: 20 checks, 0 failed

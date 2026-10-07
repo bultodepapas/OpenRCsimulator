@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok provenanced swirl fixture accepted
+ok signed strength linear in shaft torque at 0 m/s
+ok density similarity at fixed Ct/Cp and rpm at 0 m/s
+ok nominal far-wake flux includes solid core deficit at 0 m/s
+ok ideal contracted cylinder preserves disc mass at 0 m/s
+ok attenuated local speed further changes diagnostic flux at 0 m/s
+ok signed strength linear in shaft torque at 5 m/s
+ok density similarity at fixed Ct/Cp and rpm at 5 m/s
+ok nominal far-wake flux includes solid core deficit at 5 m/s
+ok ideal contracted cylinder preserves disc mass at 5 m/s
+ok attenuated local speed further changes diagnostic flux at 5 m/s
+ok signed strength linear in shaft torque at 15 m/s
+ok density similarity at fixed Ct/Cp and rpm at 15 m/s
+ok nominal far-wake flux includes solid core deficit at 15 m/s
+ok ideal contracted cylinder preserves disc mass at 15 m/s
+ok attenuated local speed further changes diagnostic flux at 15 m/s
+ok signed strength linear in shaft torque at 25 m/s
+ok density similarity at fixed Ct/Cp and rpm at 25 m/s
+ok nominal far-wake flux includes solid core deficit at 25 m/s
+ok ideal contracted cylinder preserves disc mass at 25 m/s
+ok attenuated local speed further changes diagnostic flux at 25 m/s
+ok swirl speed-floor join is continuous
+ok zero torque gives exactly zero strength
+E0b6 torque: 23 checks, 0 failed

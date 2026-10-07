@@ -337,11 +337,11 @@ func _field_signature(field_node: Node3D) -> Array[Dictionary]:
 		if not child is MeshInstance3D:
 			continue
 		var instance: MeshInstance3D = child as MeshInstance3D
-		var mesh: PlaneMesh = instance.mesh as PlaneMesh
+		var mesh: Mesh = instance.mesh
 		var material: Material = instance.material_override
 		var entry: Dictionary = {
 			"id": instance.name,
-			"size": mesh.size,
+			"bounds": mesh.get_aabb(),
 			"position": instance.position,
 			"material_class": material.get_class(),
 		}

@@ -1,0 +1,17 @@
+Baseline: E0b3b: 20 checks, 0 failed
+discard scalar immersed centroid: rejected
+  FAIL scalar loads agree with independent helper composition 0.0254745682989
+replace C1 radial taper by linear weight: rejected
+  FAIL 72 weighted integrals agree with independent dense integration 0.00169951793334
+  FAIL outer tangency has vanishing load derivative [0.04899208683699, 0.03465393886703]
+  FAIL outer boundary returns exact zero
+remove reverse-flow cutoff: rejected
+  FAIL reverse cutoff removes every load component
+move horizontal pressure plane: rejected
+  FAIL scalar loads agree with independent helper composition 0.00222626429483
+  FAIL horizontal coverage height does not move aerodynamic pressure arm
+accept incorrect profile area: rejected
+  FAIL 13 invalid profiles/mode combinations are refused
+accept overlapping profile intervals: rejected
+  FAIL 13 invalid profiles/mode combinations are refused
+Restored: E0b3b: 20 checks, 0 failed

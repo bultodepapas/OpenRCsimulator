@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""L6b real-render regression: shader identity, draws, all-sector bounds and byte-repeat captures."""
+"""L7 real-render regression: near/far shader identity, draws and byte-repeat captures."""
 import argparse
 import hashlib
 import json
@@ -28,7 +28,9 @@ def verify(folder):
         assert view['vegetation_shadow_draws'] == 0
         assert hashlib.sha256((folder / (view['id'] + '.png')).read_bytes()).hexdigest() == view['sha256']
     assert report['views'][10]['vegetation_visible_draws'] == 8
-    assert len(report['hash_samples']) == 480
+    assert len(report['hash_samples']) == 1680
+    assert sum(sample['zone'] == 'near' for sample in report['hash_samples']) == 480
+    assert sum(sample['zone'] == 'far' for sample in report['hash_samples']) == 1200
     for sample in report['hash_samples']:
         assert sample['species_matches'] and sample['height_error_m'] <= 1 / 1024 and sample['yaw_error_rad'] <= 1 / 4096
     return report
@@ -59,7 +61,7 @@ def main():
         assert (out / 'repeat-1' / filename).read_bytes() == (out / 'repeat-2' / filename).read_bytes(), filename
     checked_run([*command, '--script', 'res://tests/test_treeline.gd'], out / 'runtime-gpu.log', env)
     max_draws = max(view['vegetation_visible_draws'] for view in reports[0]['views'])
-    print(f'L6b: 13 PNGs and reports repeat byte-for-byte; 480 shader identities, maximum {max_draws} vegetation draws, no shadow draws; GPU instance/bounds checks passed')
+    print(f'L7: 13 PNGs and reports repeat byte-for-byte; 1,680 near/far shader identities, maximum {max_draws} vegetation draws, no shadow draws; GPU instance/bounds checks passed')
 
 
 if __name__ == '__main__':

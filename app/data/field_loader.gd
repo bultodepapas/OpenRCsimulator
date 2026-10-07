@@ -6,13 +6,13 @@ const DEFAULT_PATH: String = "res://data/fields/default.json"
 const FORMAT: String = "openrc-field v1"
 # Field coordinates feed Godot's standard float32 render positions; larger finite float64 values overflow there.
 const FLOAT32_MAX: float = 3.4028234663852886e38
-# L6b visual-layout assumptions, not measured field or vegetation dimensions.
+# L6b/L7 visual-layout assumptions, not measured field or vegetation dimensions.
 const MAX_FIELD_OBJECTS: int = 1
-const MAX_TREELINE_POSITIONS: int = 800
+const MAX_TREELINE_POSITIONS: int = 1680
 const TREE_POSITION_GRID_M: float = 0.25
 const TREE_POSITION_GRID_TOLERANCE: float = 0.000001
 const TREE_MIN_RADIUS_M: float = 250.0
-const TREE_MAX_RADIUS_M: float = 600.0
+const TREE_MAX_RADIUS_M: float = 1500.0
 const TREE_CARD_MAX_HORIZONTAL_RADIUS_M: float = 15.0 # Estimated visible card envelope.
 const TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M: float = 35.0 # Estimated approach and low-flight clearance.
 const MAX_PILOT_HORIZONTAL_COORDINATE_M: float = 1000000.0 # Keeps absolute tree coordinates stable for render/hash bounds.

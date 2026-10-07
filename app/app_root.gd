@@ -1,4 +1,5 @@
 # Entry point (MENU-PLAN §8/§9, steps UI-01a/01b/01d). It decides the route before loading any menu:
+# - --input-report[=path]: standalone input diagnostics (F1), no field, flight or preferences;
 # - user arguments after `--` (--trace, --capture, --frametimes, --scripted, --inspect, --quick-flight, ...):
 #   the flight scene starts at once, exactly as before, in English, without reading or writing preferences;
 # - no user arguments: the Home screen in the saved language (English by default, whatever the OS locale);
@@ -19,6 +20,7 @@ const HelpScreen := preload("res://ui/help_screen.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FLIGHT_SCENE := "res://main.tscn"
+const InputReport = preload("res://input/input_report.gd")
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -38,6 +40,17 @@ var _keyboard_reader: Callable
 
 
 func _ready() -> void:
+	if InputReport.requested(user_args):
+		var options: Dictionary = InputReport.options(user_args)
+		if not options.ok:
+			printerr(options.error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		var diagnostic: InputReport = InputReport.new()
+		diagnostic.duration_s = options.duration_s
+		diagnostic.output_path = options.path
+		add_child(diagnostic)
+		return
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
 	if wants_direct_flight(user_args):
 		# The engine starts in the OS locale (es_ES on a Spanish system): automation is always English.

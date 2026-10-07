@@ -1,0 +1,8 @@
+baseline passes: test_continuous_state.gd
+baseline passes: test_wash_transport.gd
+rejected: double transport speed
+rejected: ignore transported load speed
+rejected: freeze coupled load state
+rejected: freeze derivative body state
+rejected: corrupt checkpoint transport
+5 physics/state mutations rejected by assertions; shared tree unchanged

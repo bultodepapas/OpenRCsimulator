@@ -50,8 +50,9 @@ func _test_off_is_noop() -> void:
 	var node := FieldBuilder.build(_field)
 	_check("switch off: the field has no Scenery node", node.get_node_or_null("Scenery") == null)
 	var rough := node.get_node_or_null("rough") as MeshInstance3D
-	_check("switch off: the ground is the production plane, subdivided for G-1 by the field itself",
-		rough != null and (rough.mesh as PlaneMesh).subdivide_width == FieldBuilder.GROUND_SUBDIVISIONS)
+	_check("switch off: the field owns the contiguous L7 ground independently of scenery",
+		rough != null and rough.mesh is ArrayMesh and rough.mesh.get_surface_count() == 1
+		and rough.mesh.get_aabb().size.x == 40000.0)
 	node.free()
 
 

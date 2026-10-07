@@ -1,0 +1,11 @@
+{
+  "baseline_commit": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "isolation": "Fresh git clone plus explicit E0b3b/E0b4/E0b5 physics prerequisites and E0b6 files; concurrent landscape/input/desktop changes excluded. app/test.sh uses the validated E0b5 version; test_*.gd discovery includes both E0b6 tests.",
+  "final_runtime_sha256": {
+    "app/physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+    "app/physics/swirl_loads.gd": "40f8f007f8037518fff333cc40b58cd133116916050a9dfef8ae3cc19d3cdc37",
+    "app/tests/swirl_dense_reference.gd": "c70b391ccaa55f1e5d984489bebb0320b90acc755491d3de908be2e900e762a9",
+    "app/tests/test_swirl_accuracy.gd": "8cba06a97405c60bf811011f3a042c7a44b07436d3c858d93d9734e1d5adf666",
+    "app/tests/test_swirl_torque.gd": "82a9ae1497de34aff2411ab0be55f83b03d43ad03376fec866f932c4c1d0af69"
+  }
+}

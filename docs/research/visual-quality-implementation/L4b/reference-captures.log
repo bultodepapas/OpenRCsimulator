@@ -1,0 +1,104 @@
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 2.406s
+
+OK
+verified capture.png (atmosphere)
+verified capture-inspect.png (atmosphere)
+verified capture-inspect-deflected.png (atmosphere)
+verified capture-physics.png (atmosphere)
+verified capture-physics-inspect.png (atmosphere)
+verified capture-physics-nozoom.png (atmosphere)
+verified capture-physics-low-inspect.png (atmosphere)
+verified capture-physics-low-inspect-noplane.png (atmosphere)
+verified capture-physics-inspect-noplane.png (atmosphere)
+verified capture-land-az0-el0.png (atmosphere)
+verified capture-land-az0-el10.png (atmosphere)
+verified capture-land-az90-el0.png (atmosphere)
+verified capture-land-az90-el10.png (atmosphere)
+verified capture-land-az180-el0.png (atmosphere)
+verified capture-land-az180-el10.png (atmosphere)
+verified capture-land-az270-el0.png (atmosphere)
+verified capture-land-az270-el10.png (atmosphere)
+verified capture-land-az90-el10-t11.png (atmosphere)
+verified capture-land-az0-el0-100m.png (atmosphere)
+verified capture-land-az90-el0-100m.png (atmosphere)
+verified capture-land-az180-el0-100m.png (atmosphere)
+verified capture-land-az225-el0-100m.png (atmosphere)
+verified capture-land-az270-el0-100m.png (atmosphere)
+verified capture-land-30m.png (atmosphere)
+verified capture-land-low3m.png (atmosphere)
+verified capture-land-sun.png (atmosphere)
+verified capture-land-30m-noplane.png (atmosphere)
+verified capture-land-low3m-noplane.png (atmosphere)
+verified capture-land-top.png (atmosphere)
+render counters per view (draw calls and primitives): /tmp/openrc-l4b-export/app/captures/landscape-counters.txt
+capture draw_calls=105 primitives=47308 sun_px=behind sim_clock=3.0 shadow_px=755.7,758.3 below_px=640.0,764.8
+capture-inspect draw_calls=106 primitives=47316 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-inspect-deflected draw_calls=106 primitives=47322 sun_px=behind sim_clock=3.0 shadow_px=-2661.2,5082.1 below_px=640.0,1307.9
+capture-physics draw_calls=105 primitives=47736 sun_px=behind sim_clock=1.5 shadow_px=1152.4,1008.4 below_px=640.0,1016.9
+capture-physics-inspect draw_calls=106 primitives=47744 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-physics-nozoom draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-physics-low-inspect draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-low-inspect-noplane draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=436.3,544.6 below_px=640.0,575.0
+capture-physics-inspect-noplane draw_calls=6 primitives=904 sun_px=behind sim_clock=1.5 shadow_px=-549.6,1438.0 below_px=640.0,2269.9
+capture-land-az0-el0 draw_calls=16 primitives=3374 sun_px=behind sim_clock=1.5 shadow_px=675.3,376.1 below_px=415.1,381.8
+capture-land-az0-el10 draw_calls=107 primitives=47740 sun_px=behind sim_clock=1.5 shadow_px=675.9,512.8 below_px=410.5,518.8
+capture-land-az90-el0 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,713.5 below_px=3289.8,285.0
+capture-land-az90-el10 draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=-18027.2,892.6 below_px=3285.4,420.1
+capture-land-az180-el0 draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,338.2
+capture-land-az180-el10 draw_calls=5 primitives=896 sun_px=1267.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=412.7,473.7
+capture-land-az270-el0 draw_calls=6 primitives=898 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,435.0
+capture-land-az270-el10 draw_calls=6 primitives=898 sun_px=12.5,-404.9 sim_clock=1.5 shadow_px=behind below_px=3377.6,574.8
+capture-land-az90-el10-t11 draw_calls=107 primitives=47742 sun_px=behind sim_clock=11.5 shadow_px=222.4,504.9 below_px=281.2,506.4
+capture-land-az0-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=675.3,1309.8 below_px=415.1,1645.3
+capture-land-az90-el0-100m draw_calls=5 primitives=896 sun_px=behind sim_clock=1.5 shadow_px=-16259.5,21151.8 below_px=3289.8,-4051.5
+capture-land-az180-el0-100m draw_calls=5 primitives=896 sun_px=1412.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=415.1,-925.3
+capture-land-az225-el0-100m draw_calls=5 primitives=896 sun_px=640.0,-412.0 sim_clock=1.5 shadow_px=behind below_px=-766.8,-2205.0
+capture-land-az270-el0-100m draw_calls=5 primitives=896 sun_px=-132.0,-731.8 sim_clock=1.5 shadow_px=behind below_px=3289.8,4771.5
+capture-land-30m draw_calls=105 primitives=47738 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m draw_calls=106 primitives=47734 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-sun draw_calls=4 primitives=894 sun_px=640.0,79.0 sim_clock=1.5 shadow_px=behind below_px=-872.4,668.3
+capture-land-30m-noplane draw_calls=5 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=932.3,730.0 below_px=640.0,734.8
+capture-land-low3m-noplane draw_calls=6 primitives=894 sun_px=behind sim_clock=1.5 shadow_px=671.7,396.6 below_px=640.0,397.0
+capture-land-top draw_calls=6 primitives=898 sun_px=behind sim_clock=1.5 shadow_px=735.6,-1731.7 below_px=189.7,-1185.8
+capture-land-30m-noplane.png: sky top 126.1 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-30m.png: sky top 126.1 < near horizon 215.5 (horizon row 710), longest equal run 2 px
+capture-land-az0-el0-100m.png: sky top 160.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el0.png: sky top 160.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az0-el10.png: sky top 156.5 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az180-el0-100m.png: sky top 202.9 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el0.png: sky top 202.9 < near horizon 224.1 (horizon row 360), longest equal run 2 px
+capture-land-az180-el10.png: sky top 187.5 < near horizon 224.1 (horizon row 496), longest equal run 2 px
+capture-land-az225-el0-100m.png: sky top 181.3 < near horizon 218.4 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0-100m.png: sky top 156.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el0.png: sky top 156.7 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az270-el10.png: sky top 129.9 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el0-100m.png: sky top 154.6 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el0.png: sky top 154.6 < near horizon 215.2 (horizon row 360), longest equal run 2 px
+capture-land-az90-el10-t11.png: sky top 135.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-az90-el10.png: sky top 135.6 < near horizon 215.2 (horizon row 496), longest equal run 2 px
+capture-land-low3m-noplane.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-low3m.png: sky top 151.4 < near horizon 215.3 (horizon row 377), longest equal run 2 px
+capture-land-sun.png: sky top 120.0 < near horizon 219.2 (horizon row 720), longest equal run 2 px
+sim_clock sent in every landscape view: 1.5, 11.5
+capture-land-az0-el0-100m.png: largest step across the ground rim 3.8 levels
+capture-land-az90-el0-100m.png: largest step across the ground rim 3.1 levels
+capture-land-az180-el0-100m.png: largest step across the ground rim 3.2 levels
+capture-land-az225-el0-100m.png: largest step across the ground rim 3.1 levels
+capture-land-az270-el0-100m.png: largest step across the ground rim 2.8 levels
+capture-land-az0-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 134 vs near ground 88
+capture-land-az90-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 122 vs near ground 91
+capture-land-az180-el0.png: sky above the horizon steps ≤ 0.2 levels; far ground 139 vs near ground 90
+capture-land-az270-el0.png: sky above the horizon steps ≤ 0.3 levels; far ground 129 vs near ground 89
+sun shadow centroid 459,580: 42 px from the CG's projection along the light, 181 px from the point straight below (the two are 206 px apart; 16869 shadow px)
+airplane in the close-up: 9131 px sampled, 99th percentile lightness L* 90.9 (limit 95)
+clouds 10 s apart: 9756 sky px changed by > 3 levels; the ground changed by at most 1 level(s)
+sun disc centroid 639.5,78.5 vs projected 640.0,79.0: 0.71 px
+landscape captures ok
+capture-land-30m.png: 65 airplane pixels, Weber contrast -0.426, 9.2 % with |contrast| < 0.1, mean ΔE 41.5, background saturation 54.1
+capture-land-low3m.png: 52 airplane pixels, Weber contrast -0.495, 9.6 % with |contrast| < 0.1, mean ΔE 38.5, background saturation 21.5
+capture-physics-inspect.png: 36474 airplane pixels, Weber contrast +0.638, 8.0 % with |contrast| < 0.1, mean ΔE 65.7, background saturation 50.8
+capture-physics-low-inspect.png: 75019 airplane pixels, Weber contrast -0.231, 2.5 % with |contrast| < 0.1, mean ΔE 46.8, background saturation 59.6
+readability thresholds met: capture-land-low3m.png:-0.40:0.15:30:18, capture-land-30m.png:-0.40:0.15:30:25
+trimmed level flight: 360 ticks, 1.500000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s

@@ -1,0 +1,119 @@
+{
+  "format": "openrc-desktop-pure-probe v1",
+  "step": "DT-00-R1",
+  "source_sha256": {
+    "app/app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+    "app/app_state/aircraft_catalog.gd": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9",
+    "app/input/rc_input.gd": "08fc1addac585d07947799b0671d140d9fc306a918333dac8588b25cd8017ced"
+  },
+  "results": {
+    "future_schema": {
+      "bytes_unchanged": true,
+      "save_error": 10,
+      "writable": false
+    },
+    "godot": "4.7.2-stable (official)",
+    "radio_identity": {
+      "changed_guid_changes_key": true,
+      "same_key_for_two_runtime_ids": true
+    },
+    "same_schema_unknown_key_removed": true,
+    "stale_writer": {
+      "earlier_language_lost": true,
+      "final_aircraft": "gp-extra-300s-60",
+      "final_language": "en",
+      "first_language": "es"
+    },
+    "synthetic_unrecognized_radio": {
+      "caveat": "Synthetic info only; no device or SDL event was exercised.",
+      "kind": "gamepad",
+      "product_id": 20308,
+      "profile_source": "gamepad",
+      "vendor_id": 4617
+    },
+    "user_dir_is_probe": true
+  },
+  "lint": {
+    "before": {
+      "ok": true,
+      "project_path": "/tmp/openrc-dt-probe-jvd77ni8/project",
+      "counts": {
+        "total": 0,
+        "errors": 0,
+        "warnings": 0,
+        "parse_errors": 0
+      },
+      "categories": {
+        "godot3_api": 0,
+        "godot3_shader": 0,
+        "inference": 0,
+        "node_ref": 0,
+        "unique_name": 0,
+        "signal_target": 0,
+        "missing_resource": 0,
+        "input_action": 0,
+        "group_ref": 0,
+        "res_path": 0,
+        "animation_ref": 0
+      },
+      "scan_summary": {
+        "gd": 0,
+        "tscn": 0,
+        "tres": 0,
+        "shader": 0,
+        "project_godot": 1,
+        "scene_script_pairs": 0,
+        "node_paths_checked": 0,
+        "skipped_dynamic_paths": 0,
+        "skipped_gdignore_dirs": 0
+      },
+      "suppressions": {
+        "total": 0,
+        "used": 0,
+        "unused": []
+      },
+      "diagnostics": []
+    },
+    "after": {
+      "ok": true,
+      "project_path": "/tmp/openrc-dt-probe-jvd77ni8/project",
+      "counts": {
+        "total": 0,
+        "errors": 0,
+        "warnings": 0,
+        "parse_errors": 0
+      },
+      "categories": {
+        "godot3_api": 0,
+        "godot3_shader": 0,
+        "inference": 0,
+        "node_ref": 0,
+        "unique_name": 0,
+        "signal_target": 0,
+        "missing_resource": 0,
+        "input_action": 0,
+        "group_ref": 0,
+        "res_path": 0,
+        "animation_ref": 0
+      },
+      "scan_summary": {
+        "gd": 4,
+        "tscn": 0,
+        "tres": 0,
+        "shader": 0,
+        "project_godot": 1,
+        "scene_script_pairs": 0,
+        "node_paths_checked": 0,
+        "skipped_dynamic_paths": 0,
+        "skipped_gdignore_dirs": 0
+      },
+      "suppressions": {
+        "total": 0,
+        "used": 0,
+        "unused": []
+      },
+      "diagnostics": []
+    }
+  },
+  "scope": "Copied production pure modules, headless Linux; no app, real preferences, USB device or native GUI exercised."
+}

@@ -5,11 +5,14 @@ const Field = preload("res://render/field.gd")
 const Trees = preload("res://render/treeline.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Clock = preload("res://render/shader_clock.gd")
+const HASH_COLUMNS: int = 32
+const HASH_VIEW_WIDTH_PX: int = 1280
+const HASH_VIEW_HEIGHT_PX: int = 1080
 var viewport: SubViewport
 var camera: Camera3D
 var grove: Node3D
 var out: String
-var report: Dictionary = {format = "openrc-l6b-review v1", views = [], hash_samples = []}
+var report: Dictionary = {format = "openrc-l7-forest-review v1", views = [], hash_samples = []}
 var failed: bool = false
 
 func _initialize() -> void:
@@ -100,11 +103,13 @@ func run() -> void:
 	file.store_string(JSON.stringify(report, "\t", true) + "\n")
 	file.close()
 	viewport.free()
-	print("L6b GPU review complete: ", not failed)
+	print("L7 GPU review complete: ", not failed)
 	quit(1 if failed else 0)
 
 func hash_probe(positions: Array) -> void:
 	# Use the exact shared shader function with the actual MultiMesh float32 custom-data path.
+	var rows: int = int(ceil(float(positions.size()) / float(HASH_COLUMNS)))
+	viewport.size = Vector2i(HASH_VIEW_WIDTH_PX, HASH_VIEW_HEIGHT_PX)
 	var stage: Node3D = Node3D.new()
 	viewport.add_child(stage)
 	var shader: Shader = Shader.new()
@@ -118,9 +123,12 @@ func hash_probe(positions: Array) -> void:
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.use_custom_data = true
 	mm.mesh = quad
-	mm.instance_count = 480
-	for index: int in 480:
-		mm.set_instance_transform(index, Transform3D(Basis.IDENTITY, Vector3(float(index % 32) - 15.5, 7.0 - float(index / 32), 0)))
+	mm.instance_count = positions.size()
+	for index: int in positions.size():
+		var column: int = index % HASH_COLUMNS
+		var row: int = int(index / HASH_COLUMNS)
+		var cell_y: float = float(rows - 1) * 0.5 - float(row)
+		mm.set_instance_transform(index, Transform3D(Basis.IDENTITY, Vector3(float(column) - 15.5, cell_y, 0.0)))
 		var point: Array = positions[index]
 		mm.set_instance_custom_data(index, Trees.packed_position(point[0], point[1]))
 	var instance: MultiMeshInstance3D = MultiMeshInstance3D.new()
@@ -128,25 +136,32 @@ func hash_probe(positions: Array) -> void:
 	stage.add_child(instance)
 	camera = Camera3D.new()
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 18.0 # 1280:720 gives 32m width; 1m cell = 40 pixels
+	camera.size = float(rows + 4) # One metre cells with four rows of vertical margin.
 	stage.add_child(camera)
 	camera.position = Vector3(0, 0, 10)
 	camera.current = true
 	await settle()
 	var picture: Image = viewport.get_texture().get_image()
 	failed = failed or picture.save_png(out.path_join("hash-probe.png")) != OK
-	for index: int in 480:
+	var pixels_per_cell: float = float(HASH_VIEW_HEIGHT_PX) / camera.size
+	for index: int in positions.size():
 		var p: Array = positions[index]
 		var expected: Dictionary = Trees.identity(p[0], p[1])
 		var bits: int = 0
 		for bit: int in 32:
-			var x: int = (index % 32) * 40 + (bit % 8) * 5 + 2
-			var y: int = 60 + (index / 32) * 40 + (bit / 8) * 10 + 5
+			var column: int = index % HASH_COLUMNS
+			var row: int = int(index / HASH_COLUMNS)
+			var cell_left: float = float(HASH_VIEW_WIDTH_PX) * 0.5 + (float(column) - 16.0) * pixels_per_cell
+			var cell_top: float = float(HASH_VIEW_HEIGHT_PX) * 0.5 + (float(row) - float(rows) * 0.5) * pixels_per_cell
+			var x: int = int(floor(cell_left + (float(bit % 8) + 0.5) * pixels_per_cell / 8.0))
+			var y: int = int(floor(cell_top + (float(bit / 8) + 0.5) * pixels_per_cell / 4.0))
 			if picture.get_pixel(x, y).r > 0.5:
 				bits |= 1 << bit
 		var species: int = bits & 3
 		var height_error: float = absf(float((bits >> 2) & 32767) / 1024.0 - float(expected.height))
 		var yaw_error: float = absf(float((bits >> 17) & 32767) / 4096.0 - float(expected.yaw))
 		failed = failed or species != int(expected.species) or height_error > 1.0 / 1024.0 or yaw_error > 1.0 / 4096.0
-		report.hash_samples.append({north = p[0], east = p[1], species_matches = species == int(expected.species), height_error_m = height_error, yaw_error_rad = yaw_error})
+		var zone: String = "near" if Vector2(p[0], p[1]).length() <= 600.0 else "far"
+		report.hash_samples.append({north = p[0], east = p[1], zone = zone,
+			species_matches = species == int(expected.species), height_error_m = height_error, yaw_error_rad = yaw_error})
 	stage.free()
