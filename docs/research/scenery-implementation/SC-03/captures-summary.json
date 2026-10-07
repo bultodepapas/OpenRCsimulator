@@ -1,0 +1,137 @@
+{
+ "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "budgets": {
+  "max_draw_calls_added": 40,
+  "max_primitives_added": 150000,
+  "pilot_views": [
+   "pilot_north",
+   "pilot_south",
+   "pilot_east",
+   "pilot_west"
+  ]
+ },
+ "failures": [],
+ "field_build_ms": 374.726,
+ "stats": {
+  "build_ms": 111.266,
+  "cells": 48,
+  "fleet": 4,
+  "flowers": 2970,
+  "instances": 128,
+  "motion": 5,
+  "quality": "high",
+  "shadows": 78,
+  "skipped": 0,
+  "theme": "temperate",
+  "timing_ms": {
+   "fence": 4.142,
+   "fleet": 13.919,
+   "flowers": 11.568,
+   "hedge": 14.475,
+   "instances": 44.539,
+   "meshes": 22.051,
+   "patch": 0.173,
+   "track": 0.249
+  }
+ },
+ "views": {
+  "aerial_overview": {
+   "draw_calls_added": 27.0,
+   "primitives_added": 100129.0,
+   "repeat_identical": true,
+   "sha256": "0d78a8a7fddd85b5c93f8c6b8473ea910ee34f1ebcb8de5e2e52e2b63bca9ba2",
+   "shadow_draw_calls": 0
+  },
+  "birds_watch": {
+   "draw_calls_added": 12.0,
+   "primitives_added": 53223.0,
+   "repeat_identical": true,
+   "sha256": "d1f2cd4816cd88d0a0273745a620d6acea5726f24bed708a3c5651fb2d3d9682",
+   "shadow_draw_calls": 0
+  },
+  "car_park": {
+   "draw_calls_added": 12.0,
+   "primitives_added": 44076.0,
+   "repeat_identical": true,
+   "sha256": "42b64082c9607b648a644f55142a6c4f9d9ffa555f48ad49b097a50ead284dce",
+   "shadow_draw_calls": 0
+  },
+  "fleet_close": {
+   "draw_calls_added": 11.0,
+   "primitives_added": 47755.0,
+   "repeat_identical": true,
+   "sha256": "85f68de44096caf128a83c8559fbf4d7bc66ba88101f1a9877ecfee8fc895975",
+   "shadow_draw_calls": 0
+  },
+  "pilot_east": {
+   "draw_calls_added": 23.0,
+   "primitives_added": 56164.0,
+   "repeat_identical": true,
+   "sha256": "108267f53f8d1ef7de1650a04a60d267b96fff4e3d7596e604bec8a3d9995a2f",
+   "shadow_draw_calls": 0
+  },
+  "pilot_north": {
+   "draw_calls_added": 30.0,
+   "primitives_added": 65148.0,
+   "repeat_identical": true,
+   "sha256": "35aa35fa020250240b280243963b90466fe53a0e2c216a710ea3737e4fb85790",
+   "shadow_draw_calls": 0
+  },
+  "pilot_south": {
+   "draw_calls_added": 12.0,
+   "primitives_added": 51929.0,
+   "repeat_identical": true,
+   "sha256": "8a0c7d00f74f10e0684edf944666e2cc81a10288a48c377ad4beff9c4c65886b",
+   "shadow_draw_calls": 0
+  },
+  "pilot_west": {
+   "draw_calls_added": 8.0,
+   "primitives_added": 42188.0,
+   "repeat_identical": true,
+   "sha256": "b41d230a2ed521cf34af5047e26af3916cb4874dbb63e29a1402a8fe70c7fd7c",
+   "shadow_draw_calls": 0
+  },
+  "postcard_club": {
+   "draw_calls_added": 20.0,
+   "primitives_added": 92537.0,
+   "repeat_identical": true,
+   "sha256": "1e93dc258d5f0d4571db76c2bc1f5abc005d0e48d97241eee04613a04dca082b",
+   "shadow_draw_calls": 0
+  },
+  "postcard_farm": {
+   "draw_calls_added": 20.0,
+   "primitives_added": 54159.0,
+   "repeat_identical": true,
+   "sha256": "1d6d56617c8f1180c90770e011def663b7885133bba435563883c701bad9a5f8",
+   "shadow_draw_calls": 0
+  },
+  "postcard_meadow": {
+   "draw_calls_added": 50.0,
+   "primitives_added": 40194.0,
+   "repeat_identical": true,
+   "sha256": "57a7029024060944d65f82d6919b581c97c56db88b0b05706b2846ed6fb57788",
+   "shadow_draw_calls": 0
+  },
+  "postcard_pavilion": {
+   "draw_calls_added": 15.0,
+   "primitives_added": 69604.0,
+   "repeat_identical": true,
+   "sha256": "37c6c0c58a640cf1fc2d5f6623ca2b23fcd7e0756a87d8ad5724af2d60984cbb",
+   "shadow_draw_calls": 0
+  },
+  "postcard_pits": {
+   "draw_calls_added": 24.0,
+   "primitives_added": 65578.0,
+   "repeat_identical": true,
+   "sha256": "2b7a08d037652f54ee5e4b4e97d5e5548f7867db9ea19bc7b3336015d2279152",
+   "shadow_draw_calls": 0
+  },
+  "turbines_zoom": {
+   "draw_calls_added": 14.0,
+   "primitives_added": 46808.0,
+   "repeat_identical": true,
+   "sha256": "bc40a9cadb8a8ee46c4d9f5c1251ea9df6ca2ad0fe72275ba50e846827cb4b4c",
+   "shadow_draw_calls": 0
+  }
+ }
+}

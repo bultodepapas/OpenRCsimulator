@@ -867,6 +867,15 @@ The planned H15 target (step bookkeeping) dissolved under measurement: it was ab
 
 A support check in body axes is wrong for a taildragger: the P-51 rests 13.9° nose-up, and projecting its CG along body z instead of the resting facet's normal misstates the margin by 94 mm (0.160 vs 0.254 m). Rest is on a lower facet of the contacts' convex hull; measure the margin to the hull edges of the whole coplanar facet, because a centred CG on a square layout sits on both diagonals and a per-triangle test reports zero. The new test caught a sign error in the below-the-wheels case before it shipped ([D1-R3](docs/research/aircraft-validation/D1-R3/README.md)).
 
+## 2026-10-07 · SC-01 (probe) — measure the renderer before writing scenery rules
+
+Three rules from the desk research changed once they were measured in the real renderer ([SC-01 evidence](docs/research/scenery-implementation/SC-01/README.md)):
+- **Merging:** `ImporterMesh.merge_importer_meshes` was preferred on paper for its winding fix, but it relit mirrored cars (3,278 px), while `SurfaceTool.append_from` per material reproduced the separate render exactly. With one shared material, 40 cars went from 220 draws to 1. Merged zones lose per-object culling, so a narrow view cost more merged (78 draws) than separate (32): merge per small cell.
+- **Depth:** the d²/(near·2²⁴) formula predicted a 15 m depth step at 5 km, but a turbine with a 6 m gap rendered clean there.
+- **Shadow quads:** a 2 cm lift held up to 100 m camera height, so the proposed "lift ∝ d²" would have floated shadows by up to 0.3 m.
+
+The probe also found a bug that no landscape check had caught: the 40 km ground is two triangles, and in 4 of 12 raised views the 3 cm runway vanished under it. Splitting the plane 10 × 10 fixed it. Fixed review views can pass while a nearby view fails, so sweep many views. Two practical notes: diagnose an odd frame by checking which camera is active and the object counts before suspecting timing, and render masks for every jittered frame, because masks from the first frame produced false "flicker". 601 PNGs repeated byte for byte across two runs from fresh `git archive` copies.
+
 ## 2026-10-07 · E3b1 — stiction anchors: release on the elastic force, share by load
 
 A stuck tyre must break free on its sustained (elastic) load, not on spring plus damper: with the numerical damper included, a thrust-step transient freed a main wheel at 73% of its static load. Give each wheel a spring proportional to its static load share (the CG's barycentric weight on the D1-R3 resting facet), so all wheels reach their hold together; equal springs let the light nose wheel saturate first and cascade. Do not pre-load a re-stuck anchor to make the force continuous: it creates energy (about 1.3 mJ per re-stick, more than the kinetic energy at that speed). The real breakaway (3.1 N) is below the "all wheels at once" sum (3.5 N) because thrust above the ground unloads the mains. Test against an independent quasi-static balance, not the ideal sum. Five mutations, including keeping anchors on airborne wheels and dropping the in-stage clamp, needed their own checks before they were caught ([E3b1](docs/research/ground-contact/E3b1/README.md)).
@@ -877,6 +886,27 @@ The H7 checker instruments `ground_contact.gd` and `golden_flights.gd` by unique
 
 Settling a runway start by simulation slips (E3b1: 13.7 mm at an instant engine start); solving it does not. Solve the engine-off rest pose first, place the anchors there, then solve the idling pose with the anchors fixed: the lean onto the anchors is T/Σk at every wheel and there is no internal stress. The roadmap's "ΣN = m·g ± 0.1 %" was a level-thrust simplification: the idle thrust moves load to the nose, the Stik rests 1.6° nose-down and the tilted thrust adds 0.26 %. Test the exact balance (ΣN = m·g + T·sin θ) and say so. Measure anchor deflection at the wheels, not at the CG: the CG also moves with the extra pitch ([E3b2](docs/research/ground-contact/E3b2/README.md)).
 
+## 2026-10-07 · SC-02…SC-24 (scenery v1) — the expensive part of a populated field is everything but the geometry
+
+The scenery is built from procedural props and a few baked CC0 models, all merged per 40 m cell into one vertex-coloured surface. It costs +8 to +30 draws and +42 to +65 k primitives in the pilot's views, with byte-identical captures and identical trace rows ([SCENERY-PLAN](docs/SCENERY-PLAN.md), [SC-03](docs/research/scenery-implementation/SC-03/README.md)). Lessons:
+
+**Rendering (Compatibility 4.7.2):**
+- **Vertex colours arrive linearised.** A vertex colour renders exactly like the same albedo colour whatever `vertex_color_is_srgb` says, so a custom shader must use `COLOR` as is. Converting it again darkened the flowers and the flag.
+- **A MultiMesh without per-instance colours hands the shader a vertex `COLOR` with alpha 0.** Flower leaves marked by alpha took the petal colour. `use_colors = true` with white instance colours fixes it (measured: 0 → 382 green pixels).
+
+**Cost:**
+- **Live aircraft builds are too heavy for scenery.** Four parked aircraft through the model builders cost ~550 ms per field load, ~120 k triangles and 72 surfaces. Baking them offline with Godot's own meshoptimizer LODs gives 2.1–3.8 k triangles each, merged into the shelter's cell.
+- **LOD generation needs an indexed mesh.** A `SurfaceTool.append_from` merge is a plain triangle list: index it (positions and UVs only) before `generate_lods`. Pick the LOD closest to the target, not the first one above it.
+- **Build time hides in GDScript loops.** Expanding baked models dominated, until the JSON arrays were turned into packed arrays first and the per-triangle allocations removed.
+
+**Look:**
+- **Pointy low-poly blobs read as spikes;** jittered ellipsoids with lighter tops read as crowns and hedges.
+- **Flowers sprinkled evenly read as confetti;** clustered patches read as a meadow.
+- **Landmarks only matter where the treeline leaves the sky open.** Rebuilding the L6b skyline from its own tree heights put the farmstead, village, turbines and pylons where the pilot sees them. The first pylon sites were hidden.
+
+**Process:**
+- **Never edit visuals while a long capture run is in flight.** The L6c run mixed old and new flower colours and failed its own background check.
+
 ## 2026-10-07 · E3b3 — explain a reference gap before widening a band
 
 A 1-D point-mass integral of the model's own forces matched the 6-DOF takeoff roll within 0.17 % at the rest attitude, but the gap grew to 2.1 % by 20 m. Rather than widen the band, drive the same integral with the 6-DOF's recorded pitch: it then matched within 0.07 %, so the gap was rotation (more lift, less rolling resistance), not ground coupling. That attitude-matched check is also the sensitive one: a 10 % rolling-resistance error moved V by only 0.35 %, inside the rest-attitude bands but outside the 0.2 % matched band. Size every band from a mutation it must catch ([E3b3](docs/research/ground-contact/E3b3/README.md)).
@@ -884,7 +914,3 @@ A 1-D point-mass integral of the model's own forces matched the 6-DOF takeoff ro
 ## 2026-10-07 · D11d — fix the cause the knowledge base named, and expect it to unmask the next defect
 
 The strip model's roll over-damping and lift-slope bump came from missing induced flow and a whole-airplane lift slope per strip, as the knowledge base said, not from strip count. A Weissinger map E = (I + a0·K)⁻¹ on the existing 3 strips per side, with a0 and per-strip CL0 solved for consistency with the oracle, brought Clp from ×1.73 to ×1.12 and CLα from ×1.34 to ×0.98. Write the kernel twice (GDScript and an independent Python script) and compare both with the knowledge base's VLM before trusting it; check the theory limit you actually implement (Weissinger meets Prandtl only at high aspect ratio). Removing the lift-slope bump made the 10 m/s short period less damped (ζ 0.61 → 0.47): it had been masking the tail's Cmq defect. Pin that as E0a2's known defect instead of hiding it. Prove a golden change is the intended one by replaying with the new term switched off (all four exact) before re-recording ([D11d](docs/research/aero-consistency/D11d/README.md)).
-
-## 2026-10-07 · E0a2a — split a lumped coefficient by what physically drives each part
-
-The tail's "effective" slope a_t·η·(1 − dε/dα) was right for the free stream and wrong for pitch rate and elevator, and a hand factor (1.174) patched the elevator. Deriving the free slope, τ and incidence from the existing data kept static lift identical (6.5e-16) while pitch damping rose from 0.28× to 0.64× the oracle, the blend drag bump fell from 20 % to 5 %, and the hand factor became a checkable flap effectiveness (0.64 vs 0.55 from the elevator chord). Drive downwash from the wing's actual lift, not α, so it collapses at the stall. A check that recomputes the expected quantity from the same input can pass a broken implementation: measure the output the implementation produces (the tail angle from its lift) ([E0a2a](docs/research/aero-consistency/E0a2a/README.md)). A shell `cmd | tail && next` hides cmd's failure; check each step's status.
