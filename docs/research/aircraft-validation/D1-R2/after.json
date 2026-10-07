@@ -1,0 +1,37 @@
+[
+  {
+    "accepted": false,
+    "case": "numeric_string",
+    "errors": [
+      "propulsion.engine.shaft.power_curve: each row must be two finite numbers"
+    ]
+  },
+  {
+    "accepted": false,
+    "case": "missing_kind",
+    "errors": [
+      "propulsion.engine.shaft.power_curve: invalid evidence kind or empty source"
+    ]
+  },
+  {
+    "accepted": false,
+    "case": "missing_source",
+    "errors": [
+      "propulsion.engine.shaft.power_curve: invalid evidence kind or empty source"
+    ]
+  },
+  {
+    "accepted": false,
+    "case": "nan_power",
+    "errors": [
+      "propulsion.engine.shaft.power_curve: each row must be two finite numbers"
+    ]
+  },
+  {
+    "accepted": false,
+    "case": "infinite_final_rpm",
+    "errors": [
+      "propulsion.engine.shaft.power_curve: each row must be two finite numbers"
+    ]
+  }
+]

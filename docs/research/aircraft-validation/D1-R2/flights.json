@@ -1,0 +1,29 @@
+{
+  "baseline": "../../trace-integrity/C7-R2/flights.json",
+  "flights": [
+    {
+      "aircraft": "gp-extra-300s-60",
+      "numeric_csv_sha256": "23b00cda7e7d36b3d21bcdf1baf7bc921c40c13d822e531dfcc8fa8f44a361fc",
+      "unchanged_against_C7_R2": true,
+      "checker": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "numeric_csv_sha256": "7d2f8a4ca70be39f32ec8ccf3260d4017bc018ef07ea17b748ddc226aab00025",
+      "unchanged_against_C7_R2": true,
+      "checker": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "numeric_csv_sha256": "0c9dee169f7163aa06571404f0120adccd9451f0d9870ddbca5358b0f1c2bb45",
+      "unchanged_against_C7_R2": true,
+      "checker": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s"
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "numeric_csv_sha256": "7de0c45908e00d018a0eff514c8c549f230d9ed26055cc2f0e1e756149b36ee5",
+      "unchanged_against_C7_R2": true,
+      "checker": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s"
+    }
+  ]
+}

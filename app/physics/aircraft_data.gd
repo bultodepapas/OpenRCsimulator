@@ -447,17 +447,13 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 ## [N·m, N·m per 1000 rpm], idle_power and peak_indicated_power (W, admitted by the closed and the open throttle) }.
 static func _shaft(errors: PackedStringArray, node: Variant, rotor: Variant) -> Dictionary:
 	var sh := _dictionary(errors, "propulsion.engine.shaft", node)
-	var curve := PackedFloat64Array()
-	var c: Variant = sh.get("power_curve")
-	if typeof(c) != TYPE_DICTIONARY or c.get("unit") != "rpm, W" or typeof(c.get("value")) != TYPE_ARRAY or c.value.size() < 2:
-		errors.append("propulsion.engine.shaft.power_curve: expected {value: [[rpm, W], …] (2+ rows), unit 'rpm, W', kind, source}")
-	else:
-		for row in c.value:
-			if typeof(row) != TYPE_ARRAY or row.size() != 2 or float(row[0]) <= (curve[curve.size() - 2] if curve.size() > 0 else 0.0) or float(row[1]) <= 0.0:
-				errors.append("propulsion.engine.shaft.power_curve: rows must be [rpm, W] with rpm increasing from > 0 and W > 0")
-				break
-			curve.append(float(row[0]))
-			curve.append(float(row[1]))
+	var path := "propulsion.engine.shaft.power_curve"
+	var curve := _xy_table(errors, path, sh.get("power_curve"), "rpm, W", 0.0, INF)
+	# The shared table validator checks types, finiteness, order and provenance.
+	# Shaft samples additionally require strictly positive RPM and brake power.
+	for i in range(0, curve.size(), 2):
+		if curve[i] <= 0.0 or curve[i + 1] <= 0.0:
+			errors.append("%s[%d]: RPM and power must be > 0" % [path, i / 2])
 	var friction = _q(errors, "propulsion.engine.shaft.friction_torque", sh.get("friction_torque"), "N·m, N·m/krpm", 0.0, 20.0, 2)
 	var idle = _q(errors, "propulsion.engine.shaft.idle_power", sh.get("idle_power"), "W", 0.0, 20000.0)
 	var peak = _q(errors, "propulsion.engine.shaft.peak_indicated_power", sh.get("peak_indicated_power"), "W", 10.0, 30000.0)
@@ -567,7 +563,7 @@ static func _xy_table(errors: PackedStringArray, path: String, node: Variant, un
 	if typeof(node) != TYPE_DICTIONARY or typeof(node.get("value")) != TYPE_ARRAY or (node.value as Array).size() < 2:
 		errors.append("%s: expected {value: [[x, y], …] (2+ rows), unit, kind, source}" % path)
 		return out
-	if node.get("unit") != unit:
+	if typeof(node.get("unit")) != TYPE_STRING or node.get("unit") != unit:
 		errors.append("%s: unit '%s', expected '%s'" % [path, node.get("unit"), unit])
 	if not (node.get("kind") in KINDS) or typeof(node.get("source")) != TYPE_STRING or str(node.get("source")).strip_edges().is_empty():
 		errors.append("%s: invalid evidence kind or empty source" % path)

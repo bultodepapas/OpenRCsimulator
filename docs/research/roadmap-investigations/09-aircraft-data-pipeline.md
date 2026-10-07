@@ -6,8 +6,8 @@
 
 [ROADMAP revision 5](../../../ROADMAP.md#execution-order-and-release-gates) supersedes the mandatory v2/unified-tool proposals below. The detailed code counts, aircraft table and uncommitted-work notes are a **pre-integration snapshot**, not the current catalog. P-51 shaft/slipstream and Avanti turbine are committed; four aircraft load. The [project audit](../project-audit-2026-10-06/README.md) verified current P-51 generated outputs are fresh, but their missing CI freshness checks remain DATA-1.
 
-- Repair nested shaft provenance/numeric validation (D1-R2) and ground-support validation (D1-R3); the loader's quantity contract is sound, but not applied uniformly yet.
-- Add exact input hashing and honest trace metadata (DATA-3/C7-R2) before collecting reference datasets.
+- [D1-R2](../aircraft-validation/D1-R2/README.md) applies the shared finite numeric/provenance table contract to shaft power curves. Ground-support validation remains D1-R3; do not infer that every nested field has been exhaustively tested.
+- [C7-R2](../trace-integrity/C7-R2/README.md) identifies configured physics and recording-start auxiliary state. Exact input hashing remains DATA-3, before collecting reference datasets.
 - Extract proven duplicated helpers incrementally (DATA-5). Preserve independent aircraft derivations and generated-output checks.
 - DATA-8 requires a concrete consumer that v1 cannot represent cleanly. H8 state ownership, PT2, additional v1 aircraft and per-strip polars do not depend on a component-tree migration.
 - The v2 sketches, mass shapes, packages and solver ideas below remain research options. Choose a bounded consumer before turning an option into required architecture.
