@@ -525,6 +525,8 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 		horizontal.downwash_per_cl = per_cl
 		horizontal.free_incidence = keep * float(horizontal.incidence) + per_cl * wing_cl0
 		horizontal.wing_cl0 = wing_cl0
+		# E0a2b: the wake travels from the wing's quarter chord to the tail's pressure centre (le frame, x aft).
+		horizontal.downwash_lag_length = float(horizontal.position[0]) - 0.25 * area / span
 
 
 ## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and

@@ -14,6 +14,8 @@ const COMPONENTS := {
 	servo = { unit = "normalized command", scale = 1.0, absolute = 1e-9 },
 	# E3b1 stiction anchors: world north/east (m) and the stuck flag (0 or 1, so the bound is exact for it).
 	anchor = { unit = "m (anchor north/east) or stuck flag", scale = 1.0, absolute = 1e-6 },
+	# E0a2b lagged wing lift coefficient (dimensionless).
+	downwash = { unit = "wing lift coefficient", scale = 1.0, absolute = 1e-9 },
 }
 
 

@@ -88,7 +88,7 @@ static func replay(session: Node, g: Dictionary) -> Dictionary:
 	for cp in g.get("mode_checkpoints", []):
 		mode_cps[int(cp[0])] = cp
 	var auxiliary_ok := true
-	var worst := { pos = 0.0, vel = 0.0, att = 0.0, rate = 0.0, rpm = 0.0, servo = 0.0, anchor = 0.0 }
+	var worst := { pos = 0.0, vel = 0.0, att = 0.0, rate = 0.0, rpm = 0.0, servo = 0.0, anchor = 0.0, downwash = 0.0 }
 	var current: Array = g.inputs[0]
 	for tick in range(0, int(g.ticks) + 1):
 		if cps.has(tick):
@@ -106,7 +106,7 @@ static func replay(session: Node, g: Dictionary) -> Dictionary:
 			var aux_cp: Array = aux_cps[tick]
 			auxiliary_ok = auxiliary_ok and aux_cp.size() == sim.aux.size() + 1
 			for i in mini(sim.aux.size(), aux_cp.size() - 1):
-				var component := "rpm" if i == 0 else ("servo" if i < Session.AUX_ANCHORS else "anchor")
+				var component: String = session.aux_component(i)
 				worst[component] = maxf(worst[component], absf(sim.aux[i] - float(aux_cp[i + 1])))
 				auxiliary_ok = auxiliary_ok and Policy.accepted(component, sim.aux[i], float(aux_cp[i + 1]))
 		if mode_cps.has(tick):
@@ -153,10 +153,10 @@ static func _valid_record(g: Dictionary) -> bool:
 			return false
 		var last_tick := -1
 		for row in g[key]:
-			# E3b1: aux rows may carry whole per-wheel anchor blocks after the four sampled values.
-			var anchors_ok: bool = key == "aux_checkpoints" and row is Array and row.size() > spec[1] \
-				and (row.size() - spec[1]) % GroundContact.ANCHOR_STRIDE == 0
-			if not row is Array or (row.size() != spec[1] and not anchors_ok):
+			# E3b1/E0a2b: aux rows may carry anchors and a downwash lag after the four sampled values; replay then requires
+			# the session's exact layout.
+			var extended_ok: bool = key == "aux_checkpoints" and row is Array and row.size() > spec[1]
+			if not row is Array or (row.size() != spec[1] and not extended_ok):
 				return false
 			for value in row:
 				if not _finite_number(value):

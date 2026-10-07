@@ -58,7 +58,7 @@ func _initialize() -> void:
 	var model: Dictionary = session.aircraft.model
 	var gear: Dictionary = model.landing_gear
 	var solved: PackedFloat64Array = session.sim.state.duplicate()
-	var anchors: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS)
+	var anchors: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS, FlightSession.AUX_ANCHORS + 9)
 	_check("every wheel starts stuck, engine idling at closed throttle", anchors[2] == 1.0 and anchors[5] == 1.0 and anchors[8] == 1.0
 		and session.engine_running and session.sim.inputs[3] == 0.0 and session.sim.aux[0] == float(model.propulsion.idle_rpm))
 	_physics_checks(session, model, gear, solved, anchors, spot)
@@ -82,7 +82,7 @@ func _initialize() -> void:
 			_check("after 1 s: attitude within 0.1° of the solve", _angle(one_second, solved) < deg_to_rad(0.1),
 				"%s°" % String.num_scientific(rad_to_deg(_angle(one_second, solved))))
 	var s10: PackedFloat64Array = session.sim.state
-	var a10: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS)
+	var a10: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS, FlightSession.AUX_ANCHORS + 9)
 	var moved := sqrt((s10[RB.POS] - solved[RB.POS]) ** 2 + (s10[RB.POS + 1] - solved[RB.POS + 1]) ** 2)
 	_check("10 s at idle: |v| and |ω| < 1e-6 throughout, moved < 1 µm, anchors unchanged", worst_v < 1e-6 and worst_w < 1e-6
 		and moved < 1e-6 and a10 == anchors, "v %s, ω %s, %s m" % [String.num_scientific(worst_v), String.num_scientific(worst_w), String.num_scientific(moved)])

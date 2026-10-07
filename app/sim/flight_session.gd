@@ -35,6 +35,7 @@ const AUX_LAYOUT := ["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
 ## E3b1: with stiction data the per-wheel anchors follow AUX_LAYOUT ([north, east, stuck] per contact, gear order).
 ## AUX_LAYOUT stays the trace's four auxiliary columns.
 const AUX_ANCHORS := 4
+## E0a2b: with a tail downwash lag the lagged wing CL follows the anchors (downwash_index()).
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
 var sim: Node
@@ -495,8 +496,11 @@ func reset() -> void:
 	# Inputs first: synchronous paths (capture, --trace) never tick this node, so they must start trimmed too.
 	sim.inputs = _inputs()
 	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
-	sim.aux = PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
-	sim.aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
+	var aux := PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
+	if downwash_index() >= 0 and _has_valid_start():
+		aux.append(_wing_cl(start.state, aux)) # E0a2b: start settled, no downwash transient
+	sim.aux = aux
 	if _has_valid_start():
 		if not sim.reset(start.state):
 			sim.set_paused(true)
@@ -556,8 +560,9 @@ func _inputs() -> PackedFloat64Array:
 ## wheel (E3a).
 func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
+	var lag := downwash_index()
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
+		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]), a[lag] if lag >= 0 and lag < a.size() else NAN)
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
 		a.slice(AUX_ANCHORS) if a.size() > AUX_ANCHORS else PackedFloat64Array())
 	for i in ground.size():
@@ -603,11 +608,45 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:
 		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)
-	if aux.size() > AUX_ANCHORS:
+	var lag := downwash_index()
+	var anchors_end := aux.size() - (1 if lag >= 0 and lag < aux.size() else 0)
+	if anchors_end > AUX_ANCHORS:
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
 		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
-			aux.slice(AUX_ANCHORS)))
+			aux.slice(AUX_ANCHORS, anchors_end)))
+	if lag >= 0 and lag < aux.size():
+		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
+		# committed state and the servos the last tick used; held through the RK stages like rpm.
+		var s: PackedFloat64Array = sim.state
+		var cl_now := _wing_cl(s, aux)
+		var speed: float = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL).V
+		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
+		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
 	return out
+
+
+## E0a2b: aux index of the lagged wing CL (after the anchors), or −1 without a tail downwash lag.
+func downwash_index() -> int:
+	# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
+	if not aircraft.get("ok", false) or aircraft.model.get("envelope", {}).is_empty() \
+			or not aircraft.model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length"):
+		return -1
+	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
+
+
+## Replay-tolerance component of aux entry i (H9 policy): rpm, servo, anchor or downwash.
+func aux_component(i: int) -> String:
+	if i == AUX_RPM:
+		return "rpm"
+	if i < AUX_ANCHORS:
+		return "servo"
+	return "downwash" if i == downwash_index() else "anchor"
+
+
+## The wing strips' mean section lift coefficient at state s with the servos in aux (E0a2b lag input).
+func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array) -> float:
+	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model)
 
 
 ## E3b2: restart standing on the runway at (north, east) facing `heading` (rad, 0 = north), engine idling at closed
@@ -630,6 +669,8 @@ func reset_on_runway(north: float, east: float, heading: float) -> bool:
 		reset()
 		return false
 	aux.append_array(solved.anchors)
+	if downwash_index() >= 0:
+		aux.append(_wing_cl(solved.state, aux)) # E0a2b: at rest, settled
 	sim.aux = aux
 	if not sim.reset(solved.state):
 		reset()
