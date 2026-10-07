@@ -41,7 +41,7 @@ Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces
 
 Generated-output freshness: [DATA-1](aircraft-validation/DATA-1/README.md) adds the P-51 generation chain to CI, with five stale-copy rejection cases in a fresh clone.
 
-Simulation state and headroom: [H4/H5](simulation-state/H4-H5/README.md) profiles all aircraft and measures behavior-preserving optimizations; [H6](simulation-state/H6/README.md) enforces math routing; [H7](simulation-state/H7/README.md) checks adjacent-float sensitivity and branch decisions; [H8a](simulation-state/H8a/README.md) verifies RK stage time; [H8](simulation-state/H8/README.md) defines complete checkpoints and rollback; [H9](simulation-state/H9/README.md) defines stamped tolerance replay; [H10](simulation-state/H10/README.md) records the conditional interface decision; [H11](simulation-state/H11/README.md) bounds contact stability and accuracy. [Gate P](simulation-state/Gate-P/README.md) measures an isolated native slipstream kernel against the GDScript oracle and the whole-fleet budget; [H12](simulation-state/H12/README.md) makes local-strip aero allocation-free with exact trajectories.
+Simulation state and headroom: [H4/H5](simulation-state/H4-H5/README.md) profiles all aircraft and measures behavior-preserving optimizations; [H6](simulation-state/H6/README.md) enforces math routing; [H7](simulation-state/H7/README.md) checks adjacent-float sensitivity and branch decisions; [H8a](simulation-state/H8a/README.md) verifies RK stage time; [H8](simulation-state/H8/README.md) defines complete checkpoints and rollback; [H9](simulation-state/H9/README.md) defines stamped tolerance replay; [H10](simulation-state/H10/README.md) records the conditional interface decision; [H11](simulation-state/H11/README.md) bounds contact stability and accuracy. [Gate P](simulation-state/Gate-P/README.md) measures an isolated native slipstream kernel against the GDScript oracle and the whole-fleet budget; [H12](simulation-state/H12/README.md), [H13](simulation-state/H13/README.md) , [H14](simulation-state/H14/README.md) and [H15](simulation-state/H15/README.md) make local-strip aero, slipstream, tilted-shaft propulsion and the attached-flow path allocation-free with exact trajectories.
 
 M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06) → [ground-friction-e2.md](ground-friction-e2.md) (E2 tyre friction, nose-wheel steering, tip-over, figure-eight taxi, 2026-10-06) → [ground-surfaces-e3a.md](ground-surfaces-e3a.md) (E3a runway, mown and rough surfaces under the wheels, 2026-10-06).
 
@@ -97,6 +97,17 @@ Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
 | Implementation evidence, one folder per step | [VQ-01a](visual-quality-implementation/VQ-01a/README.md), [VQ-01b](visual-quality-implementation/VQ-01b/README.md) (with [visual references](visual-quality-implementation/VQ-01b/REFERENCES.md)), [L5](visual-quality-implementation/L5/README.md), [L6a](visual-quality-implementation/L6a/README.md), [L6b](visual-quality-implementation/L6b/README.md), [L6c](visual-quality-implementation/L6c/README.md) | Each README states what was measured, how, and what it does not prove (software rendering verifies the protocol, not target-GPU performance) |
 
 Plans: [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md), [LANDSCAPE-PLAN](../LANDSCAPE-PLAN.md). Tree tooling: [tools/trees/README.md](../../tools/trees/README.md).
+
+### Scenery and field life
+
+| Topic | Read first | Then |
+| --- | --- | --- |
+| Props, cars, buildings, people, animals: sources and licenses | [01 prop asset sources](scenery-investigations/01-prop-asset-sources.md) | [asset-sources-catalog-2026-10-06.md](asset-sources-catalog-2026-10-06.md) |
+| Flowers, bushes, motion, ambient sound, birds | [02 flora and ambience](scenery-investigations/02-flora-and-ambience.md) | [landscape 05 grass](landscape-investigations/05-grass-rendering.md), [11 wind ambience](landscape-investigations/11-wind-animation-ambience.md) |
+| Club layout rules (AMA, BMFA, DMFV, FAI), markings, shelters, photo references | [03 field layout references](scenery-investigations/03-rc-field-layout-references.md) | [landscape-research.md](landscape-research.md) |
+| Mesh merging, grounding, depth precision, motion, prior art | [04 Godot techniques and prior art](scenery-investigations/04-godot-techniques-and-prior-art.md) | — |
+
+Plan: [SCENERY-PLAN](../SCENERY-PLAN.md).
 
 ### Smoke
 

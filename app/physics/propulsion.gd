@@ -175,7 +175,55 @@ static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: 
 	if not prop.has("axis"):
 		var arm := M.cross(at, M.v3(thrust, 0.0, 0.0))
 		return PackedFloat64Array([thrust, 0.0, 0.0, -torque + arm[0], arm[1], arm[2]])
+	return _tilted_loads(v_air, rpm, prop, rho, thrust, torque, at)
+
+
+## H14: scalar form of the tilted-shaft loads (thrust, reaction torque, normal_force and pfactor_moment) in the
+## frozen oracle's arithmetic order (tests/propulsion_reference.gd); the two crossflow terms share one projection.
+## Zero crossflow terms are still added (+0.0), as in the oracle; test_propulsion_scalar.gd compares bytes.
+static func _tilted_loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float, thrust: float,
+		torque: float, at: PackedFloat64Array) -> PackedFloat64Array:
 	var ax: PackedFloat64Array = prop.axis
-	var force := M.add(M.scale(ax, thrust), normal_force(v_air, rpm, prop, rho))
-	var moment := M.add(M.sub(M.cross(at, force), M.scale(ax, torque)), pfactor_moment(v_air, rpm, prop, rho))
-	return PackedFloat64Array([force[0], force[1], force[2], moment[0], moment[1], moment[2]])
+	var a0: float = ax[0]
+	var a1: float = ax[1]
+	var a2: float = ax[2]
+	var v0: float = v_air[0]
+	var v1: float = v_air[1]
+	var v2: float = v_air[2]
+	var nf0 := 0.0
+	var nf1 := 0.0
+	var nf2 := 0.0
+	var pf0 := 0.0
+	var pf1 := 0.0
+	var pf2 := 0.0
+	var speed := M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
+	if not speed < 1e-6: # the oracle's test, so NaN takes the same branch
+		var along: float = v0 * a0 + v1 * a1 + v2 * a2
+		var c0: float = v0 - a0 * along
+		var c1: float = v1 - a1 * along
+		var c2: float = v2 - a2 * along
+		var D: float = prop.diameter
+		var n := rpm / 60.0
+		var J := maxf(along, 0.0) / (n * D)
+		var nf_table: PackedFloat64Array = prop.get("normal_force", PackedFloat64Array())
+		if not nf_table.is_empty():
+			var k: float = -coefficient(nf_table, J, 0.0) * rho * n * n * M.pow_(D, 4) / speed
+			nf0 = c0 * k
+			nf1 = c1 * k
+			nf2 = c2 * k
+		var pf_table: PackedFloat64Array = prop.get("pfactor_moment", PackedFloat64Array())
+		if not pf_table.is_empty():
+			var k: float = -coefficient(pf_table, J, 0.0) * rho * n * n * M.pow_(D, 5) / speed
+			pf0 = c0 * k
+			pf1 = c1 * k
+			pf2 = c2 * k
+	var f0: float = a0 * thrust + nf0
+	var f1: float = a1 * thrust + nf1
+	var f2: float = a2 * thrust + nf2
+	var t0: float = at[0]
+	var t1: float = at[1]
+	var t2: float = at[2]
+	return PackedFloat64Array([f0, f1, f2,
+		((t1 * f2 - t2 * f1) - a0 * torque) + pf0,
+		((t2 * f0 - t0 * f2) - a1 * torque) + pf1,
+		((t0 * f1 - t1 * f0) - a2 * torque) + pf2])

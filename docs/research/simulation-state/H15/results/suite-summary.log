@@ -1,0 +1,154 @@
+== import resource dependencies
+== L6b offline tree placement matches committed positions
+== float64 guard: no 32-bit math types in simulation code
+== H6: transcendental calls stay behind math3d
+== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
+== parse check: every script
+== test_aero.gd
+23 checks, 0 failed
+== test_aero_flow.gd
+H4 local flow: 10000 byte-exact comparisons, 0 failed
+H12 local loads: 10001 byte-exact comparisons (7305 stalled, 2000 zero-flow), 0 failed
+== test_air_data.gd
+11 checks, 0 failed
+== test_aircraft_catalog.gd
+36 checks, 0 failed
+== test_aircraft_data.gd
+72 checks, 0 failed
+== test_atmosphere.gd
+27 checks, 0 failed
+== test_attached_flow.gd
+H15 attached flow: 10000 air-data and 10000 global-load byte-exact comparisons (5000 windy, 8203 stalled, 2000 without envelope), 0 failed
+== test_avanti_handling.gd
+30 checks, 0 failed
+== test_build_info.gd
+== test_checkpoint.gd
+H8 checkpoints: 90 checks, 0 failed
+== test_contact_policy.gd
+72 checks, 0 failed
+== test_controls.gd
+17 checks, 0 failed
+== test_controls_reference.gd
+== test_crash.gd
+12 checks, 0 failed
+== test_damping_regimes.gd
+17 checks, 0 failed
+== test_dynamics.gd
+7 checks, 0 failed
+== test_e2e_input.gd
+== test_e2e_radio.gd
+== test_engine_sound.gd
+7 checks, 0 failed
+== test_envelope.gd
+ok   oracle: small local wing AND tail angles including deflection → loads identical to the linear model (500 states)  
+15 checks, 0 failed
+== test_extra_handling.gd
+12 checks, 0 failed
+== test_field_integration.gd
+== test_field_loader.gd
+161 checks, 0 failed
+== test_frame_samples.gd
+43 checks, 0 failed
+== test_frames.gd
+18 checks, 0 failed
+== test_golden.gd
+== test_ground_contact.gd
+ok   in the air the session's loads are bit-identical to the air-only evaluator
+22 checks, 0 failed
+== test_ground_friction.gd
+26 checks, 0 failed
+== test_ground_surfaces.gd
+28 checks, 0 failed
+== test_gyro.gd
+6 checks, 0 failed
+== test_handling.gd
+9 checks, 0 failed
+== test_integrator.gd
+9 checks, 0 failed
+== test_math3d.gd
+11 checks, 0 failed
+== test_modes.gd
+34 checks, 0 failed
+== test_p51_envelope.gd
+15 checks, 0 failed
+== test_p51_ground.gd
+11 checks, 0 failed
+== test_p51_handling.gd
+15 checks, 0 failed
+== test_physical_envelope.gd
+== test_pilot_aids.gd
+22 checks, 0 failed
+== test_propulsion.gd
+16 checks, 0 failed
+== test_propulsion_scalar.gd
+H14 propulsion: 20001 byte-exact comparisons (9537 tilted-shaft, 8166 with crossflow, 2860 still air, 921 stopped), 0 failed
+== test_rc_calibration.gd
+18 checks, 0 failed
+== test_rc_input.gd
+41 checks, 0 failed
+== test_replay_policy.gd
+H9 replay policy: 42 checks, 0 failed
+== test_rigid_body.gd
+15 checks, 0 failed
+== test_rk_stage_time.gd
+22 checks, 0 failed
+== test_rudder_authority.gd
+26 checks, 0 failed
+== test_servo.gd
+6 checks, 0 failed
+== test_session_guards.gd
+32 checks, 0 failed
+== test_shader_clock.gd
+7 checks, 0 failed
+== test_shaft_data.gd
+D1-R2: 117 checks, 0 failed
+== test_simulation.gd
+11 checks, 0 failed
+== test_slipstream_scalar.gd
+H13 slipstream: 10001 byte-exact comparisons (1 aircraft, 6083 washed, 1429 static air, 448 stopped), 0 failed
+== test_spin.gd
+8 checks, 0 failed
+== test_trace.gd
+19 checks, 0 failed
+== test_trace_metadata.gd
+C7-R2: 128 checks, 0 failed
+== test_tree_assets.gd
+60 checks, 0 failed
+== test_treeline.gd
+L6b runtime: 8217 checks, 0 failed; species [168, 159, 153]
+== test_treeline_data.gd
+114 checks, 0 failed
+== test_trim.gd
+14 checks, 0 failed
+== test_turbine.gd
+27 checks, 0 failed
+== test_ui_aircraft.gd
+== test_ui_flight_capture.gd
+== test_ui_help.gd
+== test_ui_home.gd
+== test_ui_input.gd
+== test_ui_language.gd
+== test_ui_pause.gd
+== test_visual_evidence.gd
+visual evidence: 97 checks, 0 failed
+== H7: exact one-ulp math sensitivity and golden branch signatures
+== L5: invalid field files fail before Home or flight can start
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)
+P-51 appearance source/runtime: identical
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+verify_p51: 248 checks, 0 failed
+== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)
+verify_p51_clearance: 12 checks, 0 failed (32639 ms)
+== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)
+== C7-R1: trace completion, finite samples and failure exits
+== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)
+== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)
+== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+== VQ-01b: scripted logger disables input and identifies its route
+== VQ-01b: invalid logger options and output write failures fail the process
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+identical
