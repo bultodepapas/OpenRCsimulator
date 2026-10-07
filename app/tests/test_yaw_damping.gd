@@ -3,8 +3,8 @@
 # and checked by the loader). The wing's physical yaw damping is profile drag, −CD0/3·(1 − 1/(4n²)) for n equal strips per
 # side (independent Weissinger reference with Kutta–Joukowski forces: the lift-induced part is +0.0004·CL²,
 # research/aero/d11f/wing_yaw_damping.py). Acceptance: across α 0–11° the local Cnr is within 7 % of that
-# Stik-consistent value (fin invariant + wing profile). The borrowed oracle Cnr (UltraStick 25e) is reported, not
-# accepted against: it is inconsistent with the oracle's own fin-derived Cnβ (a DATA decision, see the D11f report).
+# Stik-consistent value (fin invariant + wing profile). The borrowed oracle Cnr (UltraStick 25e, −0.1833) was
+# inconsistent with the oracle's own fin-derived Cnβ; D11g replaced it with the Stik's own, checked here too.
 # Run: godot --headless --path . --script res://tests/test_yaw_damping.gd
 extends SceneTree
 
@@ -40,8 +40,10 @@ func _initialize() -> void:
 	var n: int = model.envelope.station_ys.size() / 2
 	var wing_profile: float = -float(model.aero.CD0) / 3.0 * (1.0 - 1.0 / (4.0 * n * n))
 	var consistent := fin_invariant + wing_profile
-	print("info Stik-consistent Cnr: fin −2(l_v/b)·Cnβ_fin %.4f + wing profile %.4f = %.4f; borrowed oracle Cnr %.4f"
+	print("info Stik-consistent Cnr: fin −2(l_v/b)·Cnβ_fin %.4f + wing profile %.4f = %.4f; oracle Cnr %.4f"
 		% [fin_invariant, wing_profile, consistent, model.aero.Cnr])
+	_check("D11g: the oracle's Cnr %.4f within 2 %% of the Stik-consistent value" % model.aero.Cnr,
+		absf(float(model.aero.Cnr) / consistent - 1.0) < 0.02)
 	var worst_fin := 0.0
 	var worst_total := 0.0
 	var worst_cnb := 0.0

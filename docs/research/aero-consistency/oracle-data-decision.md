@@ -1,6 +1,6 @@
 # Decision brief — the Ugly Stik oracle's borrowed coefficients
 
-2026-10-07 · **Status: awaiting the owner.** Prepared by the main line after D11d, E0a2a/b and D11f. Record the choice in DECISIONS.md.
+2026-10-07 · **Status: decided 2026-10-07 (the owner delegated the choice): option 2 now for Cmq, CLq and Cnr, with the downwash lag in both regimes; option 3 later as held-out validation. Clp, the polar and the cross derivatives stay borrowed. Implemented by [D11g](D11g/README.md); recorded in DECISIONS.md.** Prepared by the main line after D11d, E0a2a/b and D11f.
 
 ## Situation
 

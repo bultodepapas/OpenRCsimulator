@@ -92,7 +92,8 @@ static func coefficients(air: Dictionary, rates: PackedFloat64Array, d: Dictiona
 
 ## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz], gravity excluded.
 ## model: AircraftData model (reference S, b, c, arp_le; cg_le; aero).
-static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float) -> PackedFloat64Array:
+static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
+		downwash_cl := NAN) -> PackedFloat64Array:
 	var ref: Dictionary = model.reference
 	var a: Dictionary = model.aero
 	var S: float = ref.S
@@ -136,6 +137,15 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var co_roll: float = a.Clb * beta_eff + a.Clda_right * dar + a.Clda_left * dal + a.Cldr * dr
 	var co_pitch: float = cm_alpha + a.Cmde * de + a.Cmda_each * (dar + dal)
 	var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar + a.Cnda_left * dal + a.Cndr * dr
+	if not is_nan(downwash_cl):
+		# D11g: the tail's downwash lag (E0a2b) in the oracle. Its static coefficients hold the settled downwash; a lagged
+		# wing CL turns the tail's angle by k_ε·(CL_wing − lag) on the free slope, at the tail's arm: the oracle's CLα̇ and
+		# Cmα̇, the same as the local tail's. Zero once settled; NAN (trim, static solves) adds nothing.
+		var tail: Dictionary = model.surfaces.horizontal
+		var lag_cl: float = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) \
+			* (wing_lift_coefficient(s, air, d, model) - downwash_cl)
+		co_cl += lag_cl
+		co_pitch -= lag_cl * (float(tail.position[0]) - float(ref.arp_le[0])) / c
 
 	# Rate (damping) terms in dimensional form: qbar·x̂ = ½ρV²·(rate·L/2V) = ¼ρ·V·rate·L. Finite as V → 0.
 	var k := 0.25 * rho * float(air.V)
@@ -569,11 +579,11 @@ static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: 
 		return _global_loads(s, air, d, model, rho)
 	var blend := local_flow_weight(s, air, d, model)
 	if blend == 0.0:
-		return _global_loads(s, air, d, model, rho)
+		return _global_loads(s, air, d, model, rho, downwash_cl)
 	var local := _local_loads(s, air, d, model, rho, downwash_cl)
 	if blend == 1.0:
 		return local
-	var global := _global_loads(s, air, d, model, rho)
+	var global := _global_loads(s, air, d, model, rho, downwash_cl)
 	for k in 6:
 		global[k] = lerpf(global[k], local[k], blend)
 	return global

@@ -763,7 +763,7 @@
     }
   },
   "aero": {
-    "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik",
+    "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik; Cmq, CLq and Cnr derived from the Stik itself (D11g)",
     "envelope": {
       "CL_max": {
         "value": 1.1,
@@ -828,10 +828,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CLq": {
-        "value": 6.1639,
+        "value": 2.951,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639"
       },
       "CLde": {
         "value": 0.0983,
@@ -954,10 +954,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cmq": {
-        "value": -13.5664,
+        "value": -7.476,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both"
       },
       "Cmde": {
         "value": -0.8488,
@@ -984,10 +984,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnr": {
-        "value": -0.1833,
+        "value": -0.1319,
         "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb"
       },
       "Cnda_right": {
         "value": 0.0287,

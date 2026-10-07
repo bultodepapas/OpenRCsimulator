@@ -304,12 +304,15 @@ func _session_checks(model: Dictionary, parked: PackedFloat64Array) -> void:
 		[idle_thrust, model.landing_gear.rolling_resistance * model.mass_kg * G, idle.state[RB.VEL], idle.state[RB.POS]])
 
 	# Figure-eight at idle (on pavement idle already rolls the Stik, and there are no brakes): a straight start, then
-	# 30 % right steer (6° at the wheel) for one full turn, then 30 % left for one. More steer at this speed rolls it
-	# onto a wingtip (tip-over checks above; printed below).
-	var eight := _drive(session, parked, true, [[1.5, 0.0, 0.0], [-1.0, 0.0, 0.3], [-1.0, 0.0, -0.3]])
-	_check("figure-eight at idle: two full turns (right, then left), no crash, all three wheels on the ground throughout",
-		eight.crashes == 0 and eight.turned.size() == 3 and absf(eight.turned[1] - 360.0) < 1.0 and absf(eight.turned[2] + 360.0) < 1.0 and eight.lifted == 0,
-		"crashes %d, turns %s°, ticks with a wheel up %d" % [eight.crashes, eight.turned, eight.lifted])
+	# 22 % right steer (4.4° at the wheel) for one full turn, then 22 % left for one. More steer at this speed rolls it
+	# onto a wingtip (tip-over checks above; printed below). Idle keeps accelerating the airplane, so the left loop ends
+	# nearest the tip-over limit: at 30 % steer the inside wheel kept only 0.45 mm of its ~20 mm static compression, and
+	# D11g's Stik-derived yaw damping (3 % more yaw rate) lifted it. The margin is now explicit (≥ 1 mm).
+	var eight := _drive(session, parked, true, [[1.5, 0.0, 0.0], [-1.0, 0.0, 0.22], [-1.0, 0.0, -0.22]])
+	_check("figure-eight at idle: two full turns (right, then left), no crash, all three wheels on the ground throughout (≥ 1 mm compression)",
+		eight.crashes == 0 and eight.turned.size() == 3 and absf(eight.turned[1] - 360.0) < 1.0 and absf(eight.turned[2] + 360.0) < 1.0 and eight.lifted == 0
+		and eight.min_compression >= 0.001,
+		"crashes %d, turns %s°, ticks with a wheel up %d, least compression %.2f mm" % [eight.crashes, eight.turned, eight.lifted, 1000.0 * eight.min_compression])
 	if eight.crashes == 0 and eight.turned.size() == 3:
 		_check("figure-eight: the right loop lies east of the start line, the left loop west, each > 2 m wide", eight.max_east > 2.0 and eight.min_east < -2.0,
 			"east %.2f m, west %.2f m" % [eight.max_east, eight.min_east])
@@ -327,17 +330,28 @@ func _session_checks(model: Dictionary, parked: PackedFloat64Array) -> void:
 ## engine on or off, ticking it like the game. Returns { state, leg_starts, leg_ends (states), closest (per leg,
 ## the nearest approach to the crossing, where the second leg began, after turning 180°: m), crashes,
 ## turned (heading change per leg, deg), lifted (ticks with any wheel off the ground after the first second),
+## min_compression (m, the least-loaded wheel after the first second),
 ## max_east, min_east, max_speed, t }.
 func _drive(session: Node, start: PackedFloat64Array, engine: bool, legs: Array) -> Dictionary:
 	session.reset()
 	session.engine_running = engine
 	session.trims = { roll = 0.0, pitch = 0.0, yaw = 0.0 }
-	session.sim.aux = PackedFloat64Array([model_idle(session) if engine else 0.0, 0.0, 0.0, 0.0])
+	# The session's own layout (D11g): engine and servos set here, E3b1 anchors from reset (sliding until slow), and the
+	# E0a2b downwash lag settled at `start`. A 4-entry aux would drop the lag, and the oracle's Cmq (the Stik's static
+	# value since D11g) would fly without its Cmα̇.
+	var aux: PackedFloat64Array = session.sim.aux.duplicate()
+	aux[0] = model_idle(session) if engine else 0.0
+	for i in range(1, 4):
+		aux[i] = 0.0
+	var lag: int = session.downwash_index()
+	if lag >= 0:
+		aux[lag] = session._wing_cl(start, aux)
+	session.sim.aux = aux
 	session.sim.reset(start)
 	session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 	session.sim.set_paused(false)
 	var dt: float = session.sim.dt()
-	var out := { crashes = 0, turned = PackedFloat64Array(), lifted = 0, max_east = -INF, min_east = INF, max_speed = 0.0, t = 0.0, leg_starts = [], leg_ends = [], closest = [] }
+	var out := { crashes = 0, turned = PackedFloat64Array(), lifted = 0, min_compression = INF, max_east = -INF, min_east = INF, max_speed = 0.0, t = 0.0, leg_starts = [], leg_ends = [], closest = [] }
 	var tick := 0
 	for li in legs.size():
 		var leg: Array = legs[li]
@@ -364,6 +378,9 @@ func _drive(session: Node, start: PackedFloat64Array, engine: bool, legs: Array)
 			prev = y
 			if tick * dt > 1.0 and not _on_wheels(s, session.aircraft.model.landing_gear):
 				out.lifted += 1
+			if tick * dt > 1.0:
+				for c in Ground.compressions(s, session.aircraft.model.landing_gear):
+					out.min_compression = minf(out.min_compression, c)
 			out.max_east = maxf(out.max_east, s[RB.POS + 1])
 			out.min_east = minf(out.min_east, s[RB.POS + 1])
 			out.max_speed = maxf(out.max_speed, sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2))

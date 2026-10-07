@@ -143,8 +143,8 @@ def instrument_branches(project: Path) -> None:
     )
     aero = replace_once(
         aero,
-        "\tif blend == 0.0:\n\t\treturn _global_loads(s, air, d, model, rho)\n",
-        "\tif blend == 0.0:\n\t\th7_branch_tape.append(20)\n\t\treturn _global_loads(s, air, d, model, rho)\n\th7_branch_tape.append(21)\n",
+        "\tif blend == 0.0:\n\t\treturn _global_loads(s, air, d, model, rho, downwash_cl)\n",
+        "\tif blend == 0.0:\n\t\th7_branch_tape.append(20)\n\t\treturn _global_loads(s, air, d, model, rho, downwash_cl)\n\th7_branch_tape.append(21)\n",
         "global-aero branch",
     )
     aero = replace_once(
