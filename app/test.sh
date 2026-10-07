@@ -18,6 +18,10 @@ echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
 python3 "$HERE/../tools/trees/test_place.py"
 
+echo "== L11a offline grass placement matches committed offsets"
+python3 "$HERE/../tools/grass/place.py" --check
+python3 "$HERE/../tools/grass/test_place.py"
+
 echo "== L7 offline hill profile matches committed heights"
 python3 "$HERE/../tools/terrain/gen_terrain.py" --check
 

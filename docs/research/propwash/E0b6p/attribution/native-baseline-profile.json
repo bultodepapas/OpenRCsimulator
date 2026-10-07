@@ -1,0 +1,605 @@
+{
+	"calls_per_batch": 3000,
+	"cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+	"format": "openrc-e0b6p-native-attribution-profile v1",
+	"godot": "4.7.2-stable (official)",
+	"instrumented": false,
+	"measured_batches": 7,
+	"rows": [
+		{
+			"adapter_external_us_per_call_batches": [
+				53.879333333333335,
+				51.141333333333336,
+				47.54866666666667,
+				48.27033333333333,
+				48.840333333333334,
+				47.157666666666664,
+				53.268
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.021333333333333333,
+				0.020666666666666667,
+				0.037333333333333336,
+				0.026333333333333334,
+				0.03166666666666667,
+				0.021333333333333333
+			],
+			"direct_external_us_per_call_batches": [
+				37.797,
+				41.343666666666664,
+				42.07033333333333,
+				42.61066666666667,
+				40.557,
+				39.226333333333336,
+				37.28633333333333
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"fade": 1.0,
+			"regime": "forward"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				50.22266666666667,
+				53.91166666666667,
+				55.56133333333333,
+				60.04933333333334,
+				64.80366666666667,
+				67.805,
+				60.675
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.021666666666666667,
+				0.029,
+				0.020666666666666667,
+				0.021333333333333333,
+				0.021,
+				0.028333333333333332
+			],
+			"direct_external_us_per_call_batches": [
+				41.59,
+				38.653,
+				39.638333333333335,
+				38.663666666666664,
+				37.113,
+				42.541666666666664,
+				37.29566666666667
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"fade": 1.0,
+			"regime": "stall"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				49.053,
+				50.31733333333333,
+				46.02733333333333,
+				51.75,
+				52.29333333333334,
+				42.547,
+				46.68
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.036333333333333336,
+				0.023666666666666666,
+				0.025333333333333333,
+				0.021333333333333333,
+				0.025,
+				0.026333333333333334
+			],
+			"direct_external_us_per_call_batches": [
+				39.401,
+				46.623333333333335,
+				36.153,
+				37.263,
+				40.919,
+				33.06933333333333,
+				43.58833333333333
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"fade": 1.0,
+			"regime": "static"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				57.519666666666666,
+				51.94,
+				53.78666666666667,
+				54.17366666666667,
+				54.43033333333333,
+				54.892,
+				53.2
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.02,
+				0.03933333333333333,
+				0.021666666666666667,
+				0.021666666666666667,
+				0.021,
+				0.03133333333333333
+			],
+			"direct_external_us_per_call_batches": [
+				43.904333333333334,
+				50.89366666666667,
+				47.086666666666666,
+				47.093666666666664,
+				43.57633333333333,
+				42.181333333333335,
+				51.370666666666665
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"fade": 1.0,
+			"regime": "spin"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				48.98,
+				48.464,
+				46.44266666666667,
+				45.35966666666667,
+				45.804,
+				47.796,
+				47.92333333333333
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.034,
+				0.036333333333333336,
+				0.027666666666666666,
+				0.024,
+				0.023333333333333334,
+				0.021,
+				0.022333333333333334
+			],
+			"direct_external_us_per_call_batches": [
+				32.611,
+				36.108666666666664,
+				33.29633333333334,
+				36.61233333333333,
+				32.926,
+				36.983,
+				34.45066666666666
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"fade": 0.5000000000000002,
+			"regime": "reverse_fade"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				3.2096666666666667,
+				3.340333333333333,
+				3.3673333333333333,
+				3.748666666666667,
+				3.5006666666666666,
+				3.836,
+				3.352
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 0,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021,
+				0.04633333333333333,
+				0.021666666666666667,
+				0.021,
+				0.021,
+				0.022333333333333334,
+				0.03133333333333333
+			],
+			"direct_external_us_per_call_batches": [
+				15.664333333333333,
+				15.186,
+				14.043666666666667,
+				14.571,
+				15.910333333333334,
+				15.964666666666666,
+				14.477333333333334
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"fade": 0.0,
+			"regime": "reverse_off"
+		}
+	],
+	"warmup_calls_per_regime": 500
+}

@@ -1,0 +1,64 @@
+{
+  "format": "openrc-l11a-validation v1",
+  "date": "2026-10-07",
+  "baseline_commit": "f516ff208f50833b80c18f21c32411bce7c9b653",
+  "runtime_sha256": {
+    "render/field.gd": "044206edcd069b569c79b3866833962d32455cf53692a0509d1318e33f2b39a2",
+    "render/ground.gdshader": "709cbace9aa045e510e13507561dcfaaf41d2d63d63456eb46f611393a25e1c9",
+    "render/near_grass.gd": "0675cb00c768f81abf86a28aefb2c45b422862621af1944af02962fe1a382795",
+    "render/near_grass.gdshader": "ff662b61f0ff8423f09f92f220a1710968f0ef0d80065ef00cc6f5abde7211e6",
+    "render/grass_surface.gdshaderinc": "634a2660ae11231d716672e7a1e8345a3f8293bf2c0cc83c8ab346a4578e423c",
+    "data/fields/grass.json": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52"
+  },
+  "trace": {
+    "samples": 721,
+    "identical_except_created_utc": true,
+    "hashes": {
+      "baseline": {
+        "raw_sha256": "1513b823de7dd870321c5b8d9c2b681ce776ed002a70e21d49e88c3ba3b167ee",
+        "normalized_sha256": "f4127d210f12a33fc31526f976970aaf08600898f55b4aacfb7fa45a120723b4"
+      },
+      "candidate": {
+        "raw_sha256": "1513b823de7dd870321c5b8d9c2b681ce776ed002a70e21d49e88c3ba3b167ee",
+        "normalized_sha256": "f4127d210f12a33fc31526f976970aaf08600898f55b4aacfb7fa45a120723b4"
+      }
+    }
+  },
+  "exported_frame": {
+    "byte_identical_to_editor": true,
+    "png_sha256": "54add0a670303afecd6f60626beb490864fda2b043f1efb203320724b55aa37f"
+  },
+  "export_exit": {
+    "exit_code": 0,
+    "elapsed_s": 59.57
+  },
+  "baseline_tests": {
+    "exit_code": 0,
+    "elapsed_s": 579.39
+  },
+  "scope": "Isolated snapshots exclude later concurrent radio/native-physics work. Export checks include Linux runtime and empty-project field packs for all three platforms; no native Windows/macOS launch.",
+  "candidate_tests": {
+    "exit_code": 0,
+    "elapsed_s": 627.37
+  },
+  "focused_grass_checks": {
+    "passed": 37,
+    "failed": 0
+  },
+  "readability": {
+    "captures": 64,
+    "pose_metrics": 48,
+    "identical_to_previous_phase": true
+  },
+  "integration_base_commit": "488bc6f",
+  "integration_note": "Only two new radio test scripts/UIDs were added to app after the frozen baseline; runtime inputs stayed unchanged.",
+  "linter": {
+    "errors": 0,
+    "warnings": 12,
+    "warnings_existing": true
+  },
+  "complete": true,
+  "capture_summary": "capture-summary.json",
+  "seam_summary": "seam-summary.json",
+  "full_capture_wrapper_run": false
+}

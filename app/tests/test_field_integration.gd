@@ -89,7 +89,8 @@ func _test_builder_contract() -> void:
 	var first: Node3D = FieldBuilder.build(normalized)
 	var second: Node3D = FieldBuilder.build(normalized)
 	_check("builder leaves normalized input unchanged", JSON.stringify(normalized) == original_normalized)
-	_check("builder creates one named mesh per surface", first.get_child_count() == 3
+	_check("builder creates one named mesh per surface", first.get_child_count() == 4
+		and first.get_node_or_null("NearGrass") is Node3D
 		and first.get_node_or_null("rough") is MeshInstance3D
 		and first.get_node_or_null("mown") is MeshInstance3D
 		and first.get_node_or_null("runway") is MeshInstance3D)
@@ -371,6 +372,14 @@ func _field_instances_are_independent(first: Node3D, second: Node3D) -> bool:
 		var other: Node = second.get_node_or_null(NodePath(String(child.name)))
 		if other == null or is_same(child, other):
 			return false
+		if child.name == &"NearGrass":
+			if child.get_child_count() != other.get_child_count():
+				return false
+			for chunk: MultiMeshInstance3D in child.get_children():
+				var other_chunk: MultiMeshInstance3D = other.get_node_or_null(NodePath(String(chunk.name))) as MultiMeshInstance3D
+				if other_chunk == null or is_same(chunk.multimesh, other_chunk.multimesh) or is_same(chunk.multimesh.mesh, other_chunk.multimesh.mesh):
+					return false
+			continue
 		if not child is MeshInstance3D or not other is MeshInstance3D:
 			return false
 		var first_mesh: MeshInstance3D = child as MeshInstance3D
@@ -426,7 +435,7 @@ func _field_ids_are_independent(previous_ids: Dictionary, active_field: Node3D) 
 
 func _field_has_only_surface_meshes(field_node: Node3D) -> bool:
 	for node: Node in _descendants_including_self(field_node):
-		if node != field_node and not node is MeshInstance3D:
+		if node != field_node and not node is MeshInstance3D and not node is MultiMeshInstance3D and node.name != &"NearGrass":
 			return false
 		if node is Camera3D or node is WorldEnvironment or node is CollisionObject3D or node.get_script() == FlightSession:
 			return false

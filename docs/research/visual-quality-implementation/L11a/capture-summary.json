@@ -1,0 +1,1088 @@
+{
+  "baseline_parity": {
+    "baseline_app": "/tmp/openrc-l11-baseline/app",
+    "byte_identical": true,
+    "deltas": {
+      "band-25-35m": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "fade-camera-35m": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "near-runway": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az000-el10": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az000-el25": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az090-el10": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az090-el25": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az180-el10": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az180-el25": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az270-el10": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "pilot-az270-el25": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      },
+      "raised-low-pass": {
+        "byte_identical": true,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "mean_abs_rgb_delta": 0.0,
+        "p99_max_channel_delta": 0.0
+      }
+    },
+    "paired_views": 12
+  },
+  "candidate": {
+    "budgets": {
+      "draw_delta_limit": 5,
+      "draw_delta_max": 2,
+      "primitive_delta_limit": 100000,
+      "primitive_delta_max": 20552
+    },
+    "pairs": {
+      "band-25-35m": {
+        "changed_pixels": 15972,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "e0055c762c41871bebe9a6fd6c729853f9c2866ea3a4204f041156f802e387a4",
+        "grass_on_sha256": "445e215eea75b121af8fe34c42018437a22755d85558eeb046fd5751d0f20917",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 89792,
+          "on": 103141
+        },
+        "projected_grass_footprint_pixels": 421720,
+        "projected_seam_band_pixels": 37122,
+        "scenario_id": "band-25-35m",
+        "seam_band_baseline_rgb_mean": [
+          87.278703,
+          101.951053,
+          51.789343
+        ],
+        "seam_band_max_channel_percent": 0.023771,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.020401,
+          0.019262,
+          0.023771
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.017806,
+          0.019638,
+          0.012311
+        ]
+      },
+      "fade-camera-35m": {
+        "changed_pixels": 0,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 2,
+          "on": 4
+        },
+        "grass_off_sha256": "019aae344442a1f935a3cef957c119b35b520bc650ab71b7595aae71f1a62a63",
+        "grass_on_sha256": "019aae344442a1f935a3cef957c119b35b520bc650ab71b7595aae71f1a62a63",
+        "objects": {
+          "delta": 2,
+          "off": 2,
+          "on": 4
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 84962,
+          "on": 98311
+        },
+        "projected_grass_footprint_pixels": 624618,
+        "projected_seam_band_pixels": 235140,
+        "scenario_id": "fade-camera-35m",
+        "seam_band_baseline_rgb_mean": [
+          105.521464,
+          119.624454,
+          66.571217
+        ],
+        "seam_band_max_channel_percent": 0.0,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "near-runway": {
+        "changed_pixels": 18617,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 4,
+          "on": 6
+        },
+        "grass_off_sha256": "1fa12f753884b7d04c7230f3af1658b4f3e1caf27558b6aa8ec9fa357d8870fb",
+        "grass_on_sha256": "cad9eb2409ca68503520114b351b217dfa71dafa80736669054e4090056fd57a",
+        "objects": {
+          "delta": 2,
+          "off": 4,
+          "on": 6
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 87506,
+          "on": 100855
+        },
+        "projected_grass_footprint_pixels": 575606,
+        "projected_seam_band_pixels": 29651,
+        "scenario_id": "near-runway",
+        "seam_band_baseline_rgb_mean": [
+          100.005194,
+          113.859971,
+          61.83235
+        ],
+        "seam_band_max_channel_percent": 0.024217,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.022325,
+          0.022363,
+          0.024217
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.022326,
+          0.025463,
+          0.014974
+        ]
+      },
+      "pilot-az000-el10": {
+        "changed_pixels": 62737,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "75f9ae243d1709038a082e8b3077bd5eb6cc203081fa9e4eea338418e4632375",
+        "grass_on_sha256": "bd572f066bf28c392e3eebca8b3100d4acb55ecdb0a46b4981002114e3172146",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 89792,
+          "on": 103141
+        },
+        "projected_grass_footprint_pixels": 582448,
+        "projected_seam_band_pixels": 21436,
+        "scenario_id": "pilot-az000-el10",
+        "seam_band_baseline_rgb_mean": [
+          87.512269,
+          102.163697,
+          51.997528
+        ],
+        "seam_band_max_channel_percent": 0.055804,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.046058,
+          0.044064,
+          0.055804
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.040306,
+          0.045018,
+          0.029017
+        ]
+      },
+      "pilot-az000-el25": {
+        "changed_pixels": 91494,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "208bbd1e662a16c6a7a56ef5d62fee954792f030006cdba1228c4845c0faa68c",
+        "grass_on_sha256": "2f2c63a90840e31287d1d3e401bc8311e6bdbe92349767f4c9345101607686f2",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 89792,
+          "on": 103141
+        },
+        "projected_grass_footprint_pixels": 861056,
+        "projected_seam_band_pixels": 24144,
+        "scenario_id": "pilot-az000-el25",
+        "seam_band_baseline_rgb_mean": [
+          86.811382,
+          101.46438,
+          51.410454
+        ],
+        "seam_band_max_channel_percent": 0.065418,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.055917,
+          0.05376,
+          0.065418
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.048542,
+          0.054548,
+          0.033632
+        ]
+      },
+      "pilot-az090-el10": {
+        "changed_pixels": 81754,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "8523e39c3c2a17e554920ea091c4e6e54346693a0d04cce1b0c6a3f2237f398f",
+        "grass_on_sha256": "c3fdac14fe55dd8c9fc3d557571d23c522245b74bfcd0e8e660e339e7ad55a40",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 17164,
+          "off": 90278,
+          "on": 107442
+        },
+        "projected_grass_footprint_pixels": 582448,
+        "projected_seam_band_pixels": 21436,
+        "scenario_id": "pilot-az090-el10",
+        "seam_band_baseline_rgb_mean": [
+          110.404646,
+          125.434876,
+          68.48162
+        ],
+        "seam_band_max_channel_percent": 0.05402,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.049606,
+          0.046823,
+          0.05402
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.054768,
+          0.058733,
+          0.036994
+        ]
+      },
+      "pilot-az090-el25": {
+        "changed_pixels": 107565,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "59107730d402009e16379d67d9bc756a690992f1f9dd98f8f6b5c3ea7310a62b",
+        "grass_on_sha256": "a065b29f98686d82387188339e72fc72ae5b035d7beedf4b8dbedcebb3241d4a",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 17164,
+          "off": 90278,
+          "on": 107442
+        },
+        "projected_grass_footprint_pixels": 861056,
+        "projected_seam_band_pixels": 24144,
+        "scenario_id": "pilot-az090-el25",
+        "seam_band_baseline_rgb_mean": [
+          110.446322,
+          125.509899,
+          68.394798
+        ],
+        "seam_band_max_channel_percent": 0.058922,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.051563,
+          0.049962,
+          0.058922
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.05695,
+          0.062707,
+          0.0403
+        ]
+      },
+      "pilot-az180-el10": {
+        "changed_pixels": 77461,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 5,
+          "on": 7
+        },
+        "grass_off_sha256": "1d4f01c9bd00b71a324c234d5d95a399fd0258c198c2e1c8a17bc197f1f20b18",
+        "grass_on_sha256": "aae48b1d1bbb053a0948b058af6b074ebed29fcfd39c23de89475078d96a3156",
+        "objects": {
+          "delta": 2,
+          "off": 5,
+          "on": 7
+        },
+        "primitives": {
+          "delta": 20552,
+          "off": 90210,
+          "on": 110762
+        },
+        "projected_grass_footprint_pixels": 582448,
+        "projected_seam_band_pixels": 21436,
+        "scenario_id": "pilot-az180-el10",
+        "seam_band_baseline_rgb_mean": [
+          102.957268,
+          119.259283,
+          62.059013
+        ],
+        "seam_band_max_channel_percent": 0.078178,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.066244,
+          0.061805,
+          0.078178
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.068203,
+          0.073708,
+          0.048517
+        ]
+      },
+      "pilot-az180-el25": {
+        "changed_pixels": 107443,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 5,
+          "on": 7
+        },
+        "grass_off_sha256": "08e058671ba171cd1a47ae7b5d7434f14cd28158b931dc419f7e2a6e94c6d081",
+        "grass_on_sha256": "f2606ee5f2e3786e88e8a4b7c89bdb79ce1e981b0b4776f2736797107dfd33d6",
+        "objects": {
+          "delta": 2,
+          "off": 5,
+          "on": 7
+        },
+        "primitives": {
+          "delta": 20552,
+          "off": 90210,
+          "on": 110762
+        },
+        "projected_grass_footprint_pixels": 861056,
+        "projected_seam_band_pixels": 24144,
+        "scenario_id": "pilot-az180-el25",
+        "seam_band_baseline_rgb_mean": [
+          103.181784,
+          119.50994,
+          62.206842
+        ],
+        "seam_band_max_channel_percent": 0.082028,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.069885,
+          0.065155,
+          0.082028
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.072109,
+          0.077866,
+          0.051027
+        ]
+      },
+      "pilot-az270-el10": {
+        "changed_pixels": 89270,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "714fdfac3ee0199561b3492f3399cd6a43e8f654ec54619ccc9e5a2f4efaffeb",
+        "grass_on_sha256": "9dc4740b5ab09b7c4891550c82eecbd61495760f0e7dc58f19f202c07ae4de21",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 16737,
+          "off": 89726,
+          "on": 106463
+        },
+        "projected_grass_footprint_pixels": 582448,
+        "projected_seam_band_pixels": 21436,
+        "scenario_id": "pilot-az270-el10",
+        "seam_band_baseline_rgb_mean": [
+          108.099552,
+          122.828839,
+          66.783215
+        ],
+        "seam_band_max_channel_percent": 0.047081,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.041947,
+          0.040183,
+          0.047081
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.045344,
+          0.049356,
+          0.031442
+        ]
+      },
+      "pilot-az270-el25": {
+        "changed_pixels": 115234,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "0ff6c10921dbcebfa18a3567ed59f1ff53b3a10e0ff7d236f17a69e8c1f38156",
+        "grass_on_sha256": "c51e39dbe7e025d43943b75e8c3685e8975b7f9c339c73846d3190a4a36d6ead",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 16737,
+          "off": 89726,
+          "on": 106463
+        },
+        "projected_grass_footprint_pixels": 861056,
+        "projected_seam_band_pixels": 24144,
+        "scenario_id": "pilot-az270-el25",
+        "seam_band_baseline_rgb_mean": [
+          107.656809,
+          122.379059,
+          66.361746
+        ],
+        "seam_band_max_channel_percent": 0.047371,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.041973,
+          0.040816,
+          0.047371
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.045187,
+          0.04995,
+          0.031436
+        ]
+      },
+      "raised-low-pass": {
+        "changed_pixels": 26807,
+        "changed_pixels_outside_projected_grass_footprint": 0,
+        "draw_calls": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "grass_off_sha256": "1194044cd7c4ac14086510d2e6470e013d95c75effcbce3bf8263ff3922b741e",
+        "grass_on_sha256": "1ce67cb4d99f26ea88bc64c1e4f880ed31c37e5bd34fd20e1cc94bb9fa4a3b6b",
+        "objects": {
+          "delta": 2,
+          "off": 6,
+          "on": 8
+        },
+        "primitives": {
+          "delta": 13349,
+          "off": 89792,
+          "on": 103141
+        },
+        "projected_grass_footprint_pixels": 508046,
+        "projected_seam_band_pixels": 37150,
+        "scenario_id": "raised-low-pass",
+        "seam_band_baseline_rgb_mean": [
+          87.320377,
+          101.989125,
+          51.824791
+        ],
+        "seam_band_max_channel_percent": 0.02301,
+        "seam_band_mean_abs_percent_of_baseline": [
+          0.020407,
+          0.019056,
+          0.02301
+        ],
+        "seam_band_mean_abs_rgb_delta": [
+          0.01782,
+          0.019435,
+          0.011925
+        ]
+      }
+    },
+    "wind": {
+      "fixed_roots_supported_by": "all 14 y=0 mesh vertices have UV.y=0; shader offsets are weighted by UV.y squared",
+      "wind_changed_pixels_outside_grass_footprint": 0,
+      "wind_clock_wrap": 1024.0,
+      "wind_t0_t1": {
+        "changed_pixel_fraction": 0.08611436631944444,
+        "changed_pixels": 79363,
+        "mean_abs_rgb_delta": 0.19728153935185186,
+        "p99_max_channel_delta": 6.0
+      },
+      "wind_t0_t1024_byte_identical": true,
+      "wind_vector": [
+        5.0,
+        0.0,
+        0.0
+      ],
+      "windless_t0_case": "pilot-az000-el10-grass-on",
+      "windless_t0_t1_byte_identical": true,
+      "windless_t1_sha256": "bd572f066bf28c392e3eebca8b3100d4acb55ecdb0a46b4981002114e3172146"
+    }
+  },
+  "capture_scene": {
+    "environment": "Atmosphere.environment + Atmosphere.create_sun",
+    "field": "FieldLoader.load_from(DEFAULT_PATH) then FieldBuilder.build",
+    "scenery_off": "candidate and optional baseline sets",
+    "scenery_on": "SC-16 flower integration pair",
+    "shader_clock_registered_before_field_build": true
+  },
+  "capture_set": {
+    "baseline_app": "/tmp/openrc-l11-baseline/app",
+    "baseline_images_per_process": 12,
+    "independent_candidate_processes": 2,
+    "independent_scenery_processes": 2,
+    "production_images_per_process": 28,
+    "production_paired_scenarios": [
+      "pilot-az000-el10",
+      "pilot-az090-el10",
+      "pilot-az180-el10",
+      "pilot-az270-el10",
+      "pilot-az000-el25",
+      "pilot-az090-el25",
+      "pilot-az180-el25",
+      "pilot-az270-el25",
+      "raised-low-pass",
+      "near-runway",
+      "band-25-35m",
+      "fade-camera-35m"
+    ],
+    "scenery_images_per_process": 2,
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    }
+  },
+  "complete": true,
+  "format": "openrc-l11a-grass-review v1",
+  "grass_contract": {
+    "casts_shadows": false,
+    "clumps": 4843,
+    "fade": {
+      "end_m": 30.0,
+      "source": "compiled ShaderMaterial parameter defaults",
+      "start_m": 22.0,
+      "uses_camera_and_pilot": true
+    },
+    "fixed_root_geometry_and_shader_contract": true,
+    "multimesh_chunks": 4,
+    "node_count": 1,
+    "observed_radius_m": {
+      "max": 29.9966640472412,
+      "min": 0.104393482208252
+    },
+    "opaque": true,
+    "pilot_radius_m": 30.0,
+    "placement_path": "res://data/fields/grass.json",
+    "present": true,
+    "runway_clumps": 0,
+    "shader_resource_path": "res://render/near_grass.gdshader",
+    "shader_sha256": "ff662b61f0ff8423f09f92f220a1710968f0ef0d80065ef00cc6f5abde7211e6",
+    "triangles": 33901,
+    "triangles_per_clump": 7
+  },
+  "limits": [
+    "Software OpenGL proves output repeatability and renderer counters, not target-GPU frame time.",
+    "The projected 36 m mask is a conservative image-space envelope around the committed 30 m grass placement."
+  ],
+  "repeatability": {
+    "baseline": {
+      "byte_identical": true,
+      "case_count": 12,
+      "image_mismatches": [],
+      "manifests_byte_identical": true
+    },
+    "candidate": {
+      "byte_identical": true,
+      "case_count": 28,
+      "image_mismatches": [],
+      "manifests_byte_identical": true
+    },
+    "scenery": {
+      "byte_identical": true,
+      "case_count": 2,
+      "image_mismatches": [],
+      "manifests_byte_identical": true
+    }
+  },
+  "scenery_integration": {
+    "flower_nodes": {
+      "count": 19,
+      "names": [
+        "flowers_-1_-1",
+        "flowers_-1_0",
+        "flowers_0_-2",
+        "flowers_0_-1",
+        "flowers_0_0",
+        "flowers_0_1",
+        "flowers_1_-2",
+        "flowers_1_-1",
+        "flowers_1_0",
+        "flowers_3_-5",
+        "flowers_3_-4",
+        "flowers_3_-3",
+        "flowers_3_-2",
+        "flowers_3_-1",
+        "flowers_3_0",
+        "flowers_3_1",
+        "flowers_3_2",
+        "flowers_3_3",
+        "flowers_3_4"
+      ],
+      "unique_names": true
+    },
+    "grass_pair": {
+      "changed_pixels": 18611,
+      "changed_pixels_outside_projected_grass_footprint": 0,
+      "draw_calls": {
+        "delta": 2,
+        "off": 64,
+        "on": 66
+      },
+      "grass_off_sha256": "c7b8c33267ae2972ca91791d99d9af425f0e3cf5f2660b9b99d205ce5ede54dc",
+      "grass_on_sha256": "8fb1f078c8bc4a8ed83a4782f46537a9f6ccfab0c2ae5dadd8f05a3748d762ff",
+      "objects": {
+        "delta": 2,
+        "off": 64,
+        "on": 66
+      },
+      "primitives": {
+        "delta": 13349,
+        "off": 155677,
+        "on": 169026
+      },
+      "projected_grass_footprint_pixels": 575606,
+      "projected_seam_band_pixels": 29651,
+      "scenario_id": "scenery-runway-edge",
+      "seam_band_baseline_rgb_mean": [
+        100.110452,
+        114.664328,
+        61.978955
+      ],
+      "seam_band_max_channel_percent": 0.032913,
+      "seam_band_mean_abs_percent_of_baseline": [
+        0.029309,
+        0.032913,
+        0.029003
+      ],
+      "seam_band_mean_abs_rgb_delta": [
+        0.029341,
+        0.037739,
+        0.017976
+      ]
+    },
+    "no_duplicate_flower_nodes": true
+  },
+  "source_provenance": {
+    "baseline": {
+      "producer_file_map_sha256": "564daeddae8e7ec91464f76767cc093285b01c1a6fa827b14b53d666a22ee8c6",
+      "producer_files_sha256": {
+        "tools/grass/capture_grass.gd": "8a2bd34924d4b6a01af7fff4379776165b10ec817ad340c9f43d2efb9eff94a4",
+        "tools/grass/check_grass.py": "a2cda6fb8622919a9f1a620da291a3a6dd40f951c117ec72810271b6ef1fc0c4"
+      },
+      "project": "/tmp/openrc-l11-baseline/app",
+      "runtime_file_count": 150,
+      "runtime_file_map_sha256": "a3dc04c12bd49f631d0b7d0c58ea913ddba2b47b608d2538110faa9f4a41175b",
+      "runtime_files_sha256": {
+        "addons/build_info/export_plugin.gd": "f70fae5f634ec905b4b47eb79af8d116a555d12fab28d8bf6b2638f20faa33f9",
+        "addons/build_info/plugin.cfg": "734f5d6589a61d704b885e229c79b89a84368c16aa8a8cb536fd5ea991d9d317",
+        "addons/build_info/plugin.gd": "6bf57404c6801c66edbffed1d130db41a7e817f979d83d868ab1d1e09b8da34a",
+        "aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+        "aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+        "aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+        "aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+        "aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+        "aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+        "aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+        "aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+        "aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+        "aircraft/inspect_p51.gd": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023",
+        "aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+        "aircraft/livery.svg.import": "a6887e03b90e9f398c6d0ede74f46241e842b362d1dc480f5ba26e8760fd8909",
+        "aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+        "aircraft/p51d_appearance.gd": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+        "aircraft/p51d_finish.gd": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+        "aircraft/p51d_geometry.gd": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+        "aircraft/p51d_model.gd": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+        "aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+        "aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+        "aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+        "aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+        "aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+        "aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+        "aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+        "aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+        "aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+        "aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+        "aircraft/verify_p51.gd": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7",
+        "aircraft/verify_p51_clearance.gd": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12",
+        "aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+        "app_root.gd": "afe8087f5e08a5903aa77d9b2849509d01c81101f6e24b2a072a4c9e06488409",
+        "app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+        "app_state/aircraft_catalog.gd": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9",
+        "app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+        "app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+        "assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+        "assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+        "assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+        "data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+        "data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+        "data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+        "data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+        "data/field_loader.gd": "8f53332471875a7bb1384d41e750245c2a63826440e10cb18001ce4eef071649",
+        "data/fields/default.json": "42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1",
+        "data/fields/horizon.json": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+        "data/ground/surface_friction.json": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94",
+        "data/scenery/default.json": "a9362f52a813b1fa3c0923f38023e01c08b4fc0a78e9029c6504ae88c34c2d23",
+        "data/scenery/models/car_hatch.json": "47725a37414734ef89e7c97113072da0669840156d186145992ebd72df8d42e5",
+        "data/scenery/models/car_sedan.json": "9cb24db341cb40afd2ba48e0e9a1a9c4b6d79e7d409e0f7c1a141c0e9b0b7b75",
+        "data/scenery/models/car_sport.json": "be6014ab38658d06505f70857a5020f772c8d2d7969a0c85df735ac7cb52e69f",
+        "data/scenery/models/car_suv.json": "4af69a9eeadf308fcb5db07e2b43090a8fc1325b7249a69a370c2848512e2610",
+        "data/scenery/models/cow.json": "b3faecaaf20a5122e93599230b05ff8f318a906fe3bf1fc9012dac0dc78593c8",
+        "data/scenery/models/fleet_avanti.json": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec",
+        "data/scenery/models/fleet_extra.json": "9920c2b286ca0613df34b41ffcc9e26d0f1ae6b7b8747db54e18f57787984057",
+        "data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
+        "data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
+        "data/scenery/models/sheep.json": "7f0db95fb1c5f7a4cefb4ae6b80b913d0ffcf83295fc858cf11597fab8884338",
+        "export_presets.cfg": "aa1ad77f476f201ddea470bd9f63640c4273d747eb8598e00fbfed716b08caba",
+        "i18n/es.po": "303914c90385dd6e5094a7bd4e983ffeae406a1e7b7835925eb9ed81581a6c0d",
+        "input/commands.gd": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2",
+        "input/input_report.gd": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb",
+        "input/input_report_data.gd": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d",
+        "input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+        "input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+        "input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+        "input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+        "main.gd": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79",
+        "main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+        "physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+        "physics/air_data.gd": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+        "physics/aircraft_data.gd": "992843aadd36607b2a220309ddb260924b00e6f5429de7666fbe0700e3512d6e",
+        "physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+        "physics/flight_modes.gd": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b",
+        "physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+        "physics/ground_start.gd": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed",
+        "physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+        "physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+        "physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+        "physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+        "physics/propulsion.gd": "3f61b2b4709610cd76c5eaf6dffd35301c9f2982ea8e69053ac8a745c2c5f0e6",
+        "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+        "physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+        "physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+        "physics/trim.gd": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338",
+        "physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+        "physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+        "project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+        "render/airplane.gd": "7a3315cb1d7588ab600078f17fc91c062b73c7bf41ec2f6cde7e876a01b59dd3",
+        "render/atmosphere.gd": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70",
+        "render/cloud_field.gdshaderinc": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+        "render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+        "render/field.gd": "4e0d2ef9abd94b2b0f508e1d70f70ed03505ede724a4baa81359c279aa8b9b1d",
+        "render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+        "render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+        "render/ground.gd": "7e23191d3997acb2ba1a3110d8041d4ad2f06b199ba141788ec45f6ad1f4742d",
+        "render/ground.gdshader": "11a08b9e9d2e3d8113e969cd8c02d6c96446a45951d13aba86fed18e974e9eb0",
+        "render/horizon.gd": "194cbdf4ada2375adda36b3b25de1a39e82d7b68f60b787ece8e6b44509e130d",
+        "render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+        "render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+        "render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+        "render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+        "render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+        "render/sky.gdshader": "e05c62adedf0cf4cb03f22917718c551e000260f2df55c136466dd7fb3609769",
+        "render/tree_assets.gd": "bff775b4451b8e80a7ab69e6c9790ad00f5ee696bee582eaffb1869baf68d68d",
+        "render/tree_identity.gdshaderinc": "d501de11fdca1d5d582404f4575d631ad484d93c60a21d802c5728d433f5d92c",
+        "render/treeline.gd": "843732618e686bfa129e5f593dbf22ee3275e3b0300be03bf058ba95cef1682e",
+        "render/treeline.gdshader": "6c5c3adc4f8b4000874192c623eb2c61e7ee5a3c055c8331aef80d48cffab713",
+        "render/visual_evidence.gd": "1459da195a587a65c3472f15f86af54267d714c3e86c77d4fbb07ac87e0f4a80",
+        "scenery/ambience.gd": "735a9374d85cdcc05d93334c983e4447a3050515c38109851d3ac31119f7ca86",
+        "scenery/ambience_player.gd": "2ffe03adbbba99ee8a545e732f80f50010861fc29c000617c053b6f2e82857b3",
+        "scenery/birds.gd": "fc0fb8a98290bcb8b4ed826fc567e8755f096fa896c5ec2f1bda7145eeb6deb0",
+        "scenery/birds.gdshader": "e38aa2b3ee9fe3b4bcdd98b915304f5fd16d0e4f1c788193f089e1322bf6cb9f",
+        "scenery/capture_views.gd": "292442d8cad3f86e19a3014848bb0ba5fa84b2367a9c6201548d8accf2aa9981",
+        "scenery/fleet.gd": "943b67c3519834264332ed2b483ccff68f96626fb2984036e6e8d26f88406339",
+        "scenery/flowers.gd": "4eeb931918f79de3e628e3b88e3dbda810e0dcd39fcd002c09d9fb39d080e009",
+        "scenery/flowers.gdshader": "dbcc0ded552366eccf008b9fee243605733f21e12f4607d8c5ecd60a35092083",
+        "scenery/ground_features.gd": "e748340c59eb4ce41a256b0abfa028bec8088d333f2160a81be6221bacd81970",
+        "scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+        "scenery/models.gd": "10d94822d3841351ad81d95232dc276dc601af23b54a94a12d603100020a0c0c",
+        "scenery/motion.gdshader": "9cd2df6f7499bfb972e3c90eb2ad2542b12b003e4180b00666255e4c86e651a0",
+        "scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
+        "scenery/postcards.gd": "e75d9ca1c7fe89dfd89bbe0341ba13c3d6c4ac3a2d2c44d307c32aff74ea0e1c",
+        "scenery/prefabs.gd": "77717b7994d91bc28f60da3c8f72ff89107be559d271315bc9f34eb8e540ff07",
+        "scenery/runway_scenario.gd": "aa03f1fbfb14d977c5136bf0c54917e3a7f0a895a998eace1655991f4f6fb604",
+        "scenery/scenery.gd": "546083526d7d828e376ef3b589c83b561297278816361290adf26b770330de5b",
+        "scenery/scenery_loader.gd": "27b1cce3a2ba6db18a116ba48a1e8681c31a3f95d79ff56d7d7c9291656e2d2b",
+        "scenery/takeoff_pilot.gd": "6f9f9bbc003b9f5d71f6f79f3e8c160b8d6cf88283bc2579490fe5ddba87f513",
+        "sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+        "sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+        "sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+        "sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+        "sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+        "sim/simulation.gd": "5a885173d805996ad74dbbb1b26dfeb0c824417e35f40e885c47c4d771223b64",
+        "sim/trace.gd": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9",
+        "spec.gd": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b",
+        "ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+        "ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+        "ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+        "ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+        "ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+        "ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+        "ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+        "ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+        "ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+        "ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+        "ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+        "ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+      },
+      "unchanged_during_capture": true
+    },
+    "candidate": {
+      "producer_file_map_sha256": "564daeddae8e7ec91464f76767cc093285b01c1a6fa827b14b53d666a22ee8c6",
+      "producer_files_sha256": {
+        "tools/grass/capture_grass.gd": "8a2bd34924d4b6a01af7fff4379776165b10ec817ad340c9f43d2efb9eff94a4",
+        "tools/grass/check_grass.py": "a2cda6fb8622919a9f1a620da291a3a6dd40f951c117ec72810271b6ef1fc0c4"
+      },
+      "project": "/tmp/openrc-l11-candidate/app",
+      "runtime_file_count": 154,
+      "runtime_file_map_sha256": "ded05ea8d49861d5dba80f0c94a26f123f86b6d9dbaeb515c06693d33bc777f8",
+      "runtime_files_sha256": {
+        "addons/build_info/export_plugin.gd": "f70fae5f634ec905b4b47eb79af8d116a555d12fab28d8bf6b2638f20faa33f9",
+        "addons/build_info/plugin.cfg": "734f5d6589a61d704b885e229c79b89a84368c16aa8a8cb536fd5ea991d9d317",
+        "addons/build_info/plugin.gd": "6bf57404c6801c66edbffed1d130db41a7e817f979d83d868ab1d1e09b8da34a",
+        "aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+        "aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+        "aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+        "aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+        "aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+        "aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+        "aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+        "aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+        "aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+        "aircraft/inspect_p51.gd": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023",
+        "aircraft/livery.svg": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec",
+        "aircraft/livery.svg.import": "a6887e03b90e9f398c6d0ede74f46241e842b362d1dc480f5ba26e8760fd8909",
+        "aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+        "aircraft/p51d_appearance.gd": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+        "aircraft/p51d_finish.gd": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+        "aircraft/p51d_geometry.gd": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+        "aircraft/p51d_model.gd": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+        "aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+        "aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+        "aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+        "aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+        "aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+        "aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+        "aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+        "aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+        "aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+        "aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+        "aircraft/verify_p51.gd": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7",
+        "aircraft/verify_p51_clearance.gd": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12",
+        "aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+        "app_root.gd": "afe8087f5e08a5903aa77d9b2849509d01c81101f6e24b2a072a4c9e06488409",
+        "app_root.tscn": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74",
+        "app_state/aircraft_catalog.gd": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9",
+        "app_state/build_info.gd": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174",
+        "app_state/preferences.gd": "3c154962057fd3cb4e9022250a005843f379b4c4c45cc971746caa8564b10aba",
+        "assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+        "assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+        "assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+        "data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+        "data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+        "data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+        "data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+        "data/field_loader.gd": "8f53332471875a7bb1384d41e750245c2a63826440e10cb18001ce4eef071649",
+        "data/fields/default.json": "42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1",
+        "data/fields/grass.json": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52",
+        "data/fields/horizon.json": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+        "data/ground/surface_friction.json": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94",
+        "data/scenery/default.json": "a9362f52a813b1fa3c0923f38023e01c08b4fc0a78e9029c6504ae88c34c2d23",
+        "data/scenery/models/car_hatch.json": "47725a37414734ef89e7c97113072da0669840156d186145992ebd72df8d42e5",
+        "data/scenery/models/car_sedan.json": "9cb24db341cb40afd2ba48e0e9a1a9c4b6d79e7d409e0f7c1a141c0e9b0b7b75",
+        "data/scenery/models/car_sport.json": "be6014ab38658d06505f70857a5020f772c8d2d7969a0c85df735ac7cb52e69f",
+        "data/scenery/models/car_suv.json": "4af69a9eeadf308fcb5db07e2b43090a8fc1325b7249a69a370c2848512e2610",
+        "data/scenery/models/cow.json": "b3faecaaf20a5122e93599230b05ff8f318a906fe3bf1fc9012dac0dc78593c8",
+        "data/scenery/models/fleet_avanti.json": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec",
+        "data/scenery/models/fleet_extra.json": "9920c2b286ca0613df34b41ffcc9e26d0f1ae6b7b8747db54e18f57787984057",
+        "data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
+        "data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
+        "data/scenery/models/sheep.json": "7f0db95fb1c5f7a4cefb4ae6b80b913d0ffcf83295fc858cf11597fab8884338",
+        "export_presets.cfg": "aa1ad77f476f201ddea470bd9f63640c4273d747eb8598e00fbfed716b08caba",
+        "i18n/es.po": "303914c90385dd6e5094a7bd4e983ffeae406a1e7b7835925eb9ed81581a6c0d",
+        "input/commands.gd": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2",
+        "input/input_report.gd": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb",
+        "input/input_report_data.gd": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d",
+        "input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+        "input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+        "input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+        "input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+        "main.gd": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79",
+        "main.tscn": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750",
+        "physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+        "physics/air_data.gd": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+        "physics/aircraft_data.gd": "992843aadd36607b2a220309ddb260924b00e6f5429de7666fbe0700e3512d6e",
+        "physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+        "physics/flight_modes.gd": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b",
+        "physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+        "physics/ground_start.gd": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed",
+        "physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+        "physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+        "physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+        "physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+        "physics/propulsion.gd": "3f61b2b4709610cd76c5eaf6dffd35301c9f2982ea8e69053ac8a745c2c5f0e6",
+        "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+        "physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+        "physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+        "physics/trim.gd": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338",
+        "physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+        "physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+        "project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+        "render/airplane.gd": "7a3315cb1d7588ab600078f17fc91c062b73c7bf41ec2f6cde7e876a01b59dd3",
+        "render/atmosphere.gd": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70",
+        "render/cloud_field.gdshaderinc": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+        "render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+        "render/field.gd": "044206edcd069b569c79b3866833962d32455cf53692a0509d1318e33f2b39a2",
+        "render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+        "render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+        "render/grass_surface.gdshaderinc": "634a2660ae11231d716672e7a1e8345a3f8293bf2c0cc83c8ab346a4578e423c",
+        "render/ground.gd": "7e23191d3997acb2ba1a3110d8041d4ad2f06b199ba141788ec45f6ad1f4742d",
+        "render/ground.gdshader": "709cbace9aa045e510e13507561dcfaaf41d2d63d63456eb46f611393a25e1c9",
+        "render/horizon.gd": "194cbdf4ada2375adda36b3b25de1a39e82d7b68f60b787ece8e6b44509e130d",
+        "render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+        "render/near_grass.gd": "0675cb00c768f81abf86a28aefb2c45b422862621af1944af02962fe1a382795",
+        "render/near_grass.gdshader": "ff662b61f0ff8423f09f92f220a1710968f0ef0d80065ef00cc6f5abde7211e6",
+        "render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+        "render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+        "render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+        "render/shadow.gd": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9",
+        "render/sky.gdshader": "e05c62adedf0cf4cb03f22917718c551e000260f2df55c136466dd7fb3609769",
+        "render/tree_assets.gd": "bff775b4451b8e80a7ab69e6c9790ad00f5ee696bee582eaffb1869baf68d68d",
+        "render/tree_identity.gdshaderinc": "d501de11fdca1d5d582404f4575d631ad484d93c60a21d802c5728d433f5d92c",
+        "render/treeline.gd": "843732618e686bfa129e5f593dbf22ee3275e3b0300be03bf058ba95cef1682e",
+        "render/treeline.gdshader": "6c5c3adc4f8b4000874192c623eb2c61e7ee5a3c055c8331aef80d48cffab713",
+        "render/visual_evidence.gd": "1459da195a587a65c3472f15f86af54267d714c3e86c77d4fbb07ac87e0f4a80",
+        "scenery/ambience.gd": "735a9374d85cdcc05d93334c983e4447a3050515c38109851d3ac31119f7ca86",
+        "scenery/ambience_player.gd": "2ffe03adbbba99ee8a545e732f80f50010861fc29c000617c053b6f2e82857b3",
+        "scenery/birds.gd": "fc0fb8a98290bcb8b4ed826fc567e8755f096fa896c5ec2f1bda7145eeb6deb0",
+        "scenery/birds.gdshader": "e38aa2b3ee9fe3b4bcdd98b915304f5fd16d0e4f1c788193f089e1322bf6cb9f",
+        "scenery/capture_views.gd": "292442d8cad3f86e19a3014848bb0ba5fa84b2367a9c6201548d8accf2aa9981",
+        "scenery/fleet.gd": "943b67c3519834264332ed2b483ccff68f96626fb2984036e6e8d26f88406339",
+        "scenery/flowers.gd": "4eeb931918f79de3e628e3b88e3dbda810e0dcd39fcd002c09d9fb39d080e009",
+        "scenery/flowers.gdshader": "dbcc0ded552366eccf008b9fee243605733f21e12f4607d8c5ecd60a35092083",
+        "scenery/ground_features.gd": "e748340c59eb4ce41a256b0abfa028bec8088d333f2160a81be6221bacd81970",
+        "scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+        "scenery/models.gd": "10d94822d3841351ad81d95232dc276dc601af23b54a94a12d603100020a0c0c",
+        "scenery/motion.gdshader": "9cd2df6f7499bfb972e3c90eb2ad2542b12b003e4180b00666255e4c86e651a0",
+        "scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
+        "scenery/postcards.gd": "e75d9ca1c7fe89dfd89bbe0341ba13c3d6c4ac3a2d2c44d307c32aff74ea0e1c",
+        "scenery/prefabs.gd": "77717b7994d91bc28f60da3c8f72ff89107be559d271315bc9f34eb8e540ff07",
+        "scenery/runway_scenario.gd": "aa03f1fbfb14d977c5136bf0c54917e3a7f0a895a998eace1655991f4f6fb604",
+        "scenery/scenery.gd": "546083526d7d828e376ef3b589c83b561297278816361290adf26b770330de5b",
+        "scenery/scenery_loader.gd": "27b1cce3a2ba6db18a116ba48a1e8681c31a3f95d79ff56d7d7c9291656e2d2b",
+        "scenery/takeoff_pilot.gd": "6f9f9bbc003b9f5d71f6f79f3e8c160b8d6cf88283bc2579490fe5ddba87f513",
+        "sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+        "sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+        "sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+        "sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+        "sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+        "sim/simulation.gd": "5a885173d805996ad74dbbb1b26dfeb0c824417e35f40e885c47c4d771223b64",
+        "sim/trace.gd": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9",
+        "spec.gd": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b",
+        "ui/controls_reference.gd": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5",
+        "ui/field_error.gd": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db",
+        "ui/first_flight_hint.gd": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c",
+        "ui/held_keys.gd": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7",
+        "ui/help_screen.gd": "bb7dea7e8c1b502de265bf750bc136fa831d7dd6e7a8f60f22c155f2cdc5caed",
+        "ui/home.gd": "06d063256e0c0e31f4ec1e788cbe859a49be46f21d22863b1e703a39d12e5bfb",
+        "ui/home_scene.gd": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156",
+        "ui/key_cap.gd": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19",
+        "ui/key_labels.gd": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c",
+        "ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
+        "ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
+        "ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+      },
+      "unchanged_during_capture": true
+    }
+  }
+}

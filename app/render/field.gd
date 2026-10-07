@@ -4,6 +4,7 @@ extends RefCounted
 const Frames = preload("res://render/frames.gd")
 const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
+const NearGrass = preload("res://render/near_grass.gd")
 const Horizon = preload("res://render/horizon.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
 # Visual separation only, never terrain height or collision geometry. Higher priority wins overlaps.
@@ -40,5 +41,6 @@ static func build(field: Dictionary) -> Node3D:
 		result.add_child(mesh_instance)
 	for object_data: Dictionary in field.objects:
 		result.add_child(Treeline.build(object_data, field.pilot))
+	result.add_child(NearGrass.build(field, grass))
 	Scenery.attach(result, field)
 	return result

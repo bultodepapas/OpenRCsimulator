@@ -1,0 +1,15 @@
+{
+  "format": "openrc-l11a-readability-comparison v1",
+  "metric_groups_byte_equivalent": true,
+  "changed_pose_metrics": [],
+  "below_mean_delta_e_30": [
+    [
+      "fixed-ground",
+      "level",
+      29.54,
+      29.54
+    ]
+  ],
+  "poses": 48,
+  "complete": true
+}
