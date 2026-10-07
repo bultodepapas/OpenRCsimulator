@@ -18,6 +18,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -607,6 +608,33 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
 			aux.slice(AUX_ANCHORS)))
 	return out
+
+
+## E3b2: restart standing on the runway at (north, east) facing `heading` (rad, 0 = north), engine idling at closed
+## throttle, every wheel stuck, in static equilibrium (GroundStart.solve). Needs stiction data. On failure the flight is
+## reset to its normal start and false is returned.
+func reset_on_runway(north: float, east: float, heading: float) -> bool:
+	reset()
+	if not _has_valid_start() or anchor_count() == 0:
+		return false
+	commands.throttle = 0.0
+	engine_running = true
+	sim.inputs = _inputs()
+	var prop: Dictionary = aircraft.model.propulsion
+	var rpm := Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
+	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	var solved := GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
+		rpm, Air.RHO_SEA_LEVEL, sim.gravity)
+	if not solved.ok:
+		printerr("runway start: " + str(solved.message))
+		reset()
+		return false
+	aux.append_array(solved.anchors)
+	sim.aux = aux
+	if not sim.reset(solved.state):
+		reset()
+		return false
+	return true
 
 
 ## E3b1: wheels with a stiction anchor (0 when the gear has no breakaway_factor).
