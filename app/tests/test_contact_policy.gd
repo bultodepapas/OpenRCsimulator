@@ -52,6 +52,8 @@ func _make_case(label: String, mass: float, target_sag: float, zeta: float, base
 		contact.position = M.v3(position[0] * size_scale, position[1] * size_scale, position[2] * size_scale)
 		contact.max_compression = float(contact.max_compression) * size_scale
 		contact.stiffness = float(contact.stiffness) * stiffness_scale
+		# E1b: the damping onset is a fraction of the static compression, which scales with load / stiffness.
+		contact.damping_onset = float(contact.get("damping_onset", 0.0)) * (mass / base_mass) / stiffness_scale
 		if not keep_base:
 			contact.damping = 2.0 * zeta * sqrt(float(contact.stiffness) * mass / gear.contacts.size())
 	gear.reach = float(gear.reach) * size_scale
