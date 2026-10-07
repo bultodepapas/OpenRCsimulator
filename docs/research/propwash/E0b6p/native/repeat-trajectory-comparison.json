@@ -1,0 +1,354 @@
+{
+  "format": "openrc-e0b6p-native-trajectory-comparison v1",
+  "godot": "4.7.2-stable (official)",
+  "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "trajectory_ticks": 240,
+  "regime_pairs": 12,
+  "compared_components": [
+    "state",
+    "aux",
+    "continuous"
+  ],
+  "tolerance": "1e-10 absolute + 1e-10 relative per component",
+  "maximum_absolute_difference": 0.0,
+  "maximum_tolerance_ratio": 0.0,
+  "zero_swirl_exact": true,
+  "rows": [
+    {
+      "regime": "forward",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 1474.1666666666667,
+      "native_median_us": 821.6666666666666,
+      "oracle_batches_us": [
+        1192.125,
+        1446.4583333333333,
+        1474.1666666666667,
+        1475.7916666666667,
+        1484.3333333333333
+      ],
+      "native_batches_us": [
+        531.75,
+        542.625,
+        821.6666666666666,
+        848.5416666666666,
+        882.75
+      ],
+      "speedup": 1.7941176470588236,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "forward",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 9110.916666666666,
+      "native_median_us": 746.2916666666666,
+      "oracle_batches_us": [
+        6918.375,
+        7220.291666666667,
+        9110.916666666666,
+        9357.416666666666,
+        9902.208333333334
+      ],
+      "native_batches_us": [
+        675.875,
+        701.375,
+        746.2916666666666,
+        820.1666666666666,
+        822.3333333333334
+      ],
+      "speedup": 12.208251912232706,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "stall",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 1083.6666666666667,
+      "native_median_us": 670.5833333333334,
+      "oracle_batches_us": [
+        999.625,
+        1077.5,
+        1083.6666666666667,
+        1249.5,
+        1395.0833333333333
+      ],
+      "native_batches_us": [
+        647.8333333333334,
+        652.7916666666666,
+        670.5833333333334,
+        696.3333333333334,
+        753.0
+      ],
+      "speedup": 1.6160059649558842,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "stall",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 7767.625,
+      "native_median_us": 979.9583333333334,
+      "oracle_batches_us": [
+        7336.5,
+        7564.375,
+        7767.625,
+        7865.541666666667,
+        7980.375
+      ],
+      "native_batches_us": [
+        722.4166666666666,
+        792.625,
+        979.9583333333334,
+        1024.7083333333333,
+        1103.0833333333333
+      ],
+      "speedup": 7.926484969599048,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "static",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 917.9583333333334,
+      "native_median_us": 535.375,
+      "oracle_batches_us": [
+        848.5416666666666,
+        909.1666666666666,
+        917.9583333333334,
+        939.875,
+        998.125
+      ],
+      "native_batches_us": [
+        466.5833333333333,
+        511.4166666666667,
+        535.375,
+        624.7916666666666,
+        723.8333333333334
+      ],
+      "speedup": 1.7146081407113394,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "static",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 5993.916666666667,
+      "native_median_us": 703.0,
+      "oracle_batches_us": [
+        5760.541666666667,
+        5973.458333333333,
+        5993.916666666667,
+        6229.166666666667,
+        7267.25
+      ],
+      "native_batches_us": [
+        663.0,
+        684.4166666666666,
+        703.0,
+        772.4166666666666,
+        835.625
+      ],
+      "speedup": 8.526197249881461,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "spin",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 971.2083333333334,
+      "native_median_us": 628.875,
+      "oracle_batches_us": [
+        861.7916666666666,
+        949.9583333333334,
+        971.2083333333334,
+        1023.5,
+        1188.6666666666667
+      ],
+      "native_batches_us": [
+        593.5416666666666,
+        613.0,
+        628.875,
+        642.0416666666666,
+        798.0416666666666
+      ],
+      "speedup": 1.5443583118001722,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "spin",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 6605.083333333333,
+      "native_median_us": 856.0,
+      "oracle_batches_us": [
+        6153.875,
+        6405.458333333333,
+        6605.083333333333,
+        6809.875,
+        7126.291666666667
+      ],
+      "native_batches_us": [
+        729.3333333333334,
+        794.9166666666666,
+        856.0,
+        883.4583333333334,
+        894.0
+      ],
+      "speedup": 7.716218847352025,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "reverse_fade",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 1009.5833333333334,
+      "native_median_us": 690.7916666666666,
+      "oracle_batches_us": [
+        888.7916666666666,
+        946.5416666666666,
+        1009.5833333333334,
+        1047.9583333333333,
+        1061.4166666666667
+      ],
+      "native_batches_us": [
+        540.75,
+        674.5833333333334,
+        690.7916666666666,
+        837.125,
+        868.9583333333334
+      ],
+      "speedup": 1.4614874238494482,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "reverse_fade",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 5900.833333333333,
+      "native_median_us": 822.625,
+      "oracle_batches_us": [
+        5376.583333333333,
+        5741.125,
+        5900.833333333333,
+        6128.416666666667,
+        6757.875
+      ],
+      "native_batches_us": [
+        602.9166666666666,
+        625.9583333333334,
+        822.625,
+        865.5,
+        892.5833333333334
+      ],
+      "speedup": 7.17317530263891,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "reverse_off",
+      "swirl_factor": 0.0,
+      "oracle_median_us": 404.6666666666667,
+      "native_median_us": 446.6666666666667,
+      "oracle_batches_us": [
+        393.0,
+        396.0833333333333,
+        404.6666666666667,
+        475.375,
+        484.2083333333333
+      ],
+      "native_batches_us": [
+        361.1666666666667,
+        402.1666666666667,
+        446.6666666666667,
+        494.875,
+        542.8333333333334
+      ],
+      "speedup": 0.9059701492537313,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    },
+    {
+      "regime": "reverse_off",
+      "swirl_factor": 0.4,
+      "oracle_median_us": 365.5,
+      "native_median_us": 608.5,
+      "oracle_batches_us": [
+        362.7916666666667,
+        364.6666666666667,
+        365.5,
+        382.0416666666667,
+        389.6666666666667
+      ],
+      "native_batches_us": [
+        581.3333333333334,
+        594.2916666666666,
+        608.5,
+        640.1666666666666,
+        674.0833333333334
+      ],
+      "speedup": 0.600657354149548,
+      "exact_boundaries": true,
+      "max_absolute_boundary_difference": {
+        "state": 0.0,
+        "aux": 0.0,
+        "continuous": 0.0
+      },
+      "max_tolerance_ratio": 0.0
+    }
+  ]
+}

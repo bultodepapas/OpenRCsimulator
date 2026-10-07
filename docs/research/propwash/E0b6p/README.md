@@ -1,6 +1,6 @@
 # E0b6p — Enabled-wake performance
 
-2026-10-07 · **Status: GDScript optimization verified; E0b6p budget remains open.** No production aircraft-data change or native dependency.
+2026-10-07 · **Status: GDScript optimization and a research-only native probe verified; E0b6p budget remains open.** No production aircraft-data change or native dependency. The [complete native wake experiment](native/README.md) is the follow-up to the scalar pass recorded below.
 
 ## Scope
 
@@ -49,7 +49,7 @@ All **12 trajectories × 240 boundaries** retain exactly equal sampled body, aux
 
 **The 500 µs/tick target is still missed. E0b6p is not complete as a budget gate.** The correction alone takes 1.2–1.6 ms per load evaluation in the interleaved profile, before the other three RK stages and the rest of the dynamics. Axial-only slipstream evaluations add about 175–252 µs each in that profile. These are separate costs; optimizing only force allocation cannot close the whole-tick budget.
 
-The next bounded E0b6p investigation should evaluate the complete smooth-wake evaluator (axial occupancy plus distributed swirl), retaining this frozen reference, dense accuracy, current-stage state and exact production trajectories. Do not reduce the physics rate, freeze geometry between RK stages, tune coefficients to hide the error, or treat a faster legacy P-51 native experiment as proof for the new profile/transport path. Native **adoption** still requires Gate P and platform evidence; the existing native experiment remains research-only. Production Stik remains unconfigured, and E0b7's independent field calibration remains open.
+The [follow-up native probe](native/README.md) now evaluates the complete smooth wake, including axial occupancy and distributed swirl: 297 load comparisons pass, all 12 × 240 trajectory boundaries remain equal, and active whole ticks measure 0.58–0.98 ms across two shared-host runs. That still exceeds 500 µs. Next, attribute the remaining complete-tick cost before choosing another optimization. Do not reduce the physics rate, freeze geometry between RK stages or tune coefficients to hide the error. Native **adoption** still requires Gate P and platform evidence. Production Stik remains unconfigured, and E0b7's independent field calibration remains open.
 
 ## Reproduce
 

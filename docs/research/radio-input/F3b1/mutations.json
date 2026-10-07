@@ -1,0 +1,29 @@
+[
+  {
+    "case": "baseline",
+    "passed": true,
+    "exit_code": 0,
+    "failed_checks": 0,
+    "summary": [
+      "F3b: 9251 checks, 0 failed; all 1024 axis-history combinations"
+    ]
+  },
+  {
+    "case": "drop_events_after_arming",
+    "passed": true,
+    "exit_code": 1,
+    "failed_checks": 30,
+    "summary": [
+      "F3b: 9251 checks, 30 failed; all 1024 axis-history combinations"
+    ]
+  },
+  {
+    "case": "drop_axis_nine",
+    "passed": true,
+    "exit_code": 1,
+    "failed_checks": 1027,
+    "summary": [
+      "F3b: 9251 checks, 1027 failed; all 1024 axis-history combinations"
+    ]
+  }
+]

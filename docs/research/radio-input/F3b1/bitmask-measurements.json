@@ -1,0 +1,254 @@
+[
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 5.1162625,
+        "median_us_per_modeled_frame": 341.084166666667,
+        "us_per_modeled_frame_samples": [
+          326.074166666667,
+          333.759166666667,
+          320.136666666667,
+          360.020833333333,
+          347.738333333333,
+          367.733333333333,
+          341.084166666667
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.872675,
+        "median_us_per_modeled_frame": 58.1783333333333,
+        "us_per_modeled_frame_samples": [
+          71.5225,
+          72.2125,
+          58.1783333333333,
+          77.9933333333333,
+          56.3283333333333,
+          47.8925,
+          55.75
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "baseline",
+    "run": 0
+  },
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 5.4244,
+        "median_us_per_modeled_frame": 361.626666666667,
+        "us_per_modeled_frame_samples": [
+          347.115833333333,
+          386.685,
+          361.626666666667,
+          348.6825,
+          340.3175,
+          385.479166666667,
+          386.039166666667
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.9012625,
+        "median_us_per_modeled_frame": 60.0841666666667,
+        "us_per_modeled_frame_samples": [
+          60.0841666666667,
+          57.4866666666667,
+          74.0358333333333,
+          61.8866666666667,
+          55.6541666666667,
+          59.32,
+          68.4991666666667
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "candidate",
+    "run": 0
+  },
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 5.167775,
+        "median_us_per_modeled_frame": 344.518333333333,
+        "us_per_modeled_frame_samples": [
+          368.203333333333,
+          344.518333333333,
+          319.545,
+          343.9675,
+          344.325833333333,
+          346.899166666667,
+          472.091666666667
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.8288625,
+        "median_us_per_modeled_frame": 55.2575,
+        "us_per_modeled_frame_samples": [
+          50.2533333333333,
+          52.505,
+          70.0633333333333,
+          82.2183333333333,
+          60.5708333333333,
+          55.2575,
+          46.62
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "candidate",
+    "run": 1
+  },
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 5.1307,
+        "median_us_per_modeled_frame": 342.046666666667,
+        "us_per_modeled_frame_samples": [
+          437.221666666667,
+          348.853333333333,
+          342.046666666667,
+          375.128333333333,
+          327.125833333333,
+          323.69,
+          316.090833333333
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.9276,
+        "median_us_per_modeled_frame": 61.84,
+        "us_per_modeled_frame_samples": [
+          48.1266666666667,
+          50.8416666666667,
+          61.84,
+          65.3166666666667,
+          66.135,
+          62.8991666666667,
+          59.6316666666667
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "baseline",
+    "run": 1
+  },
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 4.735725,
+        "median_us_per_modeled_frame": 315.715,
+        "us_per_modeled_frame_samples": [
+          321.338333333333,
+          320.526666666667,
+          309.468333333333,
+          327.064166666667,
+          293.4425,
+          315.715,
+          310.0625
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.9116875,
+        "median_us_per_modeled_frame": 60.7791666666667,
+        "us_per_modeled_frame_samples": [
+          67.8825,
+          60.7791666666667,
+          49.3358333333333,
+          48.5466666666667,
+          62.8316666666667,
+          52.425,
+          61.0916666666667
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "baseline",
+    "run": 2
+  },
+  {
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "event_construction_timed": false,
+    "events_per_second": 4000,
+    "format": "openrc-radio-event-bench v1",
+    "frames_per_round": 1200,
+    "godot": "4.7.2-stable (official)",
+    "measurements": {
+      "dispatch": {
+        "median_us_per_event": 4.494,
+        "median_us_per_modeled_frame": 299.6,
+        "us_per_modeled_frame_samples": [
+          316.990833333333,
+          294.4725,
+          286.375,
+          306.555833333333,
+          294.861666666667,
+          299.6,
+          344.745
+        ]
+      },
+      "handler": {
+        "median_us_per_event": 0.866175,
+        "median_us_per_modeled_frame": 57.745,
+        "us_per_modeled_frame_samples": [
+          57.745,
+          61.1058333333333,
+          61.4666666666667,
+          46.66,
+          47.7816666666667,
+          54.0841666666667,
+          59.2466666666667
+        ]
+      }
+    },
+    "modeled_fps": 60,
+    "os": "Linux",
+    "physics_and_render_timed": false,
+    "rounds": 7,
+    "variant": "candidate",
+    "run": 2
+  }
+]

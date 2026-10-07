@@ -1,0 +1,62 @@
+--- a/app/input/rc_input.gd
++++ b/app/input/rc_input.gd
+@@ -54,12 +54,13 @@
+ var armed := false
+ ## Latest raw axis values (−1…+1), polled once per physics tick.
+ var axes := PackedFloat64Array()
+-var _seen := {} # axis index → true once an event arrived for it since connection
++var _seen := PackedByteArray() # one flag per axis that reported since connection
+ var _rate_throttle := 0.0 # gamepad throttle (0…1), integrated from the stick
+ 
+ 
+ func _init() -> void:
+ 	axes.resize(AXES)
++	_seen.resize(AXES)
+ 
+ 
+ ## info: { guid, name, vendor_id, product_id, known } (see Input.get_joy_guid / get_joy_info / is_joy_known).
+@@ -80,7 +81,7 @@
+ 		profile_source = "default"
+ 	armed = false
+ 	_rate_throttle = 0.0
+-	_seen.clear()
++	_seen.fill(0)
+ 	axes.fill(0.0)
+ 
+ 
+@@ -108,7 +109,7 @@
+ func disconnect_device() -> void:
+ 	connected = false
+ 	armed = false
+-	_seen.clear()
++	_seen.fill(0)
+ 	axes.fill(0.0)
+ 
+ 
+@@ -116,7 +117,7 @@
+ func on_motion(id: int, axis: int, value: float) -> void:
+ 	if not connected or id != device_id or axis < 0 or axis >= AXES:
+ 		return
+-	_seen[axis] = true
++	_seen[axis] = 1
+ 	axes[axis] = value
+ 
+ 
+@@ -126,7 +127,7 @@
+ 
+ ## Whether this raw axis has reported since the current connection; polling zero is not evidence.
+ func has_axis_sample(axis: int) -> bool:
+-	return connected and axis >= 0 and axis < AXES and _seen.has(axis)
++	return connected and axis >= 0 and axis < AXES and _seen[axis] != 0
+ 
+ 
+ ## Polls every axis once per physics tick. read_axis(device_id, axis) -> float, e.g. Input.get_joy_axis.
+@@ -139,7 +140,7 @@
+ 		# Spring-centred stick: the throttle starts at idle and moves at a rate, so it is safe from the start.
+ 		armed = true
+ 		_rate_throttle = clampf(_rate_throttle + _shaped(_stick("throttle")) * float(profile.throttle_rate) * dt, 0.0, 1.0)
+-	elif not armed and _seen.has(int(profile.throttle.axis)) and throttle_position() <= ARM_THROTTLE:
++	elif not armed and has_axis_sample(int(profile.throttle.axis)) and throttle_position() <= ARM_THROTTLE:
+ 		armed = true
+ 
+ 

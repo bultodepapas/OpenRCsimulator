@@ -1,0 +1,42 @@
+{
+  "step": "F3b1",
+  "date": "2026-10-07",
+  "baseline_commit": "f516ff208f50833b80c18f21c32411bce7c9b653",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "production_changes": false,
+  "optimization_adopted": false,
+  "new_axis_history_checks": 9251,
+  "reader_mutations_rejected": 2,
+  "benchmark_drop_dispatch_mutation_rejected": true,
+  "suite": {
+    "exit_code": 0,
+    "test_programs": 99,
+    "scope": "Unchanged production baseline. New exhaustive test and final benchmark independently executed against the same checkout; no repeat of unchanged physics tests required.",
+    "log": "suite.log",
+    "four_aircraft_trimmed_traces": "pass",
+    "frame_rate_state_checks": "30/60/144 FPS identical; default flight, wake transport and distributed swirl"
+  },
+  "lint_before": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "lint_after": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "introduced_lint_diagnostics": [],
+  "source_sha256": {
+    "app/tests/bench_radio_events.gd": "717af11825631f1177f18dabdfc294709bc546cc630acae33f053943afa27238",
+    "app/tests/test_rc_axis_history.gd": "c0344324652ed3396592c6197cf8f6e0ce9daba2b94a1a55bd4a3b877ecb3ab8",
+    "app/input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+    "app/sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+    "app/main.gd": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79"
+  },
+  "measured_harness_sha256": "fd90825ecd77044132af61cf95be41af31b2a6d8b482f5eb01e9dd0bddf1829d",
+  "experiments": "Three alternating processes per variant, seven warmed rounds per process. Shared host; no physical input or display timing measured. Frozen harness final values checked after both paths; public harness now sentinel-clears and verifies each pass independently.",
+  "candidate_regression": "Stopped intentionally when the optimization candidates were rejected; not reported as passing."
+}

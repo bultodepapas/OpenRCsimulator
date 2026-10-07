@@ -1,0 +1,52 @@
+{
+  "isolated_baseline": "E0b6p scalar pass, root physics/sim source hashes matched before staging; concurrent landscape/radio/desktop work excluded",
+  "validator": {
+    "ok": true,
+    "counts": {
+      "total": 184,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 184,
+      "info": 0
+    },
+    "new_probe_diagnostics": []
+  },
+  "smoke": {
+    "ok": true,
+    "counts": {
+      "scenes": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 270,
+      "findings": 0
+    },
+    "scenes": [
+      {
+        "scene": "res://app_root.tscn",
+        "ok": true
+      },
+      {
+        "scene": "res://main.tscn",
+        "ok": true
+      },
+      {
+        "scene": "res://tests/fixtures/atmosphere_field.tscn",
+        "ok": true
+      }
+    ]
+  },
+  "note": "184 existing validator warnings match the scalar-pass baseline; none concern the new probe. Smoke warnings repeat existing scene diagnostics.",
+  "suite": {
+    "exit_code": 0,
+    "sections": 116,
+    "gdscript_test_programs": 90,
+    "engine_errors": 0,
+    "raw_log_sha256": "4df750070f4236e94dd42464bac770196bec0498d0a942d21d3a9d7310f05d5d"
+  },
+  "staged_runtime_sha256": {
+    "physics/dynamics.gd": "0840a87a2a2824bce2f443a8d7577acce2a179106443aaa21bd7a4887f7b7293",
+    "tests/e0b6p_native/adapter.gd": "288c2c71bd6345bde3e94d35c2cc067731064965d01c9761a8e8c3a64d7ba682",
+    "tests/e0b6p_native/libopenrc_slipstream.so": "b0a90d20675c53b388996477ca49d9b82624c0f9a79915f2099034252b029ed1"
+  }
+}
