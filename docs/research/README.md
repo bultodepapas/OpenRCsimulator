@@ -106,7 +106,7 @@ Plans: [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md), [LANDSCAPE-PLAN](../LAN
 | Flowers, bushes, motion, ambient sound, birds | [02 flora and ambience](scenery-investigations/02-flora-and-ambience.md) | [landscape 05 grass](landscape-investigations/05-grass-rendering.md), [11 wind ambience](landscape-investigations/11-wind-animation-ambience.md) |
 | Club layout rules (AMA, BMFA, DMFV, FAI), markings, shelters, photo references | [03 field layout references](scenery-investigations/03-rc-field-layout-references.md) | [landscape-research.md](landscape-research.md) |
 | Mesh merging, grounding, depth precision, motion, prior art | [04 Godot techniques and prior art](scenery-investigations/04-godot-techniques-and-prior-art.md) | — |
-| Implementation evidence, one folder per step | [SC-01](scenery-implementation/SC-01/README.md) (probe and style bake-off: merging, turbine depth, shadow quads, the ground bug, model sizes), [SC-03](scenery-implementation/SC-03/README.md) (the built scenery: captures, budgets, readability, tests) | Scripts in [research/scenery/sc01/](../../research/scenery/sc01/); llvmpipe numbers, not GPU performance |
+| Implementation evidence, one folder per step | [SC-01](scenery-implementation/SC-01/README.md) (probe and style bake-off: merging, turbine depth, shadow quads, the ground bug, model sizes), [SC-03](scenery-implementation/SC-03/README.md) (the built scenery: captures, budgets, readability, tests), [SC-25](scenery-implementation/SC-25/README.md) (runway scenario: automatic takeoff captures, sync checks, run comparison) | Scripts in [research/scenery/sc01/](../../research/scenery/sc01/); llvmpipe numbers, not GPU performance |
 
 Plan: [SCENERY-PLAN](../SCENERY-PLAN.md).
 

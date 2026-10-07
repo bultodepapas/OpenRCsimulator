@@ -131,6 +131,10 @@ python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --
 # only) and the blinded 24-image attitude kit for the human playtest (captures/l6c/kit).
 "$VPY" "$HERE/tests/test_treeline_readability.py"
 "$VPY" "$HERE/tests/treeline_readability.py" capture --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6c"
+# Runway scenario (SCENERY-PLAN): the airplane at the runway threshold, a scripted takeoff from five cameras at fixed
+# times, automatic physics-render sync checks, and a frame-by-frame comparison with the previous run
+# (captures/scenario/latest/report.html; history in captures/scenario/history/index.html).
+"$HERE/../tools/scenery/scenario.sh" "$HERE/captures/scenario"
 # Publish exactly this run's inventory, never a glob that can silently include old outputs.
 "$VPY" - "$HERE/captures" "${CAPTURE_NAMES[@]}" <<'PYMANIFEST'
 import hashlib, json, sys
