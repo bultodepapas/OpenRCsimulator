@@ -37,7 +37,7 @@ The audit is a fixed evidence snapshot. [ROADMAP revision 5](../../ROADMAP.md#ex
 
 Trace integrity: [C7-R1](trace-integrity/C7-R1/README.md) hardens CLI duration/failure exits and the trimmed-flight checker; records regression mutations and exported-flight comparisons. [C7-R2](trace-integrity/C7-R2/README.md) defines active-model headers, state layouts and recording-start auxiliary snapshots.
 
-Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks.
+Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 
 Generated-output freshness: [DATA-1](aircraft-validation/DATA-1/README.md) adds the P-51 generation chain to CI, with five stale-copy rejection cases in a fresh clone.
 

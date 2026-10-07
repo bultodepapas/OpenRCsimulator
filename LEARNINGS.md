@@ -862,3 +862,7 @@ Two parallel `app/test.sh` runs of the same project share `user://` (Godot deriv
 ## 2026-10-07 · H15 — profile the whole tick before naming the next target
 
 The planned H15 target (step bookkeeping) dissolved under measurement: it was about 20 safety checks of about 1 µs each, while attached-flow aero plus air data cost 32–39 µs per evaluation in every aircraft's normal flight. Retargeting H15 cut fleet trim ticks about 20% and brought every fixture under 500 µs/tick at the median. Wrap the session's Callables with timers for a step anatomy first, then micro-profile the pieces; verify any apparent overhead gap by timing the same calls in sequence, since identical P-51 `Dynamics.loads` calls varied from 90 to 107 µs between runs. A wind-free path still needs oracle cases with wind, because WIND-PLAN will use it ([H15](docs/research/simulation-state/H15/README.md)).
+
+## 2026-10-07 · D1-R3 — judge ground support where gravity acts
+
+A support check in body axes is wrong for a taildragger: the P-51 rests 13.9° nose-up, and projecting its CG along body z instead of the resting facet's normal misstates the margin by 94 mm (0.160 vs 0.254 m). Rest is on a lower facet of the contacts' convex hull; measure the margin to the hull edges of the whole coplanar facet, because a centred CG on a square layout sits on both diagonals and a per-triangle test reports zero. The new test caught a sign error in the below-the-wheels case before it shipped ([D1-R3](docs/research/aircraft-validation/D1-R3/README.md)).

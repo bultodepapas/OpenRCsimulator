@@ -99,15 +99,27 @@ def ground(out: Path) -> dict:
             dark = (lum < 0.85 * lum_ref) & mask
             entry["darkened_share"][lift] = round(float(dark.sum()) / mask.sum(), 4) if mask.sum() else None
         rows.append(entry)
+    # The ground shader writes its own FOG, so Environment.fog_enabled = false leaves it unchanged ("nofog" == "ref").
+    # Instead solve the two fogged references for the surface radiance G and the fog radiance F:
+    # L_ref(d) = T(d)·G + (1 − T(d))·F at two distances, then expect L_shadow = L_ref − 0.5·T·G.
     fog = []
-    for row in r.get("fog", []):
+    rows_fog = r.get("fog", [])
+    lin = []
+    for row in rows_fog:
         mask = polygon_mask(load(out / f"{row['ref']}.png").shape[:2], row["window_px"])
-        lin = {v: srgb_to_linear(load(out / f"{row[v]}.png")).mean(axis=2)[mask].mean() for v in ("ref", "nofog", "mix", "mul")}
-        t = row["transmittance"]
-        expected = lin["ref"] - 0.5 * t * lin["nofog"]  # L_g − 0.5·T·G: only the surface term is halved
-        fog.append({"distance_m": row["distance_m"], "transmittance": round(t, 4), "window_pixels": int(mask.sum()),
-                    "linear": {k: round(float(v), 4) for k, v in lin.items()}, "expected": round(float(expected), 4),
-                    "error_mix": round(float(lin["mix"] - expected), 4), "error_mul": round(float(lin["mul"] - expected), 4)})
+        lin.append({v: float(srgb_to_linear(load(out / f"{row[v]}.png")).mean(axis=2)[mask].mean()) for v in ("ref", "nofog", "mix", "mul")})
+    if len(rows_fog) == 2:
+        t1, t2 = rows_fog[0]["transmittance"], rows_fog[1]["transmittance"]
+        a = np.array([[t1, 1 - t1], [t2, 1 - t2]])
+        g, f = np.linalg.solve(a, np.array([lin[0]["ref"], lin[1]["ref"]]))
+        for row, l in zip(rows_fog, lin):
+            t = row["transmittance"]
+            expected = l["ref"] - 0.5 * t * g
+            fog.append({"distance_m": row["distance_m"], "transmittance": round(t, 4), "solved_G": round(float(g), 4),
+                        "solved_F": round(float(f), 4), "nofog_equals_ref": abs(l["nofog"] - l["ref"]) < 1e-6,
+                        "linear": {k: round(v, 4) for k, v in l.items()}, "expected": round(float(expected), 4),
+                        "relative_error_mix": round(float((l["mix"] - expected) / expected), 3),
+                        "relative_error_mul": round(float((l["mul"] - expected) / expected), 3)})
     return {"rows": rows, "fog": fog}
 
 

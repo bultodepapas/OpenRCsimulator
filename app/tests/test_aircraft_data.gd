@@ -118,7 +118,8 @@ func _initialize() -> void:
 	_check("without a landing_gear section the data still loads (gear is optional; wheels crash as in D9d)", r_no_gear.ok and r_no_gear.model.landing_gear.is_empty(), str(r_no_gear.errors))
 	_rejects("gear too stiff for the tick", func(d): for c in d.landing_gear.contacts: c.stiffness.value *= 50, "ω·dt")
 	_rejects("CG outside the wheelbase", func(d): for c in d.landing_gear.contacts: c.position.value[0] -= 0.2, "cannot stand")
-	_rejects("all wheels on one side", func(d): for c in d.landing_gear.contacts: c.position.value[1] += 0.5, "each side")
+	_rejects("all wheels on one side", func(d): for c in d.landing_gear.contacts: c.position.value[1] += 0.5, "cannot stand")
+	_check_ground_support(r.model.cg_le)
 	_rejects("gear stiffness in lbf/in", func(d): d.landing_gear.contacts[0].stiffness.unit = "lbf/in", "unit 'lbf/in'")
 	_rejects("negative damping", func(d): d.landing_gear.contacts[1].damping.value = -5, "outside")
 	_rejects("overdamped gear (a shock absorber, not a wire leg)", func(d): d.landing_gear.contacts[0].damping.value = 500, "ratio")
@@ -141,3 +142,52 @@ func _initialize() -> void:
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## D1-R3: the CG must project inside the resting facet of the contacts, not merely inside their bounding box.
+func _check_ground_support(stik_cg: PackedFloat64Array) -> void:
+	# The audit's probe (physics B3): inside both coordinate ranges, outside the support triangle.
+	_rejects("CG inside the gear bounding box but outside the support triangle (audit B3)", func(d):
+		var xy := [[0.0, -0.18], [1.0, 0.18], [1.0, 0.0]]
+		for i in 3:
+			d.landing_gear.contacts[i].position.value[0] = xy[i][0]
+			d.landing_gear.contacts[i].position.value[1] = xy[i][1], "cannot stand")
+	_rejects("collinear contacts", func(d): for c in d.landing_gear.contacts: c.position.value[1] = 0.0, "no support plane")
+	# Margin against an independent side view: symmetric gear rests on the line from the main axle to the third wheel.
+	var p51_raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/p51d_mustang_120.json"))
+	var p51 := AD.validate_and_derive(p51_raw)
+	_check("P-51 data loads with its taildragger gear", p51.ok, str(p51.errors))
+	for case in [["Stik (tricycle)", _raw(), stik_cg], ["P-51 (taildragger)", p51_raw, p51.model.cg_le if p51.ok else PackedFloat64Array([0, 0, 0])]]:
+		var pts := _points(case[1])
+		var cg: PackedFloat64Array = case[2]
+		var support := AD.ground_support(pts, cg)
+		var main: PackedFloat64Array = pts[0]
+		var third: PackedFloat64Array = pts[2]
+		var dx := third[0] - main[0]
+		var dz := third[2] - main[2]
+		var length := sqrt(dx * dx + dz * dz)
+		var side_margin := ((cg[0] - main[0]) * dx + (cg[2] - main[2]) * dz) / length
+		var pitch := absf(atan2(dz, absf(dx)))
+		_check("%s stands; margin to the main axle %.4f m equals the side-view value %.4f m" % [case[0], support.margin, side_margin],
+			support.supported and absf(support.margin - side_margin) < 1e-9 and absf(support.tilt - pitch) < 1e-9, str(support))
+	var p51_pts := _points(p51_raw)
+	var nose_heavy: PackedFloat64Array = p51.model.cg_le.duplicate() if p51.ok else PackedFloat64Array([0, 0, 0])
+	nose_heavy[0] -= 0.30 # CG ahead of the mains at the three-point attitude: it noses over
+	_check("taildragger with the CG projected ahead of its mains does not stand", not AD.ground_support(p51_pts, nose_heavy).supported)
+	# A coplanar square with the CG on both diagonals: a per-triangle test would see a zero margin.
+	var square := [PackedFloat64Array([-0.2, -0.2, -0.3]), PackedFloat64Array([-0.2, 0.2, -0.3]),
+		PackedFloat64Array([0.2, -0.2, -0.3]), PackedFloat64Array([0.2, 0.2, -0.3])]
+	var centred := AD.ground_support(square, PackedFloat64Array([0.0, 0.0, 0.0]))
+	_check("square gear, CG at the centre: margin is the half width 0.2 m (whole facet, not one triangle)",
+		centred.supported and absf(centred.margin - 0.2) < 1e-12 and centred.facet.size() == 4, str(centred))
+	var off := AD.ground_support(square, PackedFloat64Array([0.25, 0.0, 0.0]))
+	_check("square gear, CG 5 cm beyond an edge: margin -0.05 m", not off.supported and absf(off.margin + 0.05) < 1e-12, str(off))
+	var hanging := AD.ground_support(square, PackedFloat64Array([0.0, 0.0, -0.5]))
+	_check("CG below the wheel plane is not supported", not hanging.supported, str(hanging))
+
+
+func _points(raw: Dictionary) -> Array:
+	var pts := []
+	for c in raw.landing_gear.contacts:
+		pts.append(PackedFloat64Array(c.position.value))
+	return pts
