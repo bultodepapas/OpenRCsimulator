@@ -1,0 +1,7 @@
+{
+  "case": "drop_dispatch_calls",
+  "exit_code": 1,
+  "failed_delivery_checks": 32,
+  "result_printed": false,
+  "engine_errors": false
+}

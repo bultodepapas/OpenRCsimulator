@@ -50,6 +50,13 @@
     "existing_warnings": 12
   },
   "headless_suite": {
-    "status": "awaiting final process completion"
-  }
+    "exit_code": 0,
+    "elapsed_s": 452.858,
+    "engine_or_check_errors": [],
+    "completed_fixed_step": true,
+    "proof": "headless-tests.log",
+    "atmosphere_checks": 46,
+    "atmosphere_failures": 0
+  },
+  "complete": true
 }

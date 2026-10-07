@@ -214,7 +214,7 @@ Architecture: a `gyro_receiver` stage between `flown_commands()` and the servo `
 | Topic | Options | Recommendation |
 | --- | --- | --- |
 | Input sampling | (a) `get_joy_axis` once per tick (today: simple, deterministic, frame-rate hold); (b) threaded GDExtension (SDL3, zlib; or HIDAPI, licence to check) with timestamped samples aligned to each tick (true 240 Hz; C++ per OS; a second SDL instance may contend for the device) | **(a)**; (b) only if F6 shows sampling > 25 % of total |
-| Per-event `_input` | Every SDL event goes through the scene tree (accumulation off): up to ≈ 60 events/frame with 4 axes moving at 1 kHz | Measure (F3b); stop forwarding once armed |
+| Per-event `_input` | Every SDL event goes through the scene tree (accumulation off): up to ≈ 60 events/frame with 4 axes moving at 1 kHz | [F3b1](../radio-input/F3b1/README.md) measures handler and dispatch separately; retain late-axis detection and raw updates after arming |
 | Shaping with a radio | Sim = receiver (one truth) vs sim = computer radio (double shaping risk) | **Receiver**; computer radio for keyboard/gamepad only |
 | Trims | Per-start trim vs linkage trim | **Linkage trim** |
 | Servo | L1 slew / **L2 deadband + lag + slew** / L3 load / L4 loop | L2 next, L3 for giant scale and dives |
@@ -303,7 +303,7 @@ IDs: F3–F5 keep their ROADMAP meaning; flight aids M5-AIDS-n; the optional rea
 | F1 | **Input report:** `-- --input-report[=path.json]` lists device connection sessions (index, GUID, `raw_name`, VID:PID as integers when available, `is_joy_known`, axes seen/moved, min/max and per-axis mean callback spacing). Callback spacing is not the USB report interval | [Implementation and fake-device proof](../radio-input/F1/README.md); owner D6d/F4 hardware measurements remain open | D6a |
 | F2 | **Linkage trim:** `controls.linkage_trim` solved at a stated V_ref (generated, `derived`), applied after every device, constant across scenarios; keyboard trim keys | A 20 m/s start keeps the V_ref trim; hands-off at V_ref holds; double-trim mutation fails | D4, owner decision |
 | F3 | **Replug and focus** (existing): exact key, else family with confirmation; re-arm after every axis clear; pin `ignore_joypad_on_unfocused_application`; #121539 on 4.8 | Scripted unplug/replug/focus log: never non-idle throttle before re-arm; owner log on Windows 4.8 | F1, UI-10a |
-| F3b | **`_input` cost:** µs/frame with 4 axes changing at 1 kHz; stop forwarding once armed | Before/after µs per frame; e2e radio tests unchanged | D6a |
+| F3b | **`_input` cost:** µs/frame with 4 axes changing at 1 kHz; any event reduction must preserve axis history and raw updates | [F3b1 measurements](../radio-input/F3b1/README.md): neither bookkeeping candidate adopted; future optimization must retain radio/calibration/F6a regressions | D6a |
 | F4 | **Compatibility table** (existing) incl. report interval and GUID across a firmware update | One row per tested device | F1 |
 | F5 | **Setup screen** (existing, = UI-10b/12): device pick; raw → calibrated → surface monitor; Classic-on-Linux and RF-on warnings; setup text "clone your field model, RF off" | Owner sets up a new radio without editing files; fake-device tests for both warnings | F1, F3, UI-10a |
 | F6 | **Measured latency:** latency-patch mode + 240 fps camera protocol (≥ 20 trials) at VSync on/off and `max_fps` cap on the owner's machines | Measured median/p95 table vs the budget; headless same-tick check | D7, F1 |

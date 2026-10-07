@@ -1,0 +1,213 @@
+{
+  "note": "All production aircraft remain on GDScript fallback. Compared to E0b6p scalar pass, including initial and 960 subsequent states/aux/loads. Timing excluded: concurrent regression work.",
+  "rows": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": 0.23910731058234266,
+        "end_ground_contact": true,
+        "end_speed_mps": 0.4009219373403718,
+        "fault": "",
+        "sha256": "ca2f865d55868d8235bb94807faf5f5d968375991690ac3d02f931a8457d0d40",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 100.36654244661277,
+        "end_ground_contact": false,
+        "end_speed_mps": 16.87383926100274,
+        "fault": "",
+        "sha256": "33df2cc82ea8c9e50420a0fe5ec14a2b546016d5a78e7f8359efc7938a61e287",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 146.94266122626135,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.466242890019378,
+        "fault": "",
+        "sha256": "cf3c6f296314bc4af71513ef01d44b7416f433e8350b071bf3e85dd6f782d8e6",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.0,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.0,
+        "fault": "",
+        "sha256": "08c4b855865db6782bf199d799779570dcd9b0063ef02c9978f4467775239911",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": -55.5353539476449,
+        "end_ground_contact": false,
+        "end_speed_mps": 29.39356153585966,
+        "fault": "",
+        "sha256": "a88a3288244cb15b26f977e5baabd25c543665bc6c6ff29e1bf35895648f58e6",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 113.50173535395156,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.015658807352878,
+        "fault": "",
+        "sha256": "f7a196fe3710c41c512c74f1b62c722c89322fae16cb25c1b8e743f288d0076d",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 147.09019756429583,
+        "end_ground_contact": false,
+        "end_speed_mps": 17.594548754678907,
+        "fault": "",
+        "sha256": "102673e03235ecf1c925217ab5dc4514afba23d0bbebc2e2fbc62bdb4812acc1",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.0,
+        "end_ground_contact": false,
+        "end_speed_mps": 17.00000000000006,
+        "fault": "",
+        "sha256": "48a4fa32abd0259232cbe7f685e70305a156498ff1c9b400c1b699bd9080b6d2",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": 0.3678234951143449,
+        "end_ground_contact": true,
+        "end_speed_mps": 0.793620735703716,
+        "fault": "",
+        "sha256": "1d13524886bee34b3b07d2853dfe87f56ee8ea0a7d4e49f432efc8168db3b1cd",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 90.14151753137364,
+        "end_ground_contact": false,
+        "end_speed_mps": 23.93934964519532,
+        "fault": "",
+        "sha256": "deea5787c1988368f9e536167cf1c725f6b4883f48f743ee6d98a20b5bd6e978",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 147.9166926520153,
+        "end_ground_contact": false,
+        "end_speed_mps": 25.200265607311493,
+        "fault": "",
+        "sha256": "e2024c32c1fdabc7e06abf0ef2202481c95ccba2d0e64db9bd249fedc643976b",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.000000000001663,
+        "end_ground_contact": false,
+        "end_speed_mps": 25.000000000000004,
+        "fault": "",
+        "sha256": "389d0cd04c7af561dba41c54495c4354318b09e730de4a99101b1455bbae5044",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": -64.78774081345482,
+        "end_ground_contact": false,
+        "end_speed_mps": 33.041265792560026,
+        "fault": "",
+        "sha256": "3b2a5ff8f163a7694ed7d88b21102f2bde25b4548ba0aa7dc0949eae207d0960",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 107.26854765656056,
+        "end_ground_contact": false,
+        "end_speed_mps": 19.786934804035475,
+        "fault": "",
+        "sha256": "03f77dec155d8a2eba057c0470e61c48ac57f90cd11a74dbe2768095729c8ff5",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 128.39230606576976,
+        "end_ground_contact": false,
+        "end_speed_mps": 34.29033616229135,
+        "fault": "",
+        "sha256": "3c065d830365c4b88102820680a806eeee9fe436700c887788984eacbbbcce72",
+        "ticks": 960
+      },
+      "identical": true
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.00000000014984,
+        "end_ground_contact": false,
+        "end_speed_mps": 29.00000000005035,
+        "fault": "",
+        "sha256": "777a450133c69e0ae015133e35f216da67e82db0f0bc163b2cc61ec84efa55af",
+        "ticks": 960
+      },
+      "identical": true
+    }
+  ]
+}
