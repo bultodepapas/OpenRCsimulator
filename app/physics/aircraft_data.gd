@@ -172,8 +172,6 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		_induced_map(envelope, surfaces, aero, area, span, chords)
 	var prop := _propulsion(errors, raw.get("propulsion"))
-	if not surfaces.is_empty() and surfaces.horizontal.has("downwash_gradient") and not prop.get("slipstream", {}).is_empty():
-		errors.append("aero.surfaces.horizontal.downwash_gradient: not yet combined with a propeller slipstream (E0a2 first slice)")
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
 

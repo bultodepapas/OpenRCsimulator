@@ -17,6 +17,8 @@
 
 **E0b1 verification (2026-10-07):** the existing production `wake()` passes independent momentum, pressure and continuity checks over 144 positive-thrust cases; the 35.338× / 1.2996× operating points are reproduced. [Evidence and limitations](../propwash/E0b1/README.md). This verifies ideal theory; it does not enable or calibrate Stik propwash.
 
+**E0b3a compatibility (2026-10-07):** the loader now accepts combined wing-downwash and tail-slipstream data. Both free and washed horizontal-tail passes use E0a2's free slope, elevator effectiveness and the same held wing CL. [Tests and model limits](../propwash/E0b3a/README.md). The shared angular downwash is a quasi-steady approximation; Stik data remains unconfigured. E0b3b still owns bounded geometry, smooth edges and reverse-flow fade.
+
 ## Original baseline observed at HEAD 69dc9bc (historical)
 
 The following table describes the pre-P-51-extension code at that revision. It remains useful for the Stik's default path, but is not a description of every current aircraft.

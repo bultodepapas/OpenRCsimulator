@@ -388,13 +388,19 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 
 ## One tail surface's load about the CG with the law of _local_loads, on `area` (m2), its arm moved by `shift` and
 ## its velocity through the air changed by `extra` (both body axes). For the slipstream increment (E0b, opt-in).
+## E0b3a: downwash_cl is the wing CL supplied by the caller (held lag or instantaneous). The default means zero
+## wing downwash, not a quasi-static solve: this helper has no wing state. Legacy tails ignore it.
 static func tail_surface_load(v: PackedFloat64Array, rates: PackedFloat64Array, d: Dictionary, model: Dictionary,
-		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float) -> PackedFloat64Array:
+		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float,
+		downwash_cl: float = 0.0) -> PackedFloat64Array:
 	var surfaces: Dictionary = model.surfaces
 	var tail: Dictionary = surfaces[name]
 	var vertical := name == "vertical"
 	var arm := M.add(_arm(tail.position, model.cg_le), shift)
 	var flow_v := M.add(v, extra)
+	if not vertical and tail.has("free_slope"):
+		return _tail_surface_from_flow(M.add(flow_v, M.cross(rates, arm)), arm, d, tail, surfaces,
+			area, vertical, rho, downwash_cl)
 	var effective := _tail_angle(flow_v, rates, arm, d, tail, vertical)
 	var cl := _tail_curve(effective, tail.lift_slope, surfaces)
 	var cd: float = surfaces.tail_CD0 + surfaces.tail_k*cl*cl + surfaces.tail_CD90*M.pow_(M.sin_(effective), 2)
@@ -402,8 +408,10 @@ static func tail_surface_load(v: PackedFloat64Array, rates: PackedFloat64Array, 
 
 
 ## Washed-minus-free load for one immersed tail piece. The two evaluations share their arm and rate cross product.
+## E0b3a: both evaluations use the same supplied downwash_cl and E0a2 tail law; see tail_surface_load().
 static func tail_surface_increment(v: PackedFloat64Array, rates: PackedFloat64Array, d: Dictionary, model: Dictionary,
-		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float) -> PackedFloat64Array:
+		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float,
+		downwash_cl: float = 0.0) -> PackedFloat64Array:
 	var surfaces: Dictionary = model.surfaces
 	var tail: Dictionary = surfaces[name]
 	var vertical := name == "vertical"
@@ -413,19 +421,28 @@ static func tail_surface_increment(v: PackedFloat64Array, rates: PackedFloat64Ar
 	var free_flow := M.add(free_velocity, rate_arm)
 	var washed_velocity := M.add(v, extra)
 	var washed_flow := M.add(washed_velocity, rate_arm)
-	var free := _tail_surface_from_flow(free_flow, arm, d, tail, surfaces, area, vertical, rho)
-	var washed := _tail_surface_from_flow(washed_flow, arm, d, tail, surfaces, area, vertical, rho)
+	var free := _tail_surface_from_flow(free_flow, arm, d, tail, surfaces, area, vertical, rho, downwash_cl)
+	var washed := _tail_surface_from_flow(washed_flow, arm, d, tail, surfaces, area, vertical, rho, downwash_cl)
 	for k in 6:
 		washed[k] -= free[k]
 	return washed
 
 
 static func _tail_surface_from_flow(flow: PackedFloat64Array, arm: PackedFloat64Array, d: Dictionary,
-		tail: Dictionary, surfaces: Dictionary, area: float, vertical: bool, rho: float) -> PackedFloat64Array:
+		tail: Dictionary, surfaces: Dictionary, area: float, vertical: bool, rho: float,
+		downwash_cl: float = 0.0) -> PackedFloat64Array:
 	var control: float = -d.rudder if vertical else d.elevator
-	var effective := wrapf(M.atan2_(flow[1 if vertical else 2], flow[0])
-		+ tail.control_effectiveness*control + tail.incidence, -PI, PI)
-	var cl := _tail_curve(effective, tail.lift_slope, surfaces)
+	var effective: float
+	var slope: float
+	if not vertical and tail.has("free_slope"):
+		effective = wrapf(M.atan2_(flow[2], flow[0]) - float(tail.downwash_per_cl) * downwash_cl
+			+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+		slope = tail.free_slope
+	else:
+		effective = wrapf(M.atan2_(flow[1 if vertical else 2], flow[0])
+			+ tail.control_effectiveness*control + tail.incidence, -PI, PI)
+		slope = tail.lift_slope
+	var cl := _tail_curve(effective, slope, surfaces)
 	var cd: float = surfaces.tail_CD0 + surfaces.tail_k*cl*cl + surfaces.tail_CD90*M.pow_(M.sin_(effective), 2)
 	return _surface_with_flow(flow, arm, area, cl, cd, vertical, rho)
 

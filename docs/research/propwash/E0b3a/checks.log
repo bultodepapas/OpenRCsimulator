@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok loader accepts explicit downwash + slipstream []
+ok tail helper matches existing local tail in 300 held-lag/rate/stall cases worst 3.907985046680551e-14
+ok zero added velocity gives exactly zero increment
+ok free tail removes energy including rotational work
+ok elevator derivative uses free slope times elevator tau
+ok static powered elevator has nose-up/nose-down differential authority
+ok static powered rudder retains opposite signed yaw authority
+ok scalar washed-minus-free loads match the tested tail law worst 0; 900 immersed pieces
+ok NAN solves instantaneous wing CL exactly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok real session feeds held lag to both aero and wash
+ok lag plumbing test is not vacuous
+ok absent configuration leaves Dynamics byte-identical
+ok standalone absent/stopped wash returns exactly zero
+ok zero wash factors give exactly zero increment despite held lag
+ok production Stik remains unconfigured
+E0b3a: 15 checks, 0 failed
