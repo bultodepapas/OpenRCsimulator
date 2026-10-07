@@ -6,7 +6,8 @@
 # KNOWN_DEFECTS pins each remaining defect at its documented size, so the suite stays green while it exists and fails
 # on any change: worse, or fixed. Whoever fixes one removes it from KNOWN_DEFECTS, which turns the same measurement into
 # the acceptance test (within ±15 % of the oracle at every α). D11d (2026-10-07, wing induced-flow map) fixed Clp
-# (×1.73 → ×1.12) and CLα (×1.34 → ×0.98); Cmq waits for E0a2 (tail) and Cnr for D11f (fin).
+# (×1.73 → ×1.12) and CLα (×1.34 → ×0.98). E0a2a (tail downwash split) raised Cmq from ×0.28 to ×0.64: the remaining
+# gap is the oracle's lumped downwash lag (Cmα̇ ≈ −3.4, E0a2b through H8) and its borrowed 25e geometry. Cnr waits for D11f.
 # Run: godot --headless --path . --script res://tests/test_damping_regimes.gd
 extends SceneTree
 
@@ -15,9 +16,9 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
-## Remaining documented defects: worst ratio to the oracle (α 2°) over α 0…11°, measured 2026-10-06 and unchanged by
-## D11d; checked within ±10 %. Pitch damping 0.28× (E0a2), yaw damping 0.72× (D11f).
-const KNOWN_DEFECTS := { Cmq = 0.28, Cnr = 0.72 }
+## Remaining documented defects: worst ratio to the oracle (α 2°) over α 0…11°; checked within ±10 %. Pitch damping
+## 0.64× after E0a2a (2026-10-07; was 0.28×; E0a2b), yaw damping 0.72× (2026-10-06, D11f).
+const KNOWN_DEFECTS := { Cmq = 0.64, Cnr = 0.72 }
 ## Acceptance band once fixed: every derivative within ±15 % of the oracle value at every α.
 const BAND := 0.15
 const V := 15.0

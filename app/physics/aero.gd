@@ -262,6 +262,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var mx_sum := 0.0
 	var my_sum := 0.0
 	var mz_sum := 0.0
+	var wing_cl := 0.0 # E0a2: the strips' mean section lift coefficient (equal areas) sets the tail's downwash
 	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
 	var angles := PackedFloat64Array()
 	angles.resize(stations)
@@ -299,6 +300,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			base = cl0 + cla * effective
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		var cd: float = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+		wing_cl += cl / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
 		if speed < 1e-10:
 			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
@@ -334,8 +336,16 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var f2: float = v2 + (p*ty - q*tx)
 		var control: float = -float(d.rudder) if vertical else float(d.elevator)
 		var normal: float = f1 if vertical else f2
-		var effective := wrapf(M.atan2_(normal, f0) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
-		var slope: float = tail.lift_slope
+		var effective: float
+		var slope: float
+		if not vertical and tail.has("free_slope"):
+			# E0a2: downwash from the wing's lift; pitch rate (in the flow) and elevator act on the free tail slope.
+			effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * wing_cl
+				+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+			slope = tail.free_slope
+		else:
+			effective = wrapf(M.atan2_(normal, f0) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
+			slope = tail.lift_slope
 		var blend := _smoothstep((absf(effective) - tail_limit)/tail_span)
 		var cl: float = (1.0 - blend)*slope*effective + blend*0.5*tail_cd90*M.sin_(2.0*effective)
 		var cd: float = tail_cd0 + tail_k*cl*cl + tail_cd90*M.pow_(M.sin_(effective), 2)
@@ -479,7 +489,14 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var flow_x: float = v0 + (q*tz - r*ty)
 		var component: float = v1 + (r*tx - p*tz) if vertical else v2 + (p*ty - q*tx)
 		var control: float = -float(d.rudder) if vertical else float(d.elevator)
-		var angle: float = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
+		var angle: float
+		if not vertical and tail.has("free_slope"):
+			# E0a2: attached (linear) downwash for the blend decision: k_ε·(CLα_w·α + CL_w0) = dε/dα·α + k_ε·CL_w0.
+			angle = wrapf(M.atan2_(component, flow_x) - (float(tail.downwash_gradient) * float(air.alpha)
+				+ float(tail.downwash_per_cl) * float(tail.wing_cl0)) + float(tail.elevator_tau) * control
+				+ float(tail.free_incidence), -PI, PI)
+		else:
+			angle = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
 		blend = maxf(blend, _smoothstep((absf(angle)-limit)/tail_span))
 	return blend
 

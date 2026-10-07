@@ -1085,6 +1085,12 @@
           "unit": "rad",
           "kind": "derived",
           "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+        },
+        "downwash_gradient": {
+          "value": 0.457,
+          "unit": "1",
+          "kind": "derived",
+          "source": "E0a2: dε/dα at the horizontal tail point from a flat-wing vortex lattice of the AR 5 rectangular wing (docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T2: VLM 0.457; elliptic estimate 2·CLα/(πA) = 0.50). With it the tail's free slope is lift_slope/(1 − dε/dα) = 3.22/rad, which a Helmbold tail of AR 3.27 with η 0.9 also gives (3.17); downwash follows the wing's lift, pitch rate and elevator do not. Not measured"
         }
       },
       "vertical": {
