@@ -1,0 +1,1073 @@
+{
+	"aircraft": [
+		{
+			"id": "jensen-das-ugly-stik-60",
+			"regimes": {
+				"ground": {
+					"component_profile": {
+						"aero": 25.565,
+						"aero_blend": 0.0,
+						"aero_global_loads": 12.086666666666666,
+						"aero_local_flow_weight": 11.785833333333333,
+						"aero_local_loads": 17.7875,
+						"dynamics": 39.98083333333334,
+						"ground": 10.813333333333333,
+						"propulsion_loads": 0.9175,
+						"propulsion_thrust_torque": 0.6516666666666666,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 0.2391073104813151,
+						"end_ground_contact": true,
+						"end_speed_mps": 0.4008358462133295,
+						"fault": "",
+						"sha256": "0fc63ce911bb48456cea0edd83f7a582dcdae5a261bda9dd44eb24229806c285",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 2.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 343.275,
+						"median_us_per_tick": 301.6583333333333,
+						"min_us_per_tick": 284.7,
+						"p95_us_per_tick": 343.275,
+						"samples_us_per_tick": [
+							298.9583333333333,
+							316.55833333333334,
+							301.8333333333333,
+							343.275,
+							289.1666666666667,
+							305.8333333333333,
+							333.35,
+							295.95,
+							327.325,
+							304.21666666666664,
+							284.7,
+							301.48333333333335,
+							310.2583333333333,
+							296.96666666666664,
+							295.09166666666664,
+							291.9
+						]
+					}
+				},
+				"spin": {
+					"component_profile": {
+						"aero": 23.576666666666668,
+						"aero_blend": 1.0,
+						"aero_global_loads": 13.445,
+						"aero_local_flow_weight": 1.5691666666666666,
+						"aero_local_loads": 20.188333333333333,
+						"dynamics": 35.55916666666667,
+						"ground": 0.6925,
+						"propulsion_loads": 0.885,
+						"propulsion_thrust_torque": 0.6316666666666667,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 104.70096035899662,
+						"end_ground_contact": false,
+						"end_speed_mps": 17.717754443811767,
+						"fault": "",
+						"sha256": "06c271480e06327cfccb7c2c91ceb8b3308ca2184b79efca5bac4ac96ada6289",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 274.675,
+						"median_us_per_tick": 232.10416666666666,
+						"min_us_per_tick": 210.6,
+						"p95_us_per_tick": 274.675,
+						"samples_us_per_tick": [
+							236.925,
+							274.675,
+							211.825,
+							243.19166666666666,
+							233.225,
+							214.04166666666666,
+							222.35,
+							239.91666666666666,
+							261.94166666666666,
+							230.98333333333332,
+							250.975,
+							230.375,
+							210.6,
+							211.6,
+							215.60833333333332,
+							262.18333333333334
+						]
+					}
+				},
+				"stall": {
+					"component_profile": {
+						"aero": 23.740833333333335,
+						"aero_blend": 1.0,
+						"aero_global_loads": 13.9775,
+						"aero_local_flow_weight": 1.575,
+						"aero_local_loads": 19.885833333333334,
+						"dynamics": 42.145,
+						"ground": 0.6008333333333333,
+						"propulsion_loads": 4.979166666666667,
+						"propulsion_thrust_torque": 3.0208333333333335,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 146.93699946460754,
+						"end_ground_contact": false,
+						"end_speed_mps": 15.649271987851684,
+						"fault": "",
+						"sha256": "cc1b3f5ebe081d71fcfd8cf8e78973002dc235fae5a0e0072a3f19f39843eacc",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 384.21666666666664,
+						"median_us_per_tick": 298.39583333333337,
+						"min_us_per_tick": 268.2,
+						"p95_us_per_tick": 384.21666666666664,
+						"samples_us_per_tick": [
+							384.21666666666664,
+							273.45,
+							274.825,
+							297.28333333333336,
+							299.5083333333333,
+							338.8666666666667,
+							311.2,
+							308.1333333333333,
+							307.45,
+							286.76666666666665,
+							277.5083333333333,
+							285.46666666666664,
+							268.2,
+							300.7,
+							296.8333333333333,
+							339.875
+						]
+					}
+				},
+				"trim": {
+					"component_profile": {
+						"aero": 26.246666666666666,
+						"aero_blend": 0.0,
+						"aero_global_loads": 11.815,
+						"aero_local_flow_weight": 11.416666666666666,
+						"aero_local_loads": 19.713333333333335,
+						"dynamics": 47.071666666666665,
+						"ground": 0.6891666666666667,
+						"propulsion_loads": 5.549166666666666,
+						"propulsion_thrust_torque": 2.7225,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 30.0,
+						"end_ground_contact": false,
+						"end_speed_mps": 15.0,
+						"fault": "",
+						"sha256": "902b8aa8eab9adcc48d25436c239ec8ca497d8d6b1537e1e9d2949edfe196535",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 4.260302408165469,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 303.73333333333335,
+						"median_us_per_tick": 281.64166666666665,
+						"min_us_per_tick": 255.975,
+						"p95_us_per_tick": 303.73333333333335,
+						"samples_us_per_tick": [
+							293.26666666666665,
+							276.6666666666667,
+							255.975,
+							303.73333333333335,
+							279.425,
+							277.10833333333335,
+							281.06666666666666,
+							282.21666666666664,
+							291.6666666666667,
+							293.06666666666666,
+							258.06666666666666,
+							289.425,
+							295.925,
+							278.325,
+							279.68333333333334,
+							296.925
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "gp-extra-300s-60",
+			"regimes": {
+				"ground": {
+					"component_profile": {
+						"aero": 26.245,
+						"aero_blend": 0.0,
+						"aero_global_loads": 12.596666666666666,
+						"aero_local_flow_weight": 12.035833333333333,
+						"aero_local_loads": 19.139166666666668,
+						"dynamics": 41.24583333333333,
+						"ground": 0.6125,
+						"propulsion_loads": 0.9225,
+						"propulsion_thrust_torque": 0.6733333333333333,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": -55.500038241240915,
+						"end_ground_contact": false,
+						"end_speed_mps": 29.384138730955364,
+						"fault": "",
+						"sha256": "bac0f5704564ab0396fd143d88e339c6643f1bb4e0ed289efbac26d9a29b808e",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 2.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 314.93333333333334,
+						"median_us_per_tick": 238.90416666666667,
+						"min_us_per_tick": 219.3,
+						"p95_us_per_tick": 314.93333333333334,
+						"samples_us_per_tick": [
+							231.30833333333334,
+							229.625,
+							265.9166666666667,
+							220.0,
+							246.575,
+							255.3,
+							232.18333333333334,
+							228.54166666666666,
+							249.08333333333334,
+							314.93333333333334,
+							219.3,
+							238.88333333333333,
+							263.8666666666667,
+							235.80833333333334,
+							238.925,
+							249.575
+						]
+					}
+				},
+				"spin": {
+					"component_profile": {
+						"aero": 22.278333333333332,
+						"aero_blend": 1.0,
+						"aero_global_loads": 14.555,
+						"aero_local_flow_weight": 1.6383333333333334,
+						"aero_local_loads": 23.561666666666667,
+						"dynamics": 39.43333333333333,
+						"ground": 0.6075,
+						"propulsion_loads": 1.2066666666666668,
+						"propulsion_thrust_torque": 0.7533333333333333,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 113.51137209965324,
+						"end_ground_contact": false,
+						"end_speed_mps": 15.015249812751053,
+						"fault": "",
+						"sha256": "fa4bdb3ed4905e47fac2ef98e5fd80c260ad32425b6510e1eded098739c1e826",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 284.64166666666665,
+						"median_us_per_tick": 231.05416666666667,
+						"min_us_per_tick": 211.525,
+						"p95_us_per_tick": 284.64166666666665,
+						"samples_us_per_tick": [
+							220.175,
+							284.64166666666665,
+							243.01666666666668,
+							223.225,
+							263.94166666666666,
+							223.49166666666667,
+							213.08333333333334,
+							215.34166666666667,
+							267.34166666666664,
+							236.08333333333334,
+							211.525,
+							262.925,
+							223.76666666666668,
+							248.24166666666667,
+							245.19166666666666,
+							226.025
+						]
+					}
+				},
+				"stall": {
+					"component_profile": {
+						"aero": 21.42,
+						"aero_blend": 1.0,
+						"aero_global_loads": 12.239166666666666,
+						"aero_local_flow_weight": 1.525,
+						"aero_local_loads": 22.234166666666667,
+						"dynamics": 48.8725,
+						"ground": 0.5425,
+						"propulsion_loads": 6.184166666666667,
+						"propulsion_thrust_torque": 2.8758333333333335,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 147.2723489061311,
+						"end_ground_contact": false,
+						"end_speed_mps": 17.55671621655051,
+						"fault": "",
+						"sha256": "47737e1866d4de477847e4264f6b05047b00277af28ac819cd9e3f4d0e497bda",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 424.55833333333334,
+						"median_us_per_tick": 296.43333333333334,
+						"min_us_per_tick": 273.05833333333334,
+						"p95_us_per_tick": 424.55833333333334,
+						"samples_us_per_tick": [
+							278.31666666666666,
+							279.9166666666667,
+							346.94166666666666,
+							309.6333333333333,
+							355.01666666666665,
+							355.7916666666667,
+							295.925,
+							424.55833333333334,
+							315.05,
+							331.90833333333336,
+							273.05833333333334,
+							278.65833333333336,
+							296.94166666666666,
+							288.90833333333336,
+							273.9916666666667,
+							291.1166666666667
+						]
+					}
+				},
+				"trim": {
+					"component_profile": {
+						"aero": 27.470833333333335,
+						"aero_blend": 0.0,
+						"aero_global_loads": 12.938333333333333,
+						"aero_local_flow_weight": 10.736666666666666,
+						"aero_local_loads": 19.859166666666667,
+						"dynamics": 48.52333333333333,
+						"ground": 0.5075,
+						"propulsion_loads": 5.2941666666666665,
+						"propulsion_thrust_torque": 3.0383333333333336,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 30.0,
+						"end_ground_contact": false,
+						"end_speed_mps": 17.00000000000006,
+						"fault": "",
+						"sha256": "48a4fa32abd0259232cbe7f685e70305a156498ff1c9b400c1b699bd9080b6d2",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 5.243693571422133,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 314.68333333333334,
+						"median_us_per_tick": 287.36249999999995,
+						"min_us_per_tick": 252.425,
+						"p95_us_per_tick": 314.68333333333334,
+						"samples_us_per_tick": [
+							314.68333333333334,
+							265.56666666666666,
+							287.025,
+							269.1666666666667,
+							257.7916666666667,
+							260.89166666666665,
+							260.25,
+							252.425,
+							287.7,
+							298.275,
+							292.35,
+							273.85833333333335,
+							312.1333333333333,
+							300.1,
+							304.475,
+							292.03333333333336
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "p51d-mustang-120",
+			"regimes": {
+				"ground": {
+					"component_profile": {
+						"aero": 25.74416666666667,
+						"aero_blend": 0.0,
+						"aero_global_loads": 12.9575,
+						"aero_local_flow_weight": 10.869166666666667,
+						"aero_local_loads": 19.210833333333333,
+						"dynamics": 43.77166666666667,
+						"ground": 8.4175,
+						"propulsion_loads": 0.8866666666666667,
+						"propulsion_thrust_torque": 0.6358333333333334,
+						"slipstream": 0.8466666666666667,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.7625,
+						"slipstream_all_pairs_shared": 0.7275,
+						"slipstream_first_immersion": 7.190833333333333,
+						"slipstream_first_tail_pair_reference": 20.875,
+						"slipstream_first_tail_pair_shared": 13.195833333333333,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 3,
+						"slipstream_wake": 3.1166666666666667
+					},
+					"fingerprint": {
+						"end_altitude_m": 0.36782631117332387,
+						"end_ground_contact": true,
+						"end_speed_mps": 0.7932001390675231,
+						"fault": "",
+						"sha256": "3f6e7f0e4b5ee00cccc0ead67c01242a44f53e31679dcca5828c324b25a8582f",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 2.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 350.7083333333333,
+						"median_us_per_tick": 314.0875,
+						"min_us_per_tick": 292.2083333333333,
+						"p95_us_per_tick": 350.7083333333333,
+						"samples_us_per_tick": [
+							292.2083333333333,
+							293.3833333333333,
+							314.3666666666667,
+							330.55833333333334,
+							328.3333333333333,
+							310.025,
+							296.10833333333335,
+							313.80833333333334,
+							322.825,
+							331.2916666666667,
+							350.7083333333333,
+							303.65,
+							325.0,
+							293.2,
+							323.35833333333335,
+							311.8
+						]
+					}
+				},
+				"spin": {
+					"component_profile": {
+						"aero": 22.178333333333335,
+						"aero_blend": 1.0,
+						"aero_global_loads": 12.754166666666666,
+						"aero_local_flow_weight": 1.5658333333333334,
+						"aero_local_loads": 21.699166666666667,
+						"dynamics": 37.3125,
+						"ground": 0.6908333333333333,
+						"propulsion_loads": 0.9283333333333333,
+						"propulsion_thrust_torque": 0.655,
+						"slipstream": 0.9533333333333334,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.7308333333333333,
+						"slipstream_all_pairs_shared": 0.7591666666666667,
+						"slipstream_first_immersion": 7.615833333333334,
+						"slipstream_first_tail_pair_reference": 20.631666666666668,
+						"slipstream_first_tail_pair_shared": 13.223333333333333,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 3,
+						"slipstream_wake": 3.1633333333333336
+					},
+					"fingerprint": {
+						"end_altitude_m": 96.27350326117694,
+						"end_ground_contact": false,
+						"end_speed_mps": 24.98040637028643,
+						"fault": "",
+						"sha256": "e18227231148ac8177d7cb748f465ed65ae829112495af3ad9372e3b5314b2cd",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 320.6166666666667,
+						"median_us_per_tick": 232.24583333333334,
+						"min_us_per_tick": 217.71666666666667,
+						"p95_us_per_tick": 320.6166666666667,
+						"samples_us_per_tick": [
+							253.78333333333333,
+							221.04166666666666,
+							222.99166666666667,
+							229.44166666666666,
+							247.8,
+							231.29166666666666,
+							233.2,
+							320.6166666666667,
+							219.2,
+							217.71666666666667,
+							273.4916666666667,
+							315.40833333333336,
+							227.575,
+							240.75833333333333,
+							267.09166666666664,
+							218.90833333333333
+						]
+					}
+				},
+				"stall": {
+					"component_profile": {
+						"aero": 24.3025,
+						"aero_blend": 1.0,
+						"aero_global_loads": 13.755,
+						"aero_local_flow_weight": 1.9275,
+						"aero_local_loads": 23.5925,
+						"dynamics": 160.10166666666666,
+						"ground": 0.7216666666666667,
+						"propulsion_loads": 19.668333333333333,
+						"propulsion_thrust_torque": 3.4058333333333333,
+						"slipstream": 85.98666666666666,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 115.63833333333334,
+						"slipstream_all_pairs_shared": 88.66833333333334,
+						"slipstream_first_immersion": 7.16,
+						"slipstream_first_tail_pair_reference": 21.5425,
+						"slipstream_first_tail_pair_shared": 13.745,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 3,
+						"slipstream_wake": 3.11
+					},
+					"fingerprint": {
+						"end_altitude_m": 148.7350726417849,
+						"end_ground_contact": false,
+						"end_speed_mps": 25.014790897722413,
+						"fault": "",
+						"sha256": "5262c2c27720888e6f4d6baf08425eab19b8bf89338b19a00f3d0f67517200e0",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 839.0833333333334,
+						"median_us_per_tick": 789.75,
+						"min_us_per_tick": 732.9083333333333,
+						"p95_us_per_tick": 839.0833333333334,
+						"samples_us_per_tick": [
+							736.5166666666667,
+							793.9083333333333,
+							759.575,
+							808.4,
+							785.5916666666667,
+							772.3166666666667,
+							753.7416666666667,
+							795.0666666666667,
+							809.3416666666667,
+							767.6666666666666,
+							813.175,
+							732.9083333333333,
+							805.1583333333333,
+							799.15,
+							839.0833333333334,
+							738.7416666666667
+						]
+					}
+				},
+				"trim": {
+					"component_profile": {
+						"aero": 27.275833333333335,
+						"aero_blend": 0.0,
+						"aero_global_loads": 12.714166666666667,
+						"aero_local_flow_weight": 11.371666666666666,
+						"aero_local_loads": 19.483333333333334,
+						"dynamics": 159.14833333333334,
+						"ground": 0.6716666666666666,
+						"propulsion_loads": 19.864166666666666,
+						"propulsion_thrust_torque": 3.5216666666666665,
+						"slipstream": 88.63666666666667,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 129.125,
+						"slipstream_all_pairs_shared": 92.1075,
+						"slipstream_first_immersion": 7.621666666666667,
+						"slipstream_first_tail_pair_reference": 21.628333333333334,
+						"slipstream_first_tail_pair_shared": 14.195,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 3,
+						"slipstream_wake": 3.365
+					},
+					"fingerprint": {
+						"end_altitude_m": 30.000000000001663,
+						"end_ground_contact": false,
+						"end_speed_mps": 25.000000000000004,
+						"fault": "",
+						"sha256": "389d0cd04c7af561dba41c54495c4354318b09e730de4a99101b1455bbae5044",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 4.114853195505726,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 836.0,
+						"median_us_per_tick": 757.0250000000001,
+						"min_us_per_tick": 717.3666666666667,
+						"p95_us_per_tick": 836.0,
+						"samples_us_per_tick": [
+							764.8833333333333,
+							823.5916666666667,
+							780.225,
+							727.275,
+							756.6,
+							740.8,
+							749.2333333333333,
+							717.3666666666667,
+							806.25,
+							757.45,
+							750.2416666666667,
+							741.7583333333333,
+							739.0833333333334,
+							817.075,
+							836.0,
+							765.5
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regimes": {
+				"ground": {
+					"component_profile": {
+						"aero": 25.2575,
+						"aero_blend": 0.0,
+						"aero_global_loads": 11.861666666666666,
+						"aero_local_flow_weight": 11.055833333333334,
+						"aero_local_loads": 20.175,
+						"dynamics": 42.600833333333334,
+						"ground": 0.5116666666666667,
+						"propulsion_loads": 1.295,
+						"propulsion_thrust_torque": 0.0,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": -64.83193690984835,
+						"end_ground_contact": false,
+						"end_speed_mps": 33.05388629340237,
+						"fault": "",
+						"sha256": "0f8e73c9dbf4a7608e1d41db8c67d8a9ca66815b7fcf530e45879f11a226a503",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 2.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 302.19166666666666,
+						"median_us_per_tick": 230.8875,
+						"min_us_per_tick": 215.6,
+						"p95_us_per_tick": 302.19166666666666,
+						"samples_us_per_tick": [
+							218.85,
+							215.6,
+							252.4,
+							240.23333333333332,
+							239.68333333333334,
+							246.84166666666667,
+							227.55,
+							222.3,
+							219.14166666666668,
+							234.225,
+							220.81666666666666,
+							265.6166666666667,
+							267.40833333333336,
+							302.19166666666666,
+							224.98333333333332,
+							223.675
+						]
+					}
+				},
+				"spin": {
+					"component_profile": {
+						"aero": 22.669166666666666,
+						"aero_blend": 1.0,
+						"aero_global_loads": 12.775,
+						"aero_local_flow_weight": 1.7075,
+						"aero_local_loads": 19.824166666666667,
+						"dynamics": 36.5725,
+						"ground": 0.5066666666666667,
+						"propulsion_loads": 1.1266666666666667,
+						"propulsion_thrust_torque": 0.0,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 107.26854765656056,
+						"end_ground_contact": false,
+						"end_speed_mps": 19.786934804035475,
+						"fault": "",
+						"sha256": "03f77dec155d8a2eba057c0470e61c48ac57f90cd11a74dbe2768095729c8ff5",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 284.71666666666664,
+						"median_us_per_tick": 227.85,
+						"min_us_per_tick": 212.81666666666666,
+						"p95_us_per_tick": 284.71666666666664,
+						"samples_us_per_tick": [
+							212.81666666666666,
+							212.975,
+							221.26666666666668,
+							213.79166666666666,
+							214.94166666666666,
+							226.88333333333333,
+							217.95833333333334,
+							249.35833333333332,
+							235.60833333333332,
+							274.15833333333336,
+							284.71666666666664,
+							240.09166666666667,
+							225.61666666666667,
+							270.4,
+							228.81666666666666,
+							239.91666666666666
+						]
+					}
+				},
+				"stall": {
+					"component_profile": {
+						"aero": 24.721666666666668,
+						"aero_blend": 1.0,
+						"aero_global_loads": 12.595833333333333,
+						"aero_local_flow_weight": 1.4883333333333333,
+						"aero_local_loads": 20.916666666666668,
+						"dynamics": 50.66583333333333,
+						"ground": 0.5416666666666666,
+						"propulsion_loads": 11.564166666666667,
+						"propulsion_thrust_torque": 0.0,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 129.1890421294788,
+						"end_ground_contact": false,
+						"end_speed_mps": 34.10138732411765,
+						"fault": "",
+						"sha256": "efcc81bf3da8b9b9188cc43765c48b32ef00120900470d571fe4d5b2575fdfc0",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 339.90833333333336,
+						"median_us_per_tick": 317.01250000000005,
+						"min_us_per_tick": 288.175,
+						"p95_us_per_tick": 339.90833333333336,
+						"samples_us_per_tick": [
+							288.175,
+							295.90833333333336,
+							339.0416666666667,
+							290.4166666666667,
+							317.10833333333335,
+							299.5833333333333,
+							297.2583333333333,
+							332.1333333333333,
+							339.90833333333336,
+							323.775,
+							324.84166666666664,
+							316.9166666666667,
+							333.9166666666667,
+							304.30833333333334,
+							310.175,
+							339.7583333333333
+						]
+					}
+				},
+				"trim": {
+					"component_profile": {
+						"aero": 28.6475,
+						"aero_blend": 0.0,
+						"aero_global_loads": 13.8675,
+						"aero_local_flow_weight": 10.805833333333334,
+						"aero_local_loads": 18.266666666666666,
+						"dynamics": 52.7425,
+						"ground": 0.5175,
+						"propulsion_loads": 11.951666666666666,
+						"propulsion_thrust_torque": 0.0,
+						"slipstream": 0.0,
+						"slipstream_all_pairs_exact": true,
+						"slipstream_all_pairs_reference": 0.0,
+						"slipstream_all_pairs_shared": 0.0,
+						"slipstream_first_immersion": 0.0,
+						"slipstream_first_tail_pair_reference": 0.0,
+						"slipstream_first_tail_pair_shared": 0.0,
+						"slipstream_pair_exact": true,
+						"slipstream_pieces": 0,
+						"slipstream_wake": 0.0
+					},
+					"fingerprint": {
+						"end_altitude_m": 30.00000000014984,
+						"end_ground_contact": false,
+						"end_speed_mps": 29.00000000005035,
+						"fault": "",
+						"sha256": "777a450133c69e0ae015133e35f216da67e82db0f0bc163b2cc61ec84efa55af",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 4.063426124524857,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 359.55,
+						"median_us_per_tick": 312.5,
+						"min_us_per_tick": 290.4,
+						"p95_us_per_tick": 359.55,
+						"samples_us_per_tick": [
+							296.44166666666666,
+							290.4,
+							313.7583333333333,
+							297.60833333333335,
+							305.76666666666665,
+							358.68333333333334,
+							302.40833333333336,
+							359.55,
+							319.85833333333335,
+							343.475,
+							324.35833333333335,
+							347.21666666666664,
+							302.65,
+							293.2583333333333,
+							340.75,
+							311.2416666666667
+						]
+					}
+				}
+			}
+		}
+	],
+	"fingerprint_method": "SHA-256 over the initial and every subsequent PackedFloat64Array state, auxiliary state, and start-of-tick loads in native float64 byte order.",
+	"fingerprint_ticks": 960,
+	"format": "openrc-h4h5-bench v1",
+	"machine": {
+		"architecture": "x86_64",
+		"godot": {
+			"build": "official",
+			"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+			"hex": 263938,
+			"major": 4,
+			"minor": 7,
+			"patch": 2,
+			"status": "stable",
+			"string": "4.7.2-stable (official)",
+			"timestamp": 0
+		},
+		"logical_cpu_count": 12,
+		"os": "Linux",
+		"processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz"
+	},
+	"samples": 16,
+	"spin_fixture": "Synthetic performance fixture: alpha 22 deg, body p 2.2 rad/s and r 1.2 rad/s, full up/right, engine stopped. Not handling evidence.",
+	"tick_hz": 240.0,
+	"ticks_per_sample": 120,
+	"timing_method": "Repeated batches from a restored fixture; each sample is the whole-session sim.step average over ticks_per_sample ticks."
+}

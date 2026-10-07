@@ -66,6 +66,7 @@ State as recorded in each plan and in ROADMAP on 2026-10-06. "Owns" lists the pa
 | **Landscape** (definition of the L steps) | [LANDSCAPE-PLAN](LANDSCAPE-PLAN.md) (en) | L0…L20 (with letters), phases L-A…L-D, Gate L | L0–L4 done (shipped in rc2), L5–L6b done, L6c pending playtest; L7 onward planned; Gate L open | ROADMAP rule 7 budgets; M2 for terrain (L12), M5 for wind (L15) | `app/render/ground.gd`, `sky.gdshader`, `atmosphere.gd`, `treeline.*`, `tree_assets.gd`, `shader_clock.gd`; later `sim/terrain.gd` | [landscape-research](research/landscape-research.md), [landscape-investigations/](research/landscape-investigations/README.md), [tree-resource-review](research/tree-resource-review-2026-10-06/README.md) |
 | **Crash and damage** | [CRASH-DAMAGE-PLAN](CRASH-DAMAGE-PLAN.md) (en, rev 2) | CR-00…27, Gate CR | CR-00 research slice done; CR-01 typed impact snapshot/readable cause next; report 03 thresholds pending under CR-07 | Gate 2 prioritizes presentation; E3d contacts; H8 before persistent damage; G4b before part-loss mass updates | `docs/CRASH-DAMAGE-PLAN.md`, `docs/research/crash-damage-investigations/`, `research/crash-damage/`; future `app/render/crash/`, `app/assets/audio/crash/`, `app/tests/test_crash_*.gd`; shared sim/UI through their owners | [crash investigations](research/crash-damage-investigations/README.md) |
 | **Smoke** (exhaust and pump) | [SMOKE-PLAN](SMOKE-PLAN.md) (es, rev 2) | SM-00…09 | Proposal: no smoke code exists; one isolated Godot experiment | Model team's exhaust anchor, UI-10 radio wizard, wind W07 | Proposed: `app/render/aircraft_smoke.gd`, `app/sim/smoke_system.gd`, `app/input/aux_channel.gd` | [rc-exhaust-smoke](research/rc-exhaust-smoke.md), [smoke-investigations/](research/smoke-investigations/README.md) |
+| **Scenery and field life** (separate parallel team) | [SCENERY-PLAN](SCENERY-PLAN.md) (en, rev 2) | SC-00…24, Gate SC | Proposal (2026-10-07): only SC-00 (the plan) exists; next SC-01 research and art direction. Scenery is visual only and off by default until Gate SC | Visual/landscape track (one-line hook in `field.gd`, sub-budget, L10/L11b split), L14 for any collision, UI-06/07/08, VQ-06 | Proposed: `app/scenery/`, `app/data/scenery/`, `app/assets/scenery/`, `assets/scenery/`, `tools/scenery/`, `app/tests/test_scenery_*.gd`, `research/scenery/` | Planned: `docs/research/scenery-investigations/`, `docs/research/scenery-implementation/<ID>/` |
 | **Wind** (M5) | [WIND-PLAN](WIND-PLAN.md) (es) | M5-W00…W08, Gates W-A and W-B | Proposal: only W00 (the plan itself) exists. Its code audit predates the D9-R2 repair and must be re-read before W01 | M5; UI-07 settings; L15 windsock | Proposed: `app/physics/wind_*.gd`, `app/data/weather/` | [wind-physics-primary-sources](research/wind-physics-primary-sources.md), [wind-godot-integration](research/wind-godot-integration.md), [wind-investigations/](research/wind-investigations/README.md) |
 | **Player guide** | [FIRST-LAUNCH.md](FIRST-LAUNCH.md) (en) | none | Current for the v0.1 alpha; also the fallback release notes in CI | PT1g, Gate 2 | — | — |
 | **Releases** | [releases/](releases/) | tags `v*` | rc1 (notes in FIRST-LAUNCH), [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md), [rc4](releases/v0.1.0-rc4.md) | PT1f | — | — |
@@ -94,6 +95,7 @@ Two rules keep this table honest:
 | VQ- | Visual quality deliveries | VISUAL-QUALITY-PLAN |
 | L, Gate L | Landscape steps and their human gate | LANDSCAPE-PLAN |
 | SM- | Smoke | SMOKE-PLAN |
+| SC-, Gate SC | Scenery and field life (props, clubhouse, cars, flora, landmarks) | SCENERY-PLAN |
 | CR-, Gate CR | Crash snapshot, presentation and later structural damage; Gate CR has structural and damaged-flight checkpoints | CRASH-DAMAGE-PLAN |
 | US-, US-V | Ugly Stik model and finish | UGLY-STIK-PLAN, UGLY-STIK-VISUAL-PLAN |
 | EX- | Extra 300S | EXTRA-300-PLAN |
@@ -117,6 +119,7 @@ Rules for IDs:
 | Gate L | Does the field read well to a pilot (horizon, trees, airplane)? | Open; L6c numbers recorded, human reading pending | LANDSCAPE-PLAN |
 | Gate CR | Are structural outcomes and damaged flight plausible? | Open; later CR-B/CR-C checkpoints, after threshold research and contact/state prerequisites; distinct from Gate 2 priority | CRASH-DAMAGE-PLAN |
 | Gate W-A, W-B | Wind feel and configuration | Proposed; nothing implemented | WIND-PLAN |
+| Gate SC | Is the field more beautiful and alive while flying stays as readable and fast? Turns scenery on by default | Proposed; nothing implemented | SCENERY-PLAN |
 
 ## Where things live
 

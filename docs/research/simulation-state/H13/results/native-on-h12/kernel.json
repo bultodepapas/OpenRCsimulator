@@ -1,0 +1,58 @@
+{
+	"checks": 10046,
+	"exact_load_cases": 10004,
+	"failures": 0,
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"load_tolerance": 1e-12,
+	"max_scaled_load_error": 3.552713678800501e-15,
+	"nonzero_load_cases": 6394,
+	"policy": {
+		"clock": "exact ticks and dt",
+		"components": {
+			"attitude": {
+				"absolute": 1e-09,
+				"scale": 1.0,
+				"unit": "quaternion component"
+			},
+			"position": {
+				"absolute": 1e-06,
+				"scale": 1.0,
+				"unit": "m"
+			},
+			"rate": {
+				"absolute": 1e-06,
+				"scale": 1.0,
+				"unit": "rad/s"
+			},
+			"rpm": {
+				"absolute": 1e-05,
+				"scale": 10000.0,
+				"unit": "rpm"
+			},
+			"servo": {
+				"absolute": 1e-09,
+				"scale": 1.0,
+				"unit": "normalized command"
+			},
+			"velocity": {
+				"absolute": 1e-06,
+				"scale": 1.0,
+				"unit": "m/s"
+			}
+		},
+		"discrete": "exact",
+		"format": "openrc-replay-policy v1",
+		"other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+		"reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+	}
+}
