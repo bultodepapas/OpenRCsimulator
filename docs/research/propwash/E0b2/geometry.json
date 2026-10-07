@@ -1,0 +1,605 @@
+{
+  "format": "openrc-stik-wash-geometry-e0b2 v1",
+  "generator": "research/propwash/e0b2/derive_geometry.py",
+  "scope": "Neutral planar footprints, matching visual hinge relief/elevator notch. Geometry handoff only; no runtime slipstream configuration or wash coefficients.",
+  "axes": "LE [aft,right,up], metres; longitudinal datum wing.leading_z, vertical datum equipment.shaft_y",
+  "source_geometry_id": "jensen-60-nitro-61-v3",
+  "hub_le": {
+    "value": [
+      -0.293276,
+      0.0,
+      0.0
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+  },
+  "thrust_line_offset": {
+    "value": [
+      -0.414176,
+      0.0,
+      0.0
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
+  },
+  "pieces": [
+    {
+      "name": "horizontal_left",
+      "surface": "horizontal",
+      "area": {
+        "value": 0.04629457865,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "span_bounds_le": {
+        "value": [
+          -0.2794,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "footprints": [
+        {
+          "part": "stabilizer",
+          "outline_le": {
+            "value": [
+              [
+                0.914178,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.914178,
+                -0.27305,
+                -0.04064
+              ],
+              [
+                0.886206,
+                -0.2667,
+                -0.04064
+              ],
+              [
+                0.830326,
+                -0.254,
+                -0.04064
+              ],
+              [
+                0.774192,
+                -0.2413,
+                -0.04064
+              ],
+              [
+                0.76962,
+                -0.2159,
+                -0.04064
+              ],
+              [
+                0.76962,
+                0.0,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.0370440458,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        },
+        {
+          "part": "elevator_inner",
+          "outline_le": {
+            "value": [
+              [
+                0.940178,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.918178,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.918178,
+                -0.03,
+                -0.04064
+              ],
+              [
+                0.940178,
+                -0.03,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.0006599999999999999,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        },
+        {
+          "part": "elevator_outer",
+          "outline_le": {
+            "value": [
+              [
+                0.918178,
+                -0.03,
+                -0.04064
+              ],
+              [
+                0.918178,
+                -0.27305,
+                -0.04064
+              ],
+              [
+                0.942086,
+                -0.2794,
+                -0.04064
+              ],
+              [
+                0.946658,
+                -0.2794,
+                -0.04064
+              ],
+              [
+                0.953008,
+                -0.27305,
+                -0.04064
+              ],
+              [
+                0.953008,
+                -0.03,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.008590532849999999,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        }
+      ]
+    },
+    {
+      "name": "horizontal_right",
+      "surface": "horizontal",
+      "area": {
+        "value": 0.04629457865,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "span_bounds_le": {
+        "value": [
+          0.0,
+          0.2794
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "footprints": [
+        {
+          "part": "stabilizer",
+          "outline_le": {
+            "value": [
+              [
+                0.914178,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.76962,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.76962,
+                0.2159,
+                -0.04064
+              ],
+              [
+                0.774192,
+                0.2413,
+                -0.04064
+              ],
+              [
+                0.830326,
+                0.254,
+                -0.04064
+              ],
+              [
+                0.886206,
+                0.2667,
+                -0.04064
+              ],
+              [
+                0.914178,
+                0.27305,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.0370440458,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        },
+        {
+          "part": "elevator_inner",
+          "outline_le": {
+            "value": [
+              [
+                0.940178,
+                0.03,
+                -0.04064
+              ],
+              [
+                0.918178,
+                0.03,
+                -0.04064
+              ],
+              [
+                0.918178,
+                0.0,
+                -0.04064
+              ],
+              [
+                0.940178,
+                0.0,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.0006599999999999999,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        },
+        {
+          "part": "elevator_outer",
+          "outline_le": {
+            "value": [
+              [
+                0.918178,
+                0.03,
+                -0.04064
+              ],
+              [
+                0.953008,
+                0.03,
+                -0.04064
+              ],
+              [
+                0.953008,
+                0.27305,
+                -0.04064
+              ],
+              [
+                0.946658,
+                0.2794,
+                -0.04064
+              ],
+              [
+                0.942086,
+                0.2794,
+                -0.04064
+              ],
+              [
+                0.918178,
+                0.27305,
+                -0.04064
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.008590532849999999,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        }
+      ]
+    },
+    {
+      "name": "vertical",
+      "surface": "vertical",
+      "area": {
+        "value": 0.04758883929,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "span_bounds_le": {
+        "value": [
+          -0.02667,
+          0.183134
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+      },
+      "footprints": [
+        {
+          "part": "fin",
+          "outline_le": {
+            "value": [
+              [
+                0.715518,
+                0.0,
+                0.002794
+              ],
+              [
+                0.710438,
+                0.0,
+                0.02413
+              ],
+              [
+                0.709168,
+                0.0,
+                0.03937
+              ],
+              [
+                0.711708,
+                0.0,
+                0.05461
+              ],
+              [
+                0.716788,
+                0.0,
+                0.06985
+              ],
+              [
+                0.724408,
+                0.0,
+                0.08509
+              ],
+              [
+                0.734568,
+                0.0,
+                0.10033
+              ],
+              [
+                0.747268,
+                0.0,
+                0.11557
+              ],
+              [
+                0.762508,
+                0.0,
+                0.13081
+              ],
+              [
+                0.780288,
+                0.0,
+                0.14478
+              ],
+              [
+                0.798068,
+                0.0,
+                0.15621
+              ],
+              [
+                0.823468,
+                0.0,
+                0.16764
+              ],
+              [
+                0.848868,
+                0.0,
+                0.174752
+              ],
+              [
+                0.874268,
+                0.0,
+                0.180086
+              ],
+              [
+                0.894588,
+                0.0,
+                0.183134
+              ],
+              [
+                0.905288,
+                0.0,
+                0.182626
+              ],
+              [
+                0.905288,
+                0.0,
+                -0.026162
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.03106532522,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        },
+        {
+          "part": "rudder",
+          "outline_le": {
+            "value": [
+              [
+                0.909288,
+                0.0,
+                0.182626
+              ],
+              [
+                0.927608,
+                0.0,
+                0.179578
+              ],
+              [
+                0.947928,
+                0.0,
+                0.17272
+              ],
+              [
+                0.968248,
+                0.0,
+                0.16129
+              ],
+              [
+                0.983488,
+                0.0,
+                0.14224
+              ],
+              [
+                0.996188,
+                0.0,
+                0.12065
+              ],
+              [
+                1.006348,
+                0.0,
+                0.09525
+              ],
+              [
+                1.011428,
+                0.0,
+                0.06604
+              ],
+              [
+                1.012698,
+                0.0,
+                0.05715
+              ],
+              [
+                1.011428,
+                0.0,
+                0.04572
+              ],
+              [
+                1.007618,
+                0.0,
+                0.03175
+              ],
+              [
+                0.998728,
+                0.0,
+                0.01397
+              ],
+              [
+                0.983488,
+                0.0,
+                0.0
+              ],
+              [
+                0.963168,
+                0.0,
+                -0.01143
+              ],
+              [
+                0.937768,
+                0.0,
+                -0.02032
+              ],
+              [
+                0.909288,
+                0.0,
+                -0.02667
+              ]
+            ],
+            "unit": "m",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          },
+          "area": {
+            "value": 0.01652351407,
+            "unit": "m2",
+            "kind": "derived",
+            "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+          }
+        }
+      ]
+    }
+  ],
+  "existing_aero_surfaces": {
+    "horizontal": {
+      "area": {
+        "value": 0.0956,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+      },
+      "position": {
+        "value": [
+          0.8409,
+          0,
+          -0.04564
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+      }
+    },
+    "vertical": {
+      "area": {
+        "value": 0.0484,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+      },
+      "position": {
+        "value": [
+          0.8609,
+          0,
+          0.075
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+      }
+    }
+  },
+  "excluded_ventral_area": {
+    "value": 0.0043922492800000015,
+    "unit": "m2",
+    "kind": "derived",
+    "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; not represented by the current vertical aerodynamic surface; preserve as an explicit exclusion"
+  },
+  "limits": [
+    "Estimated geometry remains estimated evidence, even when its coordinates are derived exactly.",
+    "Existing aerodynamic areas and pressure centres are not recalibrated; their areas predate hinge relief and the elevator notch.",
+    "Surface footprints are not the current linear-chord slipstream loader format. E0b3 must choose and verify their load/immersion representation.",
+    "No fuselage shielding, tail thickness, deflected-control geometry, wake decay, swirl or reverse-flow model is inferred."
+  ]
+}

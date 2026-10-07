@@ -1,0 +1,10 @@
+fresh baseline: passed
+hub reset to CG: rejected
+hub provenance changed: rejected
+stale footprint area: rejected
+source/runtime disagreement: rejected
+vertical datum omitted: rejected
+elevator notch omitted: rejected
+fin hinge relief omitted: rejected
+restored freshness: passed
+restored geometry tests: passed

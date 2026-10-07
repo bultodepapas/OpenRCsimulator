@@ -4,6 +4,7 @@
 extends SceneTree
 
 const AD := preload("res://physics/aircraft_data.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
 const PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 
@@ -60,6 +61,33 @@ func _initialize() -> void:
 	# Agreement with the visual geometry (one source of truth per team; numbers must match).
 	_check("span matches visual geometry", absf(m.reference.b - Geometry.DATA.wing.span) < 0.001, "%s vs %s" % [m.reference.b, Geometry.DATA.wing.span])
 	_check("chord matches visual geometry", absf(m.reference.c - Geometry.DATA.wing.chord) / m.reference.c < 0.01, "%s vs %s" % [m.reference.c, Geometry.DATA.wing.chord])
+
+	# E0b2: visual [right,up,aft] -> LE [aft,right,up]. The vertical datum is the shaft,
+	# not the visual assembly origin; subtracting shaft_y makes the hub height exactly zero.
+	var hub_le: PackedFloat64Array = PackedFloat64Array([
+		Geometry.DATA.equipment.prop_z - Geometry.DATA.wing.leading_z, 0.0, 0.0])
+	for axis in 3:
+		_check("E0b2 hub/geometry agreement axis %d" % axis,
+			absf(m.cg_le[axis] + m.propulsion.offset[axis] - hub_le[axis]) < 1e-12)
+	_check("E0b2 propeller diameter matches visual geometry",
+		absf(m.propulsion.diameter - Geometry.DATA.equipment.prop_diameter) < 1e-12)
+	_check("E0b2 hub is explicitly ahead of the CG", m.propulsion.offset[0] < -0.4)
+	# Moving a force along its own axial line leaves r x F unchanged, including windmill drag.
+	var previous_prop: Dictionary = m.propulsion.duplicate(true)
+	previous_prop.offset = PackedFloat64Array([0.0, 0.0, 0.0])
+	var identical_loads: bool = true
+	var signed_zero_changes: int = 0
+	for speed: float in [-10.0, 0.0, 5.0, 15.0, 50.0]:
+		for rpm: float in [0.0, m.propulsion.idle_rpm, m.propulsion.max_rpm]:
+			var velocity: PackedFloat64Array = PackedFloat64Array([speed, 2.0, -3.0])
+			var now: PackedFloat64Array = Propulsion.loads(velocity, rpm, m.propulsion, 1.225)
+			var before: PackedFloat64Array = Propulsion.loads(velocity, rpm, previous_prop, 1.225)
+			for component in 6:
+				identical_loads = identical_loads and now[component] == before[component]
+			if now.to_byte_array() != before.to_byte_array():
+				signed_zero_changes += 1
+	_check("E0b2 axial hub move preserves every propulsion component exactly", identical_loads)
+	print("E0b2: 15 propulsion cases equal numerically; %d signed-zero byte differences" % signed_zero_changes)
 
 	# Control throws are aircraft data with provenance (D5.9), in degrees in the file.
 	_check("throws loaded (aileron 20°, elevator 20°, rudder 25°)", m.controls.throw_deg.aileron == 20.0 and m.controls.throw_deg.elevator == 20.0 and m.controls.throw_deg.rudder == 25.0, str(m.controls))

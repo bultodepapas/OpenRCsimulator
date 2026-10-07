@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok static far speed sqrt(2T/rhoA)
+ok static contraction R/sqrt(2)
+ok static dynamic pressure T/A
+ok static disc speed is half far speed
+ok wake leaves inputs unchanged
+ok wake repeats exactly
+ok momentum T = mass flow times velocity gain 144 cases
+ok pressure gain = disc loading
+ok contracted wake conserves volume flow
+ok q_far/q_inf = 1 + 8Ct/(pi J^2)
+ok positive induction and physical contraction bounds
+ok zero thrust at rest is finite and adds no flow
+ok zero thrust in forward flow has no contraction or induction
+ok wake uses shaft projection, not body x or total speed
+ok Stik fixture loads []
+ok Stik remains opted out of wash pending E0b2 onward
+ok full fixed rpm at 5 m/s T=38.36603 N; ideal pressure ratio=35.33847
+ok full fixed rpm at 15 m/s T=32.59434 N; ideal pressure ratio=4.24141
+ok 15 m/s level-flight thrust gives about 1.30, not full power T=D=3.01268 N; ideal pressure ratio=1.29960
+E0b1 wake: 19 checks, 0 failed

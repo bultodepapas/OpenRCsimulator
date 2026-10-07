@@ -1273,13 +1273,13 @@
       },
       "thrust_line_offset": {
         "value": [
-          0.0,
+          -0.414176,
           0.0,
           0.0
         ],
         "unit": "m",
-        "kind": "estimated",
-        "source": "thrust line through the CG height (plan: thrust line close to the fuselage centre); [x_aft, y_right, z_up] from the CG"
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
       }
     }
   }
