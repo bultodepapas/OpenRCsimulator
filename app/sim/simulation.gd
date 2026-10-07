@@ -152,19 +152,19 @@ func step() -> void:
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
 		return derivative
-	var f := func(s: PackedFloat64Array) -> PackedFloat64Array:
+	var f := func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 		if not stage_error.message.is_empty():
 			return _zero_derivative()
 		if not state_is_valid(s):
 			stage_error.message = "RK stage state is nonfinite, malformed, or has a degenerate quaternion"
 			return _zero_derivative()
-		var l: Variant = loads.call(s, t)
+		var l: Variant = loads.call(s, stage_t)
 		if not _loads_are_valid(l):
 			stage_error.message = "RK stage loads are nonfinite or malformed"
 			return _zero_derivative()
 		return derive.call(s, l)
 	# H2: the loads are a pure function of (state, aux, t), so stage 1 reuses the tick's own evaluation.
-	var next_state := RK.rk4_step(state, dt(), f, derive.call(state, current_loads))
+	var next_state := RK.rk4_step_at(state, t, dt(), f, derive.call(state, current_loads))
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)

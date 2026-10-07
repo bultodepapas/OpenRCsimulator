@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-06",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "baseline_commit": "56416cf73affb068f7204ebc9a3dd1137ca112b4",
+  "full_suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "parsed_gd_scripts": 162,
+    "gd_test_programs": 61,
+    "shaft_validation_checks": 117,
+    "trace_process_tests": 11
+  },
+  "lint": {
+    "before": {
+      "total": 11,
+      "errors": 0,
+      "warnings": 11,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 11,
+      "errors": 0,
+      "warnings": 11,
+      "parse_errors": 0
+    }
+  },
+  "frame_rate_state_hashes": [
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+    "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3"
+  ],
+  "verified_source_sha256": {
+    "app/physics/aircraft_data.gd": "7148a461c98e2ee986b1ffeddfc6e103571c33e6bd59dc3f1eff3bf695e13a05",
+    "app/tests/test_shaft_data.gd": "5d43561d628b009f50ec7b0873090c08611c1f0a2fcd89d07aed7fef0f359266"
+  },
+  "limits": [
+    "No flight equations or generated aircraft data changed.",
+    "No new export or graphical capture run: this change concerns input validation.",
+    "Headless regression results are verification, not independent fidelity or target-hardware acceptance."
+  ]
+}
