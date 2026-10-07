@@ -1,0 +1,565 @@
+{
+  "format": "openrc-gate-p-native-spike v1",
+  "base_commit": "99936a1ee2b59f057a63d654fa9feff2bd8a4727",
+  "library_sha256": "b7127ddfb2d96a9fde2929b575f57f4d148abfabb7531b36301de9ee58760759",
+  "source_sha256": {
+    "research/native-slipstream/sources.json": "7fd5048729e2f147e2a6ef6b9a44a3b72933980f00a2bfff79f27a90be38a57e",
+    "research/native-slipstream/toolchain-lock.json": "1e9923501fdf5e8e7bcd6119baaf3563ffd3c5b63f4f1e3e9c2341f90e14f49e",
+    "research/native-slipstream/run.py": "e747c3025729fd332454a7aa09eb9ad87fb5d7ffe3d2fdb52dcb4ce0c7c303c8",
+    "research/native-slipstream/THIRD_PARTY_NOTICES.md": "2364a43583056bcf14a7ffde5020935cc157336dbfb1c5fb2c0693e81f072a6b",
+    "research/native-slipstream/test_runner.py": "d29ac5a01fda1a5266398ca2a03e627a0d0bab8db5550a1f0d5cc146d46311ce",
+    "research/native-slipstream/verify.gd": "17ffaa43c99c3acba9aab316e3e76325bf4bd06b66592b7924128fac77cca2c4",
+    "research/native-slipstream/adapter.gd": "09ad2ae20381746b5fcf9102b48d73507f2deabff423270a26793b629a0d9c72",
+    "research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "research/native-slipstream/src/slipstream_extension.cpp": "0a0ee30a842888f53745357ad64758a43c2b5ee6b2b5ff98b89bf5c150e15112",
+    "research/native-slipstream/src/slipstream_kernel.hpp": "241db1c712c16551e596062177ab786f5b85d58cd3db804b4e650d44f70836ad"
+  },
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "quick_diagnostic": false,
+  "native_full_suite": true,
+  "kernel": {
+    "checks": 10046,
+    "exact_load_cases": 10004,
+    "failures": 0,
+    "godot": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "load_tolerance": 1e-12,
+    "max_scaled_load_error": 3.552713678800501e-15,
+    "nonzero_load_cases": 6394,
+    "policy": {
+      "clock": "exact ticks and dt",
+      "components": {
+        "attitude": {
+          "absolute": 1e-09,
+          "scale": 1.0,
+          "unit": "quaternion component"
+        },
+        "position": {
+          "absolute": 1e-06,
+          "scale": 1.0,
+          "unit": "m"
+        },
+        "rate": {
+          "absolute": 1e-06,
+          "scale": 1.0,
+          "unit": "rad/s"
+        },
+        "rpm": {
+          "absolute": 1e-05,
+          "scale": 10000.0,
+          "unit": "rpm"
+        },
+        "servo": {
+          "absolute": 1e-09,
+          "scale": 1.0,
+          "unit": "normalized command"
+        },
+        "velocity": {
+          "absolute": 1e-06,
+          "scale": 1.0,
+          "unit": "m/s"
+        }
+      },
+      "discrete": "exact",
+      "format": "openrc-replay-policy v1",
+      "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+      "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+    }
+  },
+  "trajectories_1": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    }
+  ],
+  "trajectories_2": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "trim",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "stall",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "spin",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "ground",
+      "ok": true,
+      "fingerprint_exact": true,
+      "discrete_clock_exact": true,
+      "worst_absolute_error": {
+        "attitude": 0.0,
+        "position": 0.0,
+        "rate": 0.0,
+        "rpm": 0.0,
+        "servo": 0.0,
+        "velocity": 0.0
+      }
+    }
+  ],
+  "all_trajectories_pass": true,
+  "all_native_medians_within_budget": false,
+  "all_native_batch_p95_within_budget": false
+}
