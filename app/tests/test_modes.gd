@@ -13,15 +13,17 @@ const Scenarios := preload("res://sim/scenarios.gd")
 ## 10 m/s re-recorded 2026-10-07 by D11d: it trims at α 12.2°, in the local strip model, where the wing's induced-flow
 ## map removed the strip-theory over-damping (roll τ 0.048 → 0.092 s) and the lift-slope bump that had masked the
 ## local tail's weak pitch damping (short period ζ 0.61 → 0.47, E0a2) and fin yaw damping (spiral 0.34 → 0.59, D11f).
+## 10 m/s re-recorded again by E0a2a the same day: pitch rate now acts on the free tail slope (Cmq ×0.28 → ×0.64 of
+## the oracle), short period ζ 0.47 → 0.52 and 0.90 → 0.99 Hz; roll, dutch roll and spiral nearly unchanged.
 const BANDS := {
-	10.0: [0.89891416, 0.47426430, 0.19877491, 0.04639569, 0.09216503, 0.58744794, 0.33847616, 0.59176304],
+	10.0: [0.98753320, 0.51818297, 0.19060338, 0.06707253, 0.09213067, 0.58721214, 0.33844526, 0.59149735],
 	15.0: [1.49500773, 0.73929294, 0.10320199, 0.25587799, 0.05132182, 0.77321646, 0.28941683, 0.03421904],
 	25.0: [2.42675587, 0.75475678, 0.06150803, 0.74298038, 0.03054795, 1.24178630, 0.27935633, -0.00020070],
 }
 const TOL := 0.03
-## Short-period damping floor per speed (default 0.5). At 10 m/s the local tail pitch-damps at 0.28× the oracle
-## (test_damping_regimes Cmq, E0a2): ζ 0.47 is pinned as that known defect; restore 0.5 when E0a2 lands.
-const SHORT_PERIOD_ZETA_FLOOR := { 10.0: 0.45 }
+## Short-period damping floor per speed (default 0.5). D11d had to pin 10 m/s at 0.45 (ζ 0.47 with the tail's Cmq at
+## 0.28× the oracle); E0a2a's free tail slope brought it back to 0.52, so no speed needs an exception now.
+const SHORT_PERIOD_ZETA_FLOOR := {}
 
 var _failures := 0
 var _count := 0

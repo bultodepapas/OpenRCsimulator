@@ -18,6 +18,8 @@ func _initialize() -> void:
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
 		var model: Dictionary = flight.aircraft.model.duplicate(true)
+		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
+			model.surfaces.horizontal.erase(key) # E0a2a: the frozen oracle predates the tail downwash split
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:
@@ -67,6 +69,8 @@ func _check_local_loads() -> void:
 		# refactored two-pass loop must still reproduce it byte for byte (test_strip_induced.gd covers the map).
 		for key in ["induced_map", "strip_slope", "strip_cl0"]:
 			model.envelope.erase(key)
+		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
+			model.surfaces.horizontal.erase(key) # E0a2a: the frozen oracles predate the tail downwash split
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:

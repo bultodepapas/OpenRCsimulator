@@ -172,6 +172,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		_induced_map(envelope, surfaces, aero, area, span, chords)
 	var prop := _propulsion(errors, raw.get("propulsion"))
+	if not surfaces.is_empty() and surfaces.horizontal.has("downwash_gradient") and not prop.get("slipstream", {}).is_empty():
+		errors.append("aero.surfaces.horizontal.downwash_gradient: not yet combined with a propeller slipstream (E0a2 first slice)")
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
 
@@ -508,6 +510,21 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 	envelope.strip_slope = a0
 	envelope.strip_cl0 = cl0
 	envelope.induced_map = e_map
+	if horizontal.has("downwash_gradient"):
+		# E0a2: free tail law. Static tail lift is unchanged: free_slope·((1 − dε/dα)·α − k_ε·CL_w0 + i_free) equals
+		# lift_slope·(α + incidence), with CL_w = CLα_w·α + CL_w0 the local wing (D11d) and k_ε = (dε/dα)/CLα_w. The
+		# elevator's τ = control_effectiveness·(1 − dε/dα) keeps Cmde; pitch rate now acts on the free slope.
+		var gradient: float = horizontal.downwash_gradient
+		var keep := 1.0 - gradient
+		var wing_cl0 := twist_lift
+		for i in n:
+			wing_cl0 += cl0[i] / float(n)
+		var per_cl := gradient / target
+		horizontal.free_slope = float(horizontal.lift_slope) / keep
+		horizontal.elevator_tau = float(horizontal.control_effectiveness) * keep
+		horizontal.downwash_per_cl = per_cl
+		horizontal.free_incidence = keep * float(horizontal.incidence) + per_cl * wing_cl0
+		horizontal.wing_cl0 = wing_cl0
 
 
 ## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and
@@ -1013,6 +1030,14 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 			control_effectiveness = _q(errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", 0.01, 1.5),
 			incidence = _q(errors, label + ".incidence", tail.get("incidence"), "rad", -0.2, 0.2),
 		}
+	# E0a2 (optional): the wing's downwash gradient at the horizontal tail. With it, lift_slope, control_effectiveness
+	# and incidence keep their meaning (the effective, downwash-reduced static values the oracle was matched with) and
+	# _induced_map derives the free tail law: downwash follows the wing's lift, pitch rate and elevator do not.
+	var horizontal_raw := _dictionary(errors, "aero.surfaces.horizontal", node.get("horizontal", {}))
+	if horizontal_raw.get("downwash_gradient") != null:
+		var gradient = _q(errors, "aero.surfaces.horizontal.downwash_gradient", horizontal_raw.get("downwash_gradient"), "1", 0.0, 0.9)
+		if gradient != null:
+			out.horizontal.downwash_gradient = float(gradient)
 	if not errors.is_empty():
 		return {}
 	if out.tail_stall_end <= out.tail_local_limit or out.tail_local_limit <= out.attached_limit 			or minf(env.a1, env.n1) <= out.attached_limit:
