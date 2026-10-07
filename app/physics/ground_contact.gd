@@ -1,6 +1,7 @@
 # E1: landing gear as point contacts with the flat ground (world NED, ground at down = 0).
-# Each contact is a spring-damper on its compression: F_up = max(0, k·δ + c·δ̇), applied at the contact point, so
-# an off-centre wheel also produces the moment r × F about the CG.
+# Each contact is a spring-damper on its compression: F_up = max(0, k·δ + c(δ)·δ̇), applied at the contact point, so
+# an off-centre wheel also produces the moment r × F about the CG. E1b: c(δ) ramps in from zero at touchdown to the
+# gear's damping at half the contact's static compression (damping()), so touching down no longer steps the force.
 # E2: tangential tyre forces in the ground plane, along each wheel's heading projected on the ground (the nose wheel
 # turned by the steering angle). Rolling resistance F_roll = −C_rr·N·sat(v_long / v_creep); side force from the
 # slip angle, linear up to the peak slip angle and saturated at μ·N: F_side = −μ·N·sat(tan(slip) / tan(α_peak)) with
@@ -52,6 +53,10 @@ const ANCHOR_OMEGA := 19.2
 const ANCHOR_ZETA := 0.7
 ## Floats per contact in the anchor block of aux: north, east (m, world), stuck (1.0) or sliding (0.0).
 const ANCHOR_STRIDE := 3
+## E1b: the gear damping is fully in at this fraction of a contact's static compression (estimated: the tyre and leg
+## contact develops over the first part of the static deflection). Below 1 so that oscillations about rest (H11's 20 %
+## ring-down) never cross the ramp: there the law stays smooth and RK4 keeps its order.
+const DAMPING_ONSET_FRACTION := 0.5
 
 ## Derived gear (AircraftData): { contacts: [{ name, position (body FRD about the CG, m), stiffness (N/m),
 ## damping (N·s/m), max_compression (m), max_steering (rad, 0 = fixed wheel) }], reach (m: no point can touch above
@@ -90,7 +95,7 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 		var vy := s[RB.VEL + 1] + s[RB.RATE + 2] * r[0] - s[RB.RATE] * r[2]
 		var vz := s[RB.VEL + 2] + s[RB.RATE] * r[1] - s[RB.RATE + 1] * r[0]
 		var rate := down[0] * vx + down[1] * vy + down[2] * vz
-		var f_up: float = contact.stiffness * compression + contact.damping * rate
+		var f_up: float = contact.stiffness * compression + damping(contact, compression) * rate
 		if f_up <= 0.0:
 			continue # a damper never pulls the wheel into the ground
 		# E2: tyre forces in the ground plane. Wheel heading in body axes (cos δ, sin δ, 0), projected on the ground.
@@ -154,6 +159,20 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 ## Once per tick (FlightSession._pre_step), never inside RK4. Per contact: off the ground (or without tyre friction)
 ## → sliding; stuck → sliding when the anchor's elastic force k·d exceeds breakaway·C_rr·N along the wheel, μ·N across
 ## it or μ·N in total; sliding → stuck at the wheel's current ground point when its horizontal speed < STICK_SPEED.
+## E1b: the contact's damping at `compression`. It rises from zero at touchdown, linearly at first (Hunt–Crossley
+## onset, n = 1), as c·x·(2 − x) with x = δ / damping_onset, and joins the gear's damping with zero slope at
+## `damping_onset` (AircraftData: DAMPING_ONSET_FRACTION of the contact's static compression), constant beyond. So the
+## force k·δ + c·δ̇ no longer jumps by c·δ̇ when a wheel touches (still never pulls: clamped below), and the ramp's end
+## lies below rest, outside small oscillations about it. At or beyond the onset it is the E1 law bit for bit; onset 0
+## is the E1 law everywhere.
+static func damping(contact: Dictionary, compression: float) -> float:
+	var onset: float = contact.get("damping_onset", 0.0)
+	if compression >= onset:
+		return contact.damping
+	var x := compression / onset
+	return contact.damping * x * (2.0 - x)
+
+
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
 		anchors: PackedFloat64Array) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
@@ -176,7 +195,7 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 		var vx := s[RB.VEL] + s[RB.RATE + 1] * r[2] - s[RB.RATE + 2] * r[1]
 		var vy := s[RB.VEL + 1] + s[RB.RATE + 2] * r[0] - s[RB.RATE] * r[2]
 		var vz := s[RB.VEL + 2] + s[RB.RATE] * r[1] - s[RB.RATE + 1] * r[0]
-		var f_up: float = contact.stiffness * compression + contact.damping * (down[0] * vx + down[1] * vy + down[2] * vz)
+		var f_up: float = contact.stiffness * compression + damping(contact, compression) * (down[0] * vx + down[1] * vy + down[2] * vz)
 		if f_up <= 0.0 or mu <= 0.0:
 			continue
 		var delta: float = steer * float(contact.get("max_steering", 0.0))

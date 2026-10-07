@@ -303,6 +303,13 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	if side_lambda_dt > Ground.SIDE_LAMBDA_DT_MAX:
 		errors.append("landing_gear: side-force damping λ·dt = %.2f (μ·g / (tan α_peak · %.1f m/s) at %.0f Hz) is above %.1f; raise peak_slip_angle or the tick" % [side_lambda_dt, Ground.SLIP_FLOOR, 1.0 / dt, Ground.SIDE_LAMBDA_DT_MAX])
 		return {}
+	# E1b: each contact's damping ramps in over DAMPING_ONSET_FRACTION of its static compression (ground_contact.gd
+	# damping()): the resting load share of m·g over its spring. A contact outside the resting facet uses an equal share.
+	for i in contacts.size():
+		var share := 1.0 / float(contacts.size())
+		if rest.facet.size() == 3 and static_shares.size() == 3 and rest.facet.has(i):
+			share = static_shares[rest.facet.find(i)]
+		contacts[i].damping_onset = Ground.DAMPING_ONSET_FRACTION * share * mass * 9.80665 / float(contacts[i].stiffness)
 	var derived := { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
 		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak }
 	if breakaway != null:
