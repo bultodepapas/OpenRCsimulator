@@ -1,0 +1,15 @@
+{
+  "step": "DT-00-R1",
+  "date": "2026-10-07",
+  "passed": true,
+  "reports": 12,
+  "external_references": 82,
+  "documents_checked": 14,
+  "local_file_targets": 45,
+  "unique_plan_steps": 25,
+  "python_scripts_parsed": 4,
+  "json_parsing": "passed",
+  "registry_revision": 2,
+  "errors": [],
+  "limits": "Checks file targets, not Markdown anchors or external URL availability. Does not run the app or infer native/benchmark acceptance."
+}

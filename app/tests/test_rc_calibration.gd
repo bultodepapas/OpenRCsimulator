@@ -92,7 +92,12 @@ func _initialize() -> void:
 	_check("unknown device → none", RcCalibration.load_profile(TMP, "nobody").is_empty())
 	var broken := cal.profile.duplicate(true)
 	broken.roll.axis = 12
-	RcCalibration.save_profile(TMP, "broken", broken)
+	_check("invalid calibration is refused before saving", RcCalibration.save_profile(TMP, "broken", broken) == ERR_INVALID_DATA)
+	var cfg: ConfigFile = ConfigFile.new()
+	cfg.load(TMP)
+	cfg.set_value("broken".md5_text(), "device_key", "broken")
+	cfg.set_value("broken".md5_text(), "profile", broken)
+	cfg.save(TMP) # emulate an invalid on-disk profile without going through the writer
 	_check("an invalid saved profile is ignored (axis 12)", RcCalibration.load_profile(TMP, "broken").is_empty())
 	# (A corrupt file also returns {} via ConfigFile.load != OK, but Godot prints a parse ERROR, which test.sh
 	# rightly treats as a failure, so that case is not exercised here.)

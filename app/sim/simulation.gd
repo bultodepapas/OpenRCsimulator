@@ -35,6 +35,13 @@ var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array
 var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Array:
 	return PackedFloat64Array()
 
+## E0b5: coupled float64 state, packed after the body only inside RK4. Empty on legacy aircraft.
+## Callbacks receive (body_state, continuous_state, stage_time); both are read-only.
+var continuous: PackedFloat64Array = PackedFloat64Array()
+var continuous_loads: Callable
+var continuous_derivative: Callable
+var _last_valid_continuous: PackedFloat64Array = PackedFloat64Array()
+
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
 var tick := 0
@@ -71,7 +78,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 	if not _configuration_is_valid():
 		_fail_safe("reset rejected: mass, gravity, or inertia is invalid")
 		return false
-	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux):
+	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux) or not _array_is_finite(continuous):
 		_fail_safe("reset rejected: input or auxiliary state is nonfinite or malformed")
 		return false
 	var next_state := initial.duplicate()
@@ -84,7 +91,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 	if not _array_is_finite(next_inertia_inv, 6):
 		_fail_safe("reset rejected: inertia inverse is nonfinite")
 		return false
-	var reset_loads: Variant = loads.call(next_state, 0.0)
+	var reset_loads: Variant = _stage_loads(_packed_state(next_state), 0.0)
 	if not _loads_are_valid(reset_loads):
 		_fail_safe("reset rejected: aircraft returned nonfinite or malformed loads")
 		return false
@@ -139,7 +146,8 @@ func step() -> void:
 		return
 	if not _refresh_inertia_inverse():
 		return
-	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size():
+	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
+			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
 	var old_aux := aux.duplicate()
@@ -148,7 +156,8 @@ func step() -> void:
 		_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
 		return
 	aux = next_aux
-	var current_loads: Variant = loads.call(state, t)
+	var combined: PackedFloat64Array = _packed_state(state)
+	var current_loads: Variant = _stage_loads(combined, t)
 	if not _loads_are_valid(current_loads):
 		aux = old_aux
 		_fail_safe("step rejected: aircraft returned nonfinite or malformed loads")
@@ -160,34 +169,43 @@ func step() -> void:
 		return
 	var h: PackedFloat64Array = rotor
 	var stage_error := { message = "" }
-	var derive := func(s: PackedFloat64Array, l: PackedFloat64Array) -> PackedFloat64Array:
+	var derive := func(s: PackedFloat64Array, l: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, h)
 		if not _array_is_finite(derivative, RB.SIZE):
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
+		if not continuous.is_empty():
+			var extra: Variant = continuous_derivative.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+			if not _array_is_finite(extra, continuous.size()):
+				stage_error.message = "RK continuous derivative is nonfinite or malformed"
+				return _zero_derivative()
+			derivative.append_array(extra)
 		return derivative
 	var f := func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 		if not stage_error.message.is_empty():
 			return _zero_derivative()
-		if not state_is_valid(s):
+		if not _stage_state_is_valid(s):
 			stage_error.message = "RK stage state is nonfinite, malformed, or has a degenerate quaternion"
 			return _zero_derivative()
-		var l: Variant = loads.call(s, stage_t)
+		var l: Variant = _stage_loads(s, stage_t)
 		if not _loads_are_valid(l):
 			stage_error.message = "RK stage loads are nonfinite or malformed"
 			return _zero_derivative()
-		return derive.call(s, l)
+		return derive.call(s, l, stage_t)
 	# H2: the loads are a pure function of (state, aux, t), so stage 1 reuses the tick's own evaluation.
-	var next_state := RK.rk4_step_at(state, t, dt(), f, derive.call(state, current_loads))
+	var next_state := RK.rk4_step_at(combined, t, dt(), f, derive.call(combined, current_loads, t))
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)
 		return
-	if not state_is_valid(next_state):
+	if not _stage_state_is_valid(next_state):
 		aux = old_aux
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	previous = state.duplicate()
+	if not continuous.is_empty():
+		continuous = next_state.slice(RB.SIZE)
+		next_state = next_state.slice(0, RB.SIZE)
 	state = next_state
 	last_loads = current_loads
 	tick += 1
@@ -255,6 +273,8 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 
 func _configuration_is_valid() -> bool:
+	if not continuous.is_empty() and (not continuous_loads.is_valid() or not continuous_derivative.is_valid()):
+		return false
 	if not is_finite(mass) or mass <= 0.0 or not is_finite(gravity) or gravity < 0.0 or inertia.size() != 6:
 		return false
 	for value in inertia:
@@ -290,10 +310,13 @@ func _same_array(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
 
 
 func _zero_derivative() -> PackedFloat64Array:
-	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var zero: PackedFloat64Array = PackedFloat64Array()
+	zero.resize(RB.SIZE + continuous.size())
+	return zero
 
 
 func _remember_valid_state() -> void:
+	_last_valid_continuous = continuous.duplicate()
 	_last_valid_state = state.duplicate()
 	_last_valid_previous = previous.duplicate()
 	_last_valid_aux = aux.duplicate()
@@ -309,6 +332,7 @@ func _remember_valid_state() -> void:
 
 func _restore_last_valid() -> void:
 	if state_is_valid(_last_valid_state):
+		continuous = _last_valid_continuous.duplicate()
 		tick = _last_valid_tick
 		stop_at_tick = _last_valid_stop
 		modes = _last_valid_modes.duplicate()
@@ -337,12 +361,15 @@ func _fail_safe(reason: String) -> void:
 func checkpoint() -> Dictionary:
 	if not fault_reason.is_empty() or not state_is_valid(state) or not state_is_valid(previous) \
 			or not _configuration_is_valid() or not _array_is_finite(aux) or not _array_is_finite(inputs, 4) \
-			or not _loads_are_valid(last_loads):
+			or not _loads_are_valid(last_loads) or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		return {}
-	return { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
+	var snapshot: Dictionary = { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
 		previous = previous.duplicate(), aux = aux.duplicate(), inputs = inputs.duplicate(),
 		modes = modes.duplicate(), last_loads = last_loads.duplicate(), mass = mass,
 		inertia = inertia.duplicate(), gravity = gravity, stop_at_tick = stop_at_tick }
+	if not continuous.is_empty():
+		snapshot.continuous = continuous.duplicate()
+	return snapshot
 
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
@@ -361,7 +388,8 @@ func can_restore_checkpoint(candidate: Dictionary) -> bool:
 		return false
 	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
 		return false
-	return _array_is_finite(candidate.aux, aux.size()) and _array_is_finite(candidate.inputs, 4) \
+	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
+		and _array_is_finite(candidate.aux, aux.size()) and _array_is_finite(candidate.inputs, 4) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
 		and candidate.modes.size() == modes.size() and _configuration_is_valid()
 
@@ -370,6 +398,7 @@ func can_restore_checkpoint(candidate: Dictionary) -> bool:
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not can_restore_checkpoint(candidate):
 		return false
+	continuous = candidate.get("continuous", PackedFloat64Array()).duplicate()
 	state = candidate.state.duplicate()
 	previous = candidate.previous.duplicate()
 	aux = candidate.aux.duplicate()
@@ -393,3 +422,23 @@ func _checkpoint_state_is_valid(candidate: Variant) -> bool:
 	for i in range(RB.ATT, RB.ATT + 4):
 		norm_sq += candidate[i] * candidate[i]
 	return absf(norm_sq - 1.0) <= 1e-10
+
+
+func _packed_state(body: PackedFloat64Array) -> PackedFloat64Array:
+	if continuous.is_empty():
+		return body
+	var combined: PackedFloat64Array = body.duplicate()
+	combined.append_array(continuous)
+	return combined
+
+
+func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
+	if continuous.is_empty():
+		return loads.call(combined, stage_t)
+	return continuous_loads.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
+
+
+func _stage_state_is_valid(combined: PackedFloat64Array) -> bool:
+	if continuous.is_empty():
+		return state_is_valid(combined)
+	return _array_is_finite(combined, RB.SIZE + continuous.size()) and state_is_valid(combined.slice(0, RB.SIZE))

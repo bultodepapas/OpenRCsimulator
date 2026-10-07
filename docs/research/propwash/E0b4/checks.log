@@ -1,0 +1,7 @@
+E0b4: 581 conditions independently checked; source hashes current; 33 mode solves valid
+rejected: incorrect velocity factor
+rejected: missing configuration
+rejected: wrong pressure weighting
+rejected: changed comparison throttle
+rejected: wrong derivative units
+rejected: lost lag mode

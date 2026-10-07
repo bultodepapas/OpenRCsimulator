@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-07",
+  "reason": "User requested removing obsolete repository data after storage exhaustion.",
+  "removed": [
+    {
+      "path": "app/captures",
+      "bytes": 907355907
+    },
+    {
+      "path": "dist",
+      "bytes": 383823555
+    },
+    {
+      "path": "prototypes/stage0/three/node_modules",
+      "bytes": 118321607
+    },
+    {
+      "path": "app/.godot/imported (obsolete capture textures only)",
+      "files": 1156,
+      "bytes": 227340038
+    }
+  ],
+  "reclaimed_bytes": 1636841107,
+  "preserved_capture_reports": 1013,
+  "archive": "removed-capture-reports.tar.xz",
+  "archive_bytes": 160764,
+  "protected": "Tracked source, docs/research, aircraft references, worktrees, installed Godot and active caches retained.",
+  "archive_sha256": "9657f60f1f36fee3f25d64281864132f11c70e19b560f3a421cba8708a43f008",
+  "prevention": "app/capture.sh creates captures/.gdignore before Godot import."
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "case": "baseline",
+    "passed": true,
+    "exit_code": 0,
+    "failed_checks": 0,
+    "same_tick_failures": 0,
+    "summary": [
+      "F6a: 533 checks, 0 failed; 240 same-tick marker updates and exact checkpoint pairs"
+    ]
+  },
+  {
+    "case": "before_flight_poll",
+    "passed": true,
+    "exit_code": 1,
+    "failed_checks": 240,
+    "same_tick_failures": 240,
+    "summary": [
+      "F6a: 533 checks, 240 failed; 240 same-tick marker updates and exact checkpoint pairs"
+    ]
+  },
+  {
+    "case": "render_frame_instead_of_tick",
+    "passed": true,
+    "exit_code": 1,
+    "failed_checks": 252,
+    "same_tick_failures": 240,
+    "summary": [
+      "F6a: 533 checks, 252 failed; 240 same-tick marker updates and exact checkpoint pairs"
+    ]
+  }
+]

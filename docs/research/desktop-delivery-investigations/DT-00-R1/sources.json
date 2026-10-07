@@ -1,0 +1,520 @@
+{
+  "format": "openrc-desktop-source-inventory v1",
+  "step": "DT-00-R1",
+  "consulted_date": "2026-10-07",
+  "scope": "References cited in reports, deduplicated without URL fragments. Not an automated availability check; access method and limits remain in each report.",
+  "sources": [
+    {
+      "url": "https://developer.apple.com/documentation/appkit/nsapplicationdelegate",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/appkit/nsapplicationdelegate/applicationshouldterminate%28_%3A%29",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/security/customizing-the-notarization-workflow",
+      "reports": [
+        "02-macos-trust-pipeline.md",
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/creating-distribution-signed-code-for-the-mac/",
+      "reports": [
+        "02-macos-trust-pipeline.md",
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/packaging-mac-software-for-distribution",
+      "reports": [
+        "02-macos-trust-pipeline.md",
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/tutorials/data/documentation/security/customizing-the-notarization-workflow.json",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/tutorials/data/documentation/security/notarizing-macos-software-before-distribution.json",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/tutorials/data/documentation/xcode/creating-distribution-signed-code-for-the-mac.json",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/tutorials/data/documentation/xcode/packaging-mac-software-for-distribution.json",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://docs.appimage.org/introduction/concepts.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.appimage.org/user-guide/troubleshooting/fuse.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.flatpak.org/en/latest/conventions.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.flatpak.org/en/latest/sandbox-permissions.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/concepts/security/artifact-attestations",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments",
+      "reports": [
+        "07-release-provenance.md",
+        "08-native-test-strategy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job",
+      "reports": [
+        "08-native-test-strategy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/runners/github-hosted-runners",
+      "reports": [
+        "08-native-test-strategy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target",
+      "reports": [
+        "07-release-provenance.md",
+        "08-native-test-strategy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/code-security/tutorials/secure-your-organization/protect-against-threats",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/about/list_of_features.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/about/system_requirements.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_audioserver.html",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_camera3d.html",
+      "reports": [
+        "05-dpi-camera-readability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_configfile.html",
+      "reports": [
+        "10-settings-durability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_diraccess.html",
+      "reports": [
+        "10-settings-durability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_displayserver.html",
+      "reports": [
+        "04-fullscreen-transactions.md",
+        "05-dpi-camera-readability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_input.html",
+      "reports": [
+        "12-radio-export-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_mainloop.html",
+      "reports": [
+        "04-fullscreen-transactions.md",
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_performance.html",
+      "reports": [
+        "09-performance-statistics.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_renderingserver.html",
+      "reports": [
+        "08-native-test-strategy.md",
+        "09-performance-statistics.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_resourceloader.html",
+      "reports": [
+        "11-startup-loading.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_scenetree.html",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/classes/class_window.html",
+      "reports": [
+        "05-dpi-camera-readability.md",
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/development/profiling/index.html",
+      "reports": [
+        "09-performance-statistics.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/engine_details/engine_api/gdextension/gdextension_file.html",
+      "reports": [
+        "02-macos-trust-pipeline.md",
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html",
+      "reports": [
+        "04-fullscreen-transactions.md",
+        "07-release-provenance.md",
+        "08-native-test-strategy.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_linux.html",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_macos.html",
+      "reports": [
+        "02-macos-trust-pipeline.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_windows.html",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html",
+      "reports": [
+        "03-linux-runtime-contract.md",
+        "12-radio-export-contract.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/inputs/handling_quit_requests.html",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/io/background_loading.html",
+      "reports": [
+        "11-startup-loading.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/io/data_paths.html",
+      "reports": [
+        "01-windows-installer-lifecycle.md",
+        "02-macos-trust-pipeline.md",
+        "03-linux-runtime-contract.md",
+        "10-settings-durability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/performance/pipeline_compilations.html",
+      "reports": [
+        "11-startup-loading.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/performance/thread_safe_apis.html",
+      "reports": [
+        "11-startup-loading.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/platform/linux/wayland_x11.html",
+      "reports": [
+        "03-linux-runtime-contract.md",
+        "04-fullscreen-transactions.md",
+        "05-dpi-camera-readability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html",
+      "reports": [
+        "05-dpi-camera-readability.md"
+      ]
+    },
+    {
+      "url": "https://docs.godotengine.org/en/stable/classes/class_fileaccess.html",
+      "reports": [
+        "10-settings-durability.md"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs/git-describe",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs/git-status",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://github.com/actions/checkout",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://github.com/actions/upload-artifact",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/core/io/config_file.cpp",
+      "reports": [
+        "10-settings-durability.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/sdl/joypad_sdl.cpp",
+      "reports": [
+        "12-radio-export-contract.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/linuxbsd/wayland/display_server_wayland.cpp",
+      "reports": [
+        "04-fullscreen-transactions.md",
+        "05-dpi-camera-readability.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/macos/godot_application_delegate.mm",
+      "reports": [
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/macos/godot_window_delegate.mm",
+      "reports": [
+        "04-fullscreen-transactions.md",
+        "06-native-close-suspend-audio.md"
+      ]
+    },
+    {
+      "url": "https://github.com/godotengine/godot/blob/4.7.2-stable/platform/windows/export/export_plugin.cpp",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_admininstallmode.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_filessection.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_sameappnotes.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_appid.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_appversion.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_closeapplications.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_privilegesrequired.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_restartapplications.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_signeduninstaller.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_signtool.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://jrsoftware.org/ishelp/topic_setup_usepreviousappdir.htm",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/seccrypto/time-stamping-authenticode-signatures",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/seccrypto/using-signtool-to-verify-a-file-signature",
+      "reports": [
+        "01-windows-installer-lifecycle.md"
+      ]
+    },
+    {
+      "url": "https://manual.edgetx.org/color-radios/model-settings/model-setup/usb-joystick",
+      "reports": [
+        "12-radio-export-contract.md"
+      ]
+    },
+    {
+      "url": "https://slsa.dev/spec/v1.0/levels",
+      "reports": [
+        "07-release-provenance.md"
+      ]
+    },
+    {
+      "url": "https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac",
+      "reports": [
+        "04-fullscreen-transactions.md"
+      ]
+    },
+    {
+      "url": "https://wiki.libsdl.org/SDL3/README-linux",
+      "reports": [
+        "03-linux-runtime-contract.md"
+      ]
+    },
+    {
+      "url": "https://wiki.libsdl.org/SDL3/SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS",
+      "reports": [
+        "12-radio-export-contract.md"
+      ]
+    },
+    {
+      "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm",
+      "reports": [
+        "09-performance-statistics.md"
+      ]
+    },
+    {
+      "url": "https://www.itl.nist.gov/div898/handbook/prc/section2/prc262.htm",
+      "reports": [
+        "09-performance-statistics.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+	"axis_semantics": "Godot axes after any engine mapping; unseen axes are unknown, not zero or absent.",
+	"build": {
+		"commit": "",
+		"commit_date": "",
+		"describe": "",
+		"dirty": false,
+		"godot": "4.7.2-stable (official)",
+		"label": "",
+		"parsed": {
+			"after": 0,
+			"base": "0.1.0",
+			"dirty": false,
+			"prerelease": "",
+			"semver": "0.1.0",
+			"sha": "",
+			"tag": ""
+		},
+		"source": "development",
+		"version": "0.1.0"
+	},
+	"complete": true,
+	"devices": [],
+	"format": "openrc-input-report v1",
+	"godot": "4.7.2-stable (official)",
+	"ignore_joypad_on_unfocused_application": false,
+	"observed_duration_s": 0.014987,
+	"os": "Linux",
+	"os_version": "24.04",
+	"rejected_events": 0,
+	"requested_duration_s": 0.01,
+	"timing": "Monotonic callback arrival times per axis; includes zero-spacing batched events. Not USB report interval or end-to-end latency.",
+	"use_accumulated_input": false
+}

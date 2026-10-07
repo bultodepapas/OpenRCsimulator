@@ -1,0 +1,21 @@
+# E0b6 quadrature development probe
+
+Final implementation: fixed 5-point Gauss-Legendre on each span interval, split at profile endpoints, the inner and outer occupancy radii, and the regularized core radius. The swirl correction subtracts two absolute `Aero.tail_surface_load` results; their common free-stream load cancels.
+
+Independent reference: composite midpoint integration with 8,192 samples per profile interval. The synthetic, uncalibrated E0b3b fixture supplies actual chord, occupancy, local core-regularized swirl, body rates, and the tail load law.
+
+Candidate in `/tmp/e0b6_fast_candidate`: the 41-check swirl accuracy suite passed with 0 failures; its 8,192-sample probe passed. The same module was copied to the app and the probe rerun below.
+
+Final command: `$(app/get-godot.sh) --headless --path app --script "$PWD/research/propwash/e0b6/quadrature_probe.gd"`.
+
+All corrections are finite. Peak normalized force and moment errors are 1.03503390e-6 and 1.02362268e-6, respectively, in the reverse-fade midpoint case. The target is 1e-3.
+
+```text
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"absolute_force_error":0.0000000106069883700991,"absolute_moment_error":0.00000000793238863980358,"correction":[0.101235015073824,1.02842651725328,-0.0117534964739591,0.132532290608098,-0.010146048352945,-0.762421472601705],"dense":[0.1012350127486,1.02842650691155,-0.0117534968612949,0.132532287878217,-0.0101460487374159,-0.76242146516378],"finite":true,"force_error":0.0000000102635300315561,"moment_error":0.0000000102496057829169,"scenario":"static_controls_core"}
+{"absolute_force_error":0.00000000726493996203186,"absolute_moment_error":0.00000000198639989718523,"correction":[0.06582271989602,1.45335923124404,-0.00695995743908909,0.255056927045942,-0.0079251713193157,-1.07374054865028],"dense":[0.0658227128616851,1.45335923268005,-0.00695995632761946,0.255056925433364,-0.00792517083960688,-1.07374054970634],"finite":true,"force_error":0.00000000499354688976278,"moment_error":0.00000000179985156952574,"scenario":"forward_15_alpha3"}
+{"absolute_force_error":0.0000000000368797931708415,"absolute_moment_error":0.0000000000271195986472485,"correction":[0.0488205307142067,-1.07687047489593,-0.0174199242431447,0.0205962151241457,-0.016799705836932,0.796876356922245],"dense":[0.0488205307099189,-1.0768704748593,-0.017419924243677,0.0205962151207164,-0.0167997058368284,0.796876356895343],"finite":true,"force_error":0.0000000000342075886277152,"moment_error":0.0000000000340134652816174,"scenario":"near_outer_edge"}
+{"absolute_force_error":0.00000108824079173437,"absolute_moment_error":0.000000805522888348893,"correction":[0.0560270052603438,1.04987660940088,0.00876473053514981,0.133150853249187,0.00727861562460301,-0.775553561250742],"dense":[0.0560269235310469,1.04987552423399,0.00876473160839055,0.133150787328022,0.00727862097278078,-0.775552758447578],"finite":true,"force_error":0.00000103503389999264,"moment_error":0.00000102362268294843,"scenario":"reverse_fade_midpoint"}
+worst normalized dense swirl correction error: force=0.0000010350339 moment=0.00000102362268 finite=true
+```

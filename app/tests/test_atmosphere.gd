@@ -22,9 +22,10 @@ func _v(c: Color) -> Vector3:
 
 
 func _initialize() -> void:
+	# A standalone field/pack can build ground before any sky has registered the cloud global.
+	var ground: ShaderMaterial = Ground.grass_material()
 	var env := Atmosphere.environment()
 	var sky: ShaderMaterial = env.sky.sky_material
-	var ground: ShaderMaterial = Ground.grass_material()
 	var holder := Node3D.new()
 	root.add_child(holder)
 	var sun := Atmosphere.create_sun(holder)
@@ -71,6 +72,27 @@ func _initialize() -> void:
 	var env3 := Atmosphere.environment()
 	_check("clouds: first update at t = 5 s changes the sky", Atmosphere.update_clouds(env3, 5.0))
 	_check("clouds: the same interval again does not", not Atmosphere.update_clouds(env3, 5.5))
+
+	# L4b/L15d: one field and one quantised displacement for sky and every ground surface.
+	for uniform_name: String in ["cloud_seed", "cloud_scale", "cloud_coverage", "cluster_strength"]:
+		_check("clouds: ground shares sky " + uniform_name, ground.get_shader_parameter(uniform_name) == sky.get_shader_parameter(uniform_name))
+	_check("clouds: bounded production cloud shadow", float(ground.get_shader_parameter("cloud_shadow_strength")) > 0.0
+		and float(ground.get_shader_parameter("cloud_shadow_strength")) <= 0.3)
+	_check("clouds: 1500 m deck estimate", ground.get_shader_parameter("cloud_deck_m") == 1500.0)
+	_check("clouds: grading remains off", not env.adjustment_enabled)
+	for t: float in [0.0, 5.0, 5.9, 1023.0, 1024.0, 16000.0, 864000000.0, 0.0]:
+		Atmosphere.update_clouds(env3, t)
+		_check("clouds: sky and ground agree at t=%s" % t, (env3.sky.sky_material as ShaderMaterial).get_shader_parameter("cloud_offset") == Atmosphere.last_cloud_offset
+			and Atmosphere.last_cloud_offset == Atmosphere.cloud_offset(t))
+	# Rendering clock wrapping must not reset a cloud field whose period is much longer than 1024 s.
+	_check("clouds: continuous across render clock wrap", Atmosphere.cloud_offset(1024.0).distance_to(Atmosphere.cloud_offset(1023.0)) < 0.01)
+	Atmosphere.update_clouds(env3, 5.0)
+	var fresh_env := Atmosphere.environment() # a flight restart also resets the ground, including duplicate materials
+	_check("clouds: fresh environment resets displacement", Atmosphere.last_cloud_offset == Vector2.ZERO)
+	_check("clouds: existing sky restores ground even without sky update", not Atmosphere.update_clouds(env3, 5.0)
+		and Atmosphere.last_cloud_offset == Atmosphere.cloud_offset(5.0))
+	Atmosphere.update_clouds(fresh_env, 0.0)
+	_check("clouds: replay reset restores exact zero", Atmosphere.last_cloud_offset == Vector2.ZERO)
 
 	# Geometry: the ground reaches the rim, and the camera sees past it.
 	_check("ground half-size ≥ rim end", Spec.GROUND_SIZE / 2.0 >= Spec.ATMOSPHERE.rim_end_m)

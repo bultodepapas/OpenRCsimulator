@@ -2,20 +2,23 @@
 # Momentum theory (actuator disc): disc induced velocity w = ½(−u + sqrt(u² + 2T/(ρA))), far-wake radius
 # r_s = R·sqrt((u + w)/(u + 2w)). The velocity added at the tail is k_w·w, with k_w rising linearly from the static to
 # the forward-flight value over the mass-flow ratio m = u/(u + w) ∈ [0, 0.75] (Selig 2010, AIAA 2010-7938, Fig. 5:
-# 0.8 and 1.8, below the ideal 2 because of the fuselage). Swirl: the shaft torque leaves as angular momentum flux
-# Q = ṁ·r·v_t at every radius (free vortex, core clamped at 0.3R), ṁ = ρπR²(u + w), decayed with the axial wash (k_w/2)
-# and times a straightening factor.
+# 0.8 and 1.8, below the ideal 2 because of the fuselage). Swirl strength is scaled from shaft torque:
+# Γ = swirl_factor·(k_w/2)·Q/ṁ, ṁ = ρπR² max(u + w, 1 m/s). This is a torque-scaled heuristic,
+# NOT a closed angular-momentum balance: the estimated decay and solid core (0.3R) reduce the nominal flux.
+# E0b6 documents the deficit; neither the core nor k_w/2 has measured Stik swirl support.
 # Each tail piece (the fin, each stab half) is a strip along its span with a linear chord; the part of it inside the
 # slipstream circle (around the shaft axis, drifted with the free stream at angle of attack and sideslip) gets the
 # INCREMENT  F(local tail law with the washed flow) − F(same law with the free stream), so the free-stream tail
-# (oracle or local model) is untouched and a stopped propeller adds exactly nothing.
-# Not modelled: wing in the slipstream, fuselage scrubbing drag, wash lag. 64-bit floats only (guarded).
+# (oracle or local model) is untouched. A stopped propeller adds nothing in the quasi-static path;
+# E0b5 can supply a decaying residual axial speed from its continuous state.
+# Not modelled: wing in the slipstream, fuselage scrubbing drag, transported direction/radius. 64-bit floats only (guarded).
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const SwirlLoads = preload("res://physics/swirl_loads.gd")
 
 ## The mass-flow speed u + w used for the swirl never falls below this (m/s).
 const SWIRL_SPEED_FLOOR := 1.0
@@ -23,23 +26,37 @@ const SWIRL_SPEED_FLOOR := 1.0
 ## braking (negative-thrust) propeller capped at 1.5.
 const RADIUS_MIN := 0.7071
 const RADIUS_MAX := 1.5
+# Five-point Gauss-Legendre integrates chord × cubic squared-radius taper × span moment (degree 8) exactly.
+const PROFILE_X: Array[float] = [-0.906179845938664, -0.538469310105683, 0.0, 0.538469310105683, 0.906179845938664]
+const PROFILE_W: Array[float] = [0.236926885056189, 0.478628670499366, 0.568888888888889, 0.478628670499366, 0.236926885056189]
 
 
 ## Derived data (AircraftData model.propulsion.slipstream): { hub (le), wash_factor [static, forward], swirl_factor,
 ## vertical_drift,
 ## pieces: [{
 ## surface, area (m2), root (le), span_dir (le unit), span (m), chords [root, tip] }] }.
+## E0b3b: edge_fraction/reverse_fade opt in to smooth occupancy and a flat profile [a,b,c_a,c_b,...]
+## instead of chords. Geometry moments are exact; axial loads retain a centroid approximation. E0b6 adds
+## distributed swirl-minus-axial loads, so zero swirl remains exact and continuous without a centroid swirl bias.
 ## Returns body loads [Fx, Fy, Fz, Mx, My, Mz] about the CG.
 ## H13: scalar form of the frozen oracle in tests/slipstream_reference.gd (immersion() and
 ## Aero.tail_surface_increment() inlined). Every product and sum keeps the oracle's order, including its + 0.0 terms;
 ## test_slipstream_scalar.gd compares bytes for legacy tails. E0b3a adds the E0a2 free-tail law with the same wing
 ## downwash in the two passes. downwash_cl = NAN uses instantaneous wing CL; the session passes its held lag.
+## transported_dv: optional per-piece axial speed (m/s) at the RK stage; empty uses the equilibrium wake.
 static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
-		rho: float, downwash_cl: float = NAN) -> PackedFloat64Array:
+		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
 	var prop: Dictionary = model.propulsion
-	if rpm < Propulsion.STOPPED_RPM or prop.get("slipstream", {}).is_empty():
+	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var v: PackedFloat64Array = air.v_air
+	var smooth: bool = prop.slipstream.has("edge_fraction")
+	var fade: float = reverse_weight(v, rpm, prop) if smooth else 1.0
+	# A stopped source leaves a decaying axial wake. Reverse flow still removes its tail occupancy.
+	if not transported_dv.is_empty() and rpm < Propulsion.STOPPED_RPM:
+		fade = 1.0 if v[0] >= 0.0 else 0.0
+	if fade == 0.0:
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var tq := Propulsion.thrust_torque(v, rpm, prop, rho)
 	var w := wake(v, tq[0], tq[1], prop, rho)
 	var ss: Dictionary = prop.slipstream
@@ -65,7 +82,7 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 	var vertical_drift: float = ss.vertical_drift
 	var rs: float = w.rs
 	var core: float = w.core
-	var swirl_strength: float = w.swirl
+	var swirl_strength: float = 0.0 if smooth else w.swirl
 	# Tail-law terms.
 	var cg: PackedFloat64Array = model.cg_le
 	var surfaces: Dictionary = model.surfaces
@@ -87,8 +104,12 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 	var o3 := 0.0
 	var o4 := 0.0
 	var o5 := 0.0
-	for piece_value in ss.pieces:
-		var piece: Dictionary = piece_value
+	for piece_index in ss.pieces.size():
+		var piece: Dictionary = ss.pieces[piece_index]
+		if not transported_dv.is_empty():
+			wash_0 = ax[0] * transported_dv[piece_index]
+			wash_1 = ax[1] * transported_dv[piece_index]
+			wash_2 = ax[2] * transported_dv[piece_index]
 		# --- immersion() ---
 		var root: PackedFloat64Array = piece.root
 		var dist: float = root[0] - hub[0]
@@ -109,26 +130,37 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		var perp_1: float = rel_1 - e[1] * along
 		var perp_2: float = rel_2 - e[2] * along
 		var d2: float = perp_0 * perp_0 + perp_1 * perp_1 + perp_2 * perp_2
-		if d2 >= rs * rs:
-			continue
-		var half := M.sqrt_(rs * rs - d2)
-		var span: float = piece.span
-		var a := clampf(-along - half, 0.0, span)
-		var b := clampf(-along + half, 0.0, span)
-		if b <= a:
-			continue
-		var chords: PackedFloat64Array = piece.chords
-		var c0: float = chords[0]
-		var slope: float = (chords[1] - c0) / span
-		var area_b: float = c0 * b + 0.5 * slope * b * b
-		var area_a: float = c0 * a + 0.5 * slope * a * a
-		var immersed: float = area_b - area_a
-		var full: float = c0 * span + 0.5 * slope * span * span
-		if immersed <= 0.0:
-			continue
-		var moment_b: float = 0.5 * c0 * b * b + slope * b * b * b / 3.0
-		var moment_a: float = 0.5 * c0 * a * a + slope * a * a * a / 3.0
-		var eta: float = (moment_b - moment_a) / immersed
+		var immersed: float
+		var full: float
+		var eta: float
+		if smooth:
+			var moments: PackedFloat64Array = profile_moments(piece.profile, along, d2, rs, ss.edge_fraction)
+			immersed = moments[0]
+			if immersed <= 0.0:
+				continue
+			full = piece.area
+			eta = moments[1] / immersed
+		else:
+			if d2 >= rs * rs:
+				continue
+			var half := M.sqrt_(rs * rs - d2)
+			var span: float = piece.span
+			var a := clampf(-along - half, 0.0, span)
+			var b := clampf(-along + half, 0.0, span)
+			if b <= a:
+				continue
+			var chords: PackedFloat64Array = piece.chords
+			var c0: float = chords[0]
+			var slope: float = (chords[1] - c0) / span
+			var area_b: float = c0 * b + 0.5 * slope * b * b
+			var area_a: float = c0 * a + 0.5 * slope * a * a
+			immersed = area_b - area_a
+			full = c0 * span + 0.5 * slope * span * span
+			if immersed <= 0.0:
+				continue
+			var moment_b: float = 0.5 * c0 * b * b + slope * b * b * b / 3.0
+			var moment_a: float = 0.5 * c0 * a * a + slope * a * a * a / 3.0
+			eta = (moment_b - moment_a) / immersed
 		var point_0: float = root[0] + e[0] * eta
 		var point_1: float = root[1] + e[1] * eta
 		var point_2: float = root[2] + e[2] * eta
@@ -136,6 +168,9 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		var tail_pos: PackedFloat64Array = tail.position
 		var shift_1: float = point_1 - tail_pos[1]
 		var shift_2: float = -(point_2 - tail_pos[2])
+		# The neutral coverage plane is distinct from the established aerodynamic load plane (Stik: 5 mm).
+		if smooth and piece.surface == "horizontal":
+			shift_2 = 0.0
 		var radial_body_0: float = -(point_0 - centre_0)
 		var radial_body_1: float = point_1 - centre_1
 		var radial_body_2: float = -(point_2 - centre_2)
@@ -242,6 +277,13 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		o3 += washed_3 - free_3
 		o4 += washed_4 - free_4
 		o5 += washed_5 - free_5
+	if smooth:
+		var result: PackedFloat64Array = PackedFloat64Array([o0*fade, o1*fade, o2*fade, o3*fade, o4*fade, o5*fade])
+		if w.swirl != 0.0:
+			var correction: PackedFloat64Array = SwirlLoads.correction(state, air, d, model, w, fade, rho, wing_cl)
+			for component: int in 6:
+				result[component] += correction[component]
+		return result
 	return PackedFloat64Array([o0, o1, o2, o3, o4, o5])
 
 
@@ -251,14 +293,17 @@ static func wake(v_air: PackedFloat64Array, thrust: float, torque: float, prop: 
 	var ss: Dictionary = prop.slipstream
 	var R: float = 0.5 * prop.diameter
 	var area := PI * R * R
-	var u := maxf(M.dot(v_air, Propulsion.axis(prop)), 0.0)
+	var smooth: bool = ss.has("edge_fraction")
+	# Signed momentum flow only in the new bounded route: reverse_weight removes loads by -0.2 vi0 in the fixture.
+	var axial: float = M.dot(v_air, Propulsion.axis(prop))
+	var u: float = axial if smooth else maxf(axial, 0.0)
 	var vs := M.sqrt_(maxf(u * u + 2.0 * thrust / (rho * area), 0.0))
 	var w := 0.5 * (vs - u)
-	var ratio := clampf((u + w) / maxf(u + 2.0 * w, 1e-6), RADIUS_MIN * RADIUS_MIN, RADIUS_MAX * RADIUS_MAX)
+	var ratio := clampf((u + w) / maxf(u + 2.0 * w, 1e-6), (0.25 if smooth else RADIUS_MIN * RADIUS_MIN), RADIUS_MAX * RADIUS_MAX)
 	var m := u / maxf(u + w, 1e-6) if w > 0.0 else 1.0
 	var k_w: float = lerpf(ss.wash_factor[0], ss.wash_factor[1], clampf(m / 0.75, 0.0, 1.0))
-	# Mixing that leaves k_w·w of the ideal 2w at the tail spreads the angular momentum over proportionally more air:
-	# the tangential velocity falls by the same k_w/2, so the swirl ANGLE is the ideal wake's times swirl_factor.
+	# k_w/2 is an estimated swirl attenuation, not a consequence of the axial decay law. The current radius
+	# is still the ideal contracted radius; no expanded mass-flow or missing reaction is tracked (E0b6).
 	var swirl: float = ss.swirl_factor * 0.5 * k_w * torque / (rho * area * maxf(u + w, SWIRL_SPEED_FLOOR))
 	return { u = u, w = w, vs = u + 2.0 * w, dv = k_w * w, rs = R * M.sqrt_(ratio), swirl = swirl, core = 0.3 * R }
 
@@ -295,31 +340,45 @@ static func immersion(piece: Dictionary, w: Dictionary, hub: PackedFloat64Array,
 	var perp_2: float = rel_2 - e[2] * along
 	var d2: float = perp_0 * perp_0 + perp_1 * perp_1 + perp_2 * perp_2
 	var rs: float = w.rs
-	if d2 >= rs * rs:
-		return none
-	var half := M.sqrt_(rs * rs - d2)
-	var span: float = piece.span
-	var a := clampf(-along - half, 0.0, span)
-	var b := clampf(-along + half, 0.0, span)
-	if b <= a:
-		return none
-	var c0: float = piece.chords[0]
-	var slope: float = (piece.chords[1] - c0) / span
-	# Keep the polynomial term order while avoiding two captured Callable allocations per immersed piece.
-	var area_b: float = c0 * b + 0.5 * slope * b * b
-	var area_a: float = c0 * a + 0.5 * slope * a * a
-	var area: float = area_b - area_a
-	var full: float = c0 * span + 0.5 * slope * span * span
-	if area <= 0.0:
-		return none
-	var moment_b: float = 0.5 * c0 * b * b + slope * b * b * b / 3.0
-	var moment_a: float = 0.5 * c0 * a * a + slope * a * a * a / 3.0
-	var eta: float = (moment_b - moment_a) / area
+	var area: float
+	var full: float
+	var eta: float
+	var smooth: bool = prop.slipstream.has("edge_fraction")
+	if smooth:
+		var moments: PackedFloat64Array = profile_moments(piece.profile, along, d2, rs, prop.slipstream.edge_fraction)
+		area = moments[0]
+		if area <= 0.0:
+			return none
+		full = piece.area
+		eta = moments[1] / area
+	else:
+		if d2 >= rs * rs:
+			return none
+		var half := M.sqrt_(rs * rs - d2)
+		var span: float = piece.span
+		var a := clampf(-along - half, 0.0, span)
+		var b := clampf(-along + half, 0.0, span)
+		if b <= a:
+			return none
+		var c0: float = piece.chords[0]
+		var slope: float = (piece.chords[1] - c0) / span
+		# Keep the polynomial term order while avoiding two captured Callable allocations per immersed piece.
+		var area_b: float = c0 * b + 0.5 * slope * b * b
+		var area_a: float = c0 * a + 0.5 * slope * a * a
+		area = area_b - area_a
+		full = c0 * span + 0.5 * slope * span * span
+		if area <= 0.0:
+			return none
+		var moment_b: float = 0.5 * c0 * b * b + slope * b * b * b / 3.0
+		var moment_a: float = 0.5 * c0 * a * a + slope * a * a * a / 3.0
+		eta = (moment_b - moment_a) / area
 	var point_0: float = root[0] + e[0] * eta # le frame
 	var point_1: float = root[1] + e[1] * eta
 	var point_2: float = root[2] + e[2] * eta
 	var tail_pos: PackedFloat64Array = model.surfaces[piece.surface].position
 	var shift: PackedFloat64Array = PackedFloat64Array([0.0, point_1 - tail_pos[1], -(point_2 - tail_pos[2])])
+	if smooth and piece.surface == "horizontal":
+		shift[2] = 0.0
 	var radial_0: float = point_0 - centre_0
 	var radial_1: float = point_1 - centre_1
 	var radial_2: float = point_2 - centre_2
@@ -339,3 +398,65 @@ static func immersion(piece: Dictionary, w: Dictionary, hub: PackedFloat64Array,
 		(ax[0] * radial_body_1 - ax[1] * radial_body_0) * swirl_scale,
 	])
 	return { area = piece.area * area / full, shift = shift, swirl = swirl }
+
+
+## E0b3b regularization, not a validated vortex-ring model. Positive magnitudes are in units of static induced
+## velocity at the CURRENT rpm. Density cancels in vi0 = n D sqrt(2 Ct(0)/pi). Applies to the entire increment.
+static func reverse_weight(v: PackedFloat64Array, rpm: float, prop: Dictionary) -> float:
+	if rpm < Propulsion.STOPPED_RPM:
+		return 0.0
+	var vi0: float = rpm / 60.0 * float(prop.diameter) * M.sqrt_(2.0 * float(prop.ct[1]) / PI)
+	var bounds: PackedFloat64Array = prop.slipstream.reverse_fade
+	var ratio: float = -M.dot(v, Propulsion.axis(prop)) / vi0
+	return 1.0 - Aero._smoothstep((ratio - bounds[0]) / (bounds[1] - bounds[0]))
+
+
+## Integral of chord × occupancy and its first span moment. Occupancy is a C1 cubic in squared radius,
+## one inside (1-edge)*rs and zero outside (1+edge)*rs. It weights the load increment, NOT the local air speed.
+## This avoids hard-circle tangency kinks without claiming a measured radial wake profile.
+static func profile_moments(profile: PackedFloat64Array, along: float, d2: float, rs: float, edge: float) -> PackedFloat64Array:
+	var inner2: float = rs*rs*(1.0-edge)*(1.0-edge)
+	var outer2: float = rs*rs*(1.0+edge)*(1.0+edge)
+	if d2 >= outer2:
+		return PackedFloat64Array([0.0, 0.0])
+	var outer: float = M.sqrt_(outer2-d2)
+	var inner: float = M.sqrt_(maxf(inner2-d2, 0.0))
+	var total: float = 0.0
+	var moment: float = 0.0
+	for i in range(0, profile.size(), 4):
+		var start: float = profile[i]
+		var end: float = profile[i+1]
+		var a: float = maxf(start, -along-outer)
+		var b: float = minf(end, -along+outer)
+		if b <= a:
+			continue
+		var slope: float = (profile[i+3]-profile[i+2])/(end-start)
+		for zone in 3:
+			var lo: float = a
+			var hi: float = b
+			if zone == 0:
+				hi = minf(b, -along-inner)
+			elif zone == 1:
+				lo = maxf(a, -along-inner)
+				hi = minf(b, -along+inner)
+			else:
+				lo = maxf(a, -along+inner)
+			if hi <= lo:
+				continue
+			var middle: float = 0.5*(lo+hi)
+			var half: float = 0.5*(hi-lo)
+			var chord: float = profile[i+2] + slope*(middle-start)
+			if zone == 1:
+				var strip: float = 2.0*half*chord
+				total += strip
+				moment += middle*strip + slope*2.0*half*half*half/3.0
+			else:
+				for k in 5:
+					var offset: float = half*PROFILE_X[k]
+					var eta: float = middle+offset
+					var radial: float = eta+along
+					var t: float = clampf((d2+radial*radial-inner2)/(outer2-inner2), 0.0, 1.0)
+					var strip: float = half*PROFILE_W[k]*(chord+slope*offset)*(1.0-t*t*(3.0-2.0*t))
+					total += strip
+					moment += eta*strip
+	return PackedFloat64Array([total, moment])

@@ -1,0 +1,643 @@
+{
+  "format": "openrc-e0b4-donor-profile v1",
+  "generator": "research/propwash/e0b4/donor_profile.py",
+  "status": "Source-informed static transfer calculation; no Stik calibration, runtime configuration or enablement.",
+  "input_files": {
+    "test_geometry": "app/tests/fixtures/stik_wash_profile.json",
+    "propeller_diameter": "app/data/aircraft/jensen_ugly_stik_60.json#/propulsion/propeller/diameter"
+  },
+  "input_sha256": {
+    "fixture": "61590cd2d4a305bee117b9b5ab950609cb598a30b70255b4c9678b076a08bdfa",
+    "aircraft_data": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "generator": "909f246f64965ffb89e5a6192162cbb4a44b3a1c57c84a7ecabefefc52f728da"
+  },
+  "source_model": {
+    "reference": "Khan 2016 McGill PhD thesis, Chapter 5, Eqs. (5.10), (5.12)-(5.14), (5.18)-(5.20), printed pp. 115 and 118.",
+    "thesis_record_url": "https://mcgill.scholaris.ca/items/56b70b0e-1f76-48ba-b973-d3b841d659ed",
+    "official_pdf_bitstream_url": "https://mcgill.scholaris.ca/server/api/core/bitstreams/dcf4ec23-fc4d-457b-b4af-7e0fe29ce67c/content",
+    "fit_propeller": "Electrifly Powerflow 10x4.5, D=0.254 m; fit coefficients at 5,425 rpm, T=6.43 +/- 0.03 N, CT=0.1542.",
+    "equations": {
+      "efflux_speed": "V0 = 1.46 n Dp sqrt(CT)",
+      "efflux_plane": "d0 = 0.764 Dp",
+      "contracted_radius": "R0 = 0.74 Rp; D0 = 2 R0 = 0.74 Dp",
+      "initial_peak_radius": "Rmax,0 = 0.67 (R0 - Rh)",
+      "coordinate": "xi = (ds - d0)/D0",
+      "eq_5_18": "Vs,max = V0 (1.37 - 0.1529 xi), for 1.7 <= xi <= 4.25",
+      "eq_5_19": "Rmax = Rmax,0 (1.3 - 0.3059 xi)",
+      "eq_5_20": "Vs = Vs,max exp(-((rs - Rmax)/(0.5176 Rmax,0 + 0.2295(ds - d0 - R0)))^2)",
+      "normalization": "Static actuator-disc induced speed w = n Dp sqrt(2 CT/pi), so V0/w = 1.46/sqrt(2/pi)."
+    }
+  },
+  "geometry_and_station_scope": {
+    "propeller_diameter_m": 0.3048,
+    "propeller_hub_le_m": [
+      -0.293276,
+      0.0,
+      0.0
+    ],
+    "actual_stik_tail_station_band_m": [
+      1.134176,
+      1.154176
+    ],
+    "actual_stik_tail_station_band_D": [
+      3.7210498687664044,
+      3.7866666666666666
+    ],
+    "actual_stations": [
+      {
+        "piece": "horizontal",
+        "axial_station_m": 1.134176,
+        "axial_station_D": 3.7210498687664044,
+        "xi": 3.9960133361708166,
+        "zone_branch": "Khan Eq. 5.18/5.20, 1.7 <= xi <= 4.25",
+        "inside_selected_branch": true
+      },
+      {
+        "piece": "horizontal",
+        "axial_station_m": 1.134176,
+        "axial_station_D": 3.7210498687664044,
+        "xi": 3.9960133361708166,
+        "zone_branch": "Khan Eq. 5.18/5.20, 1.7 <= xi <= 4.25",
+        "inside_selected_branch": true
+      },
+      {
+        "piece": "vertical",
+        "axial_station_m": 1.154176,
+        "axial_station_D": 3.7866666666666666,
+        "xi": 4.084684684684685,
+        "zone_branch": "Khan Eq. 5.18/5.20, 1.7 <= xi <= 4.25",
+        "inside_selected_branch": true
+      }
+    ],
+    "equation_branch_guard": "The evaluator rejects stations outside the exact current Stik root-x band and rejects xi outside [1.7, 4.25]; it does not evaluate any other Khan axial branch.",
+    "neutral_geometry": "Fixture piecewise-linear aggregate chord profiles; area and span first moment preserve the E0b2 neutral polygon groups. Horizontal halves use z=-0.040640 m, the neutral coverage plane; fin uses its full generated z profile.",
+    "fixed_reference_x": "Each profile uses its current generated root/reference x. Flow is evaluated across transverse span only; chordwise wake variation and the 5 mm horizontal load-plane offset are not resolved.",
+    "integration": "Midpoint quadrature independently subdivides every profile interval with 128 and 256 points; the local chord is linearly interpolated and weights each transverse radius.",
+    "dimensionless_q_definition": "Every field ending q_over_w2 is mean(Vs^2)/w^2 = q_mean/(0.5 rho w^2) for constant density. The centerline value is Vs(0)^2/w^2.",
+    "area_mean_convergence_absolute_tolerance": 1e-06
+  },
+  "hub_radius_sensitivity": {
+    "rh_over_rp": [
+      0.0,
+      0.1,
+      0.2
+    ],
+    "status": "Assumed mathematical sensitivity points only. The Stik fixture and source aircraft data contain no measured propeller hub radius; no one case is selected as a Stik value."
+  },
+  "smooth_occupancy_comparison": {
+    "source": "Current E0b3b load-occupancy law in app/physics/slipstream.gd / docs/research/propwash/E0b3b/README.md.",
+    "static_radius_m": 0.10776307345282984,
+    "radius_assumption": "E0b3b momentum far-wake radius at u=0 is Rp/sqrt(2); static geometry only.",
+    "edge_fraction": 0.15,
+    "edge_fraction_kind": "estimated test-fixture regularization, not a measured wash edge or Gaussian width",
+    "comparison": "The JSON reports both Gaussian area-mean q relative to its own centerline q and E0b3b mean occupancy as the uniform-increment load q proxy relative to its own centerline. These are shape/coverage diagnostics with distinct meanings; they are not equalized-speed measurements or a calibrated Stik dynamic pressure."
+  },
+  "limitations": [
+    "The thesis fit uses a different 10x4.5 propeller, motor, rpm and geometry. This normalized application transfers the fitted shape to Stik stations; it is not Stik calibration.",
+    "The source fit coefficients use 5425 rpm data; the same propeller's 1750 and 6425 rpm tests report 0.6 m/s (13%) and 2 m/s (12%) overall RMS errors, respectively.",
+    "The one-term Gaussian is symmetric; Khan reports under-prediction near the axis in the zone of flow establishment because measured profiles are asymmetric, with error fading downstream.",
+    "The Stik tail stations are near the end of the source model's zone of flow establishment (xi about 4.00-4.09). The closest tabulated radial survey station is x/D=3.54; the next, x/D=4.33, lies in the distinct established-flow branch and is not interpolated here.",
+    "Hub radius is unknown for the Stik; the three Rh/Rp cases show sensitivity without selecting a donor value.",
+    "The fixture is estimated visual geometry and integrates aggregate projected area over span at a fixed x; it does not resolve individual chordwise gaps or local flow variation in x.",
+    "No wind, advance-ratio effect, swirl, transport, Reynolds correction, aircraft-specific blockage or powered-cruise calibration is included."
+  ],
+  "cases": [
+    {
+      "hub_radius_over_propeller_radius": 0.0,
+      "input_kind": "assumed sensitivity point; not Stik measurement or source-propeller value",
+      "pieces": [
+        {
+          "piece": "horizontal_left",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3878790226086806,
+          "centerline_q_over_w2": 1.9262081813972265,
+          "area_mean_q_over_centerline_q_256": 0.5058655961061692,
+          "Rmax_m": 0.005864924756799993,
+          "gaussian_width_m": 0.220078092192,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.974402760618189,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9744024499070881,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 3.107111008482377e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 3.1887348074490663e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "horizontal_right",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3878790226086806,
+          "centerline_q_over_w2": 1.9262081813972265,
+          "area_mean_q_over_centerline_q_256": 0.5058655961061692,
+          "Rmax_m": 0.005864924756799993,
+          "gaussian_width_m": 0.220078092192,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.974402760618189,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9744024499070881,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 3.107111008482377e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 3.1887348074490663e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "vertical_fin",
+          "surface": "vertical",
+          "axial_station_m": 1.154176,
+          "axial_station_D": 3.7866666666666666,
+          "xi": 4.084684684684685,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3636630087534627,
+          "centerline_q_over_w2": 1.8595768014425464,
+          "area_mean_q_over_centerline_q_256": 0.7785731973498615,
+          "Rmax_m": 0.0038153947567999983,
+          "gaussian_width_m": 0.224668092192,
+          "Vmax_over_w": 1.3640563467025173,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "sampled_area_m2": 0.04758883929001066,
+              "area_mean_q_over_w2": 1.4478166525042264,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "sampled_area_m2": 0.04758883929001055,
+              "area_mean_q_over_w2": 1.447816656016752,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 3.5125256037105146e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 2.4260845384761707e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        }
+      ],
+      "surfaces": {
+        "horizontal": {
+          "piece_count": 2,
+          "neutral_geometry_area_m2": 0.09258915729999999,
+          "centerline_velocity_over_w_area_weighted_rms": 1.3878790226086806,
+          "centerline_q_over_w2_area_weighted": 1.9262081813972265,
+          "area_mean_q_over_centerline_q_256": 0.5058655961061693,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 1792,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.974402760618189,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 3584,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.9744024499070882,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 3.107111007372154e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 3.1887348063096773e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        },
+        "vertical": {
+          "piece_count": 1,
+          "neutral_geometry_area_m2": 0.047588839290000004,
+          "centerline_velocity_over_w_area_weighted_rms": 1.3636630087534627,
+          "centerline_q_over_w2_area_weighted": 1.8595768014425462,
+          "area_mean_q_over_centerline_q_256": 0.7785731973498615,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.4478166525042264,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.4478166560167518,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 3.5125253816659097e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 2.4260843851110303e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        }
+      }
+    },
+    {
+      "hub_radius_over_propeller_radius": 0.1,
+      "input_kind": "assumed sensitivity point; not Stik measurement or source-propeller value",
+      "pieces": [
+        {
+          "piece": "horizontal_left",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.388090703572304,
+          "centerline_q_over_w2": 1.926795801343854,
+          "area_mean_q_over_centerline_q_256": 0.4907338776251827,
+          "Rmax_m": 0.005072367357232426,
+          "gaussian_width_m": 0.21479298211199999,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.9455441562225986,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9455439749853907,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 1.8123720790796938e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 1.9167507033268295e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "horizontal_right",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.388090703572304,
+          "centerline_q_over_w2": 1.926795801343854,
+          "area_mean_q_over_centerline_q_256": 0.4907338776251827,
+          "Rmax_m": 0.005072367357232426,
+          "gaussian_width_m": 0.21479298211199999,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.9455441562225986,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9455439749853907,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 1.8123720790796938e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 1.9167507033268295e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "vertical_fin",
+          "surface": "vertical",
+          "axial_station_m": 1.154176,
+          "axial_station_D": 3.7866666666666666,
+          "xi": 4.084684684684685,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3637477773576328,
+          "centerline_q_over_w2": 1.8598080002478834,
+          "area_mean_q_over_centerline_q_256": 0.768662900630668,
+          "Rmax_m": 0.003299800870745944,
+          "gaussian_width_m": 0.21938298211200002,
+          "Vmax_over_w": 1.3640563467025173,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "sampled_area_m2": 0.04758883929001066,
+              "area_mean_q_over_w2": 1.429565408075246,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "sampled_area_m2": 0.04758883929001055,
+              "area_mean_q_over_w2": 1.42956541208666,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.011414089788445e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 2.806037454370975e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        }
+      ],
+      "surfaces": {
+        "horizontal": {
+          "piece_count": 2,
+          "neutral_geometry_area_m2": 0.09258915729999999,
+          "centerline_velocity_over_w_area_weighted_rms": 1.388090703572304,
+          "centerline_q_over_w2_area_weighted": 1.926795801343854,
+          "area_mean_q_over_centerline_q_256": 0.4907338776251827,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 1792,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.9455441562225986,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 3584,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.9455439749853907,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 1.8123720790796938e-07,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 1.9167507033268295e-07,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        },
+        "vertical": {
+          "piece_count": 1,
+          "neutral_geometry_area_m2": 0.047588839290000004,
+          "centerline_velocity_over_w_area_weighted_rms": 1.3637477773576328,
+          "centerline_q_over_w2_area_weighted": 1.8598080002478832,
+          "area_mean_q_over_centerline_q_256": 0.7686629006306682,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.429565408075246,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.4295654120866603,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.01141431183305e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 2.806037609694126e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        }
+      }
+    },
+    {
+      "hub_radius_over_propeller_radius": 0.2,
+      "input_kind": "assumed sensitivity point; not Stik measurement or source-propeller value",
+      "pieces": [
+        {
+          "piece": "horizontal_left",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3882855707072295,
+          "centerline_q_over_w2": 1.9273368258338979,
+          "area_mean_q_over_centerline_q_256": 0.4753311272845004,
+          "Rmax_m": 0.00427980995766486,
+          "gaussian_width_m": 0.209507872032,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.9161232292710737,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9161231860805574,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.3190516274549395e-08,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 4.714487847352826e-08,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "horizontal_right",
+          "surface": "horizontal",
+          "axial_station_m": 1.134176,
+          "axial_station_D": 3.7210498687664044,
+          "xi": 3.9960133361708166,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3882855707072295,
+          "centerline_q_over_w2": 1.9273368258338979,
+          "area_mean_q_over_centerline_q_256": 0.4753311272845004,
+          "Rmax_m": 0.00427980995766486,
+          "gaussian_width_m": 0.209507872032,
+          "Vmax_over_w": 1.3888650230281085,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 896,
+              "sampled_area_m2": 0.04629457864999993,
+              "area_mean_q_over_w2": 0.9161232292710737,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 1792,
+              "sampled_area_m2": 0.0462945786499997,
+              "area_mean_q_over_w2": 0.9161231860805574,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.3190516274549395e-08,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 4.714487847352826e-08,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        },
+        {
+          "piece": "vertical_fin",
+          "surface": "vertical",
+          "axial_station_m": 1.154176,
+          "axial_station_D": 3.7866666666666666,
+          "xi": 4.084684684684685,
+          "radius_at_centerline_m": 0.0,
+          "centerline_velocity_over_w": 1.3638256858332618,
+          "centerline_q_over_w2": 1.860020501338567,
+          "area_mean_q_over_centerline_q_256": 0.7582787050709233,
+          "Rmax_m": 0.0027842069846918905,
+          "gaussian_width_m": 0.214097872032,
+          "Vmax_over_w": 1.3640563467025173,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "sampled_area_m2": 0.04758883929001066,
+              "area_mean_q_over_w2": 1.410413932607737,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "sampled_area_m2": 0.04758883929001055,
+              "area_mean_q_over_w2": 1.410413937160378,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.5526411529550614e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 3.2278758972851678e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "E0b3b occupancy weights the area receiving a uniform wash increment; it is not a local radial velocity profile. Under its load-weight interpretation, area-mean occupancy is the q proxy relative to a uniform-increment top hat. Compare this coverage proxy with the Gaussian q attenuation, not as a measured velocity shape."
+          }
+        }
+      ],
+      "surfaces": {
+        "horizontal": {
+          "piece_count": 2,
+          "neutral_geometry_area_m2": 0.09258915729999999,
+          "centerline_velocity_over_w_area_weighted_rms": 1.3882855707072295,
+          "centerline_q_over_w2_area_weighted": 1.9273368258338979,
+          "area_mean_q_over_centerline_q_256": 0.4753311272845004,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 1792,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.9161232292710737,
+              "area_mean_occupancy": 0.3823103388433221
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 3584,
+              "area_m2": 0.09258915729999999,
+              "area_mean_q_over_w2": 0.9161231860805574,
+              "area_mean_occupancy": 0.38231060766717234
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.3190516274549395e-08,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 4.714487847352826e-08,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.38231060766717234,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.38231060766717234,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        },
+        "vertical": {
+          "piece_count": 1,
+          "neutral_geometry_area_m2": 0.047588839290000004,
+          "centerline_velocity_over_w_area_weighted_rms": 1.3638256858332618,
+          "centerline_q_over_w2_area_weighted": 1.8600205013385671,
+          "area_mean_q_over_centerline_q_256": 0.7582787050709232,
+          "convergence": [
+            {
+              "midpoints_per_profile_interval": 128,
+              "sample_points": 3968,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.410413932607737,
+              "area_mean_occupancy": 0.7196757444105484
+            },
+            {
+              "midpoints_per_profile_interval": 256,
+              "sample_points": 7936,
+              "area_m2": 0.047588839290000004,
+              "area_mean_q_over_w2": 1.410413937160378,
+              "area_mean_occupancy": 0.7196757421441963
+            }
+          ],
+          "area_mean_q_over_w2_abs_delta_128_to_256": 4.5526411529550614e-09,
+          "area_mean_q_over_w2_relative_delta_128_to_256": 3.2278758972851678e-09,
+          "smooth_occupancy_comparison_256": {
+            "area_mean_occupancy": 0.7196757421441963,
+            "uniform_increment_q_mean_over_centerline_q_proxy": 0.7196757421441963,
+            "interpretation": "Area-weighted occupancy is a geometric load weight; under the E0b3b uniform local wash increment, this is a coverage q proxy relative to the uniform-increment centerline."
+          }
+        }
+      }
+    }
+  ]
+}

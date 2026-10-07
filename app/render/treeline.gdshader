@@ -25,11 +25,13 @@ varying vec3 crown_view;
 varying vec2 crown_radius;
 varying vec3 up_view;
 varying float height_frac;
+varying float far_tree;
 varying vec3 tint;
 
 void vertex() {
     // INSTANCE_CUSTOM encodes each translation (N/E) in four exact bytes.
     vec2 ne = tree_position(INSTANCE_CUSTOM);
+    far_tree = step(600.0, length(ne));
     vec3 identity = tree_identity(ne);
     int species = int(identity.x);
     float ratio = frame_sizes[species] / frame_sizes.x;
@@ -60,7 +62,12 @@ void fragment() {
     // Bark is the reddish part of the atlas; leaves are green. Grades in linear space (report 02 §4).
     vec3 graded = c.r > c.g ? luma * bark_gain * vec3(1.22, 0.96, 0.70) : mix(vec3(luma), c, leaf_saturation) * leaf_gain;
     ALBEDO = graded * tint * mix(base_dark, 1.0, smoothstep(0.0, 0.25, height_frac));
-    ALPHA = tex.a;
+    // GLES3 has no alpha-to-coverage here. Recover some leaf coverage as the
+    // atlas mip averages thin silhouettes; L6b near trees remain unchanged.
+    float texel_footprint = max(fwidth(UV).x, fwidth(UV).y) * float(textureSize(atlas, 0).x);
+    float mip_level = max(log2(max(texel_footprint, 1.0)), 0.0);
+    float alpha_scale = 1.0 + 0.06 * mip_level * far_tree;
+    ALPHA = min(tex.a * alpha_scale, 1.0);
     ALPHA_SCISSOR_THRESHOLD = 0.5;
     vec2 q = (VERTEX.xy - crown_view.xy) / crown_radius;
     q /= max(1.0, length(q));

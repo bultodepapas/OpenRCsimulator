@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental forward wash=false median=327.8 us/tick samples=[320.383333333333, 323.875, 327.8, 354.433333333333, 355.291666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental forward wash=true median=799.7 us/tick samples=[652.9, 798.75, 799.733333333333, 858.566666666667, 858.9]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental stall wash=false median=382.0 us/tick samples=[341.316666666667, 356.633333333333, 381.975, 383.975, 385.425]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental stall wash=true median=814.0 us/tick samples=[759.45, 762.9, 814.025, 867.733333333333, 961.825]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental static wash=false median=313.9 us/tick samples=[306.125, 307.825, 313.941666666667, 330.958333333333, 334.641666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental static wash=true median=618.1 us/tick samples=[566.591666666667, 579.858333333333, 618.075, 631.275, 642.491666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental spin wash=false median=391.9 us/tick samples=[379.475, 390.941666666667, 391.916666666667, 407.616666666667, 449.425]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental spin wash=true median=838.1 us/tick samples=[771.966666666667, 822.625, 838.108333333333, 846.866666666667, 868.833333333333]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental reverse_fade wash=false median=303.1 us/tick samples=[295.55, 301.566666666667, 303.1, 319.083333333333, 330.008333333333]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental reverse_fade wash=true median=597.9 us/tick samples=[562.816666666667, 564.116666666667, 597.858333333333, 634.691666666667, 651.5]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental reverse_off wash=false median=339.6 us/tick samples=[308.441666666667, 325.541666666667, 339.633333333333, 348.233333333333, 366.425]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3b experimental reverse_off wash=true median=381.7 us/tick samples=[353.2, 365.866666666667, 381.716666666667, 387.191666666667, 393.808333333333]
+completed without simulation faults: true

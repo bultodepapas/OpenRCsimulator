@@ -1,0 +1,151 @@
+{
+  "step": "DT-00",
+  "checked_local_links": 24,
+  "local_links": [
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/01-launch-display.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/02-distribution.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "MENU-PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/02-distribution.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/02-distribution.md",
+      "exists": true
+    },
+    {
+      "file": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "target": "research/desktop-delivery-investigations/DT-00/03-performance-acceptance.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/01-launch-display.md",
+      "target": "audit-snapshot.json",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/01-launch-display.md",
+      "target": "../../menu-investigations/18-pantalla-ventana-plataformas.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/02-distribution.md",
+      "target": "../../../FIRST-LAUNCH.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/03-performance-acceptance.md",
+      "target": "../../visual-quality-implementation/VQ-01b/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/03-performance-acceptance.md",
+      "target": "../../../../app/export.sh",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "../../../DESKTOP-DELIVERY-PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "01-launch-display.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "02-distribution.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "03-performance-acceptance.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "audit-snapshot.json",
+      "exists": true
+    },
+    {
+      "file": "AGENTS.md",
+      "target": "docs/DESKTOP-DELIVERY-PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/README.md",
+      "target": "DESKTOP-DELIVERY-PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "docs/README.md",
+      "target": "research/desktop-delivery-investigations/DT-00/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/README.md",
+      "target": "desktop-delivery-investigations/DT-00/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/README.md",
+      "target": "../DESKTOP-DELIVERY-PLAN.md",
+      "exists": true
+    },
+    {
+      "file": "LEARNINGS.md",
+      "target": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "exists": true
+    },
+    {
+      "file": "docs/research/desktop-delivery-investigations/DT-00/README.md",
+      "target": "validation.json",
+      "exists": true
+    }
+  ],
+  "unique_step_rows": [
+    "DT-00",
+    "DT-01",
+    "DT-02",
+    "DT-03",
+    "DT-04",
+    "DT-05",
+    "DT-06",
+    "DT-07",
+    "DT-08",
+    "DT-09a",
+    "DT-09b",
+    "DT-09c",
+    "DT-09d",
+    "DT-10",
+    "DT-11a",
+    "DT-11b",
+    "DT-11c",
+    "DT-12",
+    "DT-13"
+  ],
+  "registry_present": true,
+  "whitespace_diff_pass": true,
+  "errors": [],
+  "scope": "Documentation checks only; no application tests, export or native platform tests executed."
+}

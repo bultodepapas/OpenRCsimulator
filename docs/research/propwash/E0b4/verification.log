@@ -1,0 +1,20 @@
+E0b4 verification — 2026-10-07
+Pinned Godot 4.7.2-stable
+Fresh git clone + tracked diff + nonignored untracked files; engine binary linked; no app cache copied.
+Sweep completed without engine errors/warnings; exit 0.
+$ python3 research/propwash/e0b4/check_results.py --probes
+E0b4: 581 conditions independently checked; source hashes current; 33 mode solves valid
+rejected: incorrect velocity factor
+rejected: missing configuration
+rejected: wrong pressure weighting
+rejected: changed comparison throttle
+rejected: wrong derivative units
+rejected: lost lag mode
+$ python3 research/propwash/e0b4/donor_profile.py --check
+donor-profile.json is current
+results.json: fresh-clone regenerated content byte-identical
+tables.md: fresh-clone regenerated content byte-identical
+donor-profile.json: fresh-clone regenerated content byte-identical
+Donor area-mean relative change at 128 -> 256 samples/interval: 3.1887348074490663e-07
+App static lint: 0 errors; 12 warnings identical to pre-step baseline.
+No app runtime/data/golden changes in E0b4. Full app suite not rerun for this research-only step.

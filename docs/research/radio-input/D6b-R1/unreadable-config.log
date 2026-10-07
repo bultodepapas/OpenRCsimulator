@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: ConfigFile parse error at user://test_d6br1_unreadable.cfg:0: Unexpected EOF while parsing simple tag.
+   at: _parse (core/io/config_file.cpp:293)
+   GDScript backtrace (most recent call first):
+       [0] load_profile (res://input/rc_calibration.gd:127)
+       [1] _initialize (/home/bulto/OpenRCsimulator/docs/research/radio-input/D6b-R1/probe_unreadable_config.gd:17)
+ERROR: ConfigFile parse error at user://test_d6br1_unreadable.cfg:0: Unexpected EOF while parsing simple tag.
+   at: _parse (core/io/config_file.cpp:293)
+   GDScript backtrace (most recent call first):
+       [0] save_profile (res://input/rc_calibration.gd:112)
+       [1] _initialize (/home/bulto/OpenRCsimulator/docs/research/radio-input/D6b-R1/probe_unreadable_config.gd:18)
+D6b-R1 unreadable config: load_rejected=true error=43 bytes_preserved=true

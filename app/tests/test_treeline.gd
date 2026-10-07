@@ -1,4 +1,4 @@
-# L6b: complete transformed geometry bounds, shared resources and stable instance identities.
+# L6b/L7: complete transformed geometry bounds, shared resources and stable instance identities.
 extends SceneTree
 const Loader = preload("res://data/field_loader.gd")
 const Field = preload("res://render/field.gd")
@@ -27,6 +27,8 @@ func run() -> void:
 	var trees: Node3D = field.get_node("treeline")
 	var other: Node3D = second.get_node("treeline")
 	check("eight azimuth sectors", trees.get_child_count() == 8)
+	var committed_positions: Array = loaded.field.objects[0].positions
+	check("combined near and far placement has 1,680 trees", committed_positions.size() == 1680)
 	var count: int = 0
 	var species_count: Array[int] = [0, 0, 0]
 	var mesh: ArrayMesh = null
@@ -41,10 +43,21 @@ func run() -> void:
 		var arrays: Array = mesh.surface_get_arrays(0)
 		check("six triangles per tree", arrays[Mesh.ARRAY_INDEX].size() == 18)
 		var points: Array = []
+		var expected_near_count: int = 0
+		var expected_far_count: int = 0
 		for p: Array in loaded.field.objects[0].positions:
 			if child.name == "Sector%d" % Trees.sector(p[0], p[1]):
 				points.append(p)
+				var radius: float = Vector2(float(p[0]), float(p[1])).length()
+				if radius <= 600.0:
+					expected_near_count += 1
+				else:
+					expected_far_count += 1
 		check("sector count matches committed positions", points.size() == mm.instance_count)
+		var near_count: int = int(child.get_meta("near_instance_count", -1))
+		var far_count: int = int(child.get_meta("far_instance_count", -1))
+		check("sector metadata matches near/far instance counts", near_count == expected_near_count
+			and far_count == expected_far_count and near_count + far_count == mm.instance_count)
 		for index: int in mm.instance_count:
 			count += 1
 			var point: Array = points[index]
@@ -68,13 +81,13 @@ func run() -> void:
 			var margin: float = rad_to_deg(asin(15.0 / Vector2(data.r, data.g).length()))
 			for gap: Vector2 in [Vector2(30.0, 8.0), Vector2(210.0, 10.0)]:
 				check("deliberate gap survives crown width", absf(fposmod(angle - gap.x + 180.0, 360.0) - 180.0) > gap.y + margin)
-	check("480 committed trees", count == 480)
+	check("1,680 committed trees", count == 1680)
 	check("three species have useful representation", species_count.min() > 100)
 	check("no collision shapes or scene simulation", field.find_children("*", "CollisionObject3D", true, false).is_empty() and field.find_children("*", "CollisionShape3D", true, false).is_empty())
 	field.free()
 	second.free()
 	await transition()
-	print("L6b runtime: %d checks, %d failed; species %s" % [checks, failed, species_count])
+	print("L7 tree runtime: %d checks, %d failed; species %s" % [checks, failed, species_count])
 	quit(1 if failed else 0)
 
 func signature(grove: Node3D) -> Array:

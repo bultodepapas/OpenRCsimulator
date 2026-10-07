@@ -1,0 +1,15 @@
+# L15d · Cloud shadows
+
+Date: 2026-10-07. **Status: rendering implemented and engineering-verified; M5-W04b wind integration pending.** Canonical status: [LANDSCAPE-PLAN](../../../LANDSCAPE-PLAN.md). Part of [Phase 6](../../landscape-improvement-2026-10-07/README.md).
+
+The ground samples the same periodic cumulus density as the sky. From a terrain point `p`, the ray toward the sun intersects a horizontal deck at `p.xz + (1500 - p.y) * sun_dir.xz / sun_dir.y`. Multiplying by `cloud_scale / 1500` gives noise cells. Deck height 1,500 m and maximum direct-light reduction 22% are artistic estimates, not measured weather. Thin cirrus does not cast a second shadow.
+
+Only direct directional light is attenuated; albedo, ambient light and haze are unchanged. A custom `light()` replaces Godot's default direct-light calculation. This existing shader has no `diffuse_burley` render mode, so Compatibility uses the Lambert fallback. Adding explicit Burley changed grazing ground views even with shadows disabled; the zero-strength A/B caught it. The final implementation preserves Lambert. With zero metallic and specular values, no specular contribution needs to be reproduced. Sources: pinned [shader compiler modes](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/material_storage.cpp), [light calculation](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/shaders/scene.glsl) and [spatial shader contract](https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html#light-built-ins). No new lights or shadow-map passes are added.
+
+`Atmosphere.update_clouds()` sends one quantized displacement both to the sky and to a global ground uniform. The global is registered before assigning the ground shader, so standalone field/pack construction does not require a sky first. The global also reaches the duplicated mown/runway materials. It follows simulation time, pause and restart; it does not use the rendering clock's 1,024 s wrap. Each component wraps at the noise's actual 64-cell period in CPU float64. The runtime assumes one active flight environment, as the existing shader clock does.
+
+The existing estimated drift is retained: adding `(0.004, 0.0015)` cells/s to sample coordinates moves the pattern in the opposite direction, approximately `(-1, -0.375)` render-space m/s for this deck. This is a visual preset, **not simulated wind aloft**. M5-W04b must supply integrated displacement with the correct sign when weather is connected; multiplying changing wind by elapsed time would teleport the pattern.
+
+The sky remains an angular, origin-anchored layer without camera parallax. Ground projection agrees with that virtual origin, not with every translated chase camera. Rendering the sky from camera position would invalidate radiance on camera motion; a finite, parallax-aware cloud volume is outside this step. Shadows currently affect ground surfaces only, as L15d specifies.
+
+Proof and the Phase 6 comparison: [L4b](../L4b/README.md). GPU density/projection checks: [probe](probe.md).

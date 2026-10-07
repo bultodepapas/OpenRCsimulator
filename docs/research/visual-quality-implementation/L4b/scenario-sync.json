@@ -1,0 +1,47 @@
+[
+ {
+  "check": "sim_clock equals simulation time",
+  "ok": true,
+  "detail": "worst |sim_clock \u2212 t| = 0.00e+00 s"
+ },
+ {
+  "check": "frames on simulation ticks",
+  "ok": true,
+  "detail": "worst |tick\u00b7dt \u2212 t| = 1.07e-14 s"
+ },
+ {
+  "check": "all cameras of an instant share one state",
+  "ok": true,
+  "detail": "largest spread 0.00e+00"
+ },
+ {
+  "check": "propeller angle follows the rpm",
+  "ok": true,
+  "detail": "worst error 7.36e-12 deg (constant-rpm intervals)"
+ },
+ {
+  "check": "pilot camera centred on the airplane",
+  "ok": true,
+  "detail": "worst offset 0.00 px"
+ },
+ {
+  "check": "shadow under the airplane while rolling",
+  "ok": true,
+  "detail": "worst shadow\u2013CG distance 35.5 px (chase, on the ground)"
+ },
+ {
+  "check": "still at the threshold while idling",
+  "ok": true,
+  "detail": "max idle speed 3.15e-14 m/s"
+ },
+ {
+  "check": "airborne at the end",
+  "ok": true,
+  "detail": "height 42.6 m at t = 12.0 s"
+ },
+ {
+  "check": "runway heading held",
+  "ok": true,
+  "detail": "max heading error 1.13 deg"
+ }
+]

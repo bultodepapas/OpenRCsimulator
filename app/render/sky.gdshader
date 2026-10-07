@@ -2,7 +2,8 @@
 // Gradient from the horizon haze to the zenith with weight 1 − (1 − y)^2.6 (Hosek-Wilkie fit at a 45° sun). The
 // horizon is EXACTLY the colour the engine fogs distant objects toward (GLES3 fog_process: fog light colour + the
 // sun's ×π scatter term), so far terrain melts into the sky with no seam. Below the horizon: pure haze. A 0.53° sun
-// disc and halo. A flat cloud deck (L4). Godot's debanding. Never TIME (captures repeat; the radiance renders once).
+// disc and halo. Clouds are periodic and deterministic; their drift is supplied from simulation time on the CPU.
+// Godot's debanding. Never TIME (captures repeat; the radiance renders once).
 //
 // Colour space (read from the 4.7.2 GLES3 sky.glsl, line 250): Compatibility treats a sky shader's COLOR as sRGB
 // and converts it with a cubic srgb_to_linear right after our code. So all maths here is linear (uniforms are linear,
@@ -10,6 +11,7 @@
 // value back, the same number the ground's fog and the engine's object fog use.
 shader_type sky;
 render_mode use_debanding;
+#include "res://render/cloud_field.gdshaderinc"
 
 uniform vec3 zenith_lin = vec3(0.076, 0.138, 0.287);
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846); // fog_light_color.srgb_to_linear() * fog_light_energy
@@ -19,48 +21,16 @@ uniform float sun_scatter = 0.0;                   // == Environment.fog_sun_sca
 uniform float gradient_curve = 2.6;
 uniform float sun_radius = 0.0046251;              // rad: half of 0.53° (LIGHT0_SIZE defaults to 0)
 
-// L4 clouds: one flat fair-weather deck from periodic value noise over an integer hash (no textures, no TIME).
+// L4 fair-weather deck, now able to group into larger patches while keeping the old setting at zero strength.
 uniform vec3 cloud_lin = vec3(0.9);         // lit cloud colour, linear
 uniform float cloud_coverage = 0.35;        // 0 clear … 1 overcast
 uniform float cloud_scale = 6.0;            // noise cells per unit of deck coordinate (dir.xz / dir.y)
-uniform vec2 cloud_offset = vec2(0.0);      // drift in cells, wrapped to [0, CLOUD_PERIOD) on the CPU from SIM time
+uniform vec2 cloud_offset = vec2(0.0);      // drift in cells, wrapped to [0, CLOUD_FIELD_PERIOD) on the CPU from SIM time
 uniform uint cloud_seed = 1u;
-const int CLOUD_PERIOD = 64;                // lattice period of the base octave: drift wraps without a jump
-
-// Integer hash (Hoskins-style constants, MIT): uniform in [0, 1).
-float hash2(ivec2 c, uint seed) {
-	uvec2 q = uvec2(c) * uvec2(1597334677u, 3812015801u);
-	uint n = (q.x ^ q.y ^ (seed * 2654435761u)) * 1597334677u;
-	return float(n >> 8u) * (1.0 / 16777216.0);
-}
-
-// Value noise on a lattice of `period` cells, quintic fade: exactly periodic.
-float value_noise(vec2 p, int period, uint seed) {
-	vec2 i = floor(p);
-	vec2 f = p - i;
-	vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-	ivec2 c = ivec2(i);
-	float a = hash2(ivec2(c.x % period, c.y % period), seed);
-	float b = hash2(ivec2((c.x + 1) % period, c.y % period), seed);
-	float d = hash2(ivec2(c.x % period, (c.y + 1) % period), seed);
-	float e = hash2(ivec2((c.x + 1) % period, (c.y + 1) % period), seed);
-	return mix(mix(a, b, u.x), mix(d, e, u.x), u.y);
-}
-
-// 5 octaves at exactly ×2 frequency (so every octave shares the base period), per-octave seeds.
-float cloud_fbm(vec2 p) {
-	float sum = 0.0;
-	float amp = 0.5;
-	int period = CLOUD_PERIOD;
-	for (int o = 0; o < 5; o++) {
-		vec2 q = mod(p, float(period));
-		sum += amp * value_noise(q, period, cloud_seed + uint(o) * 7919u);
-		p *= 2.0;
-		period *= 2;
-		amp *= 0.5;
-	}
-	return sum / 0.96875;
-}
+uniform float cluster_strength : hint_range(0.0, 1.0) = 0.0;
+uniform float cirrus_strength : hint_range(0.0, 0.12) = 0.0; // maximum sky blend for the thin layer
+uniform float cirrus_coverage : hint_range(0.0, 1.0) = 0.34;
+uniform float silver_strength : hint_range(0.0, 1.0) = 0.0;
 
 vec3 haze(vec3 d) {
 	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter;
@@ -81,12 +51,29 @@ vec3 encode_for_engine(vec3 x) {
 void sky() {
 	float y = max(EYEDIR.y, 0.0);
 	vec3 col = mix(haze(EYEDIR), zenith_lin, 1.0 - pow(1.0 - y, gradient_curve));
+	float density = 0.0;
 	if (EYEDIR.y > 0.0 && cloud_coverage > 0.0) {
 		vec2 deck = EYEDIR.xz / max(EYEDIR.y, 0.02);                    // flat layer
-		float n = cloud_fbm(deck * cloud_scale + cloud_offset);
-		float density = smoothstep(1.0 - cloud_coverage, 1.25 - cloud_coverage, n)
-			* smoothstep(0.03, 0.25, EYEDIR.y);                         // thin out into the horizon haze
+		vec2 cells = mod(deck * cloud_scale + cloud_offset, float(CLOUD_FIELD_PERIOD));
+		density = cloud_density(cells, cloud_seed, cloud_coverage, cluster_strength)
+			* smoothstep(0.03, 0.25, EYEDIR.y);                           // thin out into the horizon haze
 		col = mix(col, cloud_lin * mix(1.0, 0.82, density), density);   // darker cores
+
+		// A higher, very thin deck: noise stretched along the horizon, with an exact 64-cell period.
+		if (cirrus_strength > 0.0) {
+			float cirrus = cloud_stretched_density(cells, cloud_seed + 15485863u, cirrus_coverage, vec2(3.0, 51.0) / 64.0)
+				* smoothstep(0.02, 0.18, EYEDIR.y);
+			float cirrus_amount = clamp(cirrus * clamp(cirrus_strength, 0.0, 0.12), 0.0, 0.12);
+			col = mix(col, cloud_lin * 1.04, cirrus_amount);
+		}
+
+		// A bounded forward-scatter edge on clouds close to the sun direction; never raises the deck by > 0.08.
+		if (silver_strength > 0.0) {
+			float cloud_edge = 4.0 * density * (1.0 - density);
+			float forward_scatter = pow(max(dot(EYEDIR, sun_dir), 0.0), 24.0);
+			float silver = 0.08 * clamp(silver_strength, 0.0, 1.0) * cloud_edge * forward_scatter;
+			col += cloud_lin * silver;
+		}
 	}
 	float ang = acos(clamp(dot(EYEDIR, sun_dir), -1.0, 1.0));
 	col += (sun_lin / PI) * (exp(-ang * 18.0) * 0.35 + 4.0 * (1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang)));

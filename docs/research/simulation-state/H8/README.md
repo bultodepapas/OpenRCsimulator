@@ -7,6 +7,7 @@
 | State | Owner and update rule | Reset / checkpoint / failure |
 | --- | --- | --- |
 | Position, body velocity, attitude, body rates | `Simulation.state`, 13 float64 values; `RigidBody.derivative` owns their derivatives at the RK stage state and absolute stage time | Reset normalizes attitude. Checkpoint accepts finite, already-normalized state. A failed tick restores the previous committed boundary |
+| Axial wash speed (E0b5 opt-in) | Separate `Simulation.continuous` float64 array, packed with the body only inside RK4; explicit stage load and derivative callbacks | Settled flight/runway reset, fixed layout, atomic rollback and native checkpoints; body/CSV layout unchanged. [Contract and proof](../../propwash/E0b5/README.md) |
 | Engine RPM and actual servo positions | `Simulation.aux`, four float64 values in FlightSession; `pre_step` advances once before k1, frozen through k4 | Session reset initializes trim values. Snapshot and rollback include every entry. Existing split propulsion semantics remain until G2a |
 | Pilot input | `Simulation.inputs`, four post-shaping/post-trim values, sampled before stepping | Frozen during the synchronous stage evaluations; checkpoint replay supplies these samples directly |
 | Engine mode | `Simulation.modes[0]`, int64 0/1, exposed by `FlightSession.engine_running` | Explicit tick-boundary update; reset derives it from the start scenario; failed steps restore the committed mode |

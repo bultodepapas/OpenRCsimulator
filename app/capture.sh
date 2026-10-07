@@ -4,6 +4,8 @@ set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 HERE="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$HERE/captures/field" # untracked in git: a fresh clone does not have it
+# Captures are outputs, not game textures: keep the editor from importing and duplicating every PNG.
+touch "$HERE/captures/.gdignore"
 exec 9> "$HERE/captures/.capture.lock"
 flock -n 9 || { echo "another capture run owns $HERE/captures" >&2; exit 1; }
 # The complete-set marker only exists after every capture, image check and trace succeeds.
@@ -127,6 +129,11 @@ python3 "$HERE/tests/check_trimmed_flight.py" "$HERE/captures/trace-physics.csv"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
 python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6b"
+# L7: combined forest/hill A/B at three heights, repeated bytes and all visibility-preset rim checks.
+"$VPY" "$HERE/../tools/terrain/check_horizon.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l7"
+# L4b/L15d: production sky/shadow A/B, sim-time drift, repeated bytes and periodic cloud projection.
+"$VPY" "$HERE/../tools/atmosphere/check_phase6.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l4b"
+"$VPY" "$HERE/../tools/atmosphere/check_cloud_probe.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15d"
 # L6c: the airplane against trees, treetop edge, sky and grass at 100 m (numbers recorded for Gate L, case guards
 # only) and the blinded 24-image attitude kit for the human playtest (captures/l6c/kit).
 "$VPY" "$HERE/tests/test_treeline_readability.py"
@@ -152,6 +159,12 @@ trace = hashlib.sha256((root / 'trace-physics.csv').read_bytes()).hexdigest()
 manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': entries, 'trace_sha256': trace,
             'treeline_review': 'l6b/repeat-1/review.json',
             'treeline_review_sha256': hashlib.sha256((root / 'l6b/repeat-1/review.json').read_bytes()).hexdigest(),
+            'horizon_review': 'l7/capture-summary.json',
+            'horizon_review_sha256': hashlib.sha256((root / 'l7/capture-summary.json').read_bytes()).hexdigest(),
+            'atmosphere_review': 'l4b/capture-summary.json',
+            'atmosphere_review_sha256': hashlib.sha256((root / 'l4b/capture-summary.json').read_bytes()).hexdigest(),
+            'cloud_probe': 'l15d/summary.json',
+            'cloud_probe_sha256': hashlib.sha256((root / 'l15d/summary.json').read_bytes()).hexdigest(),
             'treeline_readability': 'l6c/l6c-run-manifest.json',
             'treeline_readability_sha256': hashlib.sha256((root / 'l6c/l6c-run-manifest.json').read_bytes()).hexdigest(),
             'visual_quality_manifest': 'vq01b/visual-quality-run-manifest.json',

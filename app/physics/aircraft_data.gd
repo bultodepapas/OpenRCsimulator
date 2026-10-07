@@ -728,6 +728,8 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 		if not out.has("axis"):
 			errors.append("propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)")
 		out.slipstream = _slipstream(errors, pr.get("slipstream"))
+		if out.slipstream.has("edge_fraction") and out.get("axis") != PackedFloat64Array([1.0, 0.0, 0.0]):
+			errors.append("propulsion.propeller.slipstream: smooth profile currently requires an axial shaft")
 	return out
 
 
@@ -756,6 +758,8 @@ static func _shaft(errors: PackedStringArray, node: Variant, rotor: Variant) -> 
 
 ## Tail slipstream (E0b first slice, P51-12): { hub (le), wash_factor [static, forward] (× disc induced velocity), swirl_factor, vertical_drift, pieces: [{ surface
 ## ("horizontal"/"vertical"), area (m2), root (le), span_dir (le unit vector), span (m), chords [root, tip] (m) }] }.
+## E0b3b opt-in: edge_fraction + reverse_fade replace each piece's chords with a provenanced profile table.
+## Only axial shafts/transverse spans are supported; profile occupancy is distinct from a radial velocity law.
 static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 	var ss := _dictionary(errors, "propulsion.propeller.slipstream", node)
 	var out := {
@@ -765,7 +769,22 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 		vertical_drift = _q(errors, "propulsion.propeller.slipstream.vertical_drift", ss.get("vertical_drift"), "1", 0.0, 1.0),
 		pieces = [],
 	}
+	# E0b3b: explicit opt-in; legacy pieces and arithmetic remain unchanged.
+	var smooth: bool = ss.has("edge_fraction")
+	if smooth:
+		out.edge_fraction = _q(errors, "slipstream.edge_fraction", ss.get("edge_fraction"), "1", 0.01, 0.5)
+		out.reverse_fade = _q(errors, "slipstream.reverse_fade", ss.get("reverse_fade"), "1", 0.01, 0.5, 2)
+		if out.reverse_fade != null and out.reverse_fade[0] >= out.reverse_fade[1]:
+			errors.append("slipstream.reverse_fade: positive onset must be below cutoff")
+	elif ss.has("reverse_fade"):
+		errors.append("slipstream.reverse_fade: requires edge_fraction")
+	if ss.has("transport_speed_floor"):
+		out.transport_speed_floor = _q(errors, "slipstream.transport_speed_floor", ss.get("transport_speed_floor"), "m/s", 0.1, 5.0)
+		if not smooth or out.swirl_factor != 0.0:
+			errors.append("slipstream.transport_speed_floor: axial transport requires smooth profiles and zero swirl (E0b5)")
 	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
+	if smooth and (raw.is_empty() or raw.size() > 8):
+		errors.append("slipstream.pieces: smooth profile needs 1..8 pieces")
 	for i in raw.size():
 		var label := "propulsion.propeller.slipstream.pieces[%d]" % i
 		var pc := _dictionary(errors, label, raw[i])
@@ -778,12 +797,54 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 			root = _q(errors, label + ".root", pc.get("root"), "m", -3.0, 3.0, 3),
 			span_dir = _q(errors, label + ".span_dir", pc.get("span_dir"), "1", -1.0, 1.0, 3),
 			span = _q(errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
-			chords = _q(errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2),
 		}
 		if piece.span_dir != null and absf(M.sqrt_(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
 			errors.append("%s.span_dir: must be a unit vector" % label)
+		if smooth:
+			piece.profile = _wash_profile(errors, label + ".profile", pc.get("profile"), piece.span, piece.area)
+			if pc.has("chords"):
+				errors.append(label + ": profile replaces chords; do not declare both")
+			if piece.span_dir != null:
+				var axis_ok: bool = piece.span_dir[0] == 0.0
+				axis_ok = axis_ok and (piece.span_dir[2] == 0.0 if surface == "horizontal" else piece.span_dir[1] == 0.0)
+				if not axis_ok:
+					errors.append(label + ".span_dir: smooth profile requires transverse horizontal/vertical span")
+			if piece.root != null and out.hub != null and piece.root[0] <= out.hub[0]:
+				errors.append(label + ".root: must be behind hub")
+		else:
+			piece.chords = _q(errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2)
+			if pc.has("profile"):
+				errors.append(label + ".profile: requires edge_fraction")
 		out.pieces.append(piece)
 	return out if errors.is_empty() else {}
+
+
+## Piecewise-linear neutral chord widths, including discontinuities/gaps: [a,b,c(a),c(b)], all metres.
+static func _wash_profile(errors: PackedStringArray, path: String, node: Variant, span: Variant, area: Variant) -> PackedFloat64Array:
+	var quantity: Dictionary = _dictionary(errors, path, node)
+	var rows: Array = _array(errors, path + ".value", quantity.get("value"))
+	var flat: PackedFloat64Array = PackedFloat64Array()
+	if rows.is_empty() or rows.size() > 64:
+		errors.append(path + ": needs 1..64 intervals")
+		return flat
+	var previous: float = 0.0
+	var total: float = 0.0
+	for i in rows.size():
+		var row_quantity: Dictionary = quantity.duplicate()
+		row_quantity.value = rows[i]
+		var row: Variant = _q(errors, path + "[%d]" % i, row_quantity, "m", 0.0, 3.0, 4)
+		if row == null:
+			continue
+		if row[0] < previous or row[1] <= row[0] or (span != null and row[1] > span + 1e-10):
+			errors.append(path + ": intervals must be ordered, disjoint and within span")
+		if row[2] + row[3] <= 0.0:
+			errors.append(path + ": each interval needs positive chord area")
+		total += 0.5 * (row[2] + row[3]) * (row[1] - row[0])
+		previous = row[1]
+		flat.append_array(row)
+	if area != null and absf(total - area) > 1e-8:
+		errors.append(path + ": integrated area disagrees with piece area")
+	return flat
 
 
 ## Turbojet (AV-05, physics/turbine.gd). engine: idle_rpm < max_rpm; tables as {value: [[x, y], …], unit "<x>, <y>",

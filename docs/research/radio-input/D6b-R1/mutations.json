@@ -1,0 +1,30 @@
+[
+  {
+    "case": "old-loader",
+    "detected": true,
+    "exit": 1,
+    "assertion_failures": 174,
+    "engine_error": true
+  },
+  {
+    "case": "duplicate-axis",
+    "detected": true,
+    "exit": 1,
+    "assertion_failures": 28,
+    "engine_error": false
+  },
+  {
+    "case": "nonfinite",
+    "detected": true,
+    "exit": 1,
+    "assertion_failures": 24,
+    "engine_error": false
+  },
+  {
+    "case": "identity-type",
+    "detected": true,
+    "exit": 0,
+    "assertion_failures": 0,
+    "engine_error": true
+  }
+]

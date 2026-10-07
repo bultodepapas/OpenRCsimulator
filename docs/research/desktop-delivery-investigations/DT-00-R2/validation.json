@@ -1,0 +1,15 @@
+{
+  "step": "DT-00-R2",
+  "date": "2026-10-07",
+  "passed": true,
+  "reports": 12,
+  "external_references": 70,
+  "documents_checked": 14,
+  "local_targets": 56,
+  "unique_plan_steps": 32,
+  "python_scripts_parsed": 3,
+  "json_parsing": "passed",
+  "registry_revision": 3,
+  "errors": [],
+  "limits": "File targets only, not Markdown anchors/remote availability. No native Mac or app checks."
+}

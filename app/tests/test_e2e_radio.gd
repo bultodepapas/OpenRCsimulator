@@ -135,11 +135,38 @@ func _run() -> void:
 	Input.joy_connection_changed.emit(ID, true)
 	await _settle()
 	_check("replug loads the saved calibration", _session.radio.profile_source == "calibrated" and _session.radio.profile.roll.axis == 3)
+	_check("valid saved replug still requires a fresh throttle event", not _session.radio.armed and _session.commands.throttle == 0.0)
 	_key(KEY_K)
 	await _settle()
 	_key(KEY_ESCAPE)
 	await _settle()
 	_check("Esc cancels; the calibration stays", _session.calibration == null and _session.radio.profile.roll.axis == 3)
+
+	# D6b-R1: malformed files cannot partially apply a mapping when the device is reconnected.
+	# Keep throttle high across replug: a rejected calibration must not bypass arming.
+	for defect: String in ["duplicate_axis", "nan_endpoint", "wrong_identity"]:
+		Input.joy_connection_changed.emit(ID, false)
+		await _settle()
+		_motion(2, 1.0)
+		var bad: Dictionary = p.duplicate(true)
+		var identity: String = _session.radio.device_key
+		if defect == "duplicate_axis":
+			bad.pitch.axis = bad.roll.axis
+		elif defect == "nan_endpoint":
+			bad.roll.min = NAN
+		var cfg: ConfigFile = ConfigFile.new()
+		cfg.set_value(identity.md5_text(), "device_key", "another device" if defect == "wrong_identity" else identity)
+		cfg.set_value(identity.md5_text(), "profile", bad)
+		_check("writes malformed fixture " + defect, cfg.save(PROFILES) == OK)
+		Input.joy_connection_changed.emit(ID, true)
+		await _settle()
+		_check("invalid profile falls back completely " + defect,
+			_session.radio.profile_source == "default" and _session.radio.profile == _session.radio.DEFAULT_PROFILE)
+		_check("rejected profile remains safe at high throttle " + defect,
+			not _session.radio.armed and _session.commands.throttle == 0.0 and _session.sim.paused)
+		_motion(2, -1.0)
+		await _settle()
+		_check("fallback profile can rearm at low throttle " + defect, _session.radio.armed)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
 
 	print("all e2e radio checks passed" if _failures == 0 else "%d failed" % _failures)

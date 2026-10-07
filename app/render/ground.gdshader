@@ -17,6 +17,19 @@
 shader_type spatial;
 render_mode cull_back;
 
+#include "res://render/cloud_field.gdshaderinc"
+
+// L15d: the same cumulus density as the sky, projected along the sun ray to a 1.5 km deck.
+// Only direct sunlight is attenuated. Ambient light and the calibrated haze keep their energy.
+global uniform vec2 cloud_drift_offset;
+uniform float cloud_coverage = 0.35;
+uniform float cloud_scale = 6.0;
+uniform uint cloud_seed = 1253u;
+uniform float cluster_strength = 0.0;
+uniform float cloud_deck_m = 1500.0;
+uniform float cloud_shadow_strength = 0.0;
+varying float cloud_transmission;
+
 uniform sampler2D grass : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform float tile_m = 6.0;
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
@@ -26,6 +39,8 @@ uniform float sun_scatter = 0.0;
 uniform float beta = 0.00017;
 uniform float rim_start = 4800.0;
 uniform float rim_end = 6000.0;
+// L7 clear preset: inverse distance distributes the artificial rim closure over projected screen rows.
+uniform bool rim_angular = false;
 // Phase 2 (estimates tuned on the spike of report 01: luminance spread 9-14 levels, tile repeat <= 0.30).
 uniform float anti_tiling = 1.0;
 uniform float macro_amp = 0.25;
@@ -192,10 +207,28 @@ void fragment() {
 	if (surface_kind > 0) {
 		col = surface_colour(col, world_pos.xz, v);
 	}
+	cloud_transmission = 1.0;
+	if (cloud_shadow_strength > 0.0 && cloud_coverage > 0.0 && sun_dir.y > 0.01) {
+		vec2 deck = world_pos.xz + max(cloud_deck_m - world_pos.y, 0.0) * sun_dir.xz / sun_dir.y;
+		float density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset, cloud_seed, cloud_coverage, cluster_strength);
+		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
+	}
 	ALBEDO = col;
 	ROUGHNESS = 1.0;
 	METALLIC = 0.0;
 	SPECULAR = 0.0;
 	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter;
-	FOG = vec4(haze, max(1.0 - exp(-beta * d), smoothstep(rim_start, rim_end, d)));
+	float rim = rim_angular
+		? 1.0 - smoothstep(1.0 / rim_end, 1.0 / rim_start, 1.0 / max(d, 1e-3))
+		: smoothstep(rim_start, rim_end, d);
+	FOG = vec4(haze, max(1.0 - exp(-beta * d), rim));
+}
+
+// Preserve this shader's existing Compatibility fallback: Lambert (no diffuse_burley render mode).
+// LIGHT_COLOR includes PI; the renderer applies ALBEDO after accumulating diffuse light.
+// Explicit Burley changes grazing views even with clouds disabled; see the zero-strength A/B proof.
+void light() {
+	float diffuse = max(dot(NORMAL, LIGHT), 0.0) * (1.0 / PI);
+	float transmission = LIGHT_IS_DIRECTIONAL ? cloud_transmission : 1.0;
+	DIFFUSE_LIGHT += LIGHT_COLOR * diffuse * ATTENUATION * transmission;
 }

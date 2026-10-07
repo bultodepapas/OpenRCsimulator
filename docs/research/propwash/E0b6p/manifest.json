@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "scope": "Fresh git clone plus E0b3b/E0b4/E0b5/E0b6 prerequisites and this scalar pass; concurrent landscape/radio/desktop changes excluded. Explicit E0b6p frame hook appended to the previously verified test script.",
+  "final_runtime_sha256": {
+    "app/physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+    "app/tests/swirl_e0b6_reference.gd": "36608e6398d08ee5b2d819c2c0e38bc77551db49ceefc062e4944e1b4337f826",
+    "app/tests/test_swirl_optimization.gd": "b8e54a857e43f2defdc375886fbfba2799d8ce6b0267db7925b6c0dd8480a324"
+  },
+  "frozen_body_sha256": "40f8f007f8037518fff333cc40b58cd133116916050a9dfef8ae3cc19d3cdc37"
+}

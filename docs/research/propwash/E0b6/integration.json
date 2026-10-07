@@ -1,0 +1,48 @@
+{
+  "validator": {
+    "ok": true,
+    "counts": {
+      "total": 184,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 184,
+      "info": 0
+    },
+    "new_file_diagnostics": []
+  },
+  "scenes": [
+    {
+      "scene": "main.tscn",
+      "ok": true,
+      "counts": {
+        "total": 89,
+        "errors": 0,
+        "parse_errors": 0,
+        "warnings": 89,
+        "info": 0
+      }
+    },
+    {
+      "scene": "app_root.tscn",
+      "ok": true,
+      "counts": {
+        "total": 73,
+        "errors": 0,
+        "parse_errors": 0,
+        "warnings": 73,
+        "info": 0
+      }
+    },
+    {
+      "scene": "tests/fixtures/atmosphere_field.tscn",
+      "ok": true,
+      "counts": {
+        "total": 90,
+        "errors": 0,
+        "parse_errors": 0,
+        "warnings": 89,
+        "info": 1
+      }
+    }
+  ]
+}

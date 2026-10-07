@@ -1,6 +1,6 @@
 # Landscape improvement: a phased proposal
 
-Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
+Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending; Phase 5 engineering-verified in [L7](../visual-quality-implementation/L7/README.md); Phase 6 implemented and engineering-verified in [L4b](../visual-quality-implementation/L4b/README.md), with L15d wind integration pending** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
 - **Basis:** the measured problems of [review 05](../scenery-investigations/05-landscape-image-review.md) and four research reports with Godot 4.7.2 Compatibility spikes.
 - **Step IDs:** it adds none. Every phase maps to existing **L** steps, or proposes a sub-step for the landscape owner to accept.
 - **Scope:** it does not change the ROADMAP or any plan by itself.
@@ -117,6 +117,8 @@ Effort figures are planning estimates for one developer who knows the repo.
 
 ### Phase 5 — A horizon with depth (≈ 4–6 days) · L7, L13a, far field
 
+Implemented in [L7](../visual-quality-implementation/L7/README.md); verification and limitations are recorded there. The optional real skyline remains deferred. Canonical step status stays in LANDSCAPE-PLAN.
+
 | Change | How | Target / cost |
 | --- | --- | --- |
 | **Far-field patchwork** | A land-cover layer in the ground shader beyond ~1 km: integer-hash Voronoi parcels of 100–400 m in green, straw, stubble and ploughed brown | Breaks the even haze band seen from 30–140 m up. 1 draw, no geometry |
@@ -128,6 +130,8 @@ Effort figures are planning estimates for one developer who knows the repo.
 **Proof:** horizon captures from 1.7, 30 and 140 m with a horizon-band luminance spread; draw counts; the crack test along ring borders; L2's seam test (≤ 4 levels) at every preset.
 
 ### Phase 6 — Sky and light (≈ 2 days) · L4 extension, L15d, VQ A/B
+
+Implemented in [L4b](../visual-quality-implementation/L4b/README.md), including [L15d rendering](../visual-quality-implementation/L15d/README.md). Grading remains a capture-only experiment; simulated wind integration remains M5-W04b work. Canonical status stays in LANDSCAPE-PLAN.
 
 | Change | How |
 | --- | --- |

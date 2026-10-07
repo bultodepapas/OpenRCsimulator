@@ -1,0 +1,614 @@
+{
+  "machine": {
+    "architecture": "x86_64",
+    "godot": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "logical_cpu_count": 12,
+    "os": "Linux",
+    "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz"
+  },
+  "note": "Shared host, concurrent checks; no production aircraft uses the optimized smooth swirl path. Do not attribute timing differences to this change.",
+  "rows": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": 0.23910731058234266,
+        "end_ground_contact": true,
+        "end_speed_mps": 0.4009219373403718,
+        "fault": "",
+        "sha256": "ca2f865d55868d8235bb94807faf5f5d968375991690ac3d02f931a8457d0d40",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 470.125,
+        "median_us_per_tick": 466.7,
+        "min_us_per_tick": 441.09166666666664,
+        "p95_us_per_tick": 470.125,
+        "samples_us_per_tick": [
+          441.09166666666664,
+          470.125,
+          466.7
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 886.8583333333333,
+        "median_us_per_tick": 649.0666666666667,
+        "min_us_per_tick": 468.65,
+        "p95_us_per_tick": 886.8583333333333,
+        "samples_us_per_tick": [
+          649.0666666666667,
+          468.65,
+          886.8583333333333
+        ]
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 100.36654244661277,
+        "end_ground_contact": false,
+        "end_speed_mps": 16.87383926100274,
+        "fault": "",
+        "sha256": "33df2cc82ea8c9e50420a0fe5ec14a2b546016d5a78e7f8359efc7938a61e287",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 329.6166666666667,
+        "median_us_per_tick": 310.71666666666664,
+        "min_us_per_tick": 289.93333333333334,
+        "p95_us_per_tick": 329.6166666666667,
+        "samples_us_per_tick": [
+          310.71666666666664,
+          329.6166666666667,
+          289.93333333333334
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 591.9583333333334,
+        "median_us_per_tick": 587.1666666666666,
+        "min_us_per_tick": 443.59166666666664,
+        "p95_us_per_tick": 591.9583333333334,
+        "samples_us_per_tick": [
+          591.9583333333334,
+          587.1666666666666,
+          443.59166666666664
+        ]
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 146.94266122626135,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.466242890019378,
+        "fault": "",
+        "sha256": "cf3c6f296314bc4af71513ef01d44b7416f433e8350b071bf3e85dd6f782d8e6",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 351.31666666666666,
+        "median_us_per_tick": 319.51666666666665,
+        "min_us_per_tick": 300.975,
+        "p95_us_per_tick": 351.31666666666666,
+        "samples_us_per_tick": [
+          351.31666666666666,
+          319.51666666666665,
+          300.975
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 1032.6,
+        "median_us_per_tick": 977.675,
+        "min_us_per_tick": 909.675,
+        "p95_us_per_tick": 1032.6,
+        "samples_us_per_tick": [
+          977.675,
+          1032.6,
+          909.675
+        ]
+      }
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.0,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.0,
+        "fault": "",
+        "sha256": "08c4b855865db6782bf199d799779570dcd9b0063ef02c9978f4467775239911",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 338.68333333333334,
+        "median_us_per_tick": 329.9,
+        "min_us_per_tick": 281.9583333333333,
+        "p95_us_per_tick": 338.68333333333334,
+        "samples_us_per_tick": [
+          281.9583333333333,
+          338.68333333333334,
+          329.9
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 673.775,
+        "median_us_per_tick": 534.55,
+        "min_us_per_tick": 447.475,
+        "p95_us_per_tick": 673.775,
+        "samples_us_per_tick": [
+          447.475,
+          534.55,
+          673.775
+        ]
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": -55.5353539476449,
+        "end_ground_contact": false,
+        "end_speed_mps": 29.39356153585966,
+        "fault": "",
+        "sha256": "a88a3288244cb15b26f977e5baabd25c543665bc6c6ff29e1bf35895648f58e6",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 331.3,
+        "median_us_per_tick": 317.3,
+        "min_us_per_tick": 313.23333333333335,
+        "p95_us_per_tick": 331.3,
+        "samples_us_per_tick": [
+          331.3,
+          317.3,
+          313.23333333333335
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 784.1,
+        "median_us_per_tick": 780.375,
+        "min_us_per_tick": 562.7,
+        "p95_us_per_tick": 784.1,
+        "samples_us_per_tick": [
+          780.375,
+          784.1,
+          562.7
+        ]
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 113.50173535395156,
+        "end_ground_contact": false,
+        "end_speed_mps": 15.015658807352878,
+        "fault": "",
+        "sha256": "f7a196fe3710c41c512c74f1b62c722c89322fae16cb25c1b8e743f288d0076d",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 338.2083333333333,
+        "median_us_per_tick": 328.6166666666667,
+        "min_us_per_tick": 323.5083333333333,
+        "p95_us_per_tick": 338.2083333333333,
+        "samples_us_per_tick": [
+          328.6166666666667,
+          338.2083333333333,
+          323.5083333333333
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 735.1916666666667,
+        "median_us_per_tick": 704.6083333333333,
+        "min_us_per_tick": 450.4166666666667,
+        "p95_us_per_tick": 735.1916666666667,
+        "samples_us_per_tick": [
+          735.1916666666667,
+          450.4166666666667,
+          704.6083333333333
+        ]
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 147.09019756429583,
+        "end_ground_contact": false,
+        "end_speed_mps": 17.594548754678907,
+        "fault": "",
+        "sha256": "102673e03235ecf1c925217ab5dc4514afba23d0bbebc2e2fbc62bdb4812acc1",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 305.55,
+        "median_us_per_tick": 305.2,
+        "min_us_per_tick": 280.7583333333333,
+        "p95_us_per_tick": 305.55,
+        "samples_us_per_tick": [
+          280.7583333333333,
+          305.2,
+          305.55
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 567.725,
+        "median_us_per_tick": 480.75,
+        "min_us_per_tick": 478.6,
+        "p95_us_per_tick": 567.725,
+        "samples_us_per_tick": [
+          567.725,
+          478.6,
+          480.75
+        ]
+      }
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.0,
+        "end_ground_contact": false,
+        "end_speed_mps": 17.00000000000006,
+        "fault": "",
+        "sha256": "48a4fa32abd0259232cbe7f685e70305a156498ff1c9b400c1b699bd9080b6d2",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 302.225,
+        "median_us_per_tick": 299.3666666666667,
+        "min_us_per_tick": 297.64166666666665,
+        "p95_us_per_tick": 302.225,
+        "samples_us_per_tick": [
+          297.64166666666665,
+          299.3666666666667,
+          302.225
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 543.2833333333333,
+        "median_us_per_tick": 521.2916666666666,
+        "min_us_per_tick": 422.94166666666666,
+        "p95_us_per_tick": 543.2833333333333,
+        "samples_us_per_tick": [
+          521.2916666666666,
+          422.94166666666666,
+          543.2833333333333
+        ]
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": 0.3678234951143449,
+        "end_ground_contact": true,
+        "end_speed_mps": 0.793620735703716,
+        "fault": "",
+        "sha256": "1d13524886bee34b3b07d2853dfe87f56ee8ea0a7d4e49f432efc8168db3b1cd",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 395.7083333333333,
+        "median_us_per_tick": 395.19166666666666,
+        "min_us_per_tick": 393.39166666666665,
+        "p95_us_per_tick": 395.7083333333333,
+        "samples_us_per_tick": [
+          395.7083333333333,
+          395.19166666666666,
+          393.39166666666665
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 628.625,
+        "median_us_per_tick": 628.0666666666667,
+        "min_us_per_tick": 536.575,
+        "p95_us_per_tick": 628.625,
+        "samples_us_per_tick": [
+          628.625,
+          628.0666666666667,
+          536.575
+        ]
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 90.14151753137364,
+        "end_ground_contact": false,
+        "end_speed_mps": 23.93934964519532,
+        "fault": "",
+        "sha256": "deea5787c1988368f9e536167cf1c725f6b4883f48f743ee6d98a20b5bd6e978",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 297.76666666666665,
+        "median_us_per_tick": 296.6333333333333,
+        "min_us_per_tick": 280.9,
+        "p95_us_per_tick": 297.76666666666665,
+        "samples_us_per_tick": [
+          296.6333333333333,
+          280.9,
+          297.76666666666665
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 883.9166666666666,
+        "median_us_per_tick": 853.025,
+        "min_us_per_tick": 848.95,
+        "p95_us_per_tick": 883.9166666666666,
+        "samples_us_per_tick": [
+          848.95,
+          853.025,
+          883.9166666666666
+        ]
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 147.9166926520153,
+        "end_ground_contact": false,
+        "end_speed_mps": 25.200265607311493,
+        "fault": "",
+        "sha256": "e2024c32c1fdabc7e06abf0ef2202481c95ccba2d0e64db9bd249fedc643976b",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 638.4666666666667,
+        "median_us_per_tick": 633.05,
+        "min_us_per_tick": 611.45,
+        "p95_us_per_tick": 638.4666666666667,
+        "samples_us_per_tick": [
+          611.45,
+          638.4666666666667,
+          633.05
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 1931.8666666666666,
+        "median_us_per_tick": 1543.6,
+        "min_us_per_tick": 991.6583333333333,
+        "p95_us_per_tick": 1931.8666666666666,
+        "samples_us_per_tick": [
+          1931.8666666666666,
+          1543.6,
+          991.6583333333333
+        ]
+      }
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.000000000001663,
+        "end_ground_contact": false,
+        "end_speed_mps": 25.000000000000004,
+        "fault": "",
+        "sha256": "389d0cd04c7af561dba41c54495c4354318b09e730de4a99101b1455bbae5044",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 650.3166666666667,
+        "median_us_per_tick": 640.0916666666667,
+        "min_us_per_tick": 586.8833333333333,
+        "p95_us_per_tick": 650.3166666666667,
+        "samples_us_per_tick": [
+          640.0916666666667,
+          586.8833333333333,
+          650.3166666666667
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 1088.5833333333333,
+        "median_us_per_tick": 998.5583333333333,
+        "min_us_per_tick": 944.0333333333333,
+        "p95_us_per_tick": 1088.5833333333333,
+        "samples_us_per_tick": [
+          944.0333333333333,
+          998.5583333333333,
+          1088.5833333333333
+        ]
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "ground",
+      "fingerprint": {
+        "end_altitude_m": -64.78774081345482,
+        "end_ground_contact": false,
+        "end_speed_mps": 33.041265792560026,
+        "fault": "",
+        "sha256": "3b2a5ff8f163a7694ed7d88b21102f2bde25b4548ba0aa7dc0949eae207d0960",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 363.98333333333335,
+        "median_us_per_tick": 309.6333333333333,
+        "min_us_per_tick": 308.96666666666664,
+        "p95_us_per_tick": 363.98333333333335,
+        "samples_us_per_tick": [
+          309.6333333333333,
+          363.98333333333335,
+          308.96666666666664
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 500.875,
+        "median_us_per_tick": 481.81666666666666,
+        "min_us_per_tick": 432.475,
+        "p95_us_per_tick": 500.875,
+        "samples_us_per_tick": [
+          432.475,
+          481.81666666666666,
+          500.875
+        ]
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "spin",
+      "fingerprint": {
+        "end_altitude_m": 107.26854765656056,
+        "end_ground_contact": false,
+        "end_speed_mps": 19.786934804035475,
+        "fault": "",
+        "sha256": "03f77dec155d8a2eba057c0470e61c48ac57f90cd11a74dbe2768095729c8ff5",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 309.3,
+        "median_us_per_tick": 282.78333333333336,
+        "min_us_per_tick": 277.34166666666664,
+        "p95_us_per_tick": 309.3,
+        "samples_us_per_tick": [
+          282.78333333333336,
+          277.34166666666664,
+          309.3
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 453.6666666666667,
+        "median_us_per_tick": 445.26666666666665,
+        "min_us_per_tick": 436.0083333333333,
+        "p95_us_per_tick": 453.6666666666667,
+        "samples_us_per_tick": [
+          453.6666666666667,
+          436.0083333333333,
+          445.26666666666665
+        ]
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "stall",
+      "fingerprint": {
+        "end_altitude_m": 128.39230606576976,
+        "end_ground_contact": false,
+        "end_speed_mps": 34.29033616229135,
+        "fault": "",
+        "sha256": "3c065d830365c4b88102820680a806eeee9fe436700c887788984eacbbbcce72",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 407.2916666666667,
+        "median_us_per_tick": 332.2416666666667,
+        "min_us_per_tick": 315.05833333333334,
+        "p95_us_per_tick": 407.2916666666667,
+        "samples_us_per_tick": [
+          332.2416666666667,
+          315.05833333333334,
+          407.2916666666667
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 825.7166666666667,
+        "median_us_per_tick": 765.0,
+        "min_us_per_tick": 725.4416666666667,
+        "p95_us_per_tick": 825.7166666666667,
+        "samples_us_per_tick": [
+          725.4416666666667,
+          825.7166666666667,
+          765.0
+        ]
+      }
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "regime": "trim",
+      "fingerprint": {
+        "end_altitude_m": 30.00000000014984,
+        "end_ground_contact": false,
+        "end_speed_mps": 29.00000000005035,
+        "fault": "",
+        "sha256": "777a450133c69e0ae015133e35f216da67e82db0f0bc163b2cc61ec84efa55af",
+        "ticks": 960
+      },
+      "identical": true,
+      "before": {
+        "fault": "",
+        "max_us_per_tick": 401.0416666666667,
+        "median_us_per_tick": 367.56666666666666,
+        "min_us_per_tick": 340.0833333333333,
+        "p95_us_per_tick": 401.0416666666667,
+        "samples_us_per_tick": [
+          367.56666666666666,
+          340.0833333333333,
+          401.0416666666667
+        ]
+      },
+      "after": {
+        "fault": "",
+        "max_us_per_tick": 664.5416666666666,
+        "median_us_per_tick": 605.9166666666666,
+        "min_us_per_tick": 575.025,
+        "p95_us_per_tick": 664.5416666666666,
+        "samples_us_per_tick": [
+          605.9166666666666,
+          664.5416666666666,
+          575.025
+        ]
+      }
+    }
+  ]
+}

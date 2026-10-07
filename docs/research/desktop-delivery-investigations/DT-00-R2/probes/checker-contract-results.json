@@ -1,0 +1,26 @@
+{
+  "format": "openrc-macos-checker-contract v1",
+  "date": "2026-10-07",
+  "checker": "app/tests/check_macos_export.py",
+  "checker_sha256": "9884214ec7bc39b776f9dba2f57a94719b72f2481b2a57a3e7a5668da43b826d",
+  "passed": true,
+  "cases": [
+    {
+      "case": "synthetic_adhoc_runtime",
+      "flags": "0x10002",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "stdout": "macOS export: Fixture.app/Contents/MacOS/Fixture mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed\n",
+      "stderr": ""
+    },
+    {
+      "case": "synthetic_nonadhoc_runtime",
+      "flags": "0x10000",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "stdout": "macOS export: Fixture.app/Contents/MacOS/Fixture mode 0o755, slices x86_64 signed, flags 0x10000, arm64 signed, flags 0x10000\nFAIL x86_64: signed, flags 0x10000; arm64: signed, flags 0x10000\n",
+      "stderr": ""
+    }
+  ],
+  "scope": "Python checker executed on synthetic ZIP metadata in temporary files. No valid native executable/signature exists in either fixture. No macOS execution, signature verification or trust bypass tested. Acceptance demonstrates structural-only scope; rejection demonstrates ad-hoc-only policy."
+}

@@ -1,0 +1,117 @@
+{
+  "step": "F6a",
+  "date": "2026-10-07",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "baseline_commit": "45c4d7749524c0996361cfcabf7f076a9af7c1fd",
+  "isolated_checkout_contains_steps": [
+    "D6b-R1",
+    "F1",
+    "F6a"
+  ],
+  "concurrent_M2_and_landscape_changes_excluded": true,
+  "checks": {
+    "marker": 533,
+    "cli": 26,
+    "actual_main_route": 5,
+    "rendered_captures": 4,
+    "ordering_mutations_rejected": 2
+  },
+  "suite": {
+    "coverage_complete": true,
+    "single_uninterrupted_success": false,
+    "test_programs": 90,
+    "additional_route_test_programs": 1,
+    "initial_exit_code": 143,
+    "interruption": "SIGTERM during Extra contract after all test programs, H7, field-failure routes and Stik contract passed; no engine errors logged",
+    "resumed_exit_code": 0,
+    "resume": "Original app/test.sh model-contract section through end, verbatim; same verified source",
+    "logs": [
+      "suite-tests.log",
+      "suite-contracts-traces.log"
+    ],
+    "four_aircraft_trimmed_traces": "pass",
+    "fixed_step_fps": [
+      30,
+      60,
+      144
+    ],
+    "state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+  },
+  "shared_baseline": "Failed writing logs with No space left on device; not counted as passing. No unrelated files removed.",
+  "source_sha256": {
+    "app/main.gd": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79",
+    "app/input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+    "app/input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+    "app/tests/test_latency_patch.gd": "0b05d8eccbcf879786794f81ac265b169014920821a34ac764b6969310caf35a",
+    "app/tests/test_latency_patch_cli.gd": "e4c94eb4af4ca81b40d5d7575d02af72f1129ed12215873cd8aa3e242dae0c43",
+    "app/tests/test_latency_patch_route.gd": "471c966dbc93e50e1b30b00b93db8fd6147f04ed2da8046d3407cb4b5f9508b9"
+  },
+  "lint_before": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "lint_after": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "introduced_lint_diagnostics": [],
+  "input_resource_validation": {
+    "ok": true,
+    "counts": {
+      "total": 10,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 10,
+      "info": 0
+    },
+    "config_warning_count": 0,
+    "preexisting_physics_warnings": [
+      {
+        "file": "res://physics/aero.gd",
+        "message": "The parameter \"rates\" is never used in the function \"coefficients()\". If this is intended, prefix it with an underscore: \"_rates\"."
+      },
+      {
+        "file": "res://physics/aircraft_data.gd",
+        "message": "Values of the ternary operator are not mutually compatible."
+      },
+      {
+        "file": "res://physics/aircraft_data.gd",
+        "message": "The variable \"a0\" is declared below in the parent block."
+      },
+      {
+        "file": "res://physics/aircraft_data.gd",
+        "message": "Integer division. Decimal part will be discarded."
+      },
+      {
+        "file": "res://physics/aircraft_data.gd",
+        "message": "The function parameter \"sign\" has the same name as a built-in function."
+      },
+      {
+        "file": "res://physics/aircraft_data.gd",
+        "message": "The function parameter \"sign\" has the same name as a built-in function."
+      },
+      {
+        "file": "res://physics/turbine.gd",
+        "message": "Integer division. Decimal part will be discarded."
+      },
+      {
+        "file": "res://physics/turbine.gd",
+        "message": "Integer division. Decimal part will be discarded."
+      },
+      {
+        "file": "res://physics/propulsion.gd",
+        "message": "Integer division. Decimal part will be discarded."
+      },
+      {
+        "file": "res://physics/dynamics.gd",
+        "message": "The local variable \"derivative\" is shadowing an already-declared function at line 54 in the current class."
+      }
+    ]
+  },
+  "captures": "Synthetic radio in actual flight scene; llvmpipe/Xvfb; visual proof only, not latency or performance measurements.",
+  "physical_F6_measurements": "not performed; F6 remains open"
+}

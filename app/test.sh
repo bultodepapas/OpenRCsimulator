@@ -16,10 +16,18 @@ rm -f "$IMPORT_LOG"
 
 echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
+python3 "$HERE/../tools/trees/test_place.py"
+
+echo "== L7 offline hill profile matches committed heights"
+python3 "$HERE/../tools/terrain/gen_terrain.py" --check
 
 echo "== E0b2: Stik hub and neutral tail geometry stay current"
 python3 "$HERE/../research/propwash/e0b2/derive_geometry.py" --check
 python3 "$HERE/../research/propwash/e0b2/test_geometry.py"
+
+echo "== E0b3b: neutral Stik wash profiles stay current"
+python3 "$HERE/../research/propwash/e0b3b/derive_profile.py" --check
+python3 "$HERE/../research/propwash/e0b3b/test_profile.py"
 
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
@@ -167,3 +175,9 @@ if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $
   echo "final state depends on the rendering frame rate:$HASHES"; exit 1
 fi
 echo "identical"
+
+echo "== E0b5: experimental wash transport at 30/60/144 fps"
+python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"
+
+echo "== E0b6p: distributed swirl at 30/60/144 fps"
+python3 "$HERE/../research/propwash/e0b6p/check_frames.py" --godot "$GODOT"

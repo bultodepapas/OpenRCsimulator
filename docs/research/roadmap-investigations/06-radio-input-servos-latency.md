@@ -56,7 +56,7 @@ stick pot/hall → ADC + filter → EdgeTX mixer (inputs: weight/expo/curve, tri
 
 **Godot (source read, 4.7.2-stable) [S37]–[S39]:**
 - `OS_LinuxBSD::run()`: `DisplayServer::process_events(); joypad_sdl->process_events(); Main::iteration();` (same pattern on other desktops, investigation 12); `SDL_HINT_JOYSTICK_THREAD=1`.
-- With `use_accumulated_input = false`, each event updates `_joy_axis` at once. Agile flushing is "implemented only on Android". Either way SDL is polled once per OS loop: **no setting gives more than one joystick sample per rendered frame.**
+- With `use_accumulated_input = false`, each event updates `_joy_axis` at once. Agile flushing is "implemented only on Android". Engine event delivery is paced by the main loop. Our flight reader polls the cached axis each physics tick; that does not establish a fresh hardware sample on every tick (F6a implementation clarification, 2026-10-07).
 - `Main::iteration` runs the frame's physics ticks back to back (cap `max_physics_steps_per_frame` = 12).
 - Focus: before 4.7 focus loss always cleared `_joy_axis`; since PR #115119 (4.7) only if `ignore_joypad_on_unfocused_application = true` (default false; diff read).
 - `swapchain_image_count` and `frame_queue_size` are RenderingDevice-only, **not** Compatibility; there the driver sets queue depth (unverified). `max_fps` with VSync + VRR: cap at `r − r²/3600`.
@@ -99,7 +99,7 @@ So a 2.4 GHz sport setup: **≈ 15–40 ms** stick → servo command (derived), 
 
 **Tolerated delay** (full-size and HCI references, none RC-specific): FAA Part 60 full-flight-simulator transport delay ≤ 300 ms (Level A/B), ≤ 150 ms (C/D) [S28]; NASA TM-110150: 150 ms transports, 100 ms high-performance aircraft [S29]; MIL-F-8785C equivalent delay 0.10 s Level 1 [S31]; pointing/steering degrade from ≈ 16 ms [S32]; display lag "great" 21–41 ms, "bad" ≥ 63 ms [S34]; key-to-screen on modern PCs 50–200 ms [S35]. RC flying (roll rates 150–200°/s) is a high-performance task, so ≤ 100 ms total is a ceiling, not a target. No RC simulator vendor publishes a latency figure (none found).
 
-**Measurement (F6):** phone at 240 fps (4.17 ms/frame) filming stick and screen; a "latency patch" square in the app toggles on the first tick that sees the axis cross 50 %; ≥ 20 trials, median and p95 (method of [S35]). For sub-ms timing: an Arduino-class USB HID joystick toggling an axis plus a photodiode on the patch (OpenLDAT/OSLTT style [S36]). Linux `evtest` timestamps give the radio's report interval. Godot has no input timestamps ([S56]), so in-app timers cover only poll → tick → frame submit.
+**Measurement (F6):** phone at 240 fps (4.17 ms/frame) filming stick and screen; the [F6a latency patch](../radio-input/F6a/README.md) changes on the tick that observes the raw threshold crossing (default zero = midpoint of −1…+1); ≥ 20 trials, median and p95 (method of [S35]). For sub-ms timing: an Arduino-class USB HID joystick toggling an axis plus a photodiode on the patch (OpenLDAT/OSLTT style [S36]). Linux `evtest` timestamps give the radio's report interval. Godot has no input timestamps ([S56]), so in-app timers cover only poll → tick → frame submit.
 
 ### 3. Control shaping: where rates, expo, mixes and trims live
 
@@ -283,7 +283,7 @@ Servo datasheets, link stages and gyro limits are in the tables above; this tabl
 ## Pitfalls and risks
 
 1. **Double shaping** (radio + sim expo or trims) misread as physics. *Mitigation:* radio profiles never shaped (test); linkage trim separate; monitor shows raw vs mapped.
-2. **RF module on:** reports at the RF period, plus emissions. *Mitigation:* warn when the measured event spacing > 2 ms.
+2. **RF module on:** reports at the RF period, plus emissions. *Mitigation:* document RF-off setup and verify the radio setting or OS-level report timing. F1 callback spacing cannot establish the RF state: Godot batches events and exposes no hardware timestamp (F1 implementation correction, 2026-10-07).
 3. **Classic mode on Linux → SDL gamepad** (throttle as trigger, Ch7/8 lost). *Mitigation:* `1209:4F54` + `is_joy_known` → "use Advanced → Joystick".
 4. **Axes 0 until moved** (#105676) and **focus setting flipped to true** later. *Mitigation:* arming; re-arm on every axis clear; a test pins the setting.
 5. **Windows disconnect hang** in 4.7.2. *Mitigation:* document; re-test on 4.8.
@@ -300,7 +300,7 @@ IDs: F3–F5 keep their ROADMAP meaning; flight aids M5-AIDS-n; the optional rea
 
 | Proposed ID | Step | Proof | Depends on |
 | --- | --- | --- | --- |
-| F1 | **Input report:** `-- --input-report` lists each device (index, GUID, `raw_name`, VID:PID as integers, `is_joy_known`, axes moved, min/max, mean event spacing = report interval) | Fake-device headless test; the owner's D6d run yields one F4 row per OS | D6a |
+| F1 | **Input report:** `-- --input-report[=path.json]` lists device connection sessions (index, GUID, `raw_name`, VID:PID as integers when available, `is_joy_known`, axes seen/moved, min/max and per-axis mean callback spacing). Callback spacing is not the USB report interval | [Implementation and fake-device proof](../radio-input/F1/README.md); owner D6d/F4 hardware measurements remain open | D6a |
 | F2 | **Linkage trim:** `controls.linkage_trim` solved at a stated V_ref (generated, `derived`), applied after every device, constant across scenarios; keyboard trim keys | A 20 m/s start keeps the V_ref trim; hands-off at V_ref holds; double-trim mutation fails | D4, owner decision |
 | F3 | **Replug and focus** (existing): exact key, else family with confirmation; re-arm after every axis clear; pin `ignore_joypad_on_unfocused_application`; #121539 on 4.8 | Scripted unplug/replug/focus log: never non-idle throttle before re-arm; owner log on Windows 4.8 | F1, UI-10a |
 | F3b | **`_input` cost:** µs/frame with 4 axes changing at 1 kHz; stop forwarding once armed | Before/after µs per frame; e2e radio tests unchanged | D6a |

@@ -27,6 +27,7 @@ const Air := preload("res://physics/air_data.gd")
 const M := preload("res://physics/math3d.gd")
 const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
+const LatencyPatch = preload("res://input/latency_patch.gd")
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -86,6 +87,13 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var latency_options: Dictionary = LatencyPatch.options(args)
+	if not latency_options.ok:
+		printerr(latency_options.error)
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	var trace_ticks: int = -1
 	if args.has("trace"):
 		var duration_text: String = str(args.get("t", Spec.CAPTURE.time))
@@ -164,6 +172,12 @@ func _ready() -> void:
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
 	add_child(session)
+	if latency_options.enabled:
+		var latency_patch: LatencyPatch = LatencyPatch.new()
+		latency_patch.session = session
+		latency_patch.axis = latency_options.axis
+		latency_patch.threshold = latency_options.threshold
+		add_child(latency_patch)
 	recorder = Recorder.new(session.sim)
 	session.resetting.connect(_on_resetting)
 	if session.aircraft.ok and not _scripted:
