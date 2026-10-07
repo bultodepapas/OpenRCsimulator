@@ -34,11 +34,12 @@ static func loads(state: PackedFloat64Array, model: Dictionary, d: Dictionary, r
 
 ## Evaluate loads and the state derivative from the same physics calls.
 ## `rotor_h_body` optionally supplies an explicit rotor momentum; an empty array derives it from model and rpm.
+## `downwash_cl` as in loads (D11g: the flight-mode linearisation carries the lag as a state).
 ## Returns { state, air, aero_loads, propulsion_loads, loads, rotor_momentum, derivative }.
 static func evaluate(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, wind_ned: PackedFloat64Array, g: float,
-		rotor_h_body := PackedFloat64Array()) -> Dictionary:
-	var components := _load_components(state, model, d, rpm, rho, wind_ned)
+		rotor_h_body := PackedFloat64Array(), downwash_cl := NAN) -> Dictionary:
+	var components := _load_components(state, model, d, rpm, rho, wind_ned, downwash_cl)
 	var h := rotor_h_body if not rotor_h_body.is_empty() else rotor_momentum(model, rpm)
 	var total: PackedFloat64Array = components.loads
 	var derivative := RB.derivative(state, model.mass_kg, model.inertia, RB.inertia_inverse(model.inertia),

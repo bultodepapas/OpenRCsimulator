@@ -5,11 +5,14 @@ extends RefCounted
 const Recorder := preload("res://sim/recorder.gd")
 const M := preload("res://physics/math3d.gd")
 
-## Slow flight (D9a): idle throttle, elevator holding the start altitude (PD on altitude error and climb rate),
-## so the airplane slows down at constant height until the wing can no longer hold it.
+## Slow flight (D9a): idle throttle, elevator holding the start altitude (PD on altitude error and climb rate, plus
+## the pilot's own pitch-rate damping kq), so the airplane slows down at constant height until the wing can no longer
+## hold it. D11g added kq: with the Stik's own (lower) static pitch damping the PD loop alone over-controlled, α
+## overshot 2° and the wing stalled dynamically at 9.99 m/s; with kq the pre- and post-D11g physics both stall at
+## 9.68 m/s (and the linear oracle holds to 8.21/8.19), so the measurement is of the wing, not of the loop.
 ## Flown from 150 m (E1): after the stall the airplane falls for the rest of the 10 s and used to sink below the
 ## ground, where nothing acted on it; with gear contacts the ground is real, so the maneuver starts high enough.
-const SLOW_FLIGHT := { altitude = 150.0, kp = 1.5, kd = 1.5 } # m; stick per m; stick per m/s (tuned on traces, 2026-10-05)
+const SLOW_FLIGHT := { altitude = 150.0, kp = 1.5, kd = 1.5, kq = 0.5 } # m; stick per m; stick per m/s (tuned on traces, 2026-10-05); stick per rad/s (D11g)
 
 ## Rudder gain of the "coordinated" maneuvers: yaw command per radian of sideslip (holds β ≈ 0, like a pilot's feet).
 const COORDINATION_GAIN := 10.0
@@ -46,7 +49,7 @@ static func _altitude_hold(s: PackedFloat64Array, gains := SLOW_FLIGHT) -> Dicti
 	var down_rate := M.q_rotate(M.quat(s[6], s[7], s[8], s[9]), M.v3(s[3], s[4], s[5]))[2]
 	var error: float = gains.altitude + s[2] # altitude lost (state[2] = down, start at −30)
 	var out := _hands_off()
-	out.pitch = clampf(gains.kp * error + gains.kd * down_rate, -1.0, 1.0)
+	out.pitch = clampf(gains.kp * error + gains.kd * down_rate - gains.kq * s[11], -1.0, 1.0) # s[11] = pitch rate q
 	out.throttle_delta = -1.0 # idle
 	return out
 

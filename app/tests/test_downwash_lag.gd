@@ -1,7 +1,8 @@
 # E0a2b: the tail's downwash lag (FlightSession aux, advanced in _pre_step). Layout and settled start; the lag input
 # equals the loads' own wing CL (byte-exact quasi-static identity); exact first-order step response; Cmα̇ measured by a
 # forced plunge oscillation through the real _pre_step and local loads against the delay theory from the model's
-# geometry; tick refinement; checkpoint replay. Reports the effective pitch damping Cmq + Cmα̇ against the oracle.
+# geometry; tick refinement; checkpoint replay. D11g: the oracle (attached-flow) regime carries the same lag, so its
+# Cmα̇ equals the local one; reports the effective pitch damping Cmq + Cmα̇ in both regimes.
 # Run: godot --headless --path . --script res://tests/test_downwash_lag.gd
 extends SceneTree
 
@@ -59,10 +60,13 @@ func _initialize() -> void:
 	var e480 := absf(at_480 - theory)
 	_check("tick refinement: the error to theory halves at 480 Hz (held lag input, first order)", e480 < 0.65 * e240 and e480 > 0.35 * e240,
 		"%.4f → %.4f" % [e240, e480])
+	var oracle := _plunge(model, lag, 1.0 / 240.0, true)
+	_check("D11g: the oracle regime's Cmα̇ %.3f within 3 %% of the local regime's %.3f (one lag, one tail)" % [oracle, at_240],
+		absf(oracle / at_240 - 1.0) < 0.03)
 	var cmq := _cmq_local(model, lag)
 	var effective: float = cmq + at_240 * (1.0 + omega_tau * omega_tau) # measured, back to the quasi-steady limit
-	print("info effective pitch damping in the local regime: Cmq %.2f + Cmα̇ %.2f = %.2f; borrowed oracle Cmq %.2f (×%.2f)"
-		% [cmq, at_240, effective, model.aero.Cmq, effective / float(model.aero.Cmq)])
+	print("info effective pitch damping: local Cmq %.2f + Cmα̇ %.2f = %.2f; oracle Cmq %.2f + Cmα̇ %.2f = %.2f"
+		% [cmq, at_240, effective, model.aero.Cmq, oracle, float(model.aero.Cmq) + oracle * (1.0 + omega_tau * omega_tau)])
 	_check("effective pitch damping Cmq + Cmα̇ %.2f within 10 %% of the geometry estimate −2·a_t·η·V_H·(l_t/c)·(1 + lag) + wing (%.2f)"
 		% [effective, _geometry_estimate(model, cmq)], absf(effective / _geometry_estimate(model, cmq) - 1.0) < 0.10)
 	_checkpoint()
@@ -75,6 +79,7 @@ func _identity(model: Dictionary) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 51616
 	var same := 0
+	var same_oracle := 0
 	for i in 2000:
 		var alpha := rng.randf_range(-0.3, 0.5)
 		var speed := rng.randf_range(6.0, 35.0)
@@ -85,7 +90,10 @@ func _identity(model: Dictionary) -> void:
 		var cl := Aero.wing_lift_coefficient(s, air, d, model)
 		if Aero._local_loads(s, air, d, model, RHO, cl).to_byte_array() == Aero._local_loads(s, air, d, model, RHO).to_byte_array():
 			same += 1
+		if Aero._global_loads(s, air, d, model, RHO, cl).to_byte_array() == Aero._global_loads(s, air, d, model, RHO).to_byte_array():
+			same_oracle += 1
 	_check("lag = instantaneous wing CL reproduces the quasi-static local loads byte for byte (2000 states incl. stall, rates, controls)", same == 2000, "%d/2000" % same)
+	_check("D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)", same_oracle == 2000, "%d/2000" % same_oracle)
 
 
 ## The simulator's own loads callback must feed the lag to the tail: with the lag displaced from the instantaneous CL
@@ -125,9 +133,9 @@ func _step_response(lag: int) -> void:
 		String.num_scientific(worst))
 
 
-## Forced plunge α = α0 + A·sin(ωt), q = 0, through the session's _pre_step and the local loads; Cmα̇ is the moment
-## in phase with α̇, nondimensionalised by α̇·c/(2V).
-func _plunge(model: Dictionary, lag: int, dt: float) -> float:
+## Forced plunge α = α0 + A·sin(ωt), q = 0, through the session's _pre_step and the local loads (or the oracle's, at
+## the same α 4° where the blend is 0); Cmα̇ is the moment in phase with α̇, nondimensionalised by α̇·c/(2V).
+func _plunge(model: Dictionary, lag: int, dt: float, oracle := false) -> float:
 	var c: float = model.reference.c
 	# A whole number of ticks per period, so the projection window holds exact periods and the large in-phase Cmα·α
 	# term cannot leak into the α̇ (quadrature) term.
@@ -146,7 +154,10 @@ func _plunge(model: Dictionary, lag: int, dt: float) -> float:
 		_session.sim.state = s
 		aux = _session._pre_step(aux, _session.sim.inputs, dt)
 		if k >= 3 * steps:
-			var cm: float = Aero._local_loads(s, Air.compute(s, PackedFloat64Array([0, 0, 0]), RHO), d, model, RHO, aux[lag])[4] / qs
+			var air := Air.compute(s, PackedFloat64Array([0, 0, 0]), RHO)
+			var loads: PackedFloat64Array = Aero._global_loads(s, air, d, model, RHO, aux[lag]) if oracle \
+				else Aero._local_loads(s, air, d, model, RHO, aux[lag])
+			var cm: float = loads[4] / qs
 			projection += cm * cos(omega * t) * dt
 	var in_quadrature := projection * 2.0 / (3.0 * period)
 	return in_quadrature / (AMPLITUDE * omega * c / (2.0 * V))

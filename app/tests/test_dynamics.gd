@@ -58,10 +58,10 @@ func _state_from_mode_x(x: PackedFloat64Array) -> PackedFloat64Array:
 		M.q_from_euler(0.0, x[7], x[6]), M.v3(x[3], x[4], x[5]))
 
 
-func _mode_output_no_rotor(x: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float) -> PackedFloat64Array:
+func _mode_output_no_rotor(x: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float, downwash_cl := NAN) -> PackedFloat64Array:
 	var s := _state_from_mode_x(x)
 	var air := Air.compute(s, M.v3(0, 0, 0))
-	var loads := _sum_loads(Aero.loads(s, air, d, model, Air.RHO_SEA_LEVEL),
+	var loads := _sum_loads(Aero.loads(s, air, d, model, Air.RHO_SEA_LEVEL, downwash_cl),
 		Propulsion.loads(air.v_air, rpm, model.propulsion, Air.RHO_SEA_LEVEL))
 	var dot := RB.derivative(s, model.mass_kg, model.inertia, RB.inertia_inverse(model.inertia),
 		M.v3(loads[0], loads[1], loads[2]), M.v3(loads[3], loads[4], loads[5]), G)
@@ -102,12 +102,14 @@ func _initialize() -> void:
 		return
 
 	var modes := FlightModes.analyze(model, 15.0, G)
-	_check("flight modes expose the full 8×8 Jacobian", modes.ok and _is_square(modes.get("full_jacobian", []), 8))
-	if modes.ok and _is_square(modes.get("full_jacobian", []), 8):
+	# D11g: a model with the downwash lag adds it as a ninth (longitudinal) state.
+	var size := 8 if is_nan(modes.get("downwash_lag_root", NAN)) else 9
+	_check("flight modes expose the full %d×%d Jacobian" % [size, size], modes.ok and _is_square(modes.get("full_jacobian", []), size))
+	if modes.ok and _is_square(modes.get("full_jacobian", []), size):
 		var full: Array = modes.full_jacobian
 		var projection: Dictionary = modes.get("projected_jacobians", {})
-		_check("existing longitudinal and lateral modes use explicit 4×4 projections",
-			_is_square(projection.get("longitudinal", []), 4) and _is_square(projection.get("lateral", []), 4))
+		_check("existing longitudinal and lateral modes use explicit projections (4×4; longitudinal 5×5 with the lag)",
+			_is_square(projection.get("longitudinal", []), size - 4) and _is_square(projection.get("lateral", []), 4))
 		# The rotor's +x angular momentum adds +h to the r-dot moment for a unit q perturbation.
 		# Compare the exposed full matrix against the same linearization with that term explicitly removed.
 		var e := M.q_to_euler(trim.state.slice(RB.ATT, RB.ATT + 4))
@@ -115,8 +117,13 @@ func _initialize() -> void:
 			0.0, 0.0, 0.0, e[2], e[1]])
 		var trim_d := { elevator = trim.elevator, aileron_right = trim.aileron,
 			aileron_left = -trim.aileron, rudder = trim.rudder }
+		# With the lag state the full matrix holds the lag at its trim value; so does this one.
+		var lag_cl := NAN
+		if size == 9:
+			var trimmed := _state_from_mode_x(x0)
+			lag_cl = Aero.wing_lift_coefficient(trimmed, Air.compute(trimmed, M.v3(0, 0, 0)), trim_d, model)
 		var no_gyro := L.jacobian(func(x: PackedFloat64Array) -> PackedFloat64Array:
-			return _mode_output_no_rotor(x, model, trim_d, trim.rpm), x0)
+			return _mode_output_no_rotor(x, model, trim_d, trim.rpm, lag_cl), x0)
 		var expected_gyro := RB.inertia_mul(RB.inertia_inverse(model.inertia),
 			M.v3(0.0, 0.0, model.propulsion.rotor_inertia * trim.rpm * TAU / 60.0))
 		_check("full Jacobian retains the rotor q→r gyroscopic coupling",

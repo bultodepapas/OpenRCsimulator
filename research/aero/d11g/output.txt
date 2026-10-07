@@ -1,0 +1,9 @@
+15 m/s level trim: α 4.260°
+| α° | Cmq | CLq | Cnr |
+| 0 | -7.4787 | 3.0751 | -0.13432 |
+| 2 | -7.4735 | 3.0131 | -0.13329 |
+| 4 | -7.4755 | 2.9574 | -0.13211 |
+| 6 | -7.4845 | 2.9086 | -0.13079 |
+closed form: Cmq_tail -7.4022, CLq_tail 3.1336, Cnr fin + wing profile -0.13238, Cmα̇ -3.5928
+derived at the trim α (write these): Cmq -7.476, CLq 2.951, Cnr -0.1319
+borrowed (UltraStick 25e) before D11g: Cmq -13.5664, CLq 6.1639, Cnr -0.1833
