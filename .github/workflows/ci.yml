@@ -46,7 +46,10 @@ jobs:
           python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
           python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
           python3 assets/aircraft/avanti-s-a200/compile_geometry.py --check
+          python3 assets/aircraft/p51d-mustang-120/build_geometry.py --check
+          python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
           python3 research/extra-300/ex05/derive_physics.py --check
+          python3 research/p51/p51-05/derive_physics.py --check
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

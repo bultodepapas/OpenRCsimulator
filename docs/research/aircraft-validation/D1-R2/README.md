@@ -1,6 +1,6 @@
 # D1-R2 — strict shaft power-table validation
 
-2026-10-06 · **Status: implementation in progress.** Scope: [D1-R2](../../../../ROADMAP.md#audit-repairs).
+2026-10-06 · **Status: implemented and verified.** Scope: [D1-R2](../../../../ROADMAP.md#audit-repairs).
 
 ## Confirmed defect
 
@@ -35,7 +35,9 @@ is unchanged; no schema version, generated aircraft data or flight equations cha
   preserve the active model, trim, state, auxiliaries and clock on failed reload.
 - [Four real app flights](flights.json), three seconds each, pass the current trace
   checker and retain the exact numeric CSV hashes recorded for C7-R2.
-- Full app suite pending. Static lint: zero errors, same 11 baseline warnings.
+- Full `app/test.sh` passes: 162 scripts parse, 61 GDScript test programs,
+  11 trace process tests, and identical state at 30/60/144 FPS. Static lint: zero
+  errors, same 11 baseline warnings. [Verification record](verification.json).
 
 This repairs input acceptance, not shaft dynamics or independent flight fidelity.
 
@@ -53,3 +55,12 @@ Run the probe in a separate checkout at `56416cf` for the before result. The
 probe mutates in-memory copies; the test's temporary JSON lives in `user://` and
 is removed after use. Source and tests are repository-owned; no external data
 or new dependency is introduced.
+
+Suggested commit message:
+
+```text
+fix(data): enforce shaft power-table validation (D1-R2)
+
+Proof: 117 malformed-data/session checks, full app/test.sh, five before/after
+loader probes and unchanged numeric traces for all four aircraft.
+```

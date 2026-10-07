@@ -1,0 +1,206 @@
+{
+  "step": "H8a",
+  "date": "2026-10-06",
+  "base_commit": "baf5f86a332d70fa677554cae6751fbebd0631ac",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "working_tree": "Includes pre-existing DATA-1 / D1-R2 documentation and CI edits; concurrent development host, not target hardware.",
+  "baseline_source_sha256": {
+    "app/physics/integrator.gd": "c86e5a3e7e27be3c22d5c04bbc411a911b591f8dab4ff1100154cb6acf48ff96",
+    "app/sim/simulation.gd": "a8582859a6a52e5a7872c473685d51373fde2b35d60f493b8e3550bda0675169"
+  },
+  "traces": {
+    "p51d-mustang-120": {
+      "seconds": 3,
+      "samples": 721,
+      "before_numeric_sha256": "0c9dee169f7163aa06571404f0120adccd9451f0d9870ddbca5358b0f1c2bb45",
+      "after_numeric_sha256": "0c9dee169f7163aa06571404f0120adccd9451f0d9870ddbca5358b0f1c2bb45",
+      "unchanged": true
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "seconds": 3,
+      "samples": 721,
+      "before_numeric_sha256": "7de0c45908e00d018a0eff514c8c549f230d9ed26055cc2f0e1e756149b36ee5",
+      "after_numeric_sha256": "7de0c45908e00d018a0eff514c8c549f230d9ed26055cc2f0e1e756149b36ee5",
+      "unchanged": true
+    },
+    "gp-extra-300s-60": {
+      "seconds": 3,
+      "samples": 721,
+      "before_numeric_sha256": "23b00cda7e7d36b3d21bcdf1baf7bc921c40c13d822e531dfcc8fa8f44a361fc",
+      "after_numeric_sha256": "23b00cda7e7d36b3d21bcdf1baf7bc921c40c13d822e531dfcc8fa8f44a361fc",
+      "unchanged": true
+    },
+    "jensen-das-ugly-stik-60": {
+      "seconds": 3,
+      "samples": 721,
+      "before_numeric_sha256": "7d2f8a4ca70be39f32ec8ccf3260d4017bc018ef07ea17b748ddc226aab00025",
+      "after_numeric_sha256": "7d2f8a4ca70be39f32ec8ccf3260d4017bc018ef07ea17b748ddc226aab00025",
+      "unchanged": true
+    }
+  },
+  "benchmark_us_per_tick": {
+    "p51d-mustang-120": {
+      "before_trim": 1138.2,
+      "before_stall_start": 1120.3,
+      "after_trim": 1103.3,
+      "after_stall_start": 1088.5
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "before_trim": 434.8,
+      "before_stall_start": 415.4,
+      "after_trim": 405.5,
+      "after_stall_start": 401.2
+    },
+    "jensen-das-ugly-stik-60": {
+      "before_trim": 364.9,
+      "before_stall_start": 427.0,
+      "after_trim": 363.8,
+      "after_stall_start": 394.8
+    },
+    "gp-extra-300s-60": {
+      "before_trim": 383.3,
+      "before_stall_start": 378.4,
+      "after_trim": 399.3,
+      "after_stall_start": 370.0
+    }
+  },
+  "benchmark_method": "bench_physics.gd; best of 3 x 2400 ticks per regime. Shared host, concurrent tests and pre-existing renderer. Exploratory timings, no target-machine certification or speedup claim.",
+  "checks": {
+    "targeted": {
+      "passed": 22,
+      "failed": 0,
+      "log": "targeted.log"
+    },
+    "mutation": {
+      "exit_code": 1,
+      "expected_failures": 3,
+      "log": "frozen-time-mutation.log",
+      "location": "isolated /tmp project; working tree never mutated"
+    },
+    "analytic": {
+      "system": "x_prime=v; v_prime=x+t; x(0)=v(0)=0",
+      "solution": "x=sinh(t)-t; v=cosh(t)-1",
+      "end_time_s": 1,
+      "refinement_hz": [
+        4,
+        8,
+        16
+      ],
+      "max_component_errors": [
+        4.332374651e-05,
+        2.90739641e-06,
+        1.8869979e-07
+      ],
+      "error_ratios": [
+        14.9012175856148,
+        15.4075229395434
+      ],
+      "error_at_240_hz": 3.865380238110561e-12,
+      "absolute_error_limit": 1e-10
+    },
+    "lint": {
+      "before": {
+        "total": 11,
+        "errors": 0,
+        "warnings": 11,
+        "parse_errors": 0
+      },
+      "after": {
+        "total": 11,
+        "errors": 0,
+        "warnings": 11,
+        "parse_errors": 0
+      },
+      "new_diagnostics": 0
+    },
+    "validate": {
+      "before": {
+        "total": 134,
+        "errors": 0,
+        "parse_errors": 0,
+        "warnings": 134,
+        "info": 0
+      },
+      "after": {
+        "total": 134,
+        "errors": 0,
+        "parse_errors": 0,
+        "warnings": 134,
+        "info": 0
+      },
+      "new_diagnostics": 0,
+      "node_config": {
+        "ran": true,
+        "counts": {
+          "warnings": 0,
+          "hints": 0
+        },
+        "hints": [],
+        "physics_layers": {
+          "2d": {
+            "layers": []
+          },
+          "3d": {
+            "layers": []
+          },
+          "finding_count": 0,
+          "findings": [],
+          "truncated": false
+        }
+      }
+    },
+    "smoke_scenes": {
+      "ok": true,
+      "counts": {
+        "scenes": 3,
+        "passed": 3,
+        "failed": 0,
+        "errors": 0,
+        "warnings": 174,
+        "findings": 0
+      },
+      "scenes": [
+        {
+          "scene": "res://app_root.tscn",
+          "ok": true
+        },
+        {
+          "scene": "res://main.tscn",
+          "ok": true
+        },
+        {
+          "scene": "res://tests/fixtures/atmosphere_field.tscn",
+          "ok": true
+        }
+      ]
+    },
+    "full_suite": {
+      "command": "app/test.sh",
+      "before_exit_code": 0,
+      "after_exit_code": 0,
+      "before_gdscript_programs": 61,
+      "after_gdscript_programs": 62,
+      "engine_error_lines": 0,
+      "existing_engine_warning_lines_before": 11,
+      "engine_warning_lines_after": 9,
+      "after_log_sha256": "04d0f55ba92cbb872e3fe44e754365ab2362a32391e9ed9379b062c490e110cb",
+      "frame_rate_fps": [
+        30,
+        60,
+        144
+      ],
+      "frame_rate_state_sha256": [
+        "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+        "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3",
+        "ce4a2d02e27741c9d7a8f6039ff8267fae20621c4dcf2dd75e2f3dc6f42fd7e3"
+      ],
+      "frame_rate_hashes_unchanged_from_baseline": true
+    }
+  },
+  "after_source_sha256": {
+    "app/physics/integrator.gd": "8b0d5b50d7942b172e13e453914806257d8a64aaef9d49cfd597924b450208f8",
+    "app/sim/simulation.gd": "4fe0487e85e9f256c1d107010c6638e14db32be46ccc73414a5a4f1ceb190813",
+    "app/tests/test_rk_stage_time.gd": "5c63a2abfbe90d44e1c2592498d60d70897de3091a1ab75012d03377332ac38b"
+  }
+}

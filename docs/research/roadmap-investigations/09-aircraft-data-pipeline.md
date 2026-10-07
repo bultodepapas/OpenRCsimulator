@@ -4,7 +4,7 @@
 
 ## Current execution policy — audit reconciliation, 2026-10-06
 
-[ROADMAP revision 5](../../../ROADMAP.md#execution-order-and-release-gates) supersedes the mandatory v2/unified-tool proposals below. The detailed code counts, aircraft table and uncommitted-work notes are a **pre-integration snapshot**, not the current catalog. P-51 shaft/slipstream and Avanti turbine are committed; four aircraft load. The [project audit](../project-audit-2026-10-06/README.md) verified current P-51 generated outputs are fresh, but their missing CI freshness checks remain DATA-1.
+[ROADMAP revision 5](../../../ROADMAP.md#execution-order-and-release-gates) supersedes the mandatory v2/unified-tool proposals below. The detailed code counts, aircraft table and uncommitted-work notes are a **pre-integration snapshot**, not the current catalog. P-51 shaft/slipstream and Avanti turbine are committed; four aircraft load. [DATA-1](../aircraft-validation/DATA-1/README.md) adds the P-51 geometry build, runtime compile and physics/report derivation checks to CI; five stale-copy cases verify failure in an isolated clone.
 
 - [D1-R2](../aircraft-validation/D1-R2/README.md) applies the shared finite numeric/provenance table contract to shaft power curves. Ground-support validation remains D1-R3; do not infer that every nested field has been exhaustively tested.
 - [C7-R2](../trace-integrity/C7-R2/README.md) identifies configured physics and recording-start auxiliary state. Exact input hashing remains DATA-3, before collecting reference datasets.

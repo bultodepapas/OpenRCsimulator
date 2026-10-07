@@ -1,0 +1,98 @@
+{
+  "baseline_workflow_ref": "baf5f86",
+  "clone_commit": "baf5f86a332d70fa677554cae6751fbebd0631ac",
+  "workflow_sha256": "431a76c35748783c021454f8453828853d9dc52eea219a1fbf1e85d3e9d01dbf",
+  "commands": [
+    "python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check",
+    "python3 assets/aircraft/extra-300s-60/compile_geometry.py --check",
+    "python3 assets/aircraft/extra-300s-60/compile_appearance.py --check",
+    "python3 assets/aircraft/avanti-s-a200/compile_geometry.py --check",
+    "python3 assets/aircraft/p51d-mustang-120/build_geometry.py --check",
+    "python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check",
+    "python3 research/extra-300/ex05/derive_physics.py --check",
+    "python3 research/p51/p51-05/derive_physics.py --check"
+  ],
+  "cases": [
+    {
+      "case": "fresh checkout",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngeometry.json is up to date with source.json\nP-51D visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\np51d_mustang_120.json and derivation.md are up to date\n"
+      }
+    },
+    {
+      "case": "stale geometry",
+      "path": "assets/aircraft/p51d-mustang-120/geometry.json",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 1,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\nstale geometry.json: run build_geometry.py\n"
+      },
+      "check_left_mutation_untouched": true
+    },
+    {
+      "case": "stale runtime geometry",
+      "path": "app/aircraft/p51d_geometry.gd",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 1,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngeometry.json is up to date with source.json\nTraceback (most recent call last):\n  File \"/tmp/openrc-DATA-1-7m_70oar/repo/assets/aircraft/p51d-mustang-120/compile_geometry.py\", line 123, in <module>\n    main()\n  File \"/tmp/openrc-DATA-1-7m_70oar/repo/assets/aircraft/p51d-mustang-120/compile_geometry.py\", line 115, in main\n    assert TARGET.read_text() == output, \"Stale model data: run compile_geometry.py\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Stale model data: run compile_geometry.py\n"
+      },
+      "check_left_mutation_untouched": true
+    },
+    {
+      "case": "stale physics",
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 1,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngeometry.json is up to date with source.json\nP-51D visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\nstale: app/data/aircraft/p51d_mustang_120.json (run research/p51/p51-05/derive_physics.py)\n"
+      },
+      "check_left_mutation_untouched": true
+    },
+    {
+      "case": "stale derivation report",
+      "path": "research/p51/p51-05/derivation.md",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 1,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngeometry.json is up to date with source.json\nP-51D visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\nstale: research/p51/p51-05/derivation.md (run research/p51/p51-05/derive_physics.py)\n"
+      },
+      "check_left_mutation_untouched": true
+    },
+    {
+      "case": "changed source without regeneration",
+      "path": "assets/aircraft/p51d-mustang-120/source.json",
+      "before": {
+        "exit_code": 0,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\n"
+      },
+      "after": {
+        "exit_code": 1,
+        "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\nstale geometry.json: run build_geometry.py\n"
+      },
+      "check_left_mutation_untouched": true
+    }
+  ],
+  "restored_checkout": {
+    "exit_code": 0,
+    "output": "Visual geometry source/runtime: identical\n211 measured values match metrology.json (max difference 0.050 mm)\nExtra visual geometry source/runtime: identical\nExtra appearance source/runtime: identical\nAvanti S visual geometry source/runtime: identical\ngeometry.json is up to date with source.json\nP-51D visual geometry source/runtime: identical\ngp_extra_300s_60.json and derivation.md are up to date\np51d_mustang_120.json and derivation.md are up to date\n"
+  },
+  "scope": "Actual freshness step run locally with bash fail-fast; not a hosted GitHub Actions run."
+}

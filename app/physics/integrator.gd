@@ -20,6 +20,20 @@ static func rk4_step(s: PackedFloat64Array, dt: float, f: Callable, k1_given := 
 	var k2: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k1))
 	var k3: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k2))
 	var k4: PackedFloat64Array = f.call(axpy(s, dt, k3))
+	return _finish_step(s, dt, k1, k2, k3, k4)
+
+
+## Nonautonomous RK4: f(state, stage_time). Sampled inputs must stay fixed through all stages.
+## k1_given, when present, must be f(s, t) under those same inputs.
+static func rk4_step_at(s: PackedFloat64Array, t: float, dt: float, f: Callable, k1_given := PackedFloat64Array()) -> PackedFloat64Array:
+	var k1: PackedFloat64Array = f.call(s, t) if k1_given.is_empty() else k1_given
+	var k2: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k1), t + dt / 2.0)
+	var k3: PackedFloat64Array = f.call(axpy(s, dt / 2.0, k2), t + dt / 2.0)
+	var k4: PackedFloat64Array = f.call(axpy(s, dt, k3), t + dt)
+	return _finish_step(s, dt, k1, k2, k3, k4)
+
+
+static func _finish_step(s: PackedFloat64Array, dt: float, k1: PackedFloat64Array, k2: PackedFloat64Array, k3: PackedFloat64Array, k4: PackedFloat64Array) -> PackedFloat64Array:
 	var out := s.duplicate()
 	for i in out.size():
 		out[i] += dt / 6.0 * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i])

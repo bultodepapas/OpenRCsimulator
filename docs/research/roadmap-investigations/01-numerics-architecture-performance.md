@@ -22,10 +22,10 @@
 | --- | --- |
 | RK4 on 13 float64 states, quaternion renormalized after every step; `axpy` allocates a new array per stage | [integrator.gd](../../../app/physics/integrator.gd) |
 | Fixed tick = `Engine.physics_ticks_per_second` (240), `max_physics_steps_per_frame` 12 (real time down to 20 fps, then slow motion); `physics_jitter_fix` left at default 0.5 | [project.godot](../../../app/project.godot) |
-| `step()`: `pre_step(aux)` once → `loads(state)` reused for trace and RK4 k1 → 4 load evaluations per tick. Time `t` is still the same for all four stages pending H8 stage-time support | [simulation.gd](../../../app/sim/simulation.gd) |
+| `step()`: `pre_step(aux)` once → `loads(state)` reused for trace and RK4 k1 → 4 load evaluations per tick. H8a supplies stage times `t`, `t + dt/2`, `t + dt/2`, `t + dt` while retaining the cached k1 evaluation | [simulation.gd](../../../app/sim/simulation.gd) |
 | Every stage validates state, loads and derivative (`is_finite` loops), and a fault rolls back to the last valid tick | same |
 | Aux = [rpm, servo roll, pitch, yaw], advanced once per tick by lag/shaft/turbine rules and servo slew, then **frozen over RK4 stages**; rotor momentum h is frozen too. This makes the current P-51 coupled shaft/session path first order even though the rigid-body kernel is RK4 | [flight_session.gd](../../../app/sim/flight_session.gd) `_pre_step`, [propulsion.gd](../../../app/physics/propulsion.gd), [turbine.gd](../../../app/physics/turbine.gd) |
-| Loads = `Dynamics.loads` (air data + aero + propulsion) + `Ground.loads`, hard-coded sum; surface deflections rebuilt from Dictionaries in every stage | `flight_session._loads`, [dynamics.gd](../../../app/physics/dynamics.gd) |
+| Loads = `Dynamics.loads` (air data + aero + propulsion) + `Ground.loads`, hard-coded sum; surface deflections cached by sampled servo positions (H2) | `flight_session._loads`, [dynamics.gd](../../../app/physics/dynamics.gd) |
 | H3's rigid-body derivative preserves operation order in scalar arithmetic and returns one `PackedFloat64Array`; RK4 stage allocation remains for later profiling | [rigid_body.gd](../../../app/physics/rigid_body.gd), [math3d.gd](../../../app/physics/math3d.gd) |
 | Aero reads a nested `model` Dictionary (`model.aero.CLa`: 0.22 µs per read); `local_flow_weight` evaluates the 6 wing stations + 2 tails even when the result is 0 | [aero.gd](../../../app/physics/aero.gd) |
 | Gear: per-wheel spring-damper `F = max(0, kδ + cδ̇)`, regularized tyre forces; loader enforces `ω·dt < 0.1`, side `λ·dt ≤ 0.5` | [ground_contact.gd](../../../app/physics/ground_contact.gd), [E1](../landing-gear-contact-e1.md), [E2](../ground-friction-e2.md) |
@@ -126,7 +126,7 @@ Errors are small physically but they turn the convergence test into a first-orde
 | Sampled | Advance at the tick/sample boundary and hold explicitly over stages, or evaluate a prescribed input at RK stage time | radio/input samples, servo command frames, seeded turbulence filters |
 | Discrete | Tick-boundary state machine with explicit transition and rollback rules | engine running/stopped, crash, gear collapse and wheel-anchor mode |
 
-Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated), so model current algebraically unless a future electrical transient requires otherwise. Time-dependent inputs inside a stage (gust schedules) need stage time `t + c_i·dt`; today `t` is passed unchanged to all stages. That is harmless only while loads remain autonomous.
+Notes: electric motor current has τ = L/R ≈ 0.1–1 ms (estimated), so model current algebraically unless a future electrical transient requires otherwise. Time-dependent inputs inside a stage (gust schedules) need stage time `t + c_i·dt`; [H8a](../simulation-state/H8a/README.md) now supplies those times and verifies a coupled analytic solution. Current aircraft loads remain autonomous; shaft coupling and full checkpoint/rollback semantics are still open.
 
 **Trace/golden evolution:** trace header gains `state_layout` (names + units + class) so columns follow the layout; goldens v2 store the full extended state, per-component tolerances, the recording platform (OS, arch, Godot build, `git describe`) and the margin to the nearest discrete threshold.
 

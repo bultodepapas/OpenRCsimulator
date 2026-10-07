@@ -790,3 +790,21 @@ Proof: [C7-R1 report](docs/research/trace-integrity/C7-R1/README.md), nine proce
 Trace model names must follow loaded configuration, not aircraft IDs: removing the P-51 shaft/slipstream opt-ins must change its headers without renaming it. A stopped engine still has a configured propulsion model. Record auxiliary state when recording starts, including mid-flight, and state explicitly that step loads use the previous rigid-body state with updated auxiliaries.
 
 Full-precision JSON remains diagnostic decimal data; a local round trip changed some servo values by about 1e-17. It is not a bit-exact checkpoint. Keep raw-file hashing and replay guarantees in DATA-3 and H8/H9. Proof: 128 metadata checks, 11 trace process tests, full suite, desktop exports and unchanged numeric rows for all four aircraft ([report](docs/research/trace-integrity/C7-R2/README.md)).
+
+## 2026-10-06 · D1-R2 — validate tables before converting their numbers
+
+Casting before validation allowed the shaft table to accept numeric strings and bypass kind/source checks; in-memory NaN power and infinite final RPM also passed the complete loader. Reusing `_xy_table` closes these gaps while preserving the shaft-specific positive RPM/power rule and exact valid values. Check a unit’s type before comparing it to text: numeric/list units can raise GDScript operand errors instead of producing a validation result.
+
+Test failure at the session boundary too: invalid initial data must stay unflyable, while a rejected reload must retain the current model, trim, auxiliaries and clock. Proof: 117 checks, full suite, five before/after probes and unchanged four-aircraft numeric traces ([report](docs/research/aircraft-validation/D1-R2/README.md)).
+
+## 2026-10-06 · DATA-1 — verify the whole generation chain before testing the app
+
+A generator having `--check` does not protect CI until the workflow runs it. The P-51 needs separate source-to-geometry, geometry-to-runtime and physics/report derivation checks, in dependency order. Check the generated report too: the runtime JSON can be current while its published derivation is stale.
+
+Run the exact workflow block in a fresh clone and mutate one valid file at a time. Five stale output/source cases passed the old freshness block and failed the repaired one without rewriting; restored files passed again. This proves reproducibility enforcement, not physical correctness ([DATA-1 evidence](docs/research/aircraft-validation/DATA-1/README.md)).
+
+## 2026-10-06 · H8a — stage time needs a nonautonomous oracle
+
+Autonomous flight goldens cannot reveal a solver that freezes time across RK stages. The coupled analytic system `x′ = v`, `v′ = x + t` exposes it: corrected RK4 converges at about 15× per halving, while the frozen-time mutation converges at about 2×. At 240 Hz their maximum component errors are `3.87e-12` and `2.45e-3`. Retain k1 caching and trace timing when fixing the stage clock.
+
+A state inventory must include discrete engine mode, clock and configuration, not only the body array. Existing traces/goldens are not arbitrary mid-flight checkpoints. Keep H8 open until reset, failure rollback and replay cover the bounded state explicitly. Proof: [H8a report and evidence](docs/research/simulation-state/H8a/README.md), 22 targeted checks, three detected mutation failures and unchanged numeric traces for all four aircraft.
