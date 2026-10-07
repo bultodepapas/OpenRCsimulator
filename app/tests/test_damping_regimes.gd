@@ -7,7 +7,9 @@
 # on any change: worse, or fixed. Whoever fixes one removes it from KNOWN_DEFECTS, which turns the same measurement into
 # the acceptance test (within ±15 % of the oracle at every α). D11d (2026-10-07, wing induced-flow map) fixed Clp
 # (×1.73 → ×1.12) and CLα (×1.34 → ×0.98). E0a2a (tail downwash split) raised Cmq from ×0.28 to ×0.64: the remaining
-# gap is the oracle's lumped downwash lag (Cmα̇ ≈ −3.4, E0a2b through H8) and its borrowed 25e geometry. Cnr waits for D11f.
+# gap is the oracle's lumped downwash lag (Cmα̇ ≈ −3.4, E0a2b through H8) and its borrowed 25e geometry. D11f found the
+# local Cnr consistent with the Stik's own fin and wing (test_yaw_damping.gd); its gap to the oracle is the borrowed 25e Cnr.
+# Both pins stay until the owner chooses the oracle's data source (docs/research/aero-consistency/oracle-data-decision.md).
 # Run: godot --headless --path . --script res://tests/test_damping_regimes.gd
 extends SceneTree
 
@@ -16,8 +18,8 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
-## Remaining documented defects: worst ratio to the oracle (α 2°) over α 0…11°; checked within ±10 %. Pitch damping
-## 0.64× after E0a2a (2026-10-07; was 0.28×; E0a2b), yaw damping 0.72× (2026-10-06, D11f).
+## Remaining documented gaps to the borrowed oracle: worst ratio (α 2°) over α 0…11°; checked within ±10 %. Pitch
+## damping 0.64× static (Cmq + Cmα̇ is 0.81×, E0a2b), yaw damping 0.72× (D11f). Both are data, not model, gaps.
 const KNOWN_DEFECTS := { Cmq = 0.64, Cnr = 0.72 }
 ## Acceptance band once fixed: every derivative within ±15 % of the oracle value at every α.
 const BAND := 0.15
