@@ -275,6 +275,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	for i in raw_contacts.size():
 		points.append(PackedFloat64Array(raw_contacts[i].position.value))
 	var rest := ground_support(points, cg)
+	var static_shares: PackedFloat64Array = rest.shares
 	if rest.facet.is_empty():
 		errors.append("landing_gear: the contacts form no support plane under the CG (collinear, vertical or above it); the airplane cannot stand on its wheels")
 	elif not rest.supported:
@@ -287,6 +288,10 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	var c_rr = _q(errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
 	var mu = _q(errors, "landing_gear.side_friction", gear.get("side_friction"), "1", 0.1, 1.5)
 	var peak = _q(errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
+	# E3b1 (optional): static ÷ rolling resistance of a wheel at rest; present = per-wheel stiction anchors.
+	var breakaway = null
+	if gear.get("breakaway_factor") != null:
+		breakaway = _q(errors, "landing_gear.breakaway_factor", gear.get("breakaway_factor"), "1", 1.0, 2.0)
 	if not errors.is_empty():
 		return {}
 	var tan_peak := M.tan_(deg_to_rad(peak))
@@ -294,8 +299,29 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	if side_lambda_dt > Ground.SIDE_LAMBDA_DT_MAX:
 		errors.append("landing_gear: side-force damping λ·dt = %.2f (μ·g / (tan α_peak · %.1f m/s) at %.0f Hz) is above %.1f; raise peak_slip_angle or the tick" % [side_lambda_dt, Ground.SLIP_FLOOR, 1.0 / dt, Ground.SIDE_LAMBDA_DT_MAX])
 		return {}
-	return { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
+	var derived := { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
 		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak }
+	if breakaway != null:
+		# Numerical anchor springs at a fixed frequency (ground_contact.gd ANCHOR_OMEGA), not tyre data.
+		if Ground.ANCHOR_OMEGA * dt >= 0.1:
+			errors.append("landing_gear: stiction anchors ω·dt = %.3f at %.0f Hz is not < 0.1; raise the tick" % [Ground.ANCHOR_OMEGA * dt, 1.0 / dt])
+			return {}
+		# Each wheel's spring follows its static load share, like its hold (∝ N): all wheels reach their hold at
+		# the same deflection and break away together. Shares from the resting facet (equal if not determinate).
+		var shares := PackedFloat64Array()
+		shares.resize(contacts.size())
+		if rest.facet.size() == 3 and static_shares.size() == 3:
+			for v in 3:
+				shares[rest.facet[v]] = static_shares[v]
+		else:
+			for v in rest.facet:
+				shares[v] = 1.0 / float(rest.facet.size())
+		for i in contacts.size():
+			var k_i: float = mass * Ground.ANCHOR_OMEGA * Ground.ANCHOR_OMEGA * shares[i]
+			contacts[i].anchor_stiffness = k_i
+			contacts[i].anchor_damping = 2.0 * Ground.ANCHOR_ZETA * M.sqrt_(k_i * mass * shares[i])
+		derived.breakaway_factor = float(breakaway)
+	return derived
 
 
 ## D1-R3: static support of rigid gear contacts. `points` are contact positions [x_aft, y_right, z_up] (m, LE frame) and
@@ -304,9 +330,12 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 ## the CG lies above the facet and projects inside the facet polygon (all contacts within SUPPORT_PLANE_TOL of its plane),
 ## so a taildragger is judged at its nose-up resting attitude, not in body axes. Returns the facet with the largest
 ## margin: { supported, margin (m, CG projection to the nearest polygon edge, + inside), facet (contact indices),
-## tilt (rad, facet normal from body up), height (m, CG above the facet) }; facet empty = no resting plane.
+## tilt (rad, facet normal from body up), height (m, CG above the facet), shares (static load fraction per facet
+## contact: the CG projection's barycentric coordinates when three contacts carry it, statically determinate; empty
+## for four or more) }; facet empty = no resting plane.
 static func ground_support(points: Array, cg: PackedFloat64Array) -> Dictionary:
-	var best := { supported = false, margin = -INF, facet = PackedInt32Array(), tilt = 0.0, height = 0.0 }
+	var best := { supported = false, margin = -INF, facet = PackedInt32Array(), tilt = 0.0, height = 0.0,
+		shares = PackedFloat64Array() }
 	var n := points.size()
 	for i in n:
 		for j in range(i + 1, n):
@@ -360,8 +389,16 @@ static func ground_support(points: Array, cg: PackedFloat64Array) -> Dictionary:
 				if height <= 0.0:
 					margin = minf(margin, height) # a CG on or under the wheels is not held up by them
 				if margin > best.margin:
+					var shares := PackedFloat64Array()
+					if facet.size() == 3:
+						# Barycentric weights of q: each contact's share of the weight (moment balance on the facet).
+						var whole := M.dot(M.cross(M.sub(points[facet[1]], points[facet[0]]), M.sub(points[facet[2]], points[facet[0]])), up)
+						for v in 3:
+							var b2: PackedFloat64Array = points[facet[(v + 1) % 3]]
+							var c2: PackedFloat64Array = points[facet[(v + 2) % 3]]
+							shares.append(M.dot(M.cross(M.sub(b2, q), M.sub(c2, q)), up) / whole)
 					best = { supported = margin > 0.0, margin = margin, facet = facet, tilt = M.acos_(clampf(up[2], -1.0, 1.0)),
-						height = height }
+						height = height, shares = shares }
 	return best
 
 

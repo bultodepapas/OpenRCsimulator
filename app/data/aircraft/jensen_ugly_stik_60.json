@@ -705,6 +705,12 @@
       "unit": "deg",
       "kind": "borrowed",
       "source": "Slip angle where the side force reaches μ·N in our linear-then-saturated law. Matches the initial slope of JSBSim's default Pacejka side-force curve (FGLGear: stiffness 0.06/deg, shape 2.8, curvature 1.03; slope at zero μ·2.8·0.06 per degree, so μ is reached linearly at 1/0.168 = 5.95°). A small RC wheel's real curve is unmeasured. Also sets the low-speed damping the loader checks: μ·g·dt/(tan 6°·1 m/s) = 0.31 at 240 Hz"
+    },
+    "breakaway_factor": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "E3b1: static ÷ rolling resistance of a wheel at rest (bearing and axle friction, tyre flat spot, the small mound in front of a wheel parked on grass). The ground knowledge base (docs/research/roadmap-investigations/04, §3) brackets it at 1.0-1.5 without a measurement; 1.25 is the middle. On the mown runway the hold is 1.25 × 2.8 N = 3.5 N against 2.6 N of idle thrust; on dry pavement 1.4 N, so the Stik rolls at idle there. A luggage-scale pull on the owner's field (breakaway force, then the steady rolling force) would measure it"
     }
   },
   "plausibility": {

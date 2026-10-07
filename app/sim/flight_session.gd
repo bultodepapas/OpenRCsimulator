@@ -31,6 +31,9 @@ signal resetting
 const AUX_RPM := 0
 const AUX_SERVO := 1
 const AUX_LAYOUT := ["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]
+## E3b1: with stiction data the per-wheel anchors follow AUX_LAYOUT ([north, east, stuck] per contact, gear order).
+## AUX_LAYOUT stays the trace's four auxiliary columns.
+const AUX_ANCHORS := 4
 
 ## The fixed-step simulation: a child node, stepped after this node on every tick.
 var sim: Node
@@ -492,6 +495,7 @@ func reset() -> void:
 	sim.inputs = _inputs()
 	# Engine at its trimmed rpm and servos already at the trimmed surface positions.
 	sim.aux = PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	sim.aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
 	if _has_valid_start():
 		if not sim.reset(start.state):
 			sim.set_paused(true)
@@ -553,7 +557,8 @@ func _loads(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	var a: PackedFloat64Array = sim.aux
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
 		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
-	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces)
+	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
+		a.slice(AUX_ANCHORS) if a.size() > AUX_ANCHORS else PackedFloat64Array())
 	for i in ground.size():
 		out[i] += ground[i]
 	return out
@@ -597,7 +602,17 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:
 		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)
+	if aux.size() > AUX_ANCHORS:
+		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
+		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
+			aux.slice(AUX_ANCHORS)))
 	return out
+
+
+## E3b1: wheels with a stiction anchor (0 when the gear has no breakaway_factor).
+func anchor_count() -> int:
+	var gear: Dictionary = aircraft.get("model", {}).get("landing_gear", {}) if aircraft.get("ok", false) else {}
+	return gear.contacts.size() if gear.has("breakaway_factor") else 0
 
 
 ## Header lines for a flight trace of this session.
@@ -628,9 +643,10 @@ func trace_meta() -> Dictionary:
 		state_layout = JSON.stringify(RB.STATE_LAYOUT),
 		aux_layout = JSON.stringify(AUX_LAYOUT),
 		recording_start_tick = sim.tick,
-		recording_start_aux = JSON.stringify(Array(sim.aux), "", true, true),
+		# The trace's sampled aux columns (aux_layout); E3b1 anchors are exact only in checkpoints (H8).
+		recording_start_aux = JSON.stringify(Array(sim.aux.slice(0, AUX_LAYOUT.size())), "", true, true),
 		recording_start_engine_running = JSON.stringify(engine_running),
-		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2), on %s" % [aircraft.model.landing_gear.contacts.size(), "field '%s' surfaces (E3a)" % ground_field_id if not ground_surfaces.is_empty() else "dry pavement"] if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
+		ground = "flat at 0 m; %s" % ("%d spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2)%s, on %s" % [aircraft.model.landing_gear.contacts.size(), ", stiction anchors (E3b1)" if anchor_count() > 0 else "", "field '%s' surfaces (E3a)" % ground_field_id if not ground_surfaces.is_empty() else "dry pavement"] if not aircraft.model.landing_gear.is_empty() else "no landing gear: any wheel contact is a crash (D9d)"),
 		created_utc = Time.get_datetime_string_from_system(true),
 		engine = "Godot " + Engine.get_version_info().string,
 		dt_s = sim.dt(),
@@ -673,6 +689,9 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not sim.can_restore_checkpoint(snapshot) or snapshot.modes.size() != 1 \
 			or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return false
+	for at in range(AUX_ANCHORS + 2, snapshot.aux.size(), Ground.ANCHOR_STRIDE):
+		if snapshot.aux[at] != 0.0 and snapshot.aux[at] != 1.0:
+			return false # an anchor is stuck or sliding, nothing in between
 	resetting.emit() # close recording before the clock moves backwards
 	if not sim.restore_checkpoint(snapshot):
 		return false
