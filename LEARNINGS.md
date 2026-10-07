@@ -876,3 +876,7 @@ The H7 checker instruments `ground_contact.gd` and `golden_flights.gd` by unique
 ## 2026-10-07 · E3b2 — solve the start, and state acceptance as the physics
 
 Settling a runway start by simulation slips (E3b1: 13.7 mm at an instant engine start); solving it does not. Solve the engine-off rest pose first, place the anchors there, then solve the idling pose with the anchors fixed: the lean onto the anchors is T/Σk at every wheel and there is no internal stress. The roadmap's "ΣN = m·g ± 0.1 %" was a level-thrust simplification: the idle thrust moves load to the nose, the Stik rests 1.6° nose-down and the tilted thrust adds 0.26 %. Test the exact balance (ΣN = m·g + T·sin θ) and say so. Measure anchor deflection at the wheels, not at the CG: the CG also moves with the extra pitch ([E3b2](docs/research/ground-contact/E3b2/README.md)).
+
+## 2026-10-07 · E3b3 — explain a reference gap before widening a band
+
+A 1-D point-mass integral of the model's own forces matched the 6-DOF takeoff roll within 0.17 % at the rest attitude, but the gap grew to 2.1 % by 20 m. Rather than widen the band, drive the same integral with the 6-DOF's recorded pitch: it then matched within 0.07 %, so the gap was rotation (more lift, less rolling resistance), not ground coupling. That attitude-matched check is also the sensitive one: a 10 % rolling-resistance error moved V by only 0.35 %, inside the rest-attitude bands but outside the 0.2 % matched band. Size every band from a mutation it must catch ([E3b3](docs/research/ground-contact/E3b3/README.md)).
