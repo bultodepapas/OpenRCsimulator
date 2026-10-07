@@ -72,6 +72,26 @@ func _initialize() -> void:
 			field.free()
 			quit(1)
 			return
+	var grass: Node3D = field.get_node_or_null("NearGrass") as Node3D
+	if grass == null or grass.get_child_count() != 4:
+		printerr("Pack missing L11a placement, grass shader or chunks")
+		field.free()
+		quit(1)
+		return
+	var clumps: int = 0
+	for chunk: MultiMeshInstance3D in grass.get_children():
+		clumps += chunk.multimesh.instance_count
+		if chunk.multimesh.mesh.surface_get_array_len(0) != 21 or chunk.multimesh.mesh.surface_get_material(0) == null:
+			printerr("Pack invalid L11a clump mesh/material")
+			field.free()
+			quit(1)
+			return
+	if clumps <= 0 or clumps > 6000:
+		printerr("Pack invalid L11a clipped clump count: ", clumps)
+		field.free()
+		quit(1)
+		return
+	print("Pack L11a placement checksum and %d opaque clumps validated" % clumps)
 	field.free()
 	var expected_count: int = result.field.objects[0].positions.size()
 	if count != expected_count:

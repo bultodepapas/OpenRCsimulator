@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "accepted": "complete finite six-regime positive control",
+  "rejected": [
+    "missing vectors on both sides",
+    "non-finite load",
+    "wrong native call count"
+  ]
+}

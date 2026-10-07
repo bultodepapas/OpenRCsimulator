@@ -1,0 +1,97 @@
+{
+  "format": "openrc-reference v1",
+  "id": "us120",
+  "title": "Ultra Stick 120 — legacy Froude-scaled comparison",
+  "source": {
+    "url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "locator": "Lie, Synthetic Air Data Estimation Method, Appendix D, Tables D.1-D.2 and section D.3, printed pp. 85–86",
+    "status": "inherited_derivation",
+    "note": "The modal scalars come from the rounded repository derivation in RESEARCH.md, D8b, not values printed verbatim in the thesis. Its matrix extraction/eigenvalue calculation has not been independently reproduced in VAL-3. Frequencies 1.30/0.57 Hz are converted to rad/s; roll tau 0.116 s is inverted. Damping 0.55/0.31 is retained without a diagnostic band. Treat these provisional derived rows as historical context."
+  },
+  "conditions": {
+    "speed_mps": 19.2,
+    "mass_kg": 8.338,
+    "span_m": 1.9172,
+    "chord_m": 0.4336,
+    "area_m2": 0.7692,
+    "cg_m": null,
+    "throttle": null,
+    "wind_mps": null,
+    "note": "Source airframe/trim properties, not Stik properties. Throttle fraction, CG relative to our datum and wind are unknown. Appendix D gives alpha 4.47°, beta −1.01°, bank −1.35°, pitch 5.47° and 1974.15 rpm; it does not state CL."
+  },
+  "comparison": {
+    "method": "legacy_scaled",
+    "speed_mps": 13.8,
+    "target_span_m": 1.524,
+    "note": "Retains D8b fixed Stik speed 13.8 m/s and already Froude-scaled modal scalars for 1.524 m span. The old scaling used rounded lengths (about 0.79 ratio); this is not full dynamic similarity or a new equal-CL solve. Relative density, airfoil and trim differ. Re-derivation is required if the target span changes."
+  },
+  "rows": [
+    {
+      "metric": "sp_wn",
+      "value": 8.168140899333462,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.15,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "sp_zeta",
+      "value": 0.55,
+      "unit": "1",
+      "kind": "derived",
+      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "uncertainty": null,
+      "band": null,
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "roll_rate",
+      "value": 8.620689655172413,
+      "unit": "1/s",
+      "kind": "derived",
+      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.1,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "dr_wn",
+      "value": 3.581415625092364,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.15,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "dr_zeta",
+      "value": 0.31,
+      "unit": "1",
+      "kind": "derived",
+      "source_locator": "RESEARCH.md D8b inherited eigenvalue/Froude derivation; source Appendix D",
+      "uncertainty": null,
+      "band": null,
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    }
+  ]
+}

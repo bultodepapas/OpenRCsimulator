@@ -4,6 +4,8 @@
 
 ## Summary
 
+**VAL-3 update, 2026-10-07:** the [generated modal dashboard](../../../research/validation/dashboard.md) supersedes historical modal comparison numbers below and adds a freshness check. US120 modal scalars remain a provisional inherited derivation; 25e roll uses the real-pole interpretation, not Table 5's conflicting time constant. Estimated bands are diagnostic choices, not qualification tolerances. [Source audit and proof](../validation/VAL-3/README.md).
+
 - **D11a's rerun is complete.** The generated [`research/sensitivity/results.md`](../../../research/sensitivity/results.md) contains D8b, the like-for-like 25e comparison and the repaired D10 sweep; there are no refused variants. Current roll-pole gaps are 2.07× against the Froude-scaled US120 and 2.37× against the 25e. The earlier refusals and stale values describe the pre-D11a state only.
 - **The Ultra Stick 25e flight identification is freely readable.** A UMN course page hosts a preprint of Dorobantu et al., the paper ROADMAP lists as "paywalled". At 19 m/s: SP 16.33 rad/s, ζ 0.83; roll pole 12.53 s⁻¹; dutch roll 4.96 rad/s, ζ 0.33; servo 50.3 rad/s second order plus 50 ms delay; swing-test inertia Ixx/Iyy/Izz 0.089/0.144/0.162 kg·m² [1].
 - **The two independent flight IDs agree: the sim rolls 2–2.4× too fast.** In the current D11a like-for-like result at equal CL, the sim against the 25e gives roll 2.37×, SP 0.87× and DR 1.46× (derived). Most of the roll gap comes from the inertia ratio Ixx/(m·b²): 0.0172 in the sim against 0.0282 on the 25e swing-test model. The borrowed Clp remains less damped than the flight-identified 25e value.
@@ -23,7 +25,7 @@
 | --- | --- | --- |
 | Verification of handling | [`test_handling.gd`](../../../app/tests/test_handling.gd): trim α 4.26° ± 0.5, coordinated roll 144/192 °/s ± 7 %, glide L/D 9.1 ± 2 %. These come from the same coefficients the sim uses (circular, rule 6) | No independent reference in CI |
 | Flight modes | [`linearize.gd`](../../../app/physics/linearize.gd) (central differences, Faddeev–LeVerrier, Durand–Kerner); [`test_modes.gd`](../../../app/tests/test_modes.gd) bands ± 3 % at 10/15/25 m/s, recorded 2026-10-06. At 15 m/s: SP 1.495 Hz ζ 0.739, phugoid 0.103 Hz ζ 0.256, roll τ 0.0513 s, DR 0.773 Hz ζ 0.289, spiral eigenvalue +0.034 s⁻¹ | Regression only, not truth |
-| D8b / D11a references | [`sensitivity.gd`](../../../research/sensitivity/sensitivity.gd) and generated [`results.md`](../../../research/sensitivity/results.md) contain US120 and the like-for-like 25e comparison. The D11a 15 m/s baseline matches `test_modes`; current roll gaps are 2.07× (US120) and 2.37× (25e) | Re-run after physics/data changes; there is not yet an automatic stale-result guard |
+| D8b / D11a references | [`sensitivity.gd`](../../../research/sensitivity/sensitivity.gd) and generated [`results.md`](../../../research/sensitivity/results.md) preserve the historical comparison. [VAL-3](../../../research/validation/dashboard.md) recomputes current modes; roll gaps are 2.07× (US120) and 2.37× (25e) | VAL-3 `--check` detects stale modal output; the original sensitivity sweep still needs an explicit rerun after relevant changes |
 | D10 sweep | D11a repaired the mass, CG and fin-area perturbations through valid data paths. The generated table has no refused rows; Cnr still dominates the spiral crossing, followed by Clp, CD0, Ixx, Iyy, Izz, CLmax and Cmq | Preserve the no-refused-rows/output-count check on future runs |
 | Golden flights | [`app/tests/golden/`](../../../app/tests/golden/): `glide_15`, `pull_throttle`, `roll_15`, `rudder_doublet`; replay tolerance 1e-6 m, m/s, rad/s; 1e-9 quaternion | Good regression net; no circuit (E4) |
 | Trace | CSV `openrc-trace v3`, initial sample plus one row per 240 Hz tick; T key records in-app. [C7-R1](../trace-integrity/C7-R1/README.md) enforces completion/finiteness; [C7-R2](../trace-integrity/C7-R2/README.md) identifies configured model paths, state layouts and recording-start auxiliary state | No importer for real logs or recorded-input replay. The current header repairs the audit's false P-51 “no propwash” claim; exact input hashes and a complete replay/checkpoint contract remain DATA-3 and H8/H9 |
@@ -112,7 +114,7 @@ The flight data also checks the 25e model itself. Clp −0.4496 with OpenFlightS
 | Python ID (numpy/scipy, OpenFlightAnalysis MIT) | 0 | Equation error, FRE, multisines | Our own code to verify | **Recommended** |
 | Pilot ratings only | 0 | Feel | Subjective, one pilot | Complement, never alone |
 
-**Recommendation:** D11a closed the current L1 sensitivity/reference rerun. Next, collect L2 ground measurements, then tripod-video metrics, then consider passive logging. Keep Python tooling outside `app/`; add a generated dashboard only when its schema and release use are scheduled.
+**Recommendation:** D11a closed its L1 sensitivity/reference rerun; VAL-3 now supplies the generated modal dashboard outside `app/`. Next, collect L2 ground measurements, then tripod-video metrics, then consider passive logging. Keep external comparison misses separate from software regression failures.
 
 ## Godot / GDScript notes
 

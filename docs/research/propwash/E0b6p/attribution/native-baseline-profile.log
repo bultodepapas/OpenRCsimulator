@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p attribution forward: direct 40.557 us/call; adapter 48.840 us/call
+E0b6p attribution stall: direct 38.664 us/call; adapter 60.049 us/call
+E0b6p attribution static: direct 39.401 us/call; adapter 49.053 us/call
+E0b6p attribution spin: direct 47.087 us/call; adapter 54.174 us/call
+E0b6p attribution reverse_fade: direct 34.451 us/call; adapter 47.796 us/call
+E0b6p attribution reverse_off: direct 15.186 us/call; adapter 3.367 us/call

@@ -1,0 +1,1877 @@
+{
+	"calls_per_batch": 3000,
+	"cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+	"format": "openrc-e0b6p-native-attribution-profile v1",
+	"godot": "4.7.2-stable (official)",
+	"instrumented": true,
+	"measured_batches": 7,
+	"rows": [
+		{
+			"adapter_external_us_per_call_batches": [
+				54.388666666666666,
+				61.236333333333334,
+				52.71966666666667,
+				53.382333333333335,
+				51.96066666666667,
+				53.95733333333333,
+				52.861333333333334
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2923336,
+					"kernel_finalize_ns": 106719,
+					"kernel_total_ns": 69324349,
+					"method_total_ns": 122209290,
+					"model_decode_ns": 46179759,
+					"pack_ns": 651200,
+					"profile_ns": 3159250,
+					"swirl_ns": 63935856,
+					"transported_decode_ns": 121219,
+					"validate_ns": 1318866,
+					"wake_ns": 251081
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3286538,
+					"kernel_finalize_ns": 108793,
+					"kernel_total_ns": 77233805,
+					"method_total_ns": 137523480,
+					"model_decode_ns": 52894934,
+					"pack_ns": 764413,
+					"profile_ns": 3616972,
+					"swirl_ns": 71168232,
+					"transported_decode_ns": 116377,
+					"validate_ns": 1542974,
+					"wake_ns": 238831
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2666796,
+					"kernel_finalize_ns": 105425,
+					"kernel_total_ns": 67092152,
+					"method_total_ns": 118201087,
+					"model_decode_ns": 44820435,
+					"pack_ns": 614056,
+					"profile_ns": 2958914,
+					"swirl_ns": 61917011,
+					"transported_decode_ns": 103430,
+					"validate_ns": 1329430,
+					"wake_ns": 229890
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2782831,
+					"kernel_finalize_ns": 98179,
+					"kernel_total_ns": 68074603,
+					"method_total_ns": 120207035,
+					"model_decode_ns": 45586952,
+					"pack_ns": 653499,
+					"profile_ns": 3094031,
+					"swirl_ns": 62783992,
+					"transported_decode_ns": 106536,
+					"validate_ns": 1362048,
+					"wake_ns": 220838
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2758095,
+					"kernel_finalize_ns": 103204,
+					"kernel_total_ns": 66102216,
+					"method_total_ns": 116804453,
+					"model_decode_ns": 44362407,
+					"pack_ns": 598403,
+					"profile_ns": 3030774,
+					"swirl_ns": 60950528,
+					"transported_decode_ns": 105278,
+					"validate_ns": 1309321,
+					"wake_ns": 221697
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2822502,
+					"kernel_finalize_ns": 100672,
+					"kernel_total_ns": 68990426,
+					"method_total_ns": 121961516,
+					"model_decode_ns": 46476956,
+					"pack_ns": 587576,
+					"profile_ns": 3115589,
+					"swirl_ns": 63660676,
+					"transported_decode_ns": 108340,
+					"validate_ns": 1347987,
+					"wake_ns": 255121
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2777497,
+					"kernel_finalize_ns": 95762,
+					"kernel_total_ns": 67197061,
+					"method_total_ns": 118946197,
+					"model_decode_ns": 45275658,
+					"pack_ns": 623693,
+					"profile_ns": 3038072,
+					"swirl_ns": 61980232,
+					"transported_decode_ns": 106282,
+					"validate_ns": 1296152,
+					"wake_ns": 254425
+				}
+			],
+			"adapter_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021666666666666667,
+				0.034333333333333334,
+				0.021,
+				0.02266666666666667,
+				0.022,
+				0.027,
+				0.023333333333333334
+			],
+			"direct_external_us_per_call_batches": [
+				38.348,
+				38.803333333333335,
+				41.51766666666666,
+				41.828,
+				38.834,
+				38.23433333333333,
+				40.17033333333333
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2357644,
+					"kernel_finalize_ns": 110267,
+					"kernel_total_ns": 66222817,
+					"method_total_ns": 112122925,
+					"model_decode_ns": 40424274,
+					"pack_ns": 443532,
+					"profile_ns": 2824780,
+					"swirl_ns": 61370885,
+					"transported_decode_ns": 72747,
+					"validate_ns": 1259210,
+					"wake_ns": 160573
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2424056,
+					"kernel_finalize_ns": 107001,
+					"kernel_total_ns": 66537921,
+					"method_total_ns": 113401497,
+					"model_decode_ns": 41045294,
+					"pack_ns": 466210,
+					"profile_ns": 2887919,
+					"swirl_ns": 61633790,
+					"transported_decode_ns": 80886,
+					"validate_ns": 1259948,
+					"wake_ns": 166978
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2666585,
+					"kernel_finalize_ns": 117146,
+					"kernel_total_ns": 70964400,
+					"method_total_ns": 121324034,
+					"model_decode_ns": 44241995,
+					"pack_ns": 507047,
+					"profile_ns": 3132073,
+					"swirl_ns": 65659389,
+					"transported_decode_ns": 83397,
+					"validate_ns": 1350981,
+					"wake_ns": 185106
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2694448,
+					"kernel_finalize_ns": 110355,
+					"kernel_total_ns": 72073767,
+					"method_total_ns": 122132839,
+					"model_decode_ns": 43870300,
+					"pack_ns": 540048,
+					"profile_ns": 3110565,
+					"swirl_ns": 66908446,
+					"transported_decode_ns": 85157,
+					"validate_ns": 1252214,
+					"wake_ns": 184518
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2325008,
+					"kernel_finalize_ns": 121874,
+					"kernel_total_ns": 67083107,
+					"method_total_ns": 113566067,
+					"model_decode_ns": 40907856,
+					"pack_ns": 445449,
+					"profile_ns": 2949109,
+					"swirl_ns": 62197940,
+					"transported_decode_ns": 81729,
+					"validate_ns": 1169846,
+					"wake_ns": 173435
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2408642,
+					"kernel_finalize_ns": 101416,
+					"kernel_total_ns": 65994512,
+					"method_total_ns": 111726590,
+					"model_decode_ns": 40117811,
+					"pack_ns": 495533,
+					"profile_ns": 2997256,
+					"swirl_ns": 61095756,
+					"transported_decode_ns": 75058,
+					"validate_ns": 1138825,
+					"wake_ns": 171752
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2652538,
+					"kernel_finalize_ns": 107712,
+					"kernel_total_ns": 68539515,
+					"method_total_ns": 117186996,
+					"model_decode_ns": 42581355,
+					"pack_ns": 524483,
+					"profile_ns": 3060135,
+					"swirl_ns": 63477400,
+					"transported_decode_ns": 81327,
+					"validate_ns": 1223421,
+					"wake_ns": 174144
+				}
+			],
+			"direct_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"fade": 1.0,
+			"regime": "forward"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				55.412333333333336,
+				56.53666666666667,
+				60.02766666666667,
+				55.620666666666665,
+				54.74466666666667,
+				52.733666666666664,
+				54.74
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2804407,
+					"kernel_finalize_ns": 113937,
+					"kernel_total_ns": 74249388,
+					"method_total_ns": 125451291,
+					"model_decode_ns": 44688217,
+					"pack_ns": 660697,
+					"profile_ns": 3340551,
+					"swirl_ns": 68687146,
+					"transported_decode_ns": 105636,
+					"validate_ns": 1341601,
+					"wake_ns": 239284
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2874651,
+					"kernel_finalize_ns": 103149,
+					"kernel_total_ns": 75926213,
+					"method_total_ns": 128402295,
+					"model_decode_ns": 45782932,
+					"pack_ns": 667433,
+					"profile_ns": 3472909,
+					"swirl_ns": 70246209,
+					"transported_decode_ns": 107902,
+					"validate_ns": 1343689,
+					"wake_ns": 233548
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3116784,
+					"kernel_finalize_ns": 119292,
+					"kernel_total_ns": 79486690,
+					"method_total_ns": 135356217,
+					"model_decode_ns": 48791099,
+					"pack_ns": 735091,
+					"profile_ns": 3700173,
+					"swirl_ns": 73412872,
+					"transported_decode_ns": 118399,
+					"validate_ns": 1455704,
+					"wake_ns": 259149
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2808069,
+					"kernel_finalize_ns": 103289,
+					"kernel_total_ns": 74737706,
+					"method_total_ns": 126669975,
+					"model_decode_ns": 45390543,
+					"pack_ns": 645787,
+					"profile_ns": 3341603,
+					"swirl_ns": 69279199,
+					"transported_decode_ns": 113378,
+					"validate_ns": 1291238,
+					"wake_ns": 222670
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2662966,
+					"kernel_finalize_ns": 127247,
+					"kernel_total_ns": 73550102,
+					"method_total_ns": 124831081,
+					"model_decode_ns": 44973848,
+					"pack_ns": 593598,
+					"profile_ns": 3323119,
+					"swirl_ns": 68145383,
+					"transported_decode_ns": 105962,
+					"validate_ns": 1257896,
+					"wake_ns": 215441
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2621952,
+					"kernel_finalize_ns": 115309,
+					"kernel_total_ns": 71366131,
+					"method_total_ns": 120565409,
+					"model_decode_ns": 43006604,
+					"pack_ns": 601107,
+					"profile_ns": 3249841,
+					"swirl_ns": 66033795,
+					"transported_decode_ns": 104584,
+					"validate_ns": 1237170,
+					"wake_ns": 215733
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2797367,
+					"kernel_finalize_ns": 100403,
+					"kernel_total_ns": 73491716,
+					"method_total_ns": 124343602,
+					"model_decode_ns": 44448915,
+					"pack_ns": 624823,
+					"profile_ns": 3352846,
+					"swirl_ns": 67956978,
+					"transported_decode_ns": 106061,
+					"validate_ns": 1342473,
+					"wake_ns": 228357
+				}
+			],
+			"adapter_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.020666666666666667,
+				0.02266666666666667,
+				0.021666666666666667,
+				0.021666666666666667,
+				0.043666666666666666,
+				0.022,
+				0.021666666666666667
+			],
+			"direct_external_us_per_call_batches": [
+				42.63133333333333,
+				41.800666666666665,
+				40.446,
+				40.827,
+				46.616,
+				45.214333333333336,
+				43.61
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2569428,
+					"kernel_finalize_ns": 100696,
+					"kernel_total_ns": 75456977,
+					"method_total_ns": 124578413,
+					"model_decode_ns": 43193907,
+					"pack_ns": 553897,
+					"profile_ns": 3473562,
+					"swirl_ns": 69878772,
+					"transported_decode_ns": 75375,
+					"validate_ns": 1321854,
+					"wake_ns": 173540
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2467463,
+					"kernel_finalize_ns": 100495,
+					"kernel_total_ns": 74106277,
+					"method_total_ns": 122104377,
+					"model_decode_ns": 42046820,
+					"pack_ns": 562438,
+					"profile_ns": 3228137,
+					"swirl_ns": 68873347,
+					"transported_decode_ns": 75042,
+					"validate_ns": 1215014,
+					"wake_ns": 182582
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2377225,
+					"kernel_finalize_ns": 99418,
+					"kernel_total_ns": 72664499,
+					"method_total_ns": 118369645,
+					"model_decode_ns": 40153356,
+					"pack_ns": 486975,
+					"profile_ns": 3178034,
+					"swirl_ns": 67509060,
+					"transported_decode_ns": 74609,
+					"validate_ns": 1182586,
+					"wake_ns": 199133
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2492858,
+					"kernel_finalize_ns": 108398,
+					"kernel_total_ns": 72602700,
+					"method_total_ns": 119312594,
+					"model_decode_ns": 40910055,
+					"pack_ns": 509085,
+					"profile_ns": 3234400,
+					"swirl_ns": 67423508,
+					"transported_decode_ns": 87205,
+					"validate_ns": 1181615,
+					"wake_ns": 167746
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3230969,
+					"kernel_finalize_ns": 115964,
+					"kernel_total_ns": 81295851,
+					"method_total_ns": 135421888,
+					"model_decode_ns": 47001125,
+					"pack_ns": 689196,
+					"profile_ns": 3769782,
+					"swirl_ns": 75197465,
+					"transported_decode_ns": 80569,
+					"validate_ns": 1416345,
+					"wake_ns": 202451
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2816423,
+					"kernel_finalize_ns": 117172,
+					"kernel_total_ns": 79931233,
+					"method_total_ns": 132003787,
+					"model_decode_ns": 45662980,
+					"pack_ns": 583379,
+					"profile_ns": 3575312,
+					"swirl_ns": 74225780,
+					"transported_decode_ns": 82981,
+					"validate_ns": 1304215,
+					"wake_ns": 190565
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2658825,
+					"kernel_finalize_ns": 114425,
+					"kernel_total_ns": 77136448,
+					"method_total_ns": 127311750,
+					"model_decode_ns": 44050237,
+					"pack_ns": 507121,
+					"profile_ns": 3493297,
+					"swirl_ns": 71484565,
+					"transported_decode_ns": 79151,
+					"validate_ns": 1325602,
+					"wake_ns": 194089
+				}
+			],
+			"direct_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"fade": 1.0,
+			"regime": "stall"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				48.64933333333333,
+				48.59,
+				47.275333333333336,
+				46.62866666666667,
+				47.448,
+				51.59166666666667,
+				48.29333333333334
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2688806,
+					"kernel_finalize_ns": 93559,
+					"kernel_total_ns": 59677499,
+					"method_total_ns": 109543498,
+					"model_decode_ns": 43522317,
+					"pack_ns": 616864,
+					"profile_ns": 2922576,
+					"swirl_ns": 54675514,
+					"transported_decode_ns": 114773,
+					"validate_ns": 1284108,
+					"wake_ns": 216772
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2691148,
+					"kernel_finalize_ns": 124835,
+					"kernel_total_ns": 59412790,
+					"method_total_ns": 109222193,
+					"model_decode_ns": 43575489,
+					"pack_ns": 607467,
+					"profile_ns": 2974643,
+					"swirl_ns": 54271958,
+					"transported_decode_ns": 96823,
+					"validate_ns": 1311497,
+					"wake_ns": 220747
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2570290,
+					"kernel_finalize_ns": 115272,
+					"kernel_total_ns": 58107393,
+					"method_total_ns": 106601970,
+					"model_decode_ns": 42413710,
+					"pack_ns": 552244,
+					"profile_ns": 2825473,
+					"swirl_ns": 53147898,
+					"transported_decode_ns": 108671,
+					"validate_ns": 1330260,
+					"wake_ns": 223779
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2483272,
+					"kernel_finalize_ns": 89612,
+					"kernel_total_ns": 57340591,
+					"method_total_ns": 105165512,
+					"model_decode_ns": 41915475,
+					"pack_ns": 549197,
+					"profile_ns": 2914519,
+					"swirl_ns": 52381794,
+					"transported_decode_ns": 103184,
+					"validate_ns": 1250039,
+					"wake_ns": 209021
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2588747,
+					"kernel_finalize_ns": 90991,
+					"kernel_total_ns": 57935909,
+					"method_total_ns": 106738081,
+					"model_decode_ns": 42669578,
+					"pack_ns": 585798,
+					"profile_ns": 2839069,
+					"swirl_ns": 53038522,
+					"transported_decode_ns": 96434,
+					"validate_ns": 1261089,
+					"wake_ns": 216083
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2733753,
+					"kernel_finalize_ns": 126383,
+					"kernel_total_ns": 63003953,
+					"method_total_ns": 115948275,
+					"model_decode_ns": 46542220,
+					"pack_ns": 603877,
+					"profile_ns": 3108961,
+					"swirl_ns": 57589534,
+					"transported_decode_ns": 109355,
+					"validate_ns": 1404215,
+					"wake_ns": 215168
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2628123,
+					"kernel_finalize_ns": 92089,
+					"kernel_total_ns": 59290570,
+					"method_total_ns": 108742718,
+					"model_decode_ns": 43263030,
+					"pack_ns": 580324,
+					"profile_ns": 2875858,
+					"swirl_ns": 54336103,
+					"transported_decode_ns": 97723,
+					"validate_ns": 1276086,
+					"wake_ns": 217338
+				}
+			],
+			"adapter_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.022,
+				0.025,
+				0.027666666666666666,
+				0.021333333333333333,
+				0.021,
+				0.021333333333333333,
+				0.022
+			],
+			"direct_external_us_per_call_batches": [
+				36.089666666666666,
+				35.828,
+				36.607,
+				35.330333333333336,
+				37.290333333333336,
+				34.647333333333336,
+				36.108
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2340037,
+					"kernel_finalize_ns": 95035,
+					"kernel_total_ns": 59035975,
+					"method_total_ns": 105308766,
+					"model_decode_ns": 40773729,
+					"pack_ns": 430408,
+					"profile_ns": 2855719,
+					"swirl_ns": 54114361,
+					"transported_decode_ns": 73468,
+					"validate_ns": 1302241,
+					"wake_ns": 167951
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2352933,
+					"kernel_finalize_ns": 96568,
+					"kernel_total_ns": 59044888,
+					"method_total_ns": 104712363,
+					"model_decode_ns": 40206820,
+					"pack_ns": 440836,
+					"profile_ns": 2839691,
+					"swirl_ns": 54275370,
+					"transported_decode_ns": 73371,
+					"validate_ns": 1155904,
+					"wake_ns": 179584
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2379291,
+					"kernel_finalize_ns": 91513,
+					"kernel_total_ns": 60029403,
+					"method_total_ns": 106805319,
+					"model_decode_ns": 41202816,
+					"pack_ns": 435357,
+					"profile_ns": 2871502,
+					"swirl_ns": 55228953,
+					"transported_decode_ns": 75116,
+					"validate_ns": 1199659,
+					"wake_ns": 165963
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2249394,
+					"kernel_finalize_ns": 92628,
+					"kernel_total_ns": 58022958,
+					"method_total_ns": 103280530,
+					"model_decode_ns": 39903059,
+					"pack_ns": 432099,
+					"profile_ns": 2749208,
+					"swirl_ns": 53375346,
+					"transported_decode_ns": 74496,
+					"validate_ns": 1184010,
+					"wake_ns": 162753
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2471180,
+					"kernel_finalize_ns": 96867,
+					"kernel_total_ns": 61410054,
+					"method_total_ns": 108955018,
+					"model_decode_ns": 41818961,
+					"pack_ns": 444296,
+					"profile_ns": 2965312,
+					"swirl_ns": 56487007,
+					"transported_decode_ns": 80749,
+					"validate_ns": 1205053,
+					"wake_ns": 171352
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2196822,
+					"kernel_finalize_ns": 91768,
+					"kernel_total_ns": 57578042,
+					"method_total_ns": 101439003,
+					"model_decode_ns": 38605894,
+					"pack_ns": 402838,
+					"profile_ns": 2641377,
+					"swirl_ns": 53139290,
+					"transported_decode_ns": 71478,
+					"validate_ns": 1088739,
+					"wake_ns": 165943
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2367268,
+					"kernel_finalize_ns": 96148,
+					"kernel_total_ns": 59238788,
+					"method_total_ns": 105315621,
+					"model_decode_ns": 40528654,
+					"pack_ns": 441882,
+					"profile_ns": 2773677,
+					"swirl_ns": 54497761,
+					"transported_decode_ns": 74910,
+					"validate_ns": 1185756,
+					"wake_ns": 168133
+				}
+			],
+			"direct_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"fade": 1.0,
+			"regime": "static"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				54.934666666666665,
+				56.989,
+				55.708,
+				59.24966666666667,
+				65.01,
+				63.33,
+				59.278333333333336
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2639304,
+					"kernel_finalize_ns": 103527,
+					"kernel_total_ns": 78176474,
+					"method_total_ns": 127039248,
+					"model_decode_ns": 42716640,
+					"pack_ns": 599325,
+					"profile_ns": 3314167,
+					"swirl_ns": 72717771,
+					"transported_decode_ns": 105204,
+					"validate_ns": 1314908,
+					"wake_ns": 228143
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2828265,
+					"kernel_finalize_ns": 104622,
+					"kernel_total_ns": 80618485,
+					"method_total_ns": 130982059,
+					"model_decode_ns": 43874995,
+					"pack_ns": 627095,
+					"profile_ns": 3472099,
+					"swirl_ns": 75007949,
+					"transported_decode_ns": 105876,
+					"validate_ns": 1317873,
+					"wake_ns": 222584
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2760228,
+					"kernel_finalize_ns": 105203,
+					"kernel_total_ns": 78450918,
+					"method_total_ns": 128346465,
+					"model_decode_ns": 43503570,
+					"pack_ns": 635712,
+					"profile_ns": 3352442,
+					"swirl_ns": 72979020,
+					"transported_decode_ns": 103867,
+					"validate_ns": 1302555,
+					"wake_ns": 235438
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2818495,
+					"kernel_finalize_ns": 104756,
+					"kernel_total_ns": 83118595,
+					"method_total_ns": 136505344,
+					"model_decode_ns": 46764014,
+					"pack_ns": 680626,
+					"profile_ns": 3593983,
+					"swirl_ns": 77297653,
+					"transported_decode_ns": 124038,
+					"validate_ns": 1382948,
+					"wake_ns": 231057
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3284196,
+					"kernel_finalize_ns": 113390,
+					"kernel_total_ns": 89016062,
+					"method_total_ns": 147693086,
+					"model_decode_ns": 51259126,
+					"pack_ns": 812015,
+					"profile_ns": 3886317,
+					"swirl_ns": 82762727,
+					"transported_decode_ns": 113653,
+					"validate_ns": 1448083,
+					"wake_ns": 252661
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3249660,
+					"kernel_finalize_ns": 111446,
+					"kernel_total_ns": 88313162,
+					"method_total_ns": 145725498,
+					"model_decode_ns": 50258736,
+					"pack_ns": 708308,
+					"profile_ns": 3815023,
+					"swirl_ns": 82146803,
+					"transported_decode_ns": 112913,
+					"validate_ns": 1449483,
+					"wake_ns": 243878
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 3003793,
+					"kernel_finalize_ns": 105730,
+					"kernel_total_ns": 83565782,
+					"method_total_ns": 136445213,
+					"model_decode_ns": 46085728,
+					"pack_ns": 669651,
+					"profile_ns": 3623236,
+					"swirl_ns": 77686000,
+					"transported_decode_ns": 117172,
+					"validate_ns": 1414022,
+					"wake_ns": 230819
+				}
+			],
+			"adapter_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.021333333333333333,
+				0.021333333333333333,
+				0.023333333333333334,
+				0.03133333333333333,
+				0.02666666666666667,
+				0.020666666666666667
+			],
+			"direct_external_us_per_call_batches": [
+				43.63166666666667,
+				44.63166666666667,
+				42.04,
+				42.95,
+				41.527,
+				43.827333333333335,
+				42.52066666666666
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2472223,
+					"kernel_finalize_ns": 104962,
+					"kernel_total_ns": 80316522,
+					"method_total_ns": 127659539,
+					"model_decode_ns": 41528463,
+					"pack_ns": 508557,
+					"profile_ns": 3454638,
+					"swirl_ns": 74814446,
+					"transported_decode_ns": 75107,
+					"validate_ns": 1250308,
+					"wake_ns": 170548
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2550862,
+					"kernel_finalize_ns": 140124,
+					"kernel_total_ns": 82301069,
+					"method_total_ns": 130815828,
+					"model_decode_ns": 42614623,
+					"pack_ns": 459698,
+					"profile_ns": 3366528,
+					"swirl_ns": 76852053,
+					"transported_decode_ns": 86154,
+					"validate_ns": 1265081,
+					"wake_ns": 172894
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2374517,
+					"kernel_finalize_ns": 113209,
+					"kernel_total_ns": 78221880,
+					"method_total_ns": 123353894,
+					"model_decode_ns": 39592618,
+					"pack_ns": 429991,
+					"profile_ns": 3235342,
+					"swirl_ns": 73072966,
+					"transported_decode_ns": 81444,
+					"validate_ns": 1162516,
+					"wake_ns": 157470
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2424161,
+					"kernel_finalize_ns": 131114,
+					"kernel_total_ns": 79467521,
+					"method_total_ns": 125841527,
+					"model_decode_ns": 40704678,
+					"pack_ns": 449008,
+					"profile_ns": 3294511,
+					"swirl_ns": 74176930,
+					"transported_decode_ns": 75909,
+					"validate_ns": 1175903,
+					"wake_ns": 165048
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2336750,
+					"kernel_finalize_ns": 119394,
+					"kernel_total_ns": 77298283,
+					"method_total_ns": 121789657,
+					"model_decode_ns": 39044547,
+					"pack_ns": 449104,
+					"profile_ns": 3259608,
+					"swirl_ns": 72132100,
+					"transported_decode_ns": 72863,
+					"validate_ns": 1151354,
+					"wake_ns": 172645
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2462060,
+					"kernel_finalize_ns": 119825,
+					"kernel_total_ns": 80541891,
+					"method_total_ns": 128322328,
+					"model_decode_ns": 41944057,
+					"pack_ns": 529681,
+					"profile_ns": 3399506,
+					"swirl_ns": 75111978,
+					"transported_decode_ns": 85738,
+					"validate_ns": 1229295,
+					"wake_ns": 169376
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2405257,
+					"kernel_finalize_ns": 113015,
+					"kernel_total_ns": 78568588,
+					"method_total_ns": 124466777,
+					"model_decode_ns": 40311375,
+					"pack_ns": 453762,
+					"profile_ns": 3327300,
+					"swirl_ns": 73292557,
+					"transported_decode_ns": 74252,
+					"validate_ns": 1167354,
+					"wake_ns": 186003
+				}
+			],
+			"direct_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"fade": 1.0,
+			"regime": "spin"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				46.762,
+				51.30766666666667,
+				47.79,
+				47.635666666666665,
+				46.459,
+				46.423,
+				47.254333333333335
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2568272,
+					"kernel_finalize_ns": 93964,
+					"kernel_total_ns": 56992312,
+					"method_total_ns": 105110957,
+					"model_decode_ns": 42053733,
+					"pack_ns": 572339,
+					"profile_ns": 2928837,
+					"swirl_ns": 52008605,
+					"transported_decode_ns": 96906,
+					"validate_ns": 1284251,
+					"wake_ns": 201734
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2905802,
+					"kernel_finalize_ns": 100696,
+					"kernel_total_ns": 61349183,
+					"method_total_ns": 114202373,
+					"model_decode_ns": 46167451,
+					"pack_ns": 668699,
+					"profile_ns": 3250855,
+					"swirl_ns": 55868298,
+					"transported_decode_ns": 100843,
+					"validate_ns": 1403355,
+					"wake_ns": 221890
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2547341,
+					"kernel_finalize_ns": 88990,
+					"kernel_total_ns": 57671824,
+					"method_total_ns": 107463297,
+					"model_decode_ns": 43634087,
+					"pack_ns": 599506,
+					"profile_ns": 2857832,
+					"swirl_ns": 52660883,
+					"transported_decode_ns": 109534,
+					"validate_ns": 1287993,
+					"wake_ns": 199627
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2666740,
+					"kernel_finalize_ns": 112935,
+					"kernel_total_ns": 57776434,
+					"method_total_ns": 106973656,
+					"model_decode_ns": 42977813,
+					"pack_ns": 591325,
+					"profile_ns": 2897914,
+					"swirl_ns": 52789118,
+					"transported_decode_ns": 96741,
+					"validate_ns": 1302194,
+					"wake_ns": 207844
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2638193,
+					"kernel_finalize_ns": 89964,
+					"kernel_total_ns": 56412960,
+					"method_total_ns": 104607351,
+					"model_decode_ns": 42100843,
+					"pack_ns": 580930,
+					"profile_ns": 2842049,
+					"swirl_ns": 51476651,
+					"transported_decode_ns": 95432,
+					"validate_ns": 1341265,
+					"wake_ns": 207275
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2540113,
+					"kernel_finalize_ns": 88887,
+					"kernel_total_ns": 56274370,
+					"method_total_ns": 104203216,
+					"model_decode_ns": 41926544,
+					"pack_ns": 557249,
+					"profile_ns": 2810216,
+					"swirl_ns": 51392078,
+					"transported_decode_ns": 98849,
+					"validate_ns": 1295664,
+					"wake_ns": 216142
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2633675,
+					"kernel_finalize_ns": 94123,
+					"kernel_total_ns": 57787038,
+					"method_total_ns": 106672773,
+					"model_decode_ns": 42771899,
+					"pack_ns": 529990,
+					"profile_ns": 2840071,
+					"swirl_ns": 52781627,
+					"transported_decode_ns": 120841,
+					"validate_ns": 1324995,
+					"wake_ns": 261275
+				}
+			],
+			"adapter_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021666666666666667,
+				0.021333333333333333,
+				0.021666666666666667,
+				0.030333333333333334,
+				0.021666666666666667,
+				0.02666666666666667,
+				0.021666666666666667
+			],
+			"direct_external_us_per_call_batches": [
+				34.91466666666667,
+				36.499,
+				37.565,
+				35.93,
+				34.57966666666667,
+				34.48,
+				34.965333333333334
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2240669,
+					"kernel_finalize_ns": 94044,
+					"kernel_total_ns": 56921129,
+					"method_total_ns": 102112978,
+					"model_decode_ns": 39852091,
+					"pack_ns": 410267,
+					"profile_ns": 2740472,
+					"swirl_ns": 52291505,
+					"transported_decode_ns": 74512,
+					"validate_ns": 1166703,
+					"wake_ns": 150864
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2384788,
+					"kernel_finalize_ns": 100119,
+					"kernel_total_ns": 59421659,
+					"method_total_ns": 106514075,
+					"model_decode_ns": 41463276,
+					"pack_ns": 434376,
+					"profile_ns": 2969705,
+					"swirl_ns": 54401564,
+					"transported_decode_ns": 78680,
+					"validate_ns": 1228572,
+					"wake_ns": 197877
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2454242,
+					"kernel_finalize_ns": 98073,
+					"kernel_total_ns": 60956449,
+					"method_total_ns": 109582645,
+					"model_decode_ns": 42888170,
+					"pack_ns": 445260,
+					"profile_ns": 3001808,
+					"swirl_ns": 56006261,
+					"transported_decode_ns": 87890,
+					"validate_ns": 1198823,
+					"wake_ns": 177930
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2419435,
+					"kernel_finalize_ns": 95877,
+					"kernel_total_ns": 58316289,
+					"method_total_ns": 104936999,
+					"model_decode_ns": 40921178,
+					"pack_ns": 420660,
+					"profile_ns": 2850971,
+					"swirl_ns": 53562408,
+					"transported_decode_ns": 92035,
+					"validate_ns": 1164661,
+					"wake_ns": 181824
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2220984,
+					"kernel_finalize_ns": 91985,
+					"kernel_total_ns": 56573370,
+					"method_total_ns": 101081504,
+					"model_decode_ns": 39207641,
+					"pack_ns": 412998,
+					"profile_ns": 2741499,
+					"swirl_ns": 51993241,
+					"transported_decode_ns": 81812,
+					"validate_ns": 1132388,
+					"wake_ns": 155688
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2252659,
+					"kernel_finalize_ns": 89740,
+					"kernel_total_ns": 56442547,
+					"method_total_ns": 100815906,
+					"model_decode_ns": 38976659,
+					"pack_ns": 441638,
+					"profile_ns": 2747822,
+					"swirl_ns": 51856223,
+					"transported_decode_ns": 107066,
+					"validate_ns": 1147906,
+					"wake_ns": 151115
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2312068,
+					"kernel_finalize_ns": 90683,
+					"kernel_total_ns": 57010776,
+					"method_total_ns": 102197112,
+					"model_decode_ns": 39688375,
+					"pack_ns": 425183,
+					"profile_ns": 2773301,
+					"swirl_ns": 52378407,
+					"transported_decode_ns": 76608,
+					"validate_ns": 1162121,
+					"wake_ns": 152653
+				}
+			],
+			"direct_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"fade": 0.5000000000000002,
+			"regime": "reverse_fade"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				4.657333333333334,
+				3.820666666666667,
+				3.740666666666667,
+				3.903,
+				3.626333333333333,
+				3.4586666666666668,
+				3.7523333333333335
+			],
+			"adapter_internal_stats_batches": [
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				},
+				{
+					"calls": 0,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 0,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 0,
+					"method_total_ns": 0,
+					"model_decode_ns": 0,
+					"pack_ns": 0,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 0,
+					"validate_ns": 0,
+					"wake_ns": 0
+				}
+			],
+			"adapter_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 0,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.027666666666666666,
+				0.021333333333333333,
+				0.028666666666666667,
+				0.022333333333333334,
+				0.021333333333333333,
+				0.021333333333333333,
+				0.022333333333333334
+			],
+			"direct_external_us_per_call_batches": [
+				16.092,
+				14.883,
+				17.068666666666665,
+				16.8,
+				16.651333333333334,
+				17.107333333333333,
+				16.351666666666667
+			],
+			"direct_internal_stats_batches": [
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2137292,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1254981,
+					"method_total_ns": 46010182,
+					"model_decode_ns": 39700049,
+					"pack_ns": 255204,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 72305,
+					"validate_ns": 1115808,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 1928204,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1141500,
+					"method_total_ns": 42752543,
+					"model_decode_ns": 36887837,
+					"pack_ns": 242585,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 71391,
+					"validate_ns": 1013812,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2201280,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1276742,
+					"method_total_ns": 48800864,
+					"model_decode_ns": 42298622,
+					"pack_ns": 304822,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 75686,
+					"validate_ns": 1138898,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2272315,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1244406,
+					"method_total_ns": 47969722,
+					"model_decode_ns": 41470362,
+					"pack_ns": 294083,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 74176,
+					"validate_ns": 1109941,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2180819,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1266857,
+					"method_total_ns": 47510313,
+					"model_decode_ns": 41000889,
+					"pack_ns": 306281,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 73899,
+					"validate_ns": 1133532,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2317635,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1315898,
+					"method_total_ns": 49044533,
+					"model_decode_ns": 42310296,
+					"pack_ns": 300238,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 77847,
+					"validate_ns": 1172749,
+					"wake_ns": 0
+				},
+				{
+					"calls": 3000,
+					"clock_pair_overhead_ns": 22,
+					"input_decode_ns": 2196109,
+					"kernel_finalize_ns": 0,
+					"kernel_total_ns": 1256712,
+					"method_total_ns": 46714862,
+					"model_decode_ns": 40263314,
+					"pack_ns": 272862,
+					"profile_ns": 0,
+					"swirl_ns": 0,
+					"transported_decode_ns": 104883,
+					"validate_ns": 1117686,
+					"wake_ns": 0
+				}
+			],
+			"direct_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"fade": 0.0,
+			"regime": "reverse_off"
+		}
+	],
+	"warmup_calls_per_regime": 500
+}

@@ -1,0 +1,10 @@
+{
+  "baseline-native.json": {
+    "sha256": "a2a0c815a327267d4b7f69de6ddb3a5186b66a443a45539a64d2fc267a069598",
+    "bytes": 1898626
+  },
+  "instrumented-native.json": {
+    "sha256": "6a17e16e2511075d00b30735fdb963d6c12b3131d02e7795e4c4b2c203ddbfea",
+    "bytes": 1943249
+  }
+}

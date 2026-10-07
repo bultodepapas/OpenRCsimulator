@@ -1,6 +1,6 @@
 # Landscape improvement: a phased proposal
 
-Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending; Phase 5 engineering-verified in [L7](../visual-quality-implementation/L7/README.md); Phase 6 implemented and engineering-verified in [L4b](../visual-quality-implementation/L4b/README.md), with L15d wind integration pending** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
+Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending; Phase 5 engineering-verified in [L7](../visual-quality-implementation/L7/README.md); Phase 6 implemented and engineering-verified in [L4b](../visual-quality-implementation/L4b/README.md), with L15d wind integration pending; Phase 7 required grass scope engineering-verified in [L11a](../visual-quality-implementation/L11a/README.md), existing flowers reused opt-in and L9d deferred** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
 - **Basis:** the measured problems of [review 05](../scenery-investigations/05-landscape-image-review.md) and four research reports with Godot 4.7.2 Compatibility spikes.
 - **Step IDs:** it adds none. Every phase maps to existing **L** steps, or proposes a sub-step for the landscape owner to accept.
 - **Scope:** it does not change the ROADMAP or any plan by itself.
@@ -144,6 +144,8 @@ Implemented in [L4b](../visual-quality-implementation/L4b/README.md), including 
 **Reference:** Sky3D (MIT) is the best example to read, since it uses `TIME` only for star twinkle. Do not adopt it as a dependency. "Golden hour" needs per-pixel Hosek-Wilkie (L19).
 
 ### Phase 7 — The near field (≈ 2–3 days) · L11a, L11b, L9d
+
+Required grass scope implemented and verified in [L11a](../visual-quality-implementation/L11a/README.md). SC-16/17 flowers and bushes are reused through the existing opt-in hook; O-2/Gate SC acceptance stays open. Optional L9d photo detail remains deferred until Gate L requests it. Canonical step status stays in LANDSCAPE-PLAN.
 
 | Change | How |
 | --- | --- |

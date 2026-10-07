@@ -1,0 +1,95 @@
+{
+  "format": "openrc-reference v1",
+  "id": "us25e",
+  "title": "Ultra Stick 25e — equal-CL reduced modes",
+  "source": {
+    "url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+    "locator": "Dorobantu et al., System Identification for Small, Low-Cost, Fixed-Wing Unmanned Aircraft; Table 1, section IV, Tables 4–5 and identified lateral matrix",
+    "status": "source_checked",
+    "note": "Flight-identified modal frequencies and damping. The roll entry 12.53 is used as real-pole magnitude in 1/s, consistent with the printed lateral matrix pole near −12.537. Table 5 also lists a conflicting 0.50 s time constant; that number is not used. This is another airframe, not a Stik acceptance dataset."
+  },
+  "conditions": {
+    "speed_mps": 19.0,
+    "mass_kg": 1.959,
+    "span_m": 1.27,
+    "chord_m": 0.25,
+    "area_m2": 0.31,
+    "cg_m": null,
+    "throttle": 0.7,
+    "wind_mps": null,
+    "note": "Source Table 1 dimensions and section IV nominal flight speed/throttle; CG relative to our datum and wind unknown. CL is derived with assumed sea-level density 1.225 kg/m³ and gravity 9.80665 m/s², not a reported measurement."
+  },
+  "comparison": {
+    "method": "same_cl_reduced",
+    "note": "Solve the Stik speed at the reference nominal CL using the same assumed density. Compare wn*c/(2V) for pitch and wn*b/(2V) or pole*b/(2V) laterally; damping is unchanged. Each aircraft uses its own span/chord/speed. This removes kinematic scale only, not mass/inertia/airfoil differences."
+  },
+  "rows": [
+    {
+      "metric": "sp_wn",
+      "value": 16.33,
+      "unit": "rad/s",
+      "kind": "measured",
+      "source_locator": "Paper Tables 4–5; identified matrix clarifies roll-pole interpretation",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.15,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "sp_zeta",
+      "value": 0.83,
+      "unit": "1",
+      "kind": "measured",
+      "source_locator": "Paper Tables 4–5; identified matrix clarifies roll-pole interpretation",
+      "uncertainty": null,
+      "band": null,
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "roll_rate",
+      "value": 12.53,
+      "unit": "1/s",
+      "kind": "derived",
+      "source_locator": "Paper Tables 4–5; identified matrix clarifies roll-pole interpretation",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.1,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "dr_wn",
+      "value": 4.96,
+      "unit": "rad/s",
+      "kind": "measured",
+      "source_locator": "Paper Tables 4–5; identified matrix clarifies roll-pole interpretation",
+      "uncertainty": null,
+      "band": {
+        "relative": 0.15,
+        "kind": "estimated",
+        "source": "VAL-3 class-comparison screening choice; not a source error bar or validated RC acceptance tolerance."
+      },
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    },
+    {
+      "metric": "dr_zeta",
+      "value": 0.33,
+      "unit": "1",
+      "kind": "measured",
+      "source_locator": "Paper Tables 4–5; identified matrix clarifies roll-pole interpretation",
+      "uncertainty": null,
+      "band": null,
+      "used_for_tuning": null,
+      "tuning_note": "Previously reviewed during model development; complete tuning history is not established. Do not assume held-out evidence."
+    }
+  ]
+}

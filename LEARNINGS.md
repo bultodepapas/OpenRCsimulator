@@ -1047,3 +1047,20 @@ Godot rejects reuse of a parsed input event, so a synthetic event-cost bench nee
 ## 2026-10-07 · E0b6p — measure the complete native path before adoption
 
 A complete native wake port can preserve quadrature and all sampled trajectories yet still miss the whole-tick budget. Include adapter, model decoding and binding costs in direct measurements, then measure the full coupled flight. Preserve the distinct axial/swirl quadrature constants and accumulation groups; mathematically equivalent regrouping is not automatically byte-equivalent. Test stopped residual wash with positive flow and a nonzero expected result. Malformed-input probes need a valid positive control: an unrelated NaN wing-CL input could otherwise make every mutation appear successfully rejected. Route counters, expected sample shapes and the full scenario roster prevent a fallback or empty result from becoming false evidence. [Native proof and limits](docs/research/propwash/E0b6p/native/README.md).
+
+## 2026-10-07 · L11a/L11b — match the ground and verify the renderer boundary
+
+- Share the actual texture and macro/pilot-pin function with blade roots. Extracting shader code still needs zero-feature pixel parity: all grass-off reference views matched the frozen ground before enabling grass. Upward fragment normals avoid a back-face lighting seam.
+- Godot's headless dummy renderer returns identity/empty MultiMesh transform buffers. Test pure clipped placement there and read real instance transforms on the GPU; do not accept dummy identity matrices as placement evidence. Unset material parameters likewise need the compiled shader default when checking effective fade distances.
+- A full-annulus average can conceal a narrow seam. The 25–35 m check now uses 1 m radial bins, screen strips and masked FLIP; a copied 25 cm dark stripe is rejected. An actual raised-camera A/B verifies that distance fading leaves no flat geometry behind.
+- Reuse the scenery team's existing flowers through its single opt-in hook. Geometry reuse does not close that team's human gate or require duplicate assets. Keep fixed pilot-area grass separate from future terrain following and simulated wind.
+
+[Implementation and proof](docs/research/visual-quality-implementation/L11a/README.md).
+
+## 2026-10-07 · E0b6p — account for the whole tick before choosing another optimization
+
+Keep attribution buckets exclusive: subtract nested Air calls from pre-step, and label the residual as simulation work rather than pure integration. Verify that timers are active during the trajectory comparison and assert call counts; identical output with disabled timers proves nothing about instrumentation. Match the original timing batch length because a longer evolving flight changes the workload. Alternate observer-on/off order, retain raw spreads, and treat negative overhead estimates as timing noise. Native model decoding is substantial per call but only about 53–58 µs across four stage evaluations; that bounds the value of a decoding optimization and cannot close the whole-tick budget alone. Engine parse preflights must inspect error logs even when the exit code is zero. [Attribution, verification and next experiment](docs/research/propwash/E0b6p/attribution/README.md).
+
+## 2026-10-07 · VAL-3 — make comparison provenance and freshness executable
+
+A generated validation table needs the current engine calculation, complete reference rows, explicit transforms and source/input hashes. Keep software regressions separate from scientific discrepancies: real roll rows were already red, so doubling Clp proves increased discrepancy while a separately labeled synthetic fixture proves the green-to-red classifier. Do not turn inherited rounded eigenvalue calculations into measured evidence, a contradictory source time constant into certainty, or unknown tuning history into held-out validation. Normalize each airframe with its own length and speed; diagnostic bands are not source uncertainty. Fail before publication on malformed inputs, engine errors, stale output or concurrent input changes. [Contract, source audit and proof](docs/research/validation/VAL-3/README.md).

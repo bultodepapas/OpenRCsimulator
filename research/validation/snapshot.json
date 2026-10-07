@@ -1,0 +1,295 @@
+{
+  "format": "openrc-validation-dashboard v1",
+  "input_sha256": {
+    "RESEARCH.md": "2b88c733551a1bc324689ef023bb6e88f74c508bbaef6df8cd2429be82b6708c",
+    "app/aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+    "app/aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+    "app/aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+    "app/aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+    "app/aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+    "app/aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+    "app/aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+    "app/aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+    "app/aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+    "app/aircraft/inspect_p51.gd": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023",
+    "app/aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+    "app/aircraft/p51d_appearance.gd": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+    "app/aircraft/p51d_finish.gd": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+    "app/aircraft/p51d_geometry.gd": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+    "app/aircraft/p51d_model.gd": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+    "app/aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+    "app/aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+    "app/aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+    "app/aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+    "app/aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+    "app/aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+    "app/aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+    "app/aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+    "app/aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+    "app/aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+    "app/aircraft/verify_p51.gd": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7",
+    "app/aircraft/verify_p51_clearance.gd": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12",
+    "app/aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/get-godot.sh": "cd3868ed254914fc5af635b1546069d4b3f214353705a6c4b9592f53e3310675",
+    "app/input/commands.gd": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2",
+    "app/input/input_report.gd": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb",
+    "app/input/input_report_data.gd": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d",
+    "app/input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+    "app/input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+    "app/input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+    "app/input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+    "app/physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+    "app/physics/air_data.gd": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+    "app/physics/aircraft_data.gd": "992843aadd36607b2a220309ddb260924b00e6f5429de7666fbe0700e3512d6e",
+    "app/physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+    "app/physics/flight_modes.gd": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b",
+    "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+    "app/physics/ground_start.gd": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed",
+    "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+    "app/physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+    "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "app/physics/propulsion.gd": "3f61b2b4709610cd76c5eaf6dffd35301c9f2982ea8e69053ac8a745c2c5f0e6",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+    "app/physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+    "app/physics/trim.gd": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338",
+    "app/physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+    "app/physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+    "app/project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+    "app/sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+    "app/sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+    "app/sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+    "app/sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+    "app/sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+    "app/sim/simulation.gd": "5a885173d805996ad74dbbb1b26dfeb0c824417e35f40e885c47c4d771223b64",
+    "app/sim/trace.gd": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9",
+    "app/spec.gd": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b",
+    "app/tests/test_modes.gd": "dbe8c784393c05c0a4def1c1d9c6acc013b881539ba8b349c6bf02edcad19897",
+    "research/sensitivity/sensitivity.gd": "506ded8eb484e6403d4d4c02ba114ff573768799259ebee14b12e6baaa5b13cb",
+    "research/validation/collect.gd": "50eac699e19e4902e5466907dcc001948e8c42658058eebee34567fc4d188841",
+    "research/validation/dashboard.py": "51316f0b585a4f0f12e9f4ecc0aa272a8b395e82eb8c53eef698093b5cece820",
+    "research/validation/references/us120.json": "0ae60fc4cdb54bc03c1db4c02f93656a8477564b589d5d19aaf7515507056169",
+    "research/validation/references/us25e.json": "500f1f76fb9334ab19d423e19c14ee2707e8545e4be6280ef78bd1a9c7721c53",
+    "research/validation/test_dashboard.py": "6d3a84165ad5aebb0d40a3a50c9cbfba9953707c520fa633564418d522e195ee"
+  },
+  "rows": [
+    {
+      "kind": "derived",
+      "limits": [
+        6.942919764433443,
+        9.39336203423348
+      ],
+      "metric": "sp_wn",
+      "provenance": "inherited_derivation",
+      "ratio": 1.0207371571460668,
+      "reference": 8.168140899333462,
+      "reference_id": "us120",
+      "sim": 8.337524920754156,
+      "status": "IN BAND",
+      "unit": "rad/s",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "derived",
+      "limits": null,
+      "metric": "sp_zeta",
+      "provenance": "inherited_derivation",
+      "ratio": 1.4141257884836422,
+      "reference": 0.55,
+      "reference_id": "us120",
+      "sim": 0.7777691836660033,
+      "status": "UNASSESSED",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "derived",
+      "limits": [
+        7.758620689655172,
+        9.482758620689655
+      ],
+      "metric": "roll_rate",
+      "provenance": "inherited_derivation",
+      "ratio": 2.074022196999738,
+      "reference": 8.620689655172413,
+      "reference_id": "us120",
+      "sim": 17.879501698273604,
+      "status": "OUTSIDE",
+      "unit": "1/s",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "derived",
+      "limits": [
+        3.0442032813285094,
+        4.118627968856218
+      ],
+      "metric": "dr_wn",
+      "provenance": "inherited_derivation",
+      "ratio": 1.2508632457518805,
+      "reference": 3.581415625092364,
+      "reference_id": "us120",
+      "sim": 4.479861173189534,
+      "status": "OUTSIDE",
+      "unit": "rad/s",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "derived",
+      "limits": null,
+      "metric": "dr_zeta",
+      "provenance": "inherited_derivation",
+      "ratio": 0.800778795893148,
+      "reference": 0.31,
+      "reference_id": "us120",
+      "sim": 0.24824142672687588,
+      "status": "UNASSESSED",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "measured",
+      "limits": [
+        0.0913190789473684,
+        0.12354934210526312
+      ],
+      "metric": "sp_wn",
+      "provenance": "source_checked",
+      "ratio": 0.833179675385191,
+      "reference": 0.10743421052631577,
+      "reference_id": "us25e",
+      "sim": 0.08951200065158005,
+      "status": "OUTSIDE",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "measured",
+      "limits": null,
+      "metric": "sp_zeta",
+      "provenance": "source_checked",
+      "ratio": 0.9611105562159619,
+      "reference": 0.83,
+      "reference_id": "us25e",
+      "sim": 0.7977217616592484,
+      "status": "UNASSESSED",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "derived",
+      "limits": [
+        0.3768892105263158,
+        0.46064236842105266
+      ],
+      "metric": "roll_rate",
+      "provenance": "source_checked",
+      "ratio": 2.3739177983041593,
+      "reference": 0.4187657894736842,
+      "reference_id": "us25e",
+      "sim": 0.9941155609524716,
+      "status": "OUTSIDE",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "measured",
+      "limits": [
+        0.14090315789473684,
+        0.19063368421052632
+      ],
+      "metric": "dr_wn",
+      "provenance": "source_checked",
+      "ratio": 1.4460827156398304,
+      "reference": 0.1657684210526316,
+      "reference_id": "us25e",
+      "sim": 0.23971484848311633,
+      "status": "OUTSIDE",
+      "unit": "1",
+      "used_for_tuning": null
+    },
+    {
+      "kind": "measured",
+      "limits": null,
+      "metric": "dr_zeta",
+      "provenance": "source_checked",
+      "ratio": 0.7078552723324688,
+      "reference": 0.33,
+      "reference_id": "us25e",
+      "sim": 0.23359223986971472,
+      "status": "UNASSESSED",
+      "unit": "1",
+      "used_for_tuning": null
+    }
+  ],
+  "samples": {
+    "area_m2": 0.464515,
+    "cases": {
+      "us120": {
+        "dr_wn": 4.479861173189534,
+        "dr_zeta": 0.24824142672687588,
+        "lift_coefficient": 0.5221692093947926,
+        "projection_note": "4\u00d74 modal estimates are diagonal-block projections; cross-axis couplings are omitted",
+        "roll_rate": 17.879501698273604,
+        "sp_wn": 8.337524920754156,
+        "sp_zeta": 0.7777691836660033,
+        "speed_mps": 13.8,
+        "trim": {
+          "alpha_rad": 0.09199930153550673,
+          "throttle": 0.24261360914390226
+        }
+      },
+      "us25e": {
+        "dr_wn": 5.925631214406676,
+        "dr_zeta": 0.23359223986971472,
+        "lift_coefficient": 0.2802722647025032,
+        "projection_note": "4\u00d74 modal estimates are diagonal-block projections; cross-axis couplings are omitted",
+        "roll_rate": 24.57403968082631,
+        "sp_wn": 11.06345953288646,
+        "sp_zeta": 0.7977217616592484,
+        "speed_mps": 18.83625905508274,
+        "trim": {
+          "alpha_rad": 0.0387092133597992,
+          "throttle": 0.43087168818812477
+        }
+      }
+    },
+    "chord_m": 0.3048,
+    "clp_scale": 1.0,
+    "format": "openrc-modal-samples v1",
+    "godot": "4.7.2-stable (official)",
+    "mass_kg": 2.885058291043753,
+    "model_id": "jensen-das-ugly-stik-60",
+    "regression_15_mps": {
+      "actual": [
+        1.428806905105295,
+        0.7839861534950106,
+        0.11682284859502418,
+        0.20967633501914584,
+        0.051336274948444977,
+        0.7670424443511087,
+        0.24301314836514246,
+        0.08570071248478464,
+        -16.75947762432627
+      ],
+      "expected": [
+        1.42880691,
+        0.78398615,
+        0.11682285,
+        0.20967634,
+        0.05133627,
+        0.76704244,
+        0.24301315,
+        0.08570071,
+        -16.75947762
+      ],
+      "relative_tolerance": 0.03
+    },
+    "span_m": 1.524,
+    "warnings": [
+      "inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+    ]
+  }
+}

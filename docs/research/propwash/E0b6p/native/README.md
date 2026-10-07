@@ -2,6 +2,8 @@
 
 2026-10-07 · **Status: Linux research prototype verified; whole-tick budget and native adoption remain open.**
 
+Follow-up: [whole-tick and native-phase attribution](../attribution/README.md) now separates the remaining costs and defines the next bounded decoding experiment. The measurements below document the original port.
+
 ## Result
 
 The [research-only GDExtension](../../../../../research/propwash/e0b6p/native/src/smooth_wake_extension.cpp) evaluates both smooth axial occupancy and the distributed swirl correction. Production code and aircraft data are unchanged. The experiment retains float64 arithmetic, both original five-point quadrature tables, profile/core/edge splits, accumulation order, current RK-stage inputs, horizontal downwash and stopped-source axial transport. It introduces no temporal cache or reduced physics rate.
