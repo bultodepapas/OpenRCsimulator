@@ -1,0 +1,12 @@
+Fresh local git clone plus the E0b1/E0b2 working changes: app/test.sh exit 0; 106 sections; no engine errors.
+Reused only the pinned verified engine binary; no Godot import cache, ignored asset directories or other untracked dependencies.
+After review: strengthened vertical-hinge assertion and provenance/fin-relief mutations rerun successfully in the same clean clone; no production change.
+E0b2: hub and three neutral tail footprints match source/runtime geometry
+E0b2: 15 propulsion cases equal numerically; 7 signed-zero byte differences
+87 checks, 0 failed
+E0b1 wake: 19 checks, 0 failed
+ticks=480 frames=61 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=121 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=289 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+Skill lint before: 0 errors, 12 existing warnings
+Skill lint after: 0 errors, 12 existing warnings

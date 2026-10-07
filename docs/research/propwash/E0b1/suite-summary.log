@@ -1,0 +1,9 @@
+baseline: app/test.sh exit 0; 104 sections; engine errors 0; final frame-rate comparison identical
+final: app/test.sh exit 0; 105 sections; engine errors 0; final frame-rate comparison identical
+E0b1 wake: 19 checks, 0 failed
+H13 slipstream: 10001 byte-exact comparisons (1 aircraft, 6083 washed, 1429 static air, 448 stopped), 0 failed
+ticks=480 frames=61 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=121 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=289 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+skill lint before: 0 errors, 12 existing warnings
+skill lint after: 0 errors, 12 existing warnings

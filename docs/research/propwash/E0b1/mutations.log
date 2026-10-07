@@ -1,0 +1,34 @@
+Baseline: E0b1 wake: 19 checks, 0 failed
+missing factor two in pressure jump: rejected (8 failed checks)
+  FAIL static far speed sqrt(2T/rhoA)
+  FAIL static dynamic pressure T/A
+  FAIL momentum T = mass flow times velocity gain 144 cases
+  FAIL pressure gain = disc loading
+  FAIL q_far/q_inf = 1 + 8Ct/(pi J^2)
+  FAIL full fixed rpm at 5 m/s T=38.36603 N; ideal pressure ratio=18.16924
+  FAIL full fixed rpm at 15 m/s T=32.59434 N; ideal pressure ratio=2.62070
+  FAIL 15 m/s level-flight thrust gives about 1.30, not full power T=D=3.01268 N; ideal pressure ratio=1.14980
+disc induction doubled: rejected (8 failed checks)
+  FAIL static far speed sqrt(2T/rhoA)
+  FAIL static dynamic pressure T/A
+  FAIL momentum T = mass flow times velocity gain 144 cases
+  FAIL pressure gain = disc loading
+  FAIL q_far/q_inf = 1 + 8Ct/(pi J^2)
+  FAIL full fixed rpm at 5 m/s T=38.36603 N; ideal pressure ratio=118.57542
+  FAIL full fixed rpm at 15 m/s T=32.59434 N; ideal pressure ratio=9.72776
+  FAIL 15 m/s level-flight thrust gives about 1.30, not full power T=D=3.01268 N; ideal pressure ratio=1.63840
+contraction removed: rejected (2 failed checks)
+  FAIL static contraction R/sqrt(2)
+  FAIL contracted wake conserves volume flow
+shaft projection replaced by body x: rejected (1 failed checks)
+  FAIL wake uses shaft projection, not body x or total speed
+ideal wash factor ignored: rejected (8 failed checks)
+  FAIL static dynamic pressure T/A
+  FAIL momentum T = mass flow times velocity gain 144 cases
+  FAIL pressure gain = disc loading
+  FAIL contracted wake conserves volume flow
+  FAIL q_far/q_inf = 1 + 8Ct/(pi J^2)
+  FAIL full fixed rpm at 5 m/s T=38.36603 N; ideal pressure ratio=12.05693
+  FAIL full fixed rpm at 15 m/s T=32.59434 N; ideal pressure ratio=2.34009
+  FAIL 15 m/s level-flight thrust gives about 1.30, not full power T=D=3.01268 N; ideal pressure ratio=1.14490
+Restored baseline: E0b1 wake: 19 checks, 0 failed
