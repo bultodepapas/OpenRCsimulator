@@ -1,0 +1,1311 @@
+{
+  "aircraft": "jensen-das-ugly-stik-60",
+  "azimuth_deg": 9.0,
+  "backgrounds": {
+    "ground": -0.5,
+    "horizon": 4.1,
+    "sky": 10.0,
+    "trees": 2.3
+  },
+  "distance_m": 100.0,
+  "format": "openrc-l6c-readability v1",
+  "groups": {
+    "fixed-ground": {
+      "autozoom": false,
+      "azimuth_deg": 9.0,
+      "background": "ground",
+      "distance_m": 100.0,
+      "elevation_deg": -0.5,
+      "fov_deg": 50.0,
+      "horizon_row": 353.3,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.8567,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.0602,
+            "trees": 0.0831
+          },
+          "background_saturation": 54.2,
+          "bbox_px": {
+            "centre": [
+              638.4,
+              360.7
+            ],
+            "height": 8,
+            "width": 9
+          },
+          "delta_e": 38.68,
+          "delta_e_p10": 10.26,
+          "pixels": 25,
+          "share_low_contrast": 0.16,
+          "weber_contrast": -0.0305
+        },
+        "dive": {
+          "background": {
+            "ground": 0.7163,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.1203,
+            "trees": 0.1633
+          },
+          "background_saturation": 48.7,
+          "bbox_px": {
+            "centre": [
+              638.3,
+              358.4
+            ],
+            "height": 9,
+            "width": 8
+          },
+          "delta_e": 38.39,
+          "delta_e_p10": 13.21,
+          "pixels": 25,
+          "share_low_contrast": 0.08,
+          "weber_contrast": -0.1418
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.8646,
+            "other": 0.0,
+            "pixels": 325,
+            "sky": 0.0615,
+            "trees": 0.0738
+          },
+          "background_saturation": 53.3,
+          "bbox_px": {
+            "centre": [
+              637.4,
+              359.5
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 35.36,
+          "delta_e_p10": 10.61,
+          "pixels": 24,
+          "share_low_contrast": 0.0833,
+          "weber_contrast": 0.0593
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.7344,
+            "other": 0.0,
+            "pixels": 418,
+            "sky": 0.134,
+            "trees": 0.1316
+          },
+          "background_saturation": 50.1,
+          "bbox_px": {
+            "centre": [
+              637.9,
+              359.4
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 61.1,
+          "delta_e_p10": 30.77,
+          "pixels": 54,
+          "share_low_contrast": 0.1111,
+          "weber_contrast": -0.0601
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.7351,
+            "other": 0.0,
+            "pixels": 419,
+            "sky": 0.1337,
+            "trees": 0.1313
+          },
+          "background_saturation": 50.1,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.5
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 59.65,
+          "delta_e_p10": 29.11,
+          "pixels": 54,
+          "share_low_contrast": 0.0556,
+          "weber_contrast": -0.0066
+        },
+        "level": {
+          "background": {
+            "ground": 0.8681,
+            "other": 0.0,
+            "pixels": 326,
+            "sky": 0.0552,
+            "trees": 0.0767
+          },
+          "background_saturation": 53.5,
+          "bbox_px": {
+            "centre": [
+              637.8,
+              359.5
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 34.49,
+          "delta_e_p10": 11.31,
+          "pixels": 24,
+          "share_low_contrast": 0.0417,
+          "weber_contrast": 0.1038
+        }
+      },
+      "summary": {
+        "delta_e_min": 34.49,
+        "delta_e_p10_min": 10.26,
+        "pixels_max": 54,
+        "pixels_min": 24,
+        "share_low_contrast_max": 0.16,
+        "weber_abs_min": 0.0066,
+        "weber_contrast_max": 0.1038,
+        "weber_contrast_min": -0.1418
+      },
+      "tree_pixels_in_view": 19593,
+      "view": "fixed"
+    },
+    "fixed-horizon": {
+      "autozoom": false,
+      "azimuth_deg": 9.0,
+      "background": "horizon",
+      "distance_m": 100.0,
+      "elevation_deg": 4.1,
+      "fov_deg": 50.0,
+      "horizon_row": 415.3,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.447,
+            "trees": 0.553
+          },
+          "background_saturation": 42.3,
+          "bbox_px": {
+            "centre": [
+              638.4,
+              360.6
+            ],
+            "height": 8,
+            "width": 9
+          },
+          "delta_e": 40.58,
+          "delta_e_p10": 12.61,
+          "pixels": 26,
+          "share_low_contrast": 0.0385,
+          "weber_contrast": -0.5252
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.533,
+            "trees": 0.467
+          },
+          "background_saturation": 39.9,
+          "bbox_px": {
+            "centre": [
+              638.5,
+              358.4
+            ],
+            "height": 9,
+            "width": 8
+          },
+          "delta_e": 34.51,
+          "delta_e_p10": 10.38,
+          "pixels": 27,
+          "share_low_contrast": 0.0741,
+          "weber_contrast": -0.3916
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 329,
+            "sky": 0.5289,
+            "trees": 0.4711
+          },
+          "background_saturation": 39.7,
+          "bbox_px": {
+            "centre": [
+              637.6,
+              359.6
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 40.28,
+          "delta_e_p10": 11.18,
+          "pixels": 26,
+          "share_low_contrast": 0.0769,
+          "weber_contrast": -0.4609
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 418,
+            "sky": 0.5215,
+            "trees": 0.4785
+          },
+          "background_saturation": 39.4,
+          "bbox_px": {
+            "centre": [
+              637.9,
+              359.4
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 57.35,
+          "delta_e_p10": 25.38,
+          "pixels": 54,
+          "share_low_contrast": 0.0,
+          "weber_contrast": -0.411
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 419,
+            "sky": 0.5251,
+            "trees": 0.4749
+          },
+          "background_saturation": 39.3,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.5
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 54.5,
+          "delta_e_p10": 17.28,
+          "pixels": 54,
+          "share_low_contrast": 0.0556,
+          "weber_contrast": -0.4077
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 329,
+            "sky": 0.5289,
+            "trees": 0.4711
+          },
+          "background_saturation": 39.6,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.3
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 32.01,
+          "delta_e_p10": 10.95,
+          "pixels": 27,
+          "share_low_contrast": 0.037,
+          "weber_contrast": -0.3964
+        }
+      },
+      "summary": {
+        "delta_e_min": 32.01,
+        "delta_e_p10_min": 10.38,
+        "pixels_max": 54,
+        "pixels_min": 26,
+        "share_low_contrast_max": 0.0769,
+        "weber_abs_min": 0.3916,
+        "weber_contrast_max": -0.3916,
+        "weber_contrast_min": -0.5252
+      },
+      "tree_pixels_in_view": 19697,
+      "view": "fixed"
+    },
+    "fixed-sky": {
+      "autozoom": false,
+      "azimuth_deg": 9.0,
+      "background": "sky",
+      "distance_m": 100.0,
+      "elevation_deg": 10.0,
+      "fov_deg": 50.0,
+      "horizon_row": 496.1,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.2,
+          "bbox_px": {
+            "centre": [
+              638.4,
+              360.5
+            ],
+            "height": 8,
+            "width": 9
+          },
+          "delta_e": 34.29,
+          "delta_e_p10": 10.75,
+          "pixels": 27,
+          "share_low_contrast": 0.0741,
+          "weber_contrast": -0.4328
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 351,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.4,
+          "bbox_px": {
+            "centre": [
+              638.4,
+              358.4
+            ],
+            "height": 9,
+            "width": 8
+          },
+          "delta_e": 31.46,
+          "delta_e_p10": 10.49,
+          "pixels": 28,
+          "share_low_contrast": 0.1071,
+          "weber_contrast": -0.4149
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 328,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              637.6,
+              359.6
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 34.41,
+          "delta_e_p10": 10.26,
+          "pixels": 27,
+          "share_low_contrast": 0.1852,
+          "weber_contrast": -0.4242
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 418,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              637.9,
+              359.5
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 49.73,
+          "delta_e_p10": 17.09,
+          "pixels": 55,
+          "share_low_contrast": 0.0545,
+          "weber_contrast": -0.4973
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 414,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.5
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 45.97,
+          "delta_e_p10": 14.16,
+          "pixels": 54,
+          "share_low_contrast": 0.0556,
+          "weber_contrast": -0.4442
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 341,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.4
+            ],
+            "height": 5,
+            "width": 11
+          },
+          "delta_e": 35.73,
+          "delta_e_p10": 11.25,
+          "pixels": 28,
+          "share_low_contrast": 0.1071,
+          "weber_contrast": -0.4569
+        }
+      },
+      "summary": {
+        "delta_e_min": 31.46,
+        "delta_e_p10_min": 10.26,
+        "pixels_max": 55,
+        "pixels_min": 27,
+        "share_low_contrast_max": 0.1852,
+        "weber_abs_min": 0.4149,
+        "weber_contrast_max": -0.4149,
+        "weber_contrast_min": -0.4973
+      },
+      "tree_pixels_in_view": 19724,
+      "view": "fixed"
+    },
+    "fixed-trees": {
+      "autozoom": false,
+      "azimuth_deg": 9.0,
+      "background": "trees",
+      "distance_m": 100.0,
+      "elevation_deg": 2.3,
+      "fov_deg": 50.0,
+      "horizon_row": 391.0,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.0086,
+            "trees": 0.9914
+          },
+          "background_saturation": 54.1,
+          "bbox_px": {
+            "centre": [
+              638.4,
+              360.7
+            ],
+            "height": 8,
+            "width": 9
+          },
+          "delta_e": 39.64,
+          "delta_e_p10": 10.73,
+          "pixels": 25,
+          "share_low_contrast": 0.0,
+          "weber_contrast": 0.3162
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 349,
+            "sky": 0.0315,
+            "trees": 0.9685
+          },
+          "background_saturation": 54.0,
+          "bbox_px": {
+            "centre": [
+              638.3,
+              358.4
+            ],
+            "height": 9,
+            "width": 8
+          },
+          "delta_e": 41.46,
+          "delta_e_p10": 13.3,
+          "pixels": 25,
+          "share_low_contrast": 0.0,
+          "weber_contrast": 0.2699
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 325,
+            "sky": 0.0769,
+            "trees": 0.9231
+          },
+          "background_saturation": 51.9,
+          "bbox_px": {
+            "centre": [
+              637.4,
+              359.5
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 41.02,
+          "delta_e_p10": 12.51,
+          "pixels": 24,
+          "share_low_contrast": 0.0417,
+          "weber_contrast": -0.0536
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 418,
+            "sky": 0.0837,
+            "trees": 0.9163
+          },
+          "background_saturation": 50.6,
+          "bbox_px": {
+            "centre": [
+              637.9,
+              359.4
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 58.75,
+          "delta_e_p10": 30.41,
+          "pixels": 54,
+          "share_low_contrast": 0.0741,
+          "weber_contrast": 0.1677
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 419,
+            "sky": 0.0835,
+            "trees": 0.9165
+          },
+          "background_saturation": 50.6,
+          "bbox_px": {
+            "centre": [
+              638.0,
+              359.5
+            ],
+            "height": 12,
+            "width": 10
+          },
+          "delta_e": 56.31,
+          "delta_e_p10": 26.46,
+          "pixels": 54,
+          "share_low_contrast": 0.0926,
+          "weber_contrast": 0.2216
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 326,
+            "sky": 0.089,
+            "trees": 0.911
+          },
+          "background_saturation": 51.7,
+          "bbox_px": {
+            "centre": [
+              637.8,
+              359.5
+            ],
+            "height": 4,
+            "width": 11
+          },
+          "delta_e": 37.02,
+          "delta_e_p10": 11.1,
+          "pixels": 24,
+          "share_low_contrast": 0.0417,
+          "weber_contrast": -0.0479
+        }
+      },
+      "summary": {
+        "delta_e_min": 37.02,
+        "delta_e_p10_min": 10.73,
+        "pixels_max": 54,
+        "pixels_min": 24,
+        "share_low_contrast_max": 0.0926,
+        "weber_abs_min": 0.0479,
+        "weber_contrast_max": 0.3162,
+        "weber_contrast_min": -0.0536
+      },
+      "tree_pixels_in_view": 19664,
+      "view": "fixed"
+    },
+    "game-ground": {
+      "autozoom": true,
+      "azimuth_deg": 9.0,
+      "background": "ground",
+      "distance_m": 100.0,
+      "elevation_deg": -0.5,
+      "fov_deg": 20.7054100036621,
+      "horizon_row": 342.8,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.9897,
+            "other": 0.0,
+            "pixels": 679,
+            "sky": 0.0,
+            "trees": 0.0103
+          },
+          "background_saturation": 57.9,
+          "bbox_px": {
+            "centre": [
+              636.4,
+              362.4
+            ],
+            "height": 20,
+            "width": 22
+          },
+          "delta_e": 58.29,
+          "delta_e_p10": 14.37,
+          "pixels": 94,
+          "share_low_contrast": 0.0957,
+          "weber_contrast": 0.649
+        },
+        "dive": {
+          "background": {
+            "ground": 0.8616,
+            "other": 0.0,
+            "pixels": 679,
+            "sky": 0.0059,
+            "trees": 0.1325
+          },
+          "background_saturation": 52.7,
+          "bbox_px": {
+            "centre": [
+              636.6,
+              356.4
+            ],
+            "height": 22,
+            "width": 20
+          },
+          "delta_e": 57.34,
+          "delta_e_p10": 13.72,
+          "pixels": 94,
+          "share_low_contrast": 0.117,
+          "weber_contrast": 0.5934
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.9798,
+            "other": 0.0,
+            "pixels": 643,
+            "sky": 0.0,
+            "trees": 0.0202
+          },
+          "background_saturation": 55.2,
+          "bbox_px": {
+            "centre": [
+              634.6,
+              359.7
+            ],
+            "height": 9,
+            "width": 27
+          },
+          "delta_e": 57.61,
+          "delta_e_p10": 11.54,
+          "pixels": 99,
+          "share_low_contrast": 0.1414,
+          "weber_contrast": 0.7208
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.8739,
+            "other": 0.0,
+            "pixels": 904,
+            "sky": 0.0111,
+            "trees": 0.115
+          },
+          "background_saturation": 54.5,
+          "bbox_px": {
+            "centre": [
+              636.1,
+              359.5
+            ],
+            "height": 30,
+            "width": 26
+          },
+          "delta_e": 69.09,
+          "delta_e_p10": 31.32,
+          "pixels": 289,
+          "share_low_contrast": 0.0727,
+          "weber_contrast": 0.6092
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.8739,
+            "other": 0.0,
+            "pixels": 904,
+            "sky": 0.0111,
+            "trees": 0.115
+          },
+          "background_saturation": 54.6,
+          "bbox_px": {
+            "centre": [
+              636.2,
+              359.5
+            ],
+            "height": 30,
+            "width": 26
+          },
+          "delta_e": 69.02,
+          "delta_e_p10": 31.13,
+          "pixels": 290,
+          "share_low_contrast": 0.069,
+          "weber_contrast": 0.592
+        },
+        "level": {
+          "background": {
+            "ground": 0.9798,
+            "other": 0.0,
+            "pixels": 643,
+            "sky": 0.0,
+            "trees": 0.0202
+          },
+          "background_saturation": 55.1,
+          "bbox_px": {
+            "centre": [
+              634.9,
+              359.3
+            ],
+            "height": 9,
+            "width": 27
+          },
+          "delta_e": 56.34,
+          "delta_e_p10": 12.96,
+          "pixels": 97,
+          "share_low_contrast": 0.2474,
+          "weber_contrast": 0.7058
+        }
+      },
+      "summary": {
+        "delta_e_min": 56.34,
+        "delta_e_p10_min": 11.54,
+        "pixels_max": 290,
+        "pixels_min": 94,
+        "share_low_contrast_max": 0.2474,
+        "weber_abs_min": 0.592,
+        "weber_contrast_max": 0.7208,
+        "weber_contrast_min": 0.592
+      },
+      "tree_pixels_in_view": 51285,
+      "view": "game"
+    },
+    "game-horizon": {
+      "autozoom": true,
+      "azimuth_deg": 9.0,
+      "background": "horizon",
+      "distance_m": 100.0,
+      "elevation_deg": 4.1,
+      "fov_deg": 20.7054100036621,
+      "horizon_row": 501.3,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 694,
+            "sky": 0.2205,
+            "trees": 0.7795
+          },
+          "background_saturation": 51.8,
+          "bbox_px": {
+            "centre": [
+              636.6,
+              362.2
+            ],
+            "height": 21,
+            "width": 22
+          },
+          "delta_e": 54.34,
+          "delta_e_p10": 9.62,
+          "pixels": 104,
+          "share_low_contrast": 0.0673,
+          "weber_contrast": -0.1323
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 688,
+            "sky": 0.4637,
+            "trees": 0.5363
+          },
+          "background_saturation": 44.2,
+          "bbox_px": {
+            "centre": [
+              636.7,
+              356.5
+            ],
+            "height": 22,
+            "width": 21
+          },
+          "delta_e": 46.89,
+          "delta_e_p10": 9.16,
+          "pixels": 104,
+          "share_low_contrast": 0.1058,
+          "weber_contrast": -0.342
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 652,
+            "sky": 0.316,
+            "trees": 0.684
+          },
+          "background_saturation": 47.4,
+          "bbox_px": {
+            "centre": [
+              634.7,
+              359.8
+            ],
+            "height": 9,
+            "width": 27
+          },
+          "delta_e": 53.95,
+          "delta_e_p10": 10.81,
+          "pixels": 106,
+          "share_low_contrast": 0.0755,
+          "weber_contrast": -0.1857
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 904,
+            "sky": 0.3761,
+            "trees": 0.6239
+          },
+          "background_saturation": 45.4,
+          "bbox_px": {
+            "centre": [
+              636.2,
+              359.5
+            ],
+            "height": 30,
+            "width": 26
+          },
+          "delta_e": 63.81,
+          "delta_e_p10": 18.92,
+          "pixels": 289,
+          "share_low_contrast": 0.0519,
+          "weber_contrast": -0.2737
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 916,
+            "sky": 0.3821,
+            "trees": 0.6179
+          },
+          "background_saturation": 45.2,
+          "bbox_px": {
+            "centre": [
+              636.1,
+              359.5
+            ],
+            "height": 30,
+            "width": 27
+          },
+          "delta_e": 63.37,
+          "delta_e_p10": 20.3,
+          "pixels": 290,
+          "share_low_contrast": 0.0586,
+          "weber_contrast": -0.2909
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 663,
+            "sky": 0.3002,
+            "trees": 0.6998
+          },
+          "background_saturation": 48.2,
+          "bbox_px": {
+            "centre": [
+              635.2,
+              359.2
+            ],
+            "height": 10,
+            "width": 27
+          },
+          "delta_e": 50.1,
+          "delta_e_p10": 9.39,
+          "pixels": 106,
+          "share_low_contrast": 0.0849,
+          "weber_contrast": -0.1496
+        }
+      },
+      "summary": {
+        "delta_e_min": 46.89,
+        "delta_e_p10_min": 9.16,
+        "pixels_max": 290,
+        "pixels_min": 104,
+        "share_low_contrast_max": 0.1058,
+        "weber_abs_min": 0.1323,
+        "weber_contrast_max": -0.1323,
+        "weber_contrast_min": -0.342
+      },
+      "tree_pixels_in_view": 51333,
+      "view": "game"
+    },
+    "game-sky": {
+      "autozoom": true,
+      "azimuth_deg": 9.0,
+      "background": "sky",
+      "distance_m": 100.0,
+      "elevation_deg": 10.0,
+      "fov_deg": 20.7054100036621,
+      "horizon_row": 707.5,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 698,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              636.8,
+              361.8
+            ],
+            "height": 21,
+            "width": 22
+          },
+          "delta_e": 44.44,
+          "delta_e_p10": 10.28,
+          "pixels": 115,
+          "share_low_contrast": 0.0696,
+          "weber_contrast": -0.4732
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 686,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.5,
+          "bbox_px": {
+            "centre": [
+              636.8,
+              356.4
+            ],
+            "height": 22,
+            "width": 21
+          },
+          "delta_e": 43.88,
+          "delta_e_p10": 10.36,
+          "pixels": 121,
+          "share_low_contrast": 0.124,
+          "weber_contrast": -0.4713
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 672,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.4,
+          "bbox_px": {
+            "centre": [
+              635.1,
+              360.0
+            ],
+            "height": 11,
+            "width": 27
+          },
+          "delta_e": 43.54,
+          "delta_e_p10": 9.01,
+          "pixels": 119,
+          "share_low_contrast": 0.0672,
+          "weber_contrast": -0.4749
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 917,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              636.2,
+              359.7
+            ],
+            "height": 30,
+            "width": 27
+          },
+          "delta_e": 57.5,
+          "delta_e_p10": 11.42,
+          "pixels": 286,
+          "share_low_contrast": 0.0524,
+          "weber_contrast": -0.5202
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 917,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.3,
+          "bbox_px": {
+            "centre": [
+              636.2,
+              359.4
+            ],
+            "height": 30,
+            "width": 27
+          },
+          "delta_e": 55.9,
+          "delta_e_p10": 11.26,
+          "pixels": 288,
+          "share_low_contrast": 0.0625,
+          "weber_contrast": -0.5173
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 672,
+            "sky": 1.0,
+            "trees": 0.0
+          },
+          "background_saturation": 32.4,
+          "bbox_px": {
+            "centre": [
+              635.5,
+              359.0
+            ],
+            "height": 11,
+            "width": 27
+          },
+          "delta_e": 48.45,
+          "delta_e_p10": 9.03,
+          "pixels": 119,
+          "share_low_contrast": 0.0756,
+          "weber_contrast": -0.5058
+        }
+      },
+      "summary": {
+        "delta_e_min": 43.54,
+        "delta_e_p10_min": 9.01,
+        "pixels_max": 288,
+        "pixels_min": 115,
+        "share_low_contrast_max": 0.124,
+        "weber_abs_min": 0.4713,
+        "weber_contrast_max": -0.4713,
+        "weber_contrast_min": -0.5202
+      },
+      "tree_pixels_in_view": 52720,
+      "view": "game"
+    },
+    "game-trees": {
+      "autozoom": true,
+      "azimuth_deg": 9.0,
+      "background": "trees",
+      "distance_m": 100.0,
+      "elevation_deg": 2.3,
+      "fov_deg": 20.7054100036621,
+      "horizon_row": 439.1,
+      "poses": {
+        "climb": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 679,
+            "sky": 0.0015,
+            "trees": 0.9985
+          },
+          "background_saturation": 58.8,
+          "bbox_px": {
+            "centre": [
+              636.5,
+              362.1
+            ],
+            "height": 20,
+            "width": 22
+          },
+          "delta_e": 54.83,
+          "delta_e_p10": 13.48,
+          "pixels": 99,
+          "share_low_contrast": 0.0808,
+          "weber_contrast": 0.6088
+        },
+        "dive": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 676,
+            "sky": 0.003,
+            "trees": 0.997
+          },
+          "background_saturation": 58.9,
+          "bbox_px": {
+            "centre": [
+              636.8,
+              356.5
+            ],
+            "height": 22,
+            "width": 20
+          },
+          "delta_e": 55.04,
+          "delta_e_p10": 12.86,
+          "pixels": 102,
+          "share_low_contrast": 0.0588,
+          "weber_contrast": 0.6288
+        },
+        "inverted": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 641,
+            "sky": 0.0031,
+            "trees": 0.9969
+          },
+          "background_saturation": 57.0,
+          "bbox_px": {
+            "centre": [
+              634.6,
+              359.7
+            ],
+            "height": 9,
+            "width": 27
+          },
+          "delta_e": 55.68,
+          "delta_e_p10": 14.37,
+          "pixels": 101,
+          "share_low_contrast": 0.0792,
+          "weber_contrast": 0.7387
+        },
+        "knife_left": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 904,
+            "sky": 0.0022,
+            "trees": 0.9978
+          },
+          "background_saturation": 58.3,
+          "bbox_px": {
+            "centre": [
+              636.1,
+              359.5
+            ],
+            "height": 30,
+            "width": 26
+          },
+          "delta_e": 65.4,
+          "delta_e_p10": 30.62,
+          "pixels": 288,
+          "share_low_contrast": 0.0486,
+          "weber_contrast": 0.7009
+        },
+        "knife_right": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 916,
+            "sky": 0.0022,
+            "trees": 0.9978
+          },
+          "background_saturation": 58.2,
+          "bbox_px": {
+            "centre": [
+              636.1,
+              359.5
+            ],
+            "height": 30,
+            "width": 27
+          },
+          "delta_e": 65.12,
+          "delta_e_p10": 30.59,
+          "pixels": 291,
+          "share_low_contrast": 0.0653,
+          "weber_contrast": 0.6926
+        },
+        "level": {
+          "background": {
+            "ground": 0.0,
+            "other": 0.0,
+            "pixels": 639,
+            "sky": 0.0031,
+            "trees": 0.9969
+          },
+          "background_saturation": 56.2,
+          "bbox_px": {
+            "centre": [
+              635.0,
+              359.3
+            ],
+            "height": 9,
+            "width": 27
+          },
+          "delta_e": 56.08,
+          "delta_e_p10": 13.53,
+          "pixels": 101,
+          "share_low_contrast": 0.1188,
+          "weber_contrast": 0.6866
+        }
+      },
+      "summary": {
+        "delta_e_min": 54.83,
+        "delta_e_p10_min": 12.86,
+        "pixels_max": 291,
+        "pixels_min": 99,
+        "share_low_contrast_max": 0.1188,
+        "weber_abs_min": 0.6088,
+        "weber_contrast_max": 0.7387,
+        "weber_contrast_min": 0.6088
+      },
+      "tree_pixels_in_view": 51212,
+      "view": "game"
+    }
+  },
+  "metric": "compare_captures.measure_pair: airplane = pixels that differ from the view without it; ring = 6 px around it; trees = pixels that differ between the views with and without the treeline; sky/ground split at the recorded camera's horizon row",
+  "views": {
+    "fixed": {
+      "autozoom": false
+    },
+    "game": {
+      "autozoom": true
+    }
+  }
+}
