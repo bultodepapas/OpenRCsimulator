@@ -1,0 +1,768 @@
+{
+	"aircraft": [
+		{
+			"id": "jensen-das-ugly-stik-60",
+			"regimes": {
+				"ground": {
+					"component_us_per_call_median": {
+						"aero": 40.99166666666667,
+						"dynamics": 54.27916666666667,
+						"ground": 9.844166666666666,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "0fc63ce911bb48456cea0edd83f7a582dcdae5a261bda9dd44eb24229806c285",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 417.525,
+						"median_us_per_tick": 364.2208333333333,
+						"min_us_per_tick": 350.0083333333333,
+						"p95_us_per_tick": 417.525,
+						"samples_us_per_tick": [
+							368.46666666666664,
+							350.0083333333333,
+							362.25,
+							360.6,
+							367.28333333333336,
+							366.1333333333333,
+							368.7583333333333,
+							354.89166666666665,
+							355.875,
+							417.525,
+							361.44166666666666,
+							362.30833333333334,
+							377.2916666666667,
+							388.4583333333333,
+							403.40833333333336,
+							356.075
+						]
+					}
+				},
+				"spin": {
+					"component_us_per_call_median": {
+						"aero": 91.44916666666667,
+						"dynamics": 107.755,
+						"ground": 0.6141666666666666,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "06c271480e06327cfccb7c2c91ceb8b3308ca2184b79efca5bac4ac96ada6289",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 664.4083333333333,
+						"median_us_per_tick": 509.51666666666665,
+						"min_us_per_tick": 478.3666666666667,
+						"p95_us_per_tick": 664.4083333333333,
+						"samples_us_per_tick": [
+							478.3666666666667,
+							528.8,
+							498.425,
+							479.6333333333333,
+							504.28333333333336,
+							528.9333333333333,
+							503.59166666666664,
+							526.725,
+							530.45,
+							489.51666666666665,
+							619.8916666666667,
+							664.4083333333333,
+							498.1166666666667,
+							494.43333333333334,
+							523.425,
+							514.75
+						]
+					}
+				},
+				"stall": {
+					"component_us_per_call_median": {
+						"aero": 94.96333333333334,
+						"dynamics": 111.99,
+						"ground": 0.6333333333333333,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "cc1b3f5ebe081d71fcfd8cf8e78973002dc235fae5a0e0072a3f19f39843eacc",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 506.7,
+						"median_us_per_tick": 424.14583333333337,
+						"min_us_per_tick": 386.78333333333336,
+						"p95_us_per_tick": 506.7,
+						"samples_us_per_tick": [
+							421.43333333333334,
+							386.8833333333333,
+							412.28333333333336,
+							446.8833333333333,
+							421.15,
+							399.44166666666666,
+							386.78333333333336,
+							432.9166666666667,
+							506.7,
+							432.4,
+							412.19166666666666,
+							427.45,
+							428.8,
+							415.48333333333335,
+							428.725,
+							426.85833333333335
+						]
+					}
+				},
+				"trim": {
+					"component_us_per_call_median": {
+						"aero": 45.3575,
+						"dynamics": 64.2175,
+						"ground": 0.6466666666666666,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "902b8aa8eab9adcc48d25436c239ec8ca497d8d6b1537e1e9d2949edfe196535",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 15.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 428.425,
+						"median_us_per_tick": 356.4458333333333,
+						"min_us_per_tick": 318.69166666666666,
+						"p95_us_per_tick": 428.425,
+						"samples_us_per_tick": [
+							369.575,
+							336.96666666666664,
+							327.95,
+							330.2,
+							370.69166666666666,
+							387.85,
+							373.6,
+							332.60833333333335,
+							343.31666666666666,
+							378.925,
+							428.425,
+							320.21666666666664,
+							318.69166666666666,
+							387.8666666666667,
+							369.65833333333336,
+							341.4916666666667
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "gp-extra-300s-60",
+			"regimes": {
+				"ground": {
+					"component_us_per_call_median": {
+						"aero": 41.998333333333335,
+						"dynamics": 58.641666666666666,
+						"ground": 0.5133333333333333,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "bac0f5704564ab0396fd143d88e339c6643f1bb4e0ed289efbac26d9a29b808e",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 531.0333333333333,
+						"median_us_per_tick": 486.5208333333333,
+						"min_us_per_tick": 445.9,
+						"p95_us_per_tick": 531.0333333333333,
+						"samples_us_per_tick": [
+							491.7583333333333,
+							531.0333333333333,
+							464.14166666666665,
+							445.9,
+							526.2166666666667,
+							529.4,
+							466.5416666666667,
+							464.76666666666665,
+							494.1,
+							461.10833333333335,
+							487.21666666666664,
+							501.53333333333336,
+							469.73333333333335,
+							471.93333333333334,
+							485.825,
+							511.1166666666667
+						]
+					}
+				},
+				"spin": {
+					"component_us_per_call_median": {
+						"aero": 94.81166666666667,
+						"dynamics": 102.8325,
+						"ground": 0.5175,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "fa4bdb3ed4905e47fac2ef98e5fd80c260ad32425b6510e1eded098739c1e826",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 702.8916666666667,
+						"median_us_per_tick": 543.3375000000001,
+						"min_us_per_tick": 488.875,
+						"p95_us_per_tick": 702.8916666666667,
+						"samples_us_per_tick": [
+							491.21666666666664,
+							524.875,
+							505.0,
+							502.3833333333333,
+							558.0416666666666,
+							545.775,
+							545.1333333333333,
+							543.4583333333334,
+							555.0083333333333,
+							509.3833333333333,
+							702.8916666666667,
+							548.6333333333333,
+							488.875,
+							541.2166666666667,
+							543.2166666666667,
+							593.4
+						]
+					}
+				},
+				"stall": {
+					"component_us_per_call_median": {
+						"aero": 90.03583333333333,
+						"dynamics": 115.58083333333333,
+						"ground": 0.5866666666666667,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "47737e1866d4de477847e4264f6b05047b00277af28ac819cd9e3f4d0e497bda",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 506.96666666666664,
+						"median_us_per_tick": 444.1333333333333,
+						"min_us_per_tick": 420.9916666666667,
+						"p95_us_per_tick": 506.96666666666664,
+						"samples_us_per_tick": [
+							422.7083333333333,
+							471.26666666666665,
+							506.96666666666664,
+							422.98333333333335,
+							467.43333333333334,
+							486.71666666666664,
+							421.19166666666666,
+							424.55,
+							453.95,
+							479.8666666666667,
+							434.31666666666666,
+							420.9916666666667,
+							495.53333333333336,
+							465.31666666666666,
+							433.65833333333336,
+							433.73333333333335
+						]
+					}
+				},
+				"trim": {
+					"component_us_per_call_median": {
+						"aero": 45.93333333333333,
+						"dynamics": 64.88666666666667,
+						"ground": 0.5308333333333334,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "48a4fa32abd0259232cbe7f685e70305a156498ff1c9b400c1b699bd9080b6d2",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 17.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 461.21666666666664,
+						"median_us_per_tick": 359.74583333333334,
+						"min_us_per_tick": 339.725,
+						"p95_us_per_tick": 461.21666666666664,
+						"samples_us_per_tick": [
+							339.725,
+							339.9,
+							375.2916666666667,
+							461.21666666666664,
+							447.14166666666665,
+							340.28333333333336,
+							357.96666666666664,
+							362.96666666666664,
+							358.80833333333334,
+							347.46666666666664,
+							384.4,
+							388.1666666666667,
+							358.8333333333333,
+							432.8333333333333,
+							360.65833333333336,
+							343.19166666666666
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "p51d-mustang-120",
+			"regimes": {
+				"ground": {
+					"component_us_per_call_median": {
+						"aero": 45.814166666666665,
+						"dynamics": 59.861666666666665,
+						"ground": 7.928333333333334,
+						"slipstream": 0.7716666666666666
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "3f6e7f0e4b5ee00cccc0ead67c01242a44f53e31679dcca5828c324b25a8582f",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 786.6916666666667,
+						"median_us_per_tick": 600.9875,
+						"min_us_per_tick": 556.5,
+						"p95_us_per_tick": 786.6916666666667,
+						"samples_us_per_tick": [
+							659.2833333333333,
+							567.5583333333333,
+							601.2666666666667,
+							668.9833333333333,
+							579.325,
+							600.7083333333334,
+							627.225,
+							556.5,
+							610.125,
+							588.6083333333333,
+							786.6916666666667,
+							745.5583333333333,
+							585.8833333333333,
+							666.125,
+							599.6583333333333,
+							563.7083333333334
+						]
+					}
+				},
+				"spin": {
+					"component_us_per_call_median": {
+						"aero": 89.6175,
+						"dynamics": 111.14666666666666,
+						"ground": 0.73,
+						"slipstream": 0.8725
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "e18227231148ac8177d7cb748f465ed65ae829112495af3ad9372e3b5314b2cd",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 598.5916666666667,
+						"median_us_per_tick": 523.4708333333333,
+						"min_us_per_tick": 490.725,
+						"p95_us_per_tick": 598.5916666666667,
+						"samples_us_per_tick": [
+							554.9583333333334,
+							503.2,
+							497.5083333333333,
+							598.5916666666667,
+							516.125,
+							527.425,
+							572.6583333333333,
+							490.725,
+							501.7583333333333,
+							528.225,
+							508.73333333333335,
+							533.1333333333333,
+							524.3,
+							518.6833333333333,
+							522.6416666666667,
+							547.425
+						]
+					}
+				},
+				"stall": {
+					"component_us_per_call_median": {
+						"aero": 92.955,
+						"dynamics": 277.35333333333335,
+						"ground": 0.5716666666666667,
+						"slipstream": 144.26666666666668
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "5262c2c27720888e6f4d6baf08425eab19b8bf89338b19a00f3d0f67517200e0",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 1543.5166666666667,
+						"median_us_per_tick": 1276.525,
+						"min_us_per_tick": 1110.5833333333333,
+						"p95_us_per_tick": 1543.5166666666667,
+						"samples_us_per_tick": [
+							1242.7666666666667,
+							1332.7333333333333,
+							1543.5166666666667,
+							1274.1833333333334,
+							1428.9583333333333,
+							1232.2083333333333,
+							1208.8333333333333,
+							1218.175,
+							1236.4666666666667,
+							1264.7083333333333,
+							1306.525,
+							1110.5833333333333,
+							1508.1083333333333,
+							1300.0583333333334,
+							1374.1166666666666,
+							1278.8666666666666
+						]
+					}
+				},
+				"trim": {
+					"component_us_per_call_median": {
+						"aero": 47.57416666666666,
+						"dynamics": 261.255,
+						"ground": 0.8308333333333333,
+						"slipstream": 158.8075
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "389d0cd04c7af561dba41c54495c4354318b09e730de4a99101b1455bbae5044",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 25.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 1295.4666666666667,
+						"median_us_per_tick": 1125.1291666666666,
+						"min_us_per_tick": 965.55,
+						"p95_us_per_tick": 1295.4666666666667,
+						"samples_us_per_tick": [
+							1295.4666666666667,
+							1102.9166666666667,
+							1042.25,
+							1122.6,
+							1089.8583333333333,
+							1166.1666666666667,
+							1203.375,
+							1067.8583333333333,
+							965.55,
+							1172.675,
+							1188.7916666666667,
+							1105.3583333333333,
+							1126.2916666666667,
+							1257.3083333333334,
+							1123.9666666666667,
+							1162.2833333333333
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regimes": {
+				"ground": {
+					"component_us_per_call_median": {
+						"aero": 43.9425,
+						"dynamics": 56.73166666666667,
+						"ground": 0.5433333333333333,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "0f8e73c9dbf4a7608e1d41db8c67d8a9ca66815b7fcf530e45879f11a226a503",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 613.4416666666667,
+						"median_us_per_tick": 504.91666666666663,
+						"min_us_per_tick": 470.78333333333336,
+						"p95_us_per_tick": 613.4416666666667,
+						"samples_us_per_tick": [
+							500.96666666666664,
+							599.8083333333333,
+							511.275,
+							561.825,
+							595.1083333333333,
+							485.6166666666667,
+							471.025,
+							595.625,
+							508.8666666666667,
+							498.8333333333333,
+							613.4416666666667,
+							531.3,
+							478.2583333333333,
+							487.5833333333333,
+							491.59166666666664,
+							470.78333333333336
+						]
+					}
+				},
+				"spin": {
+					"component_us_per_call_median": {
+						"aero": 87.56666666666666,
+						"dynamics": 105.10833333333333,
+						"ground": 0.5175,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "03f77dec155d8a2eba057c0470e61c48ac57f90cd11a74dbe2768095729c8ff5",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 22.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 2.2,
+						"r_radps": 1.2,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 615.8083333333333,
+						"median_us_per_tick": 506.2375,
+						"min_us_per_tick": 483.5416666666667,
+						"p95_us_per_tick": 615.8083333333333,
+						"samples_us_per_tick": [
+							542.2333333333333,
+							511.325,
+							483.5416666666667,
+							507.35833333333335,
+							615.8083333333333,
+							494.0,
+							563.7833333333333,
+							578.3083333333333,
+							503.85833333333335,
+							496.73333333333335,
+							555.5916666666667,
+							494.725,
+							503.3333333333333,
+							531.825,
+							504.53333333333336,
+							505.1166666666667
+						]
+					}
+				},
+				"stall": {
+					"component_us_per_call_median": {
+						"aero": 91.67833333333333,
+						"dynamics": 119.3375,
+						"ground": 0.9325,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "efcc81bf3da8b9b9188cc43765c48b32ef00120900470d571fe4d5b2575fdfc0",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 557.1833333333333,
+						"median_us_per_tick": 494.6333333333333,
+						"min_us_per_tick": 438.05833333333334,
+						"p95_us_per_tick": 557.1833333333333,
+						"samples_us_per_tick": [
+							518.6,
+							443.5833333333333,
+							545.4416666666667,
+							526.025,
+							446.56666666666666,
+							503.3666666666667,
+							520.0916666666667,
+							456.775,
+							455.89166666666665,
+							512.4,
+							469.625,
+							438.05833333333334,
+							485.9,
+							505.55,
+							449.80833333333334,
+							557.1833333333333
+						]
+					}
+				},
+				"trim": {
+					"component_us_per_call_median": {
+						"aero": 46.901666666666664,
+						"dynamics": 75.8825,
+						"ground": 0.5508333333333333,
+						"slipstream": 0.0
+					},
+					"fingerprint": {
+						"fault": "",
+						"sha256": "777a450133c69e0ae015133e35f216da67e82db0f0bc163b2cc61ec84efa55af",
+						"ticks": 960
+					},
+					"fixture": {
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0,
+						"speed_mps": 29.0
+					},
+					"timing": {
+						"fault": "",
+						"max_us_per_tick": 466.73333333333335,
+						"median_us_per_tick": 366.31666666666666,
+						"min_us_per_tick": 343.80833333333334,
+						"p95_us_per_tick": 466.73333333333335,
+						"samples_us_per_tick": [
+							397.6333333333333,
+							362.85833333333335,
+							391.19166666666666,
+							407.53333333333336,
+							369.775,
+							352.6,
+							361.35833333333335,
+							353.0833333333333,
+							343.80833333333334,
+							361.275,
+							358.275,
+							346.03333333333336,
+							404.125,
+							416.23333333333335,
+							413.7083333333333,
+							466.73333333333335
+						]
+					}
+				}
+			}
+		}
+	],
+	"fingerprint_method": "SHA-256 over the initial and every subsequent PackedFloat64Array state, auxiliary state, and start-of-tick loads in native float64 byte order.",
+	"fingerprint_ticks": 960,
+	"format": "openrc-h4h5-bench v1",
+	"samples": 16,
+	"spin_fixture": "Synthetic performance fixture: alpha 22 deg, body p 2.2 rad/s and r 1.2 rad/s, full up/right, engine stopped. Not handling evidence.",
+	"tick_hz": 240.0,
+	"ticks_per_sample": 120,
+	"timing_method": "Repeated batches from a restored fixture; each sample is the whole-session sim.step average over ticks_per_sample ticks."
+}

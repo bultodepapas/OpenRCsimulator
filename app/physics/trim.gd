@@ -19,9 +19,9 @@ const N := 6
 
 ## Trimmed state: airspeed V, angle of attack alpha, sideslip beta, path angle gamma, heading yaw, wings level.
 static func state_for(V: float, alpha: float, gamma: float, yaw: float, pos_ned: PackedFloat64Array, beta := 0.0) -> PackedFloat64Array:
-	var u := V * cos(alpha) * cos(beta)
-	var v := V * sin(beta)
-	var w := V * sin(alpha) * cos(beta)
+	var u := V * M.cos_(alpha) * M.cos_(beta)
+	var v := V * M.sin_(beta)
+	var w := V * M.sin_(alpha) * M.cos_(beta)
 	return RB.make_state(pos_ned, M.v3(u, v, w), M.q_from_euler(yaw, gamma + alpha, 0.0), M.v3(0, 0, 0))
 
 
@@ -127,7 +127,7 @@ static func _norm(v: PackedFloat64Array) -> float:
 	var acc := 0.0
 	for x in v:
 		acc += x * x
-	return sqrt(acc)
+	return M.sqrt_(acc)
 
 
 ## Solve A·x = b (A as an Array of PackedFloat64Array rows) by Gaussian elimination with partial pivoting.

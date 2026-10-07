@@ -1,0 +1,30 @@
+{
+  "step": "H8",
+  "base_commit": "21fc4348c5c7d00cd67c9144f4fffa64c3ed3297",
+  "focused_results": [
+    {
+      "log": "h8-checkpoints.log",
+      "checks_or_flights": 90,
+      "sha256": "f919e6a7e322fcdc6dae31614f4ee02e26893d5a1476bc6cb42d560d65fdb349"
+    },
+    {
+      "log": "h8-guards.log",
+      "checks_or_flights": 32,
+      "sha256": "1b732d6eda9a28fdd0cf11efe64cfe5e3c88c10a229cde4708808d218ce796ec"
+    },
+    {
+      "log": "h8-stage.log",
+      "checks_or_flights": 22,
+      "sha256": "25dd32591421e6684968b99952c6e38171a4dcf241ca3cb601c3ef79146b2a3e"
+    },
+    {
+      "log": "h8-meta.log",
+      "checks_or_flights": 128,
+      "sha256": "3c3974f1e9084b39d336d75335d468fca893db161f9af5cc9ab26113ac3a6541"
+    }
+  ],
+  "full_suite": {
+    "passed": true,
+    "evidence": "../H8/integration-verification.json"
+  }
+}

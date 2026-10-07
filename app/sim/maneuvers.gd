@@ -53,7 +53,7 @@ static func _altitude_hold(s: PackedFloat64Array, gains := SLOW_FLIGHT) -> Dicti
 
 ## Adds rudder against sideslip: β > 0 (wind from the right) → right rudder.
 static func _coordinated(sticks: Dictionary, s: PackedFloat64Array) -> Dictionary:
-	var beta := atan2(s[4], sqrt(s[3] * s[3] + s[5] * s[5])) # body velocity [u, v, w] at state[3..5]
+	var beta := M.atan2_(s[4], M.sqrt_(s[3] * s[3] + s[5] * s[5])) # body velocity [u, v, w] at state[3..5]
 	sticks.yaw = clampf(sticks.yaw + COORDINATION_GAIN * beta, -1.0, 1.0)
 	return sticks
 

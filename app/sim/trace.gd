@@ -38,7 +38,7 @@ func value(row: int, column: String) -> float:
 func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0])) -> void:
 	var q := M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var e := M.q_to_euler(q)
-	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
+	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	_rows.append_array(PackedFloat64Array([
 		tick, t,
 		s[RB.POS], s[RB.POS + 1], s[RB.POS + 2], -s[RB.POS + 2],

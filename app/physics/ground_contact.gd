@@ -11,6 +11,8 @@
 # A contact above the ground adds exactly 0.0, so flight in the air is bit-identical with or without gear.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 const RB := preload("res://physics/rigid_body.gd")
 
 ## Below this wheel rolling speed (m/s) the slip angle is measured against it instead of |v_long|: the side force
@@ -70,11 +72,11 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 			continue # a damper never pulls the wheel into the ground
 		# E2: tyre forces in the ground plane. Wheel heading in body axes (cos δ, sin δ, 0), projected on the ground.
 		var delta: float = steer * float(contact.get("max_steering", 0.0))
-		var hx := cos(delta)
-		var hy := sin(delta)
+		var hx := M.cos_(delta)
+		var hy := M.sin_(delta)
 		var hn := north[0] * hx + north[1] * hy
 		var he := east[0] * hx + east[1] * hy
-		var h_len := sqrt(hn * hn + he * he)
+		var h_len := M.sqrt_(hn * hn + he * he)
 		var f_n := 0.0
 		var f_e := 0.0
 		if mu > 0.0 and h_len > 1e-6: # a wheel standing on its edge (heading vertical) gets the normal force only
@@ -93,7 +95,7 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 				c *= surfaces[i + 5]
 			var f_long := -c * f_up * clampf(v_long / maxf(ROLL_CREEP, c * ROLL_CREEP_PER_CRR), -1.0, 1.0)
 			var f_lat := -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
-			var f_t := sqrt(f_long * f_long + f_lat * f_lat)
+			var f_t := M.sqrt_(f_long * f_long + f_lat * f_lat)
 			if f_t > mu_n: # friction circle
 				f_long *= mu_n / f_t
 				f_lat *= mu_n / f_t

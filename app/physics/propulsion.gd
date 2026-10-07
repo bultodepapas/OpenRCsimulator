@@ -65,7 +65,7 @@ static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> f
 	var D: float = prop.diameter
 	var n := rpm / 60.0
 	var J := maxf(u, 0.0) / (n * D)
-	return coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * pow(D, 5) / TAU
+	return coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * M.pow_(D, 5) / TAU
 
 
 ## Engine output torque (N·m) at rpm for throttle 0…1 (shaft model). The throttle admits indicated power
@@ -134,7 +134,7 @@ static func pfactor_moment(v_air: PackedFloat64Array, rpm: float, prop: Dictiona
 static func _crossflow(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float, key: String,
 		power: int) -> PackedFloat64Array:
 	var table: PackedFloat64Array = prop.get(key, PackedFloat64Array())
-	var speed := sqrt(M.dot(v_air, v_air))
+	var speed := M.sqrt_(M.dot(v_air, v_air))
 	if table.is_empty() or rpm < STOPPED_RPM or speed < 1e-6:
 		return M.v3(0.0, 0.0, 0.0)
 	var ax := axis(prop)
@@ -143,7 +143,7 @@ static func _crossflow(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, 
 	var D: float = prop.diameter
 	var n := rpm / 60.0
 	var J := maxf(along, 0.0) / (n * D)
-	return M.scale(cross, -coefficient(table, J, 0.0) * rho * n * n * pow(D, power) / speed)
+	return M.scale(cross, -coefficient(table, J, 0.0) * rho * n * n * M.pow_(D, power) / speed)
 
 
 ## Thrust (N, along the shaft), shaft torque (N·m) and advance ratio for air-relative body velocity v_air.
@@ -154,8 +154,8 @@ static func thrust_torque(v_air: PackedFloat64Array, rpm: float, prop: Dictionar
 	var n := rpm / 60.0
 	var u := v_air[0] if not prop.has("axis") else M.dot(v_air, prop.axis)
 	var J := maxf(u, 0.0) / (n * D)
-	var thrust := coefficient(prop.ct, J, CT_FLOOR) * rho * n * n * pow(D, 4)
-	var power := coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * n * pow(D, 5)
+	var thrust := coefficient(prop.ct, J, CT_FLOOR) * rho * n * n * M.pow_(D, 4)
+	var power := coefficient(prop.cp, J, _cp_floor(prop)) * rho * n * n * n * M.pow_(D, 5)
 	return PackedFloat64Array([thrust, power / (TAU * n), J])
 
 

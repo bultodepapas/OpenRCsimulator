@@ -26,6 +26,8 @@ var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 ## Auxiliary states advanced once per tick, before integration (e.g. [engine_rpm]). Held constant during RK4.
 var aux := PackedFloat64Array([0.0])
+## Discrete modes belong to the tick transaction, never the RK derivative. Layout owned by the session.
+var modes := PackedInt64Array()
 ## pre_step(aux, inputs, dt) -> PackedFloat64Array: new aux values. Runs at the fixed tick, so it stays deterministic.
 var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 	return a
@@ -36,6 +38,7 @@ var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Arra
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
 var tick := 0
+var _fixed_dt := 0.0
 var paused := false
 ## Stop stepping at this tick (-1 = never). Makes runs end at an exact tick, e.g. for replays.
 var stop_at_tick := -1
@@ -50,6 +53,13 @@ var _last_valid_previous := PackedFloat64Array()
 var _last_valid_aux := PackedFloat64Array()
 var _last_valid_inputs := PackedFloat64Array()
 var _last_valid_loads := PackedFloat64Array()
+var _last_valid_modes := PackedInt64Array()
+var _last_valid_tick := 0
+var _last_valid_stop := -1
+var _last_valid_mass := 1.0
+var _last_valid_gravity := 9.80665
+var _last_valid_inertia := PackedFloat64Array()
+const CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v1"
 
 const MIN_QUATERNION_NORM_SQ := 1e-24
 
@@ -81,6 +91,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 	state = next_state
 	previous = next_state.duplicate()
 	tick = 0
+	_fixed_dt = 1.0 / Engine.physics_ticks_per_second
 	_inertia_inv = next_inertia_inv
 	_inertia_cache = inertia.duplicate()
 	last_loads = reset_loads
@@ -91,7 +102,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 
 
 func dt() -> float:
-	return 1.0 / Engine.physics_ticks_per_second
+	return _fixed_dt if _fixed_dt > 0.0 else 1.0 / Engine.physics_ticks_per_second
 
 
 func time() -> float:
@@ -117,6 +128,9 @@ func step() -> void:
 		return
 	var started := Time.get_ticks_usec()
 	var t := time()
+	if _fixed_dt != 1.0 / Engine.physics_ticks_per_second:
+		_fail_safe("step rejected: fixed timestep changed; reset required")
+		return
 	if not state_is_valid(state):
 		_fail_safe("step rejected: current state is nonfinite, malformed, or has a degenerate quaternion")
 		return
@@ -125,7 +139,7 @@ func step() -> void:
 		return
 	if not _refresh_inertia_inverse():
 		return
-	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux):
+	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size():
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
 	var old_aux := aux.duplicate()
@@ -285,10 +299,22 @@ func _remember_valid_state() -> void:
 	_last_valid_aux = aux.duplicate()
 	_last_valid_inputs = inputs.duplicate()
 	_last_valid_loads = last_loads.duplicate()
+	_last_valid_modes = modes.duplicate()
+	_last_valid_tick = tick
+	_last_valid_stop = stop_at_tick
+	_last_valid_mass = mass
+	_last_valid_gravity = gravity
+	_last_valid_inertia = inertia.duplicate()
 
 
 func _restore_last_valid() -> void:
 	if state_is_valid(_last_valid_state):
+		tick = _last_valid_tick
+		stop_at_tick = _last_valid_stop
+		modes = _last_valid_modes.duplicate()
+		mass = _last_valid_mass
+		gravity = _last_valid_gravity
+		inertia = _last_valid_inertia.duplicate()
 		state = _last_valid_state.duplicate()
 		previous = _last_valid_previous.duplicate() if state_is_valid(_last_valid_previous) else state.duplicate()
 		if _array_is_finite(_last_valid_aux):
@@ -304,3 +330,66 @@ func _fail_safe(reason: String) -> void:
 	fault_reason = reason
 	set_paused(true)
 	faulted.emit(fault_reason)
+
+
+## Exact, detached tick-boundary snapshot. var_to_bytes/bytes_to_var preserves float64 bits;
+## JSON/CSV are diagnostics, not this format. Callbacks and model configuration stay with the owner.
+func checkpoint() -> Dictionary:
+	if not fault_reason.is_empty() or not state_is_valid(state) or not state_is_valid(previous) \
+			or not _configuration_is_valid() or not _array_is_finite(aux) or not _array_is_finite(inputs, 4) \
+			or not _loads_are_valid(last_loads):
+		return {}
+	return { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
+		previous = previous.duplicate(), aux = aux.duplicate(), inputs = inputs.duplicate(),
+		modes = modes.duplicate(), last_loads = last_loads.duplicate(), mass = mass,
+		inertia = inertia.duplicate(), gravity = gravity, stop_at_tick = stop_at_tick }
+
+
+## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
+func can_restore_checkpoint(candidate: Dictionary) -> bool:
+	for key in ["format", "tick", "dt", "state", "previous", "aux", "inputs", "modes", "last_loads", "mass", "inertia", "gravity", "stop_at_tick"]:
+		if not candidate.has(key):
+			return false
+	if typeof(candidate.format) != TYPE_STRING or candidate.format != CHECKPOINT_FORMAT or typeof(candidate.tick) != TYPE_INT or candidate.tick < 0 \
+			or typeof(candidate.stop_at_tick) != TYPE_INT or candidate.stop_at_tick < -1:
+		return false
+	for key in ["dt", "mass", "gravity"]:
+		if typeof(candidate[key]) != TYPE_FLOAT or not is_finite(candidate[key]):
+			return false
+	if candidate.dt != dt() or candidate.dt != 1.0 / Engine.physics_ticks_per_second or candidate.mass != mass or candidate.gravity != gravity \
+			or not _array_is_finite(candidate.inertia, 6) or not _same_array(candidate.inertia, inertia):
+		return false
+	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
+		return false
+	return _array_is_finite(candidate.aux, aux.size()) and _array_is_finite(candidate.inputs, 4) \
+		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
+		and candidate.modes.size() == modes.size() and _configuration_is_valid()
+
+
+## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
+func restore_checkpoint(candidate: Dictionary) -> bool:
+	if not can_restore_checkpoint(candidate):
+		return false
+	state = candidate.state.duplicate()
+	previous = candidate.previous.duplicate()
+	aux = candidate.aux.duplicate()
+	inputs = candidate.inputs.duplicate()
+	modes = candidate.modes.duplicate()
+	last_loads = candidate.last_loads.duplicate()
+	tick = candidate.tick
+	stop_at_tick = candidate.stop_at_tick
+	_inertia_inv = RB.inertia_inverse(inertia)
+	_inertia_cache = inertia.duplicate()
+	fault_reason = ""
+	_remember_valid_state()
+	set_paused(true)
+	return true
+
+
+func _checkpoint_state_is_valid(candidate: Variant) -> bool:
+	if not _array_is_finite(candidate, RB.SIZE) or not state_is_valid(candidate):
+		return false
+	var norm_sq := 0.0
+	for i in range(RB.ATT, RB.ATT + 4):
+		norm_sq += candidate[i] * candidate[i]
+	return absf(norm_sq - 1.0) <= 1e-10

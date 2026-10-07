@@ -1,0 +1,20 @@
+{
+  "step": "H9",
+  "base_commit": "21fc4348c5c7d00cd67c9144f4fffa64c3ed3297",
+  "focused_results": [
+    {
+      "log": "h9-policy.log",
+      "checks_or_flights": 42,
+      "sha256": "de9b362794b2673f16b118440c6e8dfc182d55585587f1b21b77b39daa117df4"
+    },
+    {
+      "log": "h9-legacy.log",
+      "checks_or_flights": 4,
+      "sha256": "aba4d26c26a2660de198af3061e567d6ea3aa5cda5600d12dc2cf38373b8fbff"
+    }
+  ],
+  "full_suite": {
+    "passed": true,
+    "evidence": "../H8/integration-verification.json"
+  }
+}
