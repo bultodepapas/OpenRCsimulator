@@ -63,6 +63,10 @@ func _check_local_loads() -> void:
 		flight.setup(Catalog.entry(id).data)
 		root.add_child(flight)
 		var model: Dictionary = flight.aircraft.model.duplicate(true)
+		# D11d couples the strips through an induced-flow map; without it the strip law is the frozen one, so the
+		# refactored two-pass loop must still reproduce it byte for byte (test_strip_induced.gd covers the map).
+		for key in ["induced_map", "strip_slope", "strip_cl0"]:
+			model.envelope.erase(key)
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:

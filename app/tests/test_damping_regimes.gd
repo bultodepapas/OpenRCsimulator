@@ -3,9 +3,10 @@
 # 1.3 V_s flies. Found by plan review #4 (docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md) and
 # re-measured by its lead: the local elements roll-damp 1.7× harder and pitch-damp 3× softer than the oracle.
 # Derivatives are central differences of Aero.loads at 15 m/s, controls neutral, nondimensionalised like the data.
-# KNOWN_DEFECT pins the defect at its documented size, so the suite stays green while it exists and fails on any
-# change: worse, or fixed by D11d (strips) and E0a2 (tail). Whoever fixes it sets KNOWN_DEFECT to false, which turns
-# the same measurements into the acceptance test (each derivative within ±15 % of the oracle at every α).
+# KNOWN_DEFECTS pins each remaining defect at its documented size, so the suite stays green while it exists and fails
+# on any change: worse, or fixed. Whoever fixes one removes it from KNOWN_DEFECTS, which turns the same measurement into
+# the acceptance test (within ±15 % of the oracle at every α). D11d (2026-10-07, wing induced-flow map) fixed Clp
+# (×1.73 → ×1.12) and CLα (×1.34 → ×0.98); Cmq waits for E0a2 (tail) and Cnr for D11f (fin).
 # Run: godot --headless --path . --script res://tests/test_damping_regimes.gd
 extends SceneTree
 
@@ -14,10 +15,9 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 
-const KNOWN_DEFECT := true
-## Documented size of the defect: worst ratio to the oracle (α 2°) over α 0…11°, measured 2026-10-06; checked within
-## ±10 %. Roll damping 1.73× harder, pitch damping 0.28×, yaw damping 0.72×, and a lift-slope bump of 1.34× at α 7–8°.
-const DEFECT := { Clp = 1.73, Cmq = 0.28, Cnr = 0.72, CLa = 1.34 }
+## Remaining documented defects: worst ratio to the oracle (α 2°) over α 0…11°, measured 2026-10-06 and unchanged by
+## D11d; checked within ±10 %. Pitch damping 0.28× (E0a2), yaw damping 0.72× (D11f).
+const KNOWN_DEFECTS := { Cmq = 0.28, Cnr = 0.72 }
 ## Acceptance band once fixed: every derivative within ±15 % of the oracle value at every α.
 const BAND := 0.15
 const V := 15.0
@@ -71,12 +71,11 @@ func _initialize() -> void:
 				far = ratio
 		worst[key] = far
 	print("worst ratio to the oracle over α 0…11°: %s" % str(worst))
-	if KNOWN_DEFECT:
-		for key in DEFECT:
-			_check("D11b known defect still has its documented size: %s ×%.2f ± 10 %% (if fixed, set KNOWN_DEFECT = false)"
-				% [key, DEFECT[key]], absf(worst[key] / DEFECT[key] - 1.0) <= 0.10, "×%.3f" % worst[key])
-	else:
-		for key in worst:
+	for key in worst:
+		if KNOWN_DEFECTS.has(key):
+			_check("D11b known defect still has its documented size: %s ×%.2f ± 10 %% (if fixed, remove it from KNOWN_DEFECTS)"
+				% [key, KNOWN_DEFECTS[key]], absf(worst[key] / KNOWN_DEFECTS[key] - 1.0) <= 0.10, "×%.3f" % worst[key])
+		else:
 			_check("%s within ±%.0f %% of the oracle at every α from 0° to 11°" % [key, 100.0 * BAND], absf(worst[key] - 1.0) <= BAND,
 				"×%.3f" % worst[key])
 

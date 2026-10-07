@@ -262,19 +262,41 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var mx_sum := 0.0
 	var my_sum := 0.0
 	var mz_sum := 0.0
+	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
+	var angles := PackedFloat64Array()
+	angles.resize(stations)
+	for i in stations:
+		var y: float = ys[i]
+		var arm_y: float = ay + y
+		var f0: float = v0 + (q*az - r*arm_y)
+		var f2: float = v2 + (p*arm_y - q*ax)
+		var da: float = da_right if y > 0 else da_left
+		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
+		if has_twist:
+			effective = wrapf(effective + twist[i], -PI, PI)
+		angles[i] = effective
+	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+	var coupled := e_map.size() == stations * stations
+	var strip_slope: float = env.get("strip_slope", cla)
+	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
 	for i in stations:
 		var y: float = ys[i]
 		var arm_y: float = ay + y
 		var f0: float = v0 + (q*az - r*arm_y)
 		var f1: float = v1 + (r*ax - p*az)
 		var f2: float = v2 + (p*arm_y - q*ax)
-		var da: float = da_right if y > 0 else da_left
-		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
-		if has_twist:
-			effective = wrapf(effective + twist[i], -PI, PI)
+		var effective: float = angles[i]
+		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
 		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
 			else _smoothstep((-effective - n1) / n_span)
-		var base: float = cl0 + cla * effective
+		var base: float
+		if coupled:
+			var mapped := 0.0
+			for k in stations:
+				mapped += e_map[i * stations + k] * angles[k]
+			base = strip_cl0[i] + strip_slope * mapped
+		else:
+			base = cl0 + cla * effective
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		var cd: float = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
