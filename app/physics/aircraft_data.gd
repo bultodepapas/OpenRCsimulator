@@ -15,6 +15,12 @@ const Aero := preload("res://physics/aero.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
+## D1-R3 ground_support() tolerances (m, m²): contacts within 1 mm of a facet plane count as on it (data rounding, far
+## below the 1–3 cm static sag); smaller triangle areas, near-vertical facets and shorter edges are degenerate.
+const SUPPORT_PLANE_TOL := 0.001
+const SUPPORT_AREA_MIN := 1e-6
+const SUPPORT_UP_MIN := 1e-6
+const SUPPORT_EDGE_MIN := 1e-9
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 
 ## Coefficient name → [unit, required sign (+1, -1 or 0 = any)]. Signs encode a statically stable airplane.
@@ -241,10 +247,6 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	var contacts := []
 	var total_k := 0.0
 	var reach := 0.0
-	var x_min := INF
-	var x_max := -INF
-	var y_min := INF
-	var y_max := -INF
 	for i in raw_contacts.size():
 		var label := "landing_gear.contacts[%d]" % i
 		var c := _dictionary(errors, label, raw_contacts[i])
@@ -262,20 +264,22 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		var zeta: float = damping / (2.0 * M.sqrt_(k * mass / n))
 		if zeta < 0.05 or zeta > 2.0:
 			errors.append("%s.damping: ratio ζ = %.2f outside 0.05–2 (with m/%d per contact)" % [label, zeta, int(n)])
-		x_min = minf(x_min, position[0])
-		x_max = maxf(x_max, position[0])
-		y_min = minf(y_min, position[1])
-		y_max = maxf(y_max, position[1])
 		var body := PackedFloat64Array([-(position[0] - cg[0]), position[1] - cg[1], -(position[2] - cg[2])])
 		reach = maxf(reach, M.sqrt_(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
 		total_k += k
 		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel), max_steering = deg_to_rad(steering) })
 	if not errors.is_empty() or contacts.size() < 3:
 		return {}
-	if not (x_min < cg[0] and cg[0] < x_max):
-		errors.append("landing_gear: the CG (x_aft %.3f m) is outside the wheelbase %.3f–%.3f m; the airplane cannot stand on its wheels" % [cg[0], x_min, x_max])
-	if not (y_min < cg[1] and cg[1] < y_max):
-		errors.append("landing_gear: no contact on each side of the CG (y %.3f–%.3f m)" % [y_min, y_max])
+	# D1-R3: a gear section claims the airplane stands on it, so the CG must project inside a resting facet.
+	var points := []
+	for i in raw_contacts.size():
+		points.append(PackedFloat64Array(raw_contacts[i].position.value))
+	var rest := ground_support(points, cg)
+	if rest.facet.is_empty():
+		errors.append("landing_gear: the contacts form no support plane under the CG (collinear, vertical or above it); the airplane cannot stand on its wheels")
+	elif not rest.supported:
+		errors.append("landing_gear: the CG projects %.3f m outside the support polygon of contacts %s (resting %.1f° from level); the airplane cannot stand on its wheels"
+			% [-float(rest.margin), str(rest.facet), rad_to_deg(rest.tilt)])
 	var dt := 1.0 / float(ProjectSettings.get_setting("physics/common/physics_ticks_per_second", 60))
 	var omega := M.sqrt_(total_k / mass)
 	if omega * dt >= 0.1:
@@ -292,6 +296,73 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		return {}
 	return { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
 		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak }
+
+
+## D1-R3: static support of rigid gear contacts. `points` are contact positions [x_aft, y_right, z_up] (m, LE frame) and
+## `cg` the CG in the same frame. An airplane at rest sits on a lower facet of its contacts' convex hull (a plane through
+## three contacts with every other contact on or above it); gravity then acts along that facet's normal. It stands when
+## the CG lies above the facet and projects inside the facet polygon (all contacts within SUPPORT_PLANE_TOL of its plane),
+## so a taildragger is judged at its nose-up resting attitude, not in body axes. Returns the facet with the largest
+## margin: { supported, margin (m, CG projection to the nearest polygon edge, + inside), facet (contact indices),
+## tilt (rad, facet normal from body up), height (m, CG above the facet) }; facet empty = no resting plane.
+static func ground_support(points: Array, cg: PackedFloat64Array) -> Dictionary:
+	var best := { supported = false, margin = -INF, facet = PackedInt32Array(), tilt = 0.0, height = 0.0 }
+	var n := points.size()
+	for i in n:
+		for j in range(i + 1, n):
+			for k in range(j + 1, n):
+				var a: PackedFloat64Array = points[i]
+				var b: PackedFloat64Array = points[j]
+				var c: PackedFloat64Array = points[k]
+				var e1 := M.sub(b, a)
+				var e2 := M.sub(c, a)
+				var normal := M.cross(e1, e2)
+				var area2 := M.norm(normal)
+				if area2 < SUPPORT_AREA_MIN:
+					continue # collinear triple
+				if normal[2] < 0.0:
+					normal = M.scale(normal, -1.0)
+				var up := M.scale(normal, 1.0 / area2)
+				if up[2] < SUPPORT_UP_MIN:
+					continue # a vertical plane cannot be rested on
+				var facet := PackedInt32Array()
+				var lower := true
+				for m in n:
+					var height_m := M.dot(M.sub(points[m], a), up)
+					if height_m < -SUPPORT_PLANE_TOL:
+						lower = false
+						break
+					if height_m <= SUPPORT_PLANE_TOL:
+						facet.append(m)
+				if not lower:
+					continue
+				var height := M.dot(M.sub(cg, a), up)
+				var q := M.sub(cg, M.scale(up, height)) # the CG projected along gravity onto the facet
+				var margin := INF
+				for u_index in facet.size():
+					for v_index in facet.size():
+						if u_index == v_index:
+							continue
+						var u: PackedFloat64Array = points[facet[u_index]]
+						var edge := M.sub(points[facet[v_index]], u)
+						var inward := M.cross(up, edge)
+						var length := M.norm(inward)
+						if length < SUPPORT_EDGE_MIN:
+							continue
+						inward = M.scale(inward, 1.0 / length)
+						var hull_edge := true
+						for w in facet:
+							if M.dot(M.sub(points[w], u), inward) < -SUPPORT_PLANE_TOL:
+								hull_edge = false
+								break
+						if hull_edge:
+							margin = minf(margin, M.dot(M.sub(q, u), inward))
+				if height <= 0.0:
+					margin = minf(margin, height) # a CG on or under the wheels is not held up by them
+				if margin > best.margin:
+					best = { supported = margin > 0.0, margin = margin, facet = facet, tilt = M.acos_(clampf(up[2], -1.0, 1.0)),
+						height = height }
+	return best
 
 
 ## Spanwise positions (m, ±) of the equal-area wing strips for the asymmetric stall (D9b), left side first.

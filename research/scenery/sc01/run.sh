@@ -9,7 +9,7 @@ ROOT=$(git -C "$HERE" rev-parse --show-toplevel)
 SRC=${SC01_ASSETS:?set SC01_ASSETS to the folder holding the downloaded archives}
 OUT=$(realpath -m "${1:?usage: run.sh <out-dir> [case ...]}")
 shift
-CASES=("${@:-merge depth ground style}")
+CASES=("${@:-merge depth ground groundbug style}")
 read -r -a CASES <<<"${CASES[*]}"
 GODOT=$("$ROOT/app/get-godot.sh")
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/sc01.XXXXXX")

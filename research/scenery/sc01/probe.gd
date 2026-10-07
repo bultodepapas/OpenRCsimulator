@@ -1,5 +1,5 @@
 ## SC-01(d): scenery technique probe and style bake-off (SCENERY-PLAN). Runs only inside a scratch copy of app/
-## made by run.sh (git archive HEAD), never inside app/. Cases: merge, depth, ground, style. Each writes PNGs and
+## made by run.sh (git archive HEAD), never inside app/. Cases: merge, depth, ground, groundbug, style. Each writes PNGs and
 ## result.json into --out. Real renderer required (xvfb + opengl3): render counters read 0 under --headless.
 extends SceneTree
 
@@ -39,6 +39,7 @@ func _run() -> void:
 		"depth": await _case_depth()
 		"ground": await _case_ground()
 		"style": await _case_style()
+		"groundbug": await _case_groundbug()
 		_:
 			push_error("unknown --case")
 			quit(2)
@@ -75,6 +76,15 @@ func _new_world(production_env: bool, field_objects: bool = true) -> void:
 	camera.far = 21000.0
 	world.add_child(camera)
 	camera.current = true
+
+
+## Splits the production 40 km two-triangle ground (a landscape-track file) into n+1 × n+1 cells, in this copy only.
+func _subdivide_ground(n: int) -> void:
+	var rough := world.find_child("rough", true, false) as MeshInstance3D
+	var plane := (rough.mesh as PlaneMesh).duplicate() as PlaneMesh
+	plane.subdivide_width = n
+	plane.subdivide_depth = n
+	rough.mesh = plane
 
 
 func _env_black() -> void:
@@ -465,6 +475,30 @@ func _case_depth() -> void:
 	results.rows = rows
 
 
+## How often the two-triangle ground hides the 3 cm runway: the same views with the production plane and a 10 × 10 one.
+func _case_groundbug() -> void:
+	var views: Array = []
+	for h: float in [1.7, 5.0, 30.0]:
+		for k in 12:
+			var e := -45.0 + 7.5 * k # targets along the runway, east −45…+37.5 m, 3 m north of its centre line
+			views.append([Vector3(25.0 * sin(0.5 * k), h, 30.0 * cos(0.5 * k) - 10.0), Frames.ned_to_render([18.0, e, 0.0])])
+	var tags: Array = []
+	for sub: int in [0, 9]:
+		await _new_world(true, false)
+		var rough := world.find_child("rough", true, false) as MeshInstance3D
+		var plane := (rough.mesh as PlaneMesh).duplicate() as PlaneMesh
+		plane.subdivide_width = sub
+		plane.subdivide_depth = sub
+		rough.mesh = plane
+		for i in views.size():
+			_look(views[i][0], views[i][1])
+			var tag := "bug-v%02d-sub%d" % [i, sub]
+			await _shot(tag)
+			if sub == 0:
+				tags.append({view = i, camera = str(views[i][0]), target = str(views[i][1])})
+	results.views = tags
+
+
 # ---------- case: ground (contact-shadow quads) ----------
 
 func _shadow_quad(size: float, lift: float, at: Vector3, blend_mul: bool) -> MeshInstance3D:
@@ -500,10 +534,10 @@ func _case_ground() -> void:
 			var d2_lift := 3.0 * range_m * range_m / (0.1 * DEPTH_STEPS)
 			var row := {height_m = h, distance_m = d, quad_m = 20.0, lift_dh_m = dh_lift, lift_d2_m = d2_lift, shots = {}}
 			await _new_world(true, false)
+			_subdivide_ground(int(args.get("subdivide", "9"))) # 9: see groundbug; 0 = production plane
 			_look(Vector3(0, h, 0), at)
 			row.shots.ref = "ground-h%d-d%d-ref" % [int(h), int(d)]
 			row.ref_shot = await _shot(row.shots.ref)
-			row.debug = {forward = str(-camera.global_basis.z), runway_px = str(camera.unproject_position(Vector3(5, 0, -15))), quad_px = str(camera.unproject_position(at)), at = str(at)}
 			for lift_name: String in ["0.002", "0.005", "0.02", "0.1", "dh", "d2"]:
 				var lift: float = dh_lift if lift_name == "dh" else (d2_lift if lift_name == "d2" else float(lift_name))
 				var q := _shadow_quad(20.0, lift, at, false)
@@ -529,6 +563,7 @@ func _case_ground() -> void:
 		var row := {distance_m = d, height_m = 100.0, quad_m = size, transmittance = Atmosphere.transmittance(sqrt(d * d + 1e4))}
 		for variant: String in ["ref", "nofog", "mix", "mul"]:
 			await _new_world(true, false)
+			_subdivide_ground(int(args.get("subdivide", "9"))) # 9: see groundbug; 0 = production plane
 			var env: Environment = (world.get_child(0) as WorldEnvironment).environment
 			env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 			env.tonemap_exposure = 1.0
@@ -699,7 +734,7 @@ func _case_style() -> void:
 			var zones: Array = [club, country, lineup]
 			for zone: Array in zones:
 				var mi := MeshInstance3D.new()
-				mi.mesh = _merge_importer(zone, true)
+				mi.mesh = _merge_surfacetool(zone) # one surface per material; ImporterMesh relit mirrored parts (merge case)
 				world.add_child(mi)
 			results.merge_build_ms = (Time.get_ticks_usec() - t0) / 1000.0
 			var surf := []

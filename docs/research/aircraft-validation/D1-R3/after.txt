@@ -1,0 +1,3 @@
+jensen_ugly_stik_60: ok=true errors=[]
+p51d_mustang_120: ok=true errors=[]
+audit B3 layout: ok=false errors=["landing_gear: the CG projects 0.124 m outside the support polygon of contacts [0, 1, 2] (resting 1.1° from level); the airplane cannot stand on its wheels"]

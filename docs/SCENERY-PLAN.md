@@ -1,6 +1,6 @@
 # Scenery plan: a living RC club field
 
-Written **2026-10-07**, revision 3. Revision 2 (same day) made the owner's reference photo the target look; revision 3 folds in four online research reports. **Status: proposal. SC-00 (this plan) is done. SC-01 is in progress: desk research done (reports [01](research/scenery-investigations/01-prop-asset-sources.md)–[04](research/scenery-investigations/04-godot-techniques-and-prior-art.md)); the style bake-off renders and the technique probe are pending. No scenery code, data or assets yet.**
+Written **2026-10-07**, revision 4. Revision 2 (same day) made the owner's reference photo the target look; revision 3 folded in four online research reports; revision 4 applies the SC-01 measurements in the real renderer. **Status: proposal. SC-00 and SC-01 are done ([desk research 01–04](research/scenery-investigations/01-prop-asset-sources.md), [probe and bake-off](research/scenery-implementation/SC-01/README.md)); the owner's style choice (O-3) and two Quaternius license files are pending. Next: SC-02 (seam and switch), after the landscape track answers request G-1. No scenery code, data or assets in `app/` yet.**
 
 - **Step IDs:** `SC-00…SC-24`, gate **Gate SC**.
 - **Owns:**
@@ -16,6 +16,7 @@ Written **2026-10-07**, revision 3. Revision 2 (same day) made the owner's refer
   - [02 flora, motion, sound, birds](research/scenery-investigations/02-flora-and-ambience.md)
   - [03 field layout rules, markings, structures, photos](research/scenery-investigations/03-rc-field-layout-references.md)
   - [04 Godot techniques and prior art](research/scenery-investigations/04-godot-techniques-and-prior-art.md)
+  - [SC-01 probe and bake-off: measured merging, depth, shadows, ground bug, style](research/scenery-implementation/SC-01/README.md)
 - **Does not touch:** ROADMAP, the physics line (`sim/`, `physics/`), or any other track's plan.
 
 ## Why
@@ -75,7 +76,7 @@ The owner chose an aerial photo of a real club field as the target look (local o
 Positions are in NED, with the pilot at the origin, north up and the runway centre 15 m north (L5 data). The safety line is the runway's south edge, at north = 9 m (AMA). Depths behind the pilot follow the **`photo` profile**; the other profiles are checks.
 
 ```
- ~1.5–2.5 km church steeple · 3–5 wind turbines · pylons            SC-15 (≤ 2.5 km: depth precision, below)
+ ~1.5–5 km   church steeple · 3–5 wind turbines · pylons            SC-15 (≤ 5 km, moving parts ≥ 6 m from what they cross: measured)
  400–900 m   farmstead (barn, silo, house) in a treeline gap         SC-13; cows and sheep outside the box SC-14
  250–600 m   ════════ treeline ring (L6b) ═══════════════
  ~240 m      hedgerow + post-and-wire fence, flight-box edge          SC-11 (AMA sport box: 229 m deep)
@@ -106,7 +107,7 @@ Revision 3 moved the shelters from −10 to **−15 m**. That keeps the photo's 
 
 | Role | Source | License evidence | Why |
 | --- | --- | --- | --- |
-| **Primary** | Quaternius "classic" flat-colour packs (2018–2020): Cars, Farm Buildings, Farm Animals, Background Posed Humans | CC0 per pack page; CC0 read inside the archive for Cars and Farm Animals; **three license files still to re-fetch** | Same author as the L6a trees. Near-real proportions (car 4.22 × 1.81 m measured). Flat materials with no textures, so they palette-merge |
+| **Primary** | Quaternius "classic" flat-colour packs (2018–2020): Cars, Farm Buildings, Farm Animals, Background Posed Humans | CC0 per pack page; CC0 read inside the archive for Cars (SHA-256 `af8f45d6…`) and Farm Animals; **two license files still blocked** (Farm Buildings, Posed Humans; Drive IDs in [SC-01](research/scenery-implementation/SC-01/README.md#license-evidence)) | Same author as the L6a trees, and the [bake-off](research/scenery-implementation/SC-01/README.md#5-style-bake-off) shows they sit well together. Near-real proportions (car 4.4 × 1.88 m, but 1.23 m tall: about 15 % low, corrected in SC-04). Flat materials with no textures, so they palette-merge. The Poly Pizza pickup has 6,432 triangles (decimate or skip) |
 | Small props and flora | Kenney (Survival Kit, Nature Kit, City Kit Suburban fences) | CC0 in every archive checked | Every model has one material. But the cars are toy-shaped (length/width 1.7 against about 2.5 real): no Kenney cars except a van fallback |
 | Bush fallback | KayKit Forest | CC0 on the page; archive file not yet read | One gradient atlas; no flowers |
 | **Built ourselves** | Pit shelters, pavilion, round and square bales, pit tables, folding chairs, coolers, stands, flagpole and flag, post-and-wire fence, continuous hedgerows, turbines, pylons, church, meadow "flower cushions", bird mesh | Ours | Nothing suitable or fitting exists, and these are simple shapes where real dimensions matter more than detail |
@@ -121,17 +122,17 @@ Revision 3 moved the shelters from −10 to **−15 m**. That keeps the photo's 
 | `app/data/scenery/<field_id>.json`, format `openrc-scenery v1` | Distance profile, zones, prefab instances (`prefab`, `north`, `east`, `yaw`, `tier`) and generated scatter sets (positions only, with a SHA-256) | A separate file, so the landscape loader (`field_loader.gd`, one treeline object) stays unchanged |
 | `app/scenery/scenery_loader.gd` | Validates the file and returns `{ok, errors, scenery}`, the same pattern as `field_loader.gd` | Rejects unknown prefabs, non-finite values, positions outside the field, anything on the runway or in the runway-end corridors, flight-box props above their height limit, profile violations, overlaps with L6b trees, and `collides=true` |
 | `app/scenery/prefabs.gd` + `app/assets/scenery/catalog.json` | One entry per prefab: mesh, real dimensions with source, triangles, tier | A test checks every mesh against its catalog dimensions |
-| `app/scenery/scenery.gd` | `build(field, scenery) -> Node3D`. **Compatibility has no automatic 3D batching**: every surface of every visible instance is a draw call. So static props are merged per zone at load with `ImporterMesh.merge_importer_meshes` (it fixes winding under negative scale), and repeated small items use MultiMesh per chunk | About 1 draw call per zone. Merged meshes can't be culled one by one, so zones stay compact. Build time ≤ 150 ms |
+| `app/scenery/scenery.gd` | `build(field, scenery) -> Node3D`. **Compatibility has no automatic 3D batching** (measured: 40 cars as separate meshes = 220 draws). Static props are merged at load with **`SurfaceTool.append_from`, one tool per material**, per **spatial cell** (about 30–50 m, estimated): one palette material makes a cell 1 draw (40 cars: 1 draw, pixel-identical). Repeated small items use MultiMesh per chunk | Not `ImporterMesh.merge_importer_meshes`: it relit mirrored parts (3,278 px). Cells, not whole zones: a merged zone can't be culled, and a narrow view then cost 78 draws against 32 (SC-01). Build time ≤ 150 ms (40 cars: 45–50 ms on this VM's CPU) |
 | `app/scenery/scenery.gdshader` | Palette atlas, per-instance tint (`set_instance_color`, packed to 16-bit in Compatibility: fine for colour), pivot-based sway and rotors from `sim_clock`/`wind_vec` | Opaque only. Alpha-to-coverage and alpha hash do nothing in Compatibility 4.7.2 |
 | The seam (SC-02) | **One line** in `app/render/field.gd`: `if Scenery.enabled(): result.add_child(Scenery.build(field, ...))` | The visual track owns that file, so this change is agreed with it |
 | `tools/scenery/` | `adapt.mjs`: the glTF Transform 4.5.0 already pinned in `tools/trees` runs `flatten` → `palette` → `join`, plus the Khronos validator. `place.py`: integer-only placement. `capture.sh`. Blender (pinned) for built-ourselves meshes and for vertex-colour AO | Outputs committed with a SHA-256; a `--check` mode for CI. The adapter checks that every vertex has a colour: once any merged mesh has colours, meshes without them turn **black** |
 
 **Technical rules from the research** ([04](research/scenery-investigations/04-godot-techniques-and-prior-art.md)):
-- **Contact shadows:** alpha-blended dark quads. The engine fog then shades them correctly; `blend_mul` does not.
-- **Shadow quad lift:** it grows with distance², because depth precision does. A fixed 2 cm lift z-fights beyond about 180 m.
+- **Contact shadows:** alpha-blended dark quads, measured within 0.5–7 % of the expected fogged radiance; `blend_mul` is 57–59 % too dark (SC-01).
+- **Shadow quad lift:** a fixed **2 cm** held in every tested view up to 100 m camera height and 400 m away (2–5 mm flickered from 100 m). Report 04's "lift ∝ d²" over-lifts 3–15×. It needs a subdivided ground (request G-1); on today's two-triangle ground even a 10 cm lift vanished in some raised views.
 - **Ambient occlusion:** baked into vertex colours. No LightmapGI: it renders in Compatibility, but baking needs a Forward+ or Mobile device.
-- **Depth precision:** the depth buffer is 24-bit, and reverse-Z gains nothing in OpenGL. With today's near plane of 0.1 m (`Spec.CAMERA`), one depth step is about 2.4 m at 2 km and 15 m at 5 km.
-  - Landmarks therefore stay at **≤ 2.5 km**, with moving parts at least 3 depth steps in front of what is behind them, unless O-8 raises the near plane.
+- **Depth precision:** the depth buffer is 24-bit. The formula d²/(near·2²⁴) predicts a 15 m step at 5 km with near 0.1 m, but the measured turbine was clean at 5 km with a 6 m gap; only a 3 m gap flickered (12 % of crossing pixels). Up to 2.5 km even 3 m was clean (SC-01, llvmpipe; re-check on the owner's GPU).
+  - Landmarks therefore stay at **≤ 5 km**, with moving parts at least 6 m from what they cross. The 0.1 m near plane stays (O-8 resolved by measurement).
   - Thin or moving parts are geometry, never alpha cards, and at least 1 px wide.
 - **Visible size:** at 1280 × 720 and 50° vertical FOV, an object spans about 772/d px per metre at distance d. To show at least 2 px it must be at least d/386 m: 0.26 m at 100 m, 0.57 m at 220 m ([02](research/scenery-investigations/02-flora-and-ambience.md#summary-and-recommendations)). Smaller geometry only sparkles.
 - **Animation:** rigid-part pivot animation in the vertex shader. A `Skeleton3D` adds a pass per surface per frame and blocks merging: at most 4 figures, and only after a measurement.
