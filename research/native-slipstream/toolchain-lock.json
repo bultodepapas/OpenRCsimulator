@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "godot": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "extension_api": "4.7"
+  },
+  "godot_cpp": {
+    "url": "https://github.com/godotengine/godot-cpp.git",
+    "tag": "10.0.0-stable",
+    "commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "api_versions": ["4.3", "4.4", "4.5", "4.6", "4.7"],
+    "build_profile": {
+      "content": {
+        "enabled_classes": ["OS", "RefCounted"],
+        "type": "feature_profile"
+      },
+      "sha256": "b2dd680afd78a31020f2e821dd8328292d6a3883a166018af76b09ad20783eb3",
+      "note": "OS is required by godot-cpp's print_string.cpp; godot-cpp adds Object ancestry and mandatory loader classes"
+    }
+  },
+  "scons": {
+    "version": "4.10.1",
+    "wheel_filename": "scons-4.10.1-py3-none-any.whl",
+    "wheel_url": "https://files.pythonhosted.org/packages/ce/bf/931fb9fbb87234c32b8b1b1c15fba23472a10777c12043336675633809a7/scons-4.10.1-py3-none-any.whl",
+    "wheel_sha256": "bd9d1c52f908d874eba92a8c0c0a8dcf2ed9f3b88ab956d0fce1da479c4e7126"
+  },
+  "python": {
+    "minimum": "3.9",
+    "linux_verified": "3.12.3"
+  },
+  "linux": {
+    "os": "Ubuntu 24.04.4 LTS x86_64",
+    "compiler": "g++ 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04.1)",
+    "compiler_version": "13.3.0",
+    "arch": "x86_64",
+    "floating_point_flags": ["-fno-fast-math", "-ffp-contract=off"],
+    "status": "release library built successfully; runtime verification pending"
+  },
+  "windows": {
+    "compiler_recipe": "MSVC v143 14.44 from Visual Studio 2022 17.14",
+    "sdk_recipe": "Windows 11 SDK 10.0.22621.0",
+    "floating_point_flags": ["/fp:strict"],
+    "status": "recipe only; not built or run"
+  },
+  "macos": {
+    "xcode_version": "26.1.1",
+    "macos_sdk_version": "26.1",
+    "compiler_recipe": "Apple Clang shipped with Xcode 26.1.1 Command Line Tools",
+    "architectures": ["arm64", "x86_64"],
+    "floating_point_flags": ["-fno-fast-math", "-ffp-contract=off", "-ffp-model=strict"],
+    "status": "recipe only; not built or run"
+  },
+  "build": {
+    "target": "template_release",
+    "precision": "single Godot API; native kernel state and calculations use C++ double",
+    "default_output_dir": ".tools/native-slipstream/",
+    "production_native_dependency": false
+  }
+}

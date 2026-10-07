@@ -177,49 +177,135 @@ static func _surface_with_flow(flow: PackedFloat64Array, arm: PackedFloat64Array
 	return PackedFloat64Array([fx, fy, fz, mx, my, mz])
 
 
-static func _add_load(out: PackedFloat64Array, l: PackedFloat64Array) -> void:
-	for k in 6:
-		out[k] += l[k]
-
-
 static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> float:
 	# Continuous periodic flat-plate blend. No raw alpha survives the reverse-flow seam.
 	var blend := _smoothstep((absf(alpha) - surfaces.tail_local_limit)/(surfaces.tail_stall_end - surfaces.tail_local_limit))
 	return (1.0 - blend)*slope*alpha + blend*0.5*float(surfaces.tail_CD90)*M.sin_(2.0*alpha)
 
 
+## H12: scalar form of the frozen vector oracle in tests/aero_flow_reference.gd. Every product and sum keeps the
+## oracle's order (including the + 0.0 arm terms, which turn -0.0 into +0.0); test_aero_flow.gd compares bytes.
 static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float) -> PackedFloat64Array:
-	var out := PackedFloat64Array([0., 0., 0., 0., 0., 0.])
-	var rates := s.slice(RB.RATE, RB.RATE+3)
+	var p: float = s[RB.RATE]
+	var q: float = s[RB.RATE+1]
+	var r: float = s[RB.RATE+2]
 	var v: PackedFloat64Array = air.v_air
+	var v0: float = v[0]
+	var v1: float = v[1]
+	var v2: float = v[2]
 	var a: Dictionary = model.aero
 	var env: Dictionary = model.envelope
 	var ref: Dictionary = model.reference
 	var surfaces: Dictionary = model.surfaces
-	var ar := M.v3(-(ref.arp_le[0]-model.cg_le[0]), ref.arp_le[1]-model.cg_le[1], -(ref.arp_le[2]-model.cg_le[2]))
+	var cg: PackedFloat64Array = model.cg_le
+	var arp: PackedFloat64Array = ref.arp_le
+	var ax: float = -(arp[0]-cg[0]) + 0.0
+	var ay: float = arp[1]-cg[1]
+	var az: float = -(arp[2]-cg[2]) + 0.0
 	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
-	for i in env.station_ys.size():
-		var y: float = env.station_ys[i]
-		var arm := M.add(ar, M.v3(0, y, 0))
-		var flow := M.add(v, M.cross(rates, arm))
-		var da: float = d.aileron_right if y > 0 else d.aileron_left
-		var effective := wrapf(M.atan2_(flow[2], flow[0]) + surfaces.wing_aileron_effectiveness * da, -PI, PI)
-		if not twist.is_empty():
+	var has_twist := not twist.is_empty()
+	var ys: PackedFloat64Array = env.station_ys
+	var stations := ys.size()
+	var station_area: float = ref.S / stations
+	var aileron_effect: float = surfaces.wing_aileron_effectiveness
+	var da_right: float = d.aileron_right
+	var da_left: float = d.aileron_left
+	var cl0: float = a.CL0
+	var cla: float = a.CLa
+	var cd0: float = a.CD0
+	var k_induced: float = a.k_induced
+	var cl_min_d: float = a.CL_minD
+	var cd90: float = env.CD90
+	var a1: float = env.a1
+	var a_span: float = env.a2 - env.a1
+	var n1: float = env.n1
+	var n_span: float = env.n2 - env.n1
+	var lift_q := 0.5*rho
+	var drag_q := -0.5*rho
+	var fx_sum := 0.0
+	var fy_sum := 0.0
+	var fz_sum := 0.0
+	var mx_sum := 0.0
+	var my_sum := 0.0
+	var mz_sum := 0.0
+	for i in stations:
+		var y: float = ys[i]
+		var arm_y: float = ay + y
+		var f0: float = v0 + (q*az - r*arm_y)
+		var f1: float = v1 + (r*ax - p*az)
+		var f2: float = v2 + (p*arm_y - q*ax)
+		var da: float = da_right if y > 0 else da_left
+		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
+		if has_twist:
 			effective = wrapf(effective + twist[i], -PI, PI)
-		var cl := lift_alpha(effective, a, env)
-		var weight := stall_weight(effective, env)
-		var cd: float = a.CD0 + (1.0-weight)*a.k_induced*M.pow_(cl-a.CL_minD, 2) + weight*env.CD90*M.pow_(M.sin_(effective), 2)
-		_add_load(out, _surface_with_flow(flow, arm, ref.S / env.station_ys.size(), cl, cd, false, rho))
-	for name in ["horizontal", "vertical"]:
-		var tail: Dictionary = surfaces[name]
-		var vertical: bool = name == "vertical"
-		var arm := _arm(tail.position, model.cg_le)
-		var flow := M.add(v, M.cross(rates, arm))
-		var effective := _tail_angle_from_flow(flow, d, tail, vertical)
-		var cl := _tail_curve(effective, tail.lift_slope, surfaces)
-		var cd: float = surfaces.tail_CD0 + surfaces.tail_k*cl*cl + surfaces.tail_CD90*M.pow_(M.sin_(effective), 2)
-		_add_load(out, _surface_with_flow(flow, arm, tail.area, cl, cd, vertical, rho))
-	return out
+		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
+			else _smoothstep((-effective - n1) / n_span)
+		var base: float = cl0 + cla * effective
+		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+		var cd: float = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
+		if speed < 1e-10:
+			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
+		var plane_speed := M.sqrt_(f0*f0 + f2*f2)
+		var force_scale: float = drag_q*speed*station_area*cd
+		var fx: float = f0 * force_scale
+		var fy: float = f1 * force_scale
+		var fz: float = f2 * force_scale
+		if plane_speed > 1e-10:
+			var lift: float = lift_q*plane_speed*plane_speed*station_area*cl
+			fx += lift*f2/plane_speed
+			fz -= lift*f0/plane_speed
+		fx_sum += fx
+		fy_sum += fy
+		fz_sum += fz
+		mx_sum += arm_y * fz - az * fy
+		my_sum += az * fx - ax * fz
+		mz_sum += ax * fy - arm_y * fx
+	var tail_limit: float = surfaces.tail_local_limit
+	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit
+	var tail_cd0: float = surfaces.tail_CD0
+	var tail_k: float = surfaces.tail_k
+	var tail_cd90: float = surfaces.tail_CD90
+	for tail_index in 2: # horizontal, then vertical: the oracle's summation order
+		var vertical := tail_index == 1
+		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
+		var position: PackedFloat64Array = tail.position
+		var tx: float = -(position[0]-cg[0])
+		var ty: float = position[1]-cg[1]
+		var tz: float = -(position[2]-cg[2])
+		var f0: float = v0 + (q*tz - r*ty)
+		var f1: float = v1 + (r*tx - p*tz)
+		var f2: float = v2 + (p*ty - q*tx)
+		var control: float = -float(d.rudder) if vertical else float(d.elevator)
+		var normal: float = f1 if vertical else f2
+		var effective := wrapf(M.atan2_(normal, f0) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
+		var slope: float = tail.lift_slope
+		var blend := _smoothstep((absf(effective) - tail_limit)/tail_span)
+		var cl: float = (1.0 - blend)*slope*effective + blend*0.5*tail_cd90*M.sin_(2.0*effective)
+		var cd: float = tail_cd0 + tail_k*cl*cl + tail_cd90*M.pow_(M.sin_(effective), 2)
+		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
+		if speed < 1e-10:
+			continue
+		var area: float = tail.area
+		var plane_speed := M.sqrt_(f0*f0 + normal*normal)
+		var force_scale: float = drag_q*speed*area*cd
+		var fx: float = f0 * force_scale
+		var fy: float = f1 * force_scale
+		var fz: float = f2 * force_scale
+		if plane_speed > 1e-10:
+			var lift: float = lift_q*plane_speed*plane_speed*area*cl
+			fx += lift*normal/plane_speed
+			if vertical:
+				fy -= lift*f0/plane_speed
+			else:
+				fz -= lift*f0/plane_speed
+		fx_sum += fx
+		fy_sum += fy
+		fz_sum += fz
+		mx_sum += ty * fz - tz * fy
+		my_sum += tz * fx - tx * fz
+		mz_sum += tx * fy - ty * fx
+	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 
 ## One tail surface's load about the CG with the law of _local_loads, on `area` (m2), its arm moved by `shift` and

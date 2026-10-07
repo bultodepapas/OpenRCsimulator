@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+measured jensen-das-ugly-stik-60 / trim / median 286.991666666667 µs/tick
+measured jensen-das-ugly-stik-60 / stall / median 322.129166666667 µs/tick
+measured jensen-das-ugly-stik-60 / spin / median 424.533333333333 µs/tick
+measured jensen-das-ugly-stik-60 / ground / median 311.816666666667 µs/tick
+measured gp-extra-300s-60 / trim / median 279.645833333333 µs/tick
+measured gp-extra-300s-60 / stall / median 336.025 µs/tick
+measured gp-extra-300s-60 / spin / median 406.595833333333 µs/tick
+measured gp-extra-300s-60 / ground / median 410.383333333333 µs/tick
+measured p51d-mustang-120 / trim / median 484.166666666667 µs/tick
+measured p51d-mustang-120 / stall / median 618.625 µs/tick
+measured p51d-mustang-120 / spin / median 460.291666666667 µs/tick
+measured p51d-mustang-120 / ground / median 509.9 µs/tick
+measured sebart-avanti-s-a200-p100rx / trim / median 318.108333333333 µs/tick
+measured sebart-avanti-s-a200-p100rx / stall / median 375.8625 µs/tick
+measured sebart-avanti-s-a200-p100rx / spin / median 418.8875 µs/tick
+measured sebart-avanti-s-a200-p100rx / ground / median 431.795833333333 µs/tick
+wrote /home/bulto/OpenRCsimulator/docs/research/simulation-state/Gate-P/results/native-1.json
