@@ -17,7 +17,7 @@ The previous path is frozen verbatim in [`slipstream_reference.gd`](../../../../
 - **Byte-exact oracle:** [`test_slipstream_scalar.gd`](../../../../app/tests/test_slipstream_scalar.gd) runs 10,000 seeded P-51 cases with 0 failures: 6,083 washed, 1,429 static run-ups (zero airspeed, so no drift), and 448 below `STOPPED_RPM` (each must be exactly zero). The cases also cover forward, reverse and sideslipping flow; rates up to 4 rad/s; random controls; and live CG and tail edits. A one-ulp comparator check and coverage floors prevent a vacuous pass.
 - **Mutation check:** on a scratch copy, reassociating the washed-flow sum (`v0 + ((wash_0 - swirl_0) + rate_arm_0)`) fails 2,157 of 10,001 comparisons.
 - **Trajectories:** 64/64 960-tick fingerprints (4 aircraft × 4 regimes × 4 runs) match the Gate P `oracle-1` hashes.
-- **Full suite:** `app/test.sh` exits 0 with goldens unchanged. [Summary](results/suite-summary.log).
+- **Full suite:** `app/test.sh` on a fresh clone of commit `77cdae9` exits 0 (89 sections, 361 s), goldens unchanged. It ran with its own `XDG_DATA_HOME`: an earlier run beside another suite failed one UI check, because both shared the project's `user://` settings file. [Summary](results/suite-summary.log).
 
 ## Native slipstream on committed H12 (step 1 of H12's "Next")
 
@@ -49,5 +49,5 @@ Component profile at the P-51 fixtures' initial state (µs per call): `Slipstrea
 About 80 µs/tick of identified, bounded GDScript work could close Gate P without a production native dependency or the Windows/macOS build burden:
 
 1. **H14 — P-51 propulsion loads:** P-factor, shaft and thrust angles cost 19 µs per call, against 1–5 µs for the other aircraft. Scalarize with a frozen oracle. Compute `thrust_torque` once per evaluation and share it with slipstream, preserving the call order.
-2. **H15 — step bookkeeping:** profile `Simulation.step` outside the loads for every aircraft. This is fleet-wide (about 90 µs/tick on the Stik). The H8 safety guarantees must stay: atomic rollback, checkpoints and per-stage validation.
+2. **H15 — step bookkeeping** (retargeted by measurement to the attached-flow path; see [H15](../H15/README.md)): profile `Simulation.step` outside the loads for every aircraft. This is fleet-wide (about 90 µs/tick on the Stik). The H8 safety guarantees must stay: atomic rollback, checkpoints and per-stage validation.
 3. Re-measure the fleet. Gate P stays open until every fixture meets the budget at median and batch p95. Keep the native experiment as a fallback if the GDScript margin proves too thin.

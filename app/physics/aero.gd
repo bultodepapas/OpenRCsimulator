@@ -102,7 +102,40 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var p := s[RB.RATE]
 	var q := s[RB.RATE + 1]
 	var r := s[RB.RATE + 2]
-	var co := coefficients(air, PackedFloat64Array([p, q, r]), d, a, model.get("envelope", {}))
+	# H15: coefficients() inlined in its own operation order (no Dictionary result); see
+	# tests/attached_flow_reference.gd. coefficients() stays the public reference curve for trim and linearization.
+	var env: Dictionary = model.get("envelope", {})
+	var alpha: float = air.alpha
+	var beta: float = air.beta
+	var de: float = d.elevator
+	var dar: float = d.aileron_right
+	var dal: float = d.aileron_left
+	var dr: float = d.rudder
+	var w := stall_weight(alpha, env)
+	var wb := sideslip_weight(beta, env)
+	var beta_eff := beta if wb == 0.0 else (1.0 - wb) * beta + wb * M.sin_(beta)
+	var cl_controls: float = a.CLde * de + a.CLda_each * (dar + dal)
+	var cl0: float = a.CL0
+	var cla: float = a.CLa
+	var cd0: float = a.CD0
+	var co_cl: float = cl0 + cla * alpha + cl_controls
+	var cd_aero: float = cd0 + a.k_induced * M.pow_(co_cl - a.CL_minD, 2)
+	if not env.is_empty():
+		var base: float = cl0 + cla * alpha
+		var cd90: float = env.CD90
+		co_cl = (base if w == 0.0 else (1.0 - w) * base + w * 0.5 * cd90 * M.sin_(2.0 * alpha)) + cl_controls
+		var sin_alpha := M.sin_(alpha)
+		cd_aero = (1.0 - w) * cd_aero + w * (cd0 + cd90 * sin_alpha * sin_alpha)
+	var co_cd: float = cd_aero + absf(a.CDda_each * dar) + absf(a.CDda_each * dal) + absf(a.CDdr * dr) + absf(a.CDde * de)
+	var cm0: float = a.Cm0
+	var cma: float = a.Cma
+	var cm_alpha: float = cm0 + cma * alpha
+	if w != 0.0:
+		cm_alpha = (1.0 - w) * cm_alpha + w * (cm0 + cma * M.sin_(alpha))
+	var co_cy: float = a.CYb * beta_eff + a.CYdr * dr
+	var co_roll: float = a.Clb * beta_eff + a.Clda_right * dar + a.Clda_left * dal + a.Cldr * dr
+	var co_pitch: float = cm_alpha + a.Cmde * de + a.Cmda_each * (dar + dal)
+	var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar + a.Cnda_left * dal + a.Cndr * dr
 
 	# Rate (damping) terms in dimensional form: qbar·x̂ = ½ρV²·(rate·L/2V) = ¼ρ·V·rate·L. Finite as V → 0.
 	var k := 0.25 * rho * float(air.V)
@@ -112,28 +145,29 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var pitch_rate: float = k * c * a.Cmq * q
 	var yaw_rate: float = k * b * (a.Cnp * p + a.Cnr * r)
 
-	var lift: float = (qbar * co.CL + cl_rate) * S
-	var drag: float = qbar * co.CD * S
-	var side: float = (qbar * co.CY + cy_rate) * S
+	var lift: float = (qbar * co_cl + cl_rate) * S
+	var drag: float = qbar * co_cd * S
+	var side: float = (qbar * co_cy + cy_rate) * S
 
 	# Wind axes → body axes. Wind-axis force = [-D, Y, -L].
-	var ca := M.cos_(air.alpha)
-	var sa := M.sin_(air.alpha)
-	var cb := M.cos_(air.beta)
-	var sb := M.sin_(air.beta)
+	var ca := M.cos_(alpha)
+	var sa := M.sin_(alpha)
+	var cb := M.cos_(beta)
+	var sb := M.sin_(beta)
 	var fx: float = ca * cb * (-drag) - ca * sb * side + sa * lift
 	var fy: float = sb * (-drag) + cb * side
 	var fz: float = sa * cb * (-drag) - sa * sb * side - ca * lift
 
 	# Moments about the aero reference point, then transferred to the CG: M_cg = M_arp + r × F, r = arp − cg (body).
-	var mx: float = (qbar * co.Cl + roll_rate) * S * b
-	var my: float = (qbar * co.Cm + pitch_rate) * S * c
-	var mz: float = (qbar * co.Cn + yaw_rate) * S * b
+	var mx: float = (qbar * co_roll + roll_rate) * S * b
+	var my: float = (qbar * co_pitch + pitch_rate) * S * c
+	var mz: float = (qbar * co_yaw + yaw_rate) * S * b
 	var arp: PackedFloat64Array = ref.arp_le
 	var cg: PackedFloat64Array = model.cg_le
-	var rr := M.v3(-(arp[0] - cg[0]), arp[1] - cg[1], -(arp[2] - cg[2])) # le frame → body FRD
-	var transfer := M.cross(rr, M.v3(fx, fy, fz))
-	return PackedFloat64Array([fx, fy, fz, mx + transfer[0], my + transfer[1], mz + transfer[2]])
+	var rx: float = -(arp[0] - cg[0]) # le frame → body FRD
+	var ry: float = arp[1] - cg[1]
+	var rz: float = -(arp[2] - cg[2])
+	return PackedFloat64Array([fx, fy, fz, mx + (ry * fz - rz * fy), my + (rz * fx - rx * fz), mz + (rx * fy - ry * fx)])
 
 
 # Local surface loads: lift is perpendicular to local velocity, drag opposes it;
@@ -379,40 +413,52 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
 	var r: float = s[RB.RATE+2]
-	var blend := maxf(_smoothstep((absf(air.alpha)-limit)/(env.a1-limit)), sideslip_weight(air.beta, env))
+	var a1: float = env.a1
+	var a1_span: float = a1 - limit
+	var blend := maxf(_smoothstep((absf(air.alpha)-limit)/a1_span), sideslip_weight(air.beta, env))
 	if blend == 1.0:
 		return blend
+	# H15: dictionary reads hoisted out of the loops; every product, sum and comparison is unchanged.
+	var v0: float = v[0]
+	var v1: float = v[1]
+	var v2: float = v[2]
+	var n1_span: float = float(env.n1) - limit
 	var position: PackedFloat64Array = model.reference.arp_le
 	var cg: PackedFloat64Array = model.cg_le
 	var arm_x: float = -(position[0]-cg[0]) + 0.0
 	var arm_y: float = position[1]-cg[1]
 	var arm_z: float = -(position[2]-cg[2]) + 0.0
 	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
-	for i in env.station_ys.size():
-		var y: float = env.station_ys[i]
+	var has_twist := not twist.is_empty()
+	var ys: PackedFloat64Array = env.station_ys
+	var aileron_effect: float = surfaces.wing_aileron_effectiveness
+	var da_right: float = d.aileron_right
+	var da_left: float = d.aileron_left
+	for i in ys.size():
+		var y: float = ys[i]
 		var station_y: float = arm_y + y
-		var flow_x: float = v[0] + (q*arm_z - r*station_y)
-		var flow_z: float = v[2] + (p*station_y - q*arm_x)
-		var da: float = d.aileron_right if y > 0 else d.aileron_left
-		var angle := wrapf(M.atan2_(flow_z, flow_x) + surfaces.wing_aileron_effectiveness*da, -PI, PI)
-		if not twist.is_empty():
+		var flow_x: float = v0 + (q*arm_z - r*station_y)
+		var flow_z: float = v2 + (p*station_y - q*arm_x)
+		var da: float = da_right if y > 0 else da_left
+		var angle := wrapf(M.atan2_(flow_z, flow_x) + aileron_effect*da, -PI, PI)
+		if has_twist:
 			angle = wrapf(angle + twist[i], -PI, PI)
-		var end: float = env.a1 if angle >= 0.0 else env.n1
-		blend = maxf(blend, _smoothstep((absf(angle)-limit)/(end-limit)))
+		blend = maxf(blend, _smoothstep((absf(angle)-limit)/(a1_span if angle >= 0.0 else n1_span)))
 		if blend == 1.0:
 			return blend
-	for name in ["horizontal", "vertical"]:
-		var tail: Dictionary = surfaces[name]
+	var tail_span: float = float(surfaces.tail_local_limit) - limit
+	for tail_index in 2: # horizontal, then vertical
+		var vertical := tail_index == 1
+		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
 		var tail_position: PackedFloat64Array = tail.position
 		var tx: float = -(tail_position[0]-cg[0])
 		var ty: float = tail_position[1]-cg[1]
 		var tz: float = -(tail_position[2]-cg[2])
-		var flow_x: float = v[0] + (q*tz - r*ty)
-		var vertical: bool = name == "vertical"
-		var component: float = v[1] + (r*tx - p*tz) if vertical else v[2] + (p*ty - q*tx)
-		var control: float = -d.rudder if vertical else d.elevator
+		var flow_x: float = v0 + (q*tz - r*ty)
+		var component: float = v1 + (r*tx - p*tz) if vertical else v2 + (p*ty - q*tx)
+		var control: float = -float(d.rudder) if vertical else float(d.elevator)
 		var angle: float = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
-		blend = maxf(blend, _smoothstep((absf(angle)-limit)/(surfaces.tail_local_limit-limit)))
+		blend = maxf(blend, _smoothstep((absf(angle)-limit)/tail_span))
 	return blend
 
 
