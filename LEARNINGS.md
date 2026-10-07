@@ -914,3 +914,16 @@ A 1-D point-mass integral of the model's own forces matched the 6-DOF takeoff ro
 ## 2026-10-07 · D11d — fix the cause the knowledge base named, and expect it to unmask the next defect
 
 The strip model's roll over-damping and lift-slope bump came from missing induced flow and a whole-airplane lift slope per strip, as the knowledge base said, not from strip count. A Weissinger map E = (I + a0·K)⁻¹ on the existing 3 strips per side, with a0 and per-strip CL0 solved for consistency with the oracle, brought Clp from ×1.73 to ×1.12 and CLα from ×1.34 to ×0.98. Write the kernel twice (GDScript and an independent Python script) and compare both with the knowledge base's VLM before trusting it; check the theory limit you actually implement (Weissinger meets Prandtl only at high aspect ratio). Removing the lift-slope bump made the 10 m/s short period less damped (ζ 0.61 → 0.47): it had been masking the tail's Cmq defect. Pin that as E0a2's known defect instead of hiding it. Prove a golden change is the intended one by replaying with the new term switched off (all four exact) before re-recording ([D11d](docs/research/aero-consistency/D11d/README.md)).
+
+## 2026-10-07 · SC-25 — a scripted scene beats ad-hoc screenshots for spotting change
+
+The runway scenario captures one fixed takeoff (threshold start in static equilibrium, scripted pilot, 240 Hz ticks) from five cameras at 12 instants, with a state row per frame ([SC-25](docs/research/scenery-implementation/SC-25/README.md)). Lessons:
+- **The useful verdict separates physics from pixels.** Comparing each frame's state as well as its image tells *physics changed* from *visual-only change*. `--scenery=off` changed 48 of 51 frames with the physics identical.
+- **Sync is cheap to assert once the manifest has the numbers:** `sim_clock` = t, frames on ticks, propeller angle = ∫ rpm dt, one state for all cameras, shadow under the airplane on the ground.
+- **The scripted pilot belongs in its own pure function** so `app/test.sh` can fly it headless. A physics change that breaks the scene then fails the tests, not only the captures.
+- **Full frames cost ~50 MB per run,** so history keeps manifests and filmstrips and only the last two runs keep every frame.
+- **GDScript's `%` format has no `%e`.** It printed an engine `ERROR` that would fail `app/test.sh`.
+
+## 2026-10-07 · E0a2a — split a lumped coefficient by what physically drives each part
+
+The tail's "effective" slope a_t·η·(1 − dε/dα) was right for the free stream and wrong for pitch rate and elevator, and a hand factor (1.174) patched the elevator. Deriving the free slope, τ and incidence from the existing data kept static lift identical (6.5e-16) while pitch damping rose from 0.28× to 0.64× the oracle, the blend drag bump fell from 20 % to 5 %, and the hand factor became a checkable flap effectiveness (0.64 vs 0.55 from the elevator chord). Drive downwash from the wing's actual lift, not α, so it collapses at the stall. A check that recomputes the expected quantity from the same input can pass a broken implementation: measure the output the implementation produces (the tail angle from its lift) ([E0a2a](docs/research/aero-consistency/E0a2a/README.md)). A shell `cmd | tail && next` hides cmd's failure; check each step's status.
