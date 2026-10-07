@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "build_date_utc": "2026-10-07",
+  "status": "linux release library built; runtime and flight verification passed; performance gate remains unmet",
+  "command": "python3 research/native-slipstream/build.py --jobs 4 --verbose --output .tools/native-slipstream/libopenrc_slipstream.so",
+  "build_inputs_sha256": {
+    "research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "research/native-slipstream/toolchain-lock.json": "1e9923501fdf5e8e7bcd6119baaf3563ffd3c5b63f4f1e3e9c2341f90e14f49e"
+  },
+  "target": "template_release",
+  "platform": "linux",
+  "architecture": "x86_64",
+  "runtime": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "toolchain": {
+    "os": "Ubuntu 24.04.4 LTS x86_64",
+    "python": "3.12.3",
+    "scons": "4.10.1.055b01f429d58b686701a56df863a817c36bb103",
+    "gxx": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "godot_cpp_tag": "10.0.0-stable",
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5"
+  },
+  "floating_point": {
+    "flags": [
+      "-fno-fast-math",
+      "-ffp-contract=off"
+    ],
+    "compile_commands_checked": 63,
+    "compile_commands_missing_either_flag": 0
+  },
+  "godot_cpp_feature_profile": {
+    "content": {
+      "enabled_classes": [
+        "OS",
+        "RefCounted"
+      ],
+      "type": "feature_profile"
+    },
+    "sha256": "b2dd680afd78a31020f2e821dd8328292d6a3883a166018af76b09ad20783eb3"
+  },
+  "artifact": {
+    "path": ".tools/native-slipstream/libopenrc_slipstream.so",
+    "format": "ELF 64-bit LSB shared object, x86-64",
+    "sha256": "b7127ddfb2d96a9fde2929b575f57f4d148abfabb7531b36301de9ee58760759",
+    "elf_build_id_sha1": "e42d8fc36950a47d3280368b598d2049cac1276d"
+  },
+  "source_sha256": {
+    "research/native-slipstream/src/slipstream_extension.cpp": "0a0ee30a842888f53745357ad64758a43c2b5ee6b2b5ff98b89bf5c150e15112",
+    "research/native-slipstream/src/slipstream_kernel.hpp": "241db1c712c16551e596062177ab786f5b85d58cd3db804b4e650d44f70836ad"
+  },
+  "failed_attempts": [
+    {
+      "profile": "unrestricted godot-cpp bindings",
+      "result": "failed",
+      "reason": "Linux rejected the archive command with Argument list too long"
+    }
+  ],
+  "platform_limits": {
+    "windows": "MSVC v143 14.44 and Windows SDK 10.0.22621.0 recipe only; not built or run",
+    "macos": "Xcode 26.1.1 and macOS SDK 26.1 recipe only; not built or run",
+    "cross_architecture_determinism": "not established"
+  },
+  "runtime_evidence": "results/verification.json"
+}
