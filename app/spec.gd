@@ -14,8 +14,11 @@ const WHITE := Color("#f2f2f2")
 const DARK := Color("#222222")
 const DARK_GREY := Color("#333333")
 const BLACK := Color("#111111")
-const GRASS := Color("#4a7a32")
-const RUNWAY_COLOR := Color("#6f9a4a")
+# Landscape improvement phase 1 (report 01): measured lawn colour. #4a7a32 rendered hue 104-110 deg, sat 0.69-0.74 ("billiard
+# table"); #657545 renders hue 77-79 deg, sat 0.48-0.52, inside the owner's photo window, same linear luminance (0.159).
+const GRASS := Color("#657545")
+# Mown runway turf: the grass hue, saturation -0.08, value +18 % (report 04: same hue as the grass +-5 deg, a little paler).
+const RUNWAY_COLOR := Color("#7b8a5c")
 const SKY := Color("#9cc9ef")
 
 # Aircraft geometry is generated from assets/aircraft/ugly-stik-60/geometry.json.

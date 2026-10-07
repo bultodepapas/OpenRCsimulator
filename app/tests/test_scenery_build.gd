@@ -42,7 +42,6 @@ func _initialize() -> void:
 	_test_winding()
 	_test_tiers()
 	_test_themes()
-	_test_ground_interim()
 	print("all scenery build checks passed" if _failures == 0 else "%d scenery build checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
@@ -51,8 +50,8 @@ func _test_off_is_noop() -> void:
 	var node := FieldBuilder.build(_field)
 	_check("switch off: the field has no Scenery node", node.get_node_or_null("Scenery") == null)
 	var rough := node.get_node_or_null("rough") as MeshInstance3D
-	_check("switch off: the ground stays the production two-triangle plane",
-		rough != null and (rough.mesh as PlaneMesh).subdivide_width == 0 and (rough.mesh as PlaneMesh).subdivide_depth == 0)
+	_check("switch off: the ground is the production plane, subdivided for G-1 by the field itself",
+		rough != null and (rough.mesh as PlaneMesh).subdivide_width == FieldBuilder.GROUND_SUBDIVISIONS)
 	node.free()
 
 
@@ -208,11 +207,3 @@ func _test_themes() -> void:
 	var r := Scenery.build(_field, _scenery, {audio = false, birds = false, theme = "autumn", quality = "high"})
 	_check("a themed build reports its theme", r.get_meta("stats").theme == "autumn")
 	r.free()
-
-
-func _test_ground_interim() -> void:
-	var node := FieldBuilder.build(_field)
-	Scenery.subdivide_ground(node)
-	var plane := (node.get_node("rough") as MeshInstance3D).mesh as PlaneMesh
-	_check("interim G-1: the ground is subdivided only when scenery attaches", plane.subdivide_width == Scenery.GROUND_SUBDIVISIONS)
-	node.free()

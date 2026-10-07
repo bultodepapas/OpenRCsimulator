@@ -22,7 +22,6 @@ const CELL_M := 40.0
 const FAR_CELL_M := 400.0
 const FAR_M := 400.0
 const SHADOW_RANGE_M := 300.0
-const GROUND_SUBDIVISIONS := 39 # interim G-1: 40 × 40 cells of 1 km (SC-01: even 10 × 10 stopped the runway vanishing)
 const QUALITIES: Array[String] = ["low", "balanced", "high"]
 
 
@@ -62,19 +61,7 @@ static func attach(field_node: Node3D, field: Dictionary) -> void:
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
 		return
-	subdivide_ground(field_node)
 	field_node.add_child(build(field, loaded.scenery, opts))
-
-
-## Interim for request G-1 (landscape track): the 40 km two-triangle ground hides anything lifted a few cm in some
-## raised views (SC-01). Applied only while scenery is on, so the scenery-off app stays byte-identical.
-static func subdivide_ground(field_node: Node3D) -> void:
-	for child in field_node.get_children():
-		if child is MeshInstance3D and (child as MeshInstance3D).mesh is PlaneMesh and child.name == "rough":
-			var plane := ((child as MeshInstance3D).mesh as PlaneMesh).duplicate() as PlaneMesh
-			plane.subdivide_width = GROUND_SUBDIVISIONS
-			plane.subdivide_depth = GROUND_SUBDIVISIONS
-			(child as MeshInstance3D).mesh = plane
 
 
 static func opaque_material() -> StandardMaterial3D:
