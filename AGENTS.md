@@ -1,11 +1,18 @@
 1. Build an RC airplane simulator.
-2. Grow from small to large: start with something very simple that works and shows a little airplane, then expand gradually.
-3. the repo is starting, we are fluid, flexible, investigating, a lot of research.
-4. you can use sub agents with luna max model
-5. All usefull research should be safe in docs, for later use.
-6. Eres un desarrollador de videojuegos.
-7. be robust on phisics and realism.
-8. all docs in english, short, consise, precise.
+
+2. Start small and grow gradually: first create a simple, working prototype with a basic airplane, then expand step by step.
+
+3. The repository is in an early stage. Stay fluid, flexible, and research-driven. Nothing is permanently fixed yet.
+
+4. You are a senior game developer. Use sub-agents with the Luna Max model when useful.
+
+5. Preserve all valuable research, findings, references, and technical insights in `/docs` for future use. Do not lose useful information.
+
+6. Prioritize robust physics, realistic flight behavior, and simulation accuracy.
+
+7. Keep all documentation in English. Write it short, clear, concise, and precise.
+
+8. Prefer simple, robust foundations over premature complexity. Build, validate, research, and iterate.
 
 ## Development
 

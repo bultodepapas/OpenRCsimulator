@@ -1,0 +1,27 @@
+[
+  {
+    "accepted": true,
+    "case": "numeric_string",
+    "errors": []
+  },
+  {
+    "accepted": true,
+    "case": "missing_kind",
+    "errors": []
+  },
+  {
+    "accepted": true,
+    "case": "missing_source",
+    "errors": []
+  },
+  {
+    "accepted": true,
+    "case": "nan_power",
+    "errors": []
+  },
+  {
+    "accepted": true,
+    "case": "infinite_final_rpm",
+    "errors": []
+  }
+]
