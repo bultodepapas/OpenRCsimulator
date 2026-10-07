@@ -7,19 +7,31 @@ const Ground = preload("res://render/ground.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
 # Visual separation only, never terrain height or collision geometry. Higher priority wins overlaps.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
+const GROUND_SUBDIVISIONS := 63
 
 
 static func build(field: Dictionary) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "Field"
+	# One grass material per build; mown and runway surfaces draw over it with the same shader (landscape Phase 4).
+	var grass: ShaderMaterial = Ground.grass_material()
+	var station := Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
+	grass.set_shader_parameter("pilot_xz", Vector2(station.x, station.z)) # Phase 2: the macro tone is pinned here
 	for surface: Dictionary in field.surfaces:
 		var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 		mesh_instance.name = surface.id
 		var plane: PlaneMesh = PlaneMesh.new()
 		plane.size = Vector2(surface.length_east_west, surface.width_north_south)
+		if surface.type == "rough":
+			# G-1: a 40 km plane of two triangles interpolates depth badly once clipped and hid the 3 cm runway in raised
+			# views (SC-01: 4 of 12 views at 30 m). 64 × 64 quads (8,192 triangles, one draw) fix it with margin.
+			plane.subdivide_width = GROUND_SUBDIVISIONS
+			plane.subdivide_depth = GROUND_SUBDIVISIONS
 		mesh_instance.mesh = plane
-		mesh_instance.material_override = Ground.grass_material() if surface.type == "rough" else Ground.runway_material()
 		mesh_instance.position = Frames.ned_to_render([surface.center_north, surface.center_east, -float(SURFACE_LIFT[surface.type])])
+		var half := Vector2(surface.length_east_west, surface.width_north_south) / 2.0
+		mesh_instance.material_override = grass if surface.type == "rough" \
+			else Ground.surface_material(grass, surface.type, Vector2(mesh_instance.position.x, mesh_instance.position.z), half)
 		result.add_child(mesh_instance)
 	for object_data: Dictionary in field.objects:
 		result.add_child(Treeline.build(object_data, field.pilot))

@@ -6,6 +6,8 @@ const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 
 const SIZE := 256
+## Field surface types as the ground shader's surface_kind (Phase 4).
+const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2}
 
 
 ## Seamless grass tile: a few octaves of value noise around Spec.GRASS, with mipmaps for distant ground.
@@ -49,12 +51,23 @@ static func _value_noise(grid: PackedFloat32Array, cells: int, u: float, v: floa
 	return lerpf(lerpf(a, b, fx), lerpf(c, d, fx), fy)
 
 
-## The mown runway strip: flat colour, matte like the grass.
+## The flat-colour runway strip, kept for the frozen VQ-01a atmosphere fixture (production uses surface_material).
 static func runway_material() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Spec.RUNWAY_COLOR
 	mat.metallic_specular = 0.0
 	mat.roughness = 1.0
+	return mat
+
+
+## Landscape Phase 4: a mown or runway surface drawn by the ground shader over its rectangle (render x/z centre and
+## half extents, m). A copy of the build's grass material (same texture, pilot pin and haze), so the mown turf blends
+## into the rough grass inside a noisy border with no colour seam; the runway adds mowing stripes and touchdown wear.
+static func surface_material(grass: ShaderMaterial, type: String, center: Vector2, half: Vector2) -> ShaderMaterial:
+	var mat := grass.duplicate() as ShaderMaterial
+	mat.set_shader_parameter("surface_kind", SURFACE_KIND[type])
+	mat.set_shader_parameter("rect_center", center)
+	mat.set_shader_parameter("rect_half", half)
 	return mat
 
 

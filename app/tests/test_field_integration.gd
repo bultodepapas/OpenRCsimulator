@@ -109,15 +109,23 @@ func _test_builder_contract() -> void:
 		is_equal_approx(rough.position.y, 0.0)
 		and is_equal_approx(mown.position.y, 0.015)
 		and is_equal_approx(runway.position.y, 0.03))
-	_check("rough grass and mown strip materials are selected by surface type",
+	_check("every surface is drawn by the ground shader (landscape Phase 4)",
 		rough.material_override is ShaderMaterial
-		and mown.material_override is StandardMaterial3D
-		and runway.material_override is StandardMaterial3D)
-	var mown_material: StandardMaterial3D = mown.material_override as StandardMaterial3D
-	var runway_material: StandardMaterial3D = runway.material_override as StandardMaterial3D
-	_check("overlapping mown surfaces remain separate matte resources",
-		mown_material.roughness == 1.0 and runway_material.roughness == 1.0
-		and not is_same(mown_material, runway_material))
+		and mown.material_override is ShaderMaterial
+		and runway.material_override is ShaderMaterial)
+	var rough_material: ShaderMaterial = rough.material_override as ShaderMaterial
+	var mown_material: ShaderMaterial = mown.material_override as ShaderMaterial
+	var runway_material: ShaderMaterial = runway.material_override as ShaderMaterial
+	_check("surface kind and rectangle are selected by surface type",
+		[null, 0].has(rough_material.get_shader_parameter("surface_kind")) # unset: the shader's default, rough
+		and mown_material.get_shader_parameter("surface_kind") == 1
+		and runway_material.get_shader_parameter("surface_kind") == 2
+		and runway_material.get_shader_parameter("rect_half") == Vector2(5.0, 2.0)
+		and runway_material.get_shader_parameter("rect_center") == Vector2(runway.position.x, runway.position.z)
+		and mown_material.get_shader_parameter("rect_half") == Vector2(10.0, 10.0))
+	_check("overlapping surfaces remain separate resources that share the build's grass texture",
+		not is_same(mown_material, runway_material) and not is_same(rough_material, mown_material)
+		and is_same(rough_material.get_shader_parameter("grass"), runway_material.get_shader_parameter("grass")))
 	_check("two builds create independent trees, meshes, materials and grass textures",
 		_field_instances_are_independent(first, second))
 	first.free()
@@ -346,6 +354,9 @@ func _field_signature(field_node: Node3D) -> Array[Dictionary]:
 			var shader_material: ShaderMaterial = material as ShaderMaterial
 			entry["shader_path"] = shader_material.shader.resource_path
 			entry["tile_m"] = shader_material.get_shader_parameter("tile_m")
+			entry["surface_kind"] = shader_material.get_shader_parameter("surface_kind")
+			entry["rect_center"] = shader_material.get_shader_parameter("rect_center")
+			entry["rect_half"] = shader_material.get_shader_parameter("rect_half")
 			var grass_texture: Texture2D = shader_material.get_shader_parameter("grass") as Texture2D
 			entry["grass_size"] = grass_texture.get_size() if grass_texture != null else Vector2i.ZERO
 			entry["grass_data"] = grass_texture.get_image().get_data() if grass_texture != null else PackedByteArray()

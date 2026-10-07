@@ -24,7 +24,13 @@ const VIEWS := {
 	"aerial_overview": {eye = [140.0, 160.0, -140.0], at = [-20.0, 0.0, 0.0], fov = 50.0, note = "Raised overview (contact shadows, G-1 interim)"},
 	"fleet_close": {eye = [-11.5, -33.0, -1.8], at = [-18.0, -31.0, -0.4], fov = 50.0, note = "The parked fleet under the west shelter"},
 	"birds_watch": {eye = [0.0, 0.0, -1.7], at = [420.0, -260.0, -32.0], fov = 20.7, note = "Toward the optional flock (--scenery_birds=on)"},
+	"top_140": {eye = [120.0, -90.0, -140.0], at = [120.5, -90.0, 0.0], fov = 50.0, note = "Straight down from 140 m, off the runway: ground repetition (report 01 metric)"},
+	"top_140_b": {eye = [-100.0, 110.0, -140.0], at = [-99.5, 110.0, 0.0], fov = 50.0, note = "A second top view for the repetition metric"},
+	"top_140_c": {eye = [130.0, 120.0, -140.0], at = [130.5, 120.0, 0.0], fov = 50.0, note = "A third top view for the repetition metric"},
 	"turbines_zoom": {eye = [0.0, 0.0, -1.7], at = [690.0, 3980.0, -70.0], fov = 6.0, note = "The wind farm at 4 km, long lens"},
+	"runway_threshold": {eye = [15.0, 58.0, -1.2], at = [15.0, -50.0, -0.2], fov = 40.0, note = "Along the runway from the east threshold: stripes, wear, border"},
+	"runway_zoom_100": {eye = [-85.0, 0.0, -1.7], at = [15.0, 0.0, 0.0], fov = 10.0, note = "Runway at 100 m, long lens (report 04 shimmer and edge view)"},
+	"runway_zoom_300": {eye = [-285.0, 0.0, -1.7], at = [15.0, 0.0, 0.0], fov = 10.0, note = "Runway at 300 m, long lens (auto-zoom magnifies the far runway)"},
 }
 
 

@@ -123,7 +123,9 @@ static func card_mesh(id: String) -> ArrayMesh:
 		uvs.append(Vector2(u_max, v_max))
 		uvs.append(Vector2(u_max, v_min))
 		uvs.append(Vector2(u_min, v_min))
-		indices.append_array(PackedInt32Array([base, base + 1, base + 2, base, base + 2, base + 3]))
+		# Clockwise seen from +Z, matching the +Z normal: Godot's front faces are clockwise. The old counter-clockwise
+		# order gave the visible side a normal pointing away from the viewer (front-lit trees rendered dark; report 02).
+		indices.append_array(PackedInt32Array([base, base + 2, base + 1, base, base + 3, base + 2]))
 
 	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)
