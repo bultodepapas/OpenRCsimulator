@@ -67,7 +67,7 @@ static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Di
 		total[i] += propulsion_loads[i]
 	# E0b (P51-12, opt-in): the propeller's slipstream on the tail surfaces. Absent data adds nothing at all.
 	if not model.propulsion.get("slipstream", {}).is_empty():
-		var wash := Slipstream.loads(state, air, d, model, rpm, rho)
+		var wash := Slipstream.loads(state, air, d, model, rpm, rho, downwash_cl)
 		for i in 6:
 			total[i] += wash[i]
 	return {

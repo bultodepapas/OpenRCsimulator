@@ -32,11 +32,12 @@ const RADIUS_MAX := 1.5
 ## Returns body loads [Fx, Fy, Fz, Mx, My, Mz] about the CG.
 ## H13: scalar form of the frozen oracle in tests/slipstream_reference.gd (immersion() and
 ## Aero.tail_surface_increment() inlined). Every product and sum keeps the oracle's order, including its + 0.0 terms;
-## test_slipstream_scalar.gd compares bytes.
+## test_slipstream_scalar.gd compares bytes for legacy tails. E0b3a adds the E0a2 free-tail law with the same wing
+## downwash in the two passes. downwash_cl = NAN uses instantaneous wing CL; the session passes its held lag.
 static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
-		rho: float) -> PackedFloat64Array:
+		rho: float, downwash_cl: float = NAN) -> PackedFloat64Array:
 	var prop: Dictionary = model.propulsion
-	if rpm < Propulsion.STOPPED_RPM:
+	if rpm < Propulsion.STOPPED_RPM or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var v: PackedFloat64Array = air.v_air
 	var tq := Propulsion.thrust_torque(v, rpm, prop, rho)
@@ -68,6 +69,11 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 	# Tail-law terms.
 	var cg: PackedFloat64Array = model.cg_le
 	var surfaces: Dictionary = model.surfaces
+	# E0b3a: resolve wing downwash once per evaluation, not from the washed flow. The same held/instantaneous
+	# CL must feed the free and washed evaluations. This is E0a2's angle law, not a new wake-transport model.
+	var wing_cl: float = 0.0
+	if surfaces.horizontal.has("free_slope"):
+		wing_cl = Aero.wing_lift_coefficient(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var tail_limit: float = surfaces.tail_local_limit
 	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit
 	var tail_cd0: float = surfaces.tail_CD0
@@ -157,7 +163,8 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		var control: float = -float(d.rudder) if vertical else float(d.elevator)
 		var control_angle: float = tail.control_effectiveness*control
 		var incidence: float = tail.incidence
-		var lift_slope: float = tail.lift_slope
+		var has_downwash: bool = not vertical and tail.has("free_slope")
+		var lift_slope: float = tail.free_slope if has_downwash else tail.lift_slope
 		var washed_0 := 0.0
 		var washed_1 := 0.0
 		var washed_2 := 0.0
@@ -183,7 +190,12 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 				f1 = (v1 + 0.0) + rate_arm_1
 				f2 = (v2 + 0.0) + rate_arm_2
 			var normal: float = f1 if vertical else f2
-			var effective := wrapf(M.atan2_(normal, f0) + control_angle + incidence, -PI, PI)
+			var effective: float
+			if has_downwash:
+				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * wing_cl
+					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+			else:
+				effective = wrapf(M.atan2_(normal, f0) + control_angle + incidence, -PI, PI)
 			var blend := Aero._smoothstep((absf(effective) - tail_limit)/tail_span)
 			var cl: float = (1.0 - blend)*lift_slope*effective + blend*0.5*tail_cd90*M.sin_(2.0*effective)
 			var cd: float = tail_cd0 + tail_k*cl*cl + tail_cd90*M.pow_(M.sin_(effective), 2)

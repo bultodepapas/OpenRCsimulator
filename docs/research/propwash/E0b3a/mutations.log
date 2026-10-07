@@ -1,0 +1,15 @@
+Baseline: E0b3a: 15 checks, 0 failed
+session lag disconnected at Dynamics: rejected
+  FAIL real session feeds held lag to both aero and wash
+held wing lift ignored: rejected
+  FAIL scalar washed-minus-free loads match the tested tail law worst 1.6406785684781027; 900 immersed pieces
+  FAIL NAN solves instantaneous wing CL exactly
+old scalar tail slope restored: rejected
+  FAIL scalar washed-minus-free loads match the tested tail law worst 1.5421667755432733; 900 immersed pieces
+old scalar elevator law restored: rejected
+  FAIL scalar washed-minus-free loads match the tested tail law worst 1.5330159816769788; 900 immersed pieces
+old helper tail slope restored: rejected
+  FAIL tail helper matches existing local tail in 300 held-lag/rate/stall cases worst 23.123660557673986
+  FAIL elevator derivative uses free slope times elevator tau
+  FAIL scalar washed-minus-free loads match the tested tail law worst 1.5421667755432733; 900 immersed pieces
+Restored: E0b3a: 15 checks, 0 failed

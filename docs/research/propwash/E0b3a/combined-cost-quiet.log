@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured forward wash=false median=348.6 us/tick samples=[325.308333333333, 335.983333333333, 348.616666666667, 384.775, 535.941666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured forward wash=true median=565.6 us/tick samples=[526.558333333333, 551.941666666667, 565.575, 569.583333333333, 581.816666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured stall wash=false median=358.5 us/tick samples=[322.158333333333, 329.658333333333, 358.458333333333, 369.375, 388.141666666667]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured stall wash=true median=562.2 us/tick samples=[544.091666666667, 544.45, 562.225, 567.883333333333, 588.725]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured static wash=false median=322.8 us/tick samples=[315.566666666667, 319.941666666667, 322.758333333333, 336.041666666667, 338.6]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+E0b3a manufactured static wash=true median=487.4 us/tick samples=[464.408333333333, 475.383333333333, 487.45, 500.625, 523.633333333333]
+completed without simulation faults: true
