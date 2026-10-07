@@ -1,0 +1,81 @@
+{
+  "format": "openrc-numerics-sensitivity v1",
+  "host": {
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64"
+  },
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "same_machine_wrapper_fingerprints": {
+    "glide_15": "8694647990784ccb5afe6c3dc3b74c1836340604b2ba00a71d73f0a45c951409",
+    "pull_throttle": "dd514dd7fc9a6e859efd811c32dba27f58695732abab49af56494ed4365a95c7",
+    "roll_15": "aeff2f99faae829c670fdb9a04ad33216f0312235de70a3144975913835bc7f6",
+    "rudder_doublet": "cd4e8494d6db2a84a891ab8b1f7b8976da78e975f7f54ff459b8cd2131f3ff03"
+  },
+  "same_machine_direct_builtin_fingerprints": {
+    "glide_15": "8694647990784ccb5afe6c3dc3b74c1836340604b2ba00a71d73f0a45c951409",
+    "pull_throttle": "dd514dd7fc9a6e859efd811c32dba27f58695732abab49af56494ed4365a95c7",
+    "roll_15": "aeff2f99faae829c670fdb9a04ad33216f0312235de70a3144975913835bc7f6",
+    "rudder_doublet": "cd4e8494d6db2a84a891ab8b1f7b8976da78e975f7f54ff459b8cd2131f3ff03"
+  },
+  "same_machine_fingerprints_match": true,
+  "one_ulp": {
+    "perturbations": [
+      "sin_ next-float-up",
+      "atan2_ next-float-up"
+    ],
+    "max_error_over_tolerance_div_1000": 0.00111022302462516,
+    "per_golden_error_ratios": {
+      "glide_15": 0.000411129463806503,
+      "pull_throttle": 0.0005551115123125779,
+      "roll_15": 0.00111022302462516,
+      "rudder_doublet": 0.000999200722162641
+    },
+    "branch_signatures_match": true,
+    "branch_signature_sha256": {
+      "glide_15": "384008c0c86274153e14b721c33091a9e2199edb257ef8ddc33d286d6414f743",
+      "pull_throttle": "6d85a24a35eb800988e493a38fb4f0a03b5dd97dd0d3593431b73a6c30c017e1",
+      "roll_15": "618e31a498edc63c7cfa169a63d2d16097cce5022eed0ed801a5e8f532abddfe",
+      "rudder_doublet": "ac87c83fbad9c348bca3fa32b972bb2f75468d77da1e6827b2a5b732e08a2aa2"
+    }
+  },
+  "adjacent_float_stall_branch_fixture": {
+    "baseline_alpha": 0.463647609000806,
+    "baseline_alpha_bits": 4602023952714414927,
+    "baseline_full_stall": false,
+    "baseline_weight": 0.990026460411154,
+    "perturbed_alpha": 0.463647609000806,
+    "perturbed_alpha_bits": 4602023952714414928,
+    "perturbed_full_stall": true,
+    "perturbed_weight": 1.0,
+    "threshold": 0.463647609000806,
+    "threshold_bits": 4602023952714414928
+  },
+  "controlled_golden_branch_mutation": {
+    "mutation": "aero blend == 0.0 -> blend < 0.0",
+    "goldens_with_branch_signature_divergence": [
+      "glide_15",
+      "pull_throttle",
+      "roll_15",
+      "rudder_doublet"
+    ],
+    "baseline_branch_signature_sha256": {
+      "glide_15": "384008c0c86274153e14b721c33091a9e2199edb257ef8ddc33d286d6414f743",
+      "pull_throttle": "6d85a24a35eb800988e493a38fb4f0a03b5dd97dd0d3593431b73a6c30c017e1",
+      "roll_15": "618e31a498edc63c7cfa169a63d2d16097cce5022eed0ed801a5e8f532abddfe",
+      "rudder_doublet": "ac87c83fbad9c348bca3fa32b972bb2f75468d77da1e6827b2a5b732e08a2aa2"
+    },
+    "mutated_branch_signature_sha256": {
+      "glide_15": "57e068ad275b983e0f170385c50245e5dc89a96c4e208299093eba531be966a7",
+      "pull_throttle": "ee27f5bc5759ee9f0822c94944b906a014104c370c315d257899c2f710432194",
+      "roll_15": "1fabcc5af40d94e5041ae45d913dc15963a96b56e0aeada19d29e8263cc6ed39",
+      "rudder_doublet": "03d865ea6dc4d22ec3934a4f51372746f1edbb6aa028df0ea7d568aa78d1d499"
+    },
+    "max_error_over_tolerance_div_1000": 0.000333066907387547,
+    "per_golden_error_ratios": {
+      "glide_15": 8.67361737988404e-06,
+      "pull_throttle": 5.551115123125781e-05,
+      "roll_15": 5.551115123125781e-05,
+      "rudder_doublet": 0.000333066907387547
+    }
+  }
+}

@@ -1,0 +1,573 @@
+{
+  "format": "openrc-h11-contact-policy v1",
+  "command": "$(app/get-godot.sh) --headless --path app --script res://tests/test_contact_policy.gd",
+  "checks": 72,
+  "failures": 0,
+  "engine_errors": 0,
+  "results": [
+    {
+      "effective_roll_pitch_jxx_jyy_jxy": [
+        4.75,
+        6.0,
+        1.3
+      ],
+      "expected_lambda_max": 4.47989273958583,
+      "observed_lambda_max": 4.47989273958583,
+      "reference_check": "full inertia tensor with free yaw",
+      "tensor_jxx_jyy_jzz_jxy_jxz_jyz": [
+        5.0,
+        7.0,
+        4.0,
+        0.8,
+        1.0,
+        -2.0
+      ]
+    },
+    {
+      "case": "light-1kg-18mm-zeta02",
+      "damping_case_zeta": 0.2,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 1.0,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 23.2558929078761,
+        "rho_240": 0.0968995537828171,
+        "scalar_rho_240": 0.096888841110788
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 8.67260519799872e-10,
+          "normalized": 2.8727834709335e-07,
+          "position_m": 4.29818479348189e-09,
+          "rate_radps": 1.45959792739825e-08,
+          "time_s": 0.2,
+          "velocity_mps": 1.03696797763708e-07
+        },
+        "delta_480_960": {
+          "attitude_rad": 5.36440182413384e-11,
+          "normalized": 1.78299029288818e-08,
+          "position_m": 2.6951608711345e-10,
+          "rate_radps": 9.11544105496218e-10,
+          "time_s": 0.2,
+          "velocity_mps": 6.33016370098624e-09
+        },
+        "energy_loss_240_j": 0.00361967258162754,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -2.8210036528975e-08,
+        "smooth_refinement_ratio": 16.1121655142609,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.0181363826217078,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 8.14949800041373e-05,
+          "normalized": 0.00990211194544119,
+          "position_m": 0.000157010392558883,
+          "rate_radps": 0.000882498993520729,
+          "time_s": 0.05,
+          "velocity_mps": 0.00333274972880345
+        },
+        "delta_480_960": {
+          "attitude_rad": 3.99748573891046e-05,
+          "normalized": 0.00494680166530204,
+          "position_m": 7.84397334968321e-05,
+          "rate_radps": 0.000434219769976614,
+          "time_s": 0.05,
+          "velocity_mps": 0.00166577791320137
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 2.22044604925031e-16,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "stik-actual",
+      "damping_case_zeta": 0.4,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 2.88505829104375,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 23.2558929078761,
+        "rho_240": 0.0968995537828171,
+        "scalar_rho_240": 0.096888841110788
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 6.67095983495647e-10,
+          "normalized": 1.4720070576992e-07,
+          "position_m": 2.43364950116758e-09,
+          "rate_radps": 1.01588805261864e-08,
+          "time_s": 0.15,
+          "velocity_mps": 4.76739591463926e-08
+        },
+        "delta_480_960": {
+          "attitude_rad": 4.10173294595284e-11,
+          "normalized": 9.14542490558605e-09,
+          "position_m": 1.49165316268383e-10,
+          "rate_radps": 6.32147746313248e-10,
+          "time_s": 0.15,
+          "velocity_mps": 2.93857027172893e-09
+        },
+        "energy_loss_240_j": 0.0106648119347197,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -9.83431558410075e-09,
+        "smooth_refinement_ratio": 16.095556771781,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.0181363826217078,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.000389283514378995,
+          "normalized": 0.00555023074078457,
+          "position_m": 4.19586689179674e-05,
+          "rate_radps": 0.00409101564639083,
+          "time_s": 0.2,
+          "velocity_mps": 0.000918227079878546
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.000159204436121523,
+          "normalized": 0.00833196486337639,
+          "position_m": 0.000120990968791668,
+          "rate_radps": 0.00154707892542793,
+          "time_s": 0.05,
+          "velocity_mps": 0.00293428371815604
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 8.88178419700125e-16,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "stik-10mm-zeta04",
+      "damping_case_zeta": 0.4,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 2.88505829104375,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 31.3190336636451,
+        "rho_240": 0.130495973598521,
+        "scalar_rho_240": 0.130481546694457
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 2.85201035325844e-09,
+          "normalized": 4.47203887968805e-07,
+          "position_m": 4.44127633027902e-09,
+          "rate_radps": 5.81927809369191e-08,
+          "time_s": 0.1,
+          "velocity_mps": 1.31761561971252e-07
+        },
+        "delta_480_960": {
+          "attitude_rad": 1.78416734801204e-10,
+          "normalized": 2.79312977430561e-08,
+          "position_m": 2.75405920090302e-10,
+          "rate_radps": 3.55479118481853e-09,
+          "time_s": 0.1,
+          "velocity_mps": 7.93758547471534e-09
+        },
+        "energy_loss_240_j": 0.0064400181342954,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -7.28536342364805e-10,
+        "smooth_refinement_ratio": 16.0108524882265,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.01,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.000361628939140998,
+          "normalized": 0.00939182215694258,
+          "position_m": 3.97214851231567e-05,
+          "rate_radps": 0.00522008056209528,
+          "time_s": 0.15,
+          "velocity_mps": 0.000921902071154106
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.000147499493109727,
+          "normalized": 0.0140480852752751,
+          "position_m": 0.00010140553714351,
+          "rate_radps": 0.00197955852676409,
+          "time_s": 0.05,
+          "velocity_mps": 0.00301590001021612
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 8.88178419700125e-16,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "giant-18kg-18mm-zeta07",
+      "damping_case_zeta": 0.7,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 18.21,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 23.2558929078761,
+        "rho_240": 0.0968995537828171,
+        "scalar_rho_240": 0.096888841110788
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 5.4772960971682e-10,
+          "normalized": 1.14258481280302e-07,
+          "position_m": 1.70202562135908e-09,
+          "rate_radps": 8.27863663080766e-09,
+          "time_s": 0.1,
+          "velocity_mps": 2.73162836172873e-08
+        },
+        "delta_480_960": {
+          "attitude_rad": 3.40375909096238e-11,
+          "normalized": 7.00670099557724e-09,
+          "position_m": 1.03313614492054e-10,
+          "rate_radps": 5.0676932195061e-10,
+          "time_s": 0.1,
+          "velocity_mps": 1.7091908746839e-09
+        },
+        "energy_loss_240_j": 0.0740919652748318,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -4.54922144399461e-09,
+        "smooth_refinement_ratio": 16.3070297066228,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.0181363826217078,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.00106903678129701,
+          "normalized": 0.0287230943177489,
+          "position_m": 0.00024910896032422,
+          "rate_radps": 0.0148356580409318,
+          "time_s": 0.15,
+          "velocity_mps": 0.00714377360929354
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.000343740722105263,
+          "normalized": 0.0150840637598269,
+          "position_m": 0.000177099598802192,
+          "rate_radps": 0.00462928308436827,
+          "time_s": 0.05,
+          "velocity_mps": 0.00597622712516415
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 1.4210854715202e-14,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "giant-18kg-5mm-zeta04",
+      "damping_case_zeta": 0.4,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 18.21,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 44.2918021675464,
+        "rho_240": 0.18454917569811,
+        "scalar_rho_240": 0.184528772974719
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 1.36448230011145e-08,
+          "normalized": 2.28162321925069e-06,
+          "position_m": 5.36984231176425e-09,
+          "rate_radps": 4.55926634639684e-07,
+          "time_s": 0.1,
+          "velocity_mps": 3.41200783688973e-07
+        },
+        "delta_480_960": {
+          "attitude_rad": 8.58936904268945e-10,
+          "normalized": 1.38810994967609e-07,
+          "position_m": 2.99333054572413e-10,
+          "rate_radps": 2.81280649923195e-08,
+          "time_s": 0.1,
+          "velocity_mps": 2.10957450778732e-08
+        },
+        "energy_loss_240_j": 0.0534911160262226,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -4.77261608011759e-09,
+        "smooth_refinement_ratio": 16.4369055908222,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.005,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.000647035505414942,
+          "normalized": 0.0670172460988632,
+          "position_m": 0.000171749465205195,
+          "rate_radps": 0.0154658766810221,
+          "time_s": 0.1,
+          "velocity_mps": 0.00653091761577761
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.000325882084121817,
+          "normalized": 0.0336792899488324,
+          "position_m": 8.54085876908196e-05,
+          "rate_radps": 0.00779516339491173,
+          "time_s": 0.1,
+          "velocity_mps": 0.00323121481400715
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 1.4210854715202e-14,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "stik-2mm-zeta04",
+      "damping_case_zeta": 0.4,
+      "inside_tested_fixture_boundary_240_hz": true,
+      "mass_kg": 2.88505829104375,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 70.0314882615147,
+        "rho_240": 0.291797867756311,
+        "scalar_rho_240": 0.291765608218119
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 4.48425714595595e-08,
+          "normalized": 1.35370437853813e-05,
+          "position_m": 2.40742789615607e-08,
+          "rate_radps": 4.58477280561164e-06,
+          "time_s": 0.05,
+          "velocity_mps": 5.37611610791967e-07
+        },
+        "delta_480_960": {
+          "attitude_rad": 2.77097813530613e-09,
+          "normalized": 8.5758289492055e-07,
+          "position_m": 1.43627664533574e-09,
+          "rate_radps": 2.75031753931259e-07,
+          "time_s": 0.05,
+          "velocity_mps": 4.27200645188858e-08
+        },
+        "energy_loss_240_j": 0.00528746337769981,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -1.23128174323028e-11,
+        "smooth_refinement_ratio": 15.7851140286974,
+        "start_contact_mask": 7,
+        "supported": true,
+        "switches_240": 0
+      },
+      "static_sag_m": 0.002,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.00024917581689663,
+          "normalized": 0.0376934348227796,
+          "position_m": 5.51821672693175e-05,
+          "rate_radps": 0.00819058989154105,
+          "time_s": 0.05,
+          "velocity_mps": 0.00111028313051286
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.000220780329653134,
+          "normalized": 0.0577700065545613,
+          "position_m": 0.000102177897090347,
+          "rate_radps": 0.00733404425976262,
+          "time_s": 0.05,
+          "velocity_mps": 0.00181483971129573
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 8.88178419700125e-16,
+        "supported": true,
+        "switches_240": 2
+      }
+    },
+    {
+      "case": "stik-0.5mm-zeta04",
+      "damping_case_zeta": 0.4,
+      "inside_tested_fixture_boundary_240_hz": false,
+      "mass_kg": 2.88505829104375,
+      "mode": {
+        "limiting_contact_mask": 7,
+        "omega_max": 140.062976523029,
+        "rho_240": 0.583595735512623,
+        "scalar_rho_240": 0.583531216436238
+      },
+      "ringdown": {
+        "delta_240_480": {
+          "attitude_rad": 1.00394377104629e-05,
+          "normalized": 0.00568588916821002,
+          "position_m": 1.19596764927396e-06,
+          "rate_radps": 0.00136129229415074,
+          "time_s": 0.05,
+          "velocity_mps": 4.43404265579902e-06
+        },
+        "delta_480_960": {
+          "attitude_rad": 1.2784534912464e-05,
+          "normalized": 0.00714814498918241,
+          "position_m": 1.40809375845602e-06,
+          "rate_radps": 0.00178249746245264,
+          "time_s": 0.05,
+          "velocity_mps": 9.17421304475917e-06
+        },
+        "energy_loss_240_j": 0.0154143973227088,
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": -8.88178419700125e-15,
+        "smooth_refinement_ratio": 0.795435623761789,
+        "start_contact_mask": 6,
+        "supported": false,
+        "switches_240": 1
+      },
+      "static_sag_m": 0.0005,
+      "touchdown": {
+        "delta_240_480": {
+          "attitude_rad": 0.00249713733616437,
+          "normalized": 1.3631748522001,
+          "position_m": 0.000286607042321353,
+          "rate_radps": 0.101647937630297,
+          "time_s": 0.25,
+          "velocity_mps": 0.0289254650525751
+        },
+        "delta_480_960": {
+          "attitude_rad": 0.0019280777200069,
+          "normalized": 1.05874497955037,
+          "position_m": 0.000208779457267783,
+          "rate_radps": 0.0639000772626377,
+          "time_s": 0.25,
+          "velocity_mps": 0.0237182773113649
+        },
+        "max_contacts_240": 3,
+        "max_tick_energy_gain_240_j": 8.88178419700125e-16,
+        "supported": false,
+        "switches_240": 10
+      }
+    },
+    {
+      "active_subset_count_screened": 7,
+      "catalog_id": "jensen-das-ugly-stik-60",
+      "classification": "catalog mode screen only; no aircraft-specific touchdown/refinement claim",
+      "contact_count": 3,
+      "contact_layout": [
+        {
+          "damping_ns_per_m": 18.6,
+          "equal_mass_share_zeta_estimate": 0.400748832941253,
+          "name": "main_left",
+          "position_body_m": [
+            -0.0941,
+            -0.18,
+            0.2581
+          ],
+          "stiffness_n_per_m": 560.0
+        },
+        {
+          "damping_ns_per_m": 18.6,
+          "equal_mass_share_zeta_estimate": 0.400748832941253,
+          "name": "main_right",
+          "position_body_m": [
+            -0.0941,
+            0.18,
+            0.2581
+          ],
+          "stiffness_n_per_m": 560.0
+        },
+        {
+          "damping_ns_per_m": 16.5,
+          "equal_mass_share_zeta_estimate": 0.401061470226828,
+          "name": "nose",
+          "position_body_m": [
+            0.2569,
+            0.0,
+            0.2549
+          ],
+          "stiffness_n_per_m": 440.0
+        }
+      ],
+      "contact_mode_screened": true,
+      "contact_subset_masks_screened": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "coupled_omega_max_rad_per_s": 23.2558929078761,
+      "coupled_rho_240": 0.0968995537828171,
+      "heave_scalar_rho_240": 0.096888841110788,
+      "limiting_contact_mask": 7,
+      "mass_kg": 2.88505829104375,
+      "static_sag_proxy_m": 0.0181363826217078
+    },
+    {
+      "catalog_id": "gp-extra-300s-60",
+      "contact_count": 0,
+      "contact_mode_screened": false,
+      "reason": "no landing-gear contact data"
+    },
+    {
+      "active_subset_count_screened": 7,
+      "catalog_id": "p51d-mustang-120",
+      "classification": "catalog mode screen only; no aircraft-specific touchdown/refinement claim",
+      "contact_count": 3,
+      "contact_layout": [
+        {
+          "damping_ns_per_m": 106.617031,
+          "equal_mass_share_zeta_estimate": 0.300000005291037,
+          "name": "main_left",
+          "position_body_m": [
+            0.152762743605756,
+            -0.451,
+            0.439353961838696
+          ],
+          "stiffness_n_per_m": 4405.88815
+        },
+        {
+          "damping_ns_per_m": 106.617031,
+          "equal_mass_share_zeta_estimate": 0.300000005291037,
+          "name": "main_right",
+          "position_body_m": [
+            0.152762743605756,
+            0.451,
+            0.439353961838696
+          ],
+          "stiffness_n_per_m": 4405.88815
+        },
+        {
+          "damping_ns_per_m": 56.086539,
+          "equal_mass_share_zeta_estimate": 0.300000002358942,
+          "name": "tail",
+          "position_body_m": [
+            -1.10403725639424,
+            0.0,
+            0.128503961838696
+          ],
+          "stiffness_n_per_m": 1219.263548
+        }
+      ],
+      "contact_mode_screened": true,
+      "contact_subset_masks_screened": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "coupled_omega_max_rad_per_s": 22.9444410556878,
+      "coupled_rho_240": 0.0956018377320327,
+      "heave_scalar_rho_240": 0.0900000014111399,
+      "limiting_contact_mask": 3,
+      "mass_kg": 21.499999,
+      "static_sag_proxy_m": 0.0210190536961518
+    },
+    {
+      "catalog_id": "sebart-avanti-s-a200-p100rx",
+      "contact_count": 0,
+      "contact_mode_screened": false,
+      "reason": "no landing-gear contact data; catalog configuration is gear-up, in-air start only"
+    }
+  ]
+}

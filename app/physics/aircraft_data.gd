@@ -8,6 +8,8 @@
 #        servo_rate (full throws per second)}, id.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 const FORMAT := "openrc-aircraft v1"
 const Aero := preload("res://physics/aero.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -183,7 +185,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	for axis in 3:
 		if absf(cg_inv[axis]-plan_cg[axis]) > cg_tolerance:
 			errors.append("balance: inventory CG axis %d disagrees with flight CG by %.4f m (tolerance %.4f m); reconcile the build before flying" % [axis, absf(cg_inv[axis]-plan_cg[axis]), cg_tolerance])
-	var scale: float = (mass / 1.959) * pow(span / 1.27, 2)
+	var scale: float = (mass / 1.959) * M.pow_(span / 1.27, 2)
 	var names := ["Jxx", "Jyy", "Jzz"]
 	for k in 3:
 		var ratio: float = j[k] / (inertia_ref[k] * scale)
@@ -257,7 +259,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 			errors.append("%s: missing name" % label)
 			continue
 		var n := float(raw_contacts.size())
-		var zeta: float = damping / (2.0 * sqrt(k * mass / n))
+		var zeta: float = damping / (2.0 * M.sqrt_(k * mass / n))
 		if zeta < 0.05 or zeta > 2.0:
 			errors.append("%s.damping: ratio ζ = %.2f outside 0.05–2 (with m/%d per contact)" % [label, zeta, int(n)])
 		x_min = minf(x_min, position[0])
@@ -265,7 +267,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		y_min = minf(y_min, position[1])
 		y_max = maxf(y_max, position[1])
 		var body := PackedFloat64Array([-(position[0] - cg[0]), position[1] - cg[1], -(position[2] - cg[2])])
-		reach = maxf(reach, sqrt(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
+		reach = maxf(reach, M.sqrt_(body[0] * body[0] + body[1] * body[1] + body[2] * body[2]))
 		total_k += k
 		contacts.append({ name = str(c.name), position = body, stiffness = float(k), damping = float(damping), max_compression = float(travel), max_steering = deg_to_rad(steering) })
 	if not errors.is_empty() or contacts.size() < 3:
@@ -275,7 +277,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	if not (y_min < cg[1] and cg[1] < y_max):
 		errors.append("landing_gear: no contact on each side of the CG (y %.3f–%.3f m)" % [y_min, y_max])
 	var dt := 1.0 / float(ProjectSettings.get_setting("physics/common/physics_ticks_per_second", 60))
-	var omega := sqrt(total_k / mass)
+	var omega := M.sqrt_(total_k / mass)
 	if omega * dt >= 0.1:
 		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) is not < 0.1; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt])
 	var c_rr = _q(errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
@@ -283,7 +285,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	var peak = _q(errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
 	if not errors.is_empty():
 		return {}
-	var tan_peak := tan(deg_to_rad(peak))
+	var tan_peak := M.tan_(deg_to_rad(peak))
 	var side_lambda_dt: float = mu * 9.80665 * dt / (tan_peak * Ground.SLIP_FLOOR)
 	if side_lambda_dt > Ground.SIDE_LAMBDA_DT_MAX:
 		errors.append("landing_gear: side-force damping λ·dt = %.2f (μ·g / (tan α_peak · %.1f m/s) at %.0f Hz) is above %.1f; raise peak_slip_angle or the tick" % [side_lambda_dt, Ground.SLIP_FLOOR, 1.0 / dt, Ground.SIDE_LAMBDA_DT_MAX])
@@ -312,7 +314,7 @@ static func station_ys(span: float, chords: PackedFloat64Array) -> PackedFloat64
 		for k in n:
 			# Strip edge where the area from the root reaches (k + 1)/n of the semi-span's: slope/2·y² + cr·y − A = 0.
 			var target := total * (k + 1) / n
-			var y1 := h if k == n - 1 else (-cr + sqrt(cr * cr + 2.0 * slope * target)) / slope
+			var y1 := h if k == n - 1 else (-cr + M.sqrt_(cr * cr + 2.0 * slope * target)) / slope
 			centres.append((moment.call(y1) - moment.call(y0)) / (area.call(y1) - area.call(y0)))
 			y0 = y1
 	var ys := PackedFloat64Array()
@@ -427,7 +429,7 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 		if angles != null:
 			var down := deg_to_rad(angles[0])
 			var right := deg_to_rad(angles[1])
-			out.axis = PackedFloat64Array([cos(down) * cos(right), cos(down) * sin(right), sin(down)])
+			out.axis = PackedFloat64Array([M.cos_(down) * M.cos_(right), M.cos_(down) * M.sin_(right), M.sin_(down)])
 	if pr.has("normal_force"):
 		if not out.has("axis"):
 			errors.append("propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)")
@@ -492,7 +494,7 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 			span = _q(errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
 			chords = _q(errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2),
 		}
-		if piece.span_dir != null and absf(sqrt(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
+		if piece.span_dir != null and absf(M.sqrt_(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
 			errors.append("%s.span_dir: must be a unit vector" % label)
 		out.pieces.append(piece)
 	return out if errors.is_empty() else {}
@@ -540,7 +542,7 @@ static func _turbine(errors: PackedStringArray, node: Dictionary) -> Dictionary:
 		if angles != null:
 			var down := deg_to_rad(angles[0])
 			var right := deg_to_rad(angles[1])
-			out.axis = PackedFloat64Array([cos(down) * cos(right), cos(down) * sin(right), sin(down)])
+			out.axis = PackedFloat64Array([M.cos_(down) * M.cos_(right), M.cos_(down) * M.sin_(right), M.sin_(down)])
 	if not errors.is_empty():
 		return {}
 	if idle >= max_rpm:

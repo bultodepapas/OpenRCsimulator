@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H9 round-trip: { &"ok": true, &"message": "worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 5.551115123125783e-17, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok", &"worst": { &"pos": 0.0, &"vel": 0.0, &"att": 0.0, &"rate": 0.0, &"rpm": 0.0, &"servo": 0.0 } }
+H9 replay policy: 42 checks, 0 failed

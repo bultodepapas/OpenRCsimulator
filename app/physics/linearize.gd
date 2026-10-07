@@ -4,6 +4,8 @@
 # roots by Durand–Kerner with a Newton polish. Good to ~1e-10 for the well-separated modes of an airplane.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 
 ## Central-difference Jacobian of f: R^n → R^n at x0. Returns rows: J[i][k] = ∂f_i/∂x_k.
 static func jacobian(f: Callable, x0: PackedFloat64Array, h := 1e-6) -> Array:
@@ -152,7 +154,7 @@ static func classify(ev: Array, imag_tol := 1e-7) -> Dictionary:
 	for e in ev:
 		if absf(e[1]) > imag_tol:
 			if e[1] > 0.0:
-				var wn := sqrt(e[0] * e[0] + e[1] * e[1])
+				var wn := M.sqrt_(e[0] * e[0] + e[1] * e[1])
 				osc.append({ wn = wn, zeta = -e[0] / wn })
 		else:
 			real.append(e[0])

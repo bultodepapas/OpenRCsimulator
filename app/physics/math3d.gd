@@ -2,8 +2,8 @@
 # Godot's Vector3/Basis/Quaternion are 32-bit, so physics uses PackedFloat64Array instead:
 #   vector     = [x, y, z]
 #   quaternion = [w, x, y, z], unit length, rotates body-frame vectors into the world frame.
-# All transcendental math goes through this file (sin_/cos_/atan2_/asin_/exp_), so a deterministic
-# implementation can be swapped in later without touching callers.
+# All transcendental math in physics and simulation goes through this file. The wrappers intentionally
+# call the same Godot built-ins as the old call sites so routing alone preserves same-build results.
 extends RefCounted
 
 
@@ -17,16 +17,64 @@ static func cos_(a: float) -> float:
 	return cos(a)
 
 
+static func tan_(a: float) -> float:
+	return tan(a)
+
+
+static func atan_(a: float) -> float:
+	return atan(a)
+
+
 static func atan2_(y: float, x: float) -> float:
 	return atan2(y, x)
+
+
+static func acos_(a: float) -> float:
+	return acos(a)
 
 
 static func asin_(a: float) -> float:
 	return asin(clampf(a, -1.0, 1.0))
 
 
+static func sqrt_(a: float) -> float:
+	return sqrt(a)
+
+
+static func pow_(base: float, exponent: float) -> float:
+	return pow(base, exponent)
+
+
 static func exp_(a: float) -> float:
 	return exp(a)
+
+
+static func log_(a: float) -> float:
+	return log(a)
+
+
+static func sinh_(a: float) -> float:
+	return sinh(a)
+
+
+static func cosh_(a: float) -> float:
+	return cosh(a)
+
+
+static func tanh_(a: float) -> float:
+	return tanh(a)
+
+
+static func asinh_(a: float) -> float:
+	return asinh(a)
+
+
+static func acosh_(a: float) -> float:
+	return acosh(a)
+
+
+static func atanh_(a: float) -> float:
+	return atanh(a)
 
 
 # --- vectors ---
@@ -56,7 +104,7 @@ static func cross(a: PackedFloat64Array, b: PackedFloat64Array) -> PackedFloat64
 
 
 static func norm(a: PackedFloat64Array) -> float:
-	return sqrt(dot(a, a))
+	return sqrt_(dot(a, a))
 
 
 # --- quaternions [w, x, y, z] ---
@@ -84,7 +132,7 @@ static func q_conj(q: PackedFloat64Array) -> PackedFloat64Array:
 
 
 static func q_normalized(q: PackedFloat64Array) -> PackedFloat64Array:
-	var n := sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+	var n := sqrt_(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
 	return quat(q[0] / n, q[1] / n, q[2] / n, q[3] / n)
 
 

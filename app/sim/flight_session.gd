@@ -60,7 +60,12 @@ var profiles_path := "user://rc_calibration.cfg"
 var calibration: RefCounted = null
 ## false: the engine is stopped (dead stick: no thrust, no torque, rpm 0) until restarted. A power-off glide start
 ## stops it; every other start runs it. (Starting and stopping in flight: ROADMAP G2.)
-var engine_running := true
+var engine_running: bool:
+	get:
+		return true if sim == null else sim.modes[0] == 1
+	set(value):
+		if sim != null:
+			sim.modes[0] = 1 if value else 0
 ## After a crash the scene freezes this long (s, counted in physics ticks), showing the impact, then restarts.
 const CRASH_HOLD_S := 1.5
 ## The last crash while it is shown: { speed, sink (m/s), ticks_left }; empty when flying.
@@ -92,6 +97,7 @@ func _init() -> void:
 func setup(path := Scenarios.AIRCRAFT) -> void:
 	aircraft_path = path
 	sim = Sim.new()
+	sim.modes = PackedInt64Array([1])
 	sim.faulted.connect(_on_sim_faulted)
 	var prepared := _prepare_aircraft(AircraftData.load_file(path))
 	if prepared.ok:
@@ -375,10 +381,28 @@ func reload() -> String:
 	var prepared := _prepare_aircraft(AircraftData.load_file(aircraft_path))
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
+	var old_flight := { data = aircraft, start = start, trims = trims.duplicate(true) }
+	var old_snapshot: Dictionary = sim.checkpoint()
+	var old_commands := commands.duplicate(true)
+	var old_raw := raw.duplicate(true)
+	var old_crash := crash.duplicate(true)
+	var old_reason := pause_reason
+	var old_paused: bool = sim.paused
 	_commit_aircraft(prepared)
 	reset()
 	if not sim.fault_reason.is_empty():
-		return "aircraft reload failed during reset; simulation paused: %s" % sim.fault_reason
+		var reason: String = sim.fault_reason
+		if old_snapshot.is_empty():
+			return "aircraft reload failed during reset; simulation paused: %s" % reason
+		_commit_aircraft(old_flight)
+		if not old_snapshot.is_empty() and sim.restore_checkpoint(old_snapshot):
+			commands = old_commands
+			raw = old_raw
+			crash = old_crash
+			pause_reason = old_reason
+			sim.set_paused(old_paused)
+			return "reload failed; previous aircraft and flight retained: " + reason
+		return "aircraft reload failed during reset; simulation paused: %s" % reason
 	return "aircraft reloaded: trimmed at %.0f m/s, throttle %d %%" % [start.V, roundi(start.throttle * 100.0)]
 
 
@@ -444,7 +468,7 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 
 func _crash(why: String) -> void:
 	var s: PackedFloat64Array = sim.state
-	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
+	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
 	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
 	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why }
@@ -617,3 +641,43 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+
+
+## Physics replay boundary, deliberately downstream of live input conditioning and menus.
+## Owner configuration is fingerprinted in exact Variant encoding; derived caches are excluded.
+func checkpoint() -> Dictionary:
+	if not _flight_ready():
+		return {}
+	var snapshot: Dictionary = sim.checkpoint()
+	if snapshot.is_empty() or snapshot.modes.size() != 1 or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
+		return {}
+	return { format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot }
+
+
+func _checkpoint_configuration() -> String:
+	var config_hash := HashingContext.new()
+	config_hash.start(HashingContext.HASH_SHA256)
+	config_hash.update(var_to_bytes([aircraft.model, ground_surfaces]))
+	return config_hash.finish().hex_encode()
+
+
+## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
+## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
+func restore_checkpoint(candidate: Dictionary) -> bool:
+	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
+			or candidate.format != "openrc-flight-checkpoint v1" or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.configuration != _checkpoint_configuration() \
+			or not candidate.get("simulation") is Dictionary:
+		return false
+	var snapshot: Dictionary = candidate.simulation
+	if not sim.can_restore_checkpoint(snapshot) or snapshot.modes.size() != 1 \
+			or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
+		return false
+	resetting.emit() # close recording before the clock moves backwards
+	if not sim.restore_checkpoint(snapshot):
+		return false
+	input_enabled = false
+	crash = {}
+	pause_reason = "checkpoint restored (recorded inputs)"
+	_deflection_key = PackedFloat64Array()
+	return true

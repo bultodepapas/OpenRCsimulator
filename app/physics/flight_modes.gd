@@ -28,7 +28,7 @@ static func analyze(model: Dictionary, V: float, g := 9.80665) -> Dictionary:
 		var phi := x[6]
 		var th := x[7]
 		return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 1], dot[RB.VEL + 2], dot[RB.RATE], dot[RB.RATE + 1], dot[RB.RATE + 2],
-			x[3] + (x[4] * sin(phi) + x[5] * cos(phi)) * tan(th), x[4] * cos(phi) - x[5] * sin(phi)])
+			x[3] + (x[4] * M.sin_(phi) + x[5] * M.cos_(phi)) * M.tan_(th), x[4] * M.cos_(phi) - x[5] * M.sin_(phi)])
 	var s0: PackedFloat64Array = t.state
 	var e := M.q_to_euler(s0.slice(RB.ATT, RB.ATT + 4)) # [yaw, pitch, roll]
 	var a := L.jacobian(f, PackedFloat64Array([s0[RB.VEL], s0[RB.VEL + 1], s0[RB.VEL + 2], 0.0, 0.0, 0.0, e[2], e[1]]))

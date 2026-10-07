@@ -1,0 +1,120 @@
+{
+	"captured_utc": "2026-10-07T01:08:38+00:00",
+	"base_commit": "21fc4348c5c7d00cd67c9144f4fffa64c3ed3297",
+	"worktree_dirty": true,
+	"source_diff_paths": [
+		"app/physics/aero.gd",
+		"app/physics/air_data.gd",
+		"app/physics/aircraft_data.gd",
+		"app/physics/flight_modes.gd",
+		"app/physics/ground_contact.gd",
+		"app/physics/integrator.gd",
+		"app/physics/linearize.gd",
+		"app/physics/math3d.gd",
+		"app/physics/propulsion.gd",
+		"app/physics/slipstream.gd",
+		"app/physics/trim.gd",
+		"app/physics/turbine.gd",
+		"app/sim/flight_session.gd",
+		"app/sim/maneuvers.gd",
+		"app/sim/scripted.gd",
+		"app/sim/simulation.gd",
+		"app/sim/trace.gd"
+	],
+	"tracked_source_diff_sha256": "8f8261a6ac4649c298e0d39b8b53dd8edb553cc0c7ec5d732d75871f0f8a050b",
+	"target_run_context": "Two sequential target runs completed with the owner\u2019s renderer active and no concurrent test engine.",
+	"source_files": [
+		{
+			"path": "app/physics/aero.gd",
+			"sha256": "aed9a2d95b5ece94dacdb3dca467f3160519203674188d5db2fef9c232d0abce"
+		},
+		{
+			"path": "app/physics/air_data.gd",
+			"sha256": "07e972194b49abcfa653e252178d96327c0050b1090d4396be9c34c87329fff2"
+		},
+		{
+			"path": "app/physics/aircraft_data.gd",
+			"sha256": "51b30fd48c14f469196655870d2ae5d271e2249c11f3f8c27ff3ca04f0009919"
+		},
+		{
+			"path": "app/physics/dynamics.gd",
+			"sha256": "5804ea9ecede102e278bc048a026784979cf7c4961aca6fee8892a11d197aa52"
+		},
+		{
+			"path": "app/physics/flight_modes.gd",
+			"sha256": "e0da9f0f41504e48240f4200216ea4f5d4211dc12010031f9e673ce97c531b31"
+		},
+		{
+			"path": "app/physics/ground_contact.gd",
+			"sha256": "594ab92385233657ceff6752d753ca9a766dcd9541fafff5c468b7958af5359e"
+		},
+		{
+			"path": "app/physics/ground_surfaces.gd",
+			"sha256": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99"
+		},
+		{
+			"path": "app/physics/integrator.gd",
+			"sha256": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311"
+		},
+		{
+			"path": "app/physics/linearize.gd",
+			"sha256": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1"
+		},
+		{
+			"path": "app/physics/math3d.gd",
+			"sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1"
+		},
+		{
+			"path": "app/physics/propulsion.gd",
+			"sha256": "0748414d0b1c831f31948038cb15fa943c19fbffc77517d08f5ad3c8ea6f3ff6"
+		},
+		{
+			"path": "app/physics/rigid_body.gd",
+			"sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+		},
+		{
+			"path": "app/physics/slipstream.gd",
+			"sha256": "e04b2ca8e2823a0aafee3a8a659e4c85c92c9090401ac78d0b110e7a2c1e55b0"
+		},
+		{
+			"path": "app/physics/trim.gd",
+			"sha256": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338"
+		},
+		{
+			"path": "app/physics/turbine.gd",
+			"sha256": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573"
+		},
+		{
+			"path": "app/sim/flight_session.gd",
+			"sha256": "8af9935cf3a558a2918627ca4c7aa2634d1f16accc0d3baf4f841760bda4dfc0"
+		},
+		{
+			"path": "app/sim/maneuvers.gd",
+			"sha256": "784b0db2d9afb1f7c07021fa9f749bd99136debe48866c0056c5112e67bb09a3"
+		},
+		{
+			"path": "app/sim/recorder.gd",
+			"sha256": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174"
+		},
+		{
+			"path": "app/sim/scenarios.gd",
+			"sha256": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e"
+		},
+		{
+			"path": "app/sim/scripted.gd",
+			"sha256": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf"
+		},
+		{
+			"path": "app/sim/simulation.gd",
+			"sha256": "a95bb9e8f358e8fcbe241675ce4b8658cc7d27c962efd5664b0f56c308256ed3"
+		},
+		{
+			"path": "app/sim/trace.gd",
+			"sha256": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9"
+		},
+		{
+			"path": "app/tests/bench_regimes.gd",
+			"sha256": "616407f6dab598d057fe79cf66b1e08d1db137029cb4a52cecf68fb74c588157"
+		}
+	]
+}

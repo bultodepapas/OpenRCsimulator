@@ -26,6 +26,10 @@ if [ ${#SIM_DIRS[@]} -gt 0 ] && grep -rnE '^\s*[^#[:space:]].*\b(Vector2|Vector3
   echo "32-bit math type found in simulation code (see lines above)"; exit 1
 fi
 
+echo "== H6: transcendental calls stay behind math3d"
+python3 "$HERE/tests/check_transcendentals.py"
+python3 "$HERE/tests/check_transcendentals.py" --self-test
+
 echo "== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)"
 # Shader files, plus any script that embeds shader code. Comment lines (// or #) are ignored.
 SHADER_FILES=$(cd "$HERE" && { find . \( -name '*.gdshader' -o -name '*.gdshaderinc' \) -not -path './.godot/*'; grep -rl --include='*.gd' 'shader_type' . 2>/dev/null | grep -v '^./.godot/' || true; } | sort -u)
@@ -45,6 +49,9 @@ for t in "$HERE"/tests/test_*.gd; do
   # Godot reports runtime script errors without failing the run; treat any as a failure.
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done
+
+echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
 
 echo "== L5: invalid field files fail before Home or flight can start"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes

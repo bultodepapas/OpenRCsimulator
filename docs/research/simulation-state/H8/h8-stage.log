@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok uncached kernel stage times
+ok cached k1 avoids duplicate evaluation
+ok autonomous kernel retains exact arithmetic
+ok simulation uses absolute stage times
+ok aux advances once and stays frozen
+ok sampled inputs stay fixed across stages
+ok trace loads retain k1 timing
+ok stage 2 fault rolls back body, aux, inputs and trace loads
+ok stage 2 fault pauses without emitting a completed tick
+ok stage 2 fault remains sticky
+ok stage 3 fault rolls back body, aux, inputs and trace loads
+ok stage 3 fault pauses without emitting a completed tick
+ok stage 3 fault remains sticky
+ok stage 4 fault rolls back body, aux, inputs and trace loads
+ok stage 4 fault pauses without emitting a completed tick
+ok stage 4 fault remains sticky
+ok coupled solve at 4 Hz completes
+ok coupled solve at 8 Hz completes
+ok coupled solve at 16 Hz completes
+ok coupled nonautonomous solution converges at fourth order
+ok coupled solve at 240 Hz completes
+ok 240 Hz coupled solution error below 1e-10
+H8a errors=[0.00004332374651, 0.00000290739641, 0.00000018869979] ratios=14.9012175856148,15.4075229395434 error_240hz=3.865380238110561e-12
+22 checks, 0 failed

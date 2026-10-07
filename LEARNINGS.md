@@ -808,3 +808,29 @@ Run the exact workflow block in a fresh clone and mutate one valid file at a tim
 Autonomous flight goldens cannot reveal a solver that freezes time across RK stages. The coupled analytic system `x′ = v`, `v′ = x + t` exposes it: corrected RK4 converges at about 15× per halving, while the frozen-time mutation converges at about 2×. At 240 Hz their maximum component errors are `3.87e-12` and `2.45e-3`. Retain k1 caching and trace timing when fixing the stage clock.
 
 A state inventory must include discrete engine mode, clock and configuration, not only the body array. Existing traces/goldens are not arbitrary mid-flight checkpoints. Keep H8 open until reset, failure rollback and replay cover the bounded state explicitly. Proof: [H8a report and evidence](docs/research/simulation-state/H8a/README.md), 22 targeted checks, three detected mutation failures and unchanged numeric traces for all four aircraft.
+
+## 2026-10-07 · H6/H7 — test math routing and branch decisions separately
+
+Replacing direct transcendental calls with built-in wrappers preserves the same-machine replay fingerprints. Enforce the boundary with an isolated bare-`sin` mutation. Adjacent-float `sin`/`atan2` perturbations stay below each golden budget/1000, but small state error alone does not prove the same decisions: a real aero-branch mutation changes replay signatures while staying below that threshold. Keep branch instrumentation in temporary copies ([H6](docs/research/simulation-state/H6/README.md), [H7](docs/research/simulation-state/H7/README.md)).
+
+## 2026-10-07 · H8 — checkpoint the complete physics boundary
+
+Engine mode, previous state, sampled auxiliaries, inputs, tick, stop condition and mass properties belong with the body state. A failed tick or late reload must restore them together. Capture a run's timestep so an external engine-rate change cannot reinterpret its committed clock. Restore validates before mutation, pauses and disables live input sampling; replay then feeds recorded inputs directly. This is a physics checkpoint, not a saved radio/menu session. Native Variant bytes preserve exact local state; JSON does not. Proof: 90 checks and exact continuation on all four aircraft ([H8](docs/research/simulation-state/H8/README.md)).
+
+## 2026-10-07 · H9 — recording metadata must not control acceptance
+
+Keep component scales and numerical tolerances in code. A recorded policy describes the run but cannot loosen comparison budgets. New v1 golden records can add auxiliary/mode checkpoints and platform/build stamps while old v1 files remain readable with unknown historical metadata. Validate integer-valued JSON modes before converting them: an Array of parsed floats does not compare equal to int64 modes. Proof: 42 checks, including every component mutation, clock-stamp rejection and legacy replay ([H9](docs/research/simulation-state/H9/README.md)).
+
+## 2026-10-07 · H10 — a conditional abstraction can remain unimplemented
+
+Current flight, trim and linearization consumers share Dynamics cleanly. No blocked consumer justifies another load-contributor interface. Remove measured redundant calculations inside the existing evaluators; reopen extraction only for named duplication or coupling that the shared path cannot handle ([H10](docs/research/simulation-state/H10/README.md)).
+
+## 2026-10-07 · H11 — passive contact can still be inaccurate
+
+The coupled gear frequency is a screen, not switched-contact acceptance. The bounded Stik-derived fixtures pass ring-down, energy and step-refinement checks through the measured ratio 0.291798. The much stiffer 0.583596 fixture remains passive but fails touchdown accuracy, even after another timestep halving for velocity/rate. Keep the current conservative loader limit; neither a larger universal bound nor an automatic substep count follows from this experiment. Eliminate free yaw with the inertia Schur complement: simply deleting the yaw row/column silently constrains it and underestimates some coupled frequencies. An analytic cross-inertia fixture catches that mistake. Actual P-51 has mode-screen evidence only; Extra/Avanti have no active gear configuration ([H11](docs/research/simulation-state/H11/README.md)).
+
+## 2026-10-07 · H4/H5 — exact refactors can improve cost without meeting the budget
+
+Reuse each surface's local flow and share washed/free tail work before introducing a cache or framework. Preserving product/sum order—including zero additions—kept 16 aircraft/regime fingerprints exact and passed 10,000 scalar/vector blend comparisons. Initial component profiles identified P-51 slipstream; gear evaluation was not the large isolated cost. Initial-state timings do not exactly explain an evolving 120-tick batch.
+
+The owner confirmed this host as the target. Two sequential runs still put P-51 trim at 737–761, stall at 878–898 and ground at 502–510 µs/tick; median improvements do not close a 500 µs gate, and p95 overruns matter too. Keep the native experiment bounded to the measured hot path, then remeasure every regime. Label Extra/Avanti's gearless ground fixture honestly, and distinguish batch-average p95 from individual-tick latency ([H4/H5 evidence](docs/research/simulation-state/H4-H5/README.md)).

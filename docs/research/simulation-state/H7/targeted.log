@@ -1,0 +1,6 @@
+H7: exact next-float-up sin_/atan2_ perturbations replay all four air goldens
+H6: same-machine SHA-256 trajectories match isolated direct-built-in call-site copies
+maximum component error / (golden tolerance / 1000) = 0.00111022
+adjacent-float full-stall branch fixture crossed: 0.99002646 -> 1
+controlled branch-path mutation detected in actual golden replay(s): glide_15, pull_throttle, roll_15, rudder_doublet
+mutation state error stayed below tolerance/1000 (worst ratio 0.000333067)
