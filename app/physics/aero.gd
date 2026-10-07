@@ -219,7 +219,9 @@ static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> flo
 
 ## H12: scalar form of the frozen vector oracle in tests/aero_flow_reference.gd. Every product and sum keeps the
 ## oracle's order (including the + 0.0 arm terms, which turn -0.0 into +0.0); test_aero_flow.gd compares bytes.
-static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float) -> PackedFloat64Array:
+## downwash_cl: E0a2b's lagged wing CL for the tail's downwash (FlightSession aux); NAN = the instantaneous wing CL.
+static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
+		downwash_cl := NAN) -> PackedFloat64Array:
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
 	var r: float = s[RB.RATE+2]
@@ -340,7 +342,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var slope: float
 		if not vertical and tail.has("free_slope"):
 			# E0a2: downwash from the wing's lift; pitch rate (in the flow) and elevator act on the free tail slope.
-			effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * wing_cl
+			effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * (wing_cl if is_nan(downwash_cl) else downwash_cl)
 				+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
 			slope = tail.free_slope
 		else:
@@ -501,13 +503,74 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	return blend
 
 
-static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float) -> PackedFloat64Array:
+## E0a2b: the wing strips' mean section lift coefficient at state s (the quantity whose lag drives the tail's
+## downwash), with exactly _local_loads' strip law; test_downwash_lag.gd pins the two together.
+static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary) -> float:
+	var p: float = s[RB.RATE]
+	var q: float = s[RB.RATE+1]
+	var r: float = s[RB.RATE+2]
+	var v: PackedFloat64Array = air.v_air
+	var v0: float = v[0]
+	var v2: float = v[2]
+	var a: Dictionary = model.aero
+	var env: Dictionary = model.envelope
+	var surfaces: Dictionary = model.surfaces
+	var cg: PackedFloat64Array = model.cg_le
+	var arp: PackedFloat64Array = model.reference.arp_le
+	var ax: float = -(arp[0]-cg[0]) + 0.0
+	var ay: float = arp[1]-cg[1]
+	var az: float = -(arp[2]-cg[2]) + 0.0
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	var ys: PackedFloat64Array = env.station_ys
+	var stations := ys.size()
+	var aileron_effect: float = surfaces.wing_aileron_effectiveness
+	var angles := PackedFloat64Array()
+	angles.resize(stations)
+	for i in stations:
+		var y: float = ys[i]
+		var arm_y: float = ay + y
+		var f0: float = v0 + (q*az - r*arm_y)
+		var f2: float = v2 + (p*arm_y - q*ax)
+		var da: float = float(d.aileron_right) if y > 0 else float(d.aileron_left)
+		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
+		if not twist.is_empty():
+			effective = wrapf(effective + twist[i], -PI, PI)
+		angles[i] = effective
+	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+	var coupled := e_map.size() == stations * stations
+	var strip_slope: float = env.get("strip_slope", a.CLa)
+	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
+	var cd90: float = env.CD90
+	var a1: float = env.a1
+	var a_span: float = env.a2 - env.a1
+	var n1: float = env.n1
+	var n_span: float = env.n2 - env.n1
+	var wing_cl := 0.0
+	for i in stations:
+		var effective: float = angles[i]
+		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
+			else _smoothstep((-effective - n1) / n_span)
+		var base: float
+		if coupled:
+			var mapped := 0.0
+			for k in stations:
+				mapped += e_map[i * stations + k] * angles[k]
+			base = strip_cl0[i] + strip_slope * mapped
+		else:
+			base = float(a.CL0) + float(a.CLa) * effective
+		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+		wing_cl += cl / stations
+	return wing_cl
+
+
+static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
+		downwash_cl := NAN) -> PackedFloat64Array:
 	if model.get("envelope", {}).is_empty():
 		return _global_loads(s, air, d, model, rho)
 	var blend := local_flow_weight(s, air, d, model)
 	if blend == 0.0:
 		return _global_loads(s, air, d, model, rho)
-	var local := _local_loads(s, air, d, model, rho)
+	var local := _local_loads(s, air, d, model, rho, downwash_cl)
 	if blend == 1.0:
 		return local
 	var global := _global_loads(s, air, d, model, rho)

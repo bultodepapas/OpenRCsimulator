@@ -78,8 +78,9 @@ func _initialize() -> void:
 	for s in f.field.surfaces:
 		if s.type == "runway":
 			_spot = PackedFloat64Array([s.center_north, s.center_east - s.length_east_west / 2.0 + 10.0])
-	_check("session aux carries three anchor floats per wheel", _session.sim.aux.size() == FlightSession.AUX_ANCHORS + 9 and _session.anchor_count() == 3,
-		str(_session.sim.aux.size()))
+	var lag_entries := 1 if _session.downwash_index() >= 0 else 0 # E0a2b's lagged wing CL follows the anchors
+	_check("session aux carries three anchor floats per wheel", _session.sim.aux.size() == FlightSession.AUX_ANCHORS + 9 + lag_entries
+		and _session.anchor_count() == 3, str(_session.sim.aux.size()))
 	var parked := _parked()
 	_unit_checks(gear, parked)
 	_parked_idle(parked)
@@ -119,7 +120,7 @@ func _start(s: PackedFloat64Array, engine: bool, throttle := 0.0) -> void:
 
 
 func _anchors() -> PackedFloat64Array:
-	return _session.sim.aux.slice(FlightSession.AUX_ANCHORS)
+	return _session.sim.aux.slice(FlightSession.AUX_ANCHORS, FlightSession.AUX_ANCHORS + _session.anchor_count() * Ground.ANCHOR_STRIDE)
 
 
 func _unit_checks(gear: Dictionary, settled_state: PackedFloat64Array) -> void:
@@ -356,7 +357,7 @@ func _airborne_identity() -> void:
 		c.erase("anchor_damping")
 	var without := _trimmed_bytes(plain)
 	_check("airborne trimmed flight (960 ticks): state and loads byte-identical with and without stiction", with == without and with.size() > 0
-		and plain.sim.aux.size() == FlightSession.AUX_ANCHORS)
+		and plain.anchor_count() == 0)
 	plain.queue_free()
 
 

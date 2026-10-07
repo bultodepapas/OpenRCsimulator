@@ -26,9 +26,10 @@ static func rotor_momentum(model: Dictionary, rpm: float) -> PackedFloat64Array:
 
 ## Total body loads about the CG [Fx, Fy, Fz, Mx, My, Mz], with gravity excluded.
 ## `d` contains aerodynamic-convention deflections in radians; pass actual surfaces, not stick commands.
+## downwash_cl: E0a2b's lagged wing CL for the tail (aux); NAN = quasi-static (trim, linearisation, static solves).
 static func loads(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
-		rho: float, wind_ned: PackedFloat64Array) -> PackedFloat64Array:
-	return _load_components(state, model, d, rpm, rho, wind_ned).loads
+		rho: float, wind_ned: PackedFloat64Array, downwash_cl := NAN) -> PackedFloat64Array:
+	return _load_components(state, model, d, rpm, rho, wind_ned, downwash_cl).loads
 
 
 ## Evaluate loads and the state derivative from the same physics calls.
@@ -56,9 +57,9 @@ static func derivative(state: PackedFloat64Array, model: Dictionary, d: Dictiona
 
 
 static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
-		rho: float, wind_ned: PackedFloat64Array) -> Dictionary:
+		rho: float, wind_ned: PackedFloat64Array, downwash_cl := NAN) -> Dictionary:
 	var air := Air.compute(state, wind_ned, rho)
-	var aero_loads := Aero.loads(state, air, d, model, rho)
+	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl)
 	var propulsion_loads := Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
 	var total := aero_loads.duplicate()
 	for i in 6:
