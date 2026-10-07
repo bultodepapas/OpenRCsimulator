@@ -1,0 +1,25 @@
+AR 5.000
+sign check alpha_ind per unit Cl (all > 0): [0.1042, 0.0424, 0.0327, 0.0327, 0.0424, 0.1042]
+elliptic, 400 strips: CLa 4.4910 vs theory 4.4880
+AR 5 rectangular, a0 = 2pi, refinement (per side): n  CLa  Clp   [strip theory Clp = -a0/6 * (1-1/(4n^2))... ]
+    3  4.6273  -0.5612
+    5  4.5248  -0.5393
+   10  4.4314  -0.5143
+   20  4.3769  -0.4984
+   40  4.3468  -0.4894
+   80  4.3309  -0.4846
+Weissinger sign check (row sums of K + self term, all > 0): [0.3085, 0.2084, 0.1953, 0.1953, 0.2084, 0.3085]
+AR 5 rectangular Weissinger, a0 = 2pi: n  CLa  Clp   (knowledge base VLM: 6/10/16 strips 4.32/4.17/4.08, -0.481/-0.449/-0.427 -> -0.40)
+    3  4.3171  -0.4814
+    5  4.1699  -0.4494
+    8  4.0789  -0.4274
+   10  4.0474  -0.4195
+   20  3.9828  -0.4031
+   40  3.9497  -0.3946
+   80  3.9329  -0.3902
+python Stik: a0 6.081756 wing CLa 4.2198 wing Clp -0.4738  E[:,0] [0.395204, 0.1021, 0.044127, 0.02309, 0.01323, 0.007274]
+Elliptic wing, a0 = 2pi, 200 strips/side: AR  Weissinger  Prandtl  Helmbold
+    5  4.0920  4.4880  4.2539
+   10  5.0501  5.2360  5.1510
+   20  5.6422  5.7120  5.6862
+   50  6.0260  6.0415  6.0369

@@ -169,6 +169,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if not envelope.is_empty():
 		envelope.station_ys = station_ys(span, chords)
 	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope)
+	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
+		_induced_map(envelope, surfaces, aero, area, span, chords)
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
@@ -430,6 +432,158 @@ static func station_ys(span: float, chords: PackedFloat64Array) -> PackedFloat64
 		ys.append(-centres[k])
 	ys.append_array(centres)
 	return ys
+
+
+## D11d: strip edges (m, left tip … right tip, 2n + 1 values) with the same equal-area split as station_ys().
+static func station_edges(span: float, chords: PackedFloat64Array) -> PackedFloat64Array:
+	var n: int = Aero.WING_STATIONS_PER_SIDE
+	var h := span / 2.0
+	var right := PackedFloat64Array([0.0])
+	if chords.is_empty() or is_equal_approx(chords[0], chords[1]):
+		for k in n:
+			right.append((k + 1.0) / n * h)
+	else:
+		var cr := chords[0]
+		var slope := (chords[1] - cr) / h
+		var total := cr * h + slope * h * h / 2.0
+		for k in n:
+			var target := total * (k + 1) / n
+			right.append(h if k == n - 1 else (-cr + M.sqrt_(cr * cr + 2.0 * slope * target)) / slope)
+	var edges := PackedFloat64Array()
+	for k in range(n, 0, -1):
+		edges.append(-right[k])
+	edges.append_array(right)
+	return edges
+
+
+## D11d: induced-flow coupling of the wing strips (Weissinger: bound vortex at the quarter chord, control point at
+## three-quarter chord, planar and unswept, trailing legs straight aft). K[i][j] is the induced angle at strip i per unit
+## section lift coefficient on strip j, without strip i's own 2-D bound-vortex term (the section slope a0 carries it;
+## a0 = 2π reproduces Weissinger exactly). Lift is then Cl = a0·(E·α), E = (I + a0·K)⁻¹: an antisymmetric (rolling)
+## load induces more downwash than a symmetric one, which strip theory without induced flow misses (Clp ≈ −a/6).
+## Consistency with the oracle, solved here: a0 makes the local wing + horizontal tail lift slope equal aero.CLa, and the
+## per-strip offset strip_cl0 makes their CL at α 0 equal aero.CL0 (the same airplane in two models, not a fit to
+## flight data). Clp is then a prediction. Stores envelope.strip_slope (a0), strip_cl0 (per strip), induced_map (E).
+static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dictionary, area: float, span: float,
+		chords: PackedFloat64Array) -> void:
+	var edges := station_edges(span, chords)
+	var ys: PackedFloat64Array = envelope.station_ys
+	var n := ys.size()
+	var h := span / 2.0
+	var chord := PackedFloat64Array()
+	for j in n:
+		var y: float = absf(ys[j])
+		chord.append(area / span if chords.is_empty() else chords[0] + (chords[1] - chords[0]) * y / h)
+	var k_map := strip_influence(edges, ys, chord)
+	var horizontal: Dictionary = surfaces.horizontal
+	var tail_share: float = float(horizontal.area) / area * float(horizontal.lift_slope)
+	var target: float = float(aero.CLa) - tail_share
+	# wsum(a0) = area-weighted Σ E·1 rises with a0 slower than 1/a0 falls: a0·wsum(a0) is monotonic; bisection.
+	var lo := 0.1
+	var hi := 50.0
+	var e_map := PackedFloat64Array()
+	for iteration in 80:
+		var a0 := 0.5 * (lo + hi)
+		e_map = effective_angle_map(k_map, a0, n)
+		if a0 * _row_mean(e_map, n) < target:
+			lo = a0
+		else:
+			hi = a0
+	var a0 := 0.5 * (lo + hi)
+	e_map = effective_angle_map(k_map, a0, n)
+	var wsum := _row_mean(e_map, n)
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	var twist_lift := 0.0
+	for i in n:
+		for k in n:
+			twist_lift += e_map[i * n + k] * (twist[k] if not twist.is_empty() else 0.0)
+	twist_lift *= a0 / float(n)
+	var alpha_s: float = (float(aero.CL0) - tail_share * float(horizontal.incidence) - twist_lift) / (a0 * wsum)
+	var cl0 := PackedFloat64Array()
+	for i in n:
+		var row := 0.0
+		for k in n:
+			row += e_map[i * n + k]
+		cl0.append(a0 * alpha_s * row)
+	envelope.strip_slope = a0
+	envelope.strip_cl0 = cl0
+	envelope.induced_map = e_map
+
+
+## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and
+## chords: induced angle at strip i's three-quarter-chord point per unit lift coefficient on strip j, minus strip i's
+## own 2-D bound-vortex term 1/2π.
+static func strip_influence(edges: PackedFloat64Array, ys: PackedFloat64Array, chord: PackedFloat64Array) -> PackedFloat64Array:
+	var n := ys.size()
+	var k_map := PackedFloat64Array()
+	k_map.resize(n * n)
+	for i in n:
+		var px: float = chord[i] / 2.0
+		var py: float = ys[i]
+		for j in n:
+			var a: float = edges[j]
+			var b: float = edges[j + 1]
+			var w: float = _vortex_z(px, py, 1e5, a, 0.0, a) + _vortex_z(px, py, 0.0, a, 0.0, b) + _vortex_z(px, py, 0.0, b, 1e5, b)
+			k_map[i * n + j] = -w * 0.5 * chord[j] - (1.0 / TAU if i == j else 0.0)
+	return k_map
+
+
+## (I + a0·K)⁻¹ by Gauss–Jordan with partial pivoting (row-major n×n).
+static func effective_angle_map(k_map: PackedFloat64Array, a0: float, n: int) -> PackedFloat64Array:
+	var a := PackedFloat64Array()
+	var inv := PackedFloat64Array()
+	a.resize(n * n)
+	inv.resize(n * n)
+	for i in n:
+		for j in n:
+			a[i * n + j] = (1.0 if i == j else 0.0) + a0 * k_map[i * n + j]
+		inv[i * n + i] = 1.0
+	for col in n:
+		var pivot := col
+		for r in range(col + 1, n):
+			if absf(a[r * n + col]) > absf(a[pivot * n + col]):
+				pivot = r
+		for k in n:
+			var t := a[col * n + k]
+			a[col * n + k] = a[pivot * n + k]
+			a[pivot * n + k] = t
+			t = inv[col * n + k]
+			inv[col * n + k] = inv[pivot * n + k]
+			inv[pivot * n + k] = t
+		var d := a[col * n + col]
+		for k in n:
+			a[col * n + k] /= d
+			inv[col * n + k] /= d
+		for r in n:
+			if r != col:
+				var f := a[r * n + col]
+				for k in n:
+					a[r * n + k] -= f * a[col * n + k]
+					inv[r * n + k] -= f * inv[col * n + k]
+	return inv
+
+
+## Mean row sum of a row-major n×n map (equal-area strips: the area-weighted lift per unit α, divided by a0).
+static func _row_mean(e_map: PackedFloat64Array, n: int) -> float:
+	var total := 0.0
+	for v in e_map:
+		total += v
+	return total / float(n)
+
+
+## z-velocity (up) at planar point (px, py) from a unit vortex segment (x1, y1) → (x2, y2) in the wing plane.
+static func _vortex_z(px: float, py: float, x1: float, y1: float, x2: float, y2: float) -> float:
+	var r1x := px - x1
+	var r1y := py - y1
+	var r2x := px - x2
+	var r2y := py - y2
+	var cross := r1x * r2y - r1y * r2x
+	if absf(cross) < 1e-14:
+		return 0.0
+	var n1 := M.sqrt_(r1x * r1x + r1y * r1y)
+	var n2 := M.sqrt_(r2x * r2x + r2y * r2y)
+	var dot := (x2 - x1) * (r1x / n1 - r2x / n2) + (y2 - y1) * (r1y / n1 - r2y / n2)
+	return dot / (4.0 * PI * cross)
 
 
 ## Inertia tensor entries [Jxx Jyy Jzz Jxy Jxz Jyz] in body FRD about `point` (le frame).

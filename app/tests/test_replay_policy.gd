@@ -55,8 +55,12 @@ func _initialize() -> void:
 	check("recorded clock must match replay timestep", not Golden.replay(flight, bad).ok)
 	bad.stamp.ticks_per_second = "240"
 	check("recorded clock must be numeric", not Golden.replay(flight, bad).ok)
+	# A legacy v1 record has none of the additive H9 fields; build one from the committed file so this stays a
+	# legacy check even after the goldens are re-recorded with stamps (D11d re-recorded them on 2026-10-07).
 	var legacy: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Golden.path("roll_15")))
-	check("legacy v1 remains readable", not legacy.has("policy") and Golden.replay(flight, legacy).ok)
+	for key in ["policy", "stamp", "aux_checkpoints", "mode_checkpoints"]:
+		legacy.erase(key)
+	check("legacy v1 remains readable", Golden.replay(flight, legacy).ok)
 	print("H9 replay policy: %d checks, %d failed" % [checks, failures])
 	flight.free()
 	quit(1 if failures else 0)
