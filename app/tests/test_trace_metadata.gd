@@ -44,7 +44,7 @@ func _initialize() -> void:
 		_check("metadata schema", meta.metadata_schema == "openrc-flight-meta v1")
 		_check("rigid body layout", JSON.parse_string(meta.state_layout).size() == RB.SIZE)
 		_check("auxiliary layout", JSON.parse_string(meta.aux_layout) == Trace.COLUMNS.slice(30))
-		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux))
+		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
 		_check("powered start", meta.recording_start_engine_running == "true")
 		if entry.id == "p51d-mustang-120":
 			_check("P-51 shaft balance", meta.propulsion_model == "propeller-shaft-balance-v1")
@@ -64,7 +64,7 @@ func _initialize() -> void:
 		recorder.start(session.trace_meta())
 		var snapshot: Dictionary = recorder.trace.meta.duplicate(true)
 		_check("mid-flight recording tick", snapshot.recording_start_tick == 12)
-		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux))
+		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
 		_check("CSV keeps new metadata", recorder.trace.to_csv().contains("# propulsion_model: " + snapshot.propulsion_model))
 		for index in RB.SIZE:
 			_check("state layout maps sample %d" % index, absf(recorder.trace.value(0, RB.STATE_LAYOUT[index]) - session.sim.state[index]) < 1e-12)

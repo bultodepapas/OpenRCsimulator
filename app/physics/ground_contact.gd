@@ -7,7 +7,13 @@
 # tan(slip) = v_lat / max(|v_long|, SLIP_FLOOR); both inside the friction circle |F| ≤ μ·N. Each opposes its own
 # velocity component, so friction never adds energy. Brakes: none (brakes off).
 # E3a: the surface under each wheel (runway, mown, rough) scales μ and C_rr (physics/ground_surfaces.gd).
-# Pure functions of the state (every RK4 stage sees the same law), 64-bit floats only (guarded).
+# E3b1: stiction (opt-in: landing_gear.breakaway_factor). Each wheel may be STUCK to an anchor on the ground (aux,
+# per wheel [north, east, stuck]): inside RK4 its tyre force is a spring-damper toward the anchor, clamped at the
+# static limits (breakaway_factor·C_rr·N along the wheel, μ·N across it, then the friction circle). anchor_step()
+# switches modes once per tick, before integration: slip → stick below STICK_SPEED (anchor at the wheel, so no
+# stored energy), stick → slip when the elastic force k·d exceeds its limit or the wheel lifts. A slipping
+# wheel feels the E2 law above bit for bit. Elasto-plastic "stuck point" pattern (YASim; Gonthier et al. 2004).
+# Pure functions of the state and aux (every RK4 stage sees the same law), 64-bit floats only (guarded).
 # A contact above the ground adds exactly 0.0, so flight in the air is bit-identical with or without gear.
 extends RefCounted
 
@@ -34,6 +40,18 @@ const SURFACE_STRIDE := 6
 ## Upper bound for the side force's damping rate times the tick (see SLIP_FLOOR). RK4's real-axis limit is 2.78;
 ## 0.5 keeps the per-tick error of the decay below 3·10⁻⁴.
 const SIDE_LAMBDA_DT_MAX := 0.5
+## E3b1: a sliding wheel re-sticks below this horizontal contact speed (m/s, estimated). Above the E2 creep speed
+## (≈ 0.9 cm/s at idle on grass), so a creeping wheel is caught; a wheel that just broke free re-sticks at most with
+## an unloaded anchor and a clamped force, so it still accelerates away.
+const STICK_SPEED := 0.02
+## Anchor springs: Σk = m·ANCHOR_OMEGA², split by each contact's static load share (so every wheel reaches its hold,
+## ∝ N, at the same deflection), damping ratio ANCHOR_ZETA on each contact's share of the mass (AircraftData).
+## Numerical, not a tyre property: ω·dt = 0.08 at the 240 Hz tick (the E1 rule < 0.1, with margin for the yaw/pitch
+## coupling). A fixed frequency keeps the model the same at every tick rate, so time-step refinement compares like with like.
+const ANCHOR_OMEGA := 19.2
+const ANCHOR_ZETA := 0.7
+## Floats per contact in the anchor block of aux: north, east (m, world), stuck (1.0) or sliding (0.0).
+const ANCHOR_STRIDE := 3
 
 ## Derived gear (AircraftData): { contacts: [{ name, position (body FRD about the CG, m), stiffness (N/m),
 ## damping (N·s/m), max_compression (m), max_steering (rad, 0 = fixed wheel) }], reach (m: no point can touch above
@@ -45,7 +63,9 @@ const SIDE_LAMBDA_DT_MAX := 0.5
 ## steer: the steering command (−1…1, +1 = nose wheel turned right: the rudder servo's position); each contact turns
 ## by steer × its max_steering. surfaces: the field's flat surface table (ground_surfaces.gd); empty = dry pavement
 ## everywhere (factors 1, the gear's own coefficients).
-static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surfaces := PackedFloat64Array()) -> PackedFloat64Array:
+## anchors: E3b1 per-contact [north, east, stuck] (ANCHOR_STRIDE floats each); empty = no stiction (E2 exactly).
+static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surfaces := PackedFloat64Array(),
+		anchors := PackedFloat64Array()) -> PackedFloat64Array:
 	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -57,7 +77,10 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 	var mu: float = gear.get("side_friction", 0.0) # 0 (or absent): normal force only, exactly E1
 	var c_rr: float = gear.get("rolling_resistance", 0.0)
 	var tan_peak: float = gear.get("tan_peak_slip", 1.0)
+	var breakaway: float = gear.get("breakaway_factor", 1.0)
+	var index := -1
 	for contact in gear.contacts:
+		index += 1
 		var r: PackedFloat64Array = contact.position
 		var compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]
 		if compression <= 0.0:
@@ -93,8 +116,20 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 					s[RB.POS + 1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2])
 				mu_n *= surfaces[i + 4]
 				c *= surfaces[i + 5]
-			var f_long := -c * f_up * clampf(v_long / maxf(ROLL_CREEP, c * ROLL_CREEP_PER_CRR), -1.0, 1.0)
-			var f_lat := -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
+			var f_long: float
+			var f_lat: float
+			if not anchors.is_empty() and anchors[index * ANCHOR_STRIDE + 2] == 1.0:
+				# E3b1 stuck wheel: spring-damper toward the anchor, split along the wheel's heading.
+				var dn: float = s[RB.POS] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2] - anchors[index * ANCHOR_STRIDE]
+				var de: float = s[RB.POS + 1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2] - anchors[index * ANCHOR_STRIDE + 1]
+				var hold_long := breakaway * c * f_up
+				var k_anchor: float = contact.anchor_stiffness
+				var c_anchor: float = contact.anchor_damping
+				f_long = clampf(-k_anchor * (dn * hn + de * he) - c_anchor * v_long, -hold_long, hold_long)
+				f_lat = clampf(-k_anchor * (-dn * he + de * hn) - c_anchor * v_lat, -mu_n, mu_n)
+			else:
+				f_long = -c * f_up * clampf(v_long / maxf(ROLL_CREEP, c * ROLL_CREEP_PER_CRR), -1.0, 1.0)
+				f_lat = -mu_n * clampf(v_lat / (tan_peak * maxf(absf(v_long), SLIP_FLOOR)), -1.0, 1.0)
 			var f_t := M.sqrt_(f_long * f_long + f_lat * f_lat)
 			if f_t > mu_n: # friction circle
 				f_long *= mu_n / f_t
@@ -113,6 +148,94 @@ static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surface
 		out[5] += r[0] * fy - r[1] * fx
 		touched = true
 	return out if touched else PackedFloat64Array()
+
+
+## E3b1: the anchors for the next tick, from the committed state `s` and the anchors/steer the last tick used.
+## Once per tick (FlightSession._pre_step), never inside RK4. Per contact: off the ground (or without tyre friction)
+## → sliding; stuck → sliding when the anchor's elastic force k·d exceeds breakaway·C_rr·N along the wheel, μ·N across
+## it or μ·N in total; sliding → stuck at the wheel's current ground point when its horizontal speed < STICK_SPEED.
+static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
+		anchors: PackedFloat64Array) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	out.resize(anchors.size()) # zero-filled: sliding
+	if gear.is_empty() or anchors.size() != gear.contacts.size() * ANCHOR_STRIDE or -s[RB.POS + 2] > gear.reach:
+		return out
+	var rows := _rows(s)
+	var north: PackedFloat64Array = rows[0]
+	var east: PackedFloat64Array = rows[1]
+	var down: PackedFloat64Array = rows[2]
+	var mu: float = gear.get("side_friction", 0.0)
+	var c_rr: float = gear.get("rolling_resistance", 0.0)
+	var breakaway: float = gear.get("breakaway_factor", 1.0)
+	for index in gear.contacts.size():
+		var contact: Dictionary = gear.contacts[index]
+		var r: PackedFloat64Array = contact.position
+		var compression := s[RB.POS + 2] + down[0] * r[0] + down[1] * r[1] + down[2] * r[2]
+		if compression <= 0.0:
+			continue # off the ground: sliding (out is zero-filled)
+		var vx := s[RB.VEL] + s[RB.RATE + 1] * r[2] - s[RB.RATE + 2] * r[1]
+		var vy := s[RB.VEL + 1] + s[RB.RATE + 2] * r[0] - s[RB.RATE] * r[2]
+		var vz := s[RB.VEL + 2] + s[RB.RATE] * r[1] - s[RB.RATE + 1] * r[0]
+		var f_up: float = contact.stiffness * compression + contact.damping * (down[0] * vx + down[1] * vy + down[2] * vz)
+		if f_up <= 0.0 or mu <= 0.0:
+			continue
+		var delta: float = steer * float(contact.get("max_steering", 0.0))
+		var hx := M.cos_(delta)
+		var hy := M.sin_(delta)
+		var hn := north[0] * hx + north[1] * hy
+		var he := east[0] * hx + east[1] * hy
+		var h_len := M.sqrt_(hn * hn + he * he)
+		if h_len <= 1e-6:
+			continue
+		hn /= h_len
+		he /= h_len
+		var vn := north[0] * vx + north[1] * vy + north[2] * vz
+		var ve := east[0] * vx + east[1] * vy + east[2] * vz
+		var p_n: float = s[RB.POS] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2]
+		var p_e: float = s[RB.POS + 1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2]
+		var at: int = index * ANCHOR_STRIDE
+		if anchors[at + 2] == 1.0:
+			var mu_n := mu * f_up
+			var c := c_rr
+			if not surfaces.is_empty():
+				var i := surface_at(surfaces, p_n, p_e)
+				mu_n *= surfaces[i + 4]
+				c *= surfaces[i + 5]
+			var dn := p_n - anchors[at]
+			var de := p_e - anchors[at + 1]
+			# Elastic part only: a sustained load breaks a tyre free, a transient damper force does not (it is clamped
+			# at the hold inside the stages). Elasto-plastic bristle / YASim stuck-point rule.
+			var k_anchor: float = contact.anchor_stiffness
+			var f_long := -k_anchor * (dn * hn + de * he)
+			var f_lat := -k_anchor * (-dn * he + de * hn)
+			if absf(f_long) <= breakaway * c * f_up and absf(f_lat) <= mu_n and f_long * f_long + f_lat * f_lat <= mu_n * mu_n:
+				out[at] = anchors[at]
+				out[at + 1] = anchors[at + 1]
+				out[at + 2] = 1.0
+		elif M.sqrt_(vn * vn + ve * ve) < STICK_SPEED:
+			out[at] = p_n
+			out[at + 1] = p_e
+			out[at + 2] = 1.0
+	return out
+
+
+## E3b1: elastic energy stored in the stuck anchors' springs (J), for energy checks.
+static func anchor_energy(s: PackedFloat64Array, gear: Dictionary, anchors: PackedFloat64Array) -> float:
+	if gear.is_empty() or anchors.size() != gear.contacts.size() * ANCHOR_STRIDE:
+		return 0.0
+	var rows := _rows(s)
+	var north: PackedFloat64Array = rows[0]
+	var east: PackedFloat64Array = rows[1]
+	var e := 0.0
+	for index in gear.contacts.size():
+		var at: int = index * ANCHOR_STRIDE
+		if anchors[at + 2] != 1.0:
+			continue
+		var r: PackedFloat64Array = gear.contacts[index].position
+		var dn: float = s[RB.POS] + north[0] * r[0] + north[1] * r[1] + north[2] * r[2] - anchors[at]
+		var de: float = s[RB.POS + 1] + east[0] * r[0] + east[1] * r[1] + east[2] * r[2] - anchors[at + 1]
+		e += 0.5 * float(gear.contacts[index].anchor_stiffness) * (dn * dn + de * de)
+	return e
 
 
 ## Offset in a flat surface table of the surface at (north, east): the first block containing the point (edges
