@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-08
 
-**Status:** Practical entrypoints for the current app, evidence reducers, visual tools and research experiments. The owning plan or tool README remains authoritative for status and full input contracts.
+**Status:** Practical entrypoints for the current app, evidence reducers, visual tools and research experiments. Code defines behavior and accepted inputs; the owning plan records status, and each tool README describes its usage contract.
 
 Run commands from the repository root unless a command says otherwise. `$(app/get-godot.sh)` resolves the pinned Godot 4.7.2 binary and downloads it to ignored `.tools/` when needed. Visual render checks use Xvfb and the pinned Python environment returned by `app/tests/visual-env.sh`. Generated captures and local source references are not committed.
 
