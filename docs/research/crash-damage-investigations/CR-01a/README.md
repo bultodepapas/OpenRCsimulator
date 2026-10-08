@@ -1,6 +1,6 @@
 # CR-01a — Tick-boundary crash diagnostics
 
-2026-10-07 · **Status: implementation under verification.** Bounded first increment of [CR-01](../../../CRASH-DAMAGE-PLAN.md). Owns `app/physics/impact_snapshot.gd`, the crash-only session hook, focused tests and [reproduction tools](../../../../research/crash-damage/cr-01a/).
+2026-10-07 · **Status: implemented and verified; CR-01 crossing reconstruction remains open.** Bounded first increment of [CR-01](../../../CRASH-DAMAGE-PLAN.md). Owns `app/physics/impact_snapshot.gd`, the crash-only session hook, focused tests and [reproduction tools](../../../../research/crash-damage/cr-01a/).
 
 ## Contract
 
@@ -22,6 +22,7 @@ CR-01 is **not complete**. Earliest sub-tick contact, interpolated crossing pose
 
 The candidate is built and tested in an isolated clone of `a6c1e4d4a0c90c4f6160566ffc60075450341d62`, with isolated runtime settings. Shared landing, aircraft-schema, stall-search and visual work is excluded from the evidence baseline.
 
+- [Full isolated `app/test.sh`](app-tests.log) passes all 133 sections, including goldens, UI, fleet model contracts, trace failures and 30/60/144 FPS hashes. [Exact source hashes](verification.json); [lint](lint-counts.json): zero errors, unchanged 12 pre-existing warnings.
 - [42 focused checks](focused-tests.log) pass and exercise analytical translated/rotated point velocities, `omega × r`, signed motion, boundary inequalities, contact ordering, explicit unavailable fields, overflow refusal, data ownership, readout wiring and lifecycle behavior.
 - Three deliberate defects are rejected on disposable copies: omit point rotational velocity, change hull `>=` to `>`, change gear `>` to `>=`. The unmodified control passes. [Mutation evidence](mutations.log).
 - [All four three-second numeric CSV records](comparison.json) are byte-identical to baseline (721 samples each). Five timing batches cover trimmed/stalled actual-session ticks and crash-only snapshot construction; the latter medians are 35.1 µs Stik, 34.8 µs Extra, 38.1 µs P-51 and 39.2 µs Avanti.
@@ -38,7 +39,7 @@ python3 research/crash-damage/cr-01a/compare.py --godot "$(app/get-godot.sh)" \
 
 The comparison imports both supplied projects and uses isolated user-data directories. Timings are batch-average observations on a concurrently loaded development host, not individual-tick percentiles or target-hardware acceptance. Snapshot construction occurs only after a detected crash; the ordinary-flight branch executes the same operations as before.
 
-The geometry/kinematics definition follows the existing [rigid-body layout](../../../../app/physics/rigid_body.gd), [ground-contact model](../../../../app/physics/ground_contact.gd) and [crash architecture investigation](../05-architecture-impact-model.md). Fixtures and tools are original repository code. Independent Luna Max review checked detector equivalence, frames and lifecycle coverage.
+The geometry/kinematics definition follows the existing [rigid-body layout](../../../../app/physics/rigid_body.gd), [ground-contact model](../../../../app/physics/ground_contact.gd) and [crash architecture investigation](../05-architecture-impact-model.md). Fixtures and tools are original repository code. Independent Luna Max review checked detector equivalence, frames and lifecycle coverage. The final focused rerun strengthens the active-crash manual-reset precondition; production files are identical to the full-suite run. The same 42 checks pass after integration into the shared app.
 
 Ready-to-paste commit message:
 

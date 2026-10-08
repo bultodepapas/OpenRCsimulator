@@ -29,6 +29,8 @@
 
 **E0b6p performance (2026-10-07):** [scalar tail evaluations](../propwash/E0b6p/README.md) preserve E0b6 quadrature and sampled results while removing per-node force-helper allocations. The interleaved correction profile improves 3.76–4.31×; the active whole-tick budget remains unmet. Axial occupancy and distributed force evaluation both need consideration before enabling the Stik; a legacy native benchmark does not validate the smooth profile/transport path. The [complete smooth-wake native probe](../propwash/E0b6p/native/README.md) now verifies that path, including stopped axial residuals and exact trajectories. Its whole ticks still exceed 500 µs; faster native calls alone do not establish sufficient headroom or platform readiness.
 
+**G1b1 operating-range audit (2026-10-08):** the [offline trace reader](../propulsion/G1b1/README.md) reconstructs recorded Ct/Cp load queries from previous-state axial velocity and current RPM, with exact input identity and an explicit still-air assumption. A 40 m/s idle-throttle dive exceeds the table on 480/480 recorded steps; a one-second full-power case enters the documented J gap on 171/240. Static source RPM extent applies only at J=0; the nominal 6,000 RPM dynamic file supplies no numerical RPM band. Reverse-flow clamping does not inherit static source support. G1b online/RK-stage counters and G1a matched-propeller evidence remain open.
+
 ## Original baseline observed at HEAD 69dc9bc (historical)
 
 The following table describes the pre-P-51-extension code at that revision. It remains useful for the Stik's default path, but is not a description of every current aircraft.

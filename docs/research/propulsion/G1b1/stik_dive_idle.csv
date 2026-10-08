@@ -1,6 +1,6 @@
 # format: openrc-trace v3
 # metadata_schema: openrc-flight-meta v2
-# scenario: trimmed level flight (engine running) across view at 15.0 m/s (D5: six-axis trim, calm air)
+# scenario: G1b1 stik_dive_idle
 # aircraft: jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)
 # aircraft_input_format: openrc-aircraft v1
 # aircraft_input_sha256: fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44
@@ -20,7 +20,7 @@
 # recording_start_aux: [2800.0,0.02052601619583048,0.262836484934918,0.02638659935553704]
 # recording_start_engine_running: true
 # ground: flat at 0 m; 3 spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2), stiction anchors (E3b1), on dry pavement
-# created_utc: 2026-10-08T03:12:23
+# created_utc: 2026-10-08T03:16:23
 # engine: Godot 4.7.2-stable (official)
 # dt_s: 0.00416666666667
 # mass_kg: 2.88505829104375

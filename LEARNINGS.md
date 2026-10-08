@@ -95,3 +95,11 @@ Replacing a sampled lift maximum with a continuous optimizer can change a stall 
 ## 2026-10-07 · E3c1a — stopping is not proof of runway landing
 
 A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](docs/research/ground-contact/E3c1a/README.md).
+
+## 2026-10-08 · G1b1 — verify the sampled command and the recorded query
+
+Synchronous `sim.step()` does not sample changed session commands: an intended idle/full-power fixture kept flying at trim throttle until its inputs were explicitly updated. Assert recorded commands and RPM before accepting a maneuver's label. Trace v3 also pairs previous-state velocity with current RPM for its load columns; a same-row reconstruction evaluates a different operating point. Keep clamped reverse-flow J=0 separate from static-source support. [Regression and flight-query evidence](docs/research/propulsion/G1b1/README.md).
+
+## 2026-10-08 · L10a — model calm and constrain actual geometry
+
+A calm windsock still holds its throat and first three-eighths open on a basket; the remaining sleeve hangs. Preserve cloth arc length through the bend instead of shortening it by projecting a straight sleeve. Optional field cues should preserve legacy fields, and placement exclusions must match the terrain actually rendered: the 1.5 km flat radius belongs only to the 40 km hill mesh. Remove unrelated cues explicitly from synthetic geometry fixtures. [Contract and evidence](docs/research/visual-quality-implementation/L10a/README.md).

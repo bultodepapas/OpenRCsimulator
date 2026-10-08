@@ -75,6 +75,7 @@
     "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
     "app/physics/ground_start.gd": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed",
     "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/physics/impact_snapshot.gd": "e8af492a29b7cd3f641dfc982bbaf76ed08160046898b5620c339ea2f292eaec",
     "app/physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
     "app/physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
     "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
@@ -120,7 +121,7 @@
     "app/scenery/scenery.gd": "546083526d7d828e376ef3b589c83b561297278816361290adf26b770330de5b",
     "app/scenery/scenery_loader.gd": "27b1cce3a2ba6db18a116ba48a1e8681c31a3f95d79ff56d7d7c9291656e2d2b",
     "app/scenery/takeoff_pilot.gd": "6f9f9bbc003b9f5d71f6f79f3e8c160b8d6cf88283bc2579490fe5ddba87f513",
-    "app/sim/flight_session.gd": "aceef3c308fec4a33c8f7e0644962de104ec57424f81956a1540e44d80db7990",
+    "app/sim/flight_session.gd": "0308a95dc2eabb36c097768655b807025322638806e06c23972cb97ae0f8ce38",
     "app/sim/landing_maneuver.gd": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
     "app/sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
     "app/sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
@@ -171,6 +172,7 @@
     "app/tests/test_controls.gd": "82b36d8a223f945ad80221a49da9bb9df1cce238c03bc9232cb934d8b8c21d21",
     "app/tests/test_controls_reference.gd": "59766f1a93388807e6c14cf65a8a66e6c920e71fc030134a22d7e4f58ca94e44",
     "app/tests/test_crash.gd": "7ecebfffa2224bded06538287f3ae8fa7ca6d92e6a6337d4b16cfd872d199f4a",
+    "app/tests/test_crash_snapshot.gd": "61d1a3829a9b3ac15c01214c2290fab1b90820eca7b08e68691ef2070b0cf83f",
     "app/tests/test_damping_regimes.gd": "803a7b0340e3499dcf4ce2657af5286a9af9dae5bc302f348a241c717c173fa5",
     "app/tests/test_downwash_lag.gd": "272f34dd7edab238a4f32ba188cc2cfdf267cf4af160284cd61edba21e2a6576",
     "app/tests/test_dynamics.gd": "a5a8f406b2500e99ba23671a4e71fad3fb74f698e134a385c4f87d5ab12ec35e",
@@ -186,7 +188,7 @@
     "app/tests/test_frame_samples.gd": "e80f44ce9982738a4d38e58e6e4d1d556da3d3e8b6db9a8d8f0834865b977884",
     "app/tests/test_frames.gd": "00920ee663cb5e7550020d3006a2496da97199aca069a6a9ec8e982c0af79e79",
     "app/tests/test_golden.gd": "f474f55ea9a082c6980ccce1aecba62e30b0328c07b43ff63a6c71b67a5a2b29",
-    "app/tests/test_ground_contact.gd": "f5588f26382a1f98c2338a8b5cae41eeca942cbd10a51cbc855597d0b9b4cc51",
+    "app/tests/test_ground_contact.gd": "964f608b6040a81aac6db6d341e5b8f2c0aba29d86193c8f3254c412945ccee6",
     "app/tests/test_ground_friction.gd": "df807d0efe6a1b1c7fcb915f2328957fc4db7f123935461fcd8da946925339dd",
     "app/tests/test_ground_stiction.gd": "cada85e865944c6f60a0adde8879871748d6996ca6b95f8765f976ceb6c12686",
     "app/tests/test_ground_surfaces.gd": "b265cb840f012fd678700fc4ac20994007675bb11d3d683eb90a655265cd5448",
@@ -277,10 +279,10 @@
     "app/ui/pause_menu.gd": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84",
     "app/ui/ui_input.gd": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc",
     "app/ui/ui_theme.gd": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d",
-    "research/propulsion/range-audit/audit.py": "8abd3f363a7ae12c66ef6837c2724899eefb47ed5032cbff2d008580d668a937",
-    "research/propulsion/range-audit/flights.gd": "d4bfadcb6c8b3aa7de2181469a4bea348b4d1920d0f696824139a61f71be8f5f",
+    "research/propulsion/range-audit/audit.py": "c6f65a49238df47bc3b1cb8c7f90398066d66bd1a4b03df651d024e5b263fc4f",
+    "research/propulsion/range-audit/flights.gd": "854084b8891e9abf1bd9b70ed935bb85e66cd610883c61c517f8a306827b682a",
     "research/propulsion/range-audit/stik-coverage.json": "35c7d5180f5779394dc3f44268879947a7f98fbdd10d4683f19b9cf82ea0d5a2",
-    "research/propulsion/range-audit/test_audit.py": "cc5249616dbe9193b8f05f218d03390e6329937c907ab20609aa157f22fa947e",
+    "research/propulsion/range-audit/test_audit.py": "07658186a6f7633a7a2e0db4d32976825c923d16454a499f45ea6bb52406a75d",
     "research/propulsion/range-audit/verify.py": "6ff36a8a882eee8fb2a463808be3f11f13d2f5b639003689d0ef580da96956af"
   },
   "unit_tests": 20,
@@ -309,7 +311,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 0,
@@ -320,7 +323,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     },
@@ -341,7 +345,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 480,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 480
+          "source_j_uncovered": 480,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 0,
@@ -352,7 +357,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 480,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 480
+          "source_j_uncovered": 480,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     },
@@ -373,7 +379,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 171
+          "source_j_uncovered": 171,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 0,
@@ -384,7 +391,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 171
+          "source_j_uncovered": 171,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     },
@@ -402,7 +410,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 0,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 240,
@@ -413,7 +422,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 0,
           "j_gap_coverage_unknown": 0,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     },
@@ -434,7 +444,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 240,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 0,
@@ -445,7 +456,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 240,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     },
@@ -466,7 +478,8 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 240,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         },
         "cp_table": {
           "stopped": 0,
@@ -477,37 +490,38 @@
           "outside_source_rpm": 0,
           "rpm_coverage_unknown": 240,
           "j_gap_coverage_unknown": 240,
-          "source_j_uncovered": 0
+          "source_j_uncovered": 0,
+          "reverse_flow_source_coverage_unknown": 0
         }
       }
     }
   ],
   "evidence_sha256": {
-    "extra_trim-audit.log": "a7ba86d8b332a0b8982a0950c67acfcab3ab96f508c887256898b654873f7adb",
-    "extra_trim.csv": "cdd7175cd55572afa85c9b12b3056af0329a9197e797b86cd8e65bce6c078e64",
-    "extra_trim.json": "435f74793a77afcf08a5ae5382dfdb3d085eb2d3fbc9c43828e29c354a93d1dc",
-    "flights.log": "899d4d6abaf4f8b2cf2789dc59cd4bb4da80f218cf91fbb6f2b1e06f6482198c",
-    "mutation-inclusive-gap.log": "b964221ae66cc9d4dd18abfd9c243c04279e7dea91207ee68e1feae767072f37",
-    "mutation-rpm-as-rps.log": "cf9c6c468da6a2310de6305ffbe9d256c7d6a7d63b5e3dac6c1262a821d9afec",
-    "mutation-wrong-state-timing.log": "401af6eb50bc4cbfe8c1a2976025bdd63d7dc6e514204474d3a7426b95d0d3c4",
+    "extra_trim-audit.log": "e03dd8fe17e0ce1a329822fcfb8a5e38fdddbd38938d7333cd20680380c738a4",
+    "extra_trim.csv": "cb2489ed4de104e67ec8a0db0d894706f6f62b2566de705e2b305269096488c7",
+    "extra_trim.json": "c67d764433c70f9d313915c59e5cfebb9510108ae4d204f0de3fa6e58cfe426b",
+    "flights.log": "201d09edbe3d6dffe3d9f721aa7e4f5e685fd0657a8151f90d35b336bbe54e79",
+    "mutation-inclusive-gap.log": "e3ea0cf647b1e7d5f5b09551c463b412cccc0afd2b260758357b9e329c1a90a0",
+    "mutation-rpm-as-rps.log": "4f373571c1ad3f27c0909dce7fa3954bcf381d6e4e3bba02aa8c853e7b3f516a",
+    "mutation-wrong-state-timing.log": "3b77acc7b7b5ba31f946020b3754e38422274adeb0115a454cfe32b9f3f9d6ca",
     "oracle.json": "07c2aa331727d7475bfaa8c8cdb845bd1dfea2d8c9d24e7ada04caf326bea38d",
-    "p51_trim-audit.log": "1c961acce78d0c546c6c95987c50c3091b6a928786f2f38e0404c63172560fee",
-    "p51_trim.csv": "9586c15b828d00365748dcf3fec0be1f53aed6239ac3c9536ea1831f4e8ffaf1",
-    "p51_trim.json": "9724f76fc6acbbbc575776fb2965be2dfa6f5e5948ff7abdafbf64fa523d3361",
-    "stik_dive_idle-audit.log": "499d8b5e5f7e06b381486b5cff001305f01f5d72f8424d64055506285269e089",
-    "stik_dive_idle.csv": "3b4ac0fdb9e5ebd3cfed7aa06e056dfb6af981f9216f3b2b6c7e9e8afa6a92e1",
-    "stik_dive_idle.json": "4babaea0144bffdc7930dc7fe6cbb33ccdab38422aea88fd07edd8f530e5e111",
-    "stik_full_power-audit.log": "30bd17e00ac59eb1bf099fb72430c605b2783a18eb2a6c31d7d9a1e1e724c183",
-    "stik_full_power.csv": "9cb1c86afd9b760328bc29cfce4442623c053da234ca36aeee92925878d0435c",
-    "stik_full_power.json": "b020da2eab1af8429811f001bb180a97a549c4c753d5735011f25e7fcf74ec4d",
-    "stik_stopped-audit.log": "010b59739096e235d2bf41cd2988afe59eb5319ed58cb49b51837a3d37e29ef2",
-    "stik_stopped.csv": "0044df8648c1445ef7b5768d2a69722d9b4e8154e477eb28f6801021255e636c",
-    "stik_stopped.json": "29e9b23ea9e0f51e9f0d0689430a6f95bd32c11f45c0362401586a56d4b40a09",
-    "stik_trim-audit.log": "0599680e62172bff54585c4668df97b1b63ade20dee683759b7670ae7ba16eee",
-    "stik_trim.csv": "d15badec0071a6869f14f275c445de51515b24580f8f0eaf4be68c80958697dc",
-    "stik_trim.json": "e5f469d039f070bbaf00d561daf767d2225f3984dab615042432c9b57dd6fe68",
+    "p51_trim-audit.log": "093b19e4efa67eb5f82b0d581bccbbb1ef1f0bea02fbcfb82ef2e17216c0e66c",
+    "p51_trim.csv": "c9b64c8404bdc5607059b54100766cad8fe886db0977fc6ef5f361d5b5bca45d",
+    "p51_trim.json": "a2f23ba1e8e03b516922a3711316b5eee7615d4a569630ba8ebc01fcfb72de5c",
+    "stik_dive_idle-audit.log": "1d6012ec53527db9e78c68f554165adbed8324ceafca7f7533d22cf94d821b5a",
+    "stik_dive_idle.csv": "7db5f889eea8645869270bf53b81632a30c47680860a6b3550554f06c520743a",
+    "stik_dive_idle.json": "b247316fe6b68095ca0348dd3a5e76fee0bf8d210da54bc9c50a931cb4fcd075",
+    "stik_full_power-audit.log": "761c69a24e243f7f42fb4a0d6609715c032e34962b1cc2b7a719aad3094643c7",
+    "stik_full_power.csv": "a01b8fedfa5a6895b24fbb9b2a31766b8e256262ff1806643c12874c841be797",
+    "stik_full_power.json": "1c9fb2772afd994394a9f3ebb7f6f85084619bcee624c8b4d83d829a9e3d630c",
+    "stik_stopped-audit.log": "52681526b154b18e07b8fa0d11b2d273efc296db0753b900d427d550d5636d34",
+    "stik_stopped.csv": "8df384ba81747d0efcdc791154843f8d45da58769058d869948c222d513541e0",
+    "stik_stopped.json": "8f777bfc9ca22515e14cc283625e8c6634857e7516578a71a7da0d16cbaf69a5",
+    "stik_trim-audit.log": "972355a92be847facfa275002aa40c23db098ea721667288e2e00ecfdd5c3485",
+    "stik_trim.csv": "285f47201879dd2e03212ddd8f92941015aceefb7a127e0cde3f115ab4c56b0b",
+    "stik_trim.json": "769407fede8d1fedbca26b9031a08649959cb446ce5e7220eef6350600ed9985",
     "test_propulsion.log": "520d6b4ca38307ddb8a2463e59d1f321ad7fb7d320e87483ed334eac2bf009bb",
     "test_trace_metadata.log": "dccb4327b40683d2aeafbaec90ba8ac65c331d675a90cebdac00372b4cd5d074",
-    "unit.log": "6df4ebbf84e30945071897f585e5c0249466066138ac9ff37987e298f92ebff7"
+    "unit.log": "e5ca6d70baf6392b9fc23b91eab39f0c2c3ec7494889210ed3a8f9e9d28b2c73"
   }
 }

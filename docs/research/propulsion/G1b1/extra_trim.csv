@@ -1,6 +1,6 @@
 # format: openrc-trace v3
 # metadata_schema: openrc-flight-meta v2
-# scenario: trimmed level flight (engine running) across view at 17.0 m/s (D5: six-axis trim, calm air)
+# scenario: G1b1 extra_trim
 # aircraft: gp-extra-300s-60 (res://data/aircraft/gp_extra_300s_60.json)
 # aircraft_input_format: openrc-aircraft v1
 # aircraft_input_sha256: 021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474
@@ -20,7 +20,7 @@
 # recording_start_aux: [5756.467138469301,0.011280504042928054,0.09849700797190823,0.007173615519621623]
 # recording_start_engine_running: true
 # ground: flat at 0 m; no landing gear: any wheel contact is a crash (D9d)
-# created_utc: 2026-10-08T03:12:23
+# created_utc: 2026-10-08T03:16:24
 # engine: Godot 4.7.2-stable (official)
 # dt_s: 0.00416666666667
 # mass_kg: 3.364321

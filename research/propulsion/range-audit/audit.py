@@ -21,7 +21,7 @@ STATE_TIMING = ('state and aux at tick k; aux advances before RK4 and is held th
 FRAMES = 'world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]'
 FLAGS = ('stopped', 'reverse_flow_clamped', 'below_table', 'above_table',
          'documented_j_gap', 'outside_source_rpm', 'rpm_coverage_unknown',
-         'j_gap_coverage_unknown', 'source_j_uncovered')
+         'j_gap_coverage_unknown', 'source_j_uncovered', 'reverse_flow_source_coverage_unknown')
 
 
 def digest(data: bytes) -> str:
@@ -153,6 +153,9 @@ def coverage_contract(data, aircraft_hash, tables):
                 raise ValueError('gap outside table domain')
             if any(a[1] > b[0] for a, b in zip(gaps, gaps[1:])):
                 raise ValueError('gaps must be ordered and nonoverlapping')
+            if regions is not None and any(a < r['j_range'][1] and r['j_range'][0] < b
+                                           for a, b in gaps for r in regions):
+                raise ValueError('declared J gap overlaps a source region; split the source region')
         out[key] = {'source_regions': regions, 'j_gaps': gaps, 'source': entry['source']}
     return out
 
@@ -231,6 +234,7 @@ def classify(sample, diameter, axis, tables, coverage):
         else:
             if axial < 0:
                 status.append('reverse_flow_clamped')
+                status.append('reverse_flow_source_coverage_unknown')
             lo, hi = table['j_range']
             if advance < lo:
                 status.append('below_table')
@@ -243,7 +247,8 @@ def classify(sample, diameter, axis, tables, coverage):
             elif any(a < advance < b for a, b in gaps):
                 status.append('documented_j_gap')
             regions = support.get('source_regions')
-            eligible = [] if regions is None else [r for r in regions if r['j_range'][0] <= advance <= r['j_range'][1]]
+            # A clamped runtime J=0 is not a static source condition when axial flow is negative.
+            eligible = [] if regions is None or axial < 0 else [r for r in regions if r['j_range'][0] <= advance <= r['j_range'][1]]
             if regions is not None and not eligible:
                 status.append('source_j_uncovered')
             if not eligible or any(r['rpm_range'] is None for r in eligible):

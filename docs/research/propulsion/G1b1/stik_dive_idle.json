@@ -1,6 +1,6 @@
 {
   "format": "openrc-propeller-range-audit v1",
-  "trace_sha256": "3b4ac0fdb9e5ebd3cfed7aa06e056dfb6af981f9216f3b2b6c7e9e8afa6a92e1",
+  "trace_sha256": "7db5f889eea8645869270bf53b81632a30c47680860a6b3550554f06c520743a",
   "aircraft_input_sha256": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
   "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
   "assumption": "still air: body velocity equals air-relative velocity",
@@ -149,7 +149,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 480,
       "j_gap_coverage_unknown": 0,
-      "source_j_uncovered": 480
+      "source_j_uncovered": 480,
+      "reverse_flow_source_coverage_unknown": 0
     },
     "cp_table": {
       "stopped": 0,
@@ -160,7 +161,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 480,
       "j_gap_coverage_unknown": 0,
-      "source_j_uncovered": 480
+      "source_j_uncovered": 480,
+      "reverse_flow_source_coverage_unknown": 0
     }
   },
   "first_occurrence": {
@@ -204,6 +206,6 @@
     "No flag does not establish physical validity or coverage of internal integration stages."
   ],
   "coverage_sha256": "35c7d5180f5779394dc3f44268879947a7f98fbdd10d4683f19b9cf82ea0d5a2",
-  "tool_sha256": "8abd3f363a7ae12c66ef6837c2724899eefb47ed5032cbff2d008580d668a937",
+  "tool_sha256": "c6f65a49238df47bc3b1cb8c7f90398066d66bd1a4b03df651d024e5b263fc4f",
   "identity_reader_sha256": "7b8623b5f244313356b38a4b5e01371dc9c910762ef4ac62c622fad40733a147"
 }

@@ -96,6 +96,11 @@ class AuditTests(unittest.TestCase):
         p = self.classify(u=-10)
         self.assertEqual(p['advance_ratio'], 0)
         self.assertIn('reverse_flow_clamped', p['tables']['ct_table'])
+        support = A.coverage_contract(self.coverage(), A.digest(self.data), self.tables)
+        reverse = A.classify(sample(u=-10), 1, self.axis, self.tables, support)['tables']['ct_table']
+        self.assertIn('reverse_flow_source_coverage_unknown', reverse)
+        self.assertIn('source_j_uncovered', reverse)
+        self.assertIn('rpm_coverage_unknown', reverse)
 
     def test_table_bounds_are_inclusive(self):
         for u in [0, .5, 1]:
@@ -195,6 +200,7 @@ class AuditTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 A.coverage_contract(data, A.digest(self.data), self.tables)
         for field, value in [('j_gaps', [[.3, .2]]), ('j_gaps', [[0, 2]]),
+                             ('j_gaps', [[0, .4]]),
                              ('j_gaps', [[0, .4], [.3, .5]]), ('source_regions', [])]:
             data = self.coverage(); data['tables']['ct_table'][field] = value
             with self.assertRaises(ValueError):

@@ -153,7 +153,7 @@ func _initialize() -> void:
 	var landed := _session_drop(session, 0.35, 3.0)
 	_check("dropped from 0.35 m: lands, no crash, at rest on three wheels", landed.crashes == 0 and landed.on_wheels and landed.speed < 0.02, "crashes %d, speed %.3f m/s, compressions %s" % [landed.crashes, landed.speed, landed.comp])
 	var broken := _session_drop(session, 2.0, 3.0)
-	_check("dropped from 2.0 m: the gear collapses (crash, restart)", broken.crashes >= 1 and broken.why == "gear collapsed", "crashes %d, why '%s', sink %.1f m/s" % [broken.crashes, broken.why, broken.sink])
+	_check("dropped from 2.0 m: nose gear travel limit (crash, restart)", broken.crashes >= 1 and broken.why == "landing gear travel limit (nose)", "crashes %d, why '%s', sink %.1f m/s" % [broken.crashes, broken.why, broken.sink])
 	_check("inverted at 0.20 m: still a hull crash (fin)", session.touches_ground(RB.make_state(M.v3(0, 0, -0.2), M.v3(0, 0, 0), M.q_from_euler(0, 0, PI), M.v3(0, 0, 0))))
 
 	print("%d checks, %d failed" % [_count, _failures])

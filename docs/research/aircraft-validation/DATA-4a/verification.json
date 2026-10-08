@@ -1,0 +1,26 @@
+{
+  "format": "openrc-schema-verification v1",
+  "date": "2026-10-07",
+  "snapshot": "fresh local clone plus DATA-4a schema, tooling and CI changes; separate XDG directories",
+  "base_commit": "a6c1e4d4a0c90c4f6160566ffc60075450341d62",
+  "godot": "Godot_v4.7.2-stable_linux.x86_64",
+  "app_test_exit": 0,
+  "app_test_sections": 132,
+  "contract_cases": 1469,
+  "valid_controls": 24,
+  "runtime_only_cases": 3,
+  "contract_mismatches": 0,
+  "linter_counts": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "actionlint_exit": 0,
+  "artifacts_sha256": {
+    "agreement.json": "957a500a98d69f136fee68ea52bf9e607f2bb9b2675f6ab973e2d989bd709292",
+    "contract.log": "972bcdd1a269d9cb95bb062b3e8e67e70c5d423164445cff86f2ca5df23ada5f",
+    "app-test.log": "e5d73fd72543d379df3606e750843aec048ee647f429ff16e273a35c51f3da48",
+    "mutations.json": "22d22cb843b8db540630527bd0607d9f1be075ff2a1d5d57670fcedf572e05c3"
+  }
+}

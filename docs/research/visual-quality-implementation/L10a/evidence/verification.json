@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "date": "2026-10-08",
+  "full_suite_exit_code": 0,
+  "full_suite_windsock_checks": 14,
+  "subsequent_windsock_checks": 16,
+  "reason_for_targeted_rerun": "Two FieldBuilder integration assertions added after the full suite loaded this script.",
+  "priority_images_unchanged": 4,
+  "full_capture_sh_run": false,
+  "sources_sha256": {
+    "app/tests/test_windsock.gd": "df418988dfc348919859393f5d8855ff58518d7f41c8da8713a84a63344496de",
+    "app/tests/test_windsock_data.gd": "7f39b166eea895253b605f35aea78c512b4cc4253af4b760082cbf87ebf0c111",
+    "app/tests/test_field_loader.gd": "dfdfaae3aa99c730949c6b2b1ba3307a094cc37b8de813ab6bdf035ce33dd346",
+    "app/capture.sh": "48e62a42053e2746dbccb698e94ca6683ee4fc20ba76145b15aba988c20cddb8",
+    "tools/ground/check_surfaces.py": "46767d2b2a9a9cbd3f9df5c671196421e162e938adf59a54e71fded0e45617b9"
+  }
+}
