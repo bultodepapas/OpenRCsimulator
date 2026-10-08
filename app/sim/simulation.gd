@@ -359,9 +359,7 @@ func _fail_safe(reason: String) -> void:
 ## Exact, detached tick-boundary snapshot. var_to_bytes/bytes_to_var preserves float64 bits;
 ## JSON/CSV are diagnostics, not this format. Callbacks and model configuration stay with the owner.
 func checkpoint() -> Dictionary:
-	if not fault_reason.is_empty() or not state_is_valid(state) or not state_is_valid(previous) \
-			or not _configuration_is_valid() or not _array_is_finite(aux) or not _array_is_finite(inputs, 4) \
-			or not _loads_are_valid(last_loads) or not _array_is_finite(continuous, _last_valid_continuous.size()):
+	if not fault_reason.is_empty() or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		return {}
 	var snapshot: Dictionary = { format = CHECKPOINT_FORMAT, tick = tick, dt = dt(), state = state.duplicate(),
 		previous = previous.duplicate(), aux = aux.duplicate(), inputs = inputs.duplicate(),
@@ -369,7 +367,8 @@ func checkpoint() -> Dictionary:
 		inertia = inertia.duplicate(), gravity = gravity, stop_at_tick = stop_at_tick }
 	if not continuous.is_empty():
 		snapshot.continuous = continuous.duplicate()
-	return snapshot
+	# A producer must not emit a boundary that its own reader refuses.
+	return snapshot if can_restore_checkpoint(snapshot) else {}
 
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
@@ -383,6 +382,8 @@ func can_restore_checkpoint(candidate: Dictionary) -> bool:
 	for key in ["dt", "mass", "gravity"]:
 		if typeof(candidate[key]) != TYPE_FLOAT or not is_finite(candidate[key]):
 			return false
+	if not _checkpoint_clock_is_valid(candidate.tick, candidate.dt):
+		return false
 	if candidate.dt != dt() or candidate.dt != 1.0 / Engine.physics_ticks_per_second or candidate.mass != mass or candidate.gravity != gravity \
 			or not _array_is_finite(candidate.inertia, 6) or not _same_array(candidate.inertia, inertia):
 		return false
@@ -391,7 +392,8 @@ func can_restore_checkpoint(candidate: Dictionary) -> bool:
 	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
 		and _array_is_finite(candidate.aux, aux.size()) and _array_is_finite(candidate.inputs, 4) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
-		and candidate.modes.size() == modes.size() and _configuration_is_valid()
+		and candidate.modes.size() == modes.size() and _configuration_is_valid() \
+		and _array_is_finite(RB.inertia_inverse(inertia), 6)
 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
@@ -406,6 +408,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	modes = candidate.modes.duplicate()
 	last_loads = candidate.last_loads.duplicate()
 	tick = candidate.tick
+	_fixed_dt = candidate.dt # a compatible fresh owner has no reset-established clock yet
 	stop_at_tick = candidate.stop_at_tick
 	_inertia_inv = RB.inertia_inverse(inertia)
 	_inertia_cache = inertia.duplicate()
@@ -413,6 +416,18 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_remember_valid_state()
 	set_paused(true)
 	return true
+
+
+## Restored clocks must support another integer tick and distinct RK4 stage times.
+## Checking only finiteness misses both int64 wrap and float64 time stagnation.
+func _checkpoint_clock_is_valid(at: int, timestep: float) -> bool:
+	if at < 0 or at == 9223372036854775807 or not is_finite(timestep) or timestep <= 0.0:
+		return false
+	var start_time: float = at * timestep
+	var half_time: float = start_time + 0.5 * timestep
+	var end_time: float = start_time + timestep
+	return is_finite(end_time) and half_time > start_time and end_time > half_time \
+		and (at + 1) * timestep > start_time
 
 
 func _checkpoint_state_is_valid(candidate: Variant) -> bool:

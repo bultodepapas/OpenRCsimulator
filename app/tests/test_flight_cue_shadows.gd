@@ -99,6 +99,15 @@ func _test_committed_field() -> void:
 		and colours.to_byte_array() == second.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR].to_byte_array())
 	first.free()
 	second.free()
+	var widest: Array = cues.duplicate(true)
+	var barrier: Dictionary = _find_cue(widest, "flightline_barrier")
+	barrier.width = 80.0
+	barrier.gap_width = 2.0
+	var custom: MeshInstance3D = CueShadows.build(widest)
+	var custom_vertices: PackedVector3Array = custom.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	_check("maximum supported custom field stays below 2,500 shadow triangles", custom_vertices.size() / 3 < 2500)
+	_test_barrier_posts(widest, custom_vertices)
+	custom.free()
 
 
 func _test_barrier_posts(cues: Array, vertices: PackedVector3Array) -> void:

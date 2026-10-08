@@ -1,0 +1,1144 @@
+{
+  "ok": true,
+  "ticks": 28861,
+  "checkpoints": 483,
+  "instrumentation_bit_exact_every_tick": true,
+  "comparison": {
+    "up": {
+      "branches": {
+        "different_ticks": 0,
+        "first_tick": null
+      },
+      "modes": {
+        "different_ticks": 0,
+        "first_tick": null
+      }
+    },
+    "down": {
+      "branches": {
+        "different_ticks": 0,
+        "first_tick": null
+      },
+      "modes": {
+        "different_ticks": 0,
+        "first_tick": null
+      }
+    },
+    "branch-control": {
+      "branches": {
+        "different_ticks": 25636,
+        "first_tick": 1,
+        "first_baseline": [
+          [
+            11,
+            13,
+            13,
+            13,
+            13,
+            13,
+            13,
+            20,
+            11,
+            12,
+            21,
+            22,
+            11,
+            12,
+            21,
+            22,
+            11,
+            12,
+            21,
+            22
+          ],
+          [
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35
+          ],
+          [
+            41,
+            43,
+            41,
+            43,
+            41,
+            43,
+            41,
+            43
+          ]
+        ],
+        "first_candidate": [
+          [
+            11,
+            13,
+            13,
+            13,
+            13,
+            13,
+            13,
+            21,
+            23,
+            11,
+            12,
+            21,
+            22,
+            11,
+            12,
+            21,
+            22,
+            11,
+            12,
+            21,
+            22
+          ],
+          [
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35,
+            31,
+            33,
+            35,
+            33,
+            35,
+            33,
+            35
+          ],
+          [
+            41,
+            43,
+            41,
+            43,
+            41,
+            43,
+            41,
+            43
+          ]
+        ]
+      },
+      "modes": {
+        "different_ticks": 0,
+        "first_tick": null
+      }
+    }
+  },
+  "cases": {
+    "raw": {
+      "checkpoints": 483,
+      "direction": 0,
+      "discrete_mismatches": [],
+      "exact_samples": 483,
+      "math_check": [
+        {
+          "builtin": "144276550271d73f",
+          "wrapper": "144276550271d73f"
+        },
+        {
+          "builtin": "144276550271d7bf",
+          "wrapper": "144276550271d7bf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        },
+        {
+          "builtin": "4fbb610567acdd3f",
+          "wrapper": "4fbb610567acdd3f"
+        },
+        {
+          "builtin": "4fbb610567acddbf",
+          "wrapper": "4fbb610567acddbf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        }
+      ],
+      "metrics": {
+        "anchor": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 4,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "attitude": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 6,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "downwash": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 13,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "position": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rate": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rpm": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-05
+        },
+        "servo": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 1,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "velocity": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 3,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        }
+      },
+      "ok": true,
+      "policy": {
+        "clock": "exact ticks and dt",
+        "components": {
+          "anchor": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m (anchor north/east) or stuck flag"
+          },
+          "attitude": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "quaternion component"
+          },
+          "downwash": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "wing lift coefficient"
+          },
+          "position": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m"
+          },
+          "rate": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "rad/s"
+          },
+          "rpm": {
+            "absolute": 1e-05,
+            "scale": 10000.0,
+            "unit": "rpm"
+          },
+          "servo": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "normalized command"
+          },
+          "velocity": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m/s"
+          }
+        },
+        "discrete": "exact",
+        "format": "openrc-replay-policy v1",
+        "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+        "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+      },
+      "stamp": {
+        "architecture": "x86_64",
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+        "godot": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "os": "Linux",
+        "ticks_per_second": 240
+      },
+      "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+      "ticks": 28861,
+      "trajectory_sha256": "83361cf4b3b6b0b56c310ea6f65902ae27310e6e7b31dea09169a65853f50c30"
+    },
+    "baseline": {
+      "checkpoints": 483,
+      "direction": 0,
+      "discrete_mismatches": [],
+      "exact_samples": 483,
+      "math_check": [
+        {
+          "builtin": "144276550271d73f",
+          "wrapper": "144276550271d73f"
+        },
+        {
+          "builtin": "144276550271d7bf",
+          "wrapper": "144276550271d7bf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        },
+        {
+          "builtin": "4fbb610567acdd3f",
+          "wrapper": "4fbb610567acdd3f"
+        },
+        {
+          "builtin": "4fbb610567acddbf",
+          "wrapper": "4fbb610567acddbf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        }
+      ],
+      "metrics": {
+        "anchor": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 4,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "attitude": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 6,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "downwash": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 13,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "position": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rate": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rpm": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-05
+        },
+        "servo": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 1,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "velocity": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 3,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        }
+      },
+      "ok": true,
+      "policy": {
+        "clock": "exact ticks and dt",
+        "components": {
+          "anchor": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m (anchor north/east) or stuck flag"
+          },
+          "attitude": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "quaternion component"
+          },
+          "downwash": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "wing lift coefficient"
+          },
+          "position": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m"
+          },
+          "rate": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "rad/s"
+          },
+          "rpm": {
+            "absolute": 1e-05,
+            "scale": 10000.0,
+            "unit": "rpm"
+          },
+          "servo": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "normalized command"
+          },
+          "velocity": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m/s"
+          }
+        },
+        "discrete": "exact",
+        "format": "openrc-replay-policy v1",
+        "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+        "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+      },
+      "stamp": {
+        "architecture": "x86_64",
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+        "godot": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "os": "Linux",
+        "ticks_per_second": 240
+      },
+      "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+      "ticks": 28861,
+      "trajectory_sha256": "83361cf4b3b6b0b56c310ea6f65902ae27310e6e7b31dea09169a65853f50c30"
+    },
+    "up": {
+      "checkpoints": 483,
+      "direction": 1,
+      "discrete_mismatches": [],
+      "exact_samples": 1,
+      "math_check": [
+        {
+          "builtin": "144276550271d73f",
+          "wrapper": "154276550271d73f"
+        },
+        {
+          "builtin": "144276550271d7bf",
+          "wrapper": "134276550271d7bf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0100000000000000"
+        },
+        {
+          "builtin": "4fbb610567acdd3f",
+          "wrapper": "50bb610567acdd3f"
+        },
+        {
+          "builtin": "4fbb610567acddbf",
+          "wrapper": "4ebb610567acddbf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0100000000000000"
+        }
+      ],
+      "metrics": {
+        "anchor": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 7.139178137549607e-12,
+          "max_ratio": 7.139178137549607e-06,
+          "peak_tick": 27600,
+          "tolerance": 1e-06
+        },
+        "attitude": {
+          "block": "previous",
+          "first_exceed_tick": -1,
+          "index": 9,
+          "max_absolute": 2.0539125955565396e-14,
+          "max_ratio": 2.0539125955565396e-05,
+          "peak_tick": 27720,
+          "tolerance": 1e-09
+        },
+        "downwash": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 13,
+          "max_absolute": 3.708144902248023e-14,
+          "max_ratio": 3.708144902248023e-05,
+          "peak_tick": 19980,
+          "tolerance": 1e-09
+        },
+        "position": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 7.128519996513205e-12,
+          "max_ratio": 7.128519996513205e-06,
+          "peak_tick": 28020,
+          "tolerance": 1e-06
+        },
+        "rate": {
+          "block": "previous",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 9.625286678804912e-14,
+          "max_ratio": 9.625286678804912e-08,
+          "peak_tick": 19980,
+          "tolerance": 1e-06
+        },
+        "rpm": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-05
+        },
+        "servo": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 1,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "velocity": {
+          "block": "previous",
+          "first_exceed_tick": -1,
+          "index": 5,
+          "max_absolute": 2.1405099914773018e-13,
+          "max_ratio": 2.1405099914773018e-07,
+          "peak_tick": 19980,
+          "tolerance": 1e-06
+        }
+      },
+      "ok": true,
+      "policy": {
+        "clock": "exact ticks and dt",
+        "components": {
+          "anchor": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m (anchor north/east) or stuck flag"
+          },
+          "attitude": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "quaternion component"
+          },
+          "downwash": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "wing lift coefficient"
+          },
+          "position": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m"
+          },
+          "rate": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "rad/s"
+          },
+          "rpm": {
+            "absolute": 1e-05,
+            "scale": 10000.0,
+            "unit": "rpm"
+          },
+          "servo": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "normalized command"
+          },
+          "velocity": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m/s"
+          }
+        },
+        "discrete": "exact",
+        "format": "openrc-replay-policy v1",
+        "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+        "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+      },
+      "stamp": {
+        "architecture": "x86_64",
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+        "godot": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "os": "Linux",
+        "ticks_per_second": 240
+      },
+      "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+      "ticks": 28861,
+      "trajectory_sha256": "ada9124d99104379999a6ab4c400b5b7d7e39853d1b930625ac8f31905a66229"
+    },
+    "down": {
+      "checkpoints": 483,
+      "direction": -1,
+      "discrete_mismatches": [],
+      "exact_samples": 1,
+      "math_check": [
+        {
+          "builtin": "144276550271d73f",
+          "wrapper": "134276550271d73f"
+        },
+        {
+          "builtin": "144276550271d7bf",
+          "wrapper": "154276550271d7bf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0100000000000080"
+        },
+        {
+          "builtin": "4fbb610567acdd3f",
+          "wrapper": "4ebb610567acdd3f"
+        },
+        {
+          "builtin": "4fbb610567acddbf",
+          "wrapper": "50bb610567acddbf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0100000000000080"
+        }
+      ],
+      "metrics": {
+        "anchor": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 1.0185630117121036e-11,
+          "max_ratio": 1.0185630117121036e-05,
+          "peak_tick": 27600,
+          "tolerance": 1e-06
+        },
+        "attitude": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 9,
+          "max_absolute": 2.0872192862952943e-14,
+          "max_ratio": 2.0872192862952943e-05,
+          "peak_tick": 27900,
+          "tolerance": 1e-09
+        },
+        "downwash": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 13,
+          "max_absolute": 4.007905118896815e-14,
+          "max_ratio": 4.007905118896815e-05,
+          "peak_tick": 19980,
+          "tolerance": 1e-09
+        },
+        "position": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 1.0173195619245234e-11,
+          "max_ratio": 1.0173195619245234e-05,
+          "peak_tick": 27600,
+          "tolerance": 1e-06
+        },
+        "rate": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 11,
+          "max_absolute": 1.113179508424253e-13,
+          "max_ratio": 1.113179508424253e-07,
+          "peak_tick": 28200,
+          "tolerance": 1e-06
+        },
+        "rpm": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-05
+        },
+        "servo": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 1,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "velocity": {
+          "block": "previous",
+          "first_exceed_tick": -1,
+          "index": 5,
+          "max_absolute": 2.289279876777073e-13,
+          "max_ratio": 2.2892798767770728e-07,
+          "peak_tick": 19980,
+          "tolerance": 1e-06
+        }
+      },
+      "ok": true,
+      "policy": {
+        "clock": "exact ticks and dt",
+        "components": {
+          "anchor": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m (anchor north/east) or stuck flag"
+          },
+          "attitude": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "quaternion component"
+          },
+          "downwash": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "wing lift coefficient"
+          },
+          "position": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m"
+          },
+          "rate": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "rad/s"
+          },
+          "rpm": {
+            "absolute": 1e-05,
+            "scale": 10000.0,
+            "unit": "rpm"
+          },
+          "servo": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "normalized command"
+          },
+          "velocity": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m/s"
+          }
+        },
+        "discrete": "exact",
+        "format": "openrc-replay-policy v1",
+        "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+        "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+      },
+      "stamp": {
+        "architecture": "x86_64",
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+        "godot": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "os": "Linux",
+        "ticks_per_second": 240
+      },
+      "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+      "ticks": 28861,
+      "trajectory_sha256": "20a13b817a39fdcf36db5b4478a3d1f4516520b10404d7ba0a5cfcbb89d0f080"
+    },
+    "branch-control": {
+      "checkpoints": 483,
+      "direction": 0,
+      "discrete_mismatches": [],
+      "exact_samples": 483,
+      "math_check": [
+        {
+          "builtin": "144276550271d73f",
+          "wrapper": "144276550271d73f"
+        },
+        {
+          "builtin": "144276550271d7bf",
+          "wrapper": "144276550271d7bf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        },
+        {
+          "builtin": "4fbb610567acdd3f",
+          "wrapper": "4fbb610567acdd3f"
+        },
+        {
+          "builtin": "4fbb610567acddbf",
+          "wrapper": "4fbb610567acddbf"
+        },
+        {
+          "builtin": "0000000000000000",
+          "wrapper": "0000000000000000"
+        }
+      ],
+      "metrics": {
+        "anchor": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 4,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "attitude": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 6,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "downwash": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 13,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "position": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rate": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 10,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        },
+        "rpm": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 0,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-05
+        },
+        "servo": {
+          "block": "aux",
+          "first_exceed_tick": -1,
+          "index": 1,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-09
+        },
+        "velocity": {
+          "block": "state",
+          "first_exceed_tick": -1,
+          "index": 3,
+          "max_absolute": 0.0,
+          "max_ratio": 0.0,
+          "peak_tick": 0,
+          "tolerance": 1e-06
+        }
+      },
+      "ok": true,
+      "policy": {
+        "clock": "exact ticks and dt",
+        "components": {
+          "anchor": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m (anchor north/east) or stuck flag"
+          },
+          "attitude": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "quaternion component"
+          },
+          "downwash": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "wing lift coefficient"
+          },
+          "position": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m"
+          },
+          "rate": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "rad/s"
+          },
+          "rpm": {
+            "absolute": 1e-05,
+            "scale": 10000.0,
+            "unit": "rpm"
+          },
+          "servo": {
+            "absolute": 1e-09,
+            "scale": 1.0,
+            "unit": "normalized command"
+          },
+          "velocity": {
+            "absolute": 1e-06,
+            "scale": 1.0,
+            "unit": "m/s"
+          }
+        },
+        "discrete": "exact",
+        "format": "openrc-replay-policy v1",
+        "other_platforms": "same tolerances; manual/non-gating reports until explicit CI jobs exist",
+        "reference_ci": "ubuntu-24.04 x86_64, pinned Godot; app/test.sh gates CI"
+      },
+      "stamp": {
+        "architecture": "x86_64",
+        "build": {
+          "commit": "",
+          "commit_date": "",
+          "describe": "",
+          "dirty": false,
+          "godot": "4.7.2-stable (official)",
+          "label": "",
+          "parsed": {
+            "after": 0,
+            "base": "0.1.0",
+            "dirty": false,
+            "prerelease": "",
+            "semver": "0.1.0",
+            "sha": "",
+            "tag": ""
+          },
+          "source": "development",
+          "version": "0.1.0"
+        },
+        "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+        "godot": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "os": "Linux",
+        "ticks_per_second": 240
+      },
+      "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+      "ticks": 28861,
+      "trajectory_sha256": "83361cf4b3b6b0b56c310ea6f65902ae27310e6e7b31dea09169a65853f50c30"
+    }
+  }
+}

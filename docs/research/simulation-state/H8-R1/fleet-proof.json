@@ -1,0 +1,8 @@
+{
+  "aircraft": 4,
+  "checkpoints": 8,
+  "exact_continuations": 4,
+  "byte_identical": true,
+  "before_sha256": "2ebf79567ddc9095947cc63ada5b21d2a5429ab7c6c7642ed898c8a7b8779ed5",
+  "after_sha256": "2ebf79567ddc9095947cc63ada5b21d2a5429ab7c6c7642ed898c8a7b8779ed5"
+}

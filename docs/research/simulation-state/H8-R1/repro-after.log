@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+fresh restore accepted: true
+fresh continuation: tick=2 fault=
+unnormalized checkpoint emitted: false restorable: false
+overflow clock restore accepted: false
+overflow continuation: tick=2 fault=
+nonfinite inverse preflight accepted: false
+nonfinite inverse restore accepted: false inverse=[1.0, 1.0, 1.0, 0.0, 0.0, 0.0]

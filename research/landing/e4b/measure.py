@@ -101,6 +101,10 @@ def main():
         for folder in ('e4a', 'e4b'):
             shutil.copytree(HERE.parent/folder, frozen/'research/landing'/folder,
                             ignore=shutil.ignore_patterns('__pycache__'))
+        frozen_research = {**{'e4a/'+p: h for p, h in hashes(frozen/'research/landing/e4a').items()},
+                           **{'e4b/'+p: h for p, h in hashes(frozen/'research/landing/e4b').items()}}
+        if frozen_research != research_identity:
+            raise RuntimeError('research changed while freezing; retry')
         if hashes(frozen/'app') != original or hashes(source/'app') != original:
             raise RuntimeError('app changed while freezing; retry on an isolated snapshot')
         spec = importlib.util.spec_from_file_location('h7', frozen/'app/tests/check_math_sensitivity.py')
@@ -133,6 +137,14 @@ def main():
             env = os.environ.copy()
             for kind in ('DATA', 'CONFIG', 'CACHE'):
                 env[f'XDG_{kind}_HOME'] = str(case/kind.lower())
+            if name == 'baseline':
+                test = subprocess.run([str(godot), '--headless', '--path', str(project), '--script',
+                                       str(case/'research/landing/e4b/test_probe.gd')],
+                                      capture_output=True, text=True, timeout=60, env=env)
+                log = test.stdout + test.stderr
+                (out/'test_probe.log').write_text(log)
+                if test.returncode or any(line.startswith(('ERROR:', 'SCRIPT ERROR:')) for line in log.splitlines()):
+                    raise RuntimeError('comparator negative controls failed; see log')
             command = [str(godot), '--headless', '--path', str(project), '--audio-driver', 'Dummy',
                        '--script', str(case/'research/landing/e4b/probe.gd'), '--', str(tape),
                        str(case/'research/landing/e4a/field.reference.json'), str(report_path), str(direction)]

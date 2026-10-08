@@ -1,0 +1,77 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "field_build_ms": 760.829,
+  "scenery": true,
+  "stats": {
+    "build_ms": 166.245,
+    "cells": 48,
+    "fleet": 4,
+    "flowers": 2970,
+    "instances": 128,
+    "motion": 5,
+    "quality": "high",
+    "shadows": 78,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "fence": 7.067,
+      "fleet": 20.294,
+      "flowers": 20.169,
+      "hedge": 29.315,
+      "instances": 63.026,
+      "meshes": 25.478,
+      "patch": 0.283,
+      "track": 0.356
+    }
+  },
+  "views": {
+    "car_park": {
+      "draw_calls": 18.0,
+      "objects": 18.0,
+      "primitives": 150181.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_north": {
+      "draw_calls": 39.0,
+      "objects": 39.0,
+      "primitives": 167519.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_south": {
+      "draw_calls": 20.0,
+      "objects": 20.0,
+      "primitives": 160596.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 32.0,
+      "objects": 32.0,
+      "primitives": 214933.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_meadow": {
+      "draw_calls": 53.0,
+      "objects": 53.0,
+      "primitives": 124500.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pavilion": {
+      "draw_calls": 22.0,
+      "objects": 22.0,
+      "primitives": 177389.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pits": {
+      "draw_calls": 33.0,
+      "objects": 33.0,
+      "primitives": 174515.0,
+      "shadow_draw_calls": 0
+    },
+    "runway_threshold": {
+      "draw_calls": 37.0,
+      "objects": 37.0,
+      "primitives": 225979.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

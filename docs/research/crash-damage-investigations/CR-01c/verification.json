@@ -1,7 +1,7 @@
 {
   "baseline_commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
   "main_sha256": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79",
-  "status": "full suite pending",
+  "status": "complete",
   "candidate_sha256": {
     "app/main.gd": "0c8b7ec6a90bd7d9a4e4493079cbb01ccc1e49db5bc5924b38be4d8075da73fe",
     "app/tests/test_crash_pose.gd": "51f08291ffd9277c99d02c0c3925395bbb07b41f0e56693e11f2139a1d5d3255",
@@ -12,5 +12,71 @@
   "captured_pngs_repeated_byte_identically": 5,
   "physics_traces_unchanged": 4,
   "suite_process_deadline_seconds": 180,
-  "deadline_context": "CR-01b baseline landing test exceeded the normal 60 s host deadline; assertion limits unchanged"
+  "deadline_context": "CR-01b baseline landing test exceeded the normal 60 s host deadline; assertion limits unchanged",
+  "full_suite_exit_code": 0,
+  "full_suite_sections": 143,
+  "integrated_checks": 84,
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "shared_lint": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "full_suite_warnings": [
+    {
+      "section": "== test_aircraft_catalog.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_e2e_input.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_e2e_radio.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_field_integration.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_treeline.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_ui_aircraft.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_ui_flight_capture.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_ui_help.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_ui_home.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    },
+    {
+      "section": "== test_ui_language.gd",
+      "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    }
+  ],
+  "reproduction_tools_sha256": {
+    "research/crash-damage/cr-01c/capture.gd": "72a67c23551ac1754e4a7f85346f77e3ef3fa64ee9b7eb293ddaf0a4d82b6bff",
+    "research/crash-damage/cr-01c/verify_captures.py": "7274c3cdc4aec4230b45742ff3aa62826f8d9660572609828d6640cdb06b5770",
+    "research/crash-damage/cr-01c/benchmark.gd": "cbe509d9ccafa445a55a9e66aaccf06a54e6c8d713f3b5dbdeb2d356feb716a1",
+    "research/crash-damage/cr-01c/mutations.py": "affa6648342959a02d65e08251c5f7bd1688e04fb15ea0afdad5af79977d5b8d"
+  }
 }

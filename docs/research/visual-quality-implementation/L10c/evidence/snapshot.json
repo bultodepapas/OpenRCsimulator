@@ -1,0 +1,26 @@
+{
+  "base_commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+  "overlay_sha256": {
+    "app/data/field_loader.gd": "3dd8e1b3d227176c54e937243cdd35ceb5d7144bcfddf7baf99a4d6c996d9b48",
+    "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "app/render/flightline_barrier.gd": "c5a998395659593a5982a7f9fd65d69e2a927df21984052769b47b87856da873",
+    "app/render/flight_cue_shadows.gd": "ec2d7e91c5f0cf2717615159cae91ab2e1479b8605520e1aed4a385b0b0639be",
+    "app/tests/test_flightline_barrier.gd": "5d3773c07586e076cb04bd5d4649e6492cded498bf291da68ce9691e7286211f",
+    "app/tests/test_flightline_barrier_data.gd": "2fa81a7bb9f95439d2195509b3252384d83fb980fa2151875027e91c2adea44b",
+    "app/tests/test_flight_cue_shadows.gd": "1cf442b83e93e78ba5007e785eb0d9f71acc4e7f7ab2142f7d4247824537608a",
+    "app/tests/test_windsock_data.gd": "644b6d2eea80f53c22e9f1b92b2f6c47fe9679978530007fdf8c733e310f0ab2",
+    "app/tests/test_pilot_station_data.gd": "a9960e80f3e39c8525249298bd5a63f9e584a1e0ddf7f83ec3749ab5e882f406",
+    "app/render/field.gd": "8dd006e181719fbbcac77cacb9d7116e1c3e476b6433ce8f422e2f720b514df2",
+    "app/tests/check_field_pack.gd": "3b21938eeb1c56a554c572fe7a46cc25a9ec716ac063ce5def298d3b04b8b6d6",
+    "app/capture.sh": "9f8f3fe5558351871e7a3144910860b52da55c7bd84e162ad699e0916851749d",
+    "app/run-landscape.sh": "f19403b40cd0ef02b0d64658a464d1394079307b2f60137e9df668a093d79b53",
+    "tools/ground/capture_windsock.gd": "e8a18c086cca4bcacc3286ee931ddcaa80998f6ffaab9edd212f62a602367d42",
+    "tools/ground/check_windsock.py": "c34d83e80097ad40214d4e7f26d0fd97263b9b876d257fb85230699cedfc4832",
+    "app/render/flightline_barrier.gd.uid": "837c74f2c194097004e5a71570254d80fc529d35c62b09863b7e8f1abb4b0932",
+    "app/render/flight_cue_shadows.gd.uid": "0948a834f634f46ec22f1c39296078e0133642fa9844d98a11d427ab83500d5c",
+    "app/tests/test_flightline_barrier.gd.uid": "18d7c5ee0ca1bb32b23fa8c2040cee9b6e624089f32d802ca79c417bbc648502",
+    "app/tests/test_flightline_barrier_data.gd.uid": "37be885b90814f2b813b807f0f73be21f3129ab0227912dcc4a6c337b60759f5",
+    "app/tests/test_flight_cue_shadows.gd.uid": "ae64f1cf2af0c8903c3448525d702d7a967d3f87d3f14cc415e1c03f807041d6"
+  },
+  "note": "Explicit landscape overlay; unrelated concurrent work excluded. Final source frozen for readability. Full suite began before the final sightline guard; all impacted field/cue suites rerun against final sources."
+}

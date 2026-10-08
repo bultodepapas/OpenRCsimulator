@@ -1,0 +1,29 @@
+{
+  "step": "G1a1",
+  "base_commit": "3ff9cc99c9c1490a492bbb8944faa88ed7797cd2",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "source_sha256": {
+    "research/propulsion/uiuc-import/check_mutations.py": "07e29fc4f79900c6c418efefd352e51a0ab44a8dce979658899eacc1d869f53d",
+    "research/propulsion/uiuc-import/test_import.py": "61d6066960e6134d7ebfb31bdb1b252959e1f32268bef1535840d8d82c732ccb",
+    "research/propulsion/uiuc-import/sources.json": "8c9a69d3fa212e8de28539eaba752ca2d35e725ab5f96e0b5b58cd6055002698",
+    "research/propulsion/uiuc-import/example.synthetic.json": "480493dbe42b2fd97357478b77c1b6712057291c0ede554286d182d1b49f1258",
+    "research/propulsion/uiuc-import/example.synthetic.txt": "8ff63c2f466379f8be1983f959b492b09dced79e74b168a6177025c64a11254d",
+    "research/propulsion/uiuc-import/README.md": "1ccf84ffd69cc61de3bdc794f32705716b5c47700753467db813665a119a4e6f",
+    "research/propulsion/uiuc-import/import_table.py": "27db4de01fed0e34a149dcfd82840a03ca04b06598083cab052c13da25be2200",
+    "research/propulsion/uiuc-import/readback.py": "cdd599772f510dcdb9b4d823b63671914e19e193b3dcfe395934663281e31a96"
+  },
+  "unit_tests": 18,
+  "rejected_mutations": 5,
+  "primary_source_rows": 74,
+  "fresh_clone": "Only owned files overlaid. All unit/mutation tests pass; synthetic CLI JSON and independently fetched four-source readback byte-identical.",
+  "runtime_changed": false,
+  "evidence_sha256": {
+    "fresh-clone-readback.json": "5295aed9080ed8bd7ae8a15f05db94c5faa809bf88223f8b99eb91716462610e",
+    "fresh-clone-mutations.json": "caa16c0160ef308211de9c14a20fa8c02c4b2e040b0c1cef48e436b7ea8762a7",
+    "source-readback.json": "5295aed9080ed8bd7ae8a15f05db94c5faa809bf88223f8b99eb91716462610e",
+    "mutations.json": "1e2763916bb2dc3122cc61b7f822af07c9db58b39b7dd8246c370d03d0649aa0",
+    "tests.log": "a86815baa7c9f8fe9a49ba8a65a6749920777b5db156fba262366399eeaf7682",
+    "fresh-clone-tests.log": "9305aaeeb4df73ba5ffdabc781f8e8748ee01cd3ab8f27bed585f3278cc796cb",
+    "example-result.json": "631d310b380a01c052ee447cf0dc8d386efc3f715f4ea1a0d40c02343bd9e712"
+  }
+}

@@ -46,6 +46,7 @@ const FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M: float = 2.0
 const FLIGHTLINE_BARRIER_MIN_STATION_GAP_M: float = 2.0
 const FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M: float = 2.0
 const FLIGHTLINE_BARRIER_RUNWAY_CLEARANCE_M: float = 1.0
+const FLIGHTLINE_BARRIER_SIGHTLINE_MARGIN_M: float = 0.05
 const MAX_TREELINE_POSITIONS: int = 1680
 const TREE_POSITION_GRID_M: float = 0.25
 const TREE_POSITION_GRID_TOLERANCE: float = 0.000001
@@ -257,7 +258,7 @@ static func _validate_flight_cue(
 	if typeof(cue_type_value) == TYPE_STRING and cue_type_value == "pilot_station":
 		return _validate_pilot_station(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, eye_height, surfaces)
 	if typeof(cue_type_value) == TYPE_STRING and cue_type_value == "flightline_barrier":
-		return _validate_flightline_barrier(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, surfaces, runway_id)
+		return _validate_flightline_barrier(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, eye_height, surfaces, runway_id)
 	return _validate_windsock(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, surfaces)
 
 
@@ -392,6 +393,7 @@ static func _validate_flightline_barrier(
 	pilot_north: float,
 	pilot_east: float,
 	pilot_down: float,
+	eye_height: float,
 	surfaces: Array,
 	runway_id: String
 ) -> Dictionary:
@@ -422,7 +424,7 @@ static func _validate_flightline_barrier(
 		errors.append("%s.east.value: must equal pilot.east.value exactly" % path)
 	if is_finite(north) and is_finite(pilot_north) and north < pilot_north + FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M:
 		errors.append("%s.north.value: must be at least %.1f m north of pilot.north.value" % [path, FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M])
-	_validate_flightline_barrier_placement(errors, path, north, east, width, pilot_north, surfaces, runway_id)
+	_validate_flightline_barrier_placement(errors, path, north, east, width, height, pilot_north, eye_height, surfaces, runway_id)
 	return {
 		"id": identifier,
 		"type": cue_type,
@@ -441,7 +443,9 @@ static func _validate_flightline_barrier_placement(
 	north: float,
 	east: float,
 	width: float,
+	height: float,
 	pilot_north: float,
+	eye_height: float,
 	surfaces: Array,
 	runway_id: String
 ) -> void:
@@ -511,6 +515,15 @@ static func _validate_flightline_barrier_placement(
 		errors.append("%s: full barrier row must stay at least %.1f m behind the near edge of referenced runway '%s'" % [path, FLIGHTLINE_BARRIER_RUNWAY_CLEARANCE_M, runway_id])
 	elif not runway_found:
 		errors.append("%s: referenced runway '%s' must be a validated runway surface" % [path, runway_id])
+	if runway_found and is_finite(north) and is_finite(height) and is_finite(pilot_north) and is_finite(eye_height):
+		var pilot_to_near_edge_north: float = runway_north_min - pilot_north
+		if pilot_to_near_edge_north <= 0.0:
+			errors.append("%s: pilot-to-runway near-edge sightline requires a positive north distance" % path)
+		else:
+			var barrier_to_near_edge_north: float = runway_north_min - (north + FLIGHTLINE_BARRIER_HALF_DEPTH_M)
+			var maximum_barrier_top: float = eye_height * barrier_to_near_edge_north / pilot_to_near_edge_north
+			if height + FLIGHTLINE_BARRIER_SIGHTLINE_MARGIN_M > maximum_barrier_top:
+				errors.append("%s.height.value: barrier top plus %.2f m margin exceeds the pilot-to-runway near-edge sightline" % [path, FLIGHTLINE_BARRIER_SIGHTLINE_MARGIN_M])
 	# The pilot station is centered on the pilot. Use its maximum allowed depth so cue ordering cannot weaken clearance.
 	var required_station_gap: float = FLIGHTLINE_BARRIER_MIN_STATION_GAP_M + FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M * 0.5 + FLIGHTLINE_BARRIER_HALF_DEPTH_M + FLIGHTLINE_BARRIER_CLEARANCE_M
 	if north - FLIGHTLINE_BARRIER_HALF_DEPTH_M - (pilot_north + FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M * 0.5) < FLIGHTLINE_BARRIER_MIN_STATION_GAP_M + FLIGHTLINE_BARRIER_CLEARANCE_M:

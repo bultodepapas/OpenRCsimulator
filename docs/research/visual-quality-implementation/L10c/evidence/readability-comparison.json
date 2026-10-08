@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "captures_each": 64,
+  "groups": 8,
+  "attitude_cases": 48,
+  "readability_metrics_identical": true,
+  "baseline_manifest_sha256": "c177e6b286e7a904cc54b1e45d454a2e11ebfdfdeaa922ba8a7ee30fa78f6b85",
+  "final_manifest_sha256": "271ed155212b98d56aa34fd1f48cdb2a8b973e7d8c2a8afd3a18f079614ac62c",
+  "human_playtest": "pending"
+}

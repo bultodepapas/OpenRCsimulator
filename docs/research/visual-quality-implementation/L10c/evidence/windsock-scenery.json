@@ -1,0 +1,169 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "cue": {
+    "collides": false,
+    "east": -12.0,
+    "id": "windsock",
+    "length": 2.5,
+    "north": -6.0,
+    "pole_height": 3.6,
+    "tail_diameter": 0.18,
+    "throat_diameter": 0.45,
+    "type": "windsock"
+  },
+  "driver": "opengl3",
+  "format": "openrc-l10a-capture v1",
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "bounds": [
+        411.266387939453,
+        89.8878707885742,
+        609.414367675781,
+        519.555114746094
+      ],
+      "draws": 24,
+      "eye": [
+        -7.0,
+        4.0,
+        11.0
+      ],
+      "fov": 40.0,
+      "image": "close-off.png",
+      "primitives": 162010,
+      "runway_polygon": [],
+      "sha256": "5dda800016da4df0b6bd466ef1029ea76c29ebd00c1a7056407766d9be2e7619",
+      "target": [
+        -11.5,
+        2.20000004768372,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        411.266387939453,
+        89.8878707885742,
+        609.414367675781,
+        519.555114746094
+      ],
+      "draws": 26,
+      "eye": [
+        -7.0,
+        4.0,
+        11.0
+      ],
+      "fov": 40.0,
+      "image": "close-on.png",
+      "primitives": 163780,
+      "runway_polygon": [],
+      "sha256": "1c4ea9e849f9477af2c09d74eef6560934900f8ea5b3706d4346fd0398929bae",
+      "target": [
+        -11.5,
+        2.20000004768372,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        443.887176513672,
+        184.160934448242,
+        501.626312255859,
+        369.212677001953
+      ],
+      "draws": 24,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_turn-off.png",
+      "primitives": 185756,
+      "runway_polygon": [],
+      "sha256": "afe5a5a320e808cead3f1f025572a3d4ebb28434ee6427c6fec6129270e8476b",
+      "target": [
+        -11.5,
+        2.09999990463257,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        443.887176513672,
+        184.160934448242,
+        501.626312255859,
+        369.212677001953
+      ],
+      "draws": 26,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_turn-on.png",
+      "primitives": 187526,
+      "runway_polygon": [],
+      "sha256": "59ac52a71d946f6b36280b1d98fa7abb774e9e3352334c392d3f576e92f14483",
+      "target": [
+        -11.5,
+        2.09999990463257,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        170.826324462891,
+        248.607162475586,
+        208.240585327148,
+        321.175933837891
+      ],
+      "draws": 43,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-off.png",
+      "primitives": 231173,
+      "runway_polygon": [],
+      "sha256": "132f8cee930efde0ac48d22c1afaffab020408aadcce73f8c28aa240d61180c4",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "bounds": [
+        170.826324462891,
+        248.607162475586,
+        208.240585327148,
+        321.175933837891
+      ],
+      "draws": 45,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-on.png",
+      "primitives": 232943,
+      "runway_polygon": [],
+      "sha256": "d166249070af663390cf8bc7e3cc17770823a9b8a1aaeb4cb981cc3a1f876de8",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    }
+  ],
+  "scenery": true,
+  "shader_time": 0.0,
+  "viewport": [
+    960,
+    540
+  ]
+}
