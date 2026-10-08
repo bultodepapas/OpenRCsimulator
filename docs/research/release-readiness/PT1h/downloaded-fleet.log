@@ -1,0 +1,8 @@
+gp-extra-300s-60
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s; exact aircraft input bytes verified
+jensen-das-ugly-stik-60
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input bytes verified
+p51d-mustang-120
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input bytes verified
+sebart-avanti-s-a200-p100rx
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input bytes verified

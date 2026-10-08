@@ -1,6 +1,6 @@
 # PT1h — Code reconciliation and rc6 release readiness
 
-2026-10-08 · **Status: integration and local software/export verification complete; publication requires the tagged CI capture/export gates.** Scope: integrate the existing simulator, plans and tool workflows, then publish an identified experimental release. Base: `e80f4e0`; previous release: `v0.1.0-rc5`. This is an integration audit, not a new physics model or a claim of empirical validation.
+2026-10-08 · **Status: rc6 published; tagged CI, three downloaded package checksums and the downloaded Linux fleet check pass.** Scope: integrate the existing simulator, plans and tool workflows, then publish an identified experimental release. Base: `e80f4e0`; previous release: `v0.1.0-rc5`. This is an integration audit, not a new physics model or a claim of empirical validation.
 
 ## Method and findings
 
@@ -30,18 +30,20 @@ No generated aircraft/field data, force equations, golden trajectories or resour
 
 The Stik's production wash remains disabled. Current propeller provenance borrows an 11×6 table for a configured 12×6; runtime extrapolation/range counters and matched measurements remain open. The automated calm circuit is a verification fixture, not a pilot or physical validation result.
 
+The next bounded development slice is defined in [RUNWAY-START-PLAN](../../../RUNWAY-START-PLAN.md): session start/reset/trace contract, Home selection, then export and manual-pilot evidence. It is subsequent work, outside rc6.
+
 Legacy Spanish plans and earlier research remain preserved and explicitly identified by the map; new documentation is English. Translate a legacy plan when substantively revising its scope. Its old implementation diary is historical evidence, not a competing current-state ledger. No research was deleted or silently promoted to acceptance.
 
 ## Verification
 
-This is the pre-publication evidence snapshot. [Verification summary](verification.json), [app log](app-tests.log.gz), [tool log](tool-tests.log.gz), [schema log](schema.log), [generator log](generators.log) and [clean export log](export-clean.log) preserve local results. The tagged [CI workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/workflows/ci.yml) provides final capture/package/publication outcomes; publication depends on its app and export jobs.
+This records the local pre-publication checks and the final tagged CI/download verification. [Verification summary](verification.json), [app log](app-tests.log.gz), [tool log](tool-tests.log.gz), [schema log](schema.log), [generator log](generators.log) and [clean export log](export-clean.log) preserve local results. The tagged [CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091) passed all four jobs and published rc6 at 2026-10-08 13:16:45 UTC. [CI summary](ci-summary.json), [capture log](ci-capture.log.gz), [published checksums](release-SHA256SUMS) and [downloaded Linux fleet proof](downloaded-fleet.log) retain the final evidence.
 
 - App suite: passed, 149 sections including 121 GDScript test programs, four fleet trim traces, goldens and exact 30/60/144 fps hashes; zero engine errors.
 - Offline tools: 195 tests in 11 programs passed; synthetic inputs only.
 - Generated aircraft outputs: 11 `--check` commands passed.
 - Aircraft schema/loader: passed, four fleet files and 1,691 cases (136 valid controls, 11 runtime-only counterexamples).
-- Captures: changed Home/Help views pass and were inspected in English/Spanish; VQ-01b completes 66 guarded captures and L7 repeatability passes. L4b atmosphere and GPU-cloud checks also passed. The duplicate local full run was stopped because of disk pressure; the full capture suite must pass in tagged CI before publication; final reports are retained as CI artifacts.
-- Exports: complete `app/export.sh` passes from a fresh clone at `dda5281`: Linux execution, Windows/macOS version fields, universal/ad-hoc macOS structure and all three resource packs. The exact tag `613e4ef` was then exported again ([tag export log](export-tag.log.gz)); all four aircraft flew 720 ticks from its Linux executable with exact aircraft-input hashes ([fleet log](export-tag-fleet.log)). The local disk-pressure failure and recovery are recorded below; final release packages are rebuilt from the tag by CI.
+- Captures: changed Home/Help views pass and were inspected in English/Spanish; VQ-01b completes 66 guarded captures and L7 repeatability passes. L4b atmosphere and GPU-cloud checks also passed. The duplicate local full run was stopped because of disk pressure; the full capture suite passed in tagged CI (46 fresh top-level images plus sub-suite manifests, trace verified); final rendered reports are retained as CI artifacts.
+- Exports: complete `app/export.sh` passes from a fresh clone at `dda5281`: Linux execution, Windows/macOS version fields, universal/ad-hoc macOS structure and all three resource packs. The exact tag `613e4ef` was then exported again ([tag export log](export-tag.log.gz)); all four aircraft flew 720 ticks from its Linux executable with exact aircraft-input hashes ([fleet log](export-tag-fleet.log)). The local disk-pressure failure and recovery are recorded below; CI rebuilt the final packages from the tag. All three downloaded ZIP checksums match, and all four aircraft pass the 720-tick check from the downloaded Linux executable with build identity `v0.1.0-rc6` and exact aircraft-input hashes.
 - Documentation: 633 local file links resolve in changed Markdown; `git diff --check` and shell syntax pass. Home/Help English and Spanish captures inspected.
 - VAL-3 dashboard: stale source inventory found and regenerated; numerical comparison rows unchanged; `--check` passes. E3c2b kit: 12 tests pass.
 

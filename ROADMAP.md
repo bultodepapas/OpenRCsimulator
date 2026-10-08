@@ -25,7 +25,7 @@ The [execution order below](#execution-order-and-release-gates) is authoritative
 - **Stik circuit:** automated approach/flare, full circuit trace, rendered review kit, replay and adjacent-float sensitivity exist (E3c1a–E4b). These verify the calm, wash-off experimental controller; E3c/E4 physical acceptance and PT2 remain open. Home still starts in the air.
 - **Performance:** production remains GDScript. H15's shipped fixtures met the median budget on the measured host; enabled smooth-wake research is a different workload. The retained prepared-native candidate still measures 515–614 µs/tick. Gate P, prepared-path attribution, model lifecycle integration and native-platform proof remain open.
 - **Validation and tooling:** [VAL-3 dashboard](research/validation/dashboard.md), field measurement reducers, propeller-range auditing, controller reports and video latency reduction exist; synthetic examples are not measurements. [Tool workflows](docs/TOOLS.md) connect them to the remaining VAL/F/G gates.
-- **Releases:** rc1–rc5 are published. [rc6](docs/releases/v0.1.0-rc6.md) is the PT1h integration release. Package smoke tests remain separate from physical radio, pilot, target-GPU and native Windows/macOS acceptance.
+- **Releases:** rc1–rc6 are published. [rc6](docs/releases/v0.1.0-rc6.md) is the PT1h integration release; tagged CI, downloaded checksums and four exported Linux flights pass. Package smoke tests remain separate from physical radio, pilot, target-GPU and native Windows/macOS acceptance.
 - **Flight repair:** [robustness](docs/FLIGHT-MODEL-ROBUSTNESS-PLAN.md) and [rudder repair](docs/RUDDER-REPAIR-PLAN.md) retain the repair evidence; pilot acceptance stays open.
 - **Ugly Stik:** [model](docs/UGLY-STIK-PLAN.md) and [finish](docs/UGLY-STIK-VISUAL-PLAN.md) plans own geometry and appearance; human readability and target hardware evidence remain open.
 - **Extra:** [EXTRA-300-PLAN](docs/EXTRA-300-PLAN.md) owns the experimental flyable model and independent contrast.
@@ -168,11 +168,11 @@ Computed from the original D1 data (2.601 kg, 720 in², borrowed UltraStick25e a
 
 ### PT1h — Integration and release readiness
 
-**2026-10-08 · Status: reconciliation and local software/export verification complete; rc6 publication is gated by tagged CI.** Evidence and final outcomes: [PT1h](docs/research/release-readiness/PT1h/README.md).
+**2026-10-08 · Status: rc6 published; reconciliation, tagged CI, package checksums and downloaded Linux fleet verification complete.** Evidence and final outcomes: [PT1h](docs/research/release-readiness/PT1h/README.md).
 
 | ID | Change | Acceptance |
 | --- | --- | --- |
-| PT1h | Reconcile public behavior, current roadmap, ownership and tool entry points; integrate offline tool regressions; release rc6 | Full headless suite, tool suite, schema/generator checks, capture suite and three desktop exports; Linux smoke, checksums and tag-linked notes. Record native-platform and pilot limits separately. |
+| PT1h ✅ | Reconcile public behavior, current roadmap, ownership and tool entry points; integrate offline tool regressions; release rc6 | Full headless suite, tool suite, schema/generator checks, capture suite and three desktop exports; Linux smoke, checksums and tag-linked notes. Record native-platform and pilot limits separately. |
 
 ### M1 follow-up — flight-model consistency (D11)
 

@@ -2,7 +2,7 @@
   "format": "openrc-release-readiness v1",
   "step": "PT1h",
   "base_commit": "e80f4e0ff7d9964ae91d2050f972447803489b83",
-  "status": "local-software-and-clean-export-verified; publication-gated-by-tagged-ci",
+  "status": "published-prerelease; tagged-ci-passed; downloaded-packages-verified",
   "checks": {
     "test": {
       "result": "pass",
@@ -73,7 +73,10 @@
     "capture": {
       "local_progress": "EN/ES changed UI inspected; VQ-01b 66 captures, L7 repeatability, L4b atmosphere and GPU-cloud probe passed; duplicate local full run stopped due to disk pressure; tagged CI is the full-run gate",
       "publication_gate": "full app/capture.sh in tagged CI",
-      "hardware_acceptance": false
+      "hardware_acceptance": false,
+      "tagged_ci_result": "pass",
+      "complete_run_summary": "46 fresh top-level images plus sub-suite manifests; trace verified",
+      "log_sha256": "24fc2017449123f0e2099a16de2c88257c3ec4b8d0ea167452a09c27650a1e16"
     },
     "tag_exports": {
       "result": "pass",
@@ -96,9 +99,46 @@
       "seconds_per_aircraft": 3,
       "aircraft_input_bytes_verified": true,
       "log_sha256": "de2d8e83f603c7e11d21380b6b1159a33e6e351c0947f3f92247bf5f0279b3ad"
+    },
+    "downloaded_packages": {
+      "result": "pass",
+      "sha256_verified": 3
+    },
+    "downloaded_linux_fleet": {
+      "result": "pass",
+      "aircraft": 4,
+      "ticks_per_aircraft": 720,
+      "seconds_per_aircraft": 3,
+      "build_identity": "v0.1.0-rc6",
+      "aircraft_input_bytes_verified": true,
+      "log_sha256": "1ba3539976aad9e381ab31c5c4f76890d4be6eaea95e0780c77ad333b3b2c159"
     }
   },
   "export_source_commit": "dda5281e1edc04f00563bf924976b9b494e8cbb2",
   "release_tag": "v0.1.0-rc6",
-  "release_commit": "613e4efe766e13e2207b749619e886b2c6787cc1"
+  "release_commit": "613e4efe766e13e2207b749619e886b2c6787cc1",
+  "publication": {
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc6",
+    "published_at": "2026-10-08T13:16:45Z",
+    "prerelease": true,
+    "ci_url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091",
+    "ci_result": "success",
+    "assets": [
+      {
+        "name": "openrc-simulator-v0.1.0-rc6-linux-x86_64.zip",
+        "sha256": "b072ebbc2a16636488a48647520a0143f63da74c4ddebacf98f9d255d7100806",
+        "bytes": 29665018
+      },
+      {
+        "name": "openrc-simulator-v0.1.0-rc6-macos-universal.zip",
+        "sha256": "8747507d55f095ccaa66e04835942d80451f16cf4abf5a2fc9bef8db5563577e",
+        "bytes": 61815262
+      },
+      {
+        "name": "openrc-simulator-v0.1.0-rc6-windows-x86_64.zip",
+        "sha256": "03b9ef03707069c357955431a92f92ccf70b08b7ad7031af862c0d776c27054f",
+        "bytes": 39191232
+      }
+    ]
+  }
 }
