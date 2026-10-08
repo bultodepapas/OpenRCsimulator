@@ -1,0 +1,12 @@
+{
+  "identical_numeric_rows": true,
+  "samples": 721,
+  "duration_seconds": 3,
+  "metadata_differences": [
+    [
+      "# created_utc: 2026-10-08T04:09:45",
+      "# created_utc: 2026-10-08T04:19:06"
+    ]
+  ],
+  "final_trace_sha256": "cf5ef1e9d207d870208831f42f1f102b72dd7209f0aa617cbfd248a5579fe73c"
+}

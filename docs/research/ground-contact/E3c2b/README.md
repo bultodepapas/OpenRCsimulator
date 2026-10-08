@@ -1,6 +1,6 @@
 # E3c2b — rendered circuit review kit
 
-**Status:** baseline verification complete; concurrent field integration check in progress. **Date:** 2026-10-08. **Owner:** Codex circuit-capture agent.
+**Status:** complete — offline rendered verification; owner readability and physical acceptance remain open. **Date:** 2026-10-08. **Owner:** Codex circuit-capture agent.
 
 Open the [review kit](index.html): twelve stages of the verified E3c2a circuit, each shown from the production pilot camera and aircraft inspection camera. This supplies reproducible rendered evidence for the experimental circuit. E3c2 continuous presentation/owner review, physical validation, propwash acceptance and PT2 remain open.
 
@@ -33,6 +33,10 @@ The [proof](proof.json) records 79–122 changed pixels in pilot views and 20,40
 [Relevant app regressions](focused.log): frame conversion, shader clock and visual-evidence scripts pass **122 checks**. Godot parsing and [targeted static lint](lint.json) pass with zero errors or warnings. The full physics suite was not repeated for this offline renderer-only addition.
 
 [First-run](first.log) and [second-run](second.log) logs record Godot 4.7.2, Compatibility/OpenGL and llvmpipe. Xvfb emits an unsupported-VSync warning; neither successful run emits engine/script errors. The first run's complete PNG pairs and manifest are preserved in [first/](first/); duplicate second-run images are omitted because their bytes are identical, with hashes retained in the proof.
+
+## Concurrent field integration
+
+After the full kit was captured, the visual track added a flightline barrier and cue shadows. A separate [identified snapshot](integration/source-delta.json) of those five field files was copied into the isolated checkout. Parked and rollout-entry stages in both cameras pass the same pose/image checks and repeat exactly: [four-pair proof](integration/proof.json), [capture manifest and images](integration/first/), [log](integration/first.log). The full twelve-stage kit retains its original source identity; it is not relabeled as the later field version. The barrier track subsequently revised its mesh again; these captures remain evidence for their recorded hashes. Regenerate the kit for any owner review of a newer build. Shared-checkout [unit tests](shared-unit.log) and [targeted lint](shared-lint.json) also pass.
 
 ## Reproduce
 

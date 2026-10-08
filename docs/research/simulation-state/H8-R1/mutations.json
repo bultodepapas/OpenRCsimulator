@@ -1,0 +1,30 @@
+{
+  "all_detected": true,
+  "results": [
+    {
+      "case": "control",
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nH8-R1 checkpoint integrity: 149 checks, 0 failed"
+    },
+    {
+      "case": "producer_validation",
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nH8-R1 checkpoint integrity: 149 checks, 9 failed\nFAIL producer refuses tick\nFAIL producer refuses tick\nFAIL producer refuses tick\nFAIL producer refuses stop_at_tick\nFAIL producer refuses _fixed_dt\nFAIL producer refuses unnormalized state\nFAIL producer refuses unnormalized previous\nFAIL producer refuses nonfinite inverse\nFAIL producer refuses nonfinite inverse"
+    },
+    {
+      "case": "restored_clock",
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nH8-R1 checkpoint integrity: 149 checks, 6 failed\nFAIL fresh continuation is exact\nFAIL fresh continuation is exact\nFAIL fresh continuation is exact\nFAIL fresh continuation is exact\nFAIL fresh continuation is exact\nFAIL fresh continuation is exact"
+    },
+    {
+      "case": "clock_range",
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nH8-R1 checkpoint integrity: 149 checks, 10 failed\nFAIL invalid clock 9223372036854775807 preflight\nFAIL invalid clock 9223372036854775807 restore\nFAIL invalid clock 9223372036854775806 preflight\nFAIL invalid clock 9223372036854775806 restore\nFAIL invalid clock 9007199254740992 preflight\nFAIL invalid clock 9007199254740992 restore\nFAIL invalid clock 1152921504606846976 preflight\nFAIL invalid clock 1152921504606846976 restore\nFAIL producer refuses tick\nFAIL producer refuses tick"
+    },
+    {
+      "case": "derived_inverse",
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nH8-R1 checkpoint integrity: 149 checks, 6 failed\nFAIL nonfinite derived inverse preflight\nFAIL nonfinite derived inverse restore\nFAIL producer refuses nonfinite inverse\nFAIL nonfinite derived inverse preflight\nFAIL nonfinite derived inverse restore\nFAIL producer refuses nonfinite inverse"
+    }
+  ]
+}

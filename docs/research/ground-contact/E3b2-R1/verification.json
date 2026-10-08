@@ -1,0 +1,55 @@
+{
+  "format": "openrc-ground-start-integrity v1",
+  "baseline_commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "full_suite": {
+    "exit_code": 0,
+    "sections": 143,
+    "isolation": "Fresh clone plus GroundStart repair and initial 245-check test; separate XDG settings.",
+    "log": "app-test.log"
+  },
+  "final_focused": {
+    "exit_code": 0,
+    "checks": 254,
+    "log": "focused-final.log",
+    "integrated_log": "integrated.log",
+    "note": "Final review added successful result shape/finiteness/anchor checks and strengthened diagnostics/cap assertions. Production source is identical to the full-suite candidate."
+  },
+  "preservation": {
+    "comparisons": 96,
+    "successful": 24,
+    "unsupported_aircraft_refusals": 72,
+    "all_equal": true,
+    "result_hash_convention": "SHA-256 of var_to_bytes(result).hex_encode() UTF-8 text; same pinned engine/platform."
+  },
+  "mutations_detected": 4,
+  "lint": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "integrated": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "final_files_sha256": {
+    "app/physics/ground_start.gd": "4f2ddf1035026560b5d73b9071b9530e72ba876e608a50e8a59a808e51b7be7f",
+    "app/tests/test_ground_start_integrity.gd": "24c75c929b27d3cfdc8015f0626b573dd95258823ea34a24478aab6fefb8bf09",
+    "app/tests/test_ground_start_integrity.gd.uid": "cb5b564a9d9f06580181079b6dfcbd72d1262b2946200efe37af2ec0ea312db5",
+    "docs/research/ground-contact/E3b2-R1/capture_starts.gd": "2a5a5b9e46640c179f5121d6bcbfd38f896e6ad8c4bdf7d75451a052799bf9a4",
+    "docs/research/ground-contact/E3b2-R1/check_mutations.py": "d075bdfdad538440a0ada95a75003aa57bc7797e403cd219934455c34f4a320b"
+  },
+  "full_suite_test_sha256": "2e7104b9f0efd3228c79b681abdfb533120c8e0aa1a6c254dd574d6be297548e",
+  "original_solver_sha256": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed"
+}

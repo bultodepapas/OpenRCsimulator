@@ -1,0 +1,94 @@
+{
+  "step": "G1a1",
+  "source_manifest_sha256": "8c9a69d3fa212e8de28539eaba752ca2d35e725ab5f96e0b5b58cd6055002698",
+  "importer_sha256": "27db4de01fed0e34a149dcfd82840a03ca04b06598083cab052c13da25be2200",
+  "readback_sha256": "cdd599772f510dcdb9b4d823b63671914e19e193b3dcfe395934663281e31a96",
+  "sources": [
+    {
+      "id": "apcsp_11x6_static_rd0488",
+      "url": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x6_static_rd0488.txt",
+      "sha256": "911866f1c55bb115f3fef2202fb73a8e0ecf271746d71e7a0c773b7f11cd33f9",
+      "row_readbacks": 16,
+      "normalization": {
+        "input_rows": 16,
+        "unique_rows": 16,
+        "duplicate_rows_collapsed": 0,
+        "reordered": false
+      },
+      "coordinate_axis": "rpm",
+      "coordinate_extent": [
+        1752.0,
+        6259.0
+      ],
+      "per_row_rpm_extent": [
+        1752.0,
+        6259.0
+      ],
+      "negative_ct_knots": 0,
+      "coefficient_reference_diameter": null
+    },
+    {
+      "id": "apcsp_11x6_rd0495_6000",
+      "url": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x6_rd0495_6000.txt",
+      "sha256": "987b12684c447d4cb6ec8c6f7a1dc7664daad8e26a95e66047c39c95de52f802",
+      "row_readbacks": 20,
+      "normalization": {
+        "input_rows": 20,
+        "unique_rows": 20,
+        "duplicate_rows_collapsed": 0,
+        "reordered": false
+      },
+      "coordinate_axis": "j",
+      "coordinate_extent": [
+        0.373,
+        0.788
+      ],
+      "per_row_rpm_extent": null,
+      "negative_ct_knots": 1,
+      "coefficient_reference_diameter": null
+    },
+    {
+      "id": "apce_12x6_static_0629od",
+      "url": "https://m-selig.ae.illinois.edu/props/volume-4/data/apce_12x6_static_0629od.txt",
+      "sha256": "e392a17a430ad2796172f21ee0106152375b298636584b33ba23f836a3a6c96c",
+      "row_readbacks": 14,
+      "normalization": {
+        "input_rows": 14,
+        "unique_rows": 14,
+        "duplicate_rows_collapsed": 0,
+        "reordered": false
+      },
+      "coordinate_axis": "rpm",
+      "coordinate_extent": [
+        1046.667,
+        7546.667
+      ],
+      "per_row_rpm_extent": [
+        1046.667,
+        7546.667
+      ],
+      "negative_ct_knots": 0,
+      "coefficient_reference_diameter": null
+    },
+    {
+      "id": "apce_12x6_0635od_6044",
+      "url": "https://m-selig.ae.illinois.edu/props/volume-4/data/apce_12x6_0635od_6044.txt",
+      "sha256": "7e969b7089fc74ac373cefde1fd7c1297938b79457dd1efb6e0876d9fbde6d85",
+      "row_readbacks": 24,
+      "normalization": {
+        "input_rows": 24,
+        "unique_rows": 18,
+        "duplicate_rows_collapsed": 6,
+        "reordered": true
+      },
+      "coordinate_axis": "j",
+      "coordinate_extent": [
+        0.333913,
+        0.653931
+      ],
+      "per_row_rpm_extent": null,
+      "negative_ct_knots": 3,
+      "coefficient_reference_diameter": null
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "app/data/field_loader.gd": "931ab171c245905636eb9a968b1714d54a9314eff12cf05b873d465700d904cc",
+  "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+  "app/render/field.gd": "8dd006e181719fbbcac77cacb9d7116e1c3e476b6433ce8f422e2f720b514df2",
+  "app/render/flightline_barrier.gd": "3b8dc443ac679fa49620750d316e720440531922a88ca32fc3915e657d727a93",
+  "app/render/flight_cue_shadows.gd": "ec2d7e91c5f0cf2717615159cae91ab2e1479b8605520e1aed4a385b0b0639be"
+}

@@ -1,0 +1,74 @@
+{
+  "format": "openrc-circuit-captures v1",
+  "aircraft": "jensen-das-ugly-stik-60",
+  "purpose": "Recorded-state rendering only; no dynamics replay or physical/readability acceptance",
+  "trace_sha256": "19e608b7c5a3f19be0aba6fc432d143cc4b3fa5100e8f7c1b821c1f2ae6a5355",
+  "trace_bytes_sha256": "bc67a16e976bd3dc112c6f869d51194ef0fb7e9fd274eecf1d71be9c146b6cd8",
+  "report_sha256": "d1e7a5920358cd48c3d9cba5edebac616643e0ade553c79273af1d707ae3bedb",
+  "verified_trace": {
+    "rows": 28862,
+    "hz": 240,
+    "duration_s": 120.254166667,
+    "turn_deg": -360.32821607499807,
+    "signed_area_m2": 68149.61766078306,
+    "max_cross_track_m": 160.074702486,
+    "exact_aircraft_bytes_verified": true
+  },
+  "propeller_phase": "visual-only trapezoidal integral of recorded RPM; initial angle zero",
+  "frames": [
+    {
+      "id": "parked",
+      "tick": 0,
+      "time_s": 0.0,
+      "state": [
+        15.000466434,
+        -46.992115291,
+        -0.239050388,
+        0.0,
+        0.0,
+        0.0,
+        0.707036297,
+        0.009250395,
+        -0.010532796,
+        0.707038306,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "surfaces": {
+        "roll": 0.024895704,
+        "pitch": 0.428083949,
+        "yaw": 0.031311268,
+        "throttle": 0.0
+      },
+      "prop_angle_rad": 0.0
+    },
+    {
+      "id": "rollout_entry",
+      "tick": 19968,
+      "time_s": 83.2,
+      "state": [
+        14.614126213,
+        -48.613701535,
+        -0.269184598,
+        10.244382296,
+        -0.039960096,
+        2.015425923,
+        -0.703306023,
+        0.057895427,
+        -0.052992891,
+        -0.706541231,
+        0.008466278,
+        0.030712339,
+        -0.005457075
+      ],
+      "surfaces": {
+        "roll": 0.009087631,
+        "pitch": 0.653885642,
+        "yaw": 0.011185256,
+        "throttle": 0.0
+      },
+      "prop_angle_rad": 2.211490019867277
+    }
+  ]
+}

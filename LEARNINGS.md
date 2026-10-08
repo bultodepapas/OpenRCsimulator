@@ -111,3 +111,11 @@ Finite input coefficients can produce an out-of-domain stall root or a blend who
 ## 2026-10-08 · L10b — test a near-pilot prop from the pilot eye
 
 A plausible close-up does not establish that a nearby barrier preserves the runway view. Pair visible inspection views with exact on/off comparisons from the actual pilot eye toward both thresholds; verify that a pixel change fails the equality guard. Exclude the entire grass-clump envelope around a pad, not just roots inside its footprint. [Geometry, captures and limits](docs/research/visual-quality-implementation/L10b/README.md).
+
+## 2026-10-08 · G1a1 — preserve source meaning during normalization
+
+The UIUC 12×6 tunnel file needs both deduplication and sorting; stripping repeated final rows alone leaves a backward coordinate step. Preserve source-line identity and distinguish exact duplicate points from conflicting repeated measurements. Normalized knots do not establish continuous coverage, and a run label does not supply per-row RPM. [Source readback and parser proof](docs/research/propulsion/G1a1/README.md).
+
+## 2026-10-08 · L10c/d — validate the view, not only the footprint
+
+A barrier can clear the runway rectangle yet hide its near edge. Validate its height against the pilot-to-ground sightline, then protect projected runway pixels in on/off captures. Clip bounds and protected polygons at the camera near plane before projection. Keep contact footprints tied to the renderer’s post-layout helper; check stored vertex alpha as a range because the mesh quantizes it to 8-bit values. [Evidence and limits](docs/research/visual-quality-implementation/L10c/README.md).

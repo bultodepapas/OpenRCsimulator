@@ -1,0 +1,23 @@
+test_blank_lines_keep_original_line_numbers (__main__.ImportTests.test_blank_lines_keep_original_line_numbers) ... ok
+test_cli_identity_and_rejection_without_report (__main__.ImportTests.test_cli_identity_and_rejection_without_report) ... ok
+test_conflicting_coordinate_refused_including_decimal_late_digits (__main__.ImportTests.test_conflicting_coordinate_refused_including_decimal_late_digits) ... ok
+test_distinct_axes_collapsing_to_same_float_refused (__main__.ImportTests.test_distinct_axes_collapsing_to_same_float_refused) ... ok
+test_full_file_duplicates_and_backward_tail (__main__.ImportTests.test_full_file_duplicates_and_backward_tail) ... ok
+test_hash_binds_exact_bytes_before_parsing (__main__.ImportTests.test_hash_binds_exact_bytes_before_parsing) ... ok
+test_manifest_shape_and_provenance_refused (__main__.ImportTests.test_manifest_shape_and_provenance_refused) ... ok
+test_negative_and_superunit_eta_are_preserved (__main__.ImportTests.test_negative_and_superunit_eta_are_preserved) ... ok
+test_numeric_duplicate_not_lexical_duplicate (__main__.ImportTests.test_numeric_duplicate_not_lexical_duplicate) ... ok
+test_positive_static_rpm_nonnegative_j (__main__.ImportTests.test_positive_static_rpm_nonnegative_j) ... ok
+test_repeatability_and_no_input_mutation (__main__.ImportTests.test_repeatability_and_no_input_mutation) ... ok
+test_run_label_is_optional_and_never_becomes_measured_coverage (__main__.ImportTests.test_run_label_is_optional_and_never_becomes_measured_coverage) ... ok
+test_sorted_signed_knots_and_duplicate_provenance (__main__.ImportTests.test_sorted_signed_knots_and_duplicate_provenance) ... ok
+test_static_label_and_nonfinite_json_refused (__main__.ImportTests.test_static_label_and_nonfinite_json_refused) ... ok
+test_static_measured_column_not_fixed_run_label (__main__.ImportTests.test_static_measured_column_not_fixed_run_label) ... ok
+test_underflow_overflow_and_nonfinite_refused (__main__.ImportTests.test_underflow_overflow_and_nonfinite_refused) ... ok
+test_unknown_diameter_stays_unknown_and_known_reference_preserved (__main__.ImportTests.test_unknown_diameter_stays_unknown_and_known_reference_preserved) ... ok
+test_wrong_header_and_row_shapes_refused (__main__.ImportTests.test_wrong_header_and_row_shapes_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.208s
+
+OK

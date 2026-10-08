@@ -1,0 +1,61 @@
+{
+  "format": "openrc-circuit-capture-proof v1",
+  "captures": 4,
+  "manifest_sha256": "c3d77d5aa57308d64153110bb5ef9ea095af82190684f0a1cc01ddccc9ce00f7",
+  "repeated": true,
+  "physics_advanced": false,
+  "images": [
+    {
+      "id": "parked",
+      "view": "pilot",
+      "changed_pixels": 83,
+      "changed_bounds": [
+        465,
+        265,
+        494,
+        275
+      ],
+      "sha256": "4a8ac296d26966db8c363fa66f2ff508d6c935d526b48883cf3733ea1128e50e",
+      "background_sha256": "c3db406b994b362938d7159febc6d1cdbc80175a299e5f38be3799ce915075fc"
+    },
+    {
+      "id": "parked",
+      "view": "inspect",
+      "changed_pixels": 20560,
+      "changed_bounds": [
+        308,
+        214,
+        676,
+        386
+      ],
+      "sha256": "3f2f91de10adf4831fe4c627ddf43784931a2677b14bb74b1c6f44a4a22ea43f",
+      "background_sha256": "040433c4c62b62a198c0cff415bcad0e9872ca39fa6b8b7d92c9c58288f3d60c"
+    },
+    {
+      "id": "rollout_entry",
+      "view": "pilot",
+      "changed_pixels": 90,
+      "changed_bounds": [
+        465,
+        267,
+        494,
+        276
+      ],
+      "sha256": "ce54eb37983f646a0d4f91245c0c8988238de0e7f7eb28e66f40f15084eb27bc",
+      "background_sha256": "ad6c88d695a908c0547c938b150619a426c813f905f91554110c9203a463f92e"
+    },
+    {
+      "id": "rollout_entry",
+      "view": "inspect",
+      "changed_pixels": 20495,
+      "changed_bounds": [
+        308,
+        220,
+        669,
+        391
+      ],
+      "sha256": "ea13b56cbb848394696d63bb90ec43d3d6b65b68fbf94558e43f79aaaf669725",
+      "background_sha256": "ce6d13fe1eaf2bbff14043473e493f17824275d23efa89b71b45d9f32d9122c4"
+    }
+  ]
+}

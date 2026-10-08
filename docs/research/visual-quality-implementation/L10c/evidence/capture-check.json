@@ -1,0 +1,364 @@
+{
+  "checker_sha256": "c34d83e80097ad40214d4e7f26d0fd97263b9b876d257fb85230699cedfc4832",
+  "all_capture_sets_passed": true,
+  "runway_pixel_control_rejected": true,
+  "outside_cue_pixel_control_rejected": true,
+  "metrics": {
+    "windsock": {
+      "first": {
+        "close": {
+          "changed_pixels": 13067,
+          "mean_changed_rgb_delta": 107.74852682329532,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "pilot_turn": {
+          "changed_pixels": 1807,
+          "mean_changed_rgb_delta": 97.90426120641948,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "overview": {
+          "changed_pixels": 425,
+          "mean_changed_rgb_delta": 94.74117647058823,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        }
+      },
+      "repeat": {
+        "close": {
+          "changed_pixels": 13067,
+          "mean_changed_rgb_delta": 107.74852682329532,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "pilot_turn": {
+          "changed_pixels": 1807,
+          "mean_changed_rgb_delta": 97.90426120641948,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "overview": {
+          "changed_pixels": 425,
+          "mean_changed_rgb_delta": 94.74117647058823,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        }
+      },
+      "scenery": {
+        "close": {
+          "changed_pixels": 13067,
+          "mean_changed_rgb_delta": 108.49804851917042,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "pilot_turn": {
+          "changed_pixels": 1807,
+          "mean_changed_rgb_delta": 99.73547315993359,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        },
+        "overview": {
+          "changed_pixels": 425,
+          "mean_changed_rgb_delta": 95.0164705882353,
+          "clipped_white_pixels": 0,
+          "added_draws": 2,
+          "added_primitives": 1770
+        }
+      }
+    },
+    "pilot_station": {
+      "first": {
+        "close": {
+          "changed_pixels": 27354,
+          "mean_changed_rgb_delta": 74.0960005849236,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "rear": {
+          "changed_pixels": 50918,
+          "mean_changed_rgb_delta": 85.05856475116855,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "overview": {
+          "changed_pixels": 590,
+          "mean_changed_rgb_delta": 68.73898305084745,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "pilot_left": {
+          "changed_pixels": 0
+        },
+        "pilot_right": {
+          "changed_pixels": 0
+        }
+      },
+      "repeat": {
+        "close": {
+          "changed_pixels": 27354,
+          "mean_changed_rgb_delta": 74.0960005849236,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "rear": {
+          "changed_pixels": 50918,
+          "mean_changed_rgb_delta": 85.05856475116855,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "overview": {
+          "changed_pixels": 590,
+          "mean_changed_rgb_delta": 68.73898305084745,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "pilot_left": {
+          "changed_pixels": 0
+        },
+        "pilot_right": {
+          "changed_pixels": 0
+        }
+      },
+      "scenery": {
+        "close": {
+          "changed_pixels": 27354,
+          "mean_changed_rgb_delta": 74.0960005849236,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "rear": {
+          "changed_pixels": 50918,
+          "mean_changed_rgb_delta": 85.05856475116855,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "overview": {
+          "changed_pixels": 590,
+          "mean_changed_rgb_delta": 68.73898305084745,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 230
+        },
+        "pilot_left": {
+          "changed_pixels": 0
+        },
+        "pilot_right": {
+          "changed_pixels": 0
+        }
+      }
+    },
+    "flightline_barrier": {
+      "first": {
+        "close": {
+          "changed_pixels": 2953,
+          "mean_changed_rgb_delta": 35.813748730104976,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "rear": {
+          "changed_pixels": 3187,
+          "mean_changed_rgb_delta": 66.5196109193599,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "overview": {
+          "changed_pixels": 2650,
+          "mean_changed_rgb_delta": 65.79358490566038,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_left": {
+          "changed_pixels": 15257,
+          "mean_changed_rgb_delta": 104.93235891721832,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_right": {
+          "changed_pixels": 15487,
+          "mean_changed_rgb_delta": 109.45909472460774,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        }
+      },
+      "repeat": {
+        "close": {
+          "changed_pixels": 2953,
+          "mean_changed_rgb_delta": 35.813748730104976,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "rear": {
+          "changed_pixels": 3187,
+          "mean_changed_rgb_delta": 66.5196109193599,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "overview": {
+          "changed_pixels": 2650,
+          "mean_changed_rgb_delta": 65.79358490566038,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_left": {
+          "changed_pixels": 15257,
+          "mean_changed_rgb_delta": 104.93235891721832,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_right": {
+          "changed_pixels": 15487,
+          "mean_changed_rgb_delta": 109.45909472460774,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        }
+      },
+      "scenery": {
+        "close": {
+          "changed_pixels": 2953,
+          "mean_changed_rgb_delta": 36.08533694547917,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "rear": {
+          "changed_pixels": 3151,
+          "mean_changed_rgb_delta": 66.43541732783244,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "overview": {
+          "changed_pixels": 2519,
+          "mean_changed_rgb_delta": 65.69035331480747,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_left": {
+          "changed_pixels": 15257,
+          "mean_changed_rgb_delta": 105.39647374975421,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        },
+        "pilot_right": {
+          "changed_pixels": 15487,
+          "mean_changed_rgb_delta": 109.24381739523471,
+          "clipped_white_pixels": 0,
+          "protected_runway_pixels": 22740,
+          "outside_cue_control_rejected": true,
+          "added_draws": 1,
+          "added_primitives": 1320
+        }
+      }
+    },
+    "contact_shadows": {
+      "first": {
+        "close": {
+          "changed_pixels": 1144,
+          "mean_changed_rgb_delta": 9.618006993006993,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "station": {
+          "changed_pixels": 11579,
+          "mean_changed_rgb_delta": 9.472579670092408,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "barrier": {
+          "changed_pixels": 2187,
+          "mean_changed_rgb_delta": 11.713763145861911,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        }
+      },
+      "repeat": {
+        "close": {
+          "changed_pixels": 1144,
+          "mean_changed_rgb_delta": 9.618006993006993,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "station": {
+          "changed_pixels": 11579,
+          "mean_changed_rgb_delta": 9.472579670092408,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "barrier": {
+          "changed_pixels": 2187,
+          "mean_changed_rgb_delta": 11.713763145861911,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        }
+      },
+      "scenery": {
+        "close": {
+          "changed_pixels": 1144,
+          "mean_changed_rgb_delta": 9.618006993006993,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "station": {
+          "changed_pixels": 11579,
+          "mean_changed_rgb_delta": 9.472493306848605,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        },
+        "barrier": {
+          "changed_pixels": 2187,
+          "mean_changed_rgb_delta": 11.713763145861911,
+          "clipped_white_pixels": 0,
+          "added_draws": 1,
+          "added_primitives": 1278
+        }
+      }
+    }
+  }
+}

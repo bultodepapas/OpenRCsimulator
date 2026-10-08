@@ -26,9 +26,13 @@ Updating a continuous wake or other lag once per tick while integrating the body
 
 Body position and attitude alone do not define a resumable simulation. Include the previous rigid-body state, auxiliary lags, engine mode, sampled inputs, tick and timestep, configuration, mass properties, and stop condition; restore and roll them back together after a failed tick. JSON is useful diagnostic data but is not a bit-exact checkpoint, and recorded tolerance metadata must never loosen code-owned acceptance limits. ([H8](../research/simulation-state/H8/README.md), [H9](../research/simulation-state/H9/README.md), [C7-R2](../research/trace-integrity/C7-R2/README.md))
 
+Checkpoint producers and consumers should share acceptance rules. Verify restoration by advancing a compatible fresh owner, not only by comparing serialized fields: an omitted fixed timestep can leave an accepted snapshot unable to advance. Validate derived caches before committing rollback history; finite positive-definite inertia can still have a nonfinite numerical inverse. ([H8-R1](../research/simulation-state/H8-R1/README.md))
+
 ### Exact equivalence and physical correctness are separate claims
 
 A frozen copy of the old implementation can show that a refactor preserves its behavior, including a bug. Keep an independent physical or analytic oracle for correctness, and a sensitive equivalence check for intentional behavior-preserving changes. If exact replay matters, preserve floating-point operation and accumulation order: even adding zero can change the sign of zero and therefore a bitwise fingerprint. ([H12](../research/simulation-state/H12/README.md), [E0b1](../research/propwash/E0b1/README.md))
+
+Small numerical errors do not prove identical execution paths: a changed early return can leave the entire trajectory bit-identical. Record selected branch decisions separately, verify that instrumentation preserves every-tick state, and test the observer with an actual branch mutation. Adjacent-float sensitivity is evidence for the tested trajectory and functions, not a substitute for native-platform runs. ([E4b](../research/ground-contact/E4b/README.md))
 
 ## Ground and aerodynamic models
 
@@ -85,6 +89,10 @@ A load blend can be continuous while its derivatives change sharply, so lineariz
 ### Keep rendering and physics coordinate datums explicit
 
 Visual model coordinates may include a datum offset that the physics adapter removes. Copying a rendered shaft location directly into a force application point can invent a thrust moment; document the transform and test the physics location in its own coordinate frame. ([E0b2](../research/propwash/E0b2/README.md))
+
+### Normalize source points without inventing coverage
+
+A UIUC tunnel file ends with a backward J step followed by repeated rows: removing only trailing duplicates still leaves a nonmonotone table. Compare decimal values before float64 conversion, reject conflicting repeats and coordinate collisions, then sort while retaining source lines. A nominal run label is not a measured RPM range, and catalogue diameter is not necessarily the coefficient-reference diameter. ([G1a1](../research/propulsion/G1a1/README.md))
 
 ### Calibrate propellers against power as well as thrust
 

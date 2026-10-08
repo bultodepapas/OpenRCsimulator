@@ -122,7 +122,7 @@ func _run() -> void:
 				push_error("save failed")
 				quit(1)
 				return
-			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":[] if str(pose.id).begins_with("pilot_") and cue_type in ["pilot_station", "flightline_barrier"] else _bounds(sock), "runway_polygon":_runway_polygon(loaded.field) if cue_type == "flightline_barrier" and str(pose.id).begins_with("pilot_") else [], "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
+			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":[] if str(pose.id).begins_with("pilot_") and cue_type == "pilot_station" else _bounds(sock), "runway_polygon":_runway_polygon(loaded.field) if cue_type == "flightline_barrier" and str(pose.id).begins_with("pilot_") else [], "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
 	var file: FileAccess = FileAccess.open(out.path_join("capture.json"),FileAccess.WRITE)
 	if file == null:
 		push_error("cannot write manifest")

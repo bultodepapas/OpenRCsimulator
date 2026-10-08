@@ -1,6 +1,6 @@
 # CR-01c — Render the reconstructed crash pose
 
-2026-10-08 · **Status: focused checks and captures verified; full-suite/integration validation in progress.** Continuation of [CR-01b](../CR-01b/README.md) under [CR-01](../../../CRASH-DAMAGE-PLAN.md). [Reproduction tools](../../../../research/crash-damage/cr-01c/).
+2026-10-08 · **Status: implemented, verified and integrated; component labels and crossing-time kinematics remain open in CR-01.** Continuation of [CR-01b](../CR-01b/README.md) under [CR-01](../../../CRASH-DAMAGE-PLAN.md). [Reproduction tools](../../../../research/crash-damage/cr-01c/).
 
 ## Change and boundary
 
@@ -18,7 +18,7 @@ The isolated candidate starts at `959eb8a8dea280a382be372265648bc2b5a1de73` and 
 - [Three deliberate rendering defects](mutations.json) fail on disposable copies; the control passes. Defects ignore the crossing, use the contact position as CG, or use previous/current interpolation for an unavailable crossing.
 - [All four numeric three-second traces](comparison.json) match the baseline byte-for-byte (721 samples each). The reused CR-01a comparison tool also records unchanged physics/session benchmark paths; its snapshot timings omit crossing construction and are not rendering costs.
 - [Pose-selector timing batches](pose-timings.json), five × 1,000 calls per aircraft/regime: candidate ordinary-flight medians 28.6–48.6 µs, crash 24.3–38.9 µs; baseline 27.9–28.6 and 28.1–31.6 µs respectively. These are selector-only headless batch means under concurrent host load, not frame-time percentiles or an attributable speedup/regression. Rendering adds no work to physics ticks. Target-GPU acceptance remains open.
-- [Lint counts](lint-counts.json): zero errors and the same 12 pre-existing warnings. Full-suite and shared integration results pending.
+- [Lint counts](lint-counts.json): zero errors and the same 12 pre-existing warnings. [Full isolated suite](app-tests.log): **143 sections pass**, including goldens, model contracts, UI routes, trace failure checks and identical 30/60/144 FPS hashes. [Shared integration](integrated-tests.log): all 84 pose checks pass; lint remains at zero errors and the same 12 warnings. [Source hashes and verification manifest](verification.json) record the exact candidate and existing test-exit warnings. All production files and the executed pose test match the integrated bytes.
 
 ## Rendered evidence
 
@@ -60,3 +60,15 @@ python3 research/crash-damage/cr-01a/compare.py --godot "$(app/get-godot.sh)" \
 ```
 
 The image verifier uses the repository's pinned visual Python environment (Pillow 12.3.0); both capture sets pass there. The mutation tool copies an imported candidate including its small import cache; it requires semantic assertion failures and refuses parse/runtime errors as proof. The ordinary `--capture` route advances and draws simulation state directly, bypassing crash detection; it is deliberately not used to claim crash-pose acceptance.
+
+Ready-to-paste commit message:
+
+```text
+CR-01c: display reconstructed crossing poses during the crash freeze
+
+Proof: 84 real-scene checks pass across the fleet and after integration;
+three render mutations fail; five captures repeat byte-identically;
+four numeric traces unchanged; full isolated suite passes 143 sections
+with the documented 180 s validation deadline. Physics is untouched.
+Component labels and crossing-time kinematics remain open in CR-01.
+```

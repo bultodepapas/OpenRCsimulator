@@ -1,0 +1,204 @@
+{
+  "commands": {
+    "first": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-landscape-final-959e/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/landscape-l10c-capture-final/first",
+      "--cue=flightline_barrier"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-landscape-final-959e/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/landscape-l10c-capture-final/repeat",
+      "--cue=flightline_barrier"
+    ],
+    "scenery": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-landscape-final-959e/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/landscape-l10c-capture-final/scenery",
+      "--cue=flightline_barrier",
+      "--scenery=on"
+    ]
+  },
+  "complete": true,
+  "cue": "flightline_barrier",
+  "format": "openrc-l10c-review v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "identical_repeat": true,
+  "invisible_feature_control_rejected": true,
+  "metrics": {
+    "first": {
+      "close": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2953,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 35.813748730104976
+      },
+      "overview": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2650,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 65.79358490566038
+      },
+      "pilot_left": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15257,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 104.93235891721832,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15487,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 109.45909472460774,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 3187,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 66.5196109193599
+      }
+    },
+    "repeat": {
+      "close": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2953,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 35.813748730104976
+      },
+      "overview": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2650,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 65.79358490566038
+      },
+      "pilot_left": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15257,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 104.93235891721832,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15487,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 109.45909472460774,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 3187,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 66.5196109193599
+      }
+    },
+    "scenery": {
+      "close": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2953,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 36.08533694547917
+      },
+      "overview": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 2519,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 65.69035331480747
+      },
+      "pilot_left": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15257,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 105.39647374975421,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 15487,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 109.24381739523471,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 1,
+        "added_primitives": 1320,
+        "changed_pixels": 3151,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 66.43541732783244
+      }
+    }
+  },
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "sources_sha256": {
+    "app/data/field_loader.gd": "931ab171c245905636eb9a968b1714d54a9314eff12cf05b873d465700d904cc",
+    "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "app/render/field.gd": "8dd006e181719fbbcac77cacb9d7116e1c3e476b6433ce8f422e2f720b514df2",
+    "app/render/flight_cue_shadows.gd": "ec2d7e91c5f0cf2717615159cae91ab2e1479b8605520e1aed4a385b0b0639be",
+    "app/render/flightline_barrier.gd": "c5a998395659593a5982a7f9fd65d69e2a927df21984052769b47b87856da873",
+    "app/render/near_grass.gd": "e348aebf2af9dc67100e62081b57b2ba07e32859fefae3429ad488d8a587dc14",
+    "app/render/pilot_station.gd": "e14a8dd215d8cfc45c74bddef3cbdecb62c957239fd2b026030d0178126cc286",
+    "app/render/windsock.gd": "bcd10199489cd77604b5d3a2361b305215a53df8dcb25b1d8b40dc278a1bdd45",
+    "app/scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+    "tools/ground/capture_windsock.gd": "e8a18c086cca4bcacc3286ee931ddcaa80998f6ffaab9edd212f62a602367d42",
+    "tools/ground/check_windsock.py": "c34d83e80097ad40214d4e7f26d0fd97263b9b876d257fb85230699cedfc4832"
+  }
+}

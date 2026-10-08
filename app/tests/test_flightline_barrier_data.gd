@@ -145,8 +145,9 @@ func _test_dimension_bounds() -> void:
 	_barrier_quantity(upper, "width")["value"] = 80.0
 	_barrier_quantity(upper, "height")["value"] = 0.9
 	_barrier_quantity(upper, "gap_width")["value"] = 12.0
+	_barrier_quantity(upper, "north")["value"] = 3.5
 	var upper_result: Dictionary = Loader.validate(upper)
-	_check("upper dimensions are inclusive", bool(upper_result["ok"]), str(upper_result["errors"]))
+	_check("upper dimensions at north 3.5 preserve the runway sightline", bool(upper_result["ok"]), str(upper_result["errors"]))
 
 
 func _test_placement_validation() -> void:
@@ -155,6 +156,18 @@ func _test_placement_validation() -> void:
 	_rejected("barrier requires a level field datum", func(data: Dictionary) -> void: _quantity(data, "down", true)["value"] = 0.01, "pilot.down == 0 m")
 	_rejected("barrier keeps two metres clear of maximum station depth", func(data: Dictionary) -> void: _barrier_quantity(data, "north")["value"] = 3.1, "maximum-depth pilot station")
 	_rejected("barrier stays one metre behind runway near edge", func(data: Dictionary) -> void: _barrier_quantity(data, "north")["value"] = 8.0, "at least 1.0 m behind the near edge")
+	_rejected("maximum barrier height preserves the default runway sightline", func(data: Dictionary) -> void: _barrier_quantity(data, "height")["value"] = 0.9, "exceeds the pilot-to-runway near-edge sightline")
+	_rejected("low pilot eye height preserves the runway sightline", func(data: Dictionary) -> void: _quantity(data, "eye_height", true)["value"] = 1.0, "exceeds the pilot-to-runway near-edge sightline")
+	var near_runway: Dictionary = _field_with_barrier()
+	var near_surfaces: Array = near_runway["surfaces"]
+	var near_runway_surface: Dictionary = near_surfaces[1]
+	(near_runway_surface["center_north"] as Dictionary)["value"] = 11.54
+	near_surfaces.append(_surface("mown", "mown", -20.0, 0.0, 60.0, 20.0))
+	near_runway["surfaces"] = near_surfaces
+	_barrier_quantity(near_runway, "north")["value"] = 4.4
+	var near_result: Dictionary = Loader.validate(near_runway)
+	var near_errors: PackedStringArray = near_result["errors"]
+	_check("near-runway sightline is the only error when runway and mown clearances pass", not bool(near_result["ok"]) and near_errors.size() == 1 and _has_error(near_errors, "exceeds the pilot-to-runway near-edge sightline"), str(near_errors))
 	_rejected("full row footprint avoids mown surface", func(data: Dictionary) -> void:
 		var surfaces: Array = data["surfaces"]
 		surfaces.append(_surface("mown", "mown", 4.5, 0.0, 30.0, 1.0)),
@@ -177,8 +190,13 @@ func _test_placement_validation() -> void:
 	custom_flat["surfaces"] = custom_surfaces
 	_quantity(custom_flat, "east", true)["value"] = 2000.0
 	_barrier_quantity(custom_flat, "east")["value"] = 2000.0
+	_quantity(custom_flat, "north", true)["value"] = 2000.0
+	_barrier_quantity(custom_flat, "north")["value"] = 2004.5
+	var custom_runway: Dictionary = custom_surfaces[1]
+	(custom_runway["center_north"] as Dictionary)["value"] = 2015.0
+	(custom_runway["center_east"] as Dictionary)["value"] = 2000.0
 	var custom_result: Dictionary = Loader.validate(custom_flat)
-	_check("custom rough stays flat and allows cues beyond 1.5 km", bool(custom_result["ok"]), str(custom_result["errors"]))
+	_check("translated custom rough retains relative runway sightline and stays flat beyond 1.5 km", bool(custom_result["ok"]), str(custom_result["errors"]))
 	_rejected("barrier checks the full windsock envelope", func(data: Dictionary) -> void:
 		var wind: Dictionary = _valid_windsock()
 		_quantity_from(wind, "east")["value"] = 24.0

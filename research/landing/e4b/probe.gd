@@ -10,8 +10,11 @@ var exact_samples: int = 0
 var discrete_mismatches: Array = []
 
 
-func measure(session: Node, expected: Dictionary) -> void:
+func measure(session: Node, expected: Dictionary) -> bool:
 	var actual: Dictionary = sample(session)
+	for key: String in ["state", "previous", "aux", "continuous", "inputs", "loads"]:
+		if not finite_array(actual[key], expected[key].size()):
+			return false
 	if var_to_bytes(actual) == var_to_bytes(expected):
 		exact_samples += 1
 	for key: String in ["tick", "dt", "modes", "continuous", "inputs"]:
@@ -33,6 +36,7 @@ func measure(session: Node, expected: Dictionary) -> void:
 				metric.merge({max_absolute = delta, max_ratio = delta / tolerance, peak_tick = actual.tick, block = key, index = i}, true)
 			if delta > tolerance and metric.first_exceed_tick == -1:
 				metric.first_exceed_tick = actual.tick
+	return true
 
 
 func bits(value: float) -> String:
@@ -59,7 +63,8 @@ func run_probe(session: Node, path: String, direction: int) -> Dictionary:
 	var initial: Dictionary = compare(session, tape.samples[0])
 	if not initial.ok or not initial.exact:
 		return {ok = false, error = "initial sample not exact"}
-	measure(session, tape.samples[0])
+	if not measure(session, tape.samples[0]):
+		return {ok = false, error = "nonfinite initial sample"}
 	# The two wrappers change only from this point. Derived model/fingerprint stays authentic.
 	Perturb.direction = direction
 	var math_check: Array = []
@@ -90,7 +95,8 @@ func run_probe(session: Node, path: String, direction: int) -> Dictionary:
 			flags.append(session.sim.aux[Session.AUX_ANCHORS + wheel * 3 + 2])
 		modes.append(flags)
 		if tick == tape.samples[checkpoint_index].tick:
-			measure(session, tape.samples[checkpoint_index])
+			if not measure(session, tape.samples[checkpoint_index]):
+				return {ok = false, error = "nonfinite sampled state", tick = tick}
 			checkpoint_index += 1
 	Perturb.direction = 0
 	return {ok = true, ticks = session.sim.tick, checkpoints = checkpoint_index, exact_samples = exact_samples,

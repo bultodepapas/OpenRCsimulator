@@ -41,6 +41,11 @@ def check_clear_view(on, off):
     return {'changed_pixels': 0}
 
 
+def check_runway_clear(on, off, mask):
+    if mask.sum() < 100 or np.any(on[mask] != off[mask]):
+        raise RuntimeError('flightline barrier obstructs the runway')
+
+
 def load(folder, cue_type='windsock'):
     data = json.loads((folder / 'capture.json').read_text(), parse_constant=reject_constant)
     finite_tree(data)
@@ -89,10 +94,34 @@ def load(folder, cue_type='windsock'):
             mask_image = Image.new('L', (960, 540))
             ImageDraw.Draw(mask_image).polygon([tuple(p) for p in on['runway_polygon']], fill=255)
             mask = np.asarray(mask_image.filter(ImageFilter.MaxFilter(5))) > 0
-            if mask.sum() < 100 or np.any(a[mask] != b[mask]):
-                raise RuntimeError('flightline barrier obstructs the runway')
-            metric = check_pair(a, b, [-100000, -100000, 100000, 100000], partial=True)
+            check_runway_clear(a, b, mask)
+            mutated = b.copy()
+            row, column = np.argwhere(mask)[0]
+            mutated[row, column] ^= np.uint8(255)
+            try:
+                check_runway_clear(mutated, b, mask)
+            except RuntimeError:
+                pass
+            else:
+                raise RuntimeError('runway pixel-difference control escaped the check')
+            metric = check_pair(a, b, on['bounds'], partial=True)
             metric['protected_runway_pixels'] = int(mask.sum())
+            x0, y0, x1, y1 = on['bounds']
+            yy, xx = np.mgrid[:540, :960]
+            outside = (xx < x0 - 2) | (xx > x1 + 2) | (yy < y0 - 2) | (yy > y1 + 2)
+            if not np.any(outside):
+                raise RuntimeError('pilot cue bounds leave no outside pixel for the control')
+            row, column = np.argwhere(outside)[0]
+            mutated = a.copy()
+            mutated[row, column] = b[row, column] ^ np.uint8(255)
+            try:
+                check_pair(mutated, b, on['bounds'], partial=True)
+            except RuntimeError as exc:
+                if 'escape the projected cue bounds' not in str(exc):
+                    raise
+            else:
+                raise RuntimeError('outside-cue pixel control escaped the check')
+            metric['outside_cue_control_rejected'] = True
         else:
             metric = check_pair(a, b, on['bounds'], partial=shadows)
         if shadows:

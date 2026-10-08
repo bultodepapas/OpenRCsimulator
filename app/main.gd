@@ -10,6 +10,7 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
@@ -321,6 +322,16 @@ func _current_pose() -> Dictionary:
 	if _scripted:
 		var p := Scripted.pose_at(_t)
 		return { pos = Frames.ned_to_render(p.ned), basis = Frames.attitude_to_render(p.yaw, p.pitch, p.roll) }
+	# CR-01c: presentation reads the estimate; the observed tick state stays authoritative.
+	if not session.crash.is_empty():
+		var impact: ImpactSnapshot.Snapshot = session.crash.get("impact") as ImpactSnapshot.Snapshot
+		if impact != null:
+			if impact.crossing != null and impact.crossing.available:
+				var position: PackedFloat64Array = impact.crossing.position_ned
+				return { pos = Frames.ned_to_render([position[0], position[1], position[2]]),
+					basis = Frames.quat_to_render(impact.crossing.attitude) }
+			return _pose_of(impact.detected_state)
+		return _pose_of(session.sim.state)
 	return _pose_of(session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
 
 

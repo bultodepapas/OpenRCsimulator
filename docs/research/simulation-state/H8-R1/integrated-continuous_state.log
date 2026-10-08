@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   continuous loads receive absolute RK stage times  [0.00416666666667, 0.00625, 0.00625, 0.00833333333333]
+ok   continuous derivative receives the same absolute stage times  [0.00416666666667, 0.00625, 0.00625, 0.00833333333333]
+ok   malformed continuous derivative at stage 1 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 2 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 3 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous derivative at stage 4 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 1 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 2 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 3 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   nonfinite continuous derivative at stage 4 rolls back body, continuous, aux and modes  step rejected: RK continuous derivative is nonfinite or malformed
+ok   malformed continuous loads at k1 roll back body, continuous, aux and modes  step rejected: aircraft returned nonfinite or malformed loads
+ok   malformed continuous loads at k2 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed continuous loads at k3 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed continuous loads at k4 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k1 roll back body, continuous, aux and modes  step rejected: aircraft returned nonfinite or malformed loads
+ok   nonfinite continuous loads at k2 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k3 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite continuous loads at k4 roll back body, continuous, aux and modes  step rejected: RK stage loads are nonfinite or malformed
+ok   malformed pre-step output rolls back body, continuous, aux and modes  step rejected: pre-step produced nonfinite or malformed auxiliary state
+ok   nonfinite pre-step output rolls back body, continuous, aux and modes  step rejected: pre-step produced nonfinite or malformed auxiliary state
+ok   nonfinite continuous boundary state is rolled back with aux and modes  step rejected: input or auxiliary state is nonfinite or malformed
+ok   nonfinite continuous intermediate at k2 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   nonfinite continuous intermediate at k3 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   nonfinite continuous intermediate at k4 rolls back the tick  step rejected: RK stage state is nonfinite, malformed, or has a degenerate quaternion
+ok   continuous state is present in exact checkpoint
+ok   native checkpoint encoding preserves continuous state exactly
+ok   checkpoint continuous array is detached
+ok   continuous flight reaches a replay boundary
+ok   restore accepts a matching continuous layout
+ok   mid-lag checkpoint continuation is bit-exact
+ok   checkpoint rejects missing continuous data atomically
+ok   checkpoint rejects wrong type continuous data atomically
+ok   checkpoint rejects nonfinite continuous data atomically
+ok   checkpoint rejects wrong size continuous data atomically
+ok   reset accepts a caller-initialized continuous state
+ok   reset rejects nonfinite continuous state and restores the prior boundary
+ok   valid reset clears the continuous-state fault
+ok   checkpoint refuses a changed continuous layout
+ok   mid-run continuous layout change faults and restores the fixed layout  step rejected: input or auxiliary state is nonfinite or malformed
+ok   reset establishes a new continuous layout for a new run
+ok   the new fixed layout advances after reset
+ok   bidirectionally coupled body and z converge at fourth order  errors=[0.00002314674983, 0.00000158815057, 0.0000001032728] ratios=14.57466,15.37821
+continuous state: 42 checks, 0 failed

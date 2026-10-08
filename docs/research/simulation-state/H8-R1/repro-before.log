@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+fresh restore accepted: true
+fresh continuation: tick=1 fault=step rejected: fixed timestep changed; reset required
+unnormalized checkpoint emitted: true restorable: false
+overflow clock restore accepted: true
+overflow continuation: tick=-9223372036854775808 fault=
+nonfinite inverse preflight accepted: true
+nonfinite inverse restore accepted: true inverse=[inf, 1.0, 1.0, 0.0, 0.0, 0.0]
