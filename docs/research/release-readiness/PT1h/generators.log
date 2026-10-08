@@ -1,0 +1,12 @@
+Visual geometry source/runtime: identical
+Appearance source, generated data and SVG match
+211 measured values match metrology.json (max difference 0.050 mm)
+Extra visual geometry source/runtime: identical
+Extra appearance source/runtime: identical
+Avanti S visual geometry source/runtime: identical
+geometry.json is up to date with source.json
+P-51D visual geometry source/runtime: identical
+P-51 appearance source/runtime: identical
+gp_extra_300s_60.json and derivation.md are up to date
+p51d_mustang_120.json and derivation.md are up to date
+sebart_avanti_s_a200.json and derivation.md are up to date
