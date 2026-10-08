@@ -1,6 +1,6 @@
 # Landscape improvement: a phased proposal
 
-Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending; Phase 5 engineering-verified in [L7](../visual-quality-implementation/L7/README.md); Phase 6 implemented and engineering-verified in [L4b](../visual-quality-implementation/L4b/README.md), with L15d wind integration pending; Phase 7 required grass scope engineering-verified in [L11a](../visual-quality-implementation/L11a/README.md), existing flowers reused opt-in and L9d deferred** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
+Date: **2026-10-07**. Status: **proposal for the landscape and visual-quality tracks; Phases 0–4 and the far-field patchwork implemented and measured the same day ([implementation](implementation/README.md)), review pending; Phase 5 engineering-verified in [L7](../visual-quality-implementation/L7/README.md); Phase 6 implemented and engineering-verified in [L4b](../visual-quality-implementation/L4b/README.md), with L15d wind integration pending; Phase 7 required grass scope engineering-verified in [L11a](../visual-quality-implementation/L11a/README.md), existing flowers reused opt-in and L9d deferred; Phase 8 has an engineering-verified [L15b rendering preparation](../visual-quality-implementation/L15b/README.md), with M5 integration and full Phase 8 pending** ([LANDSCAPE-PLAN](../../LANDSCAPE-PLAN.md), [VISUAL-QUALITY-PLAN](../../VISUAL-QUALITY-PLAN.md)).
 - **Basis:** the measured problems of [review 05](../scenery-investigations/05-landscape-image-review.md) and four research reports with Godot 4.7.2 Compatibility spikes.
 - **Step IDs:** it adds none. Every phase maps to existing **L** steps, or proposes a sub-step for the landscape owner to accept.
 - **Scope:** it does not change the ROADMAP or any plan by itself.
@@ -157,9 +157,11 @@ Required grass scope implemented and verified in [L11a](../visual-quality-implem
 
 ### Phase 8 — Wind and life (after M5) · L15a–c
 
+[L15b rendering preparation](../visual-quality-implementation/L15b/README.md) is verified (2026-10-08). Production remains calm until M5 supplies physical wind; this does not close L15a/c or Phase 8. Canonical step status stays in LANDSCAPE-PLAN.
+
 | Change | How |
 | --- | --- |
-| Tree bending | Crysis main bending (length-preserving) from `wind_vec` and `sim_clock`, frequencies rounded to k/1024 Hz, per-tree phase from the existing hash; cards get main bending only |
+| Tree bending | L15b uses a small length-preserving rotation anchored at the root: nonlinear endpoint bending would move the root inside the current padded quads. Shared `wind_vec` and `sim_clock`, k/1024 Hz frequencies and existing hash phases; no branch/leaf detail. Nonlinear bending would need a different mesh |
 | Grass, flowers, flags | The same uniforms (the scenery already animates its flag and rotors this way) |
 | Windsock (L15a) | As planned: the Canada AIM droop table |
 

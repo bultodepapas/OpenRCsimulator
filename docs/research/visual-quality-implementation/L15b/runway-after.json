@@ -1,0 +1,1821 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "aircraft": "jensen-das-ugly-stik-60",
+  "dt_s": 0.00416666666666667,
+  "format": "openrc-runway-scenario v1",
+  "frames": [
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 40.6266746520996,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 124.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.0016169760567,
+      "height_m": 0.239050388152084,
+      "image": "pilot/t000.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801219,
+      "primitives": 205502.0,
+      "prop_angle_deg": 0.0,
+      "roll_deg": -0.10394381366779,
+      "rpm": 2800.0,
+      "sha256": "4e325bed7276835a3f35bc38de9bd12e8bea092a5368993200942b34d5006cbc",
+      "shadow_px": [
+        644.2,
+        364.8
+      ],
+      "sim_clock": 0.0,
+      "speed_ms": 0.0,
+      "t_s": 0.0,
+      "tick": 0,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 173.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.0016169760567,
+      "height_m": 0.239050388152084,
+      "image": "chase/t000.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801219,
+      "primitives": 282125.0,
+      "prop_angle_deg": 0.0,
+      "roll_deg": -0.10394381366779,
+      "rpm": 2800.0,
+      "sha256": "512ec74bc2a999fc20ed76087468da9adeb1c6bbb5cd9182289b5bacbbc63c07",
+      "shadow_px": [
+        620.6,
+        414.7
+      ],
+      "sim_clock": 0.0,
+      "speed_ms": 0.0,
+      "t_s": 0.0,
+      "tick": 0,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 112.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.0016169760567,
+      "height_m": 0.239050388152084,
+      "image": "side/t000.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801219,
+      "primitives": 171873.0,
+      "prop_angle_deg": 0.0,
+      "roll_deg": -0.10394381366779,
+      "rpm": 2800.0,
+      "sha256": "6d192767a4dac90f7cb1d99baee4bf213693a60928a2f18197dcfd614fc08c19",
+      "shadow_px": [
+        660.5,
+        381.3
+      ],
+      "sim_clock": 0.0,
+      "speed_ms": 0.0,
+      "t_s": 0.0,
+      "tick": 0,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        321.8,
+        503.3
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 193.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.0016169760567,
+      "height_m": 0.239050388152084,
+      "image": "wide/t000.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801219,
+      "primitives": 293959.0,
+      "prop_angle_deg": 0.0,
+      "roll_deg": -0.10394381366779,
+      "rpm": 2800.0,
+      "sha256": "1a7018eef4cb49606c848f2a3a432fa8897c97999b0727cf85c14a43529e917f",
+      "shadow_px": [
+        322.3,
+        507.1
+      ],
+      "sim_clock": 0.0,
+      "speed_ms": 0.0,
+      "t_s": 0.0,
+      "tick": 0,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 139.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.0016169760567,
+      "height_m": 0.239050388152084,
+      "image": "closeup/t000.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801219,
+      "primitives": 275846.0,
+      "prop_angle_deg": 0.0,
+      "roll_deg": -0.10394381366779,
+      "rpm": 2800.0,
+      "sha256": "1ac8888a12974712ca6dbfad33a12616ec07a9090d7dbf878000eeffc064ff5c",
+      "shadow_px": [
+        572.1,
+        418.2
+      ],
+      "sim_clock": 0.0,
+      "speed_ms": 0.0,
+      "t_s": 0.0,
+      "tick": 0,
+      "view": "closeup"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 40.6266746520996,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 124.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "pilot/t001.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801215,
+      "primitives": 205502.0,
+      "prop_angle_deg": 239.999999999995,
+      "roll_deg": -0.103943813667784,
+      "rpm": 2800.0,
+      "sha256": "2900412273cd9d7cb612127a8a8e83a3dac0da6e352d514e9e0ee641668d38fe",
+      "shadow_px": [
+        644.2,
+        364.8
+      ],
+      "sim_clock": 1.0,
+      "speed_ms": 0.0000000000000297890503878328,
+      "t_s": 1.0,
+      "tick": 240,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 173.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "chase/t001.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801215,
+      "primitives": 282125.0,
+      "prop_angle_deg": 239.999999999995,
+      "roll_deg": -0.103943813667784,
+      "rpm": 2800.0,
+      "sha256": "9ca5266e706b7d69ea4660f7d55a8f5bf703cc20637343cf4ed7560f3be050e3",
+      "shadow_px": [
+        620.6,
+        414.7
+      ],
+      "sim_clock": 1.0,
+      "speed_ms": 0.0000000000000297890503878328,
+      "t_s": 1.0,
+      "tick": 240,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 112.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "side/t001.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801215,
+      "primitives": 171873.0,
+      "prop_angle_deg": 239.999999999995,
+      "roll_deg": -0.103943813667784,
+      "rpm": 2800.0,
+      "sha256": "37ee2524a400a7f1c35959d2a82ba1734b2b6e8743ecdeea7ad72fccf2c46e97",
+      "shadow_px": [
+        660.5,
+        381.3
+      ],
+      "sim_clock": 1.0,
+      "speed_ms": 0.0000000000000297890503878328,
+      "t_s": 1.0,
+      "tick": 240,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        321.8,
+        503.3
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 193.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "wide/t001.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801215,
+      "primitives": 293959.0,
+      "prop_angle_deg": 239.999999999995,
+      "roll_deg": -0.103943813667784,
+      "rpm": 2800.0,
+      "sha256": "e8f8b066fcbf1e1c080b8eee2d927c69fdca5ca07c6ce4022decd93075a70c11",
+      "shadow_px": [
+        322.3,
+        507.1
+      ],
+      "sim_clock": 1.0,
+      "speed_ms": 0.0000000000000297890503878328,
+      "t_s": 1.0,
+      "tick": 240,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 40.6266746520996,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 124.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "pilot/t002.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801218,
+      "primitives": 205502.0,
+      "prop_angle_deg": 119.999999999989,
+      "roll_deg": -0.103943813667783,
+      "rpm": 2800.0,
+      "sha256": "14a9680a4c7cd2390f05174e543a7dba9b4b8911041b585e7cba0b31727e744c",
+      "shadow_px": [
+        644.2,
+        364.8
+      ],
+      "sim_clock": 2.0,
+      "speed_ms": 0.0000000000000314988340949255,
+      "t_s": 2.0,
+      "tick": 480,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 173.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "chase/t002.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801218,
+      "primitives": 282125.0,
+      "prop_angle_deg": 119.999999999989,
+      "roll_deg": -0.103943813667783,
+      "rpm": 2800.0,
+      "sha256": "f2e15318aabf89ddaa54fe17284783c96c9f67815aaf29639eae6faabbd860c7",
+      "shadow_px": [
+        620.6,
+        414.7
+      ],
+      "sim_clock": 2.0,
+      "speed_ms": 0.0000000000000314988340949255,
+      "t_s": 2.0,
+      "tick": 480,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 112.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "side/t002.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801218,
+      "primitives": 171873.0,
+      "prop_angle_deg": 119.999999999989,
+      "roll_deg": -0.103943813667783,
+      "rpm": 2800.0,
+      "sha256": "20bfd3805a2c05938f8cdf0d115adc3e70c8f13f0107c9dea4a2997328296257",
+      "shadow_px": [
+        660.5,
+        381.3
+      ],
+      "sim_clock": 2.0,
+      "speed_ms": 0.0000000000000314988340949255,
+      "t_s": 2.0,
+      "tick": 480,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        321.8,
+        503.3
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 193.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "wide/t002.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801218,
+      "primitives": 293959.0,
+      "prop_angle_deg": 119.999999999989,
+      "roll_deg": -0.103943813667783,
+      "rpm": 2800.0,
+      "sha256": "b279f285bc10b62568d5955ed65bf549e87e4c7bbef8a129f9707fb3e878062e",
+      "shadow_px": [
+        322.3,
+        507.1
+      ],
+      "sim_clock": 2.0,
+      "speed_ms": 0.0000000000000314988340949255,
+      "t_s": 2.0,
+      "tick": 480,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0,
+        "throttle": 0.0,
+        "yaw": 0.0
+      },
+      "draw_calls": 139.0,
+      "east_m": -46.9921152914612,
+      "heading_deg": 90.001616976057,
+      "height_m": 0.239050388152084,
+      "image": "closeup/t002.0.png",
+      "north_m": 15.0004664338265,
+      "phase": "idle",
+      "pitch_deg": -1.60305315801218,
+      "primitives": 275846.0,
+      "prop_angle_deg": 119.999999999989,
+      "roll_deg": -0.103943813667783,
+      "rpm": 2800.0,
+      "sha256": "88516827e3e82aacb21d59f6019a11de354693374f046a8061dfc70eff2ba790",
+      "shadow_px": [
+        572.1,
+        418.2
+      ],
+      "sim_clock": 2.0,
+      "speed_ms": 0.0000000000000314988340949255,
+      "t_s": 2.0,
+      "tick": 480,
+      "view": "closeup"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 40.8089637756348,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0140777532254133,
+        "throttle": 0.497916666666667,
+        "yaw": -0.0073890231671126
+      },
+      "draw_calls": 124.0,
+      "east_m": -46.7396046128683,
+      "heading_deg": 90.0782548745716,
+      "height_m": 0.238879398148667,
+      "image": "pilot/t003.0.png",
+      "north_m": 15.0013641184742,
+      "phase": "roll",
+      "pitch_deg": -1.69233036529108,
+      "primitives": 205502.0,
+      "prop_angle_deg": 238.334992019812,
+      "roll_deg": -0.456160350687966,
+      "rpm": 5941.42835704985,
+      "sha256": "7a9b8718b44925423a964ff3811e7bac3aa800efdd2fa8b0144b1454e322ec3b",
+      "shadow_px": [
+        644.2,
+        364.8
+      ],
+      "sim_clock": 3.0,
+      "speed_ms": 1.02334931016107,
+      "t_s": 3.0,
+      "tick": 720,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0140777532254133,
+        "throttle": 0.497916666666667,
+        "yaw": -0.0073890231671126
+      },
+      "draw_calls": 173.0,
+      "east_m": -46.7396046128683,
+      "heading_deg": 90.0782548745716,
+      "height_m": 0.238879398148667,
+      "image": "chase/t003.0.png",
+      "north_m": 15.0013641184742,
+      "phase": "roll",
+      "pitch_deg": -1.69233036529108,
+      "primitives": 282125.0,
+      "prop_angle_deg": 238.334992019812,
+      "roll_deg": -0.456160350687966,
+      "rpm": 5941.42835704985,
+      "sha256": "292767800f762f47604d07e1f2620fd267813f3ee654e05c070a506189b8e45c",
+      "shadow_px": [
+        620.5,
+        414.7
+      ],
+      "sim_clock": 3.0,
+      "speed_ms": 1.02334931016107,
+      "t_s": 3.0,
+      "tick": 720,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0140777532254133,
+        "throttle": 0.497916666666667,
+        "yaw": -0.0073890231671126
+      },
+      "draw_calls": 113.0,
+      "east_m": -46.7396046128683,
+      "heading_deg": 90.0782548745716,
+      "height_m": 0.238879398148667,
+      "image": "side/t003.0.png",
+      "north_m": 15.0013641184742,
+      "phase": "roll",
+      "pitch_deg": -1.69233036529108,
+      "primitives": 172797.0,
+      "prop_angle_deg": 238.334992019812,
+      "roll_deg": -0.456160350687966,
+      "rpm": 5941.42835704985,
+      "sha256": "20d5152dbdeda0faedd29cf5ed36269f9410392f6e98fc72cf14bc49f743326f",
+      "shadow_px": [
+        660.8,
+        381.6
+      ],
+      "sim_clock": 3.0,
+      "speed_ms": 1.02334931016107,
+      "t_s": 3.0,
+      "tick": 720,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        326.2,
+        502.1
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0140777532254133,
+        "throttle": 0.497916666666667,
+        "yaw": -0.0073890231671126
+      },
+      "draw_calls": 193.0,
+      "east_m": -46.7396046128683,
+      "heading_deg": 90.0782548745716,
+      "height_m": 0.238879398148667,
+      "image": "wide/t003.0.png",
+      "north_m": 15.0013641184742,
+      "phase": "roll",
+      "pitch_deg": -1.69233036529108,
+      "primitives": 293959.0,
+      "prop_angle_deg": 238.334992019812,
+      "roll_deg": -0.456160350687966,
+      "rpm": 5941.42835704985,
+      "sha256": "5e6a22db79e4653602b5ecea89af5a632e5ec65ef434381aee8fab290e9b4649",
+      "shadow_px": [
+        326.6,
+        505.9
+      ],
+      "sim_clock": 3.0,
+      "speed_ms": 1.02334931016107,
+      "t_s": 3.0,
+      "tick": 720,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 43.4820556640625,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0340366699716687,
+        "throttle": 0.997916666666667,
+        "yaw": -0.0100154436720529
+      },
+      "draw_calls": 128.0,
+      "east_m": -43.2664808066028,
+      "heading_deg": 90.277008770183,
+      "height_m": 0.238546377694564,
+      "image": "pilot/t004.0.png",
+      "north_m": 14.9818248615785,
+      "phase": "roll",
+      "pitch_deg": -1.28277693622335,
+      "primitives": 211574.0,
+      "prop_angle_deg": 135.08623541128,
+      "roll_deg": -1.2059853687641,
+      "rpm": 10097.0069898914,
+      "sha256": "04cc9de5bfaf1e286a9353c7629f6295395307f54616c425f6fd379963d7492d",
+      "shadow_px": [
+        644.2,
+        364.8
+      ],
+      "sim_clock": 4.0,
+      "speed_ms": 6.97577243753597,
+      "t_s": 4.0,
+      "tick": 960,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0340366699716687,
+        "throttle": 0.997916666666667,
+        "yaw": -0.0100154436720529
+      },
+      "draw_calls": 170.0,
+      "east_m": -43.2664808066028,
+      "heading_deg": 90.277008770183,
+      "height_m": 0.238546377694564,
+      "image": "chase/t004.0.png",
+      "north_m": 14.9818248615785,
+      "phase": "roll",
+      "pitch_deg": -1.28277693622335,
+      "primitives": 281837.0,
+      "prop_angle_deg": 135.08623541128,
+      "roll_deg": -1.2059853687641,
+      "rpm": 10097.0069898914,
+      "sha256": "83b624e109ed417b0cc2e4e250465a5faa8b6373b7e508355fe696b7505b5303",
+      "shadow_px": [
+        620.5,
+        414.7
+      ],
+      "sim_clock": 4.0,
+      "speed_ms": 6.97577243753597,
+      "t_s": 4.0,
+      "tick": 960,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0340366699716687,
+        "throttle": 0.997916666666667,
+        "yaw": -0.0100154436720529
+      },
+      "draw_calls": 115.0,
+      "east_m": -43.2664808066028,
+      "heading_deg": 90.277008770183,
+      "height_m": 0.238546377694564,
+      "image": "side/t004.0.png",
+      "north_m": 14.9818248615785,
+      "phase": "roll",
+      "pitch_deg": -1.28277693622335,
+      "primitives": 170699.0,
+      "prop_angle_deg": 135.08623541128,
+      "roll_deg": -1.2059853687641,
+      "rpm": 10097.0069898914,
+      "sha256": "63539fb262f48013f25369c5ccfd971388eacbe450a7100fe7bf1f2cbd01769b",
+      "shadow_px": [
+        666.0,
+        386.2
+      ],
+      "sim_clock": 4.0,
+      "speed_ms": 6.97577243753597,
+      "t_s": 4.0,
+      "tick": 960,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        382.0,
+        487.2
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0340366699716687,
+        "throttle": 0.997916666666667,
+        "yaw": -0.0100154436720529
+      },
+      "draw_calls": 193.0,
+      "east_m": -43.2664808066028,
+      "heading_deg": 90.277008770183,
+      "height_m": 0.238546377694564,
+      "image": "wide/t004.0.png",
+      "north_m": 14.9818248615785,
+      "phase": "roll",
+      "pitch_deg": -1.28277693622335,
+      "primitives": 293959.0,
+      "prop_angle_deg": 135.08623541128,
+      "roll_deg": -1.2059853687641,
+      "rpm": 10097.0069898914,
+      "sha256": "e263ddc9f0e251c5088a115743e08a88a22ef43d1194710d53fdff1f6d5182b4",
+      "shadow_px": [
+        382.1,
+        490.8
+      ],
+      "sim_clock": 4.0,
+      "speed_ms": 6.97577243753597,
+      "t_s": 4.0,
+      "tick": 960,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0,
+        "roll": 0.0340366699716687,
+        "throttle": 0.997916666666667,
+        "yaw": -0.0100154436720529
+      },
+      "draw_calls": 139.0,
+      "east_m": -43.2664808066028,
+      "heading_deg": 90.277008770183,
+      "height_m": 0.238546377694564,
+      "image": "closeup/t004.0.png",
+      "north_m": 14.9818248615785,
+      "phase": "roll",
+      "pitch_deg": -1.28277693622335,
+      "primitives": 275846.0,
+      "prop_angle_deg": 135.08623541128,
+      "roll_deg": -1.2059853687641,
+      "rpm": 10097.0069898914,
+      "sha256": "43a4e0c7460203277d15dd00482fa3fc1b91acc6b6168f9ee72948379027a771",
+      "shadow_px": [
+        571.9,
+        419.1
+      ],
+      "sim_clock": 4.0,
+      "speed_ms": 6.97577243753597,
+      "t_s": 4.0,
+      "tick": 960,
+      "view": "closeup"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0400628336405125,
+        "roll": 0.068640590122498,
+        "throttle": 1.0,
+        "yaw": 0.00347283642094822
+      },
+      "draw_calls": 126.0,
+      "east_m": -31.3399536160722,
+      "heading_deg": 90.0592898145006,
+      "height_m": 0.3034387215424,
+      "image": "pilot/t005.0.png",
+      "north_m": 14.9453005498596,
+      "phase": "rotate",
+      "pitch_deg": 6.46321893940836,
+      "primitives": 210488.0,
+      "prop_angle_deg": 332.871811609641,
+      "roll_deg": -1.8664131624434,
+      "rpm": 11129.7320759134,
+      "sha256": "fc0550e67d8151819b62c00797ca16d0fcc3ca6aaaf78beae28e80fce4ca013d",
+      "shadow_px": [
+        646.4,
+        366.8
+      ],
+      "sim_clock": 5.0,
+      "speed_ms": 16.8403814632646,
+      "t_s": 5.0,
+      "tick": 1200,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": 0.0400628336405125,
+        "roll": 0.068640590122498,
+        "throttle": 1.0,
+        "yaw": 0.00347283642094822
+      },
+      "draw_calls": 167.0,
+      "east_m": -31.3399536160722,
+      "heading_deg": 90.0592898145006,
+      "height_m": 0.3034387215424,
+      "image": "chase/t005.0.png",
+      "north_m": 14.9453005498596,
+      "phase": "rotate",
+      "pitch_deg": 6.46321893940836,
+      "primitives": 259176.0,
+      "prop_angle_deg": 332.871811609641,
+      "roll_deg": -1.8664131624434,
+      "rpm": 11129.7320759134,
+      "sha256": "79ba9f8c68a2666f26e5a4f64c76470435b26a63e9d231993d3eeb24f385a9d5",
+      "shadow_px": [
+        615.5,
+        420.0
+      ],
+      "sim_clock": 5.0,
+      "speed_ms": 16.8403814632646,
+      "t_s": 5.0,
+      "tick": 1200,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": 0.0400628336405125,
+        "roll": 0.068640590122498,
+        "throttle": 1.0,
+        "yaw": 0.00347283642094822
+      },
+      "draw_calls": 129.0,
+      "east_m": -31.3399536160722,
+      "heading_deg": 90.0592898145006,
+      "height_m": 0.3034387215424,
+      "image": "side/t005.0.png",
+      "north_m": 14.9453005498596,
+      "phase": "rotate",
+      "pitch_deg": 6.46321893940836,
+      "primitives": 198015.0,
+      "prop_angle_deg": 332.871811609641,
+      "roll_deg": -1.8664131624434,
+      "rpm": 11129.7320759134,
+      "sha256": "4ed17a13bad24fe8be3f460d28a3fbf780b6b888c36a990a472d3b6633aa7639",
+      "shadow_px": [
+        660.8,
+        401.4
+      ],
+      "sim_clock": 5.0,
+      "speed_ms": 16.8403814632646,
+      "t_s": 5.0,
+      "tick": 1200,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        520.4,
+        449.2
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": 0.0400628336405125,
+        "roll": 0.068640590122498,
+        "throttle": 1.0,
+        "yaw": 0.00347283642094822
+      },
+      "draw_calls": 193.0,
+      "east_m": -31.3399536160722,
+      "heading_deg": 90.0592898145006,
+      "height_m": 0.3034387215424,
+      "image": "wide/t005.0.png",
+      "north_m": 14.9453005498596,
+      "phase": "rotate",
+      "pitch_deg": 6.46321893940836,
+      "primitives": 293959.0,
+      "prop_angle_deg": 332.871811609641,
+      "roll_deg": -1.8664131624434,
+      "rpm": 11129.7320759134,
+      "sha256": "4a21f53e191273738204fd92b8f78efa40e463e7fb1ad7a926bfee49182636ae",
+      "shadow_px": [
+        519.7,
+        453.0
+      ],
+      "sim_clock": 5.0,
+      "speed_ms": 16.8403814632646,
+      "t_s": 5.0,
+      "tick": 1200,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.147791005565784,
+        "roll": 0.03749314871563,
+        "throttle": 1.0,
+        "yaw": 0.0501501182193497
+      },
+      "draw_calls": 123.0,
+      "east_m": -10.9687648839566,
+      "heading_deg": 88.8731517162224,
+      "height_m": 3.1292690663628,
+      "image": "pilot/t006.0.png",
+      "north_m": 15.3241097291868,
+      "phase": "climb",
+      "pitch_deg": 12.3927420501814,
+      "primitives": 227100.0,
+      "prop_angle_deg": 238.735062967635,
+      "roll_deg": -1.70454695966029,
+      "rpm": 11148.6470956603,
+      "sha256": "da386a096b6bf788c8b400a280a9748655c8a136460aa506a64344ef8f96dafd",
+      "shadow_px": [
+        764.3,
+        487.2
+      ],
+      "sim_clock": 6.0,
+      "speed_ms": 23.6125302876571,
+      "t_s": 6.0,
+      "tick": 1440,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.147791005565784,
+        "roll": 0.03749314871563,
+        "throttle": 1.0,
+        "yaw": 0.0501501182193497
+      },
+      "draw_calls": 158.0,
+      "east_m": -10.9687648839566,
+      "heading_deg": 88.8731517162224,
+      "height_m": 3.1292690663628,
+      "image": "chase/t006.0.png",
+      "north_m": 15.3241097291868,
+      "phase": "climb",
+      "pitch_deg": 12.3927420501814,
+      "primitives": 242981.0,
+      "prop_angle_deg": 238.735062967635,
+      "roll_deg": -1.70454695966029,
+      "rpm": 11148.6470956603,
+      "sha256": "5d82c8eca17effea392cf364d5413d17c386ebd5e67ef0fba4a12b2133c5c4f1",
+      "shadow_px": [
+        457.5,
+        588.8
+      ],
+      "sim_clock": 6.0,
+      "speed_ms": 23.6125302876571,
+      "t_s": 6.0,
+      "tick": 1440,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.147791005565784,
+        "roll": 0.03749314871563,
+        "throttle": 1.0,
+        "yaw": 0.0501501182193497
+      },
+      "draw_calls": 162.0,
+      "east_m": -10.9687648839566,
+      "heading_deg": 88.8731517162224,
+      "height_m": 3.1292690663628,
+      "image": "side/t006.0.png",
+      "north_m": 15.3241097291868,
+      "phase": "climb",
+      "pitch_deg": 12.3927420501814,
+      "primitives": 227957.0,
+      "prop_angle_deg": 238.735062967635,
+      "roll_deg": -1.70454695966029,
+      "rpm": 11148.6470956603,
+      "sha256": "e0a977eb174ded6e93ccb8bbf678f7822f34d5824d4e52ed61187a302b8b39e0",
+      "shadow_px": [
+        574.2,
+        524.9
+      ],
+      "sim_clock": 6.0,
+      "speed_ms": 23.6125302876571,
+      "t_s": 6.0,
+      "tick": 1440,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        652.1,
+        380.8
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.147791005565784,
+        "roll": 0.03749314871563,
+        "throttle": 1.0,
+        "yaw": 0.0501501182193497
+      },
+      "draw_calls": 193.0,
+      "east_m": -10.9687648839566,
+      "heading_deg": 88.8731517162224,
+      "height_m": 3.1292690663628,
+      "image": "wide/t006.0.png",
+      "north_m": 15.3241097291868,
+      "phase": "climb",
+      "pitch_deg": 12.3927420501814,
+      "primitives": 293959.0,
+      "prop_angle_deg": 238.735062967635,
+      "roll_deg": -1.70454695966029,
+      "rpm": 11148.6470956603,
+      "sha256": "eceff917e9fef21842c33d3771c2d775008a14cfb84b866b1c5146afae3ea1f6",
+      "shadow_px": [
+        640.8,
+        411.9
+      ],
+      "sim_clock": 6.0,
+      "speed_ms": 23.6125302876571,
+      "t_s": 6.0,
+      "tick": 1440,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.184506975670769,
+        "roll": 0.0105004708992795,
+        "throttle": 1.0,
+        "yaw": 0.0446960845974683
+      },
+      "draw_calls": 164.0,
+      "east_m": 13.8646978188887,
+      "heading_deg": 88.944639198228,
+      "height_m": 8.56089524500778,
+      "image": "pilot/t007.0.png",
+      "north_m": 16.1043893612044,
+      "phase": "climb",
+      "pitch_deg": 13.4383654525504,
+      "primitives": 217900.0,
+      "prop_angle_deg": 172.21972044,
+      "roll_deg": -0.474321544805521,
+      "rpm": 11148.9935363316,
+      "sha256": "e04a2b0b2705887fb5d647817bafaca07512c87dc38d73cb32c65a5ce905e476",
+      "shadow_px": [
+        657.7,
+        658.8
+      ],
+      "sim_clock": 7.0,
+      "speed_ms": 26.8334112340387,
+      "t_s": 7.0,
+      "tick": 1680,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.184506975670769,
+        "roll": 0.0105004708992795,
+        "throttle": 1.0,
+        "yaw": 0.0446960845974683
+      },
+      "draw_calls": 147.0,
+      "east_m": 13.8646978188887,
+      "heading_deg": 88.944639198228,
+      "height_m": 8.56089524500778,
+      "image": "chase/t007.0.png",
+      "north_m": 16.1043893612044,
+      "phase": "climb",
+      "pitch_deg": 13.4383654525504,
+      "primitives": 208982.0,
+      "prop_angle_deg": 172.21972044,
+      "roll_deg": -0.474321544805521,
+      "rpm": 11148.9935363316,
+      "sha256": "b37ca720e08ce99756027e4f17bfbf10f732c927fb3859f957c2ad17778a039f",
+      "shadow_px": [
+        307.4,
+        748.4
+      ],
+      "sim_clock": 7.0,
+      "speed_ms": 26.8334112340387,
+      "t_s": 7.0,
+      "tick": 1680,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.184506975670769,
+        "roll": 0.0105004708992795,
+        "throttle": 1.0,
+        "yaw": 0.0446960845974683
+      },
+      "draw_calls": 159.0,
+      "east_m": 13.8646978188887,
+      "heading_deg": 88.944639198228,
+      "height_m": 8.56089524500778,
+      "image": "side/t007.0.png",
+      "north_m": 16.1043893612044,
+      "phase": "climb",
+      "pitch_deg": 13.4383654525504,
+      "primitives": 252803.0,
+      "prop_angle_deg": 172.21972044,
+      "roll_deg": -0.474321544805521,
+      "rpm": 11148.9935363316,
+      "sha256": "9f2c221bca2ea461aeaa87e154211284e4440317c6d6c1a14cdfad0b1c579bd9",
+      "shadow_px": [
+        522.4,
+        592.3
+      ],
+      "sim_clock": 7.0,
+      "speed_ms": 26.8334112340387,
+      "t_s": 7.0,
+      "tick": 1680,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        738.3,
+        317.7
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.184506975670769,
+        "roll": 0.0105004708992795,
+        "throttle": 1.0,
+        "yaw": 0.0446960845974683
+      },
+      "draw_calls": 193.0,
+      "east_m": 13.8646978188887,
+      "heading_deg": 88.944639198228,
+      "height_m": 8.56089524500778,
+      "image": "wide/t007.0.png",
+      "north_m": 16.1043893612044,
+      "phase": "climb",
+      "pitch_deg": 13.4383654525504,
+      "primitives": 293959.0,
+      "prop_angle_deg": 172.21972044,
+      "roll_deg": -0.474321544805521,
+      "rpm": 11148.9935363316,
+      "sha256": "41c04819f8ffce3aab987d9ec4683bef64116cdb2296f3a8e5b9180f93046e0b",
+      "shadow_px": [
+        708.5,
+        384.5
+      ],
+      "sim_clock": 7.0,
+      "speed_ms": 26.8334112340387,
+      "t_s": 7.0,
+      "tick": 1680,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 43.2578582763672,
+      "commands": {
+        "pitch": -0.194597098455602,
+        "roll": 0.00372104010424273,
+        "throttle": 1.0,
+        "yaw": 0.0353601117149557
+      },
+      "draw_calls": 170.0,
+      "east_m": 40.7849297525845,
+      "heading_deg": 89.1582142155546,
+      "height_m": 14.9158245652216,
+      "image": "pilot/t008.0.png",
+      "north_m": 16.8689991278606,
+      "phase": "climb",
+      "pitch_deg": 13.6894350758911,
+      "primitives": 214129.0,
+      "prop_angle_deg": 106.210281612361,
+      "roll_deg": -0.152729330524618,
+      "rpm": 11148.9998816138,
+      "sha256": "00671c048dbc491bf2334f8f147cda47f1f93529e360ccc28c2f3cd70a0d1445",
+      "shadow_px": [
+        545.6,
+        661.2
+      ],
+      "sim_clock": 8.0,
+      "speed_ms": 28.3216515482915,
+      "t_s": 8.0,
+      "tick": 1920,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.194597098455602,
+        "roll": 0.00372104010424273,
+        "throttle": 1.0,
+        "yaw": 0.0353601117149557
+      },
+      "draw_calls": 137.0,
+      "east_m": 40.7849297525845,
+      "heading_deg": 89.1582142155546,
+      "height_m": 14.9158245652216,
+      "image": "chase/t008.0.png",
+      "north_m": 16.8689991278606,
+      "phase": "climb",
+      "pitch_deg": 13.6894350758911,
+      "primitives": 174542.0,
+      "prop_angle_deg": 106.210281612361,
+      "roll_deg": -0.152729330524618,
+      "rpm": 11148.9998816138,
+      "sha256": "52d2faa1480b4a9cabfe9852bd1afe27ab6f0739f344f38d36b614d63aa11b65",
+      "shadow_px": [
+        221.2,
+        838.8
+      ],
+      "sim_clock": 8.0,
+      "speed_ms": 28.3216515482915,
+      "t_s": 8.0,
+      "tick": 1920,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.194597098455602,
+        "roll": 0.00372104010424273,
+        "throttle": 1.0,
+        "yaw": 0.0353601117149557
+      },
+      "draw_calls": 154.0,
+      "east_m": 40.7849297525845,
+      "heading_deg": 89.1582142155546,
+      "height_m": 14.9158245652216,
+      "image": "side/t008.0.png",
+      "north_m": 16.8689991278606,
+      "phase": "climb",
+      "pitch_deg": 13.6894350758911,
+      "primitives": 247625.0,
+      "prop_angle_deg": 106.210281612361,
+      "roll_deg": -0.152729330524618,
+      "rpm": 11148.9998816138,
+      "sha256": "a9dbfe07dd38c12a7399669c556a2f31814360e3b03380e69ff558768dbf7444",
+      "shadow_px": [
+        497.6,
+        623.2
+      ],
+      "sim_clock": 8.0,
+      "speed_ms": 28.3216515482915,
+      "t_s": 8.0,
+      "tick": 1920,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        794.4,
+        273.9
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.194597098455602,
+        "roll": 0.00372104010424273,
+        "throttle": 1.0,
+        "yaw": 0.0353601117149557
+      },
+      "draw_calls": 193.0,
+      "east_m": 40.7849297525845,
+      "heading_deg": 89.1582142155546,
+      "height_m": 14.9158245652216,
+      "image": "wide/t008.0.png",
+      "north_m": 16.8689991278606,
+      "phase": "climb",
+      "pitch_deg": 13.6894350758911,
+      "primitives": 293959.0,
+      "prop_angle_deg": 106.210281612361,
+      "roll_deg": -0.152729330524618,
+      "rpm": 11148.9998816138,
+      "sha256": "ca581b1c8852758a6ce96a45964c16ac1fc4d70daa86c6673282a9fe7a1de4b2",
+      "shadow_px": [
+        748.3,
+        367.9
+      ],
+      "sim_clock": 8.0,
+      "speed_ms": 28.3216515482915,
+      "t_s": 8.0,
+      "tick": 1920,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 27.8640766143799,
+      "commands": {
+        "pitch": -0.198452214533451,
+        "roll": 0.0027060688686878,
+        "throttle": 1.0,
+        "yaw": 0.0277270550449515
+      },
+      "draw_calls": 109.0,
+      "east_m": 68.6885523467893,
+      "heading_deg": 89.34089767561,
+      "height_m": 21.6528287569471,
+      "image": "pilot/t009.0.png",
+      "north_m": 17.516547999389,
+      "phase": "climb",
+      "pitch_deg": 13.7793012011548,
+      "primitives": 147896.0,
+      "prop_angle_deg": 40.2101087342055,
+      "roll_deg": -0.0989249000784332,
+      "rpm": 11148.9999978317,
+      "sha256": "131a61ece499abfa9645c8708126e005c90e6406980099e2ac9c2451d0ddad37",
+      "shadow_px": [
+        452.8,
+        798.4
+      ],
+      "sim_clock": 9.0,
+      "speed_ms": 29.0146209229104,
+      "t_s": 9.0,
+      "tick": 2160,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.198452214533451,
+        "roll": 0.0027060688686878,
+        "throttle": 1.0,
+        "yaw": 0.0277270550449515
+      },
+      "draw_calls": 130.0,
+      "east_m": 68.6885523467893,
+      "heading_deg": 89.34089767561,
+      "height_m": 21.6528287569471,
+      "image": "chase/t009.0.png",
+      "north_m": 17.516547999389,
+      "phase": "climb",
+      "pitch_deg": 13.7793012011548,
+      "primitives": 152078.0,
+      "prop_angle_deg": 40.2101087342055,
+      "roll_deg": -0.0989249000784332,
+      "rpm": 11148.9999978317,
+      "sha256": "f41ff129876982f248f94c1c669c89f42d3d7c779b7e2dde3fbd5f7ac04d496f",
+      "shadow_px": [
+        169.4,
+        892.7
+      ],
+      "sim_clock": 9.0,
+      "speed_ms": 29.0146209229104,
+      "t_s": 9.0,
+      "tick": 2160,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.198452214533451,
+        "roll": 0.0027060688686878,
+        "throttle": 1.0,
+        "yaw": 0.0277270550449515
+      },
+      "draw_calls": 152.0,
+      "east_m": 68.6885523467893,
+      "heading_deg": 89.34089767561,
+      "height_m": 21.6528287569471,
+      "image": "side/t009.0.png",
+      "north_m": 17.516547999389,
+      "phase": "climb",
+      "pitch_deg": 13.7793012011548,
+      "primitives": 247523.0,
+      "prop_angle_deg": 40.2101087342055,
+      "roll_deg": -0.0989249000784332,
+      "rpm": 11148.9999978317,
+      "sha256": "d899e533c1e67b041a93174bb2c658245fde3223406661b2d032296dd329849f",
+      "shadow_px": [
+        483.7,
+        640.1
+      ],
+      "sim_clock": 9.0,
+      "speed_ms": 29.0146209229104,
+      "t_s": 9.0,
+      "tick": 2160,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        833.0,
+        243.5
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.198452214533451,
+        "roll": 0.0027060688686878,
+        "throttle": 1.0,
+        "yaw": 0.0277270550449515
+      },
+      "draw_calls": 193.0,
+      "east_m": 68.6885523467893,
+      "heading_deg": 89.34089767561,
+      "height_m": 21.6528287569471,
+      "image": "wide/t009.0.png",
+      "north_m": 17.516547999389,
+      "phase": "climb",
+      "pitch_deg": 13.7793012011548,
+      "primitives": 293959.0,
+      "prop_angle_deg": 40.2101087342055,
+      "roll_deg": -0.0989249000784332,
+      "rpm": 11148.9999978317,
+      "sha256": "6853ef7215db37a8e7edab7d64c0487a9091f2a45ee6bb4c1c515cf84b734e27",
+      "shadow_px": [
+        773.9,
+        357.3
+      ],
+      "sim_clock": 9.0,
+      "speed_ms": 29.0146209229104,
+      "t_s": 9.0,
+      "tick": 2160,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 20.2492599487305,
+      "commands": {
+        "pitch": -0.200082005427852,
+        "roll": 0.0031507615654101,
+        "throttle": 1.0,
+        "yaw": 0.0223816373514853
+      },
+      "draw_calls": 107.0,
+      "east_m": 97.0479863882048,
+      "heading_deg": 89.4709931819589,
+      "height_m": 28.5601626379771,
+      "image": "pilot/t010.0.png",
+      "north_m": 18.0526764977044,
+      "phase": "climb",
+      "pitch_deg": 13.8166340131926,
+      "primitives": 154384.0,
+      "prop_angle_deg": 334.210105567815,
+      "roll_deg": -0.113718027426387,
+      "rpm": 11148.9999999603,
+      "sha256": "7037c27cf5d9036f853de66b757446d96386762d0d078eeb9a4ea9112d38d108",
+      "shadow_px": [
+        362.8,
+        938.8
+      ],
+      "sim_clock": 10.0,
+      "speed_ms": 29.3313901093095,
+      "t_s": 10.0,
+      "tick": 2400,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.200082005427852,
+        "roll": 0.0031507615654101,
+        "throttle": 1.0,
+        "yaw": 0.0223816373514853
+      },
+      "draw_calls": 128.0,
+      "east_m": 97.0479863882048,
+      "heading_deg": 89.4709931819589,
+      "height_m": 28.5601626379771,
+      "image": "chase/t010.0.png",
+      "north_m": 18.0526764977044,
+      "phase": "climb",
+      "pitch_deg": 13.8166340131926,
+      "primitives": 151772.0,
+      "prop_angle_deg": 334.210105567815,
+      "roll_deg": -0.113718027426387,
+      "rpm": 11148.9999999603,
+      "sha256": "d56e2feaa463de6cb01f6bc5d4eac06de1ba8a769103bd5e740883f57c42f4cc",
+      "shadow_px": [
+        135.7,
+        927.5
+      ],
+      "sim_clock": 10.0,
+      "speed_ms": 29.3313901093095,
+      "t_s": 10.0,
+      "tick": 2400,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.200082005427852,
+        "roll": 0.0031507615654101,
+        "throttle": 1.0,
+        "yaw": 0.0223816373514853
+      },
+      "draw_calls": 152.0,
+      "east_m": 97.0479863882048,
+      "heading_deg": 89.4709931819589,
+      "height_m": 28.5601626379771,
+      "image": "side/t010.0.png",
+      "north_m": 18.0526764977044,
+      "phase": "climb",
+      "pitch_deg": 13.8166340131926,
+      "primitives": 247603.0,
+      "prop_angle_deg": 334.210105567815,
+      "roll_deg": -0.113718027426387,
+      "rpm": 11148.9999999603,
+      "sha256": "76aa814e32e21f72b3db4b9745fde2b00cdde7f10ed27e7c9aa6c8eb09636ee2",
+      "shadow_px": [
+        474.8,
+        650.4
+      ],
+      "sim_clock": 10.0,
+      "speed_ms": 29.3313901093095,
+      "t_s": 10.0,
+      "tick": 2400,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        860.8,
+        221.8
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.200082005427852,
+        "roll": 0.0031507615654101,
+        "throttle": 1.0,
+        "yaw": 0.0223816373514853
+      },
+      "draw_calls": 193.0,
+      "east_m": 97.0479863882048,
+      "heading_deg": 89.4709931819589,
+      "height_m": 28.5601626379771,
+      "image": "wide/t010.0.png",
+      "north_m": 18.0526764977044,
+      "phase": "climb",
+      "pitch_deg": 13.8166340131926,
+      "primitives": 293959.0,
+      "prop_angle_deg": 334.210105567815,
+      "roll_deg": -0.113718027426387,
+      "rpm": 11148.9999999603,
+      "sha256": "46767c0dbf9533b26ec9d8df9d39d84b3303c5294fec9e1d9d76b153d2aef0f0",
+      "shadow_px": [
+        791.7,
+        350.1
+      ],
+      "sim_clock": 10.0,
+      "speed_ms": 29.3313901093095,
+      "t_s": 10.0,
+      "tick": 2400,
+      "view": "wide"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 12.9695606231689,
+      "commands": {
+        "pitch": -0.201124841682213,
+        "roll": 0.00438464732085624,
+        "throttle": 1.0,
+        "yaw": 0.016651267548834
+      },
+      "draw_calls": 105.0,
+      "east_m": 154.281201614782,
+      "heading_deg": 89.6118766847553,
+      "height_m": 42.5637643176559,
+      "image": "pilot/t012.0.png",
+      "north_m": 18.9037817561114,
+      "phase": "climb",
+      "pitch_deg": 13.8402804274164,
+      "primitives": 151840.0,
+      "prop_angle_deg": 202.2101055087,
+      "roll_deg": -0.163521476170511,
+      "rpm": 11148.9999999999,
+      "sha256": "332d31a1c3600f77d5106de95a58fae2503cc68343b9528f0377cc7829377f8e",
+      "shadow_px": [
+        184.7,
+        1223.2
+      ],
+      "sim_clock": 12.0,
+      "speed_ms": 29.5435929470947,
+      "t_s": 12.0,
+      "tick": 2880,
+      "view": "pilot"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        394.3
+      ],
+      "camera_fov_deg": 45.0,
+      "commands": {
+        "pitch": -0.201124841682213,
+        "roll": 0.00438464732085624,
+        "throttle": 1.0,
+        "yaw": 0.016651267548834
+      },
+      "draw_calls": 122.0,
+      "east_m": 154.281201614782,
+      "heading_deg": 89.6118766847553,
+      "height_m": 42.5637643176559,
+      "image": "chase/t012.0.png",
+      "north_m": 18.9037817561114,
+      "phase": "climb",
+      "pitch_deg": 13.8402804274164,
+      "primitives": 151364.0,
+      "prop_angle_deg": 202.2101055087,
+      "roll_deg": -0.163521476170511,
+      "rpm": 11148.9999999999,
+      "sha256": "2333f4de58ec5f1f68a4fcd8ebd719051ba30221455f2ebbfa46c4cf769e0ba1",
+      "shadow_px": [
+        95.6,
+        968.8
+      ],
+      "sim_clock": 12.0,
+      "speed_ms": 29.5435929470947,
+      "t_s": 12.0,
+      "tick": 2880,
+      "view": "chase"
+    },
+    {
+      "airplane_px": [
+        640.0,
+        360.0
+      ],
+      "camera_fov_deg": 30.0,
+      "commands": {
+        "pitch": -0.201124841682213,
+        "roll": 0.00438464732085624,
+        "throttle": 1.0,
+        "yaw": 0.016651267548834
+      },
+      "draw_calls": 149.0,
+      "east_m": 154.281201614782,
+      "heading_deg": 89.6118766847553,
+      "height_m": 42.5637643176559,
+      "image": "side/t012.0.png",
+      "north_m": 18.9037817561114,
+      "phase": "climb",
+      "pitch_deg": 13.8402804274164,
+      "primitives": 247177.0,
+      "prop_angle_deg": 202.2101055087,
+      "roll_deg": -0.163521476170511,
+      "rpm": 11148.9999999999,
+      "sha256": "654a7cc6db05bf842356ffa47526b354107db59c38d53e82ed691ede068c0fb9",
+      "shadow_px": [
+        464.3,
+        662.2
+      ],
+      "sim_clock": 12.0,
+      "speed_ms": 29.5435929470947,
+      "t_s": 12.0,
+      "tick": 2880,
+      "view": "side"
+    },
+    {
+      "airplane_px": [
+        898.0,
+        193.1
+      ],
+      "camera_fov_deg": 50.0,
+      "commands": {
+        "pitch": -0.201124841682213,
+        "roll": 0.00438464732085624,
+        "throttle": 1.0,
+        "yaw": 0.016651267548834
+      },
+      "draw_calls": 193.0,
+      "east_m": 154.281201614782,
+      "heading_deg": 89.6118766847553,
+      "height_m": 42.5637643176559,
+      "image": "wide/t012.0.png",
+      "north_m": 18.9037817561114,
+      "phase": "climb",
+      "pitch_deg": 13.8402804274164,
+      "primitives": 293959.0,
+      "prop_angle_deg": 202.2101055087,
+      "roll_deg": -0.163521476170511,
+      "rpm": 11148.9999999999,
+      "sha256": "e45ed198c3328a8eaffca78ca48706e3a8b5927edbbff1875313d0a9e1ad1d67",
+      "shadow_px": [
+        814.8,
+        341.0
+      ],
+      "sim_clock": 12.0,
+      "speed_ms": 29.5435929470947,
+      "t_s": 12.0,
+      "tick": 2880,
+      "view": "wide"
+    }
+  ],
+  "godot": "4.7.2-stable (official)",
+  "scenery": true,
+  "start": {
+    "east": -47.0,
+    "heading_deg": 90.0,
+    "north": 15.0
+  },
+  "times_s": [
+    0.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+    12.0
+  ],
+  "views": [
+    "pilot",
+    "chase",
+    "side",
+    "wide",
+    "closeup"
+  ]
+}

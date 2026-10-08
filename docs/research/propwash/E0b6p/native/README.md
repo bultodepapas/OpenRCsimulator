@@ -2,7 +2,7 @@
 
 2026-10-07 · **Status: Linux research prototype verified; whole-tick budget and native adoption remain open.**
 
-Follow-up: [whole-tick and native-phase attribution](../attribution/README.md) now separates the remaining costs and defines the next bounded decoding experiment. The measurements below document the original port.
+Follow-up: [whole-tick and native-phase attribution](../attribution/README.md) now separates the remaining costs and defines the next bounded decoding experiment. The [single-lookup decoder follow-up](../decoder/README.md) is now verified. The measurements below document the original port.
 
 ## Result
 

@@ -65,11 +65,11 @@ func _initialize() -> void:
 		quit(1)
 		return
 	_candidate_loaded = true
-	var baseline_class: StringName = baseline_backend.get_class()
-	var candidate_class: StringName = candidate_backend.get_class()
-	_backend_classes = {baseline = String(baseline_class), candidate = String(candidate_class)}
-	_check("reference object has the expected native class", baseline_class == &"OpenRCSmoothWake", str(baseline_class))
-	_check("candidate object has the expected native class", candidate_class == CANDIDATE_CLASS, str(candidate_class))
+	var baseline_class: String = baseline_backend.get_class()
+	var candidate_class: String = candidate_backend.get_class()
+	_backend_classes = {baseline = baseline_class, candidate = candidate_class}
+	_check("reference object has the expected native class", baseline_class == "OpenRCSmoothWake", baseline_class)
+	_check("candidate object has the expected native class", candidate_class == String(CANDIDATE_CLASS), candidate_class)
 	_check("native backend object classes are distinct", baseline_class != candidate_class, str(_backend_classes))
 	_backend_route_counts = {
 		baseline = {native = 0, kernel_calls = 0, legacy = 0, refused = 0},
@@ -266,7 +266,8 @@ func _profile_flight_case(regime: String, swirl_factor: float, baseline_backend:
 		for order_index: int in 2:
 			var mode: int = first_mode if order_index == 0 else 1 - first_mode
 			var backend: Object = baseline_backend if mode == 0 else candidate_backend
-			var timing: Dictionary = _time_flight_batch(flight, checkpoint, backend)
+			var timing: Dictionary = _time_flight_batch(flight, checkpoint, backend,
+				"baseline" if mode == 0 else "candidate")
 			pair_times[mode] = float(timing.get("us_per_tick", 0.0))
 			timing_ok = timing_ok and bool(timing.get("ok", false))
 		if pair_index >= FLIGHT_WARMUP_PAIRS:
@@ -274,8 +275,8 @@ func _profile_flight_case(regime: String, swirl_factor: float, baseline_backend:
 			candidate_samples.append(pair_times[1])
 			first_backend_samples.append("baseline" if first_mode == 0 else "candidate")
 
-	var baseline_capture: Dictionary = _capture_boundaries(flight, checkpoint, baseline_backend)
-	var candidate_capture: Dictionary = _capture_boundaries(flight, checkpoint, candidate_backend)
+	var baseline_capture: Dictionary = _capture_boundaries(flight, checkpoint, baseline_backend, "baseline")
+	var candidate_capture: Dictionary = _capture_boundaries(flight, checkpoint, candidate_backend, "candidate")
 	var exact: bool = false
 	var scalar_values_compared: int = 0
 	var boundary_comparison: Dictionary = {
@@ -318,40 +319,50 @@ func _profile_flight_case(regime: String, swirl_factor: float, baseline_backend:
 	return result
 
 
-func _time_flight_batch(flight: Node, checkpoint: Dictionary, backend: Object) -> Dictionary:
+func _time_flight_batch(flight: Node, checkpoint: Dictionary, backend: Object, backend_name: String) -> Dictionary:
 	# Backend selection and checkpoint restore are outside the measured region.
 	Adapter.backend = backend
 	if not flight.sim.restore_checkpoint(checkpoint):
 		return {ok = false, us_per_tick = 0.0, error = "checkpoint restore failed"}
+	var route_before: Dictionary = Adapter.route_counts.duplicate(true)
 	var start_tick: int = flight.sim.tick
 	var started: int = Time.get_ticks_usec()
 	for tick: int in FLIGHT_TICKS_PER_BATCH:
 		flight.sim.step()
 	var elapsed: int = Time.get_ticks_usec() - started
+	_record_backend_route_delta(backend_name, route_before, Adapter.route_counts.duplicate(true))
 	var fault_free: bool = flight.sim.fault_reason.is_empty() and flight.sim.tick == start_tick + FLIGHT_TICKS_PER_BATCH
 	return {ok = fault_free, us_per_tick = float(elapsed) / float(FLIGHT_TICKS_PER_BATCH),
 		error = "fault=%s tick=%d expected=%d" % [flight.sim.fault_reason, flight.sim.tick, start_tick + FLIGHT_TICKS_PER_BATCH]}
 
 
-func _capture_boundaries(flight: Node, checkpoint: Dictionary, backend: Object) -> Dictionary:
+func _capture_boundaries(flight: Node, checkpoint: Dictionary, backend: Object, backend_name: String) -> Dictionary:
 	Adapter.backend = backend
 	if not flight.sim.restore_checkpoint(checkpoint):
 		return {ok = false, error = "checkpoint restore failed"}
+	var route_before: Dictionary = Adapter.route_counts.duplicate(true)
 	var start_tick: int = flight.sim.tick
 	var boundaries: Array[Dictionary] = []
+	var capture_error: String = ""
 	for boundary_index: int in BOUNDARY_TICKS:
 		flight.sim.step()
 		if not flight.sim.fault_reason.is_empty():
-			return {ok = false, error = "simulation fault at boundary %d: %s" % [boundary_index + 1, flight.sim.fault_reason]}
+			capture_error = "simulation fault at boundary %d: %s" % [boundary_index + 1, flight.sim.fault_reason]
+			break
 		var body: PackedFloat64Array = flight.sim.state
 		var auxiliary: PackedFloat64Array = flight.sim.aux
 		var continuous: PackedFloat64Array = flight.sim.continuous
 		if body.size() != BODY_VALUES or auxiliary.size() != AUX_VALUES or continuous.size() != CONTINUOUS_VALUES:
-			return {ok = false, error = "boundary %d has shape body=%d aux=%d continuous=%d" % [
-				boundary_index + 1, body.size(), auxiliary.size(), continuous.size()]}
+			capture_error = "boundary %d has shape body=%d aux=%d continuous=%d" % [
+				boundary_index + 1, body.size(), auxiliary.size(), continuous.size()]
+			break
 		if not _all_finite(body) or not _all_finite(auxiliary) or not _all_finite(continuous):
-			return {ok = false, error = "boundary %d contains a non-finite value" % (boundary_index + 1)}
+			capture_error = "boundary %d contains a non-finite value" % (boundary_index + 1)
+			break
 		boundaries.append({body = body.duplicate(), auxiliary = auxiliary.duplicate(), continuous = continuous.duplicate()})
+	_record_backend_route_delta(backend_name, route_before, Adapter.route_counts.duplicate(true))
+	if not capture_error.is_empty():
+		return {ok = false, error = capture_error}
 	if flight.sim.tick != start_tick + BOUNDARY_TICKS:
 		return {ok = false, error = "captured trajectory ended at tick %d, expected %d" % [flight.sim.tick, start_tick + BOUNDARY_TICKS]}
 	return {ok = true, boundaries = boundaries, finite = true, count = boundaries.size()}
@@ -401,6 +412,13 @@ func _packed_exact(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
 	return left.size() == right.size() and left.to_byte_array() == right.to_byte_array()
 
 
+func _record_backend_route_delta(backend_name: String, before: Dictionary, after: Dictionary) -> void:
+	var totals: Dictionary = _backend_route_counts.get(backend_name, {})
+	for key: String in ["native", "kernel_calls", "legacy", "refused"]:
+		totals[key] = int(totals.get(key, 0)) + int(after.get(key, 0)) - int(before.get(key, 0))
+	_backend_route_counts[backend_name] = totals
+
+
 func _all_finite(values: PackedFloat64Array) -> bool:
 	for value: float in values:
 		if not is_finite(value):
@@ -434,8 +452,9 @@ func _write_report(path: String) -> bool:
 		backend_load_order = {
 			reference_loaded_before_candidate = _baseline_loaded_before_candidate,
 			candidate_loaded = _candidate_loaded,
-			baseline_class = "OpenRCSmoothWake",
-			candidate_class = String(CANDIDATE_CLASS),
+			baseline_class = _backend_classes.get("baseline", ""),
+			candidate_class = _backend_classes.get("candidate", ""),
+			classes_distinct = _backend_classes.get("baseline", "") != _backend_classes.get("candidate", ""),
 		},
 		protocol = {
 			warmup_pairs = DIRECT_WARMUP_PAIRS,
@@ -452,6 +471,7 @@ func _write_report(path: String) -> bool:
 		direct_rows = _direct_rows,
 		flight_rows = _flight_rows,
 		route_counts = _route_counts,
+		backend_route_counts = _backend_route_counts,
 		checks = {
 			direct_rows = _direct_rows.size(),
 			whole_tick_rows = _flight_rows.size(),
@@ -463,7 +483,18 @@ func _write_report(path: String) -> bool:
 				and int(_route_counts.get("kernel_calls", 0)) > 0
 				and int(_route_counts.get("legacy", -1)) == 0
 				and int(_route_counts.get("refused", -1)) == 0,
+			backend_routes_valid = _backend_routes_are_valid(),
+			backend_objects_distinct = _backend_classes.get("baseline", "") != _backend_classes.get("candidate", ""),
 		},
 	}
 	output.store_string(JSON.stringify(report, "\t", true, true) + "\n")
+	return true
+
+
+func _backend_routes_are_valid() -> bool:
+	for backend_name: String in ["baseline", "candidate"]:
+		var counts: Dictionary = _backend_route_counts.get(backend_name, {})
+		if int(counts.get("native", 0)) <= 0 or int(counts.get("kernel_calls", 0)) <= 0 \
+				or int(counts.get("legacy", -1)) != 0 or int(counts.get("refused", -1)) != 0:
+			return false
 	return true

@@ -2,6 +2,8 @@
 
 2026-10-07 · **Status: attribution verified; the 500 µs budget remains open.**
 
+Follow-up: the [required-field lookup cleanup](../decoder/README.md) was verified on 2026-10-08. The measurements and proposed experiment below record the attribution before that change.
+
 ## Result and next experiment
 
 Two disposable profilers separate the complete flight tick from native wake decoding and computation. Application physics, aircraft data and the original native evaluator are unchanged. The measured active native-flight medians remain **615–691 µs/tick** on the shared Linux i5-10500 host. This is diagnostic evidence, not quiet-target acceptance.

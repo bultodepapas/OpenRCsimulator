@@ -1,0 +1,38 @@
+== build identity: v0.1.0-rc5-4-g488bc6f-dirty (commit 488bc6f46790efe2a45ba5196543fb17149cd854, 2026-10-07T23:37:56+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s
+exported binary reports build v0.1.0-rc5-4-g488bc6f-dirty
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+don't have name, sorry
+--Main Shader--
+    4 | 
+    5 | #include "res://render/tree_wind.gdshaderinc"
+E   6-> 
+    7 | 
+    8 | global uniform float sim_clock;
+SHADER ERROR: Global uniform 'sim_clock' does not exist. Create it in Project Settings.
+          at: (null) (:6)
+          GDScript backtrace (most recent call first):
+              [0] build (res://render/treeline.gd:66)
+              [1] build (res://render/field.gd:43)
+              [2] _initialize (/tmp/openrc-l15b-candidate/app/tests/check_field_pack.gd:50)
+ERROR: Shader compilation failed.
+   at: shader_set_code (servers/rendering/dummy/storage/material_storage.cpp:192)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/treeline.gd:66)
+       [1] build (res://render/field.gd:43)
+       [2] _initialize (/tmp/openrc-l15b-candidate/app/tests/check_field_pack.gd:50)
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4843 opaque clumps validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated

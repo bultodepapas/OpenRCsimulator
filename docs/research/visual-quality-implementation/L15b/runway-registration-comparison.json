@@ -1,0 +1,312 @@
+{
+ "previous": "/tmp/l15b-scenario-verified/previous",
+ "verdict": "identical",
+ "frames": [
+  {
+   "image": "pilot/t000.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t000.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t000.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t000.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "closeup/t000.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t001.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t001.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t001.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t001.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t002.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t002.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t002.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t002.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "closeup/t002.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t003.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t003.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t003.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t003.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t004.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t004.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t004.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t004.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "closeup/t004.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t005.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t005.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t005.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t005.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t006.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t006.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t006.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t006.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t007.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t007.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t007.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t007.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t008.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t008.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t008.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t008.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t009.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t009.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t009.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t009.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t010.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t010.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t010.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t010.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "pilot/t012.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "chase/t012.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "side/t012.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  },
+  {
+   "image": "wide/t012.0.png",
+   "status": "identical",
+   "changed_pixels": 0,
+   "state_changes": {}
+  }
+ ]
+}

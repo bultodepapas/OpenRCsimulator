@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6 swirl accuracy: independent composite-midpoint reference; 128 samples/profile interval
+Swirl delta tolerance: 0.1% of force/moment norm or 1e-4 N / 1e-4 N m, whichever is larger.
+The fixture is synthetic and uncalibrated; total dense-load residual is reported separately from swirl-delta error.
+ok validated combined E0b3b fixture, swirl=0.0 []
+ok validated combined E0b3b fixture, swirl=0.4 []
+ok validated combined E0b3b fixture, swirl=1.0 []
+ok static swirl=0.4 loads/reference finite
+ok static swirl=0.4 distributed swirl delta within 0.1% plus floor force 9.872974429443923e-07 / 0.001033464061611473 N; moment 1.6453085080582823e-06 / 0.000773921646782327 N m
+E0b6 case static swirl=0.4: centroid baseline residual F=9.078421629863048e-07 N M=6.547685153000256e-07 N m; total dense residual F=1.2190473870903375e-06 N M=1.714283687274942e-06 N m
+ok static axial centroid residual stays under 0.25% relative force 0.000075 percent, moment 0.000076 percent
+ok static swirl=1.0 loads/reference finite
+ok static swirl=1.0 distributed swirl delta within 0.1% plus floor force 0.00020113657380967873 / 0.0024304025922977355 N; moment 0.00014483497070310686 / 0.0017975910107251255 N m
+E0b6 case static swirl=1.0: centroid baseline residual F=9.078421629863048e-07 N M=6.547685153000256e-07 N m; total dense residual F=0.00020203924077491657 N M=0.00014548967713765102 N m
+ok static axial centroid residual stays under 0.25% relative force 0.000075 percent, moment 0.000076 percent
+ok forward15_alpha3_rates swirl=0.4 loads/reference finite
+ok forward15_alpha3_rates swirl=0.4 distributed swirl delta within 0.1% plus floor force 6.11608878334851e-07 / 0.0014548653014334375 N; moment 2.0648716142432726e-06 / 0.001103646654963459 N m
+E0b6 case forward15_alpha3_rates swirl=0.4: centroid baseline residual F=3.6623089472788414e-07 N M=0.0007662860285914229 N m; total dense residual F=7.647961093520737e-07 N M=0.0007642471782393287 N m
+ok forward15_alpha3_rates axial centroid residual stays under 0.25% relative force 0.000060 percent, moment 0.196212 percent
+ok forward15_alpha3_rates swirl=1.0 loads/reference finite
+ok forward15_alpha3_rates swirl=1.0 distributed swirl delta within 0.1% plus floor force 2.5082519772256182e-05 / 0.0037111735117545744 N; moment 1.9228267807693996e-05 / 0.0028026361043562396 N m
+E0b6 case forward15_alpha3_rates swirl=1.0: centroid baseline residual F=3.6623089472788414e-07 N M=0.0007662860285914229 N m; total dense residual F=2.473993829483342e-05 N M=0.0007595480250875474 N m
+ok forward15_alpha3_rates axial centroid residual stays under 0.25% relative force 0.000060 percent, moment 0.196212 percent
+ok stall15_alpha15 swirl=0.4 loads/reference finite
+ok stall15_alpha15 swirl=0.4 distributed swirl delta within 0.1% plus floor force 2.8617693864166795e-07 / 0.0010781175884327367 N; moment 2.1561528194207182e-07 / 0.0007973196970878867 N m
+E0b6 case stall15_alpha15 swirl=0.4: centroid baseline residual F=6.882216593284984e-06 N M=4.958625939847916e-06 N m; total dense residual F=6.875411789942315e-06 N M=4.953700429886097e-06 N m
+ok stall15_alpha15 axial centroid residual stays under 0.25% relative force 0.004126 percent, moment 0.012825 percent
+ok stall15_alpha15 swirl=1.0 loads/reference finite
+ok stall15_alpha15 swirl=1.0 distributed swirl delta within 0.1% plus floor force 5.256667229040776e-06 / 0.0027567478416445188 N; moment 3.913680036185745e-06 / 0.0020283486892690326 N m
+E0b6 case stall15_alpha15 swirl=1.0: centroid baseline residual F=6.882216593284984e-06 N M=4.958625939847916e-06 N m; total dense residual F=8.54046909927956e-06 N M=6.12262770646798e-06 N m
+ok stall15_alpha15 axial centroid residual stays under 0.25% relative force 0.004126 percent, moment 0.012825 percent
+ok sideslip_displaced_core swirl=0.4 loads/reference finite
+ok sideslip_displaced_core swirl=0.4 distributed swirl delta within 0.1% plus floor force 0.00014481205762551595 / 0.0007923785271131074 N; moment 0.00010424427356348998 / 0.0006129116716488269 N m
+E0b6 case sideslip_displaced_core swirl=0.4: centroid baseline residual F=1.4251242120326341e-07 N M=1.0200560909832493e-07 N m; total dense residual F=0.00014495117706466812 N M=0.00010434614320306528 N m
+ok sideslip_displaced_core swirl=1.0 loads/reference finite
+ok sideslip_displaced_core swirl=1.0 distributed swirl delta within 0.1% plus floor force 0.00032386724582325046 / 0.00196168196086575 N; moment 0.00023332090833926025 / 0.0015134978106232577 N m
+E0b6 case sideslip_displaced_core swirl=1.0: centroid baseline residual F=1.4251242120326341e-07 N M=1.0200560909832493e-07 N m; total dense residual F=0.0003240068494319113 N M=0.00023342246070106936 N m
+ok sideslip_displaced_edge swirl=0.4 loads/reference finite
+ok sideslip_displaced_edge swirl=0.4 distributed swirl delta within 0.1% plus floor force 4.569433001627603e-06 / 0.00012136567614498847 N; moment 3.3718051750159796e-06 / 0.0001501130904564928 N m
+E0b6 case sideslip_displaced_edge swirl=0.4: centroid baseline residual F=1.5927418186887431e-06 N M=3.7403421720641417e-07 N m; total dense residual F=5.306659772000311e-06 N M=3.736603692472155e-06 N m
+ok sideslip_displaced_edge swirl=1.0 loads/reference finite
+ok sideslip_displaced_edge swirl=1.0 distributed swirl delta within 0.1% plus floor force 1.0051488533179662e-05 / 0.0003828262994746876 N; moment 7.587808303319864e-06 / 0.00039832782537963874 N m
+E0b6 case sideslip_displaced_edge swirl=1.0: centroid baseline residual F=1.5927418186887431e-06 N M=3.7403421720641417e-07 N m; total dense residual F=1.0623592119148976e-05 N M=7.936727816355949e-06 N m
+ok reverse_fade_midpoint swirl=0.4 loads/reference finite
+ok reverse_fade_midpoint swirl=0.4 distributed swirl delta within 0.1% plus floor force 5.871524306326587e-07 / 0.0005112536901446078 N; moment 9.023158311315523e-07 / 0.0003821005607159427 N m
+E0b6 case reverse_fade_midpoint swirl=0.4: centroid baseline residual F=1.563203499283364e-08 N M=3.777753406972173e-09 N m; total dense residual F=5.730835537979792e-07 N M=9.024521765201078e-07 N m
+ok reverse_fade_midpoint swirl=1.0 loads/reference finite
+ok reverse_fade_midpoint swirl=1.0 distributed swirl delta within 0.1% plus floor force 1.551098707537706e-05 / 0.0009034104589754877 N; moment 1.1551976118928367e-05 / 0.0006732828345783116 N m
+E0b6 case reverse_fade_midpoint swirl=1.0: centroid baseline residual F=1.563203499283364e-08 N M=3.777753406972173e-09 N m; total dense residual F=1.5515858510046985e-05 N M=1.1555379254784877e-05 N m
+ok midpoint reference refines from 128 to 256 samples force 2.491434316066039e-06 / 0.003711174062102721 N; moment 4.094282756636118e-06 / 0.0028026358205285205 N m
+ok isolated neutral fin swirl yaws nose left yaw delta -1.613194553064844 N m
+ok isolated neutral symmetric stabilizer swirls right roll delta 0.18191760157084153 N m
+ok swirl correction approaches the exact zero-factor baseline combined force/moment delta 6.355733185601441e-08
+ok near-zero swirl correction scales continuously norms at 1e-5 and 2e-5: 6.3557336344155e-05, 0.00012711468173452008
+ok finite, continuous swirl through the regularized core radius core-radius force 3.0592544577834784 N moment 2.272905769893778 N m
+ok outer wake edge tapers isolated fin swirl continuously inside norms [0.0003460524422, 0.00004634210075, 0.00000747220375]; edge 0; outside 0 N/N m
+ok reverse fade midpoint and smooth endpoints stay finite/continuous mid fade delta F=0.9511153711307583 N M=0.7055682168111945 N m; cutoff delta F=0 N M=0 N m
+E0b6 swirl accuracy: 41 checks, 0 failed

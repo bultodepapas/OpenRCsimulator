@@ -1,0 +1,9 @@
+{
+  "format": "openrc-l15b-runway-parity v1",
+  "baseline": "runway-before.json",
+  "candidate": "runway-after.json",
+  "entire_manifests_equal": true,
+  "frames": 51,
+  "image_sha256_equal": true,
+  "all_state_and_render_counter_fields_equal": true
+}

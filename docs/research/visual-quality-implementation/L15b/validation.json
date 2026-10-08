@@ -1,0 +1,173 @@
+{
+  "format": "openrc-l15b-validation v1",
+  "date": "2026-10-08",
+  "complete": true,
+  "snapshot_git_head": "488bc6f46790efe2a45ba5196543fb17149cd854",
+  "snapshot_note": "Working-tree snapshot includes the prior L11a implementation; its app inputs were subsequently committed unchanged in 5dba3f7.",
+  "runtime_and_test_sha256": {
+    "app/render/treeline.gd": "74bac22b7a839a61af50a307408e0903e406722c2960658dc6216354d4db4872",
+    "app/render/treeline.gdshader": "1729b1b30aa6055dc68473937a7ce32ba3b010f1777e8dcf1c684498e838555a",
+    "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+    "app/tests/test_tree_wind.gd": "9e62243eff1cd7039d70cbb8d8a6c1021d3e9a0e2384c6c273461e946b43949e",
+    "tools/grass/capture_grass.gd": "c51ac6fd8c6101c32c3ab77a2ad351c614904835a50e3798ce03591f0df0706f",
+    "tools/trees/capture_wind.gd": "aa21f3d67bdc8e6e1b24969adaea69641e666e1a6b0ee6a4b406fe4c91369166",
+    "tools/trees/check_wind.py": "9ccbed506938d8a0581cf7a84816c6d57bbfcec97c035ebe839ddd4dab9c79d1",
+    "app/capture.sh": "9046a8afd88f3a85fe930619ab1dfbe11ee7c5cf592d2e00d489615f5039cd79"
+  },
+  "bounds": {
+    "checks": 122643,
+    "failed": 0,
+    "max_default_vertex_chord_m": 0.28853
+  },
+  "trace": {
+    "identical_except_created_utc": true,
+    "normalized_sha256": "614865998482f775953a5fe7f44006dacf78ec61ce76bfd6af07943205b8e1a4",
+    "samples": 721
+  },
+  "linter_before": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "linter_after": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "scope": "L15b rendering preparation only. Physical wind, L15a/c integration and human/target-GPU acceptance remain pending.",
+  "runway_scenario": {
+    "exit_code": 0,
+    "frames": 51,
+    "verdict": "identical",
+    "state_changes": 0,
+    "sync_passed": true
+  },
+  "grass_regression": {
+    "complete": true,
+    "repeatability": {
+      "candidate": {
+        "byte_identical": true,
+        "case_count": 28,
+        "image_mismatches": [],
+        "manifests_byte_identical": true
+      },
+      "scenery": {
+        "byte_identical": true,
+        "case_count": 2,
+        "image_mismatches": [],
+        "manifests_byte_identical": true
+      }
+    },
+    "budgets": {
+      "draw_delta_limit": 5,
+      "draw_delta_max": 2,
+      "primitive_delta_limit": 100000,
+      "primitive_delta_max": 20552
+    },
+    "after_registration_fix": true
+  },
+  "registration_fix": "Empty-project export test caught missing sim_clock globals. Treeline.build now registers them before material compilation; a standalone test no longer preregisters them.",
+  "exports": {
+    "exit_code": 0,
+    "elapsed_s": 57.72
+  },
+  "exported_frame": {
+    "byte_identical_to_editor": true,
+    "png_sha256": "8544035b722befa55f8b57600040272fb22abd143d8c2dc24f01e9d5d7379003",
+    "arguments": [
+      "--scripted",
+      "--capture",
+      "--out=<png>",
+      "--t=1.5",
+      "--look_az=0",
+      "--look_el=0",
+      "--autozoom=0",
+      "--aircraft=jensen-das-ugly-stik-60"
+    ]
+  },
+  "readability": {
+    "entire_reports_equal": true,
+    "groups": 8,
+    "pose_metrics": 48,
+    "captures": 64,
+    "source_guard_complete": true
+  },
+  "complete_suite": {
+    "exit_code": 0,
+    "elapsed_s": 622.77
+  },
+  "full_capture_wrapper_run": false,
+  "tree_wind_capture": {
+    "complete": true,
+    "capture_set": {
+      "baseline_app": "/tmp/openrc-l15b-baseline/app",
+      "baseline_images_per_process": 8,
+      "baseline_processes": 2,
+      "candidate_images_per_process": 104,
+      "candidate_processes": 2,
+      "time_strip_frames": 8,
+      "viewport": {
+        "height": 720,
+        "width": 1280
+      },
+      "views": [
+        "wide-az000",
+        "zoom-az000",
+        "wide-az090",
+        "zoom-az090",
+        "wide-az180",
+        "zoom-az180",
+        "wide-az270",
+        "zoom-az270"
+      ]
+    },
+    "repeatability": {
+      "baseline": {
+        "byte_identical": true,
+        "case_count": 8,
+        "image_mismatches": [],
+        "manifest_byte_identical": true
+      },
+      "candidate": {
+        "byte_identical": true,
+        "case_count": 104,
+        "image_mismatches": [],
+        "manifest_byte_identical": true
+      }
+    },
+    "checker_self_test": {
+      "corrupted_png_hash_rejected": true,
+      "moving_pair_accepted": true,
+      "static_same_input_pair_rejected": true
+    },
+    "summary": "capture-summary.json",
+    "baseline_views_identical": 8,
+    "geometry_probe": {
+      "cardinal_directions": [
+        "east",
+        "west",
+        "north",
+        "south"
+      ],
+      "color_transfer": "linear",
+      "distinct_hash_phase_outputs": 7,
+      "max_card_vertex_displacement_m": 0.28836731670312526,
+      "max_length_error_m": 0.002383902958305484,
+      "max_prewrap_delta_m": 0.00021943270327118088,
+      "prewrap_pairs": 6,
+      "root_displacement_m": 0.002716942443245288,
+      "root_samples": 16,
+      "sample_count": 201,
+      "speed_sample_displacements_m": {
+        "5": 0.03614656822526399,
+        "10": 0.14903611879635872,
+        "20": 0.14903611879635872
+      },
+      "sub_saturation_speed_ratio_5_to_10": 0.24253562503633266,
+      "t0_to_t1_probe_delta_m": 0.0909803921568628,
+      "wrapped_pairs": 2
+    }
+  }
+}
