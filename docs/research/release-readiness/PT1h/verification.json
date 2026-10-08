@@ -2,7 +2,7 @@
   "format": "openrc-release-readiness v1",
   "step": "PT1h",
   "base_commit": "e80f4e0ff7d9964ae91d2050f972447803489b83",
-  "status": "capture-and-export-pending",
+  "status": "local-software-and-clean-export-verified; publication-gated-by-tagged-ci",
   "checks": {
     "test": {
       "result": "pass",
@@ -47,6 +47,34 @@
     "documentation": {
       "local_file_links": 633,
       "missing": 0
+    },
+    "exports": {
+      "result": "pass",
+      "platforms": [
+        "linux-x86_64",
+        "windows-x86_64",
+        "macos-universal"
+      ],
+      "native_execution": [
+        "linux-x86_64"
+      ],
+      "log_sha256": "e0a31914cca57898640f9644d977d850859a0f84cb0125f31d96547bb8851a87"
+    },
+    "clean_clone_tools": {
+      "result": "pass",
+      "programs": 11,
+      "tests": 195,
+      "temporary_filesystem": "same as checkout (hardlink fixtures)"
+    },
+    "clean_clone_dashboard": {
+      "result": "pass",
+      "rows": 10
+    },
+    "capture": {
+      "local_progress": "EN/ES changed UI inspected; VQ-01b 66 captures complete; L7 repeatability passes",
+      "publication_gate": "full app/capture.sh in tagged CI",
+      "hardware_acceptance": false
     }
-  }
+  },
+  "export_source_commit": "dda5281e1edc04f00563bf924976b9b494e8cbb2"
 }

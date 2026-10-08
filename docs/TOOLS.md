@@ -20,6 +20,14 @@ Run commands from the repository root unless a command says otherwise. `$(app/ge
 
 `app/capture.sh` composes focused checks from `tools/` and `app/tests/`. Use the focused command below when iterating on one visual feature; the complete capture run is broader and takes longer. `app/test.sh` is the normal software verification suite, not evidence that a model matches a real aircraft.
 
+## Release sequence
+
+1. Finish a small, committed change and review the selected diff. Retain per-step proof in `docs/research/`; stage explicit paths in the shared checkout.
+2. Run app, offline-tool, schema/generator and capture checks. Build with `app/export.sh` in an isolated checkout with enough output and temporary space; inspect failures before tagging.
+3. Add `docs/releases/<tag>.md`. The tag's numeric version must match `app/project.godot`; `git describe` supplies the complete package/build identity.
+4. Push the reviewed commit and `v*` tag to the repository. CI repeats checks, exports all platforms and publishes a prerelease with checksums. Tags without their own notes fail before packaging.
+5. Check the tagged workflow and download/verify its three ZIPs and `SHA256SUMS`. Keep native OS, radio, GPU and pilot acceptance separate from this software release proof.
+
 ## Radio diagnostics
 
 | Step | Command | Inputs and limits |

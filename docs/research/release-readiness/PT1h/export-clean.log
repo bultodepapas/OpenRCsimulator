@@ -1,0 +1,47 @@
+== build identity: v0.1.0-rc5-13-gdda5281 (commit dda5281e1edc04f00563bf924976b9b494e8cbb2, 2026-10-08T12:17:26+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+exported binary reports build v0.1.0-rc5-13-gdda5281
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+== packages
+058813b64f53e4165bda8a4b39b7e4e8a7e4745f437a7924dec8607833cf70af  openrc-simulator-v0.1.0-rc5-13-gdda5281-linux-x86_64.zip
+4f923682a6480722968af4195934584b140188f647600ec6bedcd7a1e66d010c  openrc-simulator-v0.1.0-rc5-13-gdda5281-macos-universal.zip
+a97f2397b594fc66f22b277d1112a71e4d0882070187ffcb8a15412a0d747986  openrc-simulator-v0.1.0-rc5-13-gdda5281-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29665839 Oct  8 12:20 openrc-simulator-v0.1.0-rc5-13-gdda5281-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61815312 Oct  8 12:20 openrc-simulator-v0.1.0-rc5-13-gdda5281-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 39191285 Oct  8 12:20 openrc-simulator-v0.1.0-rc5-13-gdda5281-windows-x86_64.zip

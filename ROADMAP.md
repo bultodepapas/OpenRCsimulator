@@ -164,7 +164,7 @@ Computed from the original D1 data (2.601 kg, 720 in², borrowed UltraStick25e a
 
 ### PT1h — Integration and release readiness
 
-**2026-10-08 · Status: code/document reconciliation and release verification.** Evidence and final outcomes: [PT1h](docs/research/release-readiness/PT1h/README.md).
+**2026-10-08 · Status: reconciliation and local software/export verification complete; rc6 publication is gated by tagged CI.** Evidence and final outcomes: [PT1h](docs/research/release-readiness/PT1h/README.md).
 
 | ID | Change | Acceptance |
 | --- | --- | --- |

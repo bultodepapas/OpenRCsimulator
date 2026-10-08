@@ -1,0 +1,11 @@
+PASS gp_extra_300s_60.json
+PASS jensen_ugly_stik_60.json
+PASS p51d_mustang_120.json
+PASS sebart_avanti_s_a200.json
+4 aircraft, 0 failed structural preflight
+...1691 schema/loader cases; 136 valid controls; 11 runtime-only checks
+.
+----------------------------------------------------------------------
+Ran 4 tests in 49.428s
+
+OK
