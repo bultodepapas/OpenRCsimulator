@@ -165,7 +165,8 @@ def reduce(document):
         warnings.append('10% and 90% fall in one sample interval: the transient is under-resolved.')
     return {'format': 'openrc-rpm-step-result v1', 'kind': 'derived', 'input': document,
             'direction': 'increasing' if amplitude > 0 else 'decreasing',
-            'sample_count': len(times), 'record_span_s': span, 'crossings': crossings,
+            'sample_count': len(times), 'record_span_s': span, 'endpoint_span_rpm': amplitude,
+            'crossings': crossings, 'normalized_residuals': residuals,
             'first_order_diagnostic': {
                 'rise_10_90_s': rise, 'tau_s': tau, 'delay_s': delay,
                 'tau_sampling_support_s': [finite(v) for v in tau_support],

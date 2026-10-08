@@ -416,6 +416,7 @@ func _field_variant(mutate: Callable) -> Dictionary:
 		return {}
 	var copy: Dictionary = raw.duplicate(true)
 	copy["objects"] = [] # Tree placement is unrelated to these grass surface cases.
+	copy.erase("flight_cues") # These fixtures independently move the pilot and surfaces.
 	mutate.call(copy)
 	var result: Dictionary = FieldLoader.validate(copy)
 	_check("grass field variant validates", bool(result.get("ok", false)), str(result.get("errors", [])))

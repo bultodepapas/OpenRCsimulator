@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /tmp/g1b1-verified-final/stik_trim.csv (241 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /tmp/g1b1-verified-final/stik_dive_idle.csv (481 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /tmp/g1b1-verified-final/stik_full_power.csv (241 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /tmp/g1b1-verified-final/stik_stopped.csv (241 rows)
+trace saved: /tmp/g1b1-verified-final/extra_trim.csv (241 rows)
+trace saved: /tmp/g1b1-verified-final/p51_trim.csv (241 rows)
+G1b1: six complete session flights and direct propulsion query oracles

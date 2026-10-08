@@ -1,0 +1,4 @@
+id,frame,frame_u,x_m,x_u_m,frame_x_correlation
+start,120,0.5,-5,0.03,0
+middle,720,0.5,10,0.03,0
+end,1320,0.5,25,0.03,0

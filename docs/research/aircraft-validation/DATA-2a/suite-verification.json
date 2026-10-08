@@ -1,0 +1,43 @@
+{
+  "step": "DATA-2a",
+  "baseline_exit_code": 0,
+  "candidate_exit_code": 0,
+  "isolation": "Disposable shared clone with the same captured source/data; separate XDG_DATA_HOME and XDG_CONFIG_HOME. Only the loader solver and new regression differ between runs.",
+  "matching_app_commit": "a6c1e4d4a0c90c4f6160566ffc60075450341d62",
+  "proof_inputs_still_match": true,
+  "logs": {
+    "baseline-suite.log": {
+      "sha256": "63c0cb435bb5f9bac76495fead8525501f114dd29c5dcac6ccccff446c056c09",
+      "sections": 131,
+      "engine_errors": 0
+    },
+    "after-suite.log": {
+      "sha256": "22cba4c42f126240cf5d343c919bccb4055f48d2c4325453a1ba0a6c4174aa17",
+      "sections": 132,
+      "engine_errors": 0
+    }
+  },
+  "baseline_frame_hashes": [
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+  ],
+  "after_frame_hashes": [
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+    "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+  ],
+  "captured_app_files_matching_current": 557
+}

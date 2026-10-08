@@ -1,6 +1,6 @@
 # DATA-2a — Faster stall-envelope loading without changing the grid
 
-2026-10-07 · **Status: validation in progress.** DATA-2's 15 ms whole-load target remains separate. Scope: stall-start solve and peak search in `app/physics/aircraft_data.gd`, one focused app test and offline evidence. DATA-3 exact-input identity is preserved.
+2026-10-08 · **Status: implemented and verified.** DATA-2's 15 ms whole-load target remains open. Scope: stall-start solve and peak search in `app/physics/aircraft_data.gd`, one focused app test and offline evidence. DATA-3 exact-input identity is preserved.
 
 ## Change and rationale
 
@@ -37,11 +37,22 @@ Twelve alternating load pairs per aircraft on the shared host; milliseconds incl
 | p51d_mustang_120 | 121.42 | 15.77 | 7.70× | 13.48–17.72 |
 | sebart_avanti_s_a200 | 120.87 | 14.47 | 8.35× | 12.38–17.97 |
 
-All latest medians improve; P-51's 15.77 ms still misses the 15 ms target. Earlier same-candidate runs under different concurrent load measured fleet medians at 15–19 ms. Do not interpret the latest lower run as universal timing acceptance. Golden flights and the isolated full-suite result are pending.
+All latest medians improve; P-51's 15.77 ms still misses the 15 ms target. [Earlier same-candidate timings](earlier-timings.log) under different concurrent load measured fleet medians at 15–19 ms. Do not interpret the latest lower run as universal timing acceptance.
 
+The isolated full `app/test.sh` passes before and after the change: [131 baseline sections](baseline-suite.log), [132 candidate sections](after-suite.log), zero engine errors. Goldens were not re-recorded; the standard, transport and distributed-swirl frame-rate hashes match the baseline at 30/60/144 fps. Each run uses the same captured source/data and separate runtime settings. [Suite verification](suite-verification.json) records log hashes and the matching app commit; all 557 captured app files matched the shared tree at completion. [Static lint](lint.json) has zero errors and the same 12 existing warnings. Proof-input hashes still match after concurrent integration.
 
 ## Limits and follow-up
 
-The historical 801-point grid remains an approximation to the continuous lift peak. This change verifies unchanged behavior, not stall calibration or independent aerodynamic validation. Large/unusual input domains use the slower fallback. The broader DATA-2 cold-load target stays open when any aircraft's measured load time exceeds 15 ms; profile remaining work before another optimization.
+The historical 801-point grid remains an approximation to the continuous lift peak. This change verifies unchanged behavior, not stall calibration or independent aerodynamic validation. Large/unusual input domains use the slower fallback. The broader DATA-2 whole-load target stays open when any aircraft's measured load time exceeds 15 ms; profile remaining work before another optimization.
 
 Knowledge base: [aircraft data pipeline](../../roadmap-investigations/09-aircraft-data-pipeline.md). Equations above are derived directly from the repository's smoothstep lift law; no third-party code or data was copied. Earlier interval-value bounds preserved the fleet angles but were slower; the curvature bound was selected after paired prototypes.
+
+Suggested commit message:
+
+```text
+DATA-2a: bound sampled stall peaks without changing flight behavior
+
+Proof: 571 focused checks, 1,000 exact solved angles, 48 exact loader
+results, three rejected mutations and isolated app/test.sh before/after.
+Fleet loader medians improve 7.7–8.9x; P-51 still misses 15 ms.
+```

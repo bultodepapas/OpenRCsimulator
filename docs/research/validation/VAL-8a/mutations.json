@@ -1,0 +1,25 @@
+{
+  "positive_control": "passed",
+  "mutations": {
+    "inclusive_frame_count": {
+      "test": "test_known_answer_and_not_inclusive_frame_count",
+      "assertion_detected": true
+    },
+    "dropped_capture_clock": {
+      "test": "test_calibration_does_not_average_away",
+      "assertion_detected": true
+    },
+    "dropped_survey_scale": {
+      "test": "test_calibration_does_not_average_away",
+      "assertion_detected": true
+    },
+    "ignored_event_correlation": {
+      "test": "test_correlated_position_frame_picks",
+      "assertion_detected": true
+    },
+    "lost_shared_event_identity": {
+      "test": "test_shared_event_and_calibration_covariance",
+      "assertion_detected": true
+    }
+  }
+}

@@ -1,0 +1,25 @@
+test_affine_rpm_invariance (__main__.Reduction.test_affine_rpm_invariance) ... ok
+test_bad_contract (__main__.Reduction.test_bad_contract) ... ok
+test_cli_failure_no_partial_report (__main__.Reduction.test_cli_failure_no_partial_report) ... ok
+test_cli_reproducible_and_hashes (__main__.Reduction.test_cli_reproducible_and_hashes) ... ok
+test_decreasing (__main__.Reduction.test_decreasing) ... ok
+test_exact_exponential (__main__.Reduction.test_exact_exponential) ... ok
+test_invalid_sample_values_and_order (__main__.Reduction.test_invalid_sample_values_and_order) ... ok
+test_irregular_interpolation (__main__.Reduction.test_irregular_interpolation) ... ok
+test_json_duplicates_and_nonfinite (__main__.Reduction.test_json_duplicates_and_nonfinite) ... ok
+test_measured_provenance_and_uncertainty_retained (__main__.Reduction.test_measured_provenance_and_uncertainty_retained) ... ok
+test_missing_threshold_and_onset (__main__.Reduction.test_missing_threshold_and_onset) ... ok
+test_negative_delay_is_not_clamped (__main__.Reduction.test_negative_delay_is_not_clamped) ... ok
+test_nonmonotone_first_crossing_overshoot (__main__.Reduction.test_nonmonotone_first_crossing_overshoot) ... ok
+test_precommand_crossing_refused (__main__.Reduction.test_precommand_crossing_refused) ... ok
+test_residuals_include_precommand_and_undershoot (__main__.Reduction.test_residuals_include_precommand_and_undershoot) ... ok
+test_sampling_support_contains_analytic_parameters (__main__.Reduction.test_sampling_support_contains_analytic_parameters) ... ok
+test_threshold_plateau (__main__.Reduction.test_threshold_plateau) ... ok
+test_time_scaling (__main__.Reduction.test_time_scaling) ... ok
+test_time_translation (__main__.Reduction.test_time_translation) ... ok
+test_underresolved_flag (__main__.Reduction.test_underresolved_flag) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.439s
+
+OK

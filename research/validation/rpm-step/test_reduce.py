@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Known-answer, adverse-data and process checks for VAL-7b (stdlib only)."""
-import copy
 import hashlib
 import importlib.util
 import json
@@ -131,6 +130,15 @@ class Reduction(unittest.TestCase):
         d['series']['samples'] = [[0, 0], [1, 100], [2, 100]]
         r = m.reduce(d)
         self.assertTrue(any('under-resolved' in w for w in r['warnings']))
+
+    def test_residuals_include_precommand_and_undershoot(self):
+        d = fixture()
+        d['series']['samples'][0][1] = 1600
+        r = m.reduce(d)
+        self.assertEqual(len(r['normalized_residuals']), len(d['series']['samples']))
+        self.assertAlmostEqual(r['normalized_residuals'][0], -.05)
+        self.assertAlmostEqual(r['observed']['minimum_fraction'], -.05)
+        self.assertEqual(r['endpoint_span_rpm'], 8000)
 
     def test_threshold_plateau(self):
         d = fixture(initial=0, final=100, command=0)

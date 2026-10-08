@@ -44,6 +44,10 @@ For rigid gear at rest, find the lower facet of the contacts' convex hull, proje
 
 A velocity-regularized rolling law creeps under a small steady push because it has no memory of a parked tyre. Per-wheel anchors remove that creep, but release must depend on sustained elastic force rather than a transient damper spike; initialize a new anchor unloaded, and distribute spring stiffness by each wheel's static load share. Check breakaway against an independent force and moment balance, since thrust height and propeller torque redistribute normal loads. Current breakaway factors remain estimates pending field measurement. ([E3b1](../research/ground-contact/E3b1/README.md))
 
+### Separate a detected contact from the physical impact event
+
+A tick-end penetration identifies an observed contact, not the first point or time of impact. Preserve that timing in diagnostics and distinguish point speed from CG speed. A landing-gear contact position is an undeformed reference: `v + omega × r` omits compression motion, so it cannot establish the actual wheel-contact velocity. Mark that value unavailable until the model provides the missing rate. ([CR-01a](../research/crash-damage-investigations/CR-01a/README.md))
+
 ### Solve runway starts as equilibria
 
 Settling a start by simulation can leave a small slip and make the result depend on timestep or engine-start transient. Solve the engine-off rest pose, place the anchors there, then solve the idling pose with anchors fixed; balance vertical force in world coordinates, including the vertical component of tilted thrust. The result verifies the model's equilibrium, not the real airplane's measured resting attitude or breakaway. ([E3b2](../research/ground-contact/E3b2/README.md))
@@ -51,6 +55,10 @@ Settling a start by simulation can leave a small slip and make the result depend
 ### Match the assumptions of an independent ground-roll oracle
 
 A one-dimensional takeoff integral using the simulator's own thrust and aerodynamic forces checks 6-DOF ground coupling, not those forces' fidelity. A fixed-rest-attitude integral diverges as the aircraft pitches and unloads its wheels; driving the same integral with the recorded 6-DOF attitude isolates the coupling error. State which quantities are shared and reserve real takeoff measurements for validation. ([E3b3](../research/ground-contact/E3b3/README.md))
+
+### Preserve shared event errors when reducing video intervals
+
+Adjacent intervals share an endpoint: its frame/position pick errors cancel in the combined span, while a common clock or survey-scale error persists. Keep signed sensitivity contributions so covariance survives; summing interval variances as independent gives the wrong result. A same-frame position estimate can also correlate with the frame pick. VAL-8a verifies these effects analytically and with seeded sampling. Use original capture cadence, surveyed ground positions and a consistent aircraft reference point; the resulting mean ground velocity does not establish airspeed or instantaneous liftoff speed. ([VAL-8a](../research/validation/VAL-8a/README.md))
 
 ### Check mass properties before tuning aerodynamic derivatives
 
@@ -81,6 +89,10 @@ When adding propwash to a tail model, evaluate washed and free loads with the sa
 ### Validate data before conversion and at the session boundary
 
 Casting first can turn numeric strings into accepted numbers and bypass unit or provenance checks; non-finite values also need explicit rejection. Validate types, finite values, units, kind and source before conversion, then test whole-session behavior: invalid initial data must not fly, while a rejected reload must preserve the existing model, trim, auxiliary state and clock. ([D1-R2](../research/aircraft-validation/D1-R2/README.md))
+
+### Match a companion schema against accepted inputs too
+
+A schema can reject every malformed fixture and still reject valid runtime inputs. Compare both directions through the production file loader: optional absence, null, empty objects and string trimming have different contracts. Godot's ASCII source trimming and Python's Unicode whitespace rules differ, so a generic `\S` can change accepted data. Keep physically inconsistent but structurally valid cases to show which checks remain runtime-only. ([DATA-4a](../research/aircraft-validation/DATA-4a/README.md))
 
 ### Keep reference provenance and freshness executable
 

@@ -24,3 +24,7 @@ The existing effective-mass experiment is in [`research/crash-damage/cr-00/`](..
 - **CR-11–CR-15 flyable damage:** read report [05](05-architecture-impact-model.md) with the plan's required H8 persistent-state and G4b shared mass-property dependencies.
 
 The current research has gaps and source-quality limits documented in each report. Treat borrowed examples as design references, not RC-airframe measurements. Record new sources, methods, uncertainty and non-results when completing CR-07.
+
+## Implementation evidence
+
+[CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. Earliest crossing and rendered crossing pose remain CR-01.

@@ -239,7 +239,9 @@ func _raw_default() -> Dictionary:
 	var parser: JSON = JSON.new()
 	if parser.parse(FileAccess.get_file_as_string(Loader.DEFAULT_PATH)) != OK or typeof(parser.data) != TYPE_DICTIONARY:
 		return {}
-	return (parser.data as Dictionary).duplicate(true)
+	var raw: Dictionary = (parser.data as Dictionary).duplicate(true)
+	raw.erase("flight_cues") # Surface fallback fixtures may have no rough ground.
+	return raw
 
 
 func _surface(id: String, kind: String, north: float, east: float, length: float, width: float) -> Dictionary:

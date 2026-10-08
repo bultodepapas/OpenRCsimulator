@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data with propulsion loads []
+ok   static thrust = Ct0·ρ·n²·D⁴ ≈ 41 N 41.25 N
+ok   T/W ≈ 1.46 (balanced virtual reference build) 1.46
+ok   static power balance closes 974 W
+ok   Ct at a knot 
+ok   Ct between knots 
+ok   Ct for J < 0 = static 
+ok   Ct beyond the data goes negative (windmill drag), floored -0.04781904761905
+ok   thrust falls with airspeed 41.3 > 32.6 > 4.7 N
+ok   past zero-thrust speed the prop drags -8.49 N at 50 m/s
+ok   power rolls the airplane left (Mx < 0) -0.834 N·m
+ok   stopped engine: no loads 
+ok   63.2 % of the step after τ 0.6321
+ok   lag is exact: 60 small steps = 1 big step 8077.574546 vs 8077.574546
+ok   throttle 0 → idle, throttle clamps 
+ok   finite at any airspeed 
+16 checks, 0 failed

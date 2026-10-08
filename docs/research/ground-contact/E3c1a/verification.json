@@ -1,0 +1,39 @@
+{
+  "baseline_commit": "38e72809ff06ae0def8da5ee68e3a2adeb0b9011",
+  "evidence_kind": "derived: synthetic control flights, not real-aircraft validation",
+  "physics_changed": false,
+  "aircraft_data_changed": false,
+  "source_sha256": {
+    "app/sim/landing_maneuver.gd": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
+    "app/tests/landing_test_driver.gd": "1041c7e83cfa5f7154ce7bb09cc475076082c40e084d52fabefbf4ef3ff439f8",
+    "app/tests/test_landing_maneuver.gd": "ef72596b0f86c6c5b3d35bad8bc0acece87eb528463907214e8abd10953aa8d5",
+    "app/tests/test_landing_variations.gd": "7c8993cf9054ffdb4b32df5625e1e7bb4d74c8c24c4e48b55de628f0fb6b5acd",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/fields/default.json": "42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1"
+  },
+  "focused_checks": 37,
+  "isolated_mutations": 4,
+  "app_regression": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "scope": "isolated baseline commit plus the four new GDScript files",
+    "gdscript_test_programs": 104,
+    "log_sha256": "9bd46b4d9beca3ead54127e405202b7f114effad9a09bceb36edf6be2a9bba18"
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 12,
+    "diagnostics_identical_to_baseline": true,
+    "new_script_diagnostics": 0
+  },
+  "shared_tree_focused_checks": {
+    "exit_codes": [
+      0,
+      0
+    ],
+    "checks": 37,
+    "head_observed_after_run": "a6c1e4d4a0c90c4f6160566ffc60075450341d62",
+    "log_sha256": "c135602055cc76f8b801da4fb0148cc97fd284485154890f2a3072a9a4fe9268",
+    "scope": "focused compatibility rerun after integration; concurrent unrelated changes excluded from the frozen full-suite claim"
+  }
+}

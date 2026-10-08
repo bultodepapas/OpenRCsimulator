@@ -35,11 +35,17 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+      - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: .tools
           key: godot-${{ hashFiles('app/get-godot.sh') }}
+      - name: Aircraft v1 structural contract and loader agreement (DATA-4a)
+        run: |
+          python3 -m venv "$RUNNER_TEMP/aircraft-schema-venv"
+          "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
+          "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/check.py
+          "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/test_contract.py
       - name: Generated geometry and physics data match their sources
         run: |
           python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check

@@ -1,0 +1,245 @@
+{
+  "campaign": {
+    "aircraft": "Invented analytic ground-run fixture; not an aircraft measurement",
+    "annotations_source": "example.synthetic.csv; invented frame/position standard uncertainties, zero within-event correlation",
+    "configuration": "No real aircraft; constant 6 m/s runway motion for arithmetic verification",
+    "environment": "Synthetic straight, flat runway; no physical surface/wind observations",
+    "evidence": "synthetic",
+    "format": "openrc-ground-video v1",
+    "intervals": [
+      {
+        "definition": "Same reference point crosses two synthetic surveyed markers; not a liftoff event",
+        "end": "middle",
+        "id": "first_segment",
+        "start": "start"
+      },
+      {
+        "definition": "Same reference point crosses the next synthetic marker; not a touchdown event",
+        "end": "end",
+        "id": "second_segment",
+        "start": "middle"
+      },
+      {
+        "definition": "Whole synthetic 30 m marker interval; not a measured takeoff or landing",
+        "end": "end",
+        "id": "whole_run",
+        "start": "start"
+      }
+    ],
+    "survey": {
+      "axis_datum": "Synthetic meters along runway from arbitrary marker; increasing x in direction of travel",
+      "ground_positions_verified": true,
+      "independent_event_residuals": true,
+      "scale_relative_u": 0.002,
+      "source": "Invented positions and uncertainties; no pixel-to-meter inference"
+    },
+    "video": {
+      "capture_fps_den": 1,
+      "capture_fps_num": 240,
+      "constant_capture_cadence_verified": true,
+      "fps_relative_u": 0.001,
+      "frame_count": 1500,
+      "sha256": null,
+      "source": "Invented 240 fps frame sequence; no video file exists",
+      "timing_source": "Synthetic exactly uniform source frames; 0.1% clock uncertainty chosen for test coverage, not a camera specification"
+    }
+  },
+  "events": {
+    "end": {
+      "frame": 1320,
+      "frame_u": 0.5,
+      "frame_x_correlation": 0.0,
+      "x_m": 25.0,
+      "x_u_m": 0.03
+    },
+    "middle": {
+      "frame": 720,
+      "frame_u": 0.5,
+      "frame_x_correlation": 0.0,
+      "x_m": 10.0,
+      "x_u_m": 0.03
+    },
+    "start": {
+      "frame": 120,
+      "frame_u": 0.5,
+      "frame_x_correlation": 0.0,
+      "x_m": -5.0,
+      "x_u_m": 0.03
+    }
+  },
+  "evidence": "synthetic",
+  "format": "openrc-ground-video-result v1",
+  "input_sha256": {
+    "campaign": "9db628707dfc7326dd52f2ae91fa4a8817f66158c1477c688be17ca670d0e4d8",
+    "events_csv": "1942d8132fbac643b77d74d007b5d6c6c3a99016fb297e8a8f6d7776f2458a9e",
+    "reducer": "eb020fa16f5c879e2d573da22f2a65cfe3a71667d15fa3341c836bc75f0f8d29",
+    "video": null
+  },
+  "intervals": [
+    {
+      "average_ground_speed": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.006,
+          "event:middle:joint": -0.005,
+          "event:middle:position_residual": 0.012,
+          "event:start:joint": 0.005,
+          "event:start:position_residual": -0.012,
+          "survey_scale": 0.012
+        },
+        "u": 0.022759613353482085,
+        "unit": "m/s",
+        "value": 6.0
+      },
+      "definition": "Same reference point crosses two synthetic surveyed markers; not a liftoff event",
+      "delta_frames": 600,
+      "distance": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0,
+          "event:middle:joint": 0.0,
+          "event:middle:position_residual": 0.03,
+          "event:start:joint": 0.0,
+          "event:start:position_residual": -0.03,
+          "survey_scale": 0.03
+        },
+        "u": 0.05196152422706632,
+        "unit": "m",
+        "value": 15.0
+      },
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:middle:joint": 0.0020833333333333333,
+          "event:middle:position_residual": 0.0,
+          "event:start:joint": -0.0020833333333333333,
+          "event:start:position_residual": 0.0,
+          "survey_scale": 0.0
+        },
+        "u": 0.003864007706456543,
+        "unit": "s",
+        "value": 2.5
+      },
+      "end": "middle",
+      "id": "first_segment",
+      "signed_displacement_m": 15.0,
+      "start": "start",
+      "warnings": []
+    },
+    {
+      "average_ground_speed": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.006,
+          "event:end:joint": -0.005,
+          "event:end:position_residual": 0.012,
+          "event:middle:joint": 0.005,
+          "event:middle:position_residual": -0.012,
+          "survey_scale": 0.012
+        },
+        "u": 0.022759613353482085,
+        "unit": "m/s",
+        "value": 6.0
+      },
+      "definition": "Same reference point crosses the next synthetic marker; not a touchdown event",
+      "delta_frames": 600,
+      "distance": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0,
+          "event:end:joint": 0.0,
+          "event:end:position_residual": 0.03,
+          "event:middle:joint": 0.0,
+          "event:middle:position_residual": -0.03,
+          "survey_scale": 0.03
+        },
+        "u": 0.05196152422706632,
+        "unit": "m",
+        "value": 15.0
+      },
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:end:joint": 0.0020833333333333333,
+          "event:end:position_residual": 0.0,
+          "event:middle:joint": -0.0020833333333333333,
+          "event:middle:position_residual": 0.0,
+          "survey_scale": 0.0
+        },
+        "u": 0.003864007706456543,
+        "unit": "s",
+        "value": 2.5
+      },
+      "end": "end",
+      "id": "second_segment",
+      "signed_displacement_m": 15.0,
+      "start": "middle",
+      "warnings": []
+    },
+    {
+      "average_ground_speed": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.006,
+          "event:end:joint": -0.0025,
+          "event:end:position_residual": 0.006,
+          "event:start:joint": 0.0025,
+          "event:start:position_residual": -0.006,
+          "survey_scale": 0.012
+        },
+        "u": 0.016263455967290594,
+        "unit": "m/s",
+        "value": 6.0
+      },
+      "definition": "Whole synthetic 30 m marker interval; not a measured takeoff or landing",
+      "delta_frames": 1200,
+      "distance": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0,
+          "event:end:joint": 0.0,
+          "event:end:position_residual": 0.03,
+          "event:start:joint": 0.0,
+          "event:start:position_residual": -0.03,
+          "survey_scale": 0.06
+        },
+        "u": 0.07348469228349534,
+        "unit": "m",
+        "value": 30.0
+      },
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.005,
+          "event:end:joint": 0.0020833333333333333,
+          "event:end:position_residual": 0.0,
+          "event:start:joint": -0.0020833333333333333,
+          "event:start:position_residual": 0.0,
+          "survey_scale": 0.0
+        },
+        "u": 0.005803495115493383,
+        "unit": "s",
+        "value": 5.0
+      },
+      "end": "end",
+      "id": "whole_run",
+      "signed_displacement_m": 30.0,
+      "start": "start",
+      "warnings": []
+    }
+  ],
+  "limitations": [
+    "Along-runway net displacement only; distance equals ground path length only for a straight, non-reversing run.",
+    "Average ground speed is neither instantaneous liftoff/touchdown speed nor airspeed or stall speed.",
+    "Capture cadence must be constant with one annotated frame per original captured frame; playback FPS is not capture FPS.",
+    "CFR, camera geometry, event definitions and survey validity are operator declarations, not verified by this reducer.",
+    "Positions must be surveyed ground coordinates or independently corrected ground-plane positions, not raw image pixels.",
+    "First-order standard uncertainties (k=1); no coverage probability or validation acceptance is assigned.",
+    "Per-event time/position correlation and shared clock/length scale errors are modeled; other cross-event correlations are excluded.",
+    "A shared coordinate origin and frame origin cancel in differences; do not add their uncertainty independently at each endpoint.",
+    "Intervals sharing events or calibration errors are correlated; signed contributions retain those dependencies and must not be averaged as independent.",
+    "Synthetic observations verify reduction only; real flights and simulator comparison remain VAL-8."
+  ]
+}
