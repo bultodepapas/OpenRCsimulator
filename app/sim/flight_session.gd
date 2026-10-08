@@ -440,7 +440,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if touches_ground(sim.state):
-			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull))
+			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
 		elif gear_collapsed(sim.state):
 			_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear))
 

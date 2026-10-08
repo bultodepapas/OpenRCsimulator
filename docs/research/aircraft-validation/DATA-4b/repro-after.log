@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DATA4A {"errors":["aero.surfaces.wing_station_incidence: mean 0.00333333333333 rad must be 0 (equal-area strips; CL0 carries the mean)"],"index":0,"ok":false}

@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   committed grass JSON parses
+ok   committed data validates to exactly 6,000 rows
+ok   data records the v1 disk, fixed seed and checksum
+ok   all committed offsets are unique and inside the 30 m disk
+ok   yaw and size bytes fit their renderer ranges
+ok   stale digest detects row corruption
+ok   fractional offsets are rejected
+ok   duplicate centers are rejected
+ok   offsets outside the disk are rejected
+ok   truncated placement is rejected
+ok   clump contains seven opaque single-triangle blades
+ok   blade roots sit at y=0 and tips reach UV.y=1
+ok   blade geometry stays within the estimated 0.2 m footprint and 0.10–0.18 m height
+ok   0.4 m exclusion margin exceeds max-scale clump plus full sway footprint
+ok   default field loads for grass checks
+ok   standalone grass build registers sim_clock and wind_vec once
+ok   standalone build has no physics or simulation nodes
+ok   default build clips data into at most four MultiMesh chunks
+ok   default build stays within 42,000 blade triangles
+ok   all grass chunks disable shadow casting
+ok   default build contains exactly the accepted field centers
+ok   every default clump and wind footprint clears runway and mown rectangles
+ok   default grass build creates no collision objects
+ok   rebuilds preserve every world center, yaw and size input
+ok   grass field variant validates
+ok   translated-pilot build uses pilot-relative offsets and current runway clipping
+ok   grass field variant validates
+ok   translated pilot, moved runway, mown apron and small rough field validate
+ok   small rough rectangle clips grass while retaining interior clumps
+ok   every small-field center and full clump footprint remains on rough and clear of strips
+ok   field builder attaches exactly one near-grass system when scenery is off
+ok   field and default grass tree contain no physical colliders
+ok   default SC-16/SC-17 data validates
+ok   validated scenery has 2,970 SC-16 cushions and six SC-17 bushes
+ok   opt-in field hook attaches Scenery beside the single near-grass system
+ok   opt-in field build retains the SC-16 flower cushions
+ok   opt-in scenery and grass remain visual-only
+37 near-grass checks, 0 failed

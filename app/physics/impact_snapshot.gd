@@ -1,10 +1,12 @@
 # CR-01a: diagnostic at the existing detector's tick boundary, not a collision solver.
 # Inputs are validated aircraft data and the session's finite, normalized rigid-body state.
-# No sub-tick time, physical failure threshold or deforming-gear point velocity is inferred.
+# Detected fields stay at the tick boundary; optional crossing pose is an interpolation estimate.
+# No physical failure threshold or deforming-gear point velocity is inferred.
 extends RefCounted
 
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const HullCrossing = preload("res://physics/hull_crossing.gd")
 const Ground = preload("res://physics/ground_contact.gd")
 
 
@@ -12,6 +14,8 @@ class Snapshot:
 	extends RefCounted
 	var trigger: String = ""
 	var tick: int = 0
+	# Optional interpolation estimate, separate from the observed state/contact. No crossing velocity inferred.
+	var crossing: HullCrossing.Result = null
 	var detected_state: PackedFloat64Array = PackedFloat64Array()
 	# Index is local to this exact model's hull/gear list, not a stable component ID.
 	var point_index: int = -1
@@ -40,7 +44,8 @@ class Snapshot:
 
 ## First penetrating point in data order, preserving the existing detector's exact expression.
 ## This order is deterministic, but does not establish which point touched first within a tick.
-static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Array) -> Snapshot:
+static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Array,
+		previous: PackedFloat64Array = PackedFloat64Array()) -> Snapshot:
 	var out: Snapshot = _start(s, tick, "hull_contact")
 	var q: PackedFloat64Array = RB._att(s)
 	for i in range(0, hull.size(), 3):
@@ -51,6 +56,8 @@ static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Ar
 			out.body_point = hull.slice(i, i + 3)
 			_hull_kinematics(out, s, q)
 			break
+	if out.point_index >= 0 and not previous.is_empty():
+		out.crossing = HullCrossing.reconstruct(previous, s, hull)
 	return out
 
 

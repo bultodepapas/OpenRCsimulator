@@ -103,3 +103,11 @@ Synchronous `sim.step()` does not sample changed session commands: an intended i
 ## 2026-10-08 · L10a — model calm and constrain actual geometry
 
 A calm windsock still holds its throat and first three-eighths open on a basket; the remaining sleeve hangs. Preserve cloth arc length through the bend instead of shortening it by projecting a straight sleeve. Optional field cues should preserve legacy fields, and placement exclusions must match the terrain actually rendered: the 1.5 km flat radius belongs only to the 40 km hill mesh. Remove unrelated cues explicitly from synthetic geometry fixtures. [Contract and evidence](docs/research/visual-quality-implementation/L10a/README.md).
+
+## 2026-10-08 · D1-R4 — validate the solved domain and residual
+
+Finite input coefficients can produce an out-of-domain stall root or a blend whose endpoints collapse in float64. Check physical reachability before dividing by a tiny slope, then validate finite ordered angles and the solved peak. A NaN residual needs an explicit finiteness check: comparison with a tolerance does not reject it. [Derivation and verification](docs/research/aircraft-validation/D1-R4/README.md).
+
+## 2026-10-08 · L10b — test a near-pilot prop from the pilot eye
+
+A plausible close-up does not establish that a nearby barrier preserves the runway view. Pair visible inspection views with exact on/off comparisons from the actual pilot eye toward both thresholds; verify that a pixel change fails the equality guard. Exclude the entire grass-clump envelope around a pad, not just roots inside its footprint. [Geometry, captures and limits](docs/research/visual-quality-implementation/L10b/README.md).

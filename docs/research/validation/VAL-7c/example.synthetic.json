@@ -1,0 +1,56 @@
+{
+  "format": "openrc-rpm-step v1",
+  "evidence": "synthetic",
+  "configuration": "Synthetic test configuration",
+  "notes": "Known steady endpoints; command and RPM use one clock.",
+  "command_time": {
+    "value": 0,
+    "unit": "s",
+    "u": 0.001,
+    "kind": "synthetic",
+    "source": "Analytic test fixture, not measurements"
+  },
+  "initial_rpm": {
+    "value": 1000,
+    "unit": "rpm",
+    "u": 2.0,
+    "kind": "synthetic",
+    "source": "Analytic test fixture, not measurements"
+  },
+  "final_rpm": {
+    "value": 11000,
+    "unit": "rpm",
+    "u": 3.0,
+    "kind": "synthetic",
+    "source": "Analytic test fixture, not measurements"
+  },
+  "series": {
+    "kind": "synthetic",
+    "source": "Analytic samples",
+    "time_u_s": 0.0001,
+    "rpm_u": 1.0,
+    "samples": [
+      [
+        -0.1,
+        1000
+      ],
+      [
+        0.2,
+        1000
+      ],
+      [
+        0.6,
+        5000
+      ],
+      [
+        1.0,
+        9000
+      ],
+      [
+        1.2,
+        11000
+      ]
+    ]
+  },
+  "uncertainty_model": "independent-inputs v1"
+}

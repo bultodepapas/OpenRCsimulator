@@ -20,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 class ContractTests(unittest.TestCase):
     def test_schema_and_real_loader_agree_on_cases(self):
         cases = build_cases()
+        self.assertEqual(len({case.name for case in cases}), len(cases), 'case names must be unique')
         contract = validator()
         godot = os.environ.get('OPENRC_TEST_GODOT') or subprocess.check_output(
             [str(ROOT / 'app/get-godot.sh')], text=True).strip()
@@ -53,6 +54,7 @@ class ContractTests(unittest.TestCase):
         report = os.environ.get('OPENRC_SCHEMA_REPORT')
         if report:
             inputs = [SCHEMA, ROOT / 'app/physics/aircraft_data.gd', HERE / 'cases.py',
+                      HERE / 'boundary_cases.py',
                       HERE / 'check.py', HERE / 'loader_probe.gd', HERE / 'test_contract.py',
                       ROOT / 'app/tests/fixtures/stik_wash_profile.json',
                       *sorted(FLEET.glob('*.json'))]
@@ -73,6 +75,12 @@ class ContractTests(unittest.TestCase):
                     path.write_text('{"number":' + value + '}', encoding='utf-8')
                     with self.assertRaises(ValueError):
                         read_json(path)
+
+    def test_contract_detects_schema_mutations(self):
+        run = subprocess.run([sys.executable, str(HERE / 'check_mutations.py')],
+                             capture_output=True, text=True, timeout=60)
+        self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+        self.assertTrue(json.loads(run.stdout)['mutations'])
 
     def test_cli_exit_status_and_diagnostic(self):
         run = subprocess.run([sys.executable, str(HERE / 'check.py')], capture_output=True, text=True)

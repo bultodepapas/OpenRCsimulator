@@ -1,0 +1,10 @@
+{
+  "missing_full_trace": {
+    "exit_code": 2,
+    "engine_errors": false
+  },
+  "nonfinite_duration": {
+    "exit_code": 2,
+    "engine_errors": false
+  }
+}

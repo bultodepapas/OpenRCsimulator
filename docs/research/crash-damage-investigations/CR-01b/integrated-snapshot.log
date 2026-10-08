@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   typed hull trigger and observed tick
+ok   first simultaneous point is in data order
+ok   hull point translated to world
+ok   point velocity includes omega cross r
+ok   point speed differs from CG speed
+ok   down velocity is signed into flat ground
+ok   flat ground normal points up
+ok   hull kinematics known, gear compression unknown
+ok   description uses point speed and detected timing
+ok   snapshot owns state and geometry
+ok   rotated world contact position
+ok   rotate velocity after body-rate contribution
+ok   already touching but moving upward stays negative
+ok   exact hull >= zero boundary -0.000000000001
+ok   exact hull >= zero boundary 0.0
+ok   exact hull >= zero boundary 0.000000000001
+ok   skips clear point; chooses first contact, not deepest
+ok   unknown hull point explicit
+ok   overflowed kinematics unavailable, no infinity leaked
+ok   gear exactly at travel is not a limit trigger
+ok   gear trigger names first failing leg
+ok   gear compression and travel exact
+ok   deforming wheel kinematics explicitly unknown
+ok   gear cause states travel limit, not structural collapse
+ok   gear reference coordinate owned
+ok   no gear leaves fields unavailable
+ok   gear reach guard preserved
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 5.4 m/s (sink 0.0 m/s, airframe contact (hull point 8), point speed 5.3 m/s at detected tick) - restarting
+ok   session detects hull before simultaneously collapsed gear
+ok   snapshot captures current tick and body
+ok   diagnostic does not move simulation to a guessed impact pose
+ok   legacy crash speed remains CG speed
+ok   legacy crash sink calculation preserved
+ok   existing readout uses typed cause
+ok   menu hold preserves snapshot and countdown
+ok   crash countdown preserves the same observed snapshot
+ok   manual restart clears an active snapshot
+CRASH at 5.4 m/s (sink 0.0 m/s, airframe contact (hull point 8), point speed 5.3 m/s at detected tick) - restarting
+ok   second crash exists before checkpoint restore
+ok   restore clears transient crash snapshot
+CRASH at 5.4 m/s (sink 0.0 m/s, landing gear travel limit (main_left)) - restarting
+ok   real gear-limit snapshot
+ok   gear readout has no invented contact speed
+ok   automatic restart still lasts 360 ticks
+ok   retained diagnostic remains an owned old observation
+42 checks, 0 failed

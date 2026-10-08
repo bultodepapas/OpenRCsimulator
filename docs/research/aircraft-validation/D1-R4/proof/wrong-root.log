@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"aircraft":"jensen_ugly_stik_60","errors":["aero.envelope: positive sampled stall peak does not reach the requested lift limit","aero.envelope: negative sampled stall peak does not reach the requested lift limit"],"refused":true}
+{"aircraft":"gp_extra_300s_60","errors":["aero.envelope: positive sampled stall peak does not reach the requested lift limit","aero.envelope: negative sampled stall peak does not reach the requested lift limit"],"refused":true}
+{"aircraft":"p51d_mustang_120","errors":["aero.envelope: positive sampled stall peak does not reach the requested lift limit","aero.envelope: negative sampled stall peak does not reach the requested lift limit"],"refused":true}
+{"aircraft":"sebart_avanti_s_a200","errors":["aero.envelope: positive sampled stall peak does not reach the requested lift limit","aero.envelope: negative sampled stall peak does not reach the requested lift limit"],"refused":true}
+D1-R4 solver faults: 4 checks, 0 failed

@@ -1,0 +1,411 @@
+{
+  "format": "openrc-rpm-step-result v1",
+  "kind": "derived",
+  "input": {
+    "format": "openrc-rpm-step v1",
+    "evidence": "synthetic",
+    "configuration": "Synthetic test configuration",
+    "notes": "Known steady endpoints; command and RPM use one clock.",
+    "command_time": {
+      "value": 0,
+      "unit": "s",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "initial_rpm": {
+      "value": 1000,
+      "unit": "rpm",
+      "u": 2.0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "final_rpm": {
+      "value": 11000,
+      "unit": "rpm",
+      "u": 3.0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "series": {
+      "kind": "synthetic",
+      "source": "Analytic samples",
+      "time_u_s": 0.0001,
+      "rpm_u": 1.0,
+      "samples": [
+        [
+          -0.1,
+          1000
+        ],
+        [
+          0.2,
+          1000
+        ],
+        [
+          0.6,
+          5000
+        ],
+        [
+          1.0,
+          9000
+        ],
+        [
+          1.2,
+          11000
+        ]
+      ]
+    },
+    "uncertainty_model": "independent-inputs v1"
+  },
+  "direction": "increasing",
+  "sample_count": 5,
+  "record_span_s": 1.3,
+  "endpoint_span_rpm": 10000.0,
+  "crossings": {
+    "10": {
+      "time_s": 0.3,
+      "after_command_s": 0.3,
+      "sample_indices": [
+        1,
+        2
+      ],
+      "sampling_support_s": [
+        0.2,
+        0.6
+      ],
+      "forward_crossing_count": 1
+    },
+    "63": {
+      "time_s": 0.8321205588285576,
+      "after_command_s": 0.8321205588285576,
+      "sample_indices": [
+        2,
+        3
+      ],
+      "sampling_support_s": [
+        0.6,
+        1.0
+      ],
+      "forward_crossing_count": 1
+    },
+    "90": {
+      "time_s": 1.1,
+      "after_command_s": 1.1,
+      "sample_indices": [
+        3,
+        4
+      ],
+      "sampling_support_s": [
+        1.0,
+        1.2
+      ],
+      "forward_crossing_count": 1
+    }
+  },
+  "normalized_residuals": [
+    0.0,
+    0.0,
+    -0.20517779611425224,
+    -0.06839259870475078,
+    0.07598356856515931
+  ],
+  "first_order_diagnostic": {
+    "rise_10_90_s": 0.8,
+    "tau_s": 0.36409569065073494,
+    "delay_s": 0.26163869028424613,
+    "tau_sampling_support_s": [
+      0.18204784532536747,
+      0.45511961331341866
+    ],
+    "delay_sampling_support_s": [
+      0.1520483628553077,
+      0.5808193451421231
+    ],
+    "causal_delay": true,
+    "t63_consistency_error_s": 0.20638617789357655,
+    "normalized_rmse": 0.10251729441200348,
+    "rpm_rmse": 1025.1729441200348,
+    "max_abs_normalized_residual": 0.20517779611425224
+  },
+  "observed": {
+    "max_backward_fraction_step": 0.0,
+    "overshoot_fraction": 0.0,
+    "minimum_fraction": 0.0,
+    "final_sample_fraction": 1.0
+  },
+  "measurement_uncertainty": {
+    "status": "available",
+    "model": "independent-inputs v1",
+    "method": "first-order signed sensitivities of fixed crossing segments",
+    "screening_multiplier": 3.0,
+    "screening_reasons": [],
+    "metrics": {
+      "t10_s": {
+        "u_s": 0.00021400934559032695,
+        "signed_contributions_s": {
+          "initial_rpm": 0.00017999999999999998,
+          "final_rpm": 2.9999999999999997e-05,
+          "rpm:1": -7.5e-05,
+          "rpm:2": -2.4999999999999998e-05,
+          "time:1": 7.500000000000001e-05,
+          "time:2": 2.5e-05
+        }
+      },
+      "t10_after_command_s": {
+        "u_s": 0.0010226436329435586,
+        "signed_contributions_s": {
+          "command_time": -0.001,
+          "final_rpm": 2.9999999999999997e-05,
+          "initial_rpm": 0.00017999999999999998,
+          "rpm:1": -7.5e-05,
+          "rpm:2": -2.4999999999999998e-05,
+          "time:1": 7.500000000000001e-05,
+          "time:2": 2.5e-05
+        }
+      },
+      "t63_s": {
+        "u_s": 0.00022722944348117552,
+        "signed_contributions_s": {
+          "initial_rpm": 7.357588823428847e-05,
+          "final_rpm": 0.0001896361676485673,
+          "rpm:2": -4.196986029286059e-05,
+          "rpm:3": -5.803013970713942e-05,
+          "time:2": 4.196986029286059e-05,
+          "time:3": 5.803013970713942e-05
+        }
+      },
+      "t63_after_command_s": {
+        "u_s": 0.0010254916966922574,
+        "signed_contributions_s": {
+          "command_time": -0.001,
+          "final_rpm": 0.0001896361676485673,
+          "initial_rpm": 7.357588823428847e-05,
+          "rpm:2": -4.196986029286059e-05,
+          "rpm:3": -5.803013970713942e-05,
+          "time:2": 4.196986029286059e-05,
+          "time:3": 5.803013970713942e-05
+        }
+      },
+      "t90_s": {
+        "u_s": 0.0002886173937932362,
+        "signed_contributions_s": {
+          "initial_rpm": 1.999999999999999e-05,
+          "final_rpm": 0.00026999999999999995,
+          "rpm:3": -4.999999999999999e-05,
+          "rpm:4": -4.999999999999999e-05,
+          "time:3": 5e-05,
+          "time:4": 5e-05
+        }
+      },
+      "t90_after_command_s": {
+        "u_s": 0.0010408169867945085,
+        "signed_contributions_s": {
+          "command_time": -0.001,
+          "final_rpm": 0.00026999999999999995,
+          "initial_rpm": 1.999999999999999e-05,
+          "rpm:3": -4.999999999999999e-05,
+          "rpm:4": -4.999999999999999e-05,
+          "time:3": 5e-05,
+          "time:4": 5e-05
+        }
+      },
+      "rise_10_90_s": {
+        "u_s": 0.0003251153641401771,
+        "signed_contributions_s": {
+          "final_rpm": 0.00023999999999999995,
+          "initial_rpm": -0.00015999999999999999,
+          "rpm:1": 7.5e-05,
+          "rpm:2": 2.4999999999999998e-05,
+          "rpm:3": -4.999999999999999e-05,
+          "rpm:4": -4.999999999999999e-05,
+          "time:1": -7.500000000000001e-05,
+          "time:2": -2.5e-05,
+          "time:3": 5e-05,
+          "time:4": 5e-05
+        }
+      },
+      "tau_s": {
+        "u_s": 0.0001479663788097287,
+        "signed_contributions_s": {
+          "final_rpm": 0.00010922870719522045,
+          "initial_rpm": -7.281913813014698e-05,
+          "rpm:1": 3.41339709985064e-05,
+          "rpm:2": 1.1377990332835465e-05,
+          "rpm:3": -2.2755980665670927e-05,
+          "rpm:4": -2.2755980665670927e-05,
+          "time:1": -3.41339709985064e-05,
+          "time:2": -1.1377990332835467e-05,
+          "time:3": 2.2755980665670934e-05,
+          "time:4": 2.2755980665670934e-05
+        }
+      },
+      "delay_s": {
+        "u_s": 0.0010243599679570319,
+        "signed_contributions_s": {
+          "command_time": -0.001,
+          "final_rpm": 1.8491607085273853e-05,
+          "initial_rpm": 0.00018767226194315074,
+          "rpm:1": -7.859637278585192e-05,
+          "rpm:2": -2.6198790928617304e-05,
+          "rpm:3": 2.397581857234614e-06,
+          "rpm:4": 2.397581857234614e-06,
+          "time:1": 7.859637278585193e-05,
+          "time:2": 2.6198790928617307e-05,
+          "time:3": -2.3975818572346144e-06,
+          "time:4": -2.3975818572346144e-06
+        }
+      },
+      "t63_consistency_error_s": {
+        "u_s": 0.00012096522324350905,
+        "signed_contributions_s": {
+          "command_time": 0.0,
+          "final_rpm": 6.1915853368073e-05,
+          "initial_rpm": -4.1277235578715286e-05,
+          "rpm:1": 4.4462401787345516e-05,
+          "rpm:2": -2.714905969707875e-05,
+          "rpm:3": -3.7671740898703106e-05,
+          "rpm:4": 2.035839880843631e-05,
+          "time:1": -4.446240178734553e-05,
+          "time:2": 2.714905969707875e-05,
+          "time:3": 3.76717408987031e-05,
+          "time:4": -2.0358398808436318e-05
+        }
+      }
+    },
+    "covariance_s2": {
+      "t10_s": {
+        "t10_s": 4.579999999999999e-08,
+        "t10_after_command_s": 4.579999999999999e-08,
+        "t63_s": 2.103123792627197e-08,
+        "t63_after_command_s": 2.103123792627197e-08,
+        "t90_s": 1.1699999999999996e-08,
+        "t90_after_command_s": 1.1699999999999996e-08,
+        "rise_10_90_s": -3.41e-08,
+        "tau_s": -1.5519578813987575e-08,
+        "delay_s": 4.7435150826633994e-08,
+        "t63_consistency_error_s": -1.0884334086374452e-08
+      },
+      "t10_after_command_s": {
+        "t10_s": 4.579999999999999e-08,
+        "t10_after_command_s": 1.0458e-06,
+        "t63_s": 2.103123792627197e-08,
+        "t63_after_command_s": 1.021031237926272e-06,
+        "t90_s": 1.1699999999999996e-08,
+        "t90_after_command_s": 1.0117e-06,
+        "rise_10_90_s": -3.41e-08,
+        "tau_s": -1.5519578813987575e-08,
+        "delay_s": 1.047435150826634e-06,
+        "t63_consistency_error_s": -1.0884334086374452e-08
+      },
+      "t63_s": {
+        "t10_s": 2.103123792627197e-08,
+        "t10_after_command_s": 2.103123792627197e-08,
+        "t63_s": 5.163321998476474e-08,
+        "t63_after_command_s": 5.163321998476474e-08,
+        "t90_s": 5.847629700051288e-08,
+        "t90_after_command_s": 5.847629700051288e-08,
+        "rise_10_90_s": 3.74450590742409e-08,
+        "tau_s": 1.7041980806366636e-08,
+        "delay_s": 1.9235686040682404e-08,
+        "t63_consistency_error_s": 1.5355553137715704e-08
+      },
+      "t63_after_command_s": {
+        "t10_s": 2.103123792627197e-08,
+        "t10_after_command_s": 1.021031237926272e-06,
+        "t63_s": 5.163321998476474e-08,
+        "t63_after_command_s": 1.0516332199847647e-06,
+        "t90_s": 5.847629700051288e-08,
+        "t90_after_command_s": 1.0584762970005129e-06,
+        "rise_10_90_s": 3.74450590742409e-08,
+        "tau_s": 1.7041980806366636e-08,
+        "delay_s": 1.0192356860406823e-06,
+        "t63_consistency_error_s": 1.5355553137715704e-08
+      },
+      "t90_s": {
+        "t10_s": 1.1699999999999996e-08,
+        "t10_after_command_s": 1.1699999999999996e-08,
+        "t63_s": 5.847629700051288e-08,
+        "t63_after_command_s": 5.847629700051288e-08,
+        "t90_s": 8.329999999999997e-08,
+        "t90_after_command_s": 8.329999999999997e-08,
+        "rise_10_90_s": 7.159999999999997e-08,
+        "tau_s": 3.2586564313240764e-08,
+        "delay_s": 8.26666278044003e-09,
+        "t63_consistency_error_s": 1.762306990683208e-08
+      },
+      "t90_after_command_s": {
+        "t10_s": 1.1699999999999996e-08,
+        "t10_after_command_s": 1.0117e-06,
+        "t63_s": 5.847629700051288e-08,
+        "t63_after_command_s": 1.0584762970005129e-06,
+        "t90_s": 8.329999999999997e-08,
+        "t90_after_command_s": 1.0832999999999999e-06,
+        "rise_10_90_s": 7.159999999999997e-08,
+        "tau_s": 3.2586564313240764e-08,
+        "delay_s": 1.00826666278044e-06,
+        "t63_consistency_error_s": 1.762306990683208e-08
+      },
+      "rise_10_90_s": {
+        "t10_s": -3.41e-08,
+        "t10_after_command_s": -3.41e-08,
+        "t63_s": 3.74450590742409e-08,
+        "t63_after_command_s": 3.74450590742409e-08,
+        "t90_s": 7.159999999999997e-08,
+        "t90_after_command_s": 7.159999999999997e-08,
+        "rise_10_90_s": 1.0569999999999997e-07,
+        "tau_s": 4.8106143127228336e-08,
+        "delay_s": -3.916848804619397e-08,
+        "t63_consistency_error_s": 2.8507403993206533e-08
+      },
+      "tau_s": {
+        "t10_s": -1.5519578813987575e-08,
+        "t10_after_command_s": -1.5519578813987575e-08,
+        "t63_s": 1.7041980806366636e-08,
+        "t63_after_command_s": 1.7041980806366636e-08,
+        "t90_s": 3.2586564313240764e-08,
+        "t90_after_command_s": 3.2586564313240764e-08,
+        "rise_10_90_s": 4.8106143127228336e-08,
+        "tau_s": 2.189404925806413e-08,
+        "delay_s": -1.7826347133655058e-08,
+        "t63_consistency_error_s": 1.2974278681957563e-08
+      },
+      "delay_s": {
+        "t10_s": 4.7435150826633994e-08,
+        "t10_after_command_s": 1.047435150826634e-06,
+        "t63_s": 1.9235686040682404e-08,
+        "t63_after_command_s": 1.0192356860406823e-06,
+        "t90_s": 8.26666278044003e-09,
+        "t90_after_command_s": 1.00826666278044e-06,
+        "rise_10_90_s": -3.916848804619397e-08,
+        "tau_s": -1.7826347133655058e-08,
+        "delay_s": 1.0493133439529312e-06,
+        "t63_consistency_error_s": -1.2251310778593843e-08
+      },
+      "t63_consistency_error_s": {
+        "t10_s": -1.0884334086374452e-08,
+        "t10_after_command_s": -1.0884334086374452e-08,
+        "t63_s": 1.5355553137715704e-08,
+        "t63_after_command_s": 1.5355553137715704e-08,
+        "t90_s": 1.762306990683208e-08,
+        "t90_after_command_s": 1.762306990683208e-08,
+        "rise_10_90_s": 2.8507403993206533e-08,
+        "tau_s": 1.2974278681957563e-08,
+        "delay_s": -1.2251310778593843e-08,
+        "t63_consistency_error_s": 1.4632585234351982e-08
+      }
+    }
+  },
+  "warnings": [],
+  "limitations": [
+    "Endpoints must come from identified steady windows; the last sample is not assumed to be steady.",
+    "First directional crossings use linear interpolation, without smoothing or sorting samples.",
+    "Sampling-support intervals are not confidence intervals; measurement uncertainty requires an explicit uncertainty_model.",
+    "Opt-in uncertainty is a local first-order estimate for independent input errors, including covariance from reused inputs; it excludes interpolation bias and correlated acquisition errors.",
+    "Lag and delay are a two-crossing first-order diagnostic, not an engine/servo identification or held-out validation.",
+    "RMSE uses equal sample weights on this same record; dense sampling can overweight one part of a transient.",
+    "Command timing, sensor filtering, synchronization and RPM harmonic selection must be established externally.",
+    "No acceptance tolerance or physical-validation decision is inferred from these results."
+  ],
+  "input_sha256": "b88250f6615a32a01152ff6f0f78d6faa060413a076cd18b968c89efb67001e5",
+  "reducer_sha256": "1a2c34b9ac7a03a956113e8586ec2fb081e6da343aec00393c71bee39718adab"
+}

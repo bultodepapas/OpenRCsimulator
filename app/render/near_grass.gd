@@ -56,6 +56,10 @@ static func accepts(north: float, east: float, field: Dictionary) -> bool:
 			on_rough = on_rough or (dn <= hn - CLEARANCE_M and de <= he - CLEARANCE_M)
 		elif dn <= hn + CLEARANCE_M and de <= he + CLEARANCE_M:
 			return false
+	for cue: Dictionary in field.get("flight_cues", []):
+		if cue.type == "pilot_station" and absf(north - float(cue.north)) <= float(cue.depth) * 0.5 + CLEARANCE_M \
+			and absf(east - float(cue.east)) <= float(cue.width) * 0.5 + CLEARANCE_M:
+			return false
 	return on_rough
 
 

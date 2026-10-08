@@ -1,0 +1,154 @@
+{
+  "commands": {
+    "first": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10b-verify/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10b-verify/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10b-windsock-final/first",
+      "--cue=windsock"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10b-verify/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10b-verify/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10b-windsock-final/repeat",
+      "--cue=windsock"
+    ],
+    "scenery": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10b-verify/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10b-verify/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10b-windsock-final/scenery",
+      "--cue=windsock",
+      "--scenery=on"
+    ]
+  },
+  "complete": true,
+  "cue": "windsock",
+  "format": "openrc-l10a-review v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "identical_repeat": true,
+  "invisible_feature_control_rejected": true,
+  "metrics": {
+    "first": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 107.77645978418919
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.54823529411765
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 97.83508577753182
+      }
+    },
+    "repeat": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 107.77645978418919
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.54823529411765
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 97.83508577753182
+      }
+    },
+    "scenery": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 108.52973138440346
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.82352941176471
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 99.66629773104593
+      }
+    }
+  },
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "sources_sha256": {
+    "app/data/field_loader.gd": "69c03c77c6d161dbe8627bb2dc230b69704706098889289be70020a3179473e3",
+    "app/data/fields/default.json": "b085f28dd6a4142fd0a81070dd2c71ee69ff5b0d0cd63b0579a8b11cb701aedf",
+    "app/render/field.gd": "2516ad4bee0b0a67a196cb011acf0f3d052466526495b39c3477e1bfead53039",
+    "app/render/near_grass.gd": "e348aebf2af9dc67100e62081b57b2ba07e32859fefae3429ad488d8a587dc14",
+    "app/render/pilot_station.gd": "e14a8dd215d8cfc45c74bddef3cbdecb62c957239fd2b026030d0178126cc286",
+    "app/render/windsock.gd": "bcd10199489cd77604b5d3a2361b305215a53df8dcb25b1d8b40dc278a1bdd45",
+    "app/scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+    "tools/ground/capture_windsock.gd": "cc1c385b4b0373ca72933db1413f60cfaa24d72389c572ae2ed6756b8fa0b514",
+    "tools/ground/check_windsock.py": "ac0b12d43207b6104dca2a1128fa7a9e2012a874bebcae34d869bf1d1b9b311f"
+  }
+}

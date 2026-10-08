@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   linear descent exact quarter tick
+ok   earliest point selected
+ok   reconstructed point on plane
+ok   CG pose preserves lever arm
+ok   method explicitly interpolation estimate
+ok   inputs unchanged
+ok   length scaling 0.000001
+ok   length scaling 1000000.000000
+ok   clear-at-end point can be first crossing
+ok   rotating enter/exit pair exact first root
+ok   rotating endpoint bracket differs from depth chord
+ok   rotating contact point residual
+ok   pose matches existing renderer interpolation
+ok   quaternion sign equivalent shortest path
+ok   endpoint contact retained
+ok   simultaneous contacts select first data index
+ok   prior contact is unknown, not fraction zero
+ok   clear interval has no crossing
+ok   tangent cannot claim a resolved crossing
+ok   invalid state refused
+ok   invalid state refused
+ok   invalid state refused
+ok   invalid state refused
+ok   invalid hull refused
+ok   invalid hull refused
+ok   invalid hull refused
+ok   overflowed coefficients unavailable
+ok   100 mixed attitudes match direct pose root
+ok   first of three cubic roots [0.2, 0.4, 0.7]
+ok   first of three cubic roots [0.1, 0.10001, 0.9]
+ok   first of three cubic roots [0.01, 0.5, 0.99]
+ok   narrow same-sign-endpoint crossing is not missed
+ok   exact polynomial tangent unknown
+ok   near tangent but clearly separated stays clear
+ok   numerically simultaneous contacts keep data order
+ok   resolved earlier contact wins
+ok   overflowed residual scale refused
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 5.4 m/s (sink 69.6 m/s, airframe contact (hull point 8), point speed 5.4 m/s at detected tick) - restarting
+ok   actual crash stores separate crossing estimate
+ok   detected state and simulation remain unchanged
+ok   reset clears snapshot, retained pose remains owned
+40 checks, 0 failed

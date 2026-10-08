@@ -1,0 +1,42 @@
+[
+  {
+    "case": "control",
+    "exit_code": 0,
+    "tests": 34
+  },
+  {
+    "case": "independent_endpoints_per_crossing",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_all_signed_sensitivities_against_finite_differences (test_uncertainty.Uncertainty.test_all_signed_sensitivities_against_finite_differences)",
+      "FAIL: test_endpoint_covariance_across_disjoint_segments (test_uncertainty.Uncertainty.test_endpoint_covariance_across_disjoint_segments)",
+      "FAIL: test_seeded_sampling_matches_standard_uncertainties (test_uncertainty.Uncertainty.test_seeded_sampling_matches_standard_uncertainties)",
+      "FAIL: test_shared_samples_and_endpoints_hand_solution (test_uncertainty.Uncertainty.test_shared_samples_and_endpoints_hand_solution)"
+    ]
+  },
+  {
+    "case": "wrong_left_sample_sign",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_all_signed_sensitivities_against_finite_differences (test_uncertainty.Uncertainty.test_all_signed_sensitivities_against_finite_differences)",
+      "FAIL: test_seeded_sampling_matches_standard_uncertainties (test_uncertainty.Uncertainty.test_seeded_sampling_matches_standard_uncertainties)",
+      "FAIL: test_shared_samples_and_endpoints_hand_solution (test_uncertainty.Uncertainty.test_shared_samples_and_endpoints_hand_solution)"
+    ]
+  },
+  {
+    "case": "lost_command_cancellation",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_all_signed_sensitivities_against_finite_differences (test_uncertainty.Uncertainty.test_all_signed_sensitivities_against_finite_differences)",
+      "FAIL: test_command_error_cancels_from_tau_and_consistency (test_uncertainty.Uncertainty.test_command_error_cancels_from_tau_and_consistency)",
+      "FAIL: test_seeded_sampling_matches_standard_uncertainties (test_uncertainty.Uncertainty.test_seeded_sampling_matches_standard_uncertainties)"
+    ]
+  },
+  {
+    "case": "missing_bracket_screen",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_screen_threshold_knots_and_earlier_near_hits (test_uncertainty.Uncertainty.test_screen_threshold_knots_and_earlier_near_hits)"
+    ]
+  }
+]

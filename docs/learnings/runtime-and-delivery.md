@@ -4,7 +4,7 @@
 
 ## Godot execution and test isolation
 
-- **Exit status alone misses engine failures.** A runtime format error printed `ERROR:` while a test exited zero; a scene parse failure left headless Godot running without anyone reaching `quit()`. Parse scripts before integration, inspect engine/script/shader error logs, and bound process lifetime. Avoid built-in class names for constants, infer no type from an untyped Dictionary, and use `String.num_scientific()` instead of unsupported `%e`/`%g`. [Runner](../../app/test.sh), [C7-R1](../research/trace-integrity/C7-R1/README.md).
+- **Exit status alone misses engine failures.** A runtime format error printed `ERROR:` while a test exited zero; a scene parse failure left headless Godot running without anyone reaching `quit()`. Parse scripts before integration, inspect engine/script/shader error logs, and bound process lifetime. Negative loader tests need the same log checks: an `ok=false` result can hide a broken rejection diagnostic. Avoid built-in class names for constants, infer no type from an untyped Dictionary, and use `String.num_scientific()` instead of unsupported `%e`/`%g` (or `%s` for ordinary value text). [Runner](../../app/test.sh), [C7-R1](../research/trace-integrity/C7-R1/README.md), [DATA-4b](../research/aircraft-validation/DATA-4b/README.md).
 
 - **Wait for completed work, not elapsed wall time.** A short timer expired before a radio test's first physics update. `physics_frame` fires before the tick, and UI presentation follows separately; wait for the required completed ticks and a rendered/process frame before asserting. Inject real events through `Input.parse_input_event` to test routing. [Input tests](../../app/tests/test_e2e_input.gd), [radio tests](../../app/tests/test_e2e_radio.gd).
 
@@ -25,6 +25,8 @@
 - **Validate saved calibration independently of the wizard.** Old or edited profiles bypass wizard checks. Require unique integer axes, finite endpoints, ordered centers and typed device identity before changing live state; rejected writes must preserve existing profiles. A throttle center may equal an endpoint because its normalization does not use the center. [D6b-R1](../research/radio-input/D6b-R1/README.md).
 
 - **Input latency claims need an observation point.** Godot callback spacing measures dispatch, not USB reports or RF latency; queued axes arrive in batches without hardware timestamps. Keep unseen/single-sample intervals unknown and reconnects separate. A visual marker must sample after the flight polls the same buffer, and its no-effect claim needs a simultaneous control flight. Hardware latency still requires a physical trial. [F1](../research/radio-input/F1/README.md), [F6a](../research/radio-input/F6a/README.md).
+
+- **A first-visible video frame is an interval observation.** Subtracting two first-frame indices retains up to one acquisition frame of timing ambiguity in either direction even with exact picks. Carry annotation/cadence bounds through median and nearest-rank p95 with ranks allowed to change; these are not confidence intervals and do not shrink with trial count. A nominal median below a timing budget can still have bounds crossing it. [F6b](../research/radio-input/F6b/README.md).
 
 ## Preferences and localization
 

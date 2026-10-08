@@ -30,3 +30,11 @@ L10a flight-cue captures use the same pinned rendering environment:
 ```
 
 Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises optional scenery. Pixel changes must stay within projected cue bounds, whites must not clip, and the cue must add two draws and fewer than 2,000 triangles. The checker rejects an invisible-feature control. [L10a evidence and scope](../../docs/research/visual-quality-implementation/L10a/README.md).
+
+L10b reuses the flight-cue harness for the pilot station:
+
+```bash
+"$(app/tests/visual-env.sh)" tools/ground/check_windsock.py --cue pilot_station --app app --godot "$(app/get-godot.sh)" --out /tmp/l10b-station
+```
+
+Front, rear and raised views require a visible one-draw cue below 400 triangles. Both runway-threshold views use the field's actual pilot eye and require identical on/off pixels. A modified-pixel control tests that equality guard; it does not render an occluder. Default repeat and scenery-on runs produce 30 images. Both cue modes run in `app/capture.sh`. [L10b evidence and limits](../../docs/research/visual-quality-implementation/L10b/README.md).

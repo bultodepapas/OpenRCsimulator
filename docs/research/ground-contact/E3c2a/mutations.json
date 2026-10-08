@@ -1,0 +1,10 @@
+[
+  {
+    "mutation": "nonfinite-command",
+    "rejected": true
+  },
+  {
+    "mutation": "state-rewrite",
+    "rejected": true
+  }
+]

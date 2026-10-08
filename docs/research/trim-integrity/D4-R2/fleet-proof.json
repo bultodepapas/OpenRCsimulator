@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "0a496184ab0c583d6c67dd211ad076d9ca01ae62",
+  "trim_results": 24,
+  "full_flight_checkpoints": 4,
+  "ticks_per_flight": 240,
+  "byte_identical": true,
+  "baseline_sha256": "dea29be7efb922cb4d84d5dff8ab4f4cddaffcffb52d6c70d080b12c879306c6",
+  "candidate_sha256": "dea29be7efb922cb4d84d5dff8ab4f4cddaffcffb52d6c70d080b12c879306c6",
+  "candidate_trim_sha256": "4cd18572701f8264d284ff0dd481ac13d69a97d7d90ec6e5ec6ca991f1b3dce6"
+}
