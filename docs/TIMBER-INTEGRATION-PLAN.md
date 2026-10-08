@@ -6,6 +6,8 @@
 
 Independent aircraft track. This plan owns Timber work; it does not change ROADMAP priorities or the other aircraft developers' plans. Research: [TT-00 evidence](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [runtime seams](research/timber-integration/TT-00/code-audit.md).
 
+External model-author communication: [Blender aircraft delivery letter](BLENDER-AIRCRAFT-HANDOFF.md), covering Timber corrections and a reusable handoff convention for future models.
+
 ## 1. Recommended delivery
 
 Integrate the supplied **Turbo Timber Evolution** through a curated Blender → GLB → Godot pipeline and a small aircraft-specific adapter. Keep the existing custom float64 flight simulator as the sole authority for motion. The first deliverable is an isolated neutral viewer, followed by articulation; the next is a catalog preview; the third is an experimental electric airplane starting in flight. Ground handling and flap/STOL behavior follow with their own evidence.

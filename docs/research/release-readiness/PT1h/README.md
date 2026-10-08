@@ -40,8 +40,8 @@ This is the pre-publication evidence snapshot. [Verification summary](verificati
 - Offline tools: 195 tests in 11 programs passed; synthetic inputs only.
 - Generated aircraft outputs: 11 `--check` commands passed.
 - Aircraft schema/loader: passed, four fleet files and 1,691 cases (136 valid controls, 11 runtime-only counterexamples).
-- Captures: changed Home/Help views pass and were inspected in English/Spanish; VQ-01b completes 66 guarded captures and L7 repeatability passes. The full capture suite continues locally and must pass in tagged CI before publication; final reports are retained as CI artifacts.
-- Exports: complete `app/export.sh` passes from a fresh clone at `dda5281`: Linux execution, Windows/macOS version fields, universal/ad-hoc macOS structure and all three resource packs. The local disk-pressure failure and recovery are recorded below; final release packages are rebuilt from the tag by CI.
+- Captures: changed Home/Help views pass and were inspected in English/Spanish; VQ-01b completes 66 guarded captures and L7 repeatability passes. L4b atmosphere and GPU-cloud checks also passed. The duplicate local full run was stopped because of disk pressure; the full capture suite must pass in tagged CI before publication; final reports are retained as CI artifacts.
+- Exports: complete `app/export.sh` passes from a fresh clone at `dda5281`: Linux execution, Windows/macOS version fields, universal/ad-hoc macOS structure and all three resource packs. The exact tag `613e4ef` was then exported again ([tag export log](export-tag.log.gz)); all four aircraft flew 720 ticks from its Linux executable with exact aircraft-input hashes ([fleet log](export-tag-fleet.log)). The local disk-pressure failure and recovery are recorded below; final release packages are rebuilt from the tag by CI.
 - Documentation: 633 local file links resolve in changed Markdown; `git diff --check` and shell syntax pass. Home/Help English and Spanish captures inspected.
 - VAL-3 dashboard: stale source inventory found and regenerated; numerical comparison rows unchanged; `--check` passes. E3c2b kit: 12 tests pass.
 

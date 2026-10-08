@@ -71,10 +71,34 @@
       "rows": 10
     },
     "capture": {
-      "local_progress": "EN/ES changed UI inspected; VQ-01b 66 captures complete; L7 repeatability passes",
+      "local_progress": "EN/ES changed UI inspected; VQ-01b 66 captures, L7 repeatability, L4b atmosphere and GPU-cloud probe passed; duplicate local full run stopped due to disk pressure; tagged CI is the full-run gate",
       "publication_gate": "full app/capture.sh in tagged CI",
       "hardware_acceptance": false
+    },
+    "tag_exports": {
+      "result": "pass",
+      "source_commit": "613e4efe766e13e2207b749619e886b2c6787cc1",
+      "build_identity": "v0.1.0-rc6",
+      "platforms": [
+        "linux-x86_64",
+        "windows-x86_64",
+        "macos-universal"
+      ],
+      "native_execution": [
+        "linux-x86_64"
+      ],
+      "log_sha256": "ae7717b58fbf85e7e4683b14c085b5c57321171a0015e168a488d02baf4267b6"
+    },
+    "tag_exported_fleet": {
+      "result": "pass",
+      "aircraft": 4,
+      "ticks_per_aircraft": 720,
+      "seconds_per_aircraft": 3,
+      "aircraft_input_bytes_verified": true,
+      "log_sha256": "de2d8e83f603c7e11d21380b6b1159a33e6e351c0947f3f92247bf5f0279b3ad"
     }
   },
-  "export_source_commit": "dda5281e1edc04f00563bf924976b9b494e8cbb2"
+  "export_source_commit": "dda5281e1edc04f00563bf924976b9b494e8cbb2",
+  "release_tag": "v0.1.0-rc6",
+  "release_commit": "613e4efe766e13e2207b749619e886b2c6787cc1"
 }
