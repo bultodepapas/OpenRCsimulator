@@ -22,11 +22,12 @@ MUTATIONS = {
         "var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar - a.Cnda_left * dal + a.Cndr * dr"),
     "fixed_strip_offset": (
         "froude", "app/physics/aero.gd",
-        "var ys: PackedFloat64Array = env.station_ys",
-        "var ys: PackedFloat64Array = env.station_ys.duplicate()\n\tfor station_index: int in ys.size():\n\t\tys[station_index] += 0.03 * signf(ys[station_index])"),
+        "var ys: PackedFloat64Array = env.station_ys\n\tvar stations := ys.size()\n\tvar station_area: float = ref.S / stations",
+        "var ys: PackedFloat64Array = env.station_ys.duplicate()\n\tfor station_index: int in ys.size():\n\t\tys[station_index] += 0.03 * signf(ys[station_index])\n\tvar stations := ys.size()\n\tvar station_area: float = ref.S / stations"),
     "wing_drag_adds_energy": (
         "energy", "app/physics/aero.gd",
-        "var drag_q := -0.5*rho", "var drag_q := 0.5*rho"),
+        # Small anti-drag exposes positive work without turning the probe into a numeric blow-up.
+        "var drag_q := -0.5*rho", "var drag_q := 0.05*rho"),
 }
 
 
@@ -71,7 +72,7 @@ def run_engine(engine, app, script, output, expected_group=None):
         require(result.returncode == 1 and report["groups"][expected_group]["failures"] > 0,
                 f"mutation survived or failed for the wrong reason ({expected_group}):\n"+result.stdout[:4000])
         require(report["groups"]["integrity"]["failures"] == 0 and report["groups"]["coverage"]["failures"] == 0,
-                "mutation invalidated the fixture instead of exposing its intended invariant")
+                f"mutation ({expected_group}) invalidated the fixture: {report['groups']}")
     return report
 
 

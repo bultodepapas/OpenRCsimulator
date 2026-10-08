@@ -796,7 +796,7 @@ bool read_number(const godot::Variant &value, double &out) {
 }
 
 bool read_number(const godot::Dictionary &dictionary, const char *key, double &out) {
-	return dictionary.has(key) && read_number(dictionary.get(key, godot::Variant()), out);
+	return read_number(dictionary.get(key, godot::Variant()), out);
 }
 
 bool read_optional_number(const godot::Dictionary &dictionary, const char *key, double &out) {
@@ -841,11 +841,11 @@ bool read_packed(const godot::Variant &value, double *out, std::size_t expected)
 }
 
 bool read_vec3(const godot::Dictionary &dictionary, const char *key, Vec3 &out) {
-	return dictionary.has(key) && read_packed(dictionary.get(key, godot::Variant()), out.data(), out.size());
+	return read_packed(dictionary.get(key, godot::Variant()), out.data(), out.size());
 }
 
 bool read_pair(const godot::Dictionary &dictionary, const char *key, Pair &out) {
-	return dictionary.has(key) && read_packed(dictionary.get(key, godot::Variant()), out.data(), out.size());
+	return read_packed(dictionary.get(key, godot::Variant()), out.data(), out.size());
 }
 
 bool read_profile(const godot::Dictionary &piece_value, Piece &piece) {

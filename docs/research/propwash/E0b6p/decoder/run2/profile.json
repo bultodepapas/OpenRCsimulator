@@ -1,0 +1,2406 @@
+{
+	"backend_load_order": {
+		"baseline_class": "OpenRCSmoothWake",
+		"candidate_class": "OpenRCSmoothWakeCandidate",
+		"candidate_loaded": true,
+		"classes_distinct": true,
+		"reference_loaded_before_candidate": true
+	},
+	"backend_route_counts": {
+		"baseline": {
+			"kernel_calls": 34867,
+			"legacy": 0,
+			"native": 40326,
+			"refused": 0
+		},
+		"candidate": {
+			"kernel_calls": 34867,
+			"legacy": 0,
+			"native": 40326,
+			"refused": 0
+		}
+	},
+	"checks": {
+		"all_adapter_totals_valid": true,
+		"backend_objects_distinct": true,
+		"backend_routes_valid": true,
+		"direct_rows": 6,
+		"whole_tick_aux_values_per_boundary": 14,
+		"whole_tick_body_values_per_boundary": 13,
+		"whole_tick_boundary_samples_per_backend": 240,
+		"whole_tick_continuous_values_per_boundary": 0,
+		"whole_tick_rows": 12
+	},
+	"cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+	"direct_rows": [
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				54.765625,
+				54.640625,
+				55.390625,
+				52.65625,
+				56.71875,
+				65.171875,
+				60.265625,
+				45.546875,
+				46.171875,
+				62.4375,
+				51.125,
+				45.984375,
+				67.984375,
+				52.90625,
+				45.765625,
+				47.953125,
+				46.71875,
+				59.140625,
+				64.5,
+				53.15625,
+				46.015625,
+				50.140625,
+				58.796875,
+				47.8125
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				57.203125,
+				56.515625,
+				55.453125,
+				51.375,
+				67.640625,
+				67.71875,
+				53.84375,
+				42.640625,
+				44.265625,
+				43.765625,
+				54.828125,
+				58.09375,
+				45.75,
+				43.078125,
+				56.390625,
+				51.140625,
+				54.1875,
+				45.703125,
+				44.40625,
+				45.8125,
+				58.296875,
+				44.15625,
+				43.6875,
+				43.671875
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "forward",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 54.765625,
+					"candidate_us_per_call": 57.203125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 54.640625,
+					"candidate_us_per_call": 56.515625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 55.390625,
+					"candidate_us_per_call": 55.453125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 52.65625,
+					"candidate_us_per_call": 51.375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 56.71875,
+					"candidate_us_per_call": 67.640625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 65.171875,
+					"candidate_us_per_call": 67.71875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 60.265625,
+					"candidate_us_per_call": 53.84375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 45.546875,
+					"candidate_us_per_call": 42.640625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 46.171875,
+					"candidate_us_per_call": 44.265625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 62.4375,
+					"candidate_us_per_call": 43.765625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 51.125,
+					"candidate_us_per_call": 54.828125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 45.984375,
+					"candidate_us_per_call": 58.09375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 67.984375,
+					"candidate_us_per_call": 45.75,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 52.90625,
+					"candidate_us_per_call": 43.078125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 45.765625,
+					"candidate_us_per_call": 56.390625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 47.953125,
+					"candidate_us_per_call": 51.140625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 46.71875,
+					"candidate_us_per_call": 54.1875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 59.140625,
+					"candidate_us_per_call": 45.703125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 64.5,
+					"candidate_us_per_call": 44.40625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 53.15625,
+					"candidate_us_per_call": 45.8125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 46.015625,
+					"candidate_us_per_call": 58.296875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.140625,
+					"candidate_us_per_call": 44.15625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 58.796875,
+					"candidate_us_per_call": 43.6875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 47.8125,
+					"candidate_us_per_call": 43.671875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		},
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				68.125,
+				48.1875,
+				55.125,
+				84.125,
+				54.046875,
+				56.15625,
+				51.40625,
+				54.625,
+				48.53125,
+				49.5625,
+				49.640625,
+				48.8125,
+				60.421875,
+				50.921875,
+				49.34375,
+				50.828125,
+				48.84375,
+				50.96875,
+				50.65625,
+				47.265625,
+				78.875,
+				80.34375,
+				80.734375,
+				52.21875
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				49.234375,
+				59.421875,
+				46.78125,
+				65.046875,
+				65.84375,
+				58.28125,
+				46.15625,
+				62.734375,
+				60.921875,
+				45.953125,
+				59.890625,
+				50.296875,
+				45.046875,
+				51.8125,
+				58.6875,
+				50.171875,
+				45.203125,
+				47.765625,
+				46.5,
+				56.921875,
+				74.296875,
+				75.265625,
+				74.203125,
+				57.09375
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "stall",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 68.125,
+					"candidate_us_per_call": 49.234375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 48.1875,
+					"candidate_us_per_call": 59.421875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 55.125,
+					"candidate_us_per_call": 46.78125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 84.125,
+					"candidate_us_per_call": 65.046875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 54.046875,
+					"candidate_us_per_call": 65.84375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 56.15625,
+					"candidate_us_per_call": 58.28125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 51.40625,
+					"candidate_us_per_call": 46.15625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 54.625,
+					"candidate_us_per_call": 62.734375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 48.53125,
+					"candidate_us_per_call": 60.921875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 49.5625,
+					"candidate_us_per_call": 45.953125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 49.640625,
+					"candidate_us_per_call": 59.890625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 48.8125,
+					"candidate_us_per_call": 50.296875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 60.421875,
+					"candidate_us_per_call": 45.046875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.921875,
+					"candidate_us_per_call": 51.8125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 49.34375,
+					"candidate_us_per_call": 58.6875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.828125,
+					"candidate_us_per_call": 50.171875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 48.84375,
+					"candidate_us_per_call": 45.203125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.96875,
+					"candidate_us_per_call": 47.765625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 50.65625,
+					"candidate_us_per_call": 46.5,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 47.265625,
+					"candidate_us_per_call": 56.921875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 78.875,
+					"candidate_us_per_call": 74.296875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 80.34375,
+					"candidate_us_per_call": 75.265625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 80.734375,
+					"candidate_us_per_call": 74.203125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 52.21875,
+					"candidate_us_per_call": 57.09375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		},
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				49.59375,
+				44.140625,
+				47.34375,
+				66.0,
+				62.0625,
+				44.5625,
+				60.4375,
+				64.09375,
+				64.6875,
+				56.65625,
+				44.546875,
+				57.421875,
+				46.90625,
+				44.015625,
+				48.28125,
+				58.953125,
+				45.265625,
+				58.484375,
+				45.671875,
+				43.046875,
+				44.421875,
+				50.109375,
+				53.609375,
+				43.0625
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				43.234375,
+				53.484375,
+				41.84375,
+				49.234375,
+				51.796875,
+				41.609375,
+				61.53125,
+				44.65625,
+				45.484375,
+				46.1875,
+				45.921875,
+				45.03125,
+				41.484375,
+				50.21875,
+				56.4375,
+				48.125,
+				40.21875,
+				40.390625,
+				46.015625,
+				43.609375,
+				41.359375,
+				49.65625,
+				68.59375,
+				47.328125
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "static",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 49.59375,
+					"candidate_us_per_call": 43.234375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.140625,
+					"candidate_us_per_call": 53.484375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 47.34375,
+					"candidate_us_per_call": 41.84375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 66.0,
+					"candidate_us_per_call": 49.234375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 62.0625,
+					"candidate_us_per_call": 51.796875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.5625,
+					"candidate_us_per_call": 41.609375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 60.4375,
+					"candidate_us_per_call": 61.53125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 64.09375,
+					"candidate_us_per_call": 44.65625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 64.6875,
+					"candidate_us_per_call": 45.484375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 56.65625,
+					"candidate_us_per_call": 46.1875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 44.546875,
+					"candidate_us_per_call": 45.921875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 57.421875,
+					"candidate_us_per_call": 45.03125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 46.90625,
+					"candidate_us_per_call": 41.484375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.015625,
+					"candidate_us_per_call": 50.21875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 48.28125,
+					"candidate_us_per_call": 56.4375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 58.953125,
+					"candidate_us_per_call": 48.125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 45.265625,
+					"candidate_us_per_call": 40.21875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 58.484375,
+					"candidate_us_per_call": 40.390625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 45.671875,
+					"candidate_us_per_call": 46.015625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 43.046875,
+					"candidate_us_per_call": 43.609375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 44.421875,
+					"candidate_us_per_call": 41.359375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.109375,
+					"candidate_us_per_call": 49.65625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 53.609375,
+					"candidate_us_per_call": 68.59375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 43.0625,
+					"candidate_us_per_call": 47.328125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		},
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				51.5,
+				69.765625,
+				51.078125,
+				67.3125,
+				55.15625,
+				62.296875,
+				57.171875,
+				64.421875,
+				57.0625,
+				70.265625,
+				65.46875,
+				54.9375,
+				57.921875,
+				51.234375,
+				59.53125,
+				55.515625,
+				55.609375,
+				55.140625,
+				56.703125,
+				53.15625,
+				55.125,
+				51.765625,
+				83.65625,
+				60.9375
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				60.34375,
+				52.75,
+				65.703125,
+				48.5625,
+				54.953125,
+				49.78125,
+				47.484375,
+				58.34375,
+				51.609375,
+				50.875,
+				54.234375,
+				49.125,
+				48.0,
+				49.328125,
+				50.734375,
+				51.109375,
+				61.828125,
+				50.1875,
+				49.28125,
+				56.46875,
+				50.828125,
+				54.84375,
+				55.828125,
+				48.0625
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "spin",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 51.5,
+					"candidate_us_per_call": 60.34375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 69.765625,
+					"candidate_us_per_call": 52.75,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 51.078125,
+					"candidate_us_per_call": 65.703125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 67.3125,
+					"candidate_us_per_call": 48.5625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 55.15625,
+					"candidate_us_per_call": 54.953125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 62.296875,
+					"candidate_us_per_call": 49.78125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 57.171875,
+					"candidate_us_per_call": 47.484375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 64.421875,
+					"candidate_us_per_call": 58.34375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 57.0625,
+					"candidate_us_per_call": 51.609375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 70.265625,
+					"candidate_us_per_call": 50.875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 65.46875,
+					"candidate_us_per_call": 54.234375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 54.9375,
+					"candidate_us_per_call": 49.125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 57.921875,
+					"candidate_us_per_call": 48.0,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 51.234375,
+					"candidate_us_per_call": 49.328125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 59.53125,
+					"candidate_us_per_call": 50.734375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 55.515625,
+					"candidate_us_per_call": 51.109375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 55.609375,
+					"candidate_us_per_call": 61.828125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 55.140625,
+					"candidate_us_per_call": 50.1875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 56.703125,
+					"candidate_us_per_call": 49.28125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 53.15625,
+					"candidate_us_per_call": 56.46875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 55.125,
+					"candidate_us_per_call": 50.828125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 51.765625,
+					"candidate_us_per_call": 54.84375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 83.65625,
+					"candidate_us_per_call": 55.828125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 60.9375,
+					"candidate_us_per_call": 48.0625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		},
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				45.96875,
+				42.875,
+				44.71875,
+				46.140625,
+				58.0,
+				57.3125,
+				45.453125,
+				66.40625,
+				45.390625,
+				44.09375,
+				43.78125,
+				43.90625,
+				71.5,
+				45.796875,
+				47.453125,
+				43.0,
+				44.421875,
+				50.09375,
+				44.75,
+				44.90625,
+				42.890625,
+				47.109375,
+				46.78125,
+				44.15625
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				43.484375,
+				44.546875,
+				59.515625,
+				51.875,
+				40.9375,
+				41.59375,
+				43.015625,
+				51.0,
+				39.84375,
+				40.40625,
+				43.375,
+				48.546875,
+				60.546875,
+				62.484375,
+				54.90625,
+				44.828125,
+				40.578125,
+				41.28125,
+				43.484375,
+				49.609375,
+				49.34375,
+				40.953125,
+				39.875,
+				41.15625
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "reverse_fade",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 45.96875,
+					"candidate_us_per_call": 43.484375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 42.875,
+					"candidate_us_per_call": 44.546875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 44.71875,
+					"candidate_us_per_call": 59.515625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 46.140625,
+					"candidate_us_per_call": 51.875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 58.0,
+					"candidate_us_per_call": 40.9375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 57.3125,
+					"candidate_us_per_call": 41.59375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 45.453125,
+					"candidate_us_per_call": 43.015625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 66.40625,
+					"candidate_us_per_call": 51.0,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 45.390625,
+					"candidate_us_per_call": 39.84375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.09375,
+					"candidate_us_per_call": 40.40625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 43.78125,
+					"candidate_us_per_call": 43.375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 43.90625,
+					"candidate_us_per_call": 48.546875,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 71.5,
+					"candidate_us_per_call": 60.546875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 45.796875,
+					"candidate_us_per_call": 62.484375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 47.453125,
+					"candidate_us_per_call": 54.90625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 43.0,
+					"candidate_us_per_call": 44.828125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 44.421875,
+					"candidate_us_per_call": 40.578125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 50.09375,
+					"candidate_us_per_call": 41.28125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 44.75,
+					"candidate_us_per_call": 43.484375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.90625,
+					"candidate_us_per_call": 49.609375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 42.890625,
+					"candidate_us_per_call": 49.34375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 47.109375,
+					"candidate_us_per_call": 40.953125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 46.78125,
+					"candidate_us_per_call": 39.875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 44.15625,
+					"candidate_us_per_call": 41.15625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		},
+		{
+			"baseline_finite": true,
+			"baseline_load_values": 6,
+			"baseline_samples_us": [
+				4.78125,
+				2.96875,
+				2.984375,
+				3.109375,
+				3.0,
+				3.125,
+				3.203125,
+				2.984375,
+				3.15625,
+				3.34375,
+				3.265625,
+				2.96875,
+				2.96875,
+				3.15625,
+				3.40625,
+				3.1875,
+				3.078125,
+				2.984375,
+				3.03125,
+				5.421875,
+				3.109375,
+				2.96875,
+				2.984375,
+				3.5625
+			],
+			"calls_per_backend_per_batch": 64,
+			"candidate_finite": true,
+			"candidate_load_values": 6,
+			"candidate_samples_us": [
+				5.328125,
+				3.28125,
+				3.28125,
+				3.125,
+				2.96875,
+				3.4375,
+				3.71875,
+				3.375,
+				3.375,
+				3.15625,
+				3.171875,
+				2.984375,
+				3.109375,
+				3.078125,
+				4.15625,
+				2.9375,
+				3.25,
+				3.15625,
+				3.0,
+				4.828125,
+				3.015625,
+				3.125,
+				2.984375,
+				3.28125
+			],
+			"exact": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline"
+			],
+			"measured_pairs": 24,
+			"regime": "reverse_off",
+			"scalar_values_compared": 6,
+			"swirl_factor": 0.4,
+			"timing_pairs": [
+				{
+					"baseline_us_per_call": 4.78125,
+					"candidate_us_per_call": 5.328125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 2.96875,
+					"candidate_us_per_call": 3.28125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 2.984375,
+					"candidate_us_per_call": 3.28125,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.109375,
+					"candidate_us_per_call": 3.125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.0,
+					"candidate_us_per_call": 2.96875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.125,
+					"candidate_us_per_call": 3.4375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.203125,
+					"candidate_us_per_call": 3.71875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 2.984375,
+					"candidate_us_per_call": 3.375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.15625,
+					"candidate_us_per_call": 3.375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.34375,
+					"candidate_us_per_call": 3.15625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.265625,
+					"candidate_us_per_call": 3.171875,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 2.96875,
+					"candidate_us_per_call": 2.984375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 2.96875,
+					"candidate_us_per_call": 3.109375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.15625,
+					"candidate_us_per_call": 3.078125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.40625,
+					"candidate_us_per_call": 4.15625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.1875,
+					"candidate_us_per_call": 2.9375,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.078125,
+					"candidate_us_per_call": 3.25,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 2.984375,
+					"candidate_us_per_call": 3.15625,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.03125,
+					"candidate_us_per_call": 3.0,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 5.421875,
+					"candidate_us_per_call": 4.828125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 3.109375,
+					"candidate_us_per_call": 3.015625,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 2.96875,
+					"candidate_us_per_call": 3.125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				},
+				{
+					"baseline_us_per_call": 2.984375,
+					"candidate_us_per_call": 2.984375,
+					"exact_last_load": true,
+					"first_backend": "candidate"
+				},
+				{
+					"baseline_us_per_call": 3.5625,
+					"candidate_us_per_call": 3.28125,
+					"exact_last_load": true,
+					"first_backend": "baseline"
+				}
+			],
+			"timing_unit": "us/call",
+			"warmup_pairs": 3
+		}
+	],
+	"failure_details": [],
+	"failures": 0,
+	"flight_rows": [
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				801.0833333333334,
+				646.8333333333334,
+				1049.5,
+				598.625,
+				511.5,
+				511.0,
+				518.75,
+				614.4166666666666,
+				576.5833333333334,
+				664.625,
+				682.75,
+				500.7083333333333,
+				527.7083333333334,
+				515.75,
+				523.4166666666666
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				754.1666666666666,
+				642.75,
+				690.7083333333334,
+				616.875,
+				490.7083333333333,
+				952.5833333333334,
+				709.1666666666666,
+				540.625,
+				528.1666666666666,
+				673.5416666666666,
+				541.7916666666666,
+				519.0833333333334,
+				614.875,
+				485.7083333333333,
+				465.0416666666667
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "forward",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				565.0,
+				671.6666666666666,
+				901.3333333333334,
+				835.2916666666666,
+				653.6666666666666,
+				964.3333333333334,
+				687.7083333333334,
+				736.3333333333334,
+				945.5833333333334,
+				796.0,
+				955.125,
+				950.9583333333334,
+				852.0416666666666,
+				851.0833333333334,
+				623.875
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				697.0,
+				633.125,
+				745.8333333333334,
+				643.2083333333334,
+				725.25,
+				920.0833333333334,
+				658.625,
+				684.9583333333334,
+				714.9583333333334,
+				727.4583333333334,
+				707.0833333333334,
+				1428.375,
+				801.8333333333334,
+				1001.5833333333334,
+				773.9166666666666
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "forward",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				555.9583333333334,
+				619.5416666666666,
+				573.6666666666666,
+				619.0833333333334,
+				681.1666666666666,
+				666.5,
+				701.75,
+				673.9583333333334,
+				565.7083333333334,
+				610.7916666666666,
+				626.375,
+				686.125,
+				702.8333333333334,
+				631.9583333333334,
+				947.5416666666666
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				713.9166666666666,
+				763.9166666666666,
+				616.625,
+				546.875,
+				698.8333333333334,
+				681.2916666666666,
+				684.9166666666666,
+				518.0416666666666,
+				640.4166666666666,
+				704.6666666666666,
+				679.5416666666666,
+				601.875,
+				671.4166666666666,
+				518.0,
+				755.4166666666666
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "stall",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				701.5833333333334,
+				715.4166666666666,
+				725.8333333333334,
+				628.1666666666666,
+				873.4166666666666,
+				719.125,
+				676.875,
+				675.2083333333334,
+				722.0416666666666,
+				651.7083333333334,
+				651.0833333333334,
+				931.75,
+				709.4166666666666,
+				717.0416666666666,
+				883.0
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				759.6666666666666,
+				700.7083333333334,
+				686.4166666666666,
+				591.875,
+				795.4583333333334,
+				826.8333333333334,
+				668.0416666666666,
+				661.0833333333334,
+				708.75,
+				650.1666666666666,
+				692.5,
+				989.7083333333334,
+				971.375,
+				990.0833333333334,
+				1074.2083333333333
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "stall",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				458.3333333333333,
+				510.9583333333333,
+				621.7916666666666,
+				487.0,
+				497.6666666666667,
+				533.6666666666666,
+				497.0416666666667,
+				497.1666666666667,
+				458.4583333333333,
+				497.7916666666667,
+				516.375,
+				501.75,
+				555.25,
+				529.0416666666666,
+				624.75
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				493.3333333333333,
+				511.4583333333333,
+				538.9166666666666,
+				565.875,
+				495.7916666666667,
+				567.125,
+				517.5,
+				479.4583333333333,
+				465.2083333333333,
+				582.5833333333334,
+				524.5833333333334,
+				489.25,
+				565.9166666666666,
+				539.375,
+				514.625
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "static",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				637.8333333333334,
+				807.2916666666666,
+				679.9583333333334,
+				626.2083333333334,
+				604.1666666666666,
+				600.6666666666666,
+				712.0,
+				586.0416666666666,
+				583.9583333333334,
+				676.2083333333334,
+				604.9166666666666,
+				680.875,
+				633.9583333333334,
+				581.5,
+				552.125
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				608.2083333333334,
+				556.4583333333334,
+				559.5,
+				579.2083333333334,
+				610.5833333333334,
+				688.0416666666666,
+				612.9166666666666,
+				593.375,
+				539.4583333333334,
+				670.9166666666666,
+				574.25,
+				560.4583333333334,
+				636.5833333333334,
+				622.2083333333334,
+				565.5
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "static",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				493.4166666666667,
+				553.5833333333334,
+				553.9166666666666,
+				499.5416666666667,
+				584.125,
+				548.6666666666666,
+				510.875,
+				505.2083333333333,
+				567.9583333333334,
+				700.625,
+				519.9166666666666,
+				574.5416666666666,
+				669.25,
+				545.6666666666666,
+				725.7916666666666
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				500.625,
+				587.125,
+				665.75,
+				565.0,
+				604.375,
+				500.0416666666667,
+				492.375,
+				490.625,
+				469.5833333333333,
+				794.75,
+				564.5833333333334,
+				542.2916666666666,
+				544.25,
+				557.625,
+				535.875
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "spin",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				595.4583333333334,
+				852.75,
+				802.25,
+				698.875,
+				563.0833333333334,
+				570.4166666666666,
+				611.25,
+				625.9166666666666,
+				625.2083333333334,
+				689.2083333333334,
+				587.5416666666666,
+				543.8333333333334,
+				599.2083333333334,
+				580.7916666666666,
+				650.8333333333334
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				581.25,
+				806.25,
+				606.9166666666666,
+				591.3333333333334,
+				575.125,
+				600.1666666666666,
+				658.4583333333334,
+				980.9583333333334,
+				695.2083333333334,
+				600.6666666666666,
+				630.2083333333334,
+				543.625,
+				654.8333333333334,
+				568.375,
+				650.4583333333334
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "spin",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				505.1666666666667,
+				457.7916666666667,
+				467.8333333333333,
+				437.4166666666667,
+				492.375,
+				487.7083333333333,
+				557.0416666666666,
+				593.2916666666666,
+				559.4583333333334,
+				523.875,
+				514.5,
+				471.9583333333333,
+				503.7083333333333,
+				534.3333333333334,
+				525.4583333333334
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				518.7083333333334,
+				434.7916666666667,
+				469.4166666666667,
+				471.0,
+				498.9166666666667,
+				470.125,
+				430.9583333333333,
+				525.0833333333334,
+				521.5,
+				454.25,
+				438.7083333333333,
+				450.1666666666667,
+				473.125,
+				499.2083333333333,
+				447.375
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "reverse_fade",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				663.2916666666666,
+				577.3333333333334,
+				694.5833333333334,
+				594.75,
+				587.7083333333334,
+				619.875,
+				714.2916666666666,
+				648.2083333333334,
+				765.375,
+				620.5833333333334,
+				596.875,
+				572.9166666666666,
+				919.7916666666666,
+				868.0,
+				682.0416666666666
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				592.0,
+				550.2916666666666,
+				607.0833333333334,
+				662.6666666666666,
+				644.7916666666666,
+				665.1666666666666,
+				596.5416666666666,
+				678.4583333333334,
+				588.875,
+				588.0416666666666,
+				626.9583333333334,
+				773.375,
+				868.625,
+				572.375,
+				561.25
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "reverse_fade",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				413.875,
+				416.1666666666667,
+				381.0416666666667,
+				373.125,
+				372.8333333333333,
+				375.0833333333333,
+				418.625,
+				360.0416666666667,
+				376.0,
+				396.5,
+				363.7916666666667,
+				345.75,
+				358.1666666666667,
+				369.7916666666667,
+				414.3333333333333
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				335.9583333333333,
+				450.5833333333333,
+				353.5833333333333,
+				385.0416666666667,
+				363.0,
+				368.2916666666667,
+				369.0833333333333,
+				361.25,
+				453.875,
+				384.5,
+				362.125,
+				391.1666666666667,
+				558.25,
+				373.1666666666667,
+				384.5416666666667
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "reverse_off",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.0,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		},
+		{
+			"baseline_boundary_capture_ok": true,
+			"baseline_samples_us": [
+				354.5833333333333,
+				373.0833333333333,
+				440.1666666666667,
+				391.2916666666667,
+				517.4583333333334,
+				425.125,
+				475.2083333333333,
+				375.2083333333333,
+				430.25,
+				347.5416666666667,
+				372.1666666666667,
+				342.8333333333333,
+				390.8333333333333,
+				355.25,
+				395.9166666666667
+			],
+			"boundary_comparison": {
+				"aux_values_per_boundary": 14,
+				"baseline_finite": true,
+				"body_values_per_boundary": 13,
+				"boundaries_per_backend": 240,
+				"candidate_finite": true,
+				"continuous_values_per_boundary": 0,
+				"exact": true,
+				"first_difference_boundary": -1,
+				"scalar_values_compared": 6480
+			},
+			"candidate_boundary_capture_ok": true,
+			"candidate_samples_us": [
+				410.75,
+				405.5833333333333,
+				394.9583333333333,
+				426.3333333333333,
+				411.1666666666667,
+				495.5833333333333,
+				394.625,
+				372.375,
+				447.375,
+				355.1666666666667,
+				372.2083333333333,
+				390.5416666666667,
+				358.375,
+				362.8333333333333,
+				369.9583333333333
+			],
+			"exact": true,
+			"fault_free_timing_batches": true,
+			"first_backend_samples": [
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate",
+				"baseline",
+				"candidate"
+			],
+			"measured_pairs": 15,
+			"ok": true,
+			"regime": "reverse_off",
+			"scalar_values_compared": 6480,
+			"swirl_factor": 0.4,
+			"ticks_per_batch": 24,
+			"timing_unit": "us/tick",
+			"warmup_pairs": 1
+		}
+	],
+	"format": "openrc-e0b6p-requiredfield-profile v1",
+	"godot": "4.7.2-stable (official)",
+	"protocol": {
+		"boundary_shape": {
+			"auxiliary": 14,
+			"body": 13,
+			"continuous": 0
+		},
+		"boundary_ticks_per_backend": 240,
+		"calls_per_backend_per_batch": 64,
+		"direct_timing_unit": "us/call",
+		"flight_measured_pairs": 15,
+		"flight_ticks_per_batch": 24,
+		"flight_timing_unit": "us/tick",
+		"flight_warmup_pairs": 1,
+		"measured_pairs": 24,
+		"warmup_pairs": 3
+	},
+	"route_counts": {
+		"kernel_calls": 70140,
+		"legacy": 0,
+		"native": 81060,
+		"refused": 0
+	},
+	"status": "pass"
+}

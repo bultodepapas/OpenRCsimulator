@@ -1,0 +1,36 @@
+{
+	"absolute_tolerance": 1e-10,
+	"checks": 315,
+	"compared_loads": 297,
+	"coverage": {
+		"classic_tail": 64,
+		"free_slope_tail": 192,
+		"held_downwash": 64,
+		"instantaneous_downwash": 128,
+		"random_smooth": 256,
+		"reverse_cutoff": 6,
+		"reverse_partial": 2,
+		"rpm_stopped": 20,
+		"transported_nonzero": 64,
+		"transported_zero": 65,
+		"zero_swirl": 153
+	},
+	"exact_loads": 296,
+	"failures": 0,
+	"fixture_note": "Random geometry perturbations of a validated research fixture; no production aircraft calibration.",
+	"format": "openrc-e0b6p-native-verification v1",
+	"godot": "4.7.2-stable (official)",
+	"native_routes": {
+		"kernel_calls": 234,
+		"legacy": 1,
+		"native": 302,
+		"refused": 1
+	},
+	"random_cases": 256,
+	"relative_tolerance": 1e-10,
+	"seed": 2601007,
+	"worst_absolute_detail": "random smooth case 72 component=2 expected=-2.936628019608046 actual=-2.9366280196080456 abs_error=4.440892098500626e-16 tolerance=3.9366280196080463e-10",
+	"worst_absolute_error": 4.440892098500626e-16,
+	"worst_ratio_detail": "random smooth case 72 component=2 expected=-2.936628019608046 actual=-2.9366280196080456 tolerance_ratio=1.1280954350730825e-06",
+	"worst_tolerance_ratio": 1.1280954350730825e-06
+}

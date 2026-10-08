@@ -1,0 +1,8712 @@
+{
+	"cases": [
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 2,
+			"elevation_deg": 0.0,
+			"id": "background-wide-az000",
+			"image": "background-wide-az000.png",
+			"objects": 2,
+			"primitives": 84962,
+			"sha256": "5ac98c681f00ab725dcf120df6409a12e4a542a8df3566d71eb3e36b9faab4ac",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": false,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 1,
+			"elevation_deg": 0.988090873408377,
+			"id": "background-zoom-az000",
+			"image": "background-zoom-az000.png",
+			"objects": 1,
+			"primitives": 84960,
+			"sha256": "cebe4864dde3de4a624bccdcfcbf6bb0a8a4f3dc30e97edfa64b77b185a576d7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": false,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 2,
+			"elevation_deg": 0.0,
+			"id": "background-wide-az090",
+			"image": "background-wide-az090.png",
+			"objects": 2,
+			"primitives": 84962,
+			"sha256": "2d621584cbf4ab521d069ac4065a6a96f5c95d7d1e65186b0244a5e681076cd1",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": false,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 1,
+			"elevation_deg": 2.04819490264243,
+			"id": "background-zoom-az090",
+			"image": "background-zoom-az090.png",
+			"objects": 1,
+			"primitives": 84960,
+			"sha256": "aefc848d910c257566b4e5730af55084bb01af46bd4a48346e0eab1f03d52072",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": false,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 1,
+			"elevation_deg": 0.0,
+			"id": "background-wide-az180",
+			"image": "background-wide-az180.png",
+			"objects": 1,
+			"primitives": 84960,
+			"sha256": "ae68d1859ab28385ab33061c1318a00615b7d6dc31ca3657d2799cfedee45caf",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": false,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 1,
+			"elevation_deg": 1.38127627783422,
+			"id": "background-zoom-az180",
+			"image": "background-zoom-az180.png",
+			"objects": 1,
+			"primitives": 84960,
+			"sha256": "3fe5b4c6511e8b67abe22871b5915e55ca2b4ca089169eee7e6a430f50bd535d",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": false,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 2,
+			"elevation_deg": 0.0,
+			"id": "background-wide-az270",
+			"image": "background-wide-az270.png",
+			"objects": 2,
+			"primitives": 84962,
+			"sha256": "1bbf920a6bd454a41c0748247f58cff17012d7fc39a7507fae9f6e42e933e26c",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": false,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "background",
+			"draw_calls": 1,
+			"elevation_deg": 1.90714780857321,
+			"id": "background-zoom-az270",
+			"image": "background-zoom-az270.png",
+			"objects": 1,
+			"primitives": 84960,
+			"sha256": "ad32b2e92a96ee7b9100a4632c3998b81b776039ada0d8f9c079bbc0584ea45e",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": false,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t0--wide-az000",
+			"image": "calm-t0--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "b47077bcbe70840df76e84442795b3854df4219443d4adb6b117137c9ea6082b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "calm-t0--zoom-az000",
+			"image": "calm-t0--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "c8ed9d6c310084c6faa90f847f45423fcbfb9b9a4fe3034118c80f1e1f95c9f3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t0--wide-az090",
+			"image": "calm-t0--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "9ddfc1001f86bb14df0de2d74526a4a5be061850e4774efc741f96a19afaae41",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "calm-t0--zoom-az090",
+			"image": "calm-t0--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "3089310295a5269feb6d4905e5a436ffad0ae5ecb11f275e720c5854bc593992",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "calm-t0--wide-az180",
+			"image": "calm-t0--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "2f55f9d9b7915c0de71424c20eca9c2a86c14e83fdbe79d160d700c26f6e19eb",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "calm-t0--zoom-az180",
+			"image": "calm-t0--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "af402a2570b6ec82d22d623e47cfa8cc2860c6d131f9a233a9b7fa2d5f4a5cf3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t0--wide-az270",
+			"image": "calm-t0--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "115ff21599a28cd5b3eaf9695e5cd87f3b84abb9de163f172bee93f83c25c2c9",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t0",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "calm-t0--zoom-az270",
+			"image": "calm-t0--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "a27ab31be471a0d2eff61cd88534eb7dfb5cb01fd150ca6f9beed02a553dbff7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t1--wide-az000",
+			"image": "calm-t1--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "b47077bcbe70840df76e84442795b3854df4219443d4adb6b117137c9ea6082b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "calm-t1--zoom-az000",
+			"image": "calm-t1--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "c8ed9d6c310084c6faa90f847f45423fcbfb9b9a4fe3034118c80f1e1f95c9f3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t1--wide-az090",
+			"image": "calm-t1--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "9ddfc1001f86bb14df0de2d74526a4a5be061850e4774efc741f96a19afaae41",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "calm-t1--zoom-az090",
+			"image": "calm-t1--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "3089310295a5269feb6d4905e5a436ffad0ae5ecb11f275e720c5854bc593992",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "calm-t1--wide-az180",
+			"image": "calm-t1--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "2f55f9d9b7915c0de71424c20eca9c2a86c14e83fdbe79d160d700c26f6e19eb",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "calm-t1--zoom-az180",
+			"image": "calm-t1--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "af402a2570b6ec82d22d623e47cfa8cc2860c6d131f9a233a9b7fa2d5f4a5cf3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "calm-t1--wide-az270",
+			"image": "calm-t1--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "115ff21599a28cd5b3eaf9695e5cd87f3b84abb9de163f172bee93f83c25c2c9",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "calm-t1",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "calm-t1--zoom-az270",
+			"image": "calm-t1--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "a27ab31be471a0d2eff61cd88534eb7dfb5cb01fd150ca6f9beed02a553dbff7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 0.0,
+			"wind_vec": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t0--wide-az000",
+			"image": "east-t0--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "38eebe298d8056d9d8e9d1604f275f33b4fbd4f0dd90b23c08b6b101ea74ad47",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-t0--zoom-az000",
+			"image": "east-t0--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "9fec17faa6eb6ad56687bd8081b02bc32b997dad761196c6868b7251a8d2d765",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t0--wide-az090",
+			"image": "east-t0--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "de3e3bbeb98c85e6bc7232792a6ffabbc7951f869dfda78d8059d8f73840ec4b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-t0--zoom-az090",
+			"image": "east-t0--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "356688e535fe9c71f4d796422a39d3b8fde980acf9e4596d7004b32c6bcffaa3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-t0--wide-az180",
+			"image": "east-t0--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "a32ea474d5d1bc375dfdfad4140242ebcf80613f669dd2abbce2c4acaddd07ad",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-t0--zoom-az180",
+			"image": "east-t0--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "cb04f687cdff839e5caffdd993902349f87aeb7953690097dc43ea0ecc95ca55",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t0--wide-az270",
+			"image": "east-t0--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "c561e2cab71ed874cd17125a9de0d645a545b361666e649bcf7d7adf4529b804",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t0",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-t0--zoom-az270",
+			"image": "east-t0--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "9f4f8ff7a5895cbca23bd5b22b6c87f9901569b1ac782bab27ca1f1bc0119359",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1--wide-az000",
+			"image": "east-t1--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "d1d7d6313b31ce31bd5f47f1f8c8f7e261aa16f3b35a5143176bfdb98b94d2c7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-t1--zoom-az000",
+			"image": "east-t1--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "800975df441d329c92b5ce94057c842e3f399e2fbd69f91dbb359a1a8e6aa135",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1--wide-az090",
+			"image": "east-t1--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "65ac7adbf69d77a03edbf76d6ec075324a00801151c6c7d84cff3432663f3f18",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-t1--zoom-az090",
+			"image": "east-t1--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "61e476376a68c26f76b4ef1aedd1cd23d4e8dcda24a8114d004c73fb6d7dbd7f",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-t1--wide-az180",
+			"image": "east-t1--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "d33fa3dd79be7e8efa0c430175ae0860b8c1963a2db2af22b4327132b4fde9ac",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-t1--zoom-az180",
+			"image": "east-t1--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "113c13e8a490c99251bcd67e7e8d9b47689b5beda27d8ee8138add413a973827",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1--wide-az270",
+			"image": "east-t1--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "42b87a84fdc2d1379b4e6f97c35b55d475ef017d94afc0542859ed4916efa4b1",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-t1--zoom-az270",
+			"image": "east-t1--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "adc656e8a5251bd4b509fe67f294237fa995d5b164caf140f2a7102745f512e3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1024--wide-az000",
+			"image": "east-t1024--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "38eebe298d8056d9d8e9d1604f275f33b4fbd4f0dd90b23c08b6b101ea74ad47",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-t1024--zoom-az000",
+			"image": "east-t1024--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "9fec17faa6eb6ad56687bd8081b02bc32b997dad761196c6868b7251a8d2d765",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1024--wide-az090",
+			"image": "east-t1024--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "de3e3bbeb98c85e6bc7232792a6ffabbc7951f869dfda78d8059d8f73840ec4b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-t1024--zoom-az090",
+			"image": "east-t1024--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "356688e535fe9c71f4d796422a39d3b8fde980acf9e4596d7004b32c6bcffaa3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-t1024--wide-az180",
+			"image": "east-t1024--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "a32ea474d5d1bc375dfdfad4140242ebcf80613f669dd2abbce2c4acaddd07ad",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-t1024--zoom-az180",
+			"image": "east-t1024--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "cb04f687cdff839e5caffdd993902349f87aeb7953690097dc43ea0ecc95ca55",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-t1024--wide-az270",
+			"image": "east-t1024--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "c561e2cab71ed874cd17125a9de0d645a545b361666e649bcf7d7adf4529b804",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-t1024",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-t1024--zoom-az270",
+			"image": "east-t1024--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "9f4f8ff7a5895cbca23bd5b22b6c87f9901569b1ac782bab27ca1f1bc0119359",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t0--wide-az000",
+			"image": "west-t0--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "3467ba742738af082d38e6054321382edac5b94f9677a77a1e36c6abaa0c3db7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "west-t0--zoom-az000",
+			"image": "west-t0--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "a825fa19dff9d2ac4b48f8ae0cbf4038914b010e821d2f2e82c077f0058a2217",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t0--wide-az090",
+			"image": "west-t0--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "085044e2e6e29cd0755619c5d1a68e9a2be3aa660b11d2591a0f9c49be67dde7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "west-t0--zoom-az090",
+			"image": "west-t0--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "c76b0f9de85d9c8ca45fb2eccba967e4a1a1116b9b052a6870d6b3d00a7e8871",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "west-t0--wide-az180",
+			"image": "west-t0--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "b4c81962e912f6c9b35e090809aeb7b90aaa93d97d9a3c1224d32b49c3458734",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "west-t0--zoom-az180",
+			"image": "west-t0--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "9324c083ce87ed9d0cefad18b12bb3066333ba30f024545a8d9eab19ca87f25d",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t0--wide-az270",
+			"image": "west-t0--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "751de27003e5204e216e6617961b0a3beb7485b4a5a28022667eb87736ee9a2f",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t0",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "west-t0--zoom-az270",
+			"image": "west-t0--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "ec0a7d87984c70b740b9e50c272174a0c1625b3d4bb5f5987c545a6f294c3d06",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1--wide-az000",
+			"image": "west-t1--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "b8887e7dc275df0bbce94e692a527d02b5a487d149de48f0546f4a9f194d373e",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "west-t1--zoom-az000",
+			"image": "west-t1--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "3bbe3dd9c6c85bb025454f7948dbeb472cd3c1028584d3275ee6ea9728f91df8",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1--wide-az090",
+			"image": "west-t1--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "3ac7847d17547e0f4a74101297cd6a6db0c99c17af542961644821bab9a70756",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "west-t1--zoom-az090",
+			"image": "west-t1--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "c484ecfc8ee53954f97a3398bce54123c4df5cb783bd3e01b0cbe52500e37da8",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "west-t1--wide-az180",
+			"image": "west-t1--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "96d2c9f2c586b003fbdc985db9c33c454335ce106fe242b766e146039f8b24d2",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "west-t1--zoom-az180",
+			"image": "west-t1--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "7ec0fcfd1189d5d089c9c98e76e237b670bfc546db5cbf5d602a81a2253134ee",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1--wide-az270",
+			"image": "west-t1--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "4959bd1bf74cf6c296ffe77263df949be428ea1350679af2ceebd4731b5b8806",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "west-t1--zoom-az270",
+			"image": "west-t1--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "e1c54641dab077dad1a04b13b899f0ad5407fcadd636e36cae2c4706da4966d4",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1024--wide-az000",
+			"image": "west-t1024--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "3467ba742738af082d38e6054321382edac5b94f9677a77a1e36c6abaa0c3db7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "west-t1024--zoom-az000",
+			"image": "west-t1024--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "a825fa19dff9d2ac4b48f8ae0cbf4038914b010e821d2f2e82c077f0058a2217",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1024--wide-az090",
+			"image": "west-t1024--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "085044e2e6e29cd0755619c5d1a68e9a2be3aa660b11d2591a0f9c49be67dde7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "west-t1024--zoom-az090",
+			"image": "west-t1024--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "c76b0f9de85d9c8ca45fb2eccba967e4a1a1116b9b052a6870d6b3d00a7e8871",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "west-t1024--wide-az180",
+			"image": "west-t1024--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "b4c81962e912f6c9b35e090809aeb7b90aaa93d97d9a3c1224d32b49c3458734",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "west-t1024--zoom-az180",
+			"image": "west-t1024--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "9324c083ce87ed9d0cefad18b12bb3066333ba30f024545a8d9eab19ca87f25d",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "west-t1024--wide-az270",
+			"image": "west-t1024--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "751de27003e5204e216e6617961b0a3beb7485b4a5a28022667eb87736ee9a2f",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "west-t1024",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "west-t1024--zoom-az270",
+			"image": "west-t1024--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "ec0a7d87984c70b740b9e50c272174a0c1625b3d4bb5f5987c545a6f294c3d06",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 1024.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				-10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-same-input-t1--wide-az000",
+			"image": "east-same-input-t1--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "d1d7d6313b31ce31bd5f47f1f8c8f7e261aa16f3b35a5143176bfdb98b94d2c7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-same-input-t1--zoom-az000",
+			"image": "east-same-input-t1--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "800975df441d329c92b5ce94057c842e3f399e2fbd69f91dbb359a1a8e6aa135",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-same-input-t1--wide-az090",
+			"image": "east-same-input-t1--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "65ac7adbf69d77a03edbf76d6ec075324a00801151c6c7d84cff3432663f3f18",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-same-input-t1--zoom-az090",
+			"image": "east-same-input-t1--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "61e476376a68c26f76b4ef1aedd1cd23d4e8dcda24a8114d004c73fb6d7dbd7f",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-same-input-t1--wide-az180",
+			"image": "east-same-input-t1--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "d33fa3dd79be7e8efa0c430175ae0860b8c1963a2db2af22b4327132b4fde9ac",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-same-input-t1--zoom-az180",
+			"image": "east-same-input-t1--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "113c13e8a490c99251bcd67e7e8d9b47689b5beda27d8ee8138add413a973827",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-same-input-t1--wide-az270",
+			"image": "east-same-input-t1--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "42b87a84fdc2d1379b4e6f97c35b55d475ef017d94afc0542859ed4916efa4b1",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-same-input-t1",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-same-input-t1--zoom-az270",
+			"image": "east-same-input-t1--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "adc656e8a5251bd4b509fe67f294237fa995d5b164caf140f2a7102745f512e3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-replay-t0--wide-az000",
+			"image": "east-replay-t0--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "38eebe298d8056d9d8e9d1604f275f33b4fbd4f0dd90b23c08b6b101ea74ad47",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-replay-t0--zoom-az000",
+			"image": "east-replay-t0--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "9fec17faa6eb6ad56687bd8081b02bc32b997dad761196c6868b7251a8d2d765",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-replay-t0--wide-az090",
+			"image": "east-replay-t0--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "de3e3bbeb98c85e6bc7232792a6ffabbc7951f869dfda78d8059d8f73840ec4b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-replay-t0--zoom-az090",
+			"image": "east-replay-t0--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "356688e535fe9c71f4d796422a39d3b8fde980acf9e4596d7004b32c6bcffaa3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-replay-t0--wide-az180",
+			"image": "east-replay-t0--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "a32ea474d5d1bc375dfdfad4140242ebcf80613f669dd2abbce2c4acaddd07ad",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-replay-t0--zoom-az180",
+			"image": "east-replay-t0--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "cb04f687cdff839e5caffdd993902349f87aeb7953690097dc43ea0ecc95ca55",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-replay-t0--wide-az270",
+			"image": "east-replay-t0--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "c561e2cab71ed874cd17125a9de0d645a545b361666e649bcf7d7adf4529b804",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-replay-t0",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-replay-t0--zoom-az270",
+			"image": "east-replay-t0--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "9f4f8ff7a5895cbca23bd5b22b6c87f9901569b1ac782bab27ca1f1bc0119359",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-disabled-t1--wide-az000",
+			"image": "east-disabled-t1--wide-az000.png",
+			"objects": 6,
+			"primitives": 89792,
+			"sha256": "b47077bcbe70840df76e84442795b3854df4219443d4adb6b117137c9ea6082b",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az000",
+			"view_kind": "pilot-wide",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "east-disabled-t1--zoom-az000",
+			"image": "east-disabled-t1--zoom-az000.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "c8ed9d6c310084c6faa90f847f45423fcbfb9b9a4fe3034118c80f1e1f95c9f3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-disabled-t1--wide-az090",
+			"image": "east-disabled-t1--wide-az090.png",
+			"objects": 6,
+			"primitives": 90278,
+			"sha256": "9ddfc1001f86bb14df0de2d74526a4a5be061850e4774efc741f96a19afaae41",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677,
+			"tree_visible": true,
+			"view_id": "wide-az090",
+			"view_kind": "pilot-wide",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 4,
+			"elevation_deg": 2.04819490264243,
+			"id": "east-disabled-t1--zoom-az090",
+			"image": "east-disabled-t1--zoom-az090.png",
+			"objects": 4,
+			"primitives": 88710,
+			"sha256": "3089310295a5269feb6d4905e5a436ffad0ae5ecb11f275e720c5854bc593992",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_visible": true,
+			"view_id": "zoom-az090",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 5,
+			"elevation_deg": 0.0,
+			"id": "east-disabled-t1--wide-az180",
+			"image": "east-disabled-t1--wide-az180.png",
+			"objects": 5,
+			"primitives": 90210,
+			"sha256": "2f55f9d9b7915c0de71424c20eca9c2a86c14e83fdbe79d160d700c26f6e19eb",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0,
+			"tree_visible": true,
+			"view_id": "wide-az180",
+			"view_kind": "pilot-wide",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 3,
+			"elevation_deg": 1.38127627783422,
+			"id": "east-disabled-t1--zoom-az180",
+			"image": "east-disabled-t1--zoom-az180.png",
+			"objects": 3,
+			"primitives": 87570,
+			"sha256": "af402a2570b6ec82d22d623e47cfa8cc2860c6d131f9a233a9b7fa2d5f4a5cf3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_visible": true,
+			"view_id": "zoom-az180",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 50.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 6,
+			"elevation_deg": 0.0,
+			"id": "east-disabled-t1--wide-az270",
+			"image": "east-disabled-t1--wide-az270.png",
+			"objects": 6,
+			"primitives": 89726,
+			"sha256": "115ff21599a28cd5b3eaf9695e5cd87f3b84abb9de163f172bee93f83c25c2c9",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103,
+			"tree_visible": true,
+			"view_id": "wide-az270",
+			"view_kind": "pilot-wide",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "east-disabled-t1",
+			"draw_calls": 2,
+			"elevation_deg": 1.90714780857321,
+			"id": "east-disabled-t1--zoom-az270",
+			"image": "east-disabled-t1--zoom-az270.png",
+			"objects": 2,
+			"primitives": 86718,
+			"sha256": "a27ab31be471a0d2eff61cd88534eb7dfb5cb01fd150ca6f9beed02a553dbff7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_visible": true,
+			"view_id": "zoom-az270",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": false,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-00",
+			"image": "time-strip-east-00.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "9fec17faa6eb6ad56687bd8081b02bc32b997dad761196c6868b7251a8d2d765",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.0,
+			"sim_time_s": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 0,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-01",
+			"image": "time-strip-east-01.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "d555fb02d4e33c95eb7e934c320646b15da7cb938c89a86a68f62cc85eb3492a",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.25,
+			"sim_time_s": 0.25,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 1,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-02",
+			"image": "time-strip-east-02.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "74e188a2f4c0eee25213d70dfc7c793f1255f20c2d367fad4e79f65e713903c7",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.5,
+			"sim_time_s": 0.5,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 2,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-03",
+			"image": "time-strip-east-03.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "058c2b79fa6c5e6c5335ef504c9ac097f9892bd9ff8a80768a97c3e19997e662",
+			"shadow_draw_calls": 0,
+			"sim_clock": 0.75,
+			"sim_time_s": 0.75,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 3,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-04",
+			"image": "time-strip-east-04.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "800975df441d329c92b5ce94057c842e3f399e2fbd69f91dbb359a1a8e6aa135",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.0,
+			"sim_time_s": 1.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 4,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-05",
+			"image": "time-strip-east-05.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "5d4bc2e9267245fefc7ab9d376e8c33359ea19ecc953eb71e2b4424c402b3e11",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.25,
+			"sim_time_s": 1.25,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 5,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-06",
+			"image": "time-strip-east-06.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "fe8d0727150719153bbb82545de4ce7258376a99c03aa044be1465e46fe492b3",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.5,
+			"sim_time_s": 1.5,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 6,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_fov_deg": 10.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"condition": "time-strip-east",
+			"draw_calls": 3,
+			"elevation_deg": 0.988090873408377,
+			"id": "time-strip-east-07",
+			"image": "time-strip-east-07.png",
+			"objects": 3,
+			"primitives": 87324,
+			"sha256": "428f80877449da4ac282be8a27e73955ceaf46f10499fd80c7643b59a18e1f76",
+			"shadow_draw_calls": 0,
+			"sim_clock": 1.75,
+			"sim_time_s": 1.75,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"time_strip_frame": 7,
+			"tree_visible": true,
+			"view_id": "zoom-az000",
+			"view_kind": "production-tree-zoom",
+			"wind_enabled": true,
+			"wind_speed_mps": 10.0,
+			"wind_vec": [
+				10.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"cloud_clock_s": 0.0,
+	"field": "res://data/fields/default.json",
+	"field_id": "default",
+	"format": "openrc-l15b-wind-capture v1",
+	"geometry_probe": {
+		"complete": true,
+		"encoding": {
+			"channels": "RGB stores displacement xyz; 0.5 means zero displacement",
+			"default_range_m": [
+				-0.4,
+				0.4
+			],
+			"per_sample_range_m": true
+		},
+		"format": "openrc-l15b-tree-wind-gpu-probe v1",
+		"png": "geometry-probe.png",
+		"png_sha256": "afcd1f00d93ea725ccd56347eb32883f9dd319f959915cc97becfc08efcf265e",
+		"production_mesh": {
+			"max_unscaled_vertex_radius_m": 1.20221221446991,
+			"source": "production treeline MultiMesh card mesh surface 0",
+			"surface_count": 1,
+			"vertex_count": 12
+		},
+		"samples": [
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-zero-wind",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-low-east-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-low-west-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					-10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-low-north-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					-10.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-low-south-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					10.0
+				]
+			},
+			{
+				"clock": 1.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "root-low-east-t1",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v0-east-t0",
+				"mesh_vertex": 0,
+				"point": [
+					6.69162130355835,
+					-0.750800251960754,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					98,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v0-west-t0",
+				"mesh_vertex": 0,
+				"point": [
+					6.69162130355835,
+					-0.750800251960754,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					158,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v0-north-t0",
+				"mesh_vertex": 0,
+				"point": [
+					6.69162130355835,
+					-0.750800251960754,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					123,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v0-south-t0",
+				"mesh_vertex": 0,
+				"point": [
+					6.69162130355835,
+					-0.750800251960754,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					132,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v1-east-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-6.69162130355835,
+					-0.750800251960754,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					158,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v1-west-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-6.69162130355835,
+					-0.750800251960754,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					98,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v1-north-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-6.69162130355835,
+					-0.750800251960754,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					132,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v1-south-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-6.69162130355835,
+					-0.750800251960754,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					123,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v2-east-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					185,
+					157,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v2-west-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					71,
+					97,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v2-north-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					131,
+					70
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v2-south-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					123,
+					184
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "wrap-low-v2-t1024",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					185,
+					157,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "prewrap-low-v2",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					103,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "wrap-low-v2-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-6.69162130355835,
+					12.7635078430176,
+					0.938794791698456
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					185,
+					157,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v3-east-t0",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					184,
+					97,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v3-west-t0",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					70,
+					157,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v3-north-t0",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					123,
+					71
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v3-south-t0",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					131,
+					185
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "wrap-low-v3-t1024",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					184,
+					97,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "prewrap-low-v3",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					103,
+					141,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "wrap-low-v3-t0",
+				"mesh_vertex": 3,
+				"point": [
+					6.69162130355835,
+					12.7635078430176,
+					-0.938794791698456
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					184,
+					97,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v4-east-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.532790184021,
+					-0.750800251960754,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					116,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v4-west-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.532790184021,
+					-0.750800251960754,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					139,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v4-north-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.532790184021,
+					-0.750800251960754,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v4-south-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.532790184021,
+					-0.750800251960754,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v5-east-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.532790184021,
+					-0.750800251960754,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					139,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v5-west-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.532790184021,
+					-0.750800251960754,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					116,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v5-north-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.532790184021,
+					-0.750800251960754,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v5-south-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.532790184021,
+					-0.750800251960754,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v6-east-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.532790184021,
+					12.7635078430176,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					185,
+					138,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v6-west-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.532790184021,
+					12.7635078430176,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					71,
+					116,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v6-north-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.532790184021,
+					12.7635078430176,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					155,
+					70
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v6-south-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.532790184021,
+					12.7635078430176,
+					6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					184
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v7-east-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.532790184021,
+					12.7635078430176,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					184,
+					116,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v7-west-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.532790184021,
+					12.7635078430176,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					70,
+					138,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v7-north-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.532790184021,
+					12.7635078430176,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					71
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v7-south-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.532790184021,
+					12.7635078430176,
+					-6.2645115852356
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					155,
+					185
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v8-east-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-4.15883111953735,
+					-0.750800251960754,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					146,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v8-west-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-4.15883111953735,
+					-0.750800251960754,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					109,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v8-north-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-4.15883111953735,
+					-0.750800251960754,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					104,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v8-south-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-4.15883111953735,
+					-0.750800251960754,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v9-east-t0",
+				"mesh_vertex": 9,
+				"point": [
+					4.15883111953735,
+					-0.750800251960754,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					109,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v9-west-t0",
+				"mesh_vertex": 9,
+				"point": [
+					4.15883111953735,
+					-0.750800251960754,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					146,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v9-north-t0",
+				"mesh_vertex": 9,
+				"point": [
+					4.15883111953735,
+					-0.750800251960754,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v9-south-t0",
+				"mesh_vertex": 9,
+				"point": [
+					4.15883111953735,
+					-0.750800251960754,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					104,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v10-east-t0",
+				"mesh_vertex": 10,
+				"point": [
+					4.15883111953735,
+					12.7635078430176,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					184,
+					108,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v10-west-t0",
+				"mesh_vertex": 10,
+				"point": [
+					4.15883111953735,
+					12.7635078430176,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					70,
+					146,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v10-north-t0",
+				"mesh_vertex": 10,
+				"point": [
+					4.15883111953735,
+					12.7635078430176,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					70
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v10-south-t0",
+				"mesh_vertex": 10,
+				"point": [
+					4.15883111953735,
+					12.7635078430176,
+					5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					103,
+					184
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v11-east-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-4.15883111953735,
+					12.7635078430176,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					185,
+					146,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v11-west-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-4.15883111953735,
+					12.7635078430176,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					71,
+					108,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v11-north-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-4.15883111953735,
+					12.7635078430176,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					103,
+					71
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 63489,
+				"height": 12.0127077223851,
+				"id": "low-v11-south-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-4.15883111953735,
+					12.7635078430176,
+					-5.32571649551392
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					185
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 108.75,
+				"tree_position_north_m": 435.25,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "root-middle-east-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "root-middle-west-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					-10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "root-middle-north-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					-10.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "root-middle-south-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					10.0
+				]
+			},
+			{
+				"clock": 1.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "root-middle-east-t1",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v0-east-t0",
+				"mesh_vertex": 0,
+				"point": [
+					-4.76166391372681,
+					-1.15665626525879,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					125,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v0-west-t0",
+				"mesh_vertex": 0,
+				"point": [
+					-4.76166391372681,
+					-1.15665626525879,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v0-north-t0",
+				"mesh_vertex": 0,
+				"point": [
+					-4.76166391372681,
+					-1.15665626525879,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					130
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v0-south-t0",
+				"mesh_vertex": 0,
+				"point": [
+					-4.76166391372681,
+					-1.15665626525879,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					104,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v1-east-t0",
+				"mesh_vertex": 1,
+				"point": [
+					4.76166391372681,
+					-1.15665626525879,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v1-west-t0",
+				"mesh_vertex": 1,
+				"point": [
+					4.76166391372681,
+					-1.15665626525879,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					130,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v1-north-t0",
+				"mesh_vertex": 1,
+				"point": [
+					4.76166391372681,
+					-1.15665626525879,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					104,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v1-south-t0",
+				"mesh_vertex": 1,
+				"point": [
+					4.76166391372681,
+					-1.15665626525879,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					125
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v2-east-t0",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v2-west-t0",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v2-north-t0",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					103,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v2-south-t0",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "wrap-middle-v2-t1024",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					178,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "prewrap-middle-v2",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					113,
+					131,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "wrap-middle-v2-t0",
+				"mesh_vertex": 2,
+				"point": [
+					4.76166391372681,
+					19.6630096435547,
+					-9.2569522857666
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					178,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v3-east-t0",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v3-west-t0",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					115,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v3-north-t0",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					151,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v3-south-t0",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					103,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "wrap-middle-v3-t1024",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					178,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "prewrap-middle-v3",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					113,
+					124,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "wrap-middle-v3-t0",
+				"mesh_vertex": 3,
+				"point": [
+					-4.76166391372681,
+					19.6630096435547,
+					9.2569522857666
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					178,
+					140,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v4-east-t0",
+				"mesh_vertex": 4,
+				"point": [
+					5.63592433929443,
+					-1.15665626525879,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					113,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v4-west-t0",
+				"mesh_vertex": 4,
+				"point": [
+					5.63592433929443,
+					-1.15665626525879,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					130,
+					142,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v4-north-t0",
+				"mesh_vertex": 4,
+				"point": [
+					5.63592433929443,
+					-1.15665626525879,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					150,
+					130
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v4-south-t0",
+				"mesh_vertex": 4,
+				"point": [
+					5.63592433929443,
+					-1.15665626525879,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					105,
+					124
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v5-east-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-5.63592433929443,
+					-1.15665626525879,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					125,
+					142,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v5-west-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-5.63592433929443,
+					-1.15665626525879,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					113,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v5-north-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-5.63592433929443,
+					-1.15665626525879,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					105,
+					131
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v5-south-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-5.63592433929443,
+					-1.15665626525879,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					150,
+					125
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v6-east-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-5.63592433929443,
+					19.6630096435547,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					142,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v6-west-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-5.63592433929443,
+					19.6630096435547,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					113,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v6-north-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-5.63592433929443,
+					19.6630096435547,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					105,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v6-south-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-5.63592433929443,
+					19.6630096435547,
+					-8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					150,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v7-east-t0",
+				"mesh_vertex": 7,
+				"point": [
+					5.63592433929443,
+					19.6630096435547,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					113,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v7-west-t0",
+				"mesh_vertex": 7,
+				"point": [
+					5.63592433929443,
+					19.6630096435547,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					142,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v7-north-t0",
+				"mesh_vertex": 7,
+				"point": [
+					5.63592433929443,
+					19.6630096435547,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					150,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v7-south-t0",
+				"mesh_vertex": 7,
+				"point": [
+					5.63592433929443,
+					19.6630096435547,
+					8.75219821929932
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					105,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v8-east-t0",
+				"mesh_vertex": 8,
+				"point": [
+					10.3975887298584,
+					-1.15665626525879,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					124,
+					101,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v8-west-t0",
+				"mesh_vertex": 8,
+				"point": [
+					10.3975887298584,
+					-1.15665626525879,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					130,
+					154,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v8-north-t0",
+				"mesh_vertex": 8,
+				"point": [
+					10.3975887298584,
+					-1.15665626525879,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					126,
+					130
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v8-south-t0",
+				"mesh_vertex": 8,
+				"point": [
+					10.3975887298584,
+					-1.15665626525879,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					129,
+					125
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v9-east-t0",
+				"mesh_vertex": 9,
+				"point": [
+					-10.3975887298584,
+					-1.15665626525879,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					125,
+					154,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v9-west-t0",
+				"mesh_vertex": 9,
+				"point": [
+					-10.3975887298584,
+					-1.15665626525879,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					131,
+					101,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v9-north-t0",
+				"mesh_vertex": 9,
+				"point": [
+					-10.3975887298584,
+					-1.15665626525879,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					129,
+					130
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v9-south-t0",
+				"mesh_vertex": 9,
+				"point": [
+					-10.3975887298584,
+					-1.15665626525879,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					126,
+					125
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v10-east-t0",
+				"mesh_vertex": 10,
+				"point": [
+					-10.3975887298584,
+					19.6630096435547,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					154,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v10-west-t0",
+				"mesh_vertex": 10,
+				"point": [
+					-10.3975887298584,
+					19.6630096435547,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					100,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v10-north-t0",
+				"mesh_vertex": 10,
+				"point": [
+					-10.3975887298584,
+					19.6630096435547,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					129,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v10-south-t0",
+				"mesh_vertex": 10,
+				"point": [
+					-10.3975887298584,
+					19.6630096435547,
+					0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					126,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v11-east-t0",
+				"mesh_vertex": 11,
+				"point": [
+					10.3975887298584,
+					19.6630096435547,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					178,
+					100,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v11-west-t0",
+				"mesh_vertex": 11,
+				"point": [
+					10.3975887298584,
+					19.6630096435547,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					77,
+					154,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v11-north-t0",
+				"mesh_vertex": 11,
+				"point": [
+					10.3975887298584,
+					19.6630096435547,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					126,
+					77
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "middle-v11-south-t0",
+				"mesh_vertex": 11,
+				"point": [
+					10.3975887298584,
+					19.6630096435547,
+					-0.504754900932312
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					129,
+					178
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": 69.75,
+				"tree_position_north_m": -394.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "root-high-east-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "root-high-west-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					-10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "root-high-north-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					-10.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "root-high-south-t0",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					10.0
+				]
+			},
+			{
+				"clock": 1.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "root-high-east-t1",
+				"point": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"purpose": "root",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v0-east-t0",
+				"mesh_vertex": 0,
+				"point": [
+					13.3150911331177,
+					-1.56171822547913,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					87,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v0-west-t0",
+				"mesh_vertex": 0,
+				"point": [
+					13.3150911331177,
+					-1.56171822547913,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v0-north-t0",
+				"mesh_vertex": 0,
+				"point": [
+					13.3150911331177,
+					-1.56171822547913,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					114,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v0-south-t0",
+				"mesh_vertex": 0,
+				"point": [
+					13.3150911331177,
+					-1.56171822547913,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					141,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v1-east-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-13.3150911331177,
+					-1.56171822547913,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v1-west-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-13.3150911331177,
+					-1.56171822547913,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					87,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v1-north-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-13.3150911331177,
+					-1.56171822547913,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					141,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v1-south-t0",
+				"mesh_vertex": 1,
+				"point": [
+					-13.3150911331177,
+					-1.56171822547913,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					114,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v2-east-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v2-west-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					86,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v2-north-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					141,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v2-south-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					113,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "wrap-high-v2-t1024",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					209,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "prewrap-high-v2",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "wrap-high-v2-t0",
+				"mesh_vertex": 2,
+				"point": [
+					-13.3150911331177,
+					26.5490093231201,
+					4.50128746032715
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					209,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v3-east-t0",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					86,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v3-west-t0",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					168,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v3-north-t0",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					113,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v3-south-t0",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					141,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 1024.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "wrap-high-v3-t1024",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 1024.0,
+				"rgb8": [
+					209,
+					86,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1023.9990234375,
+				"encoding_range_m": 0.002,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "prewrap-high-v3",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "clock-prewrap",
+				"reference_clock": 0.0,
+				"requested_time_s": 1023.9990234375,
+				"rgb8": [
+					128,
+					127,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "wrap-high-v3-t0",
+				"mesh_vertex": 3,
+				"point": [
+					13.3150911331177,
+					26.5490093231201,
+					-4.50128746032715
+				],
+				"purpose": "clock-wrap",
+				"requested_time_s": 0.0,
+				"rgb8": [
+					209,
+					86,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v4-east-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.7593150138855,
+					-1.56171822547913,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					119,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v4-west-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.7593150138855,
+					-1.56171822547913,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					136,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v4-north-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.7593150138855,
+					-1.56171822547913,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					85,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v4-south-t0",
+				"mesh_vertex": 4,
+				"point": [
+					2.7593150138855,
+					-1.56171822547913,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					170,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v5-east-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.7593150138855,
+					-1.56171822547913,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					136,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v5-west-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.7593150138855,
+					-1.56171822547913,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					119,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v5-north-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.7593150138855,
+					-1.56171822547913,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					170,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v5-south-t0",
+				"mesh_vertex": 5,
+				"point": [
+					-2.7593150138855,
+					-1.56171822547913,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					85,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v6-east-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.7593150138855,
+					26.5490093231201,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					136,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v6-west-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.7593150138855,
+					26.5490093231201,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					119,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v6-north-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.7593150138855,
+					26.5490093231201,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					169,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v6-south-t0",
+				"mesh_vertex": 6,
+				"point": [
+					-2.7593150138855,
+					26.5490093231201,
+					13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					85,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v7-east-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.7593150138855,
+					26.5490093231201,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					119,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v7-west-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.7593150138855,
+					26.5490093231201,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					136,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v7-north-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.7593150138855,
+					26.5490093231201,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					85,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v7-south-t0",
+				"mesh_vertex": 7,
+				"point": [
+					2.7593150138855,
+					26.5490093231201,
+					-13.7818517684937
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					169,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v8-east-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-10.555775642395,
+					-1.56171822547913,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					160,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v8-west-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-10.555775642395,
+					-1.56171822547913,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					95,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v8-north-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-10.555775642395,
+					-1.56171822547913,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v8-south-t0",
+				"mesh_vertex": 8,
+				"point": [
+					-10.555775642395,
+					-1.56171822547913,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v9-east-t0",
+				"mesh_vertex": 9,
+				"point": [
+					10.555775642395,
+					-1.56171822547913,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					123,
+					95,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v9-west-t0",
+				"mesh_vertex": 9,
+				"point": [
+					10.555775642395,
+					-1.56171822547913,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					132,
+					160,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v9-north-t0",
+				"mesh_vertex": 9,
+				"point": [
+					10.555775642395,
+					-1.56171822547913,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					132
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v9-south-t0",
+				"mesh_vertex": 9,
+				"point": [
+					10.555775642395,
+					-1.56171822547913,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					123
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v10-east-t0",
+				"mesh_vertex": 10,
+				"point": [
+					10.555775642395,
+					26.5490093231201,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					95,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v10-west-t0",
+				"mesh_vertex": 10,
+				"point": [
+					10.555775642395,
+					26.5490093231201,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					160,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v10-north-t0",
+				"mesh_vertex": 10,
+				"point": [
+					10.555775642395,
+					26.5490093231201,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v10-south-t0",
+				"mesh_vertex": 10,
+				"point": [
+					10.555775642395,
+					26.5490093231201,
+					9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v11-east-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-10.555775642395,
+					26.5490093231201,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					209,
+					160,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					10.0,
+					0.0
+				],
+				"wind_name": "east"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v11-west-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-10.555775642395,
+					26.5490093231201,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					46,
+					95,
+					128
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					-10.0,
+					0.0
+				],
+				"wind_name": "west"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v11-north-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-10.555775642395,
+					26.5490093231201,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					99,
+					46
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					-10.0
+				],
+				"wind_name": "north"
+			},
+			{
+				"clock": 0.0,
+				"hash": 17406,
+				"height": 24.9872922776149,
+				"id": "high-v11-south-t0",
+				"mesh_vertex": 11,
+				"point": [
+					-10.555775642395,
+					26.5490093231201,
+					-9.28056240081787
+				],
+				"purpose": "cardinal",
+				"rgb8": [
+					128,
+					156,
+					209
+				],
+				"source": "production card mesh vertex",
+				"species": 0,
+				"tree_position_east_m": -798.0,
+				"tree_position_north_m": -412.75,
+				"wind": [
+					0.0,
+					10.0
+				],
+				"wind_name": "south"
+			},
+			{
+				"clock": 0.0,
+				"hash": 0,
+				"height": 18.5063538611926,
+				"id": "phase-h0",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					185,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 5460,
+				"height": 18.5063538611926,
+				"id": "phase-h5460",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					194,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 10920,
+				"height": 18.5063538611926,
+				"id": "phase-h10920",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					201,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 16380,
+				"height": 18.5063538611926,
+				"id": "phase-h16380",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					204,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 21840,
+				"height": 18.5063538611926,
+				"id": "phase-h21840",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					201,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 27300,
+				"height": 18.5063538611926,
+				"id": "phase-h27300",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					194,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 32760,
+				"height": 18.5063538611926,
+				"id": "phase-h32760",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					185,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 38220,
+				"height": 18.5063538611926,
+				"id": "phase-h38220",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 43680,
+				"height": 18.5063538611926,
+				"id": "phase-h43680",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					168,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 49140,
+				"height": 18.5063538611926,
+				"id": "phase-h49140",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					166,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 54600,
+				"height": 18.5063538611926,
+				"id": "phase-h54600",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					168,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 60060,
+				"height": 18.5063538611926,
+				"id": "phase-h60060",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "hash-phase",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "time-east-t0",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "clock-change",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "time-east-t1",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "clock-change",
+				"rgb8": [
+					204,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "speed-05",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "speed-scale",
+				"rgb8": [
+					139,
+					127,
+					128
+				],
+				"speed_mps": 5.0,
+				"wind": [
+					5.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "speed-10",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "speed-scale",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"speed_mps": 10.0,
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "speed-20",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "speed-scale",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"speed_mps": 20.0,
+				"wind": [
+					20.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "calm-t0",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "calm",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					0.0
+				]
+			},
+			{
+				"clock": 1.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "calm-t1",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "calm",
+				"rgb8": [
+					128,
+					128,
+					128
+				],
+				"wind": [
+					0.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "direction-east",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "direction",
+				"rgb8": [
+					175,
+					127,
+					128
+				],
+				"wind": [
+					10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "direction-west",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "direction",
+				"rgb8": [
+					80,
+					127,
+					128
+				],
+				"wind": [
+					-10.0,
+					0.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "direction-north",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "direction",
+				"rgb8": [
+					128,
+					127,
+					80
+				],
+				"wind": [
+					0.0,
+					-10.0
+				]
+			},
+			{
+				"clock": 0.0,
+				"hash": 59904,
+				"height": 18.5063538611926,
+				"id": "direction-south",
+				"point": [
+					0.0,
+					18.5063533782959,
+					0.0
+				],
+				"purpose": "direction",
+				"rgb8": [
+					128,
+					127,
+					175
+				],
+				"wind": [
+					0.0,
+					10.0
+				]
+			}
+		],
+		"selected_trees": [
+			{
+				"band": "low",
+				"east_m": 108.75,
+				"hash": 63489,
+				"height_m": 12.0127077223851,
+				"north_m": 435.25,
+				"species": 0,
+				"yaw_rad": 3.28097712336262
+			},
+			{
+				"band": "middle",
+				"east_m": 69.75,
+				"hash": 59904,
+				"height_m": 18.5063538611926,
+				"north_m": -394.75,
+				"species": 0,
+				"yaw_rad": 1.09570481707901
+			},
+			{
+				"band": "high",
+				"east_m": -798.0,
+				"hash": 17406,
+				"height_m": 24.9872922776149,
+				"north_m": -412.75,
+				"species": 0,
+				"yaw_rad": 3.46759024904403
+			}
+		],
+		"shader_include": "res://render/tree_wind.gdshaderinc",
+		"shader_include_sha256": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85"
+	},
+	"godot": "4.7.2-stable (official)",
+	"mode": "candidate",
+	"near_grass_visible": false,
+	"renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"renderer_api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"scenery_on": false,
+	"smoke": false,
+	"tree": {
+		"casts_shadows": false,
+		"chunk_count": 8,
+		"chunks": [
+			{
+				"instances": 261,
+				"name": "Sector0"
+			},
+			{
+				"instances": 163,
+				"name": "Sector1"
+			},
+			{
+				"instances": 147,
+				"name": "Sector2"
+			},
+			{
+				"instances": 315,
+				"name": "Sector3"
+			},
+			{
+				"instances": 120,
+				"name": "Sector4"
+			},
+			{
+				"instances": 293,
+				"name": "Sector5"
+			},
+			{
+				"instances": 248,
+				"name": "Sector6"
+			},
+			{
+				"instances": 133,
+				"name": "Sector7"
+			}
+		],
+		"near_grass_hidden": true,
+		"shadow_nodes": [],
+		"tree_instances": 1680,
+		"unique_materials": 1,
+		"visible": true
+	},
+	"tree_wind_include_sha256": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+	"viewport": {
+		"height": 720,
+		"width": 1280
+	},
+	"views": [
+		{
+			"azimuth_deg": 0.0,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 0.0,
+			"fov_deg": 50.0,
+			"id": "wide-az000",
+			"kind": "pilot-wide",
+			"nominal_azimuth_deg": 0.0,
+			"target_east_m": 0.0,
+			"target_height_m": 1.7,
+			"target_north_m": 1000.0
+		},
+		{
+			"azimuth_deg": 1.42110410712247,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 0.988090873408377,
+			"fov_deg": 10.0,
+			"id": "zoom-az000",
+			"kind": "production-tree-zoom",
+			"nominal_azimuth_deg": 0.0,
+			"target_east_m": 10.5,
+			"target_height_m": 9.00210166177908,
+			"target_north_m": 423.25,
+			"tree_height_m": 13.435972629521
+		},
+		{
+			"azimuth_deg": 90.0,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 0.0,
+			"fov_deg": 50.0,
+			"id": "wide-az090",
+			"kind": "pilot-wide",
+			"nominal_azimuth_deg": 90.0,
+			"target_east_m": 1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": 0.0000000000000612323399573677
+		},
+		{
+			"azimuth_deg": 95.6840211836885,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 2.04819490264243,
+			"fov_deg": 10.0,
+			"id": "zoom-az090",
+			"kind": "production-tree-zoom",
+			"nominal_azimuth_deg": 90.0,
+			"target_east_m": 427.0,
+			"target_height_m": 17.0462463343108,
+			"target_north_m": -42.5,
+			"tree_height_m": 24.0087976539589
+		},
+		{
+			"azimuth_deg": 180.0,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 0.0,
+			"fov_deg": 50.0,
+			"id": "wide-az180",
+			"kind": "pilot-wide",
+			"nominal_azimuth_deg": 180.0,
+			"target_east_m": 0.000000000000122464679914735,
+			"target_height_m": 1.7,
+			"target_north_m": -1000.0
+		},
+		{
+			"azimuth_deg": 180.696335755473,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 1.38127627783422,
+			"fov_deg": 10.0,
+			"id": "zoom-az180",
+			"kind": "production-tree-zoom",
+			"nominal_azimuth_deg": 180.0,
+			"target_east_m": -4.5,
+			"target_height_m": 10.6283088954057,
+			"target_north_m": -370.25,
+			"tree_height_m": 15.8631476050831
+		},
+		{
+			"azimuth_deg": 270.0,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 0.0,
+			"fov_deg": 50.0,
+			"id": "wide-az270",
+			"kind": "pilot-wide",
+			"nominal_azimuth_deg": 270.0,
+			"target_east_m": -1000.0,
+			"target_height_m": 1.7,
+			"target_north_m": -0.000000000000183697019872103
+		},
+		{
+			"azimuth_deg": 263.564419060369,
+			"camera_east_m": 0.0,
+			"camera_height_m": 1.7,
+			"camera_north_m": 0.0,
+			"elevation_deg": 1.90714780857321,
+			"fov_deg": 10.0,
+			"id": "zoom-az270",
+			"kind": "production-tree-zoom",
+			"nominal_azimuth_deg": 270.0,
+			"target_east_m": -379.0,
+			"target_height_m": 14.4000879765396,
+			"target_north_m": -42.75,
+			"tree_height_m": 21.4926686217009
+		}
+	],
+	"zoom_targets": [
+		{
+			"cross_track_m": 10.5,
+			"east_m": 10.5,
+			"nominal_azimuth_deg": 0.0,
+			"north_m": 423.25,
+			"radius_m": 423.380218505859,
+			"tree_hash": 17521,
+			"tree_height_m": 13.435972629521
+		},
+		{
+			"cross_track_m": 42.5,
+			"east_m": 427.0,
+			"nominal_azimuth_deg": 90.0,
+			"north_m": -42.5,
+			"radius_m": 429.109832763672,
+			"tree_hash": 7089,
+			"tree_height_m": 24.0087976539589
+		},
+		{
+			"cross_track_m": 4.50000000000005,
+			"east_m": -4.5,
+			"nominal_azimuth_deg": 180.0,
+			"north_m": -370.25,
+			"radius_m": 370.27734375,
+			"tree_hash": 46384,
+			"tree_height_m": 15.8631476050831
+		},
+		{
+			"cross_track_m": 42.7499999999999,
+			"east_m": -379.0,
+			"nominal_azimuth_deg": 270.0,
+			"north_m": -42.75,
+			"radius_m": 381.403411865234,
+			"tree_hash": 17131,
+			"tree_height_m": 21.4926686217009
+		}
+	]
+}

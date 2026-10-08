@@ -42,3 +42,15 @@ The CPU and shader keep the original +2400 identity hash coordinates for every L
 The tree shader scales alpha gently from the screen-space mip footprint for far instances only. This compensates for the atlas's averaged alpha mips in the Compatibility renderer, where alpha-to-coverage is unavailable. Near trees keep the L6b alpha path unchanged.
 
 Run the recipe regression with `python3 tools/trees/test_place.py` and the app's generated-data check with `python3 tools/trees/place.py --check`. `python3 tools/trees/check_review.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l7-forest-review` uses Xvfb/OpenGL to measure draws and verify all 1,680 shader identities through the real MultiMesh custom-data path, then repeats thirteen PNGs byte-for-byte. It also runs `tests/test_treeline.gd` with the real renderer; the headless dummy renderer cannot prove GPU buffer readback. `app/capture.sh` runs the review as part of its visual checks.
+
+## L15b tree wind
+
+The render-only tree response is ready for M5's shared `wind_vec`; production remains calm. Run the focused GPU evidence with:
+
+```sh
+"$(app/tests/visual-env.sh)" tools/trees/check_wind.py \
+  --app app --godot "$(app/get-godot.sh)" --out /tmp/l15b-wind \
+  --baseline-app /path/to/pre-L15b/app
+```
+
+Use a fresh output directory. The baseline is optional for later regression runs; initial acceptance includes baseline parity. The complete capture wrapper also runs this check. See [L15b evidence](../../docs/research/visual-quality-implementation/L15b/README.md) for the card-specific root rotation, parameter estimates, culling proof and limits.

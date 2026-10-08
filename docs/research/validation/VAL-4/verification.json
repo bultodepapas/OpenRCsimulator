@@ -1,0 +1,314 @@
+{
+  "baseline": {
+    "coverage": {
+      "attached": 2349,
+      "blended": 594,
+      "lag_transient": 13440,
+      "local": 10553,
+      "moving_servo": 3264
+    },
+    "engine": "4.7.2-stable (official)",
+    "failures": 0,
+    "flights": 56,
+    "format": "openrc-metamorphic v1",
+    "groups": {
+      "coverage": {
+        "checks": 9,
+        "failures": 0,
+        "limit": 0.0,
+        "max_error": 0.0,
+        "worst": ""
+      },
+      "energy": {
+        "checks": 7680,
+        "failures": 0,
+        "limit": 1e-09,
+        "max_error": 0.0,
+        "worst": ""
+      },
+      "froude": {
+        "checks": 69408,
+        "failures": 0,
+        "limit": 1e-09,
+        "max_error": 5.290513060137708e-15,
+        "worst": "case 2 N=2.25 tick 237 state 10"
+      },
+      "integrity": {
+        "checks": 202440,
+        "failures": 0,
+        "limit": 0.0,
+        "max_error": 0.0,
+        "worst": ""
+      },
+      "mirror": {
+        "checks": 17364,
+        "failures": 0,
+        "limit": 1e-12,
+        "max_error": 7.105427357601002e-15,
+        "worst": "one-sided aileron branch 1 load 2"
+      }
+    },
+    "seed": 64007,
+    "source_warnings": [
+      "inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+    ],
+    "ticks_per_flight": 240
+  },
+  "date": "2026-10-08",
+  "debug_parse": {
+    "errors": 0,
+    "existing_dependency_warnings": 14,
+    "new_script_warnings": 0
+  },
+  "format": "openrc-metamorphic-proof v1",
+  "harness_tests": {
+    "command": "python3 research/validation/metamorphic/test_runner.py",
+    "exit_code": 0,
+    "failures": 0,
+    "tests": 7
+  },
+  "input_sha256": {
+    "app/data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+    "app/get-godot.sh": "cd3868ed254914fc5af635b1546069d4b3f214353705a6c4b9592f53e3310675",
+    "app/input/commands.gd": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2",
+    "app/input/input_report.gd": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb",
+    "app/input/input_report_data.gd": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d",
+    "app/input/keyboard.gd": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629",
+    "app/input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+    "app/input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+    "app/input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+    "app/physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+    "app/physics/air_data.gd": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+    "app/physics/aircraft_data.gd": "992843aadd36607b2a220309ddb260924b00e6f5429de7666fbe0700e3512d6e",
+    "app/physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+    "app/physics/flight_modes.gd": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b",
+    "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+    "app/physics/ground_start.gd": "85eb11cd3f9bfe20e440223386e34503aded04cac405e97acb347a15f5105eed",
+    "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+    "app/physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+    "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "app/physics/propulsion.gd": "3f61b2b4709610cd76c5eaf6dffd35301c9f2982ea8e69053ac8a745c2c5f0e6",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+    "app/physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+    "app/physics/trim.gd": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338",
+    "app/physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+    "app/physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+    "app/project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+    "app/sim/flight_session.gd": "f8e7d5576bdb9f6d6889718737fd6c4c42c6988618a3ff2fd9c79da45808d4ca",
+    "app/sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+    "app/sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+    "app/sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+    "app/sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+    "app/sim/simulation.gd": "5a885173d805996ad74dbbb1b26dfeb0c824417e35f40e885c47c4d771223b64",
+    "app/sim/trace.gd": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9",
+    "research/validation/metamorphic/checks.gd": "fe9c2fa8a827f788eb2c3250f63ce765153afa65d546376d4d5b4c3b23f1e5b4",
+    "research/validation/metamorphic/run.py": "bf9d2d00679e634a17646c8c7e19fee6ec2c17d1373c09ae8464216a19fc857b",
+    "research/validation/metamorphic/test_runner.py": "75e51f7307ce3778d567b33f6f059f347ab2871b2f033b8d33ade5e96eeeb598"
+  },
+  "isolated_control_identical": true,
+  "lint": {
+    "after": {
+      "errors": 0,
+      "parse_errors": 0,
+      "total": 12,
+      "warnings": 12
+    },
+    "before": {
+      "errors": 0,
+      "parse_errors": 0,
+      "total": 12,
+      "warnings": 12
+    }
+  },
+  "mutations": {
+    "fixed_strip_offset": {
+      "expected_group": "froude",
+      "file": "app/physics/aero.gd",
+      "new": "var ys: PackedFloat64Array = env.station_ys.duplicate()\n\tfor station_index: int in ys.size():\n\t\tys[station_index] += 0.03 * signf(ys[station_index])\n\tvar stations := ys.size()\n\tvar station_area: float = ref.S / stations",
+      "old": "var ys: PackedFloat64Array = env.station_ys\n\tvar stations := ys.size()\n\tvar station_area: float = ref.S / stations",
+      "report": {
+        "coverage": {
+          "attached": 2369,
+          "blended": 591,
+          "lag_transient": 13440,
+          "local": 10536,
+          "moving_servo": 3264
+        },
+        "engine": "4.7.2-stable (official)",
+        "failures": 40258,
+        "flights": 56,
+        "format": "openrc-metamorphic v1",
+        "groups": {
+          "coverage": {
+            "checks": 9,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "energy": {
+            "checks": 7680,
+            "failures": 0,
+            "limit": 1e-09,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "froude": {
+            "checks": 69408,
+            "failures": 40258,
+            "limit": 1e-09,
+            "max_error": 0.8803713913195851,
+            "worst": "case 3 N=0.25 tick 226 state 4"
+          },
+          "integrity": {
+            "checks": 202440,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "mirror": {
+            "checks": 17364,
+            "failures": 0,
+            "limit": 1e-12,
+            "max_error": 7.105427357601002e-15,
+            "worst": "one-sided aileron branch 1 load 2"
+          }
+        },
+        "seed": 64007,
+        "source_warnings": [
+          "inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+        ],
+        "ticks_per_flight": 240
+      }
+    },
+    "left_aileron_yaw_sign": {
+      "expected_group": "mirror",
+      "file": "app/physics/aero.gd",
+      "new": "var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar - a.Cnda_left * dal + a.Cndr * dr",
+      "old": "var co_yaw: float = a.Cnb * beta_eff + a.Cnda_right * dar + a.Cnda_left * dal + a.Cndr * dr",
+      "report": {
+        "coverage": {
+          "attached": 1845,
+          "blended": 708,
+          "lag_transient": 13440,
+          "local": 10943,
+          "moving_servo": 3264
+        },
+        "engine": "4.7.2-stable (official)",
+        "failures": 1,
+        "flights": 56,
+        "format": "openrc-metamorphic v1",
+        "groups": {
+          "coverage": {
+            "checks": 9,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "energy": {
+            "checks": 7680,
+            "failures": 0,
+            "limit": 1e-09,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "froude": {
+            "checks": 69408,
+            "failures": 0,
+            "limit": 1e-09,
+            "max_error": 5.290513060137708e-15,
+            "worst": "case 2 N=2.25 tick 237 state 10"
+          },
+          "integrity": {
+            "checks": 202440,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "mirror": {
+            "checks": 17364,
+            "failures": 1,
+            "limit": 1e-12,
+            "max_error": 1.9555379998571423,
+            "worst": "one-sided aileron branch 0 load 5"
+          }
+        },
+        "seed": 64007,
+        "source_warnings": [
+          "inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+        ],
+        "ticks_per_flight": 240
+      }
+    },
+    "wing_drag_adds_energy": {
+      "expected_group": "energy",
+      "file": "app/physics/aero.gd",
+      "new": "var drag_q := 0.05*rho",
+      "old": "var drag_q := -0.5*rho",
+      "report": {
+        "coverage": {
+          "attached": 2280,
+          "blended": 664,
+          "lag_transient": 13440,
+          "local": 10552,
+          "moving_servo": 3264
+        },
+        "engine": "4.7.2-stable (official)",
+        "failures": 7365,
+        "flights": 56,
+        "format": "openrc-metamorphic v1",
+        "groups": {
+          "coverage": {
+            "checks": 9,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "energy": {
+            "checks": 7680,
+            "failures": 7365,
+            "limit": 1e-09,
+            "max_error": 10.184527265148972,
+            "worst": "seed case 19 tick 235"
+          },
+          "froude": {
+            "checks": 69408,
+            "failures": 0,
+            "limit": 1e-09,
+            "max_error": 1.8790083164981674e-14,
+            "worst": "case 2 N=2.25 tick 122 state 3"
+          },
+          "integrity": {
+            "checks": 202440,
+            "failures": 0,
+            "limit": 0.0,
+            "max_error": 0.0,
+            "worst": ""
+          },
+          "mirror": {
+            "checks": 17364,
+            "failures": 0,
+            "limit": 1e-12,
+            "max_error": 3.552713678800501e-15,
+            "worst": "case 2 tick 165 state 3"
+          }
+        },
+        "seed": 64007,
+        "source_warnings": [
+          "inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+        ],
+        "ticks_per_flight": 240
+      }
+    }
+  },
+  "source_files_unchanged": true
+}

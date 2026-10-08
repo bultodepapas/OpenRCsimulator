@@ -183,6 +183,15 @@ func _build_world() -> Dictionary:
 	environment_node.environment = _environment
 	world.add_child(environment_node)
 	_field_node = FieldBuilder.build(_field_data)
+	# This probe varies grass wind only; L15b has a separate tree-wind capture.
+	# Permit older baseline shaders without the ablation uniform.
+	var grove: Node3D = _field_node.get_node_or_null("treeline") as Node3D
+	if grove != null:
+		for child: MultiMeshInstance3D in grove.get_children():
+			var tree_material: ShaderMaterial = child.multimesh.mesh.surface_get_material(0) as ShaderMaterial
+			for parameter: Dictionary in tree_material.shader.get_shader_uniform_list():
+				if parameter.name == "wind_enabled":
+					tree_material.set_shader_parameter("wind_enabled", false)
 	world.add_child(_field_node)
 	Atmosphere.create_sun(world)
 	var camera: Camera3D = Camera3D.new()

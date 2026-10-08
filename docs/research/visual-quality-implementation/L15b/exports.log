@@ -1,0 +1,38 @@
+== build identity: v0.1.0-rc5-4-g488bc6f-dirty (commit 488bc6f46790efe2a45ba5196543fb17149cd854, 2026-10-07T23:37:56+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s
+exported binary reports build v0.1.0-rc5-4-g488bc6f-dirty
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4843 opaque clumps validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4843 opaque clumps validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4843 opaque clumps validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+== packages
+3bf18a4dcb802762d19e1c179ea14ed4e91159570f64b44bd30d690a2b310659  openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-linux-x86_64.zip
+24dd4f89fca2d342ebaad1183901370644d30a410559c9a8cee36c9e28293750  openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-macos-universal.zip
+0e5c14991e08a03d246c35a18032504f650c83bb99591cfd700bbdadc061bb3e  openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29607216 Oct  8 00:09 openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61756592 Oct  8 00:09 openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 39133460 Oct  8 00:09 openrc-simulator-v0.1.0-rc5-4-g488bc6f-dirty-windows-x86_64.zip

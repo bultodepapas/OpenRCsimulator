@@ -1064,3 +1064,20 @@ Keep attribution buckets exclusive: subtract nested Air calls from pre-step, and
 ## 2026-10-07 · VAL-3 — make comparison provenance and freshness executable
 
 A generated validation table needs the current engine calculation, complete reference rows, explicit transforms and source/input hashes. Keep software regressions separate from scientific discrepancies: real roll rows were already red, so doubling Clp proves increased discrepancy while a separately labeled synthetic fixture proves the green-to-red classifier. Do not turn inherited rounded eigenvalue calculations into measured evidence, a contradictory source time constant into certainty, or unknown tuning history into held-out validation. Normalize each airframe with its own length and speed; diagnostic bands are not source uncertainty. Fail before publication on malformed inputs, engine errors, stale output or concurrent input changes. [Contract, source audit and proof](docs/research/validation/VAL-3/README.md).
+
+## 2026-10-08 · VAL-4 — test transformations through actual flight ticks
+
+Froude similarity needs every active length and timescale, including the sampled downwash length and servo slew, not just mass/span/inertia. Scale tick duration with the trajectory so matched integration errors remain comparable. Mirror tests need both ordinary roll commands and one-sided surface deflections: equal-sign yaw derivatives can cancel under differential ailerons and survive a seemingly strong full-roll test. A mutation that produces numerical runaway is weaker evidence than a bounded defect that fails the intended property while flight integrity still passes. Preserve an unmodified isolated control and source hashes before mutating copied code. In NED coordinates gravitational potential is `-m*g*down`; passive energy checks must include rotational energy and the full inertia tensor. [Implementation and proof](docs/research/validation/VAL-4/README.md).
+
+## 2026-10-08 · E0b6p — remove a lookup without weakening the input contract
+
+A required-field reader can use `get(key, NIL)` once when its leaf decoder already rejects NIL; optional readers still need to distinguish absence from explicit null. Test malformed fields from a finite, nonzero positive control, and keep conditionally required fields out of unconditional absence-rejection tables. Distinct native class registrations allow both versions to run in one process with alternating order; assert their identities and count calls per backend. Paired medians and differences of independent medians can disagree on a noisy host, so retain raw samples and separate a local reduction from whole-flight budget acceptance. The three-reader cleanup preserves all sampled load bytes and flight boundaries while the 500 µs gate remains open. [Implementation and proof](docs/research/propwash/E0b6p/decoder/README.md).
+
+## 2026-10-08 · L15b — anchor sparse tree cards and test actual motion
+
+- Transparent atlas padding extends below the trunk origin. Nonlinear bending at only the card endpoints can move the interpolated root; a small rigid rotation preserves the root and every triangle without subdivisions. Expand culling bounds for the full padded card, not just the crown centre.
+- Standalone render builders must register their shader globals before compiling materials. The empty-project export test caught an initialization dependency hidden by the main scene; repeat export and visual checks after fixing it.
+- A still lean can pass a calm-versus-wind image comparison. Require differences between adjacent wind frames inside the tree mask and reject a copied static pair. Check raw shader clock endpoints and the pre-wrap interval; CPU modulo equality alone proves little. GPU readback has quantization error, so distinguish neutral byte equality from exact mathematical root anchoring.
+- A verified rendering hook does not supply physical wind or close another team's gate. Keep M5 integration, transient response, owner review and target-GPU timing explicit.
+
+[Implementation, preview and proof](docs/research/visual-quality-implementation/L15b/README.md).

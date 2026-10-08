@@ -3,12 +3,15 @@ extends RefCounted
 
 const Assets = preload("res://render/tree_assets.gd")
 const Frames = preload("res://render/frames.gd")
+const ShaderClock = preload("res://render/shader_clock.gd")
 const TREE_SHADER: Shader = preload("res://render/treeline.gdshader")
 const SECTORS: int = 8
 const POSITION_PACK_OFFSET: int = 8192
 const LEGACY_HASH_OFFSET: int = 2400
 const EXTENDED_HASH_OFFSET: int = 8192
 const FAR_RING_START_M: float = 600.0
+# Must match tree_wind.gdshaderinc; angle <= lean/height, even beyond 10m/s.
+const WIND_LEAN_M: float = 0.24
 
 
 ## CPU mirror for bounds/tests. Shader owns appearance; values are design estimates (12–25m).
@@ -48,6 +51,7 @@ static func sector(north: float, east: float) -> int:
 
 ## Validated L6b objects only. Owns meshes/materials per field; shares them within that field.
 static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
+	ShaderClock.register() # standalone fields/exported packs must not depend on main.gd initialization
 	var result: Node3D = Node3D.new()
 	result.name = object_data.id
 	result.position = Frames.ned_to_render([pilot.north, pilot.east, pilot.down])
@@ -101,6 +105,10 @@ static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
 			# Enclose every rotated card vertex, including transparent below-ground padding.
 			var radius: float = frame * height * 0.5
 			var tree_bounds: AABB = AABB(origin + Vector3(-radius, (0.5 - frame * 0.5) * height, -radius), Vector3(2.0 * radius, frame * height, 2.0 * radius))
+			# A rotation through theta moves a point by at most length(point)*theta.
+			# Include all atlas padding, every wind direction and the saturated peak.
+			var max_radius: float = sqrt(radius * radius + pow((0.5 + frame * 0.5) * height, 2.0))
+			tree_bounds = tree_bounds.grow(max_radius * WIND_LEAN_M / height)
 			bounds = tree_bounds if instance == 0 else bounds.merge(tree_bounds)
 		multimesh.custom_aabb = bounds.grow(0.02) # float32 trig/transform rounding allowance, metres
 		var node: MultiMeshInstance3D = MultiMeshInstance3D.new()

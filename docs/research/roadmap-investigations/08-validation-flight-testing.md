@@ -173,6 +173,8 @@ The flight data also checks the 25e model itself. Clp −0.4496 with OpenFlightS
 
 ### Verification with known answers (L0; CI)
 
+**VAL-4 implementation, 2026-10-08:** [external flight checks](../validation/VAL-4/README.md) now cover the three properties below with 56 actual-session flights and three isolated source mutations. Froude uses a mixed absolute/relative 1e-9 bound; energy uses an absolute 1e-9 J allowance. These checks are a separate research command, not yet a shared CI job. One-sided aileron probes are necessary because opposite aileron deflections can cancel the proposed `Cnda_left` sign mutation.
+
 - **Mirror symmetry (metamorphic).** Build a symmetrised airplane: inventory mirrored (Jxy = Jyz = 0), propeller torque and gyroscopic terms off, engine off. Then a left full-aileron roll must equal the right roll with v, p, r, φ, ψ negated, to 1e-12. *Mutation:* flip the sign of Cnδa_left only → must fail.
 - **Froude-scaling invariance.** Data × (N, N³, N⁵; servo and engine times ×√N), dead stick, ρ unchanged. The trace at t·√N, V·√N must match the original (relative 1e-9). This tests the whole chain without any reference. *Mutation:* one hard-coded length (e.g. a strip offset in metres) → must fail. Ground contact is excluded: the spring rule ω·dt is not scale-free.
 - **Energy.** Dead stick, no wind, no ground: E = ½mV² + mgh + ½ωᵀIω must not increase between ticks (> 1e-9 J), over random seeded attitudes (property test). The repair already proves passive aerodynamic power per element; this proves it end to end.

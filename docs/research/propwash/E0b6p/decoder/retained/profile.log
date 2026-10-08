@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p native profile forward: 1182.0 -> 72.5 us/load
+E0b6p native profile stall: 1260.0 -> 75.5 us/load
+E0b6p native profile static: 1118.5 -> 76.0 us/load
+E0b6p native profile spin: 1748.0 -> 95.5 us/load
+E0b6p native profile reverse_fade: 967.5 -> 53.0 us/load
+E0b6p native profile reverse_off: 3.0 -> 3.0 us/load

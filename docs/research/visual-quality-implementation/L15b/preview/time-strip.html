@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>L15b tree wind time strip</title>
+<style>
+body{margin:0;background:#17202a;color:#eaf2f8;font:16px system-ui,sans-serif;display:grid;place-items:center;min-height:100vh}
+main{width:min(96vw,1280px)}img{width:100%;display:block;image-rendering:auto}p{margin:.6rem 0;color:#c9d6df}
+</style>
+<main><img id="frame" alt="Fixed 10 degree view of the production tree at approximately 400 metres"><p id="caption"></p><button id="replay">Replay time strip</button></main>
+<script>
+const frames = ["time-strip-east-00","time-strip-east-01","time-strip-east-02","time-strip-east-03","time-strip-east-04","time-strip-east-05","time-strip-east-06","time-strip-east-07"];
+let index = 0;
+let timer = null;
+function show(){document.getElementById("frame").src = frames[index] + ".png";document.getElementById("caption").textContent = "East wind 10 m/s · t = " + (index * 0.25).toFixed(2) + " s";index += 1;if(index < frames.length){timer = setTimeout(show, 250);}}
+document.getElementById("replay").addEventListener("click", function(){if(timer !== null){clearTimeout(timer);}index = 0;show();});
+show();
+</script>

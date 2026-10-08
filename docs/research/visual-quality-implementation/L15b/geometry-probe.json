@@ -1,0 +1,5261 @@
+{
+	"complete": true,
+	"encoding": {
+		"channels": "RGB stores displacement xyz; 0.5 means zero displacement",
+		"default_range_m": [
+			-0.4,
+			0.4
+		],
+		"per_sample_range_m": true
+	},
+	"format": "openrc-l15b-tree-wind-gpu-probe v1",
+	"png": "geometry-probe.png",
+	"png_sha256": "afcd1f00d93ea725ccd56347eb32883f9dd319f959915cc97becfc08efcf265e",
+	"production_mesh": {
+		"max_unscaled_vertex_radius_m": 1.20221221446991,
+		"source": "production treeline MultiMesh card mesh surface 0",
+		"surface_count": 1,
+		"vertex_count": 12
+	},
+	"samples": [
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-zero-wind",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-low-east-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-low-west-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				-10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-low-north-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				-10.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-low-south-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				10.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "root-low-east-t1",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v0-east-t0",
+			"mesh_vertex": 0,
+			"point": [
+				6.69162130355835,
+				-0.750800251960754,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				98,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v0-west-t0",
+			"mesh_vertex": 0,
+			"point": [
+				6.69162130355835,
+				-0.750800251960754,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				158,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v0-north-t0",
+			"mesh_vertex": 0,
+			"point": [
+				6.69162130355835,
+				-0.750800251960754,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				123,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v0-south-t0",
+			"mesh_vertex": 0,
+			"point": [
+				6.69162130355835,
+				-0.750800251960754,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				132,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v1-east-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-6.69162130355835,
+				-0.750800251960754,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				158,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v1-west-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-6.69162130355835,
+				-0.750800251960754,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				98,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v1-north-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-6.69162130355835,
+				-0.750800251960754,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				132,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v1-south-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-6.69162130355835,
+				-0.750800251960754,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				123,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v2-east-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				185,
+				157,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v2-west-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				71,
+				97,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v2-north-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				131,
+				70
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v2-south-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				123,
+				184
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "wrap-low-v2-t1024",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				185,
+				157,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "prewrap-low-v2",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				103,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "wrap-low-v2-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-6.69162130355835,
+				12.7635078430176,
+				0.938794791698456
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				185,
+				157,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v3-east-t0",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				184,
+				97,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v3-west-t0",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				70,
+				157,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v3-north-t0",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				123,
+				71
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v3-south-t0",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				131,
+				185
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "wrap-low-v3-t1024",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				184,
+				97,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "prewrap-low-v3",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				103,
+				141,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "wrap-low-v3-t0",
+			"mesh_vertex": 3,
+			"point": [
+				6.69162130355835,
+				12.7635078430176,
+				-0.938794791698456
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				184,
+				97,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v4-east-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.532790184021,
+				-0.750800251960754,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				116,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v4-west-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.532790184021,
+				-0.750800251960754,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				139,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v4-north-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.532790184021,
+				-0.750800251960754,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v4-south-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.532790184021,
+				-0.750800251960754,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v5-east-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.532790184021,
+				-0.750800251960754,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				139,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v5-west-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.532790184021,
+				-0.750800251960754,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				116,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v5-north-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.532790184021,
+				-0.750800251960754,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v5-south-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.532790184021,
+				-0.750800251960754,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v6-east-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.532790184021,
+				12.7635078430176,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				185,
+				138,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v6-west-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.532790184021,
+				12.7635078430176,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				71,
+				116,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v6-north-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.532790184021,
+				12.7635078430176,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				155,
+				70
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v6-south-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.532790184021,
+				12.7635078430176,
+				6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				184
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v7-east-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.532790184021,
+				12.7635078430176,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				184,
+				116,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v7-west-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.532790184021,
+				12.7635078430176,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				70,
+				138,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v7-north-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.532790184021,
+				12.7635078430176,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				71
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v7-south-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.532790184021,
+				12.7635078430176,
+				-6.2645115852356
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				155,
+				185
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v8-east-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-4.15883111953735,
+				-0.750800251960754,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				146,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v8-west-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-4.15883111953735,
+				-0.750800251960754,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				109,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v8-north-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-4.15883111953735,
+				-0.750800251960754,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				104,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v8-south-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-4.15883111953735,
+				-0.750800251960754,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v9-east-t0",
+			"mesh_vertex": 9,
+			"point": [
+				4.15883111953735,
+				-0.750800251960754,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				109,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v9-west-t0",
+			"mesh_vertex": 9,
+			"point": [
+				4.15883111953735,
+				-0.750800251960754,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				146,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v9-north-t0",
+			"mesh_vertex": 9,
+			"point": [
+				4.15883111953735,
+				-0.750800251960754,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v9-south-t0",
+			"mesh_vertex": 9,
+			"point": [
+				4.15883111953735,
+				-0.750800251960754,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				104,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v10-east-t0",
+			"mesh_vertex": 10,
+			"point": [
+				4.15883111953735,
+				12.7635078430176,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				184,
+				108,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v10-west-t0",
+			"mesh_vertex": 10,
+			"point": [
+				4.15883111953735,
+				12.7635078430176,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				70,
+				146,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v10-north-t0",
+			"mesh_vertex": 10,
+			"point": [
+				4.15883111953735,
+				12.7635078430176,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				70
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v10-south-t0",
+			"mesh_vertex": 10,
+			"point": [
+				4.15883111953735,
+				12.7635078430176,
+				5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				103,
+				184
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v11-east-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-4.15883111953735,
+				12.7635078430176,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				185,
+				146,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v11-west-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-4.15883111953735,
+				12.7635078430176,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				71,
+				108,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v11-north-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-4.15883111953735,
+				12.7635078430176,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				103,
+				71
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 63489,
+			"height": 12.0127077223851,
+			"id": "low-v11-south-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-4.15883111953735,
+				12.7635078430176,
+				-5.32571649551392
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				185
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 108.75,
+			"tree_position_north_m": 435.25,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "root-middle-east-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "root-middle-west-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				-10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "root-middle-north-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				-10.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "root-middle-south-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				10.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "root-middle-east-t1",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v0-east-t0",
+			"mesh_vertex": 0,
+			"point": [
+				-4.76166391372681,
+				-1.15665626525879,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				125,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v0-west-t0",
+			"mesh_vertex": 0,
+			"point": [
+				-4.76166391372681,
+				-1.15665626525879,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v0-north-t0",
+			"mesh_vertex": 0,
+			"point": [
+				-4.76166391372681,
+				-1.15665626525879,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				130
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v0-south-t0",
+			"mesh_vertex": 0,
+			"point": [
+				-4.76166391372681,
+				-1.15665626525879,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				104,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v1-east-t0",
+			"mesh_vertex": 1,
+			"point": [
+				4.76166391372681,
+				-1.15665626525879,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v1-west-t0",
+			"mesh_vertex": 1,
+			"point": [
+				4.76166391372681,
+				-1.15665626525879,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				130,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v1-north-t0",
+			"mesh_vertex": 1,
+			"point": [
+				4.76166391372681,
+				-1.15665626525879,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				104,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v1-south-t0",
+			"mesh_vertex": 1,
+			"point": [
+				4.76166391372681,
+				-1.15665626525879,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				125
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v2-east-t0",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v2-west-t0",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v2-north-t0",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				103,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v2-south-t0",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "wrap-middle-v2-t1024",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				178,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "prewrap-middle-v2",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				113,
+				131,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "wrap-middle-v2-t0",
+			"mesh_vertex": 2,
+			"point": [
+				4.76166391372681,
+				19.6630096435547,
+				-9.2569522857666
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				178,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v3-east-t0",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v3-west-t0",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				115,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v3-north-t0",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				151,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v3-south-t0",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				103,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "wrap-middle-v3-t1024",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				178,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "prewrap-middle-v3",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				113,
+				124,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "wrap-middle-v3-t0",
+			"mesh_vertex": 3,
+			"point": [
+				-4.76166391372681,
+				19.6630096435547,
+				9.2569522857666
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				178,
+				140,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v4-east-t0",
+			"mesh_vertex": 4,
+			"point": [
+				5.63592433929443,
+				-1.15665626525879,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				113,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v4-west-t0",
+			"mesh_vertex": 4,
+			"point": [
+				5.63592433929443,
+				-1.15665626525879,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				130,
+				142,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v4-north-t0",
+			"mesh_vertex": 4,
+			"point": [
+				5.63592433929443,
+				-1.15665626525879,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				150,
+				130
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v4-south-t0",
+			"mesh_vertex": 4,
+			"point": [
+				5.63592433929443,
+				-1.15665626525879,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				105,
+				124
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v5-east-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-5.63592433929443,
+				-1.15665626525879,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				125,
+				142,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v5-west-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-5.63592433929443,
+				-1.15665626525879,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				113,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v5-north-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-5.63592433929443,
+				-1.15665626525879,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				105,
+				131
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v5-south-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-5.63592433929443,
+				-1.15665626525879,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				150,
+				125
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v6-east-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-5.63592433929443,
+				19.6630096435547,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				142,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v6-west-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-5.63592433929443,
+				19.6630096435547,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				113,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v6-north-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-5.63592433929443,
+				19.6630096435547,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				105,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v6-south-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-5.63592433929443,
+				19.6630096435547,
+				-8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				150,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v7-east-t0",
+			"mesh_vertex": 7,
+			"point": [
+				5.63592433929443,
+				19.6630096435547,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				113,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v7-west-t0",
+			"mesh_vertex": 7,
+			"point": [
+				5.63592433929443,
+				19.6630096435547,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				142,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v7-north-t0",
+			"mesh_vertex": 7,
+			"point": [
+				5.63592433929443,
+				19.6630096435547,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				150,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v7-south-t0",
+			"mesh_vertex": 7,
+			"point": [
+				5.63592433929443,
+				19.6630096435547,
+				8.75219821929932
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				105,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v8-east-t0",
+			"mesh_vertex": 8,
+			"point": [
+				10.3975887298584,
+				-1.15665626525879,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				124,
+				101,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v8-west-t0",
+			"mesh_vertex": 8,
+			"point": [
+				10.3975887298584,
+				-1.15665626525879,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				130,
+				154,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v8-north-t0",
+			"mesh_vertex": 8,
+			"point": [
+				10.3975887298584,
+				-1.15665626525879,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				126,
+				130
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v8-south-t0",
+			"mesh_vertex": 8,
+			"point": [
+				10.3975887298584,
+				-1.15665626525879,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				129,
+				125
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v9-east-t0",
+			"mesh_vertex": 9,
+			"point": [
+				-10.3975887298584,
+				-1.15665626525879,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				125,
+				154,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v9-west-t0",
+			"mesh_vertex": 9,
+			"point": [
+				-10.3975887298584,
+				-1.15665626525879,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				131,
+				101,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v9-north-t0",
+			"mesh_vertex": 9,
+			"point": [
+				-10.3975887298584,
+				-1.15665626525879,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				129,
+				130
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v9-south-t0",
+			"mesh_vertex": 9,
+			"point": [
+				-10.3975887298584,
+				-1.15665626525879,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				126,
+				125
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v10-east-t0",
+			"mesh_vertex": 10,
+			"point": [
+				-10.3975887298584,
+				19.6630096435547,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				154,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v10-west-t0",
+			"mesh_vertex": 10,
+			"point": [
+				-10.3975887298584,
+				19.6630096435547,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				100,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v10-north-t0",
+			"mesh_vertex": 10,
+			"point": [
+				-10.3975887298584,
+				19.6630096435547,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				129,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v10-south-t0",
+			"mesh_vertex": 10,
+			"point": [
+				-10.3975887298584,
+				19.6630096435547,
+				0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				126,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v11-east-t0",
+			"mesh_vertex": 11,
+			"point": [
+				10.3975887298584,
+				19.6630096435547,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				178,
+				100,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v11-west-t0",
+			"mesh_vertex": 11,
+			"point": [
+				10.3975887298584,
+				19.6630096435547,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				77,
+				154,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v11-north-t0",
+			"mesh_vertex": 11,
+			"point": [
+				10.3975887298584,
+				19.6630096435547,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				126,
+				77
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "middle-v11-south-t0",
+			"mesh_vertex": 11,
+			"point": [
+				10.3975887298584,
+				19.6630096435547,
+				-0.504754900932312
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				129,
+				178
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": 69.75,
+			"tree_position_north_m": -394.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "root-high-east-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "root-high-west-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				-10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "root-high-north-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				-10.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "root-high-south-t0",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				10.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "root-high-east-t1",
+			"point": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"purpose": "root",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v0-east-t0",
+			"mesh_vertex": 0,
+			"point": [
+				13.3150911331177,
+				-1.56171822547913,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				87,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v0-west-t0",
+			"mesh_vertex": 0,
+			"point": [
+				13.3150911331177,
+				-1.56171822547913,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v0-north-t0",
+			"mesh_vertex": 0,
+			"point": [
+				13.3150911331177,
+				-1.56171822547913,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				114,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v0-south-t0",
+			"mesh_vertex": 0,
+			"point": [
+				13.3150911331177,
+				-1.56171822547913,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				141,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v1-east-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-13.3150911331177,
+				-1.56171822547913,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v1-west-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-13.3150911331177,
+				-1.56171822547913,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				87,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v1-north-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-13.3150911331177,
+				-1.56171822547913,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				141,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v1-south-t0",
+			"mesh_vertex": 1,
+			"point": [
+				-13.3150911331177,
+				-1.56171822547913,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				114,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v2-east-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v2-west-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				86,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v2-north-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				141,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v2-south-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				113,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "wrap-high-v2-t1024",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				209,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "prewrap-high-v2",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "wrap-high-v2-t0",
+			"mesh_vertex": 2,
+			"point": [
+				-13.3150911331177,
+				26.5490093231201,
+				4.50128746032715
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				209,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v3-east-t0",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				86,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v3-west-t0",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				168,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v3-north-t0",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				113,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v3-south-t0",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				141,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 1024.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "wrap-high-v3-t1024",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 1024.0,
+			"rgb8": [
+				209,
+				86,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1023.9990234375,
+			"encoding_range_m": 0.002,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "prewrap-high-v3",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "clock-prewrap",
+			"reference_clock": 0.0,
+			"requested_time_s": 1023.9990234375,
+			"rgb8": [
+				128,
+				127,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "wrap-high-v3-t0",
+			"mesh_vertex": 3,
+			"point": [
+				13.3150911331177,
+				26.5490093231201,
+				-4.50128746032715
+			],
+			"purpose": "clock-wrap",
+			"requested_time_s": 0.0,
+			"rgb8": [
+				209,
+				86,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v4-east-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.7593150138855,
+				-1.56171822547913,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				119,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v4-west-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.7593150138855,
+				-1.56171822547913,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				136,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v4-north-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.7593150138855,
+				-1.56171822547913,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				85,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v4-south-t0",
+			"mesh_vertex": 4,
+			"point": [
+				2.7593150138855,
+				-1.56171822547913,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				170,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v5-east-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.7593150138855,
+				-1.56171822547913,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				136,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v5-west-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.7593150138855,
+				-1.56171822547913,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				119,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v5-north-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.7593150138855,
+				-1.56171822547913,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				170,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v5-south-t0",
+			"mesh_vertex": 5,
+			"point": [
+				-2.7593150138855,
+				-1.56171822547913,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				85,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v6-east-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.7593150138855,
+				26.5490093231201,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				136,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v6-west-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.7593150138855,
+				26.5490093231201,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				119,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v6-north-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.7593150138855,
+				26.5490093231201,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				169,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v6-south-t0",
+			"mesh_vertex": 6,
+			"point": [
+				-2.7593150138855,
+				26.5490093231201,
+				13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				85,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v7-east-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.7593150138855,
+				26.5490093231201,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				119,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v7-west-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.7593150138855,
+				26.5490093231201,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				136,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v7-north-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.7593150138855,
+				26.5490093231201,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				85,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v7-south-t0",
+			"mesh_vertex": 7,
+			"point": [
+				2.7593150138855,
+				26.5490093231201,
+				-13.7818517684937
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				169,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v8-east-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-10.555775642395,
+				-1.56171822547913,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				160,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v8-west-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-10.555775642395,
+				-1.56171822547913,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				95,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v8-north-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-10.555775642395,
+				-1.56171822547913,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v8-south-t0",
+			"mesh_vertex": 8,
+			"point": [
+				-10.555775642395,
+				-1.56171822547913,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v9-east-t0",
+			"mesh_vertex": 9,
+			"point": [
+				10.555775642395,
+				-1.56171822547913,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				123,
+				95,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v9-west-t0",
+			"mesh_vertex": 9,
+			"point": [
+				10.555775642395,
+				-1.56171822547913,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				132,
+				160,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v9-north-t0",
+			"mesh_vertex": 9,
+			"point": [
+				10.555775642395,
+				-1.56171822547913,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				132
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v9-south-t0",
+			"mesh_vertex": 9,
+			"point": [
+				10.555775642395,
+				-1.56171822547913,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				123
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v10-east-t0",
+			"mesh_vertex": 10,
+			"point": [
+				10.555775642395,
+				26.5490093231201,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				95,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v10-west-t0",
+			"mesh_vertex": 10,
+			"point": [
+				10.555775642395,
+				26.5490093231201,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				160,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v10-north-t0",
+			"mesh_vertex": 10,
+			"point": [
+				10.555775642395,
+				26.5490093231201,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v10-south-t0",
+			"mesh_vertex": 10,
+			"point": [
+				10.555775642395,
+				26.5490093231201,
+				9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v11-east-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-10.555775642395,
+				26.5490093231201,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				209,
+				160,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				10.0,
+				0.0
+			],
+			"wind_name": "east"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v11-west-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-10.555775642395,
+				26.5490093231201,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				46,
+				95,
+				128
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				-10.0,
+				0.0
+			],
+			"wind_name": "west"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v11-north-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-10.555775642395,
+				26.5490093231201,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				99,
+				46
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				-10.0
+			],
+			"wind_name": "north"
+		},
+		{
+			"clock": 0.0,
+			"hash": 17406,
+			"height": 24.9872922776149,
+			"id": "high-v11-south-t0",
+			"mesh_vertex": 11,
+			"point": [
+				-10.555775642395,
+				26.5490093231201,
+				-9.28056240081787
+			],
+			"purpose": "cardinal",
+			"rgb8": [
+				128,
+				156,
+				209
+			],
+			"source": "production card mesh vertex",
+			"species": 0,
+			"tree_position_east_m": -798.0,
+			"tree_position_north_m": -412.75,
+			"wind": [
+				0.0,
+				10.0
+			],
+			"wind_name": "south"
+		},
+		{
+			"clock": 0.0,
+			"hash": 0,
+			"height": 18.5063538611926,
+			"id": "phase-h0",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				185,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 5460,
+			"height": 18.5063538611926,
+			"id": "phase-h5460",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				194,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 10920,
+			"height": 18.5063538611926,
+			"id": "phase-h10920",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				201,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 16380,
+			"height": 18.5063538611926,
+			"id": "phase-h16380",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				204,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 21840,
+			"height": 18.5063538611926,
+			"id": "phase-h21840",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				201,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 27300,
+			"height": 18.5063538611926,
+			"id": "phase-h27300",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				194,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 32760,
+			"height": 18.5063538611926,
+			"id": "phase-h32760",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				185,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 38220,
+			"height": 18.5063538611926,
+			"id": "phase-h38220",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 43680,
+			"height": 18.5063538611926,
+			"id": "phase-h43680",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				168,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 49140,
+			"height": 18.5063538611926,
+			"id": "phase-h49140",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				166,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 54600,
+			"height": 18.5063538611926,
+			"id": "phase-h54600",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				168,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 60060,
+			"height": 18.5063538611926,
+			"id": "phase-h60060",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "hash-phase",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "time-east-t0",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "clock-change",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "time-east-t1",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "clock-change",
+			"rgb8": [
+				204,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "speed-05",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "speed-scale",
+			"rgb8": [
+				139,
+				127,
+				128
+			],
+			"speed_mps": 5.0,
+			"wind": [
+				5.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "speed-10",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "speed-scale",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"speed_mps": 10.0,
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "speed-20",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "speed-scale",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"speed_mps": 20.0,
+			"wind": [
+				20.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "calm-t0",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "calm",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "calm-t1",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "calm",
+			"rgb8": [
+				128,
+				128,
+				128
+			],
+			"wind": [
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "direction-east",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "direction",
+			"rgb8": [
+				175,
+				127,
+				128
+			],
+			"wind": [
+				10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "direction-west",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "direction",
+			"rgb8": [
+				80,
+				127,
+				128
+			],
+			"wind": [
+				-10.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "direction-north",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "direction",
+			"rgb8": [
+				128,
+				127,
+				80
+			],
+			"wind": [
+				0.0,
+				-10.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"hash": 59904,
+			"height": 18.5063538611926,
+			"id": "direction-south",
+			"point": [
+				0.0,
+				18.5063533782959,
+				0.0
+			],
+			"purpose": "direction",
+			"rgb8": [
+				128,
+				127,
+				175
+			],
+			"wind": [
+				0.0,
+				10.0
+			]
+		}
+	],
+	"selected_trees": [
+		{
+			"band": "low",
+			"east_m": 108.75,
+			"hash": 63489,
+			"height_m": 12.0127077223851,
+			"north_m": 435.25,
+			"species": 0,
+			"yaw_rad": 3.28097712336262
+		},
+		{
+			"band": "middle",
+			"east_m": 69.75,
+			"hash": 59904,
+			"height_m": 18.5063538611926,
+			"north_m": -394.75,
+			"species": 0,
+			"yaw_rad": 1.09570481707901
+		},
+		{
+			"band": "high",
+			"east_m": -798.0,
+			"hash": 17406,
+			"height_m": 24.9872922776149,
+			"north_m": -412.75,
+			"species": 0,
+			"yaw_rad": 3.46759024904403
+		}
+	],
+	"shader_include": "res://render/tree_wind.gdshaderinc",
+	"shader_include_sha256": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85"
+}

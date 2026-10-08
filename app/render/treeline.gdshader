@@ -1,6 +1,11 @@
 shader_type spatial;
 render_mode cull_disabled, diffuse_burley, specular_disabled;
 #include "res://render/tree_identity.gdshaderinc"
+#include "res://render/tree_wind.gdshaderinc"
+
+global uniform float sim_clock;
+global uniform vec3 wind_vec;
+uniform bool wind_enabled = true; // capture ablation; production wind remains zero until M5
 
 // Landscape improvement phases 0/1/3 (docs/research/landscape-improvement-2026-10-07, report 02):
 // - one crown normal per pixel: an ellipsoid around the crown centre in the view plane, written in fragment() (after
@@ -44,7 +49,16 @@ void vertex() {
     VERTEX.xz = spin * VERTEX.xz;
     NORMAL.xz = spin * NORMAL.xz;
     VERTEX *= identity.y;
-    crown_view = (MODELVIEW_MATRIX * vec4(0.0, CROWN_CENTRE[species] * identity.y, 0.0, 1.0)).xyz;
+    vec3 crown = vec3(0.0, CROWN_CENTRE[species] * identity.y, 0.0);
+    if (wind_enabled && dot(wind_vec.xz, wind_vec.xz) > 0.0) {
+        // Tree instances have rotation-only/translation transforms. Convert world
+        // air velocity (where it goes TO) once; identity yaw is already applied.
+        vec3 local_wind = transpose(mat3(MODEL_MATRIX)) * vec3(wind_vec.x, 0.0, wind_vec.z);
+        uint phase_hash = tree_hash(ne);
+        VERTEX = tree_bend(VERTEX, local_wind.xz, identity.y, phase_hash, sim_clock);
+        crown = tree_bend(crown, local_wind.xz, identity.y, phase_hash, sim_clock);
+    }
+    crown_view = (MODELVIEW_MATRIX * vec4(crown, 1.0)).xyz;
     crown_radius = vec2(CROWN_HALF_W[species], CROWN_HALF_H[species]) * identity.y;
     up_view = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
     // Per-tree tint: a further integer step of the identity hash (h % 3 and h % 1024 are taken).

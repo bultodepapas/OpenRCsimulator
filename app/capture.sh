@@ -130,7 +130,7 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFai
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
 python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6b"
 # The guarded landscape tools require fresh outputs. Replace only these generated directories under the capture lock.
-rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l11a"
+rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l11a" "$HERE/captures/l15b"
 # L7: combined forest/hill A/B at three heights, repeated bytes and all visibility-preset rim checks.
 "$VPY" "$HERE/../tools/terrain/check_horizon.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l7"
 # L4b/L15d: production sky/shadow A/B, sim-time drift, repeated bytes and periodic cloud projection.
@@ -139,6 +139,8 @@ rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l11a"
 # L11a: grass budget, seam, wind wrap and reuse of existing opt-in scenery flowers.
 "$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a"
 "$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$HERE/captures/l11a/candidate-repeat-1" --out "$HERE/captures/l11a/seam-summary.json" --self-test
+# L15b: rooted tree sway, calm parity, fixed-clock repeats and GPU geometry readback.
+"$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15b" --timeout 600
 # L6c: the airplane against trees, treetop edge, sky and grass at 100 m (numbers recorded for Gate L, case guards
 # only) and the blinded 24-image attitude kit for the human playtest (captures/l6c/kit).
 "$VPY" "$HERE/tests/test_treeline_readability.py"
@@ -170,6 +172,8 @@ manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': ent
             'atmosphere_review_sha256': hashlib.sha256((root / 'l4b/capture-summary.json').read_bytes()).hexdigest(),
             'near_grass_seam': 'l11a/seam-summary.json',
             'near_grass_seam_sha256': hashlib.sha256((root / 'l11a/seam-summary.json').read_bytes()).hexdigest(),
+            'tree_wind_review': 'l15b/capture-summary.json',
+            'tree_wind_review_sha256': hashlib.sha256((root / 'l15b/capture-summary.json').read_bytes()).hexdigest(),
             'near_grass_review': 'l11a/capture-summary.json',
             'near_grass_review_sha256': hashlib.sha256((root / 'l11a/capture-summary.json').read_bytes()).hexdigest(),
             'cloud_probe': 'l15d/summary.json',
