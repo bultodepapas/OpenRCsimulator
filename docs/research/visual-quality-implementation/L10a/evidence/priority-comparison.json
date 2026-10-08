@@ -1,0 +1,26 @@
+{
+  "complete": true,
+  "captures": [
+    {
+      "capture": "runway_zoom_100-shift0-off.png",
+      "sha256": "830f64cff23cd36b89b6ad52f2086da39d6d432279f129c289d60e9496e0f46c",
+      "identical_image_and_counters": true
+    },
+    {
+      "capture": "runway_zoom_100-shift0-on.png",
+      "sha256": "1a6354e53cad1369b0b6404e13a579725d524480e2a8d72937bd8b78cb692501",
+      "identical_image_and_counters": true
+    },
+    {
+      "capture": "runway_zoom_100-shift05-off.png",
+      "sha256": "bdb3c766c84e5e817bbe95780d0b8165544999cbb7e57ae78d632b0e34e4cb1f",
+      "identical_image_and_counters": true
+    },
+    {
+      "capture": "runway_zoom_100-shift05-on.png",
+      "sha256": "0f96cc7779a839dbce65601b72f0db04dd83e68e96ff50eadd2167c9afc85a2d",
+      "identical_image_and_counters": true
+    }
+  ],
+  "baseline": "/tmp/l9c-surfaces-clean-final/priority-repeat-1"
+}

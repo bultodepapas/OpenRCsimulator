@@ -49,6 +49,8 @@ Swing-test reduction: [VAL-6a](validation/VAL-6a/README.md) provides offline bif
 
 Static propeller readings: [VAL-7a](validation/VAL-7a/README.md) reduces matched thrust/RPM and optional torque into Ct, Cp and shaft power with uncertainty. Ideal-disc power stays distinct; real static tests and transient lag remain VAL-7.
 
+Propeller operating-range diagnostics: [G1b1](propulsion/G1b1/README.md) audits Ct/Cp queries from exact-input-identified traces, separating table extrapolation, documented source gaps, stopped/reverse flow and unknown coverage. Six session flights and direct engine-query comparisons verify the offline tool; online counters and matched-propeller validation remain open.
+
 Throttle-step readings: [VAL-7b](validation/VAL-7b/README.md) reduces recorded RPM crossings into lag/delay diagnostics, retaining residuals, sampling limits and provenance. Physical measurements and propagated uncertainty remain open.
 
 Ground-run video: [VAL-8a](validation/VAL-8a/README.md) reduces original capture-frame annotations and surveyed positions into duration, distance and mean along-runway ground speed, retaining shared-event/calibration uncertainty and exact input hashes. Physical flights and simulator comparisons remain VAL-8.
@@ -134,6 +136,7 @@ Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
 | Phased improvement proposal (2026-10-07): ground colour and anti-tiling, tree shading, field surfaces, horizon, sky, near field | [landscape-improvement-2026-10-07/](landscape-improvement-2026-10-07/README.md) | Reports 01–04 inside; measured problems in [scenery 05](scenery-investigations/05-landscape-image-review.md); Phases 0–4 [implemented and measured](landscape-improvement-2026-10-07/implementation/README.md) |
 | L9c / improvement Phase 4 follow-up: field surfaces in the ground pass | [L9c evidence](visual-quality-implementation/L9c/README.md) | Bounded rectangle batch, custom-field fallback, edge/priority/repeat checks, unchanged physics/readability; shimmer acceptance open |
 | L9c-R1: stripe sampling reference | [L9c-R1 evidence](visual-quality-implementation/L9c-R1/README.md) | Stripe-only camera-motion error, 8×/16× references, fixed world-space inset, repeat and raw/zero-detail controls; bounded regression verified |
+| L10a: calm windsock scale cue | [L10a evidence](visual-quality-implementation/L10a/README.md) | Sourced dimensions, validated optional field cue, calm cloth geometry, repeated/scenery captures, unchanged physics and exported-pack verification |
 | L7 / improvement Phase 5: far forest, continuous visual hills and visibility presets | [L7 evidence](visual-quality-implementation/L7/README.md) | Integer profile, preserved near-tree identities, topology, capture A/B, readability and pack checks |
 | L4b / improvement Phase 6 and L15d rendering: sky and cloud shadows | [L4b evidence](visual-quality-implementation/L4b/README.md), [L15d](visual-quality-implementation/L15d/README.md) | Legacy parity, repeated production captures, density/projection probe, readability, pack checks and obsolete-output cleanup |
 | L11a / improvement Phase 7: near grass and reused flowers | [L11a evidence](visual-quality-implementation/L11a/README.md) | Integer placement, clipping, shared ground colour, local FLIP/seam mutation, wind/fade captures, unchanged readability and pack checks |

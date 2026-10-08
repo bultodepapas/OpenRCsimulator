@@ -1,0 +1,148 @@
+{
+  "commands": {
+    "first": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10a-clean/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10a-clean/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10a-clean-captures/first"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10a-clean/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10a-clean/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10a-clean-captures/repeat"
+    ],
+    "scenery": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l10a-clean/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/tmp/openrc-l10a-clean/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/tmp/l10a-clean-captures/scenery",
+      "--scenery=on"
+    ]
+  },
+  "complete": true,
+  "format": "openrc-l10a-review v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "identical_repeat": true,
+  "invisible_feature_control_rejected": true,
+  "metrics": {
+    "first": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 107.77645978418919
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.54823529411765
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 97.83508577753182
+      }
+    },
+    "repeat": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 107.77645978418919
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.54823529411765
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 97.83508577753182
+      }
+    },
+    "scenery": {
+      "close": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 13067,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 108.52973138440346
+      },
+      "overview": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 425,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 94.82352941176471
+      },
+      "pilot_turn": {
+        "added_draws": 2,
+        "added_primitives": 1770,
+        "changed_pixels": 1807,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 99.66629773104593
+      }
+    }
+  },
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "sources_sha256": {
+    "app/data/field_loader.gd": "4265e4f8b0671d20b8af0ad07a0e9b907a23739876f98c6b107d2a5bf669c1b4",
+    "app/data/fields/default.json": "cbc17f96415bb7c89634e9298adee3ffc14b97885727c8ffda8b9d7e47fadb95",
+    "app/render/field.gd": "4d7f18279f28399aaf637739679a1a8a52083898b6034d9b2ee6d5ddd358e07a",
+    "app/render/windsock.gd": "bcd10199489cd77604b5d3a2361b305215a53df8dcb25b1d8b40dc278a1bdd45",
+    "app/scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+    "tools/ground/capture_windsock.gd": "d7c77f384ff3d856c2714ce0e63a2105d2262569a5200e5b1ff4ce9e41a4378d",
+    "tools/ground/check_windsock.py": "db425528bb13766e6798232ca91231f0ad2a4cec3262830ea0edcde766b1d7b7"
+  }
+}

@@ -1,6 +1,6 @@
 # format: openrc-trace v3
 # metadata_schema: openrc-flight-meta v2
-# scenario: trimmed level flight (engine running) across view at 25.0 m/s (D5: six-axis trim, calm air)
+# scenario: G1b1 p51_trim
 # aircraft: p51d-mustang-120 (res://data/aircraft/p51d_mustang_120.json)
 # aircraft_input_format: openrc-aircraft v1
 # aircraft_input_sha256: 5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a
@@ -20,7 +20,7 @@
 # recording_start_aux: [3545.8395322805127,0.020990150685951423,0.40799134102681295,0.11549641511967661]
 # recording_start_engine_running: true
 # ground: flat at 0 m; 3 spring-damper gear contacts (E1) with tyre friction and nose-wheel steering, brakes off (E2), on dry pavement
-# created_utc: 2026-10-08T03:12:23
+# created_utc: 2026-10-08T03:16:24
 # engine: Godot 4.7.2-stable (official)
 # dt_s: 0.00416666666667
 # mass_kg: 21.499999

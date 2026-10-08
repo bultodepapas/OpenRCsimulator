@@ -1,6 +1,6 @@
 {
   "format": "openrc-propeller-range-audit v1",
-  "trace_sha256": "cdd7175cd55572afa85c9b12b3056af0329a9197e797b86cd8e65bce6c078e64",
+  "trace_sha256": "cb2489ed4de104e67ec8a0db0d894706f6f62b2566de705e2b305269096488c7",
   "aircraft_input_sha256": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
   "aircraft": "gp-extra-300s-60 (res://data/aircraft/gp_extra_300s_60.json)",
   "assumption": "still air: body velocity equals air-relative velocity",
@@ -61,7 +61,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 240,
       "j_gap_coverage_unknown": 240,
-      "source_j_uncovered": 0
+      "source_j_uncovered": 0,
+      "reverse_flow_source_coverage_unknown": 0
     },
     "cp_table": {
       "stopped": 0,
@@ -72,7 +73,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 240,
       "j_gap_coverage_unknown": 240,
-      "source_j_uncovered": 0
+      "source_j_uncovered": 0,
+      "reverse_flow_source_coverage_unknown": 0
     }
   },
   "first_occurrence": {
@@ -108,6 +110,6 @@
     "No flag does not establish physical validity or coverage of internal integration stages."
   ],
   "coverage_sha256": null,
-  "tool_sha256": "8abd3f363a7ae12c66ef6837c2724899eefb47ed5032cbff2d008580d668a937",
+  "tool_sha256": "c6f65a49238df47bc3b1cb8c7f90398066d66bd1a4b03df651d024e5b263fc4f",
   "identity_reader_sha256": "7b8623b5f244313356b38a4b5e01371dc9c910762ef4ac62c622fad40733a147"
 }

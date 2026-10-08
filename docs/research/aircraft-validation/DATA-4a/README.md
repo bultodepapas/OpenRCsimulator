@@ -1,6 +1,6 @@
 # DATA-4a — offline aircraft structural contract
 
-**Status:** verification in progress. Scope: schema, offline preflight, loader comparison and CI; no runtime or aircraft-data changes.
+**Status:** complete, 2026-10-07 (tooling verification). Scope: schema, offline preflight, loader comparison and CI; no runtime or aircraft-data changes.
 
 ## Contract
 
@@ -14,7 +14,7 @@ The test corpus is independent of the schema: it walks representative quantity p
 - **1,469 schema/loader cases pass**, including **24 valid controls**, the synthetic smooth-wake branch, and **three runtime-only counterexamples**. Reproduced in a fresh checkout: [case outcomes and input hashes](agreement.json), [test log](contract.log).
 - Three in-memory schema mutations are detected: dropping the unit requirement, scalar type, and vector width. [Mutation outcomes](mutations.json); rerun `research/aircraft-data/schema/check_mutations.py`.
 - CI syntax passes `actionlint`. Godot parses the offline probe; the project linter reports zero errors and the same 12 warnings before/after.
-- Full isolated `app/test.sh`: pending final completion. The shared-tree baseline passed all 132 sections, but concurrent edits make the isolated run the release evidence.
+- Full isolated `app/test.sh` passes **132 sections**, including golden flights, four finite 720-tick trim traces, and identical 30/60/144 FPS flight/wake fingerprints. [Full log](app-test.log), [snapshot and verification summary](verification.json).
 
 ## Findings
 
@@ -28,3 +28,9 @@ The test corpus is independent of the schema: it walks representative quantity p
 See [tool commands and maintenance rules](../../../../research/aircraft-data/schema/README.md). The validator dependency set is pinned. The schema follows the [2020-12 validation vocabulary](https://json-schema.org/draft/2020-12/json-schema-validation) and uses the [Python validator API](https://python-jsonschema.readthedocs.io/en/stable/validate/).
 
 The bounded corpus does not establish equivalence for every possible malformed input or feature combination. DATA-4 remains open for expanded coverage. Existing geometry, mass-property and flight-model calibration gaps are unchanged.
+
+Ready-to-paste commit message:
+
+```text
+DATA-4a: add aircraft schema preflight; 1,469 loader cases and isolated app/test.sh pass
+```

@@ -1,6 +1,6 @@
 {
   "format": "openrc-propeller-range-audit v1",
-  "trace_sha256": "9586c15b828d00365748dcf3fec0be1f53aed6239ac3c9536ea1831f4e8ffaf1",
+  "trace_sha256": "c9b64c8404bdc5607059b54100766cad8fe886db0977fc6ef5f361d5b5bca45d",
   "aircraft_input_sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
   "aircraft": "p51d-mustang-120 (res://data/aircraft/p51d_mustang_120.json)",
   "assumption": "still air: body velocity equals air-relative velocity",
@@ -61,7 +61,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 240,
       "j_gap_coverage_unknown": 240,
-      "source_j_uncovered": 0
+      "source_j_uncovered": 0,
+      "reverse_flow_source_coverage_unknown": 0
     },
     "cp_table": {
       "stopped": 0,
@@ -72,7 +73,8 @@
       "outside_source_rpm": 0,
       "rpm_coverage_unknown": 240,
       "j_gap_coverage_unknown": 240,
-      "source_j_uncovered": 0
+      "source_j_uncovered": 0,
+      "reverse_flow_source_coverage_unknown": 0
     }
   },
   "first_occurrence": {
@@ -108,6 +110,6 @@
     "No flag does not establish physical validity or coverage of internal integration stages."
   ],
   "coverage_sha256": null,
-  "tool_sha256": "8abd3f363a7ae12c66ef6837c2724899eefb47ed5032cbff2d008580d668a937",
+  "tool_sha256": "c6f65a49238df47bc3b1cb8c7f90398066d66bd1a4b03df651d024e5b263fc4f",
   "identity_reader_sha256": "7b8623b5f244313356b38a4b5e01371dc9c910762ef4ac62c622fad40733a147"
 }

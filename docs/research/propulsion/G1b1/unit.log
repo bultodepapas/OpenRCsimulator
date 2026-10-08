@@ -20,6 +20,6 @@ test_thrust_axis_down_and_right (test_audit.AuditTests.test_thrust_axis_down_and
 test_unknown_coverage_is_not_accepted_coverage (test_audit.AuditTests.test_unknown_coverage_is_not_accepted_coverage) ... ok
 
 ----------------------------------------------------------------------
-Ran 20 tests in 0.181s
+Ran 20 tests in 0.139s
 
 OK

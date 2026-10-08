@@ -1,6 +1,6 @@
 # L10a — calm windsock
 
-**Status (2026-10-08): rendering and field-data checks passed; final regression run in progress.** First bounded slice of [L10](../../../LANDSCAPE-PLAN.md). Wind response remains L15a/M5 work.
+**Status (2026-10-08): engineering verification passed; human Gate L remains open.** First bounded slice of [L10](../../../LANDSCAPE-PLAN.md). Wind response remains L15a/M5 work.
 
 ## Delivered
 
@@ -22,7 +22,13 @@ The optional `flight_cues` field-data extension accepts one windsock. Existing t
 - The three-second flight has **721 identical numeric samples** before/after; only the UTC creation timestamp differs.
 - The Linux PCK loads the field, procedural windsock, grass and tree assets from an empty project root. Native Windows/macOS execution is not claimed.
 
-Final regression status and saved evidence are recorded below after completion.
+`app/test.sh` completed with exit 0, including flight/model contracts, golden flights and 30/60/144 fps state equality. That run loaded the 14-check geometry script; a subsequent targeted run passed all 16 checks after adding two builder-integration assertions. Static lint retains the same 12 pre-existing warnings and reports no errors. The four synthetic runway/mown priority images and render counters match L9c exactly after removing the unrelated cue from that fixture. The full `app/capture.sh` pipeline was not rerun; its new cue checker and affected priority fixture were exercised directly.
+
+Saved evidence: [capture summary and source hashes](evidence/capture-summary.json), [full test log](evidence/app-test.log), [16-check integration run](evidence/windsock-test.log), [flight comparison](evidence/trace-comparison.json), [priority comparison](evidence/priority-comparison.json), [empty-root pack check](evidence/pack-check.log), [verification scope](evidence/verification.json). Three representative images are retained from the 18 generated captures; all three run manifests are in `evidence/`.
+
+![Calm windsock close view](close.png)
+
+[Pilot looking back](pilot-turn.png) · [Overview with optional scenery](scenery.png)
 
 ## Reproduce
 

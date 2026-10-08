@@ -23,11 +23,11 @@ test_unknown_coverage_is_not_accepted_coverage (test_audit.AuditTests.test_unkno
 FAIL: test_known_gap_has_open_endpoints (test_audit.AuditTests.test_known_gap_has_open_endpoints)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/tmp/openrc-range-mutation-cdcxps6n/research/propulsion/range-audit/test_audit.py", line 115, in test_known_gap_has_open_endpoints
+  File "/tmp/openrc-range-mutation-2jgs4l0z/research/propulsion/range-audit/test_audit.py", line 120, in test_known_gap_has_open_endpoints
     self.assertEqual('documented_j_gap' in p['tables']['ct_table'], gap)
 AssertionError: True != False
 
 ----------------------------------------------------------------------
-Ran 20 tests in 0.199s
+Ran 20 tests in 0.156s
 
 FAILED (failures=1)

@@ -23,6 +23,7 @@ const Turbine := preload("res://physics/turbine.gd")
 const WashTransport := preload("res://physics/wash_transport.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
@@ -74,7 +75,7 @@ var engine_running: bool:
 			sim.modes[0] = 1 if value else 0
 ## After a crash the scene freezes this long (s, counted in physics ticks), showing the impact, then restarts.
 const CRASH_HOLD_S := 1.5
-## The last crash while it is shown: { speed, sink (m/s), ticks_left }; empty when flying.
+## The last crash while shown: CG speed/sink (m/s), ticks_left, why and a typed tick-boundary impact; empty while flying.
 var crash := {}
 ## Why the session paused the simulation ("" = it did not), for the panel.
 var pause_reason := ""
@@ -439,9 +440,9 @@ func _physics_process(_delta: float) -> void:
 		return
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if touches_ground(sim.state):
-			_crash("")
+			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull))
 		elif gear_collapsed(sim.state):
-			_crash("gear collapsed")
+			_crash(ImpactSnapshot.gear_limit(sim.state, sim.tick, aircraft.model.landing_gear))
 
 
 ## True when any landing-gear contact at state `s` is compressed past its travel (E1). Always false without gear.
@@ -474,12 +475,13 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 	return false
 
 
-func _crash(why: String) -> void:
+func _crash(impact: ImpactSnapshot.Snapshot) -> void:
+	var why: String = impact.description()
 	var s: PackedFloat64Array = sim.state
 	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var prev: PackedFloat64Array = sim.previous
 	var sink: float = (s[RB.POS + 2] - prev[RB.POS + 2]) / sim.dt()
-	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why }
+	crash = { speed = speed, sink = sink, ticks_left = roundi(CRASH_HOLD_S / sim.dt()), why = why, impact = impact }
 	sim.set_paused(true)
 	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - restarting" % [speed, sink, "" if why.is_empty() else ", " + why]
 	print(pause_reason)
