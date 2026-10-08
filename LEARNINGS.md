@@ -87,3 +87,11 @@ A native snapshot can remain safely isolated yet become stale relative to its so
 ## 2026-10-08 · L9c-R1 — subtract expected image motion
 
 To measure sampling error, isolate the changing cue with a zero-amplitude capture and subtract the motion of an independently supersampled reference. Check two reference resolutions: a low-resolution reference can alias more than the candidate. Define thin distant-surface masks in world units; a one-pixel erosion can erase the entire target. Preserve a nearby-detail control so removing the feature cannot pass as good filtering. [Method, limits and evidence](docs/research/visual-quality-implementation/L9c-R1/README.md).
+
+## 2026-10-08 · DATA-2a — preserve the quantity a numerical search solves
+
+Replacing a sampled lift maximum with a continuous optimizer can change a stall angle even when both searches are accurate. Bound and prune the original grid when exact behavior must survive: a curvature/chord bound avoids assuming a single peak, while an exhaustive oracle and deliberate bound mutations verify the implementation. Keep floating-point safeguards distinct from a formal interval proof. [Derivation, equivalence checks and timing limits](docs/research/aircraft-validation/DATA-2a/README.md).
+
+## 2026-10-07 · E3c1a — stopping is not proof of runway landing
+
+A soft touchdown followed by a stop can hide a runway overrun: rough ground supplied the stopping force in early approach trials. Check every wheel throughout rollout and require a stable idle hold inside the strip. Run the actual session crash detector at each committed boundary; calling only the integrator bypasses it and lets an initially penetrating aircraft advance. [Trajectories and rejection controls](docs/research/ground-contact/E3c1a/README.md).

@@ -1,0 +1,3220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenRC aircraft data v1",
+  "description": "Structural and per-field validation for aircraft_data.gd v1 inputs. Physics and cross-field consistency remain runtime checks.",
+  "$comment": "The loader remains authoritative for coupled physical checks, ordered table samples, geometric support, and integrated areas. Quantity sources and landing-gear contact names mirror Godot String.strip_edges: ASCII U+0001–U+0020 alone is blank, while Unicode spaces remain content; JSON parsing replaces NUL with U+FFFD.",
+  "type": "object",
+  "required": [
+    "format",
+    "reference",
+    "balance",
+    "inventory",
+    "plausibility",
+    "aero",
+    "propulsion",
+    "controls",
+    "crash_hull"
+  ],
+  "properties": {
+    "format": {
+      "const": "openrc-aircraft v1"
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "wing_area",
+        "wing_span",
+        "mean_chord",
+        "aero_reference_point"
+      ],
+      "properties": {
+        "wing_area": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 3.0
+            },
+            "unit": {
+              "const": "m2"
+            }
+          }
+        },
+        "wing_span": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 4.0
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "mean_chord": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "aero_reference_point": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -2.0,
+                "maximum": 2.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "planform": {
+          "enum": [
+            "rectangular",
+            "tapered"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "planform"
+            ],
+            "properties": {
+              "planform": {
+                "const": "tapered"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "root_chord",
+              "tip_chord"
+            ],
+            "properties": {
+              "root_chord": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 1.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  }
+                }
+              },
+              "tip_chord": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.02,
+                    "maximum": 1.0
+                  },
+                  "unit": {
+                    "const": "m"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "start": {
+      "type": "object",
+      "required": [
+        "level_speed"
+      ],
+      "properties": {
+        "level_speed": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 5.0,
+              "maximum": 60.0
+            },
+            "unit": {
+              "const": "m/s"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "balance": {
+      "type": "object",
+      "required": [
+        "plan_cg",
+        "firewall",
+        "cg_tolerance"
+      ],
+      "properties": {
+        "plan_cg": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -2.0,
+                "maximum": 2.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "firewall": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -2.0,
+                "maximum": 2.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "cg_tolerance": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 1e-06,
+              "maximum": 0.005
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "inventory": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "mass",
+          "position"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mass": {
+            "$ref": "#/$defs/evidence",
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0.001,
+                "maximum": 5.0
+              },
+              "unit": {
+                "const": "kg"
+              }
+            }
+          },
+          "position": {
+            "$ref": "#/$defs/evidence",
+            "properties": {
+              "value": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": -2.0,
+                  "maximum": 2.0
+                }
+              },
+              "unit": {
+                "const": "m"
+              }
+            }
+          },
+          "size": {
+            "$ref": "#/$defs/evidence",
+            "properties": {
+              "value": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 4.0
+                }
+              },
+              "unit": {
+                "const": "m"
+              }
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "plausibility": {
+      "type": "object",
+      "required": [
+        "mass_range",
+        "inertia_reference"
+      ],
+      "properties": {
+        "mass_range": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 100.0
+              }
+            },
+            "unit": {
+              "const": "kg"
+            }
+          }
+        },
+        "inertia_reference": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 100.0
+              }
+            },
+            "unit": {
+              "const": "kg·m2"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "aero": {
+      "type": "object",
+      "required": [
+        "coefficients",
+        "envelope",
+        "surfaces"
+      ],
+      "properties": {
+        "source": {},
+        "conventions": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "coefficients": {
+          "type": "object",
+          "required": [
+            "CL0",
+            "CLa",
+            "CLadot",
+            "CLq",
+            "CLde",
+            "CLda_each",
+            "CD0",
+            "CL_minD",
+            "k_induced",
+            "CDda_each",
+            "CDdr",
+            "CDde",
+            "CYb",
+            "CYp",
+            "CYr",
+            "CYdr",
+            "Clb",
+            "Clp",
+            "Clr",
+            "Clda_right",
+            "Clda_left",
+            "Cldr",
+            "Cm0",
+            "Cma",
+            "Cmq",
+            "Cmde",
+            "Cmda_each",
+            "Cnb",
+            "Cnp",
+            "Cnr",
+            "Cnda_right",
+            "Cnda_left",
+            "Cndr"
+          ],
+          "properties": {
+            "CL0": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "CLa": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CLadot": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CLq": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CLde": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CLda_each": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CD0": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "CL_minD": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "k_induced": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "CDda_each": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CDdr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CDde": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CYb": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CYp": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CYr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "CYdr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Clb": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Clp": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Clr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Clda_right": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Clda_left": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cldr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cm0": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "Cma": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cmq": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cmde": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cmda_each": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cnb": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMinimum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cnp": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cnr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cnda_right": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cnda_left": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "Cndr": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100,
+                  "maximum": 100,
+                  "exclusiveMaximum": 0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "envelope": {
+          "type": "object",
+          "required": [
+            "CL_max",
+            "CL_min",
+            "stall_blend_width",
+            "CD90",
+            "sideslip_blend"
+          ],
+          "properties": {
+            "CL_max": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.3,
+                  "maximum": 3.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "CL_min": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -3.0,
+                  "maximum": -0.1
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "stall_blend_width": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 30.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "CD90": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 2.5
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "sideslip_blend": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number",
+                    "minimum": 1.0,
+                    "maximum": 89.0
+                  }
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "surfaces": {
+          "type": "object",
+          "required": [
+            "wing_aileron_effectiveness",
+            "attached_limit",
+            "tail_local_limit",
+            "tail_stall_end",
+            "tail_CD0",
+            "tail_k",
+            "tail_CD90",
+            "horizontal",
+            "vertical"
+          ],
+          "properties": {
+            "wing_aileron_effectiveness": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "attached_limit": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 8.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "tail_local_limit": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 9.0,
+                  "maximum": 30.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "tail_stall_end": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 10.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "tail_CD0": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.001,
+                  "maximum": 0.2
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "tail_k": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 2.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "tail_CD90": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 2.5
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "wing_station_incidence": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -0.2,
+                    "maximum": 0.2
+                  }
+                },
+                "unit": {
+                  "const": "rad"
+                }
+              }
+            },
+            "horizontal": {
+              "type": "object",
+              "required": [
+                "area",
+                "position",
+                "lift_slope",
+                "control_effectiveness",
+                "incidence"
+              ],
+              "properties": {
+                "area": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.001,
+                      "maximum": 1.0
+                    },
+                    "unit": {
+                      "const": "m2"
+                    }
+                  }
+                },
+                "position": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -2.0,
+                        "maximum": 2.0
+                      }
+                    },
+                    "unit": {
+                      "const": "m"
+                    }
+                  }
+                },
+                "lift_slope": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.1,
+                      "maximum": 6.3
+                    },
+                    "unit": {
+                      "const": "1/rad"
+                    }
+                  }
+                },
+                "control_effectiveness": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 1.5
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "incidence": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": -0.2,
+                      "maximum": 0.2
+                    },
+                    "unit": {
+                      "const": "rad"
+                    }
+                  }
+                },
+                "downwash_gradient": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/evidence",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 0.9
+                        },
+                        "unit": {
+                          "const": "1"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": true
+            },
+            "vertical": {
+              "type": "object",
+              "required": [
+                "area",
+                "position",
+                "lift_slope",
+                "control_effectiveness",
+                "incidence"
+              ],
+              "properties": {
+                "area": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.001,
+                      "maximum": 1.0
+                    },
+                    "unit": {
+                      "const": "m2"
+                    }
+                  }
+                },
+                "position": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -2.0,
+                        "maximum": 2.0
+                      }
+                    },
+                    "unit": {
+                      "const": "m"
+                    }
+                  }
+                },
+                "lift_slope": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.1,
+                      "maximum": 6.3
+                    },
+                    "unit": {
+                      "const": "1/rad"
+                    }
+                  }
+                },
+                "control_effectiveness": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 1.5
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                "incidence": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": -0.2,
+                      "maximum": 0.2
+                    },
+                    "unit": {
+                      "const": "rad"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "propulsion": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "glow_prop",
+            "turbine"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "turbine"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/turbinePropulsion"
+          },
+          "else": {
+            "$ref": "#/$defs/glowPropulsion"
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "controls": {
+      "type": "object",
+      "required": [
+        "max_throw",
+        "servo_full_throw_time"
+      ],
+      "properties": {
+        "max_throw": {
+          "type": "object",
+          "required": [
+            "aileron",
+            "elevator",
+            "rudder"
+          ],
+          "properties": {
+            "aileron": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "aileron_down": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "elevator": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "rudder": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 60.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "servo_full_throw_time": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.01,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "s"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "crash_hull": {
+      "$ref": "#/$defs/evidence",
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "properties": {
+        "unit": {
+          "const": "m"
+        },
+        "value": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "number",
+              "minimum": -3.0,
+              "maximum": 3.0
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "landing_gear": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contacts": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "position",
+                  "stiffness",
+                  "damping",
+                  "max_compression"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "[^\\u0001-\\u0020]"
+                  },
+                  "position": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "value": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number",
+                          "minimum": -3.0,
+                          "maximum": 3.0
+                        }
+                      },
+                      "unit": {
+                        "const": "m"
+                      }
+                    }
+                  },
+                  "stiffness": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "minimum": 1.0,
+                        "maximum": 1000000.0
+                      },
+                      "unit": {
+                        "const": "N/m"
+                      }
+                    }
+                  },
+                  "damping": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 10000.0
+                      },
+                      "unit": {
+                        "const": "N·s/m"
+                      }
+                    }
+                  },
+                  "max_compression": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "minimum": 0.005,
+                        "maximum": 0.5
+                      },
+                      "unit": {
+                        "const": "m"
+                      }
+                    }
+                  },
+                  "max_steering": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/evidence",
+                        "properties": {
+                          "value": {
+                            "type": "number",
+                            "minimum": -45.0,
+                            "maximum": 45.0
+                          },
+                          "unit": {
+                            "const": "deg"
+                          }
+                        }
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "rolling_resistance": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.3
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "side_friction": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 1.5
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "peak_slip_angle": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1.0,
+                  "maximum": 30.0
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "breakaway_factor": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 1.0,
+                      "maximum": 2.0
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "minProperties": 1
+              },
+              "then": {
+                "required": [
+                  "contacts",
+                  "rolling_resistance",
+                  "side_friction",
+                  "peak_slip_angle"
+                ]
+              }
+            }
+          ],
+          "additionalProperties": true
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "properties": {
+        "unit": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "manual",
+            "measured",
+            "borrowed",
+            "estimated",
+            "derived"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "pattern": "[^\\u0001-\\u0020]"
+        }
+      },
+      "additionalProperties": true
+    },
+    "ctTable": {
+      "$ref": "#/$defs/evidence",
+      "properties": {
+        "unit": {
+          "const": "1"
+        },
+        "value": {
+          "type": "array",
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "const": 0,
+                  "minimum": -1.7976931348623157e+308,
+                  "maximum": 1.7976931348623157e+308
+                },
+                {
+                  "type": "number",
+                  "minimum": -0.5,
+                  "maximum": 0.5,
+                  "exclusiveMinimum": 0
+                }
+              ],
+              "items": false
+            }
+          ],
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.7976931348623157e+308
+              },
+              {
+                "type": "number",
+                "minimum": -0.5,
+                "maximum": 0.5
+              }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    "cpTableShaft": {
+      "$ref": "#/$defs/evidence",
+      "properties": {
+        "unit": {
+          "const": "1"
+        },
+        "value": {
+          "type": "array",
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "const": 0,
+                  "minimum": -1.7976931348623157e+308,
+                  "maximum": 1.7976931348623157e+308
+                },
+                {
+                  "type": "number",
+                  "minimum": -0.3,
+                  "maximum": 0.5,
+                  "exclusiveMinimum": 0
+                }
+              ],
+              "items": false
+            }
+          ],
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.7976931348623157e+308
+              },
+              {
+                "type": "number",
+                "minimum": -0.3,
+                "maximum": 0.5
+              }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    "cpTableNoShaft": {
+      "$ref": "#/$defs/evidence",
+      "properties": {
+        "unit": {
+          "const": "1"
+        },
+        "value": {
+          "type": "array",
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "const": 0,
+                  "minimum": -1.7976931348623157e+308,
+                  "maximum": 1.7976931348623157e+308
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.5,
+                  "exclusiveMinimum": 0
+                }
+              ],
+              "items": false
+            }
+          ],
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.7976931348623157e+308
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 0.5
+              }
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    "washProfile": {
+      "$ref": "#/$defs/evidence",
+      "properties": {
+        "unit": {
+          "const": "m"
+        },
+        "value": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 3.0
+            }
+          }
+        }
+      }
+    },
+    "slipstreamPieceCore": {
+      "type": "object",
+      "required": [
+        "surface",
+        "area",
+        "root",
+        "span_dir",
+        "span"
+      ],
+      "properties": {
+        "surface": {
+          "enum": [
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "area": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.001,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "m2"
+            }
+          }
+        },
+        "root": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -3.0,
+                "maximum": 3.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "span_dir": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -1.0,
+                "maximum": 1.0
+              }
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "span": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.01,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "slipstreamPieceLegacy": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/slipstreamPieceCore"
+        },
+        {
+          "required": [
+            "chords"
+          ],
+          "properties": {
+            "chords": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number",
+                    "minimum": 0.005,
+                    "maximum": 1.0
+                  }
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            }
+          },
+          "not": {
+            "required": [
+              "profile"
+            ]
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "slipstreamPieceSmooth": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/slipstreamPieceCore"
+        },
+        {
+          "required": [
+            "profile"
+          ],
+          "properties": {
+            "profile": {
+              "$ref": "#/$defs/washProfile"
+            }
+          },
+          "not": {
+            "required": [
+              "chords"
+            ]
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "glowPropulsion": {
+      "type": "object",
+      "required": [
+        "engine",
+        "propeller"
+      ],
+      "properties": {
+        "engine": {
+          "type": "object",
+          "required": [
+            "max_rpm_static",
+            "idle_rpm",
+            "lag_time_constant",
+            "peak_power",
+            "peak_power_rpm"
+          ],
+          "properties": {
+            "max_rpm_static": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1000.0,
+                  "maximum": 50000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            },
+            "idle_rpm": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 20000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            },
+            "lag_time_constant": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "maximum": 5.0
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            },
+            "peak_power": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 10.0,
+                  "maximum": 20000.0
+                },
+                "unit": {
+                  "const": "W"
+                }
+              }
+            },
+            "peak_power_rpm": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1000.0,
+                  "maximum": 50000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            },
+            "shaft": {
+              "type": "object",
+              "required": [
+                "power_curve",
+                "friction_torque",
+                "idle_power",
+                "peak_indicated_power"
+              ],
+              "properties": {
+                "power_curve": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "unit": {
+                      "const": "rpm, W"
+                    },
+                    "value": {
+                      "type": "array",
+                      "minItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "exclusiveMinimum": 0.0,
+                              "minimum": -1.7976931348623157e+308,
+                              "maximum": 1.7976931348623157e+308
+                            },
+                            {
+                              "type": "number",
+                              "exclusiveMinimum": 0.0,
+                              "minimum": -1.7976931348623157e+308,
+                              "maximum": 1.7976931348623157e+308
+                            }
+                          ],
+                          "items": false
+                        }
+                      ],
+                      "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "exclusiveMinimum": 0.0,
+                            "minimum": -1.7976931348623157e+308,
+                            "maximum": 1.7976931348623157e+308
+                          },
+                          {
+                            "type": "number",
+                            "exclusiveMinimum": 0.0,
+                            "minimum": -1.7976931348623157e+308,
+                            "maximum": 1.7976931348623157e+308
+                          }
+                        ],
+                        "items": false
+                      }
+                    }
+                  }
+                },
+                "friction_torque": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "items": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 20.0
+                      }
+                    },
+                    "unit": {
+                      "const": "N·m, N·m/krpm"
+                    }
+                  }
+                },
+                "idle_power": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "maximum": 20000.0
+                    },
+                    "unit": {
+                      "const": "W"
+                    }
+                  }
+                },
+                "peak_indicated_power": {
+                  "$ref": "#/$defs/evidence",
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 10.0,
+                      "maximum": 30000.0
+                    },
+                    "unit": {
+                      "const": "W"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "propeller": {
+          "type": "object",
+          "required": [
+            "diameter",
+            "thrust_line_offset",
+            "rotating_inertia",
+            "ct_table",
+            "cp_table"
+          ],
+          "properties": {
+            "diameter": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 2.0
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            },
+            "thrust_line_offset": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -1.0,
+                    "maximum": 1.0
+                  }
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            },
+            "rotating_inertia": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.1
+                },
+                "unit": {
+                  "const": "kg·m2"
+                }
+              }
+            },
+            "ct_table": {
+              "$ref": "#/$defs/ctTable"
+            },
+            "cp_table": {
+              "$ref": "#/$defs/cpTableShaft"
+            },
+            "thrust_angles": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number",
+                    "minimum": -10.0,
+                    "maximum": 10.0
+                  }
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            },
+            "normal_force": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "1"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "const": 0,
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 1.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "pfactor_moment": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "1"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "const": 0,
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 1.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "slipstream": {
+              "$ref": "#/$defs/slipstream"
+            }
+          },
+          "dependentRequired": {
+            "normal_force": [
+              "thrust_angles"
+            ],
+            "pfactor_moment": [
+              "thrust_angles"
+            ],
+            "slipstream": [
+              "thrust_angles"
+            ]
+          },
+          "additionalProperties": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "shaft"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "propeller": {
+                "properties": {
+                  "cp_table": {
+                    "$ref": "#/$defs/cpTableShaft"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "propeller": {
+                "properties": {
+                  "cp_table": {
+                    "$ref": "#/$defs/cpTableNoShaft"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "shaft"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "propeller": {
+                "properties": {
+                  "rotating_inertia": {
+                    "properties": {
+                      "value": {
+                        "exclusiveMinimum": 0.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "slipstream": {
+      "type": "object",
+      "required": [
+        "hub",
+        "wash_factor",
+        "swirl_factor",
+        "vertical_drift",
+        "pieces"
+      ],
+      "properties": {
+        "hub": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -2.0,
+                "maximum": 2.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "wash_factor": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 2.0
+              }
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "swirl_factor": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "vertical_drift": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "pieces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slipstreamPieceCore"
+          }
+        },
+        "transport_speed_floor": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 5.0
+            },
+            "unit": {
+              "const": "m/s"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "edge_fraction"
+            ]
+          },
+          "then": {
+            "required": [
+              "reverse_fade"
+            ],
+            "properties": {
+              "edge_fraction": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0.01,
+                    "maximum": 0.5
+                  },
+                  "unit": {
+                    "const": "1"
+                  }
+                }
+              },
+              "reverse_fade": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 0.5
+                    }
+                  },
+                  "unit": {
+                    "const": "1"
+                  }
+                }
+              },
+              "pieces": {
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "$ref": "#/$defs/slipstreamPieceSmooth"
+                }
+              }
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "reverse_fade"
+              ]
+            },
+            "properties": {
+              "pieces": {
+                "items": {
+                  "$ref": "#/$defs/slipstreamPieceLegacy"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "transport_speed_floor"
+            ]
+          },
+          "then": {
+            "required": [
+              "edge_fraction"
+            ],
+            "properties": {
+              "swirl_factor": {
+                "properties": {
+                  "value": {
+                    "const": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "turbinePropulsion": {
+      "type": "object",
+      "required": [
+        "engine",
+        "thrust_line_offset",
+        "intake_offset"
+      ],
+      "properties": {
+        "engine": {
+          "type": "object",
+          "required": [
+            "idle_rpm",
+            "max_rpm",
+            "static_thrust",
+            "mass_flow",
+            "fuel_flow",
+            "throttle_map",
+            "accel_limit",
+            "decel_limit",
+            "installed_factor",
+            "governor_tau",
+            "rotor_inertia",
+            "rotor_sense"
+          ],
+          "properties": {
+            "idle_rpm": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1000.0,
+                  "maximum": 300000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            },
+            "max_rpm": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 1000.0,
+                  "maximum": 300000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            },
+            "static_thrust": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, N"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 5000.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 5000.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "mass_flow": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, kg/s"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0001,
+                          "maximum": 20.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0001,
+                        "maximum": 20.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "fuel_flow": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, kg/s"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 1.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "throttle_map": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "1, rpm"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "const": 0,
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 300000.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 300000.0
+                      }
+                    ],
+                    "items": false
+                  },
+                  "contains": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "const": 1,
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      }
+                    ],
+                    "items": false
+                  },
+                  "minContains": 1
+                }
+              }
+            },
+            "accel_limit": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, rpm/s"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 1.0,
+                          "maximum": 1000000.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 1.0,
+                        "maximum": 1000000.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "decel_limit": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, rpm/s"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 1.0,
+                          "maximum": 1000000.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 1.0,
+                        "maximum": 1000000.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            },
+            "installed_factor": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "governor_tau": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.02,
+                  "maximum": 2.0
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            },
+            "rotor_inertia": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.01
+                },
+                "unit": {
+                  "const": "kg·m2"
+                }
+              }
+            },
+            "rotor_sense": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "1"
+                },
+                "value": {
+                  "enum": [
+                    -1,
+                    1
+                  ]
+                }
+              }
+            },
+            "ram_flow": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 0.001
+                },
+                "unit": {
+                  "const": "s2/m2"
+                }
+              }
+            },
+            "ram_jet": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "rpm, 1"
+                },
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -1.7976931348623157e+308,
+                          "maximum": 1.7976931348623157e+308
+                        },
+                        {
+                          "type": "number",
+                          "minimum": 0.0,
+                          "maximum": 10.0
+                        }
+                      ],
+                      "items": false
+                    }
+                  ],
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": -1.7976931348623157e+308,
+                        "maximum": 1.7976931348623157e+308
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 10.0
+                      }
+                    ],
+                    "items": false
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "thrust_line_offset": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -1.0,
+                "maximum": 1.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "intake_offset": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number",
+                "minimum": -1.0,
+                "maximum": 1.0
+              }
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "thrust_angles": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "minimum": -10.0,
+                "maximum": 10.0
+              }
+            },
+            "unit": {
+              "const": "deg"
+            }
+          }
+        }
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "propeller"
+            ]
+          },
+          {
+            "required": [
+              "diameter"
+            ]
+          },
+          {
+            "required": [
+              "ct_table"
+            ]
+          },
+          {
+            "required": [
+              "cp_table"
+            ]
+          },
+          {
+            "required": [
+              "shaft"
+            ]
+          },
+          {
+            "required": [
+              "slipstream"
+            ]
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "propeller"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "diameter"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "ct_table"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "cp_table"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "shaft"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "engine"
+            ],
+            "properties": {
+              "engine": {
+                "required": [
+                  "slipstream"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "additionalProperties": true
+    }
+  }
+}

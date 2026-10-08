@@ -25,6 +25,7 @@ func _base_data() -> Dictionary:
 		return {}
 	var data: Dictionary = parser.data.duplicate(true)
 	data["objects"] = []
+	data.erase("flight_cues") # Isolate treeline placement from the default flight cue.
 	return data
 
 

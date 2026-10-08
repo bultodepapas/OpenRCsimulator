@@ -306,6 +306,7 @@ def make_priority_field(default_path: Path, output_path: Path) -> None:
     raw["surfaces"] = [next(surface for surface in surfaces if surface["type"] == "rough"), runway, mown]
     # The broad pad crosses the field validator's reserved tree corridor; trees are irrelevant to this GPU fixture.
     raw["objects"] = []
+    raw.pop("flight_cues", None)  # Broad synthetic mown pad is independent of flight-cue placement.
     output_path.write_text(json.dumps(raw, indent=2) + "\n")
 
 

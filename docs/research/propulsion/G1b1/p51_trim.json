@@ -1,0 +1,113 @@
+{
+  "format": "openrc-propeller-range-audit v1",
+  "trace_sha256": "9586c15b828d00365748dcf3fec0be1f53aed6239ac3c9536ea1831f4e8ffaf1",
+  "aircraft_input_sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+  "aircraft": "p51d-mustang-120 (res://data/aircraft/p51d_mustang_120.json)",
+  "assumption": "still air: body velocity equals air-relative velocity",
+  "sample_semantics": "rounded previous state with current auxiliary RPM: recorded force query; internal RK stages are not counted",
+  "load_query_samples": 240,
+  "hz": 240,
+  "elapsed_s": 1.0,
+  "diameter_m": 0.6604,
+  "shaft_axis_body_frd": [
+    0.9993813570294788,
+    0.01744426647499975,
+    0.03053851320982266
+  ],
+  "table_domains": {
+    "ct_table": {
+      "j_range": [
+        0.0,
+        1.05
+      ],
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: blade-element/momentum (research/p51/p51-06/bem.py), pitch x1.441 and chord x0.581 fitted to Mejzlik 26x12 2B/3B tables (rms 6.5 %); tabulated into the windmilling branch"
+    },
+    "cp_table": {
+      "j_range": [
+        0.0,
+        1.05
+      ],
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: same calibrated blade-element model; Cp < 0 = windmilling"
+    }
+  },
+  "coverage": null,
+  "initial_state_point": {
+    "tick": 0,
+    "t_s": 0.0,
+    "rpm": 3545.839532281,
+    "axial_mps": 24.977108364627824,
+    "advance_ratio": 0.6399812734362069,
+    "tables": {
+      "ct_table": [
+        "j_gap_coverage_unknown",
+        "rpm_coverage_unknown"
+      ],
+      "cp_table": [
+        "j_gap_coverage_unknown",
+        "rpm_coverage_unknown"
+      ]
+    }
+  },
+  "initial_is_recorded_load_query": true,
+  "counts": {
+    "ct_table": {
+      "stopped": 0,
+      "reverse_flow_clamped": 0,
+      "below_table": 0,
+      "above_table": 0,
+      "documented_j_gap": 0,
+      "outside_source_rpm": 0,
+      "rpm_coverage_unknown": 240,
+      "j_gap_coverage_unknown": 240,
+      "source_j_uncovered": 0
+    },
+    "cp_table": {
+      "stopped": 0,
+      "reverse_flow_clamped": 0,
+      "below_table": 0,
+      "above_table": 0,
+      "documented_j_gap": 0,
+      "outside_source_rpm": 0,
+      "rpm_coverage_unknown": 240,
+      "j_gap_coverage_unknown": 240,
+      "source_j_uncovered": 0
+    }
+  },
+  "first_occurrence": {
+    "ct_table": {
+      "j_gap_coverage_unknown": {
+        "tick": 1,
+        "t_s": 0.004166667
+      },
+      "rpm_coverage_unknown": {
+        "tick": 1,
+        "t_s": 0.004166667
+      }
+    },
+    "cp_table": {
+      "j_gap_coverage_unknown": {
+        "tick": 1,
+        "t_s": 0.004166667
+      },
+      "rpm_coverage_unknown": {
+        "tick": 1,
+        "t_s": 0.004166667
+      }
+    }
+  },
+  "active_j_range": [
+    0.6399812734362069,
+    0.6399812734362069
+  ],
+  "limits": [
+    "Counts use nominal nine-decimal trace values; boundary decisions can be rounding-sensitive.",
+    "Assumes diameter, axis and coefficient tables were not overridden after loading the identified input.",
+    "Source regions are documented exclusions, not a measured polar or an uncertainty band.",
+    "No flag does not establish physical validity or coverage of internal integration stages."
+  ],
+  "coverage_sha256": null,
+  "tool_sha256": "8abd3f363a7ae12c66ef6837c2724899eefb47ed5032cbff2d008580d668a937",
+  "identity_reader_sha256": "7b8623b5f244313356b38a4b5e01371dc9c910762ef4ac62c622fad40733a147"
+}

@@ -1,0 +1,30 @@
+{
+  "format": "openrc-ground-video v1",
+  "evidence": "synthetic",
+  "aircraft": "Invented analytic ground-run fixture; not an aircraft measurement",
+  "configuration": "No real aircraft; constant 6 m/s runway motion for arithmetic verification",
+  "environment": "Synthetic straight, flat runway; no physical surface/wind observations",
+  "video": {
+    "source": "Invented 240 fps frame sequence; no video file exists",
+    "sha256": null,
+    "frame_count": 1500,
+    "capture_fps_num": 240,
+    "capture_fps_den": 1,
+    "fps_relative_u": 0.001,
+    "constant_capture_cadence_verified": true,
+    "timing_source": "Synthetic exactly uniform source frames; 0.1% clock uncertainty chosen for test coverage, not a camera specification"
+  },
+  "survey": {
+    "axis_datum": "Synthetic meters along runway from arbitrary marker; increasing x in direction of travel",
+    "source": "Invented positions and uncertainties; no pixel-to-meter inference",
+    "scale_relative_u": 0.002,
+    "ground_positions_verified": true,
+    "independent_event_residuals": true
+  },
+  "annotations_source": "example.synthetic.csv; invented frame/position standard uncertainties, zero within-event correlation",
+  "intervals": [
+    {"id": "first_segment", "start": "start", "end": "middle", "definition": "Same reference point crosses two synthetic surveyed markers; not a liftoff event"},
+    {"id": "second_segment", "start": "middle", "end": "end", "definition": "Same reference point crosses the next synthetic marker; not a touchdown event"},
+    {"id": "whole_run", "start": "start", "end": "end", "definition": "Whole synthetic 30 m marker interval; not a measured takeoff or landing"}
+  ]
+}

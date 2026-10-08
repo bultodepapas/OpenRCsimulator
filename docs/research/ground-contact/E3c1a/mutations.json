@@ -1,0 +1,46 @@
+{
+  "control": {
+    "accepted": true,
+    "exit_code": 0,
+    "engine_error": false,
+    "completed": true,
+    "assertion_failures": []
+  },
+  "descent_without_flare": {
+    "accepted": true,
+    "exit_code": 1,
+    "engine_error": false,
+    "completed": true,
+    "assertion_failures": [
+      "FAIL 240 Hz east touches down below 1 m/s at every wheel/recontact 1.94846023587929",
+      "FAIL 240 Hz east all wheels stay on runway with 0.5 m margin -54.3632865744762"
+    ]
+  },
+  "omit_contact_rotation": {
+    "accepted": true,
+    "exit_code": 1,
+    "engine_error": false,
+    "completed": true,
+    "assertion_failures": [
+      "FAIL wheel velocity includes rotation, position uses the world frame "
+    ]
+  },
+  "bypass_crash_detector": {
+    "accepted": true,
+    "exit_code": 1,
+    "engine_error": false,
+    "completed": true,
+    "assertion_failures": [
+      "FAIL real session rejects an initial hull/gear penetration before advancing "
+    ]
+  },
+  "late_approach_runs_off_strip": {
+    "accepted": true,
+    "exit_code": 1,
+    "engine_error": false,
+    "completed": true,
+    "assertion_failures": [
+      "FAIL 240 Hz east all wheels stay on runway with 0.5 m margin -0.93474057061612"
+    ]
+  }
+}

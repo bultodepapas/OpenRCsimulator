@@ -1,0 +1,27 @@
+test_determinism_exact_input_hashes_and_stdout (__main__.ProcessTests.test_determinism_exact_input_hashes_and_stdout) ... ok
+test_failure_preserves_report (__main__.ProcessTests.test_failure_preserves_report) ... ok
+test_input_aliases_including_hardlinks (__main__.ProcessTests.test_input_aliases_including_hardlinks) ... ok
+test_measured_clip_identity_required_and_checked (__main__.ProcessTests.test_measured_clip_identity_required_and_checked) ... ok
+test_unexpected_video_and_write_failure (__main__.ProcessTests.test_unexpected_video_and_write_failure) ... ok
+test_bad_campaigns (__main__.ReductionTests.test_bad_campaigns) ... ok
+test_calibration_does_not_average_away (__main__.ReductionTests.test_calibration_does_not_average_away) ... ok
+test_closed_form_independent_uncertainty (__main__.ReductionTests.test_closed_form_independent_uncertainty) ... ok
+test_combined_timing_uncertainty_warning (__main__.ReductionTests.test_combined_timing_uncertainty_warning) ... ok
+test_correlated_position_frame_picks (__main__.ReductionTests.test_correlated_position_frame_picks) ... ok
+test_derived_overflow_and_underflow_refused (__main__.ReductionTests.test_derived_overflow_and_underflow_refused) ... ok
+test_invalid_csv (__main__.ReductionTests.test_invalid_csv) ... ok
+test_invalid_intervals (__main__.ReductionTests.test_invalid_intervals) ... ok
+test_known_answer_and_not_inclusive_frame_count (__main__.ReductionTests.test_known_answer_and_not_inclusive_frame_count) ... ok
+test_large_uncertainty_is_flagged_not_confidence_claim (__main__.ReductionTests.test_large_uncertainty_is_flagged_not_confidence_claim) ... ok
+test_rational_capture_rate (__main__.ReductionTests.test_rational_capture_rate) ... ok
+test_reverse_direction_and_correlation_transform (__main__.ReductionTests.test_reverse_direction_and_correlation_transform) ... ok
+test_seeded_monte_carlo_uncertainty (__main__.ReductionTests.test_seeded_monte_carlo_uncertainty) ... ok
+test_shared_event_and_calibration_covariance (__main__.ReductionTests.test_shared_event_and_calibration_covariance) ... ok
+test_strict_json (__main__.ReductionTests.test_strict_json) ... ok
+test_translation_and_frame_origin_cancel (__main__.ReductionTests.test_translation_and_frame_origin_cancel) ... ok
+test_zero_uncertainties_and_perfect_correlation (__main__.ReductionTests.test_zero_uncertainties_and_perfect_correlation) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.814s
+
+OK

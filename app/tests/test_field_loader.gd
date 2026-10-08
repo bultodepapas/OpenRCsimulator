@@ -16,7 +16,7 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 		printerr("FAIL %s %s" % [label, detail])
 
 
-func _fresh_data() -> Dictionary:
+func _default_data() -> Dictionary:
 	var parser: JSON = JSON.new()
 	var parse_result: Error = parser.parse(FileAccess.get_file_as_string(DATA_PATH))
 	_check("test fixture parses", parse_result == OK, parser.get_error_message())
@@ -24,6 +24,12 @@ func _fresh_data() -> Dictionary:
 		return {}
 	var parsed: Dictionary = parser.data
 	return parsed.duplicate(true)
+
+
+func _fresh_data() -> Dictionary:
+	var data: Dictionary = _default_data()
+	data.erase("flight_cues") # Legacy tests isolate unrelated field and treeline behavior.
+	return data
 
 
 func _has_error(errors: PackedStringArray, needle: String) -> bool:
@@ -52,8 +58,12 @@ func _initialize() -> void:
 		var rough: Dictionary = surfaces[0]
 		var runway: Dictionary = surfaces[1]
 		var objects: Array = field["objects"]
-		var raw_objects: Array = (_fresh_data()["objects"] as Array)
-		_check("normalized root layout", field.keys().size() == 6 and field.has_all(["format", "id", "runway", "pilot", "surfaces", "objects"]))
+		var raw_default: Dictionary = _default_data()
+		var raw_objects: Array = raw_default["objects"]
+		var normalized_root_keys: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
+		if raw_default.has("flight_cues"):
+			normalized_root_keys.append("flight_cues")
+		_check("normalized root layout preserves optional cue presence", field.keys().size() == normalized_root_keys.size() and field.has_all(normalized_root_keys))
 		_check("normalized identity and runway reference", field["format"] == "openrc-field v1" and field["id"] == "default" and field["runway"] == "runway")
 		_check("pilot layout uses float metres", pilot.keys().size() == 5 and typeof(pilot["north"]) == TYPE_FLOAT and typeof(pilot["eye_height"]) == TYPE_FLOAT)
 		_check("pilot station is historical origin with 1.7 m eye height", pilot["id"] == "pilot" and pilot["north"] == 0.0 and pilot["east"] == 0.0 and pilot["down"] == 0.0 and pilot["eye_height"] == 1.7)

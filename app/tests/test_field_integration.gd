@@ -257,6 +257,7 @@ func _custom_field_source(default_source: String) -> String:
 	var raw: Dictionary = (parser.data as Dictionary).duplicate(true)
 	# L5 surface/elevated-pilot fixture; L6b default Home -> Fly parity has its own test.
 	raw["objects"] = []
+	raw.erase("flight_cues") # This fixture deliberately moves/elevates the pilot.
 	var pilot: Dictionary = raw["pilot"]
 	(pilot["north"] as Dictionary)["value"] = 7.25
 	(pilot["east"] as Dictionary)["value"] = -6.5

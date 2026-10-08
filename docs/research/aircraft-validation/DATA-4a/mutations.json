@@ -1,0 +1,20 @@
+{
+  "format": "openrc-schema-mutations v1",
+  "mutations": [
+    {
+      "mutation": "missing-unit-accepted",
+      "detected_by_cases": 130,
+      "example": "gp_extra_300s_60:reference.wing_area:missing-unit"
+    },
+    {
+      "mutation": "scalar-type-removed",
+      "detected_by_cases": 2,
+      "example": "gp_extra_300s_60:reference.wing_span:bad-value:True"
+    },
+    {
+      "mutation": "vector-width-removed",
+      "detected_by_cases": 1,
+      "example": "gp_extra_300s_60:reference.aero_reference_point:extra-vector-entry"
+    }
+  ]
+}

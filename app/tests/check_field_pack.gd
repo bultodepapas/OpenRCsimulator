@@ -92,6 +92,13 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack L11a placement checksum and %d opaque clumps validated" % clumps)
+	var cue: Node3D = field.get_node_or_null("windsock") as Node3D
+	if cue == null or cue.get_child_count() != 2 or not cue.get_node_or_null("Fabric") is MeshInstance3D:
+		printerr("Pack missing L10a windsock data, mesh builder or material")
+		field.free()
+		quit(1)
+		return
+	print("Pack L10a calm windsock validated")
 	field.free()
 	var expected_count: int = result.field.objects[0].positions.size()
 	if count != expected_count:

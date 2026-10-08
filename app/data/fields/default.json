@@ -8500,5 +8500,48 @@
         "source": "L6b/L7 tools/trees/place.py. Estimated visual layout, not surveyed: 480 near trees from seed 610602 at 270-570 m, plus 1,200 far trees from seed 610607 in twelve 100-tree clusters at 600-1,500 m; 0.25 m grid; preserves the 30+/-8 and 210+/-10 degree crown-cleared gaps and the runway/mown east-west flight corridor. Flat visual vegetation; no collision, terrain or aerodynamics."
       }
     }
+  ],
+  "flight_cues": [
+    {
+      "id": "windsock",
+      "type": "windsock",
+      "collides": false,
+      "north": {
+        "value": -6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10a estimated visual placement behind and west of the pilot, outside the runway; not a surveyed club layout."
+      },
+      "east": {
+        "value": -12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10a estimated visual placement behind and west of the pilot, outside the runway; not a surveyed club layout."
+      },
+      "pole_height": {
+        "value": 3.6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10a estimated mast/throat-centre height; calm cloth must clear the grass."
+      },
+      "length": {
+        "value": 2.5,
+        "unit": "m",
+        "kind": "borrowed",
+        "source": "FAA AC 150/5345-27E section 3.2.2(a), nominal Size 1 length; visual reference, not certified hardware."
+      },
+      "throat_diameter": {
+        "value": 0.45,
+        "unit": "m",
+        "kind": "borrowed",
+        "source": "FAA AC 150/5345-27E section 3.2.2(a), nominal Size 1 throat diameter."
+      },
+      "tail_diameter": {
+        "value": 0.18,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10a estimated uncollapsed tail opening; taper is visual, not wind-tunnel calibrated."
+      }
+    }
   ]
 }

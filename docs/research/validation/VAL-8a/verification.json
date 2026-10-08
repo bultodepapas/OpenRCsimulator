@@ -1,0 +1,29 @@
+{
+  "app_test_exit_code": 0,
+  "app_test_sections": 132,
+  "application_baseline_commit": "a6c1e4d4a0c90c4f6160566ffc60075450341d62",
+  "application_git_tree": "ea30668726afd4315125d7336506d195ddd29565",
+  "application_snapshot_unmodified": true,
+  "application_uncommitted_shared_work_included": false,
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "environment": "isolated local clone, separate XDG data/config/cache; reused pinned .tools binary",
+  "evidence_sha256": {
+    "app-test.log": "b705ca40ccf856f2cf08f9eeb75531038ce56b550bd1b55fcc75cf9250c3ea25",
+    "example-result.json": "863f3c3968d17c97e19f9ad883604fbf644848c8f28b495fc0bba9f13e3b80a1",
+    "mutations.json": "6b527ceadc4114f698f1e195eebc2bf2e68cbaa5b4d6adf07e227a369a66f4db",
+    "tests.log": "a6f4909c7b034fe387d906a96dbba6c0494eac543c3fcc72d495768bc50be75a"
+  },
+  "focused_tests": 22,
+  "gdscript_test_programs": 104,
+  "mutations_detected": 5,
+  "status": "tooling verified; physical measurements open",
+  "step": "VAL-8a",
+  "tool_sha256": {
+    "research/validation/ground-video/check_mutations.py": "7cf2739c046eb3906d5e5c478a048c5a4ec336bbb7085aa3600d50a57bc486d6",
+    "research/validation/ground-video/example.synthetic.csv": "1942d8132fbac643b77d74d007b5d6c6c3a99016fb297e8a8f6d7776f2458a9e",
+    "research/validation/ground-video/example.synthetic.json": "9db628707dfc7326dd52f2ae91fa4a8817f66158c1477c688be17ca670d0e4d8",
+    "research/validation/ground-video/reduce.py": "eb020fa16f5c879e2d573da22f2a65cfe3a71667d15fa3341c836bc75f0f8d29",
+    "research/validation/ground-video/test_reduce.py": "b0395fadebd8ffd584f57eb1d8fa8a70cfba950c6480cd610ee670ef23e7caa0"
+  },
+  "uncertainty_monte_carlo_samples": 25000
+}

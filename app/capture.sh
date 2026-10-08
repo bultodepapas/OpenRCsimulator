@@ -130,7 +130,7 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFai
 # L6b real GPU path: custom-data packing, sector bounds/draws and deterministic tree views.
 python3 "$HERE/../tools/trees/check_review.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l6b"
 # The guarded landscape tools require fresh outputs. Replace only these generated directories under the capture lock.
-rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/captures/l11a" "$HERE/captures/l15b"
+rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/captures/l10a" "$HERE/captures/l11a" "$HERE/captures/l15b"
 # L7: combined forest/hill A/B at three heights, repeated bytes and all visibility-preset rim checks.
 "$VPY" "$HERE/../tools/terrain/check_horizon.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l7"
 # L4b/L15d: production sky/shadow A/B, sim-time drift, repeated bytes and periodic cloud projection.
@@ -140,6 +140,7 @@ rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/capt
 "$VPY" "$HERE/../tools/ground/check_surfaces.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l9c"
 "$VPY" "$HERE/../tools/ground/test_stripes.py"
 "$VPY" "$HERE/../tools/ground/check_stripes.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l9c/stripes"
+"$VPY" "$HERE/../tools/ground/check_windsock.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10a"
 # L11a: grass budget, seam, wind wrap and reuse of existing opt-in scenery flowers.
 "$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a"
 "$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$HERE/captures/l11a/candidate-repeat-1" --out "$HERE/captures/l11a/seam-summary.json" --self-test
@@ -178,6 +179,8 @@ manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': ent
             'field_surfaces_review_sha256': hashlib.sha256((root / 'l9c/summary.json').read_bytes()).hexdigest(),
             'stripe_reference_review': 'l9c/stripes/summary.json',
             'stripe_reference_review_sha256': hashlib.sha256((root / 'l9c/stripes/summary.json').read_bytes()).hexdigest(),
+            'windsock_review': 'l10a/summary.json',
+            'windsock_review_sha256': hashlib.sha256((root / 'l10a/summary.json').read_bytes()).hexdigest(),
             'near_grass_seam': 'l11a/seam-summary.json',
             'near_grass_seam_sha256': hashlib.sha256((root / 'l11a/seam-summary.json').read_bytes()).hexdigest(),
             'tree_wind_review': 'l15b/capture-summary.json',

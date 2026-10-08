@@ -1,0 +1,157 @@
+{
+  "format": "openrc-rpm-step-result v1",
+  "kind": "derived",
+  "input": {
+    "format": "openrc-rpm-step v1",
+    "evidence": "synthetic",
+    "configuration": "Synthetic test configuration",
+    "notes": "Known steady endpoints; command and RPM use one clock.",
+    "command_time": {
+      "value": 2.0,
+      "unit": "s",
+      "u": 0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "initial_rpm": {
+      "value": 2000.0,
+      "unit": "rpm",
+      "u": 0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "final_rpm": {
+      "value": 10000.0,
+      "unit": "rpm",
+      "u": 0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not measurements"
+    },
+    "series": {
+      "kind": "synthetic",
+      "source": "Analytic samples",
+      "time_u_s": 0,
+      "rpm_u": 0,
+      "samples": [
+        [
+          1.7,
+          2000.0
+        ],
+        [
+          2.0,
+          2000.0
+        ],
+        [
+          2.08,
+          2000.0
+        ],
+        [
+          2.1063401289144568,
+          2800.0
+        ],
+        [
+          2.33,
+          7056.964470628462
+        ],
+        [
+          2.6556462732485113,
+          9200.0
+        ],
+        [
+          3.33,
+          9946.096424007315
+        ]
+      ]
+    }
+  },
+  "direction": "increasing",
+  "sample_count": 7,
+  "record_span_s": 1.6300000000000001,
+  "endpoint_span_rpm": 8000.0,
+  "crossings": {
+    "10": {
+      "time_s": 2.1063401289144568,
+      "after_command_s": 0.10634012891445677,
+      "sample_indices": [
+        2,
+        3
+      ],
+      "sampling_support_s": [
+        2.08,
+        2.1063401289144568
+      ],
+      "forward_crossing_count": 1
+    },
+    "63": {
+      "time_s": 2.33,
+      "after_command_s": 0.33000000000000007,
+      "sample_indices": [
+        3,
+        4
+      ],
+      "sampling_support_s": [
+        2.1063401289144568,
+        2.33
+      ],
+      "forward_crossing_count": 1
+    },
+    "90": {
+      "time_s": 2.6556462732485113,
+      "after_command_s": 0.6556462732485113,
+      "sample_indices": [
+        4,
+        5
+      ],
+      "sampling_support_s": [
+        2.33,
+        2.6556462732485113
+      ],
+      "forward_crossing_count": 1
+    }
+  },
+  "normalized_residuals": [
+    0.0,
+    0.0,
+    0.0,
+    2.7755575615628914e-17,
+    0.0,
+    0.0,
+    -1.1102230246251565e-16
+  ],
+  "first_order_diagnostic": {
+    "rise_10_90_s": 0.5493061443340546,
+    "tau_s": 0.24999999999999986,
+    "delay_s": 0.08000000000000021,
+    "tau_sampling_support_s": [
+      0.10179199404218153,
+      0.261987909286173
+    ],
+    "delay_sampling_support_s": [
+      0.05239681878149307,
+      0.09561527193233414
+    ],
+    "causal_delay": true,
+    "t63_consistency_error_s": 0.0,
+    "normalized_rmse": 4.325394056669982e-17,
+    "rpm_rmse": 3.4603152453359854e-13,
+    "max_abs_normalized_residual": 1.1102230246251565e-16
+  },
+  "observed": {
+    "max_backward_fraction_step": 0.0,
+    "overshoot_fraction": 0.0,
+    "minimum_fraction": 0.0,
+    "final_sample_fraction": 0.9932620530009144
+  },
+  "warnings": [],
+  "limitations": [
+    "Endpoints must come from identified steady windows; the last sample is not assumed to be steady.",
+    "First directional crossings use linear interpolation, without smoothing or sorting samples.",
+    "Sampling-support intervals are not confidence intervals; measurement and endpoint uncertainties are retained but not propagated.",
+    "Lag and delay are a two-crossing first-order diagnostic, not an engine/servo identification or held-out validation.",
+    "RMSE uses equal sample weights on this same record; dense sampling can overweight one part of a transient.",
+    "Command timing, sensor filtering, synchronization and RPM harmonic selection must be established externally.",
+    "No acceptance tolerance or physical-validation decision is inferred from these results."
+  ],
+  "input_sha256": "bfb8fa51c7df639d90f11e819c32805e41b731f2946a868311bbb3825ae5f20a",
+  "reducer_sha256": "f25c34dc5a977e9e174775fae5b3088e56fb96a6b5a4926a266e78922b5f1ba2"
+}

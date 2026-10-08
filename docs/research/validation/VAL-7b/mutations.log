@@ -1,0 +1,4 @@
+Unmodified disposable-copy control: 20 tests PASS.
+missing_ln9: REJECTED; FAIL: test_decreasing (__main__.Reduction.test_decreasing); FAIL: test_exact_exponential (__main__.Reduction.test_exact_exponential); FAIL: test_sampling_support_contains_analytic_parameters (__main__.Reduction.test_sampling_support_contains_analytic_parameters); FAIL: test_time_scaling (__main__.Reduction.test_time_scaling)
+delay_sign: REJECTED; FAIL: test_decreasing (__main__.Reduction.test_decreasing); FAIL: test_exact_exponential (__main__.Reduction.test_exact_exponential); FAIL: test_negative_delay_is_not_clamped (__main__.Reduction.test_negative_delay_is_not_clamped); FAIL: test_time_scaling (__main__.Reduction.test_time_scaling)
+last_crossing: REJECTED; FAIL: test_nonmonotone_first_crossing_overshoot (__main__.Reduction.test_nonmonotone_first_crossing_overshoot)

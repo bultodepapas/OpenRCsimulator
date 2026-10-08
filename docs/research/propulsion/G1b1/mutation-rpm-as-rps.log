@@ -1,0 +1,88 @@
+test_advance_uses_axial_speed_and_rotations_per_second (test_audit.AuditTests.test_advance_uses_axial_speed_and_rotations_per_second) ... FAIL
+test_aircraft_contract (test_audit.AuditTests.test_aircraft_contract) ... ok
+test_cli_success_failure_and_input_protection (test_audit.AuditTests.test_cli_success_failure_and_input_protection) ... ok
+test_coverage_contract (test_audit.AuditTests.test_coverage_contract) ... ok
+test_duplicate_and_nonfinite_json_rejected (test_audit.AuditTests.test_duplicate_and_nonfinite_json_rejected) ... ok
+test_each_table_uses_own_domain (test_audit.AuditTests.test_each_table_uses_own_domain) ... FAIL
+test_explicit_still_air_required (test_audit.AuditTests.test_explicit_still_air_required) ... ok
+test_identity_timing_layout_and_turbine_rejected (test_audit.AuditTests.test_identity_timing_layout_and_turbine_rejected) ... ok
+test_initial_sample_does_not_inflate_counts (test_audit.AuditTests.test_initial_sample_does_not_inflate_counts) ... ok
+test_known_gap_has_open_endpoints (test_audit.AuditTests.test_known_gap_has_open_endpoints) ... FAIL
+test_load_query_uses_previous_velocity_and_current_rpm (test_audit.AuditTests.test_load_query_uses_previous_velocity_and_current_rpm) ... FAIL
+test_malformed_nested_objects_and_angle_bounds (test_audit.AuditTests.test_malformed_nested_objects_and_angle_bounds) ... ok
+test_midflight_initial_load_is_not_reconstructible (test_audit.AuditTests.test_midflight_initial_load_is_not_reconstructible) ... ok
+test_missing_duplicate_and_nonfinite_trace_rows_rejected (test_audit.AuditTests.test_missing_duplicate_and_nonfinite_trace_rows_rejected) ... ok
+test_nominal_run_rpm_does_not_invent_a_band (test_audit.AuditTests.test_nominal_run_rpm_does_not_invent_a_band) ... ok
+test_rpm_regions_do_not_extend_static_range_to_dynamic_j (test_audit.AuditTests.test_rpm_regions_do_not_extend_static_range_to_dynamic_j) ... FAIL
+test_stopped_threshold_and_reverse (test_audit.AuditTests.test_stopped_threshold_and_reverse) ... ok
+test_table_bounds_are_inclusive (test_audit.AuditTests.test_table_bounds_are_inclusive) ... FAIL
+test_thrust_axis_down_and_right (test_audit.AuditTests.test_thrust_axis_down_and_right) ... FAIL
+test_unknown_coverage_is_not_accepted_coverage (test_audit.AuditTests.test_unknown_coverage_is_not_accepted_coverage) ... ok
+
+======================================================================
+FAIL: test_advance_uses_axial_speed_and_rotations_per_second (test_audit.AuditTests.test_advance_uses_axial_speed_and_rotations_per_second)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 77, in test_advance_uses_axial_speed_and_rotations_per_second
+    self.assertEqual(p['advance_ratio'], .5)
+AssertionError: 0.008333333333333333 != 0.5
+
+======================================================================
+FAIL: test_each_table_uses_own_domain (test_audit.AuditTests.test_each_table_uses_own_domain)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 109, in test_each_table_uses_own_domain
+    self.assertIn('above_table', p['tables']['cp_table'])
+AssertionError: 'above_table' not found in ['j_gap_coverage_unknown', 'rpm_coverage_unknown']
+
+======================================================================
+FAIL: test_known_gap_has_open_endpoints (test_audit.AuditTests.test_known_gap_has_open_endpoints)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 115, in test_known_gap_has_open_endpoints
+    self.assertEqual('documented_j_gap' in p['tables']['ct_table'], gap)
+AssertionError: True != False
+
+======================================================================
+FAIL: test_load_query_uses_previous_velocity_and_current_rpm (test_audit.AuditTests.test_load_query_uses_previous_velocity_and_current_rpm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 140, in test_load_query_uses_previous_velocity_and_current_rpm
+    self.assertEqual(result['active_j_range'], [0, .5])
+AssertionError: Lists differ: [0.0, 0.008333333333333333] != [0, 0.5]
+
+First differing element 1:
+0.008333333333333333
+0.5
+
+- [0.0, 0.008333333333333333]
++ [0, 0.5]
+
+======================================================================
+FAIL: test_rpm_regions_do_not_extend_static_range_to_dynamic_j (test_audit.AuditTests.test_rpm_regions_do_not_extend_static_range_to_dynamic_j)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 121, in test_rpm_regions_do_not_extend_static_range_to_dynamic_j
+    self.assertEqual('outside_source_rpm' in p['tables']['ct_table'], outside)
+AssertionError: False != True
+
+======================================================================
+FAIL: test_table_bounds_are_inclusive (test_audit.AuditTests.test_table_bounds_are_inclusive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 103, in test_table_bounds_are_inclusive
+    self.assertIn('above_table', self.classify(u=1+1e-10)['tables']['ct_table'])
+AssertionError: 'above_table' not found in ['j_gap_coverage_unknown', 'rpm_coverage_unknown']
+
+======================================================================
+FAIL: test_thrust_axis_down_and_right (test_audit.AuditTests.test_thrust_axis_down_and_right)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/openrc-range-mutation-wo85xxsp/research/propulsion/range-audit/test_audit.py", line 85, in test_thrust_axis_down_and_right
+    self.assertAlmostEqual(p['advance_ratio'], 2*math.sin(math.radians(10)))
+AssertionError: 0.005788272588897678 != 0.34729635533386066 within 7 places (0.34150808274496297 difference)
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.197s
+
+FAILED (failures=7)
