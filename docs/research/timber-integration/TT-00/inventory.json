@@ -1,0 +1,2781 @@
+{
+  "format": "openrc-timber-source-audit-v1",
+  "source_directory": "Timber turbo evolution",
+  "file_count": 118,
+  "bytes": 139757658,
+  "stl_count": 112,
+  "triangles": 1134030,
+  "bounds_source_units": [
+    [
+      -283.4610290527344,
+      -774.0468139648438,
+      -255.99351501464844
+    ],
+    [
+      832.7000122070312,
+      774.0468139648438,
+      178.0
+    ]
+  ],
+  "material_labels": [
+    "aluminio",
+    "bateria",
+    "blanco",
+    "cromo",
+    "espuma",
+    "gris_claro",
+    "gris_oscuro",
+    "laton",
+    "led_rojo",
+    "led_verde",
+    "madera",
+    "metal",
+    "negro",
+    "nylon_negro",
+    "plastico",
+    "rojo",
+    "spinner_negro",
+    "vidrio"
+  ],
+  "stls_without_material": [],
+  "materials_without_stl": [],
+  "missing_hinge_members": [],
+  "scene_metadata": {
+    "materiales": {
+      "fuselaje_blanco": "blanco",
+      "fuselaje_panza_roja": "rojo",
+      "franjas_negras": "negro",
+      "franja_blanca_cola": "blanco",
+      "franja_negra_cola": "negro",
+      "panel_nariz": "negro",
+      "filete_nariz": "rojo",
+      "parabrisas": "vidrio",
+      "ventanas": "vidrio",
+      "baliza": "led_rojo",
+      "ala_der": "blanco",
+      "ala_izq": "blanco",
+      "puntera_der": "rojo",
+      "puntera_izq": "rojo",
+      "flap_der": "blanco",
+      "flap_izq": "blanco",
+      "aleron_der": "blanco",
+      "aleron_izq": "blanco",
+      "cuerno_aleron_der": "gris_claro",
+      "cuerno_aleron_izq": "gris_claro",
+      "cuerno_flap_der": "gris_claro",
+      "cuerno_flap_izq": "gris_claro",
+      "tapa_servo_aleron_der": "gris_claro",
+      "tapa_servo_aleron_izq": "gris_claro",
+      "tapa_servo_flap_der": "gris_claro",
+      "tapa_servo_flap_izq": "gris_claro",
+      "brazo_servo_aleron_der": "blanco",
+      "brazo_servo_aleron_izq": "blanco",
+      "brazo_servo_flap_der": "blanco",
+      "brazo_servo_flap_izq": "blanco",
+      "barras_ala_der": "blanco",
+      "barras_ala_izq": "blanco",
+      "soportes_slat_der": "gris_claro",
+      "soportes_slat_izq": "gris_claro",
+      "extrados_rojo_der": "rojo",
+      "extrados_rojo_izq": "rojo",
+      "extrados_negro_der": "negro",
+      "extrados_negro_izq": "negro",
+      "intrados_gris_der": "gris_oscuro",
+      "intrados_gris_izq": "gris_oscuro",
+      "tornillos_ala": "blanco",
+      "luz_nav_der": "led_verde",
+      "luz_nav_izq": "led_rojo",
+      "estabilizador": "blanco",
+      "timon_profundidad": "blanco",
+      "union_elevador": "metal",
+      "cuerno_elevador": "gris_claro",
+      "estab_superior_rojo": "rojo",
+      "estab_superior_negro": "negro",
+      "elevador_superior_rojo": "rojo",
+      "elevador_superior_negro": "negro",
+      "deriva": "blanco",
+      "timon_direccion": "blanco",
+      "cuerno_timon": "gris_claro",
+      "aleta_dorsal": "blanco",
+      "deriva_franja_roja": "rojo",
+      "deriva_franjas_negras": "negro",
+      "timon_franja_roja": "rojo",
+      "timon_franjas_negras": "negro",
+      "brazo_servo_elevador": "blanco",
+      "brazo_servo_timon": "blanco",
+      "guias_varillas": "negro",
+      "pata_der": "blanco",
+      "soporte_tren_der": "gris_claro",
+      "pasador_tren_der": "cromo",
+      "ojal_der": "laton",
+      "neumatico_der": "espuma",
+      "buje_der": "blanco",
+      "arandela_der": "cromo",
+      "tuerca_der": "cromo",
+      "perno_eje_der": "cromo",
+      "collarin_der": "laton",
+      "pata_izq": "blanco",
+      "soporte_tren_izq": "gris_claro",
+      "pasador_tren_izq": "cromo",
+      "ojal_izq": "laton",
+      "neumatico_izq": "espuma",
+      "buje_izq": "blanco",
+      "arandela_izq": "cromo",
+      "tuerca_izq": "cromo",
+      "perno_eje_izq": "cromo",
+      "collarin_izq": "laton",
+      "eslabon_izq": "cromo",
+      "cable_der": "cromo",
+      "resorte_der": "cromo",
+      "eslabon_der": "cromo",
+      "cable_izq": "cromo",
+      "resorte_izq": "cromo",
+      "rueda_cola": "espuma",
+      "buje_cola": "gris_claro",
+      "soporte_rueda_cola": "gris_claro",
+      "tornillos_rueda_cola": "laton",
+      "alambre_rueda_cola": "metal",
+      "helice": "nylon_negro",
+      "spinner": "spinner_negro",
+      "contraplaca": "aluminio",
+      "tornillos_spinner": "cromo",
+      "tuerca": "cromo",
+      "interno_variador": "negro",
+      "interno_bateria": "bateria",
+      "interno_receptor": "negro",
+      "interno_servos_cola": "negro",
+      "eje_motor": "metal",
+      "capota": "plastico",
+      "campana_motor": "cromo",
+      "soporte_motor": "metal",
+      "bancada_motor": "madera",
+      "tornillos_capota": "cromo",
+      "placas_escape": "plastico",
+      "escapes": "cromo",
+      "tornillos_placa_escape": "cromo",
+      "buje_torsion_elevador": "gris_claro"
+    },
+    "contactos_mm": {
+      "principal": [
+        8.0,
+        -256.0
+      ],
+      "cola": [
+        759.0,
+        -126.0
+      ]
+    },
+    "bisagras": {
+      "aleron_der": {
+        "p": [
+          157.7258454969434,
+          430.3406045726686,
+          112.36687249825128
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          0.03489949670250097
+        ],
+        "miembros": [
+          "aleron_der"
+        ]
+      },
+      "aleron_izq": {
+        "p": [
+          157.7258454969434,
+          -430.3406045726686,
+          112.36687249825128
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          -0.03489949670250097
+        ],
+        "miembros": [
+          "aleron_izq"
+        ]
+      },
+      "flap_der": {
+        "p": [
+          157.7258454969434,
+          54.56965361348862,
+          99.24466173811092
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          0.03489949670250097
+        ],
+        "miembros": [
+          "flap_der"
+        ]
+      },
+      "flap_izq": {
+        "p": [
+          157.7258454969434,
+          -54.56965361348862,
+          99.24466173811092
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          -0.03489949670250097
+        ],
+        "miembros": [
+          "flap_izq"
+        ]
+      },
+      "elevador": {
+        "p": [
+          704.0,
+          0,
+          -32.0
+        ],
+        "d": [
+          0,
+          1,
+          0
+        ],
+        "miembros": [
+          "timon_profundidad",
+          "union_elevador",
+          "elevador_superior_rojo",
+          "elevador_superior_negro"
+        ]
+      },
+      "timon": {
+        "p": [
+          738.0,
+          0,
+          0
+        ],
+        "d": [
+          0,
+          0,
+          1
+        ],
+        "miembros": [
+          "timon_direccion",
+          "timon_franja_roja",
+          "timon_franjas_negras"
+        ]
+      },
+      "rueda_cola": {
+        "p": [
+          738.0,
+          0,
+          -64
+        ],
+        "d": [
+          0,
+          0,
+          1
+        ],
+        "miembros": [
+          "rueda_cola",
+          "buje_cola",
+          "alambre_rueda_cola"
+        ]
+      }
+    },
+    "varillas": {
+      "aleron_der": {
+        "servo": [
+          104.11000000000001,
+          466.96474588429487,
+          95.12218615160762
+        ],
+        "cuerno": [
+          158.7258454969434,
+          466.995537458004,
+          94.24043084789342
+        ],
+        "r": 0.8,
+        "pivote": [
+          104.11000000000001,
+          466.5285021755136,
+          107.61457148934632
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          0.03489949670250097
+        ],
+        "relacion": 1.5515710576981347,
+        "brazo": "brazo_servo_aleron_der"
+      },
+      "aleron_izq": {
+        "servo": [
+          104.11000000000001,
+          -466.96474588429487,
+          95.12218615160762
+        ],
+        "cuerno": [
+          158.7258454969434,
+          -466.995537458004,
+          94.24043084789342
+        ],
+        "r": 0.8,
+        "pivote": [
+          104.11000000000001,
+          -466.5285021755136,
+          107.61457148934632
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          -0.03489949670250097
+        ],
+        "relacion": 1.5515710576981347,
+        "brazo": "brazo_servo_aleron_izq"
+      },
+      "flap_der": {
+        "servo": [
+          104.11000000000001,
+          147.31672897334545,
+          79.45708848522138
+        ],
+        "cuerno": [
+          158.7258454969434,
+          147.01597532838082,
+          88.06954603818859
+        ],
+        "r": 0.8,
+        "pivote": [
+          104.11000000000001,
+          146.72343752940293,
+          96.44673254454601
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          0.03489949670250097
+        ],
+        "relacion": 0.8467434247780403,
+        "brazo": "brazo_servo_flap_der"
+      },
+      "flap_izq": {
+        "servo": [
+          104.11000000000001,
+          -147.31672897334545,
+          79.45708848522138
+        ],
+        "cuerno": [
+          158.7258454969434,
+          -147.01597532838082,
+          88.06954603818859
+        ],
+        "r": 0.8,
+        "pivote": [
+          104.11000000000001,
+          -146.72343752940293,
+          96.44673254454601
+        ],
+        "d": [
+          0.0,
+          0.9993908270190958,
+          -0.03489949670250097
+        ],
+        "relacion": 0.8467434247780403,
+        "brazo": "brazo_servo_flap_izq"
+      },
+      "elevador": {
+        "servo": [
+          228.0,
+          14.0,
+          -52.5
+        ],
+        "cuerno": [
+          705.0,
+          24.0,
+          -50.5
+        ],
+        "r": 0.9,
+        "pivote": [
+          228.0,
+          14.0,
+          -40.0
+        ],
+        "d": [
+          0,
+          1,
+          0
+        ],
+        "relacion": 1.48,
+        "brazo": "brazo_servo_elevador"
+      },
+      "timon": {
+        "servo": [
+          228.0,
+          -26.5,
+          -54.0
+        ],
+        "cuerno": [
+          739.0,
+          -16.0,
+          -60.0
+        ],
+        "r": 0.9,
+        "pivote": [
+          228.0,
+          -14.0,
+          -54.0
+        ],
+        "d": [
+          0,
+          0,
+          1
+        ],
+        "relacion": 1.28,
+        "brazo": "brazo_servo_timon"
+      }
+    },
+    "mandos": {
+      "alerones": 0.0,
+      "elevador": 0.0,
+      "timon": 0.0,
+      "flaps": 0.0,
+      "diferencial": 0.7,
+      "max_alerones": 22.0,
+      "max_elevador": 22.0,
+      "max_timon": 30.0,
+      "max_flaps": 40.0
+    },
+    "tren": {
+      "radio_rueda": 58.0,
+      "pivotes": {
+        "der": [
+          37.0,
+          46.0,
+          -90.34660538109893
+        ],
+        "izq": [
+          37.0,
+          -46.0,
+          -90.34660538109893
+        ]
+      },
+      "ruedas": {
+        "der": [
+          8.0,
+          132.0,
+          -198.0
+        ],
+        "izq": [
+          8.0,
+          -132.0,
+          -198.0
+        ]
+      },
+      "anclajes": {
+        "der": [
+          15.498389660527607,
+          74.97091321809529,
+          -167.17295505466805
+        ],
+        "izq": [
+          17.682823669936,
+          -75.25187078537176,
+          -167.3959182728818
+        ]
+      },
+      "cables": {
+        "der": {
+          "ojal": [
+            44.0,
+            22.0,
+            -90.21846298022137
+          ],
+          "anclaje": [
+            17.682823669936,
+            -75.25187078537176,
+            -167.3959182728818
+          ],
+          "pata": "izq",
+          "largo_cable": 70.91288250880177,
+          "largo_resorte": 56.0
+        },
+        "izq": {
+          "ojal": [
+            30.0,
+            -22.0,
+            -90.21846298022137
+          ],
+          "anclaje": [
+            15.498389660527607,
+            74.97091321809529,
+            -167.17295505466805
+          ],
+          "pata": "der",
+          "largo_cable": 68.64208183123924,
+          "largo_resorte": 56.0
+        }
+      },
+      "rueda_cola": {
+        "centro": [
+          759.0,
+          0.0,
+          -112.0
+        ],
+        "radio": 14.0
+      }
+    },
+    "componentes": {
+      "motor": {
+        "masa": 160.0,
+        "x": -212.5,
+        "caja": [
+          37,
+          42,
+          42
+        ],
+        "z": 0.0,
+        "mat": null
+      },
+      "variador": {
+        "masa": 60.0,
+        "x": -142.0,
+        "caja": [
+          70,
+          32,
+          14
+        ],
+        "z": -4.0,
+        "mat": "negro"
+      },
+      "bateria": {
+        "masa": 340.0,
+        "x": -52.0,
+        "caja": [
+          140,
+          44,
+          36
+        ],
+        "z": -29.0,
+        "mat": "bateria",
+        "recorrido": 150.0
+      },
+      "receptor": {
+        "masa": 12.0,
+        "x": 118.0,
+        "caja": [
+          40,
+          24,
+          12
+        ],
+        "z": -62.0,
+        "mat": "negro"
+      },
+      "servos_cola": {
+        "masa": 26.0,
+        "x": 228.0,
+        "caja": [
+          32,
+          40,
+          30
+        ],
+        "z": -55.0,
+        "mat": "negro"
+      },
+      "servos_ala": {
+        "masa": 36.0,
+        "x": 100.11000000000001,
+        "caja": [
+          0,
+          0,
+          0
+        ],
+        "z": 0.0,
+        "mat": null
+      },
+      "cableado_luces": {
+        "masa": 40.0,
+        "x": 58.0,
+        "caja": [
+          0,
+          0,
+          0
+        ],
+        "z": 0.0,
+        "mat": null
+      }
+    },
+    "refrigeracion": {
+      "entrada_tomas_mm2": 276,
+      "entrada_anillo_mm2": 427,
+      "salida_mm2": 952,
+      "relacion_salida_entrada": 1.35
+    },
+    "motor": {
+      "buje": [
+        -251.5,
+        0,
+        0
+      ],
+      "caida": 2.0,
+      "derecha": 2.0,
+      "mac": 213.0
+    }
+  },
+  "files": [
+    {
+      "path": "auditoria_tren.py",
+      "bytes": 4251,
+      "sha256": "c0ef90a389a51788b7f801d7378d39708212b49b8bfc7e3d22e7f968b212e923"
+    },
+    {
+      "path": "piezas_stl_v12/ala_der.stl",
+      "bytes": 159684,
+      "sha256": "8e859a83e8a8c40766b149aa9c226d7265b1fb59ea9cd9c6e8ab1694891e73b9",
+      "triangles": 3192,
+      "bounds_source_units": [
+        [
+          0.0,
+          -4.032090663909912,
+          89.51184844970703
+        ],
+        [
+          212.8702392578125,
+          696.44775390625,
+          139.89361572265625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/ala_izq.stl",
+      "bytes": 159684,
+      "sha256": "dbf81b671d4780f0307c7435dda38375b494fd79f4bcacb4d07244939c2b88aa",
+      "triangles": 3192,
+      "bounds_source_units": [
+        [
+          0.0,
+          -696.44775390625,
+          89.51184844970703
+        ],
+        [
+          212.8702392578125,
+          4.032090663909912,
+          139.89361572265625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/alambre_rueda_cola.stl",
+      "bytes": 77884,
+      "sha256": "fbaeacc59a3d1594d18fea58d430ce4d1723e7e9a9b4f177df3601dac44223f2",
+      "triangles": 1556,
+      "bounds_source_units": [
+        [
+          736.9000244140625,
+          -6.0,
+          -113.0995101928711
+        ],
+        [
+          760.099853515625,
+          6.0,
+          -55.08515548706055
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/aleron_der.stl",
+      "bytes": 75684,
+      "sha256": "def23d0a6204aeb44434d5a50e5e178cff748f733a82b89d755303b19c20e416",
+      "triangles": 1512,
+      "bounds_source_units": [
+        [
+          150.85592651367188,
+          430.09954833984375,
+          104.6582260131836
+        ],
+        [
+          212.8702392578125,
+          694.448974609375,
+          128.4831085205078
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/aleron_izq.stl",
+      "bytes": 75684,
+      "sha256": "048616e37b59594c6373032eff7bc21cfb93e81782b7e56a2ed7dee2eda64e8b",
+      "triangles": 1512,
+      "bounds_source_units": [
+        [
+          150.85592651367188,
+          -694.448974609375,
+          104.6582260131836
+        ],
+        [
+          212.8702392578125,
+          -430.09954833984375,
+          128.4831085205078
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/aleta_dorsal.stl",
+      "bytes": 33184,
+      "sha256": "8c6123968f163510daf580b86071f8ff9b4bcf28b3f9b2b25cbfd411b3a4e193",
+      "triangles": 662,
+      "bounds_source_units": [
+        [
+          549.0330200195312,
+          -9.43077564239502,
+          -8.0
+        ],
+        [
+          729.9633178710938,
+          9.43112850189209,
+          30.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/arandela_der.stl",
+      "bytes": 42084,
+      "sha256": "9b3884f784ba03431492fc6f214945450c9d14ad6aebeb0d5e4402f0d7556ac6",
+      "triangles": 840,
+      "bounds_source_units": [
+        [
+          3.8018798828125,
+          147.13999938964844,
+          -202.19952392578125
+        ],
+        [
+          12.199999809265137,
+          148.13999938964844,
+          -193.80047607421875
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/arandela_izq.stl",
+      "bytes": 42084,
+      "sha256": "febc46492ac1e9ddb414c7b43789f2bf3ddd3ee2fec01224762c0fbdd518183f",
+      "triangles": 840,
+      "bounds_source_units": [
+        [
+          3.8018798828125,
+          -148.13999938964844,
+          -202.19952392578125
+        ],
+        [
+          12.199999809265137,
+          -147.13999938964844,
+          -193.80047607421875
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/baliza.stl",
+      "bytes": 562084,
+      "sha256": "79da416d5ec900f1079a3ae362a3db1ff7490e4ba103be5b10014a21c0655bb8",
+      "triangles": 11240,
+      "bounds_source_units": [
+        [
+          282.0,
+          -5.998683929443359,
+          -98.0
+        ],
+        [
+          404.997802734375,
+          5.998683929443359,
+          53.0
+        ]
+      ],
+      "zero_area_triangles": 4
+    },
+    {
+      "path": "piezas_stl_v12/bancada_motor.stl",
+      "bytes": 30984,
+      "sha256": "a6da07cb5f4a513ed3246034bd3803d5ae692a879ca8475fffe7fee2fb876f07",
+      "triangles": 618,
+      "bounds_source_units": [
+        [
+          -195.87437438964844,
+          -48.172672271728516,
+          -42.64217758178711
+        ],
+        [
+          -187.31314086914062,
+          48.71015548706055,
+          25.419239044189453
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/barras_ala_der.stl",
+      "bytes": 13084,
+      "sha256": "b00a2d2099f2a630cad603a5deeb02e39d653a3859f544367de31978802383bb",
+      "triangles": 260,
+      "bounds_source_units": [
+        [
+          -1.5990253686904907,
+          215.8887481689453,
+          100.6212387084961
+        ],
+        [
+          31.950000762939453,
+          693.3297729492188,
+          138.21823120117188
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/barras_ala_izq.stl",
+      "bytes": 13084,
+      "sha256": "5422acd0522f5af19bd2394c43933eccc0d8b656e25baff23d53e519c7c36bbd",
+      "triangles": 260,
+      "bounds_source_units": [
+        [
+          -1.5990253686904907,
+          -693.3297729492188,
+          100.6212387084961
+        ],
+        [
+          31.950000762939453,
+          -215.8887481689453,
+          138.21823120117188
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_aleron_der.stl",
+      "bytes": 684,
+      "sha256": "f320a542f3a03d466e8a7fa4a8d9c7d6968e9ca0b36194584e201db04575e5f2",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          101.61000061035156,
+          464.87713623046875,
+          93.5672607421875
+        ],
+        [
+          106.61000061035156,
+          468.6161193847656,
+          109.16949462890625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_aleron_izq.stl",
+      "bytes": 684,
+      "sha256": "9507d54063f1750be45ed93d14510cf84863a64c2435716e8d67042f565317f5",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          101.61000061035156,
+          -468.6161193847656,
+          93.5672607421875
+        ],
+        [
+          106.61000061035156,
+          -464.87713623046875,
+          109.16949462890625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_elevador.stl",
+      "bytes": 26084,
+      "sha256": "96aa6196d7417f7168862b1241f01a780b958b49d686b9182eeeede1ac4b027a",
+      "triangles": 520,
+      "bounds_source_units": [
+        [
+          225.60000610351562,
+          12.600907325744629,
+          -54.0
+        ],
+        [
+          230.3999481201172,
+          15.399081230163574,
+          -38.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_flap_der.stl",
+      "bytes": 684,
+      "sha256": "1fd9bf67f2bff3656cdb36afdbef127f6df79e8d0f71bb7c7094760b9cc8dfc5",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          101.61000061035156,
+          145.0720672607422,
+          77.90216064453125
+        ],
+        [
+          106.61000061035156,
+          148.96810913085938,
+          98.00165557861328
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_flap_izq.stl",
+      "bytes": 684,
+      "sha256": "d443da2841dfab6693885001b481b5a1d6aba214af469a5b9ac8415b2b0a730a",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          101.61000061035156,
+          -148.96810913085938,
+          77.90216064453125
+        ],
+        [
+          106.61000061035156,
+          -145.0720672607422,
+          98.00165557861328
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/brazo_servo_timon.stl",
+      "bytes": 26084,
+      "sha256": "3bf3bbf2c4d7229ba7686284d5d9f87a30dbe4a9e1c0059a32daf8abe9cb1d4c",
+      "triangles": 520,
+      "bounds_source_units": [
+        [
+          226.6009063720703,
+          -28.0,
+          -56.400001525878906
+        ],
+        [
+          229.39907836914062,
+          -12.0,
+          -51.600059509277344
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/buje_cola.stl",
+      "bytes": 20884,
+      "sha256": "9f375b0e9658d72d38a84fc5dc337ba5d1edde33084a26cbd4b38cc84f560e78",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          755.2216796875,
+          -4.050000190734863,
+          -115.77957916259766
+        ],
+        [
+          762.780029296875,
+          4.050000190734863,
+          -108.22042083740234
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/buje_der.stl",
+      "bytes": 280084,
+      "sha256": "df5dec79451a1d625d19d04a67760df68ce22355df3086e6c28d46c335e47e6f",
+      "triangles": 5600,
+      "bounds_source_units": [
+        [
+          -9.991943359375,
+          116.86000061035156,
+          -215.99798583984375
+        ],
+        [
+          26.0,
+          147.13999938964844,
+          -180.00201416015625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/buje_izq.stl",
+      "bytes": 280084,
+      "sha256": "c00570c9caacccec7d927a021dc736e4c7f7293366e545c3a0773115838e3b21",
+      "triangles": 5600,
+      "bounds_source_units": [
+        [
+          -9.991943359375,
+          -147.13999938964844,
+          -215.99798583984375
+        ],
+        [
+          26.0,
+          -116.86000061035156,
+          -180.00201416015625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/buje_torsion_elevador.stl",
+      "bytes": 88084,
+      "sha256": "18bcecf16dfde06bbb667bf76c67b5583afee52fd817edfddf23090d1439ad27",
+      "triangles": 1760,
+      "bounds_source_units": [
+        [
+          700.8002319335938,
+          -14.5,
+          -35.19990158081055
+        ],
+        [
+          707.2000122070312,
+          14.5,
+          -28.80002784729004
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cable_der.stl",
+      "bytes": 20884,
+      "sha256": "86f5ccab9423a7905025d0c3b6330b00e8c5c5258462493836f4b357a43e7d89",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          28.75722885131836,
+          -32.69306182861328,
+          -133.77810668945312
+        ],
+        [
+          44.537986755371094,
+          22.35332679748535,
+          -89.7818832397461
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cable_izq.stl",
+      "bytes": 20884,
+      "sha256": "ae1df0a86a262fdf92bac693927fd8bd3b74b65a53719ee7e2911b7fec8c2ff9",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          21.46756362915039,
+          -22.34554672241211,
+          -133.03099060058594
+        ],
+        [
+          30.54620361328125,
+          31.748626708984375,
+          -89.78597259521484
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/campana_motor.stl",
+      "bytes": 41884,
+      "sha256": "aa2cc13a6d063d173de92b7b7f22b87ecbcfba64fc3d5816ac2b38a0701647d2",
+      "triangles": 836,
+      "bounds_source_units": [
+        [
+          -232.0608673095703,
+          -22.746593475341797,
+          -20.27176856994629
+        ],
+        [
+          -200.025390625,
+          20.269472122192383,
+          22.740238189697266
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/capota.stl",
+      "bytes": 394784,
+      "sha256": "b428c3c21f2efc0f94d861b93f746d1a70744b6eafe51b3badefcd1db37b9125",
+      "triangles": 7894,
+      "bounds_source_units": [
+        [
+          -234.0,
+          -53.314552307128906,
+          -47.57837677001953
+        ],
+        [
+          -157.0,
+          53.23596954345703,
+          28.278217315673828
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/collarin_der.stl",
+      "bytes": 64984,
+      "sha256": "3f5315b4889db17e4f0cf55162ff954f942f69d226181d54bb87680924302106",
+      "triangles": 1298,
+      "bounds_source_units": [
+        [
+          3.4020588397979736,
+          113.9000015258789,
+          -202.5994873046875
+        ],
+        [
+          12.600000381469727,
+          116.76000213623047,
+          -192.39999389648438
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/collarin_izq.stl",
+      "bytes": 64984,
+      "sha256": "73f816b90231964c96009965cd215b0263f44e9ea98cce0f493fe455d094c740",
+      "triangles": 1298,
+      "bounds_source_units": [
+        [
+          3.4020588397979736,
+          -116.76000213623047,
+          -202.5994873046875
+        ],
+        [
+          12.600000381469727,
+          -113.9000015258789,
+          -192.39999389648438
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/contraplaca.stl",
+      "bytes": 123184,
+      "sha256": "5a543df2de311e879d302720292ac7b187ff6a98baccfd5d1793569938a79b31",
+      "triangles": 2462,
+      "bounds_source_units": [
+        [
+          -244.38278198242188,
+          -20.005855560302734,
+          -19.064420700073242
+        ],
+        [
+          -235.55624389648438,
+          19.0692138671875,
+          20.01106834411621
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_aleron_der.stl",
+      "bytes": 51884,
+      "sha256": "5d2969e25d516c3dca900e207218c5d767b27f934473f8f08215661a46963380",
+      "triangles": 1036,
+      "bounds_source_units": [
+        [
+          154.72584533691406,
+          465.794677734375,
+          90.71464538574219
+        ],
+        [
+          176.5679473876953,
+          467.9172058105469,
+          105.76134490966797
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_aleron_izq.stl",
+      "bytes": 51884,
+      "sha256": "bd19393762744efdb39d132de663f60131f898ff3d15693df246d91d2d91df7e",
+      "triangles": 1036,
+      "bounds_source_units": [
+        [
+          154.72584533691406,
+          -467.9172058105469,
+          90.71464538574219
+        ],
+        [
+          176.5679473876953,
+          -465.794677734375,
+          105.76134490966797
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_elevador.stl",
+      "bytes": 57484,
+      "sha256": "062f58590235d0cb178f08960c9bfade85780eb5ef8184a9de0c62b8756ddd5e",
+      "triangles": 1148,
+      "bounds_source_units": [
+        [
+          701.0,
+          23.200000762939453,
+          -54.0
+        ],
+        [
+          722.7391357421875,
+          24.799999237060547,
+          -36.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_flap_der.stl",
+      "bytes": 51884,
+      "sha256": "7956fc2e4c72683b59aaae8d1fb014954d3492b2820557e9210a9eb471264a2a",
+      "triangles": 1036,
+      "bounds_source_units": [
+        [
+          154.72584533691406,
+          145.98960876464844,
+          79.54680633544922
+        ],
+        [
+          176.5679473876953,
+          148.1121368408203,
+          94.593505859375
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_flap_izq.stl",
+      "bytes": 51884,
+      "sha256": "497c6450df45f511d043953c2b9f859108e43cc4c36f2db80f282fdae9395dd8",
+      "triangles": 1036,
+      "bounds_source_units": [
+        [
+          154.72584533691406,
+          -148.1121368408203,
+          79.54680633544922
+        ],
+        [
+          176.5679473876953,
+          -145.98960876464844,
+          94.593505859375
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/cuerno_timon.stl",
+      "bytes": 57884,
+      "sha256": "1e0a939d16772e915db83e54c1e2cee640a711543bab221c95d8ed1f8780d317",
+      "triangles": 1156,
+      "bounds_source_units": [
+        [
+          735.0,
+          -24.0,
+          -60.79999923706055
+        ],
+        [
+          759.0116577148438,
+          -3.0,
+          -59.20000076293945
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/deriva.stl",
+      "bytes": 331184,
+      "sha256": "9c10eac31763e8daa494ba38301ad954e1d8abbe70e4af28b71a0053798ef2b8",
+      "triangles": 6622,
+      "bounds_source_units": [
+        [
+          599.5966796875,
+          -7.020608425140381,
+          -72.0
+        ],
+        [
+          739.0999755859375,
+          7.020608425140381,
+          178.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/deriva_franja_roja.stl",
+      "bytes": 11684,
+      "sha256": "5342eeca54adf0d78607b58bbd1f72c4172420c328e828ae70b5c499e9ada4a1",
+      "triangles": 232,
+      "bounds_source_units": [
+        [
+          598.5790405273438,
+          -7.68223237991333,
+          2.0
+        ],
+        [
+          730.663330078125,
+          7.68223237991333,
+          164.48695373535156
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/deriva_franjas_negras.stl",
+      "bytes": 13284,
+      "sha256": "5cf5b7272913b94cc877f9210ac60a3c1a15773e6e4c7abac1710623eb62ade5",
+      "triangles": 264,
+      "bounds_source_units": [
+        [
+          611.3697509765625,
+          -7.298478603363037,
+          22.0
+        ],
+        [
+          730.663330078125,
+          7.298478603363037,
+          158.7728271484375
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/eje_motor.stl",
+      "bytes": 20884,
+      "sha256": "4b1045d2737638b2042aa1b1c4db412c123db9dc85a8e02339ba4bb1eee9e35a",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          -267.60382080078125,
+          -4.468863487243652,
+          -3.0568690299987793
+        ],
+        [
+          -194.94546508789062,
+          3.056203842163086,
+          4.469180583953857
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/elevador_superior_negro.stl",
+      "bytes": 11284,
+      "sha256": "069156716ce05a6ce785b907ca9200d097d8c7482a687413cb4a7f38f50d4497",
+      "triangles": 224,
+      "bounds_source_units": [
+        [
+          708.6259765625,
+          -257.4097900390625,
+          -31.5
+        ],
+        [
+          760.2350463867188,
+          257.4097900390625,
+          -27.73240852355957
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/elevador_superior_rojo.stl",
+      "bytes": 10084,
+      "sha256": "17b1fb9572603950ebfb29f352d0191abdfa070fc8671a942f887b85825565c7",
+      "triangles": 200,
+      "bounds_source_units": [
+        [
+          708.6259765625,
+          -290.0,
+          -31.5
+        ],
+        [
+          768.3649291992188,
+          290.0,
+          -27.89805793762207
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/escapes.stl",
+      "bytes": 1044284,
+      "sha256": "603ddbf6b5293c41658831d29f2695da1ab7a0ad58198a4716b2f3c67c66a076",
+      "triangles": 20884,
+      "bounds_source_units": [
+        [
+          -192.99847412109375,
+          -67.99365234375,
+          -16.5
+        ],
+        [
+          -133.85279846191406,
+          67.99295043945312,
+          -1.5000022649765015
+        ]
+      ],
+      "zero_area_triangles": 4
+    },
+    {
+      "path": "piezas_stl_v12/escena.json",
+      "bytes": 9906,
+      "sha256": "d8f8dc84bda859f02d9aae1fda049437469647882a94eb728ac1cd526456fd10"
+    },
+    {
+      "path": "piezas_stl_v12/eslabon_der.stl",
+      "bytes": 294684,
+      "sha256": "a5f7ccf93f88aec32a6b6115463e198542c6b7feb63f457c632351b0cd00c7a0",
+      "triangles": 5892,
+      "bounds_source_units": [
+        [
+          11.506085395812988,
+          74.62548065185547,
+          -183.3492431640625
+        ],
+        [
+          16.044593811035156,
+          95.15533447265625,
+          -166.74029541015625
+        ]
+      ],
+      "zero_area_triangles": 2
+    },
+    {
+      "path": "piezas_stl_v12/eslabon_izq.stl",
+      "bytes": 294984,
+      "sha256": "a8974f87214e9f7ee80fc1a7395868f5055bc2fb2290a5c9b33f5cd13db4e5f5",
+      "triangles": 5898,
+      "bounds_source_units": [
+        [
+          11.506085395812988,
+          -95.14555358886719,
+          -183.3394012451172
+        ],
+        [
+          18.220808029174805,
+          -74.89852905273438,
+          -166.95936584472656
+        ]
+      ],
+      "zero_area_triangles": 2
+    },
+    {
+      "path": "piezas_stl_v12/estab_superior_negro.stl",
+      "bytes": 7684,
+      "sha256": "641c38eac7865bd7b76efbd1e042fa25ea8ac66a56c3085e4f8c56aafba75968",
+      "triangles": 152,
+      "bounds_source_units": [
+        [
+          637.7649536132812,
+          -265.8460998535156,
+          -31.5
+        ],
+        [
+          698.3740234375,
+          265.8460998535156,
+          -26.687368392944336
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/estab_superior_rojo.stl",
+      "bytes": 12284,
+      "sha256": "419c27fa3154382e3bb9acac7289aca6d5717054ec0ba43643d0d182b3c30925",
+      "triangles": 244,
+      "bounds_source_units": [
+        [
+          635.0,
+          -290.0,
+          -31.5
+        ],
+        [
+          698.3740234375,
+          290.0,
+          -26.94002914428711
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/estabilizador.stl",
+      "bytes": 497684,
+      "sha256": "eb2d9deb5ac4e86114107ad62589152631da6904cc9cf83ce61fdfde6ddfa50f",
+      "triangles": 9952,
+      "bounds_source_units": [
+        [
+          624.401611328125,
+          -298.0,
+          -36.35877227783203
+        ],
+        [
+          705.099853515625,
+          298.0,
+          -27.64020538330078
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/extrados_negro_der.stl",
+      "bytes": 11884,
+      "sha256": "8d25b4eb4ecd061123e13aeaa04ab7e558ce52d2760739b0e8f5f9a30233599e",
+      "triangles": 236,
+      "bounds_source_units": [
+        [
+          21.293134689331055,
+          243.5208282470703,
+          106.443359375
+        ],
+        [
+          149.35455322265625,
+          695.6221313476562,
+          140.821533203125
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/extrados_negro_izq.stl",
+      "bytes": 11884,
+      "sha256": "f2fe0bacfdbe739b7500409d838a300ca2b36f8e1b43f86787ad7eb6858399b2",
+      "triangles": 236,
+      "bounds_source_units": [
+        [
+          21.293134689331055,
+          -695.6221313476562,
+          106.443359375
+        ],
+        [
+          149.35455322265625,
+          -243.5208282470703,
+          140.821533203125
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/extrados_rojo_der.stl",
+      "bytes": 5284,
+      "sha256": "227381905c3fa75cc2ae22ea16e387a75b11c92511761fd58dc7145bed3991a9",
+      "triangles": 104,
+      "bounds_source_units": [
+        [
+          -0.4130760133266449,
+          -3.9780421257019043,
+          97.89288330078125
+        ],
+        [
+          149.35455322265625,
+          696.2488403320312,
+          140.7930145263672
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/extrados_rojo_izq.stl",
+      "bytes": 5284,
+      "sha256": "fd50e4c18a42fa05510fb70f0b3b4f6f96ca0777ca9bc6bbb4259db50a6dbd44",
+      "triangles": 104,
+      "bounds_source_units": [
+        [
+          -0.4130760133266449,
+          -696.2488403320312,
+          97.89288330078125
+        ],
+        [
+          149.35455322265625,
+          3.9780421257019043,
+          140.7930145263672
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/filete_nariz.stl",
+      "bytes": 15484,
+      "sha256": "f90b94bc12934661b4d9a45b885dcb08e2e17d0eec520e19d2b660c8a3568476",
+      "triangles": 308,
+      "bounds_source_units": [
+        [
+          -234.0,
+          -53.56731033325195,
+          3.5
+        ],
+        [
+          -58.0,
+          53.60122299194336,
+          8.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/flap_der.stl",
+      "bytes": 74684,
+      "sha256": "a290f42f649c7b748d5c07ada03d9581667c6797806d7fe6f70176a67833f901",
+      "triangles": 1492,
+      "bounds_source_units": [
+        [
+          150.85592651367188,
+          54.3286018371582,
+          91.53601837158203
+        ],
+        [
+          212.8702392578125,
+          426.61224365234375,
+          119.13004302978516
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/flap_izq.stl",
+      "bytes": 74684,
+      "sha256": "42fc6485b71a31156c380dd443b55724efac88453e8a656836ad90a35785df12",
+      "triangles": 1492,
+      "bounds_source_units": [
+        [
+          150.85592651367188,
+          -426.61224365234375,
+          91.53601837158203
+        ],
+        [
+          212.8702392578125,
+          -54.3286018371582,
+          119.13004302978516
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/franja_blanca_cola.stl",
+      "bytes": 3784,
+      "sha256": "447fb38b8a6aa33dc8ceaab6235d4cd764caaaac7fba82d54b720da520c5151d",
+      "triangles": 74,
+      "bounds_source_units": [
+        [
+          355.0,
+          -42.96963882446289,
+          -62.0
+        ],
+        [
+          658.0,
+          42.96916961669922,
+          -10.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/franja_negra_cola.stl",
+      "bytes": 2484,
+      "sha256": "cee94fe3d4457d49fa86114f55ad951f50e8f63fea03afd00bfa66bd8ec470e5",
+      "triangles": 48,
+      "bounds_source_units": [
+        [
+          228.0,
+          -54.57233428955078,
+          -67.5
+        ],
+        [
+          518.0,
+          54.570472717285156,
+          -38.5
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/franjas_negras.stl",
+      "bytes": 46484,
+      "sha256": "ae34b87fea143b7aa62c66db4d72c94e767388c4cf25be95f7a200572a893373",
+      "triangles": 928,
+      "bounds_source_units": [
+        [
+          -203.0,
+          -60.844703674316406,
+          -81.0
+        ],
+        [
+          618.0,
+          60.845977783203125,
+          28.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/fuselaje_blanco.stl",
+      "bytes": 433384,
+      "sha256": "76ec851abb7cf06b6ac622f74c5165db8f0613a8253b0cd2fb26e345866bbbd2",
+      "triangles": 8666,
+      "bounds_source_units": [
+        [
+          -157.0,
+          -59.97966003417969,
+          -83.80831909179688
+        ],
+        [
+          631.0586547851562,
+          59.9431037902832,
+          88.21806335449219
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/fuselaje_panza_roja.stl",
+      "bytes": 486784,
+      "sha256": "26681f4a3b8e383c6cca5dea17130ea47259b243639107f2bc5b2a2e02fcddc8",
+      "triangles": 9734,
+      "bounds_source_units": [
+        [
+          35.5504264831543,
+          -55.397586822509766,
+          -98.13416290283203
+        ],
+        [
+          733.0,
+          55.320587158203125,
+          -1.1881861686706543
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/guias_varillas.stl",
+      "bytes": 84084,
+      "sha256": "2f82fb0e226ff6283c36227e8a6060f5daf09e624e2b95d9504adf61e3594ba9",
+      "triangles": 1680,
+      "bounds_source_units": [
+        [
+          533.5462036132812,
+          -22.344907760620117,
+          -60.04155731201172
+        ],
+        [
+          555.2584228515625,
+          22.983354568481445,
+          -48.94349670410156
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/helice.stl",
+      "bytes": 549684,
+      "sha256": "c7293057f80f50fa9af1c90dd4a02961d78513305097a69c0f347a80b26cce8f",
+      "triangles": 10992,
+      "bounds_source_units": [
+        [
+          -258.0353698730469,
+          -92.96504211425781,
+          -108.71881103515625
+        ],
+        [
+          -241.3443145751953,
+          138.13990783691406,
+          132.5806427001953
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/interno_bateria.stl",
+      "bytes": 684,
+      "sha256": "429b3247dd46aaacb15cc76f4b0b0322dac7635355c01317d466e2020e05d825",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          -122.0,
+          -22.0,
+          -47.0
+        ],
+        [
+          18.0,
+          22.0,
+          -11.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/interno_receptor.stl",
+      "bytes": 684,
+      "sha256": "348cf6f3f28683f5d0f60a0e9f3b51198ff4516359025f9ea041477096af0be1",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          98.0,
+          -12.0,
+          -68.0
+        ],
+        [
+          138.0,
+          12.0,
+          -56.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/interno_servos_cola.stl",
+      "bytes": 684,
+      "sha256": "66c5dc668c62b17bafd35b97680c627df51d7078b7b3aaa306cce58ec981114f",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          212.0,
+          -20.0,
+          -70.0
+        ],
+        [
+          244.0,
+          20.0,
+          -40.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/interno_variador.stl",
+      "bytes": 684,
+      "sha256": "a839bad45b4874d900bfc56bf84fa69d4f34fe8be64c3d9d53097c294dfd8e67",
+      "triangles": 12,
+      "bounds_source_units": [
+        [
+          -177.0,
+          -16.0,
+          -11.0
+        ],
+        [
+          -107.0,
+          16.0,
+          3.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/intrados_gris_der.stl",
+      "bytes": 30884,
+      "sha256": "65a614aee6fa5e70cf7a7442914abd04bbf22740ce8727315ed21c90aa3dcf3b",
+      "triangles": 616,
+      "bounds_source_units": [
+        [
+          -0.899451732635498,
+          61.5952033996582,
+          91.60902404785156
+        ],
+        [
+          122.29895782470703,
+          626.21533203125,
+          118.66094207763672
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/intrados_gris_izq.stl",
+      "bytes": 30884,
+      "sha256": "765127c4f2e208d6170b40d99e27a912120907049f8304882560e5dac5090a31",
+      "triangles": 616,
+      "bounds_source_units": [
+        [
+          -0.899451732635498,
+          -626.21533203125,
+          91.60902404785156
+        ],
+        [
+          122.29895782470703,
+          -61.5952033996582,
+          118.66094207763672
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/luz_nav_der.stl",
+      "bytes": 281084,
+      "sha256": "786121a25cf3842c589565106db9690585965a5fefbe20ef7c34ce56eb34ac92",
+      "triangles": 5620,
+      "bounds_source_units": [
+        [
+          21.0,
+          756.061767578125,
+          88.76504516601562
+        ],
+        [
+          38.99604797363281,
+          774.0468139648438,
+          106.75408172607422
+        ]
+      ],
+      "zero_area_triangles": 2
+    },
+    {
+      "path": "piezas_stl_v12/luz_nav_izq.stl",
+      "bytes": 281084,
+      "sha256": "7ecc2f70cda657da0fef42de82b01b535300e4bac52bcc460944aefda0041511",
+      "triangles": 5620,
+      "bounds_source_units": [
+        [
+          21.0,
+          -774.0468139648438,
+          88.76504516601562
+        ],
+        [
+          38.99604797363281,
+          -756.061767578125,
+          106.75408172607422
+        ]
+      ],
+      "zero_area_triangles": 2
+    },
+    {
+      "path": "piezas_stl_v12/neumatico_der.stl",
+      "bytes": 264484,
+      "sha256": "e7c91fc425b0d0ac309a704029dee87c31272aa787a582c2b4efcf20f62163d4",
+      "triangles": 5288,
+      "bounds_source_units": [
+        [
+          -49.97404098510742,
+          110.00425720214844,
+          -255.99351501464844
+        ],
+        [
+          66.0,
+          153.99813842773438,
+          -140.00648498535156
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/neumatico_izq.stl",
+      "bytes": 264484,
+      "sha256": "10908c64f9692d0e8da476106b5738a0f6d99f5514d0a4053e147fd283787340",
+      "triangles": 5288,
+      "bounds_source_units": [
+        [
+          -49.97404098510742,
+          -153.99813842773438,
+          -255.99351501464844
+        ],
+        [
+          66.0,
+          -110.00425720214844,
+          -140.00648498535156
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/ojal_der.stl",
+      "bytes": 1136384,
+      "sha256": "01d2ca2cdbf585d69571ec4096b2b87efd8b0c7e931e0c8791f0761b946896a2",
+      "triangles": 22726,
+      "bounds_source_units": [
+        [
+          41.00067138671875,
+          19.000003814697266,
+          -91.51824951171875
+        ],
+        [
+          47.0,
+          24.999664306640625,
+          -83.57600402832031
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/ojal_izq.stl",
+      "bytes": 1067184,
+      "sha256": "6c5815816f8daaba471ee66ca6d66c1c090e288c91b76ada99dd8923052dd1c2",
+      "triangles": 21342,
+      "bounds_source_units": [
+        [
+          27.0013427734375,
+          -24.999664306640625,
+          -91.51824951171875
+        ],
+        [
+          33.0,
+          -19.000335693359375,
+          -83.21846008300781
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/panel_nariz.stl",
+      "bytes": 82984,
+      "sha256": "7ad0357cad623aad33cc9d5cdfb70c493459f9db72a93682d16c7c85ab19bf73",
+      "triangles": 1658,
+      "bounds_source_units": [
+        [
+          -234.0,
+          -52.49637222290039,
+          8.0
+        ],
+        [
+          -58.0,
+          52.458370208740234,
+          29.344449996948242
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/parabrisas.stl",
+      "bytes": 58584,
+      "sha256": "c1729658e2bd0503086c4cf5a2dd43a2959c19652d765238b02e2cf65bcbfdd1",
+      "triangles": 1170,
+      "bounds_source_units": [
+        [
+          -60.0,
+          -60.38042449951172,
+          15.0
+        ],
+        [
+          12.0,
+          60.38113021850586,
+          89.35395812988281
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/pasador_tren_der.stl",
+      "bytes": 20884,
+      "sha256": "5b52b4c0aeefec8a254687fea5297897888a80beb3655bfdfd3ed6bb3590cfb6",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          7.25,
+          44.50016784667969,
+          -91.84660339355469
+        ],
+        [
+          66.75,
+          47.49983215332031,
+          -88.84727478027344
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/pasador_tren_izq.stl",
+      "bytes": 20884,
+      "sha256": "719925afb59d993662f6f51366412dcc48a3716ab25fd06ceebb0854242b03e5",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          7.25,
+          -47.49983215332031,
+          -91.84660339355469
+        ],
+        [
+          66.75,
+          -44.50016784667969,
+          -88.84727478027344
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/pata_der.stl",
+      "bytes": 48084,
+      "sha256": "f19a8cbce8ea08429232f4c4b7c395a4bcc0d278e6b57c8c5471b8a73e5e0191",
+      "triangles": 960,
+      "bounds_source_units": [
+        [
+          -4.0,
+          39.92157745361328,
+          -208.8212890625
+        ],
+        [
+          66.0,
+          113.80000305175781,
+          -82.14157104492188
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/pata_izq.stl",
+      "bytes": 48084,
+      "sha256": "0447de37cd326aa0e3eae878d34644561408d8c5c9da210bebfb993a2c5a761c",
+      "triangles": 960,
+      "bounds_source_units": [
+        [
+          -4.0,
+          -113.80000305175781,
+          -208.8212890625
+        ],
+        [
+          66.0,
+          -39.92157745361328,
+          -82.14157104492188
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/perno_eje_der.stl",
+      "bytes": 21884,
+      "sha256": "a94affeef46c30b0598e9bca68bd7cca069c2595340419652fbbde9a8f0599e0",
+      "triangles": 436,
+      "bounds_source_units": [
+        [
+          5.0,
+          92.80000305175781,
+          -200.59808349609375
+        ],
+        [
+          11.0,
+          148.0,
+          -195.40191650390625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/perno_eje_izq.stl",
+      "bytes": 21884,
+      "sha256": "3766f3c9c49b95d8bb0f996794f85f8d1395f997336bd9e1437d0767cbff3bca",
+      "triangles": 436,
+      "bounds_source_units": [
+        [
+          5.0,
+          -148.0,
+          -200.59808349609375
+        ],
+        [
+          11.0,
+          -92.80000305175781,
+          -195.40191650390625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/placas_escape.stl",
+      "bytes": 93884,
+      "sha256": "1fb3d997eba821685b9bafbbf47ac6ce7d774cf2ea38aa2665f4c34fb2662df2",
+      "triangles": 1876,
+      "bounds_source_units": [
+        [
+          -207.22979736328125,
+          -53.88361358642578,
+          -33.87138366699219
+        ],
+        [
+          -151.99295043945312,
+          53.874149322509766,
+          10.46263313293457
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/puntera_der.stl",
+      "bytes": 35984,
+      "sha256": "0cd6348c29cecf14dae8fddd3a9466376ce8faafd7b714a16bc4884d81f859f2",
+      "triangles": 718,
+      "bounds_source_units": [
+        [
+          0.0,
+          695.54150390625,
+          77.90704345703125
+        ],
+        [
+          212.8702392578125,
+          772.7518310546875,
+          139.89361572265625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/puntera_izq.stl",
+      "bytes": 35984,
+      "sha256": "e61e6d008481c139962f26a2b317ec36c72d7db4412cbfb64be17dff99a47548",
+      "triangles": 718,
+      "bounds_source_units": [
+        [
+          0.0,
+          -772.7518310546875,
+          77.90704345703125
+        ],
+        [
+          212.8702392578125,
+          -695.54150390625,
+          139.89361572265625
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/resorte_der.stl",
+      "bytes": 18645684,
+      "sha256": "afc3f0eaa4f19acc13315f86387859e842e6e78f8984c79388b03dff85a7444e",
+      "triangles": 372912,
+      "bounds_source_units": [
+        [
+          14.531351089477539,
+          -76.11614990234375,
+          -168.455810546875
+        ],
+        [
+          32.49334716796875,
+          -31.475278854370117,
+          -132.28160095214844
+        ]
+      ],
+      "zero_area_triangles": 4
+    },
+    {
+      "path": "piezas_stl_v12/resorte_izq.stl",
+      "bytes": 19622284,
+      "sha256": "3e9816588f685e17caeab3bf1f1fc832058c6f54617f7bb285cfa2d2ff0ec1c4",
+      "triangles": 392444,
+      "bounds_source_units": [
+        [
+          11.689932823181152,
+          30.542573928833008,
+          -168.22860717773438
+        ],
+        [
+          25.845399856567383,
+          75.83209991455078,
+          -131.54249572753906
+        ]
+      ],
+      "zero_area_triangles": 4
+    },
+    {
+      "path": "piezas_stl_v12/rueda_cola.stl",
+      "bytes": 577384,
+      "sha256": "8956403adaa6bb92d18f9a7f22fdaf2802464df2319219dbec10663cbcb28c8d",
+      "triangles": 11546,
+      "bounds_source_units": [
+        [
+          745.0062866210938,
+          -3.7799999713897705,
+          -125.9984359741211
+        ],
+        [
+          773.0,
+          3.7799999713897705,
+          -98.0015640258789
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soporte_motor.stl",
+      "bytes": 23584,
+      "sha256": "05e7e929abdbf3cf227e4f605d15c9631d4af0849a5420c5bffef5bee4d3fc3e",
+      "triangles": 470,
+      "bounds_source_units": [
+        [
+          -201.70277404785156,
+          -23.995750427246094,
+          -20.0496768951416
+        ],
+        [
+          -193.19761657714844,
+          20.05451011657715,
+          23.993318557739258
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soporte_rueda_cola.stl",
+      "bytes": 49384,
+      "sha256": "594cc42ffd96c7eae644c03167aebf6dc159f57971c6b0afdd66d99f23b6384d",
+      "triangles": 986,
+      "bounds_source_units": [
+        [
+          696.0,
+          -6.5,
+          -78.0
+        ],
+        [
+          746.0,
+          6.5,
+          -71.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soporte_tren_der.stl",
+      "bytes": 67984,
+      "sha256": "db1d827df824cbc39d8564f06bd9c7d09a5577e6f56485cb65d6a722e9497489",
+      "triangles": 1358,
+      "bounds_source_units": [
+        [
+          8.0,
+          38.0,
+          -94.34660339355469
+        ],
+        [
+          66.0,
+          54.0,
+          -80.34660339355469
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soporte_tren_izq.stl",
+      "bytes": 67884,
+      "sha256": "7faa2a6420a0d13ef9558c00b5bd8f44aabe6476dedca4549dfafe209b35394f",
+      "triangles": 1356,
+      "bounds_source_units": [
+        [
+          8.0,
+          -54.0,
+          -94.34660339355469
+        ],
+        [
+          66.0,
+          -38.0,
+          -80.34660339355469
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soportes_slat_der.stl",
+      "bytes": 2593484,
+      "sha256": "f526ca3aaedee9f8221467f0e25d06998669f39b01dafe90823a2aa32714ab0e",
+      "triangles": 51868,
+      "bounds_source_units": [
+        [
+          -3.7412290573120117,
+          174.68023681640625,
+          57.94966125488281
+        ],
+        [
+          54.83269119262695,
+          599.750244140625,
+          114.66606903076172
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/soportes_slat_izq.stl",
+      "bytes": 2593484,
+      "sha256": "8d6b35aaa94ead35d4554fc2adffb26bf7efd4abff3438e0596edfdbe3225f8a",
+      "triangles": 51868,
+      "bounds_source_units": [
+        [
+          -3.7412290573120117,
+          -599.750244140625,
+          57.94966125488281
+        ],
+        [
+          54.83269119262695,
+          -174.68023681640625,
+          114.66606903076172
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/spinner.stl",
+      "bytes": 256584,
+      "sha256": "4957fce248e05197658a1cb92e357f6b9a915569407729540173c1efe3f91494",
+      "triangles": 5130,
+      "bounds_source_units": [
+        [
+          -283.4610290527344,
+          -19.90593719482422,
+          -19.064420700073242
+        ],
+        [
+          -238.5529022216797,
+          19.065208435058594,
+          19.906370162963867
+        ]
+      ],
+      "zero_area_triangles": 2
+    },
+    {
+      "path": "piezas_stl_v12/tapa_servo_aleron_der.stl",
+      "bytes": 1484,
+      "sha256": "8bc7c3a274b88b269f2f4dafa68f9af36d5d0ed7595fe3be3d1cab9c2d2e46ad",
+      "triangles": 28,
+      "bounds_source_units": [
+        [
+          76.11000061035156,
+          453.336181640625,
+          104.52896881103516
+        ],
+        [
+          112.11000061035156,
+          479.61248779296875,
+          113.80231475830078
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tapa_servo_aleron_izq.stl",
+      "bytes": 1484,
+      "sha256": "3ff57d2c6af020908ec2e701fdd23f6f1cd21a66367c2b9e27b63e2c6a261610",
+      "triangles": 28,
+      "bounds_source_units": [
+        [
+          76.11000061035156,
+          -479.61248779296875,
+          104.52896881103516
+        ],
+        [
+          112.11000061035156,
+          -453.336181640625,
+          113.80231475830078
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tapa_servo_flap_der.stl",
+      "bytes": 1484,
+      "sha256": "109d50418be63e96e9107c7ee2a1f66a4bb56645d3ae307b15e7ed53b2966429",
+      "triangles": 28,
+      "bounds_source_units": [
+        [
+          76.11000061035156,
+          133.53111267089844,
+          93.36112976074219
+        ],
+        [
+          112.11000061035156,
+          159.80743408203125,
+          102.63447570800781
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tapa_servo_flap_izq.stl",
+      "bytes": 1484,
+      "sha256": "f8de5c02f984ac76212f360a6c61fb096bfc3ebc40e76300ff536d850131df13",
+      "triangles": 28,
+      "bounds_source_units": [
+        [
+          76.11000061035156,
+          -159.80743408203125,
+          93.36112976074219
+        ],
+        [
+          112.11000061035156,
+          -133.53111267089844,
+          102.63447570800781
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/timon_direccion.stl",
+      "bytes": 263484,
+      "sha256": "bdd3bcde09884d8e1f6f2a5e6ba6cddec212acc0b05c90ce3aa624fd6239e17c",
+      "triangles": 5268,
+      "bounds_source_units": [
+        [
+          732.663330078125,
+          -5.336317539215088,
+          -70.4000015258789
+        ],
+        [
+          832.0,
+          5.336317539215088,
+          178.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/timon_franja_roja.stl",
+      "bytes": 10884,
+      "sha256": "d2d1d3c7f69d50b261e7a7e2a3d2778112cf033b33d568d60d674f59401fcca7",
+      "triangles": 216,
+      "bounds_source_units": [
+        [
+          744.336669921875,
+          -5.7547454833984375,
+          2.0
+        ],
+        [
+          832.7000122070312,
+          5.7547454833984375,
+          166.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/timon_franjas_negras.stl",
+      "bytes": 18884,
+      "sha256": "4ff7058368cbd957e01375b921fb1f62ec13621c5bb09b65a3c1e79cbee77138",
+      "triangles": 376,
+      "bounds_source_units": [
+        [
+          743.0,
+          -5.686610698699951,
+          22.0
+        ],
+        [
+          832.7000122070312,
+          5.686610698699951,
+          158.31944274902344
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/timon_profundidad.stl",
+      "bytes": 62284,
+      "sha256": "76020a1eb2c90f90a22daa62c3a98467acfb266ca9ee49c57a5bf28e82095321",
+      "triangles": 1244,
+      "bounds_source_units": [
+        [
+          704.0,
+          -298.0,
+          -36.0
+        ],
+        [
+          768.3792724609375,
+          298.0,
+          -28.417404174804688
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tornillos_ala.stl",
+      "bytes": 83684,
+      "sha256": "2c1e7e59e7579a9267c8c7c6f26301f88a4fb0609e31c866fe08725b8c6b26d7",
+      "triangles": 1672,
+      "bounds_source_units": [
+        [
+          178.6820068359375,
+          -28.499496459960938,
+          53.08811950683594
+        ],
+        [
+          187.67999267578125,
+          28.499496459960938,
+          100.28811645507812
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tornillos_capota.stl",
+      "bytes": 167284,
+      "sha256": "14563bd153c41ce161d864f3053909c0f2de9272c293dfdc0832605253e1a4aa",
+      "triangles": 3344,
+      "bounds_source_units": [
+        [
+          -194.39892578125,
+          -50.8694953918457,
+          -27.899730682373047
+        ],
+        [
+          -189.60000610351562,
+          50.8694953918457,
+          5.799731254577637
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tornillos_placa_escape.stl",
+      "bytes": 83684,
+      "sha256": "b6387b8413fcd75896a969a78b4e543a987086620f18b97487013586bd246025",
+      "triangles": 1672,
+      "bounds_source_units": [
+        [
+          -196.9990997314453,
+          -50.33302688598633,
+          4.000223636627197
+        ],
+        [
+          -193.0,
+          50.33302688598633,
+          7.999776363372803
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tornillos_rueda_cola.stl",
+      "bytes": 41684,
+      "sha256": "48d489106967a5f6b540ffc905985becd52363cd50f053912879993d528f8661",
+      "triangles": 832,
+      "bounds_source_units": [
+        [
+          701.60107421875,
+          -2.399731397628784,
+          -79.5
+        ],
+        [
+          722.4000244140625,
+          2.399731397628784,
+          -77.69999694824219
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tornillos_spinner.stl",
+      "bytes": 64884,
+      "sha256": "68a5cad3c774476dbe3b029dfb1bf66c89f21a3ef8514e1321ac5ba064ce0b31",
+      "triangles": 1296,
+      "bounds_source_units": [
+        [
+          -244.93431091308594,
+          -19.358301162719727,
+          -18.734344482421875
+        ],
+        [
+          -240.08836364746094,
+          14.472235679626465,
+          15.084635734558105
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tuerca.stl",
+      "bytes": 42084,
+      "sha256": "6e7eb0168ebf36f8e849d0329b9f1e3733133a26cfec4db6c927dc2a964ee291",
+      "triangles": 840,
+      "bounds_source_units": [
+        [
+          -263.7073974609375,
+          -4.286734104156494,
+          -4.914920330047607
+        ],
+        [
+          -257.27069091796875,
+          4.915712833404541,
+          4.287735939025879
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tuerca_der.stl",
+      "bytes": 22284,
+      "sha256": "2525180d9de05a0d2420db2279fa53ea15f6b27cd31bafcb0bb7795bf3002ea2",
+      "triangles": 444,
+      "bounds_source_units": [
+        [
+          4.800000190734863,
+          148.13999938964844,
+          -200.7712860107422
+        ],
+        [
+          11.199999809265137,
+          151.13999938964844,
+          -195.2287139892578
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/tuerca_izq.stl",
+      "bytes": 22284,
+      "sha256": "aeb88dc905f57788253689093643f89c77655c3beed5a501a2cc0c2fcff7beb7",
+      "triangles": 444,
+      "bounds_source_units": [
+        [
+          4.800000190734863,
+          -151.13999938964844,
+          -200.7712860107422
+        ],
+        [
+          11.199999809265137,
+          -148.13999938964844,
+          -195.2287139892578
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/union_elevador.stl",
+      "bytes": 20884,
+      "sha256": "fb8b63f6bc0fbf8c234c7bc8f71cbdcf546a4fdbed4d1631c01fa069ac04044b",
+      "triangles": 416,
+      "bounds_source_units": [
+        [
+          702.7005615234375,
+          -41.0,
+          -33.29985427856445
+        ],
+        [
+          705.2999877929688,
+          41.0,
+          -30.700145721435547
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "piezas_stl_v12/ventanas.stl",
+      "bytes": 34984,
+      "sha256": "4587ee0426afa6df670ed945886ad5fe18702532122a304d00486b96f4d9228c",
+      "triangles": 698,
+      "bounds_source_units": [
+        [
+          15.0,
+          -61.337730407714844,
+          -2.0
+        ],
+        [
+          244.0,
+          61.3404426574707,
+          84.0
+        ]
+      ],
+      "zero_area_triangles": 0
+    },
+    {
+      "path": "tren_aterrizaje_v12.py",
+      "bytes": 12483,
+      "sha256": "1202f2852c95ffbeaae6bcdfa9c5df23d3dbf76326f0cb24ab7ff00fe8aae1ab"
+    },
+    {
+      "path": "turbo_timber_evolution_v12.blend",
+      "bytes": 32500536,
+      "sha256": "c7b779c228db77b5c2508a8f1d15c0e72131fcbe3843164b0f92724fe1f46cc2"
+    },
+    {
+      "path": "turbo_timber_evolution_v12.step",
+      "bytes": 41181436,
+      "sha256": "e7b072437b3e75c0a5fa0046fb11673395c9bd1c650d2897434595e7faf6b194"
+    },
+    {
+      "path": "turbo_timber_evolution_v12_step.zip",
+      "bytes": 9338138,
+      "sha256": "f74ad7c67ca58e15e6ef5df2648d7381aee88ef57b1b92142431ac9da278281a"
+    }
+  ]
+}

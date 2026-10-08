@@ -23,6 +23,10 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 
 ## Entry points per track
 
+### Turbo Timber Evolution
+
+[TT-00](timber-integration/TT-00/README.md): external Blender/CAD package inventory, reproducible STL and Blender DNA audits, official aircraft/import references and current code seams. The independent [Timber Integration Plan](../TIMBER-INTEGRATION-PLAN.md) owns TT- steps, the curated GLB pipeline, electric-flight prerequisites and later flap/ground validation.
+
 ### Desktop delivery
 
 [DT-00](desktop-delivery-investigations/DT-00/README.md): current launch/export audit, fullscreen and DPI/recovery contract, Windows installer and macOS signing/notarization research, measurement protocol and native acceptance limits. The separate [Desktop Delivery Plan](../DESKTOP-DELIVERY-PLAN.md) owns DT- steps and coordinates existing UI-07/09 and visual/physics work.

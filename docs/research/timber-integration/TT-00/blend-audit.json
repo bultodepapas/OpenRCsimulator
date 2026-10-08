@@ -1,0 +1,5122 @@
+{
+  "format": "openrc-timber-blend-static-audit-v1",
+  "source_sha256": "c7b779c228db77b5c2508a8f1d15c0e72131fcbe3843164b0f92724fe1f46cc2",
+  "parser_sha256": "a82dbec57e0afea1d66c31152a2f738d48a69bdab8a4b295a209ed0da02560e6",
+  "header_parser_sha256": "c6c1a203b0a2f5670d9e1f172741e0d52cb20c9cb54fddca26cdc62f8b7687ef",
+  "block_counts": {
+    "REND": 1,
+    "TEST": 1,
+    "GLOB": 1,
+    "WM": 1,
+    "DATA": 6442,
+    "WS": 11,
+    "SN": 11,
+    "SC": 1,
+    "GR": 1,
+    "OB": 171,
+    "CA": 7,
+    "LA": 2,
+    "ME": 130,
+    "WO": 1,
+    "MA": 20,
+    "IM": 1,
+    "AC": 2,
+    "DNA1": 1,
+    "ENDB": 1
+  },
+  "scenes": [
+    {
+      "name": "Scene",
+      "unit_system": 1,
+      "scale_length": 1.0
+    }
+  ],
+  "objects": [
+    {
+      "name": "Agujero_aleron_der",
+      "type": 0,
+      "parent": "Bisagra_aleron_der",
+      "data": null,
+      "location": [
+        0.03599998354911804,
+        -0.0010000020265579224,
+        -0.019394665956497192
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Agujero_aleron_izq",
+      "type": 0,
+      "parent": "Bisagra_aleron_izq",
+      "data": null,
+      "location": [
+        -0.03600001335144043,
+        -0.0010000020265579224,
+        -0.019394665956497192
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Agujero_elevador",
+      "type": 0,
+      "parent": "Bisagra_elevador",
+      "data": null,
+      "location": [
+        0.024000000208616257,
+        -0.0009999871253967285,
+        -0.01850000023841858
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Agujero_flap_der",
+      "type": 0,
+      "parent": "Bisagra_flap_der",
+      "data": null,
+      "location": [
+        0.09200001507997513,
+        -0.0010000020265579224,
+        -0.014394663274288177
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Agujero_flap_izq",
+      "type": 0,
+      "parent": "Bisagra_flap_izq",
+      "data": null,
+      "location": [
+        -0.09200000762939453,
+        -0.0010000020265579224,
+        -0.014394663274288177
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Agujero_timon",
+      "type": 0,
+      "parent": "Bisagra_timon",
+      "data": null,
+      "location": [
+        -0.059999980032444,
+        -0.01600000075995922,
+        -0.0010001063346862793
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "ala_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "ala_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "ala_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "ala_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "alambre_rueda_cola",
+      "type": 1,
+      "parent": "Bisagra_rueda_cola",
+      "data": "alambre_rueda_cola",
+      "location": [
+        0.06400004029273987,
+        0.0,
+        0.7379999756813049
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aleron_der",
+      "type": 1,
+      "parent": "Bisagra_aleron_der",
+      "data": "aleron_der",
+      "location": [
+        -0.43400004506111145,
+        0.15772588551044464,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aleron_izq",
+      "type": 1,
+      "parent": "Bisagra_aleron_izq",
+      "data": "aleron_izq",
+      "location": [
+        0.43400004506111145,
+        0.15772584080696106,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aleta_dorsal",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "aleta_dorsal",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Anclaje_resorte_der",
+      "type": 0,
+      "parent": "Pivote_tren_der",
+      "data": null,
+      "location": [
+        -0.021501608192920685,
+        0.02897091954946518,
+        -0.07682636380195618
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Anclaje_resorte_izq",
+      "type": 0,
+      "parent": "Pivote_tren_izq",
+      "data": null,
+      "location": [
+        -0.019317176192998886,
+        -0.029251866042613983,
+        -0.07704933732748032
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "arandela_der",
+      "type": 1,
+      "parent": "Eje_rueda_der",
+      "data": "arandela_der",
+      "location": [
+        -0.13199999928474426,
+        0.007999986410140991,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "arandela_izq",
+      "type": 1,
+      "parent": "Eje_rueda_izq",
+      "data": "arandela_izq",
+      "location": [
+        0.13199999928474426,
+        0.008000008761882782,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "baliza",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "baliza",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "bancada_motor",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "bancada_motor",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "barras_ala_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "barras_ala_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "barras_ala_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "barras_ala_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Bisagra_aleron_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.15772585570812225,
+        0.43034061789512634,
+        0.11236687749624252
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_aleron_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.15772585570812225,
+        -0.43034061789512634,
+        0.11236687749624252
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_elevador",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.7040000557899475,
+        0.0,
+        -0.03200000151991844
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_flap_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.15772585570812225,
+        0.054569654166698456,
+        0.09924466162919998
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_flap_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.15772585570812225,
+        -0.054569654166698456,
+        0.09924466162919998
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_rueda_cola",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.7380000352859497,
+        0.0,
+        -0.06400000303983688
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -1.5707963705062866,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Bisagra_timon",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.7380000352859497,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -1.5707963705062866,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "brazo_servo_aleron_der",
+      "type": 1,
+      "parent": "Servo_aleron_der",
+      "data": "brazo_servo_aleron_der",
+      "location": [
+        -0.4700000286102295,
+        0.10411003232002258,
+        -0.0912674069404602
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "brazo_servo_aleron_izq",
+      "type": 1,
+      "parent": "Servo_aleron_izq",
+      "data": "brazo_servo_aleron_izq",
+      "location": [
+        0.4700000286102295,
+        0.104109987616539,
+        -0.0912674069404602
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "brazo_servo_elevador",
+      "type": 1,
+      "parent": "Servo_elevador",
+      "data": "brazo_servo_elevador",
+      "location": [
+        -0.01399998925626278,
+        0.22800002992153168,
+        0.03999999165534973
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "brazo_servo_flap_der",
+      "type": 1,
+      "parent": "Servo_flap_der",
+      "data": "brazo_servo_flap_der",
+      "location": [
+        -0.15000000596046448,
+        0.10411001741886139,
+        -0.0912674069404602
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "brazo_servo_flap_izq",
+      "type": 1,
+      "parent": "Servo_flap_izq",
+      "data": "brazo_servo_flap_izq",
+      "location": [
+        0.15000000596046448,
+        0.10411001741886139,
+        -0.0912674069404602
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "brazo_servo_timon",
+      "type": 1,
+      "parent": "Servo_timon",
+      "data": "brazo_servo_timon",
+      "location": [
+        0.054000020027160645,
+        0.0139999995008111,
+        0.22800001502037048
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "buje_cola",
+      "type": 1,
+      "parent": "Eje_rueda_cola",
+      "data": "buje_cola",
+      "location": [
+        8.455768529813668e-09,
+        -0.11200004070997238,
+        0.7590000033378601
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.570796251296997,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "buje_der",
+      "type": 1,
+      "parent": "Eje_rueda_der",
+      "data": "buje_der",
+      "location": [
+        -0.13199999928474426,
+        0.007999986410140991,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "buje_izq",
+      "type": 1,
+      "parent": "Eje_rueda_izq",
+      "data": "buje_izq",
+      "location": [
+        0.13199999928474426,
+        0.008000008761882782,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "buje_torsion_elevador",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "buje_torsion_elevador",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cable_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.04400000348687172,
+        0.02200000174343586,
+        -0.09021846204996109
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.6536824107170105,
+        -5.3436394864547765e-08,
+        2.8773138523101807
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "cable_der",
+      "type": 1,
+      "parent": "Cable_der",
+      "data": "Cylinder.006",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cable_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.030000001192092896,
+        -0.02200000174343586,
+        -0.09021846204996109
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.6654379367828369,
+        2.314336500219838e-09,
+        0.14844584465026855
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "cable_izq",
+      "type": 1,
+      "parent": "Cable_izq",
+      "data": "Cylinder.007",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_Lateral",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.001",
+      "location": [
+        0.27000001072883606,
+        3.0,
+        0.30000001192092896
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.5441359281539917,
+        8.739171875049578e-08,
+        3.1415927410125732
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_Rueda",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.006",
+      "location": [
+        -0.07587651163339615,
+        0.3520011901855469,
+        0.08714768290519714
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.4385992288589478,
+        2.6272941155980334e-08,
+        -2.9181160926818848
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_Superior",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.002",
+      "location": [
+        1.4500000476837158,
+        1.25,
+        1.75
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.8706925511360168,
+        6.376776440220056e-08,
+        2.317751884460449
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_Tren",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.004",
+      "location": [
+        -0.3184405565261841,
+        -0.30000001192092896,
+        0.12623541057109833
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.4830200672149658,
+        9.58662269567867e-08,
+        -0.8788750171661377
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_Tren_Frente",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.005",
+      "location": [
+        -0.5984405279159546,
+        0.0,
+        0.029999999329447746
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.65652334690094,
+        5.699581606677384e-08,
+        -1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_TresCuartos",
+      "type": 11,
+      "parent": null,
+      "data": "Camera",
+      "location": [
+        -1.0199999809265137,
+        -1.0800000429153442,
+        0.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.3945242166519165,
+        -1.96160847565352e-08,
+        -0.7930315136909485
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Cam_VueloSuperior",
+      "type": 11,
+      "parent": null,
+      "data": "Camera.003",
+      "location": [
+        -0.05000000074505806,
+        -0.949999988079071,
+        3.299999952316284
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.2104574292898178,
+        -0.2297329604625702,
+        0.5404195189476013
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "campana_motor",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "campana_motor",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "capota",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "capota",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "CG_estimado",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "Sphere",
+      "location": [
+        0.060600001364946365,
+        0.0,
+        0.05999999865889549
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "CG_rango_recomendado",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "Cube.006",
+      "location": [
+        0.05849999934434891,
+        0.0,
+        0.05999999865889549
+      ],
+      "scale": [
+        0.010999999940395355,
+        0.30000001192092896,
+        0.004000000189989805
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "collarin_der",
+      "type": 1,
+      "parent": "Pivote_tren_der",
+      "data": "collarin_der",
+      "location": [
+        -0.03700000047683716,
+        -0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "collarin_izq",
+      "type": 1,
+      "parent": "Pivote_tren_izq",
+      "data": "collarin_izq",
+      "location": [
+        -0.03700000047683716,
+        0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "contraplaca",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "contraplaca",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "cuerno_aleron_der",
+      "type": 1,
+      "parent": "Bisagra_aleron_der",
+      "data": "cuerno_aleron_der",
+      "location": [
+        -0.43400004506111145,
+        0.15772588551044464,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "cuerno_aleron_izq",
+      "type": 1,
+      "parent": "Bisagra_aleron_izq",
+      "data": "cuerno_aleron_izq",
+      "location": [
+        0.43400004506111145,
+        0.15772584080696106,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "cuerno_elevador",
+      "type": 1,
+      "parent": "Bisagra_elevador",
+      "data": "cuerno_elevador",
+      "location": [
+        3.0772817183333245e-08,
+        0.7039999961853027,
+        0.03200000524520874
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "cuerno_flap_der",
+      "type": 1,
+      "parent": "Bisagra_flap_der",
+      "data": "cuerno_flap_der",
+      "location": [
+        -0.05799998715519905,
+        0.15772587060928345,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "cuerno_flap_izq",
+      "type": 1,
+      "parent": "Bisagra_flap_izq",
+      "data": "cuerno_flap_izq",
+      "location": [
+        0.05800000578165054,
+        0.15772587060928345,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "cuerno_timon",
+      "type": 1,
+      "parent": "Bisagra_timon",
+      "data": "cuerno_timon",
+      "location": [
+        4.470348358154297e-08,
+        0.0,
+        0.7379999756813049
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "deriva",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "deriva",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "deriva_franja_roja",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "deriva_franja_roja",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "deriva_franjas_negras",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "deriva_franjas_negras",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "eje_motor",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "eje_motor",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Eje_motor",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        -0.2515000104904175,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658104419708,
+        -0.03490658104419708
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Eje_rueda_cola",
+      "type": 0,
+      "parent": "Bisagra_rueda_cola",
+      "data": null,
+      "location": [
+        -0.047999992966651917,
+        0.0,
+        -0.02100008726119995
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Eje_rueda_der",
+      "type": 0,
+      "parent": "Pivote_tren_der",
+      "data": null,
+      "location": [
+        -0.02900000289082527,
+        0.085999995470047,
+        -0.1076534166932106
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Eje_rueda_izq",
+      "type": 0,
+      "parent": "Pivote_tren_izq",
+      "data": null,
+      "location": [
+        -0.02900000289082527,
+        -0.085999995470047,
+        -0.1076534166932106
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "elevador_superior_negro",
+      "type": 1,
+      "parent": "Bisagra_elevador",
+      "data": "elevador_superior_negro",
+      "location": [
+        3.0772817183333245e-08,
+        0.7039999961853027,
+        0.03200000524520874
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "elevador_superior_rojo",
+      "type": 1,
+      "parent": "Bisagra_elevador",
+      "data": "elevador_superior_rojo",
+      "location": [
+        3.0772817183333245e-08,
+        0.7039999961853027,
+        0.03200000524520874
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "escapes",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "escapes",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "eslabon_der",
+      "type": 1,
+      "parent": "Pivote_tren_der",
+      "data": "eslabon_der",
+      "location": [
+        -0.03700000047683716,
+        -0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "eslabon_izq",
+      "type": 1,
+      "parent": "Pivote_tren_izq",
+      "data": "eslabon_izq",
+      "location": [
+        -0.03700000047683716,
+        0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "estab_superior_negro",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "estab_superior_negro",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "estab_superior_rojo",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "estab_superior_rojo",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "estabilizador",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "estabilizador",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "extrados_negro_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "extrados_negro_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "extrados_negro_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "extrados_negro_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "extrados_rojo_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "extrados_rojo_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "extrados_rojo_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "extrados_rojo_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "filete_nariz",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "filete_nariz",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_der",
+      "type": 1,
+      "parent": "Bisagra_flap_der",
+      "data": "flap_der",
+      "location": [
+        -0.05799998715519905,
+        0.15772587060928345,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.03490658476948738,
+        1.7273789509886228e-08,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_izq",
+      "type": 1,
+      "parent": "Bisagra_flap_izq",
+      "data": "flap_izq",
+      "location": [
+        0.05800000578165054,
+        0.15772587060928345,
+        -0.09727975726127625
+      ],
+      "scale": [
+        1.0000001192092896,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.03490659222006798,
+        6.4302021485218575e-09,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "franja_blanca_cola",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "franja_blanca_cola",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "franja_negra_cola",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "franja_negra_cola",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Franja_reflejo",
+      "type": 1,
+      "parent": null,
+      "data": "Plane.002",
+      "location": [
+        0.0,
+        -1.399999976158142,
+        0.18000000715255737
+      ],
+      "scale": [
+        2.5,
+        0.05999999865889549,
+        1.0
+      ],
+      "rotation_euler": [
+        1.5707963705062866,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Franja_reflejo.001",
+      "type": 1,
+      "parent": null,
+      "data": "Plane.003",
+      "location": [
+        0.0,
+        1.399999976158142,
+        0.18000000715255737
+      ],
+      "scale": [
+        2.5,
+        0.05999999865889549,
+        1.0
+      ],
+      "rotation_euler": [
+        1.5707963705062866,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "franjas_negras",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "franjas_negras",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "fuselaje_blanco",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "fuselaje_blanco",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "fuselaje_panza_roja",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "fuselaje_panza_roja",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "guias_varillas",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "guias_varillas",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "helice",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "helice",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "horquilla_aleron_der",
+      "type": 1,
+      "parent": "Agujero_aleron_der",
+      "data": "Cube",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "horquilla_aleron_izq",
+      "type": 1,
+      "parent": "Agujero_aleron_izq",
+      "data": "Cube.001",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "horquilla_elevador",
+      "type": 1,
+      "parent": "Agujero_elevador",
+      "data": "Cube.004",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "horquilla_flap_der",
+      "type": 1,
+      "parent": "Agujero_flap_der",
+      "data": "Cube.002",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "horquilla_flap_izq",
+      "type": 1,
+      "parent": "Agujero_flap_izq",
+      "data": "Cube.003",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "horquilla_timon",
+      "type": 1,
+      "parent": "Agujero_timon",
+      "data": "Cube.005",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "interno_bateria",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "interno_bateria",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "interno_receptor",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "interno_receptor",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "interno_servos_cola",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "interno_servos_cola",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "interno_variador",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "interno_variador",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "intrados_gris_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "intrados_gris_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "intrados_gris_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "intrados_gris_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "luz_nav_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "luz_nav_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "luz_nav_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "luz_nav_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Mandos",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.25,
+        0.0,
+        0.3499999940395355
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "neumatico_der",
+      "type": 1,
+      "parent": "Eje_rueda_der",
+      "data": "neumatico_der",
+      "location": [
+        -0.13199999928474426,
+        0.007999986410140991,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "neumatico_izq",
+      "type": 1,
+      "parent": "Eje_rueda_izq",
+      "data": "neumatico_izq",
+      "location": [
+        0.13199999928474426,
+        0.008000008761882782,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "ojal_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "ojal_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "ojal_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "ojal_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "panel_nariz",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "panel_nariz",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "parabrisas",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "parabrisas",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "pasador_tren_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "pasador_tren_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "pasador_tren_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "pasador_tren_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "pata_der",
+      "type": 1,
+      "parent": "Pivote_tren_der",
+      "data": "pata_der",
+      "location": [
+        -0.03700000047683716,
+        -0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "pata_izq",
+      "type": 1,
+      "parent": "Pivote_tren_izq",
+      "data": "pata_izq",
+      "location": [
+        -0.03700000047683716,
+        0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "perno_eje_der",
+      "type": 1,
+      "parent": "Pivote_tren_der",
+      "data": "perno_eje_der",
+      "location": [
+        -0.03700000047683716,
+        -0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "perno_eje_izq",
+      "type": 1,
+      "parent": "Pivote_tren_izq",
+      "data": "perno_eje_izq",
+      "location": [
+        -0.03700000047683716,
+        0.046000003814697266,
+        0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Pivote_tren_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.03700000047683716,
+        0.046000003814697266,
+        -0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Pivote_tren_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.03700000047683716,
+        -0.046000003814697266,
+        -0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "placas_escape",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "placas_escape",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "puntera_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "puntera_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "puntera_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "puntera_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Reflector_oscuro",
+      "type": 1,
+      "parent": null,
+      "data": "Plane.001",
+      "location": [
+        -0.4000000059604645,
+        0.0,
+        1.600000023841858
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        3.1415927410125732,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Relleno",
+      "type": 10,
+      "parent": null,
+      "data": "Area",
+      "location": [
+        -2.5,
+        -2.5,
+        2.5
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.0319379568099976,
+        3.5431625633464137e-08,
+        -0.823840856552124
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "resorte_der",
+      "type": 1,
+      "parent": "Cable_der",
+      "data": "_resorte_local",
+      "location": [
+        0.0,
+        0.07091288268566132,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "resorte_izq",
+      "type": 1,
+      "parent": "Cable_izq",
+      "data": "_resorte_local.001",
+      "location": [
+        0.0,
+        0.06864207983016968,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "rueda_cola",
+      "type": 1,
+      "parent": "Eje_rueda_cola",
+      "data": "rueda_cola",
+      "location": [
+        8.455768529813668e-09,
+        -0.11200004070997238,
+        0.7590000033378601
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.570796251296997,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "Servo_aleron_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.1041100025177002,
+        0.4665285348892212,
+        0.10761457681655884
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Servo_aleron_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.1041100025177002,
+        -0.4665285348892212,
+        0.10761457681655884
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Servo_elevador",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.22800001502037048,
+        0.014000000432133675,
+        -0.04000000283122063
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Servo_flap_der",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.1041100025177002,
+        0.1467234343290329,
+        0.09644673764705658
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Servo_flap_izq",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.1041100025177002,
+        -0.1467234343290329,
+        0.09644673764705658
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658476948738,
+        1.5707963705062866
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Servo_timon",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.22800001502037048,
+        -0.014000000432133675,
+        -0.05400000140070915
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -1.5707963705062866,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Sol",
+      "type": 10,
+      "parent": null,
+      "data": "Sun",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.8726646304130554,
+        -0.2617993950843811,
+        -0.6108652353286743
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soporte_motor",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "soporte_motor",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soporte_rueda_cola",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "soporte_rueda_cola",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soporte_tren_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "soporte_tren_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soporte_tren_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "soporte_tren_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soportes_slat_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "soportes_slat_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "soportes_slat_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "soportes_slat_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "spinner",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "spinner",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Suelo",
+      "type": 1,
+      "parent": null,
+      "data": "Plane",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tapa_servo_aleron_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tapa_servo_aleron_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tapa_servo_aleron_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tapa_servo_aleron_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tapa_servo_flap_der",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tapa_servo_flap_der",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tapa_servo_flap_izq",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tapa_servo_flap_izq",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "timon_direccion",
+      "type": 1,
+      "parent": "Bisagra_timon",
+      "data": "timon_direccion",
+      "location": [
+        4.470348358154297e-08,
+        0.0,
+        0.7379999756813049
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "timon_franja_roja",
+      "type": 1,
+      "parent": "Bisagra_timon",
+      "data": "timon_franja_roja",
+      "location": [
+        4.470348358154297e-08,
+        0.0,
+        0.7379999756813049
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "timon_franjas_negras",
+      "type": 1,
+      "parent": "Bisagra_timon",
+      "data": "timon_franjas_negras",
+      "location": [
+        4.470348358154297e-08,
+        0.0,
+        0.7379999756813049
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.0,
+        1.570796251296997,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "timon_profundidad",
+      "type": 1,
+      "parent": "Bisagra_elevador",
+      "data": "timon_profundidad",
+      "location": [
+        3.0772817183333245e-08,
+        0.7039999961853027,
+        0.03200000524520874
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tornillos_ala",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tornillos_ala",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tornillos_capota",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tornillos_capota",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tornillos_placa_escape",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tornillos_placa_escape",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tornillos_rueda_cola",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "tornillos_rueda_cola",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tornillos_spinner",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "tornillos_spinner",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "Tren",
+      "type": 0,
+      "parent": "TurboTimber_Evolution",
+      "data": null,
+      "location": [
+        0.03700000047683716,
+        0.0,
+        -0.21034660935401917
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tuerca",
+      "type": 1,
+      "parent": "Eje_motor",
+      "data": "tuerca",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        -2.6179938316345215,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "tuerca_der",
+      "type": 1,
+      "parent": "Eje_rueda_der",
+      "data": "tuerca_der",
+      "location": [
+        -0.13199999928474426,
+        0.007999986410140991,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tuerca_izq",
+      "type": 1,
+      "parent": "Eje_rueda_izq",
+      "data": "tuerca_izq",
+      "location": [
+        0.13199999928474426,
+        0.008000008761882782,
+        0.19800002872943878
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        8.881783138210068e-16,
+        -7.486784133018432e-23,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "TurboTimber_Evolution",
+      "type": 0,
+      "parent": null,
+      "data": null,
+      "location": [
+        0.0,
+        0.0,
+        0.2536129951477051
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.17140398919582367,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": true
+    },
+    {
+      "name": "union_elevador",
+      "type": 1,
+      "parent": "Bisagra_elevador",
+      "data": "union_elevador",
+      "location": [
+        3.0772817183333245e-08,
+        0.7039999961853027,
+        0.03200000524520874
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_aleron_der",
+      "type": 1,
+      "parent": "Servo_aleron_der",
+      "data": "Cylinder",
+      "location": [
+        2.9802322387695312e-08,
+        7.450580596923828e-09,
+        -0.012500002980232239
+      ],
+      "scale": [
+        0.9999999403953552,
+        0.9999999403953552,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.016162946820259094,
+        -0.03490656986832619,
+        -3.141028642654419
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_aleron_izq",
+      "type": 1,
+      "parent": "Servo_aleron_izq",
+      "data": "Cylinder.001",
+      "location": [
+        -2.9802322387695312e-08,
+        1.4901161193847656e-08,
+        -0.012500002980232239
+      ],
+      "scale": [
+        0.9999999403953552,
+        0.9999999403953552,
+        1.0
+      ],
+      "rotation_euler": [
+        -0.016162937507033348,
+        0.03490656986832619,
+        3.141028642654419
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_elevador",
+      "type": 1,
+      "parent": "Servo_elevador",
+      "data": "Cylinder.004",
+      "location": [
+        9.313225746154785e-10,
+        1.4901161193847656e-08,
+        -0.012500006705522537
+      ],
+      "scale": [
+        0.9999999403953552,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.004191923420876265,
+        3.9065259360704374e-10,
+        -3.120631217956543
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_flap_der",
+      "type": 1,
+      "parent": "Servo_flap_der",
+      "data": "Cylinder.002",
+      "location": [
+        1.4901161193847656e-08,
+        1.4901161193847656e-08,
+        -0.0169999897480011
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.15659350156784058,
+        -0.034906066954135895,
+        3.136082649230957
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_flap_izq",
+      "type": 1,
+      "parent": "Servo_flap_izq",
+      "data": "Cylinder.003",
+      "location": [
+        0.0,
+        1.4901161193847656e-08,
+        -0.0169999897480011
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.15659354627132416,
+        0.0349060520529747,
+        -3.136082887649536
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "varilla_timon",
+      "type": 1,
+      "parent": "Servo_timon",
+      "data": "Cylinder.005",
+      "location": [
+        7.450580596923828e-09,
+        -0.012500002048909664,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        0.9999999403953552
+      ],
+      "rotation_euler": [
+        -1.5825350284576416,
+        0.020545005798339844,
+        -1.570796251296997
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": true,
+      "has_drivers": false
+    },
+    {
+      "name": "ventanas",
+      "type": 1,
+      "parent": "TurboTimber_Evolution",
+      "data": "ventanas",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "_resorte_local",
+      "vertices": 265956,
+      "faces": 531900,
+      "corners": 1595700
+    },
+    {
+      "name": "_resorte_local.001",
+      "vertices": 265956,
+      "faces": 531900,
+      "corners": 1595700
+    },
+    {
+      "name": "ala_der",
+      "vertices": 1610,
+      "faces": 3192,
+      "corners": 9576
+    },
+    {
+      "name": "ala_izq",
+      "vertices": 1610,
+      "faces": 3192,
+      "corners": 9576
+    },
+    {
+      "name": "alambre_rueda_cola",
+      "vertices": 780,
+      "faces": 1556,
+      "corners": 4668
+    },
+    {
+      "name": "aleron_der",
+      "vertices": 758,
+      "faces": 1512,
+      "corners": 4536
+    },
+    {
+      "name": "aleron_izq",
+      "vertices": 758,
+      "faces": 1512,
+      "corners": 4536
+    },
+    {
+      "name": "aleta_dorsal",
+      "vertices": 333,
+      "faces": 662,
+      "corners": 1986
+    },
+    {
+      "name": "arandela_der",
+      "vertices": 420,
+      "faces": 840,
+      "corners": 2520
+    },
+    {
+      "name": "arandela_izq",
+      "vertices": 420,
+      "faces": 840,
+      "corners": 2520
+    },
+    {
+      "name": "baliza",
+      "vertices": 5622,
+      "faces": 11236,
+      "corners": 33708
+    },
+    {
+      "name": "bancada_motor",
+      "vertices": 311,
+      "faces": 618,
+      "corners": 1854
+    },
+    {
+      "name": "barras_ala_der",
+      "vertices": 140,
+      "faces": 260,
+      "corners": 780
+    },
+    {
+      "name": "barras_ala_izq",
+      "vertices": 140,
+      "faces": 260,
+      "corners": 780
+    },
+    {
+      "name": "brazo_servo_aleron_der",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "brazo_servo_aleron_izq",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "brazo_servo_elevador",
+      "vertices": 262,
+      "faces": 520,
+      "corners": 1560
+    },
+    {
+      "name": "brazo_servo_flap_der",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "brazo_servo_flap_izq",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "brazo_servo_timon",
+      "vertices": 262,
+      "faces": 520,
+      "corners": 1560
+    },
+    {
+      "name": "buje_cola",
+      "vertices": 210,
+      "faces": 416,
+      "corners": 1248
+    },
+    {
+      "name": "buje_der",
+      "vertices": 2800,
+      "faces": 5600,
+      "corners": 16800
+    },
+    {
+      "name": "buje_izq",
+      "vertices": 2800,
+      "faces": 5600,
+      "corners": 16800
+    },
+    {
+      "name": "buje_torsion_elevador",
+      "vertices": 880,
+      "faces": 1760,
+      "corners": 5280
+    },
+    {
+      "name": "campana_motor",
+      "vertices": 420,
+      "faces": 836,
+      "corners": 2508
+    },
+    {
+      "name": "capota",
+      "vertices": 3943,
+      "faces": 7894,
+      "corners": 23682
+    },
+    {
+      "name": "collarin_der",
+      "vertices": 649,
+      "faces": 1298,
+      "corners": 3894
+    },
+    {
+      "name": "collarin_izq",
+      "vertices": 649,
+      "faces": 1298,
+      "corners": 3894
+    },
+    {
+      "name": "contraplaca",
+      "vertices": 1231,
+      "faces": 2462,
+      "corners": 7386
+    },
+    {
+      "name": "Cube",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.001",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.002",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.003",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.004",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.005",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "Cube.006",
+      "vertices": 8,
+      "faces": 6,
+      "corners": 24
+    },
+    {
+      "name": "cuerno_aleron_der",
+      "vertices": 516,
+      "faces": 1036,
+      "corners": 3108
+    },
+    {
+      "name": "cuerno_aleron_izq",
+      "vertices": 516,
+      "faces": 1036,
+      "corners": 3108
+    },
+    {
+      "name": "cuerno_elevador",
+      "vertices": 572,
+      "faces": 1148,
+      "corners": 3444
+    },
+    {
+      "name": "cuerno_flap_der",
+      "vertices": 516,
+      "faces": 1036,
+      "corners": 3108
+    },
+    {
+      "name": "cuerno_flap_izq",
+      "vertices": 516,
+      "faces": 1036,
+      "corners": 3108
+    },
+    {
+      "name": "cuerno_timon",
+      "vertices": 576,
+      "faces": 1156,
+      "corners": 3468
+    },
+    {
+      "name": "Cylinder",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.001",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.002",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.003",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.004",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.005",
+      "vertices": 24,
+      "faces": 14,
+      "corners": 72
+    },
+    {
+      "name": "Cylinder.006",
+      "vertices": 20,
+      "faces": 12,
+      "corners": 60
+    },
+    {
+      "name": "Cylinder.007",
+      "vertices": 20,
+      "faces": 12,
+      "corners": 60
+    },
+    {
+      "name": "deriva",
+      "vertices": 3319,
+      "faces": 6622,
+      "corners": 19866
+    },
+    {
+      "name": "deriva_franja_roja",
+      "vertices": 120,
+      "faces": 232,
+      "corners": 696
+    },
+    {
+      "name": "deriva_franjas_negras",
+      "vertices": 138,
+      "faces": 264,
+      "corners": 792
+    },
+    {
+      "name": "eje_motor",
+      "vertices": 210,
+      "faces": 416,
+      "corners": 1248
+    },
+    {
+      "name": "elevador_superior_negro",
+      "vertices": 116,
+      "faces": 224,
+      "corners": 672
+    },
+    {
+      "name": "elevador_superior_rojo",
+      "vertices": 104,
+      "faces": 200,
+      "corners": 600
+    },
+    {
+      "name": "escapes",
+      "vertices": 10440,
+      "faces": 20880,
+      "corners": 62640
+    },
+    {
+      "name": "eslabon_der",
+      "vertices": 2947,
+      "faces": 5890,
+      "corners": 17670
+    },
+    {
+      "name": "eslabon_izq",
+      "vertices": 2950,
+      "faces": 5896,
+      "corners": 17688
+    },
+    {
+      "name": "estab_superior_negro",
+      "vertices": 84,
+      "faces": 152,
+      "corners": 456
+    },
+    {
+      "name": "estab_superior_rojo",
+      "vertices": 126,
+      "faces": 244,
+      "corners": 732
+    },
+    {
+      "name": "estabilizador",
+      "vertices": 4992,
+      "faces": 9952,
+      "corners": 29856
+    },
+    {
+      "name": "extrados_negro_der",
+      "vertices": 124,
+      "faces": 236,
+      "corners": 708
+    },
+    {
+      "name": "extrados_negro_izq",
+      "vertices": 124,
+      "faces": 236,
+      "corners": 708
+    },
+    {
+      "name": "extrados_rojo_der",
+      "vertices": 54,
+      "faces": 104,
+      "corners": 312
+    },
+    {
+      "name": "extrados_rojo_izq",
+      "vertices": 54,
+      "faces": 104,
+      "corners": 312
+    },
+    {
+      "name": "filete_nariz",
+      "vertices": 156,
+      "faces": 308,
+      "corners": 924
+    },
+    {
+      "name": "flap_der",
+      "vertices": 748,
+      "faces": 1492,
+      "corners": 4476
+    },
+    {
+      "name": "flap_izq",
+      "vertices": 748,
+      "faces": 1492,
+      "corners": 4476
+    },
+    {
+      "name": "franja_blanca_cola",
+      "vertices": 42,
+      "faces": 74,
+      "corners": 222
+    },
+    {
+      "name": "franja_negra_cola",
+      "vertices": 26,
+      "faces": 48,
+      "corners": 144
+    },
+    {
+      "name": "franjas_negras",
+      "vertices": 469,
+      "faces": 928,
+      "corners": 2784
+    },
+    {
+      "name": "fuselaje_blanco",
+      "vertices": 4335,
+      "faces": 8666,
+      "corners": 25998
+    },
+    {
+      "name": "fuselaje_panza_roja",
+      "vertices": 4867,
+      "faces": 9734,
+      "corners": 29202
+    },
+    {
+      "name": "guias_varillas",
+      "vertices": 840,
+      "faces": 1680,
+      "corners": 5040
+    },
+    {
+      "name": "helice",
+      "vertices": 5496,
+      "faces": 10992,
+      "corners": 32976
+    },
+    {
+      "name": "interno_bateria",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "interno_receptor",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "interno_servos_cola",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "interno_variador",
+      "vertices": 8,
+      "faces": 12,
+      "corners": 36
+    },
+    {
+      "name": "intrados_gris_der",
+      "vertices": 322,
+      "faces": 616,
+      "corners": 1848
+    },
+    {
+      "name": "intrados_gris_izq",
+      "vertices": 322,
+      "faces": 616,
+      "corners": 1848
+    },
+    {
+      "name": "luz_nav_der",
+      "vertices": 2811,
+      "faces": 5618,
+      "corners": 16854
+    },
+    {
+      "name": "luz_nav_izq",
+      "vertices": 2811,
+      "faces": 5618,
+      "corners": 16854
+    },
+    {
+      "name": "neumatico_der",
+      "vertices": 2644,
+      "faces": 5288,
+      "corners": 15864
+    },
+    {
+      "name": "neumatico_izq",
+      "vertices": 2644,
+      "faces": 5288,
+      "corners": 15864
+    },
+    {
+      "name": "ojal_der",
+      "vertices": 11363,
+      "faces": 22726,
+      "corners": 68178
+    },
+    {
+      "name": "ojal_izq",
+      "vertices": 10671,
+      "faces": 21342,
+      "corners": 64026
+    },
+    {
+      "name": "panel_nariz",
+      "vertices": 831,
+      "faces": 1658,
+      "corners": 4974
+    },
+    {
+      "name": "parabrisas",
+      "vertices": 587,
+      "faces": 1170,
+      "corners": 3510
+    },
+    {
+      "name": "pasador_tren_der",
+      "vertices": 210,
+      "faces": 416,
+      "corners": 1248
+    },
+    {
+      "name": "pasador_tren_izq",
+      "vertices": 210,
+      "faces": 416,
+      "corners": 1248
+    },
+    {
+      "name": "pata_der",
+      "vertices": 482,
+      "faces": 960,
+      "corners": 2880
+    },
+    {
+      "name": "pata_izq",
+      "vertices": 482,
+      "faces": 960,
+      "corners": 2880
+    },
+    {
+      "name": "perno_eje_der",
+      "vertices": 222,
+      "faces": 436,
+      "corners": 1308
+    },
+    {
+      "name": "perno_eje_izq",
+      "vertices": 222,
+      "faces": 436,
+      "corners": 1308
+    },
+    {
+      "name": "placas_escape",
+      "vertices": 942,
+      "faces": 1876,
+      "corners": 5628
+    },
+    {
+      "name": "Plane",
+      "vertices": 4,
+      "faces": 1,
+      "corners": 4
+    },
+    {
+      "name": "Plane.001",
+      "vertices": 4,
+      "faces": 1,
+      "corners": 4
+    },
+    {
+      "name": "Plane.002",
+      "vertices": 4,
+      "faces": 1,
+      "corners": 4
+    },
+    {
+      "name": "Plane.003",
+      "vertices": 4,
+      "faces": 1,
+      "corners": 4
+    },
+    {
+      "name": "puntera_der",
+      "vertices": 361,
+      "faces": 718,
+      "corners": 2154
+    },
+    {
+      "name": "puntera_izq",
+      "vertices": 361,
+      "faces": 718,
+      "corners": 2154
+    },
+    {
+      "name": "rueda_cola",
+      "vertices": 5775,
+      "faces": 11546,
+      "corners": 34638
+    },
+    {
+      "name": "soporte_motor",
+      "vertices": 237,
+      "faces": 470,
+      "corners": 1410
+    },
+    {
+      "name": "soporte_rueda_cola",
+      "vertices": 493,
+      "faces": 986,
+      "corners": 2958
+    },
+    {
+      "name": "soporte_tren_der",
+      "vertices": 681,
+      "faces": 1358,
+      "corners": 4074
+    },
+    {
+      "name": "soporte_tren_izq",
+      "vertices": 680,
+      "faces": 1356,
+      "corners": 4068
+    },
+    {
+      "name": "soportes_slat_der",
+      "vertices": 25940,
+      "faces": 51868,
+      "corners": 155604
+    },
+    {
+      "name": "soportes_slat_izq",
+      "vertices": 25940,
+      "faces": 51868,
+      "corners": 155604
+    },
+    {
+      "name": "Sphere",
+      "vertices": 482,
+      "faces": 512,
+      "corners": 1984
+    },
+    {
+      "name": "spinner",
+      "vertices": 2560,
+      "faces": 5128,
+      "corners": 15384
+    },
+    {
+      "name": "tapa_servo_aleron_der",
+      "vertices": 16,
+      "faces": 28,
+      "corners": 84
+    },
+    {
+      "name": "tapa_servo_aleron_izq",
+      "vertices": 16,
+      "faces": 28,
+      "corners": 84
+    },
+    {
+      "name": "tapa_servo_flap_der",
+      "vertices": 16,
+      "faces": 28,
+      "corners": 84
+    },
+    {
+      "name": "tapa_servo_flap_izq",
+      "vertices": 16,
+      "faces": 28,
+      "corners": 84
+    },
+    {
+      "name": "timon_direccion",
+      "vertices": 2636,
+      "faces": 5268,
+      "corners": 15804
+    },
+    {
+      "name": "timon_franja_roja",
+      "vertices": 112,
+      "faces": 216,
+      "corners": 648
+    },
+    {
+      "name": "timon_franjas_negras",
+      "vertices": 196,
+      "faces": 376,
+      "corners": 1128
+    },
+    {
+      "name": "timon_profundidad",
+      "vertices": 626,
+      "faces": 1244,
+      "corners": 3732
+    },
+    {
+      "name": "tornillos_ala",
+      "vertices": 840,
+      "faces": 1672,
+      "corners": 5016
+    },
+    {
+      "name": "tornillos_capota",
+      "vertices": 1680,
+      "faces": 3344,
+      "corners": 10032
+    },
+    {
+      "name": "tornillos_placa_escape",
+      "vertices": 840,
+      "faces": 1672,
+      "corners": 5016
+    },
+    {
+      "name": "tornillos_rueda_cola",
+      "vertices": 420,
+      "faces": 832,
+      "corners": 2496
+    },
+    {
+      "name": "tornillos_spinner",
+      "vertices": 654,
+      "faces": 1296,
+      "corners": 3888
+    },
+    {
+      "name": "tuerca",
+      "vertices": 420,
+      "faces": 840,
+      "corners": 2520
+    },
+    {
+      "name": "tuerca_der",
+      "vertices": 222,
+      "faces": 444,
+      "corners": 1332
+    },
+    {
+      "name": "tuerca_izq",
+      "vertices": 222,
+      "faces": 444,
+      "corners": 1332
+    },
+    {
+      "name": "union_elevador",
+      "vertices": 210,
+      "faces": 416,
+      "corners": 1248
+    },
+    {
+      "name": "ventanas",
+      "vertices": 355,
+      "faces": 698,
+      "corners": 2094
+    }
+  ],
+  "materials": [
+    "Aluminio",
+    "AluminioCP",
+    "Bateria",
+    "Blanco",
+    "Contrachapado",
+    "Cromo",
+    "EspumaNegra",
+    "GrisClaro",
+    "GrisOscuro",
+    "Laton",
+    "LedRojo",
+    "LedVerde",
+    "Negro",
+    "NylonNegro",
+    "PlasticoCapota",
+    "ReflectorOscuro",
+    "Rojo",
+    "SpinnerNegro",
+    "Suelo",
+    "Vidrio"
+  ],
+  "images": [
+    "Render Result"
+  ],
+  "actions": [
+    "MandosAction",
+    "TrenAction"
+  ]
+}
