@@ -1,0 +1,405 @@
+{
+  "conclusion": "success",
+  "databaseId": 37776434091,
+  "headSha": "613e4efe766e13e2207b749619e886b2c6787cc1",
+  "jobs": [
+    {
+      "completedAt": "2026-10-08T13:14:54Z",
+      "conclusion": "success",
+      "databaseId": 113308358734,
+      "name": "Godot app",
+      "startedAt": "2026-10-08T12:22:50Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T12:22:53Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T12:22:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:04Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-08T12:22:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:04Z",
+          "conclusion": "success",
+          "name": "Tagged releases require their own notes",
+          "number": 3,
+          "startedAt": "2026-10-08T12:23:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:19Z",
+          "conclusion": "success",
+          "name": "Run sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv",
+          "number": 4,
+          "startedAt": "2026-10-08T12:23:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:22Z",
+          "conclusion": "success",
+          "name": "Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 5,
+          "startedAt": "2026-10-08T12:23:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:24:12Z",
+          "conclusion": "success",
+          "name": "Aircraft v1 structural contract and loader agreement (DATA-4a)",
+          "number": 6,
+          "startedAt": "2026-10-08T12:23:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:24:12Z",
+          "conclusion": "success",
+          "name": "Generated geometry and physics data match their sources",
+          "number": 7,
+          "startedAt": "2026-10-08T12:24:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:24:17Z",
+          "conclusion": "success",
+          "name": "Offline measurement and validation tool regressions",
+          "number": 8,
+          "startedAt": "2026-10-08T12:24:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:33:24Z",
+          "conclusion": "success",
+          "name": "Run app/test.sh",
+          "number": 9,
+          "startedAt": "2026-10-08T12:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:14:30Z",
+          "conclusion": "success",
+          "name": "Run app/capture.sh",
+          "number": 10,
+          "startedAt": "2026-10-08T12:33:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:14:51Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 11,
+          "startedAt": "2026-10-08T13:14:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:14:51Z",
+          "conclusion": "success",
+          "name": "Post Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 21,
+          "startedAt": "2026-10-08T13:14:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:14:51Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 22,
+          "startedAt": "2026-10-08T13:14:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:14:51Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-08T13:14:51Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091/job/113308358734"
+    },
+    {
+      "completedAt": "2026-10-08T12:23:33Z",
+      "conclusion": "success",
+      "databaseId": 113308358955,
+      "name": "three.js prototype (archived bake-off build)",
+      "startedAt": "2026-10-08T12:22:49Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T12:22:51Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T12:22:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:22:56Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-08T12:22:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:22:57Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "number": 3,
+          "startedAt": "2026-10-08T12:22:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:22:59Z",
+          "conclusion": "success",
+          "name": "Run npm ci",
+          "number": 4,
+          "startedAt": "2026-10-08T12:22:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:22:59Z",
+          "conclusion": "success",
+          "name": "Run npm run typecheck",
+          "number": 5,
+          "startedAt": "2026-10-08T12:22:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:00Z",
+          "conclusion": "success",
+          "name": "Run npm test",
+          "number": 6,
+          "startedAt": "2026-10-08T12:22:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:24Z",
+          "conclusion": "success",
+          "name": "Run npx playwright install --with-deps chromium",
+          "number": 7,
+          "startedAt": "2026-10-08T12:23:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:26Z",
+          "conclusion": "success",
+          "name": "Run npm run capture",
+          "number": 8,
+          "startedAt": "2026-10-08T12:23:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:30Z",
+          "conclusion": "success",
+          "name": "Run npm run e2e",
+          "number": 9,
+          "startedAt": "2026-10-08T12:23:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:30Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 10,
+          "startedAt": "2026-10-08T12:23:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:31Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "number": 19,
+          "startedAt": "2026-10-08T12:23:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:31Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 20,
+          "startedAt": "2026-10-08T12:23:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T12:23:31Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-10-08T12:23:31Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091/job/113308358955"
+    },
+    {
+      "completedAt": "2026-10-08T13:16:26Z",
+      "conclusion": "success",
+      "databaseId": 113330059104,
+      "name": "Release builds (Windows, Linux, macOS)",
+      "startedAt": "2026-10-08T13:14:57Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T13:14:59Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T13:14:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:15:06Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-08T13:14:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:15:22Z",
+          "conclusion": "success",
+          "name": "Run sudo apt-get update && sudo apt-get install -y zip libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1",
+          "number": 3,
+          "startedAt": "2026-10-08T13:15:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:15:25Z",
+          "conclusion": "success",
+          "name": "Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 4,
+          "startedAt": "2026-10-08T13:15:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:15:30Z",
+          "conclusion": "success",
+          "name": "Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 5,
+          "startedAt": "2026-10-08T13:15:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:18Z",
+          "conclusion": "success",
+          "name": "Run app/export.sh",
+          "number": 6,
+          "startedAt": "2026-10-08T13:15:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:23Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 7,
+          "startedAt": "2026-10-08T13:16:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:23Z",
+          "conclusion": "success",
+          "name": "Post Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 12,
+          "startedAt": "2026-10-08T13:16:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:23Z",
+          "conclusion": "success",
+          "name": "Post Run actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "number": 13,
+          "startedAt": "2026-10-08T13:16:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:23Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 14,
+          "startedAt": "2026-10-08T13:16:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:23Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-08T13:16:23Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091/job/113330059104"
+    },
+    {
+      "completedAt": "2026-10-08T13:16:47Z",
+      "conclusion": "success",
+      "databaseId": 113330734791,
+      "name": "GitHub release (v* tags)",
+      "startedAt": "2026-10-08T13:16:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T13:16:30Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T13:16:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:36Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 2,
+          "startedAt": "2026-10-08T13:16:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:38Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093",
+          "number": 3,
+          "startedAt": "2026-10-08T13:16:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:45Z",
+          "conclusion": "success",
+          "name": "Run # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.",
+          "number": 4,
+          "startedAt": "2026-10-08T13:16:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:45Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "number": 8,
+          "startedAt": "2026-10-08T13:16:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T13:16:45Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-10-08T13:16:45Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091/job/113330734791"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/37776434091"
+}
