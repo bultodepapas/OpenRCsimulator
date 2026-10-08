@@ -5,9 +5,11 @@ Defaults match the three-second, 240 Hz smoke flight. Capture/export callers pas
 """
 import argparse
 import csv
+import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import sys
 
 COLUMNS = (
@@ -20,14 +22,52 @@ COLUMNS = (
 TIME_TOLERANCE = 1e-9
 STATE_LAYOUT = 'north_m east_m down_m u_mps v_mps w_mps qw qx qy qz p_radps q_radps r_radps'.split()
 AUX_LAYOUT = 'engine_rpm srv_roll srv_pitch srv_yaw'.split()
+SEMANTIC_HASH_CONVENTION = ('sha256 of Godot JSON.stringify(parsed_input, indent=empty, '
+                            'sort_keys=true, full_precision=false); not file bytes')
+INPUT_HASH_CONVENTION = 'sha256 of exact aircraft input file bytes'
+
+
+def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Path | None) -> str:
+    """Never reinterpret the old rounded semantic digest as an exact file hash."""
+    schema = metadata.get('metadata_schema')
+    if schema == 'openrc-flight-meta v1':
+        if any(key.startswith(('aircraft_input_', 'aircraft_semantic_')) for key in metadata):
+            raise ValueError('legacy metadata v1 cannot contain v2 input/semantic fields')
+        if not allow_legacy:
+            raise ValueError('legacy metadata v1 has no exact input identity; use --allow-legacy-metadata for archival checks')
+        if aircraft_input is not None:
+            raise ValueError('legacy metadata cannot verify --aircraft-input')
+        digest_key, convention_key = 'aircraft_data_sha256', 'aircraft_data_hash_convention'
+        identity = 'legacy semantic-only metadata; exact input identity unavailable'
+    elif schema == 'openrc-flight-meta v2':
+        if any(key in metadata for key in ('aircraft_data_sha256', 'aircraft_data_hash_convention')):
+            raise ValueError('metadata v2 must use explicit input/semantic hash names')
+        if metadata.get('aircraft_input_format') != 'openrc-aircraft v1':
+            raise ValueError('missing or unsupported aircraft input format')
+        if metadata.get('aircraft_input_hash_convention') != INPUT_HASH_CONVENTION:
+            raise ValueError('missing or unsupported aircraft input hash convention')
+        raw_hash = metadata.get('aircraft_input_sha256', '')
+        if not re.fullmatch(r'[0-9a-f]{64}', raw_hash):
+            raise ValueError('missing or invalid exact aircraft input SHA-256')
+        if aircraft_input is not None and hashlib.sha256(aircraft_input.read_bytes()).hexdigest() != raw_hash:
+            raise ValueError('aircraft input bytes do not match recorded SHA-256')
+        digest_key, convention_key = 'aircraft_semantic_sha256', 'aircraft_semantic_hash_convention'
+        identity = ('exact aircraft input bytes verified' if aircraft_input is not None
+                    else 'exact aircraft input SHA-256 recorded (source bytes not checked)')
+    elif schema is None:
+        raise ValueError('unversioned legacy metadata is unsupported; C7-R2 v1 or DATA-3 v2 required')
+    else:
+        raise ValueError('missing or unsupported flight metadata schema')
+    if not re.fullmatch(r'[0-9a-f]{64}', metadata.get(digest_key, '')):
+        raise ValueError('missing or invalid aircraft semantic SHA-256')
+    if metadata.get(convention_key) != SEMANTIC_HASH_CONVENTION:
+        raise ValueError('missing or unsupported aircraft semantic hash convention')
+    return identity
 
 
 def check_metadata(metadata: dict, first: dict) -> None:
-    """Current app evidence requires C7-R2 headers; unversioned legacy headers are not accepted."""
-    if metadata.get('metadata_schema') != 'openrc-flight-meta v1':
-        raise ValueError('missing or unsupported flight metadata schema')
-    for key in ('aircraft', 'configuration', 'aircraft_data_sha256', 'aircraft_data_hash_convention',
-                'loads', 'state_timing'):
+    """C7-R2 state/feature requirements shared by metadata v1 and v2."""
+    for key in ('aircraft', 'configuration', 'loads', 'state_timing'):
         if not metadata.get(key):
             raise ValueError(f'missing flight metadata: {key}')
     for key, allowed in {
@@ -72,7 +112,8 @@ def check_metadata(metadata: dict, first: dict) -> None:
         raise ValueError('propeller metadata declares turbine features')
 
 
-def check(path: Path, duration: float, hz: int) -> str:
+def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
+          aircraft_input: Path | None = None) -> str:
     if not math.isfinite(duration) or duration <= 0 or hz <= 0:
         raise ValueError("duration and tick rate must be finite and positive")
     tick_count = duration * hz
@@ -121,6 +162,7 @@ def check(path: Path, duration: float, hz: int) -> str:
             raise ValueError(f"sample {index}: wrong elapsed time")
         data.append(sample)
     first, last = data[0], data[-1]
+    identity = check_input_identity(metadata, allow_legacy, aircraft_input)
     check_metadata(metadata, first)
     for key, tolerance in (("speed_mps", .01), ("pitch_deg", .05), ("alt_m", .05), ("engine_rpm", 1.0)):
         if abs(last[key] - first[key]) > tolerance:
@@ -135,7 +177,7 @@ def check(path: Path, duration: float, hz: int) -> str:
     if "spring-damper" in ground and "field '" not in ground:
         raise ValueError("gear without the field's surfaces")
     return (f"trimmed level flight: {expected_ticks} ticks, {last['t_s']:.9f} s, all samples finite; "
-            f"alt {first['alt_m']:.3f} -> {last['alt_m']:.3f} m, speed {last['speed_mps']:.4f} m/s")
+            f"alt {first['alt_m']:.3f} -> {last['alt_m']:.3f} m, speed {last['speed_mps']:.4f} m/s; {identity}")
 
 
 def main() -> int:
@@ -143,9 +185,13 @@ def main() -> int:
     parser.add_argument("trace", type=Path)
     parser.add_argument("--duration", type=float, default=3.0, help="requested flight seconds (default: 3)")
     parser.add_argument("--hz", type=int, default=240, help="requested physics ticks/s (default: 240)")
+    parser.add_argument("--aircraft-input", type=Path, help="verify the recorded SHA-256 against this exact input file")
+    parser.add_argument("--allow-legacy-metadata", action="store_true",
+                        help="allow C7-R2 metadata v1 for archival checks; cannot verify exact input bytes")
     args = parser.parse_args()
     try:
-        print(check(args.trace, args.duration, args.hz))
+        print(check(args.trace, args.duration, args.hz, allow_legacy=args.allow_legacy_metadata,
+                    aircraft_input=args.aircraft_input))
     except (OSError, UnicodeError, ValueError, csv.Error) as error:
         print(f"FAIL {error}", file=sys.stderr)
         return 1

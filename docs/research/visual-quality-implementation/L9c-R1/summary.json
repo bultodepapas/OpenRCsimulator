@@ -1,0 +1,199 @@
+{
+  "byte_identical_repeat": true,
+  "capture_environment": {
+    "LP_NUM_THREADS": "1",
+    "OPENRC_SCENERY": "off",
+    "OPENRC_SCENERY_AUDIO": "off",
+    "OPENRC_SCENERY_BIRDS": "off"
+  },
+  "commands": {
+    "filtered": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/home/bulto/OpenRCsimulator/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-r1-final/filtered",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ],
+    "import": [
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/tmp/l9c-r1-final/raw-app",
+      "--audio-driver",
+      "Dummy",
+      "--import"
+    ],
+    "raw": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/l9c-r1-final/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-r1-final/raw",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ],
+    "reference16": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 10240x1024x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/l9c-r1-final/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "10240x1024",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-r1-final/reference16",
+      "--fixture=stripe-reference",
+      "--scale=16"
+    ],
+    "reference8": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 5120x512x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/l9c-r1-final/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "5120x512",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-r1-final/reference8",
+      "--fixture=stripe-reference",
+      "--scale=8"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/home/bulto/OpenRCsimulator/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-r1-final/repeat",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ]
+  },
+  "complete": true,
+  "format": "openrc-l9c-stripe-reference v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "metrics": {
+    "runway_oblique_100": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0014700942665670058,
+        "temporal_rms_linear_rgb": 0.002050579044601333
+      },
+      "mask_pixels": 5311,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.010562943223401101,
+        "temporal_rms_linear_rgb": 0.012154408146048543
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.00789665251289554,
+        "temporal_rms_linear_rgb": 0.012397969409869375
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.0011011577490186858,
+        "temporal_rms_linear_rgb": 0.0014787666513666592
+      }
+    },
+    "runway_oblique_300": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0021797565838451525,
+        "temporal_rms_linear_rgb": 0.003680236291802203
+      },
+      "mask_pixels": 310,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.001832843752987045,
+        "temporal_rms_linear_rgb": 0.003132214643414519
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.013085050868729128,
+        "temporal_rms_linear_rgb": 0.019431085601546716
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.003138353161167246,
+        "temporal_rms_linear_rgb": 0.005466102599464064
+      }
+    },
+    "runway_threshold": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0017583476836222456,
+        "temporal_rms_linear_rgb": 0.0024674788570383326
+      },
+      "mask_pixels": 40358,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.03151372745306819,
+        "temporal_rms_linear_rgb": 0.011365735878156286
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.0028457248663697025,
+        "temporal_rms_linear_rgb": 0.0040085421064595325
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.00031479721469059144,
+        "temporal_rms_linear_rgb": 0.00044463470873741913
+      }
+    }
+  },
+  "negative_controls_rejected": {
+    "no_stripes": "runway_oblique_100/spatial_rms_linear_rgb: filter improvement does not exceed reference disagreement (filtered=0.0105629, raw=0.00789665, reference=0.00110116)",
+    "raw": "runway_oblique_100/spatial_rms_linear_rgb: filter improvement does not exceed reference disagreement (filtered=0.00789665, raw=0.00789665, reference=0.00110116)"
+  },
+  "reference_margin": 2.0,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "scope": "stripe-only error against a 16x reference, separated from measured 8x/16x disagreement; not proven convergence or perceptual shimmer closure",
+  "sources_sha256": {
+    "/home/bulto/OpenRCsimulator/app/render/ground.gdshader": "9b64f95099c16e5b52685e69f33de004f8af32f3f21d56d7c5a6d55b4ffcf61d",
+    "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd": "9d9abcbf6900683c56fcc5653ce6d066d11edb3b17c4a69a7d8a0cd648780745",
+    "/home/bulto/OpenRCsimulator/tools/ground/check_stripes.py": "2193938d05420a2b2f9ac59776c6ab98bde0235c03e22f454cb7d2540a2de464"
+  }
+}

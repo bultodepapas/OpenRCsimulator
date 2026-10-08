@@ -1,0 +1,27 @@
+[
+  {
+    "mutation": "reserialized_input_hash",
+    "exit_code": 1,
+    "failures": [
+      "FAIL raw input identity jensen-das-ugly-stik-60",
+      "FAIL raw input identity gp-extra-300s-60",
+      "FAIL raw input identity p51d-mustang-120",
+      "FAIL raw input identity sebart-avanti-s-a200-p100rx",
+      "FAIL exact hash matches independent file hashing",
+      "FAIL raw hash distinguishes changed bytes",
+      "FAIL exact hash matches independent file hashing",
+      "FAIL raw hash distinguishes changed bytes",
+      "FAIL saved trace preserves exact digest"
+    ]
+  },
+  {
+    "mutation": "reread_path_at_recording",
+    "exit_code": 1,
+    "failures": [
+      "FAIL recording identifies loaded bytes, not later disk content",
+      "FAIL failed reload retains source identity",
+      "FAIL saved trace preserves exact digest",
+      "FAIL in-memory replacement cannot inherit file identity"
+    ]
+  }
+]

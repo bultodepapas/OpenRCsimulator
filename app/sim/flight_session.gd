@@ -718,11 +718,14 @@ func trace_meta() -> Dictionary:
 	var propulsion_model: String = "turbine-ecu-spool-v1" if turbine else (
 		"propeller-shaft-balance-v1" if Propulsion.has_shaft(prop) else "propeller-rpm-lag-v1")
 	return {
-		metadata_schema = "openrc-flight-meta v1",
+		metadata_schema = "openrc-flight-meta v2",
 		scenario = "trimmed %s across view at %.1f m/s (D5: six-axis trim, calm air)" % ["level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))],
 		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), aircraft_path],
-		aircraft_data_sha256 = aircraft.model.get("data_sha256", "in-memory"),
-		aircraft_data_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+		aircraft_input_format = AircraftData.FORMAT,
+		aircraft_input_sha256 = aircraft.get("input_identity", {}).get("sha256", "unavailable: in-memory input"),
+		aircraft_input_hash_convention = "sha256 of exact aircraft input file bytes",
+		aircraft_semantic_sha256 = model.get("data_sha256", "unavailable"),
+		aircraft_semantic_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else "local-surfaces-v1 with bounded attached oracle",
 		propulsion_model = propulsion_model,

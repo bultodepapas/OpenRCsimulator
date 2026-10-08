@@ -1,0 +1,263 @@
+{
+  "byte_identical_repeats": true,
+  "capture_environment": {
+    "LP_NUM_THREADS": "1",
+    "OPENRC_SCENERY": "off",
+    "OPENRC_SCENERY_AUDIO": "off",
+    "OPENRC_SCENERY_BIRDS": "off"
+  },
+  "commands": {
+    "default-repeat-1": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l9c-clean/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/default-repeat-1"
+    ],
+    "default-repeat-2": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l9c-clean/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/default-repeat-2"
+    ],
+    "disabled_surface_mutation": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/l9c-surfaces-clean-final/disabled-surface-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/disabled-surface-run",
+      "--fixture=disabled"
+    ],
+    "disabled_surface_mutation_import": [
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/tmp/l9c-surfaces-clean-final/disabled-surface-app",
+      "--audio-driver",
+      "Dummy",
+      "--import"
+    ],
+    "priority-repeat-1": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l9c-clean/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/priority-repeat-1",
+      "--field=/tmp/l9c-surfaces-clean-final/priority-field.json",
+      "--fixture=priority"
+    ],
+    "priority-repeat-2": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/openrc-l9c-clean/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/priority-repeat-2",
+      "--field=/tmp/l9c-surfaces-clean-final/priority-field.json",
+      "--fixture=priority"
+    ],
+    "unfiltered_stripe_mutation": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 1280x720x24",
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/tmp/l9c-surfaces-clean-final/unfiltered-stripe-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/home/bulto/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/tmp/l9c-surfaces-clean-final/unfiltered-stripe-run",
+      "--fixture=stripe"
+    ],
+    "unfiltered_stripe_mutation_import": [
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/tmp/l9c-surfaces-clean-final/unfiltered-stripe-app",
+      "--audio-driver",
+      "Dummy",
+      "--import"
+    ]
+  },
+  "complete": true,
+  "disabled_surfaces_mutation_rejected": true,
+  "format": "openrc-l9c-surfaces-review v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "metrics": {
+    "aerial_overview": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 2.6524,
+      "half_pixel_shimmer_ratio": 0.08596,
+      "surface_changed_pixels": {
+        "shift0": 6791,
+        "shift05": 6783
+      },
+      "surface_residual_rms_rgb": 30.8558
+    },
+    "reversed_input_priority_fixture": {
+      "mean_limit_levels": 2.0,
+      "mown_ring_changed_pixels": 23040,
+      "mown_ring_mean_rgb_delta_from_rough": 33.394,
+      "p95_limit_levels": 5.0,
+      "runway_core_mean_abs_rgb_delta_from_default": 0.0,
+      "runway_core_p95_abs_rgb_delta_from_default": 0.0,
+      "shader_kind_order": [
+        1,
+        2
+      ],
+      "surface_count": 2
+    },
+    "runway_edge_100m": {
+      "adjacent_rough_median_luma": 94.49,
+      "inside_edge_pixels": 11388,
+      "inside_median_luma": 127.129,
+      "minimum_weber_contrast": 0.05,
+      "outside_edge_pixels": 12800,
+      "weber_contrast": 0.34542
+    },
+    "runway_oblique_100": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 7.0064,
+      "half_pixel_shimmer_ratio": 0.23333,
+      "surface_changed_pixels": {
+        "shift0": 13749,
+        "shift05": 13863
+      },
+      "surface_residual_rms_rgb": 30.0272
+    },
+    "runway_oblique_300": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 11.4528,
+      "half_pixel_shimmer_ratio": 0.69649,
+      "surface_changed_pixels": {
+        "shift0": 2322,
+        "shift05": 2333
+      },
+      "surface_residual_rms_rgb": 16.4435
+    },
+    "runway_stripe_filter_mutation": {
+      "acceptance_status": "open_observational",
+      "per_view": {
+        "oblique_100m": {
+          "filtered_ratio": 0.23333,
+          "interpretation": "observational; no acceptance threshold is claimed",
+          "ratio_reduction": 0.13183,
+          "unfiltered_ratio": 0.26876
+        },
+        "oblique_300m": {
+          "filtered_ratio": 0.69649,
+          "interpretation": "observational; no acceptance threshold is claimed",
+          "ratio_reduction": 0.03405,
+          "unfiltered_ratio": 0.72104
+        }
+      },
+      "raw_square_wave_mutation_captured": true
+    },
+    "runway_threshold": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 3.1901,
+      "half_pixel_shimmer_ratio": 0.0871,
+      "surface_changed_pixels": {
+        "shift0": 94420,
+        "shift05": 94392
+      },
+      "surface_residual_rms_rgb": 36.6252
+    },
+    "runway_zoom_100": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 0.2836,
+      "half_pixel_shimmer_ratio": 0.00955,
+      "surface_changed_pixels": {
+        "shift0": 11388,
+        "shift05": 11385
+      },
+      "surface_residual_rms_rgb": 29.6887
+    },
+    "runway_zoom_300": {
+      "comparison": "surface residual only; observational and includes expected half-pixel camera motion",
+      "half_pixel_residual_rms_delta_rgb": 0.2038,
+      "half_pixel_shimmer_ratio": 0.01525,
+      "surface_changed_pixels": {
+        "shift0": 2560,
+        "shift05": 2560
+      },
+      "surface_residual_rms_rgb": 13.3663
+    }
+  },
+  "no_filter_stripe_mutation_captured": true,
+  "no_filter_stripe_mutation_rejected": false,
+  "project": "/tmp/openrc-l9c-clean/app",
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "renderer_driver": "opengl3",
+  "renderer_method": "gl_compatibility",
+  "repeat_capture_counts": {
+    "default": 24,
+    "priority": 4
+  },
+  "repeat_processes": 2,
+  "sources_sha256": {
+    "data/fields/default.json": "42a1a2e020966d76826b5084b5af78bd8328f9e481d3092f140fa52e25bb61b1",
+    "render/atmosphere.gd": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70",
+    "render/field.gd": "6ca833b2a856f6478ab0c6982acc8e8172b169dae46cd1fc645d23e88bc43689",
+    "render/ground.gd": "8fd196dd3963fbfb95024f8a5f4ee454e3139af3270b84e19e71ce8cad6b341e",
+    "render/ground.gdshader": "9b64f95099c16e5b52685e69f33de004f8af32f3f21d56d7c5a6d55b4ffcf61d",
+    "tools/ground/capture_surfaces.gd": "8f86c8edd4efa93432741d7cd988f0fcea4dc6d38c282146b329763f7a5866dc",
+    "tools/ground/check_surfaces.py": "30a4ce20580e1f24d06eb5a1af6b7ba223b8a3fe6be38176398cab77be302f4f"
+  },
+  "stripe_filter_acceptance": "open_observational"
+}

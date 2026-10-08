@@ -2,6 +2,8 @@
 
 2026-10-07 · **Status: GDScript optimization and a research-only native probe verified; E0b6p budget remains open.** No production aircraft-data change or native dependency. The [complete native wake experiment](native/README.md) is the follow-up to the scalar pass recorded below.
 
+Latest follow-up: [prepared native models](prepared-model/README.md) preserve exact loads and trajectories with explicit invalidation and snapshot isolation. Two runs show active swirling savings, but candidate ticks remain 515–614 µs, above budget. The next bounded work is remaining-cost attribution; production integration and Gate P stay open. The earlier [stage-local sharing candidate](stage-sharing/README.md) remains unadopted.
+
 ## Scope
 
 E0b6's distributed correction resolves the centroid swirl error, but costs 16–24 ms per active 240 Hz tick on the shared target. The current step removes avoidable implementation overhead while retaining the same five-point quadrature, chord intervals, core/occupancy splits, local force law, reverse fade and RK-stage evaluation. It does not loosen the accuracy criterion, lower the physics rate or hold stage-dependent loads across a tick.

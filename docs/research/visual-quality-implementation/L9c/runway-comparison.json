@@ -1,0 +1,403 @@
+{
+  "verdict": "visual-only change",
+  "frames": 51,
+  "identical_frames": 7,
+  "changed_frames": 44,
+  "all_flight_state_fields_equal": true,
+  "frames_summary": [
+    {
+      "image": "pilot/t000.0.png",
+      "status": "changed",
+      "changed_pixels": 10594,
+      "changed_share": 0.0115,
+      "max_level": 60,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t000.0.png",
+      "status": "changed",
+      "changed_pixels": 42388,
+      "changed_share": 0.04599,
+      "max_level": 34,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t000.0.png",
+      "status": "changed",
+      "changed_pixels": 63160,
+      "changed_share": 0.06853,
+      "max_level": 128,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t000.0.png",
+      "status": "changed",
+      "changed_pixels": 2002,
+      "changed_share": 0.00217,
+      "max_level": 35,
+      "state_changes": {}
+    },
+    {
+      "image": "closeup/t000.0.png",
+      "status": "changed",
+      "changed_pixels": 41465,
+      "changed_share": 0.04499,
+      "max_level": 147,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t001.0.png",
+      "status": "changed",
+      "changed_pixels": 10594,
+      "changed_share": 0.0115,
+      "max_level": 60,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t001.0.png",
+      "status": "changed",
+      "changed_pixels": 42413,
+      "changed_share": 0.04602,
+      "max_level": 34,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t001.0.png",
+      "status": "changed",
+      "changed_pixels": 63161,
+      "changed_share": 0.06853,
+      "max_level": 128,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t001.0.png",
+      "status": "changed",
+      "changed_pixels": 2008,
+      "changed_share": 0.00218,
+      "max_level": 35,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t002.0.png",
+      "status": "changed",
+      "changed_pixels": 10597,
+      "changed_share": 0.0115,
+      "max_level": 60,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t002.0.png",
+      "status": "changed",
+      "changed_pixels": 42389,
+      "changed_share": 0.046,
+      "max_level": 34,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t002.0.png",
+      "status": "changed",
+      "changed_pixels": 63201,
+      "changed_share": 0.06858,
+      "max_level": 128,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t002.0.png",
+      "status": "changed",
+      "changed_pixels": 2004,
+      "changed_share": 0.00217,
+      "max_level": 35,
+      "state_changes": {}
+    },
+    {
+      "image": "closeup/t002.0.png",
+      "status": "changed",
+      "changed_pixels": 41497,
+      "changed_share": 0.04503,
+      "max_level": 147,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t003.0.png",
+      "status": "changed",
+      "changed_pixels": 10589,
+      "changed_share": 0.01149,
+      "max_level": 61,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t003.0.png",
+      "status": "changed",
+      "changed_pixels": 43842,
+      "changed_share": 0.04757,
+      "max_level": 36,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t003.0.png",
+      "status": "changed",
+      "changed_pixels": 63910,
+      "changed_share": 0.06935,
+      "max_level": 132,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t003.0.png",
+      "status": "changed",
+      "changed_pixels": 2004,
+      "changed_share": 0.00217,
+      "max_level": 100,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t004.0.png",
+      "status": "changed",
+      "changed_pixels": 10412,
+      "changed_share": 0.0113,
+      "max_level": 62,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t004.0.png",
+      "status": "changed",
+      "changed_pixels": 31207,
+      "changed_share": 0.03386,
+      "max_level": 34,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t004.0.png",
+      "status": "changed",
+      "changed_pixels": 74023,
+      "changed_share": 0.08032,
+      "max_level": 136,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t004.0.png",
+      "status": "changed",
+      "changed_pixels": 2005,
+      "changed_share": 0.00218,
+      "max_level": 46,
+      "state_changes": {}
+    },
+    {
+      "image": "closeup/t004.0.png",
+      "status": "changed",
+      "changed_pixels": 41885,
+      "changed_share": 0.04545,
+      "max_level": 151,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t005.0.png",
+      "status": "changed",
+      "changed_pixels": 10263,
+      "changed_share": 0.01114,
+      "max_level": 43,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t005.0.png",
+      "status": "changed",
+      "changed_pixels": 28574,
+      "changed_share": 0.031,
+      "max_level": 32,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t005.0.png",
+      "status": "changed",
+      "changed_pixels": 55580,
+      "changed_share": 0.06031,
+      "max_level": 51,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t005.0.png",
+      "status": "changed",
+      "changed_pixels": 1999,
+      "changed_share": 0.00217,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t006.0.png",
+      "status": "changed",
+      "changed_pixels": 15974,
+      "changed_share": 0.01733,
+      "max_level": 45,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t006.0.png",
+      "status": "changed",
+      "changed_pixels": 9117,
+      "changed_share": 0.00989,
+      "max_level": 24,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t006.0.png",
+      "status": "changed",
+      "changed_pixels": 37063,
+      "changed_share": 0.04022,
+      "max_level": 48,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t006.0.png",
+      "status": "changed",
+      "changed_pixels": 1997,
+      "changed_share": 0.00217,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t007.0.png",
+      "status": "changed",
+      "changed_pixels": 11989,
+      "changed_share": 0.01301,
+      "max_level": 40,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t007.0.png",
+      "status": "changed",
+      "changed_pixels": 1466,
+      "changed_share": 0.00159,
+      "max_level": 30,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t007.0.png",
+      "status": "changed",
+      "changed_pixels": 19042,
+      "changed_share": 0.02066,
+      "max_level": 49,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t007.0.png",
+      "status": "changed",
+      "changed_pixels": 1997,
+      "changed_share": 0.00217,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t008.0.png",
+      "status": "changed",
+      "changed_pixels": 6730,
+      "changed_share": 0.0073,
+      "max_level": 47,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t008.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t008.0.png",
+      "status": "changed",
+      "changed_pixels": 12221,
+      "changed_share": 0.01326,
+      "max_level": 47,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t008.0.png",
+      "status": "changed",
+      "changed_pixels": 1998,
+      "changed_share": 0.00217,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t009.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t009.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t009.0.png",
+      "status": "changed",
+      "changed_pixels": 8461,
+      "changed_share": 0.00918,
+      "max_level": 49,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t009.0.png",
+      "status": "changed",
+      "changed_pixels": 1984,
+      "changed_share": 0.00215,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t010.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t010.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t010.0.png",
+      "status": "changed",
+      "changed_pixels": 6238,
+      "changed_share": 0.00677,
+      "max_level": 49,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t010.0.png",
+      "status": "changed",
+      "changed_pixels": 1981,
+      "changed_share": 0.00215,
+      "max_level": 28,
+      "state_changes": {}
+    },
+    {
+      "image": "pilot/t012.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "chase/t012.0.png",
+      "status": "identical",
+      "changed_pixels": 0,
+      "state_changes": {}
+    },
+    {
+      "image": "side/t012.0.png",
+      "status": "changed",
+      "changed_pixels": 3921,
+      "changed_share": 0.00425,
+      "max_level": 45,
+      "state_changes": {}
+    },
+    {
+      "image": "wide/t012.0.png",
+      "status": "changed",
+      "changed_pixels": 1982,
+      "changed_share": 0.00215,
+      "max_level": 28,
+      "state_changes": {}
+    }
+  ]
+}

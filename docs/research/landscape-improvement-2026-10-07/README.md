@@ -100,12 +100,14 @@ Effort figures are planning estimates for one developer who knows the repo.
 
 ### Phase 4 — Field surfaces in the ground shader (≈ 3–4 days) · L9c, O-6
 
+The [L9c ground-pass follow-up](../visual-quality-implementation/L9c/README.md) integrates contained flat rectangles, retains custom-layout fallbacks, and verifies edge contrast, priority, flight and readability. [L9c-R1](../visual-quality-implementation/L9c-R1/README.md) adds a stripe-only sampling regression against supersampled references. Perceptual shimmer acceptance and the paved option remain open; canonical status stays in LANDSCAPE-PLAN.
+
 | Change | How | Target |
 | --- | --- | --- |
 | **One shader for every surface** | Field rectangles as signed distances (uniform arrays, early-out on the field's bounding box). Remove the lifted `PlaneMesh` per surface in `field.gd` | No lifted overlay past ~300 m (24-bit depth step: 6 mm at 100 m, 5 cm at 300 m) |
 | **Mown runway** | Stripes **1.5 m** wide (1.2–1.8 m: one ride-on deck) along the runway; view-dependent value `±(3–6 %)·dot(view_xz, bend_dir)`; stripe ripple ≤ ½ the runway edge step | Reads as mown turf from 10 to 100 m |
 | **Borders and wear** | Mown→rough border broken by noise (amplitude 0.3–0.8 m, wavelength 2–6 m); rough value ×0.75–0.85, hue −3 to −8°; worn touchdown zones 10–30 m from each threshold; taxi paths 1–2 m | No ruler-straight edges |
-| **Filtering** | An exact 1-D box filter for lines; a square-wave integral for stripes and dashes, by pixel footprint (`fwidth`); MSAA does not reach in-shader patterns. Formulas in 04 §6 | A 2-frame diff under a 0.5 px camera move shows no shimmer; zoomed (10°) views at 100 and 300 m, because auto-zoom magnifies the far runway 5–8× |
+| **Filtering** | An exact 1-D box filter for lines; a square-wave integral for stripes and dashes, by pixel footprint (`fwidth`); MSAA does not reach in-shader patterns. Formulas in 04 §6 | Reference-subtracted stripe-only error under a 0.5 px camera move, with raw-wave and erased-detail controls; zoomed (10°) views at 100 and 300 m. Raw frame differences include legitimate motion; owner/target-GPU shimmer acceptance remains separate |
 | **Paved field `paved.json` (O-6)** | Poly Haven **`aerial_asphalt_01`** (CC0, 30 m tile, cracks and tyre marks) as **detail only**: texture / its mean × the albedo from the field data. Markings drawn analytically: dashed white centreline 0.3 m (dash = gap, ≈ 7.7 m period), yellow X ≈ sRGB (200, 167, 65) with a threshold bar, six black start-up pads | Photo match: fresh asphalt at 0.27× the grass luminance; white paint linear ≈ 0.7, worn 20–40 % in blotches |
 | **Physics pair** | `asphalt` surface type in `surface_friction.json` (factors 1.0/1.0): the physics line's file | Same rectangles feed the drawing and the friction |
 

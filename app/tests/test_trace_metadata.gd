@@ -6,6 +6,7 @@ const Recorder := preload("res://sim/recorder.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Trace := preload("res://sim/trace.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 
 var _failures: int = 0
 var _checks: int = 0
@@ -41,7 +42,11 @@ func _initialize() -> void:
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
 		var meta: Dictionary = session.trace_meta()
 		_check("active aircraft " + entry.id, meta.aircraft.begins_with(entry.id))
-		_check("metadata schema", meta.metadata_schema == "openrc-flight-meta v1")
+		_check("metadata schema", meta.metadata_schema == "openrc-flight-meta v2")
+		_check("input schema", meta.aircraft_input_format == AircraftData.FORMAT)
+		_check("raw input identity " + entry.id, meta.aircraft_input_sha256 == FileAccess.get_sha256(entry.data))
+		_check("semantic hash is separately named", meta.aircraft_semantic_sha256 == session.aircraft.model.data_sha256)
+		_check("ambiguous legacy hash absent", not meta.has("aircraft_data_sha256"))
 		_check("rigid body layout", JSON.parse_string(meta.state_layout).size() == RB.SIZE)
 		_check("auxiliary layout", JSON.parse_string(meta.aux_layout) == Trace.COLUMNS.slice(30))
 		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
@@ -98,7 +103,63 @@ func _initialize() -> void:
 	_check("glide retains configured propulsion model", glide.propulsion_model == "propeller-rpm-lag-v1")
 	_check("glide engine stopped", glide.recording_start_engine_running == "false")
 	_check("glide RPM snapshot zero", JSON.parse_string(glide.recording_start_aux)[0] == 0.0)
+	_test_input_identity(session)
 	recorder.detach()
 	session.free()
-	print("C7-R2: %d checks, %d failed" % [_checks, _failures])
+	print("C7-R2 / DATA-3: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _write(path: String, content: String) -> void:
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	_check("temporary input opens", file != null)
+	if file != null:
+		file.store_buffer(content.to_utf8_buffer())
+		file.close()
+
+
+func _test_input_identity(session: Node) -> void:
+	var source_path: String = Catalog.entry(Catalog.DEFAULT_ID).data
+	var source: String = FileAccess.get_file_as_string(source_path)
+	var original: Dictionary = AircraftData.load_file(source_path)
+	var path: String = "user://data3-input-%d.json" % OS.get_process_id()
+	var output: String = "user://data3-trace-%d.csv" % OS.get_process_id()
+	var raw: Dictionary = JSON.parse_string(source)
+	var memory: Dictionary = AircraftData.validate_and_derive(raw)
+	_check("in-memory input has no file identity", memory.ok and not memory.has("input_identity"))
+	_check("file identity does not change derived model/checkpoints", original.model == memory.model)
+
+	# Both formatting-only changes and late numerical digits escaped the old fingerprint.
+	var formatted: String = source.replace("\n", "\r\n") + " \t\r\n"
+	var late_digit: String = source.replace('"value": 0.1068,', '"value": 0.1068000000000001,')
+	_check("late-digit fixture changes input", source != late_digit)
+	for changed in [formatted, late_digit]:
+		_write(path, changed)
+		var loaded: Dictionary = AircraftData.load_file(path)
+		_check("changed input loads", loaded.ok)
+		if not loaded.ok:
+			continue
+		_check("exact hash matches independent file hashing", loaded.input_identity.sha256 == FileAccess.get_sha256(path))
+		_check("raw hash distinguishes changed bytes", loaded.input_identity.sha256 != original.input_identity.sha256)
+		_check("legacy rounded semantic digest collides", loaded.model.data_sha256 == original.model.data_sha256)
+		if changed == late_digit:
+			_check("late digit reaches physics model", loaded.model.aero.CL0 != original.model.aero.CL0)
+
+	_write(path, source)
+	session.aircraft_path = path
+	_check("temporary source reloads", session.reload().begins_with("aircraft reloaded:"))
+	var before: Dictionary = session.trace_meta()
+	_write(path, "{}")
+	_check("recording identifies loaded bytes, not later disk content", session.trace_meta().aircraft_input_sha256 == before.aircraft_input_sha256)
+	_check("failed reload refuses replacement", session.reload().begins_with("reload failed"))
+	_check("failed reload retains source identity", session.trace_meta().aircraft_input_sha256 == before.aircraft_input_sha256)
+	var trace: RefCounted = Trace.new()
+	trace.meta = session.trace_meta()
+	_check("trace artifact saves", trace.save(output) == OK)
+	_check("saved trace preserves exact digest", FileAccess.get_file_as_string(output).contains(
+		"# aircraft_input_sha256: " + FileAccess.get_sha256(source_path)))
+	_check("in-memory candidate applies", session._apply(memory))
+	_check("in-memory replacement cannot inherit file identity", session.trace_meta().aircraft_input_sha256 == "unavailable: in-memory input")
+	_check("invalid input has no identity", not AircraftData.load_file(path).has("input_identity"))
+	_check("temporary input removed", DirAccess.remove_absolute(ProjectSettings.globalize_path(path)) == OK)
+	_check("temporary trace removed", DirAccess.remove_absolute(ProjectSettings.globalize_path(output)) == OK)

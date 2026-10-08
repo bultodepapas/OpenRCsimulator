@@ -89,44 +89,32 @@ func _test_builder_contract() -> void:
 	var first: Node3D = FieldBuilder.build(normalized)
 	var second: Node3D = FieldBuilder.build(normalized)
 	_check("builder leaves normalized input unchanged", JSON.stringify(normalized) == original_normalized)
-	_check("builder creates one named mesh per surface", first.get_child_count() == 4
+	_check("builder consolidates contained surfaces into the rough ground pass", first.get_child_count() == 2
 		and first.get_node_or_null("NearGrass") is Node3D
 		and first.get_node_or_null("rough") is MeshInstance3D
-		and first.get_node_or_null("mown") is MeshInstance3D
-		and first.get_node_or_null("runway") is MeshInstance3D)
+		and first.get_node_or_null("mown") == null
+		and first.get_node_or_null("runway") == null
+		and bool(first.get_meta("surfaces_consolidated", false)))
 	_check("field builder owns no camera, environment, session or collision nodes", _field_has_only_surface_meshes(first))
 
 	var rough: MeshInstance3D = first.get_node("rough") as MeshInstance3D
-	var mown: MeshInstance3D = first.get_node("mown") as MeshInstance3D
-	var runway: MeshInstance3D = first.get_node("runway") as MeshInstance3D
 	var rough_mesh: PlaneMesh = rough.mesh as PlaneMesh
-	var mown_mesh: PlaneMesh = mown.mesh as PlaneMesh
-	var runway_mesh: PlaneMesh = runway.mesh as PlaneMesh
-	_check("rectangles use east-west length and north-south width",
-		rough_mesh.size == Vector2(100.0, 100.0)
-		and mown_mesh.size == Vector2(20.0, 20.0)
-		and runway_mesh.size == Vector2(10.0, 4.0))
-	_check("overlap layering gives rough < mown < runway",
-		is_equal_approx(rough.position.y, 0.0)
-		and is_equal_approx(mown.position.y, 0.015)
-		and is_equal_approx(runway.position.y, 0.03))
-	_check("every surface is drawn by the ground shader (landscape Phase 4)",
-		rough.material_override is ShaderMaterial
-		and mown.material_override is ShaderMaterial
-		and runway.material_override is ShaderMaterial)
+	_check("rough rectangle keeps its dimensions and datum", rough_mesh.size == Vector2(100.0, 100.0)
+		and is_equal_approx(rough.position.y, 0.0))
+	_check("one ground material stores both colored rectangles", rough.material_override is ShaderMaterial)
 	var rough_material: ShaderMaterial = rough.material_override as ShaderMaterial
-	var mown_material: ShaderMaterial = mown.material_override as ShaderMaterial
-	var runway_material: ShaderMaterial = runway.material_override as ShaderMaterial
-	_check("surface kind and rectangle are selected by surface type",
-		[null, 0].has(rough_material.get_shader_parameter("surface_kind")) # unset: the shader's default, rough
-		and mown_material.get_shader_parameter("surface_kind") == 1
-		and runway_material.get_shader_parameter("surface_kind") == 2
-		and runway_material.get_shader_parameter("rect_half") == Vector2(5.0, 2.0)
-		and runway_material.get_shader_parameter("rect_center") == Vector2(runway.position.x, runway.position.z)
-		and mown_material.get_shader_parameter("rect_half") == Vector2(10.0, 10.0))
-	_check("overlapping surfaces remain separate resources that share the build's grass texture",
-		not is_same(mown_material, runway_material) and not is_same(rough_material, mown_material)
-		and is_same(rough_material.get_shader_parameter("grass"), runway_material.get_shader_parameter("grass")))
+	var rects: PackedVector4Array = rough_material.get_shader_parameter("surface_rects")
+	var kinds: PackedInt32Array = rough_material.get_shader_parameter("surface_kinds")
+	_check("surface kinds are priority ordered and retain their rectangles",
+		rough_material.get_shader_parameter("surface_count") == 2
+		and kinds[0] == 1 and rects[0] == Vector4(0.0, 0.0, 10.0, 10.0)
+		and kinds[1] == 2 and rects[1] == Vector4(0.0, 0.0, 5.0, 2.0)
+		and rough_material.get_shader_parameter("surface_bounds") == Vector4(-10.0, -10.0, 10.0, 10.0))
+	var second_rough: MeshInstance3D = second.get_node("rough") as MeshInstance3D
+	var second_material: ShaderMaterial = second_rough.material_override as ShaderMaterial
+	_check("separate field builds own their material and grass texture",
+		not is_same(rough_material, second_material)
+		and not is_same(rough_material.get_shader_parameter("grass"), second_material.get_shader_parameter("grass")))
 	_check("two builds create independent trees, meshes, materials and grass textures",
 		_field_instances_are_independent(first, second))
 	first.free()
@@ -325,11 +313,18 @@ func _surface(id: String, kind: String, north: float, east: float, length: float
 
 
 func _custom_runway_is_present(field_node: Node3D) -> bool:
-	var runway: MeshInstance3D = field_node.get_node_or_null("runway") as MeshInstance3D
-	if runway == null or not runway.mesh is PlaneMesh:
+	if not bool(field_node.get_meta("surfaces_consolidated", false)):
 		return false
-	var plane: PlaneMesh = runway.mesh as PlaneMesh
-	return plane.size == Vector2(132.0, 18.0) and runway.position.is_equal_approx(Vector3(-11.25, 0.03, -38.5))
+	var rough: MeshInstance3D = field_node.get_node_or_null("rough") as MeshInstance3D
+	if rough == null or field_node.get_node_or_null("runway") != null:
+		return false
+	var material: ShaderMaterial = rough.material_override as ShaderMaterial
+	if material == null or material.get_shader_parameter("surface_count") != 1:
+		return false
+	var rects: PackedVector4Array = material.get_shader_parameter("surface_rects")
+	var kinds: PackedInt32Array = material.get_shader_parameter("surface_kinds")
+	return rects.size() == 32 and kinds.size() == 32 \
+		and rects[0] == Vector4(-11.25, -38.5, 66.0, 9.0) and kinds[0] == 2
 
 
 func _field_signature(field_node: Node3D) -> Array[Dictionary]:
@@ -358,6 +353,10 @@ func _field_signature(field_node: Node3D) -> Array[Dictionary]:
 			entry["surface_kind"] = shader_material.get_shader_parameter("surface_kind")
 			entry["rect_center"] = shader_material.get_shader_parameter("rect_center")
 			entry["rect_half"] = shader_material.get_shader_parameter("rect_half")
+			entry["surface_count"] = shader_material.get_shader_parameter("surface_count")
+			entry["surface_rects"] = shader_material.get_shader_parameter("surface_rects")
+			entry["surface_kinds"] = shader_material.get_shader_parameter("surface_kinds")
+			entry["surface_bounds"] = shader_material.get_shader_parameter("surface_bounds")
 			var grass_texture: Texture2D = shader_material.get_shader_parameter("grass") as Texture2D
 			entry["grass_size"] = grass_texture.get_size() if grass_texture != null else Vector2i.ZERO
 			entry["grass_data"] = grass_texture.get_image().get_data() if grass_texture != null else PackedByteArray()

@@ -1,0 +1,7 @@
+{
+  "equal_to": "../L11a/readability-after.json",
+  "groups": 8,
+  "pose_metrics": 48,
+  "captures": 64,
+  "entire_reports_equal": true
+}

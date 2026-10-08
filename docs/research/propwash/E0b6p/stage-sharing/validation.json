@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "baseline_suite_exit_code": 0,
+  "baseline_log_sha256": "3f0c0690978b9fbb62958cd0ef1097813e01782d8c443ca2755e51de621391bc",
+  "baseline_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "staged_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "comparator_mutations_rejected": {
+    "native-run1": [
+      "missing_row",
+      "nonfinite_timing",
+      "different_hash",
+      "missing_boundaries"
+    ],
+    "native-run2": [
+      "missing_row",
+      "nonfinite_timing",
+      "different_hash",
+      "missing_boundaries"
+    ],
+    "gdscript": [
+      "missing_row",
+      "nonfinite_timing",
+      "different_hash",
+      "missing_boundaries"
+    ]
+  },
+  "fresh_clone": "native-run2; git clone --no-hardlinks --dissociate plus this research harness; native binary supplied explicitly",
+  "source_sha256": {
+    "research/propwash/e0b6p/stage-sharing/run.py": "fc8f07b978bef3d3c3efa08ee0a9d11e969ef4c2ab4073f2e87b1555ea44c62d",
+    "research/propwash/e0b6p/stage-sharing/probe.gd": "0fb2cee4cc8688ac6ac928cabe27548f76bd861990369768c340b3f66931c172",
+    "research/propwash/e0b6p/stage-sharing/mechanism.gd": "e48e71a66d76b5a66b3d8adb0460c317d455d5b68cc95547ef37b12706380384"
+  },
+  "final_staged_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "final_source_hashes_match": true
+}

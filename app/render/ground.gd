@@ -8,6 +8,9 @@ const Atmosphere := preload("res://render/atmosphere.gd")
 const SIZE := 256
 ## Field surface types as the ground shader's surface_kind (Phase 4).
 const SURFACE_KIND: Dictionary = {"rough": 0, "mown": 1, "runway": 2}
+# L9c: a bounded shader batch, not a field-format limit. Unsupported layouts keep the legacy planes.
+const MAX_SURFACES: int = 32
+const HORIZON_FLAT_RADIUS_M: float = 1500.0
 
 
 ## Seamless grass tile: a few octaves of value noise around Spec.GRASS, with mipmaps for distant ground.
@@ -74,3 +77,58 @@ static func surface_material(grass: ShaderMaterial, type: String, center: Vector
 ## The grass: texture in world space, matte, with the haze and the rim fade as custom fog (render/ground.gdshader).
 static func grass_material() -> ShaderMaterial:
 	return Atmosphere.ground_material(ImageTexture.create_from_image(grass_image()))
+
+
+## Pack contained, flat surface rectangles into the ground pass. Return false before changing the material
+## when the existing field contract needs independent planes (uncontained rectangles, hills, large batches).
+static func configure_surfaces(material: ShaderMaterial, surfaces: Array) -> bool:
+	var ordered: Array[Dictionary] = []
+	for kind: String in ["mown", "runway"]: # Priority is independent of JSON order.
+		for surface: Dictionary in surfaces:
+			if surface.type == kind:
+				ordered.append(surface)
+	if ordered.size() > MAX_SURFACES:
+		return false
+	for surface: Dictionary in ordered:
+		var covered: bool = false
+		var rect: Rect2 = surface_rect(surface)
+		for rough: Dictionary in surfaces:
+			if rough.type != "rough":
+				continue
+			var ground_rect: Rect2 = surface_rect(rough)
+			if not ground_rect.encloses(rect):
+				continue
+			# L7 replaces a 40 km rough plane with relief outside its flat central disk.
+			if ground_rect.size == Vector2(40000.0, 40000.0):
+				var offset: Vector2 = (rect.get_center() - ground_rect.get_center()).abs() + rect.size / 2.0
+				if offset.length() > HORIZON_FLAT_RADIUS_M:
+					continue
+			covered = true
+			break
+		if not covered:
+			return false
+	var rectangles: PackedVector4Array = PackedVector4Array()
+	var kinds: PackedInt32Array = PackedInt32Array()
+	rectangles.resize(MAX_SURFACES)
+	kinds.resize(MAX_SURFACES)
+	var bounds: Rect2 = Rect2()
+	for index: int in ordered.size():
+		var surface: Dictionary = ordered[index]
+		var rect: Rect2 = surface_rect(surface)
+		var center: Vector2 = rect.get_center()
+		var half: Vector2 = rect.size / 2.0
+		rectangles[index] = Vector4(center.x, center.y, half.x, half.y)
+		kinds[index] = SURFACE_KIND[surface.type]
+		bounds = rect if index == 0 else bounds.merge(rect)
+	material.set_shader_parameter("surface_rects", rectangles)
+	material.set_shader_parameter("surface_kinds", kinds)
+	material.set_shader_parameter("surface_bounds", Vector4(bounds.position.x, bounds.position.y, bounds.end.x, bounds.end.y))
+	material.set_shader_parameter("surface_count", ordered.size())
+	return true
+
+
+## Renderer-only x/z rectangle: east -> x, north -> -z. Input stays in float64 field coordinates.
+static func surface_rect(surface: Dictionary) -> Rect2:
+	var size: Vector2 = Vector2(surface.length_east_west, surface.width_north_south)
+	var center: Vector2 = Vector2(surface.center_east, -float(surface.center_north))
+	return Rect2(center - size / 2.0, size)

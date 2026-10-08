@@ -1,0 +1,49 @@
+{
+  "control": {
+    "accepted": true,
+    "exit_code": 0,
+    "assertion_failures": []
+  },
+  "omit_tare": {
+    "accepted": true,
+    "exit_code": 1,
+    "assertion_failures": [
+      "FAIL: test_all_local_sensitivities_against_central_difference (__main__.WeighingTests.test_all_local_sensitivities_against_central_difference)",
+      "FAIL: test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo)",
+      "FAIL: test_invalid_inputs (__main__.WeighingTests.test_invalid_inputs) (i=12)",
+      "FAIL: test_invalid_inputs (__main__.WeighingTests.test_invalid_inputs) (i=21)",
+      "FAIL: test_known_asymmetric_statics (__main__.WeighingTests.test_known_asymmetric_statics)",
+      "FAIL: test_shared_gain_cancels_from_cg (__main__.WeighingTests.test_shared_gain_cancels_from_cg)",
+      "FAIL: test_symmetric_rig_and_axis_sign (__main__.WeighingTests.test_symmetric_rig_and_axis_sign)",
+      "FAIL: test_tare_offset_invariance (__main__.WeighingTests.test_tare_offset_invariance)",
+      "FAIL: test_zero_net_support_and_large_uncertainty_warn (__main__.WeighingTests.test_zero_net_support_and_large_uncertainty_warn)"
+    ]
+  },
+  "ignore_mass_moment_covariance": {
+    "accepted": true,
+    "exit_code": 1,
+    "assertion_failures": [
+      "FAIL: test_all_local_sensitivities_against_central_difference (__main__.WeighingTests.test_all_local_sensitivities_against_central_difference)",
+      "FAIL: test_coordinate_translation (__main__.WeighingTests.test_coordinate_translation)",
+      "FAIL: test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo)"
+    ]
+  },
+  "shared_datum_averaged_down": {
+    "accepted": true,
+    "exit_code": 1,
+    "assertion_failures": [
+      "FAIL: test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo)",
+      "FAIL: test_shared_datum_is_not_averaged_down (__main__.WeighingTests.test_shared_datum_is_not_averaged_down)"
+    ]
+  },
+  "shared_gain_leaks_into_cg": {
+    "accepted": true,
+    "exit_code": 1,
+    "assertion_failures": [
+      "FAIL: test_coordinate_translation (__main__.WeighingTests.test_coordinate_translation)",
+      "FAIL: test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo)",
+      "FAIL: test_large_common_gain_does_not_warn_about_cg (__main__.WeighingTests.test_large_common_gain_does_not_warn_about_cg)",
+      "FAIL: test_shared_gain_cancels_from_cg (__main__.WeighingTests.test_shared_gain_cancels_from_cg)"
+    ]
+  }
+}

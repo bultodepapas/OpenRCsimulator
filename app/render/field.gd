@@ -7,7 +7,7 @@ const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
 const Horizon = preload("res://render/horizon.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
-# Visual separation only, never terrain height or collision geometry. Higher priority wins overlaps.
+# Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63
 
@@ -15,11 +15,15 @@ const GROUND_SUBDIVISIONS := 63
 static func build(field: Dictionary) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "Field"
-	# One grass material per build; mown and runway surfaces draw over it with the same shader (landscape Phase 4).
+	# L9c: one ground pass for contained flat rectangles; retain legacy geometry for other valid fields.
 	var grass: ShaderMaterial = Ground.grass_material()
 	var station := Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	grass.set_shader_parameter("pilot_xz", Vector2(station.x, station.z)) # Phase 2: the macro tone is pinned here
+	var consolidated: bool = Ground.configure_surfaces(grass, field.surfaces)
+	result.set_meta("surfaces_consolidated", consolidated)
 	for surface: Dictionary in field.surfaces:
+		if consolidated and surface.type != "rough":
+			continue
 		var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 		mesh_instance.name = surface.id
 		var plane: PlaneMesh = PlaneMesh.new()

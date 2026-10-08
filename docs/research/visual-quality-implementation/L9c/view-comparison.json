@@ -1,0 +1,118 @@
+{
+  "baseline_commit": "38e72809ff06ae0def8da5ee68e3a2adeb0b9011",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "resolution": [
+    1280,
+    720
+  ],
+  "views": {
+    "aerial_overview": {
+      "before_counters": {
+        "draw_calls": 11.0,
+        "objects": 11.0,
+        "primitives": 126285.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 10.0,
+        "objects": 10.0,
+        "primitives": 126283.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 0.005306532118055556,
+      "pixels_difference_gt_3": 638,
+      "before_sha256": "07235ecadfc4a64eb8c2d3f4d376cc4af4204bd404e2e8d5a6472a63ad44087e",
+      "after_sha256": "4c217283f3c5ebfa35ea6ecc1287db4dfec730c71001712787741bed12570069"
+    },
+    "pilot_north": {
+      "before_counters": {
+        "draw_calls": 8.0,
+        "objects": 8.0,
+        "primitives": 103141.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 7.0,
+        "objects": 7.0,
+        "primitives": 103139.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 0.4266357421875,
+      "pixels_difference_gt_3": 58802,
+      "before_sha256": "d1959971c16f4b12389af1c8f8dbb49d3eb26346f10eaa87941aff7c867d7d40",
+      "after_sha256": "4b4389909cdead457206f8c9a90aeb20f6e2918ffb8dca7d54c929c22575b03c"
+    },
+    "pilot_south": {
+      "before_counters": {
+        "draw_calls": 7.0,
+        "objects": 7.0,
+        "primitives": 110762.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 7.0,
+        "objects": 7.0,
+        "primitives": 110762.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 2.712673611111111e-07,
+      "pixels_difference_gt_3": 0,
+      "before_sha256": "4c1f7a2df1c88cb1396e05c7442572eff5c85482a75eec8da137684e6646be66",
+      "after_sha256": "4198fac2c272c595f5225eaa51f42d21c3730b0f38d3240311dfe2a7739d8d7f"
+    },
+    "runway_threshold": {
+      "before_counters": {
+        "draw_calls": 10.0,
+        "objects": 10.0,
+        "primitives": 123627.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 9.0,
+        "objects": 9.0,
+        "primitives": 123625.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 0.5154996744791667,
+      "pixels_difference_gt_3": 62349,
+      "before_sha256": "185371af0d724a27c2a5377879dda4a5ddb91d6f9a0ec1de15b9807b8390c0e7",
+      "after_sha256": "b13afd1135dc0747ee4f93b9df484ff9af46c7899956e6127995bdf663bc73f8"
+    },
+    "runway_zoom_100": {
+      "before_counters": {
+        "draw_calls": 8.0,
+        "objects": 8.0,
+        "primitives": 121227.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 7.0,
+        "objects": 7.0,
+        "primitives": 121225.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 0.09268120659722222,
+      "pixels_difference_gt_3": 7568,
+      "before_sha256": "77ae008869c0f292ea4bf410dc612e75dbf2d2309c42fe658702197e27152c44",
+      "after_sha256": "cac8d1b6c95ffcd72c015d2cb7d1a1d644870c8c2c5b9b6fa551069cc25d3ea4"
+    },
+    "runway_zoom_300": {
+      "before_counters": {
+        "draw_calls": 10.0,
+        "objects": 10.0,
+        "primitives": 123837.0,
+        "shadow_draw_calls": 0
+      },
+      "after_counters": {
+        "draw_calls": 9.0,
+        "objects": 9.0,
+        "primitives": 123835.0,
+        "shadow_draw_calls": 0
+      },
+      "mean_rgb_absolute_difference": 0.01756076388888889,
+      "pixels_difference_gt_3": 1908,
+      "before_sha256": "31841ddeddcd8b20c0c62bcaea6bd77c246b7f1619ba04d0801d748776a4ab5d",
+      "after_sha256": "5f043d2cebd296e0b03edcc5a7d06c00637a9004e9d07865d86de6a28cb58117"
+    }
+  }
+}

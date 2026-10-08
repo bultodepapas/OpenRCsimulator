@@ -1,0 +1,23 @@
+test_cli_success_and_failure (__main__.Contract.test_cli_success_and_failure) ... ok
+test_duplicate_keys_nonfinite_and_malformed_json (__main__.Contract.test_duplicate_keys_nonfinite_and_malformed_json) ... ok
+test_example (__main__.Contract.test_example) ... ok
+test_invalid_quantity_values (__main__.Contract.test_invalid_quantity_values) ... ok
+test_isolated_formula_mutations (__main__.Contract.test_isolated_formula_mutations) ... ok
+test_measured_campaign_refuses_estimated_operating_readings (__main__.Contract.test_measured_campaign_refuses_estimated_operating_readings) ... ok
+test_measured_label_preserves_declared_provenance_without_acceptance (__main__.Contract.test_measured_label_preserves_declared_provenance_without_acceptance) ... ok
+test_numeric_extremes_fail_cleanly (__main__.Contract.test_numeric_extremes_fail_cleanly) ... ok
+test_reproducibility_hashes_and_preserved_input (__main__.Contract.test_reproducibility_hashes_and_preserved_input) ... ok
+test_strict_fields_units_and_provenance (__main__.Contract.test_strict_fields_units_and_provenance) ... ok
+test_above_unity_fom_is_reported_without_clamping (__main__.Physics.test_above_unity_fom_is_reported_without_clamping) ... ok
+test_analytic_point (__main__.Physics.test_analytic_point) ... ok
+test_analytic_sensitivities_against_finite_differences (__main__.Physics.test_analytic_sensitivities_against_finite_differences) ... ok
+test_dimensional_similarity (__main__.Physics.test_dimensional_similarity) ... ok
+test_fom_uncertainty_cancels_shared_density_and_diameter_correctly (__main__.Physics.test_fom_uncertainty_cancels_shared_density_and_diameter_correctly) ... ok
+test_large_uncertainty_is_visible (__main__.Physics.test_large_uncertainty_is_visible) ... ok
+test_no_torque_does_not_invent_power_or_efficiency (__main__.Physics.test_no_torque_does_not_invent_power_or_efficiency) ... ok
+test_uncertainty_has_known_relative_weights (__main__.Physics.test_uncertainty_has_known_relative_weights) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.522s
+
+OK

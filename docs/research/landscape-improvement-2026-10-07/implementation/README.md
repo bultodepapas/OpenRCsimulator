@@ -2,6 +2,8 @@
 
 Status: **implemented, measured; waiting for the owner's eye and the landscape track's review.** It implements Phases 0–4 of the [proposal](../README.md) and the far-field patchwork of Phase 5. Mapped steps: G-1, L6b follow-up, L9a/L9b (ground), L9c (surfaces). Steps are not marked done here: the landscape plan's owner decides.
 
+The later [L9c follow-up](../../visual-quality-implementation/L9c/README.md) replaces the lifted planes for contained flat field surfaces. This report records the original Phase 4 implementation.
+
 ## What changed
 
 | Phase | Change | Files |

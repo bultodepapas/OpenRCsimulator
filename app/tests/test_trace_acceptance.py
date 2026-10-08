@@ -1,5 +1,6 @@
 """C7-R1: real trace mutations and CLI failures must fail as processes, not just print errors."""
 import csv
+import hashlib
 import io
 import json
 import os
@@ -79,10 +80,15 @@ class TraceAcceptance(unittest.TestCase):
                                 if line.startswith('# '))
                 self.assertEqual(metadata['propulsion_model'], propulsion)
                 self.assertEqual(metadata['propwash_model'], propwash)
+                source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
+                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2')
+                self.assertEqual(metadata['aircraft_input_format'], 'openrc-aircraft v1')
+                self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
                 features = json.loads(metadata['propulsion_features'])
                 self.assertEqual(features['propeller_normal_force'], crossflow)
                 self.assertEqual(features['propeller_pfactor'], crossflow)
-                checked = subprocess.run([sys.executable, str(CHECKER), str(path), '--duration=.05'],
+                checked = subprocess.run([sys.executable, str(CHECKER), str(path), '--duration=.05',
+                                          '--aircraft-input', str(source)],
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
 
@@ -91,12 +97,16 @@ class TraceAcceptance(unittest.TestCase):
         keys = ['metadata_schema', 'aero_model', 'propulsion_model', 'propwash_model',
                 'propulsion_features', 'engine_rpm_semantics', 'state_layout', 'aux_layout',
                 'recording_start_tick', 'recording_start_aux', 'recording_start_engine_running',
-                'aircraft_data_hash_convention']
+                'aircraft_input_format', 'aircraft_input_sha256', 'aircraft_input_hash_convention',
+                'aircraft_semantic_sha256', 'aircraft_semantic_hash_convention']
         for key in keys:
             with self.subTest(missing=key):
                 self.rejected(meta=[line for line in self.meta if not line.startswith('# ' + key + ':')])
         mutations = [
             ('metadata_schema', 'openrc-flight-meta v999'),
+            ('aircraft_input_format', 'openrc-aircraft v999'),
+            ('aircraft_input_hash_convention', 'sha256 of reserialized JSON'),
+            ('aircraft_semantic_hash_convention', 'sha256 of exact aircraft input file bytes'),
             ('aero_model', 'local-surfaces-v1 with bounded attached oracle; no propwash'),
             ('propulsion_model', 'turbine-ecu-spool-v1'),
             ('engine_rpm_semantics', 'turbine spool rpm'),
@@ -109,6 +119,9 @@ class TraceAcceptance(unittest.TestCase):
             ('propulsion_features', '{}'), ('propulsion_features', 'null'),
             ('propulsion_features', 'not-json'),
         ]
+        for key in ['aircraft_input_sha256', 'aircraft_semantic_sha256']:
+            mutations += [(key, value) for value in ['', 'a' * 63, 'a' * 65, 'g' * 64, 'A' * 64,
+                                                      'unavailable: in-memory input']]
         features = json.loads(metadata['propulsion_features'])
         mutations.append(('propulsion_features', json.dumps({**features, 'turbine_ram_flow': True})))
         mutations.append(('propulsion_features', json.dumps({**features, 'propeller_pfactor': 'false'})))
@@ -116,6 +129,43 @@ class TraceAcceptance(unittest.TestCase):
             with self.subTest(key=key, value=value):
                 self.rejected(meta=[f'# {key}: {value}' if line.startswith('# ' + key + ':') else line
                                     for line in self.meta])
+
+    def test_exact_input_artifact_verification(self):
+        source = APP / 'data/aircraft/jensen_ugly_stik_60.json'
+        saved = self.directory / 'aircraft.json'
+        saved.write_bytes(source.read_bytes())
+        result = self.checker(None, None, '--aircraft-input', str(saved))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('exact aircraft input bytes verified', result.stdout)
+        for content in [source.read_bytes() + b'\n',
+                        source.read_bytes().replace(b'"value": 0.1068,', b'"value": 0.1068000000000001,')]:
+            saved.write_bytes(content)
+            self.rejected(diagnostic='do not match recorded SHA-256', options=('--aircraft-input', str(saved)))
+        saved.unlink()
+        self.rejected(options=('--aircraft-input', str(saved)))
+
+    def test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes(self):
+        legacy = [line for line in self.meta if not line.startswith('# aircraft_input_')]
+        legacy = [line.replace('# metadata_schema: openrc-flight-meta v2',
+                               '# metadata_schema: openrc-flight-meta v1')
+                  .replace('# aircraft_semantic_sha256:', '# aircraft_data_sha256:')
+                  .replace('# aircraft_semantic_hash_convention:', '# aircraft_data_hash_convention:')
+                  for line in legacy]
+        self.rejected(meta=legacy, diagnostic='legacy metadata v1')
+        result = self.checker(None, legacy, '--allow-legacy-metadata')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('legacy semantic-only metadata; exact input identity unavailable', result.stdout)
+        self.rejected(meta=legacy + ['# aircraft_input_sha256: ' + 'a' * 64],
+                      diagnostic='cannot contain v2', options=('--allow-legacy-metadata',))
+        self.rejected(meta=legacy, diagnostic='legacy metadata cannot verify',
+                      options=('--allow-legacy-metadata', '--aircraft-input', str(APP / 'project.godot')))
+        unversioned = [line for line in legacy if not line.startswith('# metadata_schema:')]
+        self.rejected(meta=unversioned, diagnostic='unversioned legacy', options=('--allow-legacy-metadata',))
+        self.rejected(meta=self.meta + ['# aircraft_data_sha256: ' + 'a' * 64],
+                      diagnostic='explicit input/semantic hash names')
+        # Opting into legacy support must not let a v2 input identity disappear.
+        self.rejected(meta=[line for line in self.meta if not line.startswith('# aircraft_input_sha256:')],
+                      options=('--allow-legacy-metadata',))
 
     def test_partial_and_extra_samples_fail(self):
         for table in [[], self.table[:1], self.table[:2], self.table[:-1],

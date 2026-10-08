@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"candidate_us":978191,"cases":100,"max_error_rad":0.0,"mismatches":0,"reference_us":5873014}
+{"candidate_us":1728414,"cases":200,"max_error_rad":0.0,"mismatches":0,"reference_us":11714102}
+{"candidate_us":2668057,"cases":300,"max_error_rad":0.0,"mismatches":0,"reference_us":17427076}
+{"candidate_us":3552573,"cases":400,"max_error_rad":0.0,"mismatches":0,"reference_us":23235488}
+{"candidate_us":4335239,"cases":500,"max_error_rad":0.0,"mismatches":0,"reference_us":29059707}
+{"candidate_us":5195043,"cases":600,"max_error_rad":0.0,"mismatches":0,"reference_us":34926329}
+{"candidate_us":5913851,"cases":700,"max_error_rad":0.0,"mismatches":0,"reference_us":40834941}
+{"candidate_us":6592602,"cases":800,"max_error_rad":0.0,"mismatches":0,"reference_us":46521989}
+{"candidate_us":7104188,"cases":900,"max_error_rad":0.0,"mismatches":0,"reference_us":52099494}
+{"candidate_us":8145219,"cases":1000,"max_error_rad":0.0,"mismatches":0,"reference_us":57859473}
