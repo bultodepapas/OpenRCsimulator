@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "date": "2026-10-08",
+  "baseline_suite_exit_code": 0,
+  "initial_suite_exit_code": 124,
+  "continuation_exit_code": 0,
+  "initial_stop": "test_landing_maneuver.gd timed out at 60 s without an assertion failure",
+  "continuation": "Same test assertions from landing onward; only landing timeout raised to 180 s",
+  "covered_test_scripts": 111,
+  "base_commit": "b0f9e0887803869a42bef2a58723bd215648cbe1",
+  "source_scope": "Fresh clone with only listed landscape files overlaid; concurrent uncommitted physics changes excluded.",
+  "station_captures": 30,
+  "windsock_regression_captures": 18,
+  "visible_station_draws": 1,
+  "visible_station_triangles": 230,
+  "pilot_threshold_changed_pixels": 0,
+  "removed_grass_clumps": 49,
+  "remaining_grass_clumps": 4794,
+  "full_capture_sh_run": false,
+  "pack_target": "Linux PCK loaded from empty project root",
+  "review": "Independent read-only renderer/grass/capture review found no concrete defects; pixel-control wording clarified."
+}

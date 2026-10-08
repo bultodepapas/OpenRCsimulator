@@ -103,6 +103,7 @@ func _initialize() -> void:
 	# 3. Data: a stall inside the oracle region is refused, and so is a missing envelope.
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Scenarios.AIRCRAFT))
 	raw.aero.envelope.CL_max.value = 0.6
+	raw.aero.envelope.CD90.value = 0.8 # Keep CD90/2 below CL_max so this isolates the oracle check.
 	var bad := AD.validate_and_derive(raw)
 	_check("refused: CL_max 0.6 would stall inside the oracle region", not bad.ok and "oracle" in str(bad.errors), str(bad.errors))
 	raw = JSON.parse_string(FileAccess.get_file_as_string(Scenarios.AIRCRAFT))

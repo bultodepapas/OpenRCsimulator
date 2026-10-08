@@ -5,6 +5,7 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Clock = preload("res://render/shader_clock.gd")
 var out: String = ""
 var scenery_on: bool = false
+var cue_type: String = "windsock"
 var world: Node3D
 var camera: Camera3D
 
@@ -12,6 +13,8 @@ func _initialize() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			out = arg.trim_prefix("--out=")
+		elif arg.begins_with("--cue="):
+			cue_type = arg.trim_prefix("--cue=")
 		elif arg == "--scenery=on":
 			scenery_on = true
 	_run.call_deferred()
@@ -43,15 +46,15 @@ func _run() -> void:
 		return
 	world = Field.build(loaded.field)
 	root.add_child(world)
-	var cues: Array = loaded.field.get("flight_cues", [])
+	var cues: Array = loaded.field.get("flight_cues", []).filter(func(c: Dictionary) -> bool: return c.type == cue_type)
 	if cues.size() != 1:
-		push_error("expected one default flight cue")
+		push_error("expected one default cue of selected type")
 		quit(1)
 		return
 	var cue: Dictionary = cues[0]
 	var sock: Node3D = world.get_node_or_null(str(cue.id)) as Node3D
 	if sock == null:
-		push_error("FieldBuilder did not construct the windsock")
+		push_error("FieldBuilder did not construct the requested cue")
 		quit(1)
 		return
 	var environment: WorldEnvironment = WorldEnvironment.new()
@@ -69,6 +72,18 @@ func _run() -> void:
 		{"id":"close", "eye":sock.position+Vector3(5,4,5), "target":sock.position+Vector3(0.5,2.2,0), "fov":40.0},
 		{"id":"pilot_turn", "eye":Vector3(0,1.7,0), "target":sock.position+Vector3(.5,2.1,0), "fov":50.0},
 		{"id":"overview", "eye":Vector3(14,12,28), "target":Vector3(0,0,-8), "fov":50.0}]
+	if cue_type == "pilot_station":
+		var origin: Vector3 = sock.position
+		var pilot_eye: Vector3 = origin + Vector3.UP * float(loaded.field.pilot.eye_height)
+		poses = [
+			{"id":"close", "eye":origin+Vector3(3,2.5,-4), "target":origin+Vector3(0,.35,0), "fov":40.0},
+			{"id":"rear", "eye":origin+Vector3(2.5,2.0,3), "target":origin+Vector3(0,.35,0), "fov":40.0},
+			{"id":"overview", "eye":origin+Vector3(14,12,28), "target":origin+Vector3(0,0,-8), "fov":50.0}]
+		for surface: Dictionary in loaded.field.surfaces:
+			if surface.id == loaded.field.runway:
+				for side: float in [-1.0, 1.0]:
+					poses.append({"id":"pilot_left" if side < 0.0 else "pilot_right", "eye":pilot_eye,
+						"target":Vector3(surface.center_east + side * surface.length_east_west * 0.5, 0, -surface.center_north), "fov":50.0})
 	var records: Array[Dictionary] = []
 	for pose: Dictionary in poses:
 		camera.position = pose.eye
@@ -88,13 +103,13 @@ func _run() -> void:
 				push_error("save failed")
 				quit(1)
 				return
-			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":_bounds(sock), "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
+			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":[] if str(pose.id).begins_with("pilot_") and cue_type == "pilot_station" else _bounds(sock), "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
 	var file: FileAccess = FileAccess.open(out.path_join("capture.json"),FileAccess.WRITE)
 	if file == null:
 		push_error("cannot write manifest")
 		quit(1)
 		return
-	file.store_string(JSON.stringify({"format":"openrc-l10a-capture v1", "records":records,
+	file.store_string(JSON.stringify({"format":"openrc-l10b-capture v1" if cue_type == "pilot_station" else "openrc-l10a-capture v1", "records":records,
 		"adapter":RenderingServer.get_video_adapter_name(), "method":RenderingServer.get_current_rendering_method(),
 		"driver":RenderingServer.get_current_rendering_driver_name(), "viewport":[960,540],
 		"shader_time":Clock.last_clock,"scenery":scenery_on, "cue":cue},"  ")+"\n")

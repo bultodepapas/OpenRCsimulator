@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "b0f9e0887803869a42bef2a58723bd215648cbe1",
+  "exit_code": 0,
+  "test_programs": 109,
+  "sections": 137,
+  "original_run_exit_code": 124,
+  "original_timeout_seconds": 60,
+  "isolated_retry_timeout_seconds": 300,
+  "retry_change": "Only the isolated app/test.sh run() timeout changed from 60 to 300 seconds; no assertions, simulation or data changes. This timeout change is not integrated."
+}

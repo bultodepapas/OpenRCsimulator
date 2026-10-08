@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads  []
+ok   default field uses one ground pass  consolidated=true children=["rough", "treeline", "NearGrass", "windsock", "pilot_station"]
+ok   default runway rectangle is retained in the shader data  [(0.0, -15.0, 50.0, 6.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)]
+ok   overlapping custom rectangles validate  []
+ok   reordered rectangles remain valid  []
+ok   mown then runway priority is stable when JSON surfaces reorder
+ok   shifted NED field validates  []
+ok   east maps to render x and north maps to negative render z  (-795.0, -1260.0, -595.0, -1160.0)
+ok   shader declarations and loop use the GDScript surface capacity  32
+ok   exact shader capacity is valid field data  []
+ok   exactly 32 rectangles are packed without truncation  count=32
+ok   valid runway outside rough is accepted by the L5 format  []
+ok   uncontained runway uses complete legacy planes without partial shader merge  children=["rough", "mown", "runway", "NearGrass"]
+ok   field without rough remains valid L5 field data  []
+ok   far runway without a rough mesh stays in the legacy render path
+ok   more than the shader capacity remains valid L5 field data  []
+ok   overflow falls back for the entire field instead of truncating rectangles  children=35
+ok   runway crossing the L7 flat-ring boundary remains valid field data  []
+ok   overlay crossing into raised terrain keeps the legacy overlay
+19 checks, 0 failed

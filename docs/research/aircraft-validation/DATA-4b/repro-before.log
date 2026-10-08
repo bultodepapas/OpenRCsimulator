@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DATA4A {"errors":["aero.surfaces.wing_station_incidence: mean %.2e rad must be 0 (equal-area strips; CL0 carries the mean)"],"index":0,"ok":false}
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:829)
+   GDScript backtrace (most recent call first):
+       [0] _surfaces (res://physics/aircraft_data.gd:1166)
+       [1] validate_and_derive (res://physics/aircraft_data.gd:183)
+       [2] load_file (res://physics/aircraft_data.gd:50)
+       [3] _initialize (/home/bulto/OpenRCsimulator/research/aircraft-data/schema/loader_probe.gd:20)

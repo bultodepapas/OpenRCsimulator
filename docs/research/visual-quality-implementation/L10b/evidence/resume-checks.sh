@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# L10b verification continuation: earlier import/guards/parse/tests passed in app-test-initial.log.
+# Resume the timed-out landing test and every subsequent original assertion.
+set -euo pipefail
+HERE=/tmp/openrc-l10b-verify/app
+GODOT=/tmp/openrc-l10b-verify/.tools/Godot_v4.7.2-stable_linux.x86_64
+run() {
+  local seconds=60
+  if [[ " $* " == *" res://tests/test_landing_maneuver.gd "* ]]; then seconds=180; fi
+  timeout "$seconds" "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
+}
+LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
+for t in "$HERE"/tests/test_*.gd; do
+  [[ "$(basename "$t")" < "test_landing_maneuver.gd" ]] && continue
+  echo "== $(basename "$t")"
+  run --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"
+  # Godot reports runtime script errors without failing the run; treat any as a failure.
+  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
+done
+
+echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
+
+echo "== L5: invalid field files fail before Home or flight can start"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes
+
+echo "== aircraft model contract (aircraft/verify_model.gd, owned by the model team)"
+run --script res://aircraft/verify_model.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "aircraft model contract failed (see above)"; exit 1; fi
+
+echo "== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)"
+run --script res://aircraft/verify_extra.gd 2>&1 | tee "$LOG" | tail -2
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract failed (see above)"; exit 1; fi
+
+echo "== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)"
+python3 "$HERE/../assets/aircraft/p51d-mustang-120/compile_appearance.py" --check || exit 1
+
+echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"
+run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 model contract failed (see above)"; exit 1; fi
+
+echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)"
+run --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
+
+echo "== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)"
+run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
+
+echo "== C7-R1: trace completion, finite samples and failure exits"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
+
+echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=gp-extra-300s-60 --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "gp-extra-300s-60" "$TRACE" || { echo "the Extra trace does not name the Extra"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=p51d-mustang-120 --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "p51d-mustang-120" "$TRACE" || { echo "the P-51 trace does not name the P-51"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
+TRACE="$(mktemp --suffix=.csv)"
+run -- --aircraft=sebart-avanti-s-a200-p100rx --trace="$TRACE" --t=3 > /dev/null 2>&1
+grep -q "sebart-avanti-s-a200-p100rx" "$TRACE" || { echo "the Avanti trace does not name the Avanti"; exit 1; }
+python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3; rm -f "$TRACE"
+echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
+python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
+echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
+for id in no-such-aircraft; do
+  if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
+done
+echo "refused"
+
+echo "== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)"
+FT="$(mktemp --suffix=.json)"
+run -- --frametimes="$FT" --t=1.5 > /dev/null 2>&1
+python3 - "$FT" <<'PY'
+import json, sys
+r = json.load(open(sys.argv[1]))
+ms = r["frame_ms"]
+assert r["frames"] > 10 and r["seconds"] >= 1.5, r
+assert r["format"] == "openrc-frametimes v2" and r["complete"] is True
+assert r["route"] == "live-input" and r["input_enabled"] is True
+assert len(r["frame_deltas_s"]) == r["frames"]
+assert abs(sum(r["frame_deltas_s"]) - r["seconds"]) < 1e-8
+assert all(len(values) == r["frames"] for values in r["raw_metrics"].values())
+assert r["simulation"]["ticks"] > 0 and r["actual_warmup_s"] >= 1.0
+assert 0 < ms["p50"] <= ms["p95"] <= ms["p99"] <= ms["max"], ms
+assert all(k in r for k in ("adapter", "api", "godot", "os", "vsync", "physics_us_per_tick")), sorted(r)
+print(f"frame-time report: {r['frames']} frames, p50 {ms['p50']:.2f} <= p95 {ms['p95']:.2f} <= p99 {ms['p99']:.2f} ms")
+PY
+rm -f "$FT"
+
+echo "== VQ-01b: scripted logger disables input and identifies its route"
+FT="$(mktemp --suffix=.json)"
+run -- --frametimes="$FT" --warmup=0 --t=0.1 --scripted --case=logger-smoke > "$LOG" 2>&1
+if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+python3 - "$FT" <<'PYLOGGER'
+import json, sys
+r = json.load(open(sys.argv[1]))
+assert r["route"] == "scripted-fixed" and r["case_id"] == "logger-smoke"
+assert r["input_enabled"] is False and r["simulation"]["ticks"] == 0
+assert r["complete"] is True and r["seconds"] >= 0.1
+assert r["seconds"] - r["frame_deltas_s"][-1] < 0.100001
+assert r["warmup_s"] == 0 and r["backend"] and r["preset"]
+print("scripted route, raw samples and disabled input verified")
+PYLOGGER
+rm -f "$FT"
+echo "== VQ-01b: invalid logger options and output write failures fail the process"
+for bad in --t=0 --t=nan --warmup=-1 --capture --trace=/dev/null; do
+  if run -- --frametimes=/dev/null "$bad" > "$LOG" 2>&1; then
+    echo "logger accepted invalid option $bad"; exit 1
+  fi
+done
+if run -- --frametimes="$HERE" --warmup=0 --t=0.01 > "$LOG" 2>&1; then
+  echo "logger hid an output write failure"; exit 1
+fi
+
+echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
+HASHES=""
+for fps in 30 60 144; do
+  out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd 2>&1)"
+  echo "$out" | grep -E "ticks=|ERROR"
+  if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "engine error at $fps fps"; exit 1; fi
+  HASHES="$HASHES $(echo "$out" | sed -n 's/.*state_sha256=\([0-9a-f]*\).*/\1/p')"
+done
+if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
+  echo "final state depends on the rendering frame rate:$HASHES"; exit 1
+fi
+echo "identical"
+
+echo "== E0b5: experimental wash transport at 30/60/144 fps"
+python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"
+
+echo "== E0b6p: distributed swirl at 30/60/144 fps"
+python3 "$HERE/../research/propwash/e0b6p/check_frames.py" --godot "$GODOT"

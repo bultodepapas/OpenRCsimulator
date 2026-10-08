@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL 240Hz east completes without crash/fault invalid pilot command
+FAIL 240Hz east continuous normal flight ticks and bounded commands 
+FAIL 240Hz east begins parked and lifts off on the runway 2.90659715713309
+FAIL 240Hz east actual circuit encloses area and completes a turn [0.0, 0.0, 0.00046643382653]
+FAIL 240Hz east flies the ordered circuit phases above the ground ["idle"]
+FAIL 240Hz east enters the proven landing regime without a state reset {  }
+FAIL 240Hz east lands all wheels with sink <=1m/s 0.0
+FAIL 240Hz east landing and rollout stay inside runway 1000000000000000019884624838656.0
+FAIL 240Hz east stops and remains anchored at idle [-1.0, 0.0]
+ok 240Hz east wash-off baseline 
+RESULT {"completed":false,"eastbound":true,"error":"invalid pilot command","hz":240,"phases":[{"altitude_m":0.239050388152084,"bank_rad":-0.00181416178558243,"east_m":-46.9921152914612,"north_m":15.0004664338265,"phase":"idle","sink_mps":0.0,"speed_mps":0.0,"time_s":0.0,"yaw_rad":1.57082454835101}]}
+10 checks, 9 failed

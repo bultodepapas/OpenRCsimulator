@@ -1,0 +1,39 @@
+test_affine_rpm_invariance (test_reduce.Reduction.test_affine_rpm_invariance) ... ok
+test_bad_contract (test_reduce.Reduction.test_bad_contract) ... ok
+test_cli_failure_no_partial_report (test_reduce.Reduction.test_cli_failure_no_partial_report) ... ok
+test_cli_reproducible_and_hashes (test_reduce.Reduction.test_cli_reproducible_and_hashes) ... ok
+test_decreasing (test_reduce.Reduction.test_decreasing) ... ok
+test_exact_exponential (test_reduce.Reduction.test_exact_exponential) ... ok
+test_invalid_sample_values_and_order (test_reduce.Reduction.test_invalid_sample_values_and_order) ... ok
+test_irregular_interpolation (test_reduce.Reduction.test_irregular_interpolation) ... ok
+test_json_duplicates_and_nonfinite (test_reduce.Reduction.test_json_duplicates_and_nonfinite) ... ok
+test_measured_provenance_and_uncertainty_retained (test_reduce.Reduction.test_measured_provenance_and_uncertainty_retained) ... ok
+test_missing_threshold_and_onset (test_reduce.Reduction.test_missing_threshold_and_onset) ... ok
+test_negative_delay_is_not_clamped (test_reduce.Reduction.test_negative_delay_is_not_clamped) ... ok
+test_nonmonotone_first_crossing_overshoot (test_reduce.Reduction.test_nonmonotone_first_crossing_overshoot) ... ok
+test_precommand_crossing_refused (test_reduce.Reduction.test_precommand_crossing_refused) ... ok
+test_residuals_include_precommand_and_undershoot (test_reduce.Reduction.test_residuals_include_precommand_and_undershoot) ... ok
+test_sampling_support_contains_analytic_parameters (test_reduce.Reduction.test_sampling_support_contains_analytic_parameters) ... ok
+test_threshold_plateau (test_reduce.Reduction.test_threshold_plateau) ... ok
+test_time_scaling (test_reduce.Reduction.test_time_scaling) ... ok
+test_time_translation (test_reduce.Reduction.test_time_translation) ... ok
+test_underresolved_flag (test_reduce.Reduction.test_underresolved_flag) ... ok
+test_affine_rpm_and_time_scaling_of_uncertainty (test_uncertainty.Uncertainty.test_affine_rpm_and_time_scaling_of_uncertainty) ... ok
+test_all_signed_sensitivities_against_finite_differences (test_uncertainty.Uncertainty.test_all_signed_sensitivities_against_finite_differences) ... ok
+test_cli_opt_in_is_deterministic_and_keeps_hashes (test_uncertainty.Uncertainty.test_cli_opt_in_is_deterministic_and_keeps_hashes) ... ok
+test_command_error_cancels_from_tau_and_consistency (test_uncertainty.Uncertainty.test_command_error_cancels_from_tau_and_consistency) ... ok
+test_covariance_positive_semidefinite_and_diagonal (test_uncertainty.Uncertainty.test_covariance_positive_semidefinite_and_diagonal) ... ok
+test_endpoint_covariance_across_disjoint_segments (test_uncertainty.Uncertainty.test_endpoint_covariance_across_disjoint_segments) ... ok
+test_explicit_opt_in_and_strict_model (test_uncertainty.Uncertainty.test_explicit_opt_in_and_strict_model) ... ok
+test_nominal_results_unchanged (test_uncertainty.Uncertainty.test_nominal_results_unchanged) ... ok
+test_screen_endpoint_time_and_command_order (test_uncertainty.Uncertainty.test_screen_endpoint_time_and_command_order) ... ok
+test_screen_recrossing (test_uncertainty.Uncertainty.test_screen_recrossing) ... ok
+test_screen_threshold_knots_and_earlier_near_hits (test_uncertainty.Uncertainty.test_screen_threshold_knots_and_earlier_near_hits) ... ok
+test_seeded_sampling_matches_standard_uncertainties (test_uncertainty.Uncertainty.test_seeded_sampling_matches_standard_uncertainties) ... ok
+test_shared_samples_and_endpoints_hand_solution (test_uncertainty.Uncertainty.test_shared_samples_and_endpoints_hand_solution) ... ok
+test_zero_uncertainty_exact_knots (test_uncertainty.Uncertainty.test_zero_uncertainty_exact_knots) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 2.500s
+
+OK

@@ -1,0 +1,10 @@
+{
+  "rows": 28862,
+  "hz": 240,
+  "duration_s": 120.254166667,
+  "turn_deg": -360.32821607499807,
+  "signed_area_m2": 68149.61766078306,
+  "max_cross_track_m": 160.074702486,
+  "exact_aircraft_bytes_verified": true,
+  "trace_mutations_rejected": 3
+}

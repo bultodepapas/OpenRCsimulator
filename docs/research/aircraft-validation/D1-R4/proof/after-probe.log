@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"CLa":"4.0","angles":{"a1":"0.24360338382052","a2":"0.34832313894018","n1":"0.21948931045651","n2":"0.32420906557617"},"errors":[],"ok":true}
+{"CLa":"0.1","angles":{},"errors":["aero.envelope: positive stall limit is unreachable before 90 degrees","aero.envelope: negative stall limit is unreachable before 90 degrees"],"ok":false}
+{"CLa":"1e-10","angles":{},"errors":["aero.envelope: positive stall limit is unreachable before 90 degrees","aero.envelope: negative stall limit is unreachable before 90 degrees"],"ok":false}
+{"CLa":"1e-300","angles":{},"errors":["aero.envelope: positive stall limit is unreachable before 90 degrees","aero.envelope: negative stall limit is unreachable before 90 degrees"],"ok":false}

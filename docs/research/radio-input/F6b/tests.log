@@ -1,0 +1,23 @@
+test_acquisition_rate_and_evidence_refusals (__main__.Reduction.test_acquisition_rate_and_evidence_refusals) ... ok
+test_all_excluded_and_empty_conditions_remain_visible (__main__.Reduction.test_all_excluded_and_empty_conditions_remain_visible) ... ok
+test_annotation_order_does_not_change_statistics (__main__.Reduction.test_annotation_order_does_not_change_statistics) ... ok
+test_cli_deterministic_exact_hashes_and_clean_failure (__main__.Reduction.test_cli_deterministic_exact_hashes_and_clean_failure) ... ok
+test_conditions_remain_separate (__main__.Reduction.test_conditions_remain_separate) ... ok
+test_csv_round_trip_and_strict_header_width (__main__.Reduction.test_csv_round_trip_and_strict_header_width) ... ok
+test_duplicate_trials_events_and_clip_aliases (__main__.Reduction.test_duplicate_trials_events_and_clip_aliases) ... ok
+test_empty_and_malformed_contracts (__main__.Reduction.test_empty_and_malformed_contracts) ... ok
+test_exact_240fps_and_one_frame_bound (__main__.Reduction.test_exact_240fps_and_one_frame_bound) ... ok
+test_exclusions_preserved_and_not_counted (__main__.Reduction.test_exclusions_preserved_and_not_counted) ... ok
+test_fps_corners_for_positive_negative_and_zero (__main__.Reduction.test_fps_corners_for_positive_negative_and_zero) ... ok
+test_invalid_frame_values_and_clip_edges (__main__.Reduction.test_invalid_frame_values_and_clip_edges) ... ok
+test_json_duplicate_and_nonfinite_refused (__main__.Reduction.test_json_duplicate_and_nonfinite_refused) ... ok
+test_nearest_rank_and_even_median (__main__.Reduction.test_nearest_rank_and_even_median) ... ok
+test_order_statistic_bounds_under_reordering (__main__.Reduction.test_order_statistic_bounds_under_reordering) ... ok
+test_pick_radii_add_and_do_not_shrink_with_count (__main__.Reduction.test_pick_radii_add_and_do_not_shrink_with_count) ... ok
+test_seeded_events_with_shared_cadence_stay_in_bounds (__main__.Reduction.test_seeded_events_with_shared_cadence_stay_in_bounds) ... ok
+test_unknown_or_mismatched_references (__main__.Reduction.test_unknown_or_mismatched_references) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.462s
+
+OK

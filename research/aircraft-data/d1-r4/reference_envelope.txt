@@ -1,0 +1,23 @@
+static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary) -> Dictionary:
+	if typeof(node) != TYPE_DICTIONARY:
+		errors.append("aero.envelope: missing")
+		return {}
+	var cl_max = _q(errors, "aero.envelope.CL_max", node.get("CL_max"), "1", 0.3, 3.0)
+	var cl_min = _q(errors, "aero.envelope.CL_min", node.get("CL_min"), "1", -3.0, -0.1)
+	var width = _q(errors, "aero.envelope.stall_blend_width", node.get("stall_blend_width"), "deg", 1.0, 30.0)
+	var cd90 = _q(errors, "aero.envelope.CD90", node.get("CD90"), "1", 0.5, 2.5)
+	var sb = _q(errors, "aero.envelope.sideslip_blend", node.get("sideslip_blend"), "deg", 1.0, 89.0, 2)
+	if not errors.is_empty():
+		return {}
+	if sb[0] >= sb[1]:
+		errors.append("aero.envelope.sideslip_blend: start %s must be below end %s" % [sb[0], sb[1]])
+	if cd90 / 2.0 >= cl_max or cd90 / 2.0 >= -cl_min:
+		errors.append("aero.envelope.CD90 = %s: the flat plate (peak CD90/2) must lift less than the stall limits" % cd90)
+	var w := deg_to_rad(width)
+	var a1 := _solve_stall_start(aero, cd90, w, cl_max, 1.0)
+	var n1 := _solve_stall_start(aero, cd90, w, cl_min, -1.0)
+	var oracle := deg_to_rad(ORACLE_ALPHA_DEG)
+	if a1 < oracle or n1 < oracle:
+		errors.append("aero.envelope: the stall blend would start at %+.1f° / %+.1f°, inside the ±%.0f° linear-oracle region (raise CL_max / CL_min or narrow the blend)" % [rad_to_deg(a1), -rad_to_deg(n1), ORACLE_ALPHA_DEG])
+	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+

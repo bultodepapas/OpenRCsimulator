@@ -1,0 +1,99 @@
+{
+  "step": "D1-R4",
+  "before": {
+    "exit_code": 0,
+    "sections": 137,
+    "engine_errors": 0,
+    "frame_rate_hashes": [
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+    ],
+    "warnings": [
+      {
+        "section": "== test_e2e_input.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_e2e_radio.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_help.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_home.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_language.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_pause.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      }
+    ],
+    "log_sha256": "9ca6aaa45d9b4a43bb9f98480f57d6f6aaadf81be37a8a34bc9cf0ec641c3b7f"
+  },
+  "after": {
+    "exit_code": 0,
+    "sections": 138,
+    "engine_errors": 0,
+    "frame_rate_hashes": [
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+    ],
+    "warnings": [
+      {
+        "section": "== test_aircraft_catalog.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_e2e_radio.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_treeline.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_aircraft.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_flight_capture.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_help.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_home.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_pause.gd",
+        "message": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      }
+    ],
+    "log_sha256": "4ff35d93cecefad5cde4e08eff6adf71c02f5a3670859cb29439fa0a2727a29a"
+  },
+  "suite_inputs_sha256": "e1e13d161d71129f76540946c22b08e857dd1e25d7cd8573c3a5cbb2a59bfbd2",
+  "proof_sha256": "6e369d1320b137473322f90042f3455ed1f93cd81df6fae52175e6413fc9a4c1"
+}

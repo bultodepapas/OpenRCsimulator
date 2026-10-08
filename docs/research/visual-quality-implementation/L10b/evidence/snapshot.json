@@ -1,0 +1,19 @@
+{
+  "base_commit": "b0f9e0887803869a42bef2a58723bd215648cbe1",
+  "overlay_sha256": {
+    "app/capture.sh": "f8a308bb33a316bc556926e13848b8c4102029cfdb0cd05e419e0a5019e9802a",
+    "app/data/field_loader.gd": "69c03c77c6d161dbe8627bb2dc230b69704706098889289be70020a3179473e3",
+    "app/data/fields/default.json": "b085f28dd6a4142fd0a81070dd2c71ee69ff5b0d0cd63b0579a8b11cb701aedf",
+    "app/render/field.gd": "2516ad4bee0b0a67a196cb011acf0f3d052466526495b39c3477e1bfead53039",
+    "app/render/near_grass.gd": "e348aebf2af9dc67100e62081b57b2ba07e32859fefae3429ad488d8a587dc14",
+    "app/render/pilot_station.gd": "e14a8dd215d8cfc45c74bddef3cbdecb62c957239fd2b026030d0178126cc286",
+    "app/tests/test_pilot_station.gd": "bfe7141e58bf4bceb0cc21e8ff876dfcd3636925c6c0b720dcbedabcf2c071f3",
+    "app/tests/test_pilot_station_data.gd": "e95d743eb0d9adba63fde8970e9e65e312815dd50b42b1ad2ccf25306098d8bc",
+    "app/tests/test_windsock.gd": "a8db8bbe33c330cd5c08ad260243101b56bc81815182216ad4a139afc3d2cfc0",
+    "app/tests/test_windsock_data.gd": "545dfe489f074668428f30d119319cd5fe8973b266e22e1509772478d0d69725",
+    "app/tests/check_field_pack.gd": "50e6d05ef163bbaa9b009c9cc1b3f27a2f4116541d220ae9b2c4f6f14b45642c",
+    "tools/ground/capture_windsock.gd": "cc1c385b4b0373ca72933db1413f60cfaa24d72389c572ae2ed6756b8fa0b514",
+    "tools/ground/check_windsock.py": "ac0b12d43207b6104dca2a1128fa7a9e2012a874bebcae34d869bf1d1b9b311f"
+  },
+  "capture_tool_note": "Overview camera widened after headless suite started; app sources unchanged. Captures regenerated with this tool."
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""L10a: verify the production calm windsock with isolated on/off captures."""
+"""L10a/b: verify production flight cues with isolated on/off captures."""
 import argparse
 import json
 import os
@@ -14,6 +14,7 @@ from check_surfaces import checked_run, finite_tree, reject_constant, sha256
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE = Path(__file__).with_name('capture_windsock.gd')
 VIEWS = ('close', 'pilot_turn', 'overview')
+STATION_VIEWS = ('close', 'rear', 'overview', 'pilot_left', 'pilot_right')
 
 
 def check_pair(on, off, bounds):
@@ -21,22 +22,32 @@ def check_pair(on, off, bounds):
     changed = delta > 1
     count = int(changed.sum())
     if count < 20:
-        raise RuntimeError('windsock ablation changed fewer than 20 pixels')
+        raise RuntimeError('cue ablation changed fewer than 20 pixels')
     x0, y0, x1, y1 = bounds
     if not (0 <= x0 < x1 < 960 and 0 <= y0 < y1 < 540):
-        raise RuntimeError('windsock mesh bounds are not fully on screen')
+        raise RuntimeError('cue mesh bounds are not fully on screen')
     ys, xs = np.mgrid[:540, :960]
     outside = (xs < x0 - 2) | (xs > x1 + 2) | (ys < y0 - 2) | (ys > y1 + 2)
     if np.any(changed & outside):
-        raise RuntimeError('on/off changes escape the projected windsock bounds')
+        raise RuntimeError('on/off changes escape the projected cue bounds')
     return {'changed_pixels': count, 'mean_changed_rgb_delta': float(delta[changed].mean()),
             'clipped_white_pixels': int(np.all(on >= 254, axis=2)[changed].sum())}
 
 
-def load(folder):
+def check_clear_view(on, off):
+    if not np.array_equal(on, off):
+        raise RuntimeError('pilot station obstructs the runway view')
+    return {'changed_pixels': 0}
+
+
+def load(folder, cue_type='windsock'):
     data = json.loads((folder / 'capture.json').read_text(), parse_constant=reject_constant)
     finite_tree(data)
-    if data.get('format') != 'openrc-l10a-capture v1' or data.get('method') != 'gl_compatibility' or data.get('driver') != 'opengl3':
+    station = cue_type == 'pilot_station'
+    views = STATION_VIEWS if station else VIEWS
+    if data.get('cue', {}).get('type') != cue_type:
+        raise RuntimeError('wrong cue type')
+    if data.get('format') != ('openrc-l10b-capture v1' if station else 'openrc-l10a-capture v1') or data.get('method') != 'gl_compatibility' or data.get('driver') != 'opengl3':
         raise RuntimeError('invalid capture format or renderer')
     if data.get('viewport') != [960, 540] or data.get('shader_time') != 0:
         raise RuntimeError('wrong viewport or shader clock')
@@ -50,22 +61,34 @@ def load(folder):
             if image.size != (960, 540):
                 raise RuntimeError('wrong PNG dimensions')
             records[name] = (item, np.asarray(image.convert('RGB')))
-    if set(records) != {f'{view}-{state}.png' for view in VIEWS for state in ('on', 'off')}:
+    if set(records) != {f'{view}-{state}.png' for view in views for state in ('on', 'off')}:
         raise RuntimeError('incomplete capture set')
     metrics = {}
-    for view in VIEWS:
+    for view in views:
         on, a = records[f'{view}-on.png']
         off, b = records[f'{view}-off.png']
         for key in ('bounds', 'eye', 'target', 'fov'):
             if on[key] != off[key]:
                 raise RuntimeError('camera/projection changed during ablation')
+        if station and view.startswith('pilot_'):
+            metric = check_clear_view(a, b)
+            mutated = b.copy()
+            mutated[270, 480] ^= np.uint8(255)
+            try:
+                check_clear_view(mutated, b)
+            except RuntimeError:
+                pass
+            else:
+                raise RuntimeError('occlusion control escaped the pilot-view check')
+            metrics[view] = metric
+            continue
         metric = check_pair(a, b, on['bounds'])
         metric['added_draws'] = on['draws'] - off['draws']
         metric['added_primitives'] = on['primitives'] - off['primitives']
-        if metric['added_draws'] != 2 or not 0 < metric['added_primitives'] < 2000:
-            raise RuntimeError(f'{view}: expected two draws and fewer than 2000 added triangles')
+        if metric['added_draws'] != (1 if station else 2) or not 0 < metric['added_primitives'] < (400 if station else 2000):
+            raise RuntimeError(f'{view}: cue exceeds its draw or triangle budget')
         if metric['clipped_white_pixels']:
-            raise RuntimeError(f'{view}: clipped whites on the windsock')
+            raise RuntimeError(f'{view}: clipped whites on the cue')
         try:
             check_pair(b, b, on['bounds'])
         except RuntimeError as exc:
@@ -79,6 +102,7 @@ def load(folder):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--cue', choices=('windsock', 'pilot_station'), default='windsock')
     parser.add_argument('--app', type=Path, default=ROOT / 'app')
     parser.add_argument('--godot', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
@@ -94,27 +118,27 @@ def main():
     for name in ('first', 'repeat', 'scenery'):
         command = ['xvfb-run', '-a', '-s', '-screen 0 960x540x24', str(godot), '--path', str(app),
                    '--resolution', '960x540', '--rendering-driver', 'opengl3', '--audio-driver', 'Dummy',
-                   '--script', str(CAPTURE), '--', f'--out={out / name}']
+                   '--script', str(CAPTURE), '--', f'--out={out / name}', f'--cue={args.cue}']
         if name == 'scenery':
             command.append('--scenery=on')
         commands[name] = command
         checked_run(command, out / f'{name}.log', env, 240)
-        runs[name], metrics[name] = load(out / name)
+        runs[name], metrics[name] = load(out / name, args.cue)
         if runs[name]['scenery'] != (name == 'scenery'):
             raise RuntimeError('scenery mode differs from requested fixture')
     if runs['first'] != runs['repeat']:
         raise RuntimeError('independent repeat hashes/counters differ')
     sources = {"app/" + relative: sha256(app / relative) for relative in (
         'data/field_loader.gd', 'data/fields/default.json', 'render/field.gd',
-        'render/windsock.gd', 'scenery/mesh_kit.gd')}
+        'render/windsock.gd', 'render/pilot_station.gd', 'render/near_grass.gd', 'scenery/mesh_kit.gd')}
     sources.update({str(path.relative_to(ROOT)): sha256(path) for path in (CAPTURE, Path(__file__).resolve())})
-    summary = {'format': 'openrc-l10a-review v1', 'complete': True, 'metrics': metrics,
-               'identical_repeat': True, 'invisible_feature_control_rejected': True,
+    summary = {'format': 'openrc-l10b-review v1' if args.cue == 'pilot_station' else 'openrc-l10a-review v1', 'complete': True, 'metrics': metrics,
+               'cue': args.cue, 'identical_repeat': True, 'invisible_feature_control_rejected': True,
                'renderer': runs['first']['adapter'], 'sources_sha256': sources,
                'commands': commands, 'godot_version': subprocess.run([str(godot), '--version'], check=True,
                    capture_output=True, text=True).stdout.strip()}
     (out / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True, allow_nan=False) + '\n')
-    print(f'L10a windsock capture passed: {out}')
+    print(f'{args.cue} capture passed: {out}')
 
 
 if __name__ == '__main__':

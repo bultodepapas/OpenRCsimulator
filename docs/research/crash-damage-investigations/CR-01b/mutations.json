@@ -1,0 +1,43 @@
+[
+  {
+    "name": "control",
+    "exit_code": 0,
+    "failures": []
+  },
+  {
+    "name": "omit-critical-intervals",
+    "exit_code": 1,
+    "failures": [
+      "FAIL clear-at-end point can be first crossing",
+      "FAIL rotating enter/exit pair exact first root",
+      "FAIL tangent cannot claim a resolved crossing",
+      "FAIL first of three cubic roots [0.2, 0.4, 0.7]",
+      "FAIL first of three cubic roots [0.1, 0.10001, 0.9]",
+      "FAIL first of three cubic roots [0.01, 0.5, 0.99]",
+      "FAIL narrow same-sign-endpoint crossing is not missed",
+      "FAIL exact polynomial tangent unknown"
+    ]
+  },
+  {
+    "name": "omit-shortest-sign",
+    "exit_code": 1,
+    "failures": [
+      "FAIL quaternion sign equivalent shortest path",
+      "FAIL 100 mixed attitudes match direct pose root"
+    ]
+  },
+  {
+    "name": "reverse-pitch-cross-term",
+    "exit_code": 1,
+    "failures": [
+      "FAIL 100 mixed attitudes match direct pose root"
+    ]
+  },
+  {
+    "name": "omit-tie-tolerance",
+    "exit_code": 1,
+    "failures": [
+      "FAIL numerically simultaneous contacts keep data order"
+    ]
+  }
+]

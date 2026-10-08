@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D1-R4: 56 checks, 7 failed
+FAIL unreachable finite lift slope []
+FAIL unreachable finite lift slope []
+FAIL unreachable finite lift slope []
+FAIL unreachable finite lift slope []
+FAIL asymmetric unreachable side []
+FAIL reachable linear bound but blend ends beyond 90 []
+FAIL nonpositive search bracket ["aero.envelope: the stall blend would start at -5.0° / -27.9°, inside the ±8° linear-oracle region (raise CL_max / CL_min or narrow the blend)"]

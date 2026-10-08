@@ -27,4 +27,4 @@ The current research has gaps and source-quality limits documented in each repor
 
 ## Implementation evidence
 
-[CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. Earliest crossing and rendered crossing pose remain CR-01.
+[CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. [CR-01b](CR-01b/README.md) verifies crossing reconstruction along the existing pose interpolation, numerical unknown cases and unchanged flight traces. Rendered crossing pose and component labels remain CR-01.

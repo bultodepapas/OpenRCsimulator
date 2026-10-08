@@ -1,0 +1,43 @@
+{
+  "format": "openrc-data4b-verification v1",
+  "baseline_commit": "b0f9e0887803869a42bef2a58723bd215648cbe1",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "isolation": "Fresh local clone plus DATA-4b code only; separate XDG settings; pinned engine shared read-only.",
+  "app_test": {
+    "exit_code": 0,
+    "sections": 137,
+    "log": "app-test.log"
+  },
+  "contract": {
+    "exit_code": 0,
+    "tests": 4,
+    "cases": 1691,
+    "added_cases": 222,
+    "valid_controls": 136,
+    "runtime_only": 11
+  },
+  "schema_mutations_detected": 8,
+  "lint": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "tested_files_sha256": {
+    "app/physics/aircraft_data.gd": "826c8c592134f43a7c1552d426a551094641a8840803724529c352b394c0dd0b",
+    "research/aircraft-data/schema/boundary_cases.py": "4980bc38d8ca1a074677c47e49cdb272b0598e0b6a600ba37599d19afca50100",
+    "research/aircraft-data/schema/cases.py": "daf3e988f7f0048eee8fb69136873a544fbc52694cba79cbfd6086ffa5f34d2a",
+    "research/aircraft-data/schema/check_mutations.py": "eb380d826a9441548949b6dc6d76e4a6d5a58a4fd3f8e541764ecb6492cb5bd4",
+    "research/aircraft-data/schema/test_contract.py": "1a60fe6b002905bd2b52c0ba0b95fc8c732be9a682a42e2b8b9f6efdc75aae78",
+    "app/test.sh": "6c4eb471dcce5cb88c34735c9593f89f6e688f3eb327e3e26929397629e6fede"
+  },
+  "scope": "The runtime delta is only the incidence error-message format. Other contributors' uncommitted work is excluded from full-suite evidence."
+}

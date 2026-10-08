@@ -83,20 +83,38 @@ func _test_real_default_cue() -> void:
 		return
 	var field: Dictionary = loaded["field"]
 	var cues: Array = field.get("flight_cues", [])
-	_check("default field has one normalized windsock", cues.size() == 1, str(cues))
-	if cues.size() == 1:
-		var cue: Dictionary = cues[0]
+	var windsocks: Array[Dictionary] = []
+	for cue_value: Variant in cues:
+		var cue: Dictionary = cue_value
+		if cue.get("type") == "windsock":
+			windsocks.append(cue)
+	_check("default field has exactly one normalized windsock", windsocks.size() == 1, str(cues))
+	if windsocks.size() == 1:
+		var cue: Dictionary = windsocks[0]
 		_check("default windsock matches the planned field station and FAA Size 1 dimensions", cue["id"] == "windsock" and cue["north"] == -6.0 and cue["east"] == -12.0 and cue["pole_height"] == 3.6 and cue["length"] == 2.5 and cue["throat_diameter"] == 0.45 and cue["tail_diameter"] == 0.18, str(cue))
 
 
 func _test_exact_schema_and_ids() -> void:
 	_rejected("flight_cues with wrong root type", func(data: Dictionary) -> void: data["flight_cues"] = null, "flight_cues: expected an array")
-	_rejected("more than one flight cue", func(data: Dictionary) -> void: (data["flight_cues"] as Array).append(_valid_cue()), "at most 1 cue")
+	_rejected("duplicate windsock type remains rejected", func(data: Dictionary) -> void:
+		var duplicate: Dictionary = _valid_cue()
+		duplicate["id"] = "windsock_copy"
+		(data["flight_cues"] as Array).append(duplicate),
+		"at most one 'windsock' cue is supported")
+	_rejected("more than two flight cues", func(data: Dictionary) -> void:
+		var cues: Array = data["flight_cues"]
+		var second: Dictionary = _valid_cue()
+		second["id"] = "windsock_copy"
+		var third: Dictionary = _valid_cue()
+		third["id"] = "windsock_third"
+		cues.append(second)
+		cues.append(third),
+		"at most 2 cues are supported")
 	_rejected("null cue entry", func(data: Dictionary) -> void: (data["flight_cues"] as Array)[0] = null, "flight_cues[0]: expected an object")
 	for key: String in CUE_KEYS:
 		_rejected("missing cue key " + key, func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary).erase(key), "missing '%s'" % key)
 	_rejected("unknown cue key", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["color"] = "orange", "unknown key 'color'")
-	_rejected("cue type other than windsock", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["type"] = "flag", "type: expected 'windsock'")
+	_rejected("cue type other than windsock", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["type"] = "flag", "type: expected 'windsock' or 'pilot_station'")
 	_rejected("colliding cue", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["collides"] = true, "collides=true is unsupported")
 	_rejected("non-boolean collides value", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["collides"] = "false", "collides: expected a boolean")
 	_rejected("ID duplicates pilot ID", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = "pilot", "duplicate ID 'pilot'")

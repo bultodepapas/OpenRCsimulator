@@ -9,12 +9,13 @@ var _failed: int = 0
 
 func _initialize() -> void:
 	var loaded: Dictionary = FieldLoader.load_from()
-	_check("committed field provides one validated flight cue", bool(loaded.get("ok", false))
-		and loaded.get("field", {}).get("flight_cues", []).size() == 1)
+	var cues: Array = loaded.get("field", {}).get("flight_cues", []).filter(func(c: Dictionary) -> bool: return c.type == "windsock")
+	_check("committed field provides one validated windsock", bool(loaded.get("ok", false))
+		and cues.size() == 1)
 	if _failed:
 		quit(1)
 		return
-	var cue: Dictionary = loaded.field.flight_cues[0]
+	var cue: Dictionary = cues[0]
 	var field: Node3D = FieldBuilder.build(loaded.field)
 	_check("production field builder attaches the configured cue", field.get_node_or_null(str(cue.id)) is Node3D
 		and field.get_node_or_null(str(cue.id) + "/Fabric") is MeshInstance3D)

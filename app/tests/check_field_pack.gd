@@ -99,6 +99,13 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack L10a calm windsock validated")
+	var station: Node3D = field.get_node_or_null("pilot_station") as Node3D
+	if station == null or station.get_child_count() != 1 or not station.get_node_or_null("Station") is MeshInstance3D:
+		printerr("Pack missing L10b pilot station")
+		field.free()
+		quit(1)
+		return
+	print("Pack L10b pilot station validated")
 	field.free()
 	var expected_count: int = result.field.objects[0].positions.size()
 	if count != expected_count:

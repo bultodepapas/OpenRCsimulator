@@ -1,0 +1,42 @@
+{
+  "app_test_exit": 0,
+  "app_test_sections": 137,
+  "baseline_commit": "0a496184ab0c583d6c67dd211ad076d9ca01ae62",
+  "baseline_trim_sha256": "d2323aa29dd7b5128b11fb351299f24a4fbab01669fe575bc7682e44f9113338",
+  "candidate_app_changes": [
+    " M app/physics/trim.gd",
+    "?? app/tests/test_trim_integrity.gd",
+    "?? app/tests/test_trim_integrity.gd.uid"
+  ],
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "evidence_sha256": {
+    "app-test.log": "f52a8bac573032f734592352d5f36eda05e68feab148e5902d99a48906ca64ad",
+    "fleet-proof.json": "b9ffb52e7297bb193b172a7f1fccaff52f01e5d7b38ed991993b9a83294591a6",
+    "focused-final.log": "06ea7f04c4065058257fd10d76087eff031a0a8df4358e36c0b44171f82b0a31",
+    "lint-after.json": "a8f989db7cbf7bdef080d930474db8578c090cd44accad37957d1cac34481076",
+    "lint-before.json": "e2535347d7721f17e989064be7aabbab5847b4dafa2ca9c42af6f45637abf310",
+    "lint-integrated.json": "df479f744a151c01bcefa71d004a94d19702147dc1258f8f27a297c12a273b62",
+    "mutations.json": "ddefd1fad1b434da2c7fd2e1bcd5bb2ecda23f104e36409b663c568d9aac2119",
+    "repro-after.log": "d7f484af66b8977826d5e131b8dc14dfbacd16b878e5d89dd5a9f9b83030ef56",
+    "repro-before.log": "c78252528d5d9ccc9afbebd361636c6096e85b609ddf8812787f72d09b52826f"
+  },
+  "final_integrated_focused_checks": 700,
+  "full_suite_focused_checks": 699,
+  "gdscript_test_programs": 109,
+  "isolated_xdg": true,
+  "lint_integrated_counts": {
+    "errors": 0,
+    "parse_errors": 0,
+    "total": 12,
+    "warnings": 12
+  },
+  "post_suite_test_refinements": "Nonsingular leading matrix blocks, direct model-byte immutability assertion and original-repro positive control; no production change after full-suite start.",
+  "source_sha256": {
+    "app/physics/trim.gd": "4cd18572701f8264d284ff0dd481ac13d69a97d7d90ec6e5ec6ca991f1b3dce6",
+    "app/tests/test_trim_integrity.gd": "20830fb3fdc72cf918cdcc3658ab7b098551c53abbdc580af172187d650ba680",
+    "app/tests/test_trim_integrity.gd.uid": "d98996ce9f681c40a8e8358bf6106ac89a9c9f1d9d489fa71b5ee7b16c0401d1",
+    "docs/research/trim-integrity/D4-R2/check_mutations.py": "b8a4b4d8e10a8af096ecbdafca6331b2362018f91ba84913c53a6ffb2005c703",
+    "docs/research/trim-integrity/D4-R2/fleet.gd": "e7250e88b0654dc0f9a678aad311b23f83dd60db5ba6b7576c459fa7975bc36a"
+  },
+  "step": "D4-R2"
+}

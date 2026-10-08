@@ -1,0 +1,22 @@
+{
+  "positive_control": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nD4-R2 trim integrity: 700 checks, 0 failed\n",
+  "mutations": {
+    "accept_overflowed_solution": {
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL back substitution overflow refused\nD4-R2 trim integrity: 700 checks, 1 failed\n"
+    },
+    "ignore_extra_rows": {
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL malformed square matrix\nD4-R2 trim integrity: 700 checks, 1 failed\n"
+    },
+    "ignore_extra_columns": {
+      "exit_code": 1,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL malformed square matrix\nD4-R2 trim integrity: 700 checks, 1 failed\n"
+    }
+  },
+  "original_defect": {
+    "commit": "0a496184ab0c583d6c67dd211ad076d9ca01ae62",
+    "exit_code": 1,
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL NaN gravity refuses with reason\nFAIL NaN linear RHS\nD4-R2 trim integrity: 22 checks, 2 failed\n"
+  }
+}

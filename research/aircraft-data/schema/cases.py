@@ -149,4 +149,6 @@ def build_cases():
     change('runtime-only:inventory-balance', stik, ('inventory', 0, 'position', 'value'), [1, 0, 0], physical=True)
     change('runtime-only:table-order', stik, ('propulsion', 'propeller', 'ct_table', 'value'),
            [[0, .1], [1, .05], [.5, .02]], physical=True)
+    from boundary_cases import build_boundary_cases
+    cases.extend(build_boundary_cases(fleet))
     return cases

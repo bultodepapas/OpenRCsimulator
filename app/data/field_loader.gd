@@ -8,7 +8,7 @@ const FORMAT: String = "openrc-field v1"
 const FLOAT32_MAX: float = 3.4028234663852886e38
 # L6b/L7 visual-layout assumptions, not measured field or vegetation dimensions.
 const MAX_FIELD_OBJECTS: int = 1
-const MAX_FLIGHT_CUES: int = 1
+const MAX_FLIGHT_CUES: int = 2
 const MAX_FLIGHT_CUE_COORDINATE_M: float = 1000000.0
 # L10a visual policy bounds are estimates; FAA Size 1 facts cover cloth length and throat only.
 const WINDSOCK_POLE_MIN_M: float = 2.0
@@ -22,7 +22,17 @@ const WINDSOCK_CLEARANCE_M: float = 1.0
 const WINDSOCK_PILOT_CLEARANCE_M: float = 2.0
 # Only the exact 40 km square rough surface uses Horizon.mesh; custom rough surfaces stay flat.
 const HORIZON_MESH_ROUGH_SIZE_M: float = 40000.0
-const WINDSOCK_HORIZON_RELIEF_RADIUS_M: float = 1500.0
+const FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M: float = 1500.0
+const PILOT_STATION_WIDTH_MIN_M: float = 1.2
+const PILOT_STATION_WIDTH_MAX_M: float = 2.4
+const PILOT_STATION_DEPTH_MIN_M: float = 1.0
+const PILOT_STATION_DEPTH_MAX_M: float = 2.0
+const PILOT_STATION_HEIGHT_MIN_M: float = 0.6
+const PILOT_STATION_HEIGHT_MAX_M: float = 0.9
+# Estimated conservative ground clearance around dimensions that already include fittings and pad.
+const PILOT_STATION_CLEARANCE_M: float = 0.1
+const PILOT_STATION_EYE_CLEARANCE_M: float = 0.4
+const PILOT_STATION_EYE_CLEARANCE_TOLERANCE_M: float = 0.000000001
 const MAX_TREELINE_POSITIONS: int = 1680
 const TREE_POSITION_GRID_M: float = 0.25
 const TREE_POSITION_GRID_TOLERANCE: float = 0.000001
@@ -34,6 +44,8 @@ const MAX_PILOT_HORIZONTAL_COORDINATE_M: float = 1000000.0 # Keeps absolute tree
 const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
 const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues"]
 const FLIGHT_CUE_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "pole_height", "length", "throat_diameter", "tail_diameter"]
+const PILOT_STATION_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "depth", "height"]
+const FLIGHT_CUE_TYPES: Array[String] = ["windsock", "pilot_station"]
 const RESERVED_FIELD_CUE_IDS: Array[String] = ["NearGrass", "Scenery"]
 const PILOT_KEYS: Array[String] = ["id", "north", "east", "down", "eye_height"]
 const SURFACE_KEYS: Array[String] = ["id", "type", "center_north", "center_east", "length_east_west", "width_north_south"]
@@ -157,21 +169,30 @@ static func validate(raw: Variant) -> Dictionary:
 	if root.has("flight_cues"):
 		var flight_cues: Array = _array(errors, "flight_cues", root.get("flight_cues"))
 		if flight_cues.size() > MAX_FLIGHT_CUES:
-			errors.append("flight_cues: at most %d cue is supported" % MAX_FLIGHT_CUES)
-		else:
-			for index: int in range(flight_cues.size()):
-				var cue_path: String = "flight_cues[%d]" % index
-				var cue_node: Dictionary = _object(errors, cue_path, flight_cues[index])
-				normalized_flight_cues.append(_validate_windsock(
-					errors,
-					ids,
-					cue_path,
-					cue_node,
-					pilot_north,
-					pilot_east,
-					pilot_down,
-					validated_surfaces
-				))
+			errors.append("flight_cues: at most %d cues are supported" % MAX_FLIGHT_CUES)
+		var seen_cue_types: Dictionary = {}
+		var cue_count_to_validate: int = mini(flight_cues.size(), MAX_FLIGHT_CUES)
+		for index: int in range(cue_count_to_validate):
+			var cue_path: String = "flight_cues[%d]" % index
+			var cue_node: Dictionary = _object(errors, cue_path, flight_cues[index])
+			var cue_type_value: Variant = cue_node.get("type")
+			var cue_type: String = String(cue_type_value) if typeof(cue_type_value) == TYPE_STRING else ""
+			if FLIGHT_CUE_TYPES.has(cue_type):
+				if seen_cue_types.has(cue_type):
+					errors.append("flight_cues: at most one '%s' cue is supported" % cue_type)
+				else:
+					seen_cue_types[cue_type] = true
+			normalized_flight_cues.append(_validate_flight_cue(
+				errors,
+				ids,
+				cue_path,
+				cue_node,
+				pilot_north,
+				pilot_east,
+				pilot_down,
+				eye_height,
+				validated_surfaces
+			))
 
 	var selected_runway_type: String = str(surface_index_by_id.get(runway_id, ""))
 	if runway_id.is_empty():
@@ -204,6 +225,44 @@ static func validate(raw: Variant) -> Dictionary:
 	return {"ok": true, "errors": errors, "field": normalized_field}
 
 
+static func _validate_flight_cue(
+	errors: PackedStringArray,
+	ids: Dictionary,
+	path: String,
+	cue: Dictionary,
+	pilot_north: float,
+	pilot_east: float,
+	pilot_down: float,
+	eye_height: float,
+	surfaces: Array
+) -> Dictionary:
+	var cue_type_value: Variant = cue.get("type")
+	if typeof(cue_type_value) == TYPE_STRING and cue_type_value == "pilot_station":
+		return _validate_pilot_station(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, eye_height, surfaces)
+	return _validate_windsock(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, surfaces)
+
+
+static func _validate_flight_cue_id(errors: PackedStringArray, ids: Dictionary, path: String, cue: Dictionary) -> String:
+	var identifier: String = _register_id(errors, ids, path + ".id", cue.get("id"))
+	if not identifier.is_empty():
+		if identifier != identifier.strip_edges():
+			errors.append("%s.id: leading or trailing whitespace is not allowed" % path)
+		var node_name: String = identifier.validate_node_name()
+		if node_name != identifier:
+			errors.append("%s.id: '%s' is not a valid Godot node name" % [path, identifier])
+		if RESERVED_FIELD_CUE_IDS.has(identifier):
+			errors.append("%s.id: '%s' is reserved for a generated field child" % [path, identifier])
+	return identifier
+
+
+static func _validate_noncolliding_flight_cue(errors: PackedStringArray, path: String, cue: Dictionary) -> void:
+	var collides_value: Variant = cue.get("collides")
+	if typeof(collides_value) != TYPE_BOOL:
+		errors.append("%s.collides: expected a boolean" % path)
+	elif collides_value:
+		errors.append("%s.collides=true is unsupported; flight cues are visual only" % path)
+
+
 static func _validate_windsock(
 	errors: PackedStringArray,
 	ids: Dictionary,
@@ -215,23 +274,11 @@ static func _validate_windsock(
 	surfaces: Array
 ) -> Dictionary:
 	_check_keys(errors, path, cue, FLIGHT_CUE_KEYS, FLIGHT_CUE_KEYS)
-	var identifier: String = _register_id(errors, ids, path + ".id", cue.get("id"))
-	if not identifier.is_empty():
-		if identifier != identifier.strip_edges():
-			errors.append("%s.id: leading or trailing whitespace is not allowed" % path)
-		var node_name: String = identifier.validate_node_name()
-		if node_name != identifier:
-			errors.append("%s.id: '%s' is not a valid Godot node name" % [path, identifier])
-		if RESERVED_FIELD_CUE_IDS.has(identifier):
-			errors.append("%s.id: '%s' is reserved for a generated field child" % [path, identifier])
+	var identifier: String = _validate_flight_cue_id(errors, ids, path, cue)
 	var cue_type: String = _read_string(errors, path + ".type", cue.get("type"), true)
 	if cue_type != "windsock":
-		errors.append("%s.type: expected 'windsock'" % path)
-	var collides_value: Variant = cue.get("collides")
-	if typeof(collides_value) != TYPE_BOOL:
-		errors.append("%s.collides: expected a boolean" % path)
-	elif collides_value:
-		errors.append("%s.collides=true is unsupported; flight cues are visual only" % path)
+		errors.append("%s.type: expected 'windsock' or 'pilot_station'" % path)
+	_validate_noncolliding_flight_cue(errors, path, cue)
 
 	var north: float = _quantity_or_zero(errors, path + ".north", cue.get("north"), false)
 	var east: float = _quantity_or_zero(errors, path + ".east", cue.get("east"), false)
@@ -267,6 +314,78 @@ static func _validate_windsock(
 	}
 
 
+static func _validate_pilot_station(
+	errors: PackedStringArray,
+	ids: Dictionary,
+	path: String,
+	cue: Dictionary,
+	pilot_north: float,
+	pilot_east: float,
+	pilot_down: float,
+	eye_height: float,
+	surfaces: Array
+) -> Dictionary:
+	_check_keys(errors, path, cue, PILOT_STATION_KEYS, PILOT_STATION_KEYS)
+	var identifier: String = _validate_flight_cue_id(errors, ids, path, cue)
+	var cue_type: String = _read_string(errors, path + ".type", cue.get("type"), true)
+	if cue_type != "pilot_station":
+		errors.append("%s.type: expected 'pilot_station'" % path)
+	_validate_noncolliding_flight_cue(errors, path, cue)
+
+	var north: float = _quantity_or_zero(errors, path + ".north", cue.get("north"), false)
+	var east: float = _quantity_or_zero(errors, path + ".east", cue.get("east"), false)
+	var width: float = _quantity_or_zero(errors, path + ".width", cue.get("width"), true)
+	var depth: float = _quantity_or_zero(errors, path + ".depth", cue.get("depth"), true)
+	var height: float = _quantity_or_zero(errors, path + ".height", cue.get("height"), true)
+	_validate_bounded_dimension(errors, path + ".width", width, PILOT_STATION_WIDTH_MIN_M, PILOT_STATION_WIDTH_MAX_M)
+	_validate_bounded_dimension(errors, path + ".depth", depth, PILOT_STATION_DEPTH_MIN_M, PILOT_STATION_DEPTH_MAX_M)
+	_validate_bounded_dimension(errors, path + ".height", height, PILOT_STATION_HEIGHT_MIN_M, PILOT_STATION_HEIGHT_MAX_M)
+	if is_finite(north) and absf(north) > MAX_FLIGHT_CUE_COORDINATE_M:
+		errors.append("%s.north.value: must be within +/- %.0f m" % [path, MAX_FLIGHT_CUE_COORDINATE_M])
+	if is_finite(east) and absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
+		errors.append("%s.east.value: must be within +/- %.0f m" % [path, MAX_FLIGHT_CUE_COORDINATE_M])
+	if is_finite(north) and is_finite(pilot_north) and north != pilot_north:
+		errors.append("%s.north.value: must equal pilot.north.value exactly" % path)
+	if is_finite(east) and is_finite(pilot_east) and east != pilot_east:
+		errors.append("%s.east.value: must equal pilot.east.value exactly" % path)
+	if pilot_down != 0.0:
+		errors.append("%s: pilot_station requires pilot.down == 0 m for flat ground" % path)
+	if is_finite(height) and is_finite(eye_height) and height + PILOT_STATION_EYE_CLEARANCE_M > eye_height + PILOT_STATION_EYE_CLEARANCE_TOLERANCE_M:
+		errors.append("%s.height.value: station top must be at least %.1f m below pilot.eye_height" % [path, PILOT_STATION_EYE_CLEARANCE_M])
+	_validate_pilot_station_placement(errors, path, north, east, width, depth, surfaces)
+	return {
+		"id": identifier,
+		"type": cue_type,
+		"collides": false,
+		"north": north,
+		"east": east,
+		"width": width,
+		"depth": depth,
+		"height": height,
+	}
+
+
+static func _validate_pilot_station_placement(
+	errors: PackedStringArray,
+	path: String,
+	north: float,
+	east: float,
+	width: float,
+	depth: float,
+	surfaces: Array
+) -> void:
+	if not is_finite(north) or not is_finite(east) or absf(north) > MAX_FLIGHT_CUE_COORDINATE_M or absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
+		return
+	if not is_finite(width) or not is_finite(depth) or width <= 0.0 or depth <= 0.0:
+		return
+	var half_width: float = width / 2.0
+	var half_depth: float = depth / 2.0
+	var envelope_radius: float = sqrt(half_width * half_width + half_depth * half_depth) + PILOT_STATION_CLEARANCE_M
+	if not is_finite(envelope_radius) or envelope_radius <= 0.0:
+		return
+	_validate_cue_ground_envelope(errors, path, north, east, envelope_radius, surfaces, "")
+
+
 static func _validate_bounded_dimension(errors: PackedStringArray, path: String, value: float, minimum: float, maximum: float) -> void:
 	if not is_finite(value):
 		return
@@ -274,23 +393,18 @@ static func _validate_bounded_dimension(errors: PackedStringArray, path: String,
 		errors.append("%s.value: must be within %.3f..%.3f m" % [path, minimum, maximum])
 
 
-static func _validate_windsock_placement(
+static func _validate_cue_ground_envelope(
 	errors: PackedStringArray,
 	path: String,
 	north: float,
 	east: float,
-	pilot_north: float,
-	pilot_east: float,
-	length: float,
-	throat_diameter: float,
-	surfaces: Array
+	envelope_radius: float,
+	surfaces: Array,
+	cue_label: String
 ) -> void:
-	if not is_finite(north) or not is_finite(east) or absf(north) > MAX_FLIGHT_CUE_COORDINATE_M or absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
+	if not is_finite(north) or not is_finite(east) or not is_finite(envelope_radius) or envelope_radius <= 0.0:
 		return
-	if not is_finite(pilot_north) or not is_finite(pilot_east) or not is_finite(length) or not is_finite(throat_diameter):
-		return
-	var envelope_radius: float = length + throat_diameter + WINDSOCK_CLEARANCE_M
-	if not is_finite(envelope_radius) or envelope_radius <= 0.0:
+	if absf(north) > MAX_FLIGHT_CUE_COORDINATE_M or absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
 		return
 	var has_rough_envelope: bool = false
 	var within_rough_relief_policy: bool = false
@@ -325,7 +439,7 @@ static func _validate_windsock_placement(
 					var north_delta: float = north - rough_center_north
 					var east_delta: float = east - rough_center_east
 					var rough_distance: float = sqrt(north_delta * north_delta + east_delta * east_delta)
-					if rough_distance + envelope_radius < WINDSOCK_HORIZON_RELIEF_RADIUS_M:
+					if rough_distance + envelope_radius < FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M:
 						within_rough_relief_policy = true
 		elif surface_type == "runway" or surface_type == "mown":
 			var nearest_north: float = clampf(north, north_min, north_max)
@@ -334,11 +448,35 @@ static func _validate_windsock_placement(
 			var east_delta: float = east - nearest_east
 			var rectangle_distance: float = sqrt(north_delta * north_delta + east_delta * east_delta)
 			if rectangle_distance <= envelope_radius:
-				errors.append("%s: windsock envelope intersects %s surface '%s'" % [path, surface_type, surface.get("id", "")])
+				var envelope_name: String = "envelope"
+				if not cue_label.is_empty():
+					envelope_name = "%s envelope" % cue_label
+				errors.append("%s: %s intersects %s surface '%s'" % [path, envelope_name, surface_type, surface.get("id", "")])
 	if not has_rough_envelope:
 		errors.append("%s: envelope radius %.2f m must fit inside a rough surface" % [path, envelope_radius])
 	elif not within_rough_relief_policy:
-		errors.append("%s: envelope must stay within the %.0f m relief radius of the 40 km square rough surface center" % [path, WINDSOCK_HORIZON_RELIEF_RADIUS_M])
+		errors.append("%s: envelope must stay within the %.0f m relief radius of the 40 km square rough surface center" % [path, FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M])
+
+
+static func _validate_windsock_placement(
+	errors: PackedStringArray,
+	path: String,
+	north: float,
+	east: float,
+	pilot_north: float,
+	pilot_east: float,
+	length: float,
+	throat_diameter: float,
+	surfaces: Array
+) -> void:
+	if not is_finite(north) or not is_finite(east) or absf(north) > MAX_FLIGHT_CUE_COORDINATE_M or absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
+		return
+	if not is_finite(pilot_north) or not is_finite(pilot_east) or not is_finite(length) or not is_finite(throat_diameter):
+		return
+	var envelope_radius: float = length + throat_diameter + WINDSOCK_CLEARANCE_M
+	if not is_finite(envelope_radius) or envelope_radius <= 0.0:
+		return
+	_validate_cue_ground_envelope(errors, path, north, east, envelope_radius, surfaces, "windsock")
 	var pilot_north_delta: float = north - pilot_north
 	var pilot_east_delta: float = east - pilot_east
 	var pilot_distance: float = sqrt(pilot_north_delta * pilot_north_delta + pilot_east_delta * pilot_east_delta)

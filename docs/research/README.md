@@ -51,7 +51,7 @@ Static propeller readings: [VAL-7a](validation/VAL-7a/README.md) reduces matched
 
 Propeller operating-range diagnostics: [G1b1](propulsion/G1b1/README.md) audits Ct/Cp queries from exact-input-identified traces, separating table extrapolation, documented source gaps, stopped/reverse flow and unknown coverage. Six session flights and direct engine-query comparisons verify the offline tool; online counters and matched-propeller validation remain open.
 
-Throttle-step readings: [VAL-7b](validation/VAL-7b/README.md) reduces recorded RPM crossings into lag/delay diagnostics, retaining residuals, sampling limits and provenance. Physical measurements and propagated uncertainty remain open.
+Throttle-step readings: [VAL-7b](validation/VAL-7b/README.md) reduces recorded RPM crossings into lag/delay diagnostics, retaining residuals, sampling limits and provenance. [VAL-7c](validation/VAL-7c/README.md) adds explicit opt-in uncertainty with shared-input covariance and screens unresolved crossings; correlated acquisition models and physical measurements remain open.
 
 Ground-run video: [VAL-8a](validation/VAL-8a/README.md) reduces original capture-frame annotations and surveyed positions into duration, distance and mean along-runway ground speed, retaining shared-event/calibration uncertainty and exact input hashes. Physical flights and simulator comparisons remain VAL-8.
 
@@ -61,17 +61,21 @@ Ground-run video: [VAL-8a](validation/VAL-8a/README.md) reduces original capture
 
 Trace integrity: [C7-R1](trace-integrity/C7-R1/README.md) hardens CLI duration/failure exits and the trimmed-flight checker; records regression mutations and exported-flight comparisons. [C7-R2](trace-integrity/C7-R2/README.md) defines active-model headers, state layouts and recording-start auxiliary snapshots.
 
+Trim integrity: [D4-R2](trim-integrity/D4-R2/README.md) closes nonfinite false convergence and invalid linear-system acceptance, with exact fleet preservation and isolated regression evidence.
+
 Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted channel mappings and device identity, rejects malformed profiles whole, preserves files on refused saves and verifies safe replug through the real scene.
 
 Radio diagnostics: [F1](radio-input/F1/README.md) adds a standalone input report with per-device connection history, axis ranges and observed callback spacing; includes fake-device and CLI proof. Actual USB timing and physical-radio compatibility remain separate measurements.
 
 Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 
+Solved stall-envelope integrity: [D1-R4](aircraft-validation/D1-R4/README.md) rejects unreachable, nonfinite or collapsed derived transitions, preserves valid fleet models and verifies refused reloads and solver faults.
+
 Aircraft loading cost: [DATA-2a](aircraft-validation/DATA-2a/README.md) bounds the existing discrete stall-peak search while preserving exact solved angles and full loader results. Paired fleet timings improve approximately eightfold; DATA-2's 15 ms whole-load target remains open.
 
 Aircraft input identity: [DATA-3](aircraft-validation/DATA-3/README.md) hashes the exact loaded bytes, distinguishes semantic hashes in trace metadata v2 and defines explicit legacy/file-verification behavior. Includes late-digit/line-ending regressions, mutation proof and unchanged fleet traces.
 
-Aircraft structural preflight: [DATA-4a](aircraft-validation/DATA-4a/README.md) adds a v1 JSON Schema and CI checks against the real loader, including valid optional/null cases and malformed quantities. Physical cross-field checks remain runtime-only; the bounded corpus does not close DATA-4's remaining mutation-equivalence coverage.
+Aircraft structural preflight: [DATA-4a](aircraft-validation/DATA-4a/README.md) adds a v1 JSON Schema and CI checks against the real loader, including valid optional/null cases and malformed quantities. [DATA-4b](aircraft-validation/DATA-4b/README.md) adds numeric boundaries, feature combinations and a clean incidence-rejection diagnostic. Physical cross-field checks remain runtime-only; the bounded corpus does not close DATA-4's remaining mutation-equivalence coverage.
 
 Generated-output freshness: [DATA-1](aircraft-validation/DATA-1/README.md) adds the P-51 generation chain to CI, with five stale-copy rejection cases in a fresh clone.
 
@@ -82,6 +86,8 @@ M2 propwash: [E0b1](propwash/E0b1/README.md) independently verifies the existing
 M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06) → [ground-friction-e2.md](ground-friction-e2.md) (E2 tyre friction, nose-wheel steering, tip-over, figure-eight taxi, 2026-10-06) → [ground-surfaces-e3a.md](ground-surfaces-e3a.md) (E3a runway, mown and rough surfaces under the wheels, 2026-10-06) → [ground-contact/E3b1](ground-contact/E3b1/README.md) (E3b1 per-wheel stiction anchors, 2026-10-07) → [ground-contact/E3b2](ground-contact/E3b2/README.md) (E3b2 runway start in static equilibrium, 2026-10-07) → [ground-contact/E3b3](ground-contact/E3b3/README.md) (E3b3 takeoff roll against a 1-D model integral, 2026-10-07) → [ground-contact/E1b](ground-contact/E1b/README.md) (E1b continuous touchdown damping, 2026-10-07).
 
 Experimental landing baseline: [E3c1a](ground-contact/E3c1a/README.md) commands approach, flare and idle rollout through the real session; measures every wheel's contact speed and runway containment, stable stopping and 240/480 Hz refinement. Propwash acceptance, the full circuit and pilot validation remain separate.
+
+Experimental continuous circuit: [E3c2a](ground-contact/E3c2a/README.md) flies from an idling runway start through takeoff, the full pattern, the E3c1a landing handoff and an anchored idle stop; both headings, 240/480 Hz refinement, every-tick v3 trace and corruption checks. Rendered acceptance, physical measurements and PT2 remain open.
 
 Plans: [FLIGHT-MODEL-ROBUSTNESS-PLAN](../FLIGHT-MODEL-ROBUSTNESS-PLAN.md), [RUDDER-REPAIR-PLAN](../RUDDER-REPAIR-PLAN.md), ROADMAP M1.
 
@@ -137,6 +143,7 @@ Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
 | L9c / improvement Phase 4 follow-up: field surfaces in the ground pass | [L9c evidence](visual-quality-implementation/L9c/README.md) | Bounded rectangle batch, custom-field fallback, edge/priority/repeat checks, unchanged physics/readability; shimmer acceptance open |
 | L9c-R1: stripe sampling reference | [L9c-R1 evidence](visual-quality-implementation/L9c-R1/README.md) | Stripe-only camera-motion error, 8×/16× references, fixed world-space inset, repeat and raw/zero-detail controls; bounded regression verified |
 | L10a: calm windsock scale cue | [L10a evidence](visual-quality-implementation/L10a/README.md) | Sourced dimensions, validated optional field cue, calm cloth geometry, repeated/scenery captures, unchanged physics and exported-pack verification |
+| L10b: pilot station | [L10b evidence](visual-quality-implementation/L10b/README.md) | Bounded optional cue, open-rear geometry, grass exclusion, clear pilot threshold views, repeat/scenery captures and isolated regression |
 | L7 / improvement Phase 5: far forest, continuous visual hills and visibility presets | [L7 evidence](visual-quality-implementation/L7/README.md) | Integer profile, preserved near-tree identities, topology, capture A/B, readability and pack checks |
 | L4b / improvement Phase 6 and L15d rendering: sky and cloud shadows | [L4b evidence](visual-quality-implementation/L4b/README.md), [L15d](visual-quality-implementation/L15d/README.md) | Legacy parity, repeated production captures, density/projection probe, readability, pack checks and obsolete-output cleanup |
 | L11a / improvement Phase 7: near grass and reused flowers | [L11a evidence](visual-quality-implementation/L11a/README.md) | Integer placement, clipping, shared ground colour, local FLIP/seam mutation, wind/fade captures, unchanged readability and pack checks |
@@ -190,6 +197,6 @@ Observed and kept:
 3. Link the report from its plan and from this index. If it yields a reusable lesson, merge it into the appropriate topic following [LEARNINGS.md's criteria](../../LEARNINGS.md#keeping-this-useful), with a link to the step evidence.
 4. Write in English. Never link `references/` or `app/captures/` as if they were in the repository; write "local only" in plain text. Third-party files need a license that allows redistribution and a `sources.json` with author, URL, license and hash before they are committed.
 
-Latency measurement tooling: [F6a](radio-input/F6a/README.md) adds an optional live-flight raw-axis marker and a camera protocol; synthetic same-tick/state-equivalence tests and rendered captures support the tool. Physical F6 median/p95 measurements remain open.
+Latency measurement tooling: [F6a](radio-input/F6a/README.md) adds an optional live-flight raw-axis marker and a camera protocol; synthetic same-tick/state-equivalence tests and rendered captures support the tool. [F6b](radio-input/F6b/README.md) reduces per-condition frame annotations into median/p95 and explicit frame/cadence bounds, retaining exclusions and provenance. Physical F6 measurements remain open.
 
 Radio event cost: [F3b1](radio-input/F3b1/README.md) measures the actual handler and scene dispatch under a synthetic four-axis 1 kHz workload. Two bookkeeping alternatives were not adopted because their full-path timing did not improve consistently; exhaustive axis-history tests protect future optimization.

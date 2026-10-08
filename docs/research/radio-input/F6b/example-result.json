@@ -1,0 +1,460 @@
+{
+  "format": "openrc-latency-video-result v1",
+  "kind": "derived",
+  "input": {
+    "format": "openrc-latency-video v1",
+    "evidence": "synthetic",
+    "notes": "Invented frame pairs",
+    "conditions": [
+      {
+        "id": "60-on",
+        "build": "synthetic-build",
+        "system": "Synthetic OS/GPU/driver",
+        "radio": "Synthetic radio/firmware/USB/RF-off",
+        "display_refresh_hz": 60,
+        "vsync": "on",
+        "frame_cap_fps": 60,
+        "achieved_fps": 60,
+        "marker": "axis 0, threshold 0, central patch region black to white",
+        "notes": "Synthetic fixture, not hardware acceptance"
+      }
+    ],
+    "clips": [
+      {
+        "id": "clip1",
+        "condition": "60-on",
+        "source": "Invented clip; no video exists",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "frame_count": 10000,
+        "timebase": "constant-acquisition-cadence",
+        "acquisition_fps": {
+          "value": 240,
+          "min": 240,
+          "max": 240,
+          "kind": "synthetic",
+          "source": "Exact synthetic cadence"
+        },
+        "timing_notes": "Synthetic instantaneous exposure; same scanline; no dropped frames"
+      }
+    ]
+  },
+  "trials": [
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "1",
+        "clip": "clip1",
+        "stick_frame": "100",
+        "patch_frame": "107",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 29.166666666666668,
+      "frame_and_cadence_bounds_ms": [
+        25.0,
+        33.333333333333336
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "2",
+        "clip": "clip1",
+        "stick_frame": "200",
+        "patch_frame": "208",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 33.333333333333336,
+      "frame_and_cadence_bounds_ms": [
+        29.166666666666668,
+        37.5
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "3",
+        "clip": "clip1",
+        "stick_frame": "300",
+        "patch_frame": "309",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 37.5,
+      "frame_and_cadence_bounds_ms": [
+        33.333333333333336,
+        41.666666666666664
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "4",
+        "clip": "clip1",
+        "stick_frame": "400",
+        "patch_frame": "410",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 41.666666666666664,
+      "frame_and_cadence_bounds_ms": [
+        37.5,
+        45.833333333333336
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "5",
+        "clip": "clip1",
+        "stick_frame": "500",
+        "patch_frame": "511",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 45.833333333333336,
+      "frame_and_cadence_bounds_ms": [
+        41.666666666666664,
+        50.0
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "6",
+        "clip": "clip1",
+        "stick_frame": "600",
+        "patch_frame": "612",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 50.0,
+      "frame_and_cadence_bounds_ms": [
+        45.833333333333336,
+        54.166666666666664
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "7",
+        "clip": "clip1",
+        "stick_frame": "700",
+        "patch_frame": "713",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 54.166666666666664,
+      "frame_and_cadence_bounds_ms": [
+        50.0,
+        58.333333333333336
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "8",
+        "clip": "clip1",
+        "stick_frame": "800",
+        "patch_frame": "814",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 58.333333333333336,
+      "frame_and_cadence_bounds_ms": [
+        54.166666666666664,
+        62.5
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "9",
+        "clip": "clip1",
+        "stick_frame": "900",
+        "patch_frame": "915",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 62.5,
+      "frame_and_cadence_bounds_ms": [
+        58.333333333333336,
+        66.66666666666667
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "10",
+        "clip": "clip1",
+        "stick_frame": "1000",
+        "patch_frame": "1016",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 66.66666666666667,
+      "frame_and_cadence_bounds_ms": [
+        62.5,
+        70.83333333333333
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "11",
+        "clip": "clip1",
+        "stick_frame": "1100",
+        "patch_frame": "1117",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 70.83333333333333,
+      "frame_and_cadence_bounds_ms": [
+        66.66666666666667,
+        75.0
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "12",
+        "clip": "clip1",
+        "stick_frame": "1200",
+        "patch_frame": "1218",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 75.0,
+      "frame_and_cadence_bounds_ms": [
+        70.83333333333333,
+        79.16666666666667
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "13",
+        "clip": "clip1",
+        "stick_frame": "1300",
+        "patch_frame": "1319",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 79.16666666666667,
+      "frame_and_cadence_bounds_ms": [
+        75.0,
+        83.33333333333333
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "14",
+        "clip": "clip1",
+        "stick_frame": "1400",
+        "patch_frame": "1420",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 83.33333333333333,
+      "frame_and_cadence_bounds_ms": [
+        79.16666666666667,
+        87.5
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "15",
+        "clip": "clip1",
+        "stick_frame": "1500",
+        "patch_frame": "1507",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 29.166666666666668,
+      "frame_and_cadence_bounds_ms": [
+        25.0,
+        33.333333333333336
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "16",
+        "clip": "clip1",
+        "stick_frame": "1600",
+        "patch_frame": "1608",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 33.333333333333336,
+      "frame_and_cadence_bounds_ms": [
+        29.166666666666668,
+        37.5
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "17",
+        "clip": "clip1",
+        "stick_frame": "1700",
+        "patch_frame": "1709",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 37.5,
+      "frame_and_cadence_bounds_ms": [
+        33.333333333333336,
+        41.666666666666664
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "18",
+        "clip": "clip1",
+        "stick_frame": "1800",
+        "patch_frame": "1810",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 41.666666666666664,
+      "frame_and_cadence_bounds_ms": [
+        37.5,
+        45.833333333333336
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "19",
+        "clip": "clip1",
+        "stick_frame": "1900",
+        "patch_frame": "1911",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 45.833333333333336,
+      "frame_and_cadence_bounds_ms": [
+        41.666666666666664,
+        50.0
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "20",
+        "clip": "clip1",
+        "stick_frame": "2000",
+        "patch_frame": "2012",
+        "stick_pick_radius": "0",
+        "patch_pick_radius": "0",
+        "exclusion_reason": ""
+      },
+      "excluded": false,
+      "latency_ms": 50.0,
+      "frame_and_cadence_bounds_ms": [
+        45.833333333333336,
+        54.166666666666664
+      ]
+    },
+    {
+      "annotation": {
+        "condition": "60-on",
+        "trial": "21",
+        "clip": "clip1",
+        "stick_frame": "",
+        "patch_frame": "",
+        "stick_pick_radius": "",
+        "patch_pick_radius": "",
+        "exclusion_reason": "Synthetic excluded trial: patch obscured"
+      },
+      "excluded": true
+    }
+  ],
+  "conditions": [
+    {
+      "condition": "60-on",
+      "trial_count": 21,
+      "usable_count": 20,
+      "excluded_count": 1,
+      "minimum_20_trials_met": true,
+      "statistics": {
+        "median_ms": 47.91666666666667,
+        "median_bounds_ms": [
+          43.75,
+          52.08333333333333
+        ],
+        "p95_nearest_rank_ms": 79.16666666666667,
+        "p95_nearest_rank_bounds_ms": [
+          75.0,
+          83.33333333333333
+        ],
+        "min_ms": 29.166666666666668,
+        "max_ms": 83.33333333333333
+      },
+      "warnings": []
+    }
+  ],
+  "video_hashes_verified": false,
+  "proposed_60hz_reference_budget_ms": {
+    "median": 50,
+    "p95": 70,
+    "status": "reference only; no automatic acceptance"
+  },
+  "limitations": [
+    "Only physical-reference crossing to visible patch transition is observed; no servo or aircraft response.",
+    "Frame intervals are conditional bounds, not confidence intervals or population percentile uncertainty.",
+    "Exposure, rolling shutter, scanline mismatch and physical-reference error are not quantified here.",
+    "Constant original acquisition cadence is required; playback FPS and variable/dropped-frame clips are unsupported.",
+    "Twenty usable trials are a minimum screen, not a stable estimate of tail latency.",
+    "Clip hashes and acquisition metadata are declarations; video files are not opened or authenticated.",
+    "No hardware acceptance or input-threading decision is inferred from this report."
+  ],
+  "sha256": {
+    "manifest": "ed05f13e554bad96f8b47e1e242e6eecf24c214b8a622f121d9f11625af44a16",
+    "trials_csv": "bd008a737c2092980fa6dff77d4755f559cea0ced6b6976b686865376d278c3e",
+    "reducer": "e70a3ea151a72629b0a0e6d5468b8f93ff5dbff0038298134a02f30949506d4e"
+  }
+}

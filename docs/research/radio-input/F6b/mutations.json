@@ -1,0 +1,39 @@
+[
+  {
+    "case": "control",
+    "exit_code": 0
+  },
+  {
+    "case": "missing_frame_quantization",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_exact_240fps_and_one_frame_bound (__main__.Reduction.test_exact_240fps_and_one_frame_bound)",
+      "FAIL: test_fps_corners_for_positive_negative_and_zero (__main__.Reduction.test_fps_corners_for_positive_negative_and_zero)",
+      "FAIL: test_order_statistic_bounds_under_reordering (__main__.Reduction.test_order_statistic_bounds_under_reordering)",
+      "FAIL: test_pick_radii_add_and_do_not_shrink_with_count (__main__.Reduction.test_pick_radii_add_and_do_not_shrink_with_count)",
+      "FAIL: test_seeded_events_with_shared_cadence_stay_in_bounds (__main__.Reduction.test_seeded_events_with_shared_cadence_stay_in_bounds)"
+    ]
+  },
+  {
+    "case": "ignore_cadence_bounds",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_fps_corners_for_positive_negative_and_zero (__main__.Reduction.test_fps_corners_for_positive_negative_and_zero)",
+      "FAIL: test_seeded_events_with_shared_cadence_stay_in_bounds (__main__.Reduction.test_seeded_events_with_shared_cadence_stay_in_bounds)"
+    ]
+  },
+  {
+    "case": "p95_uses_maximum",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_nearest_rank_and_even_median (__main__.Reduction.test_nearest_rank_and_even_median)"
+    ]
+  },
+  {
+    "case": "nineteen_trials_accepted",
+    "exit_code": 1,
+    "assertions": [
+      "FAIL: test_exclusions_preserved_and_not_counted (__main__.Reduction.test_exclusions_preserved_and_not_counted)"
+    ]
+  }
+]

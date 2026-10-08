@@ -1,0 +1,17 @@
+{
+  "exit_code": 0,
+  "engine_errors": false,
+  "checked_source_hashes": {
+    "app/physics/impact_snapshot.gd": "558e9f222cb7ad662cb058375276aa96c4eb63f2f31d9a3d82389d3e2cd4b59a",
+    "app/sim/flight_session.gd": "44f34dc48e7fcd742908991e954a3e34f426c64b3b357cc2bd351a547ca24aa0"
+  },
+  "identical_to_prior_flight": [
+    "final_state",
+    "touchdown_east_m",
+    "max_contact_sink_mps",
+    "stop_east_m",
+    "stop_time_s",
+    "landing_margin_m"
+  ],
+  "checks": 11
+}

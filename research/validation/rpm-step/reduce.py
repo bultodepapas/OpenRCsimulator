@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VAL-7b: sampled RPM step diagnostics; never writes aircraft parameters."""
+"""VAL-7b/c: sampled RPM step diagnostics; never writes aircraft parameters."""
 import argparse
 import hashlib
 import json
@@ -11,7 +11,8 @@ import sys
 LIMITATIONS = [
     "Endpoints must come from identified steady windows; the last sample is not assumed to be steady.",
     "First directional crossings use linear interpolation, without smoothing or sorting samples.",
-    "Sampling-support intervals are not confidence intervals; measurement and endpoint uncertainties are retained but not propagated.",
+    "Sampling-support intervals are not confidence intervals; measurement uncertainty requires an explicit uncertainty_model.",
+    "Opt-in uncertainty is a local first-order estimate for independent input errors, including covariance from reused inputs; it excludes interpolation bias and correlated acquisition errors.",
     "Lag and delay are a two-crossing first-order diagnostic, not an engine/servo identification or held-out validation.",
     "RMSE uses equal sample weights on this same record; dense sampling can overweight one part of a transient.",
     "Command timing, sensor filtering, synchronization and RPM harmonic selection must be established externally.",
@@ -92,9 +93,87 @@ def crossing(times, values, level, command):
             'forward_crossing_count': len(hits)}
 
 
+def linear_combination(*terms):
+    """Combine signed, uncertainty-weighted sensitivities before squaring."""
+    keys = set().union(*(row for _, row in terms))
+    return {key: finite(math.fsum(scale*row.get(key, 0.) for scale, row in terms))
+            for key in sorted(keys)}
+
+
+def covariance(left, right):
+    return finite(math.fsum(value*right.get(key, 0.) for key, value in left.items()))
+
+
+def measurement_uncertainty(document, crossings):
+    model = document.get('uncertainty_model')
+    if model is None:
+        return {'status': 'not_requested', 'metrics': None}
+    samples = document['series']['samples']
+    initial, final = (document[key]['value'] for key in ('initial_rpm', 'final_rpm'))
+    ui, uf = (document[key]['u'] for key in ('initial_rpm', 'final_rpm'))
+    ut, ur = document['series']['time_u_s'], document['series']['rpm_u']
+    uc = document['command_time']['u']
+    # Estimated screening policy, not a coverage probability or confidence level.
+    screen = 3.
+    reasons = []
+    if abs(final-initial) <= screen*math.hypot(ui, uf):
+        reasons.append('Endpoint span is unresolved at the screening scale.')
+    if any(b[0]-a[0] <= screen*math.hypot(ut, ut) for a, b in zip(samples, samples[1:])):
+        reasons.append('Sample time ordering is unresolved at the screening scale.')
+    rows = {}
+    for name, level in (('10', .1), ('63', -math.expm1(-1)), ('90', .9)):
+        c = crossings[name]
+        left, right = c['sample_indices']
+        tl, yl = samples[left]
+        tr, yr = samples[right]
+        threshold = (1-level)*initial+level*final
+        threshold_u = math.hypot((1-level)*ui, level*uf, ur)
+        # Include earlier samples: a changed first crossing invalidates a local Jacobian.
+        if threshold_u > 0 and any(abs(y-threshold) <= screen*threshold_u
+                                   for _, y in samples[:right+1]):
+            reasons.append(f'{name}% first-crossing bracket is unresolved at the screening scale.')
+        if c['forward_crossing_count'] > 1:
+            reasons.append(f'{name}% has repeated crossings.')
+        fraction = (threshold-yl)/(yr-yl)
+        slope_inverse = (tr-tl)/(yr-yl)
+        row = {'initial_rpm': finite(slope_inverse*(1-level)*ui),
+               'final_rpm': finite(slope_inverse*level*uf),
+               f'rpm:{left}': finite(-slope_inverse*(1-fraction)*ur),
+               f'rpm:{right}': finite(-slope_inverse*fraction*ur),
+               f'time:{left}': finite((1-fraction)*ut),
+               f'time:{right}': finite(fraction*ut)}
+        rows[f't{name}_s'] = row
+        relative = linear_combination((1., row), (-1., {'command_time': uc}))
+        if c['after_command_s'] <= screen*math.hypot(*relative.values()) and any(relative.values()):
+            reasons.append(f'{name}% crossing/command ordering is unresolved at the screening scale.')
+        rows[f't{name}_after_command_s'] = relative
+    rows['rise_10_90_s'] = linear_combination((1., rows['t90_s']), (-1., rows['t10_s']))
+    rows['tau_s'] = linear_combination((1/math.log(9), rows['rise_10_90_s']))
+    rows['delay_s'] = linear_combination((1., rows['t10_after_command_s']),
+                                       (math.log(.9), rows['tau_s']))
+    rows['t63_consistency_error_s'] = linear_combination(
+        (1., rows['t63_after_command_s']), (-1., rows['delay_s']), (-1., rows['tau_s']))
+    result = {'status': 'unavailable' if reasons else 'available', 'model': model,
+              'method': 'first-order signed sensitivities of fixed crossing segments',
+              'screening_multiplier': screen, 'screening_reasons': reasons, 'metrics': None}
+    if reasons:
+        return result
+    result['metrics'] = {name: {'u_s': finite(math.hypot(*row.values())),
+                               'signed_contributions_s': row} for name, row in rows.items()}
+    result['covariance_s2'] = {name: {other: covariance(row, other_row)
+                                    for other, other_row in rows.items()}
+                               for name, row in rows.items()}
+    return result
+
+
 def reduce(document):
-    fields(document, ('format', 'evidence', 'configuration', 'notes', 'command_time',
-                      'initial_rpm', 'final_rpm', 'series'), 'input')
+    names = ('format', 'evidence', 'configuration', 'notes', 'command_time',
+             'initial_rpm', 'final_rpm', 'series')
+    if isinstance(document, dict) and 'uncertainty_model' in document:
+        names += ('uncertainty_model',)
+        if document['uncertainty_model'] != 'independent-inputs v1':
+            raise ValueError('uncertainty_model: expected independent-inputs v1')
+    fields(document, names, 'input')
     if document['format'] != 'openrc-rpm-step v1':
         raise ValueError('unsupported input format')
     evidence = document['evidence']
@@ -179,6 +258,7 @@ def reduce(document):
             'observed': {'max_backward_fraction_step': finite(backstep),
                          'overshoot_fraction': finite(max(0., max(values)-1)),
                          'minimum_fraction': min(values), 'final_sample_fraction': values[-1]},
+            'measurement_uncertainty': measurement_uncertainty(document, crossings),
             'warnings': warnings, 'limitations': LIMITATIONS}
 
 

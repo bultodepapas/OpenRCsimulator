@@ -1,0 +1,234 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "cue": {
+    "collides": false,
+    "depth": 1.2,
+    "east": 0.0,
+    "height": 0.75,
+    "id": "pilot_station",
+    "north": 0.0,
+    "type": "pilot_station",
+    "width": 1.5
+  },
+  "driver": "opengl3",
+  "format": "openrc-l10b-capture v1",
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "bounds": [
+        345.941619873047,
+        181.203735351562,
+        615.464172363281,
+        378.122406005859
+      ],
+      "draws": 19,
+      "eye": [
+        3.0,
+        2.5,
+        -4.0
+      ],
+      "fov": 40.0,
+      "image": "close-off.png",
+      "primitives": 205804,
+      "sha256": "afea9bc721beb2d9545c2ddb65b9a92aa7f18362d86cf6814bc26b2e8eb1b8e3",
+      "target": [
+        0.0,
+        0.349999994039536,
+        0.0
+      ]
+    },
+    {
+      "bounds": [
+        345.941619873047,
+        181.203735351562,
+        615.464172363281,
+        378.122406005859
+      ],
+      "draws": 20,
+      "eye": [
+        3.0,
+        2.5,
+        -4.0
+      ],
+      "fov": 40.0,
+      "image": "close-on.png",
+      "primitives": 206034,
+      "sha256": "d5661664692725cc7f34749047e9c9a35be9b54224ee4a0f61131967023b0650",
+      "target": [
+        0.0,
+        0.349999994039536,
+        0.0
+      ]
+    },
+    {
+      "bounds": [
+        306.3154296875,
+        159.904495239258,
+        655.196044921875,
+        415.599060058594
+      ],
+      "draws": 11,
+      "eye": [
+        2.5,
+        2.0,
+        3.0
+      ],
+      "fov": 40.0,
+      "image": "rear-off.png",
+      "primitives": 172599,
+      "sha256": "3934833456decf078bef30df5f4e842958406b84acdd87e62ed9cae9a2efa369",
+      "target": [
+        0.0,
+        0.349999994039536,
+        0.0
+      ]
+    },
+    {
+      "bounds": [
+        306.3154296875,
+        159.904495239258,
+        655.196044921875,
+        415.599060058594
+      ],
+      "draws": 12,
+      "eye": [
+        2.5,
+        2.0,
+        3.0
+      ],
+      "fov": 40.0,
+      "image": "rear-on.png",
+      "primitives": 172829,
+      "sha256": "40428705eccfe396d09ef87517518b4170b29d0f37929f2e8e53c250d6f4a433",
+      "target": [
+        0.0,
+        0.349999994039536,
+        0.0
+      ]
+    },
+    {
+      "bounds": [
+        412.697631835938,
+        291.338897705078,
+        445.82763671875,
+        313.75732421875
+      ],
+      "draws": 42,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-off.png",
+      "primitives": 230115,
+      "sha256": "3d44cf979eed4a07a4925ff781d3cd17e3b5d01baa6d82ed2a86d198a74060f3",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "bounds": [
+        412.697631835938,
+        291.338897705078,
+        445.82763671875,
+        313.75732421875
+      ],
+      "draws": 43,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-on.png",
+      "primitives": 230345,
+      "sha256": "162a9efa34c8cb63dd1fe38f9110beaf06d1e26b20cbd56cfe3922e4d20a67e4",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "bounds": [],
+      "draws": 27,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_left-off.png",
+      "primitives": 187071,
+      "sha256": "4552e1c3a69e5b6f12872a96a7db35aec697ef64e00a52c69b31c07263ddfbac",
+      "target": [
+        -50.0,
+        0.0,
+        -15.0
+      ]
+    },
+    {
+      "bounds": [],
+      "draws": 27,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_left-on.png",
+      "primitives": 187071,
+      "sha256": "4552e1c3a69e5b6f12872a96a7db35aec697ef64e00a52c69b31c07263ddfbac",
+      "target": [
+        -50.0,
+        0.0,
+        -15.0
+      ]
+    },
+    {
+      "bounds": [],
+      "draws": 72,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_right-off.png",
+      "primitives": 179602,
+      "sha256": "18ef28291437ea722ef7e3352c5ad19e32b8409d2e0f4511ebb90e96b05f6e9b",
+      "target": [
+        50.0,
+        0.0,
+        -15.0
+      ]
+    },
+    {
+      "bounds": [],
+      "draws": 72,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_right-on.png",
+      "primitives": 179602,
+      "sha256": "18ef28291437ea722ef7e3352c5ad19e32b8409d2e0f4511ebb90e96b05f6e9b",
+      "target": [
+        50.0,
+        0.0,
+        -15.0
+      ]
+    }
+  ],
+  "scenery": true,
+  "shader_time": 0.0,
+  "viewport": [
+    960,
+    540
+  ]
+}

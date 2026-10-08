@@ -56,8 +56,16 @@ static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dict
 ## throws: { elevator, aileron, rudder } maximum deflections in radians.
 ## Returns { ok, message, mode, V, alpha, beta, gamma, throttle, thrust, rpm, elevator, aileron, rudder,
 ##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
+## Requires a structurally valid loader model. Numerical failures keep these keys, with unavailable values NaN.
 static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary) -> Dictionary:
-	assert(mode == "level" or mode == "glide")
+	if mode != "level" and mode != "glide":
+		return _numerical_failure("unsupported trim mode", mode, V, 0)
+	if not is_finite(V) or V <= 0.0 or not is_finite(g) or g < 0.0:
+		return _numerical_failure("trim needs finite positive speed and finite nonnegative gravity", mode, V, 0)
+	for axis in ["elevator", "aileron", "rudder"]:
+		var limit: Variant = throws.get(axis)
+		if (typeof(limit) != TYPE_FLOAT and typeof(limit) != TYPE_INT) or not is_finite(limit) or limit <= 0.0:
+			return _numerical_failure("trim needs a finite positive " + axis + " throw", mode, V, 0)
 	# A large low-pitch propeller windmills at part throttle when V is near its pitch speed; there the thrust falls
 	# with rpm and Newton walks the throttle below zero (P-51 1/4, 26x12 four-blade at 27 m/s). Retrying from higher
 	# throttle guesses only after a failure keeps every previously converging trim bit-identical.
@@ -73,7 +81,10 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 	var x := PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
 	var r := _residual(x, mode, V, model, g)
 	var iterations := 0
-	while iterations < 50 and _norm(r) > 1e-10:
+	var residual_norm: float = _norm(r)
+	if not is_finite(residual_norm):
+		return _numerical_failure("nonfinite initial trim residual", mode, V, iterations)
+	while iterations < 50 and residual_norm > 1e-10:
 		iterations += 1
 		var jac := [] # jac[i][k] = ∂r_i/∂x_k
 		for i in N:
@@ -83,6 +94,8 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			var xp := x.duplicate()
 			xp[k] += h
 			var rp := _residual(xp, mode, V, model, g)
+			if not _all_finite(rp):
+				return _numerical_failure("nonfinite perturbed trim residual", mode, V, iterations)
 			for i in N:
 				jac[i][k] = (rp[i] - r[i]) / h
 		var neg := PackedFloat64Array()
@@ -90,12 +103,17 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			neg.append(-r[i])
 		var dx := solve_linear(jac, neg)
 		if dx.is_empty():
-			return _result(false, "singular Jacobian (no trim near this condition)", x, mode, V, r, iterations, throws, model, g)
+			return _numerical_failure("singular or nonfinite Jacobian (no trim near this condition)", mode, V, iterations)
 		for k in N:
 			x[k] += dx[k]
+		if not _all_finite(x):
+			return _numerical_failure("nonfinite Newton iterate", mode, V, iterations)
 		r = _residual(x, mode, V, model, g)
-	if _norm(r) > 1e-8:
-		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(_norm(r)), x, mode, V, r, iterations, throws, model, g)
+		residual_norm = _norm(r)
+		if not is_finite(residual_norm):
+			return _numerical_failure("nonfinite iterated trim residual", mode, V, iterations)
+	if residual_norm > 1e-8:
+		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g)
 	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
 		if absf(check[0]) > check[1]:
 			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g)
@@ -110,7 +128,7 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 	var e := _evaluate(x, mode, V, model, g)
 	var rpm := _rpm(throttle, e.state, mode, model)
 	var thrust: float = e.propulsion_loads[0]
-	return {
+	var result: Dictionary = {
 		ok = ok, message = message, mode = mode, V = V,
 		alpha = x[0], beta = x[3], gamma = gamma, throttle = throttle, thrust = thrust, rpm = rpm,
 		elevator = x[1], aileron = x[4], rudder = x[5],
@@ -121,6 +139,32 @@ static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: Stri
 		state = e.state,
 		residual = _norm(r), iterations = iterations,
 	}
+	if ok:
+		for value in result.values():
+			if typeof(value) == TYPE_FLOAT and not is_finite(value):
+				return _numerical_failure("nonfinite trim result", mode, V, iterations)
+		if not _all_finite(result.state):
+			return _numerical_failure("nonfinite trim state", mode, V, iterations)
+	return result
+
+
+## Do not evaluate a failed numerical candidate again or divide by invalid throws to build its diagnostic.
+## Scenario adapters read angles even on refusal, so retain the result shape without inventing a usable trim.
+static func _numerical_failure(message: String, mode: String, V: float, iterations: int) -> Dictionary:
+	return {
+		ok = false, message = message, mode = mode, V = V,
+		alpha = NAN, beta = NAN, gamma = NAN, throttle = NAN, thrust = NAN, rpm = NAN,
+		elevator = NAN, aileron = NAN, rudder = NAN,
+		pitch_command = NAN, roll_command = NAN, yaw_command = NAN,
+		state = PackedFloat64Array(), residual = NAN, iterations = iterations,
+	}
+
+
+static func _all_finite(values: PackedFloat64Array) -> bool:
+	for value in values:
+		if not is_finite(value):
+			return false
+	return true
 
 
 static func _norm(v: PackedFloat64Array) -> float:
@@ -131,11 +175,15 @@ static func _norm(v: PackedFloat64Array) -> float:
 
 
 ## Solve A·x = b (A as an Array of PackedFloat64Array rows) by Gaussian elimination with partial pivoting.
-## Returns an empty array when A is singular.
+## Returns empty for a malformed, singular or nonfinite system, including arithmetic overflow.
 static func solve_linear(a_in: Array, b_in: PackedFloat64Array) -> PackedFloat64Array:
 	var n := b_in.size()
+	if n == 0 or a_in.size() != n or not _all_finite(b_in):
+		return PackedFloat64Array()
 	var a := []
 	for row in a_in:
+		if typeof(row) != TYPE_PACKED_FLOAT64_ARRAY or row.size() != n or not _all_finite(row):
+			return PackedFloat64Array()
 		a.append((row as PackedFloat64Array).duplicate())
 	var b := b_in.duplicate()
 	for col in n:
@@ -154,14 +202,24 @@ static func solve_linear(a_in: Array, b_in: PackedFloat64Array) -> PackedFloat64
 			b[pivot] = tb
 		for row in range(col + 1, n):
 			var f: float = a[row][col] / a[col][col]
+			if not is_finite(f):
+				return PackedFloat64Array()
 			for k in range(col, n):
 				a[row][k] -= f * a[col][k]
+				if not is_finite(a[row][k]):
+					return PackedFloat64Array()
 			b[row] -= f * b[col]
+			if not is_finite(b[row]):
+				return PackedFloat64Array()
 	var x := PackedFloat64Array()
 	x.resize(n)
 	for i in range(n - 1, -1, -1):
 		var acc := b[i]
 		for k in range(i + 1, n):
 			acc -= a[i][k] * x[k]
+			if not is_finite(acc):
+				return PackedFloat64Array()
 		x[i] = acc / a[i][i]
+		if not is_finite(x[i]):
+			return PackedFloat64Array()
 	return x

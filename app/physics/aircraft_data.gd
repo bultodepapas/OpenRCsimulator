@@ -987,12 +987,42 @@ static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary
 		errors.append("aero.envelope.sideslip_blend: start %s must be below end %s" % [sb[0], sb[1]])
 	if cd90 / 2.0 >= cl_max or cd90 / 2.0 >= -cl_min:
 		errors.append("aero.envelope.CD90 = %s: the flat plate (peak CD90/2) must lift less than the stall limits" % cd90)
+	if not errors.is_empty():
+		return {}
+	# A convex blend cannot exceed both its linear and flat-plate branches.
+	# Check reachability before division by CLa (a finite tiny slope can overflow the bracket).
+	for side: float in [1.0, -1.0]:
+		var target: float = cl_max if side > 0.0 else -cl_min
+		var upper: float = maxf(side * float(aero.CL0) + float(aero.CLa) * PI / 2.0, cd90 / 2.0)
+		if target > upper:
+			errors.append("aero.envelope: %s stall limit is unreachable before 90 degrees" % ("positive" if side > 0.0 else "negative"))
+		else:
+			var bracket: float = (target - side * float(aero.CL0)) / float(aero.CLa)
+			if not is_finite(bracket) or bracket <= 0.0:
+				errors.append("aero.envelope: stall search bracket must be finite and positive")
+	if not errors.is_empty():
+		return {}
 	var w := deg_to_rad(width)
 	var a1 := _solve_stall_start(aero, cd90, w, cl_max, 1.0)
 	var n1 := _solve_stall_start(aero, cd90, w, cl_min, -1.0)
 	var oracle := deg_to_rad(ORACLE_ALPHA_DEG)
 	if a1 < oracle or n1 < oracle:
 		errors.append("aero.envelope: the stall blend would start at %+.1f° / %+.1f°, inside the ±%.0f° linear-oracle region (raise CL_max / CL_min or narrow the blend)" % [rad_to_deg(a1), -rad_to_deg(n1), ORACLE_ALPHA_DEG])
+	# CD90 describes the separated flat plate: both transitions must finish by +/-90 degrees.
+	# D1-R4: a finite input alone does not guarantee an ordered or realizable solved envelope.
+	for side: float in [1.0, -1.0]:
+		var start: float = a1 if side > 0.0 else n1
+		var end: float = start + w
+		var target: float = cl_max if side > 0.0 else cl_min
+		var label: String = "positive" if side > 0.0 else "negative"
+		if not is_finite(start) or not is_finite(end) or end <= start or end > PI / 2.0:
+			errors.append("aero.envelope: %s stall transition must be finite, ordered and finish by 90 degrees" % label)
+		else:
+			var peak: float = _blend_extreme(aero, cd90, w, start, side)
+			if not is_finite(peak) or absf(peak - target) > 1e-9:
+				errors.append("aero.envelope: %s sampled stall peak does not reach the requested lift limit" % label)
+	if not errors.is_empty():
+		return {}
 	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
 
 
@@ -1163,7 +1193,7 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 			for x in inc:
 				mean += x / n
 			if absf(mean) > 1e-6:
-				errors.append("aero.surfaces.wing_station_incidence: mean %.2e rad must be 0 (equal-area strips; CL0 carries the mean)" % mean)
+				errors.append("aero.surfaces.wing_station_incidence: mean %s rad must be 0 (equal-area strips; CL0 carries the mean)" % mean)
 			var per_station := PackedFloat64Array()
 			for k in range(n - 1, -1, -1):
 				per_station.append(inc[k]) # station_ys: left tip … left root, then right root … right tip
