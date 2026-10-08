@@ -1,0 +1,52 @@
+{
+  "format": "openrc-release-readiness v1",
+  "step": "PT1h",
+  "base_commit": "e80f4e0ff7d9964ae91d2050f972447803489b83",
+  "status": "capture-and-export-pending",
+  "checks": {
+    "test": {
+      "result": "pass",
+      "log_sha256": "3012b0a2517d4905a2bfee11a9f6e20debe27efe4f1f173c8f602a8745581d6c",
+      "sections": 149,
+      "gdscript_programs": 121,
+      "engine_errors": 0,
+      "existing_exit_warning": "1 ObjectDB instance was leaked at exit"
+    },
+    "tools": {
+      "result": "pass",
+      "log_sha256": "70b82112bb42e9da58ca78ffde3342a97ccc3c58d34eefa2029dbd3c4da7e5c6",
+      "programs": 11,
+      "tests": 195
+    },
+    "generators": {
+      "result": "pass",
+      "log_sha256": "78290ced6e0bc562e8c03ee3105f3c188a270f38f2879b0fa793fb12ae474f22",
+      "programs": 11
+    },
+    "schema": {
+      "result": "pass",
+      "log_sha256": "1e963ae0627a51018cbab4bae8df57e1eed692aae3699916e409216f042f95e1",
+      "fleet": 4,
+      "cases": 1691,
+      "valid_controls": 136,
+      "runtime_only_counterexamples": 11
+    },
+    "kit": {
+      "result": "pass",
+      "log_sha256": "d2bd264173a7f0dbba52ce8b468840d7275366962eb10f5c90b7d65550bce5f0"
+    },
+    "dashboard": {
+      "result": "pass",
+      "log_sha256": "d606201e94fb9fe21808d949e8dabcdafdd6232d9951eeb8e2c6a9c92f3362ba"
+    },
+    "lint": {
+      "errors": 0,
+      "warnings_before": 12,
+      "warnings_after": 12
+    },
+    "documentation": {
+      "local_file_links": 633,
+      "missing": 0
+    }
+  }
+}

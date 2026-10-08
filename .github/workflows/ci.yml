@@ -35,6 +35,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Tagged releases require their own notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: test -s "docs/releases/$RELEASE_TAG.md"
       - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
@@ -56,6 +61,8 @@ jobs:
           python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
           python3 research/extra-300/ex05/derive_physics.py --check
           python3 research/p51/p51-05/derive_physics.py --check
+      - name: Offline measurement and validation tool regressions
+        run: research/test-tools.sh
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -108,8 +115,8 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Release notes: docs/releases/<tag>.md when it exists (written with the release), else the first-launch guide.
+          # PT1h: every tag has reviewed notes; never publish a stale first-launch guide as release history.
           NOTES="docs/releases/${GITHUB_REF_NAME}.md"
-          [ -f "$NOTES" ] || NOTES=docs/FIRST-LAUNCH.md
+          test -s "$NOTES"
           gh release create "$GITHUB_REF_NAME" dist/openrc-simulator-*.zip dist/SHA256SUMS \
             --title "OpenRC Simulator $GITHUB_REF_NAME" --notes-file "$NOTES" --prerelease

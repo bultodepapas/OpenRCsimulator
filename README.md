@@ -49,12 +49,12 @@ An open-source airplane simulator built with Godot 4.7.2.</p>
       <a href="docs/AVANTI-S-PLAN.md"><img src="docs/media/avanti-s.png" width="480" alt="Blue, white and red SebArt Avanti S sport jet model"></a>
       <br><strong>SebArt Avanti S</strong>
       <br>Sport jet · 2.00 m · JetCat P100-RX
-      <br><strong>Visual preview</strong> · Fly disabled
+      <br><strong>Experimental</strong> · Turbine, in-air start
     </td>
   </tr>
 </table>
 
-The experimental aircraft have automated checks but have **not been validated against real flight**. Avanti S awaits turbine simulation. [Catalog and data files](app/app_state/aircraft_catalog.gd) · [How these images were captured](docs/media/README.md)
+The experimental aircraft have automated checks but have **not been validated against real flight**. Avanti S uses turbine propulsion and currently flies with flaps and gear up. [Catalog and data files](app/app_state/aircraft_catalog.gd) · [How these images were captured](docs/media/README.md)
 
 ## Inside the simulator
 
@@ -101,7 +101,7 @@ Keyboard letters refer to physical QWERTY positions; the in-game Help displays l
 - **Pilot view:** auto-zoom, HUD, engine sound and a projected ground shadow. A shared field supplies grass, sky, haze, clouds and a deterministic treeline with three tree variants.
 - **Repeatable validation:** unit and input tests, golden flights, trimmed-flight traces, frame-rate independence, capture comparisons and exported-pack checks. [CI results](https://github.com/bultodepapas/OpenRCsimulator/actions) and [visual evidence](docs/research/visual-quality-implementation/L6b/README.md) are public.
 
-This is an **early alpha**. Takeoff, landing and wind are not implemented; touching the ground restarts the flight. Trees are visual scenery without collisions. Pilot acceptance of aircraft visibility against the new trees and performance measurements on real GPUs are still pending. Scalable quality settings are part of the [visual-quality plan](docs/VISUAL-QUALITY-PLAN.md).
+This is an **early alpha**. Wheel contact and ground handling are implemented, with automated Stik takeoff/landing verification; Home still starts in the air and has no runway scenario selector. A hull strike or numerical fault triggers the crash/restart path. Physical wind is not implemented. Trees are visual scenery without collisions. Pilot acceptance of aircraft visibility against the new trees and performance measurements on real GPUs are still pending. Scalable quality settings are part of the [visual-quality plan](docs/VISUAL-QUALITY-PLAN.md).
 
 The next flight-model milestone is feedback from RC pilots, starting with the Stik. Automated regression checks establish consistency; pilot testing must establish how it feels.
 
@@ -125,6 +125,7 @@ The last command needs a display. On Windows or macOS, use **Godot 4.7.2**, impo
 | Task | Command |
 | --- | --- |
 | Full headless checks | `app/test.sh` |
+| Offline measurement-tool checks | `research/test-tools.sh` |
 | Capture suite, with `xvfb-run` and Mesa installed | `app/capture.sh` |
 | Three-second flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/flight.csv --t=3` |
 | Windows, Linux and macOS release packages | `app/export.sh` |
@@ -152,3 +153,5 @@ RC pilot feedback, reproducible bug reports, aircraft references and measured pe
 ## License
 
 Project code is licensed under [MIT](LICENSE). Third-party assets retain their own licenses; see the [landscape provenance](assets/landscape/PROVENANCE.json) and [bundled tree license](app/assets/landscape/trees/LICENSE.txt). Reference plans and scans kept locally in the ignored `references/` folder are not bundled with the simulator.
+
+Developer navigation: [documentation map](docs/README.md) · [tool workflows](docs/TOOLS.md) · [current priorities](ROADMAP.md#execution-order-and-release-gates).

@@ -4,7 +4,7 @@ Research date: **2026-10-05**. This document surveys the current options for bui
 
 **How the evidence was gathered.** Versions and release dates come from the npm registry, queried directly on 2026-10-05, or from official project pages. Many web search results were SEO aggregator blogs; claims that rely only on such secondary sources are marked *(secondary)*. Two small experiments were executed; everything else is documentation-based and was not built or run.
 
-## Current stack: Godot (Gate 1, 2026-10-05)
+## Current stack: Godot (reconciled 2026-10-08; Gate 1 decision retained)
 
 The bake-off ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) scored three.js 73 and Godot 57 of 80. **The owner chose Godot** for native desktop, SDL3 joystick input for real radios, and the editor. The simulator lives in [`app/`](app/); the three.js build is archived in `prototypes/stage0/three/`.
 
@@ -13,21 +13,18 @@ The bake-off ([COMPARISON.md](prototypes/stage0/COMPARISON.md)) scored three.js 
 | Engine | Godot, official build | 4.7.2-stable, pinned and SHA-512 verified by `app/get-godot.sh` | Not installed system-wide; lives in `.tools/` |
 | Renderer | Compatibility (OpenGL 3.3 / WebGL 2 class) | — | Runs everywhere, including software GL; the only renderer Godot can export to the web |
 | Language | GDScript | — | `float` is 64-bit; `Vector3`/`Basis`/`Quaternion`/`Transform3D` are **32-bit** |
-| Physics | Our own GDScript modules on 64-bit floats: rigid body + RK4, air data, six-axis linear aero, propulsion, six-axis trim | — | **Guarded:** `app/test.sh` fails if 32-bit math types appear in `sim/` or `physics/` |
+| Physics | Our own GDScript modules on 64-bit floats: rigid body + RK4 at 240 Hz, local aerodynamic loads, wheel contact, propeller/turbine propulsion, trim and complete-state replay | — | **Guarded:** `app/test.sh` fails if 32-bit math types appear in `sim/` or `physics/` |
 | Aircraft data | JSON `openrc-aircraft v1` (`app/data/aircraft/`) with per-value provenance, validated by `physics/aircraft_data.gd` | — | Mass and inertia derived from a component inventory |
-| Tests | Plain `extends SceneTree` scripts, headless; one Python 3 check of the app's own trace | — | Float64 guard, parse check, unit, end-to-end, model contract, app-level trimmed flight, frame-rate independence; any engine `ERROR:` fails the run |
-| Captures | `xvfb-run` + Mesa llvmpipe, `--rendering-driver opengl3` | — | 60 s timeout per capture, so a script error fails fast |
+| Tests | Headless `SceneTree` tests, Python trace/schema/tool checks and rendered capture checks | — | Float64 guard, parse check, unit, end-to-end, model contract, app-level trimmed flight, frame-rate independence; any engine `ERROR:` fails the run |
+| Captures | `xvfb-run` + Mesa llvmpipe, `--rendering-driver opengl3` | — | Guarded capture processes, isolated logs/sidecars, output lock and complete-run manifest |
 | CI | GitHub Actions on `ubuntu-24.04` | — | Installs Xvfb and X11 libraries; caches the Godot binary |
-| Input | Keyboard; then SDL3 joysticks, raw axes (D6) | — | Bypass the input-action deadzone (0.5 by default) |
+| Input | Keyboard and raw SDL3 joystick axes; saved calibration, standalone reports and optional latency marker | — | Bypass the input-action deadzone (0.5 by default) |
 | Audio | `AudioStreamGenerator` on a positional `AudioStreamPlayer3D` attached to the airplane | — | Synthesized two-stroke buzz following rpm (D5 placeholder); recordings come with G3 |
-| Distribution | Native desktop exports for Windows, Linux and macOS (PT1); web export possible later (~42 MB) | — | Export templates: 1.28 GB for all platforms (cache in CI, extract only the needed ones); macOS unsigned at first |
+| Distribution | Native desktop exports for Windows, Linux and macOS (PT1); web export possible later (~42 MB) | — | Export templates: 1.28 GB for all platforms (cache in CI, extract only the needed ones); macOS universal and ad-hoc signed; native OS acceptance remains open |
 
-**Escape hatch:** if GDScript physics is too slow or too awkward, the physics core moves to a C++ GDExtension with `double`. That costs a separate web build. **Measured cost on this VM (software rendering, 2026-10-05):**
-- **C3, rigid body + RK4:** 81–88 µs/step (47–51× real time at 240 Hz).
-- **D5, full physics** (air data + six-axis aero + propulsion + rigid body, RK4): **177–196 µs/step (21–24× real time)**, about 0.75 ms per 60 fps frame.
+**Performance escape hatch:** production remains GDScript. C++ GDExtension experiments under `research/` are not runtime dependencies. H15 brought the shipped benchmark fixtures below 500 µs/tick at the median on the measured Linux host; the enabled smooth-wake prepared-model experiment is a different workload and still measures 515–614 µs/tick. [ROADMAP](ROADMAP.md#execution-order-and-release-gates) owns Gate P and the target-machine budget; [prepared-model evidence](docs/research/propwash/E0b6p/prepared-model/README.md) records the remaining limits. Old D5 timings below are historical measurements, not current performance guarantees.
 
-The floor is ≥ 10× real time. Re-measure on the owner's hardware at PT1. Cheap headroom if needed: flatten the coefficient Dictionary lookups into arrays.
-
+Developer workflows and pinned tool dependencies: [TOOLS](docs/TOOLS.md). The app has no production native physics dependency. Schema, visual and aircraft-generation tooling remain development dependencies.
 The rest of this document is the pre-Gate-1 survey, kept as research history.
 
 ## The starting stack at a glance (pre-Gate-1, superseded)

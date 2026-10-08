@@ -1,6 +1,6 @@
 # Scenery plan: a living RC club field
 
-Written **2026-10-07**, revision 5. Revision 2 made the owner's reference photo the target look; revision 3 folded in four online research reports; revision 4 applied the SC-01 measurements; revision 5 records the implementation. **Status: implemented, off by default, Gate SC open.** SC-00…SC-17, SC-19a, SC-20 and SC-23 are done; SC-18, SC-22 and SC-24 are partial (their missing parts belong to M5 wind, the menu track and VQ-06); SC-19b and SC-21 (optional) are not started. See it with `OPENRC_SCENERY=on $(app/get-godot.sh) --path app`. Evidence: [SC-01](research/scenery-implementation/SC-01/README.md), [SC-03](research/scenery-implementation/SC-03/README.md).
+Written **2026-10-07**, revision 5. Revision 2 made the owner's reference photo the target look; revision 3 folded in four online research reports; revision 4 applied the SC-01 measurements; revision 5 records the implementation. **Status: implemented, off by default, Gate SC open.** SC-00…SC-17, SC-19a, SC-20, SC-23 and SC-25 are done; SC-18, SC-22 and SC-24 are partial (their missing parts belong to M5 wind, the menu track and VQ-06); SC-19b and SC-21 (optional) are not started. See it with `OPENRC_SCENERY=on $(app/get-godot.sh) --path app`. Evidence: [SC-01](research/scenery-implementation/SC-01/README.md), [SC-03](research/scenery-implementation/SC-03/README.md).
 
 - **Step IDs:** `SC-00…SC-25`, gate **Gate SC**.
 - **Owns:**

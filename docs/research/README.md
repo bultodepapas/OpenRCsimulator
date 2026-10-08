@@ -1,6 +1,6 @@
 # Research index
 
-`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of 167. New reports are written in English (AGENTS.md rule 8); most reports before 2026-10-06 are in Spanish and are translated when next revised. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
+`docs/research/` holds the reports that record what was investigated or measured for a step, and the evidence that proves it. This index lists the entry points per track so a newcomer reads two or three documents instead of scanning every evidence folder. New reports are written in English (AGENTS.md rule 7); most reports before 2026-10-06 are in Spanish and are translated when next revised. The [documentation map](../README.md) explains how the whole documentation fits together; [RESEARCH.md](../../RESEARCH.md) at the root is the earlier notebook (everything read before Gate 1 and for plan review #3) and is frozen.
 
 ## Two folders, one rule
 
@@ -15,9 +15,11 @@ Some scripts under `research/` read the gitignored `references/` folder (plans, 
 
 ## Whole-project audit
 
+[PT1h code/document reconciliation and rc6 verification](release-readiness/PT1h/README.md) records the 2026-10-08 integration audit. [Tool workflows](../TOOLS.md) index the current commands and distinguish synthetic checks from field measurements.
+
 [Project technical audit — 2026-10-06](project-audit-2026-10-06/README.md): independent code, physics, runtime, tests, export and roadmap review at `eaa8979`; verified findings, counterevidence, saved probes and a corrected dependency order. Supporting reports cover physics, runtime systems and roadmap/research.
 
-The audit is a fixed evidence snapshot. [ROADMAP revision 5](../../ROADMAP.md#execution-order-and-release-gates) turns its recommendations into planned work; this does not mark the simulator findings fixed.
+The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-order-and-release-gates) turns its recommendations into planned work; this does not mark the simulator findings fixed.
 
 ## Entry points per track
 

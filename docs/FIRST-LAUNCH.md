@@ -1,6 +1,6 @@
 # OpenRC Simulator: first launch
 
-An alpha RC airplane simulator. Start with the Jensen Das Ugly Stik 60 and tell us how it feels compared with a real Stik. Extra 300S and P-51D are experimental flight models; Avanti S is a visual preview with Fly disabled. See the [aircraft table](../README.md#aircraft-hangar) for their status.
+An alpha RC airplane simulator. Start with the Jensen Das Ugly Stik 60 and tell us how it feels compared with a real Stik. Extra 300S, P-51D and Avanti S are experimental flight models. Avanti uses a turbine and starts in the air with flaps and gear up. See the [aircraft table](../README.md#aircraft-hangar) for their status.
 
 ## 1. Download and check
 
@@ -64,7 +64,7 @@ Home lets you choose the aircraft and switch between English and Spanish. Press 
 - **Safety:** the engine stays at idle until you move the throttle stick to low. Unplugging the radio pauses the simulator with the engine at idle.
 - **If the sticks are mapped wrong:** press **K** and follow the on-screen steps. The calibration is saved for that radio.
 
-A crash freezes the scene for 1.5 s, showing the impact speed, then the flight restarts.
+Wheels can contact the ground for experimental landing and rollout. A hull strike or numerical fault freezes the scene for 1.5 s, showing the crash information, then the flight restarts.
 
 ## 4. What this build is (v0.1 alpha)
 
@@ -78,9 +78,9 @@ A crash freezes the scene for 1.5 s, showing the impact speed, then the flight r
 
 **It does not have yet:**
 
-- takeoff or landing (it starts in the air);
+- a player-selectable runway start or complete circuit scenario (Home starts in the air; automated takeoff/landing verification exists);
 - wind;
-- real engine response or engine sound recordings.
+- validated engine response or recorded engine audio. RPM lag, P-51 shaft dynamics and Avanti turbine response are implemented but remain under evaluation.
 
 ## 5. Measure frame times (for the landscape work)
 
@@ -104,7 +104,7 @@ To measure beyond your screen's refresh rate, add `--disable-vsync` before the `
 
 ## 7. Record a controller diagnostic (F1)
 
-In builds containing F1 (or the current source tree), run from a terminal:
+In rc6 and later (or the current source tree), run from a terminal:
 
 - **Windows:** `"OpenRC Simulator.exe" -- --input-report=input-report.json --t=20`
 - **Linux:** `./openrc-simulator.x86_64 -- --input-report=input-report.json --t=20`
@@ -117,6 +117,6 @@ The report lists all detected controllers, reconnects, observed axes and ranges.
 
 ## 8. Film stick-to-screen latency (F6a)
 
-In builds containing F6a, add `-- --latency-patch` to the executable command (source: `$(app/get-godot.sh) --path app -- --latency-patch`). This starts a normal flight with a black/white square. Move raw axis 0 first; black means below raw zero, white means at or above it. Gray means the measurement is inactive, including pause, calibration, crash or disconnection.
+In rc6 and later, add `-- --latency-patch` to the executable command (source: `$(app/get-godot.sh) --path app -- --latency-patch`). This starts a normal flight with a black/white square. Move raw axis 0 first; black means below raw zero, white means at or above it. Gray means the measurement is inactive, including pause, calibration, crash or disconnection.
 
 Optional `--latency-axis=0..9` and `--latency-threshold=0.5` select another raw axis or crossing. These values precede calibration and servo response. Film the stick and screen together at 240 fps; the marker itself does not record or calculate latency. Follow the [F6 camera protocol](research/radio-input/F6a/README.md#owner-camera-protocol-f6-still-pending) for at least 20 trials per display condition and retain the original footage. Physical F6 acceptance remains open.
