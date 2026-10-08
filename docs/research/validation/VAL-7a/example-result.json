@@ -1,0 +1,196 @@
+{
+  "assumed_advance_ratio": 0.0,
+  "evidence": "synthetic",
+  "format": "openrc-static-prop-result v1",
+  "input": {
+    "configuration": "Synthetic 0.25 m propeller; no real engine or aircraft",
+    "evidence": "synthetic",
+    "format": "openrc-static-prop v1",
+    "runs": [
+      {
+        "density": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.0012,
+          "unit": "kg/m^3",
+          "value": 1.2
+        },
+        "diameter": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.00025,
+          "unit": "m",
+          "value": 0.25
+        },
+        "id": "with-torque",
+        "notes": "Matched idealized static operating point; corrected net thrust and shaft torque",
+        "rpm": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 6.0,
+          "unit": "rpm",
+          "value": 6000
+        },
+        "thrust": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.0046875,
+          "unit": "N",
+          "value": 4.6875
+        },
+        "torque": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.0001,
+          "unit": "N*m",
+          "value": 0.1
+        }
+      },
+      {
+        "density": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.0012,
+          "unit": "kg/m^3",
+          "value": 1.2
+        },
+        "diameter": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.00025,
+          "unit": "m",
+          "value": 0.25
+        },
+        "id": "without-torque",
+        "notes": "Matched idealized static operating point; corrected net thrust and shaft torque",
+        "rpm": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 6.0,
+          "unit": "rpm",
+          "value": 6000
+        },
+        "thrust": {
+          "kind": "synthetic",
+          "source": "Invented analytic fixture; not aircraft measurements",
+          "u": 0.0046875,
+          "unit": "N",
+          "value": 4.6875
+        },
+        "torque": null
+      }
+    ],
+    "static_conditions_confirmed": true
+  },
+  "input_sha256": "f98a9c0307704ea49f81a11e78d55e5b23a44e06aaf250ef06686f3f54272ee0",
+  "limitations": [
+    "Positive-thrust, positive-RPM static operation only; ambient axial inflow is assumed negligible, not verified.",
+    "Readings must describe the same stabilized operating point and installed propeller configuration.",
+    "Inputs are net axial thrust and, when present, positive motoring shaft torque into the propeller, with rig tare/friction corrections already applied.",
+    "Reported uncertainties are first-order standard uncertainties (k=1), assuming independent input errors within each run.",
+    "Shared instrument biases, correlations between distinct inputs/runs and unquantified rig/flow errors are not modeled.",
+    "Ideal disc power is a theoretical static lower bound, not measured shaft power or an engine-power estimate.",
+    "Static figure of merit is ideal disc power / shaft power, not propulsive efficiency; useful T*V power is zero at V=0.",
+    "No torque measurement means no shaft-power, Cp or figure-of-merit inference from thrust and RPM alone.",
+    "Synthetic fixtures verify reduction algebra; they do not validate the rig, aircraft, engine or propeller model."
+  ],
+  "reducer_sha256": "0a231ed4b04344768a56c80057188c562ac8708b43fbfdd1db30f291a333961c",
+  "runs": [
+    {
+      "diagnostics": [],
+      "id": "with-torque",
+      "outputs": {
+        "cp": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -5.3616514621265804e-05,
+            "diameter": -0.00026808257310632905,
+            "rpm": -0.00010723302924253162,
+            "torque": 5.3616514621265804e-05
+          },
+          "u": 0.00029852411936743856,
+          "unit": "1",
+          "value": 0.05361651462126581
+        },
+        "ct": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -9.999999999999999e-05,
+            "diameter": -0.00039999999999999996,
+            "rpm": -0.00019999999999999998,
+            "thrust": 9.999999999999999e-05
+          },
+          "u": 0.00046904157598234294,
+          "unit": "1",
+          "value": 0.09999999999999999
+        },
+        "ideal_static_disc_power": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -0.014783979621211876,
+            "diameter": -0.029567959242423756,
+            "thrust": 0.04435193886363563
+          },
+          "u": 0.05531658655562283,
+          "unit": "W",
+          "value": 29.567959242423754
+        },
+        "shaft_power": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "rpm": 0.06283185307179587,
+            "torque": 0.06283185307179587
+          },
+          "u": 0.08885765876316733,
+          "unit": "W",
+          "value": 62.83185307179587
+        },
+        "static_figure_of_merit": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -0.00023529434352857162,
+            "diameter": -0.0004705886870571433,
+            "rpm": -0.00047058868705714336,
+            "thrust": 0.0007058830305857149,
+            "torque": -0.00047058868705714325
+          },
+          "u": 0.0011036282970837204,
+          "unit": "1",
+          "value": 0.4705886870571433
+        }
+      }
+    },
+    {
+      "diagnostics": [],
+      "id": "without-torque",
+      "outputs": {
+        "cp": null,
+        "ct": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -9.999999999999999e-05,
+            "diameter": -0.00039999999999999996,
+            "rpm": -0.00019999999999999998,
+            "thrust": 9.999999999999999e-05
+          },
+          "u": 0.00046904157598234294,
+          "unit": "1",
+          "value": 0.09999999999999999
+        },
+        "ideal_static_disc_power": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "density": -0.014783979621211876,
+            "diameter": -0.029567959242423756,
+            "thrust": 0.04435193886363563
+          },
+          "u": 0.05531658655562283,
+          "unit": "W",
+          "value": 29.567959242423754
+        },
+        "shaft_power": null,
+        "static_figure_of_merit": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,836 @@
+{
+	"cases": 165,
+	"failed": 0,
+	"format": "openrc-e0b6p-native-field-verification v1",
+	"godot": "4.7.2-stable (official)",
+	"native_calls": 171,
+	"passed": 165,
+	"required_field_count": 34,
+	"results": [
+		{
+			"label": "schema-validated heldCL=0.3 native call is finite and nonzero",
+			"observed": "size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.diameter rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.diameter rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.diameter rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.diameter rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.hub rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.hub rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.hub rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.hub rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.hub rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.wash_factor rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.wash_factor rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.wash_factor rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.wash_factor rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.wash_factor rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.swirl_factor rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.swirl_factor rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.swirl_factor rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.swirl_factor rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.vertical_drift rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.vertical_drift rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.vertical_drift rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.vertical_drift rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.edge_fraction rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.edge_fraction rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.edge_fraction rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.edge_fraction rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.cg_le rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.cg_le rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.cg_le rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.cg_le rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.cg_le rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_local_limit rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_local_limit rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_local_limit rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_local_limit rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_stall_end rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_stall_end rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_stall_end rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_stall_end rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD0 rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD0 rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD0 rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD0 rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_k rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_k rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_k rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_k rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD90 rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD90 rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD90 rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.tail_CD90 rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.elevator rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.elevator rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.elevator rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.elevator rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.rudder rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.rudder rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.rudder rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "controls.rudder rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.position rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.position rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.position rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.position rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.position rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.lift_slope rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.lift_slope rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.lift_slope rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.lift_slope rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.control_effectiveness rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.control_effectiveness rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.control_effectiveness rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.control_effectiveness rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.incidence rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.incidence rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.incidence rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.incidence rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.position rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.position rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.position rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.position rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.position rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.lift_slope rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.lift_slope rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.lift_slope rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.lift_slope rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.control_effectiveness rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.control_effectiveness rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.control_effectiveness rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.control_effectiveness rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.incidence rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.incidence rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.incidence rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.vertical.incidence rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].area rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].area rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].area rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].area rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].root rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].root rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].root rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].root rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].root rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span_dir rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span_dir rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span_dir rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span_dir rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[0].span_dir rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].area rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].area rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].area rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].area rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].root rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].root rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].root rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].root rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].root rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span_dir rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span_dir rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span_dir rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span_dir rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[1].span_dir rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].area rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].area rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].area rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].area rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].root rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].root rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].root rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].root rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].root rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span_dir rejects absent",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span_dir rejects null",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span_dir rejects wrongtype",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span_dir rejects nonfinite",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.propulsion.slipstream.pieces[2].span_dir rejects wrongshape",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "finite integer accepted by read_number",
+			"observed": "size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "conditional free_slope absence selects the accepted classic-tail branch",
+			"observed": "size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.free_slope rejects null when present",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.free_slope rejects wrongtype when present",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "model.surfaces.horizontal.free_slope rejects nonfinite when present",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.downwash_per_cl absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.downwash_per_cl rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.elevator_tau absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.elevator_tau rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.free_incidence absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.horizontal.free_incidence rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.downwash_per_cl absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.downwash_per_cl rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.elevator_tau absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.elevator_tau rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.free_incidence absence equals explicit zero",
+			"observed": "absent=size=6 finite=true nonzero=true; zero=size=6 finite=true nonzero=true",
+			"passed": true
+		},
+		{
+			"label": "optional_number surfaces.vertical.free_incidence rejects explicit nil",
+			"observed": "size=0 finite=true nonzero=false",
+			"passed": true
+		}
+	]
+}

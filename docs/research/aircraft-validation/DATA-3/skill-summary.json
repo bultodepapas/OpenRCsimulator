@@ -1,0 +1,38 @@
+[
+  {
+    "scope": "physics",
+    "candidate_counts": {
+      "total": 12,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 12,
+      "info": 0
+    },
+    "baseline_counts": {
+      "total": 12,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 12,
+      "info": 0
+    },
+    "diagnostics_unchanged_ignoring_line_shifts": true
+  },
+  {
+    "scope": "sim",
+    "candidate_counts": {
+      "total": 15,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 15,
+      "info": 0
+    },
+    "baseline_counts": {
+      "total": 15,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 15,
+      "info": 0
+    },
+    "diagnostics_unchanged_ignoring_line_shifts": true
+  }
+]

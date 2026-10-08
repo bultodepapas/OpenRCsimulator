@@ -1,0 +1,57 @@
+{
+  "format": "openrc-e0b6p-prepared-validation v1",
+  "date": "2026-10-08",
+  "candidate": "research only; no production app changes",
+  "experiments": {
+    "run1": "pass",
+    "run2": "pass"
+  },
+  "fresh_clone": {
+    "command": "git clone --quiet --no-hardlinks --dissociate <repo> <temporary>/repo",
+    "revision": "38e72809ff06ae0def8da5ee68e3a2adeb0b9011",
+    "added": [
+      "research/propwash/e0b6p/prepared-model",
+      "research/propwash/e0b6p/stage-sharing"
+    ],
+    "supplied_artifacts": [
+      "native build manifest",
+      "native binary",
+      "generated candidate C++"
+    ],
+    "copied_ignored_app_contents": false
+  },
+  "app_source_differences_between_runs": [
+    "app/physics/aircraft_data.gd",
+    "app/sim/flight_session.gd"
+  ],
+  "final_harness_matches_run2": true,
+  "lint": {
+    "baseline": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "staged_candidate": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "python_compile": "pass",
+  "whitespace_check": "pass",
+  "full_application_suite": {
+    "status": "pass",
+    "scope": "fresh tracked HEAD app, no research adapter installed",
+    "exit_code": 0,
+    "engine_errors": [],
+    "full_log_sha256": "389eb39ecf25d1db53286c51cd9cd39dd6888e69d4e58d477de897f0ea6edc65",
+    "summary": "suite-summary.log"
+  },
+  "executed_library_matches_manifest": {
+    "run1": true,
+    "run2": true
+  },
+  "independent_review": "No correctness blocker; report timing/counts and lifecycle contract checked against final sources and retained evidence"
+}

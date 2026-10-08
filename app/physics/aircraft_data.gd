@@ -1,6 +1,8 @@
 # Loads, validates and derives the physics data of an aircraft (format "openrc-aircraft v1").
 # 64-bit floats only (guarded). Errors block use; warnings are data-quality notes to show, not hide.
 # Result: { ok: bool, errors: PackedStringArray, warnings: PackedStringArray, model: Dictionary }
+# Successful file loads also carry input_identity: {format, sha256 of exact loaded bytes}.
+# In-memory validation has no file identity. It is intentionally outside the derived model.
 # model: mass_kg, inertia (PackedFloat64Array [Jxx Jyy Jzz Jxy Jxz Jyz], body FRD, about the inventory's own
 #        centre of mass; configurations whose declared flight CG disagrees are rejected),
 #        cg_le / cg_inventory_le (PackedFloat64Array [x_aft, y_right, z_up], m), reference {S, b, c, arp_le},
@@ -35,15 +37,25 @@ const COEFFICIENTS := {
 
 
 static func load_file(path: String) -> Dictionary:
-	var text := FileAccess.get_file_as_string(path)
-	if text == "":
+	# Hash and parse one read: never fingerprint a later revision of the file.
+	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
+	if bytes.is_empty():
 		return _fail("cannot read %s (error %d)" % [path, FileAccess.get_open_error()])
+	var text: String = bytes.get_string_from_utf8()
 	var json := JSON.new()
 	if json.parse(text) != OK:
 		return _fail("%s: JSON error at line %d: %s" % [path, json.get_error_line(), json.get_error_message()])
 	if typeof(json.data) != TYPE_DICTIONARY:
 		return _fail("%s: top level must be an object" % path)
-	return validate_and_derive(json.data)
+	var result: Dictionary = validate_and_derive(json.data)
+	if result.ok:
+		var digest: HashingContext = HashingContext.new()
+		digest.start(HashingContext.HASH_SHA256)
+		digest.update(bytes)
+		# Source identity is outside the derived model/checkpoint fingerprint.
+		# In-memory validate_and_derive() calls cannot claim an input file identity.
+		result.input_identity = {format = FORMAT, sha256 = digest.finish().hex_encode()}
+	return result
 
 
 static func _fail(message: String) -> Dictionary:
@@ -204,6 +216,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 
 	var model := {
 		id = raw.get("id", ""),
+		# Legacy rounded semantic hash; retained for checkpoint compatibility, NOT file bytes.
 		data_sha256 = JSON.stringify(raw, "", true).sha256_text(),
 		configuration = bal.get("configuration", "unspecified"),
 		mass_kg = mass,
@@ -990,6 +1003,8 @@ static func _solve_stall_start(aero: Dictionary, cd90: float, width: float, targ
 	var hi := (target - float(aero.CL0)) / float(aero.CLa) * sign # where the linear lift alone reaches the target
 	for i in 60:
 		var mid := 0.5 * (lo + hi)
+		if mid == lo or mid == hi:
+			break # The rounded midpoint cannot change in any remaining iteration.
 		if _blend_extreme(aero, cd90, width, mid, sign) * sign < target * sign:
 			lo = mid
 		else:
@@ -997,16 +1012,83 @@ static func _solve_stall_start(aero: Dictionary, cd90: float, width: float, targ
 	return 0.5 * (lo + hi)
 
 
+## DATA-2a: same 801-point peak, pruned by a curvature/chord upper bound.
+## Proof, rounding margin and fallback: docs/research/aircraft-validation/DATA-2a/README.md.
 static func _blend_extreme(aero: Dictionary, cd90: float, width: float, start: float, sign: float) -> float:
-	var env := { a1 = start, a2 = start + width, n1 = start, n2 = start + width, b1 = 1.0, b2 = 2.0, CD90 = cd90 }
-	var best := 0.0
-	for k in 801: # 0.01·width steps across the blend, plus its edges
-		var alpha := sign * (start + width * (float(k) / 800.0) * 1.25)
-		var cl := Aero.lift_alpha(alpha, aero, env)
-		if cl * sign > best * sign:
-			best = cl
+	var env: Dictionary = { a1 = start, a2 = start + width, n1 = start, n2 = start + width, b1 = 1.0, b2 = 2.0, CD90 = cd90 }
+	var best: float = 0.0
+	var end: float = start + width * 1.25
+	if start < 0.0 or end > PI / 2.0 or width <= 0.0 or float(aero.CLa) <= 0.0 or cd90 <= 0.0:
+		for k in 801:
+			var alpha: float = sign * (start + width * (float(k) / 800.0) * 1.25)
+			var cl: float = Aero.lift_alpha(alpha, aero, env)
+			if cl * sign > best * sign:
+				best = cl
+		return best
+	# Coarse samples seed a lower bound; the interval proof still covers all 801 indices.
+	for k in [160, 320, 480, 640]:
+		var sample: float = Aero.lift_alpha(sign * (start + width * (float(k) / 800.0) * 1.25), aero, env)
+		if sample * sign > best * sign:
+			best = sample
+	var cl0: float = aero.CL0
+	var cla: float = aero.CLa
+	var blend_range: float = (start + width) - start
+	# |f''| <= |P''| + 2|w'||P'-B'| + |w''||P-B|.
+	var base_lo: float = sign * cl0 + cla * start
+	var base_hi: float = sign * cl0 + cla * end
+	var plate_left: float = 0.5 * cd90 * M.sin_(2.0 * start)
+	var plate_right: float = 0.5 * cd90 * M.sin_(2.0 * end)
+	var plate_lo: float = minf(plate_left, plate_right)
+	var plate_hi: float = maxf(plate_left, plate_right)
+	if start <= PI / 4.0 and end >= PI / 4.0:
+		plate_hi = 0.5 * cd90
+	var value_gap: float = maxf(absf(plate_lo - base_hi), absf(plate_hi - base_lo))
+	var slope_gap: float = maxf(absf(cd90 * M.cos_(2.0 * start) - cla), absf(cd90 * M.cos_(2.0 * end) - cla))
+	var curvature: float = 2.0 * cd90 + 3.0 * slope_gap / blend_range + 6.0 * value_gap / (blend_range * blend_range)
+	var fl: float = Aero.lift_alpha(sign * start, aero, env)
+	var fr: float = Aero.lift_alpha(sign * end, aero, env)
+	if fl * sign > best * sign:
+		best = fl
+	if fr * sign > best * sign:
+		best = fr
+	# Depth-first bisection of 801 indices needs at most 11 pending intervals.
+	var indices: PackedInt32Array = PackedInt32Array()
+	var values: PackedFloat64Array = PackedFloat64Array()
+	indices.resize(24)
+	values.resize(24)
+	indices[0] = 0
+	indices[1] = 800
+	values[0] = fl
+	values[1] = fr
+	var cursor: int = 2
+	while cursor > 0:
+		cursor -= 2
+		var lo: int = indices[cursor]
+		var hi: int = indices[cursor + 1]
+		var flo: float = values[cursor]
+		var fhi: float = values[cursor + 1]
+		var xlo: float = start + width * (float(lo) / 800.0) * 1.25
+		var xhi: float = start + width * (float(hi) / 800.0) * 1.25
+		var span: float = xhi - xlo
+		# A C1 function with |f''| <= curvature lies below its chord + M*span²/8.
+		var bound: float = maxf(flo * sign, fhi * sign) + curvature * span * span / 8.0
+		if hi - lo <= 1 or bound + 1e-12 * maxf(1.0, absf(bound)) < best * sign:
+			continue
+		@warning_ignore("integer_division")
+		var mid: int = (lo + hi) / 2
+		var fm: float = Aero.lift_alpha(sign * (start + width * (float(mid) / 800.0) * 1.25), aero, env)
+		if fm * sign > best * sign:
+			best = fm
+		indices[cursor] = mid
+		indices[cursor + 1] = hi
+		values[cursor] = fm
+		values[cursor + 1] = fhi
+		indices[cursor + 2] = lo
+		indices[cursor + 3] = mid
+		values[cursor + 2] = flo
+		values[cursor + 3] = fm
+		cursor += 4
 	return best
-
 
 ## Crash hull (D9d): points [x_aft, y_right, z_up] (le frame) that touch the ground first. Returns them flattened.
 static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat64Array:

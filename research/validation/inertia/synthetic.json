@@ -1,0 +1,191 @@
+{
+  "format": "openrc-swing-test v1",
+  "evidence": "synthetic",
+  "configuration": "Synthetic uniform plank; no aircraft measurements",
+  "gravity": "gravity",
+  "quantities": {
+    "gravity": {
+      "value": 9.80665,
+      "unit": "m/s^2",
+      "u": 0.0,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "spacing": {
+      "value": 0.6,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "length": {
+      "value": 2.0,
+      "unit": "m",
+      "u": 0.002,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "loaded_mass": {
+      "value": 2.5,
+      "unit": "kg",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "loaded_elapsed": {
+      "value": 60.611914262398024,
+      "unit": "s",
+      "u": 0.02,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "tare_mass": {
+      "value": 0.5,
+      "unit": "kg",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "tare_elapsed": {
+      "value": 26.752123901187204,
+      "unit": "s",
+      "u": 0.02,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "plank_a": {
+      "value": 1.2,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "plank_b": {
+      "value": 0.2,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_spacing": {
+      "value": 0.6,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_length": {
+      "value": 2.0,
+      "unit": "m",
+      "u": 0.002,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_loaded_mass": {
+      "value": 2.5,
+      "unit": "kg",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_loaded_height": {
+      "value": 0.35,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_loaded_elapsed": {
+      "value": 32.89299247961481,
+      "unit": "s",
+      "u": 0.02,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_tare_mass": {
+      "value": 0.5,
+      "unit": "kg",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_tare_height": {
+      "value": 0.15,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_tare_elapsed": {
+      "value": 21.359858026929878,
+      "unit": "s",
+      "u": 0.02,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_plank_a": {
+      "value": 1.2,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    },
+    "compound_plank_b": {
+      "value": 0.2,
+      "unit": "m",
+      "u": 0.001,
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement"
+    }
+  },
+  "experiments": [
+    {
+      "id": "bifilar",
+      "axis": "Izz",
+      "method": "bifilar",
+      "loaded": {
+        "mass": "loaded_mass",
+        "cycles": 20,
+        "spacing": "spacing",
+        "length": "length",
+        "elapsed": "loaded_elapsed"
+      },
+      "tare": {
+        "mass": "tare_mass",
+        "cycles": 20,
+        "spacing": "spacing",
+        "length": "length",
+        "elapsed": "tare_elapsed"
+      },
+      "notes": "Ideal small-amplitude fixture; tare stays on the same axis",
+      "plank": {
+        "dimension_a": "plank_a",
+        "dimension_b": "plank_b",
+        "source": "Uniform rectangular prism about central normal axis"
+      }
+    },
+    {
+      "id": "compound",
+      "axis": "Iyy",
+      "method": "compound",
+      "loaded": {
+        "mass": "compound_loaded_mass",
+        "cycles": 20,
+        "height": "compound_loaded_height",
+        "elapsed": "compound_loaded_elapsed"
+      },
+      "tare": {
+        "mass": "compound_tare_mass",
+        "cycles": 20,
+        "height": "compound_tare_height",
+        "elapsed": "compound_tare_elapsed"
+      },
+      "notes": "Ideal small-amplitude fixture; tare stays on the same axis",
+      "plank": {
+        "dimension_a": "compound_plank_a",
+        "dimension_b": "compound_plank_b",
+        "source": "Uniform rectangular prism about central normal axis"
+      }
+    }
+  ]
+}

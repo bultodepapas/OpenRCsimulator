@@ -1,0 +1,20 @@
+test_all_local_sensitivities_against_central_difference (__main__.WeighingTests.test_all_local_sensitivities_against_central_difference) ... ok
+test_cli_failures_preserve_files (__main__.WeighingTests.test_cli_failures_preserve_files) ... ok
+test_cli_report_reproducibility_and_hashes (__main__.WeighingTests.test_cli_report_reproducibility_and_hashes) ... ok
+test_coordinate_translation (__main__.WeighingTests.test_coordinate_translation) ... ok
+test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo) ... ok
+test_invalid_inputs (__main__.WeighingTests.test_invalid_inputs) ... ok
+test_known_asymmetric_statics (__main__.WeighingTests.test_known_asymmetric_statics) ... ok
+test_large_common_gain_does_not_warn_about_cg (__main__.WeighingTests.test_large_common_gain_does_not_warn_about_cg) ... ok
+test_measured_evidence_preserves_provenance (__main__.WeighingTests.test_measured_evidence_preserves_provenance) ... ok
+test_shared_datum_is_not_averaged_down (__main__.WeighingTests.test_shared_datum_is_not_averaged_down) ... ok
+test_shared_gain_cancels_from_cg (__main__.WeighingTests.test_shared_gain_cancels_from_cg) ... ok
+test_strict_json (__main__.WeighingTests.test_strict_json) ... ok
+test_symmetric_rig_and_axis_sign (__main__.WeighingTests.test_symmetric_rig_and_axis_sign) ... ok
+test_tare_offset_invariance (__main__.WeighingTests.test_tare_offset_invariance) ... ok
+test_zero_net_support_and_large_uncertainty_warn (__main__.WeighingTests.test_zero_net_support_and_large_uncertainty_warn) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.089s
+
+OK

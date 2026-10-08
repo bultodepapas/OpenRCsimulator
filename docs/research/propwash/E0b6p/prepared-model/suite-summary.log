@@ -1,0 +1,239 @@
+Command: bash <fresh-clone>/app/test.sh
+Revision: 38e72809ff06ae0def8da5ee68e3a2adeb0b9011
+Scope: unmodified tracked app; prepared candidate verified separately in run1/run2.
+Exit status: 0
+Full log SHA-256: 389eb39ecf25d1db53286c51cd9cd39dd6888e69d4e58d477de897f0ea6edc65
+
+== import resource dependencies
+== L6b offline tree placement matches committed positions
+Ran 5 tests in 0.156s
+OK
+== L11a offline grass placement matches committed offsets
+Ran 5 tests in 0.279s
+OK
+== L7 offline hill profile matches committed heights
+== E0b2: Stik hub and neutral tail geometry stay current
+Ran 4 tests in 0.003s
+OK
+== E0b3b: neutral Stik wash profiles stay current
+Ran 7 tests in 0.004s
+OK
+== float64 guard: no 32-bit math types in simulation code
+== H6: transcendental calls stay behind math3d
+== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
+== parse check: every script
+== test_aero.gd
+23 checks, 0 failed
+== test_aero_flow.gd
+== test_air_data.gd
+11 checks, 0 failed
+== test_aircraft_catalog.gd
+36 checks, 0 failed
+== test_aircraft_data.gd
+87 checks, 0 failed
+== test_atmosphere.gd
+46 checks, 0 failed
+== test_attached_flow.gd
+== test_avanti_handling.gd
+30 checks, 0 failed
+== test_build_info.gd
+== test_checkpoint.gd
+H8 checkpoints: 90 checks, 0 failed
+== test_contact_policy.gd
+72 checks, 0 failed
+== test_continuous_state.gd
+continuous state: 42 checks, 0 failed
+== test_controls.gd
+17 checks, 0 failed
+== test_controls_reference.gd
+== test_crash.gd
+12 checks, 0 failed
+== test_damping_regimes.gd
+20 checks, 0 failed
+== test_downwash_lag.gd
+14 checks, 0 failed
+== test_dynamics.gd
+7 checks, 0 failed
+== test_e2e_input.gd
+== test_e2e_radio.gd
+== test_engine_sound.gd
+7 checks, 0 failed
+== test_envelope.gd
+15 checks, 0 failed
+== test_extra_handling.gd
+12 checks, 0 failed
+== test_far_forest.gd
+L7 far forest: 10 checks, 0 failed; 480 near, 1200 far; sector counts [200, 100, 100, 217, 83, 200, 200, 100]
+== test_field_integration.gd
+== test_field_loader.gd
+161 checks, 0 failed
+== test_frame_samples.gd
+43 checks, 0 failed
+== test_frames.gd
+18 checks, 0 failed
+== test_golden.gd
+== test_ground_contact.gd
+22 checks, 0 failed
+== test_ground_friction.gd
+26 checks, 0 failed
+== test_ground_stiction.gd
+25 checks, 0 failed
+== test_ground_surfaces.gd
+28 checks, 0 failed
+== test_gyro.gd
+6 checks, 0 failed
+== test_handling.gd
+9 checks, 0 failed
+== test_horizon.gd
+19 checks, 0 failed
+== test_input_report.gd
+F1 data/options: 53 checks, 0 failed
+== test_input_report_cli.gd
+F1 CLI: 31 checks, 0 failed
+== test_input_report_e2e.gd
+F1 e2e: 18 checks, 0 failed
+== test_integrator.gd
+9 checks, 0 failed
+== test_latency_patch.gd
+F6a: 533 checks, 0 failed; 240 same-tick marker updates and exact checkpoint pairs
+== test_latency_patch_cli.gd
+F6a CLI: 26 checks, 0 failed
+== test_latency_patch_route.gd
+F6a route: 5 checks, 0 failed
+== test_math3d.gd
+11 checks, 0 failed
+== test_modes.gd
+42 checks, 0 failed
+== test_near_grass.gd
+== test_p51_envelope.gd
+15 checks, 0 failed
+== test_p51_ground.gd
+11 checks, 0 failed
+== test_p51_handling.gd
+15 checks, 0 failed
+== test_physical_envelope.gd
+== test_pilot_aids.gd
+22 checks, 0 failed
+== test_propeller_wake.gd
+E0b1 wake: 19 checks, 0 failed
+== test_propulsion.gd
+16 checks, 0 failed
+== test_propulsion_scalar.gd
+== test_rc_axis_history.gd
+F3b: 9251 checks, 0 failed; all 1024 axis-history combinations
+== test_rc_calibration.gd
+19 checks, 0 failed
+== test_rc_input.gd
+41 checks, 0 failed
+== test_rc_profile_validation.gd
+D6b-R1: 720 checks, 0 failed
+== test_replay_policy.gd
+H9 replay policy: 50 checks, 0 failed
+== test_rigid_body.gd
+15 checks, 0 failed
+== test_rk_stage_time.gd
+22 checks, 0 failed
+== test_rudder_authority.gd
+26 checks, 0 failed
+== test_runway_start.gd
+19 checks, 0 failed
+== test_scenery_ambience.gd
+== test_scenery_build.gd
+== test_scenery_loader.gd
+== test_scenery_scenario.gd
+== test_scenery_trace.gd
+== test_servo.gd
+6 checks, 0 failed
+== test_session_guards.gd
+32 checks, 0 failed
+== test_shader_clock.gd
+7 checks, 0 failed
+== test_shaft_data.gd
+D1-R2: 117 checks, 0 failed
+== test_simulation.gd
+11 checks, 0 failed
+== test_slipstream_downwash.gd
+E0b3a: 15 checks, 0 failed
+== test_slipstream_scalar.gd
+== test_spin.gd
+8 checks, 0 failed
+== test_strip_induced.gd
+21 checks, 0 failed
+== test_swirl_accuracy.gd
+E0b6 swirl accuracy: 41 checks, 0 failed
+== test_swirl_optimization.gd
+E0b6p optimized swirl equivalence: 7 checks, 0 failed
+== test_swirl_torque.gd
+E0b6 torque: 23 checks, 0 failed
+== test_tail_downwash.gd
+8 checks, 0 failed
+== test_takeoff_roll.gd
+7 checks, 0 failed
+== test_touchdown.gd
+12 checks, 0 failed
+== test_trace.gd
+19 checks, 0 failed
+== test_trace_metadata.gd
+C7-R2: 128 checks, 0 failed
+== test_tree_assets.gd
+60 checks, 0 failed
+== test_tree_wind.gd
+L15b wind bounds: 122643 checks, 0 failed; maximum chord 0.288530m
+== test_treeline.gd
+L7 tree runtime: 28626 checks, 0 failed; species [565, 586, 529]
+== test_treeline_data.gd
+116 checks, 0 failed
+== test_trim.gd
+14 checks, 0 failed
+== test_turbine.gd
+27 checks, 0 failed
+== test_ui_aircraft.gd
+== test_ui_flight_capture.gd
+== test_ui_help.gd
+== test_ui_home.gd
+== test_ui_input.gd
+== test_ui_language.gd
+== test_ui_pause.gd
+== test_visual_evidence.gd
+visual evidence: 97 checks, 0 failed
+== test_wash_profile.gd
+E0b3b: 20 checks, 0 failed
+== test_wash_transport.gd
+E0b5 transport: 38 checks, 0 failed
+== test_yaw_damping.gd
+4 checks, 0 failed
+== H7: exact one-ulp math sensitivity and golden branch signatures
+== L5: invalid field files fail before Home or flight can start
+Ran 1 test in 8.367s
+OK
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+verify_extra: 123 checks, 0 failures
+== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+verify_p51: 248 checks, 0 failed
+== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)
+verify_p51_clearance: 12 checks, 0 failed (34014 ms)
+== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)
+PASS 137 checks
+== C7-R1: trace completion, finite samples and failure exits
+Ran 11 tests in 52.140s
+OK
+== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)
+== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)
+== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+== VQ-01b: scripted logger disables input and identifies its route
+== VQ-01b: invalid logger options and output write failures fail the process
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+== E0b5: experimental wash transport at 30/60/144 fps
+30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60
+60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120
+144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288
+E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps
+== E0b6p: distributed swirl at 30/60/144 fps
+30 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=60
+60 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=120
+144 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=288
+E0b6p: identical body/aux/load/input with swirl hashes at 30/60/144 fps

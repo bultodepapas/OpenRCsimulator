@@ -55,6 +55,6 @@ Working agreement:
 - One small step per change, following the step IDs in ROADMAP.md.
 - Every change states its proof (test, capture, trace or measurement) in the commit message.
 - Guessed numbers are labeled with their source and evidence kind.
-- After each step, add what was learned in practice to LEARNINGS.md: appended at the end under a dated heading with the track's step IDs.
+- After each step, record any new reusable lesson using [LEARNINGS.md's criteria](LEARNINGS.md#keeping-this-useful): merge by topic and link the step's evidence. Routine results and status belong in the evidence report and owning plan.
 - Documents follow [docs/README.md](docs/README.md#conventions-for-documents): one language per file, a status line and a registered step-ID prefix per plan, a step's status in its plan (ROADMAP keeps one line per track), evidence folders named by step ID, no links into gitignored folders.
 - Pin exact dependency versions; upgrade one at a time.

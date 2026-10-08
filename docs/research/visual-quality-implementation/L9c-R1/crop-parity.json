@@ -1,0 +1,61 @@
+{
+  "format": "openrc-l9c-crop-parity v1",
+  "reference": "L9c default-repeat-1 full-frame surface-on images",
+  "candidate": "L9c-R1 filtered native stripe-on crops",
+  "records": [
+    {
+      "view": "runway_oblique_100",
+      "shift_pixels": 0.0,
+      "full_frame_sha256": "044701ff42c4bd171c633a34ef21b567debfb6fb54baac282c3d9c24cfd8f559",
+      "crop_sha256": "4c1dbf4f19b3022c78e306beada21bd6a19ec3f7d944f0bd11bd25909031e4b8",
+      "max_projection_error_base_pixels": 0.000244140625,
+      "mean_absolute_rgb_byte_delta": 0.000103759765625,
+      "maximum_absolute_rgb_byte_delta": 1.0
+    },
+    {
+      "view": "runway_oblique_100",
+      "shift_pixels": 0.5,
+      "full_frame_sha256": "da87399b13cf142432f1fe17bfaf3d6aa010af5614e2cbe60a50ad98cbc06db0",
+      "crop_sha256": "49947423240349c816d13870bd6ef1887653c7d6a63890267690fe016d429cf7",
+      "max_projection_error_base_pixels": 0.0001220703125,
+      "mean_absolute_rgb_byte_delta": 0.000164794921875,
+      "maximum_absolute_rgb_byte_delta": 1.0
+    },
+    {
+      "view": "runway_oblique_300",
+      "shift_pixels": 0.0,
+      "full_frame_sha256": "7ff270103144a9bab3ea7e6c808df2105b36210e599be735af1ee5f57494fcda",
+      "crop_sha256": "92f36b832119f6cb84fe3ff98a3a6f23575799e1a53f55e6353647b70a8833b7",
+      "max_projection_error_base_pixels": 0.0001220703125,
+      "mean_absolute_rgb_byte_delta": 0.001885986328125,
+      "maximum_absolute_rgb_byte_delta": 3.0
+    },
+    {
+      "view": "runway_oblique_300",
+      "shift_pixels": 0.5,
+      "full_frame_sha256": "41c526c41dcf15cdedbcca274a72df0c005b07ff84f1753a061d07333ce07352",
+      "crop_sha256": "427f3d5cec600d22e96d1b5917735ce447dff5c1fd044126960e958d1b7065fb",
+      "max_projection_error_base_pixels": 6.103515625e-05,
+      "mean_absolute_rgb_byte_delta": 0.002398681640625,
+      "maximum_absolute_rgb_byte_delta": 6.0
+    },
+    {
+      "view": "runway_threshold",
+      "shift_pixels": 0.0,
+      "full_frame_sha256": "b13afd1135dc0747ee4f93b9df484ff9af46c7899956e6127995bdf663bc73f8",
+      "crop_sha256": "169eddd7d8dd28f9e3b89813676e7764239e5f90969e598441486044b2d5e365",
+      "max_projection_error_base_pixels": 3.0517578125e-05,
+      "mean_absolute_rgb_byte_delta": 0.00072021484375,
+      "maximum_absolute_rgb_byte_delta": 7.0
+    },
+    {
+      "view": "runway_threshold",
+      "shift_pixels": 0.5,
+      "full_frame_sha256": "39bad3af4b234197cdee79bba65ebd7aa639a30bb8417ee97bd58f0e726041cf",
+      "crop_sha256": "61fe46204fea968fe2f7612f5a07626f70af1fa8316144fee8d63bb59da6b593",
+      "max_projection_error_base_pixels": 3.0517578125e-05,
+      "mean_absolute_rgb_byte_delta": 0.00028076171875,
+      "maximum_absolute_rgb_byte_delta": 1.0
+    }
+  ]
+}

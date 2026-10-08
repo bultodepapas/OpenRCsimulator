@@ -1,0 +1,7 @@
+{
+  "format": "openrc-l9c-r1-legacy-parity v1",
+  "fixture": "runway_zoom_100",
+  "images": 4,
+  "png_hashes_identical": true,
+  "capture_records_identical": true
+}

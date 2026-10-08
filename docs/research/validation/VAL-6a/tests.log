@@ -1,0 +1,25 @@
+test_bad_contract (__main__.Contract.test_bad_contract) ... ok
+test_bad_quantities (__main__.Contract.test_bad_quantities) ... ok
+test_cli_success_failure_and_input_preservation (__main__.Contract.test_cli_success_failure_and_input_preservation) ... ok
+test_committed_example (__main__.Contract.test_committed_example) ... ok
+test_exact_input_hash_and_reproducibility (__main__.Contract.test_exact_input_hash_and_reproducibility) ... ok
+test_impossible_tare_and_compound_geometry (__main__.Contract.test_impossible_tare_and_compound_geometry) ... ok
+test_isolated_mutations_are_detected (__main__.Contract.test_isolated_mutations_are_detected) ... ok
+test_numerical_overflow_is_rejected (__main__.Contract.test_numerical_overflow_is_rejected) ... ok
+test_strict_json (__main__.Contract.test_strict_json) ... ok
+test_bad_plank_agreement_is_a_report_not_software_failure (__main__.Physics.test_bad_plank_agreement_is_a_report_not_software_failure) ... ok
+test_bifilar_tare_geometry_change_is_refused (__main__.Physics.test_bifilar_tare_geometry_change_is_refused) ... ok
+test_compound_height_sensitivity_vanishes_at_radius_of_gyration (__main__.Physics.test_compound_height_sensitivity_vanishes_at_radius_of_gyration) ... ok
+test_elapsed_and_cycle_count_describe_full_period (__main__.Physics.test_elapsed_and_cycle_count_describe_full_period) ... ok
+test_full_spacing_squared_and_timing_squared (__main__.Physics.test_full_spacing_squared_and_timing_squared) ... ok
+test_large_uncertainty_is_explicit (__main__.Physics.test_large_uncertainty_is_explicit) ... ok
+test_net_pivot_result_is_preserved_before_cg_shift (__main__.Physics.test_net_pivot_result_is_preserved_before_cg_shift) ... ok
+test_shared_geometry_uncertainty_is_not_independent_tare_error (__main__.Physics.test_shared_geometry_uncertainty_is_not_independent_tare_error) ... ok
+test_two_compound_offsets_recover_same_inertia (__main__.Physics.test_two_compound_offsets_recover_same_inertia) ... ok
+test_uncertainty_gradients_against_finite_differences (__main__.Physics.test_uncertainty_gradients_against_finite_differences) ... ok
+test_uniform_plank_both_methods_with_and_without_tare (__main__.Physics.test_uniform_plank_both_methods_with_and_without_tare) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.760s
+
+OK

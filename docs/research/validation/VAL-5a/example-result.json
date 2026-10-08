@@ -1,0 +1,306 @@
+{
+  "format": "openrc-weighing-result v1",
+  "evidence": "synthetic",
+  "input": {
+    "format": "openrc-weighing v1",
+    "evidence": "synthetic",
+    "aircraft": "Synthetic three-support fixture",
+    "configuration": "Invented 2.6 kg load; no real aircraft, fuel or equipment state represented",
+    "datum": "Arbitrary origin fixed on fixture; x forward, y right; meters",
+    "setup": {
+      "level": true,
+      "all_loads_on_scales": true,
+      "notes": "Analytical level static fixture; no real setup or photographs"
+    },
+    "common_scale_gain": {
+      "value": 0,
+      "unit": "1",
+      "u": 0.002,
+      "kind": "synthetic",
+      "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+    },
+    "datum_x": {
+      "value": 0,
+      "unit": "m",
+      "u": 0.002,
+      "kind": "synthetic",
+      "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+    },
+    "datum_y": {
+      "value": 0,
+      "unit": "m",
+      "u": 0.002,
+      "kind": "synthetic",
+      "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+    },
+    "supports": [
+      {
+        "id": "left",
+        "gross": {
+          "value": 1.4,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "tare": {
+          "value": 0.1,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "x": {
+          "value": 0.2,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "y": {
+          "value": -0.3,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "scale_gain": {
+          "value": 0,
+          "unit": "1",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        }
+      },
+      {
+        "id": "right",
+        "gross": {
+          "value": 1.2,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "tare": {
+          "value": 0.1,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "x": {
+          "value": 0.2,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "y": {
+          "value": 0.3,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "scale_gain": {
+          "value": 0,
+          "unit": "1",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        }
+      },
+      {
+        "id": "tail",
+        "gross": {
+          "value": 0.4,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "tare": {
+          "value": 0.2,
+          "unit": "kg",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "x": {
+          "value": -0.8,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "y": {
+          "value": 0,
+          "unit": "m",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        },
+        "scale_gain": {
+          "value": 0,
+          "unit": "1",
+          "u": 0.001,
+          "kind": "synthetic",
+          "source": "VAL-5a invented analytical fixture; not aircraft measurements"
+        }
+      }
+    ]
+  },
+  "results": {
+    "mass": {
+      "value": 2.5999999999999996,
+      "unit": "kg",
+      "u": 0.005998333101787529,
+      "kind": "derived"
+    },
+    "cg_x": {
+      "value": 0.12307692307692307,
+      "unit": "m",
+      "u": 0.002167506586138171,
+      "kind": "derived"
+    },
+    "cg_y": {
+      "value": -0.023076923076923078,
+      "unit": "m",
+      "u": 0.0021275564084505412,
+      "kind": "derived"
+    }
+  },
+  "covariance": {
+    "order": [
+      "mass_kg",
+      "cg_x_m",
+      "cg_y_m"
+    ],
+    "matrix": [
+      [
+        3.598e-05,
+        -5.201183431952663e-07,
+        2.3964497041420042e-08
+      ],
+      [
+        -5.201183431952663e-07,
+        4.698084800952348e-06,
+        -6.255033087076789e-09
+      ],
+      [
+        2.3964497041420042e-08,
+        -6.255033087076789e-09,
+        4.526496271138965e-06
+      ]
+    ]
+  },
+  "standard_error_contributions": {
+    "left.gross": [
+      0.001,
+      2.958579881656806e-05,
+      -0.00010650887573964499
+    ],
+    "left.tare": [
+      -0.001,
+      -2.958579881656806e-05,
+      0.00010650887573964499
+    ],
+    "left.scale_gain": [
+      0.0013,
+      3.8461538461538476e-05,
+      -0.00013846153846153847
+    ],
+    "left.x": [
+      0.0,
+      0.0005,
+      0.0
+    ],
+    "left.y": [
+      0.0,
+      0.0,
+      0.0005
+    ],
+    "right.gross": [
+      0.001,
+      2.958579881656806e-05,
+      0.0001242603550295858
+    ],
+    "right.tare": [
+      -0.001,
+      -2.958579881656806e-05,
+      -0.0001242603550295858
+    ],
+    "right.scale_gain": [
+      0.0010999999999999998,
+      3.2544378698224864e-05,
+      0.00013668639053254436
+    ],
+    "right.x": [
+      0.0,
+      0.0004230769230769231,
+      0.0
+    ],
+    "right.y": [
+      0.0,
+      0.0,
+      0.0004230769230769231
+    ],
+    "tail.gross": [
+      0.001,
+      -0.00035502958579881666,
+      8.875739644970416e-06
+    ],
+    "tail.tare": [
+      -0.001,
+      0.00035502958579881666,
+      -8.875739644970416e-06
+    ],
+    "tail.scale_gain": [
+      0.0002,
+      -7.100591715976334e-05,
+      1.7751479289940833e-06
+    ],
+    "tail.x": [
+      0.0,
+      7.692307692307694e-05,
+      0.0
+    ],
+    "tail.y": [
+      0.0,
+      0.0,
+      7.692307692307694e-05
+    ],
+    "common_scale_gain": [
+      0.0052,
+      0.0,
+      0.0
+    ],
+    "datum_x": [
+      0.0,
+      0.002,
+      0.0
+    ],
+    "datum_y": [
+      0.0,
+      0.0,
+      0.002
+    ]
+  },
+  "net_loads_kg": {
+    "left": 1.2999999999999998,
+    "right": 1.0999999999999999,
+    "tail": 0.2
+  },
+  "warnings": [],
+  "limitations": [
+    "Level body forward/right axes; vertical CG is unobservable from this weighing.",
+    "Static aircraft, all vertical reactions measured, no other forces or restraints.",
+    "First-order standard uncertainties (k=1), not confidence intervals or worst-case bounds.",
+    "Reading and local position errors are independent; scale gains are shared by gross/tare.",
+    "Common scale gain and datum shifts are fully correlated across supports; other correlations are excluded.",
+    "Unquantified leveling, buoyancy, drift and configuration errors are excluded.",
+    "Reduction verifies statics; it does not validate scales, setup, aircraft data or flight fidelity."
+  ],
+  "input_sha256": "02b092cfdeb4e0396dd03ddfcf6a13d84b7598b5b95837b8a489d718a335d5be",
+  "reducer_sha256": "cee45f51dcae9192522dbf5b2dd6c62fab52cc9ad22b4bbe38968725e459f166"
+}

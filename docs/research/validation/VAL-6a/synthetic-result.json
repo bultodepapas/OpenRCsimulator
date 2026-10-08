@@ -1,0 +1,387 @@
+{
+  "configuration": "Synthetic uniform plank; no aircraft measurements",
+  "evidence": "synthetic",
+  "experiments": [
+    {
+      "axis": "Izz",
+      "cg_estimate_definition": "Net swing-axis result; object CG assumed on the swing axis",
+      "effective_cg_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "gravity": 0.0,
+          "length": -0.0002466666666666667,
+          "loaded_elapsed": 0.00016938364002530486,
+          "loaded_mass": 0.00010266666666666669,
+          "spacing": 0.0008222222222222225,
+          "tare_elapsed": -1.4952083859863135e-05,
+          "tare_mass": -2e-05
+        },
+        "u": 0.0008813334521762538,
+        "unit": "kg*m^2",
+        "value": 0.2466666666666667
+      },
+      "id": "bifilar",
+      "loaded_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "gravity": 0.0,
+          "length": -0.0002566666666666667,
+          "loaded_elapsed": 0.00016938364002530486,
+          "loaded_mass": 0.00010266666666666669,
+          "spacing": 0.0008555555555555558
+        },
+        "u": 0.0009149231379588233,
+        "unit": "kg*m^2",
+        "value": 0.2566666666666667
+      },
+      "loaded_period_s": 3.0305957131199013,
+      "method": "bifilar",
+      "net_swing_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "gravity": 0.0,
+          "length": -0.0002466666666666667,
+          "loaded_elapsed": 0.00016938364002530486,
+          "loaded_mass": 0.00010266666666666669,
+          "spacing": 0.0008222222222222225,
+          "tare_elapsed": -1.4952083859863135e-05,
+          "tare_mass": -2e-05
+        },
+        "u": 0.0008813334521762538,
+        "unit": "kg*m^2",
+        "value": 0.2466666666666667
+      },
+      "notes": "Ideal small-amplitude fixture; tare stays on the same axis",
+      "object_mass": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "loaded_mass": 0.001,
+          "tare_mass": -0.001
+        },
+        "u": 0.001414213562373095,
+        "unit": "kg",
+        "value": 2.0
+      },
+      "plank": {
+        "relative_difference": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "gravity": 0.0,
+            "length": -0.0010000000000000002,
+            "loaded_elapsed": 0.0006866904325350198,
+            "loaded_mass": -8.37837837837837e-05,
+            "plank_a": -0.0016216216216216218,
+            "plank_b": -0.0002702702702702703,
+            "spacing": 0.0033333333333333344,
+            "tare_elapsed": -6.061655618863434e-05,
+            "tare_mass": 0.00041891891891891893
+          },
+          "u": 0.003933388451944004,
+          "unit": "1",
+          "value": 1.1252260384714425e-16
+        },
+        "source": "Uniform rectangular prism about central normal axis",
+        "theory_cg_inertia": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "loaded_mass": 0.00012333333333333334,
+            "plank_a": 0.00039999999999999996,
+            "plank_b": 6.666666666666667e-05,
+            "tare_mass": -0.00012333333333333334
+          },
+          "u": 0.0004414370472294624,
+          "unit": "kg*m^2",
+          "value": 0.24666666666666667
+        },
+        "within_3_percent_nominal": true
+      },
+      "stationary_height_warning": false,
+      "tare_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "gravity": 0.0,
+          "length": -1e-05,
+          "spacing": 3.3333333333333335e-05,
+          "tare_elapsed": 1.4952083859863135e-05,
+          "tare_mass": 2e-05
+        },
+        "u": 4.283311712756253e-05,
+        "unit": "kg*m^2",
+        "value": 0.01
+      },
+      "tare_period_s": 1.3376061950593603,
+      "uncertainty_reaches_zero": false
+    },
+    {
+      "axis": "Iyy",
+      "cg_estimate_definition": "Net pivot result minus rigid-mass parallel-axis term; added-air axis transfer unresolved",
+      "effective_cg_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_loaded_elapsed": 0.0007149445791908704,
+          "compound_loaded_height": -0.00032023809523809457,
+          "compound_loaded_mass": 0.0001151666666666668,
+          "compound_tare_elapsed": -3.979427199040112e-05,
+          "compound_tare_height": 0.0002583333333333333,
+          "compound_tare_mass": -8.250000000000005e-05,
+          "gravity": 0.0
+        },
+        "u": 0.0008379066148811585,
+        "unit": "kg*m^2",
+        "value": 0.2466666666666668
+      },
+      "id": "compound",
+      "loaded_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_loaded_elapsed": 0.0007149445791908704,
+          "compound_loaded_height": 0.0016797619047619055,
+          "compound_loaded_mass": 0.00023516666666666675,
+          "gravity": 0.0
+        },
+        "u": 0.0018406654147657762,
+        "unit": "kg*m^2",
+        "value": 0.5879166666666669
+      },
+      "loaded_period_s": 1.6446496239807407,
+      "method": "compound",
+      "net_swing_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_loaded_elapsed": 0.0007149445791908704,
+          "compound_loaded_height": 0.0016797619047619055,
+          "compound_loaded_mass": 0.00023516666666666675,
+          "compound_tare_elapsed": -3.979427199040112e-05,
+          "compound_tare_height": -0.00014166666666666673,
+          "compound_tare_mass": -4.250000000000001e-05,
+          "gravity": 0.0
+        },
+        "u": 0.0018470269212013553,
+        "unit": "kg*m^2",
+        "value": 0.5666666666666669
+      },
+      "notes": "Ideal small-amplitude fixture; tare stays on the same axis",
+      "object_cg_below_pivot": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_loaded_height": 0.00125,
+          "compound_loaded_mass": -2.500000000000002e-05,
+          "compound_tare_height": -0.00025,
+          "compound_tare_mass": 0.000125
+        },
+        "u": 0.0012811127975318958,
+        "unit": "m",
+        "value": 0.4
+      },
+      "object_mass": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_loaded_mass": 0.001,
+          "compound_tare_mass": -0.001
+        },
+        "u": 0.001414213562373095,
+        "unit": "kg",
+        "value": 2.0
+      },
+      "plank": {
+        "relative_difference": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "compound_loaded_elapsed": 0.0028984239696927183,
+            "compound_loaded_height": -0.0012982625482625457,
+            "compound_loaded_mass": -3.3108108108107714e-05,
+            "compound_plank_a": -0.0016216216216216224,
+            "compound_plank_b": -0.0002702702702702704,
+            "compound_tare_elapsed": -0.00016132812969081538,
+            "compound_tare_height": 0.0010472972972972974,
+            "compound_tare_mass": 0.00016554054054054057,
+            "gravity": 0.0
+          },
+          "u": 0.003733685587560082,
+          "unit": "1",
+          "value": 5.626130192357212e-16
+        },
+        "source": "Uniform rectangular prism about central normal axis",
+        "theory_cg_inertia": {
+          "kind": "derived",
+          "standard_uncertainty_contributions": {
+            "compound_loaded_mass": 0.00012333333333333334,
+            "compound_plank_a": 0.00039999999999999996,
+            "compound_plank_b": 6.666666666666667e-05,
+            "compound_tare_mass": -0.00012333333333333334
+          },
+          "u": 0.0004414370472294624,
+          "unit": "kg*m^2",
+          "value": 0.24666666666666667
+        },
+        "within_3_percent_nominal": true
+      },
+      "stationary_height_warning": false,
+      "tare_axis_inertia": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "compound_tare_elapsed": 3.979427199040112e-05,
+          "compound_tare_height": 0.00014166666666666673,
+          "compound_tare_mass": 4.250000000000001e-05,
+          "gravity": 0.0
+        },
+        "u": 0.00015316422078178208,
+        "unit": "kg*m^2",
+        "value": 0.021250000000000005
+      },
+      "tare_period_s": 1.067992901346494,
+      "uncertainty_reaches_zero": false
+    }
+  ],
+  "format": "openrc-swing-result v1",
+  "input_sha256": "656854d1344c60aa037916f97c1c9d4b5644185f1a136fa2bc929b5e07e87130",
+  "limitations": [
+    "Small-amplitude, effectively undamped motion assumed, not checked; no damping or amplitude correction.",
+    "Bifilar: equal-length parallel vertical strings; spacing is the full separation; axis through object CG.",
+    "Tare and loaded rig must rotate about the same axis with unchanged rig geometry.",
+    "Effective inertia in air, not corrected rigid-body inertia; added air inertia is unresolved.",
+    "Compound CG estimate uses a rigid-mass axis shift; added-air axis transfer remains unresolved.",
+    "First-order uncertainty omits curvature, even when a stationary sensitivity gives zero contribution.",
+    "Buoyancy neglected: the same mass is used for restoring torque and the parallel-axis shift.",
+    "Distinct readings with common instrument biases need covariance not represented by this input format.",
+    "First-order standard uncertainty (k=1); different quantity IDs are independent, reused IDs fully correlated.",
+    "Uncertainty excludes unquantified alignment, sway, damping, amplitude and air-inertia biases.",
+    "A 3% nominal plank comparison is diagnostic; it does not validate the physical rig or aircraft."
+  ],
+  "quantities": {
+    "compound_length": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.002,
+      "unit": "m",
+      "value": 2.0
+    },
+    "compound_loaded_elapsed": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.02,
+      "unit": "s",
+      "value": 32.89299247961481
+    },
+    "compound_loaded_height": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.35
+    },
+    "compound_loaded_mass": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "kg",
+      "value": 2.5
+    },
+    "compound_plank_a": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 1.2
+    },
+    "compound_plank_b": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.2
+    },
+    "compound_spacing": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.6
+    },
+    "compound_tare_elapsed": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.02,
+      "unit": "s",
+      "value": 21.359858026929878
+    },
+    "compound_tare_height": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.15
+    },
+    "compound_tare_mass": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "kg",
+      "value": 0.5
+    },
+    "gravity": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.0,
+      "unit": "m/s^2",
+      "value": 9.80665
+    },
+    "length": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.002,
+      "unit": "m",
+      "value": 2.0
+    },
+    "loaded_elapsed": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.02,
+      "unit": "s",
+      "value": 60.611914262398024
+    },
+    "loaded_mass": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "kg",
+      "value": 2.5
+    },
+    "plank_a": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 1.2
+    },
+    "plank_b": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.2
+    },
+    "spacing": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "m",
+      "value": 0.6
+    },
+    "tare_elapsed": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.02,
+      "unit": "s",
+      "value": 26.752123901187204
+    },
+    "tare_mass": {
+      "kind": "synthetic",
+      "source": "Analytic test fixture, not a measurement",
+      "u": 0.001,
+      "unit": "kg",
+      "value": 0.5
+    }
+  },
+  "reducer_sha256": "49e2347a26fce7705d034a849d4107ba866c2eef798faebf1fe87a86fd92bd96"
+}

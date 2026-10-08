@@ -1,0 +1,174 @@
+{
+  "step": "DATA-2a",
+  "input_sha256": {
+    "app/physics/aircraft_data.gd": "e72242a947714cb1239edc0879d544c3b048cfb06761511789e64a20b0a509c7",
+    "app/physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+    "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "app/data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+    "app/tests/test_stall_solver.gd": "58a019cf855ba2c358a6bd9ab63f81eb1239744294456779d0df75a9ae16edf5",
+    "research/aircraft-data/data2/reference.gd": "83a8071d62fa9f15d582aa0f481393dd1c62174c7b073db7f25b6f0e966efc51",
+    "research/aircraft-data/data2/sweep.gd": "af6cd2cddd7bbf1658c6673dff1efaa83fdeeea4c3879529aad5987f871aa504",
+    "research/aircraft-data/data2/bench.gd": "f2013726fee12f4bb94dd33e40fd19b4e4585728b4c3f098c3929359013454c1",
+    "research/aircraft-data/data2/run.py": "37d3fe110fe8073f01ac84453434f17dfee1f935e806782fa720f7cafd033efb"
+  },
+  "focused_checks": 571,
+  "timings": [
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "baseline_ms": [
+        124.754,
+        116.486,
+        122.469,
+        114.111,
+        117.147,
+        131.663,
+        136.587,
+        134.606,
+        128.077,
+        147.639,
+        120.554,
+        114.263
+      ],
+      "candidate_median_ms": 13.9095,
+      "candidate_ms": [
+        16.171,
+        13.961,
+        13.673,
+        13.248,
+        12.896,
+        12.135,
+        16.544,
+        15.048,
+        16.234,
+        15.447,
+        13.858,
+        13.4
+      ],
+      "exact_load_result": true
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "baseline_ms": [
+        154.872,
+        125.088,
+        120.316,
+        136.526,
+        124.676,
+        119.981,
+        120.953,
+        123.677,
+        118.304,
+        136.088,
+        121.172,
+        123.779
+      ],
+      "candidate_median_ms": 13.9255,
+      "candidate_ms": [
+        13.249,
+        12.866,
+        13.697,
+        16.565,
+        14.154,
+        15.413,
+        13.041,
+        13.574,
+        14.547,
+        21.36,
+        14.239,
+        13.189
+      ],
+      "exact_load_result": true
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "baseline_ms": [
+        124.452,
+        125.052,
+        138.596,
+        124.215,
+        115.785,
+        126.079,
+        120.353,
+        117.331,
+        121.054,
+        121.795,
+        120.421,
+        118.605
+      ],
+      "candidate_median_ms": 15.7675,
+      "candidate_ms": [
+        15.215,
+        16.614,
+        17.057,
+        15.633,
+        14.521,
+        17.716,
+        15.073,
+        16.185,
+        13.479,
+        13.821,
+        17.018,
+        15.902
+      ],
+      "exact_load_result": true
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "baseline_ms": [
+        123.951,
+        120.441,
+        123.698,
+        124.432,
+        116.81,
+        117.576,
+        123.517,
+        121.294,
+        119.055,
+        127.294,
+        114.979,
+        116.454
+      ],
+      "candidate_median_ms": 14.471,
+      "candidate_ms": [
+        17.974,
+        13.768,
+        12.955,
+        16.084,
+        14.933,
+        16.38,
+        14.034,
+        12.381,
+        13.757,
+        13.699,
+        15.533,
+        14.908
+      ],
+      "exact_load_result": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "omit_curvature",
+      "rejected_by_assertions": true
+    },
+    {
+      "name": "wrong_negative_bound",
+      "rejected_by_assertions": true
+    },
+    {
+      "name": "wrong_sample_grid",
+      "rejected_by_assertions": true
+    }
+  ],
+  "sweep": {
+    "candidate_us": 8145219,
+    "cases": 1000,
+    "max_error_rad": 0.0,
+    "mismatches": 0,
+    "reference_us": 57859473
+  },
+  "limits": "Paired wall-clock measurements on a shared host; no flight physics or calibration change. The 15 ms whole-load target is separate."
+}

@@ -9,7 +9,8 @@
 //   the near view keeps its L9a brightness;
 // - a far-field patchwork of fields (green, straw, stubble, ploughed) beyond about 1 km, so raised views do not end in
 //   one even green band.
-// Phase 4 (report 04): the mown and runway surfaces use this same shader on their own plane (surface_kind 1 and 2).
+// L9c: flat field rectangles are composed in the rough ground pass, without depth-separated overlays.
+// surface_kind 1/2 retain the existing plane fallback for custom layouts that cannot be consolidated.
 // They first compute the rough grass exactly as the ground below does, then blend to mown turf inside a noisy border,
 // so the edge is soft and irregular and never a colour seam. The runway adds filtered mowing stripes (view-dependent,
 // as real stripes are) and worn touchdown zones. No TIME, no textures beyond the grass tile: every value is a pure
@@ -53,6 +54,11 @@ uniform float fields_fade_end_m = 3000.0;
 uniform int surface_kind = 0;
 uniform vec2 rect_center = vec2(0.0);
 uniform vec2 rect_half = vec2(1.0);
+// Ground.MAX_SURFACES; initialized in full by configure_surfaces. Zero count keeps the legacy fixture unchanged.
+uniform int surface_count = 0;
+uniform vec4 surface_rects[32];
+uniform int surface_kinds[32];
+uniform vec4 surface_bounds = vec4(0.0);
 uniform float mown_value = 1.25;      // report 04: rough = 0.75-0.85 × mown; the top keeps the runway readable at 100 m+
 uniform float mown_desat = 0.15;      // saturation -0.05...-0.10 at this grass colour
 uniform float stripe_m = 1.5;         // one ride-on deck (1.2-1.8 m)
@@ -108,23 +114,26 @@ float square_filtered(float u, float du) {
 }
 
 // Mown turf over the rough colour, inside the surface's rectangle (Phase 4).
-vec3 surface_colour(vec3 rough, vec2 p, vec3 view) {
-	vec2 d = p - rect_center;
-	vec2 q = abs(d) - rect_half;
-	float sdf = max(q.x, q.y);
+vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footprint, int kind, vec4 rect) {
+	vec2 half_size = rect.zw;
+	vec2 d = p - rect.xy;
 	float edge = border_m * (0.2 + 0.55 * vnoise(p / 3.5 + 41.0) + 0.25 * vnoise(p / 1.1 + 7.0));
-	float fw = fwidth(sdf);
-	float inside = 1.0 - smoothstep(-edge - 0.2 - fw, -edge + fw, sdf);
+	// Integrate both sides of each interval, so a subpixel strip keeps its coverage instead of becoming
+	// a half-bright pixel regardless of width. The 0.2 m minimum is the existing artistic border feather.
+	vec2 inset = max(half_size - vec2(edge + 0.1), vec2(0.0));
+	vec2 filter_width = max(footprint, vec2(0.2));
+	vec2 coverage = clamp((min(d + 0.5 * filter_width, inset) - max(d - 0.5 * filter_width, -inset)) / filter_width, vec2(0.0), vec2(1.0));
+	float inside = coverage.x * coverage.y;
 	float luma = dot(rough, vec3(0.2126, 0.7152, 0.0722));
 	vec3 mown = mix(rough, vec3(luma), mown_desat) * mown_value;
-	if (surface_kind == 2) {
-		bool along_x = rect_half.x >= rect_half.y;
+	if (kind == 2) {
+		bool along_x = half_size.x >= half_size.y;
 		float along = along_x ? d.x : d.y;
 		float across = along_x ? d.y : d.x;
-		float half_len = max(rect_half.x, rect_half.y);
-		float half_wid = min(rect_half.x, rect_half.y);
+		float half_len = max(half_size.x, half_size.y);
+		float half_wid = min(half_size.x, half_size.y);
 		float u = across / (2.0 * stripe_m);
-		float stripe = square_filtered(u, fwidth(u));
+		float stripe = square_filtered(u, (along_x ? footprint.y : footprint.x) / (2.0 * stripe_m));
 		vec2 axis = along_x ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
 		float bend = dot(normalize(view.xz + vec2(1e-5)), axis);
 		mown *= 1.0 + stripe_amp * stripe * bend;
@@ -134,7 +143,7 @@ vec3 surface_colour(vec3 rough, vec2 p, vec3 view) {
 		float w = wear * zone * centre * (0.3 + 0.7 * vnoise(p / 2.2 + 5.0));
 		mown *= mix(vec3(1.0), vec3(1.12, 1.0, 0.78), w);
 	}
-	return mix(rough, mown, inside);
+	return mix(underneath, mown, inside);
 }
 
 void vertex() {
@@ -149,8 +158,21 @@ void fragment() {
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);
+	// Derivatives must be evaluated before spatially varying branches/loops (including the bounds early-out).
+	vec2 footprint = fwidth(world_pos.xz);
 	if (surface_kind > 0) {
-		col = surface_colour(col, world_pos.xz, v);
+		col = surface_colour(col, col, world_pos.xz, v, footprint, surface_kind, vec4(rect_center, rect_half));
+	} else if (surface_count > 0) {
+		vec2 p = world_pos.xz;
+		if (all(greaterThanEqual(p, surface_bounds.xy - footprint)) && all(lessThanEqual(p, surface_bounds.zw + footprint))) {
+			vec3 rough = col;
+			for (int i = 0; i < min(surface_count, 32); i++) {
+				vec4 rect = surface_rects[i];
+				if (all(lessThanEqual(abs(p - rect.xy), rect.zw + footprint))) {
+					col = surface_colour(rough, col, p, v, footprint, surface_kinds[i], rect);
+				}
+			}
+		}
 	}
 	cloud_transmission = 1.0;
 	if (cloud_shadow_strength > 0.0 && cloud_coverage > 0.0 && sun_dir.y > 0.01) {

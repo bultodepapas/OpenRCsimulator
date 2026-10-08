@@ -1,0 +1,114 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL sampled extreme 2 side 1.0
+FAIL sampled extreme 2 side -1.0
+FAIL sampled extreme 6 side 1.0
+FAIL sampled extreme 6 side -1.0
+FAIL sampled extreme 8 side 1.0
+FAIL sampled extreme 8 side -1.0
+FAIL sampled extreme 12 side 1.0
+FAIL sampled extreme 12 side -1.0
+FAIL sampled extreme 19 side 1.0
+FAIL sampled extreme 19 side -1.0
+FAIL sampled extreme 20 side 1.0
+FAIL sampled extreme 20 side -1.0
+FAIL sampled extreme 21 side 1.0
+FAIL sampled extreme 21 side -1.0
+FAIL sampled extreme 22 side 1.0
+FAIL sampled extreme 22 side -1.0
+FAIL sampled extreme 36 side 1.0
+FAIL sampled extreme 36 side -1.0
+FAIL sampled extreme 40 side 1.0
+FAIL sampled extreme 40 side -1.0
+FAIL sampled extreme 53 side 1.0
+FAIL sampled extreme 53 side -1.0
+FAIL sampled extreme 55 side 1.0
+FAIL sampled extreme 55 side -1.0
+FAIL sampled extreme 59 side 1.0
+FAIL sampled extreme 59 side -1.0
+FAIL sampled extreme 62 side 1.0
+FAIL sampled extreme 62 side -1.0
+FAIL sampled extreme 63 side 1.0
+FAIL sampled extreme 63 side -1.0
+FAIL sampled extreme 87 side 1.0
+FAIL sampled extreme 87 side -1.0
+FAIL sampled extreme 93 side 1.0
+FAIL sampled extreme 93 side -1.0
+FAIL sampled extreme 97 side 1.0
+FAIL sampled extreme 97 side -1.0
+FAIL sampled extreme 102 side 1.0
+FAIL sampled extreme 102 side -1.0
+FAIL sampled extreme 103 side 1.0
+FAIL sampled extreme 103 side -1.0
+FAIL sampled extreme 106 side -1.0
+FAIL sampled extreme 110 side 1.0
+FAIL sampled extreme 110 side -1.0
+FAIL sampled extreme 113 side 1.0
+FAIL sampled extreme 113 side -1.0
+FAIL sampled extreme 114 side 1.0
+FAIL sampled extreme 114 side -1.0
+FAIL sampled extreme 117 side 1.0
+FAIL sampled extreme 117 side -1.0
+FAIL sampled extreme 119 side 1.0
+FAIL sampled extreme 119 side -1.0
+FAIL sampled extreme 121 side 1.0
+FAIL sampled extreme 121 side -1.0
+FAIL sampled extreme 122 side 1.0
+FAIL sampled extreme 122 side -1.0
+FAIL sampled extreme 131 side 1.0
+FAIL sampled extreme 131 side -1.0
+FAIL sampled extreme 136 side 1.0
+FAIL sampled extreme 136 side -1.0
+FAIL sampled extreme 159 side 1.0
+FAIL sampled extreme 159 side -1.0
+FAIL sampled extreme 162 side 1.0
+FAIL sampled extreme 162 side -1.0
+FAIL sampled extreme 172 side 1.0
+FAIL sampled extreme 172 side -1.0
+FAIL sampled extreme 174 side 1.0
+FAIL sampled extreme 174 side -1.0
+FAIL sampled extreme 175 side 1.0
+FAIL sampled extreme 175 side -1.0
+FAIL sampled extreme 176 side 1.0
+FAIL sampled extreme 176 side -1.0
+FAIL sampled extreme 180 side 1.0
+FAIL sampled extreme 180 side -1.0
+FAIL sampled extreme 181 side -1.0
+FAIL sampled extreme 182 side 1.0
+FAIL sampled extreme 182 side -1.0
+FAIL sampled extreme 185 side 1.0
+FAIL sampled extreme 185 side -1.0
+FAIL sampled extreme 187 side 1.0
+FAIL sampled extreme 187 side -1.0
+FAIL sampled extreme 190 side 1.0
+FAIL sampled extreme 190 side -1.0
+FAIL sampled extreme 193 side 1.0
+FAIL sampled extreme 193 side -1.0
+FAIL sampled extreme 196 side 1.0
+FAIL sampled extreme 196 side -1.0
+FAIL sampled extreme 212 side 1.0
+FAIL sampled extreme 212 side -1.0
+FAIL sampled extreme 216 side 1.0
+FAIL sampled extreme 216 side -1.0
+FAIL sampled extreme 223 side 1.0
+FAIL sampled extreme 223 side -1.0
+FAIL sampled extreme 227 side 1.0
+FAIL sampled extreme 227 side -1.0
+FAIL sampled extreme 240 side 1.0
+FAIL sampled extreme 240 side -1.0
+FAIL sampled extreme 241 side 1.0
+FAIL sampled extreme 241 side -1.0
+FAIL boundary/fallback
+FAIL boundary/fallback
+FAIL boundary/fallback
+FAIL boundary/fallback
+FAIL solved start 2
+FAIL solved start 3
+FAIL solved start 4
+FAIL solved start 6
+FAIL solved start 7
+FAIL solved start 9
+FAIL solved start 10
+FAIL solved start 12
+FAIL solved start 15
+DATA-2: 571 checks, 111 failed

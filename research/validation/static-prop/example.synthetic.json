@@ -1,0 +1,80 @@
+{
+  "format": "openrc-static-prop v1",
+  "evidence": "synthetic",
+  "configuration": "Synthetic 0.25 m propeller; no real engine or aircraft",
+  "static_conditions_confirmed": true,
+  "runs": [
+    {
+      "thrust": {
+        "value": 4.6875,
+        "unit": "N",
+        "u": 0.0046875,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "rpm": {
+        "value": 6000,
+        "unit": "rpm",
+        "u": 6.0,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "diameter": {
+        "value": 0.25,
+        "unit": "m",
+        "u": 0.00025,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "density": {
+        "value": 1.2,
+        "unit": "kg/m^3",
+        "u": 0.0012,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "torque": {
+        "value": 0.1,
+        "unit": "N*m",
+        "u": 0.0001,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "id": "with-torque",
+      "notes": "Matched idealized static operating point; corrected net thrust and shaft torque"
+    },
+    {
+      "thrust": {
+        "value": 4.6875,
+        "unit": "N",
+        "u": 0.0046875,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "rpm": {
+        "value": 6000,
+        "unit": "rpm",
+        "u": 6.0,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "diameter": {
+        "value": 0.25,
+        "unit": "m",
+        "u": 0.00025,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "density": {
+        "value": 1.2,
+        "unit": "kg/m^3",
+        "u": 0.0012,
+        "kind": "synthetic",
+        "source": "Invented analytic fixture; not aircraft measurements"
+      },
+      "torque": null,
+      "id": "without-torque",
+      "notes": "Matched idealized static operating point; corrected net thrust and shaft torque"
+    }
+  ]
+}

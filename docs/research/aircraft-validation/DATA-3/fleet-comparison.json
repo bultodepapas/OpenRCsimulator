@@ -1,0 +1,42 @@
+[
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "samples": 241,
+    "numeric_rows_byte_identical": true,
+    "numeric_csv_sha256": "aeff1bf39499769cf6b0ce25aaeabadafa265861665c210c79d061012f32aea9",
+    "input_file": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "input_sha256": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "current_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input bytes verified",
+    "actual_legacy_v1_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; legacy semantic-only metadata; exact input identity unavailable"
+  },
+  {
+    "aircraft": "gp-extra-300s-60",
+    "samples": 241,
+    "numeric_rows_byte_identical": true,
+    "numeric_csv_sha256": "c64eb95db74d5f177dce93ef30be58125dcd67760d7e3c9e887a01315c522332",
+    "input_file": "app/data/aircraft/gp_extra_300s_60.json",
+    "input_sha256": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+    "current_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s; exact aircraft input bytes verified",
+    "actual_legacy_v1_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s; legacy semantic-only metadata; exact input identity unavailable"
+  },
+  {
+    "aircraft": "p51d-mustang-120",
+    "samples": 241,
+    "numeric_rows_byte_identical": true,
+    "numeric_csv_sha256": "ae5d7fddd13c6cfb2999c0a6c7eeb49e459f10d1ce26585d6fba3caf7ac34d32",
+    "input_file": "app/data/aircraft/p51d_mustang_120.json",
+    "input_sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "current_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input bytes verified",
+    "actual_legacy_v1_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; legacy semantic-only metadata; exact input identity unavailable"
+  },
+  {
+    "aircraft": "sebart-avanti-s-a200-p100rx",
+    "samples": 241,
+    "numeric_rows_byte_identical": true,
+    "numeric_csv_sha256": "a178f1c338719f28af420e6d5de7f83177201f12917d022e7b9e9e38d49a5479",
+    "input_file": "app/data/aircraft/sebart_avanti_s_a200.json",
+    "input_sha256": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+    "current_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input bytes verified",
+    "actual_legacy_v1_check": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; legacy semantic-only metadata; exact input identity unavailable"
+  }
+]

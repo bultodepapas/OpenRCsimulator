@@ -1,0 +1,10 @@
+[
+  {
+    "mutation": "duplicate_work",
+    "assertion_failures": 2
+  },
+  {
+    "mutation": "changed_thrust",
+    "assertion_failures": 3
+  }
+]

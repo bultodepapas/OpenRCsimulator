@@ -1,0 +1,15 @@
+{
+  "baseline_commit": "38e72809ff06ae0def8da5ee68e3a2adeb0b9011",
+  "scope": "Isolated committed app baseline plus VAL-5a offline tool files; concurrent working-tree changes excluded.",
+  "command": "XDG_DATA_HOME=<isolated-user-directory> bash app/test.sh",
+  "exit_code": 0,
+  "engine_error_lines": 0,
+  "suite_sections": 130,
+  "gdscript_test_programs": 102,
+  "full_log_sha256": "c5115c61d2c389a2e5a4f2566dad00ad5f074a343fc86730dadc7e9a3e85b54e",
+  "python": "3.12.3",
+  "tool_tests": 15,
+  "mutations_rejected": 4,
+  "fixture_evidence": "synthetic",
+  "runtime_changes": false
+}

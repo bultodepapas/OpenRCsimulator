@@ -1,0 +1,63 @@
+--- a/app/physics/propulsion.gd
++++ b/app/physics/propulsion.gd
+@@ -162,12 +162,13 @@
+ ## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz] for air-relative body velocity v_air.
+ ## Thrust along the shaft (body +x unless tilted) on the thrust line; the reaction to a clockwise (from behind) prop
+ ## rolls the airplane left. With a normal-force table, the in-plane force acts at the propeller disc.
+-static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
++static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float,
++		stage_tq: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+ 	if Turbine.is_turbine(prop): # AV-05
+ 		return Turbine.loads(v_air, rpm, prop, rho)
+ 	if rpm < STOPPED_RPM:
+ 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+-	var tq := thrust_torque(v_air, rpm, prop, rho)
++	var tq: PackedFloat64Array = thrust_torque(v_air, rpm, prop, rho) if stage_tq.is_empty() else stage_tq
+ 	var thrust := tq[0]
+ 	var torque := tq[1]
+ 	var r: PackedFloat64Array = prop.offset # [x_aft, y_right, z_up] from the CG
+--- a/app/physics/slipstream.gd
++++ b/app/physics/slipstream.gd
+@@ -45,7 +45,8 @@
+ ## downwash in the two passes. downwash_cl = NAN uses instantaneous wing CL; the session passes its held lag.
+ ## transported_dv: optional per-piece axial speed (m/s) at the RK stage; empty uses the equilibrium wake.
+ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
+-		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
++		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array(),
++		stage_tq: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+ 	var prop: Dictionary = model.propulsion
+ 	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
+ 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+@@ -57,7 +58,7 @@
+ 		fade = 1.0 if v[0] >= 0.0 else 0.0
+ 	if fade == 0.0:
+ 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+-	var tq := Propulsion.thrust_torque(v, rpm, prop, rho)
++	var tq: PackedFloat64Array = Propulsion.thrust_torque(v, rpm, prop, rho) if stage_tq.is_empty() else stage_tq
+ 	var w := wake(v, tq[0], tq[1], prop, rho)
+ 	var ss: Dictionary = prop.slipstream
+ 	var v0: float = v[0]
+--- a/app/physics/dynamics.gd
++++ b/app/physics/dynamics.gd
+@@ -62,13 +62,18 @@
+ 		rho: float, wind_ned: PackedFloat64Array, downwash_cl := NAN, transported_dv := PackedFloat64Array()) -> Dictionary:
+ 	var air := Air.compute(state, wind_ned, rho)
+ 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl)
+-	var propulsion_loads := Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
++	var has_wash: bool = not model.propulsion.get("slipstream", {}).is_empty()
++	# Local to this evaluation: never retain across RK stages, calls or ticks.
++	var stage_tq: PackedFloat64Array = PackedFloat64Array()
++	if has_wash and not Turbine.is_turbine(model.propulsion) and rpm >= Propulsion.STOPPED_RPM:
++		stage_tq = Propulsion.thrust_torque(air.v_air, rpm, model.propulsion, rho)
++	var propulsion_loads := Propulsion.loads(air.v_air, rpm, model.propulsion, rho, stage_tq)
+ 	var total := aero_loads.duplicate()
+ 	for i in 6:
+ 		total[i] += propulsion_loads[i]
+ 	# E0b (P51-12, opt-in): the propeller's slipstream on the tail surfaces. Absent data adds nothing at all.
+-	if not model.propulsion.get("slipstream", {}).is_empty():
+-		var wash := Slipstream.loads(state, air, d, model, rpm, rho, downwash_cl, transported_dv)
++	if has_wash:
++		var wash := Slipstream.loads(state, air, d, model, rpm, rho, downwash_cl, transported_dv, stage_tq)
+ 		for i in 6:
+ 			total[i] += wash[i]
+ 	return {
