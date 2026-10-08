@@ -1,0 +1,69 @@
+{
+  "mutations": [
+    {
+      "guard": "body_finiteness",
+      "detected": true,
+      "runs": [
+        {
+          "mutated": false,
+          "exit_code": 0,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=false"
+        },
+        {
+          "mutated": true,
+          "exit_code": 1,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=true"
+        }
+      ]
+    },
+    {
+      "guard": "clock_bound",
+      "detected": true,
+      "runs": [
+        {
+          "mutated": false,
+          "exit_code": 0,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=false"
+        },
+        {
+          "mutated": true,
+          "exit_code": 1,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=true"
+        }
+      ]
+    },
+    {
+      "guard": "layout_consistency",
+      "detected": true,
+      "runs": [
+        {
+          "mutated": false,
+          "exit_code": 0,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=false"
+        },
+        {
+          "mutated": true,
+          "exit_code": 1,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=true"
+        }
+      ]
+    },
+    {
+      "guard": "checkpoint_alignment",
+      "detected": true,
+      "runs": [
+        {
+          "mutated": false,
+          "exit_code": 0,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=false"
+        },
+        {
+          "mutated": true,
+          "exit_code": 1,
+          "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naccepted=true"
+        }
+      ]
+    }
+  ],
+  "all_detected": true
+}

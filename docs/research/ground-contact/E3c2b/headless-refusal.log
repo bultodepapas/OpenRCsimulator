@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: offline captures require a rendered display and a real rendering backend
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (/tmp/openrc-e3c2b-hj2vkso6/repo/research/landing/e3c2b/capture.gd:338)
+       [1] _run (/tmp/openrc-e3c2b-hj2vkso6/repo/research/landing/e3c2b/capture.gd:34)

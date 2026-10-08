@@ -106,6 +106,15 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack L10b pilot station validated")
+	var barrier: Node3D = field.get_node_or_null("flightline_barrier") as Node3D
+	var contact: MeshInstance3D = field.get_node_or_null("FlightCueShadows") as MeshInstance3D
+	if barrier == null or not barrier.get_node_or_null("Barrier") is MeshInstance3D \
+		or contact == null or contact.mesh == null or contact.mesh.get_surface_count() != 1:
+		printerr("Pack missing L10c flightline barrier or L10d cue contact shadows")
+		field.free()
+		quit(1)
+		return
+	print("Pack L10c barrier and L10d contact shadows validated")
 	field.free()
 	var expected_count: int = result.field.objects[0].positions.size()
 	if count != expected_count:

@@ -101,20 +101,23 @@ func _test_exact_schema_and_ids() -> void:
 		duplicate["id"] = "windsock_copy"
 		(data["flight_cues"] as Array).append(duplicate),
 		"at most one 'windsock' cue is supported")
-	_rejected("more than two flight cues", func(data: Dictionary) -> void:
+	_rejected("more than three flight cues", func(data: Dictionary) -> void:
 		var cues: Array = data["flight_cues"]
 		var second: Dictionary = _valid_cue()
 		second["id"] = "windsock_copy"
 		var third: Dictionary = _valid_cue()
 		third["id"] = "windsock_third"
+		var fourth: Dictionary = _valid_cue()
+		fourth["id"] = "windsock_fourth"
 		cues.append(second)
-		cues.append(third),
-		"at most 2 cues are supported")
+		cues.append(third)
+		cues.append(fourth),
+		"at most 3 cues are supported")
 	_rejected("null cue entry", func(data: Dictionary) -> void: (data["flight_cues"] as Array)[0] = null, "flight_cues[0]: expected an object")
 	for key: String in CUE_KEYS:
 		_rejected("missing cue key " + key, func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary).erase(key), "missing '%s'" % key)
 	_rejected("unknown cue key", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["color"] = "orange", "unknown key 'color'")
-	_rejected("cue type other than windsock", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["type"] = "flag", "type: expected 'windsock' or 'pilot_station'")
+	_rejected("cue type other than windsock", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["type"] = "flag", "type: expected 'windsock' or 'pilot_station' or 'flightline_barrier'")
 	_rejected("colliding cue", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["collides"] = true, "collides=true is unsupported")
 	_rejected("non-boolean collides value", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["collides"] = "false", "collides: expected a boolean")
 	_rejected("ID duplicates pilot ID", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = "pilot", "duplicate ID 'pilot'")
@@ -123,6 +126,7 @@ func _test_exact_schema_and_ids() -> void:
 	_rejected("ID cannot have edge whitespace", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = " windsock", "leading or trailing whitespace")
 	_rejected("ID cannot steal the near-grass child name", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = "NearGrass", "reserved for a generated field child")
 	_rejected("ID cannot steal the scenery child name", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = "Scenery", "reserved for a generated field child")
+	_rejected("ID cannot steal the contact-shadow child name", func(data: Dictionary) -> void: ((data["flight_cues"] as Array)[0] as Dictionary)["id"] = "FlightCueShadows", "reserved for a generated field child")
 
 
 func _test_quantity_validation() -> void:

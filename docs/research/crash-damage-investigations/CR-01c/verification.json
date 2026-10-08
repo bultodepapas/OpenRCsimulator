@@ -1,0 +1,16 @@
+{
+  "baseline_commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+  "main_sha256": "2e103a62ccd8245ce58fb33f1bb9bf2fd5bb316fd11eb36fa826eaa250183b79",
+  "status": "full suite pending",
+  "candidate_sha256": {
+    "app/main.gd": "0c8b7ec6a90bd7d9a4e4493079cbb01ccc1e49db5bc5924b38be4d8075da73fe",
+    "app/tests/test_crash_pose.gd": "51f08291ffd9277c99d02c0c3925395bbb07b41f0e56693e11f2139a1d5d3255",
+    "app/tests/test_crash_pose.gd.uid": "c13f3e582798bc9eefbc1c20cde7680353e041bd54183837c134c46ad69126f3"
+  },
+  "focused_checks": 84,
+  "mutations_rejected": 3,
+  "captured_pngs_repeated_byte_identically": 5,
+  "physics_traces_unchanged": 4,
+  "suite_process_deadline_seconds": 180,
+  "deadline_context": "CR-01b baseline landing test exceeded the normal 60 s host deadline; assertion limits unchanged"
+}

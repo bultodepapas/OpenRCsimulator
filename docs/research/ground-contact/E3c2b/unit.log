@@ -1,0 +1,17 @@
+test_actual_servo_bound (test_kit.KitTests.test_actual_servo_bound) ... ok
+test_exact_selected_ticks_and_final_sample (test_kit.KitTests.test_exact_selected_ticks_and_final_sample) ... ok
+test_image_ablation_repeat_and_blank (test_kit.KitTests.test_image_ablation_repeat_and_blank) ... ok
+test_known_frame_mapping (test_kit.KitTests.test_known_frame_mapping) ... ok
+test_missing_and_duplicate_views (test_kit.KitTests.test_missing_and_duplicate_views) ... ok
+test_missing_phase (test_kit.KitTests.test_missing_phase) ... ok
+test_nonfinite_and_path_escape_rejected (test_kit.KitTests.test_nonfinite_and_path_escape_rejected) ... ok
+test_phase_report_disagreement (test_kit.KitTests.test_phase_report_disagreement) ... ok
+test_pose_hinge_clock_camera_and_tick_corruptions (test_kit.KitTests.test_pose_hinge_clock_camera_and_tick_corruptions) ... ok
+test_positive_capture_contract (test_kit.KitTests.test_positive_capture_contract) ... ok
+test_selected_nonunit_attitude (test_kit.KitTests.test_selected_nonunit_attitude) ... ok
+test_source_identity_mismatch (test_kit.KitTests.test_source_identity_mismatch) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.074s
+
+OK

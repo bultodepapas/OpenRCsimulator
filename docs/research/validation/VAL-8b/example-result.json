@@ -1,0 +1,248 @@
+{
+  "campaign": {
+    "aircraft": "Synthetic timing fixture, not a measured aircraft",
+    "annotation": {
+      "complete_turns_verified": true,
+      "independent_event_errors": true,
+      "phase_definition": "Same upright phase after each complete right-wing-down roll; synthetic unambiguous top/bottom marker",
+      "same_phase_verified": true,
+      "sign_verified": true,
+      "source": "Synthetic event positions with invented independent 0.5-frame standard uncertainty"
+    },
+    "conditions": "Invented constant 144 deg/s completed-roll phase; uncertainties are test values",
+    "configuration": "Invented two-turn fixture; no simulator parameter or flight claim",
+    "evidence": "synthetic",
+    "format": "openrc-roll-video v1",
+    "intervals": [
+      {
+        "end": "one",
+        "id": "first",
+        "notes": "One complete positive turn",
+        "start": "entry"
+      },
+      {
+        "end": "two",
+        "id": "second",
+        "notes": "One complete positive turn, shares middle event",
+        "start": "one"
+      },
+      {
+        "end": "two",
+        "id": "whole",
+        "notes": "Two complete turns; not the independent average of the first two reports",
+        "start": "entry"
+      }
+    ],
+    "video": {
+      "capture_fps_den": 1,
+      "capture_fps_num": 240,
+      "fps_relative_u": 0.001,
+      "frame_count": 1500,
+      "original_cfr_verified": true,
+      "sha256": null,
+      "source": "Algebra fixture; no physical clip exists",
+      "timing_source": "Synthetic exact nominal cadence with invented standard clock uncertainty"
+    }
+  },
+  "events": {
+    "entry": {
+      "frame": 120,
+      "frame_u": 0.5,
+      "turn_index": 0
+    },
+    "one": {
+      "frame": 720,
+      "frame_u": 0.5,
+      "turn_index": 1
+    },
+    "two": {
+      "frame": 1320,
+      "frame_u": 0.5,
+      "turn_index": 2
+    }
+  },
+  "evidence": "synthetic",
+  "format": "openrc-roll-video-result v1",
+  "input_sha256": {
+    "campaign": "5bbf5e948763b18c2831c6f3ef09df52f2de0c2d5690da186b2cdb4512fc3045",
+    "events_csv": "3ace183f7d25132338461479b46c12302059479865e6aa1fe67a73f8459ccade",
+    "reducer": "2a846e4ac45e356564713c890b02575eef7293a38b568d244667f8426c142e93",
+    "video": null
+  },
+  "intervals": [
+    {
+      "delta_frames": 600,
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:entry": -0.0020833333333333333,
+          "event:one": 0.0020833333333333333
+        },
+        "u": 0.003864007706456543,
+        "unit": "s",
+        "value": 2.5
+      },
+      "end": "one",
+      "frames_per_turn": 600.0,
+      "id": "first",
+      "mean_completed_roll_rate": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.14400000000000002,
+          "event:entry": 0.12,
+          "event:one": -0.12
+        },
+        "u": 0.2225668438918969,
+        "unit": "deg/s",
+        "value": 144.0
+      },
+      "mean_period": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:entry": -0.0020833333333333333,
+          "event:one": 0.0020833333333333333
+        },
+        "u": 0.003864007706456543,
+        "unit": "s/turn",
+        "value": 2.5
+      },
+      "notes": "One complete positive turn",
+      "signed_complete_turns": 1,
+      "signed_turn_frequency": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0004,
+          "event:entry": 0.0003333333333333334,
+          "event:one": -0.0003333333333333334
+        },
+        "u": 0.000618241233033047,
+        "unit": "turn/s",
+        "value": 0.4
+      },
+      "start": "entry",
+      "warnings": []
+    },
+    {
+      "delta_frames": 600,
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:one": -0.0020833333333333333,
+          "event:two": 0.0020833333333333333
+        },
+        "u": 0.003864007706456543,
+        "unit": "s",
+        "value": 2.5
+      },
+      "end": "two",
+      "frames_per_turn": 600.0,
+      "id": "second",
+      "mean_completed_roll_rate": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.14400000000000002,
+          "event:one": 0.12,
+          "event:two": -0.12
+        },
+        "u": 0.2225668438918969,
+        "unit": "deg/s",
+        "value": 144.0
+      },
+      "mean_period": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:one": -0.0020833333333333333,
+          "event:two": 0.0020833333333333333
+        },
+        "u": 0.003864007706456543,
+        "unit": "s/turn",
+        "value": 2.5
+      },
+      "notes": "One complete positive turn, shares middle event",
+      "signed_complete_turns": 1,
+      "signed_turn_frequency": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0004,
+          "event:one": 0.0003333333333333334,
+          "event:two": -0.0003333333333333334
+        },
+        "u": 0.000618241233033047,
+        "unit": "turn/s",
+        "value": 0.4
+      },
+      "start": "one",
+      "warnings": []
+    },
+    {
+      "delta_frames": 1200,
+      "duration": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.005,
+          "event:entry": -0.0020833333333333333,
+          "event:two": 0.0020833333333333333
+        },
+        "u": 0.005803495115493383,
+        "unit": "s",
+        "value": 5.0
+      },
+      "end": "two",
+      "frames_per_turn": 600.0,
+      "id": "whole",
+      "mean_completed_roll_rate": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.14400000000000002,
+          "event:entry": 0.06,
+          "event:two": -0.06
+        },
+        "u": 0.16714065932620945,
+        "unit": "deg/s",
+        "value": 144.0
+      },
+      "mean_period": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": -0.0025,
+          "event:entry": -0.0010416666666666667,
+          "event:two": 0.0010416666666666667
+        },
+        "u": 0.0029017475577466914,
+        "unit": "s/turn",
+        "value": 2.5
+      },
+      "notes": "Two complete turns; not the independent average of the first two reports",
+      "signed_complete_turns": 2,
+      "signed_turn_frequency": {
+        "kind": "derived",
+        "standard_uncertainty_contributions": {
+          "capture_clock": 0.0004,
+          "event:entry": 0.0001666666666666667,
+          "event:two": -0.0001666666666666667
+        },
+        "u": 0.00046427960923947067,
+        "unit": "turn/s",
+        "value": 0.4
+      },
+      "start": "entry",
+      "warnings": []
+    }
+  ],
+  "limitations": [
+    "Completed-turn timing is a cycle average, not instantaneous body p, Euler bank rate, roll damping or Clp.",
+    "No image-based attitude reconstruction: the operator must resolve full turns, sign and repeated physical phase without perspective or 180-degree aliasing.",
+    "Positive turn index means right wing down about the forward body axis; screen-clockwise motion does not define this sign.",
+    "Original constant-cadence capture frames only, without dropped, duplicated or interpolated frames; playback FPS is not capture FPS.",
+    "Video identity and declarations do not verify image content, capture timing, observer accuracy or flight conditions.",
+    "First-order standard uncertainties (k=1), conditional on exact integer turn counts and independent event-pick residuals; no coverage interval or acceptance band.",
+    "Event timing uncertainties must cover finite exposure, phase selection and other relevant residual timing errors; unknown uncertainty is not zero.",
+    "Named event and clock contributions retain covariance across intervals; other correlated annotation errors are unsupported.",
+    "A comparison needs matched commands, airspeed, aircraft configuration and maneuver definition; no simulator coefficient is inferred or updated.",
+    "Synthetic observations verify tooling only; real flights and physical validation remain VAL-8."
+  ]
+}

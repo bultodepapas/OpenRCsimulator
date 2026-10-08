@@ -37,9 +37,18 @@ static func threshold(field: Dictionary, east_bound := true, lineup := LINEUP) -
 ## Solve the start. model: AircraftData model with stiction gear; surfaces: the field's surface table; d: aerodynamic
 ## deflections (radians, Aero convention); steer: the rudder servo position (nose wheel); rpm: the idling engine.
 ## Returns { ok, state (13), anchors (ANCHOR_STRIDE per contact, all stuck), rest_state (engine off), iterations,
-## residual, message }.
+## residual, message }. Requires a structurally valid AircraftData model and GroundSurfaces table.
 static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float, east: float, heading: float,
 		d: Dictionary, steer: float, rpm: float, rho: float, g: float) -> Dictionary:
+	for value in [north, east, heading, steer, rpm, rho, g]:
+		if not is_finite(value):
+			return _fail("runway start needs finite position, heading, controls, rpm, density and gravity")
+	if rpm < 0.0 or rho < 0.0 or g <= 0.0:
+		return _fail("runway start needs nonnegative rpm/density and positive gravity")
+	for axis in ["elevator", "aileron_left", "aileron_right", "rudder"]:
+		var angle: Variant = d.get(axis)
+		if (typeof(angle) != TYPE_FLOAT and typeof(angle) != TYPE_INT) or not is_finite(angle):
+			return _fail("runway start needs a finite " + axis + " deflection")
 	var gear: Dictionary = model.get("landing_gear", {})
 	if gear.is_empty() or not gear.has("breakaway_factor"):
 		return _fail("runway start needs landing gear with stiction data (breakaway_factor)")
@@ -77,6 +86,8 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	if not idle.ok:
 		return _fail("idling pose did not converge (residual %s)" % String.num_scientific(idle.residual))
 	var state := _state(idle.x)
+	if not _finite_size(state, 13) or not _finite_size(rest_state, 13) or not _finite_size(anchors, free.size()):
+		return _fail("nonfinite runway start state or anchors")
 	if Ground.anchor_step(state, gear, steer, surfaces, anchors) != anchors:
 		return _fail("idle thrust exceeds the wheels' static hold: the airplane would roll")
 	return { ok = true, state = state, anchors = anchors, rest_state = rest_state, iterations = rest.iterations + idle.iterations,
@@ -114,9 +125,12 @@ static func _quat(p: PackedFloat64Array) -> PackedFloat64Array:
 static func _newton(residual: Callable, x0: PackedFloat64Array) -> Dictionary:
 	var x := x0.duplicate()
 	var n := x.size()
-	var r: PackedFloat64Array = residual.call(x)
 	var iterations := 0
-	while _norm(r) > TOLERANCE and iterations < MAX_ITERATIONS:
+	if n == 0 or not _finite_size(x, n):
+		return { ok = false, x = x, residual = INF, iterations = iterations }
+	var r: PackedFloat64Array = residual.call(x)
+	var norm := _norm(r) if r.size() == n else INF
+	while is_finite(norm) and norm > TOLERANCE and iterations < MAX_ITERATIONS:
 		var jacobian := PackedFloat64Array()
 		jacobian.resize(n * n)
 		for j in n:
@@ -126,6 +140,8 @@ static func _newton(residual: Callable, x0: PackedFloat64Array) -> Dictionary:
 			minus[j] -= STEP
 			var rp: PackedFloat64Array = residual.call(plus)
 			var rm: PackedFloat64Array = residual.call(minus)
+			if not _finite_size(rp, n) or not _finite_size(rm, n):
+				return { ok = false, x = x, residual = INF, iterations = iterations }
 			for i in n:
 				jacobian[i * n + j] = (rp[i] - rm[i]) / (2.0 * STEP)
 		var dx := _linear_solve(jacobian, r, n)
@@ -133,20 +149,38 @@ static func _newton(residual: Callable, x0: PackedFloat64Array) -> Dictionary:
 			break
 		for i in n:
 			x[i] -= dx[i]
+		if not _finite_size(x, n):
+			return { ok = false, x = x, residual = INF, iterations = iterations }
 		r = residual.call(x)
+		norm = _norm(r) if r.size() == n else INF
 		iterations += 1
-	return { ok = _norm(r) <= TOLERANCE, x = x, residual = _norm(r), iterations = iterations }
+	return { ok = is_finite(norm) and norm <= TOLERANCE, x = x, residual = norm, iterations = iterations }
+
+
+static func _finite_size(values: PackedFloat64Array, size: int) -> bool:
+	if values.size() != size:
+		return false
+	for value in values:
+		if not is_finite(value):
+			return false
+	return true
 
 
 static func _norm(v: PackedFloat64Array) -> float:
+	if v.is_empty():
+		return INF
 	var worst := 0.0
 	for value in v:
+		if not is_finite(value):
+			return INF
 		worst = maxf(worst, absf(value))
-	return worst if is_finite(worst) else INF
+	return worst
 
 
-## Solve A·x = b (A row-major n×n). Empty when singular.
+## Solve A·x = b (A row-major n×n). Empty for malformed, singular or nonfinite systems, including overflow.
 static func _linear_solve(a_in: PackedFloat64Array, b_in: PackedFloat64Array, n: int) -> PackedFloat64Array:
+	if n <= 0 or n > a_in.size() or a_in.size() != n * n or not _finite_size(a_in, a_in.size()) or not _finite_size(b_in, n):
+		return PackedFloat64Array()
 	var a := a_in.duplicate()
 	var b := b_in.duplicate()
 	for col in n:
@@ -166,16 +200,26 @@ static func _linear_solve(a_in: PackedFloat64Array, b_in: PackedFloat64Array, n:
 			b[pivot] = tb
 		for row in range(col + 1, n):
 			var f := a[row * n + col] / a[col * n + col]
+			if not is_finite(f):
+				return PackedFloat64Array()
 			for k in range(col, n):
 				a[row * n + k] -= f * a[col * n + k]
+				if not is_finite(a[row * n + k]):
+					return PackedFloat64Array()
 			b[row] -= f * b[col]
+			if not is_finite(b[row]):
+				return PackedFloat64Array()
 	var x := PackedFloat64Array()
 	x.resize(n)
 	for row in range(n - 1, -1, -1):
 		var acc := b[row]
 		for k in range(row + 1, n):
 			acc -= a[row * n + k] * x[k]
+			if not is_finite(acc):
+				return PackedFloat64Array()
 		x[row] = acc / a[row * n + row]
+		if not is_finite(x[row]):
+			return PackedFloat64Array()
 	return x
 
 

@@ -61,7 +61,7 @@
 - **Airspeed**: V = √(2Δp/ρ). The ±17 Pa sensor spec gives V errors of 16 / 9 / 6 % at 9 / 12 / 15 m/s; at 2 Pa residual they are 2.0 / 1.1 / 0.7 % (derived).
 - **Glide**: tan γ = (D − T)/L. At idle, compare the sim at the *same* idle rpm instead of correcting for thrust. A glow engine is not stopped in flight on purpose.
 - **Phugoid sanity**: Lanchester's T ≈ π√2·V/g gives 6.8 s at 15 m/s; the sim gives 9.7 s (0.103 Hz). That is a cheap real check from baro or video altitude (inference: thrust variation with speed is the likely reason).
-- **Roll rate from video**: p = 360°·N/(Δframes/fps). A full roll at 144 °/s lasts 600 frames at 240 fps, so ±2 frames ≈ 0.3 %. **Roll τ (0.04–0.1 s) is only 10–25 frames at 240 fps and 2–5 samples at 50 Hz.** It needs an onboard gyro at ≥ 200 Hz.
+- **Completed-roll timing from video**: signed cycle-average phase rate = 360°·N/(Δframes/capture_fps), not automatically instantaneous body rate `p`. A full roll averaging 144 °/s spans 600 frames at 240 fps; a ±2-frame interval bound is about ±0.3% timing error, not a complete measurement uncertainty. Resolve physical phase, sign and full turns rather than screen-projected angle. [VAL-8b](../validation/VAL-8b/README.md) supplies a strict reducer with shared-event/clock uncertainty. **Roll τ (0.04–0.1 s) is only 10–25 frames at 240 fps and 2–5 samples at 50 Hz.** This timing tool cannot identify it; retain onboard gyro observations for damping.
 
 ### Input design
 
@@ -205,7 +205,7 @@ Adapted from 14 CFR Part 60 Appendix A, Table A2A [12] (airliner values; RC adap
 | --- | --- | --- | --- |
 | T1 Trim | Level, hands-off at 3 throttle settings; land without touching trims | Elevator angle (throw meter) after landing; speed from passes | Trim elevator vs V → Cm0/CG check (trim solver) |
 | T2 Stall | ≥ 60 m, idle, wings level, slow down ≤ 0.5 m/s² to the break; then 30° bank | Pitot or GPS; video of the wing drop | V_s, CL_max, drop direction → slow-flight maneuver (9.49 m/s) |
-| T3 Roll | Full aileron, 2–3 rolls at 15 and 20 m/s, feet still and coordinated | 240 fps video from behind; gyro | °/s → 144/192 coordinated; τ from gyro |
+| T3 Roll | Full aileron, 2–3 rolls at 15 and 20 m/s, feet still and coordinated | 240 fps video from behind; gyro | Complete-roll cycle-average °/s with resolved physical phase; match maneuver/conditions before comparison. Body p and τ require gyro/kinematic evidence |
 | T4 Sideslip | Full rudder, opposite aileron to hold heading, wings near level | Yaw string on a boom in onboard video; φ from ATT | β, φ, aileron → β 14° (linear) |
 | T5 Glide | Idle, trimmed 15 m/s, 15 s steady | Baro rate, airspeed, rpm (sound) | L/D at idle → sim at the same idle rpm |
 | T6 Climb | Full throttle at best climb speed, 10 s | Baro rate | Climb rate → G1/G2 thrust |

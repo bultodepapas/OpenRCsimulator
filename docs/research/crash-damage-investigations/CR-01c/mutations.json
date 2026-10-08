@@ -1,0 +1,81 @@
+[
+  {
+    "name": "control",
+    "exit_code": 0,
+    "failures": []
+  },
+  {
+    "name": "ignore-crossing",
+    "exit_code": 1,
+    "failures": [
+      "FAIL jensen-das-ugly-stik-60 rendered CG and attitude use crossing",
+      "FAIL jensen-das-ugly-stik-60 model origin preserves crossing CG",
+      "FAIL jensen-das-ugly-stik-60 rendered hull point lies on ground plane",
+      "FAIL jensen-das-ugly-stik-60 shadow uses crossing pose",
+      "FAIL jensen-das-ugly-stik-60 camera targets crossing CG inspect=false",
+      "FAIL jensen-das-ugly-stik-60 camera targets crossing CG inspect=true",
+      "FAIL gp-extra-300s-60 rendered CG and attitude use crossing",
+      "FAIL gp-extra-300s-60 model origin preserves crossing CG",
+      "FAIL gp-extra-300s-60 rendered hull point lies on ground plane",
+      "FAIL gp-extra-300s-60 shadow uses crossing pose",
+      "FAIL gp-extra-300s-60 camera targets crossing CG inspect=false",
+      "FAIL gp-extra-300s-60 camera targets crossing CG inspect=true",
+      "FAIL p51d-mustang-120 rendered CG and attitude use crossing",
+      "FAIL p51d-mustang-120 model origin preserves crossing CG",
+      "FAIL p51d-mustang-120 rendered hull point lies on ground plane",
+      "FAIL p51d-mustang-120 shadow uses crossing pose",
+      "FAIL p51d-mustang-120 camera targets crossing CG inspect=false",
+      "FAIL p51d-mustang-120 camera targets crossing CG inspect=true",
+      "FAIL sebart-avanti-s-a200-p100rx rendered CG and attitude use crossing",
+      "FAIL sebart-avanti-s-a200-p100rx model origin preserves crossing CG",
+      "FAIL sebart-avanti-s-a200-p100rx rendered hull point lies on ground plane",
+      "FAIL sebart-avanti-s-a200-p100rx shadow uses crossing pose",
+      "FAIL sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=false",
+      "FAIL sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=true"
+    ]
+  },
+  {
+    "name": "use-contact-as-cg",
+    "exit_code": 1,
+    "failures": [
+      "FAIL jensen-das-ugly-stik-60 rendered CG and attitude use crossing",
+      "FAIL jensen-das-ugly-stik-60 model origin preserves crossing CG",
+      "FAIL jensen-das-ugly-stik-60 rendered hull point lies on ground plane",
+      "FAIL jensen-das-ugly-stik-60 shadow uses crossing pose",
+      "FAIL jensen-das-ugly-stik-60 camera targets crossing CG inspect=false",
+      "FAIL jensen-das-ugly-stik-60 camera targets crossing CG inspect=true",
+      "FAIL gp-extra-300s-60 rendered CG and attitude use crossing",
+      "FAIL gp-extra-300s-60 model origin preserves crossing CG",
+      "FAIL gp-extra-300s-60 rendered hull point lies on ground plane",
+      "FAIL gp-extra-300s-60 shadow uses crossing pose",
+      "FAIL gp-extra-300s-60 camera targets crossing CG inspect=false",
+      "FAIL gp-extra-300s-60 camera targets crossing CG inspect=true",
+      "FAIL p51d-mustang-120 rendered CG and attitude use crossing",
+      "FAIL p51d-mustang-120 model origin preserves crossing CG",
+      "FAIL p51d-mustang-120 rendered hull point lies on ground plane",
+      "FAIL p51d-mustang-120 shadow uses crossing pose",
+      "FAIL p51d-mustang-120 camera targets crossing CG inspect=false",
+      "FAIL p51d-mustang-120 camera targets crossing CG inspect=true",
+      "FAIL sebart-avanti-s-a200-p100rx rendered CG and attitude use crossing",
+      "FAIL sebart-avanti-s-a200-p100rx model origin preserves crossing CG",
+      "FAIL sebart-avanti-s-a200-p100rx rendered hull point lies on ground plane",
+      "FAIL sebart-avanti-s-a200-p100rx shadow uses crossing pose",
+      "FAIL sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=false",
+      "FAIL sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=true"
+    ]
+  },
+  {
+    "name": "fallback-to-interpolation",
+    "exit_code": 1,
+    "failures": [
+      "FAIL jensen-das-ugly-stik-60 unavailable crossing uses detected pose",
+      "FAIL jensen-das-ugly-stik-60 absent crossing uses detected pose",
+      "FAIL gp-extra-300s-60 unavailable crossing uses detected pose",
+      "FAIL gp-extra-300s-60 absent crossing uses detected pose",
+      "FAIL p51d-mustang-120 unavailable crossing uses detected pose",
+      "FAIL p51d-mustang-120 absent crossing uses detected pose",
+      "FAIL sebart-avanti-s-a200-p100rx unavailable crossing uses detected pose",
+      "FAIL sebart-avanti-s-a200-p100rx absent crossing uses detected pose"
+    ]
+  }
+]

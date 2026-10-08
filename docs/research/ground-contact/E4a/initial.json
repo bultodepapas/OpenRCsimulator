@@ -1,0 +1,12 @@
+{
+	"absolute_error": 2.000000000279556e-06,
+	"actual": 15.000468433826532,
+	"block": "state",
+	"component": "position",
+	"error": "H9 tolerance exceeded",
+	"expected": 15.000466433826531,
+	"index": 0,
+	"ok": false,
+	"tick": 0,
+	"tolerance": 1e-06
+}

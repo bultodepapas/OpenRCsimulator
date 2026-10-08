@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "project_path": "/tmp/openrc-e3c2b-hj2vkso6/repo/app",
+  "counts": {
+    "total": 0,
+    "errors": 0,
+    "warnings": 0,
+    "parse_errors": 0
+  },
+  "categories": {
+    "godot3_api": 0,
+    "godot3_shader": 0,
+    "inference": 0,
+    "node_ref": 0,
+    "unique_name": 0,
+    "signal_target": 0,
+    "missing_resource": 0,
+    "input_action": 0,
+    "group_ref": 0,
+    "res_path": 0,
+    "animation_ref": 0
+  },
+  "scan_summary": {
+    "gd": 1,
+    "tscn": 0,
+    "tres": 0,
+    "shader": 0,
+    "project_godot": 1,
+    "scene_script_pairs": 0,
+    "node_paths_checked": 0,
+    "skipped_dynamic_paths": 0,
+    "skipped_gdignore_dirs": 0
+  },
+  "suppressions": {
+    "total": 0,
+    "used": 0,
+    "unused": []
+  },
+  "diagnostics": []
+}

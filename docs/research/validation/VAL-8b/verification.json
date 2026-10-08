@@ -1,0 +1,26 @@
+{
+  "step": "VAL-8b",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "base_commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+  "source_sha256": {
+    "research/validation/roll-video/reduce.py": "2a846e4ac45e356564713c890b02575eef7293a38b568d244667f8426c142e93",
+    "research/validation/roll-video/check_mutations.py": "ceb5d2f717b65252183ed22f1368065e82bd01ce3ff805051b3d76648327d125",
+    "research/validation/roll-video/test_reduce.py": "f20382d96d87409846e4b3620624709e45ceed293b7c089ca64dc23cdaccc389",
+    "research/validation/roll-video/example.synthetic.json": "5bbf5e948763b18c2831c6f3ef09df52f2de0c2d5690da186b2cdb4512fc3045",
+    "research/validation/roll-video/example.synthetic.csv": "3ace183f7d25132338461479b46c12302059479865e6aa1fe67a73f8459ccade",
+    "research/validation/roll-video/README.md": "af0efc3b55f27fc6864eb1dbedb9c26f3bb76c1a4c28a74bff036f1b0226702d"
+  },
+  "unit_tests": 23,
+  "seeded_trials": 20000,
+  "rejected_mutations": 5,
+  "fresh_clone": "Own files overlaid onto a new shared git clone; all 23 tests and five mutation checks pass; CLI JSON byte-identical. No untracked dependencies copied.",
+  "runtime_changed": false,
+  "evidence": "synthetic only",
+  "evidence_sha256": {
+    "fresh-clone-mutations.json": "7eff4eef030af7bf83c45a1622fd327e127389af615e1884d4c86150ba16aa92",
+    "mutations.json": "4998c337ffd26c18613820ea86a9db4fddb024e5153e50fbac0911a8f4ab9f34",
+    "tests.log": "c679a7ecec3a3127307f1ad7b53d659a7bf0e630cd8036e63e26713f87ce2844",
+    "fresh-clone-tests.log": "6458057d05765d7c89be3c16ad9ce9be376e3a5a5b297db0dd7b03edfcea39ca",
+    "example-result.json": "002292c32b721cef83244fa6df496c0ff4efe35da4764791a5734e57ec934010"
+  }
+}

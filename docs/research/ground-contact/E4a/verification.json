@@ -1,0 +1,176 @@
+{
+  "ok": true,
+  "cases": [
+    {
+      "case": "none",
+      "report": {
+        "bit_exact": true,
+        "checkpoints": 483,
+        "mutation": "none",
+        "ok": true,
+        "stamp": {
+          "architecture": "x86_64",
+          "build": {
+            "commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+            "commit_date": "",
+            "describe": "v0.1.0-rc5-10-g959eb8a",
+            "dirty": false,
+            "godot": "4.7.2-stable (official)",
+            "label": "",
+            "parsed": {
+              "after": 0,
+              "base": "0.1.0",
+              "dirty": false,
+              "prerelease": "",
+              "semver": "0.1.0",
+              "sha": "",
+              "tag": ""
+            },
+            "source": "development",
+            "version": "0.1.0"
+          },
+          "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+          "godot": {
+            "build": "official",
+            "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+            "hex": 263938,
+            "major": 4,
+            "minor": 7,
+            "patch": 2,
+            "status": "stable",
+            "string": "4.7.2-stable (official)",
+            "timestamp": 0
+          },
+          "os": "Linux",
+          "ticks_per_second": 240
+        },
+        "tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+        "ticks": 28861
+      }
+    },
+    {
+      "case": "rolling",
+      "report": {
+        "absolute_error": 2.191844437504642e-06,
+        "actual": -46.991500010257916,
+        "block": "state",
+        "component": "position",
+        "error": "H9 tolerance exceeded",
+        "expected": -46.99149781841348,
+        "index": 1,
+        "ok": false,
+        "tick": 300,
+        "tolerance": 1e-06
+      }
+    },
+    {
+      "case": "anchor",
+      "report": {
+        "absolute_error": 1.0490379375838188e-05,
+        "actual": 15.000476924205907,
+        "block": "state",
+        "component": "position",
+        "error": "H9 tolerance exceeded",
+        "expected": 15.000466433826531,
+        "index": 0,
+        "ok": false,
+        "tick": 60,
+        "tolerance": 1e-06
+      }
+    },
+    {
+      "case": "missing-input",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "nonfinite-input",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "missing-final",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "clock",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "position",
+      "report": {
+        "absolute_error": 2.000000000279556e-06,
+        "actual": 15.000466433826531,
+        "block": "state",
+        "component": "position",
+        "error": "H9 tolerance exceeded",
+        "expected": 15.000468433826532,
+        "index": 0,
+        "ok": false,
+        "tick": 60,
+        "tolerance": 1e-06
+      }
+    },
+    {
+      "case": "auxiliary",
+      "report": {
+        "absolute_error": 1.9999999989472883e-09,
+        "actual": 0.024895703527286553,
+        "block": "aux",
+        "component": "servo",
+        "error": "H9 tolerance exceeded",
+        "expected": 0.024895705527286552,
+        "index": 1,
+        "ok": false,
+        "tick": 60,
+        "tolerance": 1e-09
+      }
+    },
+    {
+      "case": "initial",
+      "report": {
+        "absolute_error": 2.000000000279556e-06,
+        "actual": 15.000468433826532,
+        "block": "state",
+        "component": "position",
+        "error": "H9 tolerance exceeded",
+        "expected": 15.000466433826531,
+        "index": 0,
+        "ok": false,
+        "tick": 0,
+        "tolerance": 1e-06
+      }
+    },
+    {
+      "case": "anchor-mode",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "policy",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    },
+    {
+      "case": "stamp",
+      "report": {
+        "error": "invalid tape",
+        "ok": false
+      }
+    }
+  ]
+}

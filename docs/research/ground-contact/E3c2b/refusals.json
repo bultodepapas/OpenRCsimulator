@@ -1,0 +1,12 @@
+[
+  {
+    "case": "headless",
+    "exit_code": 1,
+    "reason": "offline captures require a rendered display"
+  },
+  {
+    "case": "nonempty",
+    "exit_code": 1,
+    "reason": "output directory must be empty"
+  }
+]

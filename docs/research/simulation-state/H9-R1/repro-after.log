@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+nonfinite final actual state accepted: { &"ok": false, &"message": "invalid replay body state at tick 600" }
+missing interior auxiliary checkpoint accepted: false
+missing interior auxiliary and mode checkpoints accepted: false
+overflow clock accepted: { &"ok": false, &"message": "malformed golden checkpoints, inputs or policy" }; actual tick: 600

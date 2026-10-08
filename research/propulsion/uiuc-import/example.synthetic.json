@@ -1,0 +1,21 @@
+{
+  "format": "openrc-uiuc-source v1",
+  "id": "synthetic-tunnel",
+  "evidence": "synthetic",
+  "table_kind": "tunnel",
+  "source_url": "https://example.invalid/synthetic.txt",
+  "source_sha256": "8ff63c2f466379f8be1983f959b492b09dced79e74b168a6177025c64a11254d",
+  "propeller": {
+    "manufacturer": "Synthetic",
+    "family": "Invented test geometry",
+    "nominal_size": "Not a physical propeller",
+    "source": "Original algebra fixture"
+  },
+  "coefficient_reference_diameter": null,
+  "run_rpm_label": {
+    "value": 6000,
+    "unit": "rpm",
+    "source": "Invented run label, no per-row RPM observations"
+  },
+  "notes": "Synthetic signed-coefficient, duplicate and ordering fixture; no physical validation."
+}
