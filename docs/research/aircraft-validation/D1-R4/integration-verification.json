@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "source_sha256": {
+    "app/physics/aircraft_data.gd": "e0f4b4b0db5377b7de4d5c5c987064a48457b39321904c3eb2c3047698c20a4a",
+    "app/physics/impact_snapshot.gd": "558e9f222cb7ad662cb058375276aa96c4eb63f2f31d9a3d82389d3e2cd4b59a",
+    "app/sim/flight_session.gd": "44f34dc48e7fcd742908991e954a3e34f426c64b3b357cc2bd351a547ca24aa0",
+    "app/tests/test_envelope_integrity.gd": "b053a52b313dfc34f48bab9f1308163536f35ac7a21146e4b608d11a9c467fea"
+  },
+  "log_sha256": "b4845705be92a1f3c57b78602814f64a9979053c7ae1cf34d9ac9cc6106b76db",
+  "note": "Final 64 checks after concurrent CR-01b impact_snapshot/flight_session integration; the full suite remains the controlled D1-R4 snapshot."
+}

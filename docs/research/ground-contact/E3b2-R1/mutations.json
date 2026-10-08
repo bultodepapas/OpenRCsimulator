@@ -1,0 +1,45 @@
+{
+  "format": "openrc-ground-start-mutations v1",
+  "results": [
+    {
+      "mutation": "norm-hides-earlier-nan",
+      "exit_code": 1,
+      "failed_checks": [
+        "FAIL norm nonfinite component 0",
+        "FAIL nonfinite initial residual never converges",
+        "FAIL norm nonfinite component 1",
+        "FAIL nonfinite initial residual never converges",
+        "FAIL norm nonfinite component 2"
+      ]
+    },
+    {
+      "mutation": "nonfinite-initial-iterate-accepted",
+      "exit_code": 1,
+      "failed_checks": [
+        "FAIL initial iterate refused before callback",
+        "FAIL initial iterate refused before callback",
+        "FAIL initial iterate refused before callback",
+        "FAIL empty initial iterate refused before callback"
+      ]
+    },
+    {
+      "mutation": "linear-division-overflow-exposed",
+      "exit_code": 1,
+      "failed_checks": [
+        "FAIL overflow in final division"
+      ]
+    },
+    {
+      "mutation": "negative-operating-inputs-accepted",
+      "exit_code": 1,
+      "failed_checks": [
+        "FAIL negative physical input 7 refuses with reason",
+        "FAIL negative physical input 7 exposes no candidate state",
+        "FAIL negative physical input 7 retains failure diagnostics",
+        "FAIL negative physical input 8 refuses with reason",
+        "FAIL negative physical input 8 exposes no candidate state",
+        "FAIL negative physical input 8 retains failure diagnostics"
+      ]
+    }
+  ]
+}

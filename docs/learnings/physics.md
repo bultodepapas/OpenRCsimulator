@@ -32,6 +32,8 @@ A frozen copy of the old implementation can show that a refactor preserves its b
 
 ## Ground and aerodynamic models
 
+A feedback pilot can compensate for changed physics. Record the applied controls and replay them downstream of trims, retaining servos, anchors, modes and crash detection; do not regenerate expected behavior during ordinary regression checks. Restore the authentic configuration before an in-memory sensitivity probe, so configuration refusal is not mistaken for detection of changed dynamics. ([E4a](../research/ground-contact/E4a/README.md))
+
 ### Model the ground at the contact points and through the real session
 
 Keep aircraft tyre coefficients with the aircraft and let each field's surface scale them, so aircraft data remains usable at different fields. Query the surface under each wheel: a contact near the center of gravity can hide a mistaken center-of-gravity lookup. Unit tests cannot prove the application passed the selected field into simulation; expose the active surface in trace evidence or another session-level check. ([E3a](../research/ground-surfaces-e3a.md))
@@ -50,6 +52,8 @@ A tick-end penetration identifies an observed contact, not the first point or ti
 
 For a rotating rigid point, interpolating endpoint depths does not locate its crossing along the pose interpolation. Position lerp plus shortest-path quaternion nlerp yields a cubic ground-plane numerator; derivative-root intervals expose enter-and-exit contacts hidden between clear endpoints. Keep this reconstructed pose separate from the observed tick state, and leave tangencies or pre-existing contact explicitly unknown. ([CR-01b](../research/crash-damage-investigations/CR-01b/README.md))
 
+A contact point is not the airplane's CG. Present a reconstructed crash through the existing CG/model-origin transform and share that pose with the camera and shadow. An unavailable crossing needs an explicit detected-state fallback; a paused simulation can still expose a fractional previous/current pose. Exercise the actual detector/render route, since a CLI capture that draws state directly cannot verify this handoff. ([CR-01c](../research/crash-damage-investigations/CR-01c/README.md))
+
 ### Solve runway starts as equilibria
 
 Settling a start by simulation can leave a small slip and make the result depend on timestep or engine-start transient. Solve the engine-off rest pose, place the anchors there, then solve the idling pose with anchors fixed; balance vertical force in world coordinates, including the vertical component of tilted thrust. The result verifies the model's equilibrium, not the real airplane's measured resting attitude or breakaway. ([E3b2](../research/ground-contact/E3b2/README.md))
@@ -65,6 +69,8 @@ A one-dimensional takeoff integral using the simulator's own thrust and aerodyna
 ### Preserve shared event errors when reducing video intervals
 
 Adjacent intervals share an endpoint: its frame/position pick errors cancel in the combined span, while a common clock or survey-scale error persists. Keep signed sensitivity contributions so covariance survives; summing interval variances as independent gives the wrong result. A same-frame position estimate can also correlate with the frame pick. VAL-8a verifies these effects analytically and with seeded sampling. Use original capture cadence, surveyed ground positions and a consistent aircraft reference point; the resulting mean ground velocity does not establish airspeed or instantaneous liftoff speed. ([VAL-8a](../research/validation/VAL-8a/README.md))
+
+Full-roll timing likewise preserves shared frame/clock errors, but the measured quantity is a completed-cycle average. A repeated silhouette may alias at 180°, and a changing viewpoint can move apparent phase. Resolve count, sign and physical phase before propagating timing uncertainty; do not label the result as instantaneous body `p` or roll damping. ([VAL-8b](../research/validation/VAL-8b/README.md))
 
 RPM response crossings similarly reuse steady endpoints and sometimes adjacent samples. Preserve those signed contributions through lag/delay calculations; command-time uncertainty cancels from the 63.2% consistency residual. A threshold knot can change segments under small noise, invalidating a fixed-segment derivative. Screen crossing identity before reporting local uncertainty and keep interpolation bounds separate from standard uncertainties. ([VAL-7c](../research/validation/VAL-7c/README.md))
 
@@ -98,7 +104,9 @@ When adding propwash to a tail model, evaluate washed and free loads with the sa
 
 Casting first can turn numeric strings into accepted numbers and bypass unit or provenance checks; non-finite values also need explicit rejection. Validate types, finite values, units, kind and source before conversion, then test whole-session behavior: invalid initial data must not fly, while a rejected reload must preserve the existing model, trim, auxiliary state and clock. ([D1-R2](../research/aircraft-validation/D1-R2/README.md))
 
-A solver must prove that its residual is finite before testing convergence: both `NaN > tolerance` and `NaN < tolerance` are false. Finite inputs alone are insufficient because intermediate arithmetic can overflow. Refuse the candidate before reconstructing diagnostics through invalid arithmetic, and preserve the failure-result fields that callers consume. ([D4-R2](../research/trim-integrity/D4-R2/README.md))
+A solver must prove that its residual is finite before testing convergence: both `NaN > tolerance` and `NaN < tolerance` are false. Finite inputs alone are insufficient because intermediate arithmetic can overflow. Refuse the candidate before reconstructing diagnostics through invalid arithmetic, and preserve the failure-result fields that callers consume. ([D4-R2](../research/trim-integrity/D4-R2/README.md)) A zero norm only establishes equilibrium when the callback returns exactly one finite residual per unknown; validate that shape for the initial, perturbed and updated poses. ([E3b2-R1](../research/ground-contact/E3b2-R1/README.md))
+
+Replay acceptance needs the same care: `maxf` can replace a NaN error with a later finite component, and an overflowing loop endpoint can produce a success without executing a tick. Validate live samples before aggregation, bound clock arithmetic before iteration, and align sampled/discrete checkpoints with body checkpoints. Test the final tick explicitly, where no later physics step can detect corruption. ([H9-R1](../research/simulation-state/H9-R1/README.md))
 
 ### Match a companion schema against accepted inputs too
 

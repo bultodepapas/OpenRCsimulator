@@ -1,0 +1,47 @@
+{
+	"checkpoints": 483,
+	"duration_s": 120.25416666666666,
+	"landing_margin_m": 1.3327837856025297,
+	"ok": true,
+	"stamp": {
+		"architecture": "x86_64",
+		"build": {
+			"commit": "959eb8a8dea280a382be372265648bc2b5a1de73",
+			"commit_date": "",
+			"describe": "v0.1.0-rc5-10-g959eb8a",
+			"dirty": false,
+			"godot": "4.7.2-stable (official)",
+			"label": "",
+			"parsed": {
+				"after": 0,
+				"base": "0.1.0",
+				"dirty": false,
+				"prerelease": "",
+				"semver": "0.1.0",
+				"sha": "",
+				"tag": ""
+			},
+			"source": "development",
+			"version": "0.1.0"
+		},
+		"cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+		"godot": {
+			"build": "official",
+			"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+			"hex": 263938,
+			"major": 4,
+			"minor": 7,
+			"patch": 2,
+			"status": "stable",
+			"string": "4.7.2-stable (official)",
+			"timestamp": 0
+		},
+		"os": "Linux",
+		"ticks_per_second": 240
+	},
+	"stop_dwell_s": 5.0,
+	"tape_sha256": "c2caf0924abea102ed7ab94929bd4d434893d7d40999e3ad6f4ef55200129e36",
+	"ticks": 28861,
+	"touchdown_sink_mps": 0.39387457909505463,
+	"turn_rad": -6.28891375834838
+}

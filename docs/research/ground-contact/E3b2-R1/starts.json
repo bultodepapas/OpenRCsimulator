@@ -1,0 +1,966 @@
+{
+  "comparisons": 96,
+  "all_equal": true,
+  "results": [
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "409bed396f9f0e2eaa4f58581b808c5309de54cb99371c5659107691afc1651e",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "409bed396f9f0e2eaa4f58581b808c5309de54cb99371c5659107691afc1651e",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "409bed396f9f0e2eaa4f58581b808c5309de54cb99371c5659107691afc1651e",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "33ac068ab93fa55bd80eb36c2008fe202f0d0fffd05ea8508fde9f3a7f03b000",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "409bed396f9f0e2eaa4f58581b808c5309de54cb99371c5659107691afc1651e",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 1.5707963267949,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "ea93a8c904a03135610d7c87cf2fa63371b39a353b9ad4fc3c0ddf70164c0147",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "c89207671f710ab6d0e0a968037f311988c1736d743ba54f4ec31c0188a8b971",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "c89207671f710ab6d0e0a968037f311988c1736d743ba54f4ec31c0188a8b971",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "c89207671f710ab6d0e0a968037f311988c1736d743ba54f4ec31c0188a8b971",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "e73f4c55f62ba0c18a630c2ed1d35a282bee88fb94f83dce5ebd0007f89c0d7e",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "c89207671f710ab6d0e0a968037f311988c1736d743ba54f4ec31c0188a8b971",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": -1.5707963267949,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "59a45cccf8ce76f124609a0fb6a6ca991e105d7e8e4e939fb1262179419d926d",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "663b188d21e05ca39d0f318deb033af1dff1782f312f31959f0d29cf3370daa3",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "663b188d21e05ca39d0f318deb033af1dff1782f312f31959f0d29cf3370daa3",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "663b188d21e05ca39d0f318deb033af1dff1782f312f31959f0d29cf3370daa3",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "398e0944ffd0bb9c59c915392f8af8e973dfd2d375bb93c6aea7f8ce13212865",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "663b188d21e05ca39d0f318deb033af1dff1782f312f31959f0d29cf3370daa3",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.0,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "3b761f17a012eb5ded4b8b85973c98b88f315e70ee2386fec7457c0b6eb892b2",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "1c51b4ca890ca32e8634348ac3a956a619895b990710fca338a84f1a436ce561",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "1c51b4ca890ca32e8634348ac3a956a619895b990710fca338a84f1a436ce561",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "1c51b4ca890ca32e8634348ac3a956a619895b990710fca338a84f1a436ce561",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "2f143bee746fed3e55ea456a5bc0acc1dd4efba3a96e0a45f874856825cabed7",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 3,
+      "message": "",
+      "ok": true,
+      "result_sha256": "1c51b4ca890ca32e8634348ac3a956a619895b990710fca338a84f1a436ce561",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "jensen_ugly_stik_60",
+      "heading": 0.6,
+      "iterations": 6,
+      "message": "",
+      "ok": true,
+      "result_sha256": "bf89c1361da22153ce0b0b11a92387bedb494db2e1bc773a97ae6c52b61b6bbd",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "gp_extra_300s_60",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 2800.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 1400.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": -1.5707963267949,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.0,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.0,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 0.9,
+      "rpm": 44000.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 0.0
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "heading": 0.6,
+      "iterations": 0,
+      "message": "runway start needs landing gear with stiction data (breakaway_factor)",
+      "ok": false,
+      "result_sha256": "4035ef718065ccb5cfb2a743e0d3db192101ee4d3dce31fb99f0fc3c74aab831",
+      "rho": 1.225,
+      "rpm": 44000.0
+    }
+  ]
+}

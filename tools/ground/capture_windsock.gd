@@ -47,6 +47,8 @@ func _run() -> void:
 	world = Field.build(loaded.field)
 	root.add_child(world)
 	var cues: Array = loaded.field.get("flight_cues", []).filter(func(c: Dictionary) -> bool: return c.type == cue_type)
+	if cue_type == "contact_shadows":
+		cues = [{"id":"FlightCueShadows", "type":"contact_shadows"}]
 	if cues.size() != 1:
 		push_error("expected one default cue of selected type")
 		quit(1)
@@ -84,6 +86,23 @@ func _run() -> void:
 				for side: float in [-1.0, 1.0]:
 					poses.append({"id":"pilot_left" if side < 0.0 else "pilot_right", "eye":pilot_eye,
 						"target":Vector3(surface.center_east + side * surface.length_east_west * 0.5, 0, -surface.center_north), "fov":50.0})
+	if cue_type == "flightline_barrier":
+		var origin: Vector3 = sock.position
+		poses = [
+			{"id":"close", "eye":origin+Vector3(28,10,-38), "target":origin+Vector3(0,.35,0), "fov":50.0},
+			{"id":"rear", "eye":origin+Vector3(24,10,38), "target":origin+Vector3(0,.35,0), "fov":50.0},
+			{"id":"overview", "eye":Vector3(14,16,42), "target":Vector3(0,0,-8), "fov":50.0}]
+		var pilot_eye: Vector3 = Vector3(loaded.field.pilot.east, loaded.field.pilot.eye_height, -loaded.field.pilot.north)
+		for surface: Dictionary in loaded.field.surfaces:
+			if surface.id == loaded.field.runway:
+				for side: float in [-1.0, 1.0]:
+					poses.append({"id":"pilot_left" if side < 0.0 else "pilot_right", "eye":pilot_eye,
+						"target":Vector3(surface.center_east + side * surface.length_east_west * 0.5, 0, -surface.center_north), "fov":50.0})
+	if cue_type == "contact_shadows":
+		poses = [
+			{"id":"close", "eye":Vector3(-10,1.8,8), "target":Vector3(-12,0,6), "fov":40.0},
+			{"id":"station", "eye":Vector3(2,2,3), "target":Vector3.ZERO, "fov":40.0},
+			{"id":"barrier", "eye":Vector3(5,1.6,-2.5), "target":Vector3(5,0,-4.5), "fov":40.0}]
 	var records: Array[Dictionary] = []
 	for pose: Dictionary in poses:
 		camera.position = pose.eye
@@ -103,13 +122,13 @@ func _run() -> void:
 				push_error("save failed")
 				quit(1)
 				return
-			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":[] if str(pose.id).begins_with("pilot_") and cue_type == "pilot_station" else _bounds(sock), "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
+			records.append({"image":name,"sha256":FileAccess.get_sha256(out.path_join(name)),"draws":int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),"primitives":int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)), "bounds":[] if str(pose.id).begins_with("pilot_") and cue_type in ["pilot_station", "flightline_barrier"] else _bounds(sock), "runway_polygon":_runway_polygon(loaded.field) if cue_type == "flightline_barrier" and str(pose.id).begins_with("pilot_") else [], "eye":_vec(camera.position), "target":_vec(pose.target), "fov":pose.fov})
 	var file: FileAccess = FileAccess.open(out.path_join("capture.json"),FileAccess.WRITE)
 	if file == null:
 		push_error("cannot write manifest")
 		quit(1)
 		return
-	file.store_string(JSON.stringify({"format":"openrc-l10b-capture v1" if cue_type == "pilot_station" else "openrc-l10a-capture v1", "records":records,
+	file.store_string(JSON.stringify({"format":"openrc-%s-capture v1" % {"windsock":"l10a", "pilot_station":"l10b", "flightline_barrier":"l10c", "contact_shadows":"l10d"}[cue_type], "records":records,
 		"adapter":RenderingServer.get_video_adapter_name(), "method":RenderingServer.get_current_rendering_method(),
 		"driver":RenderingServer.get_current_rendering_driver_name(), "viewport":[960,540],
 		"shader_time":Clock.last_clock,"scenery":scenery_on, "cue":cue},"  ")+"\n")
@@ -121,14 +140,28 @@ func _run() -> void:
 func _bounds(sock: Node3D) -> Array[float]:
 	var minimum: Vector2 = Vector2(INF, INF)
 	var maximum: Vector2 = Vector2(-INF, -INF)
-	for child: Node in sock.get_children():
+	var candidates: Array[Node] = sock.get_children()
+	if sock is MeshInstance3D:
+		candidates.append(sock)
+	for child: Node in candidates:
 		var mesh: MeshInstance3D = child as MeshInstance3D
 		if mesh == null:
 			continue
 		var box: AABB = mesh.mesh.get_aabb()
+		var local_corners: Array[Vector3] = []
 		for i: int in 8:
-			var point: Vector3 = mesh.global_transform * box.get_endpoint(i)
-			var pixel: Vector2 = camera.unproject_position(point)
+			local_corners.append(camera.global_transform.affine_inverse() * mesh.global_transform * box.get_endpoint(i))
+		var projected: Array[Vector3] = []
+		for i: int in 8:
+			var a: Vector3 = local_corners[i]
+			if a.z <= -camera.near:
+				projected.append(a)
+			for bit: int in [1,2,4]:
+				var b: Vector3 = local_corners[i ^ bit]
+				if (a.z <= -camera.near) != (b.z <= -camera.near):
+					projected.append(a.lerp(b, (-camera.near - a.z) / (b.z - a.z)))
+		for point: Vector3 in projected:
+			var pixel: Vector2 = camera.unproject_position(camera.global_transform * point)
 			minimum = minimum.min(pixel)
 			maximum = maximum.max(pixel)
 	return [minimum.x, minimum.y, maximum.x, maximum.y]
@@ -136,3 +169,30 @@ func _bounds(sock: Node3D) -> Array[float]:
 
 func _vec(value: Vector3) -> Array[float]:
 	return [value.x, value.y, value.z]
+
+
+func _runway_polygon(field: Dictionary) -> Array:
+	var polygon: Array[Vector3] = []
+	for surface: Dictionary in field.surfaces:
+		if surface.id != field.runway:
+			continue
+		for corner: Vector2 in [Vector2(-1,-1),Vector2(1,-1),Vector2(1,1),Vector2(-1,1)]:
+			polygon.append(camera.global_transform.affine_inverse() * Vector3(
+				surface.center_east + corner.x * surface.length_east_west * .5,
+				0.03, -surface.center_north + corner.y * surface.width_north_south * .5))
+	# Clip at the near plane before projecting; the opposite threshold can be behind the eye.
+	var clipped: Array[Vector3] = []
+	for i: int in polygon.size():
+		var a: Vector3 = polygon[i]
+		var b: Vector3 = polygon[(i + 1) % polygon.size()]
+		var a_inside: bool = a.z <= -camera.near
+		var b_inside: bool = b.z <= -camera.near
+		if a_inside:
+			clipped.append(a)
+		if a_inside != b_inside:
+			clipped.append(a.lerp(b, (-camera.near - a.z) / (b.z - a.z)))
+	var pixels: Array = []
+	for point: Vector3 in clipped:
+		var pixel: Vector2 = camera.unproject_position(camera.global_transform * point)
+		pixels.append([pixel.x, pixel.y])
+	return pixels

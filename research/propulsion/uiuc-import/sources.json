@@ -1,0 +1,78 @@
+[
+  {
+    "format": "openrc-uiuc-source v1",
+    "id": "apcsp_11x6_static_rd0488",
+    "evidence": "measured-source",
+    "table_kind": "static",
+    "source_url": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x6_static_rd0488.txt",
+    "source_sha256": "911866f1c55bb115f3fef2202fb73a8e0ecf271746d71e7a0c773b7f11cd33f9",
+    "propeller": {
+      "manufacturer": "APC",
+      "family": "Sport",
+      "nominal_size": "11 x 6 inches (catalog label)",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-1/propDB-volume-1.html"
+    },
+    "coefficient_reference_diameter": null,
+    "run_rpm_label": null,
+    "notes": "Source checked 2026-10-08. Coefficient-reference diameter not independently established in this import. Sport 11x6 and Thin Electric 12x6 are distinct from the simulator Sport 12x6. No dimensional rescaling or applicability claim."
+  },
+  {
+    "format": "openrc-uiuc-source v1",
+    "id": "apcsp_11x6_rd0495_6000",
+    "evidence": "measured-source",
+    "table_kind": "tunnel",
+    "source_url": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x6_rd0495_6000.txt",
+    "source_sha256": "987b12684c447d4cb6ec8c6f7a1dc7664daad8e26a95e66047c39c95de52f802",
+    "propeller": {
+      "manufacturer": "APC",
+      "family": "Sport",
+      "nominal_size": "11 x 6 inches (catalog label)",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-1/propDB-volume-1.html"
+    },
+    "coefficient_reference_diameter": null,
+    "run_rpm_label": {
+      "value": 6000,
+      "unit": "rpm",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-1/data/apcsp_11x6_rd0495_6000.txt filename and UIUC run listing; per-row RPM/range not supplied"
+    },
+    "notes": "Source checked 2026-10-08. Coefficient-reference diameter not independently established in this import. Sport 11x6 and Thin Electric 12x6 are distinct from the simulator Sport 12x6. No dimensional rescaling or applicability claim."
+  },
+  {
+    "format": "openrc-uiuc-source v1",
+    "id": "apce_12x6_static_0629od",
+    "evidence": "measured-source",
+    "table_kind": "static",
+    "source_url": "https://m-selig.ae.illinois.edu/props/volume-4/data/apce_12x6_static_0629od.txt",
+    "source_sha256": "e392a17a430ad2796172f21ee0106152375b298636584b33ba23f836a3a6c96c",
+    "propeller": {
+      "manufacturer": "APC",
+      "family": "Thin Electric",
+      "nominal_size": "12 x 6 inches (catalog label)",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-4/propDB-volume-4.html"
+    },
+    "coefficient_reference_diameter": null,
+    "run_rpm_label": null,
+    "notes": "Source checked 2026-10-08. Coefficient-reference diameter not independently established in this import. Sport 11x6 and Thin Electric 12x6 are distinct from the simulator Sport 12x6. No dimensional rescaling or applicability claim."
+  },
+  {
+    "format": "openrc-uiuc-source v1",
+    "id": "apce_12x6_0635od_6044",
+    "evidence": "measured-source",
+    "table_kind": "tunnel",
+    "source_url": "https://m-selig.ae.illinois.edu/props/volume-4/data/apce_12x6_0635od_6044.txt",
+    "source_sha256": "7e969b7089fc74ac373cefde1fd7c1297938b79457dd1efb6e0876d9fbde6d85",
+    "propeller": {
+      "manufacturer": "APC",
+      "family": "Thin Electric",
+      "nominal_size": "12 x 6 inches (catalog label)",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-4/propDB-volume-4.html"
+    },
+    "coefficient_reference_diameter": null,
+    "run_rpm_label": {
+      "value": 6044,
+      "unit": "rpm",
+      "source": "https://m-selig.ae.illinois.edu/props/volume-4/data/apce_12x6_0635od_6044.txt filename and UIUC run listing; per-row RPM/range not supplied"
+    },
+    "notes": "Source checked 2026-10-08. Coefficient-reference diameter not independently established in this import. Sport 11x6 and Thin Electric 12x6 are distinct from the simulator Sport 12x6. No dimensional rescaling or applicability claim."
+  }
+]

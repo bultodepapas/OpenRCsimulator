@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+nonfinite final actual state accepted: { &"ok": true, &"message": "worst error: position 0 m, velocity 0 m/s, attitude 0, rate 0 rad/s; auxiliary/discrete ok", &"worst": { &"pos": 0.0, &"vel": 0.0, &"att": 0.0, &"rate": 0.0, &"rpm": 0.0, &"servo": 0.0, &"anchor": 0.0, &"downwash": 0.0 } }
+missing interior auxiliary checkpoint accepted: true
+missing interior auxiliary and mode checkpoints accepted: true
+overflow clock accepted: { &"ok": true, &"message": "worst error: position 0 m, velocity 0 m/s, attitude 0, rate 0 rad/s; auxiliary/discrete ok", &"worst": { &"pos": 0.0, &"vel": 0.0, &"att": 0.0, &"rate": 0.0, &"rpm": 0.0, &"servo": 0.0, &"anchor": 0.0, &"downwash": 0.0 } }; actual tick: 0

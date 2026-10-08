@@ -1,0 +1,321 @@
+{
+  "format": "openrc-circuit-capture-proof v1",
+  "captures": 24,
+  "manifest_sha256": "8f671d028e239c6eb4c048b57f6b3c07737cf8c795f5b5aefb63da83c53a9c28",
+  "repeated": true,
+  "physics_advanced": false,
+  "images": [
+    {
+      "id": "parked",
+      "view": "pilot",
+      "changed_pixels": 83,
+      "changed_bounds": [
+        465,
+        265,
+        494,
+        275
+      ],
+      "sha256": "f3d35bfab56eb97ef638ea48437294c8bf1d814730af7a80d9e2001a7f55e64d",
+      "background_sha256": "a967fef8f051a70d6b9c1bd02b4fc7c02b1aa987dd71f4c1b41a5bc71de3cf9c"
+    },
+    {
+      "id": "parked",
+      "view": "inspect",
+      "changed_pixels": 20560,
+      "changed_bounds": [
+        308,
+        214,
+        676,
+        386
+      ],
+      "sha256": "279464bc5168eb0a9dafc40df3654256ae86823c0727462f0e524cc045d1b749",
+      "background_sha256": "30bf279e31c1e030a83535fb11cb2ed69d4c03d8c497dd97c0afa52b656f40e5"
+    },
+    {
+      "id": "takeoff_roll",
+      "view": "pilot",
+      "changed_pixels": 80,
+      "changed_bounds": [
+        465,
+        265,
+        494,
+        275
+      ],
+      "sha256": "0a5c30e8672454da7d258ab9ae60573c575c7c5519081cc64d32a9cbef88dab7",
+      "background_sha256": "d583137f944144d887ffb5a9e7b1f5ffaff9b688cdd3df680cba7f7e3a76c149"
+    },
+    {
+      "id": "takeoff_roll",
+      "view": "inspect",
+      "changed_pixels": 20701,
+      "changed_bounds": [
+        308,
+        214,
+        676,
+        385
+      ],
+      "sha256": "9ae9bcadaa0242b87709118d19ae1f4f42c99678a45e0d6f6fd357758342e57c",
+      "background_sha256": "fcda9bbc4fde4f3a3d16387ba2a1f4ca6d2fccde0f12d2195855fdd1e5d5f6d2"
+    },
+    {
+      "id": "climb",
+      "view": "pilot",
+      "changed_pixels": 89,
+      "changed_bounds": [
+        465,
+        267,
+        494,
+        276
+      ],
+      "sha256": "16c209334ca0a164a89d5280f275cfabed0114507bce6b1dceaae3e3423f3682",
+      "background_sha256": "220e92c8ee5571461498e01be121c3049877539b4cc8b6dd77d5c94c5fbb6038"
+    },
+    {
+      "id": "climb",
+      "view": "inspect",
+      "changed_pixels": 20652,
+      "changed_bounds": [
+        308,
+        217,
+        664,
+        395
+      ],
+      "sha256": "b092039ae91517fa2c18ca95f2e3a4fdf0e09cb391c564b601dc44ec47219d66",
+      "background_sha256": "56f29e5e7a99ac86291a58284587fd8ac5082f2d79fce781580e8d9bcea73ae0"
+    },
+    {
+      "id": "crosswind",
+      "view": "pilot",
+      "changed_pixels": 122,
+      "changed_bounds": [
+        472,
+        265,
+        498,
+        276
+      ],
+      "sha256": "431c40cefcadb4ec01834a53dc24edd956ba64b03c80f0c01b35259e5c281d1d",
+      "background_sha256": "1fd46453cf9348bf706897719be341b0ffc1a9e4624236165026f4dd0124221b"
+    },
+    {
+      "id": "crosswind",
+      "view": "inspect",
+      "changed_pixels": 20674,
+      "changed_bounds": [
+        310,
+        199,
+        684,
+        375
+      ],
+      "sha256": "27e159007988cd8bfc5b072092b57922a56ae3c70da2d1e7c4e45553e4cc6b9a",
+      "background_sha256": "04ac2df0655a123fb16b8420c9cb1e1150be506b411e0d193e2decdd405e7a34"
+    },
+    {
+      "id": "downwind",
+      "view": "pilot",
+      "changed_pixels": 115,
+      "changed_bounds": [
+        471,
+        266,
+        498,
+        276
+      ],
+      "sha256": "512ded012834a1eb0307b7c1fd1623f9675e98adee124b748a6bb8bd4f6d2226",
+      "background_sha256": "c99f34b39cf8b068d4453d0fab4ef81ec53bb3b50d4853e4d092b64575ae58a8"
+    },
+    {
+      "id": "downwind",
+      "view": "inspect",
+      "changed_pixels": 20663,
+      "changed_bounds": [
+        308,
+        213,
+        673,
+        389
+      ],
+      "sha256": "ba89b71734654d8a3cc233aca0a27bc6f8a8100f0dff5973151fe130487fd51a",
+      "background_sha256": "5df3a662c2669950a5e8ae2113db48138b5c2059fde7d5f40261f9e4cf80f5d3"
+    },
+    {
+      "id": "base",
+      "view": "pilot",
+      "changed_pixels": 107,
+      "changed_bounds": [
+        472,
+        264,
+        495,
+        276
+      ],
+      "sha256": "330c2654978386d965cce3325e6190a01a007be669adf05793a2fbbe09314fa5",
+      "background_sha256": "4bf3b5cab6a833527858ee0b79dd0c60e95525f7f339642b92c175d6886d954c"
+    },
+    {
+      "id": "base",
+      "view": "inspect",
+      "changed_pixels": 20593,
+      "changed_bounds": [
+        311,
+        196,
+        684,
+        373
+      ],
+      "sha256": "16b4f264968e0446b898cc785c49c9dd36b64cfbbf530cd146b2c2cea63c7a46",
+      "background_sha256": "9506f5e6746c125371026aa5eae31d7b3fe01f9390bcfb668274e5a9a0f4f13a"
+    },
+    {
+      "id": "final_join",
+      "view": "pilot",
+      "changed_pixels": 84,
+      "changed_bounds": [
+        466,
+        263,
+        495,
+        276
+      ],
+      "sha256": "053b357a734c15e234a4e5a986da1302247456beef6bbecb746f332195d6e7ee",
+      "background_sha256": "6be404fdd5b2b76a75a65100301e7c545a1f58bf709df1a33d209a387c92d26c"
+    },
+    {
+      "id": "final_join",
+      "view": "inspect",
+      "changed_pixels": 20592,
+      "changed_bounds": [
+        311,
+        196,
+        684,
+        373
+      ],
+      "sha256": "feaef76be404d1f1fdaec6a937534966ba3fa60de778d87cd69520f164e2e340",
+      "background_sha256": "9b34ee57428bd59c13789d4037c62ef692bc03141c7bb7374accec77e732e757"
+    },
+    {
+      "id": "approach",
+      "view": "pilot",
+      "changed_pixels": 90,
+      "changed_bounds": [
+        465,
+        266,
+        495,
+        276
+      ],
+      "sha256": "f0c9500a3d0eac4b50ead44444b5a72e9319e12d761f7b29b8b07cce0d961c90",
+      "background_sha256": "bf512eeb938d3228a0f3fd815c6278fef703af63fced1337b238dc919763b6ad"
+    },
+    {
+      "id": "approach",
+      "view": "inspect",
+      "changed_pixels": 20406,
+      "changed_bounds": [
+        308,
+        215,
+        669,
+        390
+      ],
+      "sha256": "27814edcd6b97fc87a840ebc79d677d35832f68b40af1e49a28f35b0edfac24b",
+      "background_sha256": "a8094e0ded90175ae5647a08b8aa22f687069e9652d447e900197695680f5e45"
+    },
+    {
+      "id": "flare",
+      "view": "pilot",
+      "changed_pixels": 79,
+      "changed_bounds": [
+        464,
+        267,
+        494,
+        275
+      ],
+      "sha256": "8a87876055616cfe91eaadd6acfd3721c45a790300d4bf2a6351a9af672fde62",
+      "background_sha256": "ef72991e3776f35143c92c86519ba4c56ca9a47da3f5ca5a35de14bf7f75dabd"
+    },
+    {
+      "id": "flare",
+      "view": "inspect",
+      "changed_pixels": 20687,
+      "changed_bounds": [
+        308,
+        220,
+        672,
+        389
+      ],
+      "sha256": "ca6a94a28fac5cf12deb3d2cc7e2aa84bfee5cbb238b67f43650e5dc5dee81bc",
+      "background_sha256": "1337c11722ee2c79dd0b661ddc7b0c9334efcb4b6362ff3565f14d2b5cf57101"
+    },
+    {
+      "id": "rollout_entry",
+      "view": "pilot",
+      "changed_pixels": 90,
+      "changed_bounds": [
+        465,
+        267,
+        494,
+        276
+      ],
+      "sha256": "8ebd47401123e3047ddb6199f480c3bbe2beb929563479296f3827f1053df675",
+      "background_sha256": "4b605c9221a1aad734f40db897517916a177fdfcd89b58706f8229001065e874"
+    },
+    {
+      "id": "rollout_entry",
+      "view": "inspect",
+      "changed_pixels": 20495,
+      "changed_bounds": [
+        308,
+        220,
+        669,
+        391
+      ],
+      "sha256": "9cdb33f91b1eb934bd25d03d6117d5ebd19ccd65ffa6b2ea47f07daee1d9976a",
+      "background_sha256": "7159aaaa2942718b2b220f62834e061dd17e883ab08861d2967a4b1140332d67"
+    },
+    {
+      "id": "rollout",
+      "view": "pilot",
+      "changed_pixels": 86,
+      "changed_bounds": [
+        465,
+        266,
+        494,
+        275
+      ],
+      "sha256": "1c723e76770e47b0c69a5d890012dec22b830374641b06fb9b915e6107d845ad",
+      "background_sha256": "e49c980d5794c01674874281d20731337452bd6951356608d619394ff20380a5"
+    },
+    {
+      "id": "rollout",
+      "view": "inspect",
+      "changed_pixels": 20724,
+      "changed_bounds": [
+        308,
+        215,
+        676,
+        387
+      ],
+      "sha256": "fd5b70157aafc8849366eb7baac21c31d76f37aa76b0133085abf7ab11d4ca20",
+      "background_sha256": "128b65a919c1a4a361759a9458a8885bbfa610716f36fa2c535deb44f8d40423"
+    },
+    {
+      "id": "stopped",
+      "view": "pilot",
+      "changed_pixels": 81,
+      "changed_bounds": [
+        465,
+        266,
+        494,
+        275
+      ],
+      "sha256": "97c9d201ea89bc6c5fe00ca13caa2a5a44a648010891202b369d2cbc26dd35b6",
+      "background_sha256": "00439c33281ca0f2660a8ea1797499ffb1628fb7b9e1ff91e7af22a5b342c29a"
+    },
+    {
+      "id": "stopped",
+      "view": "inspect",
+      "changed_pixels": 20723,
+      "changed_bounds": [
+        308,
+        215,
+        676,
+        387
+      ],
+      "sha256": "80900f3bcfa71b11dba2e0ea804f270ca8f5a39ef12d2bc6db99f38fc38eabbc",
+      "background_sha256": "ff99751720f0d05ba5dfc537cf283c0a204a3a7a16c8f66a9390693cac088fce"
+    }
+  ]
+}

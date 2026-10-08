@@ -1,0 +1,33 @@
+{
+  "baseline": "b0f9e0887803869a42bef2a58723bd215648cbe1",
+  "source_sha256": {
+    "app/tests/golden_flights.gd": "1c5c427a2a8180b7034d3eb7ea73415e1563eeee27020ffae85d5b313031b8c0",
+    "app/tests/test_replay_integrity.gd": "d93d516621a44e82d6f5f49c3496e4ae361cc1413e7478ef2288743c3068879a",
+    "app/tests/test_replay_integrity.gd.uid": "db077a09b4758d7655027f6b66278f3a08682f16bf0eca66bdbd6f568f5f77df"
+  },
+  "goldens_unchanged": true,
+  "focused_checks": 153,
+  "mutations_detected": 4,
+  "lint": {
+    "errors": 0,
+    "warnings_before": 12,
+    "warnings_after": 12
+  },
+  "full_suite": {
+    "status": "passed",
+    "exit_code": 0,
+    "log": "app-test.log",
+    "sections": 138,
+    "gdscript_tests": 110,
+    "scope": "isolated tracked baseline plus H9-R1 reader/test; concurrent uncommitted work excluded"
+  },
+  "integrated_focused": {
+    "status": "passed",
+    "head": "959eb8a8dea280a382be372265648bc2b5a1de73",
+    "checks": 153,
+    "policy_checks": 50,
+    "golden_flights": 4,
+    "lint_errors": 0,
+    "lint_warnings": 12
+  }
+}

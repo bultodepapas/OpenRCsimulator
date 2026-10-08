@@ -1,0 +1,85 @@
+{
+  "coordinate_axis": "j",
+  "coordinate_extent": [
+    0.2,
+    0.6
+  ],
+  "coordinate_unit": "1",
+  "format": "openrc-propeller-knots v1",
+  "importer_sha256": "27db4de01fed0e34a149dcfd82840a03ca04b06598083cab052c13da25be2200",
+  "input_sha256": {
+    "manifest": "480493dbe42b2fd97357478b77c1b6712057291c0ede554286d182d1b49f1258",
+    "table": "8ff63c2f466379f8be1983f959b492b09dced79e74b168a6177025c64a11254d"
+  },
+  "knots": [
+    {
+      "cp": 0.04,
+      "ct": 0.09,
+      "eta": 0.45,
+      "j": 0.2,
+      "rpm": null,
+      "source_lines": [
+        2
+      ]
+    },
+    {
+      "cp": 0.035,
+      "ct": 0.05,
+      "eta": 0.571429,
+      "j": 0.4,
+      "rpm": null,
+      "source_lines": [
+        4,
+        5
+      ]
+    },
+    {
+      "cp": -0.02,
+      "ct": -0.01,
+      "eta": 0.3,
+      "j": 0.6,
+      "rpm": null,
+      "source_lines": [
+        3
+      ]
+    }
+  ],
+  "limitations": [
+    "Source identity and declarations do not independently verify measurement quality or propeller applicability.",
+    "Run RPM labels are not per-row RPM measurements or measured RPM coverage.",
+    "Unknown coefficient-reference diameter stays unknown; nominal size is never substituted.",
+    "Sorted knots and coordinate extents are not continuous validated coverage; no interpolation, extrapolation or uncertainty is supplied.",
+    "Identical published rows are collapsed with all source line numbers retained; conflicting repeats are refused, never averaged.",
+    "Signed Ct, Cp and eta are retained. Negative power/thrust or eta outside [0,1] is not silently clamped.",
+    "Import does not validate a different propeller, engine installation or operating range; no aircraft parameters are installed."
+  ],
+  "normalization": {
+    "duplicate_rows_collapsed": 1,
+    "input_rows": 4,
+    "reordered": true,
+    "unique_rows": 3
+  },
+  "per_row_rpm_extent": null,
+  "rpm_semantics": "per-row RPM unavailable; run label only",
+  "source": {
+    "coefficient_reference_diameter": null,
+    "evidence": "synthetic",
+    "format": "openrc-uiuc-source v1",
+    "id": "synthetic-tunnel",
+    "notes": "Synthetic signed-coefficient, duplicate and ordering fixture; no physical validation.",
+    "propeller": {
+      "family": "Invented test geometry",
+      "manufacturer": "Synthetic",
+      "nominal_size": "Not a physical propeller",
+      "source": "Original algebra fixture"
+    },
+    "run_rpm_label": {
+      "source": "Invented run label, no per-row RPM observations",
+      "unit": "rpm",
+      "value": 6000
+    },
+    "source_sha256": "8ff63c2f466379f8be1983f959b492b09dced79e74b168a6177025c64a11254d",
+    "source_url": "https://example.invalid/synthetic.txt",
+    "table_kind": "tunnel"
+  }
+}

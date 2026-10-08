@@ -1,0 +1,30 @@
+{
+  "format": "openrc-roll-video v1",
+  "evidence": "synthetic",
+  "aircraft": "Synthetic timing fixture, not a measured aircraft",
+  "configuration": "Invented two-turn fixture; no simulator parameter or flight claim",
+  "conditions": "Invented constant 144 deg/s completed-roll phase; uncertainties are test values",
+  "video": {
+    "source": "Algebra fixture; no physical clip exists",
+    "sha256": null,
+    "frame_count": 1500,
+    "capture_fps_num": 240,
+    "capture_fps_den": 1,
+    "fps_relative_u": 0.001,
+    "original_cfr_verified": true,
+    "timing_source": "Synthetic exact nominal cadence with invented standard clock uncertainty"
+  },
+  "annotation": {
+    "source": "Synthetic event positions with invented independent 0.5-frame standard uncertainty",
+    "phase_definition": "Same upright phase after each complete right-wing-down roll; synthetic unambiguous top/bottom marker",
+    "sign_verified": true,
+    "complete_turns_verified": true,
+    "same_phase_verified": true,
+    "independent_event_errors": true
+  },
+  "intervals": [
+    {"id": "first", "start": "entry", "end": "one", "notes": "One complete positive turn"},
+    {"id": "second", "start": "one", "end": "two", "notes": "One complete positive turn, shares middle event"},
+    {"id": "whole", "start": "entry", "end": "two", "notes": "Two complete turns; not the independent average of the first two reports"}
+  ]
+}

@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+{"absolute_error":0.00000000199999999894729,"actual":0.0248957035272866,"block":"aux","component":"servo","error":"H9 tolerance exceeded","expected":0.0248957055272866,"index":1,"ok":false,"tick":60,"tolerance":0.000000001}

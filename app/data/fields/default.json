@@ -8577,6 +8577,41 @@
         "kind": "estimated",
         "source": "L10b visual pilot station: centered on the existing pilot, 1.5 x 1.2 m footprint and 0.75 m barrier; informed by docs/research/scenery-investigations/03-rc-field-layout-references.md club examples, not a safety standard."
       }
+    },
+    {
+      "id": "flightline_barrier",
+      "type": "flightline_barrier",
+      "collides": false,
+      "north": {
+        "value": 4.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10c estimated visual placement behind the referenced runway and pilot station; not a surveyed club layout or safety standard."
+      },
+      "east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10c estimated visual placement aligned exactly with pilot.east; not a surveyed club layout."
+      },
+      "width": {
+        "value": 48,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10c estimated visual width informed by docs/research/scenery-investigations/03-rc-field-layout-references.md club examples; not a safety standard."
+      },
+      "height": {
+        "value": 0.65,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10c estimated low visual barrier height; not a surveyed dimension or safety standard."
+      },
+      "gap_width": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "L10c estimated central opening aligned with the pilot; informed by docs/research/scenery-investigations/03-rc-field-layout-references.md club examples, not a safety standard."
+      }
     }
   ]
 }

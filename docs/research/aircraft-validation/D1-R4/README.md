@@ -1,6 +1,6 @@
 # D1-R4 — Refuse invalid solved stall envelopes
 
-2026-10-08 · **Status: implementation and focused verification complete; full regression pending.** Scope: `_envelope()` in the aircraft loader and its regression/proof tools.
+2026-10-08 · **Status: implemented and verified.** Scope: `_envelope()` in the aircraft loader and its regression/proof tools.
 
 ## Defect and boundary
 
@@ -22,18 +22,21 @@ The residual check explicitly tests finiteness: `abs(NaN) > tolerance` is false.
 
 The first full run exposed an existing fixture with two simultaneous violations: `CL_max=0.6` equaled `CD90/2`, but the assertion expected the later oracle-angle diagnostic. Set that fixture’s `CD90=0.8` so it reaches and verifies the intended oracle rejection. The production rule is unchanged. [Initial failure](initial-suite-failure.log) · [Corrected fixture: 15 checks](oracle-fixture.log).
 
-Independent read-only mathematical/code review found no blocking issue. Full-suite results and evidence links will be recorded after completion.
+Independent read-only mathematical/code review found no blocking issue. The isolated full `app/test.sh` passes [before: 137 sections](before-suite.log) and [after: 138 sections](after-suite.log), with zero engine errors. Golden flights pass without re-recording; all nine standard/transport/swirl state hashes match the baseline at 30/60/144 fps. [Suite verification](suite-verification.json) records results and log hashes; [input manifest](suite-inputs.json) identifies the frozen source snapshot. Only this task’s loader boundary and tests were overlaid for the comparison. The separate focused proof uses the then-current shared tree. After concurrent CR-01b changes reached `impact_snapshot.gd` and `flight_session.gd`, a final [64-check integration run](integration-focused.log) also passed on the shared tree ([hashes](integration-verification.json)).
+
+Both full runs report intermittent ObjectDB exit warnings in existing scene/session tests (six before, eight after, with differing affected tests); the exact sections are retained in the suite report. The new integrity test has none. These warnings remain a separate lifecycle follow-up; this task does not claim a warning-free application.
 
 ## Limits
 
 This closes a loader acceptance defect, not stall calibration. The sampled peak remains an approximation to a continuous maximum. The two extra peak evaluations happen during aircraft loading, with no per-tick work. Paired timing observations on this shared host are not a new DATA-2 performance acceptance. Empirical stall/aircraft validation remains open.
 
-Suggested commit message after full-suite acceptance:
+Suggested commit message:
 
 ```text
 D1-R4: reject invalid solved stall envelopes before flight
 
 Proof: 64 integrity checks, 15 envelope checks, 48 exact fleet load
 pairs, 16 solver-fault refusals and three failing negative controls.
-Retain the sampled lift law and isolate the existing oracle fixture.
+Full app/test.sh: 137 baseline / 138 final sections; unchanged goldens
+and exact 30/60/144 fps hashes. Isolate the existing oracle fixture.
 ```

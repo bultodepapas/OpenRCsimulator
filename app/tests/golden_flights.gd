@@ -7,6 +7,7 @@ extends RefCounted
 const Maneuvers := preload("res://sim/maneuvers.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Policy := preload("res://tests/replay_policy.gd")
+const Simulation := preload("res://sim/simulation.gd")
 const Session := preload("res://sim/flight_session.gd")
 const GroundContact := preload("res://physics/ground_contact.gd") # not "Ground": H7 injects that name
 
@@ -14,6 +15,8 @@ const FORMAT := "openrc-golden v1"
 const DIR := "res://tests/golden/"
 const NAMES := ["roll_15", "pull_throttle", "rudder_doublet", "glide_15"]
 const CHECKPOINT_EVERY := 60 # ticks (0.25 s)
+# JSON numbers are float64: keep ticks exact and tick + 1 safely inside the int64 replay loop.
+const MAX_EXACT_TICK: int = 9007199254740991
 ## Replay tolerances: generous against libm differences between machines, far below any physics change.
 const TOL_POS: float = Policy.COMPONENTS.position.absolute # m
 const TOL_VEL: float = Policy.COMPONENTS.velocity.absolute # m/s
@@ -91,6 +94,11 @@ static func replay(session: Node, g: Dictionary) -> Dictionary:
 	var worst := { pos = 0.0, vel = 0.0, att = 0.0, rate = 0.0, rpm = 0.0, servo = 0.0, anchor = 0.0, downwash = 0.0 }
 	var current: Array = g.inputs[0]
 	for tick in range(0, int(g.ticks) + 1):
+		if not sim.fault_reason.is_empty() or sim.tick != tick:
+			return { ok = false, message = "replay fault or incomplete tick %d" % tick }
+		# Check before indexing or reducing errors: maxf can hide a NaN in a later finite component.
+		if not Simulation.state_is_valid(sim.state):
+			return { ok = false, message = "invalid replay body state at tick %d" % tick }
 		if cps.has(tick):
 			var cp: Array = cps[tick]
 			var s: PackedFloat64Array = sim.state
@@ -100,8 +108,6 @@ static func replay(session: Node, g: Dictionary) -> Dictionary:
 				worst.rate = maxf(worst.rate, absf(s[RB.RATE + i] - cp[11 + i]))
 			for i in 4:
 				worst.att = maxf(worst.att, absf(s[RB.ATT + i] - cp[7 + i]))
-		if not sim.fault_reason.is_empty() or sim.tick != tick:
-			return { ok = false, message = "replay fault or incomplete tick %d" % tick }
 		if aux_cps.has(tick):
 			var aux_cp: Array = aux_cps[tick]
 			auxiliary_ok = auxiliary_ok and aux_cp.size() == sim.aux.size() + 1
@@ -131,7 +137,7 @@ static func path(name: String) -> String:
 
 static func _valid_record(g: Dictionary) -> bool:
 	if not g.has_all(["ticks", "speed", "mode", "inputs", "checkpoints"]) or not _finite_number(g.ticks) \
-			or g.ticks < 0 or g.ticks != floor(g.ticks) or not _finite_number(g.speed) or g.speed <= 0:
+			or g.ticks < 0 or g.ticks > MAX_EXACT_TICK or g.ticks != floor(g.ticks) or not _finite_number(g.speed) or g.speed <= 0:
 		return false
 	if typeof(g.mode) != TYPE_STRING or g.mode not in ["level", "glide"]:
 		return false
@@ -158,6 +164,8 @@ static func _valid_record(g: Dictionary) -> bool:
 			var extended_ok: bool = key == "aux_checkpoints" and row is Array and row.size() > spec[1]
 			if not row is Array or (row.size() != spec[1] and not extended_ok):
 				return false
+			if row.size() != g[key][0].size():
+				return false # one sampled-state layout throughout the record
 			for value in row:
 				if not _finite_number(value):
 					return false
@@ -168,6 +176,15 @@ static func _valid_record(g: Dictionary) -> bool:
 				return false
 		if g[key][0][0] != 0 or (key != "inputs" and last_tick != int(g.ticks)):
 			return false
+	# Every body checkpoint must also cover the stamped sampled/discrete state.
+	for key in ["aux_checkpoints", "mode_checkpoints"]:
+		if not g.has(key):
+			continue
+		if g[key].size() != g.checkpoints.size():
+			return false
+		for i in g.checkpoints.size():
+			if g[key][i][0] != g.checkpoints[i][0]:
+				return false
 	return true
 
 

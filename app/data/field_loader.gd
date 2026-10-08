@@ -8,7 +8,7 @@ const FORMAT: String = "openrc-field v1"
 const FLOAT32_MAX: float = 3.4028234663852886e38
 # L6b/L7 visual-layout assumptions, not measured field or vegetation dimensions.
 const MAX_FIELD_OBJECTS: int = 1
-const MAX_FLIGHT_CUES: int = 2
+const MAX_FLIGHT_CUES: int = 3
 const MAX_FLIGHT_CUE_COORDINATE_M: float = 1000000.0
 # L10a visual policy bounds are estimates; FAA Size 1 facts cover cloth length and throat only.
 const WINDSOCK_POLE_MIN_M: float = 2.0
@@ -33,6 +33,19 @@ const PILOT_STATION_HEIGHT_MAX_M: float = 0.9
 const PILOT_STATION_CLEARANCE_M: float = 0.1
 const PILOT_STATION_EYE_CLEARANCE_M: float = 0.4
 const PILOT_STATION_EYE_CLEARANCE_TOLERANCE_M: float = 0.000000001
+# L10c visual dimensions and placement limits are estimates, not field-safety standards.
+const FLIGHTLINE_BARRIER_WIDTH_MIN_M: float = 10.0
+const FLIGHTLINE_BARRIER_WIDTH_MAX_M: float = 80.0
+const FLIGHTLINE_BARRIER_HEIGHT_MIN_M: float = 0.5
+const FLIGHTLINE_BARRIER_HEIGHT_MAX_M: float = 0.9
+const FLIGHTLINE_BARRIER_GAP_MIN_M: float = 2.0
+const FLIGHTLINE_BARRIER_GAP_MAX_M: float = 12.0
+const FLIGHTLINE_BARRIER_HALF_DEPTH_M: float = 0.04
+const FLIGHTLINE_BARRIER_CLEARANCE_M: float = 0.1
+const FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M: float = 2.0
+const FLIGHTLINE_BARRIER_MIN_STATION_GAP_M: float = 2.0
+const FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M: float = 2.0
+const FLIGHTLINE_BARRIER_RUNWAY_CLEARANCE_M: float = 1.0
 const MAX_TREELINE_POSITIONS: int = 1680
 const TREE_POSITION_GRID_M: float = 0.25
 const TREE_POSITION_GRID_TOLERANCE: float = 0.000001
@@ -45,8 +58,9 @@ const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces",
 const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues"]
 const FLIGHT_CUE_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "pole_height", "length", "throat_diameter", "tail_diameter"]
 const PILOT_STATION_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "depth", "height"]
-const FLIGHT_CUE_TYPES: Array[String] = ["windsock", "pilot_station"]
-const RESERVED_FIELD_CUE_IDS: Array[String] = ["NearGrass", "Scenery"]
+const FLIGHTLINE_BARRIER_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "height", "gap_width"]
+const FLIGHT_CUE_TYPES: Array[String] = ["windsock", "pilot_station", "flightline_barrier"]
+const RESERVED_FIELD_CUE_IDS: Array[String] = ["NearGrass", "Scenery", "FlightCueShadows"]
 const PILOT_KEYS: Array[String] = ["id", "north", "east", "down", "eye_height"]
 const SURFACE_KEYS: Array[String] = ["id", "type", "center_north", "center_east", "length_east_west", "width_north_south"]
 const OBJECT_KEYS: Array[String] = ["id", "type", "collides", "positions"]
@@ -191,7 +205,8 @@ static func validate(raw: Variant) -> Dictionary:
 				pilot_east,
 				pilot_down,
 				eye_height,
-				validated_surfaces
+				validated_surfaces,
+				runway_id
 			))
 
 	var selected_runway_type: String = str(surface_index_by_id.get(runway_id, ""))
@@ -201,6 +216,7 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("runway: unknown surface ID '%s'" % runway_id)
 	elif selected_runway_type != "runway":
 		errors.append("runway: surface '%s' must have type 'runway'" % runway_id)
+	_validate_flight_cue_conflicts(errors, normalized_flight_cues)
 
 	_check_same_type_overlaps(errors, validated_surfaces)
 
@@ -234,11 +250,14 @@ static func _validate_flight_cue(
 	pilot_east: float,
 	pilot_down: float,
 	eye_height: float,
-	surfaces: Array
+	surfaces: Array,
+	runway_id: String
 ) -> Dictionary:
 	var cue_type_value: Variant = cue.get("type")
 	if typeof(cue_type_value) == TYPE_STRING and cue_type_value == "pilot_station":
 		return _validate_pilot_station(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, eye_height, surfaces)
+	if typeof(cue_type_value) == TYPE_STRING and cue_type_value == "flightline_barrier":
+		return _validate_flightline_barrier(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, surfaces, runway_id)
 	return _validate_windsock(errors, ids, path, cue, pilot_north, pilot_east, pilot_down, surfaces)
 
 
@@ -277,7 +296,7 @@ static func _validate_windsock(
 	var identifier: String = _validate_flight_cue_id(errors, ids, path, cue)
 	var cue_type: String = _read_string(errors, path + ".type", cue.get("type"), true)
 	if cue_type != "windsock":
-		errors.append("%s.type: expected 'windsock' or 'pilot_station'" % path)
+		errors.append("%s.type: expected 'windsock' or 'pilot_station' or 'flightline_barrier'" % path)
 	_validate_noncolliding_flight_cue(errors, path, cue)
 
 	var north: float = _quantity_or_zero(errors, path + ".north", cue.get("north"), false)
@@ -362,7 +381,173 @@ static func _validate_pilot_station(
 		"width": width,
 		"depth": depth,
 		"height": height,
+}
+
+
+static func _validate_flightline_barrier(
+	errors: PackedStringArray,
+	ids: Dictionary,
+	path: String,
+	cue: Dictionary,
+	pilot_north: float,
+	pilot_east: float,
+	pilot_down: float,
+	surfaces: Array,
+	runway_id: String
+) -> Dictionary:
+	_check_keys(errors, path, cue, FLIGHTLINE_BARRIER_KEYS, FLIGHTLINE_BARRIER_KEYS)
+	var identifier: String = _validate_flight_cue_id(errors, ids, path, cue)
+	var cue_type: String = _read_string(errors, path + ".type", cue.get("type"), true)
+	if cue_type != "flightline_barrier":
+		errors.append("%s.type: expected 'flightline_barrier'" % path)
+	_validate_noncolliding_flight_cue(errors, path, cue)
+
+	var north: float = _quantity_or_zero(errors, path + ".north", cue.get("north"), false)
+	var east: float = _quantity_or_zero(errors, path + ".east", cue.get("east"), false)
+	var width: float = _quantity_or_zero(errors, path + ".width", cue.get("width"), true)
+	var height: float = _quantity_or_zero(errors, path + ".height", cue.get("height"), true)
+	var gap_width: float = _quantity_or_zero(errors, path + ".gap_width", cue.get("gap_width"), true)
+	_validate_bounded_dimension(errors, path + ".width", width, FLIGHTLINE_BARRIER_WIDTH_MIN_M, FLIGHTLINE_BARRIER_WIDTH_MAX_M)
+	_validate_bounded_dimension(errors, path + ".height", height, FLIGHTLINE_BARRIER_HEIGHT_MIN_M, FLIGHTLINE_BARRIER_HEIGHT_MAX_M)
+	_validate_bounded_dimension(errors, path + ".gap_width", gap_width, FLIGHTLINE_BARRIER_GAP_MIN_M, FLIGHTLINE_BARRIER_GAP_MAX_M)
+	if is_finite(width) and is_finite(gap_width) and gap_width > width - 4.0:
+		errors.append("%s.gap_width.value: must be at least 4 m narrower than width" % path)
+	if is_finite(north) and absf(north) > MAX_FLIGHT_CUE_COORDINATE_M:
+		errors.append("%s.north.value: must be within +/- %.0f m" % [path, MAX_FLIGHT_CUE_COORDINATE_M])
+	if is_finite(east) and absf(east) > MAX_FLIGHT_CUE_COORDINATE_M:
+		errors.append("%s.east.value: must be within +/- %.0f m" % [path, MAX_FLIGHT_CUE_COORDINATE_M])
+	if pilot_down != 0.0:
+		errors.append("%s: flightline_barrier requires pilot.down == 0 m for flat ground" % path)
+	if is_finite(east) and is_finite(pilot_east) and east != pilot_east:
+		errors.append("%s.east.value: must equal pilot.east.value exactly" % path)
+	if is_finite(north) and is_finite(pilot_north) and north < pilot_north + FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M:
+		errors.append("%s.north.value: must be at least %.1f m north of pilot.north.value" % [path, FLIGHTLINE_BARRIER_MIN_PILOT_NORTH_M])
+	_validate_flightline_barrier_placement(errors, path, north, east, width, pilot_north, surfaces, runway_id)
+	return {
+		"id": identifier,
+		"type": cue_type,
+		"collides": false,
+		"north": north,
+		"east": east,
+		"width": width,
+		"height": height,
+		"gap_width": gap_width,
 	}
+
+
+static func _validate_flightline_barrier_placement(
+	errors: PackedStringArray,
+	path: String,
+	north: float,
+	east: float,
+	width: float,
+	pilot_north: float,
+	surfaces: Array,
+	runway_id: String
+) -> void:
+	if not is_finite(north) or not is_finite(east) or not is_finite(width):
+		return
+	if absf(north) > MAX_FLIGHT_CUE_COORDINATE_M or absf(east) > MAX_FLIGHT_CUE_COORDINATE_M or width <= 0.0:
+		return
+	var half_east: float = width * 0.5 + FLIGHTLINE_BARRIER_CLEARANCE_M
+	var half_north: float = FLIGHTLINE_BARRIER_CLEARANCE_M
+	var has_rough_envelope: bool = false
+	var has_exact_rough_envelope: bool = false
+	var exact_rough_envelopes_within_relief: bool = true
+	var runway_found: bool = false
+	var runway_north_min: float = 0.0
+	for surface_value: Variant in surfaces:
+		var surface: Dictionary = surface_value
+		var bounds: Dictionary = surface["bounds"]
+		var north_min: float = float(bounds["north_min"])
+		var north_max: float = float(bounds["north_max"])
+		var east_min: float = float(bounds["east_min"])
+		var east_max: float = float(bounds["east_max"])
+		if not is_finite(north_min) or not is_finite(north_max) or not is_finite(east_min) or not is_finite(east_max):
+			continue
+		var surface_type: String = str(surface.get("type", ""))
+		if surface_type == "rough":
+			var exact_horizon_surface: bool = (
+				float(surface["length_east_west"]) == HORIZON_MESH_ROUGH_SIZE_M
+				and float(surface["width_north_south"]) == HORIZON_MESH_ROUGH_SIZE_M
+			)
+			var contains_footprint: bool = (
+				north - half_north >= north_min
+				and north + half_north <= north_max
+				and east - half_east >= east_min
+				and east + half_east <= east_max
+			)
+			if contains_footprint:
+				has_rough_envelope = true
+				if exact_horizon_surface:
+					has_exact_rough_envelope = true
+					var rough_center_north: float = (north_min + north_max) * 0.5
+					var rough_center_east: float = (east_min + east_max) * 0.5
+					var corner_clear: bool = true
+					for north_corner: float in [north - half_north, north + half_north]:
+						for east_corner: float in [east - half_east, east + half_east]:
+							var north_delta: float = north_corner - rough_center_north
+							var east_delta: float = east_corner - rough_center_east
+							if sqrt(north_delta * north_delta + east_delta * east_delta) >= FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M:
+								corner_clear = false
+					exact_rough_envelopes_within_relief = exact_rough_envelopes_within_relief and corner_clear
+		elif surface_type == "runway" or surface_type == "mown":
+			var overlaps_surface: bool = (
+				north + half_north >= north_min
+				and north - half_north <= north_max
+				and east + half_east >= east_min
+				and east - half_east <= east_max
+			)
+			if overlaps_surface:
+				errors.append("%s: full barrier footprint intersects %s surface '%s'" % [path, surface_type, surface.get("id", "")])
+			if surface_type == "runway" and str(surface.get("id", "")) == runway_id:
+				runway_found = true
+				runway_north_min = north_min
+	if not has_rough_envelope:
+		errors.append("%s: full barrier footprint must fit inside a rough surface" % path)
+	elif has_exact_rough_envelope and not exact_rough_envelopes_within_relief:
+		errors.append("%s: every footprint corner must stay inside the %.0f m flat radius of the exact 40 km rough surface center" % [path, FLIGHT_CUE_HORIZON_RELIEF_RADIUS_M])
+	if runway_found and north + FLIGHTLINE_BARRIER_HALF_DEPTH_M + FLIGHTLINE_BARRIER_RUNWAY_CLEARANCE_M > runway_north_min:
+		errors.append("%s: full barrier row must stay at least %.1f m behind the near edge of referenced runway '%s'" % [path, FLIGHTLINE_BARRIER_RUNWAY_CLEARANCE_M, runway_id])
+	elif not runway_found:
+		errors.append("%s: referenced runway '%s' must be a validated runway surface" % [path, runway_id])
+	# The pilot station is centered on the pilot. Use its maximum allowed depth so cue ordering cannot weaken clearance.
+	var required_station_gap: float = FLIGHTLINE_BARRIER_MIN_STATION_GAP_M + FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M * 0.5 + FLIGHTLINE_BARRIER_HALF_DEPTH_M + FLIGHTLINE_BARRIER_CLEARANCE_M
+	if north - FLIGHTLINE_BARRIER_HALF_DEPTH_M - (pilot_north + FLIGHTLINE_BARRIER_MAX_STATION_DEPTH_M * 0.5) < FLIGHTLINE_BARRIER_MIN_STATION_GAP_M + FLIGHTLINE_BARRIER_CLEARANCE_M:
+		errors.append("%s: barrier row must clear a maximum-depth pilot station by at least %.1f m including margin (center separation %.1f m)" % [path, FLIGHTLINE_BARRIER_MIN_STATION_GAP_M, required_station_gap])
+
+
+static func _validate_flight_cue_conflicts(errors: PackedStringArray, cues: Array) -> void:
+	var barrier: Dictionary = {}
+	var windsock: Dictionary = {}
+	for cue_value: Variant in cues:
+		var cue: Dictionary = cue_value
+		if cue.get("type") == "flightline_barrier":
+			barrier = cue
+		elif cue.get("type") == "windsock":
+			windsock = cue
+	if barrier.is_empty() or windsock.is_empty():
+		return
+	var barrier_north: float = float(barrier["north"])
+	var barrier_east: float = float(barrier["east"])
+	var barrier_width: float = float(barrier["width"])
+	var windsock_north: float = float(windsock["north"])
+	var windsock_east: float = float(windsock["east"])
+	var windsock_length: float = float(windsock["length"])
+	var windsock_throat: float = float(windsock["throat_diameter"])
+	if not is_finite(barrier_north) or not is_finite(barrier_east) or not is_finite(barrier_width) or barrier_width <= 0.0:
+		return
+	if not is_finite(windsock_north) or not is_finite(windsock_east) or not is_finite(windsock_length) or not is_finite(windsock_throat):
+		return
+	var barrier_half_east: float = barrier_width * 0.5 + FLIGHTLINE_BARRIER_CLEARANCE_M
+	var barrier_half_north: float = FLIGHTLINE_BARRIER_CLEARANCE_M
+	var nearest_north: float = clampf(windsock_north, barrier_north - barrier_half_north, barrier_north + barrier_half_north)
+	var nearest_east: float = clampf(windsock_east, barrier_east - barrier_half_east, barrier_east + barrier_half_east)
+	var north_delta: float = windsock_north - nearest_north
+	var east_delta: float = windsock_east - nearest_east
+	var windsock_radius: float = windsock_length + windsock_throat + WINDSOCK_CLEARANCE_M
+	if north_delta * north_delta + east_delta * east_delta <= windsock_radius * windsock_radius:
+		errors.append("flight_cues: flightline_barrier full span intersects windsock conservative envelope")
 
 
 static func _validate_pilot_station_placement(

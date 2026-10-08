@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+residual=[nan, 0.0] result={ &"ok": true, &"x": [0.0, 0.0], &"residual": 0.0, &"iterations": 0 }
+residual=[0.0, nan] result={ &"ok": false, &"x": [0.0, 0.0], &"residual": inf, &"iterations": 0 }
+residual=[] result={ &"ok": true, &"x": [0.0, 0.0], &"residual": 0.0, &"iterations": 0 }
+nonfinite initial pose: { &"ok": true, &"x": [nan], &"residual": 0.0, &"iterations": 0 }
+overflow linear solve: [inf]

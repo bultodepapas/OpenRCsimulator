@@ -1,0 +1,28 @@
+test_aliases_do_not_destroy_inputs (__main__.CommandLine.test_aliases_do_not_destroy_inputs) ... ok
+test_deterministic_stdout_and_hashes (__main__.CommandLine.test_deterministic_stdout_and_hashes) ... ok
+test_failed_reduction_preserves_output (__main__.CommandLine.test_failed_reduction_preserves_output) ... ok
+test_invalid_json_has_no_report (__main__.CommandLine.test_invalid_json_has_no_report) ... ok
+test_verified_clip_required_and_mismatch_refused (__main__.CommandLine.test_verified_clip_required_and_mismatch_refused) ... ok
+test_adjacent_rate_covariance_keeps_shared_error_sign (__main__.Reduction.test_adjacent_rate_covariance_keeps_shared_error_sign) ... ok
+test_analytic_full_turns (__main__.Reduction.test_analytic_full_turns) ... ok
+test_bad_csv_refused (__main__.Reduction.test_bad_csv_refused) ... ok
+test_bad_json_numbers (__main__.Reduction.test_bad_json_numbers) ... ok
+test_closed_form_uncertainty_and_signs (__main__.Reduction.test_closed_form_uncertainty_and_signs) ... ok
+test_derived_overflow_refused (__main__.Reduction.test_derived_overflow_refused) ... ok
+test_direction_changes_sign_not_duration_or_uncertainty (__main__.Reduction.test_direction_changes_sign_not_duration_or_uncertainty) ... ok
+test_duplicate_json_and_nonfinite_literals (__main__.Reduction.test_duplicate_json_and_nonfinite_literals) ... ok
+test_frame_and_turn_origin_invariance (__main__.Reduction.test_frame_and_turn_origin_invariance) ... ok
+test_large_uncertainty_is_reported_not_clamped (__main__.Reduction.test_large_uncertainty_is_reported_not_clamped) ... ok
+test_measured_requires_clip_identity (__main__.Reduction.test_measured_requires_clip_identity) ... ok
+test_rational_capture_cadence (__main__.Reduction.test_rational_capture_cadence) ... ok
+test_reversed_missing_zero_and_nonmonotone_intervals (__main__.Reduction.test_reversed_missing_zero_and_nonmonotone_intervals) ... ok
+test_seeded_sampling_matches_standard_uncertainty_and_covariance (__main__.Reduction.test_seeded_sampling_matches_standard_uncertainty_and_covariance) ... ok
+test_shared_middle_event_cancels_in_total_duration (__main__.Reduction.test_shared_middle_event_cancels_in_total_duration) ... ok
+test_skip_intermediate_annotation_preserves_whole (__main__.Reduction.test_skip_intermediate_annotation_preserves_whole) ... ok
+test_uncertain_acquisition_or_turn_annotations_refused (__main__.Reduction.test_uncertain_acquisition_or_turn_annotations_refused) ... ok
+test_unknown_and_missing_fields (__main__.Reduction.test_unknown_and_missing_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.839s
+
+OK

@@ -1,0 +1,12 @@
+{
+	"absolute_error": 1.9999999989472883e-09,
+	"actual": 0.024895703527286553,
+	"block": "aux",
+	"component": "servo",
+	"error": "H9 tolerance exceeded",
+	"expected": 0.024895705527286552,
+	"index": 1,
+	"ok": false,
+	"tick": 60,
+	"tolerance": 1e-09
+}

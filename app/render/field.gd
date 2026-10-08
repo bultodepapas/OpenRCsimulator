@@ -7,6 +7,8 @@ const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
 const Horizon = preload("res://render/horizon.gd")
 const PilotStation = preload("res://render/pilot_station.gd")
+const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
+const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
@@ -51,7 +53,11 @@ static func build(field: Dictionary) -> Node3D:
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.type == "pilot_station":
 			result.add_child(PilotStation.build(cue))
+		elif cue.type == "flightline_barrier":
+			result.add_child(FlightlineBarrier.build(cue))
 		else:
 			result.add_child(Windsock.build(cue))
+	if not field.get("flight_cues", []).is_empty():
+		result.add_child(FlightCueShadows.build(field.flight_cues))
 	Scenery.attach(result, field)
 	return result

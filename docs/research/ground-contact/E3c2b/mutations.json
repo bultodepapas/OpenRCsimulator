@@ -1,0 +1,47 @@
+{
+  "positive_control": true,
+  "checker_sha256": "61443f15567e5251d0023bdfe4cb18dbe125ff7ef0a70f34bb3aedde0848e4bc",
+  "mutation_script_sha256": "54e14b59924b26a929501d7613cbbd517ad22d6256a3a29a59e5f086424ca632",
+  "mutations": [
+    {
+      "case": "wrong manifest",
+      "rejected": true,
+      "reason": "capture used another manifest"
+    },
+    {
+      "case": "wrong tick",
+      "rejected": true,
+      "reason": "capture tick/time mismatch"
+    },
+    {
+      "case": "wrong CG",
+      "rejected": true,
+      "reason": "CG/root datum mismatch"
+    },
+    {
+      "case": "wrong hinge",
+      "rejected": true,
+      "reason": "actual hinge rotation mismatch"
+    },
+    {
+      "case": "wrong camera",
+      "rejected": true,
+      "reason": "camera FOV mismatch"
+    },
+    {
+      "case": "hidden shadow",
+      "rejected": true,
+      "reason": "shadow was not retained in both captures"
+    },
+    {
+      "case": "airplane omitted",
+      "rejected": true,
+      "reason": "airplane ablation has no visible pixels"
+    },
+    {
+      "case": "repeat image bytes changed",
+      "rejected": true,
+      "reason": "repeated render differs"
+    }
+  ]
+}
