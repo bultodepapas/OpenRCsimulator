@@ -116,7 +116,7 @@ func _init() -> void:
 	aircraft_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card_lines.add_child(aircraft_status_label)
 	card_lines.add_child(_label("Test field · Free flight", "SecondaryLabel"))
-	limits_label = _label("Starts in the air; touching the ground restarts the airplane.", "SecondaryLabel")
+	limits_label = _label("Starts in the air. A crash restarts the flight.", "SecondaryLabel")
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card_lines.add_child(limits_label)
 	card.add_child(card_lines)

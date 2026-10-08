@@ -20,8 +20,8 @@ msgstr "PRÓXIMO VUELO"
 msgid "Test field · Free flight"
 msgstr "Campo de pruebas · Vuelo libre"
 
-msgid "Starts in the air; touching the ground restarts the airplane."
-msgstr "Empieza en el aire; el contacto con el suelo reinicia el avión."
+msgid "Starts in the air. A crash restarts the flight."
+msgstr "Empieza en el aire. Un accidente reinicia el vuelo."
 
 msgid "FLY"
 msgstr "VOLAR"
@@ -113,8 +113,8 @@ msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
 msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it."
 msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra."
 
-msgid "The flight starts in the air; touching the ground restarts the airplane. No take-offs, landings or wind yet."
-msgstr "El vuelo empieza en el aire; el contacto con el suelo reinicia el avión. Aún no hay despegues, aterrizajes ni viento."
+msgid "Flights start in the air. Wheel landings are experimental; a crash restarts the flight. No wind yet."
+msgstr "El vuelo empieza en el aire. Los aterrizajes son experimentales; un accidente reinicia el vuelo. Todavía no hay viento."
 
 msgid "Pause menu (in the radio calibration: cancel it)"
 msgstr "Menú de pausa (en la calibración: cancelarla)"
