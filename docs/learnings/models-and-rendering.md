@@ -24,6 +24,8 @@
 
 ## Rendering and visual evidence
 
+- **Audit a DCC rig before treating its hierarchy as a runtime contract.** The Timber source stores metre-scale Blender transforms beside millimetre CAD metadata, a posed root, driver-controlled hinges, and fixed motor mounts under the propeller's parent. Record each representation's units and rest frame; separate fixed and rotating children before wiring simulator poses. Static inspection identifies these risks but does not replace an evaluated export/import check. ([TT-00](../research/timber-integration/TT-00/README.md))
+
 - **Probe the pinned renderer instead of generalizing from tutorials or another backend.** Small tests against the project's Godot version and Compatibility renderer have exposed differences in per-instance uniforms, shader bounds, color handling, and particle behavior. A probe establishes only the behavior it actually exercises. ([VQ-00](../research/visual-quality-round2/README.md), [SM-PLAN](../research/smoke-investigations/README.md))
 
 - **Match sky and spatial fog in linear color.** In Compatibility, sky-shader `COLOR` is interpreted as sRGB and decoded after `sky()`, while spatial `FOG` and engine fog operate in linear space. Do atmospheric math in linear values and encode the sky result so the decoded value matches the fog; direct assignment can create a visible horizon seam. ([L1/L2 investigation](../research/landscape-investigations/02-atmosphere-aerial-perspective.md), [sky shader](../../app/render/sky.gdshader))
