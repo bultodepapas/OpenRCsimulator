@@ -18,7 +18,7 @@ func _init(sim: Node) -> void:
 
 func start(meta: Dictionary) -> void:
 	trace.clear()
-	trace.meta = meta
+	trace.meta = meta.duplicate(true)
 	recording = true
 	trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux)
 

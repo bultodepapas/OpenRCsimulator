@@ -59,6 +59,93 @@ msgstr "Acelerador"
 msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."
 
+msgid "Weather"
+msgstr "Viento"
+
+msgid "Calm"
+msgstr "Calma"
+
+msgid "%s m/s from %03.0f°"
+msgstr "%s m/s desde %03.0f°"
+
+msgid "gust %s m/s"
+msgstr "racha %s m/s"
+
+msgid "up %s m/s"
+msgstr "ascenso %s m/s"
+
+msgid "%s m/s · %03.0f°"
+msgstr "%s m/s · %03.0f°"
+
+msgid "Gust %s m/s"
+msgstr "Racha %s m/s"
+
+msgid "Updraft %s m/s"
+msgstr "Corriente ascendente %s m/s"
+
+msgid "Downdraft %s m/s"
+msgstr "Corriente descendente %s m/s"
+
+msgid "Uniform wind with smooth repeating gusts."
+msgstr "Viento uniforme con rachas suaves y periódicas."
+
+msgid "Flight conditions"
+msgstr "Condiciones de vuelo"
+
+msgid "Uniform wind and smooth repeating gusts. No turbulence or spatial variation."
+msgstr "Viento uniforme y rachas suaves y periódicas. Sin turbulencia ni variación espacial."
+
+msgid "Preset"
+msgstr "Preajuste"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Steady breeze"
+msgstr "Brisa constante"
+
+msgid "Crosswind"
+msgstr "Viento cruzado"
+
+msgid "Gusty"
+msgstr "Racheado"
+
+msgid "Updraft"
+msgstr "Corriente ascendente"
+
+msgid "ground speed %.1f m/s  wind %.1f m/s from %s  up %+.1f m/s"
+msgstr "vel. suelo %.1f m/s  viento %.1f m/s desde %s  ascend. %+.1f m/s"
+
+msgid "Wind speed (0–15 m/s)"
+msgstr "Velocidad del viento (0–15 m/s)"
+
+msgid "Direction FROM (0–360°)"
+msgstr "Dirección DESDE (0–360°)"
+
+msgid "Horizontal gust peak (0–8 m/s)"
+msgstr "Pico de racha horizontal (0–8 m/s)"
+
+msgid "Vertical gust, up (−8 to 8 m/s)"
+msgstr "Racha vertical, hacia arriba (−8 a 8 m/s)"
+
+msgid "Gust duration (0.5–20 s)"
+msgstr "Duración de la racha (0.5–20 s)"
+
+msgid "Gust period (0.5–120 s)"
+msgstr "Periodo de la racha (0.5–120 s)"
+
+msgid "Enter valid numbers within the shown limits; gust period must be at least its duration."
+msgstr "Introduce números válidos dentro de los límites indicados; el periodo debe ser al menos igual a la duración."
+
+msgid "Flights start in the air. Wind is uniform across the field; smooth gusts repeat on a timer. No turbulence or spatial variation. Wheel landings are experimental; a crash restarts the flight."
+msgstr "El vuelo empieza en el aire. Viento uniforme y rachas suaves periódicas, sin turbulencia ni variación espacial. Los aterrizajes son experimentales; un accidente reinicia el vuelo."
+
 msgid "PAUSED"
 msgstr "PAUSA"
 
@@ -112,9 +199,6 @@ msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
 
 msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it."
 msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra."
-
-msgid "Flights start in the air. Wheel landings are experimental; a crash restarts the flight. No wind yet."
-msgstr "El vuelo empieza en el aire. Los aterrizajes son experimentales; un accidente reinicia el vuelo. Todavía no hay viento."
 
 msgid "Pause menu (in the radio calibration: cancel it)"
 msgstr "Menú de pausa (en la calibración: cancelarla)"

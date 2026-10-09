@@ -17,8 +17,10 @@ const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
+const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const WeatherSettings := preload("res://physics/wind_config.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 
@@ -33,11 +35,13 @@ var home_scene: Node3D
 var flight: Node
 var pause_menu: CanvasLayer
 var help: CanvasLayer
+var weather_dialog: CanvasLayer
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
+var _weather_return_focus: Control
 
 
 func _ready() -> void:
@@ -81,12 +85,14 @@ func show_home() -> void:
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
+	home.set_weather_config(preferences.get("weather_config", WeatherSettings.defaults()))
 	home.fly_requested.connect(start_flight)
 	home.aircraft_requested.connect(set_aircraft)
 	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
+	home.weather_requested.connect(open_weather)
 	add_child(home)
 	home.set_note(_settings_note)
 
@@ -127,9 +133,15 @@ func set_start_choice(choice: String) -> void:
 func start_flight() -> void:
 	if flight != null:
 		return
+	close_weather()
 	close_help()
 	var aircraft: String = home.aircraft_id if home != null else ""
 	var chosen_start: String = home.start_choice if home != null else "airborne"
+	var chosen_weather: Dictionary = WeatherSettings.defaults()
+	if has_home:
+		var checked_weather := WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults()))
+		if checked_weather.ok:
+			chosen_weather = checked_weather.config.duplicate(true)
 	for screen in [home, home_scene]:
 		if screen != null:
 			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
@@ -137,6 +149,7 @@ func start_flight() -> void:
 	flight.field_path = field_path
 	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
 	flight.start_choice = chosen_start
+	flight.weather_config = chosen_weather.duplicate(true)
 	flight.interactive_start = has_home
 	add_child(flight)
 	if has_home and not flight.startup_error.is_empty():
@@ -158,6 +171,7 @@ func start_flight() -> void:
 	home_scene = null
 	if has_home:
 		preferences.start_choice = chosen_start
+		preferences.weather_config = chosen_weather.duplicate(true)
 		var err: Error = Preferences.save_to(preferences_path, preferences)
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
@@ -218,6 +232,44 @@ func close_help() -> void:
 	remove_child(help) # deferred-safe: the Help screen marked its key event handled before asking
 	help.queue_free()
 	help = null
+
+
+## Opens a draft over Home. Nothing is stored or used by a flight until Apply is pressed.
+func open_weather(from: Control = null) -> void:
+	if home == null or weather_dialog != null:
+		return
+	_weather_return_focus = from if from != null else home.weather_button
+	weather_dialog = WeatherDialog.new(preferences.get("weather_config", WeatherSettings.defaults()))
+	weather_dialog.applied.connect(_on_weather_applied)
+	weather_dialog.cancelled.connect(close_weather)
+	add_child(weather_dialog)
+
+
+func _on_weather_applied(raw: Dictionary) -> void:
+	var checked := WeatherSettings.validate(raw)
+	if not checked.ok:
+		return
+	preferences.weather_config = checked.config.duplicate(true)
+	if home != null:
+		home.set_weather_config(preferences.weather_config)
+	var err: Error = Preferences.save_to(preferences_path, preferences)
+	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
+	if home != null:
+		home.set_note(_settings_note)
+	close_weather()
+
+
+func close_weather() -> void:
+	if weather_dialog == null:
+		return
+	var dialog := weather_dialog
+	weather_dialog = null
+	if dialog.is_inside_tree():
+		remove_child(dialog)
+	dialog.queue_free()
+	if _weather_return_focus != null and is_instance_valid(_weather_return_focus) and _weather_return_focus.is_inside_tree():
+		_weather_return_focus.grab_focus()
+	_weather_return_focus = null
 
 
 func continue_flight() -> void:

@@ -1,0 +1,48 @@
+{
+  "aircraft_models": {
+    "gp-extra-300s-60": {
+      "baseline_sha256": "e7042567dad826f4398505a94198385547223ea8ad15bc38593dd577f3de9b01",
+      "identical": true,
+      "overlay_sha256": "e7042567dad826f4398505a94198385547223ea8ad15bc38593dd577f3de9b01",
+      "path": "app/data/aircraft/gp_extra_300s_60.json"
+    },
+    "jensen-das-ugly-stik-60": {
+      "baseline_sha256": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+      "identical": true,
+      "overlay_sha256": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json"
+    },
+    "p51d-mustang-120": {
+      "baseline_sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+      "identical": true,
+      "overlay_sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+      "path": "app/data/aircraft/p51d_mustang_120.json"
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "baseline_sha256": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+      "identical": true,
+      "overlay_sha256": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json"
+    }
+  },
+  "base_commit": "6973e42159eaf21574c17f44f64e536b2e0304eb",
+  "benchmark_harness": {
+    "path": "app/tests/bench_wind.gd",
+    "sha256": "cd4f6bd54983974fd9339888199109dd2a41eed467f36f61523784f252d0080a"
+  },
+  "core_files": {
+    "app/physics/ground_start.gd": "3bfdefd406b462c12b27ca632281da92644d445bc627ec1fff2124d4fb116a6a",
+    "app/physics/wind_config.gd": "f3385ff8e6b31f830b621d8fb095179e5e5c0e34241189beb2ac4c6735f98f4a",
+    "app/physics/wind_field.gd": "aca8ea105a9690cb7a23f09c12862a2294ccb0dd6ba84183e56f92bfa068e885",
+    "app/sim/flight_session.gd": "a44325dd87ed10d1b8ba887403656da96152d4a296b9e072f1a27e5812d93b2f",
+    "app/sim/recorder.gd": "53084c3d700b16d74c7698e66c8d8d33923e84105a60597b553b5725ba24cc47",
+    "app/sim/trace.gd": "81c19d2a04da6e9ba307bbcf4e87b83db48b3f6c0c8013ba01bbada765945814"
+  },
+  "engine": {
+    "build_hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "version": "4.7.2-stable official"
+  },
+  "format": "openrc-wind-source-manifest v1",
+  "overlay_method": "Detached worktree at base_commit plus only the listed core files; no UI files copied.",
+  "snapshot_sha256": "810075d0893bd231803341bd886856061b5098c467499fd287243a18fd6b77b8"
+}

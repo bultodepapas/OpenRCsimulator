@@ -6,6 +6,43 @@
 # visible pause; resuming is an explicit action (resume()).
 extends Node
 
+const WeatherField = preload("res://physics/wind_field.gd")
+const WeatherConfig = preload("res://physics/wind_config.gd")
+var _weather: WeatherField = WeatherField.new()
+var weather_error: String = ""
+
+
+## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
+## Rejected settings never alter the existing flight, field or recorder.
+func setup_weather(settings: Variant) -> bool:
+	var built: Dictionary = WeatherField.build(settings)
+	if not built.ok:
+		weather_error = "; ".join(built.errors)
+		return false
+	if sim != null and sim.tick > 0:
+		weather_error = "weather changes require a new flight or reset boundary"
+		return false
+	resetting.emit() # a recording cannot span an environment-identity change
+	_weather = built.field
+	weather_error = ""
+	return true
+
+
+func weather_configuration() -> Dictionary:
+	return _weather.configuration()
+
+
+func weather_is_calm() -> bool:
+	return _weather.is_calm()
+
+
+func wind_at(time_s: float) -> PackedFloat64Array:
+	return _weather.sample(time_s)
+
+
+func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
+	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s), Air.RHO_SEA_LEVEL)
+
 const Commands := preload("res://input/commands.gd")
 const Keyboard := preload("res://input/keyboard.gd")
 const RcInput := preload("res://input/rc_input.gd")
@@ -489,7 +526,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
 	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, Air.RHO_SEA_LEVEL)
 	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
-		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity)
+		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity, wind_at(0.0))
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
@@ -583,6 +620,12 @@ func reset() -> void:
 
 ## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
 func _reset_airborne_start() -> bool:
+	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
+	if _has_valid_start() and not weather_is_calm():
+		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
+		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), wind_at(0.0))
+		for axis: int in 3:
+			initial[RB.VEL + axis] += wind_body[axis]
 	commands = Commands.neutral_commands()
 	if _has_valid_start():
 		commands.throttle = start.throttle
@@ -595,11 +638,11 @@ func _reset_airborne_start() -> bool:
 	var aux := PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
 	if downwash_index() >= 0 and _has_valid_start():
-		aux.append(_wing_cl(start.state, aux)) # E0a2b: start settled, no downwash transient
+		aux.append(_wing_cl(initial, aux, 0.0)) # E0a2b: start settled, no downwash transient
 	sim.aux = aux
 	if _has_valid_start():
-		sim.continuous = _settled_wash(start.state, aux)
-		if not sim.reset(start.state):
+		sim.continuous = _settled_wash(initial, aux)
+		if not sim.reset(initial):
 			sim.set_paused(true)
 			var reason: String = "simulation reset failed: " + sim.fault_reason
 			_fail_selected_start(reason)
@@ -659,12 +702,12 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
-		rpm, Air.RHO_SEA_LEVEL, sim.gravity)
+		rpm, Air.RHO_SEA_LEVEL, sim.gravity, wind_at(0.0))
 	if not solved.ok:
 		return { ok = false, message = "runway start: " + str(solved.message) }
 	aux.append_array(solved.anchors)
 	if downwash_index() >= 0:
-		aux.append(_wing_cl(solved.state, aux)) # E0a2b: at rest, settled
+		aux.append(_wing_cl(solved.state, aux, 0.0)) # E0a2b: at rest, settled
 	sim.aux = aux
 	sim.continuous = _settled_wash(solved.state, aux)
 	if not sim.reset(solved.state):
@@ -765,7 +808,7 @@ func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
 	return _wash_loads(s, sim.continuous, t)
 
 
-func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stage_time: float) -> PackedFloat64Array:
 	var prop: Dictionary = aircraft.model.propulsion
 	var expected: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
 	if transported_dv.size() != expected:
@@ -773,7 +816,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, _t: 
 	var a: PackedFloat64Array = sim.aux
 	var lag := downwash_index()
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
+		Air.RHO_SEA_LEVEL, wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
 		a.slice(AUX_ANCHORS) if a.size() > AUX_ANCHORS else PackedFloat64Array())
 	for i in ground.size():
@@ -782,15 +825,15 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, _t: 
 
 
 ## Continuous wash uses stage airspeed and state, with the existing sampled RPM/servo policy.
-func _wash_derivative(s: PackedFloat64Array, lagged: PackedFloat64Array, _t: float) -> PackedFloat64Array:
-	var air: Dictionary = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+func _wash_derivative(s: PackedFloat64Array, lagged: PackedFloat64Array, stage_time: float) -> PackedFloat64Array:
+	var air: Dictionary = air_data(s, stage_time)
 	return WashTransport.derivative(air.v_air, sim.aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL, lagged)
 
 
 func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	if not WashTransport.enabled(aircraft.model.propulsion):
 		return PackedFloat64Array()
-	var air: Dictionary = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+	var air: Dictionary = air_data(s, 0.0)
 	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
 
 
@@ -825,6 +868,8 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# G2 first slice (P51-06): torque balance at the current axial airspeed (calm air, as _loads).
 		var s: PackedFloat64Array = sim.state
 		var u := M.dot(M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]), Propulsion.axis(prop))
+		if not weather_is_calm():
+			u = M.dot(air_data(s, sim.time()).v_air, Propulsion.axis(prop))
 		rpm = Propulsion.shaft_step(aux[AUX_RPM], inputs[3], u, dt, prop, Air.RHO_SEA_LEVEL)
 	elif engine_running:
 		rpm = Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, prop)
@@ -843,7 +888,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# committed state and the servos the last tick used; held through the RK stages like rpm.
 		var s: PackedFloat64Array = sim.state
 		var cl_now := _wing_cl(s, aux)
-		var speed: float = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL).V
+		var speed: float = air_data(s, sim.time()).V
 		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
 		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
 	return out
@@ -868,8 +913,8 @@ func aux_component(i: int) -> String:
 
 
 ## The wing strips' mean section lift coefficient at state s with the servos in aux (E0a2b lag input).
-func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array) -> float:
-	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float = NAN) -> float:
+	var air: Dictionary = air_data(s, time_s)
 	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model)
 
 
@@ -913,7 +958,7 @@ func trace_meta() -> Dictionary:
 		scenario = "start refused: " + str(_launch_metadata.get("launch_error", "unknown start error"))
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
 		scenario = "checkpoint replay (original launch unknown)"
-	return {
+	var metadata: Dictionary = {
 		metadata_schema = "openrc-flight-meta v2",
 		scenario = scenario,
 		selected_start_choice = _launch_metadata.get("selected_start_choice", start_choice),
@@ -962,6 +1007,15 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+	if not weather_is_calm():
+		metadata.metadata_schema = "openrc-flight-meta v3"
+		metadata.scenario = str(metadata.scenario).replace("calm air", "trim relative to moving air")
+		metadata.weather_config = JSON.stringify(weather_configuration(), "", true, true)
+		metadata.weather_model = "uniform-ned-repeating-cosine-v1"
+		metadata.weather_evidence = "user-selected/authored practice conditions; not measured meteorology"
+		metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0"
+		metadata.recording_start_previous_state = JSON.stringify(Array(sim.previous), "", true, true)
+	return metadata
 
 
 ## Physics replay boundary, deliberately downstream of live input conditioning and menus.
@@ -972,13 +1026,24 @@ func checkpoint() -> Dictionary:
 	var snapshot: Dictionary = sim.checkpoint()
 	if snapshot.is_empty() or snapshot.modes.size() != 1 or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return {}
-	return { format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot }
+	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
+	if not weather_is_calm():
+		boundary.format = "openrc-flight-checkpoint v2"
+		boundary.weather_config = weather_configuration()
+	return boundary
 
 
 func _checkpoint_configuration() -> String:
+	return _configuration_for_weather(_weather)
+
+
+func _configuration_for_weather(field: WeatherField) -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
-	config_hash.update(var_to_bytes([aircraft.model, ground_surfaces]))
+	var parts: Array = [aircraft.model, ground_surfaces]
+	if not field.is_calm():
+		parts.append(field.configuration())
+	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
 
@@ -986,9 +1051,18 @@ func _checkpoint_configuration() -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format != "openrc-flight-checkpoint v1" or typeof(candidate.get("configuration")) != TYPE_STRING \
-			or candidate.configuration != _checkpoint_configuration() \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
+		return false
+	var restored_weather: WeatherField = _weather
+	if candidate.format == "openrc-flight-checkpoint v2":
+		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
+		if not built.ok or built.field.is_calm():
+			return false
+		restored_weather = built.field
+	elif not weather_is_calm() or candidate.has("weather_config"):
+		return false # a legacy physics-only boundary cannot hide non-calm forcing
+	if candidate.configuration != _configuration_for_weather(restored_weather):
 		return false
 	var snapshot: Dictionary = candidate.simulation
 	if not sim.can_restore_checkpoint(snapshot) or snapshot.modes.size() != 1 \
@@ -1000,6 +1074,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	resetting.emit() # close recording before the clock moves backwards
 	if not sim.restore_checkpoint(snapshot):
 		return false
+	_weather = restored_weather
 	# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
 	# restored state to this destination session's earlier launch. reset() will establish a new known launch.
 	_launch_metadata = {

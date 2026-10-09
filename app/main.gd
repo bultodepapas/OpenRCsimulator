@@ -43,6 +43,41 @@ var recorder: RefCounted
 var aircraft_id := ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
+var weather_config: Dictionary = {}
+
+
+## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
+func _weather_options(options: Dictionary) -> Dictionary:
+	var raw: Variant = weather_config.duplicate(true) if not weather_config.is_empty() else FlightSession.WeatherConfig.defaults()
+	if options.has("weather") and options.has("weather-file"):
+		return {ok = false, config = {}, errors = PackedStringArray(["choose --weather or --weather-file, not both"])}
+	if options.has("weather"):
+		if typeof(options.weather) != TYPE_STRING:
+			return {ok = false, config = {}, errors = PackedStringArray(["--weather needs a preset ID"])}
+		raw = FlightSession.WeatherConfig.preset(options.weather)
+		if raw.is_empty():
+			return {ok = false, config = {}, errors = PackedStringArray(["unknown weather preset '%s'" % options.weather])}
+	if options.has("weather-file"):
+		if typeof(options["weather-file"]) != TYPE_STRING or not FileAccess.file_exists(options["weather-file"]):
+			return {ok = false, config = {}, errors = PackedStringArray(["--weather-file needs an existing JSON file"])}
+		var parser: JSON = JSON.new()
+		if parser.parse(FileAccess.get_file_as_string(options["weather-file"])) != OK:
+			return {ok = false, config = {}, errors = PackedStringArray(["weather JSON is invalid: " + parser.get_error_message()])}
+		raw = parser.data
+	var mappings: Dictionary = {"wind-speed": "speed_mps", "wind-from": "from_deg", "gust-speed": "gust_mps", "gust-up": "gust_up_mps", "gust-duration": "gust_duration_s", "gust-period": "gust_period_s", "gust-delay": "gust_delay_s"}
+	for key: String in mappings:
+		if not options.has(key):
+			continue
+		if not raw is Dictionary or typeof(options[key]) != TYPE_STRING or not str(options[key]).is_valid_float():
+			return {ok = false, config = {}, errors = PackedStringArray(["--%s needs a finite number" % key])}
+		raw[mappings[key]] = str(options[key]).to_float()
+	return FlightSession.WeatherConfig.validate(raw)
+
+
+func _render_wind(time_s: float) -> Vector3:
+	if _scripted or session == null:
+		return Vector3.ZERO
+	return Frames.ned_to_render(Array(session.wind_at(time_s)))
 var interactive_start: bool = false
 var startup_error: String = ""
 var _airplane: Dictionary
@@ -179,6 +214,15 @@ func _ready() -> void:
 	session.setup(Catalog.entry(aircraft_id).data)
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
 	session.start_choice = start_choice
+	var conditions: Dictionary = _weather_options(args)
+	if not conditions.ok or not session.setup_weather(conditions.config):
+		startup_error = "; ".join(conditions.errors) if not conditions.ok else session.weather_error
+		if not interactive_start:
+			printerr("weather refused: ", startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	_update_cg_model()
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
@@ -253,7 +297,7 @@ func _process(delta: float) -> void:
 	var visual_clock_s: float = session.sim.time()
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
-	ShaderClock.update(visual_clock_s)
+	ShaderClock.update(visual_clock_s, _render_wind(visual_clock_s))
 	Atmosphere.update_clouds(_env, visual_clock_s) # at most once per cloud_update_s of simulation
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
@@ -292,11 +336,26 @@ func _update_hud() -> void:
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
 	else:
 		var s: PackedFloat64Array = session.sim.state
-		var air := Air.compute(s, M.v3(0.0, 0.0, 0.0))
+		var air: Dictionary = session.air_data(s)
 		lines.append(Hud.flight_line(air.V, -s[RB.POS + 2], rad_to_deg(air.alpha), session.sim.inputs[3]))
+		if not session.weather_is_calm():
+			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
+			lines.append(_weather_hud_line(s, wind))
 	if _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	_hud.text = "\n".join(lines)
+
+
+## Ground speed is horizontal NED speed. A vertical-only air current has no compass bearing.
+func _weather_hud_line(s: PackedFloat64Array, wind: PackedFloat64Array) -> String:
+	var horizontal: float = M.sqrt_(wind[0] * wind[0] + wind[1] * wind[1])
+	var bearing: String = "--"
+	if horizontal > 0.0:
+		bearing = "%03.0f°" % fposmod(rad_to_deg(M.atan2_(-wind[1], -wind[0])), 360.0)
+	var q: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+	var velocity: PackedFloat64Array = M.q_rotate(q, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
+	var ground_speed: float = M.sqrt_(velocity[0] * velocity[0] + velocity[1] * velocity[1])
+	return tr("ground speed %.1f m/s  wind %.1f m/s from %s  up %+.1f m/s") % [ground_speed, horizontal, bearing, -wind[2]]
 
 
 func _status() -> String:
@@ -535,7 +594,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
-	ShaderClock.update(t if _scripted else sim.time())
+	ShaderClock.update(t if _scripted else sim.time(), _render_wind(t if _scripted else sim.time()))
 	Atmosphere.update_clouds(_env, t if _scripted else sim.time())
 	_update_hud()
 	await RenderingServer.frame_post_draw

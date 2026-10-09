@@ -77,6 +77,8 @@ Trace integrity: [C7-R1](trace-integrity/C7-R1/README.md) hardens CLI duration/f
 
 Trim integrity: [D4-R2](trim-integrity/D4-R2/README.md) closes nonfinite false convergence and invalid linear-system acceptance, with exact fleet preservation and isolated regression evidence.
 
+Playable wind: [uniform wind and repeating gusts](wind-implementation/README.md) integrates four-aircraft air-relative physics, precise Home conditions, explicit v4 telemetry, v2 weather checkpoints, FPS reproducibility, EN/ES rendered proof and native Linux source/export parity. Atmosphere/pilot validation remains open.
+
 Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted channel mappings and device identity, rejects malformed profiles whole, preserves files on refused saves and verifies safe replug through the real scene.
 
 Calibration rearming: [D6b-R2](radio-input/D6b-R2/README.md) requires fresh finite low-throttle evidence after profile replacement, preserves raw-axis diagnostic history, and records private fault tests, real-session checks and paired event-cost observations.

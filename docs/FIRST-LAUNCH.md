@@ -70,6 +70,10 @@ Wheels can contact the ground for experimental landing and rollout. A hull strik
 
 ## 4. What this build is (v0.1 alpha)
 
+On Home, **Weather** opens the flight conditions editor. Choose Calm, Steady breeze, Crosswind, Gusty or Updraft, or edit the values. Direction is where the wind comes from; vertical gust values are positive upward. **Apply** validates and remembers the settings; **Cancel/Esc** keeps the previous settings. Restart repeats the same wind and gust timing. The HUD separates airspeed from horizontal ground speed and shows the current wind.
+
+The wind is spatially uniform, with smooth periodic practice gusts. The presets are authored conditions rather than measured site weather; turbulence and windsock dynamics remain future work. Non-calm traces use v4; calm retains v3.
+
 **It has:**
 
 - full six-axis flight with prop torque and gyroscopic effects;

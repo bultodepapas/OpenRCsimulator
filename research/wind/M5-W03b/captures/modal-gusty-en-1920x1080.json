@@ -1,0 +1,315 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "flight": {},
+  "format": "openrc-wind-ui-capture v1",
+  "image": "modal-gusty-en-1920x1080.png",
+  "image_check": {
+    "nonuniform_samples": 473900,
+    "not_blank": true,
+    "sample_stride_px": 2,
+    "samples": 518400,
+    "unique_colors": 3192
+  },
+  "language": "en",
+  "layout": {
+    "container_overlap_count": 0,
+    "control_count": 27,
+    "controls": [
+      {
+        "class": "Control",
+        "name": "Modal",
+        "rect": [
+          0.0,
+          0.0,
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "class": "ColorRect",
+        "name": "Dim",
+        "rect": [
+          0.0,
+          0.0,
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "class": "CenterContainer",
+        "name": "@CenterContainer@72",
+        "rect": [
+          0.0,
+          0.0,
+          1920.0,
+          1080.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "WeatherPanel",
+        "rect": [
+          610.0,
+          260.0,
+          700.0,
+          560.0
+        ]
+      },
+      {
+        "class": "VBoxContainer",
+        "name": "@VBoxContainer@73",
+        "rect": [
+          650.0,
+          304.0,
+          620.0,
+          480.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@75",
+        "rect": [
+          650.0,
+          304.0,
+          620.0,
+          50.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@74",
+        "rect": [
+          650.0,
+          304.0,
+          620.0,
+          50.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@76",
+        "rect": [
+          650.0,
+          364.0,
+          620.0,
+          23.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@88",
+        "rect": [
+          650.0,
+          397.0,
+          620.0,
+          43.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@77",
+        "rect": [
+          650.0,
+          407.0,
+          50.0,
+          23.0
+        ]
+      },
+      {
+        "class": "OptionButton",
+        "name": "WeatherPreset",
+        "rect": [
+          712.0,
+          397.0,
+          558.0,
+          43.0
+        ]
+      },
+      {
+        "class": "GridContainer",
+        "name": "@GridContainer@89",
+        "rect": [
+          650.0,
+          450.0,
+          620.0,
+          280.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@90",
+        "rect": [
+          650.0,
+          458.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "speed_mps",
+        "rect": [
+          903.0,
+          450.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@91",
+        "rect": [
+          650.0,
+          506.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "from_deg",
+        "rect": [
+          903.0,
+          498.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@92",
+        "rect": [
+          650.0,
+          554.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "gust_mps",
+        "rect": [
+          903.0,
+          546.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@93",
+        "rect": [
+          650.0,
+          602.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "gust_up_mps",
+        "rect": [
+          903.0,
+          594.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@94",
+        "rect": [
+          650.0,
+          650.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "gust_duration_s",
+        "rect": [
+          903.0,
+          642.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@95",
+        "rect": [
+          650.0,
+          698.0,
+          235.0,
+          23.0
+        ]
+      },
+      {
+        "class": "LineEdit",
+        "name": "gust_period_s",
+        "rect": [
+          903.0,
+          690.0,
+          367.0,
+          40.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@96",
+        "rect": [
+          650.0,
+          740.0,
+          620.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Cancel",
+        "rect": [
+          994.0,
+          740.0,
+          132.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Apply",
+        "rect": [
+          1138.0,
+          740.0,
+          132.0,
+          44.0
+        ]
+      }
+    ],
+    "findings": [],
+    "offscreen_count": 0,
+    "ok": true,
+    "target": "Modal",
+    "zero_size_count": 0
+  },
+  "producer": "research/wind/M5-W03b/capture.gd",
+  "renderer": "gl_compatibility",
+  "screen": "modal",
+  "selected_dialog_preset": "gusty",
+  "sha256": "2fc6d5dd94da71044603c92b02ed4f3f8060e1beb998e5ec37623ad6e165cce6",
+  "size": [
+    1920,
+    1080
+  ],
+  "weather_config": {
+    "format": "openrc-weather v1",
+    "from_deg": 270.0,
+    "gust_delay_s": 2.0,
+    "gust_duration_s": 4.0,
+    "gust_mps": 3.0,
+    "gust_period_s": 12.0,
+    "gust_up_mps": 1.5,
+    "speed_mps": 3.0
+  },
+  "weather_preset": "gusty"
+}
