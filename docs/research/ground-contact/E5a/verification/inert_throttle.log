@@ -1,0 +1,66 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coast_left at 240 Hz completes without crash/fault  
+ok coast_left retains three wheel contacts 3
+ok ground heading follows yaw command -29.122435 deg
+ok coast_left at 480 Hz completes without crash/fault  
+ok coast_left retains three wheel contacts 3
+ok ground heading follows yaw command -29.101252 deg
+ok coast_left at 960 Hz completes without crash/fault  
+ok coast_left retains three wheel contacts 3
+ok ground heading follows yaw command -29.090630 deg
+ok coast_left refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00117413417191, 0.00067562616382, 0.00015877745384, 0.00363678086662]
+ok coast_left refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00058859779715, 0.00033915026247, 0.00007959997137, 0.00183409074764]
+ok coast_left component group 0 difference shrinks on second refinement [0.00117413417191, 0.00058859779715]
+ok coast_left component group 1 difference shrinks on second refinement [0.00067562616382, 0.00033915026247]
+ok coast_left component group 2 difference shrinks on second refinement [0.00015877745384, 0.00007959997137]
+ok coast_left component group 3 difference shrinks on second refinement [0.00363678086662, 0.00183409074764]
+ok coast_right at 240 Hz completes without crash/fault  
+ok coast_right retains three wheel contacts 3
+ok ground heading follows yaw command 29.122435 deg
+ok coast_right at 480 Hz completes without crash/fault  
+ok coast_right retains three wheel contacts 3
+ok ground heading follows yaw command 29.101252 deg
+ok coast_right at 960 Hz completes without crash/fault  
+ok coast_right retains three wheel contacts 3
+ok ground heading follows yaw command 29.090630 deg
+ok coast_right refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00117413415867, 0.00067562616206, 0.00015877745381, 0.00363678086642]
+ok coast_right refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00058859779631, 0.00033915026236, 0.00007959997137, 0.00183409074763]
+ok coast_right component group 0 difference shrinks on second refinement [0.00117413415867, 0.00058859779631]
+ok coast_right component group 1 difference shrinks on second refinement [0.00067562616206, 0.00033915026236]
+ok coast_right component group 2 difference shrinks on second refinement [0.00015877745381, 0.00007959997137]
+ok coast_right component group 3 difference shrinks on second refinement [0.00363678086642, 0.00183409074763]
+ok idle at 240 Hz completes without crash/fault  
+ok idle retains three wheel contacts 3
+ok idle engine remains running near its configured idle 2800.0
+ok idle at 480 Hz completes without crash/fault  
+ok idle retains three wheel contacts 3
+ok idle engine remains running near its configured idle 2800.0
+ok idle at 960 Hz completes without crash/fault  
+ok idle retains three wheel contacts 3
+ok idle engine remains running near its configured idle 2800.0
+ok idle refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000019709, 0.00000001581686, 0.00000000028452, 0.0000000629455]
+ok idle refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000001207, 0.00000000067854, 0.00000000001779, 0.00000000308583]
+ok idle component group 0 difference shrinks on second refinement [0.00000000019709, 0.00000000001207]
+ok idle component group 1 difference shrinks on second refinement [0.00000001581686, 0.00000000067854]
+ok idle component group 2 difference shrinks on second refinement [0.00000000028452, 0.00000000001779]
+ok idle component group 3 difference shrinks on second refinement [0.0000000629455, 0.00000000308583]
+ok pulse at 240 Hz completes without crash/fault  
+ok pulse retains three wheel contacts 3
+ok pulse at 480 Hz completes without crash/fault  
+ok pulse retains three wheel contacts 3
+ok pulse at 960 Hz completes without crash/fault  
+ok pulse retains three wheel contacts 3
+ok pulse refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000019709, 0.00000001581686, 0.00000000028452, 0.0000000629455]
+ok pulse refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000001207, 0.00000000067854, 0.00000000001779, 0.00000000308583]
+ok pulse component group 0 difference shrinks on second refinement [0.00000000019709, 0.00000000001207]
+ok pulse component group 1 difference shrinks on second refinement [0.00000001581686, 0.00000000067854]
+ok pulse component group 2 difference shrinks on second refinement [0.00000000028452, 0.00000000001779]
+ok pulse component group 3 difference shrinks on second refinement [0.0000000629455, 0.00000000308583]
+FAIL pulse produces resolved RPM response at 240 Hz [2800.0, 2800.0]
+FAIL pulse moves farther than idle by more than the refinement allowance [0.02436325942937, 0.02436325942937]
+FAIL pulse produces resolved RPM response at 480 Hz [2800.0, 2800.0]
+FAIL pulse moves farther than idle by more than the refinement allowance [0.02436325948998, 0.02436325948998]
+FAIL pulse produces resolved RPM response at 960 Hz [2800.0, 2800.0]
+FAIL pulse moves farther than idle by more than the refinement allowance [0.02436325949302, 0.02436325949302]
+63 checks, 6 failed

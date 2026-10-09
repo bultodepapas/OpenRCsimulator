@@ -268,7 +268,7 @@ Knowledge: [04](docs/research/roadmap-investigations/04-ground-handling-collisio
 
 | # | Step | Proof |
 | --- | --- | --- |
-| E5a (P-51 first slice exists) | Review committed P-51 tailwheel handling, then extend through each aircraft generator; add caster behavior only when requested | Recheck contact geometry and static attitude; steering/ground-loop signs, refinement and independent pilot contrast. Existing P-51 tests do not validate all taildraggers. |
+| E5a (Extra extension verified; pilot contrast open) | Review committed P-51 tailwheel handling, then extend through each aircraft generator; add caster behavior only when requested | 2026-10-09: reviewed P-51 contacts and added generated Extra 300S fixed gear with a rudder-linked tailwheel, replacing wheel crash points. Source geometry, static moment balance, steering/component ground-loop signs and 240/480/960 Hz session refinement verified on Linux; Extra airborne trace preserved. Mechanics remain provisional; independent pilot contrast, caster behavior and future aircraft remain separate. [Implementation, tests and limits](docs/research/ground-contact/E5a/README.md). |
 | E5b | Nose-over (tail up, soft spot): friction needed is ≈ 0.35–0.37 for the Extra and P-51, which rough grass plus a soft spot can reach | The tail lifts at the rigid-gear oracle's d/h ± 2 % |
 | E5c | Brakes (JSBSim formula, brake groups, channel or rudder differential) | Straight braking deceleration μ_brake·g ± 2 % |
 | E5d | Retracts (unblocks P51-11 together with DATA-10) | Cycle time matches the data; a gear-up landing at 0.8 m/s sink slides |

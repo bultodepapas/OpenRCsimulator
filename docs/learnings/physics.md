@@ -18,6 +18,8 @@ Touchdown damping should rise continuously from zero compression and join the fu
 
 A refinement ratio near two can come from a wheel bouncing across the ground-contact branch, not from a defect in the smooth tyre law. Inspect the motion and contact state, establish whether the test is in a smooth or switched regime, and compare against the expected integration order before changing a band. Quasi-static limits are useful oracles only when the test approaches the assumptions behind them. ([E2](../research/ground-friction-e2.md), [H11](../research/simulation-state/H11/README.md))
 
+The whole session can also converge near first order during control transients while every wheel remains loaded: sampled servos and engine updates precede RK4. Compare constant-control contact trials with the complete session at three tick rates before attributing a millimetre-scale difference to the contact law. ([E5a](../research/ground-contact/E5a/README.md))
+
 ### Every coupled continuous state needs the same integration stages
 
 Updating a continuous wake or other lag once per tick while integrating the body with RK4 creates a split, lower-order system. Put coupled continuous variables in the integrator workspace and evaluate them at each RK stage; use a nonautonomous analytic oracle because ordinary autonomous flight traces will not reveal a solver that freezes stage time. Sampled controls and discrete modes still need explicit update boundaries. ([H8a](../research/simulation-state/H8a/README.md), [E0b5](../research/propwash/E0b5/README.md))
@@ -45,6 +47,8 @@ Keep aircraft tyre coefficients with the aircraft and let each field's surface s
 ### Judge wheel support along gravity on the full resting facet
 
 For rigid gear at rest, find the lower facet of the contacts' convex hull, project the center of gravity along that facet's normal, and measure its margin to the whole coplanar facet boundary. A body-axis projection misjudges taildraggers at their nose-up resting attitude, while testing each triangle separately can give a centered square-layout center zero margin along its diagonals. ([D1-R3](../research/aircraft-validation/D1-R3/README.md))
+
+Use those ground-projected reaction shares when splitting spring stiffness to preserve equal vertical sag. Splitting by body longitudinal arms can still produce a balanced equilibrium, but at a different attitude: the existing P-51 settles 0.68° above its wheel-bottom geometric pose, whereas the Extra's projected-arm split preserves that pose. ([E5a](../research/ground-contact/E5a/README.md))
 
 ### Stiction needs per-wheel memory and an energy-safe release rule
 

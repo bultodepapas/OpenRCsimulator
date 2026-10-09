@@ -72,6 +72,7 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | aero | aileron lift-increment centre (chord fraction) | 0.4363 | thin airfoil: 1/4 + dCm_c/4 / dCl for the flap |
 | drag | CD0 | 0.03137 | skin friction (40 % laminar on surfaces) x form factors (Raymer ch. 12) + gear + engine, x1.1 excrescences: wing 0.0046 m2, tails 0.0016 m2, fuselage 0.0034 m2, main gear, pants, tail wheel 0.0025 m2, exposed cylinder head, cooling flow 0.0015 m2 |
 | drag | Oswald e | 0.78 | estimated: Stik/UltraStick identified value (0.78) at similar AR and Re; Raymer's 0.885 is optimistic at Re 3e5 |
+| gear | three-point pitch (deg), tail load share, static sag (mm) | 10.86, 0.1416, 21.02 | E5a: point-contact rest geometry; stiffness shares use ground-projected CG moment arms |
 
 ## Coefficients written (c_ref = S/b; moments about the ARP = wing-body ac)
 
@@ -117,4 +118,4 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 - Fuselage directional destabilization is omitted (v1 contract: Cnb equals the fin term), as for the Stik.
 - The local (post-stall) wing strips use the whole-airplane CLa, so local lift is ~8 % high (tail counted twice); pitch stiffness agrees with the global model because the ARP is the wing-body ac.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = 0.39.
-- No propwash, no fuel burn, no ground contact (crash hull only).
+- No propwash or fuel burn. E5a adds fixed taildragger ground contact; stiffness, damping, tyre forces, steering ratio and collapse thresholds remain provisional. No caster, brakes or stiction anchors; the parked idle state may creep. Point contacts rotate with the airframe; wheel-circle geometry remains E6a. Visual wheels do not animate suspension or steering in this step.
