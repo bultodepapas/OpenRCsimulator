@@ -39,7 +39,13 @@ static func threshold(field: Dictionary, east_bound := true, lineup := LINEUP) -
 ## Returns { ok, state (13), anchors (ANCHOR_STRIDE per contact, all stuck), rest_state (engine off), iterations,
 ## residual, message }. Requires a structurally valid AircraftData model and GroundSurfaces table.
 static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float, east: float, heading: float,
-		d: Dictionary, steer: float, rpm: float, rho: float, g: float) -> Dictionary:
+		d: Dictionary, steer: float, rpm: float, rho: float, g: float,
+		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> Dictionary:
+	if wind_ned.size() != 3:
+		return _fail("runway start needs three NED wind components")
+	for value: float in wind_ned:
+		if not is_finite(value):
+			return _fail("runway start needs finite NED wind")
 	for value in [north, east, heading, steer, rpm, rho, g]:
 		if not is_finite(value):
 			return _fail("runway start needs finite position, heading, controls, rpm, density and gravity")
@@ -62,7 +68,7 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	var pose := PackedFloat64Array([north, east, -(lowest - float(gear.static_sag)), 0.0, 0.0, heading])
 	var rest_residual := func(x: PackedFloat64Array) -> PackedFloat64Array:
 		var p := PackedFloat64Array([north, east, x[0], x[1], x[2], heading])
-		var a := _accelerations(_state(p), model, inv, gear, surfaces, d, steer, 0.0, rho, g, free, false)
+		var a := _accelerations(_state(p), model, inv, gear, surfaces, d, steer, 0.0, rho, g, free, false, wind_ned)
 		# World-frame vertical acceleration and angular accelerations about north and east.
 		var q := _quat(p)
 		var lin := M.q_rotate(q, M.v3(a[0], a[1], a[2]))
@@ -81,7 +87,7 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 			return _fail("contact %d does not touch the ground at rest" % i)
 	# Stage 2: engine idling, anchors fixed; all six pose values.
 	var idle_residual := func(x: PackedFloat64Array) -> PackedFloat64Array:
-		return _accelerations(_state(x), model, inv, gear, surfaces, d, steer, rpm, rho, g, anchors, true)
+		return _accelerations(_state(x), model, inv, gear, surfaces, d, steer, rpm, rho, g, anchors, true, wind_ned)
 	var idle := _newton(idle_residual, pose)
 	if not idle.ok:
 		return _fail("idling pose did not converge (residual %s)" % String.num_scientific(idle.residual))
@@ -98,10 +104,11 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 ## and the gear with the given anchors.
 static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: PackedFloat64Array, gear: Dictionary,
 		surfaces: PackedFloat64Array, d: Dictionary, steer: float, rpm: float, rho: float, g: float,
-		anchors: PackedFloat64Array, engine: bool) -> PackedFloat64Array:
+		anchors: PackedFloat64Array, engine: bool,
+		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> PackedFloat64Array:
 	var loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	if engine:
-		loads = Dynamics.loads(s, model, d, rpm, rho, PackedFloat64Array([0.0, 0.0, 0.0]))
+	if engine or wind_ned[0] != 0.0 or wind_ned[1] != 0.0 or wind_ned[2] != 0.0:
+		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned)
 	var ground := Ground.loads(s, gear, steer, surfaces, anchors)
 	for i in ground.size():
 		loads[i] += ground[i]

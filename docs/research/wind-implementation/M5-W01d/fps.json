@@ -1,0 +1,23 @@
+[
+  {
+    "fps": 30,
+    "ticks": 480,
+    "frames": 61,
+    "throttle": 0.5344,
+    "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+  },
+  {
+    "fps": 60,
+    "ticks": 480,
+    "frames": 121,
+    "throttle": 0.5344,
+    "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+  },
+  {
+    "fps": 144,
+    "ticks": 480,
+    "frames": 289,
+    "throttle": 0.5344,
+    "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+  }
+]

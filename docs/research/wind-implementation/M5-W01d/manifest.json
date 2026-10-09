@@ -1,0 +1,162 @@
+{
+  "format": "openrc-wind-delivery v1",
+  "date": "2026-10-09",
+  "baseline_commit": "6973e42159eaf21574c17f44f64e536b2e0304eb",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "full_app_suite": {
+    "exit_code": 0,
+    "gdscript_programs": 132,
+    "weather_cli_tests": 6
+  },
+  "focused_checks": {
+    "field": 54,
+    "flight": 51,
+    "trace": 29,
+    "hud": 9,
+    "weather_ui": 45
+  },
+  "active_gust_fps": [
+    {
+      "fps": 30,
+      "ticks": 480,
+      "frames": 61,
+      "throttle": 0.5344,
+      "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+    },
+    {
+      "fps": 60,
+      "ticks": 480,
+      "frames": 121,
+      "throttle": 0.5344,
+      "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+    },
+    {
+      "fps": 144,
+      "ticks": 480,
+      "frames": 289,
+      "throttle": 0.5344,
+      "state_sha256": "ce81c6c1c55ba01bc58acd48237a19d1acd19c153d8404184b35b823d238e6e9"
+    }
+  ],
+  "native_linux_weather_parity": [
+    {
+      "preset": "steady",
+      "rows": 721,
+      "numeric_sha256": "42a5369bafcb77a8e1cff01772e2e4c8f1239961f2eb192b97e876c57137e498",
+      "source_export_byte_equal": true
+    },
+    {
+      "preset": "gusty",
+      "rows": 721,
+      "numeric_sha256": "18ab128a1e4e4cd92d3d93cf84d56dfe4a73735827347c7609e85deb01e8fc97",
+      "source_export_byte_equal": true
+    },
+    {
+      "preset": "updraft",
+      "rows": 721,
+      "numeric_sha256": "5255232029ef3f19cc65ced388a9974927695dfe056f593152461490d64a8374",
+      "source_export_byte_equal": true
+    }
+  ],
+  "resource_validation": {
+    "ok": true,
+    "counts": {
+      "total": 430,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 430,
+      "info": 0
+    },
+    "node_config": {
+      "ran": true,
+      "counts": {
+        "warnings": 0,
+        "hints": 0
+      },
+      "hints": [],
+      "physics_layers": {
+        "2d": {
+          "layers": []
+        },
+        "3d": {
+          "layers": []
+        },
+        "finding_count": 0,
+        "findings": [],
+        "truncated": false
+      }
+    }
+  },
+  "scene_smoke": {
+    "ok": true,
+    "counts": {
+      "scenes": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 285,
+      "findings": 0
+    }
+  },
+  "source_sha256": {
+    "app/app_root.gd": "03827ad5091f377c45b259d192ddad1426527b9b56ce054c711ac50f77dcb96c",
+    "app/app_state/preferences.gd": "1a152f407b541c071ce88c63fe4685903a76860108d3393b2022740427966d4b",
+    "app/i18n/es.po": "c43e8427e9e1fa2cbae338c7820fa41c6342a91712ac27ef80658641e86ea4ff",
+    "app/main.gd": "c09cc00c03fc0a062d1831bf601c1800ceedfa07f28c28e47c02dc63e807170e",
+    "app/physics/ground_start.gd": "3bfdefd406b462c12b27ca632281da92644d445bc627ec1fff2124d4fb116a6a",
+    "app/physics/wind_config.gd": "f3385ff8e6b31f830b621d8fb095179e5e5c0e34241189beb2ac4c6735f98f4a",
+    "app/physics/wind_config.gd.uid": "1128d9ac371e2764e404b138d701d5c21b669ef26bf696307f3febc28e671e2b",
+    "app/physics/wind_field.gd": "aca8ea105a9690cb7a23f09c12862a2294ccb0dd6ba84183e56f92bfa068e885",
+    "app/physics/wind_field.gd.uid": "8c1498e008cd9eb4b49d8a2b1ca1b081dd30d32d293a98d6b20a1a33a3e3b05a",
+    "app/sim/flight_session.gd": "c9205a73d66226e318ac2f92da9cdeebeed07ff2d22f573414f893490a8823ea",
+    "app/sim/recorder.gd": "53084c3d700b16d74c7698e66c8d8d33923e84105a60597b553b5725ba24cc47",
+    "app/sim/trace.gd": "36ee77e7502a67846899e6c01e63da6e6ea8de16d532a8e8d0dfa18a31f8e51d",
+    "app/test.sh": "92ef7bbe8db63f1c4524c2a200c9e571b08abf8f7806602ebab5740066877b6c",
+    "app/tests/bench_wind.gd": "94e41647fa113c5299d8e9e74722ff9a732191711e7d85ea0b34a9993e1bfd6e",
+    "app/tests/bench_wind.gd.uid": "fa897308f36f591509e75b202a8a6d09e6363537f4c22c83dedfb8c8935b2928",
+    "app/tests/check_wind_trace.py": "830848f33c5054090de408db91d715726b2db18ddb29536e5ed3a1f6f81b75f6",
+    "app/tests/test_ui_weather.gd": "c2e72eae20482ea9cffd12403bebcadfaaa22fdae6957df89eea588ad4474f73",
+    "app/tests/test_ui_weather.gd.uid": "666ead109c647c28986d01f8b57abb01a23d2a72261ba0c5aedac568c2a1db15",
+    "app/tests/test_weather_cli.py": "de316d1cdeff83c5aa505f32a0dddf81ed2c58d4e4d7b4c20110a09cc5ab5c8b",
+    "app/tests/test_wind_field.gd": "c08060ebdbc9fe4b1e09437b81063e56dcdb48a590d6a03cd7b8a08bfdd86635",
+    "app/tests/test_wind_field.gd.uid": "7d38b61d0e1a3a1a6048dbed9495e3a0d46ca61c4117c9f78a567b45ac37264e",
+    "app/tests/test_wind_flight.gd": "4fa6638415f2471e073eba6e792cec34a6347e40f74ad715e159a1ff90ca7606",
+    "app/tests/test_wind_flight.gd.uid": "79ed39b3f02ffafbc86dd3195976e561d65b9bada8a4937156a94eedd381e288",
+    "app/tests/test_wind_hud.gd": "0cf390be1ddd64e5d09a7988aa922849a1abe40d70f3805cf738e51d0a0b5f9b",
+    "app/tests/test_wind_hud.gd.uid": "791fee9b054bde1ff98028b34d81f550e0928bcd272ded0023e6eebea612b3b9",
+    "app/tests/test_wind_trace.gd": "d0c8650e7799c713db53f1b24bf67c03ccb70fe7c93394ce2b4b7f3b5afed8f1",
+    "app/tests/test_wind_trace.gd.uid": "801b8259b1160fd87fc12558ef23bde8254123ecbccb2771077cf339fa55ec5a",
+    "app/ui/help_screen.gd": "6c2954fa51751bccf1f6093d957fcc95380e57cfd22556eb1231466f15ee17e9",
+    "app/ui/home.gd": "16e0ec4317347c5b3721ea26dbbefdcd42774abbfec234707a884f8e8625c7b8",
+    "app/ui/weather_dialog.gd": "40717895c99c6585b8e1051d31aad8cb095c5fe5f4fd6e27560a5b90d4cbb349",
+    "app/ui/weather_dialog.gd.uid": "7e787f49eed86dd5e75416c70e08f95ac53f4afebc1eb0502c259a624b109978"
+  },
+  "evidence_sha256": {
+    "cli.log": "55ef25e59a24e6b8f65ab0f0141ec801e1fbacd41e40dcaecb03c8c33e6f36c0",
+    "fps.json": "ce430176971a31d1d903528de33fd0de0cf071a8d6d7f12c7f784589beda612e",
+    "gusty-export.csv": "f7e176da20c80be058214baad555c6b379375813b6c952ddde3cb78963f35e0c",
+    "gusty-export.log": "283a7a57f9fa1d77d7b4be8825fc145ea2006735679e529e4057b50f43601fa9",
+    "gusty-source.csv": "d11be25f739ef2e3290928cf6bfefa56a33e624e2ae5426bf47f8c1c499585f7",
+    "gusty-source.log": "22b21eaff0e7a85e2351b0bc4a050ce6058944ee1b16cd049dfd6e18dd2d7a61",
+    "lint.json": "5fac0c9ef43853c17db0f7264315be2d4bde411c3b87d8423f823353f6b6439d",
+    "package-smoke.json": "ea2d5d9304caa445eaeb4485c49db2626d18cb16cc0864e8e39beccbd1e758cc",
+    "packages.json": "ed0d92e057780d248d5eb44a8800a968ef4fdad3e4fdc7e869ce62395a70834e",
+    "scenes.json": "70f730be654a3efc7e2b69a7fec98d383a5295c2064d648d71963aca19ff1608",
+    "steady-export.csv": "ebd1a4e3952832c929cdf0c5adaf1db2f63a84ec2412c52d1723e42a7e1d16d2",
+    "steady-export.log": "526890481cac2b8c046042e692b1dee98cc295774714050e70037d65c3866ecf",
+    "steady-source.csv": "41e7bdbb329588c4ba538f2934d3c3404ead9f4c928e0150c1cf67b1ec9e7516",
+    "steady-source.log": "cded6111d2d9520c9db1f8980f65675aa82c32e3f0ff5044de21159f61796e70",
+    "suite.log": "196d0f82531422bac2f6dc8289b59f5021471c895b882123ef382cf5e9310da2",
+    "test_ui_home.log": "e0993ec49f439fc837ad9526b58d60b65dcab82ba51d3b4548605f8696884c2e",
+    "test_ui_weather.log": "c3f785fbde0784e8ef16bb82c2e48917c07ad833aebf9b38a1a51ecab5d797f6",
+    "test_wind_field.log": "0eb6ffaa552187d8d1fb91bd5fa709b9a7c22b30e169fa2cc2ec38bc03eebb5a",
+    "test_wind_flight.log": "d48e4af459dfcac84fd8f8ab1666e68215d7f4c896abf7795f3487d4b6834601",
+    "test_wind_hud.log": "40bdd945a26f925fd7f3b85d732fe94adce42b16a937141beba310eca7427371",
+    "test_wind_trace.log": "26f749d1162149f51b94f312c8c35b3a92245d2d11d09c287f66b468156cda46",
+    "updraft-export.csv": "0b3d57829d02f2bda330045764364b6eeae8236eed309ee099951952c6b81bf1",
+    "updraft-export.log": "6f48e4132329143cf41f1b86f958be3898c4c792349f715b6e93f1227c10504f",
+    "updraft-source.csv": "84f4e650bfc1e9d4c3f613add8adb3f4ba9e4f92bdbc42e98854b38df42da748",
+    "updraft-source.log": "ad5e149213fcea3f4aa56a9445f62546f2bace826504262f4ecdfad9e5638164",
+    "validation.json": "4e1f947045f7c52954e6015e09105fb148a46e7ccca73f6f13e61f5ec410f3a9"
+  }
+}

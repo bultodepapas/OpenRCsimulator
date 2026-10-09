@@ -12,6 +12,7 @@ const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const WeatherSettings := preload("res://physics/wind_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
@@ -25,6 +26,8 @@ signal help_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 signal start_requested(choice: String)
+## The player asked to edit draft flight conditions; closing the dialog returns focus to `from`.
+signal weather_requested(from: Control)
 
 const SIDEBAR_WIDTH := 440
 
@@ -32,9 +35,11 @@ const SIDEBAR_WIDTH := 440
 var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "airborne"
 var runway_available: bool = true
+var weather_config: Dictionary = WeatherSettings.defaults()
 var start_button: Button
 
 var fly_button: Button
+var weather_button: Button
 var language_button: Button
 var help_button: Button
 var quit_button: Button
@@ -54,6 +59,9 @@ var _fly_sent := false
 func _init() -> void:
 	name = "Home"
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
+	var sidebar_style: StyleBoxFlat = theme.get_stylebox("panel", "Sidebar") as StyleBoxFlat
+	sidebar_style.content_margin_top = 36
+	sidebar_style.content_margin_bottom = 24
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -135,12 +143,24 @@ func _init() -> void:
 	fly_button.name = "Fly"
 	fly_button.custom_minimum_size.y = 66
 	fly_button.pressed.connect(_on_fly)
-	column.add_child(fly_button)
+	var fly_row := HBoxContainer.new()
+	fly_row.add_theme_constant_override("separation", 12)
+	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fly_row.add_child(fly_button)
+	weather_button = _button("", "")
+	weather_button.name = "Weather"
+	weather_button.custom_minimum_size = Vector2(170, 66)
+	weather_button.add_theme_font_size_override("font_size", 17)
+	weather_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # the compact dynamic summary is built with tr()
+	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
+	fly_row.add_child(weather_button)
+	column.add_child(fly_row)
 	column.add_child(_gap(12))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	language_button = _button("", "")
 	language_button.name = "Language"
+	language_button.add_theme_font_size_override("font_size", 16)
 	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
 	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
@@ -185,6 +205,10 @@ func _ready() -> void:
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
+	weather_button.focus_neighbor_top = weather_button.get_path_to(fly_button)
+	weather_button.focus_neighbor_bottom = weather_button.get_path_to(language_button)
+	for button: Button in [language_button, help_button, quit_button]:
+		button.focus_neighbor_top = button.get_path_to(fly_button)
 	Input.joy_connection_changed.connect(_on_joy_changed)
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
@@ -217,6 +241,14 @@ func set_start_choice(choice: String) -> void:
 	start_button.disabled = not supported
 	start_button.text = "Start: runway (experimental)" if start_choice == "runway" else "Start: in the air"
 	limits_label.text = "Starts at idle on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+
+
+## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.
+func set_weather_config(raw: Variant) -> void:
+	var checked := WeatherSettings.validate(raw)
+	weather_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
+	if is_node_ready():
+		_update_weather_text()
 
 
 ## A rejected launch leaves the same usable Home, including keyboard focus.
@@ -273,7 +305,37 @@ func _update_texts() -> void:
 	aircraft_count_label.text = tr("Aircraft %d of %d") % [Catalog.ids().find(aircraft_id) + 1, Catalog.ids().size()]
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")
+	_update_weather_text()
 	_update_control()
+
+
+func _update_weather_text() -> void:
+	if weather_button == null:
+		return
+	var parts := PackedStringArray()
+	var speed := float(weather_config.speed_mps)
+	var gust := float(weather_config.gust_mps)
+	var gust_up := float(weather_config.gust_up_mps)
+	var summary := tr("Calm")
+	if speed > 0.0:
+		var wind_text := tr("%s m/s from %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+		parts.append(wind_text)
+		summary = tr("%s m/s · %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+	if gust > 0.0:
+		parts.append(tr("gust %s m/s") % String.num(gust, 1))
+		if speed == 0.0:
+			summary = tr("Gust %s m/s") % String.num(gust, 1)
+		else:
+			summary += " +%s" % String.num(gust, 1)
+	if gust_up != 0.0:
+		parts.append(tr("up %s m/s") % String.num(gust_up, 1))
+		if speed == 0.0 and gust == 0.0:
+			if gust_up > 0.0:
+				summary = tr("Updraft %s m/s") % String.num(gust_up, 1)
+			else:
+				summary = tr("Downdraft %s m/s") % String.num(absf(gust_up), 1)
+	weather_button.text = "%s\n%s" % [tr("Weather"), summary]
+	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind with smooth repeating gusts."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
 
 
 ## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.

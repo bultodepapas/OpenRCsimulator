@@ -1,0 +1,20 @@
+[
+  {
+    "preset": "steady",
+    "rows": 721,
+    "numeric_sha256": "42a5369bafcb77a8e1cff01772e2e4c8f1239961f2eb192b97e876c57137e498",
+    "source_export_byte_equal": true
+  },
+  {
+    "preset": "gusty",
+    "rows": 721,
+    "numeric_sha256": "18ab128a1e4e4cd92d3d93cf84d56dfe4a73735827347c7609e85deb01e8fc97",
+    "source_export_byte_equal": true
+  },
+  {
+    "preset": "updraft",
+    "rows": 721,
+    "numeric_sha256": "5255232029ef3f19cc65ced388a9974927695dfe056f593152461490d64a8374",
+    "source_export_byte_equal": true
+  }
+]

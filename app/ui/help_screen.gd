@@ -72,7 +72,7 @@ func _init(return_focus: Control = null) -> void:
 	right.add_child(_text("RADIO", "SectionLabel"))
 	right.add_child(_text("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.", "SecondaryLabel", true))
 	right.add_child(_text("RIGHT NOW", "SectionLabel"))
-	right.add_child(_text("Flights start in the air. Wheel landings are experimental; a crash restarts the flight. No wind yet.", "SecondaryLabel", true))
+	right.add_child(_text("Flights start in the air. Wind is uniform across the field; smooth gusts repeat on a timer. No turbulence or spatial variation. Wheel landings are experimental; a crash restarts the flight.", "SecondaryLabel", true))
 
 	# About across the width, in two lines: everything fits at 1280x720 without scrolling, because nothing below
 	# Close is focusable and keyboard players could not scroll to it (tests/test_ui_help.gd checks the fit).

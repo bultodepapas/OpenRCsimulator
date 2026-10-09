@@ -1,0 +1,695 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   schema-1 defaults include a complete calm weather config
+ok   nested defaults are detached between loads
+ok   old schema-1 file without weather remains readable
+ok   invalid saved weather falls back to calm
+ok   saving an invalid weather object is rejected
+ok   valid weather saves and reloads
+ok   future schema reads valid weather but becomes read-only
+ok   future schema settings are never overwritten
+ok   precision fixture valid
+ok   Home presents a weather button next to Fly
+ok   Tab from Fly reaches Weather without stealing aircraft arrow navigation
+ok   Weather is keyboard reachable next to Fly
+ok   radio axis cannot move Home focus
+ok   Enter opens a modal draft
+ok   weather dialog panel fits the 1280×720 base layout
+ok   all six requested weather fields are available
+ok   speed_mps field round-trips the complete float64
+ok   from_deg field round-trips the complete float64
+ok   gust_mps field round-trips the complete float64
+ok   gust_up_mps field round-trips the complete float64
+ok   gust_duration_s field round-trips the complete float64
+ok   gust_period_s field round-trips the complete float64
+ok   gust delay stays hidden from the form
+ok   radio axis cannot move modal focus
+ok   Esc cancels and returns focus to Weather
+ok   cancel leaves the original persisted config untouched
+ok   reopen begins from the committed precision values
+ok   out-of-range edit displays an error and stays in the draft
+ok   invalid draft does not change the committed config
+ok   Apply preserves every unedited value and hidden gust delay
+ok   Apply returns focus and closes the modal
+ok   preset fills the draft without changing saved preferences
+ok   Apply commits the chosen preset
+ok   Spanish localizes Home and the modal preset list
+ok   Spanish modal has no untranslated focusable or instructional text
+ok   future-schema UI fixture saves
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema Apply takes effect for this session
+ok   future schema save failure is visible on Home
+ok   future schema Apply leaves the original file byte-for-byte unchanged
+ok   non-calm Home-to-Fly fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   successful Fly passes the chosen config to main before adding the flight
+ok   session received the same weather configuration
+ok   successful Fly remembers the weather config
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route keeps the calm default
+ok   direct route leaves stored non-calm preference bytes alone
+all UI weather checks passed
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://tests/ui_driver.gd:49)
+WARNING: The parameter "assembly" is never used in the function "_build_wing_mechanism()". If this is intended, prefix it with an underscore: "_assembly".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:207)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:214)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "bell_input_zero" is declared but never used in the block. If this is intended, prefix it with an underscore: "_bell_input_zero".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:244)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "assembly" is never used in the function "_build_tail_mechanism()". If this is intended, prefix it with an underscore: "_assembly".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:305)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "root" is never used in the function "_build_throttle_approximation()". If this is intended, prefix it with an underscore: "_root".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:362)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "v" is declared but never used in the block. If this is intended, prefix it with an underscore: "_v".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:372)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "normal" is never used in the function "_add_control_horn()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:384)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "arm_radius" is never used in the function "_add_bellcrank_support()". If this is intended, prefix it with an underscore: "_arm_radius".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:422)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "arm_u" is never used in the function "_add_servo()". If this is intended, prefix it with an underscore: "_arm_u".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:438)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:448)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "u" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_u".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "v" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_v".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "normal" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "angle" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_angle".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "normal" is never used in the function "_update_beam()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:551)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "normal" is never used in the function "_beam_transform()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:559)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "root" is never used in the function "_add_tail_guide()". If this is intended, prefix it with an underscore: "_root".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:579)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "reference" is shadowing an already-declared method in the base class "RefCounted".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:113)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "a" is declared but never used in the block. If this is intended, prefix it with an underscore: "_a".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:151)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "b" is declared but never used in the block. If this is intended, prefix it with an underscore: "_b".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:152)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:621)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_model.gd:230)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:414)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:453)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:511)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The variable "outline" is declared below in the parent block.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:512)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:562)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:583)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:317)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "tr" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://aircraft/p51d_model.gd:595)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:681)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:744)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:788)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "le_root" is declared but never used in the block. If this is intended, prefix it with an underscore: "_le_root".
+     at: GDScript::reload (res://aircraft/p51d_model.gd:793)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:813)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:964)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The variable "hub" is declared below in the parent block.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:1027)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://render/ground.gd:17)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:19)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:184)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:207)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/flightline_barrier.gd:54)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/windsock.gd:32)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/windsock.gd:32)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:43)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:79)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:131)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:147)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "seed" is never used in the function "_pavilion()". If this is intended, prefix it with an underscore: "_seed".
+     at: GDScript::reload (res://scenery/prefabs.gd:161)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:161)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:302)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:316)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:339)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:346)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:360)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:497)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:574)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://scenery/models.gd:72)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The variable "rows" is declared below in the parent block.
+     at: GDScript::reload (res://scenery/scenery_loader.gd:283)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:65)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:76)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:165)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:192)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:206)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The variable "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience_player.gd:11)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience_player.gd:15)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:15)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "calls" is declared but never used in the block. If this is intended, prefix it with an underscore: "_calls".
+     at: GDScript::reload (res://scenery/ambience.gd:42)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:84)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:101)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "get" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://scenery/scenery.gd:34)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/scenery.gd:88)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/scenery.gd:238)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The local variable "basis" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://ui/home_scene.gd:102)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://ui/help_screen.gd:96)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The function parameter "wrap" has the same name as a built-in function.
+     at: GDScript::reload (res://ui/help_screen.gd:150)
+     GDScript backtrace (most recent call first):
+         [0] _app (res://tests/test_ui_weather.gd:249)
+         [1] _draft_dialog (res://tests/test_ui_weather.gd:96)
+         [2] _run (res://tests/test_ui_weather.gd:31)
+         [3] _initialize (res://tests/test_ui_weather.gd:25)
+WARNING: The parameter "rates" is never used in the function "coefficients()". If this is intended, prefix it with an underscore: "_rates".
+     at: GDScript::reload (res://physics/aero.gd:62)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://physics/aircraft_data.gd:104)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The variable "a0" is declared below in the parent block.
+     at: GDScript::reload (res://physics/aircraft_data.gd:510)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/aircraft_data.gd:779)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1051)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1067)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:31)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:44)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/propulsion.gd:28)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "derivative" is shadowing an already-declared function at line 55 in the current class.
+     at: GDScript::reload (res://physics/dynamics.gd:46)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://sim/simulation.gd:238)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/hull_crossing.gd:66)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/impact_snapshot.gd:55)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local function parameter "is_connected" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://sim/flight_session.gd:181)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:391)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:847)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://sim/trace.gd:45)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "position" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:406)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://main.gd:496)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "visible" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:627)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "position" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:765)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "basis" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:766)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
