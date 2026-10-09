@@ -1,0 +1,269 @@
+Fresh local clone of HEAD plus only E0b7 tool files and offline-suite registration.
+== validation/weighing/test_reduce.py
+test_all_local_sensitivities_against_central_difference (__main__.WeighingTests.test_all_local_sensitivities_against_central_difference) ... ok
+test_cli_failures_preserve_files (__main__.WeighingTests.test_cli_failures_preserve_files) ... ok
+test_cli_report_reproducibility_and_hashes (__main__.WeighingTests.test_cli_report_reproducibility_and_hashes) ... ok
+test_coordinate_translation (__main__.WeighingTests.test_coordinate_translation) ... ok
+test_covariance_against_seeded_monte_carlo (__main__.WeighingTests.test_covariance_against_seeded_monte_carlo) ... ok
+test_invalid_inputs (__main__.WeighingTests.test_invalid_inputs) ... ok
+test_known_asymmetric_statics (__main__.WeighingTests.test_known_asymmetric_statics) ... ok
+test_large_common_gain_does_not_warn_about_cg (__main__.WeighingTests.test_large_common_gain_does_not_warn_about_cg) ... ok
+test_measured_evidence_preserves_provenance (__main__.WeighingTests.test_measured_evidence_preserves_provenance) ... ok
+test_shared_datum_is_not_averaged_down (__main__.WeighingTests.test_shared_datum_is_not_averaged_down) ... ok
+test_shared_gain_cancels_from_cg (__main__.WeighingTests.test_shared_gain_cancels_from_cg) ... ok
+test_strict_json (__main__.WeighingTests.test_strict_json) ... ok
+test_symmetric_rig_and_axis_sign (__main__.WeighingTests.test_symmetric_rig_and_axis_sign) ... ok
+test_tare_offset_invariance (__main__.WeighingTests.test_tare_offset_invariance) ... ok
+test_zero_net_support_and_large_uncertainty_warn (__main__.WeighingTests.test_zero_net_support_and_large_uncertainty_warn) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.662s
+
+OK
+== validation/inertia/test_reduce.py
+test_bad_contract (__main__.Contract.test_bad_contract) ... ok
+test_bad_quantities (__main__.Contract.test_bad_quantities) ... ok
+test_cli_success_failure_and_input_preservation (__main__.Contract.test_cli_success_failure_and_input_preservation) ... ok
+test_committed_example (__main__.Contract.test_committed_example) ... ok
+test_exact_input_hash_and_reproducibility (__main__.Contract.test_exact_input_hash_and_reproducibility) ... ok
+test_impossible_tare_and_compound_geometry (__main__.Contract.test_impossible_tare_and_compound_geometry) ... ok
+test_isolated_mutations_are_detected (__main__.Contract.test_isolated_mutations_are_detected) ... ok
+test_numerical_overflow_is_rejected (__main__.Contract.test_numerical_overflow_is_rejected) ... ok
+test_strict_json (__main__.Contract.test_strict_json) ... ok
+test_bad_plank_agreement_is_a_report_not_software_failure (__main__.Physics.test_bad_plank_agreement_is_a_report_not_software_failure) ... ok
+test_bifilar_tare_geometry_change_is_refused (__main__.Physics.test_bifilar_tare_geometry_change_is_refused) ... ok
+test_compound_height_sensitivity_vanishes_at_radius_of_gyration (__main__.Physics.test_compound_height_sensitivity_vanishes_at_radius_of_gyration) ... ok
+test_elapsed_and_cycle_count_describe_full_period (__main__.Physics.test_elapsed_and_cycle_count_describe_full_period) ... ok
+test_full_spacing_squared_and_timing_squared (__main__.Physics.test_full_spacing_squared_and_timing_squared) ... ok
+test_large_uncertainty_is_explicit (__main__.Physics.test_large_uncertainty_is_explicit) ... ok
+test_net_pivot_result_is_preserved_before_cg_shift (__main__.Physics.test_net_pivot_result_is_preserved_before_cg_shift) ... ok
+test_shared_geometry_uncertainty_is_not_independent_tare_error (__main__.Physics.test_shared_geometry_uncertainty_is_not_independent_tare_error) ... ok
+test_two_compound_offsets_recover_same_inertia (__main__.Physics.test_two_compound_offsets_recover_same_inertia) ... ok
+test_uncertainty_gradients_against_finite_differences (__main__.Physics.test_uncertainty_gradients_against_finite_differences) ... ok
+test_uniform_plank_both_methods_with_and_without_tare (__main__.Physics.test_uniform_plank_both_methods_with_and_without_tare) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.463s
+
+OK
+== validation/static-prop/test_reduce.py
+test_cli_success_and_failure (__main__.Contract.test_cli_success_and_failure) ... ok
+test_duplicate_keys_nonfinite_and_malformed_json (__main__.Contract.test_duplicate_keys_nonfinite_and_malformed_json) ... ok
+test_example (__main__.Contract.test_example) ... ok
+test_invalid_quantity_values (__main__.Contract.test_invalid_quantity_values) ... ok
+test_isolated_formula_mutations (__main__.Contract.test_isolated_formula_mutations) ... ok
+test_measured_campaign_refuses_estimated_operating_readings (__main__.Contract.test_measured_campaign_refuses_estimated_operating_readings) ... ok
+test_measured_label_preserves_declared_provenance_without_acceptance (__main__.Contract.test_measured_label_preserves_declared_provenance_without_acceptance) ... ok
+test_numeric_extremes_fail_cleanly (__main__.Contract.test_numeric_extremes_fail_cleanly) ... ok
+test_reproducibility_hashes_and_preserved_input (__main__.Contract.test_reproducibility_hashes_and_preserved_input) ... ok
+test_strict_fields_units_and_provenance (__main__.Contract.test_strict_fields_units_and_provenance) ... ok
+test_above_unity_fom_is_reported_without_clamping (__main__.Physics.test_above_unity_fom_is_reported_without_clamping) ... ok
+test_analytic_point (__main__.Physics.test_analytic_point) ... ok
+test_analytic_sensitivities_against_finite_differences (__main__.Physics.test_analytic_sensitivities_against_finite_differences) ... ok
+test_dimensional_similarity (__main__.Physics.test_dimensional_similarity) ... ok
+test_fom_uncertainty_cancels_shared_density_and_diameter_correctly (__main__.Physics.test_fom_uncertainty_cancels_shared_density_and_diameter_correctly) ... ok
+test_large_uncertainty_is_visible (__main__.Physics.test_large_uncertainty_is_visible) ... ok
+test_no_torque_does_not_invent_power_or_efficiency (__main__.Physics.test_no_torque_does_not_invent_power_or_efficiency) ... ok
+test_uncertainty_has_known_relative_weights (__main__.Physics.test_uncertainty_has_known_relative_weights) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.432s
+
+OK
+== validation/rpm-step/test_reduce.py
+test_affine_rpm_invariance (__main__.Reduction.test_affine_rpm_invariance) ... ok
+test_bad_contract (__main__.Reduction.test_bad_contract) ... ok
+test_cli_failure_no_partial_report (__main__.Reduction.test_cli_failure_no_partial_report) ... ok
+test_cli_reproducible_and_hashes (__main__.Reduction.test_cli_reproducible_and_hashes) ... ok
+test_decreasing (__main__.Reduction.test_decreasing) ... ok
+test_exact_exponential (__main__.Reduction.test_exact_exponential) ... ok
+test_invalid_sample_values_and_order (__main__.Reduction.test_invalid_sample_values_and_order) ... ok
+test_irregular_interpolation (__main__.Reduction.test_irregular_interpolation) ... ok
+test_json_duplicates_and_nonfinite (__main__.Reduction.test_json_duplicates_and_nonfinite) ... ok
+test_measured_provenance_and_uncertainty_retained (__main__.Reduction.test_measured_provenance_and_uncertainty_retained) ... ok
+test_missing_threshold_and_onset (__main__.Reduction.test_missing_threshold_and_onset) ... ok
+test_negative_delay_is_not_clamped (__main__.Reduction.test_negative_delay_is_not_clamped) ... ok
+test_nonmonotone_first_crossing_overshoot (__main__.Reduction.test_nonmonotone_first_crossing_overshoot) ... ok
+test_precommand_crossing_refused (__main__.Reduction.test_precommand_crossing_refused) ... ok
+test_residuals_include_precommand_and_undershoot (__main__.Reduction.test_residuals_include_precommand_and_undershoot) ... ok
+test_sampling_support_contains_analytic_parameters (__main__.Reduction.test_sampling_support_contains_analytic_parameters) ... ok
+test_threshold_plateau (__main__.Reduction.test_threshold_plateau) ... ok
+test_time_scaling (__main__.Reduction.test_time_scaling) ... ok
+test_time_translation (__main__.Reduction.test_time_translation) ... ok
+test_underresolved_flag (__main__.Reduction.test_underresolved_flag) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.393s
+
+OK
+== validation/rpm-step/test_uncertainty.py
+test_affine_rpm_and_time_scaling_of_uncertainty (__main__.Uncertainty.test_affine_rpm_and_time_scaling_of_uncertainty) ... ok
+test_all_signed_sensitivities_against_finite_differences (__main__.Uncertainty.test_all_signed_sensitivities_against_finite_differences) ... ok
+test_cli_opt_in_is_deterministic_and_keeps_hashes (__main__.Uncertainty.test_cli_opt_in_is_deterministic_and_keeps_hashes) ... ok
+test_command_error_cancels_from_tau_and_consistency (__main__.Uncertainty.test_command_error_cancels_from_tau_and_consistency) ... ok
+test_covariance_positive_semidefinite_and_diagonal (__main__.Uncertainty.test_covariance_positive_semidefinite_and_diagonal) ... ok
+test_endpoint_covariance_across_disjoint_segments (__main__.Uncertainty.test_endpoint_covariance_across_disjoint_segments) ... ok
+test_explicit_opt_in_and_strict_model (__main__.Uncertainty.test_explicit_opt_in_and_strict_model) ... ok
+test_nominal_results_unchanged (__main__.Uncertainty.test_nominal_results_unchanged) ... ok
+test_screen_endpoint_time_and_command_order (__main__.Uncertainty.test_screen_endpoint_time_and_command_order) ... ok
+test_screen_recrossing (__main__.Uncertainty.test_screen_recrossing) ... ok
+test_screen_threshold_knots_and_earlier_near_hits (__main__.Uncertainty.test_screen_threshold_knots_and_earlier_near_hits) ... ok
+test_seeded_sampling_matches_standard_uncertainties (__main__.Uncertainty.test_seeded_sampling_matches_standard_uncertainties) ... ok
+test_shared_samples_and_endpoints_hand_solution (__main__.Uncertainty.test_shared_samples_and_endpoints_hand_solution) ... ok
+test_zero_uncertainty_exact_knots (__main__.Uncertainty.test_zero_uncertainty_exact_knots) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.650s
+
+OK
+== validation/ground-video/test_reduce.py
+test_determinism_exact_input_hashes_and_stdout (__main__.ProcessTests.test_determinism_exact_input_hashes_and_stdout) ... ok
+test_failure_preserves_report (__main__.ProcessTests.test_failure_preserves_report) ... ok
+test_input_aliases_including_hardlinks (__main__.ProcessTests.test_input_aliases_including_hardlinks) ... ok
+test_measured_clip_identity_required_and_checked (__main__.ProcessTests.test_measured_clip_identity_required_and_checked) ... ok
+test_unexpected_video_and_write_failure (__main__.ProcessTests.test_unexpected_video_and_write_failure) ... ok
+test_bad_campaigns (__main__.ReductionTests.test_bad_campaigns) ... ok
+test_calibration_does_not_average_away (__main__.ReductionTests.test_calibration_does_not_average_away) ... ok
+test_closed_form_independent_uncertainty (__main__.ReductionTests.test_closed_form_independent_uncertainty) ... ok
+test_combined_timing_uncertainty_warning (__main__.ReductionTests.test_combined_timing_uncertainty_warning) ... ok
+test_correlated_position_frame_picks (__main__.ReductionTests.test_correlated_position_frame_picks) ... ok
+test_derived_overflow_and_underflow_refused (__main__.ReductionTests.test_derived_overflow_and_underflow_refused) ... ok
+test_invalid_csv (__main__.ReductionTests.test_invalid_csv) ... ok
+test_invalid_intervals (__main__.ReductionTests.test_invalid_intervals) ... ok
+test_known_answer_and_not_inclusive_frame_count (__main__.ReductionTests.test_known_answer_and_not_inclusive_frame_count) ... ok
+test_large_uncertainty_is_flagged_not_confidence_claim (__main__.ReductionTests.test_large_uncertainty_is_flagged_not_confidence_claim) ... ok
+test_rational_capture_rate (__main__.ReductionTests.test_rational_capture_rate) ... ok
+test_reverse_direction_and_correlation_transform (__main__.ReductionTests.test_reverse_direction_and_correlation_transform) ... ok
+test_seeded_monte_carlo_uncertainty (__main__.ReductionTests.test_seeded_monte_carlo_uncertainty) ... ok
+test_shared_event_and_calibration_covariance (__main__.ReductionTests.test_shared_event_and_calibration_covariance) ... ok
+test_strict_json (__main__.ReductionTests.test_strict_json) ... ok
+test_translation_and_frame_origin_cancel (__main__.ReductionTests.test_translation_and_frame_origin_cancel) ... ok
+test_zero_uncertainties_and_perfect_correlation (__main__.ReductionTests.test_zero_uncertainties_and_perfect_correlation) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.156s
+
+OK
+== validation/roll-video/test_reduce.py
+test_aliases_do_not_destroy_inputs (__main__.CommandLine.test_aliases_do_not_destroy_inputs) ... ok
+test_deterministic_stdout_and_hashes (__main__.CommandLine.test_deterministic_stdout_and_hashes) ... ok
+test_failed_reduction_preserves_output (__main__.CommandLine.test_failed_reduction_preserves_output) ... ok
+test_invalid_json_has_no_report (__main__.CommandLine.test_invalid_json_has_no_report) ... ok
+test_verified_clip_required_and_mismatch_refused (__main__.CommandLine.test_verified_clip_required_and_mismatch_refused) ... ok
+test_adjacent_rate_covariance_keeps_shared_error_sign (__main__.Reduction.test_adjacent_rate_covariance_keeps_shared_error_sign) ... ok
+test_analytic_full_turns (__main__.Reduction.test_analytic_full_turns) ... ok
+test_bad_csv_refused (__main__.Reduction.test_bad_csv_refused) ... ok
+test_bad_json_numbers (__main__.Reduction.test_bad_json_numbers) ... ok
+test_closed_form_uncertainty_and_signs (__main__.Reduction.test_closed_form_uncertainty_and_signs) ... ok
+test_derived_overflow_refused (__main__.Reduction.test_derived_overflow_refused) ... ok
+test_direction_changes_sign_not_duration_or_uncertainty (__main__.Reduction.test_direction_changes_sign_not_duration_or_uncertainty) ... ok
+test_duplicate_json_and_nonfinite_literals (__main__.Reduction.test_duplicate_json_and_nonfinite_literals) ... ok
+test_frame_and_turn_origin_invariance (__main__.Reduction.test_frame_and_turn_origin_invariance) ... ok
+test_large_uncertainty_is_reported_not_clamped (__main__.Reduction.test_large_uncertainty_is_reported_not_clamped) ... ok
+test_measured_requires_clip_identity (__main__.Reduction.test_measured_requires_clip_identity) ... ok
+test_rational_capture_cadence (__main__.Reduction.test_rational_capture_cadence) ... ok
+test_reversed_missing_zero_and_nonmonotone_intervals (__main__.Reduction.test_reversed_missing_zero_and_nonmonotone_intervals) ... ok
+test_seeded_sampling_matches_standard_uncertainty_and_covariance (__main__.Reduction.test_seeded_sampling_matches_standard_uncertainty_and_covariance) ... ok
+test_shared_middle_event_cancels_in_total_duration (__main__.Reduction.test_shared_middle_event_cancels_in_total_duration) ... ok
+test_skip_intermediate_annotation_preserves_whole (__main__.Reduction.test_skip_intermediate_annotation_preserves_whole) ... ok
+test_uncertain_acquisition_or_turn_annotations_refused (__main__.Reduction.test_uncertain_acquisition_or_turn_annotations_refused) ... ok
+test_unknown_and_missing_fields (__main__.Reduction.test_unknown_and_missing_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.620s
+
+OK
+== propwash/e0b7/test_reduce.py
+test_cli_failure_preserves_existing_output (__main__.ProcessTests.test_cli_failure_preserves_existing_output) ... ok
+test_deterministic_json_and_exact_input_hashes (__main__.ProcessTests.test_deterministic_json_and_exact_input_hashes) ... ok
+test_output_aliases_campaign_raw_and_reducer (__main__.ProcessTests.test_output_aliases_campaign_raw_and_reducer) ... ok
+test_absolute_and_parent_traversal_source_paths_are_refused (__main__.ReductionTests.test_absolute_and_parent_traversal_source_paths_are_refused) ... ok
+test_all_three_maneuvers_are_reduced_and_covered (__main__.ReductionTests.test_all_three_maneuvers_are_reduced_and_covered) ... ok
+test_analytic_endpoint_deltas_and_absolute_bound_sum (__main__.ReductionTests.test_analytic_endpoint_deltas_and_absolute_bound_sum) ... ok
+test_clearance_bounds_overlapping_zero_do_not_resolve_separation (__main__.ReductionTests.test_clearance_bounds_overlapping_zero_do_not_resolve_separation) ... ok
+test_difference_overflow_is_refused (__main__.ReductionTests.test_difference_overflow_is_refused) ... ok
+test_heading_delta_uses_declared_unwrapped_values (__main__.ReductionTests.test_heading_delta_uses_declared_unwrapped_values) ... ok
+test_interior_transient_changes_sampled_extrema_not_endpoint_delta (__main__.ReductionTests.test_interior_transient_changes_sampled_extrema_not_endpoint_delta) ... ok
+test_malformed_types_units_nonfinite_order_and_unknown_fields (__main__.ReductionTests.test_malformed_types_units_nonfinite_order_and_unknown_fields) ... ok
+test_measured_campaign_accepts_derived_reading_kinds (__main__.ReductionTests.test_measured_campaign_accepts_derived_reading_kinds) ... ok
+test_measured_campaign_requires_verified_original_bytes (__main__.ReductionTests.test_measured_campaign_requires_verified_original_bytes) ... ok
+test_near_zero_load_decrease_is_unresolved (__main__.ReductionTests.test_near_zero_load_decrease_is_unresolved) ... ok
+test_original_campaign_is_retained_in_report (__main__.ReductionTests.test_original_campaign_is_retained_in_report) ... ok
+test_partial_campaign_coverage_reports_only_present_maneuvers (__main__.ReductionTests.test_partial_campaign_coverage_reports_only_present_maneuvers) ... ok
+test_split_rejects_same_source_bytes_at_different_paths (__main__.ReductionTests.test_split_rejects_same_source_bytes_at_different_paths) ... ok
+test_split_rejects_shared_trial_identity_across_roles (__main__.ReductionTests.test_split_rejects_shared_trial_identity_across_roles) ... ok
+test_synthetic_readings_cannot_be_labeled_measured (__main__.ReductionTests.test_synthetic_readings_cannot_be_labeled_measured) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.696s
+
+OK
+== radio-latency/test_reduce.py
+test_acquisition_rate_and_evidence_refusals (__main__.Reduction.test_acquisition_rate_and_evidence_refusals) ... ok
+test_all_excluded_and_empty_conditions_remain_visible (__main__.Reduction.test_all_excluded_and_empty_conditions_remain_visible) ... ok
+test_annotation_order_does_not_change_statistics (__main__.Reduction.test_annotation_order_does_not_change_statistics) ... ok
+test_cli_deterministic_exact_hashes_and_clean_failure (__main__.Reduction.test_cli_deterministic_exact_hashes_and_clean_failure) ... ok
+test_conditions_remain_separate (__main__.Reduction.test_conditions_remain_separate) ... ok
+test_csv_round_trip_and_strict_header_width (__main__.Reduction.test_csv_round_trip_and_strict_header_width) ... ok
+test_duplicate_trials_events_and_clip_aliases (__main__.Reduction.test_duplicate_trials_events_and_clip_aliases) ... ok
+test_empty_and_malformed_contracts (__main__.Reduction.test_empty_and_malformed_contracts) ... ok
+test_exact_240fps_and_one_frame_bound (__main__.Reduction.test_exact_240fps_and_one_frame_bound) ... ok
+test_exclusions_preserved_and_not_counted (__main__.Reduction.test_exclusions_preserved_and_not_counted) ... ok
+test_fps_corners_for_positive_negative_and_zero (__main__.Reduction.test_fps_corners_for_positive_negative_and_zero) ... ok
+test_invalid_frame_values_and_clip_edges (__main__.Reduction.test_invalid_frame_values_and_clip_edges) ... ok
+test_json_duplicate_and_nonfinite_refused (__main__.Reduction.test_json_duplicate_and_nonfinite_refused) ... ok
+test_nearest_rank_and_even_median (__main__.Reduction.test_nearest_rank_and_even_median) ... ok
+test_order_statistic_bounds_under_reordering (__main__.Reduction.test_order_statistic_bounds_under_reordering) ... ok
+test_pick_radii_add_and_do_not_shrink_with_count (__main__.Reduction.test_pick_radii_add_and_do_not_shrink_with_count) ... ok
+test_seeded_events_with_shared_cadence_stay_in_bounds (__main__.Reduction.test_seeded_events_with_shared_cadence_stay_in_bounds) ... ok
+test_unknown_or_mismatched_references (__main__.Reduction.test_unknown_or_mismatched_references) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.385s
+
+OK
+== propulsion/uiuc-import/test_import.py
+test_blank_lines_keep_original_line_numbers (__main__.ImportTests.test_blank_lines_keep_original_line_numbers) ... ok
+test_cli_identity_and_rejection_without_report (__main__.ImportTests.test_cli_identity_and_rejection_without_report) ... ok
+test_conflicting_coordinate_refused_including_decimal_late_digits (__main__.ImportTests.test_conflicting_coordinate_refused_including_decimal_late_digits) ... ok
+test_distinct_axes_collapsing_to_same_float_refused (__main__.ImportTests.test_distinct_axes_collapsing_to_same_float_refused) ... ok
+test_full_file_duplicates_and_backward_tail (__main__.ImportTests.test_full_file_duplicates_and_backward_tail) ... ok
+test_hash_binds_exact_bytes_before_parsing (__main__.ImportTests.test_hash_binds_exact_bytes_before_parsing) ... ok
+test_manifest_shape_and_provenance_refused (__main__.ImportTests.test_manifest_shape_and_provenance_refused) ... ok
+test_negative_and_superunit_eta_are_preserved (__main__.ImportTests.test_negative_and_superunit_eta_are_preserved) ... ok
+test_numeric_duplicate_not_lexical_duplicate (__main__.ImportTests.test_numeric_duplicate_not_lexical_duplicate) ... ok
+test_positive_static_rpm_nonnegative_j (__main__.ImportTests.test_positive_static_rpm_nonnegative_j) ... ok
+test_repeatability_and_no_input_mutation (__main__.ImportTests.test_repeatability_and_no_input_mutation) ... ok
+test_run_label_is_optional_and_never_becomes_measured_coverage (__main__.ImportTests.test_run_label_is_optional_and_never_becomes_measured_coverage) ... ok
+test_sorted_signed_knots_and_duplicate_provenance (__main__.ImportTests.test_sorted_signed_knots_and_duplicate_provenance) ... ok
+test_static_label_and_nonfinite_json_refused (__main__.ImportTests.test_static_label_and_nonfinite_json_refused) ... ok
+test_static_measured_column_not_fixed_run_label (__main__.ImportTests.test_static_measured_column_not_fixed_run_label) ... ok
+test_underflow_overflow_and_nonfinite_refused (__main__.ImportTests.test_underflow_overflow_and_nonfinite_refused) ... ok
+test_unknown_diameter_stays_unknown_and_known_reference_preserved (__main__.ImportTests.test_unknown_diameter_stays_unknown_and_known_reference_preserved) ... ok
+test_wrong_header_and_row_shapes_refused (__main__.ImportTests.test_wrong_header_and_row_shapes_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.134s
+
+OK
+== propulsion/range-audit/test_audit.py
+....................
+----------------------------------------------------------------------
+Ran 20 tests in 0.151s
+
+OK
+== validation/metamorphic/test_runner.py
+test_complete_positive_control (__main__.Harness.test_complete_positive_control) ... ok
+test_engine_errors_with_zero_exit_are_failures (__main__.Harness.test_engine_errors_with_zero_exit_are_failures) ... ok
+test_failed_publication_preserves_existing_evidence (__main__.Harness.test_failed_publication_preserves_existing_evidence) ... ok
+test_missing_or_partial_reports_fail (__main__.Harness.test_missing_or_partial_reports_fail) ... ok
+test_mutation_must_fail_named_group_without_execution_fault (__main__.Harness.test_mutation_must_fail_named_group_without_execution_fault) ... ok
+test_report_failure_cannot_pass_with_zero_exit (__main__.Harness.test_report_failure_cannot_pass_with_zero_exit) ... ok
+test_timeout_is_propagated (__main__.Harness.test_timeout_is_propagated) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.033s
+
+OK
+Offline tool regressions passed; physical validation remains open.
+Synthetic report reproduced byte-for-byte in fresh checkout.

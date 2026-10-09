@@ -1,0 +1,747 @@
+{
+  "format": "openrc-propwash-field v1",
+  "evidence": "synthetic",
+  "configuration": {
+    "aircraft": "Synthetic tricycle aircraft, no Stik measurements.",
+    "motor": "Invented engine; rotation convention not applicable.",
+    "propeller": "No physical propeller; RPM values invented.",
+    "mass_cg": "Unknown; algebra fixture only.",
+    "gear": "Tricycle; nose-load channel is an invented sensor reading.",
+    "controls": "Throttle command 0=idle, 1=full; other controls held neutral in invented series.",
+    "restraint": "None in invented series; no recommended field procedure.",
+    "surface": "Invented level reference plane.",
+    "wind": "Unknown; not a calm-wind observation.",
+    "heading_frame": "Unwrapped ground heading, positive right viewed from above; 179 to 183 degrees crosses the wrapped branch.",
+    "position_reference": "Lateral position of main gear midpoint, positive right of initial heading; nose tire clearance above local surface.",
+    "synchronization": "Invented common clock; t bounds include synchronization and sample selection errors."
+  },
+  "split_plan": "Synthetic split exercises bookkeeping only. Real trials must be assigned before fitting, with different trial and source identities.",
+  "runs": [
+    {
+      "id": "nose_unloading-calibration",
+      "maneuver": "nose_unloading",
+      "role": "calibration",
+      "independent_trial": "nose_unloading-calibration",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 4,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 2,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0.001,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 0,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0.01,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "taxi_blip-calibration",
+      "maneuver": "taxi_blip",
+      "role": "calibration",
+      "independent_trial": "taxi_blip-calibration",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 179,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 181,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.1,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 3000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 183,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.2,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "takeoff_swing-calibration",
+      "maneuver": "takeoff_swing",
+      "role": "calibration",
+      "independent_trial": "takeoff_swing-calibration",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 179,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 181,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.1,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 183,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.2,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "nose_unloading-held_out",
+      "maneuver": "nose_unloading",
+      "role": "held_out",
+      "independent_trial": "nose_unloading-held_out",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 4,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 2,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0.001,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_load": {
+            "value": 0,
+            "unit": "N",
+            "bound": 0.1,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "nose_clearance": {
+            "value": 0.01,
+            "unit": "m",
+            "bound": 0.002,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "taxi_blip-held_out",
+      "maneuver": "taxi_blip",
+      "role": "held_out",
+      "independent_trial": "taxi_blip-held_out",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 179,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 181,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.1,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 3000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 183,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.2,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "takeoff_swing-held_out",
+      "maneuver": "takeoff_swing",
+      "role": "held_out",
+      "independent_trial": "takeoff_swing-held_out",
+      "notes": "Synthetic independent IDs; duplicated algebra values are intentional. No measured trial exists.",
+      "raw_sources": [],
+      "samples": [
+        {
+          "t": {
+            "value": 0,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 0,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 2000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 179,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 1,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 181,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.1,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        },
+        {
+          "t": {
+            "value": 2,
+            "unit": "s",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "throttle": {
+            "value": 1,
+            "unit": "1",
+            "bound": 0.02,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "rpm": {
+            "value": 6000,
+            "unit": "rpm",
+            "bound": 50,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "heading": {
+            "value": 183,
+            "unit": "deg",
+            "bound": 0.2,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          },
+          "lateral": {
+            "value": 0.2,
+            "unit": "m",
+            "bound": 0.01,
+            "kind": "synthetic",
+            "source": "Invented algebra fixture, not an aircraft observation."
+          }
+        }
+      ]
+    }
+  ]
+}

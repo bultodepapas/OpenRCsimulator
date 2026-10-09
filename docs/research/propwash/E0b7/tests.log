@@ -1,0 +1,24 @@
+test_cli_failure_preserves_existing_output (__main__.ProcessTests.test_cli_failure_preserves_existing_output) ... ok
+test_deterministic_json_and_exact_input_hashes (__main__.ProcessTests.test_deterministic_json_and_exact_input_hashes) ... ok
+test_output_aliases_campaign_raw_and_reducer (__main__.ProcessTests.test_output_aliases_campaign_raw_and_reducer) ... ok
+test_absolute_and_parent_traversal_source_paths_are_refused (__main__.ReductionTests.test_absolute_and_parent_traversal_source_paths_are_refused) ... ok
+test_all_three_maneuvers_are_reduced_and_covered (__main__.ReductionTests.test_all_three_maneuvers_are_reduced_and_covered) ... ok
+test_analytic_endpoint_deltas_and_absolute_bound_sum (__main__.ReductionTests.test_analytic_endpoint_deltas_and_absolute_bound_sum) ... ok
+test_clearance_bounds_overlapping_zero_do_not_resolve_separation (__main__.ReductionTests.test_clearance_bounds_overlapping_zero_do_not_resolve_separation) ... ok
+test_difference_overflow_is_refused (__main__.ReductionTests.test_difference_overflow_is_refused) ... ok
+test_heading_delta_uses_declared_unwrapped_values (__main__.ReductionTests.test_heading_delta_uses_declared_unwrapped_values) ... ok
+test_interior_transient_changes_sampled_extrema_not_endpoint_delta (__main__.ReductionTests.test_interior_transient_changes_sampled_extrema_not_endpoint_delta) ... ok
+test_malformed_types_units_nonfinite_order_and_unknown_fields (__main__.ReductionTests.test_malformed_types_units_nonfinite_order_and_unknown_fields) ... ok
+test_measured_campaign_accepts_derived_reading_kinds (__main__.ReductionTests.test_measured_campaign_accepts_derived_reading_kinds) ... ok
+test_measured_campaign_requires_verified_original_bytes (__main__.ReductionTests.test_measured_campaign_requires_verified_original_bytes) ... ok
+test_near_zero_load_decrease_is_unresolved (__main__.ReductionTests.test_near_zero_load_decrease_is_unresolved) ... ok
+test_original_campaign_is_retained_in_report (__main__.ReductionTests.test_original_campaign_is_retained_in_report) ... ok
+test_partial_campaign_coverage_reports_only_present_maneuvers (__main__.ReductionTests.test_partial_campaign_coverage_reports_only_present_maneuvers) ... ok
+test_split_rejects_same_source_bytes_at_different_paths (__main__.ReductionTests.test_split_rejects_same_source_bytes_at_different_paths) ... ok
+test_split_rejects_shared_trial_identity_across_roles (__main__.ReductionTests.test_split_rejects_shared_trial_identity_across_roles) ... ok
+test_synthetic_readings_cannot_be_labeled_measured (__main__.ReductionTests.test_synthetic_readings_cannot_be_labeled_measured) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.621s
+
+OK
