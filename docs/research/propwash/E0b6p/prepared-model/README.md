@@ -46,7 +46,7 @@ Preparation/startup cost was excluded and is not measured here. This is a Linux 
 
 ## Next bounded work
 
-Attribute the remaining **prepared-path whole-tick cost** before changing more interfaces: measure the retained static validation, adapter/dynamic marshalling, swirl quadrature and non-wake Dynamics separately without overlapping timers. Preserve the reverse-cutoff control and immutable-model lifecycle tests. Revisit integration only with sufficient target headroom and an explicit model revision boundary; Gate P, E0b7 independent calibration and Stik circuit prerequisites stay open.
+The [prepared-path attribution](../prepared-cost/README.md) completes that measurement step on 2026-10-08: static validation is small; swirl, non-wake aerodynamics and the simulation remainder dominate. Its next bounded experiment splits local aero and simulation bookkeeping before another optimization. Preserve reverse-cutoff controls and the immutable-model lifecycle. Revisit integration only with sufficient target headroom and an explicit model revision boundary; Gate P, E0b7 independent calibration and Stik circuit prerequisites stay open.
 
 Sources: project-owned [native decoder/kernel](../../../../../research/propwash/e0b6p/native/), [previous attribution](../attribution/README.md), [decoder contract](../decoder/README.md), and [stage-sharing workload](../stage-sharing/README.md). No new physical assumptions or external aerodynamic references are introduced. Code and evidence use the repository MIT license.
 

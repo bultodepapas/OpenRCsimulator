@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Prepared native attribution forward: direct 22.133 us/call; adapter 34.259 us/call
+Prepared native attribution stall: direct 27.228 us/call; adapter 36.798 us/call
+Prepared native attribution static: direct 22.045 us/call; adapter 30.156 us/call
+Prepared native attribution spin: direct 27.674 us/call; adapter 39.677 us/call
+Prepared native attribution reverse_fade: direct 23.064 us/call; adapter 31.503 us/call
+Prepared native attribution reverse_off: direct 2.789 us/call; adapter 4.952 us/call
