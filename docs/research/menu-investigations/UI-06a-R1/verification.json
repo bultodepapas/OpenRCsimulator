@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "scope": "checkpoint trace origin; source only",
+  "files_sha256": {
+    "app/sim/flight_session.gd": "7e018f241b442b2a5a46210e8f2b4c46e497350d1b1d8b13f3d8cbc098966891",
+    "app/tests/test_runway_checkpoint_metadata.gd": "30701fb77d218bb220cc76cc589d4f1d55da7f0b85209ecb7fb8d05dad060c31",
+    "app/physics/propulsion.gd": "93c12b2d1979f69c925b041288eff2f2c1f9a119b6f416f6b1efab7912b5ef63"
+  },
+  "focused_checks": 14,
+  "focused_failures_before": 4,
+  "focused_failures_after": 0,
+  "lint_counts": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "lint_diagnostics_unchanged": true,
+  "concurrent_change": "propulsion.gd belongs to G2-R1; included in integration run but not edited by this repair",
+  "integration": {
+    "command": "XDG_DATA_HOME=/dev/shm/openrc-runway-followup app/test.sh",
+    "exit_code": 0,
+    "gdscript_test_processes": 125,
+    "log": "app-test.log.gz",
+    "uncompressed_log_sha256": "e08c21a0067710bc41258ac79afae21c7b97f8a41a0c299afecc8cc4ca8320e7"
+  }
+}

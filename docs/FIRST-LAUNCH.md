@@ -41,7 +41,9 @@ You need OpenGL 3.3 graphics.
 
 ## 3. Fly
 
-Home lets you choose the aircraft and switch between English and Spanish. Press **Fly** to start in the air, trimmed for level flight (15 m/s for the Stik). Navigate menus with the keyboard or mouse; the radio controls only flight. **Esc** opens the pause menu with Continue, Restart flight, End flight and Quit. Losing window focus also pauses.
+Home lets you choose the aircraft and switch between English and Spanish. **Fly** starts in the air by default, trimmed for level flight (15 m/s for the Stik). In the current source build, the Stik also offers **Start: runway (experimental)**: click the start selector, or press Up from Fly and Enter, then Down and Enter to fly. The airplane starts at idle near the runway threshold. Fly remembers the choice; R, pause Restart and crash recovery use it again. Other aircraft start in the air.
+
+Navigate menus with the keyboard or mouse; the radio controls only flight. **Esc** opens the pause menu with Continue, Restart flight, End flight and Quit. Losing window focus also pauses. The [runway flight card](research/menu-investigations/UI-06c/FLIGHT-CARD.md) describes the pending manual circuit trial. Direct CLI flights ignore the saved start choice.
 
 | Control | Keyboard | Radio / gamepad |
 | --- | --- | --- |
@@ -78,7 +80,7 @@ Wheels can contact the ground for experimental landing and rollout. A hull strik
 
 **It does not have yet:**
 
-- a player-selectable runway start or complete circuit scenario (Home starts in the air; automated takeoff/landing verification exists);
+- validated takeoff/landing behavior or a guided circuit lesson (the Stik runway start is experimental; automated verification is not pilot acceptance);
 - wind;
 - validated engine response or recorded engine audio. RPM lag, P-51 shaft dynamics and Avanti turbine response are implemented but remain under evaluation.
 

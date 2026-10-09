@@ -1,0 +1,1253 @@
+{
+  "app_test": {
+    "command": "XDG_DATA_HOME=/dev/shm/openrc-runway-suite app/test.sh",
+    "exit_code": 0,
+    "gdscript_test_processes": 123,
+    "log": "app-test.log.gz",
+    "uncompressed_sha256": "c808bd9be1ec76d539d0883bf6ae2adc24ce45c5ee3e03b0071693653a065f43"
+  },
+  "build": "v0.1.0-rc6-4-gce4a80c-dirty",
+  "changed_source_sha256": {
+    "app/app_root.gd": "132c2ef0bd2356da90ffd69642ec0b50ad287f1653cc38f6825e2bba8f0acdae",
+    "app/app_state/preferences.gd": "4b3ff3b830f42cb1830cfaee8e843aa9d412ff603229f7708d58d02a5baca103",
+    "app/i18n/es.po": "9be5afeeea4bbb71127d93c01eb6ced54689bdd772ed8846423abef6b8c3f7bd",
+    "app/main.gd": "3ee5cabfc4d15435f5b351999f0662dfffe20ed0036a823570463032cbb7cbb5",
+    "app/sim/flight_session.gd": "6bad545c65f9a0db1396519691efb7bc4665433a4004ef7f8dadda2928f4c4e3",
+    "app/tests/capture_ui.gd": "b5a64b90cfdcaf0d691c856291b95dab993808c77e307314912ab19f75dda345",
+    "app/tests/test_start_choice.gd": "e362b08bba163a26c0e58e267e5851d830254337f1bc2fdb6f8b0595d1b27eb3",
+    "app/tests/test_ui_home.gd": "8ec07b9e64cfb7d5a238bb61f406caaeb45b223d0a590dc9d08f63e7579d990e",
+    "app/tests/test_ui_runway.gd": "f0294586069ae7bb530342a5db0b6d098b51e39421f639df24f98ac3d39645c8",
+    "app/ui/home.gd": "59bf4c0f375c2be8f2dcf4ee4c7339768cafdc3dc056c76943365c24b8e35f37"
+  },
+  "commit": "ce4a80c4774dd4c398e6f8ae55f82e63e111a691",
+  "date": "2026-10-08",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "export": {
+    "checksums": "SHA256SUMS",
+    "command": "app/export.sh (isolated current-source snapshot in /dev/shm/openrc-runway-build)",
+    "exit_code": 0,
+    "log": "export.log",
+    "native_smoke": "evidence/export-smoke.json",
+    "native_smoke_passed": true,
+    "native_smoke_sha256": "2da734de9be4385119aad726ba73aa35a1b960fa3a68a6b2bcfed1a8ae061311",
+    "runtime_snapshot_matches_workspace": true
+  },
+  "format": "openrc-ui06c-verification v1",
+  "limits": "Software proof only; no independent aircraft validation, physical radio trial, target-GPU performance or native Windows/macOS execution.",
+  "lint": {
+    "errors": 0,
+    "parse_errors": 0,
+    "total": 12,
+    "warnings": 12
+  },
+  "runtime_snapshot": [
+    {
+      "path": "app/app_root.tscn",
+      "sha256": "b1f1f34440677606948148a0d0a5519b522931e34077a7dd9d14498996a35c74"
+    },
+    {
+      "path": "app/get-godot.sh",
+      "sha256": "cd3868ed254914fc5af635b1546069d4b3f214353705a6c4b9592f53e3310675"
+    },
+    {
+      "path": "app/spec.gd.uid",
+      "sha256": "e3c8d2fec087eb7a3951ffc2bd34a56c328d2f11a7602e9fa786efeff22a29d5"
+    },
+    {
+      "path": "app/run-landscape.sh",
+      "sha256": "f19403b40cd0ef02b0d64658a464d1394079307b2f60137e9df668a093d79b53"
+    },
+    {
+      "path": "app/main.gd.uid",
+      "sha256": "510e129353b8a470321a8ebc5815baac17ee3bbfcc166343253d67e42487f6c1"
+    },
+    {
+      "path": "app/app_root.gd",
+      "sha256": "132c2ef0bd2356da90ffd69642ec0b50ad287f1653cc38f6825e2bba8f0acdae"
+    },
+    {
+      "path": "app/export_presets.cfg",
+      "sha256": "aa1ad77f476f201ddea470bd9f63640c4273d747eb8598e00fbfed716b08caba"
+    },
+    {
+      "path": "app/spec.gd",
+      "sha256": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b"
+    },
+    {
+      "path": "app/export.sh",
+      "sha256": "c0eaf54f7c275ed5e63d90f5db3565879e9ed6ba265c22bd61e7b11bea171c8e"
+    },
+    {
+      "path": "app/capture.sh",
+      "sha256": "9f8f3fe5558351871e7a3144910860b52da55c7bd84e162ad699e0916851749d"
+    },
+    {
+      "path": "app/main.gd",
+      "sha256": "3ee5cabfc4d15435f5b351999f0662dfffe20ed0036a823570463032cbb7cbb5"
+    },
+    {
+      "path": "app/app_root.gd.uid",
+      "sha256": "f57e464807509c361641f066a508fb79c22a7a6cca30eac1b2960b204a2a5b43"
+    },
+    {
+      "path": "app/test.sh",
+      "sha256": "6c4eb471dcce5cb88c34735c9593f89f6e688f3eb327e3e26929397629e6fede"
+    },
+    {
+      "path": "app/project.godot",
+      "sha256": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde"
+    },
+    {
+      "path": "app/main.tscn",
+      "sha256": "34259bebef9686b289791a10dfd00652c4abdec14a7db73d1b2748ceb73ed750"
+    },
+    {
+      "path": "app/get-templates.sh",
+      "sha256": "4d65b149aef9d0e6eed0d4a62312e1a9b1d377e5f626ab7f215c3f0140a0d90e"
+    },
+    {
+      "path": "app/physics/slipstream.gd",
+      "sha256": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2"
+    },
+    {
+      "path": "app/physics/propulsion.gd.uid",
+      "sha256": "23234fdbf1c8d2e1048dba70ea3736d6304e43402e5482c4f3b746ab7ffa6314"
+    },
+    {
+      "path": "app/physics/turbine.gd.uid",
+      "sha256": "ffa87c091f6f7eb41c7502bf3b600af5ef2a00ff0e827b029e0b198ce66451f6"
+    },
+    {
+      "path": "app/physics/swirl_loads.gd",
+      "sha256": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21"
+    },
+    {
+      "path": "app/physics/linearize.gd",
+      "sha256": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1"
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd",
+      "sha256": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99"
+    },
+    {
+      "path": "app/physics/turbine.gd",
+      "sha256": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573"
+    },
+    {
+      "path": "app/physics/wash_transport.gd",
+      "sha256": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637"
+    },
+    {
+      "path": "app/physics/hull_crossing.gd",
+      "sha256": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650"
+    },
+    {
+      "path": "app/physics/integrator.gd.uid",
+      "sha256": "80fb2fd3708edffe839062a10ed0b40b3766df59f8d1fe5c9e953c054d33644c"
+    },
+    {
+      "path": "app/physics/linearize.gd.uid",
+      "sha256": "45c70edb07742645177123c80f4a40cc15ff44fbb74abc667ef7aa1862dc804c"
+    },
+    {
+      "path": "app/physics/hull_crossing.gd.uid",
+      "sha256": "1eb15fe8e24b19ba2b04865b35c847c24f03ffdc684b3f17eafccec31ee66b95"
+    },
+    {
+      "path": "app/physics/ground_contact.gd.uid",
+      "sha256": "0da9fed34bb30096a28aaa68e688b1846f209ac4c857204ccfdf244f63411da3"
+    },
+    {
+      "path": "app/physics/rigid_body.gd.uid",
+      "sha256": "afdf5b634b93f4e0d27fc2af721271f80d7838c011d0d775f347abbe8051e3e7"
+    },
+    {
+      "path": "app/physics/math3d.gd.uid",
+      "sha256": "7b4cb517a7cbcbcfd2613d7113aa0da4c2d9c6ef0c008220f82546afe516ca07"
+    },
+    {
+      "path": "app/physics/dynamics.gd",
+      "sha256": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339"
+    },
+    {
+      "path": "app/physics/ground_start.gd.uid",
+      "sha256": "51b470d7a181245b8d4eb5a04aa30d7ab87e84ff40ba085e43f3855951ec13a8"
+    },
+    {
+      "path": "app/physics/trim.gd",
+      "sha256": "4cd18572701f8264d284ff0dd481ac13d69a97d7d90ec6e5ec6ca991f1b3dce6"
+    },
+    {
+      "path": "app/physics/aero.gd",
+      "sha256": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b"
+    },
+    {
+      "path": "app/physics/wash_transport.gd.uid",
+      "sha256": "d05eb118ea6dfce3f17f738f781e2f0c09c6573d6147008bf8b5c854612870aa"
+    },
+    {
+      "path": "app/physics/impact_snapshot.gd.uid",
+      "sha256": "fdd19c2c6c894fbcdcdbe2da515e4fd3ac4e3d22f9097fdd63b9cef4b2ebef97"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1"
+    },
+    {
+      "path": "app/physics/swirl_loads.gd.uid",
+      "sha256": "9660be34783bbf1f3c46b4bc7eb7222fe1d3eab398e009a68e1d8aa4cd6208d9"
+    },
+    {
+      "path": "app/physics/air_data.gd",
+      "sha256": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b"
+    },
+    {
+      "path": "app/physics/dynamics.gd.uid",
+      "sha256": "8a02fcfacea4845c4732fe9983d08fe7395210d71347b16160ec1f5d8cac1e57"
+    },
+    {
+      "path": "app/physics/integrator.gd",
+      "sha256": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311"
+    },
+    {
+      "path": "app/physics/trim.gd.uid",
+      "sha256": "72c4c55e6c41fc65f4d2d058a5d50e72c9fc494a22dc21a3806b0a6bc323efd2"
+    },
+    {
+      "path": "app/physics/aero.gd.uid",
+      "sha256": "124039efecc50ceef7df4a4be1741f6bad102267d85536b31086378b2a1137a5"
+    },
+    {
+      "path": "app/physics/flight_modes.gd",
+      "sha256": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b"
+    },
+    {
+      "path": "app/physics/ground_start.gd",
+      "sha256": "4f2ddf1035026560b5d73b9071b9530e72ba876e608a50e8a59a808e51b7be7f"
+    },
+    {
+      "path": "app/physics/impact_snapshot.gd",
+      "sha256": "558e9f222cb7ad662cb058375276aa96c4eb63f2f31d9a3d82389d3e2cd4b59a"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "e0f4b4b0db5377b7de4d5c5c987064a48457b39321904c3eb2c3047698c20a4a"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd.uid",
+      "sha256": "bfb6c202a09d359c1b94f01b01a6b518bf90f70b7890e3628a4d41f3b0a32256"
+    },
+    {
+      "path": "app/physics/air_data.gd.uid",
+      "sha256": "216fed76ed2982802d30997044d4f47c9be63355e6684c6b045c86e457f27cec"
+    },
+    {
+      "path": "app/physics/slipstream.gd.uid",
+      "sha256": "c43893fa933714449fc1192b967f8ca513b36061acd2b88cdc76a8f881a214cb"
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "sha256": "3f61b2b4709610cd76c5eaf6dffd35301c9f2982ea8e69053ac8a745c2c5f0e6"
+    },
+    {
+      "path": "app/physics/ground_contact.gd",
+      "sha256": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e"
+    },
+    {
+      "path": "app/physics/flight_modes.gd.uid",
+      "sha256": "979846bb81ffd7203ed44251881db192546bca787e171d6d71e3437b5fcf75fd"
+    },
+    {
+      "path": "app/physics/ground_surfaces.gd.uid",
+      "sha256": "99adfb626b18dd1dad5d266ab41f44b75b2f939f6d7bc0dbd9c8620353a30c22"
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "sha256": "7a3315cb1d7588ab600078f17fc91c062b73c7bf41ec2f6cde7e876a01b59dd3"
+    },
+    {
+      "path": "app/render/windsock.gd",
+      "sha256": "bcd10199489cd77604b5d3a2361b305215a53df8dcb25b1d8b40dc278a1bdd45"
+    },
+    {
+      "path": "app/render/atmosphere.gd",
+      "sha256": "533cfd7415d8125d32fe07b998eb034a2abf67439860b53d665fdeaa8a5eab70"
+    },
+    {
+      "path": "app/render/engine_sound.gd",
+      "sha256": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b"
+    },
+    {
+      "path": "app/render/tree_wind.gdshaderinc.uid",
+      "sha256": "e79b5b9436d7e13c89d8421d24af8156f74f5ee87efd374dde7a31e1e40f553e"
+    },
+    {
+      "path": "app/render/sky.gdshader.uid",
+      "sha256": "5de9b134c2bb872960248eb9e062c2c5617eaabdd2c01794939ffe2979be080f"
+    },
+    {
+      "path": "app/render/flight_cue_shadows.gd",
+      "sha256": "ec2d7e91c5f0cf2717615159cae91ab2e1479b8605520e1aed4a385b0b0639be"
+    },
+    {
+      "path": "app/render/cloud_field.gdshaderinc.uid",
+      "sha256": "693f578c5baa4c56415b09faa9e51e2764273649f107b2f45945a4c1db32c1b6"
+    },
+    {
+      "path": "app/render/windsock.gd.uid",
+      "sha256": "7a25293cc77e36d39841aa3fc25eb37e7f67f4edd7dc9fdd0eef1f1b9b74daff"
+    },
+    {
+      "path": "app/render/frame_samples.gd.uid",
+      "sha256": "2fb75852f4c0d4c81433275d793136b3f3574d8e4ef79752307e3a900c7cbdbb"
+    },
+    {
+      "path": "app/render/horizon.gd",
+      "sha256": "194cbdf4ada2375adda36b3b25de1a39e82d7b68f60b787ece8e6b44509e130d"
+    },
+    {
+      "path": "app/render/field.gd.uid",
+      "sha256": "3934d1e425a6bad3fd8dda35ae39427560817708827f2ddf708ce4a342c7cc75"
+    },
+    {
+      "path": "app/render/horizon.gd.uid",
+      "sha256": "a08b824837b683103f49a59ff480e7da9a51c3767bba73402d983e1eeba08ae4"
+    },
+    {
+      "path": "app/render/pilot_station.gd.uid",
+      "sha256": "3283c0c0ab24c536f1f6bdb8a5d4ab69c5332b0d5f311eb21658e17d288f5c81"
+    },
+    {
+      "path": "app/render/atmosphere.gd.uid",
+      "sha256": "87edf4e87e35b317a334f65bd92ebe749d6105bdf04be1b248bdada2615b0655"
+    },
+    {
+      "path": "app/render/visual_evidence.gd",
+      "sha256": "1459da195a587a65c3472f15f86af54267d714c3e86c77d4fbb07ac87e0f4a80"
+    },
+    {
+      "path": "app/render/frames.gd.uid",
+      "sha256": "7361267660e14d37a6d38df81bbc4cbaf84a7bd52e6ce116a7b8d7317aebd24a"
+    },
+    {
+      "path": "app/render/treeline.gd",
+      "sha256": "74bac22b7a839a61af50a307408e0903e406722c2960658dc6216354d4db4872"
+    },
+    {
+      "path": "app/render/frame_samples.gd",
+      "sha256": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67"
+    },
+    {
+      "path": "app/render/flight_cue_shadows.gd.uid",
+      "sha256": "0948a834f634f46ec22f1c39296078e0133642fa9844d98a11d427ab83500d5c"
+    },
+    {
+      "path": "app/render/panel.gd",
+      "sha256": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8"
+    },
+    {
+      "path": "app/render/treeline.gd.uid",
+      "sha256": "181464991e83aa3bc88cdfb761b134fc1314456eb1f495f8832e3b289bfb23d2"
+    },
+    {
+      "path": "app/render/sky.gdshader",
+      "sha256": "e05c62adedf0cf4cb03f22917718c551e000260f2df55c136466dd7fb3609769"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8"
+    },
+    {
+      "path": "app/render/cloud_field.gdshaderinc",
+      "sha256": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce"
+    },
+    {
+      "path": "app/render/treeline.gdshader.uid",
+      "sha256": "6fd0ee289855bf5eae6ce3ca96f04da7c6ff233d49b6e56678a611256f23ad1e"
+    },
+    {
+      "path": "app/render/tree_identity.gdshaderinc",
+      "sha256": "d501de11fdca1d5d582404f4575d631ad484d93c60a21d802c5728d433f5d92c"
+    },
+    {
+      "path": "app/render/airplane.gd.uid",
+      "sha256": "97b4deb033c691d61fac5960632055e3e1b99b55f53db9c4672d18079970bf42"
+    },
+    {
+      "path": "app/render/flightline_barrier.gd",
+      "sha256": "c5a998395659593a5982a7f9fd65d69e2a927df21984052769b47b87856da873"
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc.uid",
+      "sha256": "6c58c3d7d95b00bf2d864d6c4f317362cc7a5ab8ddb43b8ab773e34fa3a39002"
+    },
+    {
+      "path": "app/render/shader_clock.gd",
+      "sha256": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd"
+    },
+    {
+      "path": "app/render/near_grass.gd.uid",
+      "sha256": "47ba21870706d6155d4f349d40fa36fe775393a943f03923938daaf13f930a20"
+    },
+    {
+      "path": "app/render/tree_wind.gdshaderinc",
+      "sha256": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85"
+    },
+    {
+      "path": "app/render/field.gd",
+      "sha256": "8dd006e181719fbbcac77cacb9d7116e1c3e476b6433ce8f422e2f720b514df2"
+    },
+    {
+      "path": "app/render/ground.gd.uid",
+      "sha256": "926c69de722f3bf3eb4ad0e0f5c902fe61d59833dc6f0afd35cf25ca7d06d816"
+    },
+    {
+      "path": "app/render/tree_assets.gd",
+      "sha256": "bff775b4451b8e80a7ab69e6c9790ad00f5ee696bee582eaffb1869baf68d68d"
+    },
+    {
+      "path": "app/render/pilot_camera.gd",
+      "sha256": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7"
+    },
+    {
+      "path": "app/render/pilot_camera.gd.uid",
+      "sha256": "352842bc585e8f4b4d85cc5e385f841eca56bbf51f0fdbeb6027ce4586616834"
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "sha256": "9b64f95099c16e5b52685e69f33de004f8af32f3f21d56d7c5a6d55b4ffcf61d"
+    },
+    {
+      "path": "app/render/visual_evidence.gd.uid",
+      "sha256": "559d408404a8bb81a2139eb8353cb2aea43215393771aa9c35997f8eeafdf42d"
+    },
+    {
+      "path": "app/render/panel.gd.uid",
+      "sha256": "0ce10a346fa32273fff2febd6050fcaa4c903cdc5c16266991673156c26080ba"
+    },
+    {
+      "path": "app/render/grass_surface.gdshaderinc",
+      "sha256": "634a2660ae11231d716672e7a1e8345a3f8293bf2c0cc83c8ab346a4578e423c"
+    },
+    {
+      "path": "app/render/flightline_barrier.gd.uid",
+      "sha256": "837c74f2c194097004e5a71570254d80fc529d35c62b09863b7e8f1abb4b0932"
+    },
+    {
+      "path": "app/render/engine_sound.gd.uid",
+      "sha256": "9518fb7a49735ffdfd61274fac1ffb70b97d3c1311559f025ad65c525b145ebb"
+    },
+    {
+      "path": "app/render/shadow.gd",
+      "sha256": "764e952e7c0afed6f55af8bdbe86711f71e2deba10cf3a36d28f20bad932b6e9"
+    },
+    {
+      "path": "app/render/tree_identity.gdshaderinc.uid",
+      "sha256": "25f64e77db9570581632e1409ef661428bb3da3848a037444a6cfdc7951e2da1"
+    },
+    {
+      "path": "app/render/near_grass.gdshader",
+      "sha256": "ff662b61f0ff8423f09f92f220a1710968f0ef0d80065ef00cc6f5abde7211e6"
+    },
+    {
+      "path": "app/render/tree_assets.gd.uid",
+      "sha256": "735205347b61497daa1040c715bd72cdff78cc7ba07cf81276cff41ea9bd85e2"
+    },
+    {
+      "path": "app/render/near_grass.gd",
+      "sha256": "e348aebf2af9dc67100e62081b57b2ba07e32859fefae3429ad488d8a587dc14"
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "sha256": "1729b1b30aa6055dc68473937a7ce32ba3b010f1777e8dcf1c684498e838555a"
+    },
+    {
+      "path": "app/render/ground.gd",
+      "sha256": "8fd196dd3963fbfb95024f8a5f4ee454e3139af3270b84e19e71ce8cad6b341e"
+    },
+    {
+      "path": "app/render/ground.gdshader.uid",
+      "sha256": "9bc2c463349101bb54a60c38adc2a74599917edeef0fa019f0f1bd8da6d8fca5"
+    },
+    {
+      "path": "app/render/shadow.gd.uid",
+      "sha256": "f31d4fb186bdee11a07a4141bf6d410a0294b4a571a4e1cb6e4ffed0374a9d58"
+    },
+    {
+      "path": "app/render/near_grass.gdshader.uid",
+      "sha256": "0fa4669ba18333b00ad5e53f48422520317fbf14ca177d06e5f4e719fa4e579f"
+    },
+    {
+      "path": "app/render/pilot_station.gd",
+      "sha256": "e14a8dd215d8cfc45c74bddef3cbdecb62c957239fd2b026030d0178126cc286"
+    },
+    {
+      "path": "app/render/shader_clock.gd.uid",
+      "sha256": "bceddb944e89b18ef4757e2b48e5c1c3e8212e68845579ed3dc3108c19a844d4"
+    },
+    {
+      "path": "app/render/hud.gd.uid",
+      "sha256": "d9b6fe620cd989ed26b21d1f9fc6d66083cc72cfd2ed7f41dbf1040c4ed6658c"
+    },
+    {
+      "path": "app/render/hud.gd",
+      "sha256": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d"
+    },
+    {
+      "path": "app/aircraft/model_clearance.gd",
+      "sha256": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_finish.gd.uid",
+      "sha256": "974e1cd671fc9edaaa221dd44a9ea1cc8d9a1a18b39cfa03b0be11ef8e64e663"
+    },
+    {
+      "path": "app/aircraft/avanti_s_model.gd.uid",
+      "sha256": "ea35c89fec2d9e4166758342d18a42b2a78d7c266b9a4c6353c39948e1af0da3"
+    },
+    {
+      "path": "app/aircraft/inspect_extra.gd",
+      "sha256": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441"
+    },
+    {
+      "path": "app/aircraft/p51d_appearance.gd.uid",
+      "sha256": "9c7f81246cc9fd536a61a7abca6f1f40e4fb8da61b73dd77e48eaf8b8eeb76fb"
+    },
+    {
+      "path": "app/aircraft/livery.svg.import",
+      "sha256": "a6887e03b90e9f398c6d0ede74f46241e842b362d1dc480f5ba26e8760fd8909"
+    },
+    {
+      "path": "app/aircraft/extra_clearance.gd.uid",
+      "sha256": "598c6ce50f3c75709a62431d1d0561439aa72ca97b008ce30ce7ab7516b2172c"
+    },
+    {
+      "path": "app/aircraft/inspect_p51.gd.uid",
+      "sha256": "12445da0f94bf913ebb8f0344ae425dcc940b54ea7a79af7ffd255ae3fa40958"
+    },
+    {
+      "path": "app/aircraft/p51d_finish.gd.uid",
+      "sha256": "1bd25d6a24b36759ff392262d15fa8d16ab2ddf743ec68bfc09a4eb071617ba3"
+    },
+    {
+      "path": "app/aircraft/verify_p51_clearance.gd.uid",
+      "sha256": "24ad2a2ad68bde9b455ba6974a60815dcbc7eacf5ce282466a85b9c6e605b0a1"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_appearance.gd",
+      "sha256": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce"
+    },
+    {
+      "path": "app/aircraft/avanti_s_geometry.gd",
+      "sha256": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf"
+    },
+    {
+      "path": "app/aircraft/verify_avanti.gd.uid",
+      "sha256": "e8e7938f98f89ce1956c6b201b506baa72f644b46c3086cd3eeaa5ab833b211e"
+    },
+    {
+      "path": "app/aircraft/verify_controls.gd.uid",
+      "sha256": "18735ba0f0a1cac6b36cba993484405afaf09d50fadfdd4bc6de50aa89f34da7"
+    },
+    {
+      "path": "app/aircraft/verify_p51.gd.uid",
+      "sha256": "500f8360f131c3a72d814748f84457f521675e5e464a2e90f3e3edf6ac2fda51"
+    },
+    {
+      "path": "app/aircraft/extra_300s_appearance.gd.uid",
+      "sha256": "e0b175224638bc1e6d9913177ac2359066aa3b7c84d0de790b2a06316cb096f0"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_model.gd.uid",
+      "sha256": "b39e37efa27d2b06d17bbf2512c9a74362b2bd54df2bdae2c4ba6f90988ab2fa"
+    },
+    {
+      "path": "app/aircraft/verify_controls.gd",
+      "sha256": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641"
+    },
+    {
+      "path": "app/aircraft/visual_checks.gd.uid",
+      "sha256": "391db2b0606ae45070c58093d4faac995805e91976a49215115cfc81811441a2"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_controls.gd",
+      "sha256": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480"
+    },
+    {
+      "path": "app/aircraft/avanti_s_geometry.gd.uid",
+      "sha256": "67538b02d92412ae53f99d2d93359cd931656c93757805921fd5aab2f9425ca0"
+    },
+    {
+      "path": "app/aircraft/inspect_model.gd.uid",
+      "sha256": "9b3f5b2961997b0bea4bc58720b51e3556ab1d0bcd96d2d8fa4bf34ca19821f6"
+    },
+    {
+      "path": "app/aircraft/model_clearance.gd.uid",
+      "sha256": "0cfd730e992f39d72fcd2f77df741c2dbea3f2777dc8b39bc64e61ede6504e6f"
+    },
+    {
+      "path": "app/aircraft/extra_300s_appearance.gd",
+      "sha256": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b"
+    },
+    {
+      "path": "app/aircraft/inspect_model.gd",
+      "sha256": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b"
+    },
+    {
+      "path": "app/aircraft/extra_300s_geometry.gd",
+      "sha256": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f"
+    },
+    {
+      "path": "app/aircraft/verify_p51_clearance.gd",
+      "sha256": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12"
+    },
+    {
+      "path": "app/aircraft/avanti_s_model.gd",
+      "sha256": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c"
+    },
+    {
+      "path": "app/aircraft/p51d_appearance.gd",
+      "sha256": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b"
+    },
+    {
+      "path": "app/aircraft/extra_300s_geometry.gd.uid",
+      "sha256": "1909081ec72924a8893f4a5cc72dbf2956acbe0b263e5c0a3705499423a9d396"
+    },
+    {
+      "path": "app/aircraft/verify_extra.gd.uid",
+      "sha256": "497dbfb28d41f0ad330ea999df147081549c82ebfbb5c0d9545474bf7b8f6a60"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_appearance.gd.uid",
+      "sha256": "a63a7ac8179fad246aed64dd0c59f5d2a6df28d686d7efbf2121e6e0b7ec8ac6"
+    },
+    {
+      "path": "app/aircraft/verify_p51.gd",
+      "sha256": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_model.gd",
+      "sha256": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_geometry.gd.uid",
+      "sha256": "571c7e83b7b29834e35ff3651f70942f0b557f380b9ca7025e1b1fc3b8608da6"
+    },
+    {
+      "path": "app/aircraft/extra_300s_model.gd",
+      "sha256": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e"
+    },
+    {
+      "path": "app/aircraft/inspect_extra.gd.uid",
+      "sha256": "b87d1ebadc874f5264b9e9f6ec6464213ffa3e001cda3b7018ac16b80083ade6"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_geometry.gd",
+      "sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a"
+    },
+    {
+      "path": "app/aircraft/p51d_model.gd.uid",
+      "sha256": "c550001da6a205fdd8eb0b8020813a8ea8527de81a6cecda8e7e38c3d68527ff"
+    },
+    {
+      "path": "app/aircraft/inspect_p51.gd",
+      "sha256": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023"
+    },
+    {
+      "path": "app/aircraft/verify_extra.gd",
+      "sha256": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7"
+    },
+    {
+      "path": "app/aircraft/extra_300s_model.gd.uid",
+      "sha256": "4b7ce9866c4e795e82b288c86b58d4e1390abed49e688d1cfee4081dc140d737"
+    },
+    {
+      "path": "app/aircraft/extra_300s_finish.gd",
+      "sha256": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be"
+    },
+    {
+      "path": "app/aircraft/p51d_model.gd",
+      "sha256": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f"
+    },
+    {
+      "path": "app/aircraft/visual_checks.gd",
+      "sha256": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b"
+    },
+    {
+      "path": "app/aircraft/p51d_finish.gd",
+      "sha256": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c"
+    },
+    {
+      "path": "app/aircraft/p51d_geometry.gd.uid",
+      "sha256": "634deee70c34fc0aa4ba9c259a9f627233fcb8ee46fc67d6814b1a1c73805b1c"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_controls.gd.uid",
+      "sha256": "17a54212d50151f7a7ade2446a17949d354935d4a7da5ed317791d7f6fe9a9b7"
+    },
+    {
+      "path": "app/aircraft/verify_model.gd",
+      "sha256": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed"
+    },
+    {
+      "path": "app/aircraft/livery.svg",
+      "sha256": "a728328d0c05c355d034b1564e1d441a320a63f00d0300952c8aa28af4d542ec"
+    },
+    {
+      "path": "app/aircraft/extra_clearance.gd",
+      "sha256": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_finish.gd",
+      "sha256": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e"
+    },
+    {
+      "path": "app/aircraft/extra_300s_finish.gd.uid",
+      "sha256": "bfe7736f5c49577bc0daa88396d4545423ffd44e0ce99e8dfee9f9eb851159d7"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_equipment.gd",
+      "sha256": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6"
+    },
+    {
+      "path": "app/aircraft/verify_avanti.gd",
+      "sha256": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573"
+    },
+    {
+      "path": "app/aircraft/p51d_geometry.gd",
+      "sha256": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704"
+    },
+    {
+      "path": "app/aircraft/ugly_stik_equipment.gd.uid",
+      "sha256": "5fe3f6570ce52ae4132d550e3a18447e3c6e3b6f063daaa7842ad98b13e53fa8"
+    },
+    {
+      "path": "app/aircraft/verify_model.gd.uid",
+      "sha256": "f7ee815ccd89f86706a28f8fafa78fd461a9c9bacc25d31e080cb0393ce655af"
+    },
+    {
+      "path": "app/app_state/aircraft_catalog.gd",
+      "sha256": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9"
+    },
+    {
+      "path": "app/app_state/aircraft_catalog.gd.uid",
+      "sha256": "0683563c711929dcb6dda5acbcad517a0cf1452edd544663db42d115f332dd46"
+    },
+    {
+      "path": "app/app_state/build_info.gd",
+      "sha256": "8e3ec9f50ad2faf222f54a6dfb34892fefe773cf7b906ac1ab3c9c11d4d52174"
+    },
+    {
+      "path": "app/app_state/preferences.gd.uid",
+      "sha256": "c2f8821c81a323d419339341aa5ff920edc49ec04292ea60d88489300a8aea1f"
+    },
+    {
+      "path": "app/app_state/build_info.gd.uid",
+      "sha256": "c960b6af383d45fc2b6ef1306f92a7706befde763b731fdd3cbc1fc75ef81e03"
+    },
+    {
+      "path": "app/app_state/preferences.gd",
+      "sha256": "4b3ff3b830f42cb1830cfaee8e843aa9d412ff603229f7708d58d02a5baca103"
+    },
+    {
+      "path": "app/ui/controls_reference.gd.uid",
+      "sha256": "a3cfe3a029a084ea4154e80907d587abf1657135d1f78095f0889951367e2e3f"
+    },
+    {
+      "path": "app/ui/first_flight_hint.gd.uid",
+      "sha256": "a0c53cc75969121cac27e62e1e4b94416376e72e7619ff162d391d07e303763c"
+    },
+    {
+      "path": "app/ui/ui_input.gd.uid",
+      "sha256": "c5d9a875ef14642cee042c07bbe5f72bb25e7785ac9b9242e61f0a8117ca0093"
+    },
+    {
+      "path": "app/ui/home_scene.gd.uid",
+      "sha256": "ebf694d818b237218f96da7204aab60cdb10cb3df731f4b485393edc31091013"
+    },
+    {
+      "path": "app/ui/key_cap.gd",
+      "sha256": "a41534a15c0d2ec772ecc0e0ff6aa0d2027b43d15b41349197183eefb18ccc19"
+    },
+    {
+      "path": "app/ui/help_screen.gd",
+      "sha256": "df1ba561eaace835abd1892a134dad53988074126929245e687b04a991939289"
+    },
+    {
+      "path": "app/ui/held_keys.gd.uid",
+      "sha256": "00da891765b5be0b59afcab8025bd4f4f4a31b0e757d2bb0ee50ccbf82384ae8"
+    },
+    {
+      "path": "app/ui/home.gd",
+      "sha256": "59bf4c0f375c2be8f2dcf4ee4c7339768cafdc3dc056c76943365c24b8e35f37"
+    },
+    {
+      "path": "app/ui/ui_theme.gd",
+      "sha256": "68f632ce8b320e9843584be3392b1f89eb6ae0120e6b392652f6e53f18d42d9d"
+    },
+    {
+      "path": "app/ui/pause_menu.gd.uid",
+      "sha256": "41774bc1a23ce374d3557d88d2fe0fb547cd200c836cd2849e71b8626033e152"
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "sha256": "158770e47622f1738d1fa4355971957060a2982c69f8047c8a8e1b4938807156"
+    },
+    {
+      "path": "app/ui/home.gd.uid",
+      "sha256": "5ef6974770eccf6b8803f99a8a3aee68dfc79a9b4332f410ea6c18d31717e71e"
+    },
+    {
+      "path": "app/ui/first_flight_hint.gd",
+      "sha256": "dadf7d3d5e3fb4f834f04022a822faf7c4e7b72da3913ebf720fea20675c138c"
+    },
+    {
+      "path": "app/ui/controls_reference.gd",
+      "sha256": "ad3c2659070cc0492c25c14cc478b54ca6d6524258951c27bbe678d5224c29c5"
+    },
+    {
+      "path": "app/ui/ui_theme.gd.uid",
+      "sha256": "dba5a641d737286f856033f79a50868d36dcb92ded3138d9db1d42ccddc20bf7"
+    },
+    {
+      "path": "app/ui/help_screen.gd.uid",
+      "sha256": "e749b66acd3b1337907a74e69f2fca6235638b0894c824d4bb58dbb2e11c6cf4"
+    },
+    {
+      "path": "app/ui/ui_input.gd",
+      "sha256": "42ec6f85bfd5313730b39a1a2bf9de29fad1fbb69b4a6baf673dee37e88c79dc"
+    },
+    {
+      "path": "app/ui/key_cap.gd.uid",
+      "sha256": "c83bac61ab8356bf15f028b65678015758c2bd3777dedf17adbd0acae80bf322"
+    },
+    {
+      "path": "app/ui/key_labels.gd",
+      "sha256": "ef97e048bc4ca9cf91f5407cc84f6b6b30eda6af419ec7976f10d86f4abd376c"
+    },
+    {
+      "path": "app/ui/pause_menu.gd",
+      "sha256": "847d9e2e872ab7bde9ebd0aee577106c6a96ce915e2867c5ede22eec802dbc84"
+    },
+    {
+      "path": "app/ui/key_labels.gd.uid",
+      "sha256": "50a8a164607d5b70611f68b189340a0b19f24a0cea7b29b13ea01856afb0a3ba"
+    },
+    {
+      "path": "app/ui/field_error.gd.uid",
+      "sha256": "d82f258ba4ec54b01895982561c201fcbd9036060dea6de628f619188546c332"
+    },
+    {
+      "path": "app/ui/field_error.gd",
+      "sha256": "43418653e5789fee4c6e0ad7d5b8d02e1d930e14812266f4be0b86b3650407db"
+    },
+    {
+      "path": "app/ui/held_keys.gd",
+      "sha256": "57710dd86e43484ca2ca6f833725fe6b95593967639f1935268a09af48e68fd7"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "9be5afeeea4bbb71127d93c01eb6ced54689bdd772ed8846423abef6b8c3f7bd"
+    },
+    {
+      "path": "app/input/input_report.gd",
+      "sha256": "f1f2cb2d2a139570f4970a423f7c6099913e6ec01f27cdf9ddf4d5e15e8f6dbb"
+    },
+    {
+      "path": "app/input/keyboard.gd",
+      "sha256": "d60ae0c841ec9ae132c5e02e958cf96082ed9311d284d694343783dd76762629"
+    },
+    {
+      "path": "app/input/rc_input.gd.uid",
+      "sha256": "72340e9185c2e42f8e5608451c10167daf122bfb14f77d75722168ff752cb181"
+    },
+    {
+      "path": "app/input/rc_calibration.gd.uid",
+      "sha256": "c4969a4368f3d2fadcdef049553929f6f25afa89bbe1586c52f97aa807aa084c"
+    },
+    {
+      "path": "app/input/latency_patch.gd.uid",
+      "sha256": "02b1c7dd5f49cdb5086391d73a01474f20e08fb8fcf6c55973c7db3313d50a30"
+    },
+    {
+      "path": "app/input/input_report.gd.uid",
+      "sha256": "4cdfb5a110f22a0565a5e30538f99a7f833ff0f31b7c390e1f6fb2a89147b0b6"
+    },
+    {
+      "path": "app/input/input_report_data.gd.uid",
+      "sha256": "4f82c98036e7b6b1bad4a89542ea217fe3e82826d7062a9fbb0a211629cef9d3"
+    },
+    {
+      "path": "app/input/rc_calibration.gd",
+      "sha256": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408"
+    },
+    {
+      "path": "app/input/latency_patch.gd",
+      "sha256": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "sha256": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557"
+    },
+    {
+      "path": "app/input/input_report_data.gd",
+      "sha256": "f2e25424876bd0ce63fcc8f3cc92596a3ad7f6315381b4184649ce3b60fd6d9d"
+    },
+    {
+      "path": "app/input/commands.gd",
+      "sha256": "c9a14004b11403670e9b2aaf20d32f37eea1f6fa8cd87f45a4f462927d69a5b2"
+    },
+    {
+      "path": "app/input/keyboard.gd.uid",
+      "sha256": "46e50e13286f0ed3bc04da7c7457abad723b6be5f876deac747007b623be4074"
+    },
+    {
+      "path": "app/input/commands.gd.uid",
+      "sha256": "10c99accb3d9d8de647ac3808dfbfc9f0422c1adf7722f226f32882071d7dc2a"
+    },
+    {
+      "path": "app/sim/maneuvers.gd",
+      "sha256": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126"
+    },
+    {
+      "path": "app/sim/landing_maneuver.gd.uid",
+      "sha256": "678f6dbc43da1cfbcca3daff185fc7a61b43dc474fcc1194345bc21586f1901d"
+    },
+    {
+      "path": "app/sim/trace.gd.uid",
+      "sha256": "80fc881dc11816faa3e18a472b0b8114889866d852f1b4bf51b0876f0021e2ee"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "sha256": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "6bad545c65f9a0db1396519691efb7bc4665433a4004ef7f8dadda2928f4c4e3"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "11eda8c124b6c03ed6b74e171ef927e648daccfc8505f00ee8121c09c609b4d7"
+    },
+    {
+      "path": "app/sim/simulation.gd.uid",
+      "sha256": "509200bdd5831ee91e1d385d2dfdbf23f1e430c4f2fbfbb2a18bacc106f71d8a"
+    },
+    {
+      "path": "app/sim/scripted.gd",
+      "sha256": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf"
+    },
+    {
+      "path": "app/sim/scenarios.gd",
+      "sha256": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e"
+    },
+    {
+      "path": "app/sim/scenarios.gd.uid",
+      "sha256": "0c51691dccd21b2396a615792bcb5644bc797f82de96b6071e59a55e2147d517"
+    },
+    {
+      "path": "app/sim/flight_session.gd.uid",
+      "sha256": "d493e2297ad2620915324b3422e8787ba0b42b7bec479cadf02f570a26ff376d"
+    },
+    {
+      "path": "app/sim/recorder.gd",
+      "sha256": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174"
+    },
+    {
+      "path": "app/sim/maneuvers.gd.uid",
+      "sha256": "caaa885af62dd764e1d120f3d308e87679d6817097f9c2101172a94feaebda50"
+    },
+    {
+      "path": "app/sim/scripted.gd.uid",
+      "sha256": "33cf5d8ca138cb1390bc691f2086a8f9812f7197fe7e1e64d13d17235093ea57"
+    },
+    {
+      "path": "app/sim/recorder.gd.uid",
+      "sha256": "ccf3710cf7054569eec75f4fecbeddace542fbe1966443389b0f646572675479"
+    },
+    {
+      "path": "app/sim/landing_maneuver.gd",
+      "sha256": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0"
+    },
+    {
+      "path": "app/scenery/flowers.gd.uid",
+      "sha256": "99d99ea6b06cb3080aaa5ef5bd6b245a6305fd11dbaa74e85d8c6391a167d98a"
+    },
+    {
+      "path": "app/scenery/prefabs.gd",
+      "sha256": "77717b7994d91bc28f60da3c8f72ff89107be559d271315bc9f34eb8e540ff07"
+    },
+    {
+      "path": "app/scenery/palette.gd.uid",
+      "sha256": "3f595e57e565fc5fd53957682dcd5fbbcc0c5676b4c8de7467f2421bbd125c27"
+    },
+    {
+      "path": "app/scenery/prefabs.gd.uid",
+      "sha256": "06eef7b96b33128b2e5e95e2211bfcf57cf9716a2d90f99b8712e1072173793d"
+    },
+    {
+      "path": "app/scenery/fleet.gd.uid",
+      "sha256": "f132118b7d6b2ab27fd59ab244796edb9af4ae8ad681d9709667a6bcc0a88f1e"
+    },
+    {
+      "path": "app/scenery/birds.gd",
+      "sha256": "fc0fb8a98290bcb8b4ed826fc567e8755f096fa896c5ec2f1bda7145eeb6deb0"
+    },
+    {
+      "path": "app/scenery/models.gd.uid",
+      "sha256": "3eabc25e6987300fe84b017fe115af83f79e1d922ca58e960396cf9a05264f4c"
+    },
+    {
+      "path": "app/scenery/capture_views.gd",
+      "sha256": "292442d8cad3f86e19a3014848bb0ba5fa84b2367a9c6201548d8accf2aa9981"
+    },
+    {
+      "path": "app/scenery/flowers.gdshader.uid",
+      "sha256": "8b51783f039c009f83625a82afa14f85637d7be04a251b5332478221a0f252d8"
+    },
+    {
+      "path": "app/scenery/mesh_kit.gd",
+      "sha256": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a"
+    },
+    {
+      "path": "app/scenery/ambience_player.gd",
+      "sha256": "2ffe03adbbba99ee8a545e732f80f50010861fc29c000617c053b6f2e82857b3"
+    },
+    {
+      "path": "app/scenery/postcards.gd.uid",
+      "sha256": "b8169968c56b25934bfdc784863678f338ad5988d07686be2d21233eb8821ea2"
+    },
+    {
+      "path": "app/scenery/ambience.gd",
+      "sha256": "735a9374d85cdcc05d93334c983e4447a3050515c38109851d3ac31119f7ca86"
+    },
+    {
+      "path": "app/scenery/mesh_kit.gd.uid",
+      "sha256": "15c7d1355ea3ab4a2232f3e4be00e06c4a25f55a321e3749fbdea0a395f9faf4"
+    },
+    {
+      "path": "app/scenery/scenery_loader.gd",
+      "sha256": "27b1cce3a2ba6db18a116ba48a1e8681c31a3f95d79ff56d7d7c9291656e2d2b"
+    },
+    {
+      "path": "app/scenery/runway_scenario.gd",
+      "sha256": "aa03f1fbfb14d977c5136bf0c54917e3a7f0a895a998eace1655991f4f6fb604"
+    },
+    {
+      "path": "app/scenery/runway_scenario.gd.uid",
+      "sha256": "7cb6536e20016bd56b010d791b74be3cc62f89e6d311e762d2950457ea659d28"
+    },
+    {
+      "path": "app/scenery/flowers.gdshader",
+      "sha256": "dbcc0ded552366eccf008b9fee243605733f21e12f4607d8c5ecd60a35092083"
+    },
+    {
+      "path": "app/scenery/scenery_loader.gd.uid",
+      "sha256": "6f4814eea284f4a0b0696a3fea987d2d483b7e7bec1919850ed446a5922bdd2c"
+    },
+    {
+      "path": "app/scenery/motion.gdshader",
+      "sha256": "9cd2df6f7499bfb972e3c90eb2ad2542b12b003e4180b00666255e4c86e651a0"
+    },
+    {
+      "path": "app/scenery/takeoff_pilot.gd.uid",
+      "sha256": "0597d502b8d0e1f65525838765d6e314df9409489fd5a9995d989f01983c0197"
+    },
+    {
+      "path": "app/scenery/scenery.gd",
+      "sha256": "546083526d7d828e376ef3b589c83b561297278816361290adf26b770330de5b"
+    },
+    {
+      "path": "app/scenery/postcards.gd",
+      "sha256": "e75d9ca1c7fe89dfd89bbe0341ba13c3d6c4ac3a2d2c44d307c32aff74ea0e1c"
+    },
+    {
+      "path": "app/scenery/ground_features.gd",
+      "sha256": "e748340c59eb4ce41a256b0abfa028bec8088d333f2160a81be6221bacd81970"
+    },
+    {
+      "path": "app/scenery/birds.gd.uid",
+      "sha256": "16388fe596a08659aaac0a510bf1ba4d5d91a9f26d7aa5c049449c515fad41c0"
+    },
+    {
+      "path": "app/scenery/palette.gd",
+      "sha256": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da"
+    },
+    {
+      "path": "app/scenery/ambience.gd.uid",
+      "sha256": "abf1dd61f53b4e80870d1cb311a053fe8e22bd6513fc7563168716dc8d4410e3"
+    },
+    {
+      "path": "app/scenery/scenery.gd.uid",
+      "sha256": "daa64cc87bf2f92f3c5e3ee093abc35587dc38d2a97b62e3de920c5f6d497c15"
+    },
+    {
+      "path": "app/scenery/takeoff_pilot.gd",
+      "sha256": "6f9f9bbc003b9f5d71f6f79f3e8c160b8d6cf88283bc2579490fe5ddba87f513"
+    },
+    {
+      "path": "app/scenery/flowers.gd",
+      "sha256": "4eeb931918f79de3e628e3b88e3dbda810e0dcd39fcd002c09d9fb39d080e009"
+    },
+    {
+      "path": "app/scenery/birds.gdshader",
+      "sha256": "e38aa2b3ee9fe3b4bcdd98b915304f5fd16d0e4f1c788193f089e1322bf6cb9f"
+    },
+    {
+      "path": "app/scenery/motion.gdshader.uid",
+      "sha256": "69d5ef7ab39c3c19bc6075cf7c0001804897bbca055d8942f4f42e26463c7eeb"
+    },
+    {
+      "path": "app/scenery/birds.gdshader.uid",
+      "sha256": "f1377c69461012c53794c2812a7806a8106da16032daed32d173794087e33853"
+    },
+    {
+      "path": "app/scenery/capture_views.gd.uid",
+      "sha256": "c664278e8a3bcb0c4a721af060a5c472eb819924a4b157c8c7f181c2b96a1e25"
+    },
+    {
+      "path": "app/scenery/ambience_player.gd.uid",
+      "sha256": "b14b8ffc1d75e781cc9fa02d1c686fed9ef764aff4bb816b95bc7a47472557bb"
+    },
+    {
+      "path": "app/scenery/fleet.gd",
+      "sha256": "943b67c3519834264332ed2b483ccff68f96626fb2984036e6e8d26f88406339"
+    },
+    {
+      "path": "app/scenery/models.gd",
+      "sha256": "10d94822d3841351ad81d95232dc276dc601af23b54a94a12d603100020a0c0c"
+    },
+    {
+      "path": "app/scenery/ground_features.gd.uid",
+      "sha256": "253a5438b2201b83bb99bac71eaa5d6d878f2b3f805d6048d84e4ffec04edc74"
+    },
+    {
+      "path": "app/data/field_loader.gd.uid",
+      "sha256": "2fff43b8bb2a99130e92d0fc063a2c1d9d67f417e2afa81230aad9765eb5b08c"
+    },
+    {
+      "path": "app/data/field_loader.gd",
+      "sha256": "3dd8e1b3d227176c54e937243cdd35ceb5d7144bcfddf7baf99a4d6c996d9b48"
+    },
+    {
+      "path": "app/addons/build_info/plugin.cfg",
+      "sha256": "734f5d6589a61d704b885e229c79b89a84368c16aa8a8cb536fd5ea991d9d317"
+    },
+    {
+      "path": "app/addons/build_info/export_plugin.gd.uid",
+      "sha256": "66f7dc08a7de1e8caa66eb3610d855b870143c0bcc7700e5bb3f03d934672d84"
+    },
+    {
+      "path": "app/addons/build_info/plugin.gd.uid",
+      "sha256": "38088b898786876607871b7f7d092ef2f07480f6fd4cbe05738a397a6b8d6fb2"
+    },
+    {
+      "path": "app/addons/build_info/plugin.gd",
+      "sha256": "6bf57404c6801c66edbffed1d130db41a7e817f979d83d868ab1d1e09b8da34a"
+    },
+    {
+      "path": "app/addons/build_info/export_plugin.gd",
+      "sha256": "f70fae5f634ec905b4b47eb79af8d116a555d12fab28d8bf6b2638f20faa33f9"
+    },
+    {
+      "path": "app/assets/landscape/trees/LICENSE.txt",
+      "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "app/assets/landscape/trees/catalog.json",
+      "sha256": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89"
+    },
+    {
+      "path": "app/assets/landscape/trees/atlas.png",
+      "sha256": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43"
+    },
+    {
+      "path": "app/assets/landscape/trees/atlas.png.import",
+      "sha256": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413"
+    },
+    {
+      "path": "app/data/aircraft/gp_extra_300s_60.json",
+      "sha256": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474"
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a"
+    },
+    {
+      "path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "sha256": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67"
+    },
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44"
+    },
+    {
+      "path": "app/data/schema/openrc-aircraft-v1.schema.json",
+      "sha256": "c83d7b47cf8a10dab12058289481d9f60791ba7f838d4340ac9055fe8ab9022f"
+    },
+    {
+      "path": "app/data/ground/surface_friction.json",
+      "sha256": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94"
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "sha256": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea"
+    },
+    {
+      "path": "app/data/fields/horizon.json",
+      "sha256": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c"
+    },
+    {
+      "path": "app/data/fields/grass.json",
+      "sha256": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52"
+    },
+    {
+      "path": "app/data/scenery/default.json",
+      "sha256": "a9362f52a813b1fa3c0923f38023e01c08b4fc0a78e9029c6504ae88c34c2d23"
+    },
+    {
+      "path": "app/data/scenery/models/fleet_extra.json",
+      "sha256": "9920c2b286ca0613df34b41ffcc9e26d0f1ae6b7b8747db54e18f57787984057"
+    },
+    {
+      "path": "app/data/scenery/models/car_sport.json",
+      "sha256": "be6014ab38658d06505f70857a5020f772c8d2d7969a0c85df735ac7cb52e69f"
+    },
+    {
+      "path": "app/data/scenery/models/car_suv.json",
+      "sha256": "4af69a9eeadf308fcb5db07e2b43090a8fc1325b7249a69a370c2848512e2610"
+    },
+    {
+      "path": "app/data/scenery/models/fleet_p51.json",
+      "sha256": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3"
+    },
+    {
+      "path": "app/data/scenery/models/fleet_stik.json",
+      "sha256": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949"
+    },
+    {
+      "path": "app/data/scenery/models/cow.json",
+      "sha256": "b3faecaaf20a5122e93599230b05ff8f318a906fe3bf1fc9012dac0dc78593c8"
+    },
+    {
+      "path": "app/data/scenery/models/fleet_avanti.json",
+      "sha256": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec"
+    },
+    {
+      "path": "app/data/scenery/models/car_hatch.json",
+      "sha256": "47725a37414734ef89e7c97113072da0669840156d186145992ebd72df8d42e5"
+    },
+    {
+      "path": "app/data/scenery/models/car_sedan.json",
+      "sha256": "9cb24db341cb40afd2ba48e0e9a1a9c4b6d79e7d409e0f7c1a141c0e9b0b7b75"
+    },
+    {
+      "path": "app/data/scenery/models/sheep.json",
+      "sha256": "7f0db95fb1c5f7a4cefb4ae6b80b913d0ffcf83295fc858cf11597fab8884338"
+    }
+  ]
+}

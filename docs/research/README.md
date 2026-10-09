@@ -77,9 +77,15 @@ Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted ch
 
 Radio diagnostics: [F1](radio-input/F1/README.md) adds a standalone input report with per-device connection history, axis ranges and observed callback spacing; includes fake-device and CLI proof. Actual USB timing and physical-radio compatibility remain separate measurements.
 
+Loader cost: [DATA-2b](aircraft-validation/DATA-2b/README.md) attributes the remaining startup cost and stops repeated induced-flow inversions after exact float64 midpoint stagnation; paired whole-model and refusal comparisons retain identical bytes.
+
+Steady shaft integrity: [G2-R1](propulsion/G2-R1/README.md) rejects unbracketed or nonfinite RPM equilibria and verifies unchanged fleet trims and flight endpoints.
+
 Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 
 Solved stall-envelope integrity: [D1-R4](aircraft-validation/D1-R4/README.md) rejects unreachable, nonfinite or collapsed derived transitions, preserves valid fleet models and verifies refused reloads and solver faults.
+
+Wing-strip calibration integrity: [D1-R5](aircraft-validation/D1-R5/README.md) rejects unreachable or nonfinite induced-flow calibration before deriving offsets/downwash, with exact fleet parity and failed-reload proof.
 
 Aircraft loading cost: [DATA-2a](aircraft-validation/DATA-2a/README.md) bounds the existing discrete stall-peak search while preserving exact solved angles and full loader results. Paired fleet timings improve approximately eightfold; DATA-2's 15 ms whole-load target remains open.
 
@@ -145,6 +151,12 @@ Plan: [AVANTI-S-PLAN](../AVANTI-S-PLAN.md).
 Plans: [P51-PLAN](../P51-PLAN.md), [P51-VISUAL-PLAN](../P51-VISUAL-PLAN.md).
 
 ### Menus and product shell
+
+Experimental Stik runway delivery: [UI-06a session and trace contract](menu-investigations/UI-06a/README.md), [UI-06b Home and preferences](menu-investigations/UI-06b/README.md), [UI-06c export proof and pilot card](menu-investigations/UI-06c/README.md). The [scoped runway plan](../RUNWAY-START-PLAN.md) owns completion; physical pilot acceptance remains separate.
+
+[UI-06a-R1](menu-investigations/UI-06a-R1/README.md) repairs checkpoint replay headers that inherited the destination flight's launch origin; physics-only checkpoints now declare that origin unknown.
+
+[UI-06c-R1](menu-investigations/UI-06c-R1/README.md) refreshes the three-platform packages after that repair, verifies each compiled pack and repeats the native Linux runway smoke against a frozen source snapshot.
 
 [menu-investigations/README.md](menu-investigations/README.md): 25 numbered investigations (01-22, 24, 25; number 23 is a probe only, explained in the README), Godot probes under `probes/`, a contrast checker and `sources.json`. Start with [02 input focus and radio isolation](menu-investigations/02-input-focus-radio-isolation.md). Plan: [MENU-PLAN](../MENU-PLAN.md).
 

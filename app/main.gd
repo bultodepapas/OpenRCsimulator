@@ -41,6 +41,10 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+## Interactive Home choice only; CLI and scripted routes retain the airborne default.
+var start_choice: String = "airborne"
+var interactive_start: bool = false
+var startup_error: String = ""
 var _airplane: Dictionary
 var _camera: Camera3D
 var _panel: Label
@@ -111,6 +115,11 @@ func _ready() -> void:
 		trace_ticks = int(rounded_ticks)
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	if not loaded_field.ok:
+		if interactive_start:
+			startup_error = "; ".join(loaded_field.errors)
+			set_process(false)
+			set_process_unhandled_input(false)
+			return
 		FieldError.report(self, loaded_field.errors)
 		return
 	field = loaded_field.field
@@ -169,6 +178,7 @@ func _ready() -> void:
 	session.physics_enabled = not _scripted
 	session.setup(Catalog.entry(aircraft_id).data)
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
+	session.start_choice = start_choice
 	_update_cg_model()
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
@@ -184,6 +194,13 @@ func _ready() -> void:
 	if session.aircraft.ok and not _scripted:
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
+	if interactive_start and not session.is_flyable():
+		startup_error = session.start_error if not session.start_error.is_empty() else session.pause_reason
+		if startup_error.is_empty():
+			startup_error = "Aircraft data or starting condition invalid."
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	if args.has("trace"):
 		if not session.aircraft.ok or not session.surface_error.is_empty():
 			# Never record a "flight" on invalid data (it would be a ballistic throw): fail the run instead.

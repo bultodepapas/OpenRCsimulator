@@ -1,0 +1,21 @@
+[
+  {
+    "case": "control",
+    "exit_code": 0,
+    "failed_checks": []
+  },
+  {
+    "case": "pivot_shift",
+    "exit_code": 1,
+    "failed_checks": [
+      "pivots_within_0p01mm"
+    ]
+  },
+  {
+    "case": "axis_flip",
+    "exit_code": 1,
+    "failed_checks": [
+      "axes_within_1e_minus5"
+    ]
+  }
+]

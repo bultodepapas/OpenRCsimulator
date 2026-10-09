@@ -1,0 +1,30 @@
+[
+  {
+    "target": "old-linux",
+    "expected_exit_code": 1,
+    "exit_code": 1,
+    "pack_sha256": "b13ba90d592ff10fec12ff02fc100ccdcb15191e223f36001cae2f4d7295a05f",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\nFAIL pack contains UI-06a-R1\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\nFAIL pack contains UI-06a-R1\nPack checkpoint origin: FAIL /home/bulto/OpenRCsimulator/dist/linux/openrc-simulator.x86_64\n"
+  },
+  {
+    "target": "linux",
+    "expected_exit_code": 0,
+    "exit_code": 0,
+    "pack_sha256": "9f245fb183e9ae68ef13d9b587bf2e27a6f1980cb00e559da22efc2a8f18b0d2",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\nPack checkpoint origin: PASS /dev/shm/openrc-runway-refresh/dist/linux/openrc-simulator.x86_64\n"
+  },
+  {
+    "target": "windows",
+    "expected_exit_code": 0,
+    "exit_code": 0,
+    "pack_sha256": "508aa937a50714d56b522fc3af6fa513141602b2a2c0cd6ae5f0896b2d558c85",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\nPack checkpoint origin: PASS /dev/shm/openrc-runway-refresh/dist/windows/OpenRC Simulator.exe\n"
+  },
+  {
+    "target": "macos",
+    "expected_exit_code": 0,
+    "exit_code": 0,
+    "pack_sha256": "b13ea03e220500b965910cb5fed3eac943cc1e2916419e612f27c326174462c8",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value\nPack checkpoint origin: PASS /dev/shm/runway-pack-vv_x1abi/macos.pck\n"
+  }
+]

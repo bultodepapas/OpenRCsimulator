@@ -1,7 +1,7 @@
 # UI captures use the real Home and app_root routes where a screen transition matters.
 # Needs a renderer (run under Xvfb, see capture.sh):
 #   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/flight.png --lang=en --screen=flight
-#   [--screen=home|pause|help|hint] [--aircraft=<catalog id>]
+#   [--screen=home|pause|help|hint] [--aircraft=<catalog id>] [--start=airborne|runway]
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
 
@@ -11,6 +11,7 @@ const Preferences := preload("res://app_state/preferences.gd")
 const Commands := preload("res://input/commands.gd")
 const VisualEvidence := preload("res://render/visual_evidence.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const TARGET_FLIGHT_TIME_S: float = 1.5
 const FLIGHT_PREFERENCES_PATH: String = "user://capture_ui_flight_settings.cfg"
 
@@ -24,6 +25,7 @@ func _run() -> void:
 	var lang: String = "en"
 	var screen: String = "home"
 	var aircraft: String = "jensen-das-ugly-stik-60"
+	var start_choice: String = "airborne"
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--aircraft="):
 			aircraft = arg.trim_prefix("--aircraft=")
@@ -33,6 +35,15 @@ func _run() -> void:
 			lang = arg.trim_prefix("--lang=")
 		elif arg.begins_with("--screen="):
 			screen = arg.trim_prefix("--screen=")
+		elif arg.begins_with("--start="):
+			start_choice = arg.trim_prefix("--start=")
+	if start_choice not in ["airborne", "runway"]:
+		push_error("Unknown UI capture start choice '%s'" % start_choice)
+		quit(ERR_INVALID_PARAMETER)
+		return
+	if start_choice == "runway" and aircraft != Catalog.DEFAULT_ID:
+		push_error("Runway UI captures require the supported Ugly Stik")
+		quit(ERR_INVALID_PARAMETER)
 	TranslationServer.set_locale(lang) # never the OS locale: captures must not depend on the machine
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var app: Node = null
@@ -40,6 +51,8 @@ func _run() -> void:
 	var flight: Node = null
 	var transition_timing: Dictionary = {}
 	var visual_state: Dictionary = {}
+	var selector_evidence: Dictionary = {}
+	var home_control: Control = null
 	var route: String = "standalone-home"
 
 	if screen == "flight":
@@ -49,6 +62,7 @@ func _run() -> void:
 		prefs.language = lang
 		prefs.first_flight_hint_seen = true
 		prefs.aircraft = aircraft
+		prefs.start_choice = start_choice
 		var prefs_error: Error = Preferences.save_to(FLIGHT_PREFERENCES_PATH, prefs)
 		if prefs_error != OK:
 			push_error("Cannot write deterministic UI capture preferences: %s" % error_string(prefs_error))
@@ -64,6 +78,11 @@ func _run() -> void:
 			push_error("Flight capture did not start at Home")
 			quit(1)
 			return
+		home_control = home as Control
+		selector_evidence = _check_start_selector(home_control, start_choice, lang)
+		if selector_evidence.is_empty():
+			quit(1)
+			return
 		var fly_button: Button = home.get("fly_button")
 		if fly_button.disabled:
 			push_error("Flight capture Home Fly button is disabled for %s" % aircraft)
@@ -76,7 +95,16 @@ func _run() -> void:
 			push_error("Home Fly did not create the flight scene")
 			quit(1)
 			return
+		var session_choice: String = str(flight.get("start_choice"))
+		if session_choice != start_choice or not str(flight.get("startup_error")).is_empty():
+			push_error("Flight capture start rejected or changed: requested=%s actual=%s error=%s" % [start_choice, session_choice, str(flight.get("startup_error"))])
+			quit(1)
+			return
 		var session: Node = flight.get("session")
+		if str(session.get("start_choice")) != start_choice or not str(session.get("start_error")).is_empty():
+			push_error("Flight session start rejected or changed: requested=%s actual=%s error=%s" % [start_choice, str(session.get("start_choice")), str(session.get("start_error"))])
+			quit(1)
+			return
 		var sim: Node = session.get("sim")
 		# Draw the initial state before measuring transition completion. A newly built main scene has not yet run its
 		# first _process callback, so without this pose the first frame would show the airplane at its origin.
@@ -157,6 +185,8 @@ func _run() -> void:
 		if not "--no-ui" in args:
 			var home_ui: Control = Home.new()
 			home_ui.set_aircraft(aircraft)
+			home_ui.set_start_choice(start_choice)
+			home_control = home_ui
 			root.add_child(home_ui)
 		if screen != "home":
 			push_error("Unknown UI capture screen '%s'" % screen)
@@ -186,6 +216,11 @@ func _run() -> void:
 	await process_frame
 	await process_frame # deferred initial focus, then a frame drawn with it
 	await RenderingServer.frame_post_draw
+	if screen == "home" and home_control != null:
+		selector_evidence = _check_start_selector(home_control, start_choice, lang)
+		if selector_evidence.is_empty():
+			quit(1)
+			return
 	var viewport: Viewport = root.get_viewport()
 	var camera_count: int = _count_nodes(viewport, "Camera3D")
 	var environment_count: int = _count_nodes(viewport, "WorldEnvironment")
@@ -217,6 +252,8 @@ func _run() -> void:
 			"active_camera": "" if active_camera == null else str(active_camera.get_path()),
 		},
 		"flight_snapshot_frozen": flight != null,
+		"selected_start_choice": start_choice,
+		"start_selector": selector_evidence,
 		"visual": visual_state,
 	}
 	if home_field != null:
@@ -242,7 +279,7 @@ func _run() -> void:
 	manifest_file.flush()
 	var manifest_error: Error = manifest_file.get_error()
 	manifest_file.close()
-	print("saved %s (error 0) scene=%s camera3d=%d worldenvironment=%d%s" % [out, screen, camera_count, environment_count,
+	print("saved %s (error 0) scene=%s start=%s camera3d=%d worldenvironment=%d%s" % [out, screen, start_choice, camera_count, environment_count,
 		" transition_usec=%d (diagnostic only; cache unknown)" % int(transition_timing.elapsed_usec) if not transition_timing.is_empty() else ""])
 	for child in root.get_children():
 		child.queue_free() # freeing render scenes before quit avoids false GL leak errors at process exit
@@ -257,6 +294,37 @@ func _new_app(user_args: PackedStringArray, preferences_path: String) -> Node:
 	app.set("user_args", user_args)
 	app.set("preferences_path", preferences_path)
 	return app
+
+
+## Verifies that the translated selector is visible inside the Home sidebar and does not overlap Fly.
+func _check_start_selector(home: Control, choice: String, lang: String) -> Dictionary:
+	var button: Button = home.get("start_button") as Button
+	var fly: Button = home.get("fly_button") as Button
+	if button == null or fly == null:
+		push_error("Home capture has no start selector or Fly button")
+		return {}
+	var rect: Rect2 = button.get_global_rect()
+	var fly_rect: Rect2 = fly.get_global_rect()
+	var sidebar: Control = home.get_node("Sidebar") as Control
+	var sidebar_rect: Rect2 = sidebar.get_global_rect()
+	var viewport_size: Vector2 = root.get_viewport().get_visible_rect().size
+	var shown_text: String = button.atr(button.text)
+	var expected: String = "Start: runway (experimental)" if choice == "runway" else "Start: in the air"
+	if lang == "es":
+		expected = "Inicio: pista (experimental)" if choice == "runway" else "Inicio: en el aire"
+	var fits: bool = rect.has_area() and sidebar_rect.encloses(rect) and not rect.intersects(fly_rect) \
+		and rect.position.x >= 0.0 and rect.position.y >= 0.0 and rect.end.x <= viewport_size.x and rect.end.y <= viewport_size.y
+	if not button.is_visible_in_tree() or shown_text != expected or not fits:
+		push_error("Home start selector layout/translation failed: language=%s text='%s' expected='%s' rect=%s sidebar=%s viewport=%s" % [lang, shown_text, expected, rect, sidebar_rect, viewport_size])
+		return {}
+	return {
+		"choice": choice,
+		"label": shown_text,
+		"rect": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
+		"sidebar_rect": [sidebar_rect.position.x, sidebar_rect.position.y, sidebar_rect.size.x, sidebar_rect.size.y],
+		"fits_viewport": fits,
+		"does_not_overlap_fly": not rect.intersects(fly_rect),
+	}
 
 
 func _count_nodes(parent: Node, type_name: String) -> int:

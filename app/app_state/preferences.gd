@@ -11,7 +11,7 @@ const SCHEMA := 1
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
 const LANGUAGES := { "en": "English", "es": "Español" }
 ## aircraft: the catalog ID Home offers to fly (UI-05); an ID that is no longer in the catalog falls back to the default.
-const DEFAULTS := { language = "en", first_flight_hint_seen = false, aircraft = Catalog.DEFAULT_ID }
+const DEFAULTS := { language = "en", first_flight_hint_seen = false, aircraft = Catalog.DEFAULT_ID, start_choice = "airborne" }
 
 
 ## Returns the preferences: the DEFAULTS keys plus `writable` (false for a file from a newer version, which must
@@ -43,6 +43,9 @@ static func load_from(path: String) -> Dictionary:
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = aircraft
+	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
+	if typeof(start_choice) == TYPE_STRING and start_choice == "runway" and prefs.aircraft == Catalog.DEFAULT_ID:
+		prefs.start_choice = start_choice
 	return prefs
 
 
@@ -54,4 +57,5 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
+	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	return cfg.save(path)

@@ -1,12 +1,14 @@
 # Turbo Timber Evolution — external-model integration plan
 
-2026-10-08 · Revision 1 · Step prefix: **TT-**
+2026-10-08 · Revision 2 · Step prefix: **TT-**
 
-**Status: TT-00 complete (source research and static asset/code audit); implementation has not started.**
+**Status: TT-00 complete; r1 delivery review TT-00-R1 in progress. Application integration has not started.**
 
 Independent aircraft track. This plan owns Timber work; it does not change ROADMAP priorities or the other aircraft developers' plans. Research: [TT-00 evidence](research/timber-integration/TT-00/README.md), [primary sources](research/timber-integration/TT-00/sources.md), [runtime seams](research/timber-integration/TT-00/code-audit.md).
 
 External model-author communication: [Blender aircraft delivery letter](BLENDER-AIRCRAFT-HANDOFF.md), covering Timber corrections and a reusable handoff convention for future models.
+
+Latest delivery: [r1 review](research/timber-integration/TT-00-R1/README.md). Independent binary checks confirm a neutral 64,291-triangle GLB, 36 surfaces and 13 consistent articulation pivots. r1 supplies the proposed handoff structure; reconstruction paths, mass evidence, length and redistribution terms remain open. The v12 inventory below is historical and must not be mistaken for the current export.
 
 ## 1. Recommended delivery
 
@@ -18,7 +20,7 @@ Baseline proposal: wheels installed, flaps up, slats off, one documented battery
 
 Deferred: floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal/degradation models, flexible wings, articulated multibody suspension, detachable damage and a general plugin system for aircraft. These are independent features, not conditions for seeing or testing this model.
 
-## 2. What the package actually contains
+## 2. Original v12 package inventory
 
 Snapshot and hashes: [inventory.json](research/timber-integration/TT-00/inventory.json). Sizes below are decimal; counts describe the audited source, not a Godot runtime import.
 
@@ -163,6 +165,7 @@ Each row is one bounded change, with an evidence folder named for its ID. Shared
 | ID | Step / deliverable | Dependencies | Proof / exit condition | Status (date) |
 | --- | --- | --- | --- | --- |
 | TT-00 | Inventory, source research, code seams and this plan | Supplied folder | Hash manifest; static Blender/STL counts; official references; integration risks recorded | Complete (2026-10-08) |
+| TT-00-R1 | Review external game delivery r1 against the handoff letter | TT-00; new r1 package | Independent GLB/metadata audit, source-pipeline review and isolated Godot import/pose evidence | In progress (2026-10-08) |
 | TT-01 | Freeze accepted source and identify variant/loadout | Owner/model-author facts | Stable hashes, asset-origin/license record, exact Blender build, successful visual open, original preserved; missing CAD inputs listed | Planned |
 | TT-02 | Normalize datum and measure anchors | TT-01 | Axis-marker test; span/length discrepancy resolved or explicitly bounded; hinge/CG/contact tables; no double scaling | Planned |
 | TT-03 | Minimal curated GLB and isolated Godot viewer | TT-02 | Clean import without Blender installed on consumer; neutral assembled model in six views; required nodes/materials survive export | Planned |
@@ -206,4 +209,4 @@ On a GLB/path/import change, test a fresh clone and a packaged build: neither `.
 4. Which asset redistribution terms apply? Record them before distributing source/assets with the repository; local inspection and planning are already useful.
 5. Which motor/propeller, mass/inertia and assist-off flight measurements can be collected? Missing measurements limit confidence and labeling, not honest experimental work.
 
-**Next concrete step:** TT-01 → TT-02 → TT-03: freeze the source, establish its frame, and load a small neutral curated model in an isolated Godot viewer. No electric or flap implementation is needed to prove that first integration.
+**Next concrete step after the r1 review:** close TT-01 provenance/configuration and reproducible-generation gaps, resolve or bound TT-02 dimensional discrepancies, and reuse r1’s curated GLB for TT-03. Axis/name/sign adaptation belongs in the simulator adapter. Electric propulsion and flight flaps remain later shared prerequisites.

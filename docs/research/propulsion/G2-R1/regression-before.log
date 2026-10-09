@@ -1,0 +1,25 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL positive torque at both endpoints refused
+FAIL negative torque at both endpoints refused
+FAIL nonfinite throttle refused
+FAIL nonfinite inflow refused
+FAIL nonfinite density refused
+FAIL nonfinite throttle refused
+FAIL nonfinite inflow refused
+FAIL nonfinite density refused
+FAIL nonfinite throttle refused
+FAIL nonfinite inflow refused
+FAIL nonfinite density refused
+FAIL negative density refused
+FAIL overflowing bracket refused
+FAIL overflowing torque refused
+FAIL reversed RPM bracket refused
+FAIL exact upper endpoint root accepted
+FAIL nonfinite evaluated torque refused
+FAIL nonfinite evaluated torque refused
+FAIL nonfinite evaluated torque refused
+FAIL loader-valid unbracketed equilibrium refused
+FAIL loader-valid bracket overflow refused
+FAIL runway solver refuses failed RPM before evaluating loads
+G2-R1: 46 checks, 22 failed

@@ -26,6 +26,11 @@ const Ground := preload("res://physics/ground_contact.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 
+const START_AIRBORNE := "airborne"
+const START_RUNWAY := "runway"
+const RUNWAY_AIRCRAFT_ID := "jensen-das-ugly-stik-60"
+const RUNWAY_FIELD_ID := "default"
+
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
 
@@ -45,6 +50,13 @@ var sim: Node
 var aircraft_path := Scenarios.AIRCRAFT
 var aircraft := {} # AircraftData result: { ok, errors, warnings, model }
 var start := {} # trimmed starting condition (Trim result); empty without valid data
+## Persistent product start selection. Set before setup(), or before reset(); explicit runway failures stay stopped.
+var start_choice: String = START_AIRBORNE
+## Empty after a successful reset; otherwise the explicit reason the requested start was refused.
+var start_error: String = ""
+var _runway_field: Dictionary = {}
+var _launch_metadata: Dictionary = {}
+var _has_committed_aircraft: bool = false
 ## Trims in pilot units (−1…1), like radio trim tabs: solved at the start, added to the sticks.
 var trims := { roll = 0.0, pitch = 0.0, yaw = 0.0 }
 ## Stick commands after shaping (−1…1, throttle 0…1), and the raw input sample they came from.
@@ -198,6 +210,8 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	if not built.ok:
 		surface_error = "ground surfaces invalid: " + str(built.errors[0] if not built.errors.is_empty() else "unknown")
 		ground_surfaces = PackedFloat64Array()
+		ground_field_id = ""
+		_runway_field = {}
 		pause_reason = surface_error
 		sim.set_paused(true)
 		printerr(surface_error)
@@ -205,6 +219,7 @@ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> 
 	surface_error = ""
 	ground_surfaces = built.rects
 	ground_field_id = str(field.get("id", "?"))
+	_runway_field = field.duplicate(true)
 	return true
 
 
@@ -284,6 +299,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
 	start = prepared.start
 	trims = prepared.trims.duplicate(true)
+	_has_committed_aircraft = true
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
 	_deflection_key = PackedFloat64Array()
@@ -390,12 +406,18 @@ func reload() -> String:
 	var prepared := _prepare_aircraft(AircraftData.load_file(aircraft_path))
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
-	var old_flight := { data = aircraft, start = start, trims = trims.duplicate(true) }
+	if start_choice == START_RUNWAY:
+		var runway_candidate: Dictionary = _validate_runway_candidate(prepared)
+		if not runway_candidate.ok:
+			return "reload failed; previous aircraft and flight retained: %s" % runway_candidate.message
+	var old_flight: Dictionary = { data = aircraft, start = start, trims = trims.duplicate(true) }
 	var old_snapshot: Dictionary = sim.checkpoint()
 	var old_commands := commands.duplicate(true)
 	var old_raw := raw.duplicate(true)
 	var old_crash := crash.duplicate(true)
 	var old_reason := pause_reason
+	var old_start_error: String = start_error
+	var old_launch_metadata: Dictionary = _launch_metadata.duplicate(true)
 	var old_paused: bool = sim.paused
 	_commit_aircraft(prepared)
 	reset()
@@ -404,15 +426,71 @@ func reload() -> String:
 		if old_snapshot.is_empty():
 			return "aircraft reload failed during reset; simulation paused: %s" % reason
 		_commit_aircraft(old_flight)
-		if not old_snapshot.is_empty() and sim.restore_checkpoint(old_snapshot):
+		if _restore_reload_checkpoint(old_snapshot):
 			commands = old_commands
 			raw = old_raw
 			crash = old_crash
 			pause_reason = old_reason
+			start_error = old_start_error
+			_launch_metadata = old_launch_metadata
 			sim.set_paused(old_paused)
 			return "reload failed; previous aircraft and flight retained: " + reason
 		return "aircraft reload failed during reset; simulation paused: %s" % reason
+	if str(_launch_metadata.get("launch_choice", "")) == "runway":
+		return "aircraft reloaded: runway start on field '%s'" % str(_launch_metadata.get("launch_field_id", ""))
 	return "aircraft reloaded: trimmed at %.0f m/s, throttle %d %%" % [start.V, roundi(start.throttle * 100.0)]
+
+
+func _restore_reload_checkpoint(snapshot: Dictionary) -> bool:
+	if snapshot.is_empty() or not snapshot.has("state") or not snapshot.has("aux"):
+		return false
+	if sim.restore_checkpoint(snapshot):
+		return true
+	# Establish the previous aircraft's state-array widths and loads before validating the exact old tick boundary.
+	sim.continuous = snapshot.get("continuous", PackedFloat64Array()).duplicate()
+	sim.aux = snapshot.aux.duplicate()
+	sim.inputs = snapshot.inputs.duplicate()
+	sim.modes = snapshot.modes.duplicate()
+	if not sim.reset(snapshot.state):
+		return false
+	return sim.restore_checkpoint(snapshot)
+
+
+## Preflights the selected runway route before reload emits `resetting` or replaces active data.
+func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
+	if not surface_error.is_empty():
+		return { ok = false, message = surface_error }
+	if _runway_field.is_empty():
+		return { ok = false, message = "runway start needs a loaded field" }
+	var field_id: String = str(_runway_field.get("id", ""))
+	if field_id != RUNWAY_FIELD_ID or ground_field_id != field_id:
+		return { ok = false, message = "runway start is supported only on field '%s' (got '%s')" % [RUNWAY_FIELD_ID, field_id] }
+	var data: Dictionary = prepared.get("data", {})
+	if not data.get("ok", false):
+		return { ok = false, message = "aircraft data is invalid" }
+	var model: Dictionary = data.get("model", {})
+	var model_id: String = str(model.get("id", ""))
+	if model_id != RUNWAY_AIRCRAFT_ID:
+		return { ok = false, message = "runway start is supported only for '%s' (got '%s')" % [RUNWAY_AIRCRAFT_ID, model_id] }
+	var gear: Dictionary = model.get("landing_gear", {})
+	if gear.is_empty() or not gear.has("breakaway_factor") or gear.get("contacts", []).is_empty():
+		return { ok = false, message = "runway start needs landing gear with stiction data" }
+	var spot: Dictionary = GroundStart.threshold(_runway_field)
+	if not spot.ok:
+		return { ok = false, message = "runway start: " + str(spot.message) }
+	var pilot_commands: Dictionary = Commands.neutral_commands()
+	var candidate_trims: Dictionary = prepared.get("trims", {})
+	pilot_commands.roll = clampf(float(candidate_trims.get("roll", 0.0)), -1.0, 1.0)
+	pilot_commands.pitch = clampf(float(candidate_trims.get("pitch", 0.0)), -1.0, 1.0)
+	pilot_commands.yaw = clampf(float(candidate_trims.get("yaw", 0.0)), -1.0, 1.0)
+	pilot_commands.throttle = 0.0
+	var input_values := PackedFloat64Array([pilot_commands.roll, pilot_commands.pitch, pilot_commands.yaw, 0.0])
+	var surface_angles: Dictionary = Commands.surface_deflections_deg(pilot_commands, model.controls.throw_deg)
+	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
+	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, Air.RHO_SEA_LEVEL)
+	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
+		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity)
+	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
 func _physics_process(_delta: float) -> void:
@@ -492,6 +570,19 @@ func reset() -> void:
 	crash = {}
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
+	start_error = ""
+	if start_choice == START_AIRBORNE:
+		_reset_airborne_start()
+	elif start_choice == START_RUNWAY:
+		var result: Dictionary = _reset_selected_runway_start()
+		if not result.ok:
+			_fail_selected_start(str(result.message))
+	else:
+		_fail_selected_start("unsupported start choice '%s'" % start_choice)
+
+
+## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
+func _reset_airborne_start() -> bool:
 	commands = Commands.neutral_commands()
 	if _has_valid_start():
 		commands.throttle = start.throttle
@@ -510,9 +601,13 @@ func reset() -> void:
 		sim.continuous = _settled_wash(start.state, aux)
 		if not sim.reset(start.state):
 			sim.set_paused(true)
-			return
+			var reason: String = "simulation reset failed: " + sim.fault_reason
+			_fail_selected_start(reason)
+			return false
 		pause_reason = ""
-		sim.set_paused(false)
+		sim.set_paused(not holds.is_empty())
+		_capture_launch("airborne", "trimmed_airborne", "", "")
+		return true
 	else:
 		# An invalid initial candidate is parked in a valid, inert state. It never enters the throw/flying fallback.
 		if not Sim.state_is_valid(sim.state):
@@ -522,6 +617,108 @@ func reset() -> void:
 		sim.set_paused(true)
 		# Trace/capture helpers may call step() directly, so the invalid initial condition must also block raw stepping.
 		sim.fault_reason = pause_reason
+		start_error = pause_reason
+		_capture_launch("failed", "failed", "", start_error)
+		return false
+
+
+func _reset_selected_runway_start() -> Dictionary:
+	if not surface_error.is_empty():
+		return { ok = false, message = surface_error }
+	if not aircraft.get("ok", false) or not start.get("ok", false):
+		return { ok = false, message = _start_failure_reason() }
+	var model_id: String = str(aircraft.model.get("id", ""))
+	if model_id != RUNWAY_AIRCRAFT_ID:
+		return { ok = false, message = "runway start is supported only for '%s' (got '%s')" % [RUNWAY_AIRCRAFT_ID, model_id] }
+	if _runway_field.is_empty():
+		return { ok = false, message = "runway start needs a loaded field" }
+	var field_id: String = str(_runway_field.get("id", ""))
+	if field_id != RUNWAY_FIELD_ID or ground_field_id != field_id:
+		return { ok = false, message = "runway start is supported only on field '%s' (got '%s')" % [RUNWAY_FIELD_ID, field_id] }
+	if anchor_count() == 0:
+		return { ok = false, message = "runway start needs landing gear with stiction data" }
+	var spot: Dictionary = GroundStart.threshold(_runway_field)
+	if not spot.ok:
+		return { ok = false, message = "runway start: " + str(spot.message) }
+	var result: Dictionary = _apply_runway_start(float(spot.north), float(spot.east), float(spot.heading))
+	if not result.ok:
+		return result
+	_capture_launch("runway", "runway_threshold", field_id, "")
+	return { ok = true, message = "" }
+
+
+## Solves and installs a runway pose. It never selects or falls back to another start.
+func _apply_runway_start(north: float, east: float, heading: float) -> Dictionary:
+	if not _has_valid_start() or anchor_count() == 0:
+		return { ok = false, message = "runway start needs valid aircraft data, trim, and stiction gear" }
+	commands = Commands.neutral_commands()
+	commands.throttle = 0.0
+	engine_running = true
+	sim.inputs = _inputs()
+	var prop: Dictionary = aircraft.model.propulsion
+	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
+	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
+		rpm, Air.RHO_SEA_LEVEL, sim.gravity)
+	if not solved.ok:
+		return { ok = false, message = "runway start: " + str(solved.message) }
+	aux.append_array(solved.anchors)
+	if downwash_index() >= 0:
+		aux.append(_wing_cl(solved.state, aux)) # E0a2b: at rest, settled
+	sim.aux = aux
+	sim.continuous = _settled_wash(solved.state, aux)
+	if not sim.reset(solved.state):
+		return { ok = false, message = "runway start reset failed: " + sim.fault_reason }
+	sim.set_paused(not holds.is_empty())
+	pause_reason = ""
+	return { ok = true, message = "" }
+
+
+func _fail_selected_start(reason: String) -> void:
+	start_error = reason if not reason.is_empty() else "requested start could not be prepared"
+	pause_reason = start_error
+	crash = {}
+	commands = Commands.neutral_commands()
+	commands.throttle = 0.0
+	raw = Commands.neutral_raw()
+	engine_running = false
+	if sim != null:
+		sim.inputs = _inputs()
+		var parked := PackedFloat64Array([0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+		if _has_committed_aircraft:
+			var aux := PackedFloat64Array([0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
+			aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
+			if downwash_index() >= 0:
+				aux.append(_wing_cl(parked, aux))
+			sim.aux = aux
+			sim.continuous = _settled_wash(parked, aux)
+		else:
+			sim.aux = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+			sim.continuous = PackedFloat64Array()
+		if not Sim.state_is_valid(sim.state) or _has_committed_aircraft:
+			sim.reset(parked)
+		sim.fault_reason = start_error
+		sim.set_paused(true)
+	_capture_launch("failed", "failed", str(_runway_field.get("id", "")), start_error)
+
+
+func _capture_launch(actual_choice: String, launch_kind: String, field_id: String, error_text: String) -> void:
+	var state_snapshot: PackedFloat64Array = sim.state.duplicate() if sim != null and Sim.state_is_valid(sim.state) else PackedFloat64Array()
+	var aux_snapshot: PackedFloat64Array = sim.aux.slice(0, AUX_LAYOUT.size()) if sim != null else PackedFloat64Array()
+	var anchor_snapshot: PackedFloat64Array = PackedFloat64Array()
+	if sim != null and actual_choice == "runway":
+		anchor_snapshot = sim.aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
+	_launch_metadata = {
+		"selected_start_choice": start_choice,
+		"launch_choice": actual_choice,
+		"launch_kind": launch_kind,
+		"launch_field_id": field_id,
+		"launch_state": JSON.stringify(Array(state_snapshot), "", true, true),
+		"launch_aux": JSON.stringify(Array(aux_snapshot), "", true, true),
+		"launch_ground_anchors": JSON.stringify(Array(anchor_snapshot), "", true, true),
+		"launch_engine_running": JSON.stringify(engine_running),
+		"launch_error": error_text,
+	}
 
 
 func _has_valid_start() -> bool:
@@ -676,33 +873,22 @@ func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array) -> float:
 	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model)
 
 
-## E3b2: restart standing on the runway at (north, east) facing `heading` (rad, 0 = north), engine idling at closed
-## throttle, every wheel stuck, in static equilibrium (GroundStart.solve). Needs stiction data. On failure the flight is
-## reset to its normal start and false is returned.
+## Compatibility helper for tests/captures: one-shot runway start at (north, east), facing `heading` (rad, 0 = north).
+## It does not change the persistent start_choice. Failure restores the normal trimmed start and returns false.
 func reset_on_runway(north: float, east: float, heading: float) -> bool:
-	reset()
-	if not _has_valid_start() or anchor_count() == 0:
+	resetting.emit()
+	crash = {}
+	if pause_reason.begins_with("CRASH"):
+		pause_reason = ""
+	start_error = ""
+	if not _reset_airborne_start():
 		return false
-	commands.throttle = 0.0
-	engine_running = true
-	sim.inputs = _inputs()
-	var prop: Dictionary = aircraft.model.propulsion
-	var rpm := Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
-	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
-	var solved := GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
-		rpm, Air.RHO_SEA_LEVEL, sim.gravity)
-	if not solved.ok:
-		printerr("runway start: " + str(solved.message))
-		reset()
+	var result: Dictionary = _apply_runway_start(north, east, heading)
+	if not result.ok:
+		printerr(str(result.message))
+		_reset_airborne_start()
 		return false
-	aux.append_array(solved.anchors)
-	if downwash_index() >= 0:
-		aux.append(_wing_cl(solved.state, aux)) # E0a2b: at rest, settled
-	sim.aux = aux
-	sim.continuous = _settled_wash(solved.state, aux)
-	if not sim.reset(solved.state):
-		reset()
-		return false
+	_capture_launch("runway", "runway_threshold", ground_field_id, "")
 	return true
 
 
@@ -719,9 +905,26 @@ func trace_meta() -> Dictionary:
 	var turbine: bool = Turbine.is_turbine(prop)
 	var propulsion_model: String = "turbine-ecu-spool-v1" if turbine else (
 		"propeller-shaft-balance-v1" if Propulsion.has_shaft(prop) else "propeller-rpm-lag-v1")
+	var scenario: String = "trimmed %s across view at %.1f m/s (D5: six-axis trim, calm air)" % [
+		"level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))]
+	if str(_launch_metadata.get("launch_choice", "airborne")) == "runway":
+		scenario = "runway threshold on field '%s' (idle engine, static equilibrium; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
+	elif str(_launch_metadata.get("launch_choice", "")) == "failed":
+		scenario = "start refused: " + str(_launch_metadata.get("launch_error", "unknown start error"))
+	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
+		scenario = "checkpoint replay (original launch unknown)"
 	return {
 		metadata_schema = "openrc-flight-meta v2",
-		scenario = "trimmed %s across view at %.1f m/s (D5: six-axis trim, calm air)" % ["level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))],
+		scenario = scenario,
+		selected_start_choice = _launch_metadata.get("selected_start_choice", start_choice),
+		launch_choice = _launch_metadata.get("launch_choice", "unknown"),
+		launch_kind = _launch_metadata.get("launch_kind", "unknown"),
+		launch_field_id = _launch_metadata.get("launch_field_id", ""),
+		launch_state = _launch_metadata.get("launch_state", "[]"),
+		launch_aux = _launch_metadata.get("launch_aux", "[]"),
+		launch_ground_anchors = _launch_metadata.get("launch_ground_anchors", "[]"),
+		launch_engine_running = _launch_metadata.get("launch_engine_running", "false"),
+		launch_error = _launch_metadata.get("launch_error", ""),
 		aircraft = "%s (%s)" % [aircraft.model.get("id", "?"), aircraft_path],
 		aircraft_input_format = AircraftData.FORMAT,
 		aircraft_input_sha256 = aircraft.get("input_identity", {}).get("sha256", "unavailable: in-memory input"),
@@ -797,6 +1000,13 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	resetting.emit() # close recording before the clock moves backwards
 	if not sim.restore_checkpoint(snapshot):
 		return false
+	# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
+	# restored state to this destination session's earlier launch. reset() will establish a new known launch.
+	_launch_metadata = {
+		selected_start_choice = "unknown", launch_choice = "unknown", launch_kind = "checkpoint_restore",
+		launch_field_id = "", launch_state = "[]", launch_aux = "[]", launch_ground_anchors = "[]",
+		launch_engine_running = "unknown", launch_error = "",
+	}
 	input_enabled = false
 	crash = {}
 	pause_reason = "checkpoint restored (recorded inputs)"

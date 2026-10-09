@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL unattainable wing slope refused 6.3 []
+FAIL unattainable wing slope refused 4.58 []
+FAIL unattainable wing slope refused 4.579999999999 []
+FAIL unattainable wing slope refused 4.53 []
+FAIL invalid calibration publishes no map -1.0 
+FAIL invalid calibration publishes no map 0.0 
+FAIL invalid calibration publishes no map 0.000000000001 
+FAIL invalid calibration publishes no map 100.0 
+FAIL invalid calibration publishes no map nan 
+FAIL invalid calibration publishes no map inf 
+FAIL invalid calibration publishes no map -inf 
+FAIL invalid calibration publishes no map -1.0 
+FAIL invalid calibration publishes no map 0.0 
+FAIL invalid calibration publishes no map 0.000000000001 
+FAIL invalid calibration publishes no map 100.0 
+FAIL invalid calibration publishes no map nan 
+FAIL invalid calibration publishes no map inf 
+FAIL invalid calibration publishes no map -inf 
+FAIL invalid calibration publishes no map -1.0 
+FAIL invalid calibration publishes no map 0.0 
+FAIL invalid calibration publishes no map 0.000000000001 
+FAIL invalid calibration publishes no map 100.0 
+FAIL invalid calibration publishes no map nan 
+FAIL invalid calibration publishes no map inf 
+FAIL invalid calibration publishes no map -inf 
+FAIL invalid calibration publishes no map -1.0 
+FAIL invalid calibration publishes no map 0.0 
+FAIL invalid calibration publishes no map 0.000000000001 
+FAIL invalid calibration publishes no map 100.0 
+FAIL invalid calibration publishes no map nan 
+FAIL invalid calibration publishes no map inf 
+FAIL invalid calibration publishes no map -inf 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL reload explains calibration failure reload failed; previous aircraft and flight retained: simulation reset failed: reset rejected: aircraft returned nonfinite or malformed loads
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL invalid initial aircraft cannot fly 
+D1-R5: 115 checks, 34 failed

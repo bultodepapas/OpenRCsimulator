@@ -24,11 +24,15 @@ signal language_requested(code: String)
 signal help_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
+signal start_requested(choice: String)
 
 const SIDEBAR_WIDTH := 440
 
 ## The catalog aircraft that Fly starts (set_aircraft() changes it).
 var aircraft_id := Catalog.DEFAULT_ID
+var start_choice: String = "airborne"
+var runway_available: bool = true
+var start_button: Button
 
 var fly_button: Button
 var language_button: Button
@@ -119,6 +123,10 @@ func _init() -> void:
 	limits_label = _label("Starts in the air. A crash restarts the flight.", "SecondaryLabel")
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card_lines.add_child(limits_label)
+	start_button = _button("", "")
+	start_button.name = "StartChoice"
+	start_button.pressed.connect(func() -> void: start_requested.emit("runway" if start_choice == "airborne" else "airborne"))
+	card_lines.add_child(start_button)
 	card.add_child(card_lines)
 	column.add_child(card)
 	column.add_child(_gap(18))
@@ -173,6 +181,8 @@ func _ready() -> void:
 	# Down from Fly lands on the row's first button (geometry alone picks the middle one, Help). Left and right from
 	# Fly reach the aircraft arrows, so changing airplane is two keys away from the start.
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(language_button)
+	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
+	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
 	Input.joy_connection_changed.connect(_on_joy_changed)
@@ -185,6 +195,7 @@ func _ready() -> void:
 ## (a stale preference must never leave Home without a valid airplane).
 func set_aircraft(id: String) -> void:
 	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
+	set_start_choice(start_choice)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var had_focus := fly_button.has_focus()
@@ -198,6 +209,22 @@ func set_aircraft(id: String) -> void:
 		next_button.grab_focus()
 	if is_node_ready():
 		_update_texts()
+
+
+func set_start_choice(choice: String) -> void:
+	var supported: bool = aircraft_id == Catalog.DEFAULT_ID and runway_available
+	start_choice = "runway" if supported and choice == "runway" else "airborne"
+	start_button.disabled = not supported
+	start_button.text = "Start: runway (experimental)" if start_choice == "runway" else "Start: in the air"
+	limits_label.text = "Starts at idle on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+
+
+## A rejected launch leaves the same usable Home, including keyboard focus.
+func reject_start(message: String) -> void:
+	_fly_sent = false
+	set_aircraft(aircraft_id)
+	set_note(message)
+	fly_button.grab_focus()
 
 
 func _notification(what: int) -> void:

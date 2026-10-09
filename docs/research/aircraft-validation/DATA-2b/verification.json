@@ -1,0 +1,1744 @@
+{
+  "step": "DATA-2b",
+  "input_sha256": {
+    "app/physics/aircraft_data.gd": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+    "app/physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+    "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "app/data/aircraft/gp_extra_300s_60.json": "021710f4c12a37b20b27ae9865c54bd5d40e9c6df6482e49c4175c7f2cff3474",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+    "research/aircraft-data/data2b/cases.gd": "e363c4c1c8ecd591945864d765f31dfe547ad73b624b550d4610237af8d370f9",
+    "research/aircraft-data/data2b/compare.gd": "054e97e70e65f0a1ea2a1faf2c3579210843ed738928312b20627114856a9d46",
+    "research/aircraft-data/data2b/profile.gd": "4d87db0043e362fd398e580d783ced95f1a63f9b427775b96c5af2dad2560049",
+    "research/aircraft-data/data2b/verify.py": "369af719fe2073b51f979e9aef00d50da47a7a6f43dd0b93aced422f49267114"
+  },
+  "paired_runs": [
+    [
+      {
+        "aircraft": "jensen_ugly_stik_60",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 12710,
+            "before_us": 14933
+          },
+          {
+            "after_us": 12414,
+            "before_us": 12179
+          },
+          {
+            "after_us": 11976,
+            "before_us": 11843
+          },
+          {
+            "after_us": 14384,
+            "before_us": 13234
+          },
+          {
+            "after_us": 11746,
+            "before_us": 12896
+          },
+          {
+            "after_us": 10823,
+            "before_us": 12185
+          },
+          {
+            "after_us": 11709,
+            "before_us": 11971
+          },
+          {
+            "after_us": 11761,
+            "before_us": 11956
+          },
+          {
+            "after_us": 12274,
+            "before_us": 13359
+          },
+          {
+            "after_us": 11240,
+            "before_us": 13729
+          },
+          {
+            "after_us": 12356,
+            "before_us": 12857
+          },
+          {
+            "after_us": 14063,
+            "before_us": 12727
+          },
+          {
+            "after_us": 11650,
+            "before_us": 12671
+          },
+          {
+            "after_us": 10946,
+            "before_us": 11886
+          },
+          {
+            "after_us": 11552,
+            "before_us": 12193
+          },
+          {
+            "after_us": 11587,
+            "before_us": 11988
+          },
+          {
+            "after_us": 12579,
+            "before_us": 12506
+          },
+          {
+            "after_us": 11816,
+            "before_us": 13143
+          },
+          {
+            "after_us": 11589,
+            "before_us": 12185
+          },
+          {
+            "after_us": 11020,
+            "before_us": 11689
+          },
+          {
+            "after_us": 12070,
+            "before_us": 11694
+          },
+          {
+            "after_us": 11094,
+            "before_us": 11813
+          },
+          {
+            "after_us": 11061,
+            "before_us": 11826
+          },
+          {
+            "after_us": 11618,
+            "before_us": 13260
+          }
+        ],
+        "before_median_us": 12189.0,
+        "after_median_us": 11727.5,
+        "after_range_us": [
+          10823,
+          14384
+        ]
+      },
+      {
+        "aircraft": "gp_extra_300s_60",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 11594,
+            "before_us": 13273
+          },
+          {
+            "after_us": 11385,
+            "before_us": 13618
+          },
+          {
+            "after_us": 11363,
+            "before_us": 14263
+          },
+          {
+            "after_us": 11573,
+            "before_us": 13600
+          },
+          {
+            "after_us": 11781,
+            "before_us": 13240
+          },
+          {
+            "after_us": 11313,
+            "before_us": 13794
+          },
+          {
+            "after_us": 12004,
+            "before_us": 13258
+          },
+          {
+            "after_us": 11905,
+            "before_us": 15501
+          },
+          {
+            "after_us": 12819,
+            "before_us": 13787
+          },
+          {
+            "after_us": 12011,
+            "before_us": 13433
+          },
+          {
+            "after_us": 11158,
+            "before_us": 12996
+          },
+          {
+            "after_us": 13406,
+            "before_us": 13052
+          },
+          {
+            "after_us": 12045,
+            "before_us": 12374
+          },
+          {
+            "after_us": 11244,
+            "before_us": 11821
+          },
+          {
+            "after_us": 11543,
+            "before_us": 12614
+          },
+          {
+            "after_us": 11887,
+            "before_us": 12069
+          },
+          {
+            "after_us": 12703,
+            "before_us": 14355
+          },
+          {
+            "after_us": 11568,
+            "before_us": 12117
+          },
+          {
+            "after_us": 11457,
+            "before_us": 12158
+          },
+          {
+            "after_us": 11490,
+            "before_us": 12782
+          },
+          {
+            "after_us": 12092,
+            "before_us": 12263
+          },
+          {
+            "after_us": 11384,
+            "before_us": 11963
+          },
+          {
+            "after_us": 11058,
+            "before_us": 12116
+          },
+          {
+            "after_us": 11829,
+            "before_us": 11817
+          }
+        ],
+        "before_median_us": 13024.0,
+        "after_median_us": 11583.5,
+        "after_range_us": [
+          11058,
+          13406
+        ]
+      },
+      {
+        "aircraft": "p51d_mustang_120",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 14327,
+            "before_us": 15573
+          },
+          {
+            "after_us": 12780,
+            "before_us": 14469
+          },
+          {
+            "after_us": 13708,
+            "before_us": 14137
+          },
+          {
+            "after_us": 13661,
+            "before_us": 13670
+          },
+          {
+            "after_us": 13045,
+            "before_us": 14084
+          },
+          {
+            "after_us": 12200,
+            "before_us": 13389
+          },
+          {
+            "after_us": 12876,
+            "before_us": 13983
+          },
+          {
+            "after_us": 12651,
+            "before_us": 13209
+          },
+          {
+            "after_us": 13421,
+            "before_us": 15093
+          },
+          {
+            "after_us": 13785,
+            "before_us": 13576
+          },
+          {
+            "after_us": 12593,
+            "before_us": 15121
+          },
+          {
+            "after_us": 12333,
+            "before_us": 14092
+          },
+          {
+            "after_us": 13033,
+            "before_us": 14484
+          },
+          {
+            "after_us": 12850,
+            "before_us": 13844
+          },
+          {
+            "after_us": 14643,
+            "before_us": 13285
+          },
+          {
+            "after_us": 13456,
+            "before_us": 15255
+          },
+          {
+            "after_us": 12299,
+            "before_us": 14169
+          },
+          {
+            "after_us": 13301,
+            "before_us": 17353
+          },
+          {
+            "after_us": 14563,
+            "before_us": 21773
+          },
+          {
+            "after_us": 13354,
+            "before_us": 15056
+          },
+          {
+            "after_us": 12128,
+            "before_us": 13968
+          },
+          {
+            "after_us": 11911,
+            "before_us": 14518
+          },
+          {
+            "after_us": 12614,
+            "before_us": 15080
+          },
+          {
+            "after_us": 14572,
+            "before_us": 13325
+          }
+        ],
+        "before_median_us": 14153.0,
+        "after_median_us": 13039.0,
+        "after_range_us": [
+          11911,
+          14643
+        ]
+      },
+      {
+        "aircraft": "sebart_avanti_s_a200",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 12183,
+            "before_us": 12756
+          },
+          {
+            "after_us": 11384,
+            "before_us": 12978
+          },
+          {
+            "after_us": 14185,
+            "before_us": 15098
+          },
+          {
+            "after_us": 11573,
+            "before_us": 13081
+          },
+          {
+            "after_us": 11902,
+            "before_us": 13830
+          },
+          {
+            "after_us": 14076,
+            "before_us": 14408
+          },
+          {
+            "after_us": 12212,
+            "before_us": 16089
+          },
+          {
+            "after_us": 11701,
+            "before_us": 13157
+          },
+          {
+            "after_us": 11489,
+            "before_us": 13092
+          },
+          {
+            "after_us": 11618,
+            "before_us": 17613
+          },
+          {
+            "after_us": 11421,
+            "before_us": 12636
+          },
+          {
+            "after_us": 11300,
+            "before_us": 12156
+          },
+          {
+            "after_us": 12054,
+            "before_us": 12827
+          },
+          {
+            "after_us": 13608,
+            "before_us": 15531
+          },
+          {
+            "after_us": 11611,
+            "before_us": 12929
+          },
+          {
+            "after_us": 11957,
+            "before_us": 14491
+          },
+          {
+            "after_us": 12222,
+            "before_us": 13114
+          },
+          {
+            "after_us": 15402,
+            "before_us": 12917
+          },
+          {
+            "after_us": 11599,
+            "before_us": 12850
+          },
+          {
+            "after_us": 11396,
+            "before_us": 12163
+          },
+          {
+            "after_us": 13976,
+            "before_us": 12270
+          },
+          {
+            "after_us": 12468,
+            "before_us": 13634
+          },
+          {
+            "after_us": 11512,
+            "before_us": 12636
+          },
+          {
+            "after_us": 11683,
+            "before_us": 13483
+          }
+        ],
+        "before_median_us": 13086.5,
+        "after_median_us": 11801.5,
+        "after_range_us": [
+          11300,
+          15402
+        ]
+      }
+    ],
+    [
+      {
+        "aircraft": "jensen_ugly_stik_60",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 12105,
+            "before_us": 13933
+          },
+          {
+            "after_us": 11622,
+            "before_us": 12421
+          },
+          {
+            "after_us": 11193,
+            "before_us": 13072
+          },
+          {
+            "after_us": 10894,
+            "before_us": 13477
+          },
+          {
+            "after_us": 11952,
+            "before_us": 12323
+          },
+          {
+            "after_us": 11449,
+            "before_us": 12963
+          },
+          {
+            "after_us": 11559,
+            "before_us": 13447
+          },
+          {
+            "after_us": 11366,
+            "before_us": 12626
+          },
+          {
+            "after_us": 12174,
+            "before_us": 12366
+          },
+          {
+            "after_us": 10894,
+            "before_us": 12028
+          },
+          {
+            "after_us": 11564,
+            "before_us": 12857
+          },
+          {
+            "after_us": 10810,
+            "before_us": 12737
+          },
+          {
+            "after_us": 10861,
+            "before_us": 11902
+          },
+          {
+            "after_us": 11376,
+            "before_us": 12278
+          },
+          {
+            "after_us": 11342,
+            "before_us": 13137
+          },
+          {
+            "after_us": 11484,
+            "before_us": 11632
+          },
+          {
+            "after_us": 13491,
+            "before_us": 12868
+          },
+          {
+            "after_us": 12049,
+            "before_us": 12115
+          },
+          {
+            "after_us": 11429,
+            "before_us": 12790
+          },
+          {
+            "after_us": 11568,
+            "before_us": 11821
+          },
+          {
+            "after_us": 11006,
+            "before_us": 11860
+          },
+          {
+            "after_us": 10809,
+            "before_us": 12108
+          },
+          {
+            "after_us": 11561,
+            "before_us": 13230
+          },
+          {
+            "after_us": 10992,
+            "before_us": 12519
+          }
+        ],
+        "before_median_us": 12572.5,
+        "after_median_us": 11439.0,
+        "after_range_us": [
+          10809,
+          13491
+        ]
+      },
+      {
+        "aircraft": "gp_extra_300s_60",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 11494,
+            "before_us": 11791
+          },
+          {
+            "after_us": 12432,
+            "before_us": 12115
+          },
+          {
+            "after_us": 11869,
+            "before_us": 11949
+          },
+          {
+            "after_us": 11306,
+            "before_us": 11695
+          },
+          {
+            "after_us": 11313,
+            "before_us": 12301
+          },
+          {
+            "after_us": 11265,
+            "before_us": 11827
+          },
+          {
+            "after_us": 11186,
+            "before_us": 16023
+          },
+          {
+            "after_us": 12173,
+            "before_us": 12865
+          },
+          {
+            "after_us": 11227,
+            "before_us": 12268
+          },
+          {
+            "after_us": 11313,
+            "before_us": 13182
+          },
+          {
+            "after_us": 11788,
+            "before_us": 16778
+          },
+          {
+            "after_us": 11300,
+            "before_us": 12297
+          },
+          {
+            "after_us": 12089,
+            "before_us": 12169
+          },
+          {
+            "after_us": 11184,
+            "before_us": 14158
+          },
+          {
+            "after_us": 15166,
+            "before_us": 18662
+          },
+          {
+            "after_us": 16267,
+            "before_us": 12875
+          },
+          {
+            "after_us": 12791,
+            "before_us": 13015
+          },
+          {
+            "after_us": 11825,
+            "before_us": 13450
+          },
+          {
+            "after_us": 12643,
+            "before_us": 13992
+          },
+          {
+            "after_us": 11982,
+            "before_us": 12502
+          },
+          {
+            "after_us": 11609,
+            "before_us": 12756
+          },
+          {
+            "after_us": 11665,
+            "before_us": 12460
+          },
+          {
+            "after_us": 12558,
+            "before_us": 13694
+          },
+          {
+            "after_us": 11478,
+            "before_us": 11973
+          }
+        ],
+        "before_median_us": 12629.0,
+        "after_median_us": 11726.5,
+        "after_range_us": [
+          11184,
+          16267
+        ]
+      },
+      {
+        "aircraft": "p51d_mustang_120",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 17682,
+            "before_us": 14069
+          },
+          {
+            "after_us": 13215,
+            "before_us": 15115
+          },
+          {
+            "after_us": 12856,
+            "before_us": 14455
+          },
+          {
+            "after_us": 12922,
+            "before_us": 13560
+          },
+          {
+            "after_us": 13001,
+            "before_us": 13578
+          },
+          {
+            "after_us": 14123,
+            "before_us": 14349
+          },
+          {
+            "after_us": 12327,
+            "before_us": 14003
+          },
+          {
+            "after_us": 13153,
+            "before_us": 16239
+          },
+          {
+            "after_us": 13709,
+            "before_us": 17983
+          },
+          {
+            "after_us": 13643,
+            "before_us": 13703
+          },
+          {
+            "after_us": 13157,
+            "before_us": 13814
+          },
+          {
+            "after_us": 13902,
+            "before_us": 14607
+          },
+          {
+            "after_us": 12934,
+            "before_us": 14210
+          },
+          {
+            "after_us": 12915,
+            "before_us": 13764
+          },
+          {
+            "after_us": 12379,
+            "before_us": 13843
+          },
+          {
+            "after_us": 12493,
+            "before_us": 13487
+          },
+          {
+            "after_us": 12389,
+            "before_us": 13216
+          },
+          {
+            "after_us": 12227,
+            "before_us": 13237
+          },
+          {
+            "after_us": 12315,
+            "before_us": 13203
+          },
+          {
+            "after_us": 12375,
+            "before_us": 13660
+          },
+          {
+            "after_us": 14211,
+            "before_us": 15650
+          },
+          {
+            "after_us": 13696,
+            "before_us": 13868
+          },
+          {
+            "after_us": 12993,
+            "before_us": 13298
+          },
+          {
+            "after_us": 12805,
+            "before_us": 13576
+          }
+        ],
+        "before_median_us": 13828.5,
+        "after_median_us": 12963.5,
+        "after_range_us": [
+          12227,
+          17682
+        ]
+      },
+      {
+        "aircraft": "sebart_avanti_s_a200",
+        "exact_pairs": 24,
+        "rows": [
+          {
+            "after_us": 11604,
+            "before_us": 12672
+          },
+          {
+            "after_us": 13019,
+            "before_us": 13981
+          },
+          {
+            "after_us": 11722,
+            "before_us": 12660
+          },
+          {
+            "after_us": 14414,
+            "before_us": 15081
+          },
+          {
+            "after_us": 11878,
+            "before_us": 13588
+          },
+          {
+            "after_us": 12579,
+            "before_us": 13615
+          },
+          {
+            "after_us": 11791,
+            "before_us": 12612
+          },
+          {
+            "after_us": 12464,
+            "before_us": 12827
+          },
+          {
+            "after_us": 11667,
+            "before_us": 12087
+          },
+          {
+            "after_us": 12292,
+            "before_us": 13500
+          },
+          {
+            "after_us": 12133,
+            "before_us": 13168
+          },
+          {
+            "after_us": 16351,
+            "before_us": 13523
+          },
+          {
+            "after_us": 13429,
+            "before_us": 13361
+          },
+          {
+            "after_us": 11817,
+            "before_us": 14088
+          },
+          {
+            "after_us": 12226,
+            "before_us": 13195
+          },
+          {
+            "after_us": 12191,
+            "before_us": 12543
+          },
+          {
+            "after_us": 11572,
+            "before_us": 12406
+          },
+          {
+            "after_us": 11809,
+            "before_us": 11970
+          },
+          {
+            "after_us": 15917,
+            "before_us": 12828
+          },
+          {
+            "after_us": 12082,
+            "before_us": 13682
+          },
+          {
+            "after_us": 11994,
+            "before_us": 12283
+          },
+          {
+            "after_us": 12948,
+            "before_us": 18774
+          },
+          {
+            "after_us": 16868,
+            "before_us": 13602
+          },
+          {
+            "after_us": 11735,
+            "before_us": 12774
+          }
+        ],
+        "before_median_us": 13181.5,
+        "after_median_us": 12162.0,
+        "after_range_us": [
+          11572,
+          16868
+        ]
+      }
+    ]
+  ],
+  "profiles": {
+    "before": [
+      {
+        "aircraft": "jensen_ugly_stik_60",
+        "rows": [
+          {
+            "envelope_us": 6287,
+            "induced_us": 3228,
+            "load_us": 12867,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6190,
+            "induced_us": 3283,
+            "load_us": 12961,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6683,
+            "induced_us": 3260,
+            "load_us": 12885,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 7499,
+            "induced_us": 3962,
+            "load_us": 14460,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6031,
+            "induced_us": 3543,
+            "load_us": 12957,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6211,
+            "induced_us": 3251,
+            "load_us": 12381,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6120,
+            "induced_us": 3230,
+            "load_us": 13118,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6127,
+            "induced_us": 3206,
+            "load_us": 12705,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6137,
+            "induced_us": 3197,
+            "load_us": 12115,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6505,
+            "induced_us": 3180,
+            "load_us": 12531,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6497,
+            "induced_us": 3329,
+            "load_us": 12856,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6597,
+            "induced_us": 3335,
+            "load_us": 12957,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6428,
+            "induced_us": 3304,
+            "load_us": 12629,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6330,
+            "induced_us": 3309,
+            "load_us": 12710,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6147,
+            "induced_us": 3507,
+            "load_us": 12626,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6361,
+            "induced_us": 3236,
+            "load_us": 12602,
+            "map_calls": 81
+          }
+        ],
+        "medians_us": {
+          "load_us": 12783.0,
+          "envelope_us": 6308.5,
+          "induced_us": 3271.5
+        }
+      },
+      {
+        "aircraft": "gp_extra_300s_60",
+        "rows": [
+          {
+            "envelope_us": 6920,
+            "induced_us": 3234,
+            "load_us": 12787,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6845,
+            "induced_us": 3312,
+            "load_us": 12719,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6814,
+            "induced_us": 3263,
+            "load_us": 12783,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6715,
+            "induced_us": 3287,
+            "load_us": 12640,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6947,
+            "induced_us": 3420,
+            "load_us": 13032,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6945,
+            "induced_us": 3273,
+            "load_us": 12775,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 7726,
+            "induced_us": 3205,
+            "load_us": 13585,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6577,
+            "induced_us": 3283,
+            "load_us": 12276,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6852,
+            "induced_us": 3210,
+            "load_us": 12588,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6801,
+            "induced_us": 3406,
+            "load_us": 13040,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6966,
+            "induced_us": 3209,
+            "load_us": 12911,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 7428,
+            "induced_us": 3513,
+            "load_us": 13887,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6770,
+            "induced_us": 3331,
+            "load_us": 12797,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6729,
+            "induced_us": 3227,
+            "load_us": 12472,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6715,
+            "induced_us": 3485,
+            "load_us": 12935,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6628,
+            "induced_us": 3403,
+            "load_us": 12631,
+            "map_calls": 81
+          }
+        ],
+        "medians_us": {
+          "load_us": 12785.0,
+          "envelope_us": 6829.5,
+          "induced_us": 3285.0
+        }
+      },
+      {
+        "aircraft": "p51d_mustang_120",
+        "rows": [
+          {
+            "envelope_us": 6711,
+            "induced_us": 3357,
+            "load_us": 14109,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6856,
+            "induced_us": 3203,
+            "load_us": 14006,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6407,
+            "induced_us": 3525,
+            "load_us": 14049,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6951,
+            "induced_us": 3539,
+            "load_us": 14959,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6565,
+            "induced_us": 3307,
+            "load_us": 13963,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6511,
+            "induced_us": 3374,
+            "load_us": 14087,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6733,
+            "induced_us": 3282,
+            "load_us": 13968,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6800,
+            "induced_us": 3388,
+            "load_us": 14168,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6825,
+            "induced_us": 3350,
+            "load_us": 14514,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6754,
+            "induced_us": 3267,
+            "load_us": 14024,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6695,
+            "induced_us": 3178,
+            "load_us": 13901,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6651,
+            "induced_us": 3262,
+            "load_us": 13993,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6430,
+            "induced_us": 3204,
+            "load_us": 13499,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6485,
+            "induced_us": 3264,
+            "load_us": 13699,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6814,
+            "induced_us": 3219,
+            "load_us": 13933,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6426,
+            "induced_us": 3377,
+            "load_us": 14190,
+            "map_calls": 81
+          }
+        ],
+        "medians_us": {
+          "load_us": 14015.0,
+          "envelope_us": 6703.0,
+          "induced_us": 3294.5
+        }
+      },
+      {
+        "aircraft": "sebart_avanti_s_a200",
+        "rows": [
+          {
+            "envelope_us": 6081,
+            "induced_us": 3139,
+            "load_us": 12597,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6034,
+            "induced_us": 3376,
+            "load_us": 13417,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5935,
+            "induced_us": 3213,
+            "load_us": 12766,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5772,
+            "induced_us": 3196,
+            "load_us": 12152,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6606,
+            "induced_us": 3285,
+            "load_us": 13164,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5883,
+            "induced_us": 3128,
+            "load_us": 12192,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5981,
+            "induced_us": 3210,
+            "load_us": 12550,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5884,
+            "induced_us": 3358,
+            "load_us": 12995,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5987,
+            "induced_us": 3251,
+            "load_us": 12596,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5845,
+            "induced_us": 3340,
+            "load_us": 12763,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6166,
+            "induced_us": 3408,
+            "load_us": 13176,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6333,
+            "induced_us": 3270,
+            "load_us": 13204,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6022,
+            "induced_us": 3288,
+            "load_us": 13347,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6056,
+            "induced_us": 3219,
+            "load_us": 13058,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 6157,
+            "induced_us": 3325,
+            "load_us": 12898,
+            "map_calls": 81
+          },
+          {
+            "envelope_us": 5871,
+            "induced_us": 3121,
+            "load_us": 12264,
+            "map_calls": 81
+          }
+        ],
+        "medians_us": {
+          "load_us": 12832.0,
+          "envelope_us": 6004.5,
+          "induced_us": 3260.5
+        }
+      }
+    ],
+    "after": [
+      {
+        "aircraft": "jensen_ugly_stik_60",
+        "rows": [
+          {
+            "envelope_us": 6091,
+            "induced_us": 2195,
+            "load_us": 11754,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5986,
+            "induced_us": 2242,
+            "load_us": 10766,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5903,
+            "induced_us": 2261,
+            "load_us": 10778,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6173,
+            "induced_us": 2615,
+            "load_us": 11860,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6302,
+            "induced_us": 2312,
+            "load_us": 11496,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6165,
+            "induced_us": 2283,
+            "load_us": 11181,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5949,
+            "induced_us": 2465,
+            "load_us": 11535,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6109,
+            "induced_us": 2301,
+            "load_us": 11478,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6001,
+            "induced_us": 2203,
+            "load_us": 10910,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6084,
+            "induced_us": 2197,
+            "load_us": 10931,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6032,
+            "induced_us": 2287,
+            "load_us": 11035,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6253,
+            "induced_us": 2219,
+            "load_us": 11402,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6236,
+            "induced_us": 2323,
+            "load_us": 11429,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6058,
+            "induced_us": 2270,
+            "load_us": 10894,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6225,
+            "induced_us": 2339,
+            "load_us": 11832,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6417,
+            "induced_us": 2333,
+            "load_us": 11720,
+            "map_calls": 57
+          }
+        ],
+        "medians_us": {
+          "load_us": 11415.5,
+          "envelope_us": 6100.0,
+          "induced_us": 2285.0
+        }
+      },
+      {
+        "aircraft": "gp_extra_300s_60",
+        "rows": [
+          {
+            "envelope_us": 6728,
+            "induced_us": 2223,
+            "load_us": 11213,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6577,
+            "induced_us": 2485,
+            "load_us": 12171,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6783,
+            "induced_us": 2263,
+            "load_us": 11962,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6530,
+            "induced_us": 2238,
+            "load_us": 11275,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6928,
+            "induced_us": 2303,
+            "load_us": 12113,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6791,
+            "induced_us": 2535,
+            "load_us": 12443,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7036,
+            "induced_us": 2534,
+            "load_us": 12311,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7142,
+            "induced_us": 2312,
+            "load_us": 12001,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6726,
+            "induced_us": 2267,
+            "load_us": 11571,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6662,
+            "induced_us": 2268,
+            "load_us": 11379,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7019,
+            "induced_us": 2617,
+            "load_us": 12353,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6739,
+            "induced_us": 2290,
+            "load_us": 11489,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6844,
+            "induced_us": 2511,
+            "load_us": 11987,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6598,
+            "induced_us": 2292,
+            "load_us": 11773,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6856,
+            "induced_us": 2380,
+            "load_us": 11946,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7009,
+            "induced_us": 2810,
+            "load_us": 12835,
+            "map_calls": 57
+          }
+        ],
+        "medians_us": {
+          "load_us": 11974.5,
+          "envelope_us": 6787.0,
+          "induced_us": 2307.5
+        }
+      },
+      {
+        "aircraft": "p51d_mustang_120",
+        "rows": [
+          {
+            "envelope_us": 6508,
+            "induced_us": 2414,
+            "load_us": 12847,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6898,
+            "induced_us": 2258,
+            "load_us": 13033,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7719,
+            "induced_us": 2259,
+            "load_us": 13883,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6424,
+            "induced_us": 2244,
+            "load_us": 12395,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6466,
+            "induced_us": 2291,
+            "load_us": 12607,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6781,
+            "induced_us": 2525,
+            "load_us": 13037,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6420,
+            "induced_us": 2247,
+            "load_us": 12653,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6954,
+            "induced_us": 2248,
+            "load_us": 14070,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6973,
+            "induced_us": 2250,
+            "load_us": 13810,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6404,
+            "induced_us": 2261,
+            "load_us": 12394,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6318,
+            "induced_us": 2278,
+            "load_us": 12292,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6415,
+            "induced_us": 2388,
+            "load_us": 12983,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6449,
+            "induced_us": 2235,
+            "load_us": 13007,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7409,
+            "induced_us": 2326,
+            "load_us": 13783,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6561,
+            "induced_us": 2600,
+            "load_us": 15001,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 7071,
+            "induced_us": 2259,
+            "load_us": 13746,
+            "map_calls": 57
+          }
+        ],
+        "medians_us": {
+          "load_us": 13020.0,
+          "envelope_us": 6534.5,
+          "induced_us": 2260.0
+        }
+      },
+      {
+        "aircraft": "sebart_avanti_s_a200",
+        "rows": [
+          {
+            "envelope_us": 6279,
+            "induced_us": 2887,
+            "load_us": 12684,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5950,
+            "induced_us": 2268,
+            "load_us": 11492,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5912,
+            "induced_us": 2408,
+            "load_us": 11661,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5885,
+            "induced_us": 2277,
+            "load_us": 11398,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5661,
+            "induced_us": 2402,
+            "load_us": 11214,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5719,
+            "induced_us": 2372,
+            "load_us": 11291,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6239,
+            "induced_us": 2288,
+            "load_us": 11961,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6177,
+            "induced_us": 2461,
+            "load_us": 12131,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6135,
+            "induced_us": 2640,
+            "load_us": 13561,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6137,
+            "induced_us": 2270,
+            "load_us": 12093,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5805,
+            "induced_us": 2255,
+            "load_us": 11259,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6031,
+            "induced_us": 2342,
+            "load_us": 11866,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6337,
+            "induced_us": 2319,
+            "load_us": 12050,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5987,
+            "induced_us": 2367,
+            "load_us": 11578,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 5933,
+            "induced_us": 2285,
+            "load_us": 11396,
+            "map_calls": 57
+          },
+          {
+            "envelope_us": 6388,
+            "induced_us": 2448,
+            "load_us": 12270,
+            "map_calls": 57
+          }
+        ],
+        "medians_us": {
+          "load_us": 11763.5,
+          "envelope_us": 6009.0,
+          "induced_us": 2354.5
+        }
+      }
+    ]
+  },
+  "exact_map_cases": 128,
+  "exact_refusal_cases": 24,
+  "premature_stop_detected": true,
+  "limits": "Warm OS cache, shared-host wall-clock measurements; no cold-start, universal timing or physical calibration claim."
+}

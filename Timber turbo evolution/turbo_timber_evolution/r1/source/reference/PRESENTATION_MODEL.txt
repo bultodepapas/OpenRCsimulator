@@ -1,0 +1,1 @@
+The presentation model v12 (.blend, 32 MB) is delivered separately in turbo_timber_evolution_v12/turbo_timber_evolution_v12.blend; it is reference only.

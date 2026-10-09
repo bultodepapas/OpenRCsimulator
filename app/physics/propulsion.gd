@@ -18,6 +18,8 @@ const CT_FLOOR := -0.1
 const CP_FLOOR := 0.0
 ## Shaft balance: the rpm search bracket's top, as a multiple of the power curve's last rpm row.
 const SHAFT_RPM_CEILING := 1.6
+## Numerical torque-balance tolerance (N·m absolute, relative above 1 N·m); not a physical accuracy claim.
+const SHAFT_TORQUE_TOL := 1e-10
 
 
 ## Piecewise-linear table [J0, v0, J1, v1, …]. J < 0 (flying backwards) uses the J = 0 value;
@@ -93,22 +95,53 @@ static func shaft_step(rpm: float, throttle: float, u: float, dt: float, prop: D
 
 
 ## Steady rpm for a throttle at axial airspeed u: the lag model's target, or the shaft model's torque balance
-## (bisection; the net torque falls with rpm through a single root).
+## Bisection requires positive-to-negative net torque across the supported bracket. Returns NAN if no
+## finite equilibrium is established there; callers must refuse that start, not use a bracket endpoint.
+## Assumes a structurally valid loader model. Does not establish root uniqueness or measured engine validity.
 static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float) -> float:
 	if Turbine.is_turbine(prop): # AV-05
 		return Turbine.steady_rpm(throttle, prop)
 	if not has_shaft(prop):
 		return target_rpm(throttle, prop)
+	if not is_finite(throttle) or not is_finite(u) or not is_finite(rho) or rho < 0.0:
+		return NAN
 	var curve: PackedFloat64Array = prop.shaft.power_curve
 	var lo := STOPPED_RPM
 	var hi := curve[curve.size() - 2] * SHAFT_RPM_CEILING
+	if not is_finite(hi) or hi <= lo:
+		return NAN
+	var low_torque := _shaft_net_torque(lo, throttle, u, prop, rho)
+	var high_torque := _shaft_net_torque(hi, throttle, u, prop, rho)
+	if not is_finite(low_torque) or not is_finite(high_torque) or low_torque < 0.0 or high_torque > 0.0:
+		return NAN
+	if low_torque == 0.0:
+		return lo
+	if high_torque == 0.0:
+		return hi
 	for _i in 80:
 		var mid := 0.5 * (lo + hi)
-		if engine_torque(mid, throttle, prop) - prop_torque(mid, u, prop, rho) > 0.0:
+		var net := _shaft_net_torque(mid, throttle, u, prop, rho)
+		if not is_finite(net):
+			return NAN
+		if net > 0.0:
 			lo = mid
 		else:
 			hi = mid
-	return 0.5 * (lo + hi)
+	var rpm := 0.5 * (lo + hi)
+	var engine := engine_torque(rpm, throttle, prop)
+	var torque_load := prop_torque(rpm, u, prop, rho)
+	var residual := engine - torque_load
+	if not is_finite(engine) or not is_finite(torque_load) or not is_finite(residual):
+		return NAN
+	if absf(residual) > SHAFT_TORQUE_TOL * maxf(1.0, maxf(absf(engine), absf(torque_load))):
+		return NAN
+	return rpm
+
+
+static func _shaft_net_torque(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float) -> float:
+	var engine := engine_torque(rpm, throttle, prop)
+	var torque_load := prop_torque(rpm, u, prop, rho)
+	return engine - torque_load if is_finite(engine) and is_finite(torque_load) else NAN
 
 
 ## Unit shaft axis in body FRD: +x tilted down (down thrust: +z) and right (right thrust: +y). [1, 0, 0] by default.

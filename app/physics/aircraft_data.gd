@@ -504,6 +504,8 @@ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dicti
 	var e_map := PackedFloat64Array()
 	for iteration in 80:
 		var a0 := 0.5 * (lo + hi)
+		if a0 == lo or a0 == hi:
+			break # Rounded midpoint cannot change; remaining inverse evaluations would repeat.
 		e_map = effective_angle_map(k_map, a0, n)
 		if a0 * _row_mean(e_map, n) < target:
 			lo = a0

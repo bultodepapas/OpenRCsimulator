@@ -114,6 +114,12 @@ Casting first can turn numeric strings into accepted numbers and bypass unit or 
 
 A solver must prove that its residual is finite before testing convergence: both `NaN > tolerance` and `NaN < tolerance` are false. Finite inputs alone are insufficient because intermediate arithmetic can overflow. Refuse the candidate before reconstructing diagnostics through invalid arithmetic, and preserve the failure-result fields that callers consume. ([D4-R2](../research/trim-integrity/D4-R2/README.md)) A zero norm only establishes equilibrium when the callback returns exactly one finite residual per unknown; validate that shape for the initial, perturbed and updated poses. ([E3b2-R1](../research/ground-contact/E3b2-R1/README.md))
 
+For a deterministic bisection with finite ordered bounds, stop when the rounded midpoint equals an endpoint: subsequent iterations can only keep that midpoint or collapse the bracket to it. Recompute the final derived result as before, and prove byte equality; a tolerance-based stop can change the model. Profiling should separate envelope search from other startup solves before optimizing the largest-looking function. ([DATA-2b](../research/aircraft-validation/DATA-2b/README.md))
+
+A bounded bisection can converge to an endpoint even when no root is bracketed. Require finite endpoint residuals with the solver’s supported sign orientation, validate every inner evaluation, and check the actual residual again at the returned candidate. A finite input may still overflow while constructing the bracket. ([G2-R1](../research/propulsion/G2-R1/README.md))
+
+For inverse aerodynamic calibration, individually valid component slopes can leave an unreachable whole-aircraft target after subtracting the tail contribution. Check the solved wing residual before deriving offsets or dividing by that target for downwash; midpoint stagnation alone establishes no physical consistency. Preserve valid model bytes when adding acceptance checks. ([D1-R5](../research/aircraft-validation/D1-R5/README.md))
+
 Replay acceptance needs the same care: `maxf` can replace a NaN error with a later finite component, and an overflowing loop endpoint can produce a success without executing a tick. Validate live samples before aggregation, bound clock arithmetic before iteration, and align sampled/discrete checkpoints with body checkpoints. Test the final tick explicitly, where no later physics step can detect corruption. ([H9-R1](../research/simulation-state/H9-R1/README.md))
 
 ### Match a companion schema against accepted inputs too

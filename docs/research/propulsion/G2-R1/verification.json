@@ -1,0 +1,65 @@
+{
+  "baseline_commit": "ce4a80c4774dd4c398e6f8ae55f82e63e111a691",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "focused_checks": 46,
+  "original_failures": 22,
+  "detected_guard_mutations": 3,
+  "internal_fault_refusals": 2,
+  "identical_fleet_hashes": 16,
+  "steady_queries": 60,
+  "trim_results": 8,
+  "flight_endpoints": 4,
+  "flight_ticks_each": 240,
+  "full_suites": {
+    "shared_before": {
+      "exit_code": 0,
+      "sections": 151,
+      "gdscript_test_programs": 123,
+      "engine_errors": [],
+      "log_sha256": "d54007fbafcca1916ae207882f5ae403d395655806c9040fa6a1084283b97963",
+      "final_frame_rate_checks": [
+        "30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60",
+        "60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120",
+        "144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288",
+        "E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps",
+        "== E0b6p: distributed swirl at 30/60/144 fps",
+        "30 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=60",
+        "60 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=120",
+        "144 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=288",
+        "E0b6p: identical body/aux/load/input with swirl hashes at 30/60/144 fps"
+      ]
+    },
+    "isolated_after": {
+      "exit_code": 0,
+      "sections": 150,
+      "gdscript_test_programs": 122,
+      "engine_errors": [],
+      "log_sha256": "0a992d7157a90f9ba0e8df8ed8921a5d5cec1964b9c2bef38ba59dcbeeabaa31",
+      "final_frame_rate_checks": [
+        "30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60",
+        "60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120",
+        "144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288",
+        "E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps",
+        "== E0b6p: distributed swirl at 30/60/144 fps",
+        "30 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=60",
+        "60 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=120",
+        "144 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=288",
+        "E0b6p: identical body/aux/load/input with swirl hashes at 30/60/144 fps"
+      ]
+    }
+  },
+  "files": {
+    "app/physics/propulsion.gd": "93c12b2d1979f69c925b041288eff2f2c1f9a119b6f416f6b1efab7912b5ef63",
+    "app/tests/test_shaft_equilibrium.gd": "7dcedff9d7f17c305b661a6b5289bdc5f3dcc36887ce0eef1b6fa2fbcd1bd1ed",
+    "app/tests/test_shaft_equilibrium.gd.uid": "3ea678eb8283605b49b5ef4b50d278bf6249375d4b547e467f837c23e7ca31b2",
+    "research/propulsion/g2-r1/fault_probe.gd": "3172dfa761e4a3a68752b27aeb1b5efd27dc916c5de95e5a4de6ddf4766490ca",
+    "research/propulsion/g2-r1/probe.gd": "2c69b862394542c80a0b9a7309d65f12d76fcdaf14f448ca489698784d459071",
+    "research/propulsion/g2-r1/verify_faults.py": "59eb347da716ac9c8aeb1985f98ac9bc48acf31d61b4a695ba8d335c02fb264e"
+  },
+  "lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  }
+}

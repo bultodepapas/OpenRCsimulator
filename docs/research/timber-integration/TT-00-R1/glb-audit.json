@@ -1,0 +1,1258 @@
+{
+  "format": "openrc-timber-r1-independent-audit-v1",
+  "numpy_version": "1.26.4",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1971,
+      "sha256": "cc89fe4e613ea1aae34c5a1334929b1588a23ef078c332dad7fd34a39848540e"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1327,
+      "sha256": "76879725d59b894c59a3300eb999e76347b0b61b7e6ce171dcd2a2ef82dcda57"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8102,
+      "sha256": "939ffdb09206196a1708af9599efbfb68808d00266bbb72fdd7442735ef20a4e"
+    },
+    {
+      "path": "export/aircraft.glb",
+      "bytes": 1692540,
+      "sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5"
+    },
+    {
+      "path": "export/aircraft_demo.glb",
+      "bytes": 1708076,
+      "sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2"
+    },
+    {
+      "path": "export-map.json",
+      "bytes": 11940,
+      "sha256": "1f4eecbc9950ab2f1bb8dcc76554f80394855fa55ea309a0839e152bc5229e45"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 43076,
+      "sha256": "7e0afb84661c1dfb9eb050ce6d8fc088707ddcd0dbd97928f6420ef0886ca047"
+    },
+    {
+      "path": "previews/control_extremes.png",
+      "bytes": 1385669,
+      "sha256": "d1a88e3890ab2254d6128156bcdd42bf93864c6343f0dfe57e2a3d9fb8c3c6dc"
+    },
+    {
+      "path": "previews/front.png",
+      "bytes": 919877,
+      "sha256": "cfd39b0b6c0a0079f11ce56afeb7bbfb6b1df68e52d6dc1a867e9da3eb9fa12a"
+    },
+    {
+      "path": "previews/side_right.png",
+      "bytes": 979631,
+      "sha256": "0d0c91ead62b26f129ee61f293c907525307a8993cfcc09b8be754679a08f5d4"
+    },
+    {
+      "path": "previews/three_quarter.png",
+      "bytes": 1046610,
+      "sha256": "237c13d0fa1156745c3d2fba9ebc1585f44a72b24128067abc18afe100a7b54c"
+    },
+    {
+      "path": "previews/three_quarter_rear.png",
+      "bytes": 1016783,
+      "sha256": "6c70ce47d9aa1e323ea5e1dc05ecc227c9f18356679636fc257986d900f4f114"
+    },
+    {
+      "path": "previews/top.png",
+      "bytes": 1012149,
+      "sha256": "1a5c696d3a51047de984d64565fcafa8f82dc0648f53c48ff44f1e47489ffbea"
+    },
+    {
+      "path": "previews/underside.png",
+      "bytes": 1000054,
+      "sha256": "463fb6265d2459948016637dd047827baa98b4a296378ce61ebe9ed1933193af"
+    },
+    {
+      "path": "source/aircraft.blend",
+      "bytes": 1264314,
+      "sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6"
+    },
+    {
+      "path": "source/reference/PRESENTATION_MODEL.txt",
+      "bytes": 153,
+      "sha256": "07a2ed4535530dc5ef1cb32137580cdb798074eb5a6f2fc2079f2687fa110382"
+    },
+    {
+      "path": "source/reference/analisis_v12.json",
+      "bytes": 2077,
+      "sha256": "c63c7f2fb582f48885eee4a47ddfe87fd736dc7d864a1feb2e4fa4c73e380867"
+    },
+    {
+      "path": "source/reference/auditoria2_v12.json",
+      "bytes": 1881,
+      "sha256": "21faa7d961853ac636453875eb5d8afc89156f11d700cc138b9885ae9d346943"
+    },
+    {
+      "path": "source/reference/auditoria_tren_v12.json",
+      "bytes": 1320,
+      "sha256": "41af7ea63ce89c59a971811ea896510f681605870a2bd1fe3d7d6d84d9545e5f"
+    },
+    {
+      "path": "source/reference/retessellation_report.json",
+      "bytes": 4591,
+      "sha256": "832fea8f1dc268fd36ca3405fea916eb7f3b924fcebbb12ef67673dc570598fb"
+    },
+    {
+      "path": "source/scripts/analisis_mecanico.py",
+      "bytes": 10780,
+      "sha256": "7bdebd43661ee1d430e364ccb6c84ee8f2edc1f9191ccdd077928b3e288fe3e0"
+    },
+    {
+      "path": "source/scripts/auditoria2.py",
+      "bytes": 6603,
+      "sha256": "aad44dafd484b1b3ca31d7c4b96bfa2d062f743de8a5c7548d3438ed1e8e7ff4"
+    },
+    {
+      "path": "source/scripts/auditoria_tren.py",
+      "bytes": 4251,
+      "sha256": "c0ef90a389a51788b7f801d7378d39708212b49b8bfc7e3d22e7f968b212e923"
+    },
+    {
+      "path": "source/scripts/documenta.py",
+      "bytes": 20011,
+      "sha256": "10ea9e8fc9bddb838a302b9eb8f61a58c5085b6f0855c8ee64123106d917011e"
+    },
+    {
+      "path": "source/scripts/escena_blender_v12.py",
+      "bytes": 9981,
+      "sha256": "f8a6a41334faac2539fc77697e9318686b1dbd1695fa7efca732e8d5f5b69897"
+    },
+    {
+      "path": "source/scripts/exporta_juego.py",
+      "bytes": 19844,
+      "sha256": "514ec3ac62e6ef347406ec1cd201cf1dad421b4e5601f3ef4dc35b9fd4f00b5d"
+    },
+    {
+      "path": "source/scripts/helice_spinner.py",
+      "bytes": 7387,
+      "sha256": "64b2dc6d803a5ff476b794cd60e84681e752bd1ce7d07eaf0948e27cfb6dbc55"
+    },
+    {
+      "path": "source/scripts/hoja_mandos.py",
+      "bytes": 1018,
+      "sha256": "5060522dd56a053833fd3c3f2683f24270e4b72b5feed2d5756ea9c00de4bdc1"
+    },
+    {
+      "path": "source/scripts/mapa.py",
+      "bytes": 5746,
+      "sha256": "347e37b861d29b7fa75c25e4d0373c40baef4ac0418a5a8956877e70e0d135c9"
+    },
+    {
+      "path": "source/scripts/modelo_v12.py",
+      "bytes": 46528,
+      "sha256": "c08714c29a69c713a3b38ffe675f35badd72b78f2166288b0f2224c299557573"
+    },
+    {
+      "path": "source/scripts/retesela.py",
+      "bytes": 2869,
+      "sha256": "373a4c9efddf6e1f01a4cbad6fa15fbf10c39bf6cda06768705bec7ca5062845"
+    },
+    {
+      "path": "source/scripts/rig_mandos.py",
+      "bytes": 6709,
+      "sha256": "66124d20794dca85002ff98f77f990b469525374b8f0e871e5b559e71e590836"
+    },
+    {
+      "path": "source/scripts/rig_tren.py",
+      "bytes": 6217,
+      "sha256": "3f910066ada91d8babec44a6a112acfb62413fe881705f59043f0537469888f7"
+    },
+    {
+      "path": "source/scripts/rig_v7.py",
+      "bytes": 2687,
+      "sha256": "85a63b8177906d19b30ce1327f1ef3dba8466c7a591f30511c14cf7d479e659a"
+    },
+    {
+      "path": "source/scripts/tren_aterrizaje_v12.py",
+      "bytes": 12483,
+      "sha256": "1202f2852c95ffbeaae6bcdfa9c5df23d3dbf76326f0cb24ab7ff00fe8aae1ab"
+    },
+    {
+      "path": "source/scripts/verifica_glb.py",
+      "bytes": 17565,
+      "sha256": "eeb735d4680aba82f882c2fd2fa930766a0cb3386097eabb5f9ca9210d9e6cef"
+    },
+    {
+      "path": "textures/.keep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 18448,
+      "sha256": "4bc73f00d912c125066cc921c9845ef5de920584a16470d51becb07ce60ee511"
+    }
+  ],
+  "neutral": {
+    "nodes": 30,
+    "mesh_nodes": 15,
+    "triangles": 64291,
+    "surfaces": 36,
+    "materials": 10,
+    "external_uris": [],
+    "extensions_used": [
+      "KHR_materials_emissive_strength"
+    ],
+    "extensions_required": [],
+    "bounds_m": [
+      [
+        -0.7739560008049011,
+        -0.25600001960992813,
+        -0.2834610686510436
+      ],
+      [
+        0.7739560008049011,
+        0.17800000309944153,
+        0.8330991864204407
+      ]
+    ],
+    "size_m": [
+      1.5479120016098022,
+      0.43400002270936966,
+      1.1165602550714842
+    ],
+    "roots": [
+      {
+        "name": "TurboTimberEvolution",
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "meshes": [
+      {
+        "name": "aileron_left",
+        "triangles": 1062,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.6944490512827322,
+            0.09071464556682146,
+            0.15085487067699432
+          ],
+          [
+            -0.4300996025902811,
+            0.12848311678675794,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "aileron_right",
+        "triangles": 1062,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.4300996025902811,
+            0.09071464556682146,
+            0.15085487067699432
+          ],
+          [
+            0.6944490512827322,
+            0.12848311678675794,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "airframe",
+        "triangles": 36691,
+        "surfaces": 9,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.7739560008049011,
+            -0.09825744479894638,
+            -0.23477521538734436
+          ],
+          [
+            0.7739560008049011,
+            0.17800000309944153,
+            0.7460000514984131
+          ]
+        ]
+      },
+      {
+        "name": "elevator",
+        "triangles": 2042,
+        "surfaces": 4,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.2980000078678131,
+            -0.05400000140070915,
+            0.7010000348091125
+          ],
+          [
+            0.2980000078678131,
+            -0.027469750493764877,
+            0.768696665763855
+          ]
+        ]
+      },
+      {
+        "name": "flap_left",
+        "triangles": 1050,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.4266122687946967,
+            0.07954679789562287,
+            0.15085487067699432
+          ],
+          [
+            -0.054328601037401114,
+            0.1191300421709595,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "flap_right",
+        "triangles": 1050,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.05432860105555587,
+            0.07954680430611757,
+            0.15085487067699432
+          ],
+          [
+            0.4266122688128515,
+            0.11913004858145422,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "gear_cables",
+        "triangles": 112,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.07776559144258499,
+            -0.17057134211063385,
+            0.011623135767877102
+          ],
+          [
+            0.07741338014602661,
+            -0.08974216133356094,
+            0.044549234211444855
+          ]
+        ]
+      },
+      {
+        "name": "gear_left_leg",
+        "triangles": 1868,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.1479999911534374,
+            -0.20882553607225418,
+            -0.00399999649649397
+          ],
+          [
+            -0.0399215795698798,
+            -0.08214158564805984,
+            0.06599999442258582
+          ]
+        ]
+      },
+      {
+        "name": "wheel_left",
+        "triangles": 3436,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.153941080203165,
+            -0.25600001960992813,
+            -0.050000004880138824
+          ],
+          [
+            -0.11001657948941573,
+            -0.14000000804662704,
+            0.0660000104084559
+          ]
+        ]
+      },
+      {
+        "name": "gear_right_leg",
+        "triangles": 1866,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.0399215795698798,
+            -0.20882553607225418,
+            -0.00399999649649397
+          ],
+          [
+            0.1479999911534374,
+            -0.08214158564805984,
+            0.06599999442258582
+          ]
+        ]
+      },
+      {
+        "name": "wheel_right",
+        "triangles": 3436,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.11001657948941573,
+            -0.25600001960992813,
+            -0.05000000488014385
+          ],
+          [
+            0.153941080203165,
+            -0.14000000804662704,
+            0.06600001040845088
+          ]
+        ]
+      },
+      {
+        "name": "rudder",
+        "triangles": 2546,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.024000000208616257,
+            -0.07040000706911087,
+            0.7326633930206299
+          ],
+          [
+            0.0060032024048268795,
+            0.17800000309944153,
+            0.8330991864204407
+          ]
+        ]
+      },
+      {
+        "name": "tailwheel",
+        "triangles": 1504,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.004050000427885978,
+            -0.12599999457598082,
+            0.7450000643730156
+          ],
+          [
+            0.004050000774480298,
+            -0.09799999743700388,
+            0.7730000019073485
+          ]
+        ]
+      },
+      {
+        "name": "tailwheel_fork",
+        "triangles": 532,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.006000000052154064,
+            -0.11310000717639923,
+            0.7369000315666199
+          ],
+          [
+            0.006000000052154064,
+            -0.055084746330976486,
+            0.7601000070571899
+          ]
+        ]
+      },
+      {
+        "name": "propeller_rotor",
+        "triangles": 6034,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.09294868644163157,
+            -0.10869074924636252,
+            -0.2834610686510436
+          ],
+          [
+            0.1381399285338951,
+            0.13258066601833013,
+            -0.20002929759249682
+          ]
+        ]
+      }
+    ],
+    "animations": []
+  },
+  "demo": {
+    "nodes": 30,
+    "mesh_nodes": 15,
+    "triangles": 64291,
+    "surfaces": 36,
+    "materials": 10,
+    "external_uris": [],
+    "extensions_used": [
+      "KHR_materials_emissive_strength"
+    ],
+    "extensions_required": [],
+    "bounds_m": [
+      [
+        -0.7739560008049011,
+        -0.25600001960992813,
+        -0.2834610686510436
+      ],
+      [
+        0.7739560008049011,
+        0.17800000309944153,
+        0.8330991864204407
+      ]
+    ],
+    "size_m": [
+      1.5479120016098022,
+      0.43400002270936966,
+      1.1165602550714842
+    ],
+    "roots": [
+      {
+        "name": "TurboTimberEvolution",
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "meshes": [
+      {
+        "name": "aileron_left",
+        "triangles": 1062,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.6944490512827322,
+            0.09071464556682146,
+            0.15085487067699432
+          ],
+          [
+            -0.4300996025902811,
+            0.12848311678675794,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "aileron_right",
+        "triangles": 1062,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.4300996025902811,
+            0.09071464556682146,
+            0.15085487067699432
+          ],
+          [
+            0.6944490512827322,
+            0.12848311678675794,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "airframe",
+        "triangles": 36691,
+        "surfaces": 9,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.7739560008049011,
+            -0.09825744479894638,
+            -0.23477521538734436
+          ],
+          [
+            0.7739560008049011,
+            0.17800000309944153,
+            0.7460000514984131
+          ]
+        ]
+      },
+      {
+        "name": "elevator",
+        "triangles": 2042,
+        "surfaces": 4,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.2980000078678131,
+            -0.05400000140070915,
+            0.7010000348091125
+          ],
+          [
+            0.2980000078678131,
+            -0.027469750493764877,
+            0.768696665763855
+          ]
+        ]
+      },
+      {
+        "name": "flap_left",
+        "triangles": 1050,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.4266122687946967,
+            0.07954679789562287,
+            0.15085487067699432
+          ],
+          [
+            -0.054328601037401114,
+            0.1191300421709595,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "flap_right",
+        "triangles": 1050,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.05432860105555587,
+            0.07954680430611757,
+            0.15085487067699432
+          ],
+          [
+            0.4266122688128515,
+            0.11913004858145422,
+            0.212870255112648
+          ]
+        ]
+      },
+      {
+        "name": "gear_cables",
+        "triangles": 112,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.07776559144258499,
+            -0.17057134211063385,
+            0.011623135767877102
+          ],
+          [
+            0.07741338014602661,
+            -0.08974216133356094,
+            0.044549234211444855
+          ]
+        ]
+      },
+      {
+        "name": "gear_left_leg",
+        "triangles": 1868,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.1479999911534374,
+            -0.20882553607225418,
+            -0.00399999649649397
+          ],
+          [
+            -0.0399215795698798,
+            -0.08214158564805984,
+            0.06599999442258582
+          ]
+        ]
+      },
+      {
+        "name": "wheel_left",
+        "triangles": 3436,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.153941080203165,
+            -0.25600001960992813,
+            -0.050000004880138824
+          ],
+          [
+            -0.11001657948941573,
+            -0.14000000804662704,
+            0.0660000104084559
+          ]
+        ]
+      },
+      {
+        "name": "gear_right_leg",
+        "triangles": 1866,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.0399215795698798,
+            -0.20882553607225418,
+            -0.00399999649649397
+          ],
+          [
+            0.1479999911534374,
+            -0.08214158564805984,
+            0.06599999442258582
+          ]
+        ]
+      },
+      {
+        "name": "wheel_right",
+        "triangles": 3436,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            0.11001657948941573,
+            -0.25600001960992813,
+            -0.05000000488014385
+          ],
+          [
+            0.153941080203165,
+            -0.14000000804662704,
+            0.06600001040845088
+          ]
+        ]
+      },
+      {
+        "name": "rudder",
+        "triangles": 2546,
+        "surfaces": 3,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.024000000208616257,
+            -0.07040000706911087,
+            0.7326633930206299
+          ],
+          [
+            0.0060032024048268795,
+            0.17800000309944153,
+            0.8330991864204407
+          ]
+        ]
+      },
+      {
+        "name": "tailwheel",
+        "triangles": 1504,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.004050000427885978,
+            -0.12599999457598082,
+            0.7450000643730156
+          ],
+          [
+            0.004050000774480298,
+            -0.09799999743700388,
+            0.7730000019073485
+          ]
+        ]
+      },
+      {
+        "name": "tailwheel_fork",
+        "triangles": 532,
+        "surfaces": 1,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.006000000052154064,
+            -0.11310000717639923,
+            0.7369000315666199
+          ],
+          [
+            0.006000000052154064,
+            -0.055084746330976486,
+            0.7601000070571899
+          ]
+        ]
+      },
+      {
+        "name": "propeller_rotor",
+        "triangles": 6034,
+        "surfaces": 2,
+        "zero_area_triangles": 0,
+        "nonfinite_coordinates": 0,
+        "identity_local_transform": true,
+        "bounds_m": [
+          [
+            -0.09294868644163157,
+            -0.10869074924636252,
+            -0.2834610686510436
+          ],
+          [
+            0.1381399285338951,
+            0.13258066601833013,
+            -0.20002929759249682
+          ]
+        ]
+      }
+    ],
+    "animations": [
+      {
+        "name": "control_demo",
+        "channels": 13,
+        "targets": [
+          "aileron_left_hinge",
+          "aileron_right_hinge",
+          "elevator_hinge",
+          "flap_left_hinge",
+          "flap_right_hinge",
+          "gear_left_suspension",
+          "wheel_left_axle",
+          "gear_right_suspension",
+          "wheel_right_axle",
+          "rudder_hinge",
+          "tailwheel_steer",
+          "tailwheel_axle",
+          "propeller_spin"
+        ],
+        "duration_s": 18.04166603088379
+      }
+    ]
+  },
+  "joints": [
+    {
+      "name": "aileron_left_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 2.0675696817465808e-07,
+      "axis_error": 5.206239076525374e-07,
+      "local_rest_rotation_error": 1.1565445649246455e-06
+    },
+    {
+      "name": "flap_left_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 4.43115576237348e-07,
+      "axis_error": 5.206239076525374e-07,
+      "local_rest_rotation_error": 1.1565445649246455e-06
+    },
+    {
+      "name": "aileron_right_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 2.0675696817465808e-07,
+      "axis_error": 5.206239076525374e-07,
+      "local_rest_rotation_error": 1.1565445649246455e-06
+    },
+    {
+      "name": "flap_right_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 4.55146612107943e-07,
+      "axis_error": 5.206239076525374e-07,
+      "local_rest_rotation_error": 1.1565445649246455e-06
+    },
+    {
+      "name": "elevator_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 5.581064772755061e-08,
+      "axis_error": 0.0,
+      "local_rest_rotation_error": 0.0
+    },
+    {
+      "name": "rudder_hinge",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 3.5328847041310444e-08,
+      "axis_error": 0.0,
+      "local_rest_rotation_error": 0.0
+    },
+    {
+      "name": "tailwheel_steer",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 3.802570523576127e-07,
+      "axis_error": 0.0,
+      "local_rest_rotation_error": 0.0
+    },
+    {
+      "name": "tailwheel_axle",
+      "parent": "tailwheel_steer",
+      "parent_matches": true,
+      "pivot_error_m": 6.303737184175721e-08,
+      "axis_error": 1.8848641976348995e-07,
+      "local_rest_rotation_error": 2.7957054021761447e-07
+    },
+    {
+      "name": "propeller_spin",
+      "parent": "thrust_frame",
+      "parent_matches": true,
+      "pivot_error_m": 3.130377958278636e-07,
+      "axis_error": 4.998302878543076e-07,
+      "local_rest_rotation_error": 0.0
+    },
+    {
+      "name": "gear_left_suspension",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 3.9543985069751605e-07,
+      "axis_error": 1.6858739693148608e-07,
+      "local_rest_rotation_error": 2.384185834997024e-07
+    },
+    {
+      "name": "wheel_left_axle",
+      "parent": "gear_left_suspension",
+      "parent_matches": true,
+      "pivot_error_m": 1.8015936636436628e-07,
+      "axis_error": 1.6858739715353553e-07,
+      "local_rest_rotation_error": 4.76837166371373e-07
+    },
+    {
+      "name": "gear_right_suspension",
+      "parent": "TurboTimberEvolution",
+      "parent_matches": true,
+      "pivot_error_m": 3.9543985069751605e-07,
+      "axis_error": 1.6858739693148608e-07,
+      "local_rest_rotation_error": 2.384185834997024e-07
+    },
+    {
+      "name": "wheel_right_axle",
+      "parent": "gear_right_suspension",
+      "parent_matches": true,
+      "pivot_error_m": 1.9495958813283883e-07,
+      "axis_error": 1.6858739715353553e-07,
+      "local_rest_rotation_error": 4.76837166371373e-07
+    }
+  ],
+  "sign_checks": [
+    {
+      "name": "aileron_left_hinge",
+      "displacement_at_plus10deg_m": [
+        -0.0003300982769814387,
+        -0.00945277938305053,
+        -0.0021771773967269037
+      ],
+      "expected_component": 1,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "flap_left_hinge",
+      "displacement_at_plus10deg_m": [
+        -0.0003300982848820633,
+        -0.009452779609294748,
+        -0.0021771748091674314
+      ],
+      "expected_component": 1,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "aileron_right_hinge",
+      "displacement_at_plus10deg_m": [
+        0.0003300982769814387,
+        -0.00945277938305053,
+        -0.0021771773967269037
+      ],
+      "expected_component": 1,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "flap_right_hinge",
+      "displacement_at_plus10deg_m": [
+        0.0003300982848820633,
+        -0.009452779609294748,
+        -0.0021771748091674314
+      ],
+      "expected_component": 1,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "elevator_hinge",
+      "displacement_at_plus10deg_m": [
+        0.0,
+        -0.011240490901586839,
+        -0.0009138210339643127
+      ],
+      "expected_component": 1,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "rudder_hinge",
+      "displacement_at_plus10deg_m": [
+        0.016513795529750734,
+        0.0,
+        -0.0014447556468245581
+      ],
+      "expected_component": 0,
+      "expected_sign": 1,
+      "passed": true
+    },
+    {
+      "name": "tailwheel_steer",
+      "displacement_at_plus10deg_m": [
+        0.0036466165335159438,
+        0.0,
+        -0.0003190376069088785
+      ],
+      "expected_component": 0,
+      "expected_sign": 1,
+      "passed": true
+    },
+    {
+      "name": "tailwheel_axle",
+      "displacement_at_plus10deg_m": [
+        -3.1956239237630025e-10,
+        -0.000151922469877927,
+        -0.0017364817766692964
+      ],
+      "expected_component": 2,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "propeller_spin",
+      "displacement_at_plus10deg_m": [
+        0.017341818749005446,
+        -0.0015173743210846607,
+        0.0006586060000335625
+      ],
+      "expected_component": 0,
+      "expected_sign": 1,
+      "passed": true
+    },
+    {
+      "name": "gear_left_suspension",
+      "displacement_at_plus10deg_m": [
+        -0.0173876082584499,
+        0.016565561572410903,
+        2.9313316149415236e-09
+      ],
+      "expected_component": 0,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "wheel_left_axle",
+      "displacement_at_plus10deg_m": [
+        2.927489362036795e-10,
+        -0.00015192246987791314,
+        -0.00173648177666928
+      ],
+      "expected_component": 2,
+      "expected_sign": -1,
+      "passed": true
+    },
+    {
+      "name": "gear_right_suspension",
+      "displacement_at_plus10deg_m": [
+        0.017387608484832034,
+        0.016565558984851403,
+        2.93133165310544e-09
+      ],
+      "expected_component": 0,
+      "expected_sign": 1,
+      "passed": true
+    },
+    {
+      "name": "wheel_right_axle",
+      "displacement_at_plus10deg_m": [
+        -2.927489362036795e-10,
+        -0.00015192246987791314,
+        -0.00173648177666928
+      ],
+      "expected_component": 2,
+      "expected_sign": -1,
+      "passed": true
+    }
+  ],
+  "landmarks": [
+    {
+      "name": "left_wingtip",
+      "error_m": 1.0521864427565555e-07,
+      "method": "nearest exported vertex"
+    },
+    {
+      "name": "right_wingtip",
+      "error_m": 1.0521864427565555e-07,
+      "method": "nearest exported vertex"
+    },
+    {
+      "name": "nose_spinner_tip",
+      "error_m": 2.46200210095711e-07,
+      "method": "nearest exported vertex"
+    },
+    {
+      "name": "tail_rudder_trailing_edge",
+      "error_m": 4.2799138760410486e-07,
+      "method": "nearest exported vertex"
+    },
+    {
+      "name": "left_main_wheel_center",
+      "error_m": 1.8015936636436628e-07,
+      "method": "pivot origin"
+    },
+    {
+      "name": "right_main_wheel_center",
+      "error_m": 1.9495958813283883e-07,
+      "method": "pivot origin"
+    },
+    {
+      "name": "tailwheel_center",
+      "error_m": 6.303737184175721e-08,
+      "method": "pivot origin"
+    },
+    {
+      "name": "propeller_hub",
+      "error_m": 1.0490417479136482e-08,
+      "method": "pivot origin"
+    },
+    {
+      "name": "datum_D0",
+      "error_m": 0.0,
+      "method": "pivot origin"
+    }
+  ],
+  "mass_ledger": {
+    "sum_kg": 1.4599,
+    "cg_x_cad_mm": 60.6568737584766
+  },
+  "checks": {
+    "all_parents_match": true,
+    "pivots_within_0p01mm": true,
+    "axes_within_1e_minus5": true,
+    "local_rest_rotations_match": true,
+    "root_identity": true,
+    "signs": true,
+    "landmarks_within_0p01mm": true,
+    "no_zero_area": true,
+    "finite": true,
+    "no_external_uris": true,
+    "neutral_no_animations": true
+  }
+}

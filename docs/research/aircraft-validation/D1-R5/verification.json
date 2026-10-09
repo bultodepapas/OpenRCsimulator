@@ -1,0 +1,35 @@
+{
+  "baseline_sha256": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+  "loader_sha256": "95f8886a4a6d309ad5f749acc7ef98e4cf21b62615703c606dc94c8f68571348",
+  "exact_fleet_load_pairs": 96,
+  "solver_fault_refusals": 12,
+  "negative_control": "missing residual accepts four wrong maps",
+  "runs": [
+    {
+      "name": "pairs",
+      "exit": 0
+    },
+    {
+      "name": "nan",
+      "exit": 0
+    },
+    {
+      "name": "infinity",
+      "exit": 0
+    },
+    {
+      "name": "finite_wrong_map",
+      "exit": 0
+    },
+    {
+      "name": "missing_residual",
+      "exit": 1
+    }
+  ],
+  "tool_sha256": {
+    "research/aircraft-data/d1-r5/README.md": "d4f18682c5d3efda4e0fd6cfeb4b289bc8055b4dbaaa1d74de62b0b96d0009b2",
+    "research/aircraft-data/d1-r5/fault_probe.gd": "42c92ca77e1b563e1eda5882f3a2c8c1b23a13f2b63c253f59f021f049edb36e",
+    "research/aircraft-data/d1-r5/verify.py": "b4d26aad73b388c68f3941f52a32ef6cd791486639839a43ad1c07c7ac21f7ba"
+  },
+  "regression_sha256": "78c6891a7d938acb74deaf1a45c35b1de8fb4cae5298febc6a0c1bce603476f5"
+}

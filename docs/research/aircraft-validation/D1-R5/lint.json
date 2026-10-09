@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "counts": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "categories": {
+    "godot3_api": 0,
+    "godot3_shader": 0,
+    "inference": 1,
+    "node_ref": 0,
+    "unique_name": 0,
+    "signal_target": 0,
+    "missing_resource": 0,
+    "input_action": 0,
+    "group_ref": 0,
+    "res_path": 11,
+    "animation_ref": 0
+  }
+}
