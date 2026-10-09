@@ -21,6 +21,10 @@ Some scripts under `research/` read the gitignored `references/` folder (plans, 
 
 The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-order-and-release-gates) turns its recommendations into planned work; this does not mark the simulator findings fixed.
 
+## Development workflows
+
+[Graveacre AI-assisted asset workflow — 2026-10-09](graveacre-ai-workflow-2026-10-09.md): the Reddit post, its game/community links and official PixelLab/Retro Diffusion documentation; author claims, access limits and applications to our existing asset pipelines, visual review, parallel work and PT2 pilot feedback.
+
 ## Entry points per track
 
 ### Turbo Timber Evolution
@@ -106,6 +110,8 @@ The [E0b7 field-observation preparation](propwash/E0b7/README.md) provides a nos
 M2 ground handling: [landing-gear-contact-e1.md](landing-gear-contact-e1.md) (E1 spring-damper gear contacts, 2026-10-06) → [ground-friction-e2.md](ground-friction-e2.md) (E2 tyre friction, nose-wheel steering, tip-over, figure-eight taxi, 2026-10-06) → [ground-surfaces-e3a.md](ground-surfaces-e3a.md) (E3a runway, mown and rough surfaces under the wheels, 2026-10-06) → [ground-contact/E3b1](ground-contact/E3b1/README.md) (E3b1 per-wheel stiction anchors, 2026-10-07) → [ground-contact/E3b2](ground-contact/E3b2/README.md) (E3b2 runway start in static equilibrium, 2026-10-07) → [ground-contact/E3b3](ground-contact/E3b3/README.md) (E3b3 takeoff roll against a 1-D model integral, 2026-10-07) → [ground-contact/E1b](ground-contact/E1b/README.md) (E1b continuous touchdown damping, 2026-10-07).
 
 Runway-start numerical integrity: [E3b2-R1](ground-contact/E3b2-R1/README.md) rejects nonfinite and wrong-sized Newton residuals, invalid operating inputs and linear-solve overflow while preserving valid static equilibria.
+
+Taildragger breadth: [E5a](ground-contact/E5a/README.md) reviews the existing P-51 contacts and adds generated Extra 300S wheel contacts, with static moment balance, steering/component ground-loop signs, real-session refinement and isolated fault detection. Independent pilot contrast remains open.
 
 Experimental landing baseline: [E3c1a](ground-contact/E3c1a/README.md) commands approach, flare and idle rollout through the real session; measures every wheel's contact speed and runway containment, stable stopping and 240/480 Hz refinement. Propwash acceptance, the full circuit and pilot validation remain separate.
 

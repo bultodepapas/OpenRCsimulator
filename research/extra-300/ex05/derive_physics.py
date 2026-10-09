@@ -356,6 +356,48 @@ def station_centres(span, root, tip, n=3):
 sum_y = sum(station_centres(b, cr, ct))
 wing_ail_eff = abs(Clda) * 6 * b / (CLa * sum_y)
 
+# --- E5a: fixed taildragger contacts from the model's wheel bottoms --------------------------------------------
+main_pos = [le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2,
+               side * GEAR["track"] / 2) for side in (-1, 1)]
+tail_pos = le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] - GEAR["tail_wheel_diameter"] / 2)
+rest_pitch = math.atan2(tail_pos[2] - main_pos[0][2], tail_pos[0] - main_pos[0][0])
+# Vertical reactions balance moments about the CG using horizontal arms in the REST frame, not body x alone.
+# Splitting k by those reactions gives equal vertical sag and preserves this three-point attitude.
+ground_arm = lambda pos: math.cos(rest_pitch) * (cg[0] - pos[0]) + math.sin(rest_pitch) * (cg[2] - pos[2])
+main_arm, tail_arm = ground_arm(main_pos[0]), ground_arm(tail_pos)
+tail_share = main_arm / (main_arm - tail_arm)
+if not 0 < tail_share < 1:
+    raise ValueError("E5a: CG projection lies outside the wheelbase")
+k_total = mass * (0.09 * 240) ** 2
+k_main, k_tail = k_total * (1 - tail_share) / 2, k_total * tail_share
+note("gear", "three-point pitch (deg), tail load share, static sag (mm)",
+     [math.degrees(rest_pitch), tail_share, 1000 * mass * G0 / k_total],
+     "E5a: point-contact rest geometry; stiffness shares use ground-projected CG moment arms")
+
+
+def gear_contact(name, position, stiffness, travel, steering=0.0):
+    contact = {
+        "name": name,
+        "position": q(position, "m", "derived", GEO_SRC + "; wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."),
+        "stiffness": q(stiffness, "N/m", "estimated", "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."),
+        "damping": q(2 * 0.3 * math.sqrt(stiffness * mass / 3), "N·s/m", "estimated", "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."),
+        "max_compression": q(travel, "m", "estimated", "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."),
+    }
+    if steering:
+        contact["max_steering"] = q(steering, "deg", "estimated", "E5a: provisional +/-25 deg rudder-linked tail wheel, as the P-51 fixture. Negative coefficient: positive right-yaw command steers the aft wheel left, forcing the tail left and nose right. No caster or measured linkage ratio.")
+    return contact
+
+
+landing_gear = {
+    "description": "E5a: fixed main wheels and rudder-linked tail wheel using E1/E2 point spring-damper/tyre contacts. Provisional mechanics; no caster, brakes or stiction anchors. Wheel-circle contact geometry remains E6a.",
+    "contacts": [gear_contact("main_left", main_pos[0], k_main, 0.08),
+                 gear_contact("main_right", main_pos[1], k_main, 0.08),
+                 gear_contact("tail", tail_pos, k_tail, 0.05, -25.0)],
+    "rolling_resistance": q(0.04, "1", "estimated", "E5a: reuse Stik E2 reference C_rr for similarly sized model wheels; Extra 69.85 mm mains and 25.4 mm tail are not separately calibrated. Field factors apply per contact."),
+    "side_friction": q(0.8, "1", "borrowed", "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."),
+    "peak_slip_angle": q(6.0, "deg", "borrowed", "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."),
+}
+
 # --- Assemble ----------------------------------------------------------------------------------------------------
 stik = json.load(open(STIK))
 D = lambda how: f"{SCRIPT}: {how}"
@@ -430,14 +472,11 @@ data = {
         le(W["le_z_tip"], W["chord_plane_y"], -semi), le(W["le_z_tip"], W["chord_plane_y"], semi),
         le(W["le_z_tip"] + ct, W["chord_plane_y"], -semi), le(W["le_z_tip"] + ct, W["chord_plane_y"], semi),
         le(g["spinner"]["tip_z"]),
-        le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2, -GEAR["track"] / 2),
-        le(GEAR["main_axle"][0], GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2, GEAR["track"] / 2),
-        le(GEAR["tail_axle"][0], GEAR["tail_axle"][1] - GEAR["tail_wheel_diameter"] / 2),
         le(T["rudder_te_low"][0], T["rudder_te_low"][1]),
         le(T["elevator_tip_te_z"], T["stab_y"], -T["stab_half_span"]), le(T["elevator_tip_te_z"], T["stab_y"], T["stab_half_span"]),
         le(T["rudder_top_te_z"], T["fin_top_y"]),
         le(max(g["canopy"]["top"], key=lambda p: p[1])[0], max(p[1] for p in g["canopy"]["top"])),
-    ], "m", "measured", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, main wheel bottoms (track estimated there), tail wheel bottom, rudder bottom TE, stab tips, fin top, canopy top. Replaced by gear contact in E1/E2"),
+    ], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
     "plausibility": {
         "mass_range": q([3.0, 3.8], "kg", "manual", MANUAL + ": 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; widened for fuel"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],
@@ -485,6 +524,7 @@ data = {
         },
     },
     "propulsion": json.loads(json.dumps(stik["propulsion"])),
+    "landing_gear": landing_gear,
 }
 p = data["propulsion"]
 p["description"] = "Same O.S. MAX-61FX and APC 12x6 data as the Ugly Stik (manual p3 prototype engine). AXIAL thrust: the plan's 2 deg right and 0.5 deg down thrust are not modelled yet (EX-06); the visual model shows a 12x8 stand-in."
@@ -534,7 +574,7 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
 - Fuselage directional destabilization is omitted (v1 contract: Cnb equals the fin term), as for the Stik.
 - The local (post-stall) wing strips use the whole-airplane CLa, so local lift is ~{100 * slope_h * Sh / S / CLa:.0f} % high (tail counted twice); pitch stiffness agrees with the global model because the ARP is the wing-body ac.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- No propwash, no fuel burn, no ground contact (crash hull only).
+- No propwash or fuel burn. E5a adds fixed taildragger ground contact; stiffness, damping, tyre forces, steering ratio and collapse thresholds remain provisional. No caster, brakes or stiction anchors; the parked idle state may creep. Point contacts rotate with the airframe; wheel-circle geometry remains E6a. Visual wheels do not animate suspension or steering in this step.
 """
 
 if "--check" in sys.argv:

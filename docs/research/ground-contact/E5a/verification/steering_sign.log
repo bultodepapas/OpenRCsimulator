@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   p51d-mustang-120: raw and loaded aircraft data are available  []
+ok   p51d-mustang-120: generator wheel bottoms match geometry and remain outside crash hull  max source error 0 m
+ok   p51d-mustang-120: loader transforms LE [aft,right,up] contacts into CG [forward,right,down]  max loaded error 0 m
+ok   p51d-mustang-120: bare gear settles on all three wheels  pitch 14.572°, compressions [0.01915163196623, 0.01915163196623, 0.03451515350889], fault ''
+ok   p51d-mustang-120: static contacts balance weight and hand-computed moment shares  ΣN error 0, |M| 0.0 N·m (0.0 of W·wheelbase), tail share 0.19959437 vs oracle 0.19959437 (Δ 5.551115123125783e-16)
+ok   p51d-mustang-120: compliant rest attitude matches wheel-bottom three-point geometry  wheel-bottom geometry 13.892°, settled 14.572° (Δ 0.67993°, limit 2.0°); established P-51 spring split uses raw x moment arms, so a small compliant pitch offset is expected
+ok   p51d-mustang-120: +right command steers linked tailwheel left and yaws nose right; reverse command mirrors  tail coefficient -25.0°, +cmd Fy -29.761 N Mz 32.857 N·m; −cmd Fy 29.761 N Mz -32.857 N·m
+ok   p51d-mustang-120: rightward slip gives main-ahead yaw divergence, aft-tail restoring moment  main only Fy -64.226 N Mz -9.811 N·m; tail only Fy -16.016 N Mz 17.682 N·m
+ok   p51d-mustang-120: opposite rudder commands turn opposite ways in the two-second bare taxi  +cmd yaw 13.817°, −cmd yaw -13.817°; faults '' / ''
+ok   p51d-mustang-120: 240/480 Hz bare taxi refinement within 1 mm, 1 cm/s and 0.001 attitude/rate  Δpos 1.461531598773158e-06 m, Δvel 4.7820690296518364e-08 m/s, Δq 6.764377351309303e-07, Δrate 8.102085280459193e-09 rad/s
+ok   gp-extra-300s-60: raw and loaded aircraft data are available  []
+ok   gp-extra-300s-60: generator wheel bottoms match geometry and remain outside crash hull  max source error 6.938893903907228e-18 m
+ok   gp-extra-300s-60: loader transforms LE [aft,right,up] contacts into CG [forward,right,down]  max loaded error 0 m
+ok   gp-extra-300s-60: bare gear settles on all three wheels  pitch 10.862°, compressions [0.0210190484319, 0.0210190484319, 0.02101906877568], fault ''
+ok   gp-extra-300s-60: static contacts balance weight and hand-computed moment shares  ΣN error 2.153635005899455e-16, |M| 0.0 N·m (0.0 of W·wheelbase), tail share 0.14158873 vs oracle 0.14158873 (Δ 3.885780586188048e-16)
+ok   gp-extra-300s-60: compliant rest attitude matches wheel-bottom three-point geometry  wheel-bottom geometry 10.862°, settled 10.862° (Δ 0.0°, limit 0.001°)
+ok   gp-extra-300s-60: projected-arm spring split gives equal main and tail compression  compression spread 2.0343786100163186e-08 m (limit 2e-6 m)
+FAIL gp-extra-300s-60: +right command steers linked tailwheel left and yaws nose right; reverse command mirrors  tail coefficient 25.0°, +cmd Fy 3.292 N Mz -2.777 N·m; −cmd Fy -3.292 N Mz 2.777 N·m
+ok   gp-extra-300s-60: rightward slip gives main-ahead yaw divergence, aft-tail restoring moment  main only Fy -10.778 N Mz -0.972 N·m; tail only Fy -1.778 N Mz 1.500 N·m
+FAIL gp-extra-300s-60: opposite rudder commands turn opposite ways in the two-second bare taxi  +cmd yaw -16.068°, −cmd yaw 16.068°; faults '' / ''
+ok   gp-extra-300s-60: 240/480 Hz bare taxi refinement within 1 mm, 1 cm/s and 0.001 attitude/rate  Δpos 2.0466540207875195e-06 m, Δvel 5.979425513058523e-08 m/s, Δq 1.0036533634183442e-06, Δrate 1.1626852784024644e-07 rad/s
+21 checks, 2 failed

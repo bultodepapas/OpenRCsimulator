@@ -1,0 +1,79 @@
+{
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "input_sha256": {
+    "app/data/aircraft/gp_extra_300s_60.json": "e7042567dad826f4398505a94198385547223ea8ad15bc38593dd577f3de9b01",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "app/data/field_loader.gd": "3dd8e1b3d227176c54e937243cdd35ceb5d7144bcfddf7baf99a4d6c996d9b48",
+    "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "app/data/ground/surface_friction.json": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94",
+    "app/physics/aircraft_data.gd": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+    "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+    "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/sim/flight_session.gd": "7e018f241b442b2a5a46210e8f2b4c46e497350d1b1d8b13f3d8cbc098966891",
+    "app/sim/simulation.gd": "11eda8c124b6c03ed6b74e171ef927e648daccfc8505f00ee8121c09c609b4d7",
+    "assets/aircraft/extra-300s-60/geometry.json": "37e6487ebaefe82cb4566ffa96a0902ad3a85cf839204eaed0d261473a3430f1",
+    "assets/aircraft/p51d-mustang-120/geometry.json": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+    "research/extra-300/ex05/derive_physics.py": "d44277e5eeb2dd9b9627492f2f03dfaf7391c426dbaf5aea6084822423e4df1a",
+    "research/ground-contact/e5a/checks.gd": "b4f72b8c6ea0c30aecaf24363148ec33e877421a11d986d8c64ccfc3eda13a0f",
+    "research/ground-contact/e5a/session.gd": "7f97f1227f7d05c3bbf7ef02bf2a088a70e1c7ff09b32e828acec6df92eafd56",
+    "research/ground-contact/e5a/verify.py": "28c92d126939c54f277953144032aea31ff579690a58a8aaec5d9ba35ffd9d76"
+  },
+  "ok": true,
+  "physical_acceptance": false,
+  "results": {
+    "checks.gd": {
+      "checks": 21,
+      "exit_code": 0,
+      "failures": 0
+    },
+    "clone_control": {
+      "checks.gd": {
+        "checks": 21,
+        "exit_code": 0,
+        "failures": 0
+      },
+      "session.gd": {
+        "checks": 63,
+        "exit_code": 0,
+        "failures": 0
+      }
+    },
+    "inert_throttle": {
+      "checks": 63,
+      "exit_code": 1,
+      "failures": 6,
+      "intended_assertion_failed": true
+    },
+    "missing_wheel_radius": {
+      "checks": 21,
+      "exit_code": 1,
+      "failures": 1,
+      "intended_assertion_failed": true
+    },
+    "session.gd": {
+      "checks": 63,
+      "exit_code": 0,
+      "failures": 0
+    },
+    "steering_sign": {
+      "checks": 21,
+      "exit_code": 1,
+      "failures": 2,
+      "intended_assertion_failed": true
+    },
+    "tail_position": {
+      "checks": 21,
+      "exit_code": 1,
+      "failures": 3,
+      "intended_assertion_failed": true
+    },
+    "wheel_crash_hull": {
+      "checks": 12,
+      "exit_code": 1,
+      "failures": 12,
+      "intended_assertion_failed": true
+    }
+  },
+  "source_commit": "5ae879878187c6a8b8dfc05207e8f339308c8679"
+}

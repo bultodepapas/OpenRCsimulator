@@ -1,0 +1,9 @@
+{
+  "changed_aircraft_sections": [
+    "crash_hull",
+    "landing_gear"
+  ],
+  "airborne_csv_rows_identical": true,
+  "airborne_data_rows": 721,
+  "airborne_rows_sha256": "5f20d5765173cc4cc07328c6ff4d25ceb0b84248d761ddaa6e771630a5783892"
+}

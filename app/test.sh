@@ -185,3 +185,8 @@ python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"
 
 echo "== E0b6p: distributed swirl at 30/60/144 fps"
 python3 "$HERE/../research/propwash/e0b6p/check_frames.py" --godot "$GODOT"
+
+echo "== E5a: generated Extra taildragger contacts, P-51 review and session refinement"
+E5A_WORK="$(mktemp -d)"
+python3 "$HERE/../research/ground-contact/e5a/verify.py" --godot "$GODOT" --out "$E5A_WORK/results"
+rm -rf "$E5A_WORK"
