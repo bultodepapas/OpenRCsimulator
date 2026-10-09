@@ -1,0 +1,78 @@
+{
+  "format": "openrc-e0b6p-prepared-native-attribution-build v1",
+  "instrumentation_api": "openrc-e0b6p-prepared-native-attribution v1",
+  "instrumentation_fields": [
+    "prepared_method_total_ns",
+    "prepared_dispatch_ns",
+    "prepared_input_decode_ns",
+    "prepared_transport_decode_ns",
+    "prepared_kernel_ns",
+    "prepared_pack_ns",
+    "prepare_method_total_ns",
+    "prepare_model_decode_ns",
+    "prepare_validation_ns",
+    "static_validation_ns",
+    "dynamic_validation_ns",
+    "axial_wake_ns",
+    "axial_profile_ns",
+    "swirl_ns"
+  ],
+  "toolchain": {
+    "platform": "linux",
+    "architecture": "x86_64",
+    "compiler_version": "13.3.0",
+    "godot_cpp_commit": "507ed9d840c01a3c5b2a39af8bb4000bfac30bf5",
+    "godot_extension_api": "4.7",
+    "build_profile_sha256": "b2dd680afd78a31020f2e821dd8328292d6a3883a166018af76b09ad20783eb3"
+  },
+  "sources": {
+    "original_binding": {
+      "path": "research/propwash/e0b6p/native/src/smooth_wake_extension.cpp",
+      "sha256": "e5a81208bf218d1623909fc84c24fa68af56901adde6c3ff1dbd367ec996a13a"
+    },
+    "kernel_header": {
+      "path": "research/propwash/e0b6p/native/src/smooth_wake_kernel.hpp",
+      "sha256": "2641c7efb54225dffc158a464c999f53e51ee9a7154887fe2c860bd60eeccfa6"
+    },
+    "prepared_snippet": {
+      "path": "research/propwash/e0b6p/prepared-model/native_extension.inc",
+      "sha256": "6f95a9591a5a287a64bd78f1fafea7c290822a0f7589b4e81c3967fdbc0bd16d"
+    },
+    "build_script": {
+      "path": "research/propwash/e0b6p/prepared-model/build.py",
+      "sha256": "7307112165f11a1dd4d5e129de227c78642ab254498a400862631a9b6a860a9c"
+    },
+    "locked_builder": {
+      "path": "research/native-slipstream/build.py",
+      "sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745"
+    },
+    "toolchain_lock": {
+      "path": "research/native-slipstream/toolchain-lock.json",
+      "sha256": "1e9923501fdf5e8e7bcd6119baaf3563ffd3c5b63f4f1e3e9c2341f90e14f49e"
+    },
+    "generated_instrumented_candidate": {
+      "path": ".tools/native-prepared-attribution/src/smooth_wake_prepared_instrumented.cpp",
+      "sha256": "e430e0109a7454744bb1705554d234b323dece696503bc1f1a6e2b1c443a4a5c"
+    },
+    "instrumentation_builder": {
+      "path": "research/propwash/e0b6p/prepared-cost/native_build.py",
+      "sha256": "ce573897ca5e4a8b856a13802f3cbd735061bacf2d0a5e8af28f16448a3a924a"
+    },
+    "prepared_build_manifest": {
+      "path": ".tools/native-prepared/build.json",
+      "sha256": "0dd8a11e86adf5787af83ffc21116e1e532f1ce6cd6604234dac2be38a460132"
+    }
+  },
+  "baseline_library": {
+    "path": "/home/bulto/OpenRCsimulator/.tools/native-smooth-wake/libopenrc_slipstream.so",
+    "sha256": "e0febacfff4552e6df7ce24fb1d51bca6c389450c94f63987c7409b637d47f36"
+  },
+  "prepared_library": {
+    "path": "/home/bulto/OpenRCsimulator/.tools/native-prepared/libopenrc_prepared_wake.so",
+    "sha256": "249dfe2b7753088ce103ae056b8639c65601381219e4af679826b5f8ecb15beb"
+  },
+  "instrumented_library": {
+    "path": "/home/bulto/OpenRCsimulator/.tools/native-prepared-attribution/libopenrc_prepared_wake.so",
+    "sha256": "8258e914eb39919323c4c79485015e6f6936d211b7405f865ac9e127f1e44610"
+  }
+}
