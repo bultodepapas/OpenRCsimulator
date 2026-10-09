@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-08. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-09. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -151,6 +151,8 @@ Reject missing elapsed timers and changed workload metadata before normalizing a
 ### Remove calls and allocations before adding a native dependency
 
 Measured GDScript hot paths often spend substantial time on helper calls, temporary arrays and dictionary lookups rather than arithmetic. Scalarize only behind a frozen, sensitive oracle that preserves operation order, and remeasure the complete trajectory: an exact local speedup may still miss the whole-tick budget. A native port also has binding and model-decoding costs, platform-build obligations, and must retain the GDScript oracle until its full path is accepted. ([H12](../research/simulation-state/H12/README.md), [H13](../research/simulation-state/H13/README.md), [E0b6p native evidence](../research/propwash/E0b6p/native/README.md))
+
+Keep dictionary-read hoisting and loop-index rewrites separable when evaluating a candidate. Exact outputs and fewer source expressions do not establish a speedup: a faster helper can coexist with slower other paths and inconsistent whole-flight gains. Preserve the rejected candidate and raw paired samples so the next experiment can isolate the useful change. ([Wing-loop experiment](../research/propwash/E0b6p/wing-loops/README.md))
 
 ### A prepared model needs an explicit ownership boundary
 

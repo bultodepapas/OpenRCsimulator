@@ -1,0 +1,10 @@
+{
+	"format": "openrc-wing-loop-equivalence v1",
+	"failures": 1016,
+	"requests": 1024,
+	"comparisons": 5120,
+	"scalars": 25600,
+	"baseline_sha256": "8b0bd4cc55242285d6253a5338d700386e1e2c204669d3fb2035f7f43d480f31",
+	"candidate_sha256": "ecc4aec8128b5f948baa62b7623d558447675332d1e21ea42dc8fa9ee8eaa77f",
+	"timing": []
+}

@@ -1,0 +1,59 @@
+--- a/app/physics/aero.gd
++++ b/app/tests/wing_loops/aero.gd
+@@ -305,8 +305,9 @@
+ 		var base: float
+ 		if coupled:
+ 			var mapped := 0.0
++			var row_start: int = i * stations
+ 			for k in stations:
+-				mapped += e_map[i * stations + k] * angles[k]
++				mapped += e_map[row_start + k] * angles[k]
+ 			base = strip_cl0[i] + strip_slope * mapped
+ 		else:
+ 			base = cl0 + cla * effective
+@@ -551,6 +552,12 @@
+ 	var ys: PackedFloat64Array = env.station_ys
+ 	var stations := ys.size()
+ 	var aileron_effect: float = surfaces.wing_aileron_effectiveness
++	# E0b6p: values are constant within this evaluation; no cross-stage cache.
++	var da_right: float = float(d.aileron_right)
++	var da_left: float = float(d.aileron_left)
++	var has_twist: bool = not twist.is_empty()
++	var cl0: float = float(a.CL0)
++	var cla: float = float(a.CLa)
+ 	var angles := PackedFloat64Array()
+ 	angles.resize(stations)
+ 	for i in stations:
+@@ -558,14 +565,14 @@
+ 		var arm_y: float = ay + y
+ 		var f0: float = v0 + (q*az - r*arm_y)
+ 		var f2: float = v2 + (p*arm_y - q*ax)
+-		var da: float = float(d.aileron_right) if y > 0 else float(d.aileron_left)
++		var da: float = da_right if y > 0 else da_left
+ 		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
+-		if not twist.is_empty():
++		if has_twist:
+ 			effective = wrapf(effective + twist[i], -PI, PI)
+ 		angles[i] = effective
+ 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+ 	var coupled := e_map.size() == stations * stations
+-	var strip_slope: float = env.get("strip_slope", a.CLa)
++	var strip_slope: float = env.get("strip_slope", cla)
+ 	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
+ 	var cd90: float = env.CD90
+ 	var a1: float = env.a1
+@@ -580,11 +587,12 @@
+ 		var base: float
+ 		if coupled:
+ 			var mapped := 0.0
++			var row_start: int = i * stations
+ 			for k in stations:
+-				mapped += e_map[i * stations + k] * angles[k]
++				mapped += e_map[row_start + k] * angles[k]
+ 			base = strip_cl0[i] + strip_slope * mapped
+ 		else:
+-			base = float(a.CL0) + float(a.CLa) * effective
++			base = cl0 + cla * effective
+ 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+ 		wing_cl += cl / stations
+ 	return wing_cl
