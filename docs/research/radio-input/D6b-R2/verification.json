@@ -1,0 +1,65 @@
+{
+  "format": "openrc-rc-rearm-verification v1",
+  "results": {
+    "control": {
+      "checks": 365,
+      "failures": 0,
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "baseline": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "cached_history": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "missing_profile_reset": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "missing_connection_reset": {
+      "checks": 365,
+      "failures": 18,
+      "exit_code": 1,
+      "expected_failure": "direct device replacement cannot reuse low evidence"
+    },
+    "nonfinite_evidence": {
+      "checks": 365,
+      "failures": 45,
+      "exit_code": 1,
+      "expected_failure": "nonfinite event is not low-throttle evidence"
+    },
+    "latched_evidence": {
+      "checks": 365,
+      "failures": 18,
+      "exit_code": 1,
+      "expected_failure": "later high event replaces low evidence"
+    },
+    "missing_current_low": {
+      "checks": 365,
+      "failures": 36,
+      "exit_code": 1,
+      "expected_failure": "low event with high current poll remains safe"
+    },
+    "cleared_history": {
+      "checks": 365,
+      "failures": 19,
+      "exit_code": 1,
+      "expected_failure": "calibration retains raw values and connection history"
+    }
+  },
+  "source_sha256": {
+    "app/input/rc_input.gd": "a777c4124d842e2cd072cb48fa8b1c30a5948cb8cc4f3cf10c298f1657961a17",
+    "app/input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+    "app/tests/test_rc_rearm.gd": "259417d50ad58cae6a0706352e9b778c6dee2099998d2d6dce4c614b35be5090"
+  },
+  "baseline_sha256": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557"
+}

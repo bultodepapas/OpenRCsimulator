@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+F3B_RESULT {"cpu":"Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz","event_construction_timed":false,"events_per_second":4000,"format":"openrc-radio-event-bench v1","frames_per_round":1200,"godot":"4.7.2-stable (official)","measurements":{"dispatch":{"median_us_per_event":4.62245,"median_us_per_modeled_frame":308.163333333333,"us_per_modeled_frame_samples":[281.496666666667,314.4725,341.313333333333,288.578333333333,310.061666666667,308.163333333333,295.3175]},"handler":{"median_us_per_event":0.8034125,"median_us_per_modeled_frame":53.5608333333333,"us_per_modeled_frame_samples":[53.5608333333333,50.7741666666667,53.5441666666667,52.9633333333333,53.6316666666667,60.7841666666667,68.0375]}},"modeled_fps":60,"os":"Linux","physics_and_render_timed":false,"radio_regime":"ARMED","rounds":7}
