@@ -1,7 +1,9 @@
 # D1-R5 — Wing-strip calibration acceptance
 
-**Status:** implementation and focused verification complete; full integration run pending, 2026-10-08.
+**Status:** integrated and verified by the full app suite, 2026-10-09. Physical lift/damping validation remains open.
 **Owner:** Codex induced-calibration integrity agent. **Scope:** loader acceptance only.
+
+[Current runtime integration](integration/README.md) applies the retained patch and supplies a tracked 168-check regression. The 2026-10-08 prototype evidence below is preserved; its original 115-check source was not tracked and is superseded by the current regression.
 
 ## Defect and repair
 
@@ -64,11 +66,12 @@ python3 research/aircraft-data/d1-r5/verify.py \
 [Patch](change.patch) and [source hashes](verification.json) identify this dated
 comparison; later loader changes require the matching revision.
 
-Suggested commit message after integration passes:
+Ready-to-paste integration commit message:
 
 ```text
-fix(physics): reject unsatisfied wing-strip calibration (D1-R5)
+fix(physics): integrate wing-strip calibration acceptance (D1-R5)
 
-Proof: 115 regression checks; 96 exact fleet pairs; 12 solver-fault refusals;
-residual negative control; 16 unchanged flight fingerprints; full app suite.
+Proof: 168 regression checks; 96 exact fleet pairs; 12 solver-fault refusals;
+explicit wrong-map negative control; full app suite (126 GDScript test programs),
+unchanged goldens and 30/60/144 FPS fingerprints; zero new focused warnings.
 ```

@@ -1,0 +1,29 @@
+{
+  "baseline_sha256": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+  "loader_sha256": "95f8886a4a6d309ad5f749acc7ef98e4cf21b62615703c606dc94c8f68571348",
+  "exact_fleet_load_pairs": 96,
+  "solver_fault_refusals": 12,
+  "negative_control": "missing residual accepts four wrong maps",
+  "runs": [
+    {
+      "name": "pairs",
+      "exit": 0
+    },
+    {
+      "name": "nan",
+      "exit": 0
+    },
+    {
+      "name": "infinity",
+      "exit": 0
+    },
+    {
+      "name": "finite_wrong_map",
+      "exit": 0
+    },
+    {
+      "name": "missing_residual",
+      "exit": 1
+    }
+  ]
+}

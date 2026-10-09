@@ -1,0 +1,163 @@
+{
+  "format": "openrc-d6b-r2-radio-event-cost-summary v1",
+  "measured_at_utc": "2026-10-09T13:34:07.296787+00:00",
+  "scope": "Synthetic input-event processing cost only; no hardware, polling, physics, rendering, or stick-to-photon timing.",
+  "host": {
+    "os": "Linux",
+    "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "godot": "4.7.2-stable (official)"
+  },
+  "setup": {
+    "projects": "Two disposable app copies from the same current working tree under /tmp; captures excluded. Original copy used saved reader; current copy used working reader.",
+    "aircraft_data_sha256_both_copies": "95f8886a4a6d309ad5f749acc7ef98e4cf21b62615703c606dc94c8f68571348",
+    "saved_original_reader_sha256": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+    "current_reader_sha256": "a777c4124d842e2cd072cb48fa8b1c30a5948cb8cc4f3cf10c298f1657961a17",
+    "private_harness": "Same copy of existing bench_radio_events.gd in both projects; accepts --safe-regime to start armed=false and adds radio_regime metadata. The script disables physics polling; no repo source was edited.",
+    "events_per_second": 4000,
+    "event_mix": "4 axes at 1,000 synthetic events/s each; 1,200 modeled 60 Hz frames and 7 measurement rounds per invocation; construction outside timed section.",
+    "repetitions_per_variant_regime": 3,
+    "run_order": [
+      "original:ARMED",
+      "current:ARMED",
+      "original:SAFE",
+      "current:SAFE",
+      "original:ARMED",
+      "current:ARMED",
+      "original:SAFE",
+      "current:SAFE",
+      "original:ARMED",
+      "current:ARMED",
+      "original:SAFE",
+      "current:SAFE"
+    ],
+    "concurrent_app_suite": "Parent reported the full app suite was running; treat these measurements as observational, not platform/performance acceptance."
+  },
+  "results": {
+    "ARMED": {
+      "handler": {
+        "original": {
+          "run_medians_us_per_event": [
+            0.7521875,
+            0.8288875,
+            0.8502
+          ],
+          "median_us_per_event": 0.8288875,
+          "min_run_median_us_per_event": 0.7521875,
+          "max_run_median_us_per_event": 0.8502
+        },
+        "current": {
+          "run_medians_us_per_event": [
+            0.863,
+            0.832925,
+            0.858075
+          ],
+          "median_us_per_event": 0.858075,
+          "min_run_median_us_per_event": 0.832925,
+          "max_run_median_us_per_event": 0.863
+        },
+        "delta_current_minus_original_us_per_event": 0.029187500000000033,
+        "delta_percent": 3.5212860611361654,
+        "estimated_delta_ms_per_60hz_frame_at_4000_events_s": 0.0019458333333333354
+      },
+      "dispatch": {
+        "original": {
+          "run_medians_us_per_event": [
+            4.48635,
+            4.4307375,
+            4.7221875
+          ],
+          "median_us_per_event": 4.48635,
+          "min_run_median_us_per_event": 4.4307375,
+          "max_run_median_us_per_event": 4.7221875
+        },
+        "current": {
+          "run_medians_us_per_event": [
+            4.7393125,
+            4.79395,
+            4.860925
+          ],
+          "median_us_per_event": 4.79395,
+          "min_run_median_us_per_event": 4.7393125,
+          "max_run_median_us_per_event": 4.860925
+        },
+        "delta_current_minus_original_us_per_event": 0.3075999999999999,
+        "delta_percent": 6.856353160141315,
+        "estimated_delta_ms_per_60hz_frame_at_4000_events_s": 0.020506666666666656
+      }
+    },
+    "SAFE": {
+      "handler": {
+        "original": {
+          "run_medians_us_per_event": [
+            0.8039625,
+            0.8054125,
+            0.79055
+          ],
+          "median_us_per_event": 0.8039625,
+          "min_run_median_us_per_event": 0.79055,
+          "max_run_median_us_per_event": 0.8054125
+        },
+        "current": {
+          "run_medians_us_per_event": [
+            1.0881625,
+            1.2187125,
+            1.254
+          ],
+          "median_us_per_event": 1.2187125,
+          "min_run_median_us_per_event": 1.0881625,
+          "max_run_median_us_per_event": 1.254
+        },
+        "delta_current_minus_original_us_per_event": 0.41475000000000006,
+        "delta_percent": 51.58822706282943,
+        "estimated_delta_ms_per_60hz_frame_at_4000_events_s": 0.02765
+      },
+      "dispatch": {
+        "original": {
+          "run_medians_us_per_event": [
+            4.6199375,
+            4.81495,
+            4.7342625
+          ],
+          "median_us_per_event": 4.7342625,
+          "min_run_median_us_per_event": 4.6199375,
+          "max_run_median_us_per_event": 4.81495
+        },
+        "current": {
+          "run_medians_us_per_event": [
+            4.946775,
+            5.1202,
+            5.1675375
+          ],
+          "median_us_per_event": 5.1202,
+          "min_run_median_us_per_event": 4.946775,
+          "max_run_median_us_per_event": 5.1675375
+        },
+        "delta_current_minus_original_us_per_event": 0.3859374999999998,
+        "delta_percent": 8.152008892620549,
+        "estimated_delta_ms_per_60hz_frame_at_4000_events_s": 0.025729166666666654
+      }
+    }
+  },
+  "validation": {
+    "run_count": 12,
+    "all_exit_zero_and_delivery_verified": true,
+    "engine_error_lines": [],
+    "nonfatal_validation_warnings": [
+      "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+    ]
+  },
+  "logs": [
+    "/tmp/openrc-d6b-r2-cost/run-01-original-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-02-current-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-03-original-safe.log",
+    "/tmp/openrc-d6b-r2-cost/run-04-current-safe.log",
+    "/tmp/openrc-d6b-r2-cost/run-05-original-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-06-current-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-07-original-safe.log",
+    "/tmp/openrc-d6b-r2-cost/run-08-current-safe.log",
+    "/tmp/openrc-d6b-r2-cost/run-09-original-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-10-current-armed.log",
+    "/tmp/openrc-d6b-r2-cost/run-11-original-safe.log",
+    "/tmp/openrc-d6b-r2-cost/run-12-current-safe.log"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "app/input/rc_input.gd": "f4a020e520cf128296a9072a4a2cef38ea0f7bcc403127ad1d156ce6191da557",
+  "app/tests/test_rc_input.gd": "f0717a5fe4941b45d80b26afa2fe3598a8113e870a0eea6ddc91f539661edf5d",
+  "app/tests/test_rc_axis_history.gd": "c0344324652ed3396592c6197cf8f6e0ce9daba2b94a1a55bd4a3b877ecb3ab8",
+  "app/tests/test_e2e_radio.gd": "36e0f3e7fc009074e49c7bdbe83e49f7e4719acfccee99cfa56599cc12f732cd"
+}

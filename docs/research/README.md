@@ -79,6 +79,8 @@ Trim integrity: [D4-R2](trim-integrity/D4-R2/README.md) closes nonfinite false c
 
 Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted channel mappings and device identity, rejects malformed profiles whole, preserves files on refused saves and verifies safe replug through the real scene.
 
+Calibration rearming: [D6b-R2](radio-input/D6b-R2/README.md) requires fresh finite low-throttle evidence after profile replacement, preserves raw-axis diagnostic history, and records private fault tests, real-session checks and paired event-cost observations.
+
 Radio diagnostics: [F1](radio-input/F1/README.md) adds a standalone input report with per-device connection history, axis ranges and observed callback spacing; includes fake-device and CLI proof. Actual USB timing and physical-radio compatibility remain separate measurements.
 
 Loader cost: [DATA-2b](aircraft-validation/DATA-2b/README.md) attributes the remaining startup cost and stops repeated induced-flow inversions after exact float64 midpoint stagnation; paired whole-model and refusal comparisons retain identical bytes.

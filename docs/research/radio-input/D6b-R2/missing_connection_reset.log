@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D6b-R2: 365 checks, 18 failed
+FAIL axis 0 endpoints [-1.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 0 endpoints [-1.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 0 endpoints [0.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 0 endpoints [0.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 0 endpoints [-0.8, 0.9, false] direct device replacement cannot reuse low evidence
+FAIL axis 0 endpoints [-0.8, 0.9, true] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [-1.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [-1.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [0.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [0.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [-0.8, 0.9, false] direct device replacement cannot reuse low evidence
+FAIL axis 2 endpoints [-0.8, 0.9, true] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [-1.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [-1.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [0.0, 1.0, false] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [0.0, 1.0, true] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [-0.8, 0.9, false] direct device replacement cannot reuse low evidence
+FAIL axis 9 endpoints [-0.8, 0.9, true] direct device replacement cannot reuse low evidence

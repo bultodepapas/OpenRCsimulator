@@ -18,9 +18,9 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 ## A connected radio whose axes read `values` (axis index → value; others 0).
-func _radio(values: Dictionary, moved: Array) -> RcInput:
+func _radio(values: Dictionary, moved: Array, saved: Dictionary = {}) -> RcInput:
 	var r := RcInput.new()
-	r.connect_device(3, INFO)
+	r.connect_device(3, INFO, saved)
 	for axis in moved:
 		r.on_motion(3, axis, values.get(axis, 0.0))
 	r.poll(func(_device: int, axis: int) -> float: return values.get(axis, 0.0), DT)
@@ -64,8 +64,9 @@ func _initialize() -> void:
 	_check("a low reading without a throttle event does not arm", not r.armed)
 
 	# Unipolar throttle (an SDL gamepad trigger: 0 at rest … 1 full) = a calibration with endpoints 0…1.
-	r = _radio({ 2: 0.0 }, [2])
-	r.profile.throttle.min = 0.0
+	var unipolar: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	unipolar.throttle.min = 0.0
+	r = _radio({ 2: 0.0 }, [2], unipolar)
 	_check("unipolar: 0 → 0 %", r.throttle_position() == 0.0)
 	r.poll(func(_d: int, axis: int) -> float: return 0.0, DT)
 	_check("unipolar trigger at rest arms", r.armed)

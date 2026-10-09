@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   starts on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   radio connected with its device key
+ok   untouched throttle (reads mid-stick) keeps the engine at idle
+ok   panel says SAFE
+ok   throttle moved to 60 %: still SAFE
+ok   throttle low: ARMED
+ok   armed: full throttle
+ok   roll stick full right → +1 at once (radio positions are not rate-limited)
+ok   the simulation flies it (stick + trim, clamped)
+ok   elevator stick forward → pitch −1 (nose down)
+failsafe: radio disconnected
+ok   unplug: simulation paused
+ok   unplug: engine idle, sticks centred
+ok   unplug: panel says why
+ok   unplug: stays paused (no automatic resume)
+ok   P resumes on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   replug with the throttle stick high: SAFE, idle
+failsafe: calibrating radio
+ok   K starts the calibration (paused, step 1)
+radio calibrated: fake|1209:4f54|Fake EdgeTX
+ok   calibrated: aileron axis 3, rudder axis 0, elevator inverted
+ok   calibration saved for this device
+ok   completed calibration is SAFE despite the old low throttle
+ok   after calibration: aileron works while stale throttle stays SAFE
+ok   after calibration: new high throttle still SAFE
+ok   after calibration: fresh low throttle arms
+failsafe: radio disconnected
+radio connected: fake|1209:4f54|Fake EdgeTX (calibrated profile)
+ok   replug loads the saved calibration
+ok   valid saved replug still requires a fresh throttle event
+failsafe: calibrating radio
+ok   Esc cancels; the calibration stays
+failsafe: radio disconnected
+ok   writes malformed fixture duplicate_axis
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back completely duplicate_axis
+ok   rejected profile remains safe at high throttle duplicate_axis
+ok   fallback profile can rearm at low throttle duplicate_axis
+failsafe: radio disconnected
+ok   writes malformed fixture nan_endpoint
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back completely nan_endpoint
+ok   rejected profile remains safe at high throttle nan_endpoint
+ok   fallback profile can rearm at low throttle nan_endpoint
+failsafe: radio disconnected
+ok   writes malformed fixture wrong_identity
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back completely wrong_identity
+ok   rejected profile remains safe at high throttle wrong_identity
+ok   fallback profile can rearm at low throttle wrong_identity
+all e2e radio checks passed
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D6b-R2: 365 checks, 19 failed
+FAIL axis 0 endpoints [-1.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 0 endpoints [-1.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 0 endpoints [0.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 0 endpoints [0.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 0 endpoints [-0.8, 0.9, false] calibration retains raw values and connection history
+FAIL axis 0 endpoints [-0.8, 0.9, true] calibration retains raw values and connection history
+FAIL axis 2 endpoints [-1.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 2 endpoints [-1.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 2 endpoints [0.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 2 endpoints [0.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 2 endpoints [-0.8, 0.9, false] calibration retains raw values and connection history
+FAIL axis 2 endpoints [-0.8, 0.9, true] calibration retains raw values and connection history
+FAIL axis 9 endpoints [-1.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 9 endpoints [-1.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 9 endpoints [0.0, 1.0, false] calibration retains raw values and connection history
+FAIL axis 9 endpoints [0.0, 1.0, true] calibration retains raw values and connection history
+FAIL axis 9 endpoints [-0.8, 0.9, false] calibration retains raw values and connection history
+FAIL axis 9 endpoints [-0.8, 0.9, true] calibration retains raw values and connection history
+FAIL old throttle axis cannot arm newly assigned axis

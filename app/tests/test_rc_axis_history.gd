@@ -36,7 +36,7 @@ func _initialize() -> void:
 		check("other device ignored %d" % selection, before == radio.axes.to_byte_array() and radio.has_axis_sample(2) == observed.has(2))
 		# Polling does not turn an unreported axis into evidence, even at low throttle.
 		radio.poll(func(_id: int, _axis: int) -> float: return -1.0, 1.0 / 240.0)
-		correct = radio.armed == observed.has(2)
+		correct = not radio.armed # the actual throttle events above were high, even if polling now reads low
 		for axis: int in Radio.AXES:
 			correct = correct and radio.has_axis_sample(axis) == observed.has(axis)
 		check("poll preserves history and safe arming %d" % selection, correct)
@@ -55,13 +55,16 @@ func _initialize() -> void:
 		for sample: float in [-0.75, 0.0, 0.75]:
 			radio.on_motion(15, axis, sample)
 			check("armed reader retains latest axis %d / %s" % [axis, sample], radio.has_axis_sample(axis) and radio.axes[axis] == sample)
-	# Profile replacement retains the established D6b behavior: disarm, retain connection history.
+	# Profile replacement disarms and retains diagnostic history; fresh arming evidence is separate.
 	radio.use_profile(Radio.DEFAULT_PROFILE, "fixture")
 	check("profile change disarms but retains seen throttle", not radio.armed and radio.has_axis_sample(2))
 	radio.poll(func(_id: int, _axis: int) -> float: return 1.0, 1.0 / 240.0)
 	check("new profile high throttle remains unarmed", not radio.armed)
 	radio.poll(func(_id: int, _axis: int) -> float: return -1.0, 1.0 / 240.0)
-	check("new profile arms only after low sample", radio.armed)
+	check("new profile ignores low polling with stale event history", not radio.armed)
+	radio.on_motion(15, 2, -1.0)
+	radio.poll(func(_id: int, _axis: int) -> float: return -1.0, 1.0 / 240.0)
+	check("new profile arms after fresh low throttle event", radio.armed)
 	radio.connect_device(15, INFO)
 	var clear: bool = not radio.armed
 	for axis: int in Radio.AXES:

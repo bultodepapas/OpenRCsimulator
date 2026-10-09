@@ -55,6 +55,8 @@ var armed := false
 ## Latest raw axis values (−1…+1), polled once per physics tick.
 var axes := PackedFloat64Array()
 var _seen := {} # axis index → true once an event arrived for it since connection
+## Separate arming evidence: a finite low-throttle event under the active profile, not connection history.
+var _throttle_low_seen: bool = false
 var _rate_throttle := 0.0 # gamepad throttle (0…1), integrated from the stick
 
 
@@ -79,6 +81,7 @@ func connect_device(id: int, info: Dictionary, saved := {}) -> void:
 		profile = DEFAULT_PROFILE.duplicate(true)
 		profile_source = "default"
 	armed = false
+	_throttle_low_seen = false
 	_rate_throttle = 0.0
 	_seen.clear()
 	axes.fill(0.0)
@@ -102,12 +105,14 @@ func use_profile(p: Dictionary, source: String) -> void:
 	profile = p.duplicate(true)
 	profile_source = source
 	armed = false
+	_throttle_low_seen = false
 	_rate_throttle = 0.0
 
 
 func disconnect_device() -> void:
 	connected = false
 	armed = false
+	_throttle_low_seen = false
 	_seen.clear()
 	axes.fill(0.0)
 
@@ -118,6 +123,8 @@ func on_motion(id: int, axis: int, value: float) -> void:
 		return
 	_seen[axis] = true
 	axes[axis] = value
+	if not armed and axis == int(profile.throttle.axis):
+		_throttle_low_seen = is_finite(value) and normalize_throttle(value, profile.throttle) <= ARM_THROTTLE
 
 
 func is_rate_throttle() -> bool:
@@ -139,7 +146,7 @@ func poll(read_axis: Callable, dt: float) -> void:
 		# Spring-centred stick: the throttle starts at idle and moves at a rate, so it is safe from the start.
 		armed = true
 		_rate_throttle = clampf(_rate_throttle + _shaped(_stick("throttle")) * float(profile.throttle_rate) * dt, 0.0, 1.0)
-	elif not armed and _seen.has(int(profile.throttle.axis)) and throttle_position() <= ARM_THROTTLE:
+	elif not armed and _throttle_low_seen and throttle_position() <= ARM_THROTTLE:
 		armed = true
 
 

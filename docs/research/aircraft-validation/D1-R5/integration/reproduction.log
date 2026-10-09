@@ -1,0 +1,125 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+D1-R5 integration: 168 checks, 86 failed
+WARNING: The parameter "rates" is never used in the function "coefficients()". If this is intended, prefix it with an underscore: "_rates".
+     at: GDScript::reload (res://physics/aero.gd:62)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://physics/aircraft_data.gd:104)
+WARNING: The variable "a0" is declared below in the parent block.
+     at: GDScript::reload (res://physics/aircraft_data.gd:506)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/aircraft_data.gd:761)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1033)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1049)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:31)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:44)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/propulsion.gd:28)
+WARNING: The local variable "derivative" is shadowing an already-declared function at line 55 in the current class.
+     at: GDScript::reload (res://physics/dynamics.gd:46)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://sim/simulation.gd:238)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/hull_crossing.gd:66)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/impact_snapshot.gd:55)
+WARNING: The local function parameter "is_connected" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://sim/flight_session.gd:144)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 743 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:354)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 743 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:804)
+FAIL jensen_ugly_stik_60 boundary solve succeeds 
+FAIL jensen_ugly_stik_60 boundary solve succeeds 
+FAIL jensen_ugly_stik_60 invalid target returns false -1.0 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing -1.0 
+FAIL jensen_ugly_stik_60 invalid target returns false 0.0 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing 0.0 
+FAIL jensen_ugly_stik_60 invalid target returns false 0.000000000001 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing 0.000000000001 
+FAIL jensen_ugly_stik_60 invalid target returns false 100.0 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing 100.0 
+FAIL jensen_ugly_stik_60 invalid target returns false nan 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing nan 
+FAIL jensen_ugly_stik_60 invalid target returns false inf 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing inf 
+FAIL jensen_ugly_stik_60 invalid target returns false -inf 
+FAIL jensen_ugly_stik_60 invalid target publishes nothing -inf 
+FAIL jensen_ugly_stik_60 invalid offset returns false 
+FAIL jensen_ugly_stik_60 invalid offset publishes nothing 
+FAIL jensen_ugly_stik_60 invalid twist returns false 
+FAIL jensen_ugly_stik_60 invalid twist publishes nothing 
+FAIL gp_extra_300s_60 boundary solve succeeds 
+FAIL gp_extra_300s_60 boundary solve succeeds 
+FAIL gp_extra_300s_60 invalid target returns false -1.0 
+FAIL gp_extra_300s_60 invalid target publishes nothing -1.0 
+FAIL gp_extra_300s_60 invalid target returns false 0.0 
+FAIL gp_extra_300s_60 invalid target publishes nothing 0.0 
+FAIL gp_extra_300s_60 invalid target returns false 0.000000000001 
+FAIL gp_extra_300s_60 invalid target publishes nothing 0.000000000001 
+FAIL gp_extra_300s_60 invalid target returns false 100.0 
+FAIL gp_extra_300s_60 invalid target publishes nothing 100.0 
+FAIL gp_extra_300s_60 invalid target returns false nan 
+FAIL gp_extra_300s_60 invalid target publishes nothing nan 
+FAIL gp_extra_300s_60 invalid target returns false inf 
+FAIL gp_extra_300s_60 invalid target publishes nothing inf 
+FAIL gp_extra_300s_60 invalid target returns false -inf 
+FAIL gp_extra_300s_60 invalid target publishes nothing -inf 
+FAIL gp_extra_300s_60 invalid offset returns false 
+FAIL gp_extra_300s_60 invalid offset publishes nothing 
+FAIL gp_extra_300s_60 invalid twist returns false 
+FAIL gp_extra_300s_60 invalid twist publishes nothing 
+FAIL p51d_mustang_120 boundary solve succeeds 
+FAIL p51d_mustang_120 boundary solve succeeds 
+FAIL p51d_mustang_120 invalid target returns false -1.0 
+FAIL p51d_mustang_120 invalid target publishes nothing -1.0 
+FAIL p51d_mustang_120 invalid target returns false 0.0 
+FAIL p51d_mustang_120 invalid target publishes nothing 0.0 
+FAIL p51d_mustang_120 invalid target returns false 0.000000000001 
+FAIL p51d_mustang_120 invalid target publishes nothing 0.000000000001 
+FAIL p51d_mustang_120 invalid target returns false 100.0 
+FAIL p51d_mustang_120 invalid target publishes nothing 100.0 
+FAIL p51d_mustang_120 invalid target returns false nan 
+FAIL p51d_mustang_120 invalid target publishes nothing nan 
+FAIL p51d_mustang_120 invalid target returns false inf 
+FAIL p51d_mustang_120 invalid target publishes nothing inf 
+FAIL p51d_mustang_120 invalid target returns false -inf 
+FAIL p51d_mustang_120 invalid target publishes nothing -inf 
+FAIL p51d_mustang_120 invalid offset returns false 
+FAIL p51d_mustang_120 invalid offset publishes nothing 
+FAIL p51d_mustang_120 invalid twist returns false 
+FAIL p51d_mustang_120 invalid twist publishes nothing 
+FAIL sebart_avanti_s_a200 boundary solve succeeds 
+FAIL sebart_avanti_s_a200 boundary solve succeeds 
+FAIL sebart_avanti_s_a200 invalid target returns false -1.0 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing -1.0 
+FAIL sebart_avanti_s_a200 invalid target returns false 0.0 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing 0.0 
+FAIL sebart_avanti_s_a200 invalid target returns false 0.000000000001 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing 0.000000000001 
+FAIL sebart_avanti_s_a200 invalid target returns false 100.0 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing 100.0 
+FAIL sebart_avanti_s_a200 invalid target returns false nan 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing nan 
+FAIL sebart_avanti_s_a200 invalid target returns false inf 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing inf 
+FAIL sebart_avanti_s_a200 invalid target returns false -inf 
+FAIL sebart_avanti_s_a200 invalid target publishes nothing -inf 
+FAIL sebart_avanti_s_a200 invalid offset returns false 
+FAIL sebart_avanti_s_a200 invalid offset publishes nothing 
+FAIL sebart_avanti_s_a200 invalid twist returns false 
+FAIL sebart_avanti_s_a200 invalid twist publishes nothing 
+FAIL unreachable wing target refuses model 6.3 []
+FAIL unreachable wing target refuses model 4.58 []
+FAIL unreachable wing target refuses model 4.579999999999 []
+FAIL unreachable wing target refuses model 4.53 []
+FAIL reload reports calibration failure reload failed; previous aircraft and flight retained: simulation reset failed: reset rejected: aircraft returned nonfinite or malformed loads
+FAIL invalid initial aircraft cannot fly 
