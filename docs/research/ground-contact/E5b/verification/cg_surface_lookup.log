@@ -1,0 +1,98 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok gp_extra_300s_60 loads []
+ok tail-up fixture has loaded mains and clear tail [0.02448598852007, 0.02448598852007, -0.15473901147993]
+ok main-only pitch moment follows N(d - mu*h) [0.36156781516183, 0.05951893588389, 0.05951893588389]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok main-only pitch moment follows N(d - mu*h) [0.36894675016513, -0.0, 0.0]
+ok main-only drag and normal force agree with oracle 
+ok main-only pitch moment follows N(d - mu*h) [0.37632568516843, -0.05951893588389, -0.05951893588389]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok evaluated pitch-zero threshold agrees with d/h within 2 percent 
+ok friction cap below threshold prevents nose-down moment 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.0652219776502, 0.695800841216]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.04281018876726, 0.23333095830615]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.06500147720225, 0.69345566884908]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.04241507804794, 0.22893987574186]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.06489122450199, 0.69228299021946]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.04221751507532, 0.22674410688148]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok patch pitch agrees across adjacent rates within 0.1 degree [0.00022050044795, 0.00011025270026]
+ok patch pitch agrees across adjacent rates within 0.1 degree [0.00039511071932, 0.00019756297262]
+ok p51d_mustang_120 loads []
+ok tail-up fixture has loaded mains and clear tail [0.02392740782507, 0.02392740782507, -0.28692259217493]
+ok main-only pitch moment follows N(d - mu*h) [0.3407445971515, 0.64417899665819, 0.64417899665818]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok main-only pitch moment follows N(d - mu*h) [0.34769856852194, 0.0, 0.0]
+ok main-only drag and normal force agree with oracle 
+ok main-only pitch moment follows N(d - mu*h) [0.35465253989237, -0.64417899665818, -0.64417899665818]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok evaluated pitch-zero threshold agrees with d/h within 2 percent 
+ok friction cap below threshold prevents nose-down moment 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.03805047488169, 0.39657397463148]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.03126237813695, 0.22129078853521]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.03796446006997, 0.39547151101548]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.03111262161511, 0.2193192977706]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitch rate has predicted direction [0.8, 0.03792145258395, 0.39492026901118]
+ok synthetic patch factor is within supported surface bounds 
+FAIL patch lookup scales longitudinal drag at wheel location 
+FAIL patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitch rate has predicted direction [1.3, 0.03103774265725, 0.21833352299444]
+FAIL high-resistance patch reverses initial nose-up motion 
+ok patch pitch agrees across adjacent rates within 0.1 degree [0.00008601481172, 0.00004300748602]
+ok patch pitch agrees across adjacent rates within 0.1 degree [0.00014975652184, 0.00007487895786]
+ok report opened 
+95 checks, 30 failed

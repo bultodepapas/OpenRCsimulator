@@ -113,6 +113,8 @@ Runway-start numerical integrity: [E3b2-R1](ground-contact/E3b2-R1/README.md) re
 
 Taildragger breadth: [E5a](ground-contact/E5a/README.md) reviews the existing P-51 contacts and adds generated Extra 300S wheel contacts, with static moment balance, steering/component ground-loop signs, real-session refinement and isolated fault detection. Independent pilot contrast remains open.
 
+Nose-over mechanics: [E5b](ground-contact/E5b/README.md) separates tail-up pitch reversal from three-point tail lift, verifies both against rigid contact moments, and exercises synthetic resistance patches. Numerical and fault-detection evidence does not calibrate real soft ground.
+
 Experimental landing baseline: [E3c1a](ground-contact/E3c1a/README.md) commands approach, flare and idle rollout through the real session; measures every wheel's contact speed and runway containment, stable stopping and 240/480 Hz refinement. Propwash acceptance, the full circuit and pilot validation remain separate.
 
 Experimental continuous circuit: [E3c2a](ground-contact/E3c2a/README.md) flies from an idling runway start through takeoff, the full pattern, the E3c1a landing handoff and an anchored idle stop; both headings, 240/480 Hz refinement, every-tick v3 trace and corruption checks. Rendered acceptance, physical measurements and PT2 remain open.
