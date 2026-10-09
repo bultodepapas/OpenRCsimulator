@@ -56,7 +56,7 @@ The **direct** reverse-cutoff control still enters the prepared method and valid
 
 Keep the prepared candidate outside production. Repeated static validation is only about 0.3 µs per direct call here; removing it would not plausibly close the observed whole-tick shortfall. Preserve the guards and explicit model lifecycle. Distributed swirl dominates the native method, while aerodynamics and the simulation remainder remain substantial outside it.
 
-Next, split `Aero.loads` into local wing/tail work and split the simulation remainder into validation/checkpoint bookkeeping, RK/rigid-body work and callback/dispatch cost on these same evolving fixtures. Select one behavior-preserving change from that evidence. Do not infer an integration bottleneck from the residual, reduce quadrature accuracy, or expand the native interface without proof. Production adoption still needs target headroom, explicit model revision ownership and native-platform qualification.
+Follow-up: [nested aero/simulation attribution](../dynamics-cost/README.md) now completes this measurement and selects a bounded wing-loop experiment. The original next-step scope was to split `Aero.loads` into local wing/tail work and split the simulation remainder into validation/checkpoint bookkeeping, RK/rigid-body work and callback/dispatch cost on these same evolving fixtures. Select one behavior-preserving change from that evidence. Do not infer an integration bottleneck from the residual, reduce quadrature accuracy, or expand the native interface without proof. Production adoption still needs target headroom, explicit model revision ownership and native-platform qualification.
 
 ## Limits and reproduction
 

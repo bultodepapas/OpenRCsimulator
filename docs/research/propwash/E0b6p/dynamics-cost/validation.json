@@ -1,0 +1,90 @@
+{
+  "format": "openrc-e0b6p-dynamics-cost-validation v1",
+  "status": "pass",
+  "source_revision": "77312ec82810d60a8c971323bcf09945b1608ed9",
+  "commands": [
+    "python3 research/propwash/e0b6p/dynamics-cost/run.py --godot \"$(app/get-godot.sh)\" --output /tmp/openrc-dynamics-cost-final3",
+    "git clone --local --no-hardlinks --dissociate /home/bulto/OpenRCsimulator /tmp/openrc-dynamics-cost-clean",
+    "python3 research/propwash/e0b6p/dynamics-cost/run.py --godot \"$(app/get-godot.sh)\" --project /tmp/openrc-dynamics-cost-clean/app --output /tmp/openrc-dynamics-cost-final4"
+  ],
+  "sequential_runs": true,
+  "same_app_inputs": true,
+  "same_harness_inputs": true,
+  "production_files_changed": false,
+  "app_input_count": 617,
+  "harness_input_count": 37,
+  "lint_counts": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "instrumented": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "lint_warning_scope": "12 existing project warnings; zero new errors or warnings",
+  "checks_per_run": {
+    "original_float64_values": 95040,
+    "trajectory_cases": 12,
+    "boundaries_each": 240,
+    "native_lifecycle": 68,
+    "prepared_adapter": 35,
+    "rejected_adapter_defects": 2,
+    "rejected_report_corruptions": 24
+  },
+  "limits": "Disposable instrumentation only; no production code or data changes; full app suite not repeated. Shared-host batch averages do not close Gate P or physical acceptance.",
+  "retained_sha256": {
+    "run1/baseline-parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/baseline.json.gz": "9353c2dbf8c17fa553d73d5987ce1c714ad39b1ba96059f03dcd3129712b90c1",
+    "run1/baseline.log": "07075ee6db470342643860c25ae0b229311192ec625bc7ad1a811fd30c5f56f7",
+    "run1/dynamics-evidence.json": "f43445132a6eec71944264662f048612cb1e95a66d200416dcb41e7d265985e1",
+    "run1/instrumented-parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/instrumented.json.gz": "58a3042a260f9a0bdb49ecd7924992ebe3c11bb2195c4a8bc426a379824e61c9",
+    "run1/instrumented.log": "7ee04cf92cc11f652625519e2426e373ad76668e341023f477cc981caf15eefc",
+    "run1/mutation_allow_route_change.json": "189af0da0c59c8cf53507c9bf1bfacf2c98e50dc861e279c2b900d274f22dbd3",
+    "run1/mutation_allow_route_change.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/mutation_allow_route_change.run.log": "1316c7d167c2f445fcdbe1a62de264e50ee92ffa2066506ade506213cb8f0fcb",
+    "run1/mutation_bypass_prepared_dispatch.json": "882cfa38f176353b9c6a2be551599c568793c0d5bf2c36cbfb2a64c438fefed3",
+    "run1/mutation_bypass_prepared_dispatch.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/mutation_bypass_prepared_dispatch.run.log": "7d04f5fd330aa63fc5fd1ec42f0cbdbf6a6fd226724149b6412ee2a55951c16c",
+    "run1/verify_adapter.json": "dab7ad0368ce4d54f2fdcd73c907b0a9ebcf1e97d51eff13aa4f3ffda6b4ad40",
+    "run1/verify_adapter.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/verify_adapter.run.log": "4d3144409116c4fec4a070b70273b06230596fc677059f99dbcb937d63fd46e3",
+    "run1/verify_lifecycle.json": "3d5237776bfe4fee38be53022d8bd6c9dceb86581592fe96d98ca98c63cc9f75",
+    "run1/verify_lifecycle.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run1/verify_lifecycle.run.log": "7e569747917bc5c2728a9fa2637825f0ce755b38e58914431d25193dd74e73e9",
+    "run2/baseline-parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/baseline.json.gz": "92bc49648056de281d9a20562184aacbf5e729e5bac0e66239bab0e2b96104a2",
+    "run2/baseline.log": "75a87aa15f90e9116e8dd23fce02646d9a6df8468b1d5ad7668aa95676972888",
+    "run2/dynamics-evidence.json": "f57f8c5112b7c37e82e9827ed7d67bf3567450f2f844a97a22dd2dd020f77955",
+    "run2/instrumented-parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/instrumented.json.gz": "52c2052e36c9781ce03e0f2b167f340252c7285c169524831ac64e30145877e3",
+    "run2/instrumented.log": "386b9ec8bde9467ce614002f0cee6182948761637eb3c2e0b22973f97a2199a5",
+    "run2/mutation_allow_route_change.json": "14ef6fa48b24c9f94c2a471178bb0a373ee5059da4116564d39d2a729dc07f42",
+    "run2/mutation_allow_route_change.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/mutation_allow_route_change.run.log": "1316c7d167c2f445fcdbe1a62de264e50ee92ffa2066506ade506213cb8f0fcb",
+    "run2/mutation_bypass_prepared_dispatch.json": "491f59188b38f45ade1fc90e99fe93264a439a2b68c27a33781f95574bddd32c",
+    "run2/mutation_bypass_prepared_dispatch.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/mutation_bypass_prepared_dispatch.run.log": "7d04f5fd330aa63fc5fd1ec42f0cbdbf6a6fd226724149b6412ee2a55951c16c",
+    "run2/verify_adapter.json": "9cd2d2bcf4e1038a2fa04910dfe8b3135f2a9da66c46aa6264c0e38ce819c69b",
+    "run2/verify_adapter.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/verify_adapter.run.log": "4d3144409116c4fec4a070b70273b06230596fc677059f99dbcb937d63fd46e3",
+    "run2/verify_lifecycle.json": "3d5237776bfe4fee38be53022d8bd6c9dceb86581592fe96d98ca98c63cc9f75",
+    "run2/verify_lifecycle.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+    "run2/verify_lifecycle.run.log": "7e569747917bc5c2728a9fa2637825f0ce755b38e58914431d25193dd74e73e9"
+  },
+  "retained_raw_replay": "exact summaries, comparisons and 24 rejection controls in both runs",
+  "independent_run_original_bytes_identical": true,
+  "local_document_links_checked": 547
+}

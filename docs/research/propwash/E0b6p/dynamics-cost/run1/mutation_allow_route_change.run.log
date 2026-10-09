@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p prepared adapter: 35 cases, 34 passed, 1 failed
+SCRIPT ERROR: Invalid access to property or key 'chords' on a base object of type 'Dictionary'.
+          at: loads (res://physics/slipstream.gd:152)
+          GDScript backtrace (most recent call first):
+              [0] loads (res://physics/slipstream.gd:152)
+              [1] loads (res://tests/e0b6p_prepared/adapter.gd:79)
+              [2] _prepared_loads (res://tests/e0b6p_prepared/verify_adapter.gd:149)
+              [3] _refusal (res://tests/e0b6p_prepared/verify_adapter.gd:159)
+              [4] _initialize (res://tests/e0b6p_prepared/verify_adapter.gd:96)
+FAIL removing edge_fraction after prepare is rejected: { "label": "removing edge_fraction after prepare is rejected", "passed": false, "refused_nonfinite6": false, "actual_size": 0, "all_finite": true }
