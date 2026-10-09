@@ -1,0 +1,342 @@
+{
+	"case_count": 35,
+	"expected_cases": 35,
+	"failed": 1,
+	"failures": 1,
+	"format": "openrc-e0b6p-prepared-adapter v1",
+	"godot": "4.7.2-stable (official)",
+	"passed": 34,
+	"protocol": {
+		"attempts": 8,
+		"prepared_calls": 7,
+		"routes": {
+			"kernel_calls": 8,
+			"legacy": 3,
+			"native": 9,
+			"refused": 3
+		},
+		"setup_calls": 1,
+		"setup_mode": false
+	},
+	"results": [
+		{
+			"detail": "/tmp/openrc-dynamics-cost-final4/mutation_allow_route_change.json",
+			"label": "output path supplied",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "prepared adapter available",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "stateless native adapter available",
+			"passed": true
+		},
+		{
+			"detail": "[]",
+			"label": "combined fixture validates",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "smooth prepare succeeds",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"finite6": true,
+			"label": "prepared loads equal stateless native bytes",
+			"passed": true
+		},
+		{
+			"detail": "{ \"attempts\": 1, \"prepared_calls\": 1, \"setup_calls\": 0, \"setup_mode\": false, \"routes\": { \"native\": 1, \"kernel_calls\": 1, \"legacy\": 0, \"refused\": 0 } }",
+			"label": "prepared route was used",
+			"passed": true
+		},
+		{
+			"actual_size": 6,
+			"all_finite": false,
+			"label": "direct backend invalidation refuses active smooth load",
+			"passed": true,
+			"refused_nonfinite6": true
+		},
+		{
+			"detail": "{ \"attempts\": 1, \"prepared_calls\": 2, \"setup_calls\": 0, \"setup_mode\": false, \"routes\": { \"native\": 2, \"kernel_calls\": 2, \"legacy\": 0, \"refused\": 1 } }",
+			"label": "backend invalidation did not fall back to setup",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "prepare restores invalidated backend",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"finite6": true,
+			"label": "reprepared loads are exact",
+			"passed": true
+		},
+		{
+			"actual_size": 6,
+			"all_finite": false,
+			"label": "replacement dictionary identity is rejected",
+			"passed": true,
+			"refused_nonfinite6": true
+		},
+		{
+			"detail": "{ \"attempts\": 2, \"prepared_calls\": 3, \"setup_calls\": 0, \"setup_mode\": false, \"routes\": { \"native\": 3, \"kernel_calls\": 3, \"legacy\": 0, \"refused\": 2 } }",
+			"label": "replacement rejection avoids setup fallback",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"finite6": true,
+			"label": "original dictionary remains prepared",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "malformed prepare fails",
+			"passed": true
+		},
+		{
+			"actual_size": 6,
+			"all_finite": false,
+			"label": "failed prepare refuses without raw fallback",
+			"passed": true,
+			"refused_nonfinite6": true
+		},
+		{
+			"detail": "{ \"attempts\": 3, \"prepared_calls\": 4, \"setup_calls\": 0, \"setup_mode\": false, \"routes\": { \"native\": 5, \"kernel_calls\": 4, \"legacy\": 0, \"refused\": 3 } }",
+			"label": "failed prepare did not call setup or prepared kernel",
+			"passed": true
+		},
+		{
+			"detail": "{ \"attempts\": 3, \"prepared_calls\": 4, \"setup_calls\": 0, \"setup_mode\": true, \"routes\": { \"native\": 5, \"kernel_calls\": 4, \"legacy\": 0, \"refused\": 3 } }",
+			"label": "begin_setup enables explicit raw setup",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"finite6": true,
+			"label": "begin_setup uses stateless native loads",
+			"passed": true
+		},
+		{
+			"detail": "{ \"attempts\": 3, \"prepared_calls\": 4, \"setup_calls\": 1, \"setup_mode\": true, \"routes\": { \"native\": 6, \"kernel_calls\": 5, \"legacy\": 0, \"refused\": 3 } }",
+			"label": "begin_setup increments only setup route",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "nested-edit fixture prepares",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.3442882556394131,
+				-0.07419362177382771,
+				-2.388958861591379,
+				0.2463381464295663,
+				-1.7223309651155325,
+				0.043016705400101385
+			],
+			"finite6": true,
+			"label": "nested-edit baseline",
+			"passed": true
+		},
+		{
+			"detail": "[-0.34428825563941, -0.07419362177383, -2.38895886159138, 0.24633814642957, -1.72233096511553, 0.0430167054001]",
+			"label": "nested edits retain old snapshot until reprepare",
+			"passed": true
+		},
+		{
+			"detail": "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",
+			"label": "stateless loads observe nested edit",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "reprepare after nested edit succeeds",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"finite6": true,
+			"label": "reprepared loads equal edited stateless bytes",
+			"passed": true
+		},
+		{
+			"detail": "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",
+			"label": "reprepare updates loads",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "prepare smooth model before mode-change check",
+			"passed": true
+		},
+		{
+			"actual_size": 0,
+			"all_finite": true,
+			"label": "removing edge_fraction after prepare is rejected",
+			"passed": false,
+			"refused_nonfinite6": false
+		},
+		{
+			"detail": "",
+			"label": "explicit legacy reprepare succeeds",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"finite6": true,
+			"label": "legacy reprepare returns normal oracle",
+			"passed": true
+		},
+		{
+			"detail": "[]",
+			"label": "real legacy aircraft loads",
+			"passed": true
+		},
+		{
+			"detail": "",
+			"label": "legacy aircraft prepare succeeds",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"finite6": true,
+			"label": "legacy aircraft uses normal oracle",
+			"passed": true
+		},
+		{
+			"detail": "{ \"native\": 9, \"kernel_calls\": 8, \"legacy\": 3, \"refused\": 3 }",
+			"label": "legacy oracle route was used",
+			"passed": true
+		}
+	]
+}

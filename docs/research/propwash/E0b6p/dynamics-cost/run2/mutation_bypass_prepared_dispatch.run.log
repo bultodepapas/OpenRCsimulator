@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p prepared adapter: 35 cases, 32 passed, 3 failed
+FAIL direct backend invalidation refuses active smooth load: { "label": "direct backend invalidation refuses active smooth load", "passed": false, "refused_nonfinite6": false, "actual_size": 6, "all_finite": true }
+FAIL nested edits retain old snapshot until reprepare: { "label": "nested edits retain old snapshot until reprepare", "passed": false, "detail": "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]" }
+FAIL stateless loads observe nested edit: { "label": "stateless loads observe nested edit", "passed": false, "detail": "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]" }
