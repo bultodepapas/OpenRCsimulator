@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:31)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:44)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/propulsion.gd:28)
+WARNING: The parameter "rates" is never used in the function "coefficients()". If this is intended, prefix it with an underscore: "_rates".
+     at: GDScript::reload (res://physics/aero.gd:62)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://physics/aircraft_data.gd:104)
+WARNING: The variable "a0" is declared below in the parent block.
+     at: GDScript::reload (res://physics/aircraft_data.gd:506)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/aircraft_data.gd:759)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1031)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1047)
+WARNING: The local variable "derivative" is shadowing an already-declared function at line 55 in the current class.
+     at: GDScript::reload (res://physics/dynamics.gd:46)
+G2-R1: 46 checks, 0 failed

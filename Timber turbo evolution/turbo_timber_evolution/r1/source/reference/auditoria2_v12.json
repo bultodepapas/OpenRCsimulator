@@ -1,0 +1,67 @@
+{
+ "flotantes": [],
+ "holguras": {
+  "campana_motor_vs_capota_y_bancada_mm": 2.0,
+  "helice_y_cono_vs_nariz_mm": 4.23,
+  "rueda_cola_vs_fuselaje_en_recorrido_mm": 21.73,
+  "tren_vs_fuselaje_comprimido_mm": 2.67
+ },
+ "varillas": {
+  "aleron_der": {
+   "brazo_cuerno_mm": 19.4,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 86.1,
+   "brazo_servo_mm": 12.5,
+   "angulo_varilla_brazo_servo_grados": 89.1,
+   "giro_servo_necesario_grados": 35.6
+  },
+  "aleron_izq": {
+   "brazo_cuerno_mm": 19.4,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 86.1,
+   "brazo_servo_mm": 12.5,
+   "angulo_varilla_brazo_servo_grados": 89.1,
+   "giro_servo_necesario_grados": 35.6
+  },
+  "flap_der": {
+   "brazo_cuerno_mm": 14.4,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 95.0,
+   "brazo_servo_mm": 17.0,
+   "angulo_varilla_brazo_servo_grados": 99.0,
+   "giro_servo_necesario_grados": 33.1
+  },
+  "flap_izq": {
+   "brazo_cuerno_mm": 14.4,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 95.0,
+   "brazo_servo_mm": 17.0,
+   "angulo_varilla_brazo_servo_grados": 99.0,
+   "giro_servo_necesario_grados": 33.1
+  },
+  "elevador": {
+   "brazo_cuerno_mm": 18.5,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 87.1,
+   "brazo_servo_mm": 12.5,
+   "angulo_varilla_brazo_servo_grados": 90.2,
+   "giro_servo_necesario_grados": 33.7
+  },
+  "timon": {
+   "brazo_cuerno_mm": 16.0,
+   "agujero_fuera_de_bisagra_mm": 1.0,
+   "angulo_varilla_cuerno_grados": 87.6,
+   "brazo_servo_mm": 12.5,
+   "angulo_varilla_brazo_servo_grados": 91.2,
+   "giro_servo_necesario_grados": 39.9
+  }
+ },
+ "piezas_conectadas": "112 de 112",
+ "ala_vs_fuselaje_mm": 1.78,
+ "refrigeracion": {
+  "entrada_tomas_mm2": 276,
+  "entrada_anillo_mm2": 427,
+  "salida_mm2": 952,
+  "relacion_salida_entrada": 1.35
+ }
+}

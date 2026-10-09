@@ -1,0 +1,42 @@
+{
+  "step": "TT-00-R1",
+  "godot_executable": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "godot_binary_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "renderer_requested": "gl_compatibility",
+  "rendering_mode": "xvfb-run with LIBGL_ALWAYS_SOFTWARE=1",
+  "temporary_project_parent": "/tmp",
+  "package_inputs": {
+    "aircraft.glb_sha256": "fb7586f190295bd3e3aee6b8fbd4c10acf34d3b2288f38baadf170b8f66ae4a5",
+    "aircraft_demo.glb_sha256": "aefc81f6d8e669f7db3be2ca2a374ed74313fec85ccdc5d6bd8f45b0ea570cc2"
+  },
+  "import_exit_code": 0,
+  "run_exit_code": 1,
+  "report_all_checks_pass": false,
+  "checks": {
+    "animation_player_available": true,
+    "articulated_pose_applied": false,
+    "articulated_screenshot_saved": true,
+    "articulation_hierarchy_matches_metadata": true,
+    "control_demo_available": true,
+    "control_demo_moves_controls": true,
+    "demo_glb_loaded": true,
+    "instances_have_independent_pivots": true,
+    "mesh_nodes_15": true,
+    "metadata_axis_bounds_match": false,
+    "moving_meshes_have_identity_local_transform": true,
+    "neutral_import_loaded": true,
+    "neutral_screenshot_saved": true,
+    "rest_times_local_x_rotation_composes": true,
+    "root_scale_identity": true,
+    "rotating_one_instance_leaves_other_unchanged": true,
+    "surfaces_36": true
+  },
+  "evidence_files": {
+    "godot-report.json": true,
+    "import.log": true,
+    "run.log": true,
+    "neutral.png": true,
+    "articulated.png": true
+  },
+  "ok": false
+}

@@ -1,0 +1,74 @@
+--- a/app/physics/aircraft_data.gd
++++ b/app/physics/aircraft_data.gd
+@@ -182,7 +182,8 @@
+ 		envelope.station_ys = station_ys(span, chords)
+ 	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope)
+ 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
+-		_induced_map(envelope, surfaces, aero, area, span, chords)
++		if not _induced_map(envelope, surfaces, aero, area, span, chords):
++			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
+ 	var prop := _propulsion(errors, raw.get("propulsion"))
+ 	var hull := _crash_hull(errors, raw.get("crash_hull"))
+ 	var controls := _controls(errors, raw.get("controls"))
+@@ -484,8 +485,9 @@
+ ## Consistency with the oracle, solved here: a0 makes the local wing + horizontal tail lift slope equal aero.CLa, and the
+ ## per-strip offset strip_cl0 makes their CL at α 0 equal aero.CL0 (the same airplane in two models, not a fit to
+ ## flight data). Clp is then a prediction. Stores envelope.strip_slope (a0), strip_cl0 (per strip), induced_map (E).
++## Returns false if the target cannot be reproduced; publish derived fields only after a finite solve.
+ static func _induced_map(envelope: Dictionary, surfaces: Dictionary, aero: Dictionary, area: float, span: float,
+-		chords: PackedFloat64Array) -> void:
++		chords: PackedFloat64Array) -> bool:
+ 	var edges := station_edges(span, chords)
+ 	var ys: PackedFloat64Array = envelope.station_ys
+ 	var n := ys.size()
+@@ -498,6 +500,8 @@
+ 	var horizontal: Dictionary = surfaces.horizontal
+ 	var tail_share: float = float(horizontal.area) / area * float(horizontal.lift_slope)
+ 	var target: float = float(aero.CLa) - tail_share
++	if not is_finite(target) or target <= 0.0:
++		return false
+ 	# wsum(a0) = area-weighted Σ E·1 rises with a0 slower than 1/a0 falls: a0·wsum(a0) is monotonic; bisection.
+ 	var lo := 0.1
+ 	var hi := 50.0
+@@ -514,6 +518,14 @@
+ 	var a0 := 0.5 * (lo + hi)
+ 	e_map = effective_angle_map(k_map, a0, n)
+ 	var wsum := _row_mean(e_map, n)
++	# D1-R5: stagnation is not convergence. Reject saturated endpoints and nonfinite solves before
++	# deriving offsets/downwash. This is a numerical tolerance, not an aerodynamic uncertainty band.
++	for value in e_map:
++		if not is_finite(value):
++			return false
++	var solved: float = a0 * wsum
++	if not is_finite(solved) or absf(solved - target) > 1e-10 * maxf(1.0, absf(target)):
++		return false
+ 	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+ 	var twist_lift := 0.0
+ 	for i in n:
+@@ -521,12 +533,17 @@
+ 			twist_lift += e_map[i * n + k] * (twist[k] if not twist.is_empty() else 0.0)
+ 	twist_lift *= a0 / float(n)
+ 	var alpha_s: float = (float(aero.CL0) - tail_share * float(horizontal.incidence) - twist_lift) / (a0 * wsum)
++	if not is_finite(alpha_s):
++		return false
+ 	var cl0 := PackedFloat64Array()
+ 	for i in n:
+ 		var row := 0.0
+ 		for k in n:
+ 			row += e_map[i * n + k]
+-		cl0.append(a0 * alpha_s * row)
++		var offset := a0 * alpha_s * row
++		if not is_finite(offset):
++			return false
++		cl0.append(offset)
+ 	envelope.strip_slope = a0
+ 	envelope.strip_cl0 = cl0
+ 	envelope.induced_map = e_map
+@@ -547,6 +564,7 @@
+ 		horizontal.wing_cl0 = wing_cl0
+ 		# E0a2b: the wake travels from the wing's quarter chord to the tail's pressure centre (le frame, x aft).
+ 		horizontal.downwash_lag_length = float(horizontal.position[0]) - 0.25 * area / span
++	return true
+ 
+ 
+ ## D11d: Weissinger influence matrix K (row-major n×n) for strips with the given edges (2n + 1), control-point y and

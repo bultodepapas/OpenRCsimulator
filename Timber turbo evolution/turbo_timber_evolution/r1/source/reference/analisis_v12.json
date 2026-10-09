@@ -1,0 +1,118 @@
+{
+ "interferencias": [],
+ "helice": {
+  "radio_mm": 138.1,
+  "actitud_3_puntos_grados": 9.8,
+  "holgura_3_puntos_mm": 162.1,
+  "holgura_cola_arriba_mm": 117.9,
+  "distancia_plano_helice_a_rueda_mm": 191.3
+ },
+ "tren": {
+  "trocha_mm": 264.0,
+  "trocha_comprimido_mm": 305.0,
+  "bajada_avion_mm": -20.2,
+  "resorte_libre_mm": 56.0,
+  "estiramiento_resorte_mm": 8.0,
+  "estiramiento_pct": 14.3,
+  "angulo_tres_puntos_grados": 9.8
+ },
+ "cg": {
+  "masa_total_g": 1460,
+  "mac_mm": 213.0,
+  "cg_recomendado_mm": [
+   53.0,
+   64.0
+  ],
+  "cg_con_bateria_en_su_bahia_mm": 60.6,
+  "cg_pct_mac": 28.5,
+  "bateria_centro_para_cg_25_30_mm": [
+   -84.0,
+   -38.0
+  ],
+  "bahia_bateria_mm": [
+   -127,
+   23
+  ],
+  "desglose": [
+   {
+    "pieza": "ala (2 semialas, flaps, alerones)",
+    "masa_g": 255.6,
+    "x_mm": 101.3
+   },
+   {
+    "pieza": "fuselaje",
+    "masa_g": 290.0,
+    "x_mm": 220.8
+   },
+   {
+    "pieza": "cola",
+    "masa_g": 61.287162162162176,
+    "x_mm": 703.3
+   },
+   {
+    "pieza": "tren principal",
+    "masa_g": 135.0,
+    "x_mm": 12.0
+   },
+   {
+    "pieza": "rueda de cola",
+    "masa_g": 12.0,
+    "x_mm": 738.4
+   },
+   {
+    "pieza": "helice y cono",
+    "masa_g": 32.0,
+    "x_mm": -251.0
+   },
+   {
+    "pieza": "motor",
+    "masa_g": 160.0,
+    "x_mm": -212.5
+   },
+   {
+    "pieza": "variador",
+    "masa_g": 60.0,
+    "x_mm": -142.0
+   },
+   {
+    "pieza": "receptor",
+    "masa_g": 12.0,
+    "x_mm": 118.0
+   },
+   {
+    "pieza": "servos_cola",
+    "masa_g": 26.0,
+    "x_mm": 228.0
+   },
+   {
+    "pieza": "servos_ala",
+    "masa_g": 36.0,
+    "x_mm": 100.1
+   },
+   {
+    "pieza": "cableado_luces",
+    "masa_g": 40.0,
+    "x_mm": 58.0
+   },
+   {
+    "pieza": "bateria",
+    "masa_g": 340.0,
+    "x_mm": -52.0
+   }
+  ],
+  "carga_alar_g_dm2": 44.4,
+  "superficie_alar_dm2": 32.9,
+  "altura_cg_mm": -10.9,
+  "angulo_ruedas_vs_cg_grados": 12.1,
+  "peso_en_rueda_cola_pct": 7.0,
+  "angulo_vuelco_lateral_grados": 63.9,
+  "trocha_mm": 264
+ },
+ "piezas_revisadas": 0,
+ "cola": {
+  "Sh_dm2": 7.56,
+  "Lt_mm": 612,
+  "Vh": 0.66
+ },
+ "componentes_fuera": {}
+}

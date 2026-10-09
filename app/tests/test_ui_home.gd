@@ -5,6 +5,7 @@ extends SceneTree
 const AppRoot := preload("res://app_root.gd")
 const Home := preload("res://ui/home.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
 const PREFS := "user://test_ui_home_settings.cfg"
@@ -113,9 +114,12 @@ func _run() -> void:
 		and root.find_children("HomeScene", "", true, false).is_empty())
 	_check("the flight's camera is the one in use", root.get_viewport().get_camera_3d() == app.flight._camera)
 
-	_check("Fly did not write settings", not FileAccess.file_exists(PREFS))
+	var saved: Dictionary = Preferences.load_from(PREFS)
+	_check("Fly saves the selected default start choice", FileAccess.file_exists(PREFS) and saved.start_choice == "airborne")
 	app.queue_free()
 	await process_frame
+	for path in [PREFS, PREFS + ".bad"]:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	print("all UI home checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 

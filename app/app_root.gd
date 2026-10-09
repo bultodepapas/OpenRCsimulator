@@ -37,6 +37,7 @@ var help: CanvasLayer
 var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
+var _settings_note: String = ""
 
 
 func _ready() -> void:
@@ -77,13 +78,17 @@ func show_home() -> void:
 	if not home_scene.field_errors.is_empty():
 		return
 	home = Home.new()
+	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
+	home.set_start_choice(preferences.get("start_choice", "airborne"))
 	home.fly_requested.connect(start_flight)
 	home.aircraft_requested.connect(set_aircraft)
+	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
 	add_child(home)
+	home.set_note(_settings_note)
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
@@ -104,10 +109,18 @@ func set_aircraft(id: String) -> void:
 		return
 	preferences.aircraft = id
 	home.set_aircraft(id)
+	if id != Catalog.DEFAULT_ID:
+		preferences.start_choice = "airborne"
 	if home_scene != null:
 		home_scene.show_aircraft(id)
 	var err := Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+
+
+## Preview the launch choice; only a successful Fly remembers it.
+func set_start_choice(choice: String) -> void:
+	if home != null:
+		home.set_start_choice(choice)
 
 
 ## Creates the flight scene in this same frame (captures and traces stay frame-for-frame identical) and frees Home.
@@ -115,17 +128,39 @@ func start_flight() -> void:
 	if flight != null:
 		return
 	close_help()
+	var aircraft: String = home.aircraft_id if home != null else ""
+	var chosen_start: String = home.start_choice if home != null else "airborne"
 	for screen in [home, home_scene]:
 		if screen != null:
 			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
-			screen.queue_free()
-	var aircraft: String = home.aircraft_id if home != null else ""
-	home = null
-	home_scene = null
 	flight = load(FLIGHT_SCENE).instantiate()
 	flight.field_path = field_path
 	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
+	flight.start_choice = chosen_start
+	flight.interactive_start = has_home
 	add_child(flight)
+	if has_home and not flight.startup_error.is_empty():
+		var reason: String = flight.startup_error
+		if flight.recorder != null:
+			flight.recorder.detach()
+		remove_child(flight)
+		flight.queue_free()
+		flight = null
+		add_child(home_scene)
+		home_scene.camera.make_current()
+		add_child(home)
+		home.reject_start(tr("Could not start flight: %s") % reason)
+		return
+	for screen in [home, home_scene]:
+		if screen != null:
+			screen.queue_free()
+	home = null
+	home_scene = null
+	if has_home:
+		preferences.start_choice = chosen_start
+		var err: Error = Preferences.save_to(preferences_path, preferences)
+		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
+		flight._note = _settings_note
 	if flight.session != null:
 		flight.pause_requested.connect(open_pause)
 		_keyboard_reader = flight.session.read_raw
@@ -199,7 +234,7 @@ func restart_flight() -> void:
 	if pause_menu == null:
 		return
 	_close_pause()
-	flight.session.reset() # a fresh trimmed start; the recorder closes its file on reset
+	flight.session.reset() # the selected launch; the recorder closes its file on reset
 
 
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again

@@ -1,0 +1,887 @@
+{
+  "format": "openrc-timber-blend-static-audit-v1",
+  "source_sha256": "2c2787984b4cfce7ad5bb8eecd8eef64f2b2eb5bc4ba39210cd78a3c8e02f3f6",
+  "parser_sha256": "a82dbec57e0afea1d66c31152a2f738d48a69bdab8a4b295a209ed0da02560e6",
+  "header_parser_sha256": "c6c1a203b0a2f5670d9e1f172741e0d52cb20c9cb54fddca26cdc62f8b7687ef",
+  "block_counts": {
+    "REND": 1,
+    "TEST": 1,
+    "GLOB": 1,
+    "WM": 1,
+    "DATA": 2383,
+    "WS": 11,
+    "SN": 11,
+    "SC": 1,
+    "GR": 1,
+    "OB": 30,
+    "ME": 15,
+    "MA": 10,
+    "DNA1": 1,
+    "ENDB": 1
+  },
+  "scenes": [
+    {
+      "name": "Scene",
+      "unit_system": 1,
+      "scale_length": 1.0
+    }
+  ],
+  "objects": [
+    {
+      "name": "aileron_left",
+      "type": 1,
+      "parent": "aileron_left_hinge",
+      "data": "aileron_left_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aileron_left_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        -0.5620170831680298,
+        -0.15772585570812225,
+        0.11696512252092361
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658104419708,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aileron_right",
+      "type": 1,
+      "parent": "aileron_right_hinge",
+      "data": "aileron_right_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "aileron_right_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.5620170831680298,
+        -0.15772585570812225,
+        0.11696512252092361
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658104419708,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "airframe",
+      "type": 1,
+      "parent": "TurboTimberEvolution",
+      "data": "airframe_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "elevator",
+      "type": 1,
+      "parent": "elevator_hinge",
+      "data": "elevator_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "elevator_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        -7.450580596923828e-09,
+        -0.7040000557899475,
+        -0.03200000151991844
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_left",
+      "type": 1,
+      "parent": "flap_left_hinge",
+      "data": "flap_left_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_left_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        -0.24024724960327148,
+        -0.15772585570812225,
+        0.10572866350412369
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.03490658104419708,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_right",
+      "type": 1,
+      "parent": "flap_right_hinge",
+      "data": "flap_right_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "flap_right_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.24024727940559387,
+        -0.15772585570812225,
+        0.10572867095470428
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.03490658104419708,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "gear_cables",
+      "type": 1,
+      "parent": "TurboTimberEvolution",
+      "data": "gear_cables_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "gear_left_leg",
+      "type": 1,
+      "parent": "gear_left_suspension",
+      "data": "gear_left_leg_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "gear_left_suspension",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        -0.046000003814697266,
+        -0.03099999763071537,
+        -0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.570796251296997
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "gear_right_leg",
+      "type": 1,
+      "parent": "gear_right_suspension",
+      "data": "gear_right_leg_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "gear_right_suspension",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.046000003814697266,
+        -0.03099999763071537,
+        -0.09034660458564758
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.570796251296997
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "propeller_rotor",
+      "type": 1,
+      "parent": "propeller_spin",
+      "data": "propeller_rotor_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "propeller_spin",
+      "type": 0,
+      "parent": "thrust_frame",
+      "data": null,
+      "location": [
+        -0.009371714666485786,
+        3.4059859377322255e-09,
+        -5.286437954055145e-12
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        0.9999999403953552
+      ],
+      "rotation_euler": [
+        6.345451719624862e-09,
+        -3.75803121954732e-09,
+        -2.459158849887899e-07
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "rudder",
+      "type": 1,
+      "parent": "rudder_hinge",
+      "data": "rudder_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "rudder_hinge",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.0,
+        -0.7380000352859497,
+        0.05380000174045563
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.570796251296997,
+        -1.5707963705062866,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tailwheel",
+      "type": 1,
+      "parent": "tailwheel_axle",
+      "data": "tailwheel_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tailwheel_axle",
+      "type": 0,
+      "parent": "tailwheel_steer",
+      "data": null,
+      "location": [
+        -0.02790762484073639,
+        6.196737532157301e-18,
+        0.021000027656555176
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.570796251296997,
+        -0.0,
+        1.570796251296997
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tailwheel_fork",
+      "type": 1,
+      "parent": "tailwheel_steer",
+      "data": "tailwheel_fork_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "tailwheel_steer",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.0,
+        -0.7380000352859497,
+        -0.08409237861633301
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.570796251296997,
+        -1.5707963705062866,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "thrust_frame",
+      "type": 0,
+      "parent": "TurboTimberEvolution",
+      "data": null,
+      "location": [
+        0.0,
+        0.2515000104904175,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        1.3629776196566468e-09,
+        0.03490658104419708,
+        1.5358898639678955
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "TurboTimberEvolution",
+      "type": 0,
+      "parent": null,
+      "data": null,
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "wheel_left",
+      "type": 1,
+      "parent": "wheel_left_axle",
+      "data": "wheel_left_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "wheel_left_axle",
+      "type": 0,
+      "parent": "gear_left_suspension",
+      "data": null,
+      "location": [
+        0.02300000749528408,
+        0.08597881346940994,
+        -0.1076534166932106
+      ],
+      "scale": [
+        0.9999998807907104,
+        0.9999998807907104,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        1.5707961320877075
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "wheel_right",
+      "type": 1,
+      "parent": "wheel_right_axle",
+      "data": "wheel_right_mesh",
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "rotation_mode": 1,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    },
+    {
+      "name": "wheel_right_axle",
+      "type": 0,
+      "parent": "gear_right_suspension",
+      "data": null,
+      "location": [
+        -0.02300000749528408,
+        0.08597879856824875,
+        -0.1076534166932106
+      ],
+      "scale": [
+        0.9999998807907104,
+        0.9999998807907104,
+        1.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.5707961320877075
+      ],
+      "rotation_mode": 0,
+      "has_modifiers": false,
+      "has_constraints": false,
+      "has_drivers": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "aileron_left_mesh",
+      "vertices": 528,
+      "faces": 1062,
+      "corners": 3186
+    },
+    {
+      "name": "aileron_right_mesh",
+      "vertices": 528,
+      "faces": 1062,
+      "corners": 3186
+    },
+    {
+      "name": "airframe_mesh",
+      "vertices": 18464,
+      "faces": 36691,
+      "corners": 110073
+    },
+    {
+      "name": "elevator_mesh",
+      "vertices": 1038,
+      "faces": 2042,
+      "corners": 6126
+    },
+    {
+      "name": "flap_left_mesh",
+      "vertices": 522,
+      "faces": 1050,
+      "corners": 3150
+    },
+    {
+      "name": "flap_right_mesh",
+      "vertices": 522,
+      "faces": 1050,
+      "corners": 3150
+    },
+    {
+      "name": "gear_cables_mesh",
+      "vertices": 64,
+      "faces": 112,
+      "corners": 336
+    },
+    {
+      "name": "gear_left_leg_mesh",
+      "vertices": 942,
+      "faces": 1868,
+      "corners": 5604
+    },
+    {
+      "name": "gear_right_leg_mesh",
+      "vertices": 941,
+      "faces": 1866,
+      "corners": 5598
+    },
+    {
+      "name": "propeller_rotor_mesh",
+      "vertices": 3006,
+      "faces": 6034,
+      "corners": 18102
+    },
+    {
+      "name": "rudder_mesh",
+      "vertices": 1289,
+      "faces": 2546,
+      "corners": 7638
+    },
+    {
+      "name": "tailwheel_fork_mesh",
+      "vertices": 268,
+      "faces": 532,
+      "corners": 1596
+    },
+    {
+      "name": "tailwheel_mesh",
+      "vertices": 756,
+      "faces": 1504,
+      "corners": 4512
+    },
+    {
+      "name": "wheel_left_mesh",
+      "vertices": 1682,
+      "faces": 3436,
+      "corners": 10308
+    },
+    {
+      "name": "wheel_right_mesh",
+      "vertices": 1682,
+      "faces": 3436,
+      "corners": 10308
+    }
+  ],
+  "materials": [
+    "black",
+    "dark_grey",
+    "foam",
+    "glass",
+    "light_green",
+    "light_grey",
+    "light_red",
+    "metal",
+    "red",
+    "white"
+  ],
+  "images": [],
+  "actions": []
+}

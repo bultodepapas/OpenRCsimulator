@@ -1,0 +1,43 @@
+{
+ "rueda_gira_libre_mm": {
+  "neumatico_vs_pata_der_sin_carga": 11.39,
+  "buje_vs_pata_der_sin_carga": 3.06,
+  "neumatico_vs_soporte_der_sin_carga": 80.51,
+  "neumatico_vs_fuselaje_der_sin_carga": 102.06,
+  "neumatico_vs_resortes_der_sin_carga": 34.32,
+  "neumatico_vs_pata_der_comprimido": 11.39,
+  "buje_vs_pata_der_comprimido": 3.06,
+  "neumatico_vs_soporte_der_comprimido": 80.06,
+  "neumatico_vs_fuselaje_der_comprimido": 98.97,
+  "neumatico_vs_resortes_der_comprimido": 51.02,
+  "neumatico_vs_pata_izq_sin_carga": 11.39,
+  "buje_vs_pata_izq_sin_carga": 3.06,
+  "neumatico_vs_soporte_izq_sin_carga": 80.51,
+  "neumatico_vs_fuselaje_izq_sin_carga": 102.07,
+  "neumatico_vs_resortes_izq_sin_carga": 34.01,
+  "neumatico_vs_pata_izq_comprimido": 11.39,
+  "buje_vs_pata_izq_comprimido": 3.06,
+  "neumatico_vs_soporte_izq_comprimido": 80.06,
+  "neumatico_vs_fuselaje_izq_comprimido": 98.97,
+  "neumatico_vs_resortes_izq_comprimido": 50.75
+ },
+ "espaciador_vs_pata_mm": 0.1,
+ "pila_del_eje_huecos_mm": {
+  "espaciador-buje": 0.1,
+  "buje-arandela": 0.0,
+  "arandela-tuerca": 0.0
+ },
+ "cables": {
+  "entre_si_mm": 9.84,
+  "vs_fuselaje_mm": 50.73
+ },
+ "resorte": {
+  "estiramiento_mm": 8.0,
+  "pct_del_cuerpo": 18.1,
+  "largo_cuerpo_mm": 44.0
+ },
+ "estabilidad": {
+  "trocha_mm": 264,
+  "angulo_ruedas_cg_grados": 12.1
+ }
+}

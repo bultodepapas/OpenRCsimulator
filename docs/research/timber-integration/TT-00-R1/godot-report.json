@@ -1,0 +1,824 @@
+{
+	"all_checks_pass": false,
+	"articulated_pose": {
+		"all_pivots_applied": false,
+		"angles_and_rotations": {
+			"aileron_left_hinge": {
+				"angle_deg": 18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 22.0,
+					"min": -22.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					-0.0174524039030075,
+					0.999847710132599
+				],
+				"result_quaternion_xyzw": [
+					0.156410664319992,
+					-0.00273015815764666,
+					-0.017237538471818,
+					0.987537920475006
+				]
+			},
+			"aileron_right_hinge": {
+				"angle_deg": -18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 22.0,
+					"min": -22.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0174524039030075,
+					0.999847710132599
+				],
+				"result_quaternion_xyzw": [
+					-0.156410664319992,
+					-0.00273015815764666,
+					0.017237538471818,
+					0.987537920475006
+				]
+			},
+			"elevator_hinge": {
+				"angle_deg": 12.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 22.0,
+					"min": -22.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"result_quaternion_xyzw": [
+					0.104528471827507,
+					0.0,
+					0.0,
+					0.994521915912628
+				]
+			},
+			"flap_left_hinge": {
+				"angle_deg": 18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 40.0,
+					"min": 0.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					-0.0174524039030075,
+					0.999847710132599
+				],
+				"result_quaternion_xyzw": [
+					0.156410664319992,
+					-0.00273015815764666,
+					-0.017237538471818,
+					0.987537920475006
+				]
+			},
+			"flap_right_hinge": {
+				"angle_deg": 18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 40.0,
+					"min": 0.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0174524039030075,
+					0.999847710132599
+				],
+				"result_quaternion_xyzw": [
+					0.156410664319992,
+					0.00273015815764666,
+					0.017237538471818,
+					0.987537920475006
+				]
+			},
+			"gear_left_suspension": {
+				"angle_deg": 8.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 12.0,
+					"min": 0.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.707106828689575,
+					0.0,
+					0.707106709480286
+				],
+				"result_quaternion_xyzw": [
+					0.04932526871562,
+					0.705384373664856,
+					-0.0493252798914909,
+					0.705384254455566
+				]
+			},
+			"gear_right_suspension": {
+				"angle_deg": 8.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 12.0,
+					"min": 0.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler); cross-wire springs limit it",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					-0.707106828689575,
+					0.0,
+					0.707106709480286
+				],
+				"result_quaternion_xyzw": [
+					0.04932526871562,
+					-0.705384373664856,
+					0.0493252798914909,
+					0.705384254455566
+				]
+			},
+			"propeller_spin": {
+				"angle_deg": 65.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"continuous": true,
+					"source": "continuous"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				],
+				"result_quaternion_xyzw": [
+					0.537299633026123,
+					0.0,
+					0.0,
+					0.843391418457031
+				]
+			},
+			"rudder_hinge": {
+				"angle_deg": 18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 30.0,
+					"min": -30.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.5,
+					0.5,
+					0.5,
+					0.5
+				],
+				"result_quaternion_xyzw": [
+					0.572061419487,
+					0.572061419487,
+					0.41562694311142,
+					0.41562694311142
+				]
+			},
+			"tailwheel_axle": {
+				"angle_deg": 35.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"continuous": true,
+					"source": "continuous"
+				},
+				"rest_quaternion_xyzw": [
+					0.500000059604645,
+					0.500000059604645,
+					-0.499999940395355,
+					0.5
+				],
+				"result_quaternion_xyzw": [
+					0.627211451530457,
+					0.326505661010742,
+					-0.627211332321167,
+					0.32650551199913
+				]
+			},
+			"tailwheel_steer": {
+				"angle_deg": 18.0,
+				"composition_matches": true,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"evidence": "estimated",
+					"max": 30.0,
+					"min": -30.0,
+					"source": "authored approximation (no manufacturer manual available to the modeler)",
+					"unit": "deg"
+				},
+				"rest_quaternion_xyzw": [
+					0.5,
+					0.5,
+					0.5,
+					0.5
+				],
+				"result_quaternion_xyzw": [
+					0.572061419487,
+					0.572061419487,
+					0.41562694311142,
+					0.41562694311142
+				]
+			},
+			"wheel_left_axle": {
+				"angle_deg": 35.0,
+				"composition_matches": false,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"continuous": true,
+					"source": "continuous"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.707106649875641,
+					0.0,
+					0.70710688829422
+				],
+				"result_quaternion_xyzw": [
+					0.212631165981293,
+					0.674379587173462,
+					-0.212631076574326,
+					0.674379825592041
+				]
+			},
+			"wheel_right_axle": {
+				"angle_deg": -35.0,
+				"composition_matches": false,
+				"formula": "rest_quaternion * Quaternion(local +X, angle_rad)",
+				"found": true,
+				"range_deg": {
+					"continuous": true,
+					"source": "continuous"
+				},
+				"rest_quaternion_xyzw": [
+					0.0,
+					-0.707106649875641,
+					0.0,
+					0.70710688829422
+				],
+				"result_quaternion_xyzw": [
+					-0.212631165981293,
+					-0.674379587173462,
+					-0.212631076574326,
+					0.674379825592041
+				]
+			}
+		}
+	},
+	"checks": {
+		"animation_player_available": true,
+		"articulated_pose_applied": false,
+		"articulated_screenshot_saved": true,
+		"articulation_hierarchy_matches_metadata": true,
+		"control_demo_available": true,
+		"control_demo_moves_controls": true,
+		"demo_glb_loaded": true,
+		"instances_have_independent_pivots": true,
+		"mesh_nodes_15": true,
+		"metadata_axis_bounds_match": false,
+		"moving_meshes_have_identity_local_transform": true,
+		"neutral_import_loaded": true,
+		"neutral_screenshot_saved": true,
+		"rest_times_local_x_rotation_composes": true,
+		"root_scale_identity": true,
+		"rotating_one_instance_leaves_other_unchanged": true,
+		"surfaces_36": true
+	},
+	"demo_animation": {
+		"animation_names": [
+			"control_demo"
+		],
+		"animation_player_found": true,
+		"authored_articulations": 13,
+		"control_demo_available": true,
+		"control_demo_length_s": 18.0416660308838,
+		"expected_primary_controls": [
+			"aileron_left_hinge",
+			"aileron_right_hinge",
+			"elevator_hinge",
+			"rudder_hinge"
+		],
+		"loaded": true,
+		"primary_control_motion": true,
+		"sample_count": 17,
+		"sampled_primary_control_motion": {
+			"aileron_left_hinge": {
+				"max_delta_deg": 5.5752746718249,
+				"max_delta_rad": 0.0973068997263908
+			},
+			"aileron_right_hinge": {
+				"max_delta_deg": 18.9415010968469,
+				"max_delta_rad": 0.330591559410095
+			},
+			"elevator_hinge": {
+				"max_delta_deg": 1.36372293348244,
+				"max_delta_rad": 0.0238014552742243
+			},
+			"rudder_hinge": {
+				"max_delta_deg": 19.3906645819507,
+				"max_delta_rad": 0.338430941104889
+			}
+		},
+		"source": "res://assets/aircraft_demo.glb"
+	},
+	"failures": [],
+	"independent_instances": {
+		"applied_quaternion_xyzw": [
+			0.147786900401115,
+			-0.00257962942123413,
+			-0.0172607023268938,
+			0.988865256309509
+		],
+		"independent_pivots": true,
+		"other_instance_unchanged": true,
+		"rest_quaternion_xyzw": [
+			0.0,
+			0.0,
+			-0.0174524039030075,
+			0.999847710132599
+		],
+		"rest_times_local_x_composes": true,
+		"second_instance_after_xyzw": [
+			0.0,
+			0.0,
+			-0.0174524039030075,
+			0.999847710132599
+		],
+		"second_instance_before_xyzw": [
+			0.0,
+			0.0,
+			-0.0174524039030075,
+			0.999847710132599
+		],
+		"test_angle_deg": 17.0
+	},
+	"neutral_import": {
+		"articulation_hierarchy_match": true,
+		"articulations": {
+			"aileron_left_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "aileron_left",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					-0.0174524039030075,
+					0.999847710132599
+				]
+			},
+			"aileron_right_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "aileron_right",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0174524039030075,
+					0.999847710132599
+				]
+			},
+			"elevator_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "elevator",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				]
+			},
+			"flap_left_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "flap_left",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					-0.0174524039030075,
+					0.999847710132599
+				]
+			},
+			"flap_right_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "flap_right",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0174524039030075,
+					0.999847710132599
+				]
+			},
+			"gear_left_suspension": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "gear_left_leg",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.707106828689575,
+					0.0,
+					0.707106709480286
+				]
+			},
+			"gear_right_suspension": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "gear_right_leg",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					-0.707106828689575,
+					0.0,
+					0.707106709480286
+				]
+			},
+			"propeller_spin": {
+				"expected_parent": "thrust_frame",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "propeller_rotor",
+				"parent": "thrust_frame",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.0,
+					0.0,
+					1.0
+				]
+			},
+			"rudder_hinge": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "rudder",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.5,
+					0.5,
+					0.5,
+					0.5
+				]
+			},
+			"tailwheel_axle": {
+				"expected_parent": "tailwheel_steer",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "tailwheel",
+				"parent": "tailwheel_steer",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.500000059604645,
+					0.500000059604645,
+					-0.499999940395355,
+					0.5
+				]
+			},
+			"tailwheel_steer": {
+				"expected_parent": "TurboTimberEvolution",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "tailwheel_fork",
+				"parent": "TurboTimberEvolution",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.5,
+					0.5,
+					0.5,
+					0.5
+				]
+			},
+			"wheel_left_axle": {
+				"expected_parent": "gear_left_suspension",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "wheel_left",
+				"parent": "gear_left_suspension",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					0.707106649875641,
+					0.0,
+					0.70710688829422
+				]
+			},
+			"wheel_right_axle": {
+				"expected_parent": "gear_right_suspension",
+				"mesh_direct_child": true,
+				"mesh_local_identity": true,
+				"mesh_node": "wheel_right",
+				"parent": "gear_right_suspension",
+				"parent_match": true,
+				"rest_quaternion_xyzw": [
+					0.0,
+					-0.707106649875641,
+					0.0,
+					0.70710688829422
+				]
+			}
+		},
+		"axes": {
+			"axis_order_matches_metadata_landmarks": true,
+			"nose": "-Z",
+			"right": "+X",
+			"up": "+Y"
+		},
+		"bounds_m": {
+			"max": [
+				0.773956000804901,
+				0.178000003099442,
+				0.833099186420441
+			],
+			"min": [
+				-0.773956000804901,
+				-0.256000012159348,
+				-0.291325956583023
+			],
+			"valid": true
+		},
+		"bounds_match_metadata": false,
+		"bounds_tolerance_m": 0.001,
+		"expected_bounds_m": {
+			"max": [
+				0.773956000804901,
+				0.178000003099442,
+				0.833099186420441
+			],
+			"min": [
+				-0.773956000804901,
+				-0.256000012159348,
+				-0.283461064100266
+			]
+		},
+		"hierarchy": [
+			{
+				"class": "Node3D",
+				"name": "VisibleAircraft",
+				"path": "VisibleAircraft"
+			},
+			{
+				"class": "Node3D",
+				"name": "TurboTimberEvolution",
+				"path": "VisibleAircraft/TurboTimberEvolution"
+			},
+			{
+				"class": "Node3D",
+				"name": "aileron_left_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/aileron_left_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "aileron_left",
+				"path": "VisibleAircraft/TurboTimberEvolution/aileron_left_hinge/aileron_left"
+			},
+			{
+				"class": "Node3D",
+				"name": "aileron_right_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/aileron_right_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "aileron_right",
+				"path": "VisibleAircraft/TurboTimberEvolution/aileron_right_hinge/aileron_right"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "airframe",
+				"path": "VisibleAircraft/TurboTimberEvolution/airframe"
+			},
+			{
+				"class": "Node3D",
+				"name": "elevator_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/elevator_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "elevator",
+				"path": "VisibleAircraft/TurboTimberEvolution/elevator_hinge/elevator"
+			},
+			{
+				"class": "Node3D",
+				"name": "flap_left_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/flap_left_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "flap_left",
+				"path": "VisibleAircraft/TurboTimberEvolution/flap_left_hinge/flap_left"
+			},
+			{
+				"class": "Node3D",
+				"name": "flap_right_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/flap_right_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "flap_right",
+				"path": "VisibleAircraft/TurboTimberEvolution/flap_right_hinge/flap_right"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "gear_cables",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_cables"
+			},
+			{
+				"class": "Node3D",
+				"name": "gear_left_suspension",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_left_suspension"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "gear_left_leg",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_left_suspension/gear_left_leg"
+			},
+			{
+				"class": "Node3D",
+				"name": "wheel_left_axle",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_left_suspension/wheel_left_axle"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "wheel_left",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_left_suspension/wheel_left_axle/wheel_left"
+			},
+			{
+				"class": "Node3D",
+				"name": "gear_right_suspension",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_right_suspension"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "gear_right_leg",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_right_suspension/gear_right_leg"
+			},
+			{
+				"class": "Node3D",
+				"name": "wheel_right_axle",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_right_suspension/wheel_right_axle"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "wheel_right",
+				"path": "VisibleAircraft/TurboTimberEvolution/gear_right_suspension/wheel_right_axle/wheel_right"
+			},
+			{
+				"class": "Node3D",
+				"name": "rudder_hinge",
+				"path": "VisibleAircraft/TurboTimberEvolution/rudder_hinge"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "rudder",
+				"path": "VisibleAircraft/TurboTimberEvolution/rudder_hinge/rudder"
+			},
+			{
+				"class": "Node3D",
+				"name": "tailwheel_steer",
+				"path": "VisibleAircraft/TurboTimberEvolution/tailwheel_steer"
+			},
+			{
+				"class": "Node3D",
+				"name": "tailwheel_axle",
+				"path": "VisibleAircraft/TurboTimberEvolution/tailwheel_steer/tailwheel_axle"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "tailwheel",
+				"path": "VisibleAircraft/TurboTimberEvolution/tailwheel_steer/tailwheel_axle/tailwheel"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "tailwheel_fork",
+				"path": "VisibleAircraft/TurboTimberEvolution/tailwheel_steer/tailwheel_fork"
+			},
+			{
+				"class": "Node3D",
+				"name": "thrust_frame",
+				"path": "VisibleAircraft/TurboTimberEvolution/thrust_frame"
+			},
+			{
+				"class": "Node3D",
+				"name": "propeller_spin",
+				"path": "VisibleAircraft/TurboTimberEvolution/thrust_frame/propeller_spin"
+			},
+			{
+				"class": "MeshInstance3D",
+				"name": "propeller_rotor",
+				"path": "VisibleAircraft/TurboTimberEvolution/thrust_frame/propeller_spin/propeller_rotor"
+			}
+		],
+		"loaded": true,
+		"mesh_count": 15,
+		"moving_meshes_identity": true,
+		"root_name": "VisibleAircraft",
+		"root_origin_m": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"root_rotation_xyzw": [
+			0.0,
+			0.0,
+			0.0,
+			1.0
+		],
+		"root_scale": [
+			1.0,
+			1.0,
+			1.0
+		],
+		"root_scale_identity": true,
+		"source": "res://assets/aircraft.glb",
+		"surface_count": 36
+	},
+	"probe": {
+		"godot_version": "4.7.2-stable (official)",
+		"renderer_driver": "opengl3",
+		"renderer_method": "gl_compatibility",
+		"step": "TT-00-R1"
+	},
+	"screenshots": {
+		"articulated": {
+			"path": "res://probe-output/articulated.png",
+			"save_error": 0
+		},
+		"neutral": {
+			"path": "res://probe-output/neutral.png",
+			"save_error": 0
+		}
+	}
+}

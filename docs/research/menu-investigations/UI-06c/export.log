@@ -1,0 +1,47 @@
+== build identity: v0.1.0-rc6-3-g1504ed8-dirty (commit 1504ed82d1e17f2f9075ed23fe0a5b2c3a1c436d, 2026-10-08T13:00:05+00:00), numeric 0.1.0
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+exported binary reports build v0.1.0-rc6-3-g1504ed8-dirty
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.0
+version fields: .exe 0.1.0.0 (FileVersion, ProductVersion), Info.plist 0.1.0 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a placement checksum and 4794 opaque clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+== packages
+c409b5a4b19d309f3e3dcacc2851929114a5d316174651f781642f9f42a08742  openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-linux-x86_64.zip
+de0edd7f7ce6551bc8a4c6b88ec3bc39ebf80099d88bc7a8d1972f5614cbb294  openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-macos-universal.zip
+2ce998e470abe23fa611880ee317a906295ab8a8c744988f95b1cdc0604cb619  openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-windows-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 29674962 Oct  8 13:20 openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-linux-x86_64.zip
+-rw-rw-r-- 1 bulto bulto 61823519 Oct  8 13:20 openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-macos-universal.zip
+-rw-rw-r-- 1 bulto bulto 39200438 Oct  8 13:20 openrc-simulator-v0.1.0-rc6-3-g1504ed8-dirty-windows-x86_64.zip

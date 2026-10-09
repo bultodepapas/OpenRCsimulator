@@ -1,0 +1,40 @@
+{
+  "tracked_and_untracked_app_files": 617,
+  "sorted_path_and_sha256_digest": "99fa4385e68d87537203ad3233b91834f659c40a1758df43fa7deefb2270881e",
+  "shared_and_isolated_app_match": true,
+  "static_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "missing_driver_path_refusals": 3,
+  "suite": {
+    "exit_code": 0,
+    "sections": 153,
+    "gdscript_programs": 125,
+    "engine_errors": 0,
+    "log_sha256": "2473e57bd805defb0583b6077e9b6e93eddf692dc19c992299d9c1ba2338b789",
+    "warnings": [
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).",
+      "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+    ],
+    "frame_rate_hash_lines": [
+      "ticks=480 frames=61 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "ticks=480 frames=121 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "ticks=480 frames=289 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+      "30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60",
+      "60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120",
+      "144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288",
+      "30 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=60",
+      "60 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=120",
+      "144 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=288"
+    ]
+  }
+}

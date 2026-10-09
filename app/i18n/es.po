@@ -226,3 +226,15 @@ msgstr "No se pudo cargar el campo."
 
 msgid "Flight is unavailable. Restore the field data and restart the simulator."
 msgstr "El vuelo no está disponible. Restaura los datos del campo y reinicia el simulador."
+
+msgid "Start: in the air"
+msgstr "Inicio: en el aire"
+
+msgid "Start: runway (experimental)"
+msgstr "Inicio: pista (experimental)"
+
+msgid "Starts at idle on the runway. Experimental ground handling."
+msgstr "Motor al ralentí en pista. Rodaje experimental."
+
+msgid "Could not start flight: %s"
+msgstr "No se pudo iniciar el vuelo: %s"

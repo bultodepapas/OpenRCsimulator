@@ -16,6 +16,7 @@ Run commands from the repository root unless a command says otherwise. `$(app/ge
 | Capture app visuals | `app/capture.sh` | Xvfb render set, image checks, traces, scenario comparisons and a complete run manifest under ignored `app/captures/`. |
 | Preview optional scenery | `app/run-landscape.sh` | Opens the app with `OPENRC_SCENERY=on`; scenery remains opt-in in the regular app. |
 | Build release packages | `app/export.sh` | Windows, Linux and macOS builds, smoke checks, archives and SHA256SUMS in `dist/`; export templates are downloaded and verified as needed. |
+| Check the exported runway route | `python3 docs/research/menu-investigations/UI-06c/run_export_smoke.py --binary dist/linux/openrc-simulator.x86_64 --out /tmp/runway-export-review` | Linux/Xvfb native keyboard smoke, Recorder traces, export identity, CLI parity and isolated preferences. Requires X11/XTest and the pinned visual Python environment; [contract and pilot card](research/menu-investigations/UI-06c/README.md). This is software verification, not a pilot trial. |
 | Run the app | `$(app/get-godot.sh) --path app` | Opens the Godot app. See [AGENTS.md](../AGENTS.md) for controls and aircraft IDs. |
 
 `app/capture.sh` composes focused checks from `tools/` and `app/tests/`. Use the focused command below when iterating on one visual feature; the complete capture run is broader and takes longer. `app/test.sh` is the normal software verification suite, not evidence that a model matches a real aircraft.

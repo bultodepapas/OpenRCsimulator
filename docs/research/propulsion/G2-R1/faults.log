@@ -1,0 +1,7 @@
+positive control: expected exit 0; verified
+missing bracket and residual guards detected: expected exit 1; verified
+nonfinite midpoint refused: expected exit 0; verified
+missing midpoint guard detected: expected exit 1; verified
+false inner root refused by final physical residual: expected exit 0; verified
+missing final residual guard detected: expected exit 1; verified
+G2-R1: three negative controls and both internal-fault refusals passed.
