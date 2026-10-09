@@ -12,6 +12,8 @@ Aerodynamic work depends on the branch. In attached forward flight, blend select
 
 **Selected next change:** test hoisting loop-invariant dictionary reads and induced-map row offsets within `Aero.wing_lift_coefficient` and the local wing-strip loop. Keep each floating-point expression and summation order, the existing number of strips, and all guards. This is a bounded GDScript experiment without cross-stage caching or a new model lifecycle. Require exact loads, fleet trajectories, existing aero/downwash tests and paired uninstrumented whole-tick measurements before retaining it. This report establishes where to test; it does not claim that lookup work explains the entire measured region or predict a speedup.
 
+Follow-up, 2026-10-09: the [wing-loop experiment](../wing-loops/README.md) completes that comparison. The combined candidate remains outside production because exact outputs and local helper gains did not establish reliable whole-flight savings.
+
 ## Timing evidence
 
 Godot 4.7.2, Linux i5-10500 shared host, source `77312ec82810d60a8c971323bcf09945b1608ed9`. The prepared binary is unchanged from the previous experiment. Six regimes at swirl 0 and 0.4 use one warmup plus five measured 24-tick batches. Setup, preparation, checkpoint restoration and trajectory-byte capture are outside timing. Timer-enabled and disabled batches alternate order.

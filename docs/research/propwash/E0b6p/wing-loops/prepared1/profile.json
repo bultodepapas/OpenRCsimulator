@@ -1,0 +1,2514 @@
+{
+	"backend_routes": {},
+	"counts": {
+		"direct_calls_compared": 1216,
+		"finite_checks": 60918,
+		"flight_boundaries_compared": 7230,
+		"shape_checks": 60918
+	},
+	"direct_rows": [
+		{
+			"baseline_samples_us": [
+				42.578125,
+				42.328125,
+				42.40625,
+				43.640625,
+				43.25,
+				42.4375,
+				43.875,
+				50.0,
+				46.796875,
+				46.8125,
+				46.484375,
+				51.890625,
+				67.15625,
+				50.0625,
+				49.015625
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				42.03125,
+				42.015625,
+				42.484375,
+				42.71875,
+				42.359375,
+				42.34375,
+				41.96875,
+				43.65625,
+				48.046875,
+				52.03125,
+				54.53125,
+				56.390625,
+				53.0625,
+				48.65625,
+				46.53125
+			],
+			"case": "fleet:jensen-das-ugly-stik-60",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 46.484375,
+			"median_candidate_us": 43.65625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				45.859375,
+				36.890625,
+				33.75,
+				35.171875,
+				31.84375,
+				30.578125,
+				31.9375,
+				30.078125,
+				31.390625,
+				30.234375,
+				29.90625,
+				30.0,
+				30.078125,
+				30.140625,
+				29.984375
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				40.65625,
+				33.78125,
+				32.96875,
+				33.046875,
+				33.609375,
+				31.296875,
+				31.21875,
+				31.125,
+				34.203125,
+				34.96875,
+				30.6875,
+				30.03125,
+				30.015625,
+				30.5625,
+				30.109375
+			],
+			"case": "fleet:gp-extra-300s-60",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 30.578125,
+			"median_candidate_us": 31.296875,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				95.0625,
+				101.28125,
+				100.484375,
+				91.8125,
+				111.96875,
+				90.84375,
+				107.515625,
+				81.453125,
+				80.40625,
+				100.328125,
+				87.859375,
+				87.71875,
+				81.265625,
+				81.828125,
+				83.9375
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				96.5625,
+				114.40625,
+				92.9375,
+				87.3125,
+				101.71875,
+				90.0625,
+				90.09375,
+				87.078125,
+				86.515625,
+				88.234375,
+				83.109375,
+				81.828125,
+				81.59375,
+				80.296875,
+				86.984375
+			],
+			"case": "fleet:p51d-mustang-120",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 90.84375,
+			"median_candidate_us": 87.3125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				43.546875,
+				54.71875,
+				48.6875,
+				41.4375,
+				48.46875,
+				44.703125,
+				43.703125,
+				42.671875,
+				40.96875,
+				41.59375,
+				52.546875,
+				45.8125,
+				45.453125,
+				43.90625,
+				46.796875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				41.015625,
+				51.484375,
+				45.703125,
+				43.109375,
+				48.3125,
+				41.09375,
+				41.078125,
+				45.78125,
+				45.265625,
+				44.640625,
+				47.25,
+				44.421875,
+				42.78125,
+				46.3125,
+				46.828125
+			],
+			"case": "fleet:sebart-avanti-s-a200-p100rx",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 44.703125,
+			"median_candidate_us": 45.265625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				60.875,
+				60.5,
+				60.640625,
+				61.265625,
+				62.046875,
+				62.125,
+				62.03125,
+				73.328125,
+				67.96875,
+				85.65625,
+				90.921875,
+				67.421875,
+				72.96875,
+				84.546875,
+				68.265625
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				61.21875,
+				62.171875,
+				62.375,
+				60.40625,
+				60.453125,
+				61.375,
+				60.4375,
+				62.65625,
+				70.4375,
+				69.046875,
+				75.65625,
+				69.84375,
+				71.5,
+				72.765625,
+				65.953125
+			],
+			"case": "smooth:forward:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 67.421875,
+			"median_candidate_us": 62.65625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				82.359375,
+				87.578125,
+				84.453125,
+				85.3125,
+				84.75,
+				82.203125,
+				85.28125,
+				84.484375,
+				94.15625,
+				107.4375,
+				100.453125,
+				92.21875,
+				99.0,
+				102.296875,
+				89.21875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				93.6875,
+				93.921875,
+				82.40625,
+				83.921875,
+				81.796875,
+				82.203125,
+				87.0625,
+				81.875,
+				91.921875,
+				91.828125,
+				105.265625,
+				88.828125,
+				88.21875,
+				85.78125,
+				86.609375
+			],
+			"case": "smooth:forward:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 87.578125,
+			"median_candidate_us": 87.0625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				72.421875,
+				64.78125,
+				61.75,
+				58.90625,
+				58.375,
+				58.6875,
+				58.484375,
+				59.0625,
+				57.3125,
+				59.953125,
+				57.921875,
+				57.203125,
+				58.015625,
+				63.828125,
+				70.734375
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				62.53125,
+				68.9375,
+				62.5,
+				65.96875,
+				58.09375,
+				60.359375,
+				63.0625,
+				58.53125,
+				58.78125,
+				58.53125,
+				58.71875,
+				59.34375,
+				61.3125,
+				66.625,
+				72.59375
+			],
+			"case": "smooth:stall:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 58.90625,
+			"median_candidate_us": 61.3125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				96.53125,
+				80.5625,
+				77.96875,
+				77.9375,
+				78.5625,
+				88.84375,
+				86.890625,
+				81.640625,
+				87.53125,
+				81.796875,
+				82.203125,
+				82.421875,
+				82.625,
+				91.484375,
+				96.546875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				79.6875,
+				86.421875,
+				78.265625,
+				78.546875,
+				87.65625,
+				85.53125,
+				90.59375,
+				82.84375,
+				83.578125,
+				84.5625,
+				83.59375,
+				83.078125,
+				83.65625,
+				89.953125,
+				95.5
+			],
+			"case": "smooth:stall:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 82.421875,
+			"median_candidate_us": 83.65625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				64.875,
+				58.6875,
+				58.5,
+				66.03125,
+				59.234375,
+				58.765625,
+				61.828125,
+				63.046875,
+				65.109375,
+				68.859375,
+				60.921875,
+				105.03125,
+				72.25,
+				66.015625,
+				82.171875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				79.34375,
+				61.28125,
+				59.1875,
+				60.390625,
+				59.46875,
+				59.59375,
+				60.25,
+				59.078125,
+				64.21875,
+				67.453125,
+				58.984375,
+				66.109375,
+				72.109375,
+				71.4375,
+				65.59375
+			],
+			"case": "smooth:static:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 64.875,
+			"median_candidate_us": 61.28125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				104.171875,
+				86.546875,
+				85.265625,
+				81.625,
+				88.609375,
+				84.0625,
+				85.96875,
+				79.71875,
+				79.515625,
+				79.453125,
+				79.34375,
+				83.4375,
+				81.703125,
+				82.28125,
+				97.34375
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				98.015625,
+				88.734375,
+				83.578125,
+				81.25,
+				81.53125,
+				81.0625,
+				104.671875,
+				78.765625,
+				76.828125,
+				77.453125,
+				77.96875,
+				77.71875,
+				80.171875,
+				85.484375,
+				86.90625
+			],
+			"case": "smooth:static:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 83.4375,
+			"median_candidate_us": 81.25,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				79.6875,
+				72.453125,
+				66.015625,
+				69.46875,
+				62.5625,
+				60.515625,
+				59.90625,
+				60.59375,
+				58.484375,
+				59.015625,
+				59.984375,
+				62.6875,
+				62.828125,
+				62.140625,
+				59.15625
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				85.765625,
+				78.515625,
+				67.21875,
+				64.984375,
+				63.328125,
+				73.03125,
+				66.0625,
+				60.40625,
+				58.234375,
+				62.984375,
+				59.90625,
+				66.09375,
+				61.046875,
+				63.65625,
+				59.46875
+			],
+			"case": "smooth:spin:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 62.140625,
+			"median_candidate_us": 63.65625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				80.765625,
+				77.96875,
+				78.5625,
+				95.90625,
+				102.078125,
+				84.109375,
+				84.859375,
+				97.5,
+				86.734375,
+				84.90625,
+				81.125,
+				78.9375,
+				83.734375,
+				78.140625,
+				78.015625
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				79.578125,
+				78.796875,
+				86.203125,
+				88.34375,
+				101.609375,
+				87.921875,
+				84.125,
+				80.375,
+				93.34375,
+				82.25,
+				79.359375,
+				79.90625,
+				81.125,
+				80.671875,
+				78.296875
+			],
+			"case": "smooth:spin:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 83.734375,
+			"median_candidate_us": 81.125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				62.625,
+				61.25,
+				60.6875,
+				57.890625,
+				60.578125,
+				60.640625,
+				67.984375,
+				61.65625,
+				71.25,
+				60.109375,
+				58.234375,
+				61.21875,
+				73.234375,
+				62.796875,
+				57.953125
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				59.78125,
+				60.453125,
+				61.375,
+				60.0,
+				66.890625,
+				61.71875,
+				68.171875,
+				73.578125,
+				66.765625,
+				67.546875,
+				62.09375,
+				65.625,
+				66.453125,
+				62.0,
+				59.6875
+			],
+			"case": "smooth:reverse_fade:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 61.21875,
+			"median_candidate_us": 62.09375,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				81.15625,
+				77.234375,
+				76.21875,
+				79.109375,
+				74.8125,
+				75.71875,
+				76.015625,
+				74.859375,
+				75.21875,
+				83.625,
+				96.40625,
+				89.125,
+				85.84375,
+				86.484375,
+				87.46875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				84.84375,
+				81.28125,
+				76.46875,
+				75.015625,
+				75.109375,
+				75.078125,
+				80.796875,
+				76.90625,
+				75.640625,
+				85.921875,
+				92.140625,
+				92.140625,
+				85.09375,
+				88.9375,
+				86.171875
+			],
+			"case": "smooth:reverse_fade:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 79.109375,
+			"median_candidate_us": 81.28125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				46.859375,
+				47.28125,
+				48.96875,
+				50.328125,
+				51.578125,
+				47.484375,
+				51.25,
+				47.015625,
+				46.875,
+				49.078125,
+				48.546875,
+				46.453125,
+				46.53125,
+				46.90625,
+				46.21875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				47.453125,
+				48.8125,
+				47.984375,
+				52.046875,
+				49.703125,
+				49.453125,
+				52.125,
+				48.96875,
+				46.5625,
+				47.453125,
+				49.625,
+				47.46875,
+				48.0625,
+				47.1875,
+				49.25
+			],
+			"case": "smooth:reverse_off:swirl=0.0",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 47.28125,
+			"median_candidate_us": 48.8125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				54.875,
+				55.546875,
+				55.765625,
+				55.171875,
+				51.78125,
+				54.21875,
+				55.359375,
+				62.609375,
+				64.921875,
+				66.8125,
+				60.109375,
+				49.78125,
+				47.359375,
+				47.875,
+				47.25
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				54.796875,
+				59.890625,
+				65.1875,
+				64.03125,
+				50.546875,
+				52.90625,
+				57.28125,
+				59.96875,
+				63.75,
+				73.828125,
+				53.578125,
+				62.21875,
+				48.390625,
+				53.046875,
+				49.65625
+			],
+			"case": "smooth:reverse_off:swirl=0.4",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 55.171875,
+			"median_candidate_us": 57.28125,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				66.25,
+				68.859375,
+				67.234375,
+				62.734375,
+				61.4375,
+				60.421875,
+				60.484375,
+				74.203125,
+				74.234375,
+				85.578125,
+				78.828125,
+				67.671875,
+				64.03125,
+				74.84375,
+				66.765625
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				64.28125,
+				66.125,
+				62.453125,
+				59.828125,
+				60.0625,
+				59.25,
+				63.28125,
+				63.171875,
+				71.1875,
+				72.796875,
+				72.171875,
+				65.90625,
+				69.953125,
+				66.75,
+				68.0625
+			],
+			"case": "smooth:transport_on",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 67.234375,
+			"median_candidate_us": 65.90625,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				40.671875,
+				43.875,
+				40.53125,
+				40.984375,
+				41.0625,
+				41.546875,
+				45.109375,
+				59.5,
+				46.09375,
+				42.203125,
+				44.265625,
+				42.390625,
+				43.359375,
+				41.984375,
+				41.421875
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				40.015625,
+				41.59375,
+				42.578125,
+				41.96875,
+				43.671875,
+				41.71875,
+				43.0625,
+				46.0,
+				42.625,
+				42.015625,
+				41.78125,
+				44.0625,
+				43.015625,
+				42.375,
+				41.234375
+			],
+			"case": "smooth:stopped",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 42.203125,
+			"median_candidate_us": 42.375,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		},
+		{
+			"baseline_samples_us": [
+				51.03125,
+				49.078125,
+				49.5625,
+				52.28125,
+				57.390625,
+				51.6875,
+				50.875,
+				73.1875,
+				50.703125,
+				49.171875,
+				49.046875,
+				53.3125,
+				60.03125,
+				62.203125,
+				60.3125
+			],
+			"calls_per_sample": 64,
+			"candidate_samples_us": [
+				49.25,
+				49.359375,
+				54.609375,
+				52.453125,
+				51.78125,
+				52.0,
+				50.609375,
+				51.34375,
+				52.359375,
+				50.609375,
+				51.796875,
+				57.34375,
+				57.125,
+				59.921875,
+				59.78125
+			],
+			"case": "smooth:stopped_residual",
+			"exact": true,
+			"exact_calls": 64,
+			"median_baseline_us": 51.6875,
+			"median_candidate_us": 52.0,
+			"timing_unit": "mean microseconds per Dynamics.loads call"
+		}
+	],
+	"failures": 0,
+	"flight_rows": [
+		{
+			"baseline_samples_us": [
+				335.5416666666667,
+				304.9166666666667,
+				327.9166666666667,
+				320.4583333333333,
+				308.125,
+				337.875,
+				494.3333333333333,
+				370.4583333333333,
+				446.0833333333333
+			],
+			"baseline_trajectory_sha256": "561f0ecc22c7600390e0910973e7d83a0cd35d1eb4f26e97d3d9a45a65d6e04e",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				312.7083333333333,
+				301.5833333333333,
+				308.375,
+				310.125,
+				314.125,
+				332.0416666666667,
+				336.9583333333333,
+				326.9166666666667,
+				331.6666666666667
+			],
+			"candidate_trajectory_sha256": "561f0ecc22c7600390e0910973e7d83a0cd35d1eb4f26e97d3d9a45a65d6e04e",
+			"case": "fleet:jensen-das-ugly-stik-60:trim",
+			"median_baseline_us_per_tick": 335.5416666666667,
+			"median_candidate_us_per_tick": 314.125,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				367.4166666666667,
+				405.5,
+				363.0833333333333,
+				373.1666666666667,
+				369.0416666666667,
+				379.0,
+				398.2916666666667,
+				388.5,
+				417.75
+			],
+			"baseline_trajectory_sha256": "fb19b791466baad1c5d0354e322afb12e6a8f02ec1e4b72692aa326503fa8e16",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				379.0,
+				374.4583333333333,
+				362.75,
+				360.5,
+				365.2083333333333,
+				346.9166666666667,
+				424.4583333333333,
+				371.7916666666667,
+				396.2083333333333
+			],
+			"candidate_trajectory_sha256": "fb19b791466baad1c5d0354e322afb12e6a8f02ec1e4b72692aa326503fa8e16",
+			"case": "fleet:jensen-das-ugly-stik-60:stall",
+			"median_baseline_us_per_tick": 379.0,
+			"median_candidate_us_per_tick": 371.7916666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				319.7916666666667,
+				286.1666666666667,
+				278.0416666666667,
+				269.7916666666667,
+				289.2916666666667,
+				285.0,
+				268.0416666666667,
+				276.875,
+				281.625
+			],
+			"baseline_trajectory_sha256": "623cff68a119d82bcb5283fd663deaf9e40ecca8de903271389c78ab2e821799",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				291.5833333333333,
+				286.7083333333333,
+				276.3333333333333,
+				281.9583333333333,
+				297.9583333333333,
+				288.125,
+				268.8333333333333,
+				268.1666666666667,
+				276.9166666666667
+			],
+			"candidate_trajectory_sha256": "623cff68a119d82bcb5283fd663deaf9e40ecca8de903271389c78ab2e821799",
+			"case": "fleet:jensen-das-ugly-stik-60:spin",
+			"median_baseline_us_per_tick": 281.625,
+			"median_candidate_us_per_tick": 281.9583333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				385.25,
+				422.7083333333333,
+				370.5833333333333,
+				359.7916666666667,
+				363.0,
+				369.8333333333333,
+				363.5833333333333,
+				352.125,
+				355.6666666666667
+			],
+			"baseline_trajectory_sha256": "a9498264e8373a9d146882ab8bac050e797db01c8121cae8ae175da34ddf96d8",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				404.625,
+				407.2083333333333,
+				365.2083333333333,
+				355.8333333333333,
+				397.7083333333333,
+				376.1666666666667,
+				371.0,
+				353.75,
+				345.375
+			],
+			"candidate_trajectory_sha256": "a9498264e8373a9d146882ab8bac050e797db01c8121cae8ae175da34ddf96d8",
+			"case": "fleet:jensen-das-ugly-stik-60:ground",
+			"median_baseline_us_per_tick": 363.5833333333333,
+			"median_candidate_us_per_tick": 371.0,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				229.375,
+				226.75,
+				218.54166666666666,
+				243.5,
+				244.54166666666666,
+				244.79166666666666,
+				243.91666666666666,
+				254.16666666666666,
+				227.04166666666666
+			],
+			"baseline_trajectory_sha256": "4ae500e7de512a561f0866dd5d171c365c00252d3a645a586f1558fa94e820b3",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				230.79166666666666,
+				224.875,
+				240.75,
+				246.83333333333334,
+				270.7916666666667,
+				272.9166666666667,
+				249.66666666666666,
+				259.9166666666667,
+				235.125
+			],
+			"candidate_trajectory_sha256": "4ae500e7de512a561f0866dd5d171c365c00252d3a645a586f1558fa94e820b3",
+			"case": "fleet:gp-extra-300s-60:trim",
+			"median_baseline_us_per_tick": 243.5,
+			"median_candidate_us_per_tick": 246.83333333333334,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				343.75,
+				354.4583333333333,
+				318.8333333333333,
+				333.6666666666667,
+				316.6666666666667,
+				307.1666666666667,
+				308.7083333333333,
+				316.875,
+				307.5416666666667
+			],
+			"baseline_trajectory_sha256": "94778998c293f4f49ea1be57f0a42601a9129cb2dfd29cadd878f3c034e57000",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				332.0416666666667,
+				367.9583333333333,
+				315.4166666666667,
+				330.9166666666667,
+				349.75,
+				334.125,
+				322.2916666666667,
+				304.2083333333333,
+				304.7916666666667
+			],
+			"candidate_trajectory_sha256": "94778998c293f4f49ea1be57f0a42601a9129cb2dfd29cadd878f3c034e57000",
+			"case": "fleet:gp-extra-300s-60:stall",
+			"median_baseline_us_per_tick": 316.875,
+			"median_candidate_us_per_tick": 330.9166666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				246.91666666666666,
+				244.875,
+				264.2083333333333,
+				253.20833333333334,
+				287.375,
+				260.9583333333333,
+				265.8333333333333,
+				252.16666666666666,
+				252.5
+			],
+			"baseline_trajectory_sha256": "ca68fdcc1beb852926afd40a5e85a8c2b6115256889de212e765ece8e7320ce9",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				246.16666666666666,
+				245.625,
+				243.66666666666666,
+				256.6666666666667,
+				336.5,
+				254.625,
+				312.75,
+				260.9166666666667,
+				269.9583333333333
+			],
+			"candidate_trajectory_sha256": "ca68fdcc1beb852926afd40a5e85a8c2b6115256889de212e765ece8e7320ce9",
+			"case": "fleet:gp-extra-300s-60:spin",
+			"median_baseline_us_per_tick": 253.20833333333334,
+			"median_candidate_us_per_tick": 256.6666666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				289.4166666666667,
+				242.08333333333334,
+				231.16666666666666,
+				242.83333333333334,
+				231.41666666666666,
+				265.3333333333333,
+				265.0,
+				279.2083333333333,
+				297.8333333333333
+			],
+			"baseline_trajectory_sha256": "3866967e592da5985143a58262a9f6903952fb32128f088053b1f6a98b7cea94",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				249.625,
+				257.2083333333333,
+				242.16666666666666,
+				257.8333333333333,
+				237.20833333333334,
+				234.875,
+				269.125,
+				268.7083333333333,
+				246.29166666666666
+			],
+			"candidate_trajectory_sha256": "3866967e592da5985143a58262a9f6903952fb32128f088053b1f6a98b7cea94",
+			"case": "fleet:gp-extra-300s-60:ground",
+			"median_baseline_us_per_tick": 265.0,
+			"median_candidate_us_per_tick": 249.625,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				467.9583333333333,
+				462.125,
+				524.5833333333334,
+				461.875,
+				442.9583333333333,
+				595.3333333333334,
+				523.7083333333334,
+				544.375,
+				491.6666666666667
+			],
+			"baseline_trajectory_sha256": "f240a58f83827d47eca743cf7edbda9958ac68e79257731506ab211f182cfb36",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				457.5833333333333,
+				455.5833333333333,
+				478.5833333333333,
+				470.3333333333333,
+				480.5833333333333,
+				494.6666666666667,
+				490.2916666666667,
+				535.9166666666666,
+				468.5833333333333
+			],
+			"candidate_trajectory_sha256": "f240a58f83827d47eca743cf7edbda9958ac68e79257731506ab211f182cfb36",
+			"case": "fleet:p51d-mustang-120:trim",
+			"median_baseline_us_per_tick": 491.6666666666667,
+			"median_candidate_us_per_tick": 478.5833333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				541.0833333333334,
+				523.875,
+				499.7916666666667,
+				493.5,
+				475.7916666666667,
+				545.5,
+				596.4583333333334,
+				523.4166666666666,
+				555.4583333333334
+			],
+			"baseline_trajectory_sha256": "cb5d7c914f3c9dbdd398c996e66037bbd9914a3ea2507494598d5fa30a0760d4",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				509.3333333333333,
+				479.0833333333333,
+				526.7916666666666,
+				483.5,
+				480.7083333333333,
+				483.0833333333333,
+				584.2916666666666,
+				521.2083333333334,
+				503.2083333333333
+			],
+			"candidate_trajectory_sha256": "cb5d7c914f3c9dbdd398c996e66037bbd9914a3ea2507494598d5fa30a0760d4",
+			"case": "fleet:p51d-mustang-120:stall",
+			"median_baseline_us_per_tick": 523.875,
+			"median_candidate_us_per_tick": 503.2083333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				267.5833333333333,
+				294.5833333333333,
+				284.2916666666667,
+				263.2916666666667,
+				276.1666666666667,
+				266.6666666666667,
+				266.8333333333333,
+				380.3333333333333,
+				323.375
+			],
+			"baseline_trajectory_sha256": "5c57db49920269d2e51e5278059af023de6827af71132174786b6121e9db08b7",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				313.5833333333333,
+				464.1666666666667,
+				406.6666666666667,
+				291.9583333333333,
+				270.6666666666667,
+				272.375,
+				307.625,
+				328.0833333333333,
+				290.375
+			],
+			"candidate_trajectory_sha256": "5c57db49920269d2e51e5278059af023de6827af71132174786b6121e9db08b7",
+			"case": "fleet:p51d-mustang-120:spin",
+			"median_baseline_us_per_tick": 276.1666666666667,
+			"median_candidate_us_per_tick": 307.625,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				346.0,
+				375.375,
+				337.7916666666667,
+				312.2083333333333,
+				306.2083333333333,
+				305.875,
+				330.7083333333333,
+				409.375,
+				347.375
+			],
+			"baseline_trajectory_sha256": "80fa1fb82cfa8a3c949d22dd2200ec9e30563ee1a1bf23736050d75f3e0952a7",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				418.9166666666667,
+				332.75,
+				330.5,
+				316.5833333333333,
+				307.25,
+				301.4583333333333,
+				331.875,
+				333.5,
+				366.7916666666667
+			],
+			"candidate_trajectory_sha256": "80fa1fb82cfa8a3c949d22dd2200ec9e30563ee1a1bf23736050d75f3e0952a7",
+			"case": "fleet:p51d-mustang-120:ground",
+			"median_baseline_us_per_tick": 337.7916666666667,
+			"median_candidate_us_per_tick": 331.875,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				342.0416666666667,
+				321.4166666666667,
+				299.3333333333333,
+				295.4583333333333,
+				272.9583333333333,
+				282.6666666666667,
+				281.9166666666667,
+				270.7083333333333,
+				267.25
+			],
+			"baseline_trajectory_sha256": "5be545fbcbad823191e0dbd5a05a74293582ba596bf20c858b19c27fbd5c2704",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				315.1666666666667,
+				296.8333333333333,
+				289.7083333333333,
+				273.875,
+				292.75,
+				258.1666666666667,
+				259.5416666666667,
+				277.25,
+				268.625
+			],
+			"candidate_trajectory_sha256": "5be545fbcbad823191e0dbd5a05a74293582ba596bf20c858b19c27fbd5c2704",
+			"case": "fleet:sebart-avanti-s-a200-p100rx:trim",
+			"median_baseline_us_per_tick": 282.6666666666667,
+			"median_candidate_us_per_tick": 277.25,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				294.875,
+				384.25,
+				336.125,
+				353.4583333333333,
+				360.0,
+				317.125,
+				309.5,
+				333.5833333333333,
+				313.125
+			],
+			"baseline_trajectory_sha256": "4b39ed3db7047c6f807efa60efd86a2cf3d93678661c642547d947abb5f9caaa",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				351.5416666666667,
+				382.2916666666667,
+				361.6666666666667,
+				396.9166666666667,
+				379.5416666666667,
+				366.5833333333333,
+				330.5416666666667,
+				309.375,
+				303.1666666666667
+			],
+			"candidate_trajectory_sha256": "4b39ed3db7047c6f807efa60efd86a2cf3d93678661c642547d947abb5f9caaa",
+			"case": "fleet:sebart-avanti-s-a200-p100rx:stall",
+			"median_baseline_us_per_tick": 333.5833333333333,
+			"median_candidate_us_per_tick": 361.6666666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				271.1666666666667,
+				240.41666666666666,
+				238.25,
+				250.16666666666666,
+				241.875,
+				239.25,
+				286.625,
+				300.4166666666667,
+				293.6666666666667
+			],
+			"baseline_trajectory_sha256": "83a361bc4905cf2dc99c02a80d46dc61b92b38e92bfea5b454badde8608e3d5b",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				256.5833333333333,
+				238.875,
+				265.75,
+				244.33333333333334,
+				240.08333333333334,
+				239.625,
+				264.375,
+				310.875,
+				350.25
+			],
+			"candidate_trajectory_sha256": "83a361bc4905cf2dc99c02a80d46dc61b92b38e92bfea5b454badde8608e3d5b",
+			"case": "fleet:sebart-avanti-s-a200-p100rx:spin",
+			"median_baseline_us_per_tick": 250.16666666666666,
+			"median_candidate_us_per_tick": 256.5833333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				275.0416666666667,
+				332.2083333333333,
+				256.2916666666667,
+				288.0416666666667,
+				236.54166666666666,
+				230.375,
+				237.95833333333334,
+				250.41666666666666,
+				232.04166666666666
+			],
+			"baseline_trajectory_sha256": "042bba9b718d6d0ee4b17036ebfaf92b0d617459dedd77ee98dab05be21c8cea",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				270.2916666666667,
+				341.0,
+				284.0,
+				270.0416666666667,
+				230.70833333333334,
+				234.91666666666666,
+				255.375,
+				242.58333333333334,
+				230.95833333333334
+			],
+			"candidate_trajectory_sha256": "042bba9b718d6d0ee4b17036ebfaf92b0d617459dedd77ee98dab05be21c8cea",
+			"case": "fleet:sebart-avanti-s-a200-p100rx:ground",
+			"median_baseline_us_per_tick": 250.41666666666666,
+			"median_candidate_us_per_tick": 255.375,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				474.7083333333333,
+				406.0,
+				385.2916666666667,
+				397.6666666666667,
+				379.125,
+				381.7916666666667,
+				382.8333333333333,
+				435.9583333333333,
+				432.0833333333333
+			],
+			"baseline_trajectory_sha256": "1966fd4d1ddac64f215cc1e8259b984e51f27de563bd16c48888094198acb99c",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				433.375,
+				503.2916666666667,
+				416.125,
+				399.625,
+				389.0416666666667,
+				392.0,
+				379.2916666666667,
+				415.75,
+				515.4583333333334
+			],
+			"candidate_trajectory_sha256": "1966fd4d1ddac64f215cc1e8259b984e51f27de563bd16c48888094198acb99c",
+			"case": "smooth:forward:swirl=0.0",
+			"median_baseline_us_per_tick": 397.6666666666667,
+			"median_candidate_us_per_tick": 415.75,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				566.0,
+				585.375,
+				574.375,
+				479.0,
+				482.5833333333333,
+				490.9583333333333,
+				497.0416666666667,
+				483.4583333333333,
+				584.75
+			],
+			"baseline_trajectory_sha256": "e7d4915b297320b6c2ae8d1a53f631b719109af634d91c41946b14bc2dea4957",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				590.25,
+				544.2083333333334,
+				548.9583333333334,
+				514.0,
+				511.125,
+				537.3333333333334,
+				484.9583333333333,
+				488.0416666666667,
+				587.5416666666666
+			],
+			"candidate_trajectory_sha256": "e7d4915b297320b6c2ae8d1a53f631b719109af634d91c41946b14bc2dea4957",
+			"case": "smooth:forward:swirl=0.4",
+			"median_baseline_us_per_tick": 497.0416666666667,
+			"median_candidate_us_per_tick": 537.3333333333334,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				441.125,
+				430.0416666666667,
+				471.25,
+				489.5833333333333,
+				504.5416666666667,
+				510.9166666666667,
+				454.0833333333333,
+				462.0,
+				454.875
+			],
+			"baseline_trajectory_sha256": "d21a8f1d16127d26fb588d63129d05e39338963373620ce208750816895d3efb",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				448.0416666666667,
+				439.9166666666667,
+				482.75,
+				521.5416666666666,
+				508.6666666666667,
+				455.2916666666667,
+				431.0833333333333,
+				456.1666666666667,
+				436.875
+			],
+			"candidate_trajectory_sha256": "d21a8f1d16127d26fb588d63129d05e39338963373620ce208750816895d3efb",
+			"case": "smooth:stall:swirl=0.0",
+			"median_baseline_us_per_tick": 462.0,
+			"median_candidate_us_per_tick": 455.2916666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				596.3333333333334,
+				523.3333333333334,
+				534.9583333333334,
+				531.6666666666666,
+				522.6666666666666,
+				740.7916666666666,
+				629.0833333333334,
+				646.25,
+				554.8333333333334
+			],
+			"baseline_trajectory_sha256": "9296587ec1a96f70f291da44e4306b2e88476b74e419727af12892fd45f2978e",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				604.5416666666666,
+				536.2916666666666,
+				550.625,
+				518.0,
+				540.0416666666666,
+				522.625,
+				676.625,
+				625.4583333333334,
+				524.0416666666666
+			],
+			"candidate_trajectory_sha256": "9296587ec1a96f70f291da44e4306b2e88476b74e419727af12892fd45f2978e",
+			"case": "smooth:stall:swirl=0.4",
+			"median_baseline_us_per_tick": 554.8333333333334,
+			"median_candidate_us_per_tick": 540.0416666666666,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				472.25,
+				394.2916666666667,
+				462.375,
+				376.875,
+				384.4166666666667,
+				391.75,
+				394.6666666666667,
+				429.7083333333333,
+				577.7083333333334
+			],
+			"baseline_trajectory_sha256": "3a0530657f2cd137fc65971eb57f4f0f9461e02aedce03395d98165f6f42166e",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				450.625,
+				392.9583333333333,
+				438.4166666666667,
+				385.6666666666667,
+				385.0,
+				370.0,
+				427.1666666666667,
+				522.9166666666666,
+				511.7083333333333
+			],
+			"candidate_trajectory_sha256": "3a0530657f2cd137fc65971eb57f4f0f9461e02aedce03395d98165f6f42166e",
+			"case": "smooth:static:swirl=0.0",
+			"median_baseline_us_per_tick": 394.6666666666667,
+			"median_candidate_us_per_tick": 427.1666666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				456.5,
+				528.4583333333334,
+				533.9583333333334,
+				490.375,
+				461.4166666666667,
+				495.0,
+				472.0416666666667,
+				457.125,
+				457.7916666666667
+			],
+			"baseline_trajectory_sha256": "fa9a468eea132672ce5d27bfa670adb78ef0be95e428302f9cbd7f05c771a1bc",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				518.5833333333334,
+				588.7083333333334,
+				519.8333333333334,
+				511.375,
+				466.9583333333333,
+				473.7083333333333,
+				464.4166666666667,
+				479.0416666666667,
+				493.8333333333333
+			],
+			"candidate_trajectory_sha256": "fa9a468eea132672ce5d27bfa670adb78ef0be95e428302f9cbd7f05c771a1bc",
+			"case": "smooth:static:swirl=0.4",
+			"median_baseline_us_per_tick": 472.0416666666667,
+			"median_candidate_us_per_tick": 493.8333333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				413.375,
+				405.375,
+				437.0416666666667,
+				460.875,
+				452.2916666666667,
+				426.25,
+				422.5,
+				489.9583333333333,
+				435.5416666666667
+			],
+			"baseline_trajectory_sha256": "89ef5dccb8cd00bcc5a6494a162d544170f1dcc9375140e0b19cd0e0363b7f52",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				398.0416666666667,
+				399.5833333333333,
+				454.9583333333333,
+				578.5833333333334,
+				452.4583333333333,
+				444.8333333333333,
+				407.375,
+				539.6666666666666,
+				431.9166666666667
+			],
+			"candidate_trajectory_sha256": "89ef5dccb8cd00bcc5a6494a162d544170f1dcc9375140e0b19cd0e0363b7f52",
+			"case": "smooth:spin:swirl=0.0",
+			"median_baseline_us_per_tick": 435.5416666666667,
+			"median_candidate_us_per_tick": 444.8333333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				499.4583333333333,
+				510.2083333333333,
+				727.1666666666666,
+				718.9166666666666,
+				685.625,
+				524.8333333333334,
+				507.6666666666667,
+				602.0,
+				493.9583333333333
+			],
+			"baseline_trajectory_sha256": "e3e1ab065388a2b1dfb6916c7b2adabe927807cd3d3935fc9a7fb35db1b5bce5",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				480.0416666666667,
+				568.3333333333334,
+				694.8333333333334,
+				588.9166666666666,
+				536.125,
+				507.0833333333333,
+				498.75,
+				519.0416666666666,
+				480.9583333333333
+			],
+			"candidate_trajectory_sha256": "e3e1ab065388a2b1dfb6916c7b2adabe927807cd3d3935fc9a7fb35db1b5bce5",
+			"case": "smooth:spin:swirl=0.4",
+			"median_baseline_us_per_tick": 524.8333333333334,
+			"median_candidate_us_per_tick": 519.0416666666666,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				390.875,
+				381.1666666666667,
+				386.75,
+				370.0,
+				366.9583333333333,
+				409.9166666666667,
+				507.0416666666667,
+				441.8333333333333,
+				436.4166666666667
+			],
+			"baseline_trajectory_sha256": "ec60548a8314fe0bbb758d4e55937668b3f9c34629b013d094e71723afb8a403",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				383.7083333333333,
+				381.4583333333333,
+				370.5416666666667,
+				378.5833333333333,
+				398.2916666666667,
+				391.875,
+				426.5833333333333,
+				420.375,
+				409.7083333333333
+			],
+			"candidate_trajectory_sha256": "ec60548a8314fe0bbb758d4e55937668b3f9c34629b013d094e71723afb8a403",
+			"case": "smooth:reverse_fade:swirl=0.0",
+			"median_baseline_us_per_tick": 390.875,
+			"median_candidate_us_per_tick": 391.875,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				503.5,
+				746.5416666666666,
+				463.125,
+				491.0,
+				475.7083333333333,
+				495.8333333333333,
+				470.7916666666667,
+				450.1666666666667,
+				620.4583333333334
+			],
+			"baseline_trajectory_sha256": "6b0349de40289f183898d3cfc283d45adee784150e44c2b477de99a2c6f91308",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				717.3333333333334,
+				807.2083333333334,
+				532.25,
+				505.6666666666667,
+				486.2083333333333,
+				492.75,
+				472.1666666666667,
+				455.3333333333333,
+				836.625
+			],
+			"candidate_trajectory_sha256": "6b0349de40289f183898d3cfc283d45adee784150e44c2b477de99a2c6f91308",
+			"case": "smooth:reverse_fade:swirl=0.4",
+			"median_baseline_us_per_tick": 491.0,
+			"median_candidate_us_per_tick": 505.6666666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				333.1666666666667,
+				329.25,
+				337.7083333333333,
+				328.7083333333333,
+				323.75,
+				400.4583333333333,
+				444.7916666666667,
+				374.2083333333333,
+				376.0416666666667
+			],
+			"baseline_trajectory_sha256": "7b5297244e87ec6d432c30c61aa4e0dd0c7f425c6abd04e990f8ac695b532747",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				373.0,
+				352.0,
+				342.75,
+				325.875,
+				336.125,
+				351.1666666666667,
+				381.6666666666667,
+				390.0,
+				405.5
+			],
+			"candidate_trajectory_sha256": "7b5297244e87ec6d432c30c61aa4e0dd0c7f425c6abd04e990f8ac695b532747",
+			"case": "smooth:reverse_off:swirl=0.0",
+			"median_baseline_us_per_tick": 337.7083333333333,
+			"median_candidate_us_per_tick": 352.0,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				329.875,
+				332.9166666666667,
+				344.0,
+				425.5,
+				419.875,
+				368.9583333333333,
+				419.25,
+				330.75,
+				327.7083333333333
+			],
+			"baseline_trajectory_sha256": "82f66baea7a497196b9c6f42522865266009f3829d93766c48512fe28a278b87",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				337.375,
+				331.5,
+				354.75,
+				449.0416666666667,
+				409.4166666666667,
+				362.1666666666667,
+				346.5833333333333,
+				327.625,
+				339.1666666666667
+			],
+			"candidate_trajectory_sha256": "82f66baea7a497196b9c6f42522865266009f3829d93766c48512fe28a278b87",
+			"case": "smooth:reverse_off:swirl=0.4",
+			"median_baseline_us_per_tick": 344.0,
+			"median_candidate_us_per_tick": 346.5833333333333,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				554.7916666666666,
+				792.1666666666666,
+				675.2916666666666,
+				585.4166666666666,
+				541.7916666666666,
+				515.2916666666666,
+				497.0,
+				556.0,
+				504.2916666666667
+			],
+			"baseline_trajectory_sha256": "1742357063d4e3631457884dd4dd42794df6a0c9a108a3dd6b0f73e8ffdd389d",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				505.75,
+				526.3333333333334,
+				530.8333333333334,
+				574.9583333333334,
+				576.3333333333334,
+				667.1666666666666,
+				547.3333333333334,
+				510.4583333333333,
+				478.5833333333333
+			],
+			"candidate_trajectory_sha256": "1742357063d4e3631457884dd4dd42794df6a0c9a108a3dd6b0f73e8ffdd389d",
+			"case": "smooth:transport_on",
+			"median_baseline_us_per_tick": 554.7916666666666,
+			"median_candidate_us_per_tick": 530.8333333333334,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		},
+		{
+			"baseline_samples_us": [
+				464.1666666666667,
+				462.6666666666667,
+				418.0833333333333,
+				441.375,
+				432.9583333333333,
+				751.2916666666666,
+				616.7083333333334,
+				511.5416666666667,
+				446.9166666666667
+			],
+			"baseline_trajectory_sha256": "e74f3d070a146d2f916c1ca4955c32b50d4975300645234d94e0fc913a461aa1",
+			"boundaries_compared": 241,
+			"candidate_samples_us": [
+				425.1666666666667,
+				418.8333333333333,
+				414.0,
+				412.5,
+				432.375,
+				508.0416666666667,
+				483.625,
+				497.6666666666667,
+				415.0
+			],
+			"candidate_trajectory_sha256": "e74f3d070a146d2f916c1ca4955c32b50d4975300645234d94e0fc913a461aa1",
+			"case": "smooth:stopped_residual",
+			"median_baseline_us_per_tick": 462.6666666666667,
+			"median_candidate_us_per_tick": 425.1666666666667,
+			"timing_ticks_per_sample": 24,
+			"timing_unit": "mean microseconds per sim.step tick",
+			"trajectory_exact": true
+		}
+	],
+	"format": "openrc-e0b6p-stage-sharing v1",
+	"machine": {
+		"architecture": "x86_64",
+		"godot": {
+			"build": "official",
+			"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+			"hex": 263938,
+			"major": 4,
+			"minor": 7,
+			"patch": 2,
+			"status": "stable",
+			"string": "4.7.2-stable (official)",
+			"timestamp": 0
+		},
+		"os": "Linux",
+		"processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz"
+	},
+	"pass": true,
+	"prepared_protocol": {
+		"baseline": {
+			"attempts": 49,
+			"prepared_calls": 38126,
+			"setup_calls": 54,
+			"setup_mode_at_end": false
+		},
+		"candidate": {
+			"attempts": 49,
+			"prepared_calls": 38126,
+			"setup_calls": 54,
+			"setup_mode_at_end": false
+		},
+		"measured_route_rows": [
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:jensen-das-ugly-stik-60"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:gp-extra-300s-60"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:p51d-mustang-120"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:sebart-avanti-s-a200-p100rx"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:forward:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:forward:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stall:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stall:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:static:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:static:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:spin:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:spin:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_fade:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_fade:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_off:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_off:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:transport_on"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stopped"
+			},
+			{
+				"baseline": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1152,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stopped_residual"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:jensen-das-ugly-stik-60:trim"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:jensen-das-ugly-stik-60:stall"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:jensen-das-ugly-stik-60:spin"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:jensen-das-ugly-stik-60:ground"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:gp-extra-300s-60:trim"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:gp-extra-300s-60:stall"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:gp-extra-300s-60:spin"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:gp-extra-300s-60:ground"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:p51d-mustang-120:trim"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:p51d-mustang-120:stall"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:p51d-mustang-120:spin"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:p51d-mustang-120:ground"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:sebart-avanti-s-a200-p100rx:trim"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:sebart-avanti-s-a200-p100rx:stall"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:sebart-avanti-s-a200-p100rx:spin"
+			},
+			{
+				"baseline": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 0,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "fleet:sebart-avanti-s-a200-p100rx:ground"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:forward:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:forward:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stall:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stall:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:static:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:static:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:spin:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:spin:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_fade:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_fade:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 631,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 631,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_off:swirl=0.0"
+			},
+			{
+				"baseline": {
+					"prepared": 631,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 631,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:reverse_off:swirl=0.4"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:transport_on"
+			},
+			{
+				"baseline": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"candidate": {
+					"prepared": 1920,
+					"refused": 0,
+					"setup": 0
+				},
+				"case": "smooth:stopped_residual"
+			}
+		],
+		"measured_routes": {
+			"baseline": {
+				"prepared": 38126,
+				"refused": 0,
+				"setup": 0
+			},
+			"candidate": {
+				"prepared": 38126,
+				"refused": 0,
+				"setup": 0
+			}
+		}
+	},
+	"status": "pass",
+	"timing": {
+		"direct_calls_per_pair": 64,
+		"direct_pairs": 15,
+		"direct_warmup_pairs": 2,
+		"flight_pairs": 9,
+		"flight_ticks_per_pair": 24,
+		"flight_warmup_pairs": 1,
+		"trajectory_ticks": 240
+	}
+}
