@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-09",
+  "runtime_and_aircraft_data_unchanged": true,
+  "tracked_app_files_compared": 617,
+  "changed_app_files": {
+    "app/test.sh": {
+      "before": "279e47567034db2fefe4699678ae3c7bc2d4ff9dc0b1eab154f90ce2bdf2ab28",
+      "after": "349ad11d2ce9ffc13865680c805b0ce375484172f5b2d3e572063d8aa6331c40"
+    }
+  },
+  "pre_hook_app_suite": {
+    "exit_code": 0,
+    "sections": 154,
+    "gdscript_test_programs": 125,
+    "engine_errors": 0,
+    "engine_warnings": [
+      {
+        "section": "== test_aircraft_catalog.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_e2e_input.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_e2e_radio.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_aircraft.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_flight_capture.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_home.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_language.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      },
+      {
+        "section": "== test_ui_pause.gd",
+        "warning": "WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details)."
+      }
+    ],
+    "test_script_sha256": "279e47567034db2fefe4699678ae3c7bc2d4ff9dc0b1eab154f90ce2bdf2ab28"
+  },
+  "post_hook_app_suite_rerun": false,
+  "focused_verification": "verification/verification.json",
+  "lint": {
+    "lint-checks.json": {
+      "total": 0,
+      "errors": 0,
+      "warnings": 0,
+      "parse_errors": 0
+    },
+    "lint-app.json": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    }
+  },
+  "new_hook": {
+    "exit_code": 0,
+    "checks": 125,
+    "failures": 0,
+    "execution": "Exact appended E5b command block executed separately after the full pre-hook suite passed.",
+    "log": "app-hook.log",
+    "test_script_sha256": "349ad11d2ce9ffc13865680c805b0ce375484172f5b2d3e572063d8aa6331c40"
+  }
+}

@@ -50,6 +50,8 @@ For rigid gear at rest, find the lower facet of the contacts' convex hull, proje
 
 Use those ground-projected reaction shares when splitting spring stiffness to preserve equal vertical sag. Splitting by body longitudinal arms can still produce a balanced equilibrium, but at a different attitude: the existing P-51 settles 0.68° above its wheel-bottom geometric pose, whereas the Extra's projected-arm split preserves that pose. ([E5a](../research/ground-contact/E5a/README.md))
 
+Define the attitude and contact event before using a nose-over oracle. A tail-up `d/h` predicts main-contact pitch-moment reversal; first tail lift starts from the larger three-point ratio. For compliant fixed-point contacts, the force lever includes penetration and differs from CG height above the nominal plane. Approach the rigid limit with stiffness, timestep and loading-rate checks; a sudden drag patch is a separate transient experiment. ([E5b](../research/ground-contact/E5b/README.md))
+
 ### Stiction needs per-wheel memory and an energy-safe release rule
 
 A velocity-regularized rolling law creeps under a small steady push because it has no memory of a parked tyre. Per-wheel anchors remove that creep, but release must depend on sustained elastic force rather than a transient damper spike; initialize a new anchor unloaded, and distribute spring stiffness by each wheel's static load share. Check breakaway against an independent force and moment balance, since thrust height and propeller torque redistribute normal loads. Current breakaway factors remain estimates pending field measurement. ([E3b1](../research/ground-contact/E3b1/README.md))

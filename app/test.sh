@@ -190,3 +190,8 @@ echo "== E5a: generated Extra taildragger contacts, P-51 review and session refi
 E5A_WORK="$(mktemp -d)"
 python3 "$HERE/../research/ground-contact/e5a/verify.py" --godot "$GODOT" --out "$E5A_WORK/results"
 rm -rf "$E5A_WORK"
+
+echo "== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches"
+E5B_WORK="$(mktemp -d)"
+python3 "$HERE/../research/ground-contact/e5b/verify.py" --godot "$GODOT" --out "$E5B_WORK/results"
+rm -rf "$E5B_WORK"

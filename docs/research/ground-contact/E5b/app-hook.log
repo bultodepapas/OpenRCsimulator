@@ -1,0 +1,10 @@
+== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches
+{
+  "full": {
+    "checks": 125,
+    "failures": 0,
+    "exit_code": 0,
+    "scope": "full",
+    "expected_failure": null
+  }
+}

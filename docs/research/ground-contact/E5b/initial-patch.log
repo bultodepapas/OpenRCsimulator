@@ -1,0 +1,122 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok gp_extra_300s_60 loads []
+ok tail-up fixture has loaded mains and clear tail [0.02448598852007, 0.02448598852007, -0.15473901147993]
+ok main-only pitch moment follows N(d - mu*h) [0.36156781516183, 0.05951893588389, 0.05951893588389]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok main-only pitch moment follows N(d - mu*h) [0.36894675016513, -0.0, 0.0]
+ok main-only drag and normal force agree with oracle 
+ok main-only pitch moment follows N(d - mu*h) [0.37632568516843, -0.05951893588389, -0.05951893588389]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok evaluated pitch-zero threshold agrees with d/h within 2 percent 
+ok friction cap below threshold prevents nose-down moment 
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.04212008228018, 0.47532135478136]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.0011765310816, -0.18269994411078]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.0424264912931, 0.47800109871612]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.0017313092561, -0.17761582258912]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.04196365754722, 0.47396917627049]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.00089313755524, -0.18526702745185]
+ok patch pitch refines within 0.1 degree [0.00030640901292, 0.00046283374588]
+ok patch pitch refines within 0.1 degree [0.0005547781745, 0.00083817170086]
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.60302083333333, &"bracket": [0.60299479166667, 0.60302083333333], &"time_s": 13.5604166666667, &"pitch_deg": 10.8393826219329, &"pitch_rate_rad_s": -0.00003342801458, &"main_compression_m": 0.00038258002133, &"tail_compression_m": -0.0000000012242 }
+ok tail separation agrees with rigid d/h within 2 percent [0.60302083333333, 0.60356727821735]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.60302083333333, &"bracket": [0.6030078125, 0.60302083333333], &"time_s": 13.5604166666667, &"pitch_deg": 10.839382621933, &"pitch_rate_rad_s": -0.00003342571526, &"main_compression_m": 0.00038258002133, &"tail_compression_m": -0.0000000012242 }
+ok tail separation agrees with rigid d/h within 2 percent [0.60302083333333, 0.60356727821735]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.6034375, &"bracket": [0.60342447916667, 0.6034375], &"time_s": 13.56875, &"pitch_deg": 10.8566690328461, &"pitch_rate_rad_s": -0.00000835207419, &"main_compression_m": 0.00009564684219, &"tail_compression_m": -0.00000000101122 }
+ok tail separation agrees with rigid d/h within 2 percent [0.6034375, 0.60356727821735]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.60343098958333, &"bracket": [0.60342447916667, 0.60343098958333], &"time_s": 25.6372395833333, &"pitch_deg": 10.8566690433677, &"pitch_rate_rad_s": -0.00000416972019, &"main_compression_m": 0.0000956475546, &"tail_compression_m": -0.00000000012417 }
+ok tail separation agrees with rigid d/h within 2 percent [0.60343098958333, 0.60356727821735]
+ok tail normal unloads before geometric separation 
+ok doubling ramp tick rate changes threshold by less than 0.1 percent 
+ok stiffer gear approaches rigid threshold 
+ok halving ramp rate changes threshold by less than 0.1 percent 
+ok p51d_mustang_120 loads []
+ok tail-up fixture has loaded mains and clear tail [0.02392740782507, 0.02392740782507, -0.28692259217493]
+ok main-only pitch moment follows N(d - mu*h) [0.3407445971515, 0.64417899665819, 0.64417899665818]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok main-only pitch moment follows N(d - mu*h) [0.34769856852194, 0.0, 0.0]
+ok main-only drag and normal force agree with oracle 
+ok main-only pitch moment follows N(d - mu*h) [0.35465253989237, -0.64417899665818, -0.64417899665818]
+ok main-only drag and normal force agree with oracle 
+ok pitch sign changes across 2 percent threshold bracket 
+ok evaluated pitch-zero threshold agrees with d/h within 2 percent 
+ok friction cap below threshold prevents nose-down moment 
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.02055289999556, 0.22276756448889]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.00055183395192, -0.09313266847475]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.02070519033862, 0.22402542517916]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.00082069361639, -0.09084008139176]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+ok patch coast pitches in predicted direction [0.8, 0.02047527332378, 0.2221349746935]
+ok synthetic patch factor is within supported surface bounds 
+ok patch lookup scales longitudinal drag at wheel location 
+ok patch moment has expected threshold sign 
+ok patch coast enters with clear tail and no collapse or fault 
+FAIL patch coast pitches in predicted direction [1.3, 0.00041472708786, -0.09428605303494]
+ok patch pitch refines within 0.1 degree [0.00015229034306, 0.00022991701484]
+ok patch pitch refines within 0.1 degree [0.00026885966447, 0.00040596652854]
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.650625, &"bracket": [0.65059895833333, 0.650625], &"time_s": 14.5125, &"pitch_deg": 13.8758699316042, &"pitch_rate_rad_s": -0.00003590599526, &"main_compression_m": 0.00037385058436, &"tail_compression_m": -0.00000001366106 }
+ok tail separation agrees with rigid d/h within 2 percent [0.650625, 0.65101933288815]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.65061197916667, &"bracket": [0.65059895833333, 0.65061197916667], &"time_s": 14.5122395833333, &"pitch_deg": 13.8758704670879, &"pitch_rate_rad_s": -0.0000358748518, &"main_compression_m": 0.00037384911652, &"tail_compression_m": -0.00000000302897 }
+ok tail separation agrees with rigid d/h within 2 percent [0.65061197916667, 0.65101933288815]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.65092447916667, &"bracket": [0.65091145833333, 0.65092447916667], &"time_s": 14.5184895833333, &"pitch_deg": 13.8882789709112, &"pitch_rate_rad_s": -0.00000895896325, &"main_compression_m": 0.00009346453114, &"tail_compression_m": -0.00000000161528 }
+ok tail separation agrees with rigid d/h within 2 percent [0.65092447916667, 0.65101933288815]
+ok tail normal unloads before geometric separation 
+ok rigid ramp begins with loaded tail and completes without fault { &"mu": 0.65091796875, &"bracket": [0.65091145833333, 0.65091796875], &"time_s": 27.53671875, &"pitch_deg": 13.8882789906026, &"pitch_rate_rad_s": -0.00000447492388, &"main_compression_m": 0.00009346541234, &"tail_compression_m": -0.00000000028912 }
+ok tail separation agrees with rigid d/h within 2 percent [0.65091796875, 0.65101933288815]
+ok tail normal unloads before geometric separation 
+ok doubling ramp tick rate changes threshold by less than 0.1 percent 
+ok stiffer gear approaches rigid threshold 
+ok halving ramp rate changes threshold by less than 0.1 percent 
+ok report opened 
+119 checks, 6 failed
