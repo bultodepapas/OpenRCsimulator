@@ -1,0 +1,34 @@
+{
+  "preparation_date_bogota": "2026-10-08",
+  "source_commit": "28cd5c6aa63118f869588ffb160ae0362b4bd999",
+  "source_manifest": "docs/research/menu-investigations/UI-06c-R1/source-sha256.json",
+  "source_manifest_sha256": "738716cb6a8127d11c678e6c0ea87eaf35f2c86fb5b5c2b577ee1d386d6f40a9",
+  "source_manifest_entries": 617,
+  "source_manifest_mismatches": [],
+  "zip_checksum_result": [
+    "openrc-simulator-v0.1.0-rc6-4-gce4a80c-dirty-linux-x86_64.zip: OK",
+    "openrc-simulator-v0.1.0-rc6-4-gce4a80c-dirty-macos-universal.zip: OK",
+    "openrc-simulator-v0.1.0-rc6-4-gce4a80c-dirty-windows-x86_64.zip: OK"
+  ],
+  "trial_folder": "/home/bulto/OpenRC-trials/PT2-001",
+  "trial_file_sha256": {
+    "openrc-simulator.x86_64": "9f245fb183e9ae68ef13d9b587bf2e27a6f1980cb00e559da22efc2a8f18b0d2",
+    "jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "default-field.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "stik-coverage.json": "35c7d5180f5779394dc3f44268879947a7f98fbdd10d4683f19b9cf82ea0d5a2"
+  },
+  "software_smoke_passed": true,
+  "pilot_trial": "not performed",
+  "retained_software_evidence_sha256": {
+    "export-smoke.json": "7d66f218957b7dca51fa9464137310d13faf662cc335676dc018cd41898283c0",
+    "export-smoke.log": "dc54ccd5eed6121da44aaab4f6e18d70088f8831f41b8046387471d1744b4b99",
+    "exported-gui.log": "afb1f5fc2b66a934a3065a96218b0e267afe77f117083274512da2a3a15b1cb7",
+    "flight-taxi.png": "33690de3e822fabeb1f9a137f792b9a67a3e78fd318d4248913d0ad89da99491",
+    "home-runway.png": "0cac15bc13a6d431deb893f7403665cddb3755f541a555d3dd2f726edda2843e",
+    "manual-launch.json": "dea22df57b1db6bafcde6dc5cef5e7791d99a14abaf947e131f8b317b2e64380",
+    "runway-manual.csv": "14ad5a49f7cb90142cc43cfb578e74ee87258df8035340f1235c4b7d94ec938e",
+    "runway-pause-restart.csv": "8b01efa722acc84d00673e09458ff716c9f31f6bea72503cea33afa7077effc9",
+    "runway-r-restart.csv": "8502a7ca969121096684fa8135780d0372b0d90eb52dfffa20cc962515b437e7",
+    "range-audit.json": "1188062787ec14f325112a34b3a41efa33862eaf05b6ac8a72f7a545027f8c61"
+  }
+}

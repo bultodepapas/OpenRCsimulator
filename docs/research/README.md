@@ -107,6 +107,8 @@ Experimental landing baseline: [E3c1a](ground-contact/E3c1a/README.md) commands 
 
 Experimental continuous circuit: [E3c2a](ground-contact/E3c2a/README.md) flies from an idling runway start through takeoff, the full pattern, the E3c1a landing handoff and an anchored idle stop; both headings, 240/480 Hz refinement, every-tick v3 trace and corruption checks. Rendered acceptance, physical measurements and PT2 remain open.
 
+Manual circuit trial: [PT2 preparation](ground-contact/PT2/README.md) identifies the frozen Linux build, provides launch/recording and diagnostic instructions, and retains fresh export-smoke evidence. Owner flight and independent physical acceptance remain pending.
+
 Rendered circuit review: [E3c2b](ground-contact/E3c2b/README.md) captures twelve recorded stages in production pilot/inspection views, checks actual poses, hinges, cameras and clocks, and preserves a repeatable [HTML kit](ground-contact/E3c2b/index.html). No dynamics replay or physical/readability acceptance is implied.
 
 Full-circuit regression: [E4a](ground-contact/E4a/README.md) replays a saved 28,861-tick experimental circuit from frozen applied controls with H9 tolerances, complete sampled state and real crash guards. Rolling-resistance and anchor-stiffness changes are detected; physical and release acceptance remain open.
