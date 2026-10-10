@@ -1,0 +1,422 @@
+{
+  "step": "EL1a-R1",
+  "date": "2026-10-10",
+  "scope": "Documentation and original synthetic algebra only; no physical measurements or runtime integration tested",
+  "status": "pass",
+  "questions": [
+    {
+      "number": "01",
+      "title": "What do `Kv`, `R`, and `I0` mean for a three-phase motor?"
+    },
+    {
+      "number": "02",
+      "title": "Is throttle command the ESC duty and current in EL1a?"
+    },
+    {
+      "number": "03",
+      "title": "What does zero throttle mean on the selected Avian 70 A?"
+    },
+    {
+      "number": "04",
+      "title": "Battery model order and identifiability"
+    },
+    {
+      "number": "05",
+      "title": "Usable charge, energy and endurance"
+    },
+    {
+      "number": "06",
+      "title": "LVC, imbalance, recovery and receiver power"
+    },
+    {
+      "number": "07",
+      "title": "RPM and Reynolds-number dependence"
+    },
+    {
+      "number": "08",
+      "title": "Stopped and windmilling propeller drag"
+    },
+    {
+      "number": "09",
+      "title": "Installed powertrain torque and transient response"
+    },
+    {
+      "number": "10",
+      "title": "Can one fixed timestep handle stopping, cutoff and different motors?"
+    },
+    {
+      "number": "11",
+      "title": "Does a telemetry RPM/current sample mean what the model assumes?"
+    },
+    {
+      "number": "12",
+      "title": "What evidence is sufficient for the ±10% and ±15% targets?"
+    }
+  ],
+  "external_urls_by_report": {
+    "docs/research/propulsion/EL1a-R1/01-motor-esc.md": [
+      "https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dwb7e67f91/Manuals/EFL105250B-Manual_EN.pdf",
+      "https://doi.org/10.1155/2020/9263961",
+      "https://www.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw92e4fe8d/Manuals/Spektrum-SmartLink-Avian-Programmer-and-Update-Instructions.pdf",
+      "https://www.infineon.com/dgdl/Infineon-Basic_Motor_Parameters_and_the_Configuration-ApplicationNotes-v01_00-EN.pdf?fileId=8ac78c8c8caa022e018cee2157f0686d",
+      "https://www.mdpi.com/2076-0825/10/7/143",
+      "https://www.mdpi.com/2076-3417/10/22/8080",
+      "https://www.spektrumrc.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html",
+      "https://www.ti.com/lit/an/slvaf66/slvaf66.pdf"
+    ],
+    "docs/research/propulsion/EL1a-R1/02-battery.md": [
+      "https://doi.org/10.3390/en15239249",
+      "https://doi.org/10.3390/s23156937",
+      "https://www.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/Manuals/EFL105250B-Manual_EN.pdf",
+      "https://www.spektrumrc.com/on/demandware.static/-/Sites-horizon-master/default/dwb627f043/Manuals/Avian-Manual-EN.pdf",
+      "https://www.spektrumrc.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html"
+    ],
+    "docs/research/propulsion/EL1a-R1/03-propeller-validation.md": [
+      "https://aerosyslab.com/papers/conferences/PropTest_AIAA-Aviation-2019.pdf",
+      "https://arxiv.org/html/2312.09981",
+      "https://doi.org/10.1007/s13272-023-00702-w",
+      "https://doi.org/10.2514/6.2024-2359",
+      "https://m-selig.ae.illinois.edu/props/propDB.html",
+      "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2014-AIAA-2014-2151.pdf",
+      "https://ntrs.nasa.gov/citations/19930091538",
+      "https://www.apcprop.com/technical-information/performance-data/"
+    ],
+    "docs/research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md": [
+      "https://ardupilot.org/plane/docs/common-esc-telemetry.html",
+      "https://ardupilot.org/plane/docs/common-rpm.html",
+      "https://computing.llnl.gov/projects/sundials/usage-notes",
+      "https://fncbook.com/python/absstab-diffusion/",
+      "https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-6-expanded-uncertainty",
+      "https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-law-propagation-uncertainty"
+    ]
+  },
+  "distinct_external_urls": 26,
+  "source_check_scope": "Primary-source inspection documented in the reports; URL inventory is not an HTTP-health or automatic scientific validation check",
+  "local_link_check_scope": "Full new Markdown reports and changed lines of the three existing documentation files; targets exist, are not ignored, and referenced Markdown heading anchors resolve",
+  "local_links_checked": 41,
+  "local_links": [
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../../../ELECTRIC-PROPULSION-PLAN.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "01-motor-esc.md#01--what-do-kv-r-and-i0-mean-for-a-three-phase-motor"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "01-motor-esc.md#02--is-throttle-command-the-esc-duty-and-current-in-el1a"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "01-motor-esc.md#03--what-does-zero-throttle-mean-on-the-selected-avian-70-a"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "02-battery.md#04--battery-model-order-and-identifiability"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "02-battery.md#05--usable-charge-energy-and-endurance"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "02-battery.md#06--lvc-imbalance-recovery-and-receiver-power"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "03-propeller-validation.md#07--rpm-and-reynolds-number-dependence"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "03-propeller-validation.md#08--stopped-and-windmilling-propeller-drag"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "03-propeller-validation.md#09--installed-powertrain-torque-and-transient-response"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "04-numerics-telemetry-uncertainty.md#10--can-one-fixed-timestep-handle-stopping-cutoff-and-different-motors"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "04-numerics-telemetry-uncertainty.md#11--does-a-telemetry-rpmcurrent-sample-mean-what-the-model-assumes"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "04-numerics-telemetry-uncertainty.md#12--what-evidence-is-sufficient-for-the-10-and-15-targets"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../../validation/VAL-7a/README.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../../validation/VAL-7c/README.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../G1a1/README.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../G1b1/README.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../EL1a/timber-reference.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "verification.json"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/README.md",
+      "target": "../EL1a/README.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/01-motor-esc.md",
+      "target": "../../../ELECTRIC-PROPULSION-PLAN.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/02-battery.md",
+      "target": "../EL1a/sources.md"
+    },
+    {
+      "file": "docs/research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md",
+      "target": "../../../ELECTRIC-PROPULSION-PLAN.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/README.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/01-motor-esc.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/01-motor-esc.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/02-battery.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/02-battery.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/01-motor-esc.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/02-battery.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/validation/VAL-7a/README.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/validation/VAL-7c/README.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/G1b1/README.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/03-propeller-validation.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md"
+    },
+    {
+      "file": "docs/ELECTRIC-PROPULSION-PLAN.md",
+      "target": "research/propulsion/EL1a-R1/README.md"
+    },
+    {
+      "file": "docs/research/README.md",
+      "target": "propulsion/EL1a-R1/README.md"
+    },
+    {
+      "file": "docs/learnings/physics.md",
+      "target": "../research/propulsion/EL1a-R1/01-motor-esc.md"
+    },
+    {
+      "file": "docs/learnings/physics.md",
+      "target": "../research/propulsion/EL1a-R1/02-battery.md"
+    }
+  ],
+  "whitespace": "git diff --check on the three changed documents; trailing-space and final-newline checks on new Markdown files",
+  "unchanged_electric_code_sha256": {
+    "app/physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+    "app/tests/test_electric_motor.gd": "ef0cc4f377875cce3038281bc7601e734e9088a1c8e8055738ae3efe7bbaf394"
+  },
+  "report_sha256": {
+    "docs/research/propulsion/EL1a-R1/README.md": "e841c39747468ac37860d75a7deadb42593ff25287275de752308c6d8004d08c",
+    "docs/research/propulsion/EL1a-R1/01-motor-esc.md": "f8e4c2bf73acd15826486a62c255dacd0e554dcbc7d439cbcb22a1713cad7424",
+    "docs/research/propulsion/EL1a-R1/02-battery.md": "4711c9ed2e92b69c6e652b5935659fd4e5b2733c210873eafa1365438fcb5fb9",
+    "docs/research/propulsion/EL1a-R1/03-propeller-validation.md": "2da632f81e810122bf2205242d0a2a4c878dbc8e8d639a9576136eb514062950",
+    "docs/research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md": "595ff807a6f97547e5764bf5168566dde488309690a150e883f43b4545a43e54",
+    "docs/ELECTRIC-PROPULSION-PLAN.md": "d78b346125d657540f428479d2c0561b43d065e212335cf4c2bc2a6daecee712"
+  },
+  "algebra": {
+    "scope": "Original synthetic algebra fixtures; not measured hardware or runtime integration",
+    "inputs": {
+      "ocv_v": 16.0,
+      "pack_resistance_ohm": 0.04,
+      "motor_resistance_ohm": 0.08,
+      "back_emf_v": 8.0
+    },
+    "positive_motoring_or_no_regeneration_branch_cases": [
+      {
+        "duty": 0.0,
+        "auxiliary_current_a": 0.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.0,
+        "bus_voltage_v": 16.0
+      },
+      {
+        "duty": 0.0,
+        "auxiliary_current_a": 0.5,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.5,
+        "bus_voltage_v": 15.98
+      },
+      {
+        "duty": 0.0,
+        "auxiliary_current_a": 2.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 2.0,
+        "bus_voltage_v": 15.92
+      },
+      {
+        "duty": 0.25,
+        "auxiliary_current_a": 0.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.0,
+        "bus_voltage_v": 16.0
+      },
+      {
+        "duty": 0.25,
+        "auxiliary_current_a": 0.5,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.5,
+        "bus_voltage_v": 15.98
+      },
+      {
+        "duty": 0.25,
+        "auxiliary_current_a": 2.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 2.0,
+        "bus_voltage_v": 15.92
+      },
+      {
+        "duty": 0.5,
+        "auxiliary_current_a": 0.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.0,
+        "bus_voltage_v": 16.0
+      },
+      {
+        "duty": 0.5,
+        "auxiliary_current_a": 0.5,
+        "motor_current_a": 0.0,
+        "pack_current_a": 0.5,
+        "bus_voltage_v": 15.98
+      },
+      {
+        "duty": 0.5,
+        "auxiliary_current_a": 2.0,
+        "motor_current_a": 0.0,
+        "pack_current_a": 2.0,
+        "bus_voltage_v": 15.92
+      },
+      {
+        "duty": 0.75,
+        "auxiliary_current_a": 0.0,
+        "motor_current_a": 39.02439024390244,
+        "pack_current_a": 29.268292682926827,
+        "bus_voltage_v": 14.829268292682928
+      },
+      {
+        "duty": 0.75,
+        "auxiliary_current_a": 0.5,
+        "motor_current_a": 38.878048780487795,
+        "pack_current_a": 29.658536585365844,
+        "bus_voltage_v": 14.813658536585367
+      },
+      {
+        "duty": 0.75,
+        "auxiliary_current_a": 2.0,
+        "motor_current_a": 38.439024390243894,
+        "pack_current_a": 30.82926829268292,
+        "bus_voltage_v": 14.766829268292684
+      },
+      {
+        "duty": 1.0,
+        "auxiliary_current_a": 0.0,
+        "motor_current_a": 66.66666666666667,
+        "pack_current_a": 66.66666666666667,
+        "bus_voltage_v": 13.333333333333332
+      },
+      {
+        "duty": 1.0,
+        "auxiliary_current_a": 0.5,
+        "motor_current_a": 66.5,
+        "pack_current_a": 67.0,
+        "bus_voltage_v": 13.32
+      },
+      {
+        "duty": 1.0,
+        "auxiliary_current_a": 2.0,
+        "motor_current_a": 66.0,
+        "pack_current_a": 68.0,
+        "bus_voltage_v": 13.28
+      }
+    ]
+  },
+  "rpm_conversion_examples": {
+    "electrical_rpm": 42000,
+    "pole_pairs": 7,
+    "optical_pulses_per_minute": 18000,
+    "optical_markers_per_revolution": 3,
+    "mechanical_rpm": 6000
+  },
+  "acceptance_rule_examples": [
+    {
+      "residual": 6,
+      "expanded_uncertainty": 2,
+      "limit": 10,
+      "result": "pass"
+    },
+    {
+      "residual": 13,
+      "expanded_uncertainty": 2,
+      "limit": 10,
+      "result": "fail"
+    },
+    {
+      "residual": 9,
+      "expanded_uncertainty": 2,
+      "limit": 10,
+      "result": "inconclusive"
+    }
+  ],
+  "review": "Independent Luna Max read-only review accepted auxiliary-current algebra and stable-root scope; sampled-controller event ordering was clarified following its feedback",
+  "app_regression_rerun": false,
+  "excluded_concurrent_work": "Time-of-day track has independent runtime/tests/docs changes in the shared workspace; those files are not edited or certified by this research step"
+}

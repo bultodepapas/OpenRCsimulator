@@ -1,0 +1,22 @@
+{
+  "step": "TOD-09c1",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "base_commit": "bfff6122a785aa4e75852a3b933d3596d5487abb",
+  "working_tree_changes": true,
+  "focused_checks": 1888,
+  "focused_failures": 0,
+  "full_command": "app/test.sh",
+  "full_exit_code": 0,
+  "gdscript_test_programs": 159,
+  "source_sha256": {
+    "app/environment/visual_timeline.gd": "2741288515364550f0ff019c2e837281f27b7aef574c914ab3a34a84102d0894",
+    "app/environment/solar_clock.gd": "7b855e2c2a8f03df78635fe57f41069b530d87c8d219f04af079fbe14656a385",
+    "app/app_state/visual_checkpoint.gd": "72879d623cfd1ec0e86e5fac90088ce40326d7131ac2c65c8816879cbb3edc07",
+    "app/main.gd": "28f7b62295343ce54bad152c776059b3979a4b9425c0bef97bd2ef2b7ae0e0a2",
+    "app/tests/test_time_of_day_timeline.gd": "b5b219e0a3c34a939c34fc721303f2ed0c748aadabd7fe7e8814234389c90480",
+    "app/tests/test_time_of_day_checkpoint_v2.gd": "34c6ad28443e41206a98318e91787f7f24267936b56a4ce16c4ad51bfff64e6d",
+    "app/tests/test_time_of_day_checkpoint.gd": "9a6446db58f0f92bad9bcc4e2c7adfdf66feaace8c7272f269073331a41a27e0",
+    "app/test.sh": "0fb964faf24fde2c60832433fe4cd9c8c3298e7224fa8ddcf5aab98944d59361"
+  },
+  "live_progression_enabled": false
+}
