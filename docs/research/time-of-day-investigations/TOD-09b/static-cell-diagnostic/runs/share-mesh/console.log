@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:372)
+OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+TOD09b static cell arrays: {"arrays_bytes_compared":12488904,"compared_meshes":48,"first_sha256":"6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a","mismatched":[],"ok":true,"second_sha256":"6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"}
+00-legacy in-place/fresh pixels=true update=0.556 ms elevation=45.0000 deg
+TOD-09b diagnostic capture complete; hidden scenery mode=

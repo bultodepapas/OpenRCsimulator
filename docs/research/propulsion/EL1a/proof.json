@@ -1,0 +1,58 @@
+{
+  "format": "openrc-electric-source-proof v1",
+  "scope": "synthetic verification only",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "sha256": {
+    "physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+    "physics/propulsion.gd": "d12d2ec2b5b08df62c825920873b16627194517573f2edd70a3c1cd9d10dc439",
+    "physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+    "physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "physics/rotor_coupling.gd": "e893d4707feeb119a727ff050366fc077c7f35ddb7316303576f2ad3b5e05126",
+    "tests/test_electric_motor.gd": "ef0cc4f377875cce3038281bc7601e734e9088a1c8e8055738ae3efe7bbaf394"
+  },
+  "control": {
+    "exit_code": 0,
+    "checks": 1057,
+    "failures": 0,
+    "engine_errors": false,
+    "observations": [
+      "EL1a synthetic static: rho=0.800 rpm=6246.823214 battery_A=10.714710",
+      "EL1a synthetic static: rho=1.225 rpm=5936.859471 battery_A=14.589257",
+      "EL1a synthetic static: rho=1.600 rpm=5705.821175 battery_A=17.477235",
+      "EL1a no-load: Hz=120 rpm_error=0.015830550908",
+      "EL1a no-load: Hz=240 rpm_error=0.000910824056",
+      "EL1a no-load: Hz=480 rpm_error=0.000054623271",
+      "EL1a no-load: Hz=960 rpm_error=0.000003344239",
+      "EL1a electric source: 1057 checks, 0 failed"
+    ],
+    "failed_assertions": []
+  },
+  "mutations": {
+    "battery_current_ignores_duty": {
+      "rejected": true,
+      "checks": 1057,
+      "failures": 95,
+      "assertion": "battery current includes duty"
+    },
+    "wrong_kv_units": {
+      "rejected": true,
+      "checks": 1057,
+      "failures": 65,
+      "assertion": "shaft torque uses SI conversion"
+    },
+    "coast_loses_mechanical_drag": {
+      "rejected": true,
+      "checks": 1057,
+      "failures": 144,
+      "assertion": "coasting keeps mechanical loss"
+    },
+    "ignore_disable": {
+      "rejected": true,
+      "checks": 1057,
+      "failures": 6,
+      "assertion": "disabled equals duty zero"
+    }
+  },
+  "ok": true
+}

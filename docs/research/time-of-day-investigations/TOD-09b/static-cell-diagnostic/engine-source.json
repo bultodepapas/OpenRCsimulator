@@ -1,0 +1,12 @@
+{
+  "commit": "ed1daf0bf001b61586d9930840f2f1394092c079",
+  "source_sha256": {
+    "rasterizer_scene_gles3.cpp": "6d0719c9cd2caf685a9825028183bdf058081d7bc92d4b27ed2587f39b081221",
+    "rasterizer_scene_gles3.h": "4e3d4c1b13ec5982afb5f6ab477e317bb83b2b2dd7e631ae7738891ef35ffaf7"
+  },
+  "observations": {
+    "geometry_key": "p_mesh.get_local_index()",
+    "opaque_sort": "sort_key2 then sort_key1",
+    "engine_buffer_precision": "not measured"
+  }
+}

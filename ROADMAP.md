@@ -33,7 +33,7 @@ The [execution order below](#execution-order-and-release-gates) is authoritative
 - **P-51:** [P51-PLAN](docs/P51-PLAN.md) owns the experimental model and generated physics; [visual plan](docs/P51-VISUAL-PLAN.md) owns appearance acceptance.
 - **Product shell:** [MENU-PLAN](docs/MENU-PLAN.md) owns the shell; [RUNWAY-START-PLAN](docs/RUNWAY-START-PLAN.md) records the delivered UI-06a…c slice: experimental Stik launch selection, consistent restarts, trace identity and export proof. Current controls/catalog are authoritative; older execution records describe their original implementation date.
 - **Field and readability:** [LANDSCAPE-PLAN](docs/LANDSCAPE-PLAN.md) owns L-step status; [VISUAL-QUALITY-PLAN](docs/VISUAL-QUALITY-PLAN.md) sequences delivery. The renderer includes distant terrain, clouds/shadows, near grass, tree sway hooks, surfaces, windsock and pilot/flightline cues. Blinded readability, windsock dynamics and target-GPU acceptance remain open.
-- **Time of day:** [TIME-OF-DAY-PLAN](docs/TIME-OF-DAY-PLAN.md) scopes L19 into fixed selectable dawn/day/dusk/night; Home/CLI implementation and software verification are complete, with legacy daylight preserved, physical weather independent, and target-display/pilot acceptance pending. TOD-08a paired visual checkpoints and fixed-time history are software-verified; TOD-08b paused editing and recorded time changes are software-verified; TOD-09a establishes the software-verified exact solar clock; TOD-09b updates lighting and scenery shadows in place (regression/export checks pass; exact scenery-on pixel parity open); visible progression remains TOD-09c.
+- **Time of day:** [TIME-OF-DAY-PLAN](docs/TIME-OF-DAY-PLAN.md) scopes L19 into fixed selectable dawn/day/dusk/night; Home/CLI implementation and software verification are complete, with legacy daylight preserved, physical weather independent, and target-display/pilot acceptance pending. TOD-08a paired visual checkpoints and fixed-time history are software-verified; TOD-08b paused editing and recorded time changes are software-verified; TOD-09a establishes the software-verified exact solar clock; TOD-09b updates lighting and scenery shadows in place (regression/export checks and 22/22 exact independent-process pixel pairs pass); visible progression remains TOD-09c.
 - **Scenery:** [SCENERY-PLAN](docs/SCENERY-PLAN.md) owns opt-in field life and runway capture scenarios. Gate SC remains open; `app/run-landscape.sh` previews the complete field.
 - **Crash:** [CRASH-DAMAGE-PLAN](docs/CRASH-DAMAGE-PLAN.md) owns implemented snapshots, crossing reconstruction and rendered handoff; component labels, crossing-time kinematics and later damage presentation remain open.
 - **Desktop delivery:** [DESKTOP-DELIVERY-PLAN](docs/DESKTOP-DELIVERY-PLAN.md) owns native qualification, installers and fullscreen delivery; current releases are ZIP exports.
@@ -41,6 +41,7 @@ The [execution order below](#execution-order-and-release-gates) is authoritative
 - **Wind and flight conditions:** [WIND-PLAN](docs/WIND-PLAN.md) owns the owner-selected uniform-wind/repeating-gust slice: four-aircraft physics, moving-air trim, wind-aware runway support, Home conditions, v4 telemetry and exact weather replay. Seeded temporal OU turbulence now adds per-axis RMS/tau controls, v5 telemetry and exact RNG/filter replay ([M5-W04a evidence](docs/research/wind-implementation/M5-W04a/README.md)). Calm remains the default; spatial wind, physical/pilot acceptance and the wind/performance gates stay open.
 - **Field atmosphere:** [ATMOSPHERE-PLAN](docs/ATMOSPHERE-PLAN.md) owns M5-ATM-1/2 and the first explicit shaft-charge correction: field density, coherent trim/loads/wake, EAS/DA telemetry, EN/ES controls and environment replay. Uniform field conditions are an approximation; physical/performance acceptance stays open.
 - **Coupled propulsion:** [PROPULSION-CORE-PLAN](docs/PROPULSION-CORE-PLAN.md) records the main-line G2a/G2b experimental shaft/body RK4 slice, fixed-axis rotor reaction and exact replay; default promotion, other powerplants and physical/performance acceptance remain open.
+- **Electric propulsion:** [ELECTRIC-PROPULSION-PLAN](docs/ELECTRIC-PROPULSION-PLAN.md) owns EL1–EL6 and the reusable motor/ESC/battery integration sequence; Timber B/4S is the selected reference, with its asset/data gates retained in TT.
 - **Deferred proposals:** [SMOKE-PLAN](docs/SMOKE-PLAN.md). Re-audit its old code assumptions before implementation and reuse the existing render wind hook.
 
 ## Execution order and release gates
@@ -337,18 +338,9 @@ Knowledge: [05](docs/research/roadmap-investigations/05-propulsion-engines-motor
 | G5 | Several power plants (`powerplants[]`, with DATA-14) | Counter-rotating twin: net reaction torque 0 ± 1e-12; engine-out yaw sign |
 | PT4 | Playtest v0.4 | Owner judges throttle response, idle reliability and sound with the PT4 checklist in [05](docs/research/roadmap-investigations/05-propulsion-engines-motors.md) |
 
-#### M4b — Electric propulsion (optional next product slice)
+#### M4b — Electric propulsion
 
-EL1 needs the H8/G2a shaft contract and matched motor/prop data; it does **not** wait for nitro failures, acoustic propagation or fuel burn. Choose its priority after Gate 2; add EL2–4 only with measured need and state/validation coverage.
-
-| # | Step | Proof |
-| --- | --- | --- |
-| EL1 | Drela three-constant motor (Kv, R, I0), averaged ESC and an ideal battery; an electric Stik variant | Operating point vs the hand calculation; the variant trims and passes the handling test |
-| EL2 | LiPo battery: open-circuit voltage vs state of charge, internal resistance, one RC pair; state of charge in the H8 state | Voltage-sag trace on a throttle punch vs the hand calculation |
-| EL3 | ESC behaviours (Hobbywing manual values): start ramp, soft and hard low-voltage cut-off, brake vs freewheel, signal-loss cut, arming | Unit test per mode; the brake gives a stopped-prop glide |
-| EL4 | Winding temperature with R(T); ESC derating | Sustained full throttle plateaus; derating at the threshold |
-| EL5 | Static operating point vs measured data (a test-stand dataset or the owner's wattmeter) | Current and thrust within ±10 % |
-| EL6 | Flight time vs telemetry (mAh per minute of a pattern) | Within ±15 % |
+The owner selected electric development on 2026-10-10. The [Electric Propulsion Plan](docs/ELECTRIC-PROPULSION-PLAN.md) now owns EL1–EL6 status and detailed proofs: source kernel → schema → trim → coupled session/replay → experimental electric aircraft → Timber handoff, followed by identified battery/ESC behavior and independent validation. H8/G2a/G2b are shared foundations; nitro failures, acoustic propagation and fuel burn are not prerequisites. The original EL5 current/thrust ±10% and EL6 endurance ±15% targets remain there. Synthetic tests establish software behavior, not physical Timber accuracy.
 
 Turbine: AV-05a (spool ≈ 3 s up, ≈ 1.9 s down) and AV-05b (ECU states) belong to the [Avanti plan](docs/AVANTI-S-PLAN.md), using [05](docs/research/roadmap-investigations/05-propulsion-engines-motors.md).
 

@@ -1,6 +1,6 @@
 # TOD-09b — In-place scene lighting
 
-2026-10-10 · Status: implemented; full regression and exported interaction checks pass. Exact scenery-on fresh-build pixel parity remains open. Continuous solar progression remains disabled.
+2026-10-10 · Status: implemented and software-verified; full regression, exported interactions and 22/22 independent-process pixel pairs pass. Continuous solar progression remains disabled.
 
 [Plan](../../../TIME-OF-DAY-PLAN.md) · [Prior consumer audit](../TOD-09a/render-update-audit.md)
 
@@ -26,7 +26,7 @@ Preparation allocates detached replacement meshes and validates ownership at com
 
 The production paused-Apply captures pass with scenery [off](apply-off/report.json) and [on](apply-on/report.json): unchanged physical state, exact day/night/day round trip, exact repeated-night pixels, and settled first frames. The independent fresh-build matrix covers legacy, noon, night, dawn and samples immediately around sunrise/sunset. All 11 scenery-[off](render-off/report.json) pairs are exact. Scenery-[on](render-on/report.json) passes only the night pair; the other 10 pairs differ at two or three static-cell pixels, with a maximum channel delta of 4/255. All pairs retain the same aircraft transform and converge between consecutive frames.
 
-**The exact scenery-on parity gate is open.** The capture command intentionally exits nonzero; no pixel tolerance, mask or acceptance waiver was introduced. See the diagnostic below. Target-GPU/display and pilot acceptance also remain open.
+**The exact pixel gate is now closed by the independent-process fixture:** all 22 production Apply versus fresh Main pairs match, and a stale-Environment negative control is rejected. [Closure and reproduction](pixel-verification.md), [matrix report](process-parity/report.json). The archived same-process probe retains its failed comparisons; no pixel tolerance, mask or acceptance waiver was introduced. Target-GPU/display and pilot acceptance remain open.
 
 ## Exploratory update cost
 
@@ -37,17 +37,17 @@ Compatibility/OpenGL, llvmpipe, Xvfb, 960×540, one software-renderer worker. Tw
 | Off | 0.545 / 0.753 / 1.652 | 406.185 / 419.650 | 441.689 / 460.459 |
 | On | 4.989 / 5.957 / 9.293 | 424.728 / 448.961 | 477.540 / 508.203 |
 
-These are absolute sampled frame intervals, not an isolated GPU-cost measurement. They do not establish the proposed 720p budget. Shadow-only mesh preparation still allocates; scheduling and target-hardware worst-update cost must be established before TOD-09c enables continuous progression. The capture process also reports two ObjectDB instances at exit; the production regression suite passed, but the probe teardown warning is not classified here.
+These are absolute sampled frame intervals, not an isolated GPU-cost measurement. They do not establish the proposed 720p budget. Shadow-only mesh preparation still allocates; scheduling and target-hardware worst-update cost must be established before TOD-09c enables continuous progression. The archived capture process reports two ObjectDB instances at exit. The follow-up identifies them as WAV playback objects; the independent-process visual fixture disables audio and exits without that warning. Production audio teardown is outside this slice.
 
 ## Capture oracle diagnostic
 
 The initial capture harness paused physical ticks but resampled the airplane's frame-interpolated pose between image pairs. Its legacy comparison differed at 47 aircraft pixels; the sky and field matched. [Initial images and pixel bounds](interpolation-diagnostic/report.json) preserve that failure. The corrected harness pins an explicit physical pose, asserts transform equality, and requires consecutive completed frames to converge. Production pose interpolation is unchanged. This avoids misclassifying geometry movement as a lighting error; it does not relax the image comparison.
 
-The remaining three-pixel discrepancy already occurs in the initial legacy no-op. Two subsequent fresh builds match exactly. Hiding moving parts, flowers or shadow batches does not remove it; hiding only opaque `cell_*` geometry does. All 48 static cell meshes have byte-identical surface arrays (12,488,904 bytes) between the original and fresh scene. Raising cells equally does not reliably remove the difference, so ground Z-fighting is **not** established. [Diagnostic controls and reproduction](static-cell-diagnostic/README.md) preserve the observations. They isolate the discrepancy to static-cell rendering across scene contexts, without proving its engine-level cause or closing the parity requirement.
+The remaining three-pixel discrepancy already occurs in the initial legacy no-op. Two subsequent fresh builds match exactly. Hiding moving parts, flowers or shadow batches does not remove it; hiding only opaque `cell_*` geometry does. All 48 static cell meshes have byte-identical surface arrays (12,488,904 bytes) between the original and fresh scene. Raising cells equally does not reliably remove the difference, so ground Z-fighting is **not** established. [Diagnostic controls and reproduction](static-cell-diagnostic/README.md) preserve the observations. Follow-up mesh-resource and near-plane controls identify allocation-dependent draw ordering and depth sensitivity. The independent-process fixture preserves production startup allocation and closes the lighting parity gate with the original camera; it does not change static scenery geometry.
 
 ## Next action
 
-Resolve the static-cell fresh-build comparison with a deterministic independent scene/process fixture and investigate probe teardown. Keep the exact assertion. Then close TOD-09b's image gate and proceed to TOD-09c: versioned progressing events/checkpoints, solar scheduling, lifecycle behavior and UI controls. Continuous time remains disabled in this change.
+Proceed to TOD-09c: versioned progressing events/checkpoints, solar scheduling, lifecycle behavior and UI controls. Establish scheduling and target-frame cost before enabling the user-facing 1× rate. Continuous time remains disabled in this change.
 
 ## Reproduction
 
