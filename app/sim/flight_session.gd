@@ -6,6 +6,12 @@
 # visible pause; resuming is an explicit action (resume()).
 extends Node
 
+const ElectricStop: Script = preload("res://physics/electric_stop.gd")
+const ELECTRIC_LAW: String = "electric-fixed-bus-coupled-stop-v1"
+## Conservative source-only explicit-step envelope, qualified by EL1d scalar refinement.
+## Propeller/aerodynamic stiffness still needs per-configuration flight evidence.
+const ELECTRIC_MAX_STEP_RATIO: float = 0.25
+
 const WeatherField = preload("res://physics/wind_field.gd")
 const Turbulence = preload("res://physics/wind_turbulence.gd")
 const WeatherConfig = preload("res://physics/wind_config.gd")
@@ -16,6 +22,7 @@ var _trim_charge: float = 1.0
 var _weather_pending_reset: bool = false
 var _turbulence_aux_index: int = -1 # derived layout cache; reset/restore only, excluded from snapshots
 var _shaft_integrator: String = "split"
+var _shaft_explicit: bool = false
 var _shaft_pending_reset: bool = false
 var shaft_error: String = ""
 
@@ -31,6 +38,10 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 	if mode == "coupled-rk4" and aircraft.get("ok", false) and not _supports_coupled_shaft(aircraft.model):
 		shaft_error = "coupled-rk4 requires a propeller shaft model with positive rotor inertia"
 		return false
+	if mode == "split" and aircraft.get("ok", false) and Propulsion.is_electric(aircraft.model.propulsion):
+		shaft_error = "electric propulsion requires coupled-rk4"
+		return false
+	_shaft_explicit = true
 	if mode == _shaft_integrator:
 		shaft_error = ""
 		return true
@@ -54,12 +65,21 @@ func shaft_is_coupled() -> bool:
 
 func _supports_coupled_shaft(model: Dictionary) -> bool:
 	var prop: Dictionary = model.get("propulsion", {})
-	if Turbine.is_turbine(prop) or not Propulsion.has_shaft(prop) or not _model_is_valid(model) \
+	if Turbine.is_turbine(prop) or not Propulsion.has_rotor_dynamics(prop) or not _model_is_valid(model) \
 			or not is_finite(float(prop.get("rotor_inertia", NAN))) or float(prop.get("rotor_inertia", 0.0)) <= 0.0:
 		return false
 	var axis: PackedFloat64Array = Propulsion.axis(prop)
 	var inverse: PackedFloat64Array = RB.inertia_inverse(model.inertia)
 	return 1.0 - float(prop.rotor_inertia) * M.dot(axis, RB.inertia_mul(inverse, axis)) > 0.0
+
+
+func _electric_step_supported(model: Dictionary) -> bool:
+	var prop: Dictionary = model.propulsion
+	var carrier: float = 1.0 - float(prop.rotor_inertia) * M.dot(Propulsion.axis(prop),
+		RB.inertia_mul(RB.inertia_inverse(model.inertia), Propulsion.axis(prop)))
+	var kt: float = 60.0 / (TAU * float(prop.motor.kv_rpm_per_volt))
+	var ratio: float = sim.dt() * kt * kt / (float(prop.motor.resistance_ohm) * float(prop.rotor_inertia) * carrier)
+	return is_finite(ratio) and ratio >= 0.0 and ratio <= ELECTRIC_MAX_STEP_RATIO
 
 
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
@@ -422,12 +442,18 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 			error_text += ": " + str(data.errors[0])
 		return { ok = false, data = data, start = { ok = false, message = error_text }, trims = neutral_trims, message = error_text }
 	var model: Dictionary = data.get("model", {})
-	if shaft_is_coupled() and not _supports_coupled_shaft(model):
+	var electric: bool = Propulsion.is_electric(model.get("propulsion", {}))
+	if electric and _shaft_explicit and not shaft_is_coupled():
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims, message = "electric propulsion requires coupled-rk4"}
+	if (electric or (shaft_is_coupled() and _shaft_explicit)) and not _supports_coupled_shaft(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "coupled-rk4 requires a propeller shaft model with positive carrier inertia"}
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
+	if electric and not _electric_step_supported(model):
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
+			message = "electric motor is too stiff for the selected timestep (dt/motor time constant > 0.25); qualify a slower source or a finer solver"}
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
 	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0), air_density(), engine_charge_ratio())
 	if not candidate_start.get("ok", false):
@@ -462,6 +488,8 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
+	if not _shaft_explicit:
+		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) else "split"
 	start = prepared.start
 	trims = prepared.trims.duplicate(true)
 	_has_committed_aircraft = true
@@ -479,6 +507,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
+	sim.continuous_step = _electric_step if Propulsion.is_electric(aircraft.model.propulsion) else Callable()
 	sim.continuous_evaluate = _coupled_evaluate if shaft_is_coupled() else Callable()
 	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
 	sim.continuous_derivative = _coupled_derivative if shaft_is_coupled() else _wash_derivative
@@ -1011,10 +1040,10 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 	return out
 
 
-func _coupled_rpm(values: PackedFloat64Array) -> float:
+func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 	var prop: Dictionary = aircraft.model.propulsion
 	var count: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
-	if values.size() != count + 1 or not is_finite(values[count]) or values[count] < 0.0:
+	if values.size() != count + 1 or not is_finite(values[count]) or (values[count] < 0.0 and not trial):
 		return NAN
 	return values[count]
 
@@ -1029,15 +1058,17 @@ func _coupled_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> Pa
 
 
 func _coupled_rotor(_s: PackedFloat64Array, values: PackedFloat64Array, _t: float) -> PackedFloat64Array:
-	return Dynamics.rotor_momentum(aircraft.model, _coupled_rpm(values))
+	return Dynamics.rotor_momentum(aircraft.model, maxf(0.0, _coupled_rpm(values, true)) if Propulsion.is_electric(aircraft.model.propulsion) else _coupled_rpm(values))
 
 
 ## External loads include -Q_prop exactly once. The rotor response adds only relative-spin reaction.
 func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
-	var rpm: float = _coupled_rpm(values)
-	if not is_finite(rpm):
-		return {ok = false}
 	var prop: Dictionary = aircraft.model.propulsion
+	var electric: bool = Propulsion.is_electric(prop)
+	var trial_rpm: float = _coupled_rpm(values, electric)
+	if not is_finite(trial_rpm):
+		return {ok = false}
+	var rpm: float = maxf(0.0, trial_rpm) if electric else trial_rpm
 	var air: Dictionary = air_data(s, time_s)
 	var rate: float = Propulsion.shaft_rate(rpm, sim.inputs[3], M.dot(air.v_air, Propulsion.axis(prop)),
 		prop, air_density(), engine_charge_ratio(), engine_running)
@@ -1051,11 +1082,36 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		a.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE))
 	for i: int in ground.size():
 		external[i] += ground[i]
+	var locked: bool = false
+	if electric and trial_rpm <= 0.0:
+		var point: Dictionary = Propulsion.electric_source_state(rpm, sim.inputs[3], prop, engine_running)
+		if not point.get("ok", false):
+			return {ok = false}
+		var kt: float = 60.0 / (TAU * float(prop.motor.kv_rpm_per_volt))
+		var friction: float = kt * float(prop.motor.no_load_current_a)
+		if trial_rpm < 0.0:
+			# Left-limit continuation for event localization only. Never commit this RPM.
+			rate = (kt * float(point.motor_current_a) - friction) / float(prop.rotor_inertia) * 60.0 / TAU
+		elif rpm == 0.0:
+			# Static bearing friction may hold the relative rotor against body acceleration.
+			var w: PackedFloat64Array = s.slice(RB.RATE, RB.RATE + 3)
+			var free_body: PackedFloat64Array = RB.inertia_mul(RB.inertia_inverse(sim.inertia),
+				M.sub(external.slice(3, 6), M.cross(w, RB.inertia_mul(sim.inertia, w))))
+			var required: float = float(prop.rotor_inertia) * M.dot(Propulsion.axis(prop), free_body)
+			var drive: float = kt * float(point.motor_current_a)
+			if absf(drive - required) <= friction:
+				locked = true
+				rate = required / float(prop.rotor_inertia) * 60.0 / TAU
+			elif drive - required < -friction:
+				return {ok = false} # unsupported reverse breakaway, not an invented stop torque
 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
 		M.v3(external[3], external[4], external[5]), sim.inertia, RB.inertia_inverse(sim.inertia),
 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
 	if not response.ok:
 		return response
+	if locked:
+		response.spin_acceleration = 0.0
+		response.reaction = PackedFloat64Array([0.0, 0.0, 0.0])
 	for i: int in 3:
 		external[3 + i] += response.reaction[i]
 	response.loads = external
@@ -1098,6 +1154,41 @@ func _shaft_rate(s: PackedFloat64Array, rpm: float, time_s: float) -> float:
 	values[values.size() - 1] = rpm
 	var result: Dictionary = _coupled_response(s, values, time_s)
 	return result.rpm_rate if result.ok else NAN
+
+
+## EL1d: locate the first stop, conserve momentum through the numerical boundary projection,
+## then resume the remaining tick with static friction. Only accepted state is published.
+func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivative: Callable,
+		first: PackedFloat64Array) -> PackedFloat64Array:
+	var result: Dictionary = ElectricStop.advance(combined, at, dt, derivative, first,
+		combined.size() - 1, _project_electric_stop)
+	return result.state if result.ok else PackedFloat64Array([NAN])
+
+
+func _project_electric_stop(values: PackedFloat64Array, index: int) -> PackedFloat64Array:
+	var out: PackedFloat64Array = values.duplicate()
+	var impulse: float = float(aircraft.model.propulsion.rotor_inertia) * out[index] * TAU / 60.0
+	var correction: PackedFloat64Array = RB.inertia_mul(RB.inertia_inverse(sim.inertia),
+		M.scale(Propulsion.axis(aircraft.model.propulsion), impulse))
+	for i: int in 3:
+		out[RB.RATE + i] += correction[i]
+	out[index] = 0.0
+	return out
+
+
+## Pure accepted-endpoint electrical telemetry; no dynamic state is stored in the definition.
+func electrical_state() -> Dictionary:
+	if not aircraft.get("ok", false) or not Propulsion.is_electric(aircraft.model.propulsion):
+		return {ok = false}
+	var point: Dictionary = Propulsion.electric_source_state(sim.aux[AUX_RPM], sim.inputs[3],
+		aircraft.model.propulsion, engine_running)
+	if point.get("ok", false):
+		point.tick = sim.tick
+		point.time_s = sim.time()
+		point.rpm = sim.aux[AUX_RPM]
+		point.enabled = engine_running
+		point.duty = sim.inputs[3] if engine_running else 0.0
+	return point
 
 
 ## Aerodynamic-convention deflections from the servos' actual positions. The servos change once per tick (in
@@ -1322,6 +1413,12 @@ func trace_meta() -> Dictionary:
 		metadata.state_timing = "body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage"
 		if metadata.has("weather_timing"):
 			metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0"
+	if Propulsion.is_electric(prop):
+		metadata.propulsion_model = ELECTRIC_LAW
+		metadata.electric_configuration = JSON.stringify({motor = prop.motor, battery = prop.battery, esc = prop.esc}, "", true, true)
+		metadata.electric_sample_timing = "accepted endpoint; current tick input and source-enabled mode"
+		metadata.electric_stop = "first downward zero crossing; bounded RK4 localization; static bearing friction; no reverse"
+		metadata.engine_atmosphere = "electric motor constants independent of density; propeller loads use field density"
 	return metadata
 
 
@@ -1344,6 +1441,9 @@ func checkpoint() -> Dictionary:
 		boundary.format = "openrc-flight-checkpoint v4"
 		boundary.shaft_integrator = shaft_integrator()
 		boundary.weather_config = weather_configuration()
+	if Propulsion.is_electric(aircraft.model.propulsion):
+		boundary.format = "openrc-flight-checkpoint v5"
+		boundary.electric_law = ELECTRIC_LAW
 	return boundary
 
 
@@ -1359,6 +1459,8 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(field.configuration())
 	if shaft_is_coupled():
 		parts.append("shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
+	if Propulsion.is_electric(aircraft.model.propulsion):
+		parts.append(ELECTRIC_LAW)
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
@@ -1367,14 +1469,17 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4"] or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
-	if shaft_is_coupled() != (candidate.format == "openrc-flight-checkpoint v4") \
+	var electric: bool = Propulsion.is_electric(aircraft.model.propulsion)
+	if electric != (candidate.format == "openrc-flight-checkpoint v5") or (electric and candidate.get("electric_law") != ELECTRIC_LAW):
+		return false
+	if shaft_is_coupled() != (candidate.format in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5"]) \
 			or (shaft_is_coupled() and candidate.get("shaft_integrator") != shaft_integrator()):
 		return false
 	var restored_weather: WeatherField = _weather
-	if candidate.format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4"]:
+	if candidate.format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5"]:
 		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
 		if not built.ok:
 			return false

@@ -11,8 +11,9 @@ var note := ""
 var _sim: Node
 
 
-func _init(sim: Node) -> void:
+func _init(sim: Node, electrical_sample: Callable = Callable()) -> void:
 	_sim = sim
+	trace.electrical_sample = electrical_sample
 	sim.stepped.connect(_on_stepped)
 
 

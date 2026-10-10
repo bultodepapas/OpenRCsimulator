@@ -48,6 +48,9 @@ var continuous_evaluate: Callable
 ## Empty callbacks retain the legacy sampled-rotor policy. Projection is validated before any commit.
 var continuous_rotor_momentum: Callable
 var continuous_aux: Callable
+## EL1d: optional pure bounded integration policy for a continuous-state event.
+## (combined, t, dt, derivative, k1) -> float64 combined state; failure returns nonfinite state.
+var continuous_step: Callable
 var _last_valid_continuous: PackedFloat64Array = PackedFloat64Array()
 
 var state := PackedFloat64Array()
@@ -228,7 +231,9 @@ func step() -> void:
 			return _zero_derivative()
 		return derive.call(s, l, stage_t, joint)
 	# H2: the loads are a pure function of (state, aux, t), so stage 1 reuses the tick's own evaluation.
-	var next_state := RK.rk4_step_at(combined, t, dt(), f, derive.call(combined, current_loads, t, current_joint))
+	var first: PackedFloat64Array = derive.call(combined, current_loads, t, current_joint)
+	var next_state: PackedFloat64Array = continuous_step.call(combined, t, dt(), f, first) if continuous_step.is_valid() \
+		else RK.rk4_step_at(combined, t, dt(), f, first)
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)

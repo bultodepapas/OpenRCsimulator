@@ -1240,28 +1240,45 @@
         "kind": {
           "enum": [
             "glow_prop",
-            "turbine"
+            "turbine",
+            "electric_prop"
           ]
         }
       },
-      "allOf": [
+      "oneOf": [
         {
-          "if": {
-            "required": [
-              "kind"
-            ],
-            "properties": {
-              "kind": {
-                "const": "turbine"
+          "allOf": [
+            {
+              "$ref": "#/$defs/glowPropulsion"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "glow_prop"
+                }
               }
             }
-          },
-          "then": {
-            "$ref": "#/$defs/turbinePropulsion"
-          },
-          "else": {
-            "$ref": "#/$defs/glowPropulsion"
-          }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/turbinePropulsion"
+            },
+            {
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "turbine"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/electricPropulsion"
         }
       ],
       "additionalProperties": true
@@ -3215,6 +3232,485 @@
         ]
       },
       "additionalProperties": true
+    },
+    "electricEvidence": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "properties": {
+        "unit": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "manual",
+            "measured",
+            "borrowed",
+            "estimated",
+            "derived"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "pattern": "[^\\u0001-\\u0020]"
+        },
+        "value": {}
+      },
+      "additionalProperties": false
+    },
+    "electricCtTable": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/electricEvidence"
+        },
+        {
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1.7976931348623157e+308,
+                      "const": 0
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "maximum": 0.5,
+                      "exclusiveMinimum": 0
+                    }
+                  ],
+                  "items": false
+                }
+              ],
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1.7976931348623157e+308
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -0.5,
+                    "maximum": 0.5
+                  }
+                ],
+                "items": false
+              }
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        }
+      ]
+    },
+    "electricCpTable": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/electricEvidence"
+        },
+        {
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1.7976931348623157e+308,
+                      "const": 0
+                    },
+                    {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "minimum": -0.3,
+                      "maximum": 0.5
+                    }
+                  ],
+                  "items": false
+                }
+              ],
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1.7976931348623157e+308
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -0.3,
+                    "maximum": 0.5
+                  }
+                ],
+                "items": false
+              }
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        }
+      ]
+    },
+    "electricPropeller": {
+      "type": "object",
+      "required": [
+        "diameter",
+        "thrust_line_offset",
+        "rotating_inertia",
+        "ct_table",
+        "cp_table"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "diameter": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 2.0
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            }
+          ]
+        },
+        "thrust_line_offset": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -1.0,
+                    "maximum": 1.0
+                  }
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            }
+          ]
+        },
+        "rotating_inertia": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 0.0,
+                  "maximum": 0.1
+                },
+                "unit": {
+                  "const": "kg·m2"
+                }
+              }
+            }
+          ]
+        },
+        "ct_table": {
+          "$ref": "#/$defs/electricCtTable"
+        },
+        "cp_table": {
+          "$ref": "#/$defs/electricCpTable"
+        },
+        "thrust_angles": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number",
+                    "minimum": -10.0,
+                    "maximum": 10.0
+                  }
+                },
+                "unit": {
+                  "const": "deg"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricNoLoadContext": {
+      "type": "object",
+      "required": [
+        "voltage_v",
+        "rpm",
+        "temperature_c"
+      ],
+      "properties": {
+        "voltage_v": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 0.1,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "V"
+                }
+              }
+            }
+          ]
+        },
+        "rpm": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 1.0,
+                  "maximum": 10000000.0
+                },
+                "unit": {
+                  "const": "rpm"
+                }
+              }
+            }
+          ]
+        },
+        "temperature_c": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -100.0,
+                  "maximum": 300.0
+                },
+                "unit": {
+                  "const": "°C"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricMotor": {
+      "type": "object",
+      "required": [
+        "kv_rpm_per_volt",
+        "resistance_ohm",
+        "resistance_scope",
+        "no_load_current_a",
+        "no_load_context"
+      ],
+      "properties": {
+        "kv_rpm_per_volt": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 1.0,
+                  "maximum": 10000.0
+                },
+                "unit": {
+                  "const": "rpm/V"
+                }
+              }
+            }
+          ]
+        },
+        "resistance_ohm": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 1e-05,
+                  "maximum": 10.0
+                },
+                "unit": {
+                  "const": "ohm"
+                }
+              }
+            }
+          ]
+        },
+        "resistance_scope": {
+          "const": "motor_winding_equivalent"
+        },
+        "no_load_current_a": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 200.0
+                },
+                "unit": {
+                  "const": "A"
+                }
+              }
+            }
+          ]
+        },
+        "no_load_context": {
+          "$ref": "#/$defs/electricNoLoadContext"
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricBattery": {
+      "type": "object",
+      "required": [
+        "kind",
+        "voltage_v"
+      ],
+      "properties": {
+        "kind": {
+          "const": "fixed_voltage"
+        },
+        "voltage_v": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "minimum": 0.1,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "V"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricEsc": {
+      "type": "object",
+      "required": [
+        "kind",
+        "command_mapping"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ideal_motoring"
+        },
+        "command_mapping": {
+          "const": "identity"
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricPropulsion": {
+      "type": "object",
+      "required": [
+        "kind",
+        "motor",
+        "battery",
+        "esc",
+        "propeller"
+      ],
+      "properties": {
+        "kind": {
+          "const": "electric_prop"
+        },
+        "motor": {
+          "$ref": "#/$defs/electricMotor"
+        },
+        "battery": {
+          "$ref": "#/$defs/electricBattery"
+        },
+        "esc": {
+          "$ref": "#/$defs/electricEsc"
+        },
+        "propeller": {
+          "$ref": "#/$defs/electricPropeller"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

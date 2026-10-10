@@ -10,6 +10,7 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const Turbine := preload("res://physics/turbine.gd")
+const ElectricMotor := preload("res://physics/electric_motor.gd")
 
 ## Below this, the engine produces nothing (stopped).
 const STOPPED_RPM := 1.0
@@ -21,6 +22,10 @@ const SHAFT_RPM_CEILING := 1.6
 ## Numerical torque-balance tolerance (N·m absolute, relative above 1 N·m); not a physical accuracy claim.
 const SHAFT_TORQUE_TOL := 1e-10
 const RHO_REFERENCE := 1.225 # reference calibration of the existing power curve
+## The electric root search is bounded numerically, not by its no-load Kv × V reference.
+const ELECTRIC_SEARCH_SAMPLES := 48
+const ELECTRIC_SEARCH_EXPANSIONS := 16
+const ELECTRIC_ROOT_TORQUE_TOL := 1e-10
 
 
 ## Piecewise-linear table [J0, v0, J1, v1, …]. J < 0 (flying backwards) uses the J = 0 value;
@@ -56,6 +61,252 @@ static func has_shaft(prop: Dictionary) -> bool:
 	return not prop.get("shaft", {}).is_empty()
 
 
+## Explicit normalized source identity. Missing kind remains the legacy glow source.
+static func source_kind(prop: Dictionary) -> String:
+	var kind: Variant = prop.get("kind", "glow_prop")
+	if kind == "electric_prop" or kind == "turbine" or kind == "glow_prop":
+		return str(kind)
+	return "unsupported"
+
+
+static func is_electric(prop: Dictionary) -> bool:
+	return source_kind(prop) == "electric_prop"
+
+
+## Continuous rotor state is a capability, independent of a combustion power-curve layout.
+static func has_rotor_dynamics(prop: Dictionary) -> bool:
+	return is_electric(prop) or (not Turbine.is_turbine(prop) and has_shaft(prop))
+
+
+## Motor and ideal ESC output for one trial/accepted RPM and command.
+## The returned fields include shaft_torque_nm, motor_current_a, battery_current_a,
+## command_voltage_v, motor_voltage_v, bus_power_w and loss powers for session telemetry.
+static func electric_source_state(rpm: float, duty: float, prop: Dictionary, enabled: bool = true) -> Dictionary:
+	if not is_electric(prop):
+		return {ok = false, message = "source is not electric_prop"}
+	var motor_value: Variant = prop.get("motor", {})
+	var battery_value: Variant = prop.get("battery", {})
+	var esc_value: Variant = prop.get("esc", {})
+	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY \
+			or typeof(esc_value) != TYPE_DICTIONARY:
+		return {ok = false, message = "electric source needs motor, battery and esc dictionaries"}
+	var motor: Dictionary = motor_value
+	var battery: Dictionary = battery_value
+	var esc: Dictionary = esc_value
+	if battery.get("kind") != "fixed_voltage" or esc.get("kind") != "ideal_motoring" \
+			or esc.get("command_mapping") != "identity":
+		return {ok = false, message = "unsupported electric battery or ESC mode"}
+	var voltage_value: Variant = battery.get("voltage_v")
+	if typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
+		return {ok = false, message = "fixed_voltage battery needs numeric voltage_v"}
+	var state: Dictionary = ElectricMotor.evaluate(rpm, duty, float(voltage_value), motor, enabled)
+	state["bus_voltage_v"] = float(voltage_value)
+	if not state.get("ok", false):
+		state["source_kind"] = "electric_prop"
+		state["enabled"] = enabled
+		return state
+	state["source_kind"] = "electric_prop"
+	state["enabled"] = enabled
+	return state
+
+
+## Torque-balance equilibrium for an electric source and the shared Ct/Cp propeller.
+## Kv × V sets only the first search scale. The finite geometric search expands above it,
+## allowing airflow-driven RPM above electrical no-load speed without imposing a governor.
+## A root is accepted only when its residual is small and both local one-sided slopes are restoring.
+static func steady_operating_point(duty: float, u: float, prop: Dictionary, rho: float) -> Dictionary:
+	if not is_electric(prop):
+		return _electric_operating_failure("invalid", "source is not electric_prop", NAN, NAN, 0)
+	if not is_finite(duty) or duty < 0.0 or duty > 1.0:
+		return _electric_operating_failure("invalid", "electric duty must be finite and in [0,1]", NAN, NAN, 0)
+	if not is_finite(u) or not is_finite(rho) or rho <= 0.0:
+		return _electric_operating_failure("invalid", "electric equilibrium needs finite axial speed and positive density", NAN, NAN, 0)
+	var diameter_value: Variant = prop.get("diameter")
+	if typeof(diameter_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(diameter_value)) \
+			or float(diameter_value) <= 0.0 or typeof(prop.get("cp")) != TYPE_PACKED_FLOAT64_ARRAY:
+		return _electric_operating_failure("invalid", "electric equilibrium needs finite diameter and Cp table", NAN, NAN, 0)
+	var motor_value: Variant = prop.get("motor", {})
+	var battery_value: Variant = prop.get("battery", {})
+	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY:
+		return _electric_operating_failure("invalid", "electric equilibrium needs motor and battery dictionaries", NAN, NAN, 0)
+	var motor: Dictionary = motor_value
+	var battery: Dictionary = battery_value
+	var kv_value: Variant = motor.get("kv_rpm_per_volt")
+	var voltage_value: Variant = battery.get("voltage_v")
+	if typeof(kv_value) not in [TYPE_INT, TYPE_FLOAT] or typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
+		return _electric_operating_failure("invalid", "electric equilibrium needs numeric Kv and fixed voltage", NAN, NAN, 0)
+	var reference_rpm: float = float(kv_value) * float(voltage_value)
+	if not is_finite(reference_rpm) or reference_rpm <= 0.0:
+		return _electric_operating_failure("invalid", "electric no-load reference must be finite and positive", NAN, NAN, 0)
+	var lower_rpm: float = STOPPED_RPM
+	var lower_residual: float = _electric_net_torque(lower_rpm, duty, u, prop, rho)
+	if not is_finite(lower_residual):
+		return _electric_operating_failure("invalid", "electric source or propeller evaluation failed at stopped cutoff", lower_rpm, NAN, 0)
+	var cutoff_tolerance: float = _electric_torque_tolerance(lower_rpm, duty, u, prop, rho)
+	var stopped_cutoff_root: bool = is_finite(cutoff_tolerance) and absf(lower_residual) <= cutoff_tolerance
+	var unstable_count: int = 0
+	var last_upper_rpm: float = lower_rpm
+	for expansion in ELECTRIC_SEARCH_EXPANSIONS:
+		var upper_rpm: float = reference_rpm * M.pow_(2.0, float(expansion))
+		if not is_finite(upper_rpm) or upper_rpm <= lower_rpm:
+			return _electric_operating_failure("unbracketed", "electric RPM search exceeded its finite numerical bound", lower_rpm, last_upper_rpm, unstable_count)
+		last_upper_rpm = upper_rpm
+		var points: Array[float] = _electric_search_points(lower_rpm, upper_rpm, u, prop, duty)
+		var previous_rpm: float = points[0]
+		var previous_residual: float = _electric_net_torque(previous_rpm, duty, u, prop, rho)
+		if previous_rpm == lower_rpm and stopped_cutoff_root:
+			previous_residual = 0.0
+		if not is_finite(previous_residual):
+			return _electric_operating_failure("invalid", "electric torque residual became nonfinite", lower_rpm, upper_rpm, unstable_count)
+		for point_index in range(1, points.size()):
+			var rpm: float = points[point_index]
+			var residual: float = _electric_net_torque(rpm, duty, u, prop, rho)
+			if not is_finite(residual):
+				return _electric_operating_failure("invalid", "electric torque residual became nonfinite", lower_rpm, upper_rpm, unstable_count)
+			if rpm > lower_rpm and residual == 0.0:
+				var exact: Dictionary = _electric_root_result(rpm, duty, u, prop, rho, upper_rpm, 0)
+				if exact.ok:
+					return exact
+				if exact.status == "unstable":
+					unstable_count += 1
+			elif _opposite_signs(previous_residual, residual):
+				var bracket: Dictionary = _bisect_electric_root(previous_rpm, rpm, previous_residual, duty, u, prop, rho, upper_rpm)
+				if bracket.ok:
+					return bracket
+				if bracket.status == "unstable":
+					unstable_count += 1
+			previous_rpm = rpm
+			previous_residual = residual
+	if unstable_count > 0:
+		return _electric_operating_failure("unstable", "electric torque balance has no stable root in the bounded search; an unstable root was found", lower_rpm, last_upper_rpm, unstable_count)
+	if stopped_cutoff_root:
+		return _electric_operating_failure("stopped_cutoff", "equilibrium at the stopped-prop cutoff is not a positive-RPM operating point", lower_rpm, last_upper_rpm, 0)
+	return _electric_operating_failure("unbracketed", "no stable electric torque equilibrium in the bounded RPM search", lower_rpm, last_upper_rpm, 0)
+
+
+static func _electric_operating_failure(status: String, message: String, lower_rpm: float, upper_rpm: float, unstable_roots: int) -> Dictionary:
+	return {
+		ok = false, status = status, message = message, rpm = NAN, residual = NAN,
+		stability_slope = NAN, lower_rpm = lower_rpm, upper_rpm = upper_rpm,
+		unstable_roots = unstable_roots,
+	}
+
+
+static func _electric_search_points(lower_rpm: float, upper_rpm: float, u: float, prop: Dictionary,
+		duty: float) -> Array[float]:
+	var points: Array[float] = []
+	var log_span: float = M.log_(upper_rpm / lower_rpm)
+	for i in range(ELECTRIC_SEARCH_SAMPLES + 1):
+		var fraction: float = float(i) / float(ELECTRIC_SEARCH_SAMPLES)
+		points.append(lower_rpm * M.exp_(log_span * fraction))
+	var motor: Dictionary = prop.get("motor", {})
+	var battery: Dictionary = prop.get("battery", {})
+	var current_cutoff_rpm: float = duty * float(battery.get("voltage_v", 0.0)) * float(motor.get("kv_rpm_per_volt", 0.0))
+	if current_cutoff_rpm > lower_rpm and current_cutoff_rpm < upper_rpm:
+		points.append(current_cutoff_rpm)
+	var diameter: float = float(prop.get("diameter", 0.0))
+	var cp: PackedFloat64Array = prop.get("cp", PackedFloat64Array())
+	if u > 0.0 and diameter > 0.0:
+		for table_index in range(0, cp.size(), 2):
+			var J: float = cp[table_index]
+			if J > 0.0:
+				var knot_rpm: float = 60.0 * u / (J * diameter)
+				if is_finite(knot_rpm) and knot_rpm > lower_rpm and knot_rpm < upper_rpm:
+					points.append(knot_rpm)
+	points.sort()
+	var unique: Array[float] = []
+	for point in points:
+		if unique.is_empty() or absf(point - unique[unique.size() - 1]) > maxf(1e-9, absf(point) * 1e-12):
+			unique.append(point)
+	return unique
+
+
+static func _electric_net_torque(rpm: float, duty: float, u: float, prop: Dictionary, rho: float) -> float:
+	var source: Dictionary = electric_source_state(rpm, duty, prop)
+	if not source.get("ok", false):
+		return NAN
+	var load: float = prop_torque(rpm, u, prop, rho)
+	var residual: float = float(source.shaft_torque_nm) - load
+	return residual if is_finite(residual) else NAN
+
+
+static func _opposite_signs(a: float, b: float) -> bool:
+	return (a > 0.0 and b < 0.0) or (a < 0.0 and b > 0.0)
+
+
+static func _bisect_electric_root(low_rpm: float, high_rpm: float, low_residual: float, duty: float,
+		u: float, prop: Dictionary, rho: float, search_upper_rpm: float) -> Dictionary:
+	var lo: float = low_rpm
+	var hi: float = high_rpm
+	var flo: float = low_residual
+	var root: float = 0.5 * (lo + hi)
+	var residual: float = NAN
+	for iteration in range(80):
+		root = 0.5 * (lo + hi)
+		residual = _electric_net_torque(root, duty, u, prop, rho)
+		if not is_finite(residual):
+			return _electric_operating_failure("invalid", "electric torque residual became nonfinite during bisection", STOPPED_RPM, search_upper_rpm, 0)
+		if absf(residual) <= _electric_torque_tolerance(root, duty, u, prop, rho):
+			return _electric_root_result(root, duty, u, prop, rho, search_upper_rpm, iteration + 1)
+		if (flo > 0.0 and residual > 0.0) or (flo < 0.0 and residual < 0.0):
+			lo = root
+			flo = residual
+		else:
+			hi = root
+		if hi - lo <= maxf(1e-10, absf(root) * 1e-13):
+			break
+	return _electric_root_result(root, duty, u, prop, rho, search_upper_rpm, 80)
+
+
+static func _electric_root_result(rpm: float, duty: float, u: float, prop: Dictionary, rho: float,
+		search_upper_rpm: float, iterations: int) -> Dictionary:
+	var residual: float = _electric_net_torque(rpm, duty, u, prop, rho)
+	var tolerance: float = _electric_torque_tolerance(rpm, duty, u, prop, rho)
+	var slopes: PackedFloat64Array = _electric_one_sided_slopes(rpm, duty, u, prop, rho)
+	if not is_finite(residual) or absf(residual) > tolerance or slopes.size() != 2 \
+			or not is_finite(slopes[0]) or not is_finite(slopes[1]):
+		return _electric_operating_failure("invalid", "electric root failed residual or local-slope validation", STOPPED_RPM, search_upper_rpm, 0)
+	var stable: bool = slopes[0] < 0.0 and slopes[1] < 0.0
+	if not stable:
+		var failed: Dictionary = _electric_operating_failure("unstable", "electric torque root is not restoring on both sides", STOPPED_RPM, search_upper_rpm, 1)
+		failed.rpm = rpm
+		failed.residual = residual
+		failed.stability_slope = maxf(slopes[0], slopes[1])
+		return failed
+	return {
+		ok = true, status = "equilibrium", message = "stable electric torque equilibrium",
+		rpm = rpm, residual = residual, stability_slope = maxf(slopes[0], slopes[1]),
+		lower_rpm = STOPPED_RPM, upper_rpm = search_upper_rpm, unstable_roots = 0,
+		iterations = iterations,
+	}
+
+
+static func _electric_one_sided_slopes(rpm: float, duty: float, u: float, prop: Dictionary,
+		rho: float) -> PackedFloat64Array:
+	var h: float = maxf(1e-5, absf(rpm) * 1e-7)
+	var low: float = maxf(STOPPED_RPM, rpm - h)
+	var high: float = rpm + h
+	if low >= rpm or high <= rpm:
+		return PackedFloat64Array()
+	var at_root: float = _electric_net_torque(rpm, duty, u, prop, rho)
+	var low_value: float = _electric_net_torque(low, duty, u, prop, rho)
+	var high_value: float = _electric_net_torque(high, duty, u, prop, rho)
+	if not is_finite(at_root) or not is_finite(low_value) or not is_finite(high_value):
+		return PackedFloat64Array()
+	var rpm_per_omega: float = 60.0 / TAU
+	var left_slope: float = (at_root - low_value) / ((rpm - low) / rpm_per_omega)
+	var right_slope: float = (high_value - at_root) / ((high - rpm) / rpm_per_omega)
+	return PackedFloat64Array([left_slope, right_slope])
+
+
+static func _electric_torque_tolerance(rpm: float, duty: float, u: float, prop: Dictionary, rho: float) -> float:
+	var source: Dictionary = electric_source_state(rpm, duty, prop)
+	if not source.get("ok", false):
+		return NAN
+	var load: float = prop_torque(rpm, u, prop, rho)
+	return ELECTRIC_ROOT_TORQUE_TOL * maxf(1.0, maxf(absf(float(source.shaft_torque_nm)), absf(load)))
+
+
 ## Cp floor: 0 for the D5 tables (no windmilling torque), the table's own minimum when it tabulates windmilling.
 static func _cp_floor(prop: Dictionary) -> float:
 	return minf(CP_FLOOR, float(prop.get("cp_min", 0.0)))
@@ -75,6 +326,9 @@ static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> f
 ## P_adm = P_idle + θ·(P_peak_ind − P_idle) (air flow through the carburettor); the engine delivers
 ## Q = min(Q_full_ind(n), P_adm/ω) − Q_friction(n). Q_full_ind is the full-throttle brake torque curve plus friction.
 static func engine_torque(rpm: float, throttle: float, prop: Dictionary, charge_ratio: float = 1.0) -> float:
+	if is_electric(prop):
+		var source: Dictionary = electric_source_state(rpm, throttle, prop)
+		return float(source.shaft_torque_nm) if source.get("ok", false) else NAN
 	if not is_finite(charge_ratio) or charge_ratio < 0.0:
 		return NAN
 	var sh: Dictionary = prop.shaft
@@ -102,18 +356,25 @@ static func shaft_step(rpm: float, throttle: float, u: float, dt: float, prop: D
 
 
 ## G2a: continuous shaft derivative (rpm/s), evaluated with stage-local RPM and axial airspeed.
-## Engine-off retains windmilling and mechanical friction. Below the existing stopped-prop cutoff,
-## a negative derivative is suppressed; negative RK states are refused by the owner, never hidden by clamping.
+## Engine-off retains windmilling and mechanical friction. The legacy source holds below its cutoff;
+## electric relative spin reaches zero through the session stop event, never through this derivative clamp.
 static func shaft_rate(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float,
 		engine_charge_ratio: float = 1.0, running: bool = true) -> float:
 	if not is_finite(rpm) or rpm < 0.0 or not is_finite(throttle) or not is_finite(u) \
 			or not is_finite(rho) or rho <= 0.0 or not is_finite(engine_charge_ratio) or engine_charge_ratio < 0.0 \
-			or not has_shaft(prop) or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0:
+			or not has_rotor_dynamics(prop) or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0:
 		return NAN
-	var engine: float = engine_torque(rpm, throttle, prop, engine_charge_ratio) if running else (
-		-float(prop.shaft.friction[0]) - float(prop.shaft.friction[1]) * rpm / 1000.0)
+	var engine: float
+	if is_electric(prop):
+		var source: Dictionary = electric_source_state(rpm, throttle, prop, running)
+		if not source.get("ok", false):
+			return NAN
+		engine = float(source.shaft_torque_nm)
+	else:
+		engine = engine_torque(rpm, throttle, prop, engine_charge_ratio) if running else (
+			-float(prop.shaft.friction[0]) - float(prop.shaft.friction[1]) * rpm / 1000.0)
 	var net: float = engine - prop_torque(rpm, u, prop, rho)
-	if rpm <= STOPPED_RPM and net < 0.0:
+	if not is_electric(prop) and rpm <= STOPPED_RPM and net < 0.0:
 		return 0.0
 	return net / float(prop.rotor_inertia) * 60.0 / TAU
 
@@ -123,6 +384,9 @@ static func shaft_rate(rpm: float, throttle: float, u: float, prop: Dictionary, 
 ## finite equilibrium is established there; callers must refuse that start, not use a bracket endpoint.
 ## Assumes a structurally valid loader model. Does not establish root uniqueness or measured engine validity.
 static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
+	if is_electric(prop):
+		var operating_point: Dictionary = steady_operating_point(throttle, u, prop, rho)
+		return float(operating_point.rpm) if operating_point.get("ok", false) else NAN
 	if Turbine.is_turbine(prop): # AV-05
 		return Turbine.steady_rpm(throttle, prop)
 	if not has_shaft(prop):
