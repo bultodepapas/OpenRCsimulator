@@ -75,6 +75,7 @@ func _init(initial_config: Variant = null) -> void:
 	controls = TimeOfDayControls.new(initial) as VBoxContainer
 	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.focus_order_changed.connect(_set_focus_order)
+	_use_native_option_popups_when_supported()
 	scroll.add_child(controls)
 
 	error_label = _label("", "SecondaryLabel", true)
@@ -126,6 +127,18 @@ func _focus_initial_control() -> void:
 		controls.mode_picker.grab_focus()
 	else:
 		cancel_button.grab_focus()
+
+
+func _use_native_option_popups_when_supported() -> void:
+	if not DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
+		return
+	# Godot's embedded Popup teardown emits release-build disconnect errors; native subwindows avoid that path.
+	var pickers: Array[OptionButton] = [
+		controls.get("mode_picker") as OptionButton,
+		controls.get("preset_picker") as OptionButton,
+	]
+	for picker: OptionButton in pickers:
+		picker.get_popup().force_native = true
 
 
 func _sync_panel_size() -> void:

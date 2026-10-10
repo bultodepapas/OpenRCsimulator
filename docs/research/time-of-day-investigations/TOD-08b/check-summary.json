@@ -1,0 +1,88 @@
+{
+  "format": "openrc-tod08b-checks v1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "full_suite_exit": 0,
+  "gdscript_test_programs": 153,
+  "core_checks": 54,
+  "post_native_popup_ui_programs": [
+    "test_ui_time_of_day_pause",
+    "test_ui_time_of_day",
+    "test_ui_pause",
+    "test_ui_help",
+    "test_ui_runway"
+  ],
+  "post_native_popup_ui_exit": 0,
+  "lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "smoke": {
+    "scenes": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "warnings": 317,
+    "findings": 0
+  },
+  "render_scenarios": {
+    "default": true,
+    "scenery": true
+  },
+  "native_export": {
+    "ok": true,
+    "binary_sha256": "321df7b978cf6171a7d0255b5ccf3ce1359b3b292a786ba6ad2fa8a4434d5643",
+    "rows": 145,
+    "edit_tick": 276,
+    "initial_mode": "legacy",
+    "selected_config": {
+      "date": "2026-03-20",
+      "format": "openrc-lighting v1",
+      "latitude_deg": 0.0,
+      "local_seconds": 457,
+      "location_name": "Reference field (synthetic)",
+      "longitude_deg": 0.0,
+      "mode": "astronomical",
+      "utc_offset_minutes": 0
+    },
+    "route": "Home \u2192 Fly \u2192 record \u2192 Pause \u2192 Time of day \u2192 Night \u2192 Apply \u2192 Continue \u2192 stop recording"
+  },
+  "limitations": [
+    "llvmpipe is not target GPU or display acceptance",
+    "pilot readability not measured",
+    "fixed selected time; no continuous progression"
+  ],
+  "source_sha256": {
+    "app/main.gd": "c7b2d4bcc93b76ecb4e09a334ac46177fdeb3d44eb4d9edb077097b8f457a07a",
+    "app/sim/trace.gd": "59c85dcc970a30e86e235806f12f56d8cada8ff1bb431e13e7565dde52b33276",
+    "app/app_root.gd": "b2491dce91918d744b07f580c2b5d47ac53cd72b827d95bd8da4fe20ede413e5",
+    "app/ui/time_of_day_dialog.gd": "1917a143f22aee97824942ff4a8e01c691e4db54122dc50817f3eaea20d810a9",
+    "app/ui/time_of_day_controls.gd": "a9bf9fdb4c79901367866867b1f3c297c863ec5730293472cb7be8016bfa6819",
+    "app/ui/pause_menu.gd": "981bfd1e63a9a233720545b6b87c57948edbecdb6dd7905f56f7d3bea1820b98",
+    "app/tests/test_time_of_day_edit.gd": "f185011658ad09988fdb97e0aa2413c779cf0547a9981fc6e3a3ca7b68631467",
+    "app/tests/test_ui_time_of_day_pause.gd": "09915baac2c48824250f04635c8242d6a768e9e7bc04cdeb66d28f89df6ab6a1"
+  },
+  "native_escape": {
+    "format": "openrc-tod08b-native-escape v1",
+    "binary_sha256": "321df7b978cf6171a7d0255b5ccf3ce1359b3b292a786ba6ad2fa8a4434d5643",
+    "route": [
+      "Home",
+      "Fly",
+      "Pause",
+      "Time of day",
+      "open Time preset",
+      "Esc closes popup",
+      "Esc cancels editor"
+    ],
+    "result": "The first Escape closed only the preset popup; the time editor stayed open over the paused flight. The second Escape cancelled the editor and left the flight paused.",
+    "engine_errors": [],
+    "engine_log": "native-export-escape.log",
+    "screenshots": [
+      "native-export-escape-popup-open.png",
+      "native-export-escape-popup-closed.png",
+      "native-export-escape-dialog-cancelled.png"
+    ]
+  },
+  "popup_reproduction": "popup-repro/logs/report.json"
+}

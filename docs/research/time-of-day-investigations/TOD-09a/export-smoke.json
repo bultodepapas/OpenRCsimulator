@@ -1,0 +1,20 @@
+{
+  "binary_sha256": "ceafc4abe7f6e0eda46052b7ff4b1339c3ccd128ac0b302b1ee13c5703c267cf",
+  "scope": "existing fixed-time Linux export smoke, empty working directory, no source project",
+  "cases": {
+    "legacy": {
+      "exit": 0,
+      "errors": false,
+      "sample_rows": 25,
+      "samples_sha256": "88c475a503f523ea1730866b68341466f45fd1aeb44a135b82f6478c08207c83"
+    },
+    "night": {
+      "exit": 0,
+      "errors": false,
+      "sample_rows": 25,
+      "samples_sha256": "88c475a503f523ea1730866b68341466f45fd1aeb44a135b82f6478c08207c83"
+    }
+  },
+  "physics_equal": true,
+  "ok": true
+}

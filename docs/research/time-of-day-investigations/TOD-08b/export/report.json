@@ -1,8 +1,8 @@
 {
   "ok": true,
-  "binary_sha256": "f9516a4806afc5f2b3d546ba7b1d0f7ff796570b871f35fde1acf92bdba0fcc3",
+  "binary_sha256": "321df7b978cf6171a7d0255b5ccf3ce1359b3b292a786ba6ad2fa8a4434d5643",
   "rows": 145,
-  "edit_tick": 192,
+  "edit_tick": 276,
   "initial_mode": "legacy",
   "selected_config": {
     "date": "2026-03-20",
