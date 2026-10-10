@@ -4,6 +4,7 @@ extends SceneTree
 
 const FAKE_DEVICE: int = 15
 const PROPULSION: Script = preload("res://physics/propulsion.gd")
+const FLIGHT_SESSION: Script = preload("res://sim/flight_session.gd")
 
 var _failures: int = 0
 var _checks: int = 0
@@ -60,14 +61,42 @@ func _initialize() -> void:
 		if argument.begins_with("--electric-demo="):
 			demo = argument.trim_prefix("--electric-demo=")
 	if demo.is_empty():
-		print("EL1e electric input: skipped; run with --electric-demo=4s or --electric-demo=6s")
-		quit(0)
+		_run_default_session_checks()
 		return
 	if demo not in ["4s", "6s"]:
 		printerr("EL1e electric input requires --electric-demo=4s or --electric-demo=6s")
 		quit(2)
 		return
 	_run(demo)
+
+
+## The ordinary app suite has no CLI user args; keep useful coverage for both installed electric data files there.
+func _run_default_session_checks() -> void:
+	for demo: String in ["4s", "6s"]:
+		var session: Node = FLIGHT_SESSION.new()
+		session.call("setup", "res://data/aircraft/synthetic_stik_electric_%s.json" % demo)
+		var aircraft_value: Variant = session.get("aircraft")
+		var aircraft: Dictionary = aircraft_value if aircraft_value is Dictionary else {}
+		var model_value: Variant = aircraft.get("model", {})
+		var model: Dictionary = model_value if model_value is Dictionary else {}
+		var propulsion_value: Variant = model.get("propulsion", {})
+		var propulsion: Dictionary = propulsion_value if propulsion_value is Dictionary else {}
+		var sim: Node = session.get("sim") as Node
+		_check("%s data starts a coupled electric flight" % demo,
+			session.call("is_flyable") and session.call("shaft_is_coupled")
+			and PROPULSION.is_electric(propulsion))
+		var initial_rpm: float = float(sim.get("aux")[0])
+		session.set("engine_running", false)
+		var stopped: Dictionary = session.call("electrical_state")
+		_check("%s disabled source has zero current" % demo, stopped.get("ok", false)
+			and float(stopped.get("motor_current_a", NAN)) == 0.0
+			and float(stopped.get("battery_current_a", NAN)) == 0.0)
+		session.call("reset")
+		_check("%s reset restores powered trim" % demo, bool(session.get("engine_running"))
+			and absf(float(sim.get("aux")[0]) - initial_rpm) < 0.01)
+		session.free()
+	print("EL1e electric session defaults: %d checks, %d failed" % [_checks, _failures])
+	quit(1 if _failures > 0 else 0)
 
 
 func _run(demo: String) -> void:

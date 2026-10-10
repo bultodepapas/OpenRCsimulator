@@ -9,7 +9,7 @@ var failures: int = 0
 
 func make_flight(config: String) -> Node:
 	var flight: Node = Flight.new()
-	flight.setup("res://data/aircraft/synthetic_stik_electric_%s.json" % config)
+	flight.setup(config if config.begins_with("res://") else "res://data/aircraft/synthetic_stik_electric_%s.json" % config)
 	flight.input_enabled = false
 	flight.set_start_altitude(150.0)
 	flight.reset()
@@ -97,8 +97,9 @@ func cost(config: String, coast: bool) -> Dictionary:
 	var before: int = Time.get_ticks_usec()
 	var sink: float = 0.0
 	for sample: int in 10000:
-		sink += Prop.electric_source_state(5000.0, 0.6, prop).motor_current_a
-	result.source_us_per_call = float(Time.get_ticks_usec() - before) / 10000.0
+		sink += Prop.electric_source_state(5000.0, 0.6, prop).motor_current_a if Prop.is_electric(prop) else 0.0
+	if Prop.is_electric(prop):
+		result.source_us_per_call = float(Time.get_ticks_usec() - before) / 10000.0
 	result.source_sink = sink
 	if not result.ok:
 		failures += 1
@@ -123,6 +124,9 @@ func _initialize() -> void:
 		else:
 			for coast: bool in [false, true]:
 				result.cases[config + ("-coast" if coast else "-powered")] = cost(config, coast)
+	if args[0] == "cost":
+		for model: String in ["jensen_ugly_stik_60", "gp_extra_300s_60", "p51d_mustang_120", "sebart_avanti_s_a200"]:
+			result.cases[model] = cost("res://data/aircraft/%s.json" % model, false)
 	var file: FileAccess = FileAccess.open(args[1].path_join(args[0] + ".json"), FileAccess.WRITE)
 	if file == null:
 		failures += 1
