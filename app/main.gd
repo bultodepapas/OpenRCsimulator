@@ -211,7 +211,23 @@ func _ready() -> void:
 			return
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
+	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
+		printerr("shaft integrator refused: ", session.shaft_error if not _scripted else "requires a physics flight")
+		session.free() # refused before add_child(): this owner would otherwise remain orphaned
+		session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	session.setup(Catalog.entry(aircraft_id).data)
+	if args.has("shaft-integrator") and not session.is_flyable():
+		printerr("shaft integrator refused: ", session.pause_reason)
+		session.free()
+		session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
 	session.start_choice = start_choice
 	var conditions: Dictionary = _weather_options(args)
@@ -341,6 +357,10 @@ func _update_hud() -> void:
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
+	if not _scripted and session.aircraft.ok and not session.atmosphere_is_reference():
+		var field_air: Dictionary = session.atmosphere_configuration()
+		var true_speed: float = session.air_data(session.sim.state).V
+		lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [true_speed * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
 	if _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	_hud.text = "\n".join(lines)

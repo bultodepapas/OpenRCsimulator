@@ -1,8 +1,9 @@
-# Draft-only flight conditions dialog. Legacy v1 weather stays v1 until turbulence settings are changed.
+# Draft-only flight conditions dialog. Legacy v1/v2 weather stays unchanged until its controls are edited.
 extends CanvasLayer
 
 const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -30,7 +31,31 @@ const TURBULENCE_LABELS: Dictionary = {
 	"tau_s": "Correlation time tau (0.2–30 s)",
 	"seed": "Seed (0–4294967295)",
 }
+const ATMOSPHERE_EDITED_KEYS: Array[String] = ["field_elevation_m", "temperature_c", "qnh_hpa", "relative_humidity_pct"]
+const ATMOSPHERE_LABELS: Dictionary = {
+	"field_elevation_m": "Field elevation (−500 to 4000 m)",
+	"temperature_c": "Temperature (−20 to 45 °C)",
+	"qnh_hpa": "QNH (870 to 1085 hPa)",
+	"relative_humidity_pct": "Relative humidity (0 to 100%)",
+}
+const SLIDER_SPECS: Dictionary = {
+	"speed_mps": { min = 0.0, max = 15.0, step = 0.1, decimals = 1, unit = "m/s" },
+	"from_deg": { min = 0.0, max = 360.0, step = 1.0, decimals = 0, unit = "°" },
+	"gust_mps": { min = 0.0, max = 8.0, step = 0.1, decimals = 1, unit = "m/s" },
+	"gust_up_mps": { min = -8.0, max = 8.0, step = 0.1, decimals = 1, unit = "m/s" },
+	"gust_duration_s": { min = 0.5, max = 20.0, step = 0.1, decimals = 1, unit = "s" },
+	"gust_period_s": { min = 0.5, max = 120.0, step = 0.5, decimals = 1, unit = "s" },
+	"north_rms_mps": { min = 0.0, max = 3.0, step = 0.01, decimals = 2, unit = "m/s" },
+	"east_rms_mps": { min = 0.0, max = 3.0, step = 0.01, decimals = 2, unit = "m/s" },
+	"up_rms_mps": { min = 0.0, max = 3.0, step = 0.01, decimals = 2, unit = "m/s" },
+	"tau_s": { min = 0.2, max = 30.0, step = 0.1, decimals = 1, unit = "s" },
+	"field_elevation_m": { min = -500.0, max = 4000.0, step = 10.0, decimals = 0, unit = "m" },
+	"temperature_c": { min = -20.0, max = 45.0, step = 0.5, decimals = 1, unit = "°C" },
+	"qnh_hpa": { min = 870.0, max = 1085.0, step = 0.1, decimals = 1, unit = "hPa" },
+	"relative_humidity_pct": { min = 0.0, max = 100.0, step = 1.0, decimals = 0, unit = "%" },
+}
 const ERROR_TEXT: String = "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
+const ATMOSPHERE_ERROR_TEXT: String = "Check field elevation, temperature, QNH and humidity against the displayed limits."
 
 var preset_picker: OptionButton
 var tab_container: TabBar
@@ -39,15 +64,27 @@ var tab_scroll: ScrollContainer
 var panel: PanelContainer
 var wind_page: VBoxContainer
 var turbulence_page: VBoxContainer
+var atmosphere_page: VBoxContainer
 var field_inputs: Dictionary = {}
+var field_sliders: Dictionary = {}
 var turbulence_inputs: Dictionary = {}
+var turbulence_sliders: Dictionary = {}
+var atmosphere_inputs: Dictionary = {}
+var atmosphere_sliders: Dictionary = {}
 var turbulence_enabled: CheckBox
+var atmosphere_mode_picker: OptionButton
+var atmosphere_note: Label
+var atmosphere_preview: Label
 var cancel_button: Button
 var apply_button: Button
 var error_label: Label
 var _base_config: Dictionary
 var _initial_text: Dictionary = {}
 var _initial_turbulence_text: Dictionary = {}
+var _initial_atmosphere_text: Dictionary = {}
+var _atmosphere_source_config: Dictionary = {}
+var _initial_atmosphere_mode: String = "reference"
+var _atmosphere_touched: bool = false
 var _initial_turbulence_enabled: bool = false
 var _focus_order: Array[Control] = []
 var _setting_fields: bool = false
@@ -114,6 +151,7 @@ func _init(initial_config: Variant = null) -> void:
 	tab_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tab_container.add_tab(tr("Wind & Gusts"))
 	tab_container.add_tab(tr("Turbulence"))
+	tab_container.add_tab(tr("Atmosphere"))
 	tab_container.current_tab = 0
 	column.add_child(tab_container)
 	tab_bar = tab_container
@@ -164,6 +202,44 @@ func _init(initial_config: Variant = null) -> void:
 	turbulence_page.add_child(turbulence_grid)
 	for key: String in TURBULENCE_EDITED_KEYS:
 		_add_number_field(turbulence_grid, key, TURBULENCE_LABELS[key], turbulence_inputs, key == "seed", true)
+
+	atmosphere_page = VBoxContainer.new()
+	atmosphere_page.name = "AtmospherePage"
+	atmosphere_page.add_theme_constant_override("separation", 10)
+	atmosphere_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	atmosphere_page.visible = false
+	page_stack.add_child(atmosphere_page)
+	atmosphere_page.add_child(_label("Field atmosphere is uniform for the flight. Reference air uses a fixed 1.225 kg/m³ baseline.", "SecondaryLabel", true))
+	var atmosphere_mode_row: HBoxContainer = HBoxContainer.new()
+	atmosphere_mode_row.add_theme_constant_override("separation", 18)
+	atmosphere_mode_row.add_child(_label("Atmosphere mode", "SecondaryLabel"))
+	atmosphere_mode_picker = OptionButton.new()
+	atmosphere_mode_picker.name = "AtmosphereMode"
+	atmosphere_mode_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	atmosphere_mode_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	atmosphere_mode_picker.add_item(tr("Reference air"))
+	atmosphere_mode_picker.add_item(tr("Custom field conditions"))
+	_set_atmosphere_mode_titles()
+	atmosphere_mode_picker.item_selected.connect(_on_atmosphere_mode_selected)
+	atmosphere_mode_row.add_child(atmosphere_mode_picker)
+	atmosphere_page.add_child(atmosphere_mode_row)
+	atmosphere_note = _label("Reference air keeps the modeled density at 1.225 kg/m³.", "SecondaryLabel", true)
+	atmosphere_note.name = "AtmosphereNote"
+	atmosphere_note.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	atmosphere_page.add_child(atmosphere_note)
+	var atmosphere_grid: GridContainer = GridContainer.new()
+	atmosphere_grid.name = "AtmosphereFields"
+	atmosphere_grid.columns = 2
+	atmosphere_grid.add_theme_constant_override("h_separation", 18)
+	atmosphere_grid.add_theme_constant_override("v_separation", 8)
+	atmosphere_page.add_child(atmosphere_grid)
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		_add_number_field(atmosphere_grid, key, ATMOSPHERE_LABELS[key], atmosphere_inputs, false, false, true)
+	_set_atmosphere_field_labels()
+	atmosphere_preview = _label("", "SecondaryLabel", true)
+	atmosphere_preview.name = "AtmospherePreview"
+	atmosphere_preview.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	atmosphere_page.add_child(atmosphere_preview)
 	tab_bar.tab_changed.connect(_on_tab_changed)
 	_set_tab_titles()
 
@@ -205,6 +281,10 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_fill_presets()
 		_set_tab_titles()
+		_set_atmosphere_mode_titles()
+		_set_atmosphere_field_labels()
+		_update_atmosphere_controls()
+		_update_atmosphere_preview()
 		if error_label.visible:
 			_show_error()
 		_schedule_scroll_height_update()
@@ -232,6 +312,24 @@ func _set_tab_titles() -> void:
 		return
 	tab_container.set_tab_title(0, tr("Wind & Gusts"))
 	tab_container.set_tab_title(1, tr("Turbulence"))
+	tab_container.set_tab_title(2, tr("Atmosphere"))
+
+
+func _set_atmosphere_mode_titles() -> void:
+	if atmosphere_mode_picker == null or atmosphere_mode_picker.item_count < 2:
+		return
+	atmosphere_mode_picker.set_item_text(0, tr("Reference air"))
+	atmosphere_mode_picker.set_item_text(1, tr("Custom field conditions"))
+
+
+func _set_atmosphere_field_labels() -> void:
+	if atmosphere_page == null:
+		return
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		var field_label: Label = atmosphere_page.find_child(key + "Label", true, false) as Label
+		if field_label != null:
+			field_label.text = tr(ATMOSPHERE_LABELS[key])
+			field_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 
 
 func _schedule_scroll_height_update() -> void:
@@ -266,6 +364,7 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 		var edit: LineEdit = field_inputs[key]
 		edit.text = text
 		_initial_text[key] = text
+		_sync_slider_from_text(field_sliders[key], text)
 	var sigma: Array = _base_config.get("turbulence_rms_mps", [0.0, 0.0, 0.0])
 	for index: int in 3:
 		var key: String = TURBULENCE_EDITED_KEYS[index]
@@ -273,16 +372,31 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 		var sigma_edit: LineEdit = turbulence_inputs[key]
 		sigma_edit.text = sigma_text
 		_initial_turbulence_text[key] = sigma_text
+		_sync_slider_from_text(turbulence_sliders[key], sigma_text)
 	var tau_text: String = _format_number(float(_base_config.get("turbulence_tau_s", TURBULENCE_DEFAULT_TAU)))
 	var tau_edit: LineEdit = turbulence_inputs["tau_s"]
 	tau_edit.text = tau_text
 	_initial_turbulence_text["tau_s"] = tau_text
+	_sync_slider_from_text(turbulence_sliders["tau_s"], tau_text)
 	var seed_text: String = str(int(_base_config.get("turbulence_seed", TURBULENCE_DEFAULT_SEED)))
 	var seed_edit: LineEdit = turbulence_inputs["seed"]
 	seed_edit.text = seed_text
 	_initial_turbulence_text["seed"] = seed_text
 	_initial_turbulence_enabled = WeatherSettings.has_turbulence(_base_config)
 	turbulence_enabled.set_pressed_no_signal(_initial_turbulence_enabled)
+	_atmosphere_source_config = _base_config.duplicate(true) if _base_config.get("format") == WeatherSettings.ATMOSPHERE_FORMAT else WeatherSettings.upgrade_atmosphere(_base_config)
+	_initial_atmosphere_mode = String(_atmosphere_source_config.get("atmosphere_mode", "reference"))
+	_atmosphere_touched = false
+	_initial_atmosphere_text.clear()
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		var atmosphere_text: String = _format_number(float(_atmosphere_source_config[key]))
+		var atmosphere_edit: LineEdit = atmosphere_inputs[key]
+		atmosphere_edit.text = atmosphere_text
+		_initial_atmosphere_text[key] = atmosphere_text
+		_sync_slider_from_text(atmosphere_sliders[key], atmosphere_text)
+	atmosphere_mode_picker.select(1 if _initial_atmosphere_mode == "custom" else 0)
+	_update_atmosphere_controls()
+	_update_atmosphere_preview()
 	if preset_picker != null:
 		preset_picker.select(selected_preset)
 	if error_label != null:
@@ -303,6 +417,8 @@ func _on_preset_selected(index: int) -> void:
 func _on_field_changed(_text: String, _key: String) -> void:
 	if _setting_fields:
 		return
+	if field_sliders.has(_key):
+		_sync_slider_from_text(field_sliders[_key], _text)
 	if preset_picker != null and preset_picker.selected != 0:
 		preset_picker.select(0)
 	if error_label != null:
@@ -318,11 +434,13 @@ func _on_turbulence_toggled(enabled: bool) -> void:
 			var key: String = TURBULENCE_EDITED_KEYS[index]
 			var edit: LineEdit = turbulence_inputs[key]
 			edit.text = _format_number(DEFAULT_TURBULENCE_RMS[index])
+			_sync_slider_from_text(turbulence_sliders[key], edit.text)
 	elif not enabled:
 		for index: int in 3:
 			var key: String = TURBULENCE_EDITED_KEYS[index]
 			var edit: LineEdit = turbulence_inputs[key]
 			edit.text = "0"
+			_sync_slider_from_text(turbulence_sliders[key], edit.text)
 	_setting_fields = false
 	_on_field_changed("", "turbulence")
 
@@ -330,6 +448,8 @@ func _on_turbulence_toggled(enabled: bool) -> void:
 func _on_turbulence_field_changed(_text: String, key: String) -> void:
 	if _setting_fields:
 		return
+	if turbulence_sliders.has(key):
+		_sync_slider_from_text(turbulence_sliders[key], _text)
 	if preset_picker != null and preset_picker.selected != 0:
 		preset_picker.select(0)
 	if key in ["north_rms_mps", "east_rms_mps", "up_rms_mps"] and _rms_inputs_are_valid():
@@ -337,6 +457,64 @@ func _on_turbulence_field_changed(_text: String, key: String) -> void:
 		turbulence_enabled.set_pressed_no_signal(any_rms)
 	if error_label != null:
 		_set_error_visible(false)
+
+
+func _on_atmosphere_mode_selected(_index: int) -> void:
+	if _setting_fields:
+		return
+	_atmosphere_touched = true
+	if preset_picker != null and preset_picker.selected != 0:
+		preset_picker.select(0)
+	_update_atmosphere_controls()
+	_update_atmosphere_preview()
+	_set_focus_ring()
+	if error_label != null:
+		_set_error_visible(false)
+
+
+func _on_atmosphere_field_changed(_text: String, _key: String) -> void:
+	if _setting_fields:
+		return
+	if atmosphere_sliders.has(_key):
+		_sync_slider_from_text(atmosphere_sliders[_key], _text)
+	_atmosphere_touched = true
+	if preset_picker != null and preset_picker.selected != 0:
+		preset_picker.select(0)
+	_update_atmosphere_preview()
+	if error_label != null:
+		_set_error_visible(false)
+
+
+func _update_atmosphere_controls() -> void:
+	if atmosphere_mode_picker == null or atmosphere_page == null:
+		return
+	var custom: bool = atmosphere_mode_picker.selected == 1
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		var edit: LineEdit = atmosphere_inputs[key]
+		edit.editable = custom
+		var slider: HSlider = atmosphere_sliders[key]
+		slider.focus_mode = Control.FOCUS_ALL if custom else Control.FOCUS_NONE
+		slider.mouse_filter = Control.MOUSE_FILTER_STOP if custom else Control.MOUSE_FILTER_IGNORE
+		slider.modulate = Color.WHITE if custom else Color(0.72, 0.76, 0.75, 1.0)
+	atmosphere_note.text = tr("Custom field conditions set the modeled air density for this flight.") if custom \
+		else tr("Reference air keeps the modeled density at 1.225 kg/m³.")
+
+
+func _update_atmosphere_preview() -> void:
+	if atmosphere_preview == null or atmosphere_mode_picker == null:
+		return
+	var changes: Dictionary = { "atmosphere_mode": "custom" if atmosphere_mode_picker.selected == 1 else "reference" }
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		var edit: LineEdit = atmosphere_inputs[key]
+		changes[key] = edit.text.to_float() if edit.text.is_valid_float() else edit.text
+	var draft: Dictionary = WeatherSettings.upgrade_atmosphere(_base_config, changes)
+	var air: Dictionary = WeatherSettings.atmosphere(draft)
+	if not air.get("ok", false):
+		atmosphere_preview.text = tr("Density preview is unavailable until all field values are valid.")
+		return
+	atmosphere_preview.text = tr("Air density: %s kg/m³ · density altitude: %s m") % [
+		String.num(float(air.rho_kgm3), 3), String.num(float(air.density_altitude_m), 0),
+	]
 
 
 func _rms_inputs_are_zero() -> bool:
@@ -410,11 +588,26 @@ func _on_apply() -> void:
 		if edit.text != String(_initial_turbulence_text[key]):
 			changed_turbulence = true
 	turbulence_enabled.set_pressed_no_signal(any_rms)
-	if _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT or any_rms or changed_turbulence:
-		raw["format"] = WeatherSettings.TURBULENCE_FORMAT
+	var base_is_atmosphere: bool = _base_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT
+	if base_is_atmosphere or _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT or any_rms or changed_turbulence:
+		raw["format"] = WeatherSettings.ATMOSPHERE_FORMAT if base_is_atmosphere else WeatherSettings.TURBULENCE_FORMAT
 		raw["turbulence_rms_mps"] = sigma
 		raw["turbulence_tau_s"] = tau
 		raw["turbulence_seed"] = seed
+	if _atmosphere_touched or _base_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT:
+		var atmosphere_changes: Dictionary = {
+			"atmosphere_mode": "custom" if atmosphere_mode_picker.selected == 1 else "reference",
+		}
+		for key: String in ATMOSPHERE_EDITED_KEYS:
+			var edit: LineEdit = atmosphere_inputs[key]
+			if edit.text == String(_initial_atmosphere_text[key]):
+				atmosphere_changes[key] = _atmosphere_source_config[key]
+			elif not edit.text.is_valid_float():
+				_show_error()
+				return
+			else:
+				atmosphere_changes[key] = edit.text.to_float()
+		raw = WeatherSettings.upgrade_atmosphere(raw, atmosphere_changes)
 	var checked: Dictionary = WeatherSettings.validate(raw)
 	if not checked.ok:
 		_show_error()
@@ -437,7 +630,8 @@ func _on_cancel() -> void:
 
 
 func _show_error() -> void:
-	error_label.text = tr(ERROR_TEXT)
+	var message: String = ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else ERROR_TEXT
+	error_label.text = tr(message)
 	_set_error_visible(true)
 
 
@@ -452,6 +646,7 @@ func _on_tab_changed(_tab: int) -> void:
 	var focused: Control = get_viewport().gui_get_focus_owner()
 	wind_page.visible = _tab == 0
 	turbulence_page.visible = _tab == 1
+	atmosphere_page.visible = _tab == 2
 	tab_scroll.scroll_vertical = 0
 	_set_focus_ring()
 	_schedule_scroll_height_update()
@@ -467,11 +662,21 @@ func _set_focus_ring() -> void:
 	_focus_order.append(tab_bar)
 	if tab_container.current_tab == 0:
 		for key: String in EDITED_KEYS:
+			if field_sliders.has(key):
+				_focus_order.append(field_sliders[key])
 			_focus_order.append(field_inputs[key])
-	else:
+	elif tab_container.current_tab == 1:
 		_focus_order.append(turbulence_enabled)
 		for key: String in TURBULENCE_EDITED_KEYS:
+			if turbulence_sliders.has(key):
+				_focus_order.append(turbulence_sliders[key])
 			_focus_order.append(turbulence_inputs[key])
+	else:
+		_focus_order.append(atmosphere_mode_picker)
+		for key: String in ATMOSPHERE_EDITED_KEYS:
+			if atmosphere_sliders.has(key) and atmosphere_sliders[key].focus_mode != Control.FOCUS_NONE:
+				_focus_order.append(atmosphere_sliders[key])
+			_focus_order.append(atmosphere_inputs[key])
 	_focus_order.append(cancel_button)
 	_focus_order.append(apply_button)
 	for index: int in _focus_order.size():
@@ -487,25 +692,127 @@ func _set_focus_ring() -> void:
 	apply_button.focus_neighbor_left = apply_button.get_path_to(cancel_button)
 
 
-func _add_number_field(grid: GridContainer, key: String, label_text: String, inputs: Dictionary, integer_only: bool, turbulence_field: bool) -> void:
+func _add_number_field(grid: GridContainer, key: String, label_text: String, inputs: Dictionary, integer_only: bool, turbulence_field: bool, atmosphere_field: bool = false) -> void:
 	var field_label: Label = _label(label_text, "SecondaryLabel")
 	field_label.name = key + "Label"
 	field_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	grid.add_child(field_label)
+	var category: String = "atmosphere" if atmosphere_field else ("turbulence" if turbulence_field else "wind")
+	var values: HBoxContainer = HBoxContainer.new()
+	values.name = key + "Values"
+	values.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	values.add_theme_constant_override("separation", 8)
+	var slider_map: Dictionary = atmosphere_sliders if atmosphere_field else (turbulence_sliders if turbulence_field else field_sliders)
+	if not integer_only:
+		var spec: Dictionary = SLIDER_SPECS[key]
+		var slider: HSlider = HSlider.new()
+		slider.name = key + "Slider"
+		slider.min_value = float(spec.min)
+		slider.max_value = float(spec.max)
+		slider.step = float(spec.step)
+		slider.custom_minimum_size = Vector2(150.0, 42.0)
+		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slider.focus_mode = Control.FOCUS_ALL
+		slider.scrollable = false
+		slider.tooltip_text = tr(label_text)
+		_style_slider(slider)
+		slider.value_changed.connect(_on_slider_changed.bind(key, category))
+		slider_map[key] = slider
+		values.add_child(slider)
 	var edit: LineEdit = LineEdit.new()
 	edit.name = key
-	edit.custom_minimum_size = Vector2(210.0, 40.0)
-	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	edit.custom_minimum_size = Vector2(210.0 if integer_only else 120.0, 40.0)
+	edit.size_flags_horizontal = Control.SIZE_FILL
 	edit.alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	edit.select_all_on_focus = true
 	if integer_only:
 		edit.max_length = 10
-	if turbulence_field:
+	if atmosphere_field:
+		edit.text_changed.connect(_on_atmosphere_field_changed.bind(key))
+	elif turbulence_field:
 		edit.text_changed.connect(_on_turbulence_field_changed.bind(key))
 	else:
 		edit.text_changed.connect(_on_field_changed.bind(key))
 	inputs[key] = edit
-	grid.add_child(edit)
+	values.add_child(edit)
+	if not integer_only:
+		var unit: Label = _label(String(SLIDER_SPECS[key].unit), "SecondaryLabel", false, false)
+		unit.name = key + "Unit"
+		unit.custom_minimum_size = Vector2(44.0, 0.0)
+		unit.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		values.add_child(unit)
+	grid.add_child(values)
+
+
+func _style_slider(slider: HSlider) -> void:
+	slider.add_theme_icon_override("grabber", SLIDER_GRABBER)
+	slider.add_theme_icon_override("grabber_highlight", SLIDER_GRABBER)
+	var track: StyleBoxLine = StyleBoxLine.new()
+	track.color = UiTheme.EDGE
+	track.thickness = 6
+	track.grow_begin = 2.0
+	track.grow_end = 2.0
+	slider.add_theme_stylebox_override("slider", track)
+	var fill: StyleBoxLine = StyleBoxLine.new()
+	fill.color = UiTheme.FOCUS
+	fill.thickness = 6
+	fill.grow_begin = 2.0
+	fill.grow_end = 2.0
+	slider.add_theme_stylebox_override("grabber_area", fill)
+	var hover_fill: StyleBoxLine = StyleBoxLine.new()
+	hover_fill.color = UiTheme.FOCUS.lightened(0.12)
+	hover_fill.thickness = 8
+	hover_fill.grow_begin = 2.0
+	hover_fill.grow_end = 2.0
+	slider.add_theme_stylebox_override("grabber_area_highlight", hover_fill)
+	var focus: StyleBoxFlat = StyleBoxFlat.new()
+	focus.draw_center = false
+	focus.set_border_width_all(UiTheme.FOCUS_WIDTH)
+	focus.border_color = UiTheme.FOCUS
+	focus.set_corner_radius_all(UiTheme.RADIUS + UiTheme.FOCUS_WIDTH)
+	focus.set_expand_margin_all(UiTheme.FOCUS_WIDTH + 1)
+	slider.add_theme_stylebox_override("focus", focus)
+
+
+func _on_slider_changed(value: float, key: String, category: String) -> void:
+	var spec: Dictionary = SLIDER_SPECS[key]
+	var value_text: String = _format_slider_value(value, int(spec.decimals))
+	var edit: LineEdit
+	match category:
+		"wind":
+			edit = field_inputs[key]
+		"turbulence":
+			edit = turbulence_inputs[key]
+		"atmosphere":
+			edit = atmosphere_inputs[key]
+		_:
+			return
+	edit.text = value_text
+	match category:
+		"wind":
+			_on_field_changed(value_text, key)
+		"turbulence":
+			_on_turbulence_field_changed(value_text, key)
+		"atmosphere":
+			_on_atmosphere_field_changed(value_text, key)
+
+
+func _sync_slider_from_text(slider: HSlider, text: String) -> void:
+	if not text.is_valid_float():
+		return
+	var value: float = text.to_float()
+	if value < slider.min_value or value > slider.max_value:
+		return
+	slider.set_value_no_signal(value)
+
+
+static func _format_slider_value(value: float, decimals: int) -> String:
+	var text: String = String.num(value, decimals)
+	while text.contains(".") and text.ends_with("0"):
+		text = text.left(-1)
+	if text.ends_with("."):
+		text = text.left(-1)
+	return text
 
 
 static func _format_number(value: float) -> String:

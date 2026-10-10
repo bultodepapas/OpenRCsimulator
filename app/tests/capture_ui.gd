@@ -1,9 +1,10 @@
 # UI captures use the real Home and app_root routes where a screen transition matters.
 # Needs a renderer (run under Xvfb, see capture.sh):
 #   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/flight.png --lang=en --screen=flight
-#   [--screen=home|pause|help|hint|weather] [--tab=wind|turbulence] [--size=1280x720]
-#   [--weather-error] captures the localized seed-validation message on the turbulence tab.
-#   [--weather-focus=seed] captures the seed field after keyboard-follow scrolling.
+#   [--screen=home|pause|help|hint|weather] [--tab=wind|turbulence|atmosphere] [--size=1280x720]
+#   [--weather-error] captures the localized invalid seed/temperature message on its selected tab.
+#   [--weather-focus=period|seed|humidity] captures the last field after keyboard-follow scrolling.
+#   [--weather=<id>] (alias: --weather-preset=<id>) supplies a real preset to Home, Weather or Flight routes.
 #   [--aircraft=<catalog id>] [--start=airborne|runway]
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
@@ -53,6 +54,8 @@ func _run() -> void:
 			weather_focus = arg.trim_prefix("--weather-focus=")
 		elif arg.begins_with("--weather-preset="):
 			weather_preset = arg.trim_prefix("--weather-preset=")
+		elif arg.begins_with("--weather="):
+			weather_preset = arg.trim_prefix("--weather=")
 		elif arg.begins_with("--size="):
 			var dimensions: PackedStringArray = arg.trim_prefix("--size=").split("x")
 			if dimensions.size() == 2 and dimensions[0].is_valid_int() and dimensions[1].is_valid_int():
@@ -73,12 +76,19 @@ func _run() -> void:
 	if start_choice == "runway" and aircraft != Catalog.DEFAULT_ID:
 		push_error("Runway UI captures require the supported Ugly Stik")
 		quit(ERR_INVALID_PARAMETER)
-	if screen == "weather" and weather_tab not in ["wind", "turbulence"]:
-		push_error("Weather capture tab must be wind or turbulence")
+	if screen == "weather" and weather_tab not in ["wind", "turbulence", "atmosphere"]:
+		push_error("Weather capture tab must be wind, turbulence or atmosphere")
 		quit(ERR_INVALID_PARAMETER)
 		return
-	if weather_focus not in ["default", "seed"] or (weather_focus == "seed" and weather_tab != "turbulence"):
-		push_error("Weather focus must be default, or seed on the turbulence tab")
+	if weather_focus not in ["default", "period", "seed", "humidity"] \
+		or (weather_focus == "period" and weather_tab != "wind") \
+		or (weather_focus == "seed" and weather_tab != "turbulence") \
+		or (weather_focus == "humidity" and weather_tab != "atmosphere"):
+		push_error("Weather focus must be period on Wind, seed on Turbulence, or humidity on Atmosphere")
+		quit(ERR_INVALID_PARAMETER)
+		return
+	if screen == "weather" and show_weather_error and weather_tab not in ["turbulence", "atmosphere"]:
+		push_error("Weather validation error capture requires Turbulence or Atmosphere")
 		quit(ERR_INVALID_PARAMETER)
 		return
 	TranslationServer.set_locale(lang) # never the OS locale: captures must not depend on the machine
@@ -100,6 +110,13 @@ func _run() -> void:
 		prefs.first_flight_hint_seen = true
 		prefs.aircraft = aircraft
 		prefs.start_choice = start_choice
+		if weather_preset != "":
+			var flight_weather: Dictionary = WeatherSettings.preset(weather_preset)
+			if flight_weather.is_empty():
+				push_error("Unknown UI capture weather preset '%s'" % weather_preset)
+				quit(ERR_INVALID_PARAMETER)
+				return
+			prefs.weather_config = flight_weather
 		var prefs_error: Error = Preferences.save_to(FLIGHT_PREFERENCES_PATH, prefs)
 		if prefs_error != OK:
 			push_error("Cannot write deterministic UI capture preferences: %s" % error_string(prefs_error))
@@ -191,7 +208,11 @@ func _run() -> void:
 		var prefs: Dictionary = Preferences.DEFAULTS.duplicate(true)
 		prefs.language = lang
 		prefs.first_flight_hint_seen = true
-		prefs.weather_config = WeatherSettings.preset("turbulent")
+		prefs.weather_config = WeatherSettings.preset(weather_preset) if weather_preset != "" else WeatherSettings.preset("turbulent")
+		if prefs.weather_config.is_empty():
+			push_error("Unknown UI capture weather preset '%s'" % weather_preset)
+			quit(ERR_INVALID_PARAMETER)
+			return
 		var prefs_error: Error = Preferences.save_to(WEATHER_PREFERENCES_PATH, prefs)
 		if prefs_error != OK:
 			push_error("Cannot write deterministic weather capture preferences: %s" % error_string(prefs_error))
@@ -216,7 +237,7 @@ func _run() -> void:
 			quit(1)
 			return
 		var tabs: TabBar = dialog.get("tab_container") as TabBar
-		tabs.current_tab = 1 if weather_tab == "turbulence" else 0
+		tabs.current_tab = {"wind": 0, "turbulence": 1, "atmosphere": 2}[weather_tab]
 		await process_frame # lay out the selected tab before testing its focus-driven scroll
 		var focus_control: Control
 		if weather_tab == "turbulence":
@@ -225,15 +246,31 @@ func _run() -> void:
 				focus_control = turbulence_inputs["seed"] as Control
 			else:
 				focus_control = dialog.get("turbulence_enabled") as Control
+		elif weather_tab == "atmosphere":
+			if weather_focus == "humidity":
+				var atmosphere_inputs: Dictionary = dialog.get("atmosphere_inputs")
+				focus_control = atmosphere_inputs["relative_humidity_pct"] as Control
+			else:
+				focus_control = dialog.get("atmosphere_mode_picker") as Control
 		else:
-			focus_control = dialog.get("preset_picker") as Control
-		focus_control.grab_focus()
+			if weather_focus == "period":
+				var field_inputs: Dictionary = dialog.get("field_inputs")
+				focus_control = field_inputs["gust_period_s"] as Control
+			else:
+				focus_control = dialog.get("preset_picker") as Control
 		if show_weather_error:
-			var turbulence_inputs: Dictionary = dialog.get("turbulence_inputs")
-			var seed_edit: LineEdit = turbulence_inputs["seed"]
-			seed_edit.text = "-"
+			if weather_tab == "turbulence":
+				var turbulence_inputs: Dictionary = dialog.get("turbulence_inputs")
+				var seed_edit: LineEdit = turbulence_inputs["seed"]
+				seed_edit.text = "-"
+			else:
+				var atmosphere_inputs: Dictionary = dialog.get("atmosphere_inputs")
+				var temperature_edit: LineEdit = atmosphere_inputs["temperature_c"]
+				temperature_edit.text = "46"
+				dialog.call("_on_atmosphere_field_changed", "46", "temperature_c")
 			dialog.call("_on_apply")
-			await process_frame
+			await process_frame # let the error row reduce the body before asking scroll-follow to expose the focused field
+		focus_control.grab_focus()
 		route = "interactive-home-weather"
 	elif screen == "help" or screen == "hint":
 		app = _new_app(PackedStringArray(), "user://capture_ui_hint_settings.cfg")
@@ -361,8 +398,27 @@ func _run() -> void:
 		var turbulence_inputs: Dictionary = weather_dialog.get("turbulence_inputs")
 		var seed_rect: Rect2 = (turbulence_inputs["seed"] as Control).get_global_rect()
 		var scroll_rect: Rect2 = dialog_scroll.get_global_rect()
+		var focused_rect: Rect2 = focus_owner.get_global_rect() if focus_owner is Control else Rect2()
 		var app_preferences: Dictionary = app.get("preferences")
 		var weather_config: Dictionary = app_preferences.get("weather_config", {})
+		var focus_visible_in_scroll: bool = focus_owner is Control and scroll_rect.encloses(focused_rect)
+		var atmosphere_evidence: Dictionary = {}
+		if weather_tab == "atmosphere":
+			var atmosphere_inputs: Dictionary = weather_dialog.get("atmosphere_inputs")
+			var temperature_edit: LineEdit = atmosphere_inputs["temperature_c"]
+			var humidity_edit: LineEdit = atmosphere_inputs["relative_humidity_pct"]
+			var error_label: Label = weather_dialog.get("error_label") as Label
+			atmosphere_evidence = {
+				"mode": "custom" if (weather_dialog.get("atmosphere_mode_picker") as OptionButton).selected == 1 else "reference",
+				"preview": str((weather_dialog.get("atmosphere_preview") as Label).text),
+				"temperature_text": temperature_edit.text,
+				"temperature_editable": temperature_edit.editable,
+				"invalid_temperature_error_visible": show_weather_error and error_label.visible and temperature_edit.text == "46",
+				"error_text": error_label.text if error_label.visible else "",
+				"humidity_focus_name": humidity_edit.name,
+				"humidity_rect": [humidity_edit.get_global_rect().position.x, humidity_edit.get_global_rect().position.y,
+					humidity_edit.get_global_rect().size.x, humidity_edit.get_global_rect().size.y],
+			}
 		evidence["weather"] = {
 			"tab": weather_tab,
 			"tab_title": weather_tabs.get_tab_title(weather_tabs.current_tab),
@@ -372,10 +428,13 @@ func _run() -> void:
 			"scroll_rect": [scroll_rect.position.x, scroll_rect.position.y, scroll_rect.size.x, scroll_rect.size.y],
 			"scroll_vertical": dialog_scroll.scroll_vertical,
 			"seed_visible_in_scroll": weather_tab == "turbulence" and scroll_rect.encloses(seed_rect),
+			"focused_control_rect": [focused_rect.position.x, focused_rect.position.y, focused_rect.size.x, focused_rect.size.y],
+			"focused_control_visible_in_scroll": focus_visible_in_scroll,
 			"fits_viewport": panel_rect.position.x >= 0.0 and panel_rect.position.y >= 0.0
 				and panel_rect.end.x <= view_size.x and panel_rect.end.y <= view_size.y,
 			"viewport_size": [view_size.x, view_size.y],
 			"format": str(weather_config.get("format", "")),
+			"atmosphere": atmosphere_evidence,
 		}
 	if screen == "home" and home_control != null:
 		var home_focus: Control = viewport.gui_get_focus_owner()
@@ -384,6 +443,19 @@ func _run() -> void:
 			"focus_name": "" if home_focus == null else str(home_focus.name),
 			"focus_path": "" if home_focus == null else str(home_focus.get_path()),
 			"weather_summary": "" if weather_button == null else weather_button.text,
+			"weather_tooltip": "" if weather_button == null else weather_button.tooltip_text,
+		}
+	if screen == "flight" and flight != null:
+		var session: Node = flight.get("session")
+		var active_atmosphere: Dictionary = session.call("atmosphere_configuration")
+		var hud: Label = flight.get("_hud") as Label
+		evidence["flight_ui"] = {
+			"weather_format": str(session.call("weather_configuration").get("format", "")),
+			"atmosphere_mode": "reference" if session.call("atmosphere_is_reference") else "custom",
+			"air_density_kgm3": session.call("air_density"),
+			"density_altitude_m": active_atmosphere.get("density_altitude_m"),
+			"trim_tas_mps": (session.get("start") as Dictionary).get("V"),
+			"hud_text": "" if hud == null else hud.text,
 		}
 	if home_field != null:
 		evidence["home_field"] = _home_field_evidence(home_field)

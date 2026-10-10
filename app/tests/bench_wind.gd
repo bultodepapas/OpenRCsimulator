@@ -18,6 +18,7 @@ const CHECKPOINT_TICKS := [0, 240, 480]
 
 var _aircraft_ids := PackedStringArray()
 var _weather_name := "calm"
+var _weather_file := ""
 var _output_path := ""
 var _source_revision := "unspecified"
 var _samples := 5
@@ -121,6 +122,8 @@ func _parse_args() -> void:
 			_aircraft_ids.append(arg.trim_prefix("--aircraft="))
 		elif arg.begins_with("--weather="):
 			_weather_name = arg.trim_prefix("--weather=")
+		elif arg.begins_with("--weather-file="):
+			_weather_file = arg.trim_prefix("--weather-file=")
 		elif arg.begins_with("--output="):
 			_output_path = arg.trim_prefix("--output=")
 		elif arg.begins_with("--revision="):
@@ -143,7 +146,7 @@ func _configure_weather(session: Node) -> Dictionary:
 	if not session.has_method("setup_weather"):
 		push_error("weather API is unavailable for requested weather " + _weather_name)
 		return {"ok": false, "api_available": false}
-	var configuration: Dictionary = _weather_configuration(_weather_name)
+	var configuration: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(_weather_file)) if not _weather_file.is_empty() else _weather_configuration(_weather_name)
 	if configuration.is_empty():
 		push_error("unknown weather preset: " + _weather_name)
 		return {"ok": false, "api_available": true}
@@ -204,7 +207,7 @@ func _weather_samples(session: Node) -> Array:
 		return samples
 	var times: Array = [0.0, 0.5, 1.0, 2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 14.0]
 	var config: Dictionary = session.call("weather_configuration")
-	if config.get("format") == "openrc-weather v2" and config.get("turbulence_rms_mps") != [0.0, 0.0, 0.0]:
+	if config.get("format") in ["openrc-weather v2", "openrc-weather v3"] and config.get("turbulence_rms_mps") != [0.0, 0.0, 0.0]:
 		times = [0.0] # only the current tick interval exists; random future wind is never queried
 	for t in times:
 		var value: Variant = session.call("wind_at", t)
@@ -221,7 +224,7 @@ func _configure_fixture(session: Node, regime: String) -> Dictionary:
 	var throttle: float = float(session.start.throttle)
 	var engine_running: bool = session.start.get("mode", "level") != "glide"
 	var wind: PackedFloat64Array = _wind_at(session, 0.0)
-	var initial_air: Dictionary = Air.compute(state, wind, Air.RHO_SEA_LEVEL)
+	var initial_air: Dictionary = Air.compute(state, wind, _density(session))
 	var speed: float = float(initial_air.V)
 	var alpha: float = 0.0
 	var ground_contacts := 0
@@ -272,7 +275,7 @@ func _configure_fixture(session: Node, regime: String) -> Dictionary:
 	var reset_ok: bool = session.sim.reset(state)
 	if not reset_ok:
 		return {"ok": false, "fault": str(session.sim.fault_reason)}
-	var actual_air := Air.compute(state, wind, Air.RHO_SEA_LEVEL)
+	var actual_air := Air.compute(state, wind, _density(session))
 	return {
 		"ok": true,
 		"state": state,
@@ -438,3 +441,7 @@ func _maximum(values: PackedFloat64Array) -> float:
 	for value in values:
 		result = maxf(result, value)
 	return result if not values.is_empty() else 0.0
+
+
+func _density(session: Node) -> float:
+	return float(session.call("air_density")) if session.has_method("air_density") else Air.RHO_SEA_LEVEL

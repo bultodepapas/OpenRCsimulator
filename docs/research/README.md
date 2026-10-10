@@ -79,6 +79,8 @@ Trim integrity: [D4-R2](trim-integrity/D4-R2/README.md) closes nonfinite false c
 
 Playable wind: [uniform wind and repeating gusts](wind-implementation/README.md) integrates four-aircraft air-relative physics, precise Home conditions, explicit v4 telemetry, v2 weather checkpoints, FPS reproducibility, EN/ES rendered proof and native Linux source/export parity. [M5-W04a](wind-implementation/M5-W04a/README.md) adds seeded temporal OU turbulence, float64 Gaussian sampling, exact RNG/filter rollback/replay, v5 telemetry and independent statistical/PCG checks. Atmosphere/pilot validation remains open.
 
+Field atmosphere: [M5-ATM-1 kernel](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3 flight integration](atmosphere/M5-ATM-2/README.md) separate moist aerodynamic density from dry-air engine charge; include reference parity, trim/wake/runway consistency, v6 telemetry and exact environment replay. Uniform per-flight conditions and empirical power maps remain limited.
+
 Radio calibration: [D6b-R1](radio-input/D6b-R1/README.md) validates persisted channel mappings and device identity, rejects malformed profiles whole, preserves files on refused saves and verifies safe replug through the real scene.
 
 Calibration rearming: [D6b-R2](radio-input/D6b-R2/README.md) requires fresh finite low-throttle evidence after profile replacement, preserves raw-axis diagnostic history, and records private fault tests, real-session checks and paired event-cost observations.
@@ -88,6 +90,8 @@ Radio diagnostics: [F1](radio-input/F1/README.md) adds a standalone input report
 Loader cost: [DATA-2b](aircraft-validation/DATA-2b/README.md) attributes the remaining startup cost and stops repeated induced-flow inversions after exact float64 midpoint stagnation; paired whole-model and refusal comparisons retain identical bytes.
 
 Steady shaft integrity: [G2-R1](propulsion/G2-R1/README.md) rejects unbracketed or nonfinite RPM equilibria and verifies unchanged fleet trims and flight endpoints.
+
+Coupled shaft dynamics: [G2a/G2b experiment](propulsion/G2a-RK4/README.md) integrates relative RPM with stage-local aircraft/wake loads and locked-inertia rotor reaction; preserves the default split route and records refinement, transactional replay and primary-source assumptions.
 
 Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 

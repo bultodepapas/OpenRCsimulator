@@ -7,7 +7,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 2
+const SCHEMA := 3
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
@@ -78,7 +78,8 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	if not checked_weather.ok:
 		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
-	var schema: int = SCHEMA if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA
+	var schema: int = SCHEMA if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
+		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA)
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))

@@ -40,6 +40,10 @@ var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Arra
 var continuous: PackedFloat64Array = PackedFloat64Array()
 var continuous_loads: Callable
 var continuous_derivative: Callable
+## G2a: optional stage-local spinning momentum and pure endpoint projection into sampled telemetry.
+## Empty callbacks retain the legacy sampled-rotor policy. Projection is validated before any commit.
+var continuous_rotor_momentum: Callable
+var continuous_aux: Callable
 var _last_valid_continuous: PackedFloat64Array = PackedFloat64Array()
 
 var state := PackedFloat64Array()
@@ -80,6 +84,9 @@ func reset(initial: PackedFloat64Array) -> bool:
 		return false
 	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux) or not _array_is_finite(continuous):
 		_fail_safe("reset rejected: input or auxiliary state is nonfinite or malformed")
+		return false
+	if not _continuous_aux_matches(continuous, aux):
+		_fail_safe("reset rejected: continuous and auxiliary states disagree")
 		return false
 	var next_state := initial.duplicate()
 	var a := RB.ATT
@@ -170,7 +177,14 @@ func step() -> void:
 	var h: PackedFloat64Array = rotor
 	var stage_error := { message = "" }
 	var derive := func(s: PackedFloat64Array, l: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
-		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, h)
+		var stage_h: PackedFloat64Array = h
+		if not continuous.is_empty() and continuous_rotor_momentum.is_valid():
+			var candidate_h: Variant = continuous_rotor_momentum.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+			if not _array_is_finite(candidate_h, 3):
+				stage_error.message = "RK rotor momentum is nonfinite or malformed"
+				return _zero_derivative()
+			stage_h = candidate_h
+		var derivative := RB.derivative(s, mass, inertia, _inertia_inv, M.v3(l[0], l[1], l[2]), M.v3(l[3], l[4], l[5]), gravity, stage_h)
 		if not _array_is_finite(derivative, RB.SIZE):
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
@@ -202,6 +216,13 @@ func step() -> void:
 		aux = old_aux
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
+	if not continuous.is_empty() and continuous_aux.is_valid():
+		var projected: Variant = continuous_aux.call(next_state.slice(RB.SIZE), aux.duplicate())
+		if not _array_is_finite(projected, aux.size()):
+			aux = old_aux
+			_fail_safe("step rejected: continuous auxiliary projection is nonfinite or malformed")
+			return
+		aux = projected
 	previous = state.duplicate()
 	if not continuous.is_empty():
 		continuous = next_state.slice(RB.SIZE)
@@ -309,6 +330,13 @@ func _same_array(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
 	return true
 
 
+func _continuous_aux_matches(extra: PackedFloat64Array, sampled: PackedFloat64Array) -> bool:
+	if not continuous_aux.is_valid():
+		return true
+	var projected: Variant = continuous_aux.call(extra.duplicate(), sampled.duplicate())
+	return _array_is_finite(projected, sampled.size()) and _same_array(projected, sampled)
+
+
 func _zero_derivative() -> PackedFloat64Array:
 	var zero: PackedFloat64Array = PackedFloat64Array()
 	zero.resize(RB.SIZE + continuous.size())
@@ -393,7 +421,8 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, 4) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
 		and candidate.modes.size() == (modes.size() if expected_modes_size < 0 else expected_modes_size) and _configuration_is_valid() \
-		and _array_is_finite(RB.inertia_inverse(inertia), 6)
+		and _array_is_finite(RB.inertia_inverse(inertia), 6) \
+		and _continuous_aux_matches(candidate.get("continuous", PackedFloat64Array()), candidate.aux)
 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.

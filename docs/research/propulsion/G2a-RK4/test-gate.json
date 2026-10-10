@@ -1,0 +1,16 @@
+{
+  "format": "openrc-coupled-shaft-test-gate v1",
+  "command": "app/test.sh",
+  "exit_code": 0,
+  "gdscript_test_suites": 143,
+  "new_gdscript_checks": {
+    "rotor_coupling": 17,
+    "shaft_coupled": 35,
+    "shaft_refinement": 2
+  },
+  "shaft_cli_tests": 7,
+  "engine_errors": 0,
+  "log_sha256": "629372cb2f8742e8f3d6f19a880440368dded7057b9e1f56b8c5d14a9c90aa0d",
+  "scope": "Software regression; physical and performance acceptance open",
+  "existing_notices": "Aircraft estimate notices and shutdown ObjectDB warnings; no engine errors."
+}

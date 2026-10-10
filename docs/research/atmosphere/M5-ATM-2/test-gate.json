@@ -1,0 +1,18 @@
+{
+  "format": "openrc-atmosphere-test-gate v1",
+  "command": "app/test.sh",
+  "exit_code": 0,
+  "log_sha256": "ef28c145460f5a1d572cb2d0d89943aab42a00213d839a9753673bd6345b4562",
+  "gdscript_test_suites": 140,
+  "engine_errors": 0,
+  "new_suites": [
+    "test_air_density.gd",
+    "test_atmosphere_flight.gd",
+    "test_trim_density.gd",
+    "test_ui_atmosphere.gd",
+    "test_ui_weather_sliders.gd"
+  ],
+  "expected_new_suites_present": true,
+  "scope": "Software regression suite; no physical acceptance",
+  "warnings": "Existing aircraft-data estimate notices and exit-time ObjectDB warnings remain; no engine errors."
+}
