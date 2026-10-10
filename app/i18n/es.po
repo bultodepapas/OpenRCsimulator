@@ -62,6 +62,15 @@ msgstr "No se pudieron guardar los ajustes (error %d)."
 msgid "Weather"
 msgstr "Viento"
 
+msgid "Reference air"
+msgstr "Aire de referencia"
+
+msgid "Thin air"
+msgstr "Aire poco denso"
+
+msgid "Custom air"
+msgstr "Aire personalizado"
+
 msgid "Turbulence"
 msgstr "Turbulencia"
 
@@ -110,11 +119,47 @@ msgstr "La turbulencia con semilla cambia suavemente con el tiempo. RMS indica l
 msgid "Uniform wind and repeating gusts, with optional seeded turbulence."
 msgstr "Viento uniforme y rachas periódicas, con turbulencia opcional con semilla."
 
+msgid "Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."
+msgstr "El viento uniforme, las rachas periódicas y la turbulencia son opcionales. La atmósfera del campo define la densidad modelada del aire."
+
+msgid "Reference air · fixed density 1.225 kg/m³"
+msgstr "Aire de referencia · densidad fija de 1,225 kg/m³"
+
+msgid "Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m"
+msgstr "Campo %s m · %s °C · QNH %s hPa · HR %s%% · densidad %s kg/m³ · altitud de densidad %s m"
+
 msgid "Enable turbulence"
 msgstr "Activar turbulencia"
 
 msgid "Wind & Gusts"
 msgstr "Viento y rachas"
+
+msgid "Atmosphere"
+msgstr "Atmósfera"
+
+msgid "Field atmosphere is uniform for the flight. Reference air uses a fixed 1.225 kg/m³ baseline."
+msgstr "La atmósfera del campo es uniforme durante el vuelo. El aire de referencia usa una densidad fija de 1,225 kg/m³."
+
+msgid "Atmosphere mode"
+msgstr "Modo de atmósfera"
+
+msgid "Custom field conditions"
+msgstr "Condiciones de campo personalizadas"
+
+msgid "Reference air keeps the modeled density at 1.225 kg/m³."
+msgstr "El aire de referencia mantiene la densidad modelada en 1,225 kg/m³."
+
+msgid "Custom field conditions set the modeled air density for this flight."
+msgstr "Las condiciones de campo personalizadas definen la densidad modelada del aire durante este vuelo."
+
+msgid "Air density: %s kg/m³ · density altitude: %s m"
+msgstr "Densidad del aire: %s kg/m³ · altitud de densidad: %s m"
+
+msgid "EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m"
+msgstr "EAS %.1f m/s  aire %.3f kg/m³  altitud de densidad %.0f m"
+
+msgid "Density preview is unavailable until all field values are valid."
+msgstr "La vista previa de densidad estará disponible cuando todos los valores del campo sean válidos."
 
 msgid "Preset"
 msgstr "Preajuste"
@@ -161,6 +206,18 @@ msgstr "Duración de la racha (0.5–20 s)"
 msgid "Gust period (0.5–120 s)"
 msgstr "Periodo de la racha (0.5–120 s)"
 
+msgid "Field elevation (−500 to 4000 m)"
+msgstr "Elevación del campo (−500 a 4000 m)"
+
+msgid "Temperature (−20 to 45 °C)"
+msgstr "Temperatura (−20 a 45 °C)"
+
+msgid "QNH (870 to 1085 hPa)"
+msgstr "QNH (870 a 1085 hPa)"
+
+msgid "Relative humidity (0 to 100%)"
+msgstr "Humedad relativa (0 a 100%)"
+
 msgid "North RMS (0–3 m/s)"
 msgstr "RMS norte (0–3 m/s)"
 
@@ -182,17 +239,26 @@ msgstr "RMS de turbulencia N/E/arriba: %s / %s / %s m/s; tau %s s; semilla %s"
 msgid "Turbulence practice"
 msgstr "Práctica de turbulencia"
 
+msgid "Hot and high"
+msgstr "Calor y altitud"
+
+msgid "Cool dense air"
+msgstr "Aire frío y denso"
+
 msgid "Enter valid numbers within the shown limits; gust period must be at least its duration."
 msgstr "Introduce números válidos dentro de los límites indicados; el periodo debe ser al menos igual a la duración."
 
 msgid "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
 msgstr "Introduce valores dentro de los límites indicados; el periodo debe ser al menos igual a la duración. La semilla solo puede contener dígitos."
 
+msgid "Check field elevation, temperature, QNH and humidity against the displayed limits."
+msgstr "Revisa la elevación, temperatura, QNH y humedad según los límites indicados."
+
 msgid "Flights start in the air. Wind is uniform across the field; smooth gusts repeat on a timer. No turbulence or spatial variation. Wheel landings are experimental; a crash restarts the flight."
 msgstr "El vuelo empieza en el aire. Viento uniforme y rachas suaves periódicas, sin turbulencia ni variación espacial. Los aterrizajes son experimentales; un accidente reinicia el vuelo."
 
-msgid "Flights start in the air. Weather adds uniform wind, repeating gusts and seeded turbulence. Wheel landings are experimental; crashes restart the flight."
-msgstr "Los vuelos empiezan en el aire. El clima añade viento uniforme, rachas periódicas y turbulencia con semilla. Los aterrizajes con ruedas son experimentales; los choques reinician el vuelo."
+msgid "Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart."
+msgstr "El vuelo empieza en el aire. Configura viento, rachas, turbulencia y atmósfera del campo. Aterrizar es experimental; un choque reinicia."
 
 msgid "PAUSED"
 msgstr "PAUSA"

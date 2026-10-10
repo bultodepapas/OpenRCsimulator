@@ -2,6 +2,9 @@
 class_name WindConfig
 extends RefCounted
 
+const Atmosphere = preload("res://physics/atmosphere.gd")
+const ATMOSPHERE_FORMAT := "openrc-weather v3"
+const ATMOSPHERE_KEYS := ["atmosphere_mode", "field_elevation_m", "temperature_c", "qnh_hpa", "relative_humidity_pct"]
 const FORMAT := "openrc-weather v1"
 const TURBULENCE_FORMAT := "openrc-weather v2"
 const TURBULENCE_KEYS := ["turbulence_rms_mps", "turbulence_tau_s", "turbulence_seed"]
@@ -35,16 +38,19 @@ static func validate(raw: Variant) -> Dictionary:
 
 	var source: Dictionary = raw
 	var keys: Array = REQUIRED_KEYS.duplicate()
-	var turbulent: bool = source.get("format") == TURBULENCE_FORMAT
+	var with_atmosphere: bool = source.get("format") == ATMOSPHERE_FORMAT
+	var turbulent: bool = source.get("format") in [TURBULENCE_FORMAT, ATMOSPHERE_FORMAT]
 	if turbulent:
 		keys.append_array(TURBULENCE_KEYS)
+	if with_atmosphere:
+		keys.append_array(ATMOSPHERE_KEYS)
 	for key: String in keys:
 		if not source.has(key):
 			errors.append("missing required field '%s'" % key)
 	for key: Variant in source:
 		if key not in keys:
 			errors.append("unknown field '%s'" % str(key))
-	if typeof(source.get("format")) != TYPE_STRING or source.get("format") not in [FORMAT, TURBULENCE_FORMAT]:
+	if typeof(source.get("format")) != TYPE_STRING or source.get("format") not in [FORMAT, TURBULENCE_FORMAT, ATMOSPHERE_FORMAT]:
 		errors.append("format must be '%s'" % FORMAT)
 
 	var speed := _number(source.get("speed_mps"), "speed_mps", 0.0, 15.0, errors)
@@ -74,13 +80,26 @@ static func validate(raw: Variant) -> Dictionary:
 			errors.append("turbulence_seed must be an integer in [0, 4294967295]")
 		else:
 			seed_value = int(raw_seed)
+	var atmosphere_settings: Dictionary = {}
+	if with_atmosphere:
+		var mode: Variant = source.get("atmosphere_mode")
+		if typeof(mode) != TYPE_STRING or mode not in ["reference", "custom"]:
+			errors.append("atmosphere_mode must be reference or custom")
+		var checked_air: Dictionary = Atmosphere.evaluate(source.get("field_elevation_m"), source.get("temperature_c"),
+			source.get("qnh_hpa"), source.get("relative_humidity_pct"))
+		if not checked_air.ok:
+			errors.append_array(checked_air.errors)
+		else:
+			atmosphere_settings = {atmosphere_mode = mode, field_elevation_m = float(source.field_elevation_m),
+				temperature_c = float(source.temperature_c), qnh_hpa = float(source.qnh_hpa),
+				relative_humidity_pct = float(source.relative_humidity_pct)}
 	if not errors.is_empty():
 		return { ok = false, config = {}, errors = errors }
 
 	var result: Dictionary = {
 		ok = true,
 		config = {
-			"format": TURBULENCE_FORMAT if turbulent else FORMAT,
+			"format": ATMOSPHERE_FORMAT if with_atmosphere else (TURBULENCE_FORMAT if turbulent else FORMAT),
 			"speed_mps": speed,
 			"from_deg": 0.0 if from_deg == 360.0 else from_deg,
 			"gust_mps": gust,
@@ -96,6 +115,8 @@ static func validate(raw: Variant) -> Dictionary:
 		result.config.turbulence_rms_mps = sigma
 		result.config.turbulence_tau_s = tau_s
 		result.config.turbulence_seed = seed_value
+	if with_atmosphere:
+		result.config.merge(atmosphere_settings)
 	return result
 
 
@@ -115,6 +136,10 @@ static func presets() -> Array[Dictionary]:
 		"format": TURBULENCE_FORMAT, "speed_mps": 3.0, "from_deg": 270.0,
 		"turbulence_rms_mps": [0.6, 0.6, 0.4], "turbulence_tau_s": 2.0, "turbulence_seed": 20261009,
 	}) })
+	out.append({id = "hot-high", label = "Hot and high", config = upgrade_atmosphere(defaults(), {
+		atmosphere_mode = "custom", field_elevation_m = 1500.0, temperature_c = 35.0, relative_humidity_pct = 50.0})})
+	out.append({id = "cool-dense", label = "Cool dense air", config = upgrade_atmosphere(defaults(), {
+		atmosphere_mode = "custom", temperature_c = 5.0})})
 	return out
 
 
@@ -131,7 +156,7 @@ static func summary(config: Variant) -> String:
 	if not checked.ok:
 		return "Invalid weather"
 	var c: Dictionary = checked.config
-	if float(c.speed_mps) == 0.0 and float(c.gust_mps) == 0.0 and float(c.gust_up_mps) == 0.0 and not has_turbulence(c):
+	if float(c.speed_mps) == 0.0 and float(c.gust_mps) == 0.0 and float(c.gust_up_mps) == 0.0 and not has_turbulence(c) and not has_atmosphere(c):
 		return "Calm"
 	var parts := PackedStringArray()
 	if float(c.speed_mps) > 0.0:
@@ -140,6 +165,9 @@ static func summary(config: Variant) -> String:
 		parts.append("repeating gust every %.1f s" % float(c.gust_period_s))
 	if has_turbulence(c):
 		parts.append("turbulence RMS %s m/s; tau %.1f s; seed %d" % [str(c.turbulence_rms_mps), c.turbulence_tau_s, c.turbulence_seed])
+	if has_atmosphere(c):
+		var air: Dictionary = atmosphere(c)
+		parts.append("air density %.3f kg/m³; density altitude %.0f m" % [air.rho_kgm3, air.density_altitude_m])
 	return "; ".join(parts)
 
 
@@ -165,9 +193,33 @@ static func _number(value: Variant, key: String, minimum: float, maximum: float,
 
 
 static func has_turbulence(config: Dictionary) -> bool:
-	if config.get("format") != TURBULENCE_FORMAT:
+	if config.get("format") not in [TURBULENCE_FORMAT, ATMOSPHERE_FORMAT]:
 		return false
 	for value: float in config.turbulence_rms_mps:
 		if value > 0.0:
 			return true
 	return false
+
+
+## Promote a validated legacy configuration without losing existing wind or turbulence settings.
+static func upgrade_atmosphere(config: Dictionary, changes: Dictionary = {}) -> Dictionary:
+	var result: Dictionary = config.duplicate(true)
+	if result.get("format") == FORMAT:
+		result.merge({turbulence_rms_mps = [0.0, 0.0, 0.0], turbulence_tau_s = 2.0, turbulence_seed = 20261009})
+	if result.get("format") != ATMOSPHERE_FORMAT:
+		result.merge({atmosphere_mode = "reference", field_elevation_m = 0.0, temperature_c = 15.0,
+			qnh_hpa = 1013.25, relative_humidity_pct = 0.0})
+	result.format = ATMOSPHERE_FORMAT
+	result.merge(changes, true)
+	return result
+
+
+static func has_atmosphere(config: Dictionary) -> bool:
+	return config.get("format") == ATMOSPHERE_FORMAT and config.get("atmosphere_mode") == "custom"
+
+
+## UI preview and field construction share the physical kernel; reference stays the literal legacy density.
+static func atmosphere(config: Dictionary) -> Dictionary:
+	if not has_atmosphere(config):
+		return Atmosphere.standard()
+	return Atmosphere.evaluate(config.field_elevation_m, config.temperature_c, config.qnh_hpa, config.relative_humidity_pct)

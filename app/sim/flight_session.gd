@@ -11,8 +11,55 @@ const Turbulence = preload("res://physics/wind_turbulence.gd")
 const WeatherConfig = preload("res://physics/wind_config.gd")
 var _weather: WeatherField = WeatherField.new()
 var weather_error: String = ""
+var _trim_density: float = 1.225
+var _trim_charge: float = 1.0
 var _weather_pending_reset: bool = false
 var _turbulence_aux_index: int = -1 # derived layout cache; reset/restore only, excluded from snapshots
+var _shaft_integrator: String = "split"
+var _shaft_pending_reset: bool = false
+var shaft_error: String = ""
+
+
+## G2a/G2b: experimental shaft coupling is a launch-time choice, independent of aircraft coefficients.
+func setup_shaft_integrator(mode: Variant) -> bool:
+	if typeof(mode) != TYPE_STRING or mode not in ["split", "coupled-rk4"]:
+		shaft_error = "shaft integrator must be split or coupled-rk4"
+		return false
+	if sim != null and sim.tick > 0:
+		shaft_error = "shaft integration changes require a new flight"
+		return false
+	if mode == "coupled-rk4" and aircraft.get("ok", false) and not _supports_coupled_shaft(aircraft.model):
+		shaft_error = "coupled-rk4 requires a propeller shaft model with positive rotor inertia"
+		return false
+	if mode == _shaft_integrator:
+		shaft_error = ""
+		return true
+	resetting.emit()
+	_shaft_integrator = mode
+	_shaft_pending_reset = sim != null
+	if sim != null:
+		_configure_continuous_callbacks()
+		sim.set_paused(true)
+	shaft_error = ""
+	return true
+
+
+func shaft_integrator() -> String:
+	return _shaft_integrator
+
+
+func shaft_is_coupled() -> bool:
+	return _shaft_integrator == "coupled-rk4"
+
+
+func _supports_coupled_shaft(model: Dictionary) -> bool:
+	var prop: Dictionary = model.get("propulsion", {})
+	if Turbine.is_turbine(prop) or not Propulsion.has_shaft(prop) or not _model_is_valid(model) \
+			or not is_finite(float(prop.get("rotor_inertia", NAN))) or float(prop.get("rotor_inertia", 0.0)) <= 0.0:
+		return false
+	var axis: PackedFloat64Array = Propulsion.axis(prop)
+	var inverse: PackedFloat64Array = RB.inertia_inverse(model.inertia)
+	return 1.0 - float(prop.rotor_inertia) * M.dot(axis, RB.inertia_mul(inverse, axis)) > 0.0
 
 
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
@@ -40,6 +87,22 @@ func weather_configuration() -> Dictionary:
 
 func weather_is_calm() -> bool:
 	return _weather.is_calm()
+
+
+func atmosphere_configuration() -> Dictionary:
+	return _weather.atmosphere()
+
+
+func atmosphere_is_reference() -> bool:
+	return not _weather.has_atmosphere()
+
+
+func air_density() -> float:
+	return _weather.air_density()
+
+
+func engine_charge_ratio() -> float:
+	return _weather.engine_charge_ratio()
 
 
 func wind_at(time_s: float) -> PackedFloat64Array:
@@ -102,7 +165,7 @@ func _initial_wind() -> PackedFloat64Array:
 
 
 func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
-	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s), Air.RHO_SEA_LEVEL)
+	return Air.compute(s, wind_at(sim.time() if is_nan(time_s) else time_s), air_density())
 
 const Commands := preload("res://input/commands.gd")
 const Keyboard := preload("res://input/keyboard.gd")
@@ -116,6 +179,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
+const RotorCoupling = preload("res://physics/rotor_coupling.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const WashTransport := preload("res://physics/wash_transport.gd")
@@ -358,11 +422,14 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 			error_text += ": " + str(data.errors[0])
 		return { ok = false, data = data, start = { ok = false, message = error_text }, trims = neutral_trims, message = error_text }
 	var model: Dictionary = data.get("model", {})
+	if shaft_is_coupled() and not _supports_coupled_shaft(model):
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
+			message = "coupled-rk4 requires a propeller shaft model with positive carrier inertia"}
 	if not _model_is_valid(model):
 		var invalid_model := "aircraft model has invalid mass properties or control throws"
 		return { ok = false, data = data, start = { ok = false, message = invalid_model }, trims = neutral_trims, message = invalid_model }
 	# Each aircraft declares its own start speed (the Stik's 15 m/s is the loader's default).
-	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0))
+	var candidate_start := Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, model.get("start_speed", 15.0), air_density(), engine_charge_ratio())
 	if not candidate_start.get("ok", false):
 		var trim_error := "trim: " + str(candidate_start.get("message", "trim failed"))
 		return { ok = false, data = data, start = candidate_start, trims = neutral_trims, message = trim_error }
@@ -398,16 +465,24 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	start = prepared.start
 	trims = prepared.trims.duplicate(true)
 	_has_committed_aircraft = true
+	_trim_density = air_density()
+	_trim_charge = engine_charge_ratio()
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
 	_deflection_key = PackedFloat64Array()
 	sim.loads = _loads
-	sim.continuous_loads = _wash_loads
-	sim.continuous_derivative = _wash_derivative
+	_configure_continuous_callbacks()
 	sim.pre_step = _pre_step
 	sim.rotor_momentum = rotor_momentum
 	for warning in aircraft.warnings:
 		print("aircraft data warning: ", warning)
+
+
+func _configure_continuous_callbacks() -> void:
+	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
+	sim.continuous_derivative = _coupled_derivative if shaft_is_coupled() else _wash_derivative
+	sim.continuous_rotor_momentum = _coupled_rotor if shaft_is_coupled() else Callable()
+	sim.continuous_aux = _coupled_aux if shaft_is_coupled() else Callable()
 
 
 func _set_initial_failure(prepared: Dictionary) -> void:
@@ -453,7 +528,7 @@ func _candidate_loads_are_valid(model: Dictionary, candidate_start: Dictionary, 
 	var deflections := Aero.deflections_from_surfaces(surfaces)
 	var wind := PackedFloat64Array([0.0, 0.0, 0.0])
 	var result: PackedFloat64Array = Dynamics.loads(candidate_start.state, model, deflections,
-		candidate_start.rpm, Air.RHO_SEA_LEVEL, wind)
+		candidate_start.rpm, air_density(), wind)
 	if result.size() != 6:
 		return false
 	for value in result:
@@ -482,10 +557,12 @@ func _on_sim_faulted(reason: String) -> void:
 ## maneuvers (tests, golden flights). Returns the Trim result.
 func trim_at(speed: float, mode := "level") -> Dictionary:
 	var m: Dictionary = aircraft.model
-	var t := Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad, speed) if mode == "level" \
-		else Scenarios.trimmed_glide_across_view(m, sim.gravity, m.controls.throw_rad, speed)
+	var t := Scenarios.trimmed_level_across_view(m, sim.gravity, m.controls.throw_rad, speed, air_density(), engine_charge_ratio()) if mode == "level" \
+		else Scenarios.trimmed_glide_across_view(m, sim.gravity, m.controls.throw_rad, speed, air_density(), engine_charge_ratio())
 	if t.ok:
 		start = t
+		_trim_density = air_density()
+		_trim_charge = engine_charge_ratio()
 		trims = { roll = t.roll_command, pitch = t.pitch_command, yaw = t.get("yaw_command", 0.0) }
 	return t
 
@@ -585,9 +662,9 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var input_values := PackedFloat64Array([pilot_commands.roll, pilot_commands.pitch, pilot_commands.yaw, 0.0])
 	var surface_angles: Dictionary = Commands.surface_deflections_deg(pilot_commands, model.controls.throw_deg)
 	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
-	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, Air.RHO_SEA_LEVEL)
+	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, air_density(), engine_charge_ratio())
 	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
-		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity, _initial_wind())
+		deflections, input_values[2], rpm, air_density(), sim.gravity, _initial_wind())
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
@@ -664,11 +741,27 @@ func _crash(impact: ImpactSnapshot.Snapshot) -> void:
 
 
 func reset() -> void:
+	_shaft_pending_reset = false
 	resetting.emit()
 	crash = {}
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	start_error = ""
+	if aircraft.get("ok", false) and (_trim_density != air_density() or _trim_charge != engine_charge_ratio()):
+		var old_start: Dictionary = start
+		var speed: float = float(old_start.get("V", aircraft.model.get("start_speed", 15.0)))
+		if not is_finite(speed) or speed <= 0.0:
+			speed = float(aircraft.model.get("start_speed", 15.0))
+		var refit: Dictionary = trim_at(speed, str(old_start.get("mode", "level")))
+		if not refit.ok:
+			start = refit
+			_trim_density = NAN
+			_trim_charge = NAN
+			_fail_selected_start("atmosphere trim refused: " + str(refit.message))
+			return
+		if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
+			for axis: int in 3:
+				start.state[RB.POS + axis] = old_start.state[RB.POS + axis]
 	if start_choice == START_AIRBORNE:
 		_reset_airborne_start()
 	elif start_choice == START_RUNWAY:
@@ -707,7 +800,7 @@ func _reset_airborne_start() -> bool:
 		aux[downwash_index()] = _wing_cl(initial, aux, 0.0) # E0a2b: start settled, no downwash transient
 	sim.aux = aux
 	if _has_valid_start():
-		sim.continuous = _settled_wash(initial, aux)
+		sim.continuous = _settled_continuous(initial, aux)
 		if not sim.reset(initial):
 			sim.set_paused(true)
 			var reason: String = "simulation reset failed: " + sim.fault_reason
@@ -765,10 +858,10 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	engine_running = true
 	sim.inputs = _inputs()
 	var prop: Dictionary = aircraft.model.propulsion
-	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
+	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
-		rpm, Air.RHO_SEA_LEVEL, sim.gravity, _initial_wind())
+		rpm, air_density(), sim.gravity, _initial_wind())
 	if not solved.ok:
 		return { ok = false, message = "runway start: " + str(solved.message) }
 	aux.append_array(solved.anchors)
@@ -779,7 +872,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	if downwash_index() >= 0:
 		aux[downwash_index()] = _wing_cl(solved.state, aux, 0.0) # E0a2b: at rest, settled
 	sim.aux = aux
-	sim.continuous = _settled_wash(solved.state, aux)
+	sim.continuous = _settled_continuous(solved.state, aux)
 	if not sim.reset(solved.state):
 		return { ok = false, message = "runway start reset failed: " + sim.fault_reason }
 	sim.set_paused(not holds.is_empty())
@@ -807,7 +900,7 @@ func _fail_selected_start(reason: String) -> void:
 			sim.aux = aux
 			if downwash_index() >= 0:
 				aux[downwash_index()] = _wing_cl(parked, aux, 0.0)
-			sim.continuous = _settled_wash(parked, aux)
+			sim.continuous = _settled_continuous(parked, aux)
 		else:
 			sim.aux = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 			sim.continuous = PackedFloat64Array()
@@ -842,7 +935,7 @@ func _has_valid_start() -> bool:
 
 
 func _flight_ready() -> bool:
-	return _has_valid_start() and not _weather_pending_reset and sim.fault_reason.is_empty()
+	return _has_valid_start() and not _weather_pending_reset and not _shaft_pending_reset and sim.fault_reason.is_empty()
 
 
 ## Stick commands plus trims: what the surfaces actually do (and what the physics sees).
@@ -889,7 +982,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 	var a: PackedFloat64Array = sim.aux
 	var lag := downwash_index()
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
-		Air.RHO_SEA_LEVEL, wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
+		air_density(), wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
 		a.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE))
 	for i in ground.size():
@@ -900,14 +993,98 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 ## Continuous wash uses stage airspeed and state, with the existing sampled RPM/servo policy.
 func _wash_derivative(s: PackedFloat64Array, lagged: PackedFloat64Array, stage_time: float) -> PackedFloat64Array:
 	var air: Dictionary = air_data(s, stage_time)
-	return WashTransport.derivative(air.v_air, sim.aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL, lagged)
+	return WashTransport.derivative(air.v_air, sim.aux[AUX_RPM], aircraft.model.propulsion, air_density(), lagged)
 
 
 func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	if not WashTransport.enabled(aircraft.model.propulsion):
 		return PackedFloat64Array()
 	var air: Dictionary = air_data(s, 0.0)
-	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, Air.RHO_SEA_LEVEL)
+	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, air_density())
+
+
+func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	var out: PackedFloat64Array = _settled_wash(s, aux)
+	if shaft_is_coupled():
+		out.append(aux[AUX_RPM])
+	return out
+
+
+func _coupled_rpm(values: PackedFloat64Array) -> float:
+	var prop: Dictionary = aircraft.model.propulsion
+	var count: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
+	if values.size() != count + 1 or not is_finite(values[count]) or values[count] < 0.0:
+		return NAN
+	return values[count]
+
+
+## The optional RPM boundary mirror is telemetry, never a second evolving shaft state.
+func _coupled_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
+	var out: PackedFloat64Array = sampled.duplicate()
+	if out.is_empty():
+		return PackedFloat64Array([NAN])
+	out[AUX_RPM] = _coupled_rpm(values)
+	return out
+
+
+func _coupled_rotor(_s: PackedFloat64Array, values: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	return Dynamics.rotor_momentum(aircraft.model, _coupled_rpm(values))
+
+
+## External loads include -Q_prop exactly once. The rotor response adds only relative-spin reaction.
+func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	var rpm: float = _coupled_rpm(values)
+	if not is_finite(rpm):
+		return {ok = false}
+	var prop: Dictionary = aircraft.model.propulsion
+	var air: Dictionary = air_data(s, time_s)
+	var rate: float = Propulsion.shaft_rate(rpm, sim.inputs[3], M.dot(air.v_air, Propulsion.axis(prop)),
+		prop, air_density(), engine_charge_ratio(), engine_running)
+	if not is_finite(rate):
+		return {ok = false}
+	var a: PackedFloat64Array = sim.aux
+	var lag: int = downwash_index()
+	var external: PackedFloat64Array = Dynamics.loads(s, aircraft.model, _deflections(a), rpm,
+		air_density(), wind_at(time_s), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, values.size() - 1))
+	var ground: PackedFloat64Array = Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
+		a.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE))
+	for i: int in ground.size():
+		external[i] += ground[i]
+	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
+		M.v3(external[3], external[4], external[5]), sim.inertia, RB.inertia_inverse(sim.inertia),
+		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
+	if not response.ok:
+		return response
+	for i: int in 3:
+		external[3 + i] += response.reaction[i]
+	response.loads = external
+	response.rpm_rate = response.spin_acceleration * 60.0 / TAU
+	return response
+
+
+func _coupled_loads(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	var result: Dictionary = _coupled_response(s, values, time_s)
+	return result.loads if result.ok else PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN])
+
+
+func _coupled_derivative(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	var result: Dictionary = _coupled_response(s, values, time_s)
+	if not result.ok:
+		return PackedFloat64Array([NAN])
+	var air: Dictionary = air_data(s, time_s)
+	var wash: PackedFloat64Array = WashTransport.derivative(air.v_air, _coupled_rpm(values),
+		aircraft.model.propulsion, air_density(), values.slice(0, values.size() - 1)) if values.size() > 1 else PackedFloat64Array()
+	wash.append(result.rpm_rate)
+	return wash
+
+
+func _shaft_rate(s: PackedFloat64Array, rpm: float, time_s: float) -> float:
+	var values: PackedFloat64Array = sim.continuous.duplicate()
+	if values.is_empty():
+		return NAN
+	values[values.size() - 1] = rpm
+	var result: Dictionary = _coupled_response(s, values, time_s)
+	return result.rpm_rate if result.ok else NAN
 
 
 ## Aerodynamic-convention deflections from the servos' actual positions. The servos change once per tick (in
@@ -932,11 +1109,13 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 ## the shaft torque balance when the aircraft declares one (P51-06);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
-	if _weather_pending_reset:
+	if _weather_pending_reset or _shaft_pending_reset:
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm := 0.0
-	if engine_running and Turbine.is_turbine(prop):
+	if shaft_is_coupled():
+		rpm = aux[AUX_RPM] # the continuous endpoint owns RPM; the boundary mirror is read-only here
+	elif engine_running and Turbine.is_turbine(prop):
 		# AV-05: the turbine spools toward the ECU demand within its acceleration/deceleration schedules.
 		rpm = Turbine.spool_step(aux[AUX_RPM], inputs[3], dt, prop)
 	elif engine_running and Propulsion.has_shaft(prop):
@@ -945,7 +1124,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		var u := M.dot(M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]), Propulsion.axis(prop))
 		if not weather_is_calm():
 			u = M.dot(air_data(s, sim.time()).v_air, Propulsion.axis(prop))
-		rpm = Propulsion.shaft_step(aux[AUX_RPM], inputs[3], u, dt, prop, Air.RHO_SEA_LEVEL)
+		rpm = Propulsion.shaft_step(aux[AUX_RPM], inputs[3], u, dt, prop, air_density(), engine_charge_ratio())
 	elif engine_running:
 		rpm = Propulsion.rpm_step(aux[AUX_RPM], inputs[3], dt, prop)
 	var out := PackedFloat64Array([rpm, 0.0, 0.0, 0.0])
@@ -1109,6 +1288,27 @@ func trace_meta() -> Dictionary:
 			metadata.recording_start_rng_state = str(sim.modes[1])
 			metadata.recording_start_turbulence = JSON.stringify(Array(sim.aux.slice(turbulence_index())), "", true, true)
 		metadata.recording_start_previous_state = JSON.stringify(Array(sim.previous), "", true, true)
+	if not atmosphere_is_reference():
+		metadata.metadata_schema = "openrc-flight-meta v5"
+		metadata.weather_config = JSON.stringify(weather_configuration(), "", true, true)
+		metadata.weather_model = "uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1" if _weather.has_turbulence() else "uniform-ned-repeating-cosine-v1"
+		metadata.weather_evidence = "user-selected/authored practice conditions; not measured meteorology"
+		metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0"
+		metadata.recording_start_previous_state = JSON.stringify(Array(sim.previous), "", true, true)
+		metadata.atmosphere_model = "uniform-field-qnh-isa-buck-liquid-v1"
+		metadata.atmosphere_state = JSON.stringify(atmosphere_configuration(), "", true, true)
+		metadata.atmosphere_scope = "uniform field density per flight; geometric field elevation; liquid-water RH; fixed gravity; not a vertical sounding"
+		metadata.engine_atmosphere = "shaft: dry-air indicated torque, fixed friction; rpm-lag: prescribed rpm; turbine: existing density-scaled map (experimental)"
+	if shaft_is_coupled():
+		metadata.propulsion_model = "propeller-shaft-coupled-rk4-v1"
+		metadata.shaft_integrator = shaft_integrator()
+		metadata.rotor_coupling = "relative-spin-locked-inertia-reaction-v1"
+		metadata.continuous_layout = "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"
+		metadata.recording_start_continuous = JSON.stringify(Array(sim.continuous), "", true, true)
+		metadata.loads = "Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction"
+		metadata.state_timing = "body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage"
+		if metadata.has("weather_timing"):
+			metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0"
 	return metadata
 
 
@@ -1124,6 +1324,13 @@ func checkpoint() -> Dictionary:
 	if not weather_is_calm():
 		boundary.format = "openrc-flight-checkpoint v2"
 		boundary.weather_config = weather_configuration()
+	if not atmosphere_is_reference():
+		boundary.format = "openrc-flight-checkpoint v3"
+		boundary.weather_config = weather_configuration()
+	if shaft_is_coupled():
+		boundary.format = "openrc-flight-checkpoint v4"
+		boundary.shaft_integrator = shaft_integrator()
+		boundary.weather_config = weather_configuration()
 	return boundary
 
 
@@ -1135,8 +1342,10 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
-	if not field.is_calm():
+	if not field.is_calm() or field.has_atmosphere():
 		parts.append(field.configuration())
+	if shaft_is_coupled():
+		parts.append("shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 
@@ -1145,16 +1354,23 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
-			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2"] or typeof(candidate.get("configuration")) != TYPE_STRING \
+			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
 		return false
+	if shaft_is_coupled() != (candidate.format == "openrc-flight-checkpoint v4") \
+			or (shaft_is_coupled() and candidate.get("shaft_integrator") != shaft_integrator()):
+		return false
 	var restored_weather: WeatherField = _weather
-	if candidate.format == "openrc-flight-checkpoint v2":
+	if candidate.format in ["openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4"]:
 		var built: Dictionary = WeatherField.build(candidate.get("weather_config"))
-		if not built.ok or built.field.is_calm():
+		if not built.ok:
+			return false
+		if candidate.format == "openrc-flight-checkpoint v2" and (built.field.is_calm() or built.field.has_atmosphere()):
+			return false
+		if candidate.format == "openrc-flight-checkpoint v3" and not built.field.has_atmosphere():
 			return false
 		restored_weather = built.field
-	elif not weather_is_calm() or candidate.has("weather_config"):
+	elif not weather_is_calm() or not atmosphere_is_reference() or candidate.has("weather_config"):
 		return false # a legacy physics-only boundary cannot hide non-calm forcing
 	if candidate.configuration != _configuration_for_weather(restored_weather):
 		return false
@@ -1188,6 +1404,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		return false
 	_weather = restored_weather
 	_weather_pending_reset = false
+	_shaft_pending_reset = false
 	_turbulence_aux_index = expected_aux - 7 if turbulent else -1
 	# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
 	# restored state to this destination session's earlier launch. reset() will establish a new known launch.

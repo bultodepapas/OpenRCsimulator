@@ -345,8 +345,31 @@ func _update_weather_text() -> void:
 			summary = tr("Turbulence")
 		else:
 			summary += " + " + tr("Turbulence")
+	if weather_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT:
+		if WeatherSettings.has_atmosphere(weather_config):
+			var air: Dictionary = WeatherSettings.atmosphere(weather_config)
+			if air.get("ok", false):
+				var atmosphere_summary: String = tr("Thin air") if float(air.rho_kgm3) < 1.225 else tr("Custom air")
+				parts.append(tr("Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m") % [
+					String.num(float(weather_config.field_elevation_m), 1),
+					String.num(float(weather_config.temperature_c), 1),
+					String.num(float(weather_config.qnh_hpa), 1),
+					String.num(float(weather_config.relative_humidity_pct), 0),
+					String.num(float(air.rho_kgm3), 3),
+					String.num(float(air.density_altitude_m), 0),
+				])
+				if speed == 0.0 and gust == 0.0 and gust_up == 0.0 and not turbulence:
+					summary = atmosphere_summary
+				else:
+					summary += " + " + atmosphere_summary
+		else:
+			parts.append(tr("Reference air · fixed density 1.225 kg/m³"))
+			if speed == 0.0 and gust == 0.0 and gust_up == 0.0 and not turbulence:
+				summary = tr("Reference air")
+			else:
+				summary += " + " + tr("Reference air")
 	weather_button.text = "%s\n%s" % [tr("Weather"), summary]
-	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind and repeating gusts, with optional seeded turbulence."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
+	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
 
 
 ## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.

@@ -1,0 +1,144 @@
+{
+  "cases": [
+    {
+      "endpoint_rpm": 3545.8395322805127,
+      "fixture": "trim",
+      "integrator": "split",
+      "median_batch_mean_usec": 508.9291666666667,
+      "samples_usec_per_tick": [
+        508.9291666666667,
+        488.6458333333333,
+        554.5583333333333,
+        519.5875,
+        501.44166666666666,
+        489.0541666666667,
+        516.6791666666667
+      ],
+      "weather": "calm"
+    },
+    {
+      "endpoint_rpm": 3545.8395322805127,
+      "fixture": "trim",
+      "integrator": "coupled-rk4",
+      "median_batch_mean_usec": 1262.8458333333333,
+      "samples_usec_per_tick": [
+        1305.0166666666667,
+        1283.5958333333333,
+        1240.0791666666667,
+        1209.2541666666666,
+        1201.025,
+        1262.8458333333333,
+        1317.9958333333334
+      ],
+      "weather": "calm"
+    },
+    {
+      "endpoint_rpm": 5651.998547811845,
+      "fixture": "punch",
+      "integrator": "split",
+      "median_batch_mean_usec": 517.3208333333333,
+      "samples_usec_per_tick": [
+        558.5208333333334,
+        517.3208333333333,
+        522.6291666666667,
+        493.4791666666667,
+        510.375,
+        568.925,
+        498.975
+      ],
+      "weather": "calm"
+    },
+    {
+      "endpoint_rpm": 5648.611326807292,
+      "fixture": "punch",
+      "integrator": "coupled-rk4",
+      "median_batch_mean_usec": 1324.8416666666667,
+      "samples_usec_per_tick": [
+        1243.2791666666667,
+        1203.5166666666667,
+        1337.8041666666666,
+        1324.8416666666667,
+        1355.65,
+        1121.0916666666667,
+        1436.3708333333334
+      ],
+      "weather": "calm"
+    },
+    {
+      "endpoint_rpm": 3620.604179663458,
+      "fixture": "trim",
+      "integrator": "split",
+      "median_batch_mean_usec": 524.6666666666666,
+      "samples_usec_per_tick": [
+        577.5791666666667,
+        524.6666666666666,
+        530.3875,
+        529.6625,
+        498.3375,
+        515.8208333333333,
+        521.6208333333333
+      ],
+      "weather": "hot-high"
+    },
+    {
+      "endpoint_rpm": 3620.604179663458,
+      "fixture": "trim",
+      "integrator": "coupled-rk4",
+      "median_batch_mean_usec": 1269.0333333333333,
+      "samples_usec_per_tick": [
+        1269.0333333333333,
+        1228.4166666666667,
+        1254.6041666666667,
+        1296.925,
+        1224.85,
+        1345.6166666666666,
+        1279.9708333333333
+      ],
+      "weather": "hot-high"
+    },
+    {
+      "endpoint_rpm": 5406.139248476209,
+      "fixture": "punch",
+      "integrator": "split",
+      "median_batch_mean_usec": 487.7375,
+      "samples_usec_per_tick": [
+        501.09583333333336,
+        484.51666666666665,
+        487.7375,
+        548.3125,
+        508.3208333333333,
+        465.09583333333336,
+        466.2
+      ],
+      "weather": "hot-high"
+    },
+    {
+      "endpoint_rpm": 5402.326471383273,
+      "fixture": "punch",
+      "integrator": "coupled-rk4",
+      "median_batch_mean_usec": 1283.5708333333334,
+      "samples_usec_per_tick": [
+        1267.1583333333333,
+        1279.4583333333333,
+        1304.4041666666667,
+        1370.65,
+        1283.5708333333334,
+        1235.6583333333333,
+        1337.6208333333334
+      ],
+      "weather": "hot-high"
+    }
+  ],
+  "cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+  "engine": "4.7.2-stable (official)",
+  "format": "openrc-coupled-shaft-cost v1",
+  "logical_cpus": 12,
+  "samples": 7,
+  "tick_hz": 240,
+  "ticks_per_sample": 240,
+  "timing_scope": "median of seven simulation-step batch means; no individual tick tails or renderer",
+  "warmup_ticks_per_sample": 240,
+  "source_manifest": "source-manifest.json",
+  "source_manifest_sha256": "583dfa61e437c388f6123ad5fc1c608b5ea832226311a65d6b23e2c904eaf84b",
+  "benchmark_source_sha256": "58bc9a36249258cb806919f69b2dea2c533e70cade810d4e7b9d2ef7e8a61aed"
+}

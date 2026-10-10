@@ -76,6 +76,17 @@ def _weather_config(raw, trace_version):
         raise ValueError('weather_config must be an object')
     base = {'format', 'speed_mps', 'from_deg', 'gust_mps', 'gust_up_mps',
             'gust_duration_s', 'gust_period_s', 'gust_delay_s'}
+    if config.get('format') == 'openrc-weather v3':
+        atmosphere_keys = {'atmosphere_mode', 'field_elevation_m', 'temperature_c',
+                           'qnh_hpa', 'relative_humidity_pct'}
+        expected = base | {'turbulence_rms_mps', 'turbulence_tau_s', 'turbulence_seed'} | atmosphere_keys
+        if set(config) != expected or config.get('atmosphere_mode') != 'reference':
+            raise ValueError('custom atmosphere requires trace v6 and its atmosphere reader')
+        for key, limits in {'field_elevation_m': (-500, 4000), 'temperature_c': (-20, 45),
+                            'qnh_hpa': (870, 1085), 'relative_humidity_pct': (0, 100)}.items():
+            _number(config[key], key, *limits)
+        config = {key: value for key, value in config.items() if key not in atmosphere_keys}
+        config['format'] = 'openrc-weather v2'
     version = config.get('format')
     turbulent = version == 'openrc-weather v2'
     expected_keys = base | ({'turbulence_rms_mps', 'turbulence_tau_s', 'turbulence_seed'} if turbulent else set())
@@ -236,6 +247,8 @@ def check(path, duration=None):
             if not separator or key in metadata:
                 raise ValueError('malformed or duplicate metadata')
             metadata[key] = value
+    from check_trimmed_flight import check_coupled_metadata
+    check_coupled_metadata(metadata)
     trace_format = metadata.get('format')
     if trace_format == 'openrc-trace v4':
         trace_version = 4
@@ -259,7 +272,10 @@ def check(path, duration=None):
         raise ValueError('missing/invalid trace clock metadata') from error
     if not math.isfinite(dt) or not 0 < dt <= 1:
         raise ValueError('invalid trace clock')
-    if metadata.get('weather_timing') != 'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0':
+    expected_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
+                       if metadata.get('shaft_integrator') == 'coupled-rk4' else
+                       'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0')
+    if metadata.get('weather_timing') != expected_timing:
         raise ValueError('unsupported weather timing contract')
     if metadata.get('weather_evidence') != 'user-selected/authored practice conditions; not measured meteorology':
         raise ValueError('unsupported weather evidence contract')

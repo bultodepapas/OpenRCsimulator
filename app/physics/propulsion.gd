@@ -20,6 +20,7 @@ const CP_FLOOR := 0.0
 const SHAFT_RPM_CEILING := 1.6
 ## Numerical torque-balance tolerance (N·m absolute, relative above 1 N·m); not a physical accuracy claim.
 const SHAFT_TORQUE_TOL := 1e-10
+const RHO_REFERENCE := 1.225 # reference calibration of the existing power curve
 
 
 ## Piecewise-linear table [J0, v0, J1, v1, …]. J < 0 (flying backwards) uses the J = 0 value;
@@ -73,7 +74,9 @@ static func prop_torque(rpm: float, u: float, prop: Dictionary, rho: float) -> f
 ## Engine output torque (N·m) at rpm for throttle 0…1 (shaft model). The throttle admits indicated power
 ## P_adm = P_idle + θ·(P_peak_ind − P_idle) (air flow through the carburettor); the engine delivers
 ## Q = min(Q_full_ind(n), P_adm/ω) − Q_friction(n). Q_full_ind is the full-throttle brake torque curve plus friction.
-static func engine_torque(rpm: float, throttle: float, prop: Dictionary) -> float:
+static func engine_torque(rpm: float, throttle: float, prop: Dictionary, charge_ratio: float = 1.0) -> float:
+	if not is_finite(charge_ratio) or charge_ratio < 0.0:
+		return NAN
 	var sh: Dictionary = prop.shaft
 	var omega := maxf(rpm, 0.0) * TAU / 60.0
 	var friction: float = sh.friction[0] + sh.friction[1] * rpm / 1000.0
@@ -85,33 +88,57 @@ static func engine_torque(rpm: float, throttle: float, prop: Dictionary) -> floa
 		brake_full = coefficient(curve, rpm, 0.0) / omega
 	var admitted: float = sh.idle_power + clampf(throttle, 0.0, 1.0) * (sh.peak_indicated_power - sh.idle_power)
 	var indicated := minf(brake_full + friction, admitted / maxf(omega, 1.0))
+	# Estimated naturally aspirated correction: oxygen-bearing dry-air charge scales indicated torque, not friction.
+	if charge_ratio != 1.0:
+		indicated *= charge_ratio
 	return indicated - friction
 
 
 ## Shaft model step: J_rot·dω/dt = Q_engine − Q_prop, explicit over one tick (τ ≈ 0.2 s ≫ dt). rpm ≥ 0.
-static func shaft_step(rpm: float, throttle: float, u: float, dt: float, prop: Dictionary, rho: float) -> float:
-	var net := engine_torque(rpm, throttle, prop) - prop_torque(rpm, u, prop, rho)
+static func shaft_step(rpm: float, throttle: float, u: float, dt: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
+	var ratio: float = engine_charge_ratio
+	var net := engine_torque(rpm, throttle, prop, ratio) - prop_torque(rpm, u, prop, rho)
 	return maxf(0.0, rpm + net / float(prop.rotor_inertia) * dt * 60.0 / TAU)
+
+
+## G2a: continuous shaft derivative (rpm/s), evaluated with stage-local RPM and axial airspeed.
+## Engine-off retains windmilling and mechanical friction. Below the existing stopped-prop cutoff,
+## a negative derivative is suppressed; negative RK states are refused by the owner, never hidden by clamping.
+static func shaft_rate(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float,
+		engine_charge_ratio: float = 1.0, running: bool = true) -> float:
+	if not is_finite(rpm) or rpm < 0.0 or not is_finite(throttle) or not is_finite(u) \
+			or not is_finite(rho) or rho <= 0.0 or not is_finite(engine_charge_ratio) or engine_charge_ratio < 0.0 \
+			or not has_shaft(prop) or not is_finite(float(prop.rotor_inertia)) or prop.rotor_inertia <= 0.0:
+		return NAN
+	var engine: float = engine_torque(rpm, throttle, prop, engine_charge_ratio) if running else (
+		-float(prop.shaft.friction[0]) - float(prop.shaft.friction[1]) * rpm / 1000.0)
+	var net: float = engine - prop_torque(rpm, u, prop, rho)
+	if rpm <= STOPPED_RPM and net < 0.0:
+		return 0.0
+	return net / float(prop.rotor_inertia) * 60.0 / TAU
 
 
 ## Steady rpm for a throttle at axial airspeed u: the lag model's target, or the shaft model's torque balance
 ## Bisection requires positive-to-negative net torque across the supported bracket. Returns NAN if no
 ## finite equilibrium is established there; callers must refuse that start, not use a bracket endpoint.
 ## Assumes a structurally valid loader model. Does not establish root uniqueness or measured engine validity.
-static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float) -> float:
+static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float, engine_charge_ratio: float = 1.0) -> float:
 	if Turbine.is_turbine(prop): # AV-05
 		return Turbine.steady_rpm(throttle, prop)
 	if not has_shaft(prop):
 		return target_rpm(throttle, prop)
 	if not is_finite(throttle) or not is_finite(u) or not is_finite(rho) or rho < 0.0:
 		return NAN
+	var ratio: float = engine_charge_ratio
+	if not is_finite(ratio) or ratio < 0.0:
+		return NAN
 	var curve: PackedFloat64Array = prop.shaft.power_curve
 	var lo := STOPPED_RPM
 	var hi := curve[curve.size() - 2] * SHAFT_RPM_CEILING
 	if not is_finite(hi) or hi <= lo:
 		return NAN
-	var low_torque := _shaft_net_torque(lo, throttle, u, prop, rho)
-	var high_torque := _shaft_net_torque(hi, throttle, u, prop, rho)
+	var low_torque := _shaft_net_torque(lo, throttle, u, prop, rho, ratio)
+	var high_torque := _shaft_net_torque(hi, throttle, u, prop, rho, ratio)
 	if not is_finite(low_torque) or not is_finite(high_torque) or low_torque < 0.0 or high_torque > 0.0:
 		return NAN
 	if low_torque == 0.0:
@@ -120,7 +147,7 @@ static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float) 
 		return hi
 	for _i in 80:
 		var mid := 0.5 * (lo + hi)
-		var net := _shaft_net_torque(mid, throttle, u, prop, rho)
+		var net := _shaft_net_torque(mid, throttle, u, prop, rho, ratio)
 		if not is_finite(net):
 			return NAN
 		if net > 0.0:
@@ -128,7 +155,7 @@ static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float) 
 		else:
 			hi = mid
 	var rpm := 0.5 * (lo + hi)
-	var engine := engine_torque(rpm, throttle, prop)
+	var engine := engine_torque(rpm, throttle, prop, ratio)
 	var torque_load := prop_torque(rpm, u, prop, rho)
 	var residual := engine - torque_load
 	if not is_finite(engine) or not is_finite(torque_load) or not is_finite(residual):
@@ -138,8 +165,8 @@ static func steady_rpm(throttle: float, u: float, prop: Dictionary, rho: float) 
 	return rpm
 
 
-static func _shaft_net_torque(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float) -> float:
-	var engine := engine_torque(rpm, throttle, prop)
+static func _shaft_net_torque(rpm: float, throttle: float, u: float, prop: Dictionary, rho: float, ratio: float) -> float:
+	var engine := engine_torque(rpm, throttle, prop, ratio)
 	var torque_load := prop_torque(rpm, u, prop, rho)
 	return engine - torque_load if is_finite(engine) and is_finite(torque_load) else NAN
 

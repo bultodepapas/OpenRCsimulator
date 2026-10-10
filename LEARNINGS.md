@@ -128,3 +128,12 @@ A barrier can clear the runway rectangle yet hide its near edge. Validate its he
 ## 2026-10-09 · M5-W04a — keep random forcing inside the transaction
 
 A seeded RNG is insufficient for deterministic simulation: stage/render queries must never advance it. Store the exact RNG bits beside the filter interval in the existing sampled/discrete checkpoint and rollback both on a failed step. Reconstruct Gaussian samples from raw integer words when an engine's normal helpers use float32. A seed's PCG sequence initializer differs from the runtime recurrence increment; independent replay exposed this distinction. For replay, keep int64 state out of JSON numeric fields. [Kernel and integrated proof](docs/research/wind-implementation/M5-W04a/README.md).
+
+
+## 2026-10-09 · M5-ATM-2/3 — density is shared, engine charge is distinct
+
+Thread one field density through trim, aero, propeller load, wake and telemetry before exposing an atmosphere control. Moist aerodynamic density includes vapor; a naturally aspirated engine's oxygen-bearing charge follows dry partial pressure. Scale indicated torque explicitly and keep friction fixed, while leaving other propulsion laws separate. Preserve the literal reference branch instead of recomputing a nearly identical baseline, and reject a new environment's failed trim rather than flying its previous solution. [Equations and fleet proof](docs/research/atmosphere/M5-ATM-2/README.md).
+
+## 2026-10-09 · G2a/G2b — relative rotor speed couples to body acceleration
+
+With locked aircraft inertia, relative shaft acceleration and body acceleration along the shaft must be solved together. Add relative-spin reaction once over the existing external propeller torque, and use stage RPM for both loads and gyro momentum. Check angular momentum and motor work independently; algebra alone can hide an omitted body-acceleration term. Quantify table-knot crossings separately from smooth RK4 order, and use quaternion chord distance when errors are too small for `acos(dot)`. Continuous wake increments are signed; only the RPM suffix has a nonnegative domain. [Equations, conservation and refinement](docs/research/propulsion/G2a-RK4/README.md).

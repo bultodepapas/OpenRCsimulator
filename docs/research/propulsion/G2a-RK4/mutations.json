@@ -1,0 +1,47 @@
+{
+  "format": "openrc-rotor-mutation-check v1",
+  "source_unchanged": true,
+  "source_sha256": {
+    "physics/rotor_coupling.gd": "e893d4707feeb119a727ff050366fc077c7f35ddb7316303576f2ad3b5e05126",
+    "sim/flight_session.gd": "7be5d1e1078a05ceb6f988ff90f43cedb0f5b29e7923bdd297f42b108cb27752"
+  },
+  "results": {
+    "control_rotor": {
+      "exit_code": 0,
+      "failures": [],
+      "log_sha256": "629cede961acfcb40cb982a11f68cc5f64ae0a85f7f5e2b1c7f423426dede70d"
+    },
+    "control_refinement": {
+      "exit_code": 0,
+      "failures": [],
+      "log_sha256": "33ec13a16ecd257d3a859e4ff384a5d0b76ba78e919c443d4ef3d18e79825b60"
+    },
+    "missing_body_acceleration": {
+      "exit_code": 1,
+      "failures": [
+        "FAIL rotor-only absolute axial acceleration balances motor torque ",
+        "FAIL instantaneous work equals external moment power plus relative shaft motor power ",
+        "FAIL kinetic energy increase matches integrated shaft work 0.22752328939441435 J"
+      ],
+      "log_sha256": "c756ff117b00bd33cb745f0759d258130fa149ebd496414b5b81c3d70ec641ab"
+    },
+    "reversed_reaction": {
+      "exit_code": 1,
+      "failures": [
+        "FAIL rotor-only absolute axial acceleration balances motor torque ",
+        "FAIL instantaneous work equals external moment power plus relative shaft motor power ",
+        "FAIL spin-up and spin-down react in opposite directions ",
+        "FAIL inertial total angular momentum is conserved during internal spin-up 0.4745709667407003 N\u00b7m\u00b7s",
+        "FAIL kinetic energy increase matches integrated shaft work 0.4918153463981936 J"
+      ],
+      "log_sha256": "3648bd3daad6a6f03a498fcc84f36db83771383adaf213952df7117066d41985"
+    },
+    "sampled_gyro": {
+      "exit_code": 1,
+      "failures": [
+        "FAIL coupled-rk4 smooth full-session RPM refinement: errors [0.00000010363101, 0.00000059527747, 0.00000030893671] rpm, ratios [0.17408858016133, 1.92685899502325]"
+      ],
+      "log_sha256": "d7f80ddfc874f73a85d384dad54ecbb2a032bcafd79e8db67a1dd87e48a80387"
+    }
+  }
+}

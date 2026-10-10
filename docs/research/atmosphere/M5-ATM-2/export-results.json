@@ -1,0 +1,18 @@
+{
+  "format": "openrc-atmosphere-export-check v1",
+  "command": "app/export.sh",
+  "exit_code": 0,
+  "log_sha256": "86a86820f0609a3b89fa99b557aede37d9e122dcfec9ccbdbccd51e5bfc30466",
+  "identity": "v0.1.0-rc6-15-g9a4eabd-dirty",
+  "checks": [
+    "Linux trimmed-flight native smoke",
+    "macOS package structure",
+    "all three packs: field/data/resource load checks"
+  ],
+  "scope": "Linux executed; Windows/macOS export and pack checks only; native platform/pilot acceptance remains open",
+  "packages": [
+    "e78e9d3a4f36246e8e3f4198565031d9a06cc5bd39bd85bf4bf5a02002831d77  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-linux-x86_64.zip",
+    "c3a462b0d3b3cd384ba84ab0dae69e87c4cc5234d5eedf1c3a5e09d1055c9bcf  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-macos-universal.zip",
+    "b126b5c1e9099162d982fd6d0e3fd5215819d665feb77468c6834a4b240cdd10  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-windows-x86_64.zip"
+  ]
+}

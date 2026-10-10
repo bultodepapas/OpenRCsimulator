@@ -16,6 +16,7 @@ const REPOSITORY := "github.com/bultodepapas/OpenRCsimulator"
 
 var close_button: Button
 var about_label: Label
+var field_conditions_label: Label
 var _return_focus: Control
 
 
@@ -72,7 +73,10 @@ func _init(return_focus: Control = null) -> void:
 	right.add_child(_text("RADIO", "SectionLabel"))
 	right.add_child(_text("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.", "SecondaryLabel", true))
 	right.add_child(_text("RIGHT NOW", "SectionLabel"))
-	right.add_child(_text("Flights start in the air. Weather adds uniform wind, repeating gusts and seeded turbulence. Wheel landings are experimental; crashes restart the flight.", "SecondaryLabel", true))
+	field_conditions_label = _text("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.", "SecondaryLabel", true)
+	field_conditions_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_update_field_conditions_text()
+	right.add_child(field_conditions_label)
 
 	# About across the width, in two lines: everything fits at 1280x720 without scrolling, because nothing below
 	# Close is focusable and keyboard players could not scroll to it (tests/test_ui_help.gd checks the fit).
@@ -86,6 +90,17 @@ func _init(return_focus: Control = null) -> void:
 func _ready() -> void:
 	about_label.text = about_text(BuildInfo.current())
 	close_button.grab_focus.call_deferred()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_update_field_conditions_text()
+		about_label.text = about_text(BuildInfo.current())
+
+
+func _update_field_conditions_text() -> void:
+	if field_conditions_label != null:
+		field_conditions_label.text = tr("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.")
 
 
 ## Product, build identity (as exported, or "development"), engine and licence: what a bug report needs.

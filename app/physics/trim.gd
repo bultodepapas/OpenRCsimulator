@@ -30,25 +30,25 @@ static func _deflections(x: PackedFloat64Array) -> Dictionary:
 
 
 ## Shared loads/derivative and state for unknowns x. Unknown control angles remain in Aero's data convention.
-static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float) -> Dictionary:
+static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
 	var throttle := x[2] if mode == "level" else 0.0
-	var rpm := _rpm(throttle, s, mode, model)
-	return Dynamics.evaluate(s, model, _deflections(x), rpm, Air.RHO_SEA_LEVEL, M.v3(0, 0, 0), g)
+	var rpm := _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
+	return Dynamics.evaluate(s, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
 
 
 ## Steady engine rpm in the trimmed state: the lag model's target, or the shaft model's torque balance at the
 ## state's axial airspeed (calm air). 0 in a glide (engine stopped).
-static func _rpm(throttle: float, s: PackedFloat64Array, mode: String, model: Dictionary) -> float:
+static func _rpm(throttle: float, s: PackedFloat64Array, mode: String, model: Dictionary, rho: float, engine_charge_ratio: float) -> float:
 	if mode != "level":
 		return 0.0
 	var u := M.dot(M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]), Propulsion.axis(model.propulsion))
-	return Propulsion.steady_rpm(throttle, u, model.propulsion, Air.RHO_SEA_LEVEL)
+	return Propulsion.steady_rpm(throttle, u, model.propulsion, rho, engine_charge_ratio)
 
 
-static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float) -> PackedFloat64Array:
-	var e := _evaluate(x, mode, V, model, g)
+static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> PackedFloat64Array:
+	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
 	var dot: PackedFloat64Array = e.derivative
 	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
 
@@ -57,11 +57,15 @@ static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dict
 ## Returns { ok, message, mode, V, alpha, beta, gamma, throttle, thrust, rpm, elevator, aileron, rudder,
 ##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
 ## Requires a structurally valid loader model. Numerical failures keep these keys, with unavailable values NaN.
-static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary) -> Dictionary:
+static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, rho: float = Air.RHO_SEA_LEVEL, engine_charge_ratio: float = 1.0) -> Dictionary:
 	if mode != "level" and mode != "glide":
 		return _numerical_failure("unsupported trim mode", mode, V, 0)
 	if not is_finite(V) or V <= 0.0 or not is_finite(g) or g < 0.0:
 		return _numerical_failure("trim needs finite positive speed and finite nonnegative gravity", mode, V, 0)
+	if not is_finite(rho) or rho <= 0.0:
+		return _numerical_failure("trim needs finite positive air density", mode, V, 0)
+	if not is_finite(engine_charge_ratio) or engine_charge_ratio < 0.0:
+		return _numerical_failure("trim needs a finite nonnegative engine charge ratio", mode, V, 0)
 	for axis in ["elevator", "aileron", "rudder"]:
 		var limit: Variant = throws.get(axis)
 		if (typeof(limit) != TYPE_FLOAT and typeof(limit) != TYPE_INT) or not is_finite(limit) or limit <= 0.0:
@@ -71,15 +75,15 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 	# throttle guesses only after a failure keeps every previously converging trim bit-identical.
 	var result := {}
 	for guess in ([0.4, 0.75, 0.95] if mode == "level" else [-0.1]):
-		result = _solve_from(mode, V, model, g, throws, guess)
+		result = _solve_from(mode, V, model, g, throws, guess, rho, engine_charge_ratio)
 		if result.ok:
 			return result
 	return result
 
 
-static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float) -> Dictionary:
+static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float) -> Dictionary:
 	var x := PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
-	var r := _residual(x, mode, V, model, g)
+	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio)
 	var iterations := 0
 	var residual_norm: float = _norm(r)
 	if not is_finite(residual_norm):
@@ -93,7 +97,7 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			var h := 1e-7 * maxf(1.0, absf(x[k]))
 			var xp := x.duplicate()
 			xp[k] += h
-			var rp := _residual(xp, mode, V, model, g)
+			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio)
 			if not _all_finite(rp):
 				return _numerical_failure("nonfinite perturbed trim residual", mode, V, iterations)
 			for i in N:
@@ -108,25 +112,25 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			x[k] += dx[k]
 		if not _all_finite(x):
 			return _numerical_failure("nonfinite Newton iterate", mode, V, iterations)
-		r = _residual(x, mode, V, model, g)
+		r = _residual(x, mode, V, model, g, rho, engine_charge_ratio)
 		residual_norm = _norm(r)
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated trim residual", mode, V, iterations)
 	if residual_norm > 1e-8:
-		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g)
+		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
 	for check in [[x[1], throws.elevator, "elevator"], [x[4], throws.aileron, "aileron"], [x[5], throws.rudder, "rudder"]]:
 		if absf(check[0]) > check[1]:
-			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g)
+			return _result(false, "needs %.1f° of %s, more than the %.1f° throw" % [rad_to_deg(absf(check[0])), check[2], rad_to_deg(check[1])], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
 	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
-		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g)
-	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g)
+		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
 
 
-static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary, g: float) -> Dictionary:
+static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var throttle := x[2] if mode == "level" else 0.0
-	var e := _evaluate(x, mode, V, model, g)
-	var rpm := _rpm(throttle, e.state, mode, model)
+	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
+	var rpm := _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio)
 	var thrust: float = e.propulsion_loads[0]
 	var result: Dictionary = {
 		ok = ok, message = message, mode = mode, V = V,
