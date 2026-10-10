@@ -1,10 +1,13 @@
-# TOD-08a: bind an exact physics checkpoint to its visual timeline and field identity.
+# TOD-09c1: bind an exact physics checkpoint to a fixed or progressing visual timeline.
 extends RefCounted
 
 const Config: Script = preload("res://environment/time_of_day_config.gd")
 const VisualTimeline: Script = preload("res://environment/visual_timeline.gd")
 
 const FORMAT: String = "openrc-visual-checkpoint v1"
+const FORMAT_PROGRESSING: String = "openrc-visual-checkpoint v2"
+const TIMELINE_FORMAT_FIXED: String = "openrc-visual-timeline v1"
+const TIMELINE_FORMAT_PROGRESSING: String = "openrc-visual-timeline v2"
 const PHYSICS_FORMATS: Array[String] = [
 	"openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2",
 	"openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4",
@@ -28,10 +31,16 @@ static func make(snapshot: Dictionary, timeline: Variant, field_identity: String
 	var visual: Dictionary = _timeline_at_tick(timeline, physics_check.tick)
 	if not visual.ok:
 		return _failure_make(visual.errors)
+	var checkpoint_format: String = FORMAT
+	if visual.timeline.format == TIMELINE_FORMAT_PROGRESSING:
+		checkpoint_format = FORMAT_PROGRESSING
+		var timestep_check: Dictionary = _physics_timestep(snapshot, int(visual.timeline.ticks_per_second))
+		if not timestep_check.ok:
+			return _failure_make(timestep_check.errors)
 	var physics_copy: Dictionary = bytes_to_var(var_to_bytes(snapshot))
 	var timeline_copy: Dictionary = bytes_to_var(var_to_bytes(visual.timeline))
 	var checkpoint: Dictionary = {
-		"format": FORMAT,
+		"format": checkpoint_format,
 		"physics": physics_copy,
 		"timeline": timeline_copy,
 		"field_identity": field_identity,
@@ -53,7 +62,9 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 	if typeof(format_value) != TYPE_STRING:
 		return _failure_read(["checkpoint format must be a string"])
 	if format_value == FORMAT:
-		return _read_paired(source, expected_field_identity)
+		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_FIXED)
+	if format_value == FORMAT_PROGRESSING:
+		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_PROGRESSING)
 	if not PHYSICS_FORMATS.has(str(format_value)):
 		return _failure_read(["unknown checkpoint format '%s'" % str(format_value)])
 	for marker: String in PAIRED_MARKERS:
@@ -81,7 +92,7 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 	}
 
 
-static func _read_paired(source: Dictionary, expected_field_identity: String) -> Dictionary:
+static func _read_paired(source: Dictionary, expected_field_identity: String, expected_timeline_format: String) -> Dictionary:
 	if not _has_exact_keys(source, PAIRED_FIELDS):
 		return _failure_read(["paired checkpoint has an invalid schema"])
 	var physics: Variant = source.get("physics", null)
@@ -98,10 +109,14 @@ static func _read_paired(source: Dictionary, expected_field_identity: String) ->
 	var physics_check: Dictionary = _physics_tick(physics)
 	if not physics_check.ok:
 		return _failure_read(physics_check.errors)
-	var visual: Dictionary = _timeline_at_tick(timeline, physics_check.tick)
+	var visual: Dictionary = _timeline_at_tick(timeline, physics_check.tick, expected_timeline_format)
 	if not visual.ok:
 		return _failure_read(visual.errors)
-	return {
+	if expected_timeline_format == TIMELINE_FORMAT_PROGRESSING:
+		var timestep_check: Dictionary = _physics_timestep(physics, int(visual.timeline.ticks_per_second))
+		if not timestep_check.ok:
+			return _failure_read(timestep_check.errors)
+	var result: Dictionary = {
 		"ok": true,
 		"physics": bytes_to_var(var_to_bytes(physics)),
 		"timeline": bytes_to_var(var_to_bytes(visual.timeline)),
@@ -112,6 +127,10 @@ static func _read_paired(source: Dictionary, expected_field_identity: String) ->
 		"context_status": "paired",
 		"errors": [],
 	}
+	if expected_timeline_format == TIMELINE_FORMAT_PROGRESSING:
+		result["subsecond_ticks"] = visual.subsecond_ticks
+		result["configured_start"] = bytes_to_var(var_to_bytes(visual.configured_start))
+	return result
 
 
 static func _physics_tick(raw: Variant) -> Dictionary:
@@ -129,11 +148,13 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	return {"ok": true, "tick": int(tick), "errors": []}
 
 
-static func _timeline_at_tick(raw: Variant, checkpoint_tick: int) -> Dictionary:
+static func _timeline_at_tick(raw: Variant, checkpoint_tick: int, expected_format: String = "") -> Dictionary:
 	var validated: Dictionary = VisualTimeline.validate(raw)
 	if not validated.get("ok", false):
 		return {"ok": false, "errors": _prefixed_errors("timeline", validated.get("errors", []))}
 	var timeline: Dictionary = validated.timeline
+	if not expected_format.is_empty() and timeline.get("format", "") != expected_format:
+		return {"ok": false, "errors": ["timeline format does not match paired checkpoint format"]}
 	if int(timeline.anchor_tick) > checkpoint_tick:
 		return {"ok": false, "errors": ["checkpoint tick precedes the timeline anchor"]}
 	for event: Dictionary in timeline.events:
@@ -142,7 +163,7 @@ static func _timeline_at_tick(raw: Variant, checkpoint_tick: int) -> Dictionary:
 	var evaluated: Dictionary = VisualTimeline.evaluate(timeline, checkpoint_tick)
 	if not evaluated.get("ok", false):
 		return {"ok": false, "errors": _prefixed_errors("timeline evaluation", evaluated.get("errors", []))}
-	return {
+	var result: Dictionary = {
 		"ok": true,
 		"timeline": timeline,
 		"config": evaluated.config,
@@ -151,6 +172,26 @@ static func _timeline_at_tick(raw: Variant, checkpoint_tick: int) -> Dictionary:
 		"anchor_tick": evaluated.anchor_tick,
 		"errors": [],
 	}
+	if timeline.format == TIMELINE_FORMAT_PROGRESSING:
+		result["subsecond_ticks"] = evaluated.subsecond_ticks
+		result["configured_start"] = bytes_to_var(var_to_bytes(evaluated.configured_start))
+	return result
+
+
+static func _physics_timestep(raw: Variant, ticks_per_second: int) -> Dictionary:
+	if typeof(raw) != TYPE_DICTIONARY or ticks_per_second <= 0:
+		return {"ok": false, "errors": ["progressing timeline requires a positive physics timestep"]}
+	var simulation: Variant = raw.get("simulation", null)
+	if typeof(simulation) != TYPE_DICTIONARY:
+		return {"ok": false, "errors": ["progressing timeline requires physics simulation.dt"]}
+	var timestep: Variant = simulation.get("dt", null)
+	if (typeof(timestep) != TYPE_FLOAT and typeof(timestep) != TYPE_INT) \
+			or not is_finite(float(timestep)) or float(timestep) <= 0.0:
+		return {"ok": false, "errors": ["progressing timeline requires finite positive physics simulation.dt"]}
+	var expected: float = 1.0 / float(ticks_per_second)
+	if float(timestep) != expected:
+		return {"ok": false, "errors": ["physics simulation.dt does not match timeline.ticks_per_second"]}
+	return {"ok": true, "errors": []}
 
 
 static func _payload_sha256(physics: Dictionary, timeline: Dictionary, field_identity: String) -> String:

@@ -525,6 +525,11 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	var decoded: Dictionary = VisualCheckpoint.read(candidate, _field_identity())
 	if not decoded.ok:
 		return decoded
+	# TOD-09c1 defines progressing records before the live controller consumes them.
+	# Refuse even a stopped v2 history: its restart selection and fractional phase
+	# cannot be represented by this controller's fixed-time reset path yet.
+	if decoded.timeline.format != VisualTimeline.FORMAT:
+		return {ok = false, errors = ["progressing visual checkpoints require the solar progression controller"]}
 	var staged: Dictionary = _prepare_checkpoint_lighting(decoded.config)
 	if not staged.ok:
 		return {ok = false, errors = ["could not prepare checkpoint lighting"]}

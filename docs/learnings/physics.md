@@ -116,6 +116,8 @@ When adding propwash to a tail model, evaluate washed and free loads with the sa
 
 An ideal averaged ESC's battery current is duty times its DC-equivalent motor current. In the EL1a half-duty hand fixture, confusing the two doubles inferred battery input from 90 W to 180 W; an isolated mutation is rejected by both arithmetic and energy checks. Record the current plane and Kv units before fitting motor constants or integrating battery charge. Raw brushless phase RMS current and phase-pair resistance also need an explicit equivalent-port convention. A controller's current rating does not establish a current-limit law. ([EL1a equations and rejecting evidence](../research/propulsion/EL1a/README.md))
 
+Total pack current also includes any BEC/receiver/servo draw referred to the pack side; a different-voltage BEC output current cannot be added directly. A same-family manual may omit the exact ESC: the EL1a-R1 Avian review found no 70 A model in the generic setting tables, and the Timber transmitter alarm was distinct from its ESC cutoff. Record firmware/settings and measurement boundaries before treating family behavior as a calibrated preset. ([EL1a-R1, motor/ESC](../research/propulsion/EL1a-R1/01-motor-esc.md), [battery and LVC](../research/propulsion/EL1a-R1/02-battery.md))
+
 ## Data and performance
 
 ### Validate data before conversion and at the session boundary

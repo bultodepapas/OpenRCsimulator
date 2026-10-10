@@ -62,6 +62,16 @@ func _run() -> void:
 	ShaderClock.update(123.25, Vector3(1.0, 2.0, 3.0))
 	Atmosphere.update_clouds(flight._env, 123.25)
 	var before: Dictionary = _observed(flight)
+	# A valid future-format payload must not silently become a fixed-time flight.
+	# Even rate zero can carry fractional phase and a distinct restart selection.
+	for rate: int in [0, 1]:
+		var progressing: Dictionary = Timeline.create_progressing(night, 0, rate)
+		var future_pair: Dictionary = Envelope.make(original.physics, progressing.timeline, flight._field_identity())
+		check("v2 fixture is valid at rate %d" % rate, future_pair.ok
+			and Envelope.read(future_pair.checkpoint, flight._field_identity()).ok)
+		var refused: Dictionary = flight.restore_checkpoint(future_pair.checkpoint)
+		check("unsupported v2 restore is atomic at rate %d" % rate, not refused.ok
+			and str(refused.errors).contains("solar progression controller") and _observed(flight) == before)
 	for defect: String in ["missing_visual", "future_format", "wrong_hash", "wrong_field", "invalid_config", "invalid_physics"]:
 		var bad: Dictionary = edited.duplicate(true)
 		match defect:
