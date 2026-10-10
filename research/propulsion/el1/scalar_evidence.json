@@ -1,0 +1,221 @@
+{
+  "format": "openrc-el1d-scalar-evidence-v1",
+  "status": "synthetic numerical qualification; no aircraft or hardware calibration",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "python_versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "fixture": {
+    "axis_body": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "bus_voltage_v": 6.0,
+    "carrier_inertia_kg_m2": 0.0039,
+    "duty": 0.85,
+    "locked_inertia_kg_m2": 0.004,
+    "motor": {
+      "kv_rpm_per_volt": 800.0,
+      "no_load_current_a": 1.0,
+      "resistance_ohm": 0.06
+    },
+    "relative_rotor_inertia_kg_m2": 0.0001,
+    "smooth_horizon_s": 0.1,
+    "smooth_initial_omega_rad_s": 20.0,
+    "stop_initial_omega_rad_s": 45.0
+  },
+  "reference": {
+    "kt_nm_per_a": 0.01193662073189215,
+    "coupled_factor_s_per_kg_m2": 10256.410256410256,
+    "q_intercept_nm": 1.0026761414789405,
+    "q_slope_nms": 0.0023747152416172916,
+    "decay_rate_per_s": 24.35605376017735,
+    "steady_relative_speed_rad_s": 422.23005264246814,
+    "smooth_endpoint": {
+      "omega_rad_s": 387.0169298697595,
+      "body_rate_x_rad_s": -9.175423246743987,
+      "bus_energy_j": 15.799014577646613,
+      "copper_energy_j": 8.192507767100183,
+      "rotational_loss_energy_j": 0.324129240262981,
+      "shaft_work_j": 7.28237757028345
+    },
+    "smooth_reference_method": "SciPy DOP853 on scalar equations, checked against analytic exponential",
+    "smooth_reference_rhs": [
+      "Q = kt * ((duty*V - kt*Omega)/R - I0)",
+      "Omega_dot = (Jlocked/(Jrotor*Jcarrier))*Q",
+      "w_dot = -(Jrotor/Jlocked)*Omega_dot from Hdot=0",
+      "Ebus_dot = V*duty*I; Ecopper_dot=R*I^2; Erot_dot=kt*I0*Omega; Eshaft_dot=Q*Omega"
+    ],
+    "stop_time_s": 0.3675663404700058,
+    "stop_rhs": "Omega_dot = -(kt*I0)*Jlocked/(Jrotor*Jcarrier); t_stop=Omega0/(-Omega_dot)",
+    "stop_final_body_rate_x_rad_s": 1.125,
+    "solve_ivp_evaluations": 1202
+  },
+  "checks": {
+    "smooth": {
+      "points": [
+        {
+          "hz": 120,
+          "steps": 12,
+          "final_omega_rad_s": 387.015492816693,
+          "reference_error": {
+            "omega_rad_s": 0.0014370530665246406,
+            "body_rate_rad_s": 3.592632665672113e-05,
+            "bus_energy_j": 5.9864064812842344e-05,
+            "copper_energy_j": 0.0003099895007867559,
+            "rotational_loss_energy_j": 7.042831159931318e-07,
+            "shaft_work_j": 0.00037055784872030983
+          },
+          "relative_momentum_error_kg_m2_s": 1.9949319973733282e-17,
+          "port_energy_closure_error_j": 2.6645352591003757e-15,
+          "kinetic_change_j": 7.28232334440721,
+          "coupled_shaft_work_j": 7.28200701243473,
+          "kinetic_work_closure_error_j": 0.00031633197248037703,
+          "maximum_quaternion_norm_error": 0.0
+        },
+        {
+          "hz": 240,
+          "steps": 24,
+          "final_omega_rad_s": 387.016847363731,
+          "reference_error": {
+            "omega_rad_s": 8.250602849102506e-05,
+            "body_rate_rad_s": 2.0626507168941544e-06,
+            "bus_energy_j": 3.436996413697102e-06,
+            "copper_energy_j": 1.813270931627642e-05,
+            "rotational_loss_energy_j": 4.0435251980053266e-08,
+            "shaft_work_j": 2.161014099044678e-05
+          },
+          "relative_momentum_error_kg_m2_s": 9.974659986866641e-18,
+          "port_energy_closure_error_j": 7.105427357601002e-15,
+          "kinetic_change_j": 7.282374456988871,
+          "coupled_shaft_work_j": 7.28235596014246,
+          "kinetic_work_closure_error_j": 1.849684641097582e-05,
+          "maximum_quaternion_norm_error": 3.3306690738754696e-16
+        },
+        {
+          "hz": 480,
+          "steps": 48,
+          "final_omega_rad_s": 387.016924927016,
+          "reference_error": {
+            "omega_rad_s": 4.942743487390544e-06,
+            "body_rate_rad_s": 1.2356860779050294e-07,
+            "bus_energy_j": 2.0590241334161874e-07,
+            "copper_energy_j": 1.096175367365504e-06,
+            "rotational_loss_energy_j": 2.422381961686426e-09,
+            "shaft_work_j": 1.304500190535407e-06
+          },
+          "relative_momentum_error_kg_m2_s": 0.0,
+          "port_energy_closure_error_j": 2.6645352591003757e-14,
+          "kinetic_change_j": 7.282377383773211,
+          "coupled_shaft_work_j": 7.28237626578326,
+          "kinetic_work_closure_error_j": 1.1179899512825386e-06,
+          "maximum_quaternion_norm_error": 0.0
+        },
+        {
+          "hz": 960,
+          "steps": 96,
+          "final_omega_rad_s": 387.016929567307,
+          "reference_error": {
+            "omega_rad_s": 3.0245251991800615e-07,
+            "body_rate_rad_s": 7.5613169059352e-09,
+            "bus_energy_j": 1.2599413068414833e-08,
+            "copper_energy_j": 6.737428748238017e-08,
+            "rotational_loss_energy_j": 1.482289846421736e-10,
+            "shaft_work_j": 8.012194996354083e-08
+          },
+          "relative_momentum_error_kg_m2_s": 0.0,
+          "port_energy_closure_error_j": 1.865174681370263e-14,
+          "kinetic_change_j": 7.2823775588706505,
+          "coupled_shaft_work_j": 7.2823774901615,
+          "kinetic_work_closure_error_j": 6.870915036927272e-08,
+          "maximum_quaternion_norm_error": 4.440892098500626e-16
+        }
+      ],
+      "omega_error_rad_s": [
+        0.0014370530665246406,
+        8.250602849102506e-05,
+        4.942743487390544e-06,
+        3.0245251991800615e-07
+      ],
+      "observed_order": [
+        4.122469990410063,
+        4.061115594745647,
+        4.030531451323116
+      ],
+      "thresholds": {
+        "momentum_abs_kg_m2_s": 1e-13,
+        "port_energy_abs_j": 2e-12,
+        "kinetic_work_abs_j": 0.0004,
+        "coarsest_omega_abs_rad_s": 0.002,
+        "observed_order": [
+          3.8,
+          4.2
+        ]
+      }
+    },
+    "stop": {
+      "points": [
+        {
+          "hz": 120,
+          "steps_to_event": 45,
+          "event_time_s": 0.367566340469542,
+          "event_time_error_s": -4.637956685371591e-13,
+          "relative_momentum_error_kg_m2_s": 9.540979117872439e-18,
+          "body_rate_error_rad_s": 0.0
+        },
+        {
+          "hz": 240,
+          "steps_to_event": 89,
+          "event_time_s": 0.367566340469542,
+          "event_time_error_s": -4.637956685371591e-13,
+          "relative_momentum_error_kg_m2_s": -8.673617379884035e-19,
+          "body_rate_error_rad_s": 0.0
+        },
+        {
+          "hz": 480,
+          "steps_to_event": 177,
+          "event_time_s": 0.367566340469541,
+          "event_time_error_s": -4.647948692593218e-13,
+          "relative_momentum_error_kg_m2_s": -2.0816681711721685e-17,
+          "body_rate_error_rad_s": 0.0
+        },
+        {
+          "hz": 960,
+          "steps_to_event": 353,
+          "event_time_s": 0.367566340469541,
+          "event_time_error_s": -4.647948692593218e-13,
+          "relative_momentum_error_kg_m2_s": -4.0766001685454967e-17,
+          "body_rate_error_rad_s": -9.992007221626409e-15
+        }
+      ],
+      "cross_rate_spread_s": 9.992007221626409e-16,
+      "thresholds": {
+        "event_time_abs_s": 1e-09,
+        "cross_rate_spread_s": 5e-12,
+        "projection_momentum_abs_kg_m2_s": 2e-13
+      }
+    }
+  },
+  "independence": {
+    "expected_values": "Python scalar equations and SciPy DOP853; closed-form exponential cross-check",
+    "production_path": "Godot electric motor + rotor response + RK4 + stop event; no production coupling used to calculate expected values",
+    "sha256": {
+      "physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+      "physics/rotor_coupling.gd": "e893d4707feeb119a727ff050366fc077c7f35ddb7316303576f2ad3b5e05126",
+      "physics/electric_stop.gd": "96cffdbccdc60239d1864106141c567b70fda64a5b1415698c7169d6cf4be96d",
+      "physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+      "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    "probe_sha256": "faa74f54165b43f1a8bee6561f3874a1526c9d2b37ca78695c4449e1f3ec3a9c",
+    "verifier_sha256": "dd6a3984e1e0d5bd3fdc467596c00724a459aee0aac2953973910b7d9bfdfbb8"
+  },
+  "limitations": [
+    "Synthetic direct-drive motor and a single principal axis; no propeller or external moment.",
+    "This checks the source/rotor equations and stop numerics, not an aircraft flight or measured motor.",
+    "The closed form assumes positive motoring current for the smooth interval and constant I0 loss during coast.",
+    "A principal-axis fixture does not independently qualify general tilted-axis gyro coupling; the separate stop unit test covers a tilted momentum projection."
+  ],
+  "ok": true
+}

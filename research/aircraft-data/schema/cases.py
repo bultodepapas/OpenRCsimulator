@@ -52,6 +52,11 @@ def build_cases():
     smooth['propulsion']['propeller']['slipstream'] = wash
     fleet['synthetic_smooth_wash'] = smooth
     cases = [Case(name, data, True, True) for name, data in fleet.items()]
+    # Canonical synthetic demo aircraft are already part of the fleet files above.
+    electric_fixtures = {
+        name: fleet[name]
+        for name in ('synthetic_stik_electric_4s', 'synthetic_stik_electric_6s')
+    }
     seen = set()
     for name, raw in fleet.items():
         for path, quantity in quantities(raw):
@@ -142,6 +147,45 @@ def build_cases():
     for value in ['\u00a0', '\u2003']:
         change('source-unicode-space:' + repr(value), stik, ('reference', 'wing_span', 'source'), value, valid=True)
     change('source-ascii-control', stik, ('reference', 'wing_span', 'source'), '\x1f')
+
+    # EL1b electric fixtures are deliberately test-only synthetic configurations. They
+    # retain the Stik geometry and original mass distribution, not a conversion claim.
+    electric = electric_fixtures['synthetic_stik_electric_4s']
+    electric_integer = deepcopy(electric)
+    at(electric_integer, ('propulsion', 'motor', 'kv_rpm_per_volt'))['value'] = 800
+    at(electric_integer, ('propulsion', 'battery', 'voltage_v'))['value'] = 14
+    cases.append(Case('electric-integer-json-numbers', electric_integer, True, True))
+    change('electric-unknown-root-field', electric, ('propulsion', 'extra_controller'), {})
+    change('electric-wrong-selector', electric, ('propulsion', 'kind'), 'electric')
+    change('electric-mixed-glow-field', electric, ('propulsion', 'engine'), {})
+    change('electric-unknown-motor-field', electric, ('propulsion', 'motor', 'gear_ratio'), 2.0)
+    change('electric-unknown-quantity-field', electric,
+           ('propulsion', 'motor', 'no_load_current_a', 'instrument'), 'synthetic')
+    change('electric-wrong-resistance-scope', electric,
+           ('propulsion', 'motor', 'resistance_scope'), 'motor_plus_esc')
+    change('electric-wrong-battery-kind', electric, ('propulsion', 'battery', 'kind'), 'ocv_sag')
+    change('electric-wrong-esc-mapping', electric,
+           ('propulsion', 'esc', 'command_mapping'), 'receiver_pulse')
+    change('electric-wrong-kv-unit', electric,
+           ('propulsion', 'motor', 'kv_rpm_per_volt', 'unit'), 'V/rpm')
+    change('electric-missing-i0-context', electric,
+           ('propulsion', 'motor', 'no_load_context', 'temperature_c'), delete=True)
+    change('electric-zero-rotor-inertia', electric,
+           ('propulsion', 'propeller', 'rotating_inertia', 'value'), 0.0)
+    electric_small_carrier = deepcopy(electric)
+    for part in electric_small_carrier['inventory']:
+        part['position']['value'] = [0.1209, 0.0, 0.0]
+        part['size'] = {
+            'value': [0.01, 0.01, 0.01], 'unit': 'm', 'kind': 'estimated',
+            'source': 'EL1b synthetic cross-inertia negative control; not an aircraft geometry claim',
+        }
+    cases.append(Case('electric-runtime-only:carrier-inertia', electric_small_carrier, True, False))
+    change('electric-runtime-only:no-load-context', electric,
+           ('propulsion', 'motor', 'no_load_context', 'rpm', 'value'), 15000.0, physical=True)
+    change('electric-negative-static-cp', electric,
+           ('propulsion', 'propeller', 'cp_table', 'value', 0, 1), -0.01)
+    change('electric-unknown-propeller-field', electric,
+           ('propulsion', 'propeller', 'gear_ratio'), 2.0)
 
     # Shape cannot enforce relationships between measured quantities. These must
     # pass schema validation while the physics authority refuses them.

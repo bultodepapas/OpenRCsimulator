@@ -45,6 +45,7 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
@@ -213,6 +214,13 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(1)
 		return
+	_electric_demo = str(args.get("electric-demo", ""))
+	if args.has("electric-demo") and (_electric_demo not in ["4s", "6s"] or aircraft_id != Catalog.DEFAULT_ID or _scripted):
+		printerr("electric demo requires 4s or 6s, the default visual airframe, and a physics flight")
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
@@ -243,7 +251,8 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	session.setup(Catalog.entry(aircraft_id).data)
+	var physics_path: String = str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo
+	session.setup(physics_path)
 	if args.has("shaft-integrator") and not session.is_flyable():
 		printerr("shaft integrator refused: ", session.pause_reason)
 		session.free()
@@ -273,9 +282,9 @@ func _ready() -> void:
 		latency_patch.axis = latency_options.axis
 		latency_patch.threshold = latency_options.threshold
 		add_child(latency_patch)
-	recorder = Recorder.new(session.sim)
+	recorder = Recorder.new(session.sim, session.electrical_state)
 	session.resetting.connect(_on_resetting)
-	if session.aircraft.ok and not _scripted:
+	if session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
 	if interactive_start and not session.is_flyable():
@@ -414,6 +423,8 @@ func _status() -> String:
 	var trims: Dictionary = session.trims
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
+	if not _electric_demo.is_empty():
+		line = "Synthetic electric test airframe (%s)\n" % _electric_demo.to_upper() + line
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
 	line += "\n" + session.radio.describe()
 	if session.calibration != null:

@@ -34,6 +34,10 @@ var _previous_recorded: PackedFloat64Array = PackedFloat64Array()
 var _last_recorded_tick: int = -1
 var _invalid_weather: bool = false
 var _weather_meta: Dictionary = {}
+const ELECTRIC_COLUMNS: Array = ["drive_enabled", "drive_duty", "bus_voltage_v", "motor_current_a", "drive_bus_current_a", "source_torque_nm", "shaft_power_w", "copper_loss_w", "rotational_loss_w"]
+## Optional recorder-owned endpoint sampler; required only for the versioned electric trace.
+var electrical_sample: Callable
+var _electric: bool = false
 var _coupled_shaft: bool = false
 var _coupled_start_rpm: float = NAN
 
@@ -47,6 +51,7 @@ func clear() -> void:
 	_invalid_weather = false
 	_weather_meta = {}
 	_coupled_shaft = false
+	_electric = false
 	_coupled_start_rpm = NAN
 	_atmosphere = {}
 	_turbulence_index = -1
@@ -125,9 +130,13 @@ func _prepare_weather() -> void:
 
 
 func _prepare_shaft_metadata() -> void:
-	if not meta.has("shaft_integrator") and meta.get("propulsion_model") != "propeller-shaft-coupled-rk4-v1":
+	_electric = meta.get("propulsion_model") == Session.ELECTRIC_LAW
+	if not _electric and (meta.has("electric_configuration") or meta.has("electric_sample_timing")):
+		_invalid_weather = true
 		return
-	if meta.get("propulsion_model") != "propeller-shaft-coupled-rk4-v1" or meta.get("shaft_integrator") != "coupled-rk4" \
+	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW]:
+		return
+	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
 			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1" \
 			or meta.get("continuous_layout") != "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled":
 		_invalid_weather = true
@@ -147,6 +156,16 @@ func _prepare_shaft_metadata() -> void:
 	if values[-1] < 0.0 or typeof(sampled[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sampled[0])) or values[-1] != sampled[0]:
 		_invalid_weather = true
 		return
+	if _electric:
+		var configuration: Variant = JSON.parse_string(str(meta.get("electric_configuration", "null")))
+		if not electrical_sample.is_valid() or not configuration is Dictionary \
+				or not configuration.get("motor") is Dictionary or not configuration.get("battery") is Dictionary \
+				or not configuration.get("esc") is Dictionary \
+				or configuration.battery.get("kind") != "fixed_voltage" \
+				or meta.get("electric_sample_timing") != "accepted endpoint; current tick input and source-enabled mode":
+			_invalid_weather = true
+			return
+		_columns.append_array(ELECTRIC_COLUMNS)
 	_coupled_shaft = true
 	_coupled_start_rpm = values[-1]
 	_weather_meta = meta.duplicate(true)
@@ -164,6 +183,19 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			or (_rows.is_empty() and aux[0] != _coupled_start_rpm)):
 		_invalid_weather = true
 		return
+	var electric_row: PackedFloat64Array = PackedFloat64Array()
+	if _electric:
+		var point: Variant = electrical_sample.call()
+		if not point is Dictionary or not point.get("ok", false) or point.get("tick") != tick \
+				or point.get("time_s") != t or point.get("rpm") != aux[0] or typeof(point.get("enabled")) != TYPE_BOOL:
+			_invalid_weather = true
+			return
+		electric_row.append(1.0 if point.enabled else 0.0)
+		for key: String in ["duty", "bus_voltage_v", "motor_current_a", "battery_current_a", "shaft_torque_nm", "shaft_power_w", "copper_loss_w", "rotational_loss_w"]:
+			if typeof(point.get(key)) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(point[key])):
+				_invalid_weather = true
+				return
+			electric_row.append(float(point[key]))
 	if _weather != null:
 		if tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
 				or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 4) or aux.size() < 4 or not _finite(aux):
@@ -209,6 +241,8 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	_rows.append_array(inputs)
 	for i in 4: # [engine_rpm, srv_roll, srv_pitch, srv_yaw]; missing entries record as 0
 		_rows.append(aux[i] if aux.size() > i else 0.0)
+	if _electric:
+		_rows.append_array(electric_row)
 	if _weather != null:
 		var wind: PackedFloat64Array = _weather.sample(t)
 		var noise: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])
@@ -263,7 +297,7 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))
+	lines.append("# format: %s" % ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))))
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft else meta).duplicate(true)
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
 	for visual_key: String in ["visual_context", "visual_timeline"]:

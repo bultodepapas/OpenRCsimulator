@@ -11,6 +11,7 @@
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
+const RB := preload("res://physics/rigid_body.gd")
 
 const FORMAT := "openrc-aircraft v1"
 const Aero := preload("res://physics/aero.gd")
@@ -67,6 +68,20 @@ static func _dictionary(errors: PackedStringArray, path: String, node: Variant) 
 		errors.append("%s: expected an object" % path)
 		return {}
 	return node
+
+
+## New data branches can be closed without changing the permissive legacy v1 objects.
+static func _reject_unknown_keys(errors: PackedStringArray, path: String, node: Dictionary, allowed: Array) -> void:
+	for key: String in node:
+		if not allowed.has(key):
+			errors.append("%s: unsupported field '%s'" % [path, key])
+
+
+## Electric evidence uses a closed v1 quantity object without tightening legacy data.
+static func _electric_q(errors: PackedStringArray, path: String, node: Variant, unit: String, lo: float, hi: float, size := 0) -> Variant:
+	if typeof(node) == TYPE_DICTIONARY:
+		_reject_unknown_keys(errors, path, node, ["value", "unit", "kind", "source"])
+	return _q(errors, path, node, unit, lo, hi, size)
 
 
 static func _array(errors: PackedStringArray, path: String, node: Variant) -> Array:
@@ -206,6 +221,8 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	for axis in 3:
 		if absf(cg_inv[axis]-plan_cg[axis]) > cg_tolerance:
 			errors.append("balance: inventory CG axis %d disagrees with flight CG by %.4f m (tolerance %.4f m); reconcile the build before flying" % [axis, absf(cg_inv[axis]-plan_cg[axis]), cg_tolerance])
+	if prop.get("kind") == "electric_prop":
+		_validate_electric_rotor_carrier(errors, prop, j)
 	var scale: float = (mass / 1.959) * M.pow_(span / 1.27, 2)
 	var names := ["Jxx", "Jyy", "Jzz"]
 	for k in 3:
@@ -711,10 +728,12 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 		return {}
 	# AV-05: `kind` selects the branch; absent = the glow engine and propeller (every file before AV-05).
 	var kind: Variant = node.get("kind", "glow_prop")
+	if kind == "electric_prop":
+		return _electric_propulsion(errors, node)
 	if kind == "turbine":
 		return _turbine(errors, node)
 	if kind != "glow_prop":
-		errors.append("propulsion.kind: '%s' is not 'glow_prop' or 'turbine'" % kind)
+		errors.append("propulsion.kind: '%s' is not 'glow_prop', 'turbine', or 'electric_prop'" % kind)
 		return {}
 	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
 	var pr := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
@@ -764,6 +783,130 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 		if out.slipstream.has("edge_fraction") and out.get("axis") != PackedFloat64Array([1.0, 0.0, 0.0]):
 			errors.append("propulsion.propeller.slipstream: smooth profile currently requires an axial shaft")
 	return out
+
+
+## EL1b: a strict three-constant equivalent motor, prescribed bus and direct-drive propeller.
+## The raw resistance is motor-winding equivalent only; ESC and wiring losses are outside this law.
+## Positive RPM is direct-drive rotation about the propeller axis (+1 sense); gears and reverse sense are unsupported.
+static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) -> Dictionary:
+	_reject_unknown_keys(errors, "propulsion", node, ["kind", "motor", "battery", "esc", "propeller"])
+	var motor_raw := _dictionary(errors, "propulsion.motor", node.get("motor", {}))
+	_reject_unknown_keys(errors, "propulsion.motor", motor_raw, [
+		"kv_rpm_per_volt", "resistance_ohm", "resistance_scope", "no_load_current_a", "no_load_context",
+	])
+	var context_raw := _dictionary(errors, "propulsion.motor.no_load_context", motor_raw.get("no_load_context", {}))
+	_reject_unknown_keys(errors, "propulsion.motor.no_load_context", context_raw, ["voltage_v", "rpm", "temperature_c"])
+	var kv = _electric_q(errors, "propulsion.motor.kv_rpm_per_volt", motor_raw.get("kv_rpm_per_volt"), "rpm/V", 1.0, 10000.0)
+	var resistance = _electric_q(errors, "propulsion.motor.resistance_ohm", motor_raw.get("resistance_ohm"), "ohm", 1e-5, 10.0)
+	var idle_current = _electric_q(errors, "propulsion.motor.no_load_current_a", motor_raw.get("no_load_current_a"), "A", 0.0, 200.0)
+	if motor_raw.get("resistance_scope") != "motor_winding_equivalent":
+		errors.append("propulsion.motor.resistance_scope: must be 'motor_winding_equivalent' (ESC and wiring losses are excluded)")
+	var context_voltage = _electric_q(errors, "propulsion.motor.no_load_context.voltage_v", context_raw.get("voltage_v"), "V", 0.1, 1000.0)
+	var context_rpm = _electric_q(errors, "propulsion.motor.no_load_context.rpm", context_raw.get("rpm"), "rpm", 1.0, 1.0e7)
+	_electric_q(errors, "propulsion.motor.no_load_context.temperature_c", context_raw.get("temperature_c"), "°C", -100.0, 300.0)
+	var battery_raw := _dictionary(errors, "propulsion.battery", node.get("battery", {}))
+	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, ["kind", "voltage_v"])
+	if battery_raw.get("kind") != "fixed_voltage":
+		errors.append("propulsion.battery.kind: only 'fixed_voltage' is supported")
+	var bus_voltage = _electric_q(errors, "propulsion.battery.voltage_v", battery_raw.get("voltage_v"), "V", 0.1, 1000.0)
+	var esc_raw := _dictionary(errors, "propulsion.esc", node.get("esc", {}))
+	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping"])
+	if esc_raw.get("kind") != "ideal_motoring":
+		errors.append("propulsion.esc.kind: only 'ideal_motoring' is supported")
+	if esc_raw.get("command_mapping") != "identity":
+		errors.append("propulsion.esc.command_mapping: only 'identity' is supported")
+	var prop_raw := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
+	_reject_unknown_keys(errors, "propulsion.propeller", prop_raw, [
+		"name", "diameter", "thrust_line_offset", "rotating_inertia", "ct_table", "cp_table", "thrust_angles",
+	])
+	if prop_raw.has("name") and typeof(prop_raw.name) != TYPE_STRING:
+		errors.append("propulsion.propeller.name: expected a string")
+	var diameter = _electric_q(errors, "propulsion.propeller.diameter", prop_raw.get("diameter"), "m", 0.05, 2.0)
+	var offset = _electric_q(errors, "propulsion.propeller.thrust_line_offset", prop_raw.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
+	var rotor = _electric_q(errors, "propulsion.propeller.rotating_inertia", prop_raw.get("rotating_inertia"), "kg·m2", 0.0, 0.1)
+	var ct_node: Variant = prop_raw.get("ct_table")
+	var cp_node: Variant = prop_raw.get("cp_table")
+	var ct := _table(errors, "propulsion.propeller.ct_table", ct_node, -0.5, 0.5)
+	var cp := _table(errors, "propulsion.propeller.cp_table", cp_node, -0.3, 0.5)
+	if typeof(ct_node) == TYPE_DICTIONARY:
+		_reject_unknown_keys(errors, "propulsion.propeller.ct_table", ct_node, ["value", "unit", "kind", "source"])
+	if typeof(cp_node) == TYPE_DICTIONARY:
+		_reject_unknown_keys(errors, "propulsion.propeller.cp_table", cp_node, ["value", "unit", "kind", "source"])
+	var angles: Variant = null
+	if prop_raw.has("thrust_angles"):
+		angles = _electric_q(errors, "propulsion.propeller.thrust_angles", prop_raw.get("thrust_angles"), "deg", -10.0, 10.0, 2)
+	if not errors.is_empty():
+		return {}
+	# Cross-field checks and derived values only run after every raw quantity is known finite and in range.
+	if context_rpm > kv * context_voltage:
+		errors.append("propulsion.motor.no_load_context.rpm: must not exceed Kv × test voltage")
+	if rotor <= 0.0:
+		errors.append("propulsion.propeller.rotating_inertia: electric rotor inertia must be positive")
+	if ct[1] <= 0.0:
+		errors.append("propulsion.propeller.ct_table: static Ct must be positive (a propeller that pushes)")
+	if cp[1] <= 0.0:
+		errors.append("propulsion.propeller.cp_table: static Cp must be positive (a propeller that absorbs power)")
+	if not errors.is_empty():
+		return {}
+	var axis := PackedFloat64Array([1.0, 0.0, 0.0])
+	if angles != null:
+		var down := deg_to_rad(angles[0])
+		var right := deg_to_rad(angles[1])
+		axis = PackedFloat64Array([M.cos_(down) * M.cos_(right), M.cos_(down) * M.sin_(right), M.sin_(down)])
+	var max_rpm: float = kv * bus_voltage
+	if not is_finite(max_rpm) or max_rpm <= 0.0:
+		errors.append("propulsion: derived Kv × fixed voltage reference RPM is nonfinite or nonpositive")
+	if not errors.is_empty():
+		return {}
+	var out := {
+		kind = "electric_prop",
+		motor = {kv_rpm_per_volt = kv, resistance_ohm = resistance, no_load_current_a = idle_current},
+		battery = {kind = "fixed_voltage", voltage_v = bus_voltage},
+		esc = {kind = "ideal_motoring", command_mapping = "identity"},
+		max_rpm = max_rpm,
+		diameter = diameter,
+		offset = offset,
+		rotor_inertia = rotor,
+		ct = ct,
+		cp = cp,
+		axis = axis,
+	}
+	var cp_min: float = 0.0
+	for i in range(1, cp.size(), 2):
+		cp_min = minf(cp_min, cp[i])
+	if cp_min < 0.0:
+		out.cp_min = cp_min
+	return out
+
+
+## Removing the rotor's axial spin inertia must leave a positive definite locked carrier tensor.
+static func _validate_electric_rotor_carrier(errors: PackedStringArray, prop: Dictionary, inertia: PackedFloat64Array) -> void:
+	if not _inertia_is_positive_definite(inertia):
+		errors.append("propulsion.propeller.rotating_inertia: aircraft inertia tensor must be positive definite")
+		return
+	var inverse := RB.inertia_inverse(inertia)
+	var axis: PackedFloat64Array = prop.axis
+	var projected_inverse := M.dot(axis, RB.inertia_mul(inverse, axis))
+	var carrier_factor: float = 1.0 - float(prop.rotor_inertia) * projected_inverse
+	if not is_finite(carrier_factor) or carrier_factor <= 0.0:
+		errors.append("propulsion.propeller.rotating_inertia: subtracting the rotor leaves a nonpositive carrier inertia along its axis")
+
+
+static func _inertia_is_positive_definite(inertia: PackedFloat64Array) -> bool:
+	if inertia.size() != 6:
+		return false
+	for value: float in inertia:
+		if not is_finite(value):
+			return false
+	var a: float = inertia[0]
+	var b: float = inertia[1]
+	var c: float = inertia[2]
+	var d: float = inertia[3]
+	var e: float = inertia[4]
+	var f: float = inertia[5]
+	var minor2: float = a * b - d * d
+	var determinant: float = a * (b * c - f * f) + d * (e * f - d * c) + e * (d * f - b * e)
+	return a > 0.0 and minor2 > 0.0 and is_finite(minor2) and determinant > 0.0 and is_finite(determinant)
 
 
 ## Shaft balance (G2 first slice, P51-06): { power_curve [rpm0, W0, …] (full-throttle brake power), friction

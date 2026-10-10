@@ -82,8 +82,12 @@ static func fly(session: Node, m: Dictionary) -> RefCounted:
 		session.set_start_altitude(m.altitude) # optional start height (m): room for loops and spins
 	session.reset()
 	var sim: Node = session.sim
-	var rec := Recorder.new(sim)
-	rec.start({ maneuver = m })
+	var rec := Recorder.new(sim, session.electrical_state)
+	var metadata: Dictionary = { maneuver = m }
+	if session.electrical_state().get("ok", false):
+		metadata = session.trace_meta()
+		metadata.maneuver = m
+	rec.start(metadata)
 	for i in roundi(m.duration / sim.dt()):
 		var s: Dictionary = m.sticks.call(sim.time(), sim.state)
 		session.commands = { roll = s.roll, pitch = s.pitch, yaw = s.yaw, throttle = clampf(session.start.throttle + s.throttle_delta, 0.0, 1.0) }
