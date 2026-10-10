@@ -5,6 +5,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
+const Session = preload("res://sim/flight_session.gd")
 const Air = preload("res://physics/air_data.gd")
 
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
@@ -23,6 +24,8 @@ const COLUMNS := [
 var meta := {} # written as "# key: value" lines above the header
 var _rows := PackedFloat64Array() # flattened, COLUMNS.size() per row
 const WEATHER_COLUMNS = ["wind_north_mps", "wind_east_mps", "wind_down_mps", "tas_mps", "ground_horizontal_mps", "loads_t_s", "loads_wind_north_mps", "loads_wind_east_mps", "loads_wind_down_mps", "loads_tas_mps"]
+const TURBULENCE_COLUMNS = ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps", "loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
+var _turbulence_index: int = -1
 var _columns: Array = COLUMNS.duplicate()
 var _weather: WeatherField
 var _previous_recorded: PackedFloat64Array = PackedFloat64Array()
@@ -39,6 +42,7 @@ func clear() -> void:
 	_last_recorded_tick = -1
 	_invalid_weather = false
 	_weather_meta = {}
+	_turbulence_index = -1
 
 
 func row_count() -> int:
@@ -71,6 +75,23 @@ func _prepare_weather() -> void:
 	_weather = built.field
 	_weather_meta = meta.duplicate(true)
 	_columns.append_array(WEATHER_COLUMNS)
+	if _weather.has_turbulence():
+		var index: Variant = meta.get("turbulence_aux_index")
+		if typeof(index) != TYPE_INT or index < 4:
+			_invalid_weather = true
+			return
+		var raw_state: Variant = meta.get("recording_start_rng_state")
+		var interval: Variant = JSON.parse_string(str(meta.get("recording_start_turbulence", "null")))
+		if typeof(raw_state) != TYPE_STRING or not raw_state.is_valid_int() or str(int(raw_state)) != raw_state \
+				or not interval is Array or interval.size() != 7:
+			_invalid_weather = true
+			return
+		for value: Variant in interval:
+			if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+				_invalid_weather = true
+				return
+		_turbulence_index = index
+		_columns.append_array(TURBULENCE_COLUMNS)
 
 
 ## Signature matches Simulation.stepped, so it can be connected directly.
@@ -84,6 +105,12 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _weather != null:
 		if tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
 				or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 4) or aux.size() < 4 or not _finite(aux):
+			_invalid_weather = true
+			return
+	if _turbulence_index >= 0:
+		var at: float = max(0, tick - 1) * float(_weather_meta.dt_s)
+		if aux.size() != _turbulence_index + 7 or aux[_turbulence_index + 6] != at \
+				or (_last_recorded_tick < 0 and JSON.stringify(Array(aux.slice(_turbulence_index)), "", true, true) != _weather_meta.recording_start_turbulence):
 			_invalid_weather = true
 			return
 	var force_state: PackedFloat64Array = _previous_recorded
@@ -122,14 +149,27 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_rows.append(aux[i] if aux.size() > i else 0.0)
 	if _weather != null:
 		var wind: PackedFloat64Array = _weather.sample(t)
+		var noise: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])
+		if _turbulence_index >= 0:
+			noise = Session.turbulence_at(aux, _turbulence_index, t, float(_weather_meta.dt_s))
+			for axis: int in 3:
+				wind[axis] += noise[axis]
 		var air: Dictionary = Air.compute(s, wind)
 		var velocity_ned: PackedFloat64Array = M.q_rotate(q, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
 		var load_time: float = max(0, tick - 1) * float(_weather_meta.dt_s)
 		var load_wind: PackedFloat64Array = _weather.sample(load_time)
+		var load_noise := PackedFloat64Array([0.0, 0.0, 0.0])
+		if _turbulence_index >= 0:
+			load_noise = Session.turbulence_at(aux, _turbulence_index, load_time, float(_weather_meta.dt_s))
+			for axis: int in 3:
+				load_wind[axis] += load_noise[axis]
 		var load_air: Dictionary = Air.compute(force_state, load_wind)
 		_rows.append_array(PackedFloat64Array([wind[0], wind[1], wind[2], air.V,
 			M.sqrt_(velocity_ned[0] * velocity_ned[0] + velocity_ned[1] * velocity_ned[1]), load_time,
 			load_wind[0], load_wind[1], load_wind[2], load_air.V]))
+		if _turbulence_index >= 0:
+			_rows.append_array(noise)
+			_rows.append_array(load_noise)
 	_previous_recorded = s.duplicate()
 	_last_recorded_tick = tick
 
@@ -157,10 +197,11 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v4" if _weather != null else FORMAT))
+	lines.append("# format: %s" % ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))
 	var written_meta: Dictionary = _weather_meta if _weather != null else meta
 	for key in written_meta:
-		lines.append("# %s: %s" % [key, written_meta[key]])
+		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if _weather != null and key == "dt_s" else str(written_meta[key])
+		lines.append("# %s: %s" % [key, encoded])
 	lines.append(",".join(_columns))
 	var n := _columns.size()
 	for r in row_count():

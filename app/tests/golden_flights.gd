@@ -26,6 +26,8 @@ const TOL_RATE: float = Policy.COMPONENTS.rate.absolute # rad/s
 
 ## Flies a maneuver and returns its golden record.
 static func record(session: Node, name: String) -> Dictionary:
+	if not session.weather_is_calm():
+		return {} # v1 has no weather identity or lossless int64 RNG encoding; use session checkpoints.
 	var m: Dictionary = Maneuvers.all()[name]
 	var auxiliaries: Array = []
 	var discrete: Array = []
@@ -68,6 +70,8 @@ static func _state(trace: RefCounted, r: int) -> PackedFloat64Array:
 
 ## Replays a golden record. Returns { ok, message, worst: { pos, vel, att, rate } }.
 static func replay(session: Node, g: Dictionary) -> Dictionary:
+	if not session.weather_is_calm():
+		return {ok = false, message = "golden v1 requires calm weather; use weather-aware session checkpoints"}
 	if typeof(g.get("format")) != TYPE_STRING or g.format != FORMAT:
 		return { ok = false, message = "not a golden flight (%s)" % g.get("format") }
 	if not _valid_record(g):

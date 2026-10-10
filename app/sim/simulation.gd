@@ -372,7 +372,7 @@ func checkpoint() -> Dictionary:
 
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
-func can_restore_checkpoint(candidate: Dictionary) -> bool:
+func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, expected_modes_size: int = -1) -> bool:
 	for key in ["format", "tick", "dt", "state", "previous", "aux", "inputs", "modes", "last_loads", "mass", "inertia", "gravity", "stop_at_tick"]:
 		if not candidate.has(key):
 			return false
@@ -390,9 +390,9 @@ func can_restore_checkpoint(candidate: Dictionary) -> bool:
 	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
 		return false
 	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
-		and _array_is_finite(candidate.aux, aux.size()) and _array_is_finite(candidate.inputs, 4) \
+		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, 4) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
-		and candidate.modes.size() == modes.size() and _configuration_is_valid() \
+		and candidate.modes.size() == (modes.size() if expected_modes_size < 0 else expected_modes_size) and _configuration_is_valid() \
 		and _array_is_finite(RB.inertia_inverse(inertia), 6)
 
 

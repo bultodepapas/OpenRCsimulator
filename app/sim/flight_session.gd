@@ -7,9 +7,12 @@
 extends Node
 
 const WeatherField = preload("res://physics/wind_field.gd")
+const Turbulence = preload("res://physics/wind_turbulence.gd")
 const WeatherConfig = preload("res://physics/wind_config.gd")
 var _weather: WeatherField = WeatherField.new()
 var weather_error: String = ""
+var _weather_pending_reset: bool = false
+var _turbulence_aux_index: int = -1 # derived layout cache; reset/restore only, excluded from snapshots
 
 
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
@@ -24,6 +27,9 @@ func setup_weather(settings: Variant) -> bool:
 		return false
 	resetting.emit() # a recording cannot span an environment-identity change
 	_weather = built.field
+	_weather_pending_reset = sim != null
+	if sim != null:
+		sim.set_paused(true)
 	weather_error = ""
 	return true
 
@@ -37,7 +43,62 @@ func weather_is_calm() -> bool:
 
 
 func wind_at(time_s: float) -> PackedFloat64Array:
-	return _weather.sample(time_s)
+	if _weather_pending_reset:
+		return M.v3(NAN, NAN, NAN)
+	var wind: PackedFloat64Array = _weather.sample(time_s)
+	if _weather.has_turbulence() and sim != null:
+		var index: int = _turbulence_aux_index
+		if index < AUX_ANCHORS or sim.aux.size() != index + 7:
+			return M.v3(NAN, NAN, NAN)
+		var noise: PackedFloat64Array = turbulence_at(sim.aux, index, time_s, sim.dt())
+		for axis: int in 3:
+			wind[axis] += noise[axis]
+	return wind
+
+
+## Read-only interpolation of the committed tick's wind interval. No draws during RK/render/trace queries.
+static func turbulence_at(aux: PackedFloat64Array, index: int, time_s: float, dt: float) -> PackedFloat64Array:
+	if index < 0 or aux.size() < index + 7 or not is_finite(time_s) or not is_finite(dt) or dt <= 0.0:
+		return PackedFloat64Array([NAN, NAN, NAN])
+	var fraction: float = clampf((time_s - aux[index + 6]) / dt, 0.0, 1.0)
+	var result := PackedFloat64Array([0.0, 0.0, 0.0])
+	for axis: int in 3:
+		result[axis] = aux[index + axis] + fraction * (aux[index + 3 + axis] - aux[index + axis])
+	return result
+
+
+func turbulence_index() -> int:
+	return AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE + (1 if downwash_index() >= 0 else 0)
+
+
+## Stationary restart sample. This is a value, never mutable RNG state outside the simulation snapshot.
+func _initial_turbulence() -> Dictionary:
+	if not _weather.has_turbulence():
+		return {ok = true, values = PackedFloat64Array([0.0, 0.0, 0.0]), rng_state = 0}
+	return Turbulence.initial(_weather.turbulence_rms(), _weather.turbulence_seed())
+
+
+func _restart_weather_aux() -> PackedFloat64Array:
+	_weather_pending_reset = false
+	var initial: Dictionary = _initial_turbulence()
+	_turbulence_aux_index = turbulence_index() if _weather.has_turbulence() else -1
+	if not _weather.has_turbulence():
+		sim.modes = PackedInt64Array([sim.modes[0]])
+		return PackedFloat64Array()
+	sim.modes = PackedInt64Array([sim.modes[0], initial.rng_state])
+	var window: PackedFloat64Array = initial.values.duplicate()
+	window.append_array(initial.values)
+	window.append(0.0)
+	return window
+
+
+## Reset-time wind independent of the old tick/window (also used by transactional runway preflight).
+func _initial_wind() -> PackedFloat64Array:
+	var wind: PackedFloat64Array = _weather.sample(0.0)
+	var initial: Dictionary = _initial_turbulence()
+	for axis: int in 3:
+		wind[axis] += initial.values[axis]
+	return wind
 
 
 func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
@@ -526,7 +587,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var deflections: Dictionary = Aero.deflections_from_surfaces(surface_angles)
 	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, Air.RHO_SEA_LEVEL)
 	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
-		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity, wind_at(0.0))
+		deflections, input_values[2], rpm, Air.RHO_SEA_LEVEL, sim.gravity, _initial_wind())
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
@@ -620,10 +681,11 @@ func reset() -> void:
 
 ## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
 func _reset_airborne_start() -> bool:
+	var weather_aux: PackedFloat64Array = _restart_weather_aux()
 	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
 	if _has_valid_start() and not weather_is_calm():
 		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
-		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), wind_at(0.0))
+		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind())
 		for axis: int in 3:
 			initial[RB.VEL + axis] += wind_body[axis]
 	commands = Commands.neutral_commands()
@@ -638,7 +700,11 @@ func _reset_airborne_start() -> bool:
 	var aux := PackedFloat64Array([start.get("rpm", 0.0) if _has_valid_start() else 0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE) # E3b1: every wheel starts sliding
 	if downwash_index() >= 0 and _has_valid_start():
-		aux.append(_wing_cl(initial, aux, 0.0)) # E0a2b: start settled, no downwash transient
+		aux.append(0.0)
+	aux.append_array(weather_aux)
+	sim.aux = aux
+	if downwash_index() >= 0 and _has_valid_start():
+		aux[downwash_index()] = _wing_cl(initial, aux, 0.0) # E0a2b: start settled, no downwash transient
 	sim.aux = aux
 	if _has_valid_start():
 		sim.continuous = _settled_wash(initial, aux)
@@ -702,12 +768,16 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, Air.RHO_SEA_LEVEL)
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
-		rpm, Air.RHO_SEA_LEVEL, sim.gravity, wind_at(0.0))
+		rpm, Air.RHO_SEA_LEVEL, sim.gravity, _initial_wind())
 	if not solved.ok:
 		return { ok = false, message = "runway start: " + str(solved.message) }
 	aux.append_array(solved.anchors)
 	if downwash_index() >= 0:
-		aux.append(_wing_cl(solved.state, aux, 0.0)) # E0a2b: at rest, settled
+		aux.append(0.0)
+	aux.append_array(_restart_weather_aux())
+	sim.aux = aux
+	if downwash_index() >= 0:
+		aux[downwash_index()] = _wing_cl(solved.state, aux, 0.0) # E0a2b: at rest, settled
 	sim.aux = aux
 	sim.continuous = _settled_wash(solved.state, aux)
 	if not sim.reset(solved.state):
@@ -732,8 +802,11 @@ func _fail_selected_start(reason: String) -> void:
 			var aux := PackedFloat64Array([0.0, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 			aux.resize(AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 			if downwash_index() >= 0:
-				aux.append(_wing_cl(parked, aux))
+				aux.append(0.0)
+			aux.append_array(_restart_weather_aux())
 			sim.aux = aux
+			if downwash_index() >= 0:
+				aux[downwash_index()] = _wing_cl(parked, aux, 0.0)
 			sim.continuous = _settled_wash(parked, aux)
 		else:
 			sim.aux = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
@@ -769,7 +842,7 @@ func _has_valid_start() -> bool:
 
 
 func _flight_ready() -> bool:
-	return _has_valid_start() and sim.fault_reason.is_empty()
+	return _has_valid_start() and not _weather_pending_reset and sim.fault_reason.is_empty()
 
 
 ## Stick commands plus trims: what the surfaces actually do (and what the physics sees).
@@ -818,7 +891,7 @@ func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stag
 	var out := Dynamics.loads(s, aircraft.model, _deflections(a), a[AUX_RPM],
 		Air.RHO_SEA_LEVEL, wind_at(stage_time), a[lag] if lag >= 0 and lag < a.size() else NAN, transported_dv)
 	var ground := Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
-		a.slice(AUX_ANCHORS) if a.size() > AUX_ANCHORS else PackedFloat64Array())
+		a.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE))
 	for i in ground.size():
 		out[i] += ground[i]
 	return out
@@ -859,6 +932,8 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 ## the shaft torque balance when the aircraft declares one (P51-06);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	if _weather_pending_reset:
+		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm := 0.0
 	if engine_running and Turbine.is_turbine(prop):
@@ -878,7 +953,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	for k in 3:
 		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)
 	var lag := downwash_index()
-	var anchors_end := aux.size() - (1 if lag >= 0 and lag < aux.size() else 0)
+	var anchors_end := AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
 	if anchors_end > AUX_ANCHORS:
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
 		out.append_array(Ground.anchor_step(sim.state, aircraft.model.landing_gear, aux[AUX_SERVO + 2], ground_surfaces,
@@ -891,6 +966,16 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		var speed: float = air_data(s, sim.time()).V
 		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
 		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
+	if _weather.has_turbulence():
+		var index: int = turbulence_index()
+		var next: Dictionary = Turbulence.step(aux.slice(index + 3, index + 6), _weather.turbulence_rms(),
+			_weather.turbulence_tau(), dt, _weather.turbulence_seed(), sim.modes[1])
+		if not next.ok:
+			return PackedFloat64Array([NAN]) # H8 rolls back body, interval and RNG together.
+		out.append_array(aux.slice(index + 3, index + 6))
+		out.append_array(next.values)
+		out.append(sim.time())
+		sim.modes[1] = next.rng_state
 	return out
 
 
@@ -909,6 +994,8 @@ func aux_component(i: int) -> String:
 		return "rpm"
 	if i < AUX_ANCHORS:
 		return "servo"
+	if _weather.has_turbulence() and i >= turbulence_index():
+		return "weather"
 	return "downwash" if i == downwash_index() else "anchor"
 
 
@@ -1014,6 +1101,13 @@ func trace_meta() -> Dictionary:
 		metadata.weather_model = "uniform-ned-repeating-cosine-v1"
 		metadata.weather_evidence = "user-selected/authored practice conditions; not measured meteorology"
 		metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1, current aux); reset uses t=0"
+		if _weather.has_turbulence():
+			metadata.metadata_schema = "openrc-flight-meta v4"
+			metadata.weather_model = "uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1"
+			metadata.turbulence_aux_index = turbulence_index()
+			metadata.turbulence_interval = "linear interpolation between exact OU tick samples; wall time tau; independent NED axes"
+			metadata.recording_start_rng_state = str(sim.modes[1])
+			metadata.recording_start_turbulence = JSON.stringify(Array(sim.aux.slice(turbulence_index())), "", true, true)
 		metadata.recording_start_previous_state = JSON.stringify(Array(sim.previous), "", true, true)
 	return metadata
 
@@ -1024,7 +1118,7 @@ func checkpoint() -> Dictionary:
 	if not _flight_ready():
 		return {}
 	var snapshot: Dictionary = sim.checkpoint()
-	if snapshot.is_empty() or snapshot.modes.size() != 1 or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
+	if snapshot.is_empty() or snapshot.modes.size() != (2 if _weather.has_turbulence() else 1) or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
 	if not weather_is_calm():
@@ -1065,16 +1159,36 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	if candidate.configuration != _configuration_for_weather(restored_weather):
 		return false
 	var snapshot: Dictionary = candidate.simulation
-	if not sim.can_restore_checkpoint(snapshot) or snapshot.modes.size() != 1 \
+	var turbulent: bool = restored_weather.has_turbulence()
+	var expected_aux: int = turbulence_index() + 7 if turbulent else (
+		turbulence_index() if _weather.has_turbulence() else sim.aux.size())
+	var expected_modes: int = 2 if turbulent else 1
+	if not sim.can_restore_checkpoint(snapshot, expected_aux, expected_modes) \
 			or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return false
-	for at in range(AUX_ANCHORS + 2, snapshot.aux.size(), Ground.ANCHOR_STRIDE):
+	if turbulent:
+		var expected_time: float = max(0, snapshot.tick - 1) * snapshot.dt
+		if snapshot.aux[expected_aux - 1] != expected_time:
+			return false
+		for axis: int in 3:
+			if restored_weather.turbulence_rms()[axis] == 0.0 and (snapshot.aux[expected_aux - 7 + axis] != 0.0 or snapshot.aux[expected_aux - 4 + axis] != 0.0):
+				return false
+	for at in range(AUX_ANCHORS + 2, mini(snapshot.aux.size(), AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE), Ground.ANCHOR_STRIDE):
 		if snapshot.aux[at] != 0.0 and snapshot.aux[at] != 1.0:
 			return false # an anchor is stuck or sliding, nothing in between
 	resetting.emit() # close recording before the clock moves backwards
+	# Layout was fully preflighted above; resize only at this owner-controlled environment boundary.
+	var old_aux: PackedFloat64Array = sim.aux
+	var old_modes: PackedInt64Array = sim.modes
+	sim.aux = snapshot.aux.duplicate()
+	sim.modes = snapshot.modes.duplicate()
 	if not sim.restore_checkpoint(snapshot):
+		sim.aux = old_aux
+		sim.modes = old_modes
 		return false
 	_weather = restored_weather
+	_weather_pending_reset = false
+	_turbulence_aux_index = expected_aux - 7 if turbulent else -1
 	# v1 checkpoints contain physics only, not the source flight's launch provenance. Never attribute the
 	# restored state to this destination session's earlier launch. reset() will establish a new known launch.
 	_launch_metadata = {

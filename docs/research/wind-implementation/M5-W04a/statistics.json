@@ -1,0 +1,45 @@
+{
+  "format": "openrc-ou-statistics v1",
+  "seeds": [
+    101,
+    2027,
+    4294967295
+  ],
+  "samples_per_seed": 20000,
+  "dt_s": 0.02,
+  "tau_s": 0.5,
+  "sigma_mps": [
+    1,
+    1,
+    1
+  ],
+  "axes": [
+    {
+      "axis": 0,
+      "mean_mps": 0.00101225,
+      "rms_mps": 1.01678464,
+      "ac1": 0.96241908,
+      "expected_ac1": 0.96078944
+    },
+    {
+      "axis": 1,
+      "mean_mps": 0.01671517,
+      "rms_mps": 0.98502564,
+      "ac1": 0.95960543,
+      "expected_ac1": 0.96078944
+    },
+    {
+      "axis": 2,
+      "mean_mps": 0.01546129,
+      "rms_mps": 0.99670776,
+      "ac1": 0.96090234,
+      "expected_ac1": 0.96078944
+    }
+  ],
+  "cross_covariance_ne_nd_ed": [
+    -0.02125151,
+    -0.00503496,
+    0.01124457
+  ],
+  "precision": "reported test diagnostics, eight decimals; not raw replay values"
+}

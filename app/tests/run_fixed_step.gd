@@ -54,5 +54,9 @@ func _process(_delta: float) -> bool:
 	var hash := HashingContext.new()
 	hash.start(HashingContext.HASH_SHA256)
 	hash.update(sim.state.to_byte_array())
+	var full_hash := HashingContext.new()
+	full_hash.start(HashingContext.HASH_SHA256)
+	full_hash.update(var_to_bytes(_main.session.checkpoint()))
+	print("flight_sha256=%s" % full_hash.finish().hex_encode())
 	print("ticks=%d frames=%d throttle=%.4f state_sha256=%s" % [sim.tick, _frames, throttle, hash.finish().hex_encode()])
 	return true # quit

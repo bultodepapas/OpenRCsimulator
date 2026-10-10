@@ -62,6 +62,9 @@ msgstr "No se pudieron guardar los ajustes (error %d)."
 msgid "Weather"
 msgstr "Viento"
 
+msgid "Turbulence"
+msgstr "Turbulencia"
+
 msgid "Calm"
 msgstr "Calma"
 
@@ -89,11 +92,29 @@ msgstr "Corriente descendente %s m/s"
 msgid "Uniform wind with smooth repeating gusts."
 msgstr "Viento uniforme con rachas suaves y periódicas."
 
+msgid "Wind is uniform across the field; optional turbulence changes smoothly over time."
+msgstr "El viento es uniforme en todo el campo; la turbulencia opcional cambia suavemente con el tiempo."
+
 msgid "Flight conditions"
 msgstr "Condiciones de vuelo"
 
 msgid "Uniform wind and smooth repeating gusts. No turbulence or spatial variation."
 msgstr "Viento uniforme y rachas suaves y periódicas. Sin turbulencia ni variación espacial."
+
+msgid "Uniform wind and repeating gusts with optional seeded turbulence."
+msgstr "Viento uniforme y rachas periódicas con turbulencia opcional con semilla."
+
+msgid "Seeded turbulence changes smoothly over time. RMS sets strength by direction; tau controls how quickly it changes."
+msgstr "La turbulencia con semilla cambia suavemente con el tiempo. RMS indica la intensidad por dirección; tau controla su rapidez."
+
+msgid "Uniform wind and repeating gusts, with optional seeded turbulence."
+msgstr "Viento uniforme y rachas periódicas, con turbulencia opcional con semilla."
+
+msgid "Enable turbulence"
+msgstr "Activar turbulencia"
+
+msgid "Wind & Gusts"
+msgstr "Viento y rachas"
 
 msgid "Preset"
 msgstr "Preajuste"
@@ -140,11 +161,38 @@ msgstr "Duración de la racha (0.5–20 s)"
 msgid "Gust period (0.5–120 s)"
 msgstr "Periodo de la racha (0.5–120 s)"
 
+msgid "North RMS (0–3 m/s)"
+msgstr "RMS norte (0–3 m/s)"
+
+msgid "East RMS (0–3 m/s)"
+msgstr "RMS este (0–3 m/s)"
+
+msgid "Up RMS (0–3 m/s)"
+msgstr "RMS ascendente (0–3 m/s)"
+
+msgid "Correlation time tau (0.2–30 s)"
+msgstr "Tiempo de correlación tau (0,2–30 s)"
+
+msgid "Seed (0–4294967295)"
+msgstr "Semilla (0–4294967295)"
+
+msgid "Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s"
+msgstr "RMS de turbulencia N/E/arriba: %s / %s / %s m/s; tau %s s; semilla %s"
+
+msgid "Turbulence practice"
+msgstr "Práctica de turbulencia"
+
 msgid "Enter valid numbers within the shown limits; gust period must be at least its duration."
 msgstr "Introduce números válidos dentro de los límites indicados; el periodo debe ser al menos igual a la duración."
 
+msgid "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
+msgstr "Introduce valores dentro de los límites indicados; el periodo debe ser al menos igual a la duración. La semilla solo puede contener dígitos."
+
 msgid "Flights start in the air. Wind is uniform across the field; smooth gusts repeat on a timer. No turbulence or spatial variation. Wheel landings are experimental; a crash restarts the flight."
 msgstr "El vuelo empieza en el aire. Viento uniforme y rachas suaves periódicas, sin turbulencia ni variación espacial. Los aterrizajes son experimentales; un accidente reinicia el vuelo."
+
+msgid "Flights start in the air. Weather adds uniform wind, repeating gusts and seeded turbulence. Wheel landings are experimental; crashes restart the flight."
+msgstr "Los vuelos empiezan en el aire. El clima añade viento uniforme, rachas periódicas y turbulencia con semilla. Los aterrizajes con ruedas son experimentales; los choques reinician el vuelo."
 
 msgid "PAUSED"
 msgstr "PAUSA"

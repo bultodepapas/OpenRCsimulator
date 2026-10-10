@@ -1,7 +1,10 @@
 # UI captures use the real Home and app_root routes where a screen transition matters.
 # Needs a renderer (run under Xvfb, see capture.sh):
 #   godot --path . --rendering-driver opengl3 --script res://tests/capture_ui.gd -- --out=/path/flight.png --lang=en --screen=flight
-#   [--screen=home|pause|help|hint] [--aircraft=<catalog id>] [--start=airborne|runway]
+#   [--screen=home|pause|help|hint|weather] [--tab=wind|turbulence] [--size=1280x720]
+#   [--weather-error] captures the localized seed-validation message on the turbulence tab.
+#   [--weather-focus=seed] captures the seed field after keyboard-follow scrolling.
+#   [--aircraft=<catalog id>] [--start=airborne|runway]
 # Software rendering proves layout and focus drawing, not GPU quality or legibility on the pilot's monitor.
 extends SceneTree
 
@@ -12,8 +15,10 @@ const Commands := preload("res://input/commands.gd")
 const VisualEvidence := preload("res://render/visual_evidence.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const WeatherSettings := preload("res://physics/wind_config.gd")
 const TARGET_FLIGHT_TIME_S: float = 1.5
 const FLIGHT_PREFERENCES_PATH: String = "user://capture_ui_flight_settings.cfg"
+const WEATHER_PREFERENCES_PATH: String = "user://capture_ui_weather_settings.cfg"
 
 
 func _initialize() -> void:
@@ -26,6 +31,11 @@ func _run() -> void:
 	var screen: String = "home"
 	var aircraft: String = "jensen-das-ugly-stik-60"
 	var start_choice: String = "airborne"
+	var weather_tab: String = "wind"
+	var weather_focus: String = "default"
+	var weather_preset: String = ""
+	var requested_size: Vector2i = Vector2i.ZERO
+	var show_weather_error: bool = false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--aircraft="):
 			aircraft = arg.trim_prefix("--aircraft=")
@@ -37,6 +47,25 @@ func _run() -> void:
 			screen = arg.trim_prefix("--screen=")
 		elif arg.begins_with("--start="):
 			start_choice = arg.trim_prefix("--start=")
+		elif arg.begins_with("--tab="):
+			weather_tab = arg.trim_prefix("--tab=")
+		elif arg.begins_with("--weather-focus="):
+			weather_focus = arg.trim_prefix("--weather-focus=")
+		elif arg.begins_with("--weather-preset="):
+			weather_preset = arg.trim_prefix("--weather-preset=")
+		elif arg.begins_with("--size="):
+			var dimensions: PackedStringArray = arg.trim_prefix("--size=").split("x")
+			if dimensions.size() == 2 and dimensions[0].is_valid_int() and dimensions[1].is_valid_int():
+				requested_size = Vector2i(int(dimensions[0]), int(dimensions[1]))
+			else:
+				push_error("UI capture size must be WIDTHxHEIGHT")
+				quit(ERR_INVALID_PARAMETER)
+				return
+		elif arg == "--weather-error":
+			show_weather_error = true
+	if requested_size.x > 0 and requested_size.y > 0:
+		DisplayServer.window_set_size(requested_size)
+		await process_frame
 	if start_choice not in ["airborne", "runway"]:
 		push_error("Unknown UI capture start choice '%s'" % start_choice)
 		quit(ERR_INVALID_PARAMETER)
@@ -44,6 +73,14 @@ func _run() -> void:
 	if start_choice == "runway" and aircraft != Catalog.DEFAULT_ID:
 		push_error("Runway UI captures require the supported Ugly Stik")
 		quit(ERR_INVALID_PARAMETER)
+	if screen == "weather" and weather_tab not in ["wind", "turbulence"]:
+		push_error("Weather capture tab must be wind or turbulence")
+		quit(ERR_INVALID_PARAMETER)
+		return
+	if weather_focus not in ["default", "seed"] or (weather_focus == "seed" and weather_tab != "turbulence"):
+		push_error("Weather focus must be default, or seed on the turbulence tab")
+		quit(ERR_INVALID_PARAMETER)
+		return
 	TranslationServer.set_locale(lang) # never the OS locale: captures must not depend on the machine
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var app: Node = null
@@ -150,6 +187,54 @@ func _run() -> void:
 		flight.call("_update_hud")
 		visual_state = flight.call("capture_evidence")
 		route = "interactive-home-fly"
+	elif screen == "weather":
+		var prefs: Dictionary = Preferences.DEFAULTS.duplicate(true)
+		prefs.language = lang
+		prefs.first_flight_hint_seen = true
+		prefs.weather_config = WeatherSettings.preset("turbulent")
+		var prefs_error: Error = Preferences.save_to(WEATHER_PREFERENCES_PATH, prefs)
+		if prefs_error != OK:
+			push_error("Cannot write deterministic weather capture preferences: %s" % error_string(prefs_error))
+			quit(1)
+			return
+		app = _new_app(PackedStringArray(), WEATHER_PREFERENCES_PATH)
+		root.add_child(app)
+		await process_frame
+		await process_frame
+		home_control = app.get("home") as Control
+		if home_control == null:
+			push_error("Weather capture did not start at Home")
+			quit(1)
+			return
+		var weather_button: Control = home_control.get("weather_button") as Control
+		app.call("open_weather", weather_button)
+		await process_frame
+		await process_frame
+		var dialog: Node = app.get("weather_dialog") as Node
+		if dialog == null:
+			push_error("Home did not open the weather dialog")
+			quit(1)
+			return
+		var tabs: TabBar = dialog.get("tab_container") as TabBar
+		tabs.current_tab = 1 if weather_tab == "turbulence" else 0
+		await process_frame # lay out the selected tab before testing its focus-driven scroll
+		var focus_control: Control
+		if weather_tab == "turbulence":
+			if weather_focus == "seed":
+				var turbulence_inputs: Dictionary = dialog.get("turbulence_inputs")
+				focus_control = turbulence_inputs["seed"] as Control
+			else:
+				focus_control = dialog.get("turbulence_enabled") as Control
+		else:
+			focus_control = dialog.get("preset_picker") as Control
+		focus_control.grab_focus()
+		if show_weather_error:
+			var turbulence_inputs: Dictionary = dialog.get("turbulence_inputs")
+			var seed_edit: LineEdit = turbulence_inputs["seed"]
+			seed_edit.text = "-"
+			dialog.call("_on_apply")
+			await process_frame
+		route = "interactive-home-weather"
 	elif screen == "help" or screen == "hint":
 		app = _new_app(PackedStringArray(), "user://capture_ui_hint_settings.cfg")
 		DirAccess.remove_absolute(ProjectSettings.globalize_path("user://capture_ui_hint_settings.cfg")) # first flight: the hint shows
@@ -186,6 +271,14 @@ func _run() -> void:
 			var home_ui: Control = Home.new()
 			home_ui.set_aircraft(aircraft)
 			home_ui.set_start_choice(start_choice)
+			var weather_config: Dictionary = WeatherSettings.defaults()
+			if weather_preset != "":
+				weather_config = WeatherSettings.preset(weather_preset)
+				if weather_config.is_empty():
+					push_error("Unknown UI capture weather preset '%s'" % weather_preset)
+					quit(ERR_INVALID_PARAMETER)
+					return
+			home_ui.set_weather_config(weather_config)
 			home_control = home_ui
 			root.add_child(home_ui)
 		if screen != "home":
@@ -256,6 +349,42 @@ func _run() -> void:
 		"start_selector": selector_evidence,
 		"visual": visual_state,
 	}
+	if screen == "weather":
+		var weather_dialog: Node = app.get("weather_dialog") as Node
+		var weather_tabs: TabBar = weather_dialog.get("tab_container") as TabBar
+		var focus_owner: Control = viewport.gui_get_focus_owner()
+		var panel_nodes: Array[Node] = weather_dialog.find_children("WeatherPanel", "PanelContainer", true, false)
+		var weather_panel: Control = panel_nodes[0] as Control
+		var panel_rect: Rect2 = weather_panel.get_global_rect()
+		var view_size: Vector2 = viewport.get_visible_rect().size
+		var dialog_scroll: ScrollContainer = weather_dialog.get("tab_scroll") as ScrollContainer
+		var turbulence_inputs: Dictionary = weather_dialog.get("turbulence_inputs")
+		var seed_rect: Rect2 = (turbulence_inputs["seed"] as Control).get_global_rect()
+		var scroll_rect: Rect2 = dialog_scroll.get_global_rect()
+		var app_preferences: Dictionary = app.get("preferences")
+		var weather_config: Dictionary = app_preferences.get("weather_config", {})
+		evidence["weather"] = {
+			"tab": weather_tab,
+			"tab_title": weather_tabs.get_tab_title(weather_tabs.current_tab),
+			"focus_name": "" if focus_owner == null else str(focus_owner.name),
+			"focus_path": "" if focus_owner == null else str(focus_owner.get_path()),
+			"panel_rect": [panel_rect.position.x, panel_rect.position.y, panel_rect.size.x, panel_rect.size.y],
+			"scroll_rect": [scroll_rect.position.x, scroll_rect.position.y, scroll_rect.size.x, scroll_rect.size.y],
+			"scroll_vertical": dialog_scroll.scroll_vertical,
+			"seed_visible_in_scroll": weather_tab == "turbulence" and scroll_rect.encloses(seed_rect),
+			"fits_viewport": panel_rect.position.x >= 0.0 and panel_rect.position.y >= 0.0
+				and panel_rect.end.x <= view_size.x and panel_rect.end.y <= view_size.y,
+			"viewport_size": [view_size.x, view_size.y],
+			"format": str(weather_config.get("format", "")),
+		}
+	if screen == "home" and home_control != null:
+		var home_focus: Control = viewport.gui_get_focus_owner()
+		var weather_button: Control = home_control.get("weather_button") as Control
+		evidence["home_ui"] = {
+			"focus_name": "" if home_focus == null else str(home_focus.name),
+			"focus_path": "" if home_focus == null else str(home_focus.get_path()),
+			"weather_summary": "" if weather_button == null else weather_button.text,
+		}
 	if home_field != null:
 		evidence["home_field"] = _home_field_evidence(home_field)
 	var manifest: Dictionary = {
@@ -286,6 +415,7 @@ func _run() -> void:
 	for frame_index in range(3):
 		await process_frame # let the renderer release GPU resources after nodes leave the tree
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(FLIGHT_PREFERENCES_PATH))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(WEATHER_PREFERENCES_PATH))
 	quit(1 if manifest_error != OK else 0)
 
 

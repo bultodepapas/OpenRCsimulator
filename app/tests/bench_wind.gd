@@ -151,6 +151,7 @@ func _configure_weather(session: Node) -> Dictionary:
 	if not accepted:
 		push_error("session rejected weather configuration " + _weather_name)
 		return {"ok": false, "api_available": true, "requested_configuration": configuration}
+	session.reset() # configure requires a reset boundary before querying wind or stepping
 	var actual: Dictionary = session.call("weather_configuration") if session.has_method("weather_configuration") else {}
 	return {"ok": true, "api_available": true, "requested_configuration": configuration, "configuration": actual}
 
@@ -180,6 +181,13 @@ func _weather_configuration(name: String) -> Dictionary:
 		"crosswind":
 			config.speed_mps = 5.0
 			config.from_deg = 0.0
+		"turbulent":
+			config.format = "openrc-weather v2"
+			config.speed_mps = 3.0
+			config.from_deg = 270.0
+			config.turbulence_rms_mps = [0.6, 0.6, 0.4]
+			config.turbulence_tau_s = 2.0
+			config.turbulence_seed = 20261009
 		"updraft":
 			config.gust_up_mps = 2.0
 			config.gust_period_s = 10.0
@@ -194,7 +202,11 @@ func _weather_samples(session: Node) -> Array:
 	var samples: Array = []
 	if not session.has_method("wind_at"):
 		return samples
-	for t in [0.0, 0.5, 1.0, 2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 14.0]:
+	var times: Array = [0.0, 0.5, 1.0, 2.0, 2.5, 3.0, 4.0, 6.0, 10.0, 14.0]
+	var config: Dictionary = session.call("weather_configuration")
+	if config.get("format") == "openrc-weather v2" and config.get("turbulence_rms_mps") != [0.0, 0.0, 0.0]:
+		times = [0.0] # only the current tick interval exists; random future wind is never queried
+	for t in times:
 		var value: Variant = session.call("wind_at", t)
 		samples.append({"time_s": t, "wind_ned_mps": Array(value)})
 	return samples
@@ -247,11 +259,16 @@ func _configure_fixture(session: Node, regime: String) -> Dictionary:
 	inputs[3] = throttle
 	session.engine_running = engine_running
 	session.sim.inputs = inputs
-	var aux := PackedFloat64Array([
-		float(session.start.rpm) if engine_running else 0.0,
-		inputs[0], inputs[1], inputs[2],
-	])
+	var aux: PackedFloat64Array = session.sim.aux.duplicate()
+	aux[0] = float(session.start.rpm) if engine_running else 0.0
+	for axis: int in 3:
+		aux[axis+1] = inputs[axis]
 	session.sim.aux = aux
+	var lag: int = session.downwash_index()
+	if lag >= 0:
+		aux[lag] = session._wing_cl(state, aux, 0.0)
+		session.sim.aux = aux
+	session.sim.continuous = session._settled_wash(state, aux)
 	var reset_ok: bool = session.sim.reset(state)
 	if not reset_ok:
 		return {"ok": false, "fault": str(session.sim.fault_reason)}
@@ -261,6 +278,8 @@ func _configure_fixture(session: Node, regime: String) -> Dictionary:
 		"state": state,
 		"inputs": inputs,
 		"aux": aux,
+		"modes": session.sim.modes.duplicate(),
+		"continuous": session.sim.continuous.duplicate(),
 		"summary": {
 			"alpha_deg": rad_to_deg(float(actual_air.alpha)),
 			"air_speed_mps": float(actual_air.V),
@@ -298,6 +317,8 @@ func _wind_at(session: Node, time_s: float) -> PackedFloat64Array:
 func _restore(session: Node, fixture: Dictionary) -> bool:
 	session.sim.inputs = fixture.inputs.duplicate()
 	session.sim.aux = fixture.aux.duplicate()
+	session.sim.modes = fixture.modes.duplicate()
+	session.sim.continuous = fixture.continuous.duplicate()
 	session.sim.fault_reason = ""
 	return session.sim.reset(fixture.state)
 

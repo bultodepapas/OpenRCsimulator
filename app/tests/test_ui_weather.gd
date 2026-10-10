@@ -259,6 +259,7 @@ func _close(app: Node) -> void:
 		var sound: AudioStreamPlayer3D = app.flight.get("_engine_audio")
 		if sound != null:
 			sound.stop()
+			sound.stream = null # release the generator resource when the app test is torn down
 	if app.get_parent() == root:
 		root.remove_child(app)
 	app.free()
