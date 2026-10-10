@@ -112,6 +112,10 @@ Tail effectiveness depends on the distributed axial and swirl velocity over the 
 
 When adding propwash to a tail model, evaluate washed and free loads with the same tail law, pressure arm, rate contribution, and sampled wing lift; otherwise the increment subtracts a different baseline. Verify the held downwash state through the real session path, since a helper-only test can miss disconnected state wiring. E0b3a's shared angular downwash is explicitly a quasi-steady approximation, and its manufactured fixtures do not calibrate Stik propwash. ([E0b3a](../research/propwash/E0b3a/README.md))
 
+### Keep electrical current measurement planes explicit
+
+An ideal averaged ESC's battery current is duty times its DC-equivalent motor current. In the EL1a half-duty hand fixture, confusing the two doubles inferred battery input from 90 W to 180 W; an isolated mutation is rejected by both arithmetic and energy checks. Record the current plane and Kv units before fitting motor constants or integrating battery charge. Raw brushless phase RMS current and phase-pair resistance also need an explicit equivalent-port convention. A controller's current rating does not establish a current-limit law. ([EL1a equations and rejecting evidence](../research/propulsion/EL1a/README.md))
+
 ## Data and performance
 
 ### Validate data before conversion and at the session boundary

@@ -1,0 +1,301 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_samples_ms": [
+		0.363
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "0f81c2d4f540f6c99e8a60518fb1476d7a76b4dd5aabcbb6647dccb2f3f3dccc",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "3ebf07c04c71feec5ceca5959adc1f668fc38cbc84a8d360002729a7e8a8bf99",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "",
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"mesh_context_control": "share-material",
+	"mesh_local_indices": [
+		{
+			"cell": "cell_-2_-1",
+			"fresh": 135,
+			"original": 14
+		},
+		{
+			"cell": "cell_-2_0",
+			"fresh": 134,
+			"original": 15
+		},
+		{
+			"cell": "cell_-1_-2",
+			"fresh": 279,
+			"original": 16
+		},
+		{
+			"cell": "cell_-1_-1",
+			"fresh": 269,
+			"original": 17
+		},
+		{
+			"cell": "cell_-1_0",
+			"fresh": 268,
+			"original": 18
+		},
+		{
+			"cell": "cell_-1_1",
+			"fresh": 244,
+			"original": 19
+		},
+		{
+			"cell": "cell_-1_7",
+			"fresh": 246,
+			"original": 20
+		},
+		{
+			"cell": "cell_-1_8",
+			"fresh": 239,
+			"original": 21
+		},
+		{
+			"cell": "cell_-1_9",
+			"fresh": 238,
+			"original": 22
+		},
+		{
+			"cell": "cell_-1_7776",
+			"fresh": 212,
+			"original": 23
+		},
+		{
+			"cell": "cell_0_-1",
+			"fresh": 214,
+			"original": 24
+		},
+		{
+			"cell": "cell_0_8",
+			"fresh": 207,
+			"original": 25
+		},
+		{
+			"cell": "cell_0_9",
+			"fresh": 206,
+			"original": 26
+		},
+		{
+			"cell": "cell_1_1",
+			"fresh": 190,
+			"original": 27
+		},
+		{
+			"cell": "cell_1_3",
+			"fresh": 194,
+			"original": 28
+		},
+		{
+			"cell": "cell_1_4",
+			"fresh": 171,
+			"original": 29
+		},
+		{
+			"cell": "cell_1_9",
+			"fresh": 170,
+			"original": 30
+		},
+		{
+			"cell": "cell_2_2",
+			"fresh": 152,
+			"original": 31
+		},
+		{
+			"cell": "cell_2_3",
+			"fresh": 156,
+			"original": 32
+		},
+		{
+			"cell": "cell_2_4",
+			"fresh": 133,
+			"original": 33
+		},
+		{
+			"cell": "cell_2_5",
+			"fresh": 132,
+			"original": 34
+		},
+		{
+			"cell": "cell_3_2",
+			"fresh": 240,
+			"original": 35
+		},
+		{
+			"cell": "cell_3_3",
+			"fresh": 209,
+			"original": 36
+		},
+		{
+			"cell": "cell_3_4",
+			"fresh": 208,
+			"original": 37
+		},
+		{
+			"cell": "cell_3_5",
+			"fresh": 168,
+			"original": 38
+		},
+		{
+			"cell": "cell_4_1",
+			"fresh": 163,
+			"original": 39
+		},
+		{
+			"cell": "cell_4_2",
+			"fresh": 130,
+			"original": 40
+		},
+		{
+			"cell": "cell_4_3",
+			"fresh": 125,
+			"original": 41
+		},
+		{
+			"cell": "cell_4_4",
+			"fresh": 262,
+			"original": 42
+		},
+		{
+			"cell": "cell_4_5",
+			"fresh": 236,
+			"original": 43
+		},
+		{
+			"cell": "cell_5_0",
+			"fresh": 232,
+			"original": 44
+		},
+		{
+			"cell": "cell_5_3",
+			"fresh": 204,
+			"original": 45
+		},
+		{
+			"cell": "cell_5_4",
+			"fresh": 200,
+			"original": 46
+		},
+		{
+			"cell": "cell_6_-6",
+			"fresh": 167,
+			"original": 47
+		},
+		{
+			"cell": "cell_6_-2",
+			"fresh": 162,
+			"original": 48
+		},
+		{
+			"cell": "cell_6_1",
+			"fresh": 129,
+			"original": 49
+		},
+		{
+			"cell": "cell_6_3",
+			"fresh": 124,
+			"original": 50
+		},
+		{
+			"cell": "cell_6_6",
+			"fresh": 265,
+			"original": 51
+		},
+		{
+			"cell": "cell_999000_994000",
+			"fresh": 261,
+			"original": 52
+		},
+		{
+			"cell": "cell_999000_995000",
+			"fresh": 237,
+			"original": 53
+		},
+		{
+			"cell": "cell_999000_1004000",
+			"fresh": 235,
+			"original": 54
+		},
+		{
+			"cell": "cell_1000000_1001000",
+			"fresh": 231,
+			"original": 55
+		},
+		{
+			"cell": "cell_1000000_1003000",
+			"fresh": 205,
+			"original": 56
+		},
+		{
+			"cell": "cell_1000000_1011000",
+			"fresh": 203,
+			"original": 57
+		},
+		{
+			"cell": "cell_1001000_1000000",
+			"fresh": 199,
+			"original": 58
+		},
+		{
+			"cell": "cell_1001000_1010000",
+			"fresh": 169,
+			"original": 59
+		},
+		{
+			"cell": "cell_1002000_1009000",
+			"fresh": 166,
+			"original": 60
+		},
+		{
+			"cell": "cell_1002000_1010000",
+			"fresh": 161,
+			"original": 61
+		}
+	],
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/tmp/tod09b-close/durable-share-material/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"static_cell_geometry_comparison": {
+		"arrays_bytes_compared": 12488904,
+		"compared_meshes": 48,
+		"first_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a",
+		"mismatched": [],
+		"ok": true,
+		"second_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"
+	},
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

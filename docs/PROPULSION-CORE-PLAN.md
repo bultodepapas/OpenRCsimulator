@@ -14,6 +14,8 @@ The first slice integrates relative propeller shaft RPM with body state in RK4. 
 
 Use `-- --aircraft=p51d-mustang-120 --shaft-integrator=coupled-rk4`. `split` remains the default. Aircraft without shaft data and positive carrier inertia refuse the experiment. This does not create shaft data for glow or electric aircraft.
 
+Electric source work follows [EL1–EL6](ELECTRIC-PROPULSION-PLAN.md). Its first stateless motor/ESC kernel is separate from this flight route; future electric integration must reuse the coupled solve and replace the existing combustion-specific source/friction assumptions explicitly.
+
 Continuous layout is axial wake increments first, then one relative shaft RPM; `aux[0]` mirrors the accepted endpoint for existing renderer/audio/CSV consumers. Sampled servos and turbulence retain their tick policy. The RK derivative never changes RNG/modes. Body, continuous RPM, aux mirror and clock commit together; faults roll back together. Coupled flight checkpoints use v4 with explicit integration identity and weather. Restoring requires a destination already configured for the same integration mode. Golden v1 excludes this continuous-state experiment.
 
 Propeller aerodynamic reaction is an external moment. Engine torque and bearing friction exchange momentum internally. The solver retains locked aircraft inertia and relative rotor momentum, includes gyroscopic precession once, and applies `−I*Omega_dot*axis` once. It also accounts for body angular acceleration along the shaft in `I*(Omega_dot + axis·omega_dot) = Q_engine_net − Q_prop`. [Primary-source notes](research/propulsion/G2a-RK4/sources.md) record the assumptions and derivation.

@@ -18,7 +18,7 @@ from typing import Any
 
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[3]
+ROOT = HERE.parents[2]
 APP = ROOT / "app"
 GDSCRIPT = HERE / "process_oracle.gd"
 CASE_IDS = [
@@ -78,12 +78,14 @@ def error_lines(log: str) -> list[str]:
 
 
 def warning_lines(log: str) -> list[str]:
-    return [line for line in log.splitlines() if WARNING_LINE.match(line)]
+    return [line for line in log.splitlines() if WARNING_LINE.match(line) or "warning" in line.lower()]
 
 
 def digest_sources() -> dict[str, str]:
     paths = [
         "app/main.gd",
+        "app/app_state/aircraft_catalog.gd",
+        "app/data/field_loader.gd",
         "app/render/field.gd",
         "app/render/atmosphere.gd",
         "app/render/time_of_day_lighting.gd",
@@ -93,25 +95,41 @@ def digest_sources() -> dict[str, str]:
         "app/render/near_grass.gdshader",
         "app/render/frames.gd",
         "app/render/shadow.gd",
+        "app/render/airplane.gd",
+        "app/render/pilot_camera.gd",
+        "app/spec.gd",
         "app/scenery/scenery.gd",
         "app/scenery/ground_features.gd",
         "app/sim/flight_session.gd",
         "app/sim/simulation.gd",
         "app/data/fields/default.json",
         "app/data/scenery/default.json",
-        "app/data/aircraft/ugly_stik_60.json",
+        "app/data/aircraft/jensen_ugly_stik_60.json",
         "research/time-of-day/tod-09b/process_oracle.gd",
         "research/time-of-day/tod-09b/process_oracle.py",
     ]
     result: dict[str, str] = {}
     for relative in paths:
         path = ROOT / relative
-        if path.is_file():
-            result[relative] = sha256_file(path)
-        else:
-            result[relative] = "missing"
+        if not path.is_file():
+            raise OracleFailure(f"Required provenance source is missing: {relative}")
+        result[relative] = sha256_file(path)
     for path in sorted((APP / "data/scenery/models").glob("*.json")):
         result[path.relative_to(ROOT).as_posix()] = sha256_file(path)
+    source_suffixes = {".gd", ".gdshader", ".gdshaderinc"}
+    for relative_tree in ("app/render", "app/scenery", "app/environment", "app/sim", "app/aircraft"):
+        tree = ROOT / relative_tree
+        if not tree.is_dir():
+            raise OracleFailure(f"Required runtime source tree is missing: {relative_tree}")
+        for path in sorted(tree.rglob("*")):
+            if path.is_file() and path.suffix in source_suffixes:
+                result[path.relative_to(ROOT).as_posix()] = sha256_file(path)
+    assets = APP / "assets"
+    if not assets.is_dir():
+        raise OracleFailure("Required visual asset tree is missing: app/assets")
+    for path in sorted(assets.rglob("*")):
+        if path.is_file():
+            result[path.relative_to(ROOT).as_posix()] = sha256_file(path)
     return result
 
 
@@ -138,25 +156,30 @@ def load_report(path: Path) -> dict[str, Any]:
     return report
 
 
-def raw_equal(left: Path, right: Path, width: int, height: int) -> dict[str, Any]:
+def raw_equal(left: Path, right: Path, width: int, height: int, channels: int) -> dict[str, Any]:
     left_bytes = left.read_bytes()
     right_bytes = right.read_bytes()
-    equal = left_bytes == right_bytes
+    expected_bytes = width * height * channels
+    buffers_valid = channels == 4 and len(left_bytes) == expected_bytes and len(right_bytes) == expected_bytes
+    equal = buffers_valid and left_bytes == right_bytes
     first_difference: dict[str, int] | None = None
     if not equal:
         offset = next(
             (index for index, (a, b) in enumerate(zip(left_bytes, right_bytes)) if a != b),
             min(len(left_bytes), len(right_bytes)),
         )
-        pixel_index = offset // 4
+        pixel_index = offset // max(channels, 1)
         first_difference = {
             "byte_offset": offset,
-            "channel": offset % 4,
+            "channel": offset % max(channels, 1),
             "x": pixel_index % width if width else 0,
             "y": pixel_index // width if width else 0,
         }
     return {
         "exact_pixels": equal,
+        "buffers_valid": buffers_valid,
+        "channels_per_pixel": channels,
+        "expected_bytes": expected_bytes,
         "left_bytes": len(left_bytes),
         "right_bytes": len(right_bytes),
         "first_difference": first_difference,
@@ -182,6 +205,9 @@ class ProcessOracle:
         self.env["LP_NUM_THREADS"] = "1"
         self.env["OPENRC_SCENERY_AUDIO"] = "off"
         self.env["OPENRC_SCENERY_BIRDS"] = "off"
+        self.env["OPENRC_SCENERY_THEME"] = "temperate"
+        self.env["OPENRC_SCENERY_QUALITY"] = "high"
+        self.env["OPENRC_SCENERY_FILE"] = "res://data/scenery/default.json"
         self.env.pop("OPENRC_SCENERY", None)
 
     def invoke(
@@ -209,6 +235,11 @@ class ProcessOracle:
             str(GDSCRIPT),
             "--",
             f"--scenery={scenery}",
+            "--scenery_theme=temperate",
+            "--scenery_quality=high",
+            "--scenery_audio=off",
+            "--scenery_birds=off",
+            "--scenery_file=res://data/scenery/default.json",
             f"--oracle-role={role}",
             f"--oracle-out={target}",
         ]
@@ -248,18 +279,41 @@ class ProcessOracle:
         case_id: str,
         width: int,
         height: int,
+        in_place_dir: Path,
+        fresh_dir: Path,
         require_pixels: bool = True,
     ) -> dict[str, Any]:
         left = _case_row(in_place, case_id)
         right = _case_row(fresh, case_id)
-        image = raw_equal(Path(left["image_rgba_path"]), Path(right["image_rgba_path"]), width, height)
+        channels = int(left.get("image_channels_per_pixel", 4))
+        image = raw_equal(
+            in_place_dir / str(left["image_data_file"]),
+            fresh_dir / str(right["image_data_file"]),
+            width,
+            height,
+            channels,
+        )
         metadata_fields = [
             ("lighting_config", left.get("lighting_config"), right.get("lighting_config")),
             ("lighting_snapshot", left.get("lighting_snapshot"), right.get("lighting_snapshot")),
             ("lighting_context", left.get("lighting_context"), right.get("lighting_context")),
             ("state_sha256", left.get("state_sha256"), right.get("state_sha256")),
             ("aircraft_transform_sha256", left.get("aircraft_transform_sha256"), right.get("aircraft_transform_sha256")),
+            ("camera_transform_sha256", left.get("camera_transform_sha256"), right.get("camera_transform_sha256")),
             ("image_size", left.get("image_size"), right.get("image_size")),
+            ("image_format_enum", left.get("image_format_enum"), right.get("image_format_enum")),
+            ("image_format_name", left.get("image_format_name"), right.get("image_format_name")),
+            ("image_channels_per_pixel", left.get("image_channels_per_pixel"), right.get("image_channels_per_pixel")),
+            ("image_data_bytes", left.get("image_data_bytes"), right.get("image_data_bytes")),
+            ("image_data_valid", left.get("image_data_valid"), right.get("image_data_valid")),
+            ("camera_near", left.get("camera_near"), right.get("camera_near")),
+            ("camera_far", left.get("camera_far"), right.get("camera_far")),
+            ("camera_fov", left.get("camera_fov"), right.get("camera_fov")),
+            ("shader_clock_s", left.get("shader_clock_s"), right.get("shader_clock_s")),
+            ("shader_wind", left.get("shader_wind"), right.get("shader_wind")),
+            ("cloud_offset", left.get("cloud_offset"), right.get("cloud_offset")),
+            ("registered_cloud_offset", left.get("registered_cloud_offset"), right.get("registered_cloud_offset")),
+            ("godot_version", left.get("godot_version"), right.get("godot_version")),
         ]
         metadata = {name: a == b for name, a, b in metadata_fields}
         all_invariants = all(
@@ -272,6 +326,8 @@ class ProcessOracle:
                 "lighting_context_matches",
                 "state_unchanged",
                 "aircraft_transform_stable",
+                "camera_transform_stable",
+                "image_data_valid",
                 "capture_stable",
                 "save_ok",
             )
@@ -279,6 +335,20 @@ class ProcessOracle:
             int(row.get(key, -1)) == 0
             for row in (left, right)
             for key in ("tick_before_first_await", "tick_after_capture")
+        ) and all(
+            abs(float(row.get("camera_near", -1.0)) - 0.1) < 1e-6
+            and abs(float(row.get("camera_far", -1.0)) - 21000.0) < 1e-9
+            and abs(float(row.get("camera_fov", -1.0)) - 50.0) < 1e-6
+            and row.get("image_size") == [width, height]
+            and row.get("image_format_name") == "RGBA8"
+            and int(row.get("image_format_enum", -1)) == 5
+            and int(row.get("image_channels_per_pixel", -1)) == 4
+            and int(row.get("image_data_bytes", -1)) == width * height * 4
+            and float(row.get("shader_clock_s", -1.0)) == 0.0
+            and row.get("shader_wind") == [0.0, 0.0, 0.0]
+            and row.get("cloud_offset") == [0.0, 0.0]
+            and row.get("registered_cloud_offset") == [0.0, 0.0]
+            for row in (left, right)
         )
         exact_metadata = all(metadata.values())
         ok = all_invariants and exact_metadata and (image["exact_pixels"] if require_pixels else True)
@@ -288,8 +358,12 @@ class ProcessOracle:
             "invariants_ok": all_invariants,
             "metadata_equal": metadata,
             "pixels": image,
-            "in_place_image_sha256": left.get("image_rgba_sha256"),
-            "fresh_image_sha256": right.get("image_rgba_sha256"),
+            "in_place_image_sha256": left.get("image_data_sha256"),
+            "fresh_image_sha256": right.get("image_data_sha256"),
+            "mutation_applied": {
+                "in_place": bool(left.get("mutation_applied", False)),
+                "fresh": bool(right.get("mutation_applied", False)),
+            },
             "in_place_log": next(
                 (record["log"] for record in self.process_records if record.get("role") == "in-place" and record.get("scenery") == in_place.get("scenery_argument")),
                 None,
@@ -299,7 +373,7 @@ class ProcessOracle:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=Path("/tmp/tod09b-process-matrix"))
+    parser.add_argument("--output", "--out", dest="output", type=Path, default=Path("/tmp/tod09b-process-matrix"))
     parser.add_argument("--scenery", choices=("both", "off", "on"), default="both")
     parser.add_argument("--timeout-seconds", type=int, default=90)
     parser.add_argument("--mutation-control", action="store_true", help="run a noon stale-Environment negative control")
@@ -332,17 +406,38 @@ def run_matrix(oracle: ProcessOracle, scenery_modes: list[str]) -> dict[str, Any
     for scenery in scenery_modes:
         mode_dir = oracle.output / f"scenery-{scenery}"
         in_place = oracle.invoke("in-place", scenery, mode_dir / "in-place")
+        expected_scenery_options = {
+            "enabled": scenery == "on",
+            "theme": "temperate",
+            "quality": "high",
+            "audio": False,
+            "birds": False,
+            "file": "res://data/scenery/default.json",
+        }
+        if in_place.get("scenery_options") != expected_scenery_options:
+            raise OracleFailure(f"In-place process scenery options differ from the pinned fixture: {in_place.get('scenery_options')}")
         rows = in_place.get("captures", [])
         ids = [str(row.get("id", "")) for row in rows]
         if len(ids) != 11 or set(ids) != EXPECTED_CASES or len(set(ids)) != len(ids):
             raise OracleFailure(f"The in-place {scenery} run did not report the expected 11 cases: {ids}")
-        width, height = in_place.get("resolution", [960, 540])
+        if in_place.get("resolution") != [960, 540]:
+            raise OracleFailure(f"In-place viewport size is not 960x540: {in_place.get('resolution')}")
+        width, height = 960, 540
         pair_results: list[dict[str, Any]] = []
         for index, case_id in enumerate(ids):
             fresh = oracle.invoke("fresh", scenery, mode_dir / "fresh" / case_id, case_index=index)
+            if fresh.get("scenery_options") != expected_scenery_options:
+                raise OracleFailure(f"Fresh process scenery options differ from the pinned fixture for {case_id}: {fresh.get('scenery_options')}")
             if len(fresh.get("captures", [])) != 1:
                 raise OracleFailure(f"Fresh process for {case_id} produced an unexpected capture count")
-            pair_results.append(oracle.compare_pair(in_place, fresh, case_id, int(width), int(height)))
+            pair_result = oracle.compare_pair(
+                in_place, fresh, case_id, int(width), int(height),
+                mode_dir / "in-place", mode_dir / "fresh" / case_id,
+            )
+            pair_results.append(pair_result)
+            if pair_result["pixels"]["exact_pixels"]:
+                (mode_dir / "in-place" / f"{case_id}.bin").unlink(missing_ok=True)
+                (mode_dir / "fresh" / case_id / f"{case_id}.bin").unlink(missing_ok=True)
         mode_reports.append({
             "scenery": scenery,
             "renderer": in_place.get("renderer"),
@@ -366,22 +461,55 @@ def run_mutation_control(oracle: ProcessOracle) -> dict[str, Any]:
     )
     fresh = oracle.invoke("fresh", "off", mode_dir / "fresh-noon", case_index=1)
     width, height = in_place.get("resolution", [960, 540])
-    pair = oracle.compare_pair(in_place, fresh, "noon", int(width), int(height), require_pixels=False)
+    pair = oracle.compare_pair(
+        in_place,
+        fresh,
+        "noon",
+        int(width),
+        int(height),
+        mode_dir / "in-place-mutated",
+        mode_dir / "fresh-noon",
+        require_pixels=False,
+    )
     difference_detected = not bool(pair["pixels"]["exact_pixels"])
-    pair["expected_pixel_difference_detected"] = difference_detected
-    pair["ok"] = bool(pair["invariants_ok"]) and all(pair["metadata_equal"].values()) and difference_detected
+    expected_mutation_applied = pair["mutation_applied"] == {"in_place": True, "fresh": False}
+    valid_negative_control = (
+        bool(pair["invariants_ok"])
+        and all(pair["metadata_equal"].values())
+        and expected_mutation_applied
+    )
+    strict_comparison_ok = valid_negative_control and bool(pair["pixels"]["exact_pixels"])
+    pair["strict_comparison_ok"] = strict_comparison_ok
+    pair["strict_comparison_verdict"] = "pass" if strict_comparison_ok else "fail"
+    pair["valid_negative_control"] = valid_negative_control
+    pair["expected_failure_detected"] = valid_negative_control and difference_detected
+    pair["ok"] = strict_comparison_ok
     return {
         "mutation": "stale-environment after production Apply",
         "scope": "scratch oracle only; production files are not mutated",
         "pair": pair,
-        "ok": pair["ok"],
+        "ok": bool(pair["expected_failure_detected"]),
     }
+
+
+def prepare_output(output: Path) -> None:
+    marker_name = ".tod09b-process-oracle-output"
+    marker = output / marker_name
+    if output.exists() and any(output.iterdir()):
+        if not marker.is_file():
+            raise OracleFailure(
+                f"Refusing to use non-empty output directory without oracle marker: {output}; "
+                "choose another --out path or remove it explicitly"
+            )
+        shutil.rmtree(output)
+    output.mkdir(parents=True, exist_ok=True)
+    (output / marker_name).write_text("Owned by research/time-of-day/tod-09b/process_oracle.py\n", encoding="utf-8")
 
 
 def main() -> int:
     args = parse_args()
     output = args.output.expanduser().resolve()
-    output.mkdir(parents=True, exist_ok=True)
+    prepare_output(output)
     godot = godot_binary(args)
     version_result = subprocess.run(
         [godot, "--version"], check=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -402,7 +530,7 @@ def main() -> int:
         "resolution": [960, 540],
         "comparison": "exact byte equality of Image.get_data() RGBA buffers; no tolerance",
         "clock_policy": "freeze sim and presentation at tick zero before first await in each process",
-        "audio_policy": "Godot Dummy driver; OPENRC_SCENERY_AUDIO=off; engine stream stopped and detached",
+        "audio_policy": "Godot Dummy driver; scenery audio/birds disabled; engine stream stopped and detached",
         "source_sha256": digest_sources(),
         "matrix": None,
         "mutation_control": None,
@@ -413,6 +541,9 @@ def main() -> int:
     }
     try:
         matrix = run_matrix(oracle, scenery_modes)
+        pair_count = sum(len(mode.get("pairs", [])) for mode in matrix.get("modes", []))
+        if args.scenery == "both" and pair_count != 22:
+            raise OracleFailure(f"Expected 22 scenery off/on comparisons, received {pair_count}")
         report["matrix"] = matrix
         mutation: dict[str, Any] | None = None
         if args.mutation_control:

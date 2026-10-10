@@ -1,0 +1,264 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_count": 1,
+	"captures": [
+		{
+			"aircraft_transform_sha256": "00247a7b0923b2e5980af52f7b9a7af74b1119a9568c7b0d3d81b5d54415a71b",
+			"aircraft_transform_stable": true,
+			"camera_far": 21000.0,
+			"camera_fov": 50.0,
+			"camera_near": 0.10000000149011612,
+			"camera_transform_sha256": "a360fd1fc027eebb5ffc4d5d622948c0f95155c95cce5dd4084a1fb00baff7df",
+			"camera_transform_stable": true,
+			"capture_stable": true,
+			"case_index": 7,
+			"cloud_offset": [
+				0.0,
+				0.0
+			],
+			"config_matches": true,
+			"config_valid": true,
+			"edit_result": {
+				"changed": false,
+				"ok": true,
+				"startup_config": true
+			},
+			"expected_aircraft_transform_sha256": "00247a7b0923b2e5980af52f7b9a7af74b1119a9568c7b0d3d81b5d54415a71b",
+			"expected_camera_transform_sha256": "a360fd1fc027eebb5ffc4d5d622948c0f95155c95cce5dd4084a1fb00baff7df",
+			"expected_lighting_config": {
+				"date": "2026-03-20",
+				"format": "openrc-lighting v1",
+				"latitude_deg": 0.0,
+				"local_seconds": 65443,
+				"location_name": "Reference field (synthetic)",
+				"longitude_deg": 0.0,
+				"mode": "astronomical",
+				"utc_offset_minutes": 0
+			},
+			"expected_lighting_context": {
+				"config": {
+					"date": "2026-03-20",
+					"format": "openrc-lighting v1",
+					"latitude_deg": 0.0,
+					"local_seconds": 65443,
+					"location_name": "Reference field (synthetic)",
+					"longitude_deg": 0.0,
+					"mode": "astronomical",
+					"utc_offset_minutes": 0
+				},
+				"config_sha256": "e40acec727d19d8ad055f08fa37302a70cb7ed01f68be6760ce33093209d9133",
+				"exposure": 0.6,
+				"format": "openrc-visual-context v1",
+				"illumination_kind": "estimated",
+				"mode": "fixed",
+				"moon": "not-modelled",
+				"profile": "openrc-lighting-curves v1",
+				"solar": {
+					"azimuth_deg": 270.05775599186177,
+					"direction_ned": [
+						0.0010079257324361048,
+						-0.9998940215413755,
+						0.0145234214816389
+					],
+					"elevation_deg": -0.8321600112895982,
+					"errors": [],
+					"hour_angle_deg": 90.83216043402126,
+					"julian_date": 2461120.25744213,
+					"ok": true
+				}
+			},
+			"expected_lighting_snapshot": {
+				"cloud_cirrus_strength": 0.12,
+				"cloud_cluster_strength": 0.35,
+				"cloud_color": "(0.8353, 0.6745, 0.5882, 1.0)",
+				"cloud_coverage": 0.35,
+				"cloud_deck_m": 1500.0,
+				"cloud_drift_cells_per_s": "(0.004, 0.0015)",
+				"cloud_scale": 6.0,
+				"cloud_seed": 1253,
+				"cloud_shadow_strength": 0.22,
+				"cloud_silver_strength": 1.502745999774469e-08,
+				"cloud_update_s": 1.0,
+				"disc_cloud_occlusion": true,
+				"disc_elevation_deg": -0.2654933446229315,
+				"exposure": 0.6,
+				"gradient_curve": 2.6,
+				"haze": "(0.8118, 0.6235, 0.5216, 1.0)",
+				"haze_energy": 1.0,
+				"rim_end_m": 20000.0,
+				"rim_start_m": 16000.0,
+				"shadow_energy_compat": 0.85,
+				"shadow_max_distance_m": 300.0,
+				"shadow_strength": 0.0,
+				"solar": {
+					"azimuth_deg": 270.05775599186177,
+					"direction_ned": [
+						0.0010079257324361048,
+						-0.9998940215413755,
+						0.0145234214816389
+					],
+					"elevation_deg": -0.8321600112895982,
+					"errors": [],
+					"hour_angle_deg": 90.83216043402126,
+					"julian_date": 2461120.25744213,
+					"ok": true
+				},
+				"sun_azimuth_deg": 270.05775599186177,
+				"sun_color": "(1.0, 0.5922, 0.3529, 1.0)",
+				"sun_diameter_deg": 0.53,
+				"sun_elevation_deg": 0.05,
+				"sun_energy": 5.8440122213451567e-08,
+				"sun_scatter": 0.785,
+				"visibility_m": 23000.0,
+				"white": 1.0,
+				"zenith": "(0.2039, 0.3059, 0.4863, 1.0)"
+			},
+			"expected_state_sha256": "eecba6def91afa0f56291dd808761850cf148f0cebee87328717f98f0f6d3981",
+			"godot_version": "4.7.2-stable (official)",
+			"id": "sunset+0",
+			"image_channels_per_pixel": 4,
+			"image_data_bytes": 2073600,
+			"image_data_file": "sunset+0.bin",
+			"image_data_sha256": "a4fafea85f6dd4073569cdd377aeb923cc273ade4427cd4a2d058e0c9f302413",
+			"image_data_valid": true,
+			"image_format_enum": 5,
+			"image_format_name": "RGBA8",
+			"image_png_file": "sunset+0.png",
+			"image_size": [
+				960,
+				540
+			],
+			"lighting_config": {
+				"date": "2026-03-20",
+				"format": "openrc-lighting v1",
+				"latitude_deg": 0.0,
+				"local_seconds": 65443,
+				"location_name": "Reference field (synthetic)",
+				"longitude_deg": 0.0,
+				"mode": "astronomical",
+				"utc_offset_minutes": 0
+			},
+			"lighting_context": {
+				"config": {
+					"date": "2026-03-20",
+					"format": "openrc-lighting v1",
+					"latitude_deg": 0.0,
+					"local_seconds": 65443,
+					"location_name": "Reference field (synthetic)",
+					"longitude_deg": 0.0,
+					"mode": "astronomical",
+					"utc_offset_minutes": 0
+				},
+				"config_sha256": "e40acec727d19d8ad055f08fa37302a70cb7ed01f68be6760ce33093209d9133",
+				"exposure": 0.6,
+				"format": "openrc-visual-context v1",
+				"illumination_kind": "estimated",
+				"mode": "fixed",
+				"moon": "not-modelled",
+				"profile": "openrc-lighting-curves v1",
+				"solar": {
+					"azimuth_deg": 270.05775599186177,
+					"direction_ned": [
+						0.0010079257324361048,
+						-0.9998940215413755,
+						0.0145234214816389
+					],
+					"elevation_deg": -0.8321600112895982,
+					"errors": [],
+					"hour_angle_deg": 90.83216043402126,
+					"julian_date": 2461120.25744213,
+					"ok": true
+				}
+			},
+			"lighting_context_matches": true,
+			"lighting_snapshot": {
+				"cloud_cirrus_strength": 0.12,
+				"cloud_cluster_strength": 0.35,
+				"cloud_color": "(0.8353, 0.6745, 0.5882, 1.0)",
+				"cloud_coverage": 0.35,
+				"cloud_deck_m": 1500.0,
+				"cloud_drift_cells_per_s": "(0.004, 0.0015)",
+				"cloud_scale": 6.0,
+				"cloud_seed": 1253,
+				"cloud_shadow_strength": 0.22,
+				"cloud_silver_strength": 1.502745999774469e-08,
+				"cloud_update_s": 1.0,
+				"disc_cloud_occlusion": true,
+				"disc_elevation_deg": -0.2654933446229315,
+				"exposure": 0.6,
+				"gradient_curve": 2.6,
+				"haze": "(0.8118, 0.6235, 0.5216, 1.0)",
+				"haze_energy": 1.0,
+				"rim_end_m": 20000.0,
+				"rim_start_m": 16000.0,
+				"shadow_energy_compat": 0.85,
+				"shadow_max_distance_m": 300.0,
+				"shadow_strength": 0.0,
+				"solar": {
+					"azimuth_deg": 270.05775599186177,
+					"direction_ned": [
+						0.0010079257324361048,
+						-0.9998940215413755,
+						0.0145234214816389
+					],
+					"elevation_deg": -0.8321600112895982,
+					"errors": [],
+					"hour_angle_deg": 90.83216043402126,
+					"julian_date": 2461120.25744213,
+					"ok": true
+				},
+				"sun_azimuth_deg": 270.05775599186177,
+				"sun_color": "(1.0, 0.5922, 0.3529, 1.0)",
+				"sun_diameter_deg": 0.53,
+				"sun_elevation_deg": 0.05,
+				"sun_energy": 5.8440122213451567e-08,
+				"sun_scatter": 0.785,
+				"visibility_m": 23000.0,
+				"white": 1.0,
+				"zenith": "(0.2039, 0.3059, 0.4863, 1.0)"
+			},
+			"lighting_snapshot_matches": true,
+			"mutation_applied": false,
+			"ok": true,
+			"registered_cloud_offset": [
+				0.0,
+				0.0
+			],
+			"save_ok": true,
+			"shader_clock_s": 0.0,
+			"shader_wind": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"state_sha256": "eecba6def91afa0f56291dd808761850cf148f0cebee87328717f98f0f6d3981",
+			"state_unchanged": true,
+			"tick_after_capture": 0,
+			"tick_before_first_await": 0
+		}
+	],
+	"format": "tod09b-independent-process-oracle v1",
+	"initial_aircraft_transform_sha256": "00247a7b0923b2e5980af52f7b9a7af74b1119a9568c7b0d3d81b5d54415a71b",
+	"initial_camera_transform_sha256": "a360fd1fc027eebb5ffc4d5d622948c0f95155c95cce5dd4084a1fb00baff7df",
+	"initial_state_sha256": "eecba6def91afa0f56291dd808761850cf148f0cebee87328717f98f0f6d3981",
+	"mutation": "",
+	"ok": true,
+	"renderer": "gl_compatibility",
+	"resolution": [
+		960,
+		540
+	],
+	"role": "fresh",
+	"scenery_argument": "on",
+	"scenery_audio_env": "off",
+	"scenery_enabled": true,
+	"scenery_options": {
+		"audio": false,
+		"birds": false,
+		"enabled": true,
+		"file": "res://data/scenery/default.json",
+		"quality": "high",
+		"theme": "temperate"
+	},
+	"tick_before_first_await": 0
+}

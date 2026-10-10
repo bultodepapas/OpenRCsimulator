@@ -101,6 +101,8 @@ func _run() -> void:
 	var initial_state_hash: String = _sha256(initial_state)
 	var initial_transform: Transform3D = flight._airplane.root.transform
 	var initial_transform_hash: String = _sha256(var_to_bytes(initial_transform))
+	var initial_camera_transform: Transform3D = flight._camera.global_transform
+	var initial_camera_transform_hash: String = _sha256(var_to_bytes(initial_camera_transform))
 	var initial_lighting: Dictionary = flight._lighting.duplicate(true)
 	var tick_before_first_await: int = flight.session.sim.tick
 
@@ -139,12 +141,21 @@ func _run() -> void:
 		var capture: Dictionary = await _stable_capture()
 		var image: Image = capture.image
 		var png_path: String = _out_dir.path_join(str(case.id) + ".png")
-		var raw_path: String = _out_dir.path_join(str(case.id) + ".rgba")
+		var raw_path: String = _out_dir.path_join(str(case.id) + ".bin")
 		var png_error: Error = image.save_png(png_path)
 		var raw_error: Error = _write_raw(raw_path, image.get_data())
+		var image_data: PackedByteArray = image.get_data()
+		var image_channels: int = int(image_data.size() / (image.get_width() * image.get_height()))
+		var image_data_valid: bool = image.get_format() == Image.FORMAT_RGBA8 \
+			and image_channels == 4 and image_data.size() == CAPTURE_SIZE.x * CAPTURE_SIZE.y * 4
 		var state_after: PackedByteArray = var_to_bytes(flight.session.sim.state)
 		var transform_after: Transform3D = flight._airplane.root.transform
+		var camera_transform_after: Transform3D = flight._camera.global_transform
+		var shader_wind: Vector3 = ShaderClock.last_wind
+		var cloud_offset: Vector2 = flight._env.sky.sky_material.get_shader_parameter("cloud_offset")
+		var registered_cloud_offset: Vector2 = Atmosphere.last_cloud_offset
 		var transform_stable: bool = transform_after == initial_transform
+		var camera_transform_stable: bool = camera_transform_after == initial_camera_transform
 		var state_unchanged: bool = state_after == initial_state
 		var context: Dictionary = Lighting.context(flight.lighting_config, flight._lighting)
 		var row: Dictionary = {
@@ -169,11 +180,27 @@ func _run() -> void:
 			"aircraft_transform_sha256": _sha256(var_to_bytes(transform_after)),
 			"expected_aircraft_transform_sha256": initial_transform_hash,
 			"aircraft_transform_stable": transform_stable,
+			"camera_transform_sha256": _sha256(var_to_bytes(camera_transform_after)),
+			"expected_camera_transform_sha256": initial_camera_transform_hash,
+			"camera_transform_stable": camera_transform_stable,
+			"shader_clock_s": ShaderClock.last_clock,
+			"shader_wind": [shader_wind.x, shader_wind.y, shader_wind.z],
+			"cloud_offset": [cloud_offset.x, cloud_offset.y],
+			"registered_cloud_offset": [registered_cloud_offset.x, registered_cloud_offset.y],
 			"capture_stable": bool(capture.stable),
 			"image_size": [image.get_width(), image.get_height()],
-			"image_rgba_sha256": _sha256(image.get_data()),
-			"image_rgba_path": raw_path,
-			"image_png_path": png_path,
+			"image_data_sha256": _sha256(image_data),
+			"image_data_file": raw_path.get_file(),
+			"image_png_file": png_path.get_file(),
+			"image_format_enum": image.get_format(),
+			"image_format_name": _image_format_name(image.get_format()),
+			"image_channels_per_pixel": image_channels,
+			"image_data_bytes": image_data.size(),
+			"image_data_valid": image_data_valid,
+			"camera_near": flight._camera.near,
+			"camera_far": flight._camera.far,
+			"camera_fov": flight._camera.fov,
+			"godot_version": Engine.get_version_info().string,
 			"save_ok": png_error == OK and raw_error == OK,
 			"mutation_applied": _mutation == "stale-environment" and str(case.id) == "noon" and _role == "in-place",
 		}
@@ -188,11 +215,13 @@ func _run() -> void:
 	var all_ok: bool = captures.size() == selected_indices.size()
 	for row: Dictionary in captures:
 		all_ok = all_ok and bool(row.get("ok", false))
+	var scenery_options: Dictionary = Scenery.options()
 	var report: Dictionary = {
 		"format": "tod09b-independent-process-oracle v1",
 		"role": _role,
 		"scenery_argument": _scenery_argument(),
 		"scenery_enabled": Scenery.enabled(),
+		"scenery_options": scenery_options,
 		"scenery_audio_env": OS.get_environment("OPENRC_SCENERY_AUDIO"),
 		"mutation": _mutation,
 		"renderer": RenderingServer.get_current_rendering_method(),
@@ -201,6 +230,7 @@ func _run() -> void:
 		"tick_before_first_await": tick_before_first_await,
 		"initial_state_sha256": initial_state_hash,
 		"initial_aircraft_transform_sha256": initial_transform_hash,
+		"initial_camera_transform_sha256": initial_camera_transform_hash,
 		"capture_count": captures.size(),
 		"captures": captures,
 		"ok": all_ok,
@@ -300,6 +330,14 @@ func _sha256(bytes: PackedByteArray) -> String:
 	return hashing.finish().hex_encode()
 
 
+func _image_format_name(format: int) -> String:
+	if format == Image.FORMAT_RGB8:
+		return "RGB8"
+	if format == Image.FORMAT_RGBA8:
+		return "RGBA8"
+	return "ImageFormat(%d)" % format
+
+
 func _capture_row_ok(row: Dictionary) -> bool:
 	return bool(row.config_valid) and bool(row.config_matches) \
 		and bool(row.lighting_snapshot_matches) and bool(row.lighting_context_matches) \
@@ -307,6 +345,14 @@ func _capture_row_ok(row: Dictionary) -> bool:
 		and int(row.tick_before_first_await) == 0 and int(row.tick_after_capture) == 0 \
 		and bool(row.aircraft_transform_stable) \
 		and str(row.aircraft_transform_sha256) == str(row.expected_aircraft_transform_sha256) \
+		and bool(row.camera_transform_stable) \
+		and str(row.camera_transform_sha256) == str(row.expected_camera_transform_sha256) \
+		and float(row.shader_clock_s) == 0.0 and row.shader_wind == [0.0, 0.0, 0.0] \
+		and row.cloud_offset == [0.0, 0.0] and row.registered_cloud_offset == [0.0, 0.0] \
+		and row.image_size == [CAPTURE_SIZE.x, CAPTURE_SIZE.y] \
+		and int(row.image_format_enum) == Image.FORMAT_RGBA8 and str(row.image_format_name) == "RGBA8" \
+		and int(row.image_channels_per_pixel) == 4 and int(row.image_data_bytes) == CAPTURE_SIZE.x * CAPTURE_SIZE.y * 4 \
+		and bool(row.image_data_valid) \
 		and bool(row.capture_stable) and bool(row.save_ok)
 
 
