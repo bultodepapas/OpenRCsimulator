@@ -24,6 +24,8 @@ The whole session can also converge near first order during control transients w
 
 Updating a continuous wake or other lag once per tick while integrating the body with RK4 creates a split, lower-order system. Put coupled continuous variables in the integrator workspace and evaluate them at each RK stage; use a nonautonomous analytic oracle because ordinary autonomous flight traces will not reveal a solver that freezes stage time. Sampled controls and discrete modes still need explicit update boundaries. ([H8a](../research/simulation-state/H8a/README.md), [E0b5](../research/propwash/E0b5/README.md))
 
+An adaptive reference solver needs independent qualification too. Dense output samples do not bound internal event steps, and a root at a shared step endpoint can be reported twice. Verify final time/status, step refinement, event identity/direction and re-arm behavior before treating its output as an oracle; preserve the raw event counterexample. ([EL1a-R2 tool probes](../research/propulsion/EL1a-R2/04-verification-tools.md#11--how-should-an-independent-solver-verify-the-fixed-step-implementation))
+
 ### A checkpoint is the complete physics boundary
 
 Body position and attitude alone do not define a resumable simulation. Include the previous rigid-body state, auxiliary lags, engine mode, sampled inputs, tick and timestep, configuration, mass properties, and stop condition; restore and roll them back together after a failed tick. JSON is useful diagnostic data but is not a bit-exact checkpoint, and recorded tolerance metadata must never loosen code-owned acceptance limits. ([H8](../research/simulation-state/H8/README.md), [H9](../research/simulation-state/H9/README.md), [C7-R2](../research/trace-integrity/C7-R2/README.md))
