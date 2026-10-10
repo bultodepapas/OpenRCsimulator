@@ -137,3 +137,7 @@ Thread one field density through trim, aero, propeller load, wake and telemetry 
 ## 2026-10-09 · G2a/G2b — relative rotor speed couples to body acceleration
 
 With locked aircraft inertia, relative shaft acceleration and body acceleration along the shaft must be solved together. Add relative-spin reaction once over the existing external propeller torque, and use stage RPM for both loads and gyro momentum. Check angular momentum and motor work independently; algebra alone can hide an omitted body-acceleration term. Quantify table-knot crossings separately from smooth RK4 order, and use quaternion chord distance when errors are too small for `acos(dot)`. Continuous wake increments are signed; only the RPM suffix has a nonnegative domain. [Equations, conservation and refinement](docs/research/propulsion/G2a-RK4/README.md).
+
+## 2026-10-09 · G2a-R1 — reuse work inside the RK stage
+
+Coupled equations can need the same expensive loads to obtain forces and continuous derivatives. Return loads, derivatives and spinning momentum together from one pure stage evaluation, then validate the complete payload before consuming it. Keep that result inside the step; a persistent query cache would need every state, command, environment and model dependency in its key. Prove full checkpoint and trajectory bits against the frozen pre-optimization implementation, including sampled RNG and optional wake state. [Exact parity and measured cost](docs/research/propulsion/G2a-R1/README.md).

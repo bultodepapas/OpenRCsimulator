@@ -37,7 +37,7 @@ The complete `app/test.sh` [gate](test-gate.json) passed **143 GDScript suites**
 
 [Isolated mutations](mutations.json), reproduced with [mutation_check.py](mutation_check.py), prove the checks reject an omitted body-acceleration term, reversed rotor reaction and sampled gyro momentum. Control copies pass and live source bytes remain unchanged.
 
-[Serial cost measurement](cost.md) records 1263–1325 µs/step for this coupled P-51 slice on the host, versus 488–525 µs for split in these cases. The 500 µs target stays open. The current stage evaluates aerodynamics twice; reusing one stage evaluation is a measured follow-up, with all torque/convergence/replay contracts retained.
+[Serial cost measurement](cost.md) records 1263–1325 µs/step for this coupled P-51 slice on the host, versus 488–525 µs for split in these cases. The 500 µs target stays open. That initial stage evaluated aerodynamics twice. [G2a-R1](../G2a-R1/README.md) now reuses one stage evaluation with exact frozen-baseline trajectory parity and reduced measured cost.
 
 The final [export checks](export-results.json) pass Linux flight smoke and all-platform pack/resource checks. [Source/Linux comparison](native-results.json), reproduced with [native_compare.py](native_compare.py), gives identical numeric rows for calm, hot-high and combined OU/custom-air coupled flights: 721 samples per run, independently checked by the applicable trace reader. Windows/macOS execution remains untested.
 

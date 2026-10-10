@@ -93,6 +93,8 @@ Steady shaft integrity: [G2-R1](propulsion/G2-R1/README.md) rejects unbracketed 
 
 Coupled shaft dynamics: [G2a/G2b experiment](propulsion/G2a-RK4/README.md) integrates relative RPM with stage-local aircraft/wake loads and locked-inertia rotor reaction; preserves the default split route and records refinement, transactional replay and primary-source assumptions.
 
+Coupled-stage headroom: [G2a-R1](propulsion/G2a-R1/README.md) shares one pure evaluation between stage loads, shaft derivatives and rotor momentum; verifies exact frozen-baseline trajectories, complete payload validation and measured simulation-step cost.
+
 Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 
 Solved stall-envelope integrity: [D1-R4](aircraft-validation/D1-R4/README.md) rejects unreachable, nonfinite or collapsed derived transitions, preserves valid fleet models and verifies refused reloads and solver faults.

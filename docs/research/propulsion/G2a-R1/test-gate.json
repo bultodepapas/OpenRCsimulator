@@ -1,0 +1,11 @@
+{
+  "format": "openrc-stage-evaluation-test-gate v1",
+  "command": "app/test.sh",
+  "exit_code": 0,
+  "gdscript_suites": 143,
+  "joint_shaft_checks": 43,
+  "shaft_cli_tests": 7,
+  "engine_errors": 0,
+  "log_sha256": "0b4a60ab6eb9f16f2a54328a6b905dd069a5163a89825e7e85f71a60d445b5f0",
+  "notes": "Existing estimate notices and shutdown ObjectDB warnings; no engine errors."
+}
