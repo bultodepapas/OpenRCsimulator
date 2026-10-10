@@ -15,6 +15,8 @@ const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
+const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
@@ -44,6 +46,9 @@ var aircraft_id := ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
+## TOD: immutable selection for this flight; no preference reads on the direct route.
+var lighting_config: Dictionary = {}
+var _lighting: Dictionary = {}
 
 
 ## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
@@ -127,6 +132,17 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var selected_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if lighting_config.is_empty() else lighting_config) if interactive_start else LightingConfig.from_args(args)
+	if not selected_light.ok:
+		startup_error = "; ".join(selected_light.errors)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr("lighting: " + startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	lighting_config = selected_light.config.duplicate(true)
+	_lighting = TimeOfDayLighting.snapshot(lighting_config)
 	var latency_options: Dictionary = LatencyPatch.options(args)
 	if not latency_options.ok:
 		printerr(latency_options.error)
@@ -488,6 +504,9 @@ func _trace_meta() -> Dictionary:
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
+	if lighting_config.get("mode", "legacy") != "legacy":
+		# Self-contained optional header, copied/frozen by Recorder; CSV columns and physics identity stay unchanged.
+		meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
 	return meta
 
 
@@ -525,13 +544,13 @@ func _view_name() -> String:
 
 func _build_world() -> void:
 	var world_env := WorldEnvironment.new()
-	_env = Atmosphere.environment()
+	_env = Atmosphere.environment(_lighting)
 	world_env.environment = _env
 	add_child(world_env)
 
 	_build_field()
 
-	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light
+	Atmosphere.create_sun(self, _lighting) # the sky shader draws the sun disc from this light
 
 	_airplane = AirplaneBuilder.build(aircraft_id)
 	add_child(_airplane.root)
@@ -544,7 +563,7 @@ func _build_world() -> void:
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	add_child(FieldBuilder.build(field))
+	add_child(FieldBuilder.build(field, _lighting))
 
 
 ## Hides every field object (today: the treeline) for a background-only capture. False when there is none.
@@ -568,8 +587,9 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
-	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.sun_direction() if _shadow_mode == "sun" else Vector3.UP)
+	var strength: float = Atmosphere.shadow_strength(_lighting) if _shadow_mode == "sun" else 1.0
+	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.sun_direction(_lighting) if _shadow_mode == "sun" else Vector3.UP, strength)
 	if is_nan(_look.x):
 		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
 	else:
@@ -623,14 +643,18 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
 	var manifest_err := _write_manifest(out, err)
-	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
-	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
+	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.disc_direction(_lighting) * 1000.0)
+	var sun_visible: bool = Atmosphere.light_energy(_lighting) > 0.0 and not _camera.is_position_behind(_camera.global_position + Atmosphere.disc_direction(_lighting) * 1000.0)
 	# L3: where the sun shadow of the airplane's CG falls on the ground (along the light, onto y = 0), on screen.
 	var cg: Vector3 = pose.pos
-	var sd := Atmosphere.sun_direction()
-	var shadow_point: Vector3 = cg - sd * (cg.y / sd.y)
+	var sd := Atmosphere.sun_direction(_lighting)
+	var shadow_available: bool = sd.y > 0.00001 and Atmosphere.shadow_strength(_lighting) > 0.0
+	# Match the visible footprint's low-angle bound instead of logging an unbounded physical projection.
+	var projection_direction: Vector3 = sd
+	projection_direction.y = maxf(projection_direction.y, 0.05)
+	var shadow_point: Vector3 = cg - projection_direction * (cg.y / projection_direction.y) if shadow_available else Vector3(cg.x, 0.0, cg.z)
 	var shadow_px := _camera.unproject_position(shadow_point)
-	var shadow_seen := not _camera.is_position_behind(shadow_point)
+	var shadow_seen: bool = shadow_available and not _camera.is_position_behind(shadow_point)
 	var below_px := _camera.unproject_position(Vector3(cg.x, 0.0, cg.z)) # straight below: where a vertical shadow would be
 	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s sim_clock=%s shadow_px=%s below_px=%s" % [out, err,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
@@ -785,13 +809,13 @@ func capture_evidence() -> Dictionary:
 	var position: Vector3 = _last_render_pose.get("pos", Vector3.ZERO)
 	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
 	return {
-		format = "openrc-visual-evidence v1", provenance = VisualEvidence.provenance(),
+		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
 		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},
 		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),
 		visual_elevation_deg = float(args.get("visual_elevation", VisualEvidence.DEFAULT_ELEVATION_DEG)),
 		visual_azimuth_deg = float(args.get("visual_azimuth", VisualEvidence.DEFAULT_AZIMUTH_DEG)),
-		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction()), energy = Atmosphere.light_energy(), color = str(Spec.ATMOSPHERE.sun_color)},
+		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction(_lighting)), energy = Atmosphere.light_energy(_lighting), color = str(_lighting.sun_color)},
 		route = "synthetic-inspection" if not _visual_pose.is_empty() else ("scripted-circle" if _scripted else "physics-fixed"),
 		preset = "current-default", backend = RenderingServer.get_current_rendering_method(),
 		pose = VisualEvidence.transform(Transform3D(basis, position)), coordinate_frame = "render: east/up/south; metres",

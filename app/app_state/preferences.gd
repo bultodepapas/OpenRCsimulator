@@ -5,9 +5,10 @@ extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 3
+const SCHEMA := 4
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
@@ -29,6 +30,9 @@ const DEFAULTS := {
 		"gust_period_s": 12.0,
 		"gust_delay_s": 2.0,
 	},
+	# A separate, visual-only selection. Its default preserves the original fixed daylight image.
+	lighting_config = TimeOfDay.DEFAULTS,
+	lighting_invalid = false,
 }
 
 
@@ -68,6 +72,14 @@ static func load_from(path: String) -> Dictionary:
 	var checked_weather := WeatherSettings.validate(weather)
 	if checked_weather.ok:
 		prefs.weather_config = checked_weather.config.duplicate(true)
+	if cfg.has_section_key("flight", "lighting_config"):
+		var lighting: Variant = cfg.get_value("flight", "lighting_config", null)
+		var checked_lighting: Dictionary = TimeOfDay.validate(lighting)
+		if checked_lighting.get("ok", false):
+			prefs.lighting_config = checked_lighting.config.duplicate(true)
+		else:
+			prefs.lighting_invalid = true
+			prefs.note = _append_note(prefs.note, "invalid time-of-day settings; using legacy daylight")
 	return prefs
 
 
@@ -77,13 +89,23 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	var checked_weather := WeatherSettings.validate(prefs.get("weather_config", DEFAULTS.weather_config))
 	if not checked_weather.ok:
 		return ERR_INVALID_DATA
+	var checked_lighting: Dictionary = TimeOfDay.validate(prefs.get("lighting_config", DEFAULTS.lighting_config))
+	if not checked_lighting.get("ok", false):
+		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
-	var schema: int = SCHEMA if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
+	var weather_schema: int = 3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA)
+	var schema: int = SCHEMA if checked_lighting.config != TimeOfDay.defaults() else weather_schema
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
+	if checked_lighting.config != TimeOfDay.defaults():
+		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
 	return cfg.save(path)
+
+
+static func _append_note(existing: String, addition: String) -> String:
+	return addition if existing.is_empty() else existing + "; " + addition

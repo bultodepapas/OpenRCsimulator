@@ -16,11 +16,11 @@ const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63
 
 
-static func build(field: Dictionary) -> Node3D:
+static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "Field"
 	# L9c: one ground pass for contained flat rectangles; retain legacy geometry for other valid fields.
-	var grass: ShaderMaterial = Ground.grass_material()
+	var grass: ShaderMaterial = Ground.grass_material(lighting)
 	var station := Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	grass.set_shader_parameter("pilot_xz", Vector2(station.x, station.z)) # Phase 2: the macro tone is pinned here
 	var consolidated: bool = Ground.configure_surfaces(grass, field.surfaces)
@@ -58,6 +58,6 @@ static func build(field: Dictionary) -> Node3D:
 		else:
 			result.add_child(Windsock.build(cue))
 	if not field.get("flight_cues", []).is_empty():
-		result.add_child(FlightCueShadows.build(field.flight_cues))
-	Scenery.attach(result, field)
+		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
+	Scenery.attach(result, field, lighting)
 	return result

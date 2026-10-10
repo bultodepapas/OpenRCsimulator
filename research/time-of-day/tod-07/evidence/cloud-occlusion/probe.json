@@ -1,0 +1,281 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"atmosphere_sha256": "e14e839f300ba8f696941c240a65b14cc9113dc8d991bdcb40b7f33107dc18e8",
+	"below_sun": {
+		"actual_sun_energy": 0.0,
+		"apparent_disc_direction": [
+			-0.9960601329803467,
+			-0.08867376297712326,
+			-0.0011013112962245941
+		],
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 66600,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"horizon_test_sun_lin": [
+			3.6128315925598145,
+			2.9439032077789307,
+			2.4550728797912598
+		],
+		"note": "nonzero high-Sun sun_lin is injected deliberately; the below-horizon solar snapshot has zero direct energy",
+		"solar": {
+			"azimuth_deg": 270.063350054525,
+			"direction_ned": [
+				0.0011002877614615715,
+				-0.9951344125078619,
+				0.0985205075579419
+			],
+			"elevation_deg": -5.653981089247997,
+			"errors": [],
+			"hour_angle_deg": 95.65398452285217,
+			"julian_date": 2461120.2708333335,
+			"ok": true
+		}
+	},
+	"controls": [
+		{
+			"case_id": "high-cloud-0-sun-off",
+			"uniforms": {
+				"camera_direction": [
+					0.03256269544363022,
+					0.9994693994522095,
+					0.0007678482797928154
+				],
+				"cloud_coverage": 0.0,
+				"disc_cloud_occlusion": true,
+				"png": "high-cloud-0-sun-off.png",
+				"png_sha256": "0c685243cc8175f6531014271e9cf1a9e1e6dbaea066e34fb757db1977009412",
+				"size": [
+					1280,
+					720
+				],
+				"sun_enabled": false,
+				"sun_lin": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"sun_scatter": 0.0
+			}
+		},
+		{
+			"case_id": "high-cloud-0-sun-on",
+			"uniforms": {
+				"camera_direction": [
+					0.03256269544363022,
+					0.9994693994522095,
+					0.0007678482797928154
+				],
+				"cloud_coverage": 0.0,
+				"disc_cloud_occlusion": true,
+				"png": "high-cloud-0-sun-on.png",
+				"png_sha256": "3a706e0f4b8ff07acd363149c170d7268cea0d12871aa9862cd390d202ac6796",
+				"size": [
+					1280,
+					720
+				],
+				"sun_enabled": true,
+				"sun_lin": [
+					3.6128315925598145,
+					2.9439032077789307,
+					2.4550728797912598
+				],
+				"sun_scatter": 0.0
+			}
+		},
+		{
+			"case_id": "high-cloud-1-sun-off",
+			"uniforms": {
+				"camera_direction": [
+					0.03256269544363022,
+					0.9994693994522095,
+					0.0007678482797928154
+				],
+				"cloud_coverage": 1.0,
+				"disc_cloud_occlusion": true,
+				"png": "high-cloud-1-sun-off.png",
+				"png_sha256": "e0841e06012b7e9b1a847a7f59b4d3dfe0b2a0e1d82b1780bdb4a2cb0d8da08d",
+				"size": [
+					1280,
+					720
+				],
+				"sun_enabled": false,
+				"sun_lin": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"sun_scatter": 0.0
+			}
+		},
+		{
+			"case_id": "high-cloud-1-sun-on",
+			"uniforms": {
+				"camera_direction": [
+					0.03256269544363022,
+					0.9994693994522095,
+					0.0007678482797928154
+				],
+				"cloud_coverage": 1.0,
+				"disc_cloud_occlusion": true,
+				"png": "high-cloud-1-sun-on.png",
+				"png_sha256": "13e1e0edcbe82d210d2438964de44db0e63e5b98b2eb6ef212408e2f7c5dc405",
+				"size": [
+					1280,
+					720
+				],
+				"sun_enabled": true,
+				"sun_lin": [
+					3.6128315925598145,
+					2.9439032077789307,
+					2.4550728797912598
+				],
+				"sun_scatter": 0.0
+			}
+		},
+		{
+			"case_id": "below-sun-sun-off",
+			"uniforms": {
+				"camera_direction": [
+					-0.9960601329803467,
+					-0.08867376297712326,
+					-0.0011013112962245941
+				],
+				"cloud_coverage": 0.0,
+				"disc_cloud_occlusion": true,
+				"png": "below-sun-sun-off.png",
+				"png_sha256": "e064ebe4082577e9084bfb235e37c142444ab9cc9dd91389134f2d3be27a1e94",
+				"size": [
+					1280,
+					720
+				],
+				"solar_clip_under_test": "step(0.0, EYEDIR.y)",
+				"sun_enabled": false,
+				"sun_lin": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"sun_scatter": 0.0
+			}
+		},
+		{
+			"case_id": "below-sun-sun-on",
+			"uniforms": {
+				"camera_direction": [
+					-0.9960601329803467,
+					-0.08867376297712326,
+					-0.0011013112962245941
+				],
+				"cloud_coverage": 0.0,
+				"disc_cloud_occlusion": true,
+				"png": "below-sun-sun-on.png",
+				"png_sha256": "4f97edeb20a51fdf6b634f09500b36a8ebc5e91949fc6c296426b6e0bb5336a8",
+				"size": [
+					1280,
+					720
+				],
+				"solar_clip_under_test": "step(0.0, EYEDIR.y)",
+				"sun_enabled": true,
+				"sun_lin": [
+					3.6128315925598145,
+					2.9439032077789307,
+					2.4550728797912598
+				],
+				"sun_scatter": 0.0
+			}
+		}
+	],
+	"fixed_sky_uniforms": {
+		"cirrus_coverage": 0.34,
+		"cirrus_strength": 0.12,
+		"cloud_lin": [
+			0.8879231810569763,
+			0.904661238193512,
+			0.9301108717918396
+		],
+		"cloud_offset": [
+			0.0,
+			0.0
+		],
+		"cloud_scale": 6.0,
+		"cloud_seed": 1253,
+		"cluster_strength": 0.35,
+		"disc_cloud_occlusion": true,
+		"exposure": 0.6000000238418579,
+		"haze_lin": [
+			0.5840784311294556,
+			0.7681511640548706,
+			0.8468731641769409
+		],
+		"sun_scatter_test_override": 0.0,
+		"zenith_lin": [
+			0.05622914806008339,
+			0.13289624452590942,
+			0.2747630774974823
+		]
+	},
+	"format": "openrc-tod-07-cloud-occlusion-probe v1",
+	"fov_deg": 50.0,
+	"high_sun": {
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 43200,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"disc_dir": [
+			0.03256269544363022,
+			0.9994693994522095,
+			0.0007678482797928154
+		],
+		"solar": {
+			"azimuth_deg": 91.35081909677777,
+			"direction_ned": [
+				-0.0007678482644554136,
+				0.03256269724115908,
+				-0.9994693998104311
+			],
+			"elevation_deg": 88.13344609948263,
+			"errors": [],
+			"hour_angle_deg": -1.8660355394800945,
+			"julian_date": 2461120.0,
+			"ok": true
+		},
+		"sun_dir": [
+			0.03256269544363022,
+			0.9994693994522095,
+			0.0007678482797928154
+		],
+		"sun_energy": 1.15,
+		"sun_lin": [
+			3.6128315925598145,
+			2.9439032077789307,
+			2.4550728797912598
+		]
+	},
+	"lighting_sha256": "4c768bdab12b187008792669cd8871590510884130cf6c4b5310ff065ab68bfd",
+	"profile": "production Atmosphere.environment + render/sky.gdshader",
+	"renderer": "gl_compatibility",
+	"requested_window_size": [
+		1280,
+		720
+	],
+	"run_status": "complete",
+	"shader_sha256": "3646b180fa9dc94c770baea4b7d7caa42547c8334f0d15cc0c00a5fdf05609c6",
+	"viewport": [
+		1280,
+		720
+	]
+}

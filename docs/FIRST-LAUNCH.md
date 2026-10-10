@@ -72,6 +72,8 @@ Wheels can contact the ground for experimental landing and rollout. A hull strik
 
 On Home, **Weather** opens the flight conditions editor. Choose Calm, Steady breeze, Crosswind, Gusty or Updraft, or edit the values. Direction is where the wind comes from; vertical gust values are positive upward. **Apply** validates and remembers the settings; **Cancel/Esc** keeps the previous settings. Restart repeats the same wind and gust timing. The HUD separates airspeed from horizontal ground speed and shows the current wind.
 
+The current source build also offers **Weather → Time of day**. Choose **Astronomical time**, set an exact local time or use Dawn, Noon, Sunset or Night, then **Apply**. Date/location settings include an explicit UTC offset; the default reference is synthetic, not a real flying site. The selected time stays fixed during flight and survives restart. **Legacy daylight** restores the original appearance. Night currently has no Moon or aircraft/field lights, so the airplane may become invisible; changing time does not change wind, temperature or flight physics. [Scope and evidence](TIME-OF-DAY-PLAN.md).
+
 The wind is spatially uniform, with smooth periodic practice gusts. The presets are authored conditions rather than measured site weather; turbulence and windsock dynamics remain future work. Non-calm traces use v4; calm retains v3.
 
 **It has:**

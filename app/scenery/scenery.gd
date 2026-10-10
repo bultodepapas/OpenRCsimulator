@@ -52,7 +52,7 @@ static func enabled() -> bool:
 
 
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
-static func attach(field_node: Node3D, field: Dictionary) -> void:
+static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}) -> void:
 	var opts := options()
 	if not opts.enabled:
 		return
@@ -61,7 +61,7 @@ static func attach(field_node: Node3D, field: Dictionary) -> void:
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
 		return
-	field_node.add_child(build(field, loaded.scenery, opts))
+	field_node.add_child(build(field, loaded.scenery, opts, lighting))
 
 
 static func opaque_material() -> StandardMaterial3D:
@@ -110,7 +110,7 @@ static func _placement_xf(n: float, e: float, heading_deg: float) -> Transform3D
 	return Transform3D(Basis(Vector3.UP, -deg_to_rad(heading_deg)), Frames.ned_to_render([n, e, 0.0]))
 
 
-static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> Node3D:
+static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	var t0 := Time.get_ticks_usec()
 	var root := Node3D.new()
 	root.name = "Scenery"
@@ -118,7 +118,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 	var quality: String = opts.quality if QUALITIES.has(opts.quality) else "high"
 	var opaque := opaque_material()
 	var shade := shadow_material()
-	var sun := Atmosphere.sun_direction()
+	var sun := Atmosphere.sun_direction(lighting)
+	var shadow_strength: float = Atmosphere.shadow_strength(lighting)
+	shade.albedo_color.a = shadow_strength
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
 	var shadow_cells := {}
@@ -155,7 +157,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 						kit.append_arrays(arr.pos, arr.nrm, arr.col, xf, paint)
 					stats.instances += 1
 					var mode: Variant = spec.get("shadow", false)
-					if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
+					if mode != false and shadow_strength > 0.0 and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
 						GroundFeatures.contact_shadow(_kit(shadow_cells, _cell(pl.north, pl.east)), xf, spec.size,
 							"solid" if mode == true else str(mode), sun)
 						stats.shadows += 1

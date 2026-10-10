@@ -1,0 +1,1342 @@
+{
+  "baseline_png": "/home/bulto/OpenRCsimulator/research/time-of-day/tod-01/evidence/legacy-production.png",
+  "baseline_sha256": "98368c07ecbbe69c8064679226b2bda9c0ae37c3ad52a29c55c2098b0ed1a855",
+  "captures": [
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "baseline_pixel_comparison": {
+        "baseline_size": [
+          1280,
+          720
+        ],
+        "changed_pixels": 0,
+        "current_size": [
+          1280,
+          720
+        ],
+        "dimensions_match": true,
+        "exact": true,
+        "max_channel_delta": 0,
+        "mean_absolute_channel_delta": 0.0
+      },
+      "capture_seconds": 13.0545,
+      "case_id": "legacy-default",
+      "date": null,
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 111
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "pre-change pixel baseline",
+      "lighting_mode": "legacy",
+      "local_time": null,
+      "log": "logs/legacy-default.log",
+      "metadata": "images/legacy-default.json",
+      "metadata_sha256": "2e2b02712bf32551aa2d6bb768f15d07d3cc4933d9e707c469e2ac7fb5500671",
+      "png": "images/legacy-default.png",
+      "png_sha256": "98368c07ecbbe69c8064679226b2bda9c0ae37c3ad52a29c55c2098b0ed1a855",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162771
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.820658810810869,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 186.95102291891888,
+          "mean_rgb_code_0_255": [
+            172.9156756756757,
+            189.57405405405405,
+            202.2962162162162
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -0.820658810810869,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 187.77168172972975,
+          "mean_rgb_code_0_255": [
+            171.15783783783783,
+            191.07891891891893,
+            203.9318918918919
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "legacy",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "4132ac4b6ca9d457d709f12d8e5bd3480d2a5995fc3e5ec84c6d97e39daf1429",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "legacy-spec",
+        "solar": {}
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.8717,
+      "case_id": "default-00-00",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "00:00",
+      "log": "logs/default-00-00.log",
+      "metadata": "images/default-00-00.json",
+      "metadata_sha256": "81d08bbbda403b00bd1abaa44689764962afef1650b7f4322c1aceeb5f1ecffe",
+      "png": "images/default-00-00.png",
+      "png_sha256": "9721dbc48c04cf078456fbb2538ac3a24f24f29e670935df00c22b0ff0a5eec1",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.0021690810810810895,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 0.12447481081081081,
+          "mean_rgb_code_0_255": [
+            0.12756756756756757,
+            0.12324324324324325,
+            0.12756756756756757
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -0.0021690810810810895,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 0.1266438918918919,
+          "mean_rgb_code_0_255": [
+            0.12432432432432433,
+            0.12756756756756757,
+            0.12432432432432433
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.76166332457,
+          "direction_ned": [
+            -0.00421738666746885,
+            -0.0332053595591734,
+            0.999439651878113
+          ],
+          "elevation_deg": -88.081830980773,
+          "errors": [],
+          "hour_angle_deg": 178.097106317655,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.5024,
+      "case_id": "default-05-45",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "05:45",
+      "log": "logs/default-05-45.log",
+      "metadata": "images/default-05-45.json",
+      "metadata_sha256": "93daf26d5b35b6023c1f8b1f6458dddd523e3e60a907d4308f87079f5223b4fe",
+      "png": "images/default-05-45.png",
+      "png_sha256": "b78a92c588cd4b250bf58849819a7335a13c5644185fd09cea2daf0961db5874",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.7146525405405413,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 72.43339654054054,
+          "mean_rgb_code_0_255": [
+            70.83027027027028,
+            70.88,
+            92.54162162162162
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -1.7146525405405413,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 74.14804908108108,
+          "mean_rgb_code_0_255": [
+            72.20432432432432,
+            72.64864864864865,
+            94.72432432432433
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 20700,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "faefa20b100baad69e5714ce02447c9597fd83c8a28ec0ebe97426969828aad8",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 90.1476421597139,
+          "direction_ned": [
+            -0.00256438562526941,
+            0.995163904736232,
+            0.098194840172488
+          ],
+          "elevation_deg": -5.63523080472518,
+          "errors": [],
+          "hour_angle_deg": -95.6352493936411,
+          "julian_date": 2461119.73958333,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.4205,
+      "case_id": "default-06-00",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "06:00",
+      "log": "logs/default-06-00.log",
+      "metadata": "images/default-06-00.json",
+      "metadata_sha256": "31b10d8a454c0afaf3918efda65bf5f73dba3333fde6bf694e8d82554287af36",
+      "png": "images/default-06-00.png",
+      "png_sha256": "18cd39d369af593373def6030d908a8fea71f2cc66a6033fba24807a01eee7d1",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.0621656216216309,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 131.45391956756757,
+          "mean_rgb_code_0_255": [
+            159.18702702702703,
+            124.2054054054054,
+            121.59351351351351
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -1.0621656216216309,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 132.5160851891892,
+          "mean_rgb_code_0_255": [
+            159.7135135135135,
+            125.38702702702703,
+            123.04972972972973
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 21600,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "1ff99e2c87848c9c5a07b6de8d3b845c73a854b6b1cfbef78599fda6a389d1cf",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 90.1428882949478,
+          "direction_ned": [
+            -0.00249251984700301,
+            0.999456054621417,
+            0.0328843766157137
+          ],
+          "elevation_deg": -1.88447573588058,
+          "errors": [],
+          "hour_angle_deg": -91.8844815918186,
+          "julian_date": 2461119.75,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.9056,
+      "case_id": "default-12-00",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 111
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "12:00",
+      "log": "logs/default-12-00.log",
+      "metadata": "images/default-12-00.json",
+      "metadata_sha256": "5bda48b3e610c2365b20afd4b22153b2cecb756d844774cd973f849c1d2b7f43",
+      "png": "images/default-12-00.png",
+      "png_sha256": "8140d1d98e76b517e78d9ae9ef6ede1aa2724f797fd21cb98eb6991dc04e727c",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162771
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.9187963243242905,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 186.2080464864865,
+          "mean_rgb_code_0_255": [
+            171.16756756756757,
+            189.14162162162162,
+            201.43675675675675
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -0.9187963243242905,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 187.12684281081079,
+          "mean_rgb_code_0_255": [
+            169.6216216216216,
+            190.7135135135135,
+            203.1437837837838
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.3508190967778,
+          "direction_ned": [
+            -0.000767848264455414,
+            0.0325626972411591,
+            -0.999469399810431
+          ],
+          "elevation_deg": 88.1334460994826,
+          "errors": [],
+          "hour_angle_deg": -1.86603553948009,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.5822,
+      "case_id": "default-18-00",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "18:00",
+      "log": "logs/default-18-00.log",
+      "metadata": "images/default-18-00.json",
+      "metadata_sha256": "c6678fe7cf9c331841fc8f9b4105d64921f873b552818d51ebe8318aac622454",
+      "png": "images/default-18-00.png",
+      "png_sha256": "4718f02db9b3c25790dd52a7a002e7e8d96056ae31304d1425265f7c1f4f8ad5",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.1575338378378888,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 154.3362791351351,
+          "mean_rgb_code_0_255": [
+            167.13945945945946,
+            150.4572972972973,
+            155.06054054054053
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -1.1575338378378888,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 155.493812972973,
+          "mean_rgb_code_0_255": [
+            167.11675675675676,
+            151.89513513513515,
+            156.91675675675677
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 64800,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "2c54b6aea41c9f9574d2f0160ff7b692450528a82434c3d8758d5472f2a087b5",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 270.054837396636,
+          "direction_ned": [
+            0.000956595428712143,
+            -0.999479687095003,
+            -0.0322403475425062
+          ],
+          "elevation_deg": 1.84755600914033,
+          "errors": [],
+          "hour_angle_deg": 88.15244314524,
+          "julian_date": 2461120.25,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.463,
+      "case_id": "default-18-30",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "lighting_mode": "astronomical",
+      "local_time": "18:30",
+      "log": "logs/default-18-30.log",
+      "metadata": "images/default-18-30.json",
+      "metadata_sha256": "580ba8f44df47bb29de81d550a744c29e6510d380ca8e643608ab4dbf71ab60c",
+      "png": "images/default-18-30.png",
+      "png_sha256": "6799ba12c242d6231b1b7a7b0e340ba4c85230c24a5e5cb0e20bd41c7b9e8f88",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.7121712432432616,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 72.31346702702702,
+          "mean_rgb_code_0_255": [
+            70.62054054054055,
+            70.77945945945946,
+            92.49405405405406
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -1.7121712432432616,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 74.02563827027028,
+          "mean_rgb_code_0_255": [
+            71.99783783783784,
+            72.54378378378378,
+            94.67567567567568
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 66600,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "deca62844232f5e16b966939ff440509e8fb84741098dea9073906a59d22e5dd",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 270.063350054525,
+          "direction_ned": [
+            0.00110028776146157,
+            -0.995134412507862,
+            0.0985205075579419
+          ],
+          "elevation_deg": -5.653981089248,
+          "errors": [],
+          "hour_angle_deg": 95.6539845228522,
+          "julian_date": 2461120.27083333,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "gp-extra-300s-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 6.1817,
+      "case_id": "gp-extra-300s-60-noon",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 43
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "noon aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "12:00",
+      "log": "logs/gp-extra-300s-60-noon.log",
+      "metadata": "images/gp-extra-300s-60-noon.json",
+      "metadata_sha256": "b8c5419a73aa5133a2599c26944f485a8df5c514afb8b4fc0d4481eceaafa58d",
+      "png": "images/gp-extra-300s-60-noon.png",
+      "png_sha256": "b277acbd3fd918443ad560269222c6477afedce4d1468cfc8c345686f76b3e1e",
+      "primitives": {
+        "shadow": 0,
+        "visible": 135433
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.8191582655826437,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            620,
+            346,
+            661,
+            373
+          ],
+          "mean_rec709_code_luma_0_255": 185.752895031617,
+          "mean_rgb_code_0_255": [
+            170.54561878952123,
+            188.7289972899729,
+            201.05149051490514
+          ],
+          "pixel_count": 1107
+        },
+        "aircraft_minus_background_luma_code": -1.8191582655826437,
+        "background_patch": {
+          "box_xyxy": [
+            685,
+            346,
+            726,
+            373
+          ],
+          "mean_rec709_code_luma_0_255": 187.57205329719963,
+          "mean_rgb_code_0_255": [
+            170.29539295392954,
+            191.11020776874435,
+            203.39656729900634
+          ],
+          "pixel_count": 1107
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.63,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 12.846582986414015
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.3508190967778,
+          "direction_ned": [
+            -0.000767848264455414,
+            0.0325626972411591,
+            -0.999469399810431
+          ],
+          "elevation_deg": 88.1334460994826,
+          "errors": [],
+          "hour_angle_deg": -1.86603553948009,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "gp-extra-300s-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.3189,
+      "case_id": "gp-extra-300s-60-night",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 42
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "night aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "00:00",
+      "log": "logs/gp-extra-300s-60-night.log",
+      "metadata": "images/gp-extra-300s-60-night.json",
+      "metadata_sha256": "87979d04b6ce4ea62a32cb3bfe384e8747a3016dcb159d56e26ff8f307a7d0a1",
+      "png": "images/gp-extra-300s-60-night.png",
+      "png_sha256": "9da68542c44e163a83c1851b353187daeb392e2f1b5bd91b4215aa58d64bf86d",
+      "primitives": {
+        "shadow": 0,
+        "visible": 135431
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.00052032520325207,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            620,
+            346,
+            661,
+            373
+          ],
+          "mean_rec709_code_luma_0_255": 0.1254330623306233,
+          "mean_rgb_code_0_255": [
+            0.12737127371273713,
+            0.12466124661246612,
+            0.12737127371273713
+          ],
+          "pixel_count": 1107
+        },
+        "aircraft_minus_background_luma_code": -0.00052032520325207,
+        "background_patch": {
+          "box_xyxy": [
+            685,
+            346,
+            726,
+            373
+          ],
+          "mean_rec709_code_luma_0_255": 0.12595338753387536,
+          "mean_rgb_code_0_255": [
+            0.12466124661246612,
+            0.12646793134598014,
+            0.12466124661246612
+          ],
+          "pixel_count": 1107
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.63,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 12.846582986414015
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.76166332457,
+          "direction_ned": [
+            -0.00421738666746885,
+            -0.0332053595591734,
+            0.999439651878113
+          ],
+          "elevation_deg": -88.081830980773,
+          "errors": [],
+          "hour_angle_deg": 178.097106317655,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "p51d-mustang-120",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 5.5296,
+      "case_id": "p51d-mustang-120-noon",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 151
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "noon aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "12:00",
+      "log": "logs/p51d-mustang-120-noon.log",
+      "metadata": "images/p51d-mustang-120-noon.json",
+      "metadata_sha256": "124638b7ea4270341aba8ae4f0012ff2619d00f694baa384411a94dd2daf3f5b",
+      "png": "images/p51d-mustang-120-noon.png",
+      "png_sha256": "1525871cebff10f01baa62fd5fd1c990d37d3610403fe9ed6a04f460bdfcb220",
+      "primitives": {
+        "shadow": 0,
+        "visible": 168624
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.4139442491520526,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            606,
+            336,
+            675,
+            383
+          ],
+          "mean_rec709_code_luma_0_255": 186.73393845205055,
+          "mean_rgb_code_0_255": [
+            169.81837804502004,
+            190.19426456984274,
+            202.26611162503855
+          ],
+          "pixel_count": 3243
+        },
+        "aircraft_minus_background_luma_code": -1.4139442491520526,
+        "background_patch": {
+          "box_xyxy": [
+            713,
+            336,
+            782,
+            383
+          ],
+          "mean_rec709_code_luma_0_255": 188.1478827012026,
+          "mean_rgb_code_0_255": [
+            171.0632130743139,
+            191.6490903484428,
+            203.77304964539007
+          ],
+          "pixel_count": 3243
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 2.82,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 22.225376700421794
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.3508190967778,
+          "direction_ned": [
+            -0.000767848264455414,
+            0.0325626972411591,
+            -0.999469399810431
+          ],
+          "elevation_deg": 88.1334460994826,
+          "errors": [],
+          "hour_angle_deg": -1.86603553948009,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "p51d-mustang-120",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.5257,
+      "case_id": "p51d-mustang-120-night",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 150
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "night aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "00:00",
+      "log": "logs/p51d-mustang-120-night.log",
+      "metadata": "images/p51d-mustang-120-night.json",
+      "metadata_sha256": "a407e61a82487c4f5742ff60246c82822312f360cf657daa2b45bcadd992d244",
+      "png": "images/p51d-mustang-120-night.png",
+      "png_sha256": "57ce4812898901855b4c45dba340dadd6a6e94248711e2b38dfb7992fca20996",
+      "primitives": {
+        "shadow": 0,
+        "visible": 168622
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.004318963922294181,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            606,
+            336,
+            675,
+            383
+          ],
+          "mean_rec709_code_luma_0_255": 0.12320986740672217,
+          "mean_rgb_code_0_255": [
+            0.12365094048720321,
+            0.12303422756706753,
+            0.12365094048720321
+          ],
+          "pixel_count": 3243
+        },
+        "aircraft_minus_background_luma_code": -0.004318963922294181,
+        "background_patch": {
+          "box_xyxy": [
+            713,
+            336,
+            782,
+            383
+          ],
+          "mean_rec709_code_luma_0_255": 0.12752883132901635,
+          "mean_rgb_code_0_255": [
+            0.12642614862781376,
+            0.12796793092815295,
+            0.12642614862781376
+          ],
+          "pixel_count": 3243
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 2.82,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 22.225376700421794
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.76166332457,
+          "direction_ned": [
+            -0.00421738666746885,
+            -0.0332053595591734,
+            0.999439651878113
+          ],
+          "elevation_deg": -88.081830980773,
+          "errors": [],
+          "hour_angle_deg": 178.097106317655,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.5183,
+      "case_id": "sebart-avanti-s-a200-p100rx-noon",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 46
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "noon aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "12:00",
+      "log": "logs/sebart-avanti-s-a200-p100rx-noon.log",
+      "metadata": "images/sebart-avanti-s-a200-p100rx-noon.json",
+      "metadata_sha256": "22ccf69e99c3075a3bc54cb24e42ebe261928069e1b64bdbd92e404c1f0140c0",
+      "png": "images/sebart-avanti-s-a200-p100rx-noon.png",
+      "png_sha256": "3c65342577e66b7b6a12ac0ef8762ff866ae76718d0bb12a2da94f5dc290d1ec",
+      "primitives": {
+        "shadow": 0,
+        "visible": 121823
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.717566233766263,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            616,
+            343,
+            665,
+            376
+          ],
+          "mean_rec709_code_luma_0_255": 185.8565896103896,
+          "mean_rgb_code_0_255": [
+            168.68336425479282,
+            189.3234384662956,
+            202.08286951144095
+          ],
+          "pixel_count": 1617
+        },
+        "aircraft_minus_background_luma_code": -1.717566233766263,
+        "background_patch": {
+          "box_xyxy": [
+            693,
+            343,
+            742,
+            376
+          ],
+          "mean_rec709_code_luma_0_255": 187.57415584415585,
+          "mean_rgb_code_0_255": [
+            170.28014842300556,
+            191.11688311688312,
+            203.40445269016698
+          ],
+          "pixel_count": 1617
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 2.0,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 15.762678510937443
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.3508190967778,
+          "direction_ned": [
+            -0.000767848264455414,
+            0.0325626972411591,
+            -0.999469399810431
+          ],
+          "elevation_deg": 88.1334460994826,
+          "errors": [],
+          "hour_angle_deg": -1.86603553948009,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "capture_seconds": 4.2265,
+      "case_id": "sebart-avanti-s-a200-p100rx-night",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 45
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "night aircraft view",
+      "lighting_mode": "astronomical",
+      "local_time": "00:00",
+      "log": "logs/sebart-avanti-s-a200-p100rx-night.log",
+      "metadata": "images/sebart-avanti-s-a200-p100rx-night.json",
+      "metadata_sha256": "a49991bd7cd42d2354596ba9ba28bf8b7daf2574cd256c1bb80dfdaadc7cd10f",
+      "png": "images/sebart-avanti-s-a200-p100rx-night.png",
+      "png_sha256": "f0121512aecc96ada5fef7d398b316ba89e0e240d6c2494ab73bb54d1d26c863",
+      "primitives": {
+        "shadow": 0,
+        "visible": 121821
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 0.003092145949288805,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            616,
+            343,
+            665,
+            376
+          ],
+          "mean_rec709_code_luma_0_255": 0.12501273964131107,
+          "mean_rgb_code_0_255": [
+            0.12368583797155226,
+            0.12554112554112554,
+            0.12368583797155226
+          ],
+          "pixel_count": 1617
+        },
+        "aircraft_minus_background_luma_code": -0.003092145949288805,
+        "background_patch": {
+          "box_xyxy": [
+            693,
+            343,
+            742,
+            376
+          ],
+          "mean_rec709_code_luma_0_255": 0.12810488559059988,
+          "mean_rgb_code_0_255": [
+            0.12677798392084105,
+            0.12863327149041434,
+            0.12677798392084105
+          ],
+          "pixel_count": 1617
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 2.0,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 15.762678510937443
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.76166332457,
+          "direction_ned": [
+            -0.00421738666746885,
+            -0.0332053595591734,
+            0.999439651878113
+          ],
+          "elevation_deg": -88.081830980773,
+          "errors": [],
+          "hour_angle_deg": 178.097106317655,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      }
+    }
+  ],
+  "completed_utc": "2026-10-10T13:24:53Z",
+  "date": "2026-03-20",
+  "format": "openrc-tod-07-capture-matrix v1",
+  "godot_binary": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "last_updated_utc": "2026-10-10T13:24:53Z",
+  "legacy_pixel_exact": true,
+  "planned_full_matrix_cases": [
+    "legacy-default",
+    "default-00-00",
+    "default-05-45",
+    "default-06-00",
+    "default-12-00",
+    "default-18-00",
+    "default-18-30",
+    "gp-extra-300s-60-noon",
+    "gp-extra-300s-60-night",
+    "p51d-mustang-120-noon",
+    "p51d-mustang-120-night",
+    "sebart-avanti-s-a200-p100rx-noon",
+    "sebart-avanti-s-a200-p100rx-night"
+  ],
+  "project_kind": "scratch",
+  "project_root": "/tmp/openrc-tod-render-check",
+  "reference_location": "Reference field (synthetic), latitude 0\u00b0, longitude 0\u00b0, UTC offset 0",
+  "renderer_request": "opengl3 / Compatibility",
+  "run_status": "complete",
+  "runner_source": {
+    "path": "runner_source.py",
+    "sha256": "a1c3680231762ead385f35d1442213b20967b918edc2641f27f083494f3aeb4d"
+  },
+  "software_renderer_note": "llvmpipe measurements are reproducible software-renderer evidence, not target-GPU performance or physical validation",
+  "started_utc": "2026-10-10T13:23:41Z",
+  "ui_capture": "skipped: current Home has no TOD selection control or capture seam"
+}
