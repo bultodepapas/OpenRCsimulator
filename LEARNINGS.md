@@ -123,3 +123,8 @@ The UIUC 12×6 tunnel file needs both deduplication and sorting; stripping repea
 ## 2026-10-08 · L10c/d — validate the view, not only the footprint
 
 A barrier can clear the runway rectangle yet hide its near edge. Validate its height against the pilot-to-ground sightline, then protect projected runway pixels in on/off captures. Clip bounds and protected polygons at the camera near plane before projection. Keep contact footprints tied to the renderer’s post-layout helper; check stored vertex alpha as a range because the mesh quantizes it to 8-bit values. [Evidence and limits](docs/research/visual-quality-implementation/L10c/README.md).
+
+
+## 2026-10-09 · M5-W04a — keep random forcing inside the transaction
+
+A seeded RNG is insufficient for deterministic simulation: stage/render queries must never advance it. Store the exact RNG bits beside the filter interval in the existing sampled/discrete checkpoint and rollback both on a failed step. Reconstruct Gaussian samples from raw integer words when an engine's normal helpers use float32. A seed's PCG sequence initializer differs from the runtime recurrence increment; independent replay exposed this distinction. For replay, keep int64 state out of JSON numeric fields. [Kernel and integrated proof](docs/research/wind-implementation/M5-W04a/README.md).

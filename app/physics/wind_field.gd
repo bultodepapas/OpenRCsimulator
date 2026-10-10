@@ -13,6 +13,10 @@ var _gust_period_s := 12.0
 var _gust_delay_s := 2.0
 var _has_gust := false
 var _calm := true
+var _turbulent := false
+var _turbulence_rms := PackedFloat64Array([0.0, 0.0, 0.0])
+var _turbulence_tau := 2.0
+var _turbulence_seed: int = 20261009
 
 
 func _init() -> void:
@@ -39,7 +43,8 @@ func is_calm() -> bool:
 	return _calm
 
 
-## Air transport velocity [north, east, down] in m/s at simulation time.
+## Deterministic mean/gust background velocity [north, east, down] in m/s at simulation time.
+## Stateful turbulence is added by FlightSession; this pure profile never advances RNG state.
 ## The field is uniform, so position is intentionally not an input in this first version.
 ## Invalid time is surfaced as nonfinite wind for the simulation's existing fail-closed guard.
 func sample(time_s: float) -> PackedFloat64Array:
@@ -68,6 +73,10 @@ func sample(time_s: float) -> PackedFloat64Array:
 
 func _apply_config(config: Dictionary) -> void:
 	_config = config.duplicate(true)
+	_turbulent = Config.has_turbulence(_config)
+	_turbulence_rms = PackedFloat64Array(_config.get("turbulence_rms_mps", [0.0, 0.0, 0.0]))
+	_turbulence_tau = float(_config.get("turbulence_tau_s", 2.0))
+	_turbulence_seed = int(_config.get("turbulence_seed", 20261009))
 	var from_deg: float = float(_config.from_deg)
 	_mean_ned = _direction_ned(from_deg, float(_config.speed_mps))
 	_gust_ned = _direction_ned(from_deg, float(_config.gust_mps))
@@ -76,7 +85,7 @@ func _apply_config(config: Dictionary) -> void:
 	_gust_period_s = float(_config.gust_period_s)
 	_gust_delay_s = float(_config.gust_delay_s)
 	_has_gust = float(_config.gust_mps) != 0.0 or float(_config.gust_up_mps) != 0.0
-	_calm = float(_config.speed_mps) == 0.0 and not _has_gust
+	_calm = float(_config.speed_mps) == 0.0 and not _has_gust and not has_turbulence()
 
 
 ## Meteorological direction is "from"; the returned vector points toward the air's transport direction.
@@ -94,3 +103,19 @@ static func _direction_ned(from_deg: float, magnitude: float) -> PackedFloat64Ar
 			return M.v3(0.0, magnitude, 0.0)
 	var radians: float = deg_to_rad(from_deg)
 	return M.v3(-magnitude * M.cos_(radians), -magnitude * M.sin_(radians), 0.0)
+
+
+func has_turbulence() -> bool:
+	return _turbulent
+
+
+func turbulence_rms() -> PackedFloat64Array:
+	return _turbulence_rms.duplicate()
+
+
+func turbulence_tau() -> float:
+	return _turbulence_tau
+
+
+func turbulence_seed() -> int:
+	return _turbulence_seed

@@ -1,6 +1,6 @@
-# Wind and gusts
+# Wind, gusts and turbulence
 
-2026-10-09 · Revision 2 · Step prefix: **M5-W** · **Status: uniform wind and deterministic repeating gusts implemented and software verified. Gates W-A/W-B and physical acceptance remain open.**
+2026-10-09 · Revision 3 · Step prefix: **M5-W** · **Status: uniform wind, repeating gusts and seeded temporal OU turbulence implemented and software verified. Gates W-A/W-B and physical acceptance remain open.**
 
 Owns `app/physics/wind_*.gd`, wind session/trace integration, weather preferences/dialog, wind tests and `research/wind/`. Coordinate simulation, menu and landscape interfaces with their tracks. The owner explicitly selected this larger playable wind slice on 2026-10-09; it advances the former deferred proposal without closing Gate 2/PT2.
 
@@ -8,11 +8,11 @@ This replaces the 2026-10-05 proposal after auditing the current code. Its detai
 
 ## Delivered slice
 
-Home → **Weather** opens an English/Spanish draft editor with Calm, Steady breeze, Crosswind, Gusty and Updraft presets. The six controls set mean speed, meteorological direction, horizontal/vertical gust peaks, duration and period. Cancel/Esc changes nothing. Apply validates once, preserves untouched float64 values and reports refused preference saves. Weather persists through aircraft selection and flight restarts; technical launches ignore player preferences.
+Home → **Weather** opens an English/Spanish draft editor with Calm, Steady breeze, Crosswind, Gusty, Updraft and Turbulence practice presets. A second tab sets per-axis turbulence RMS, correlation time and a uint32 seed. The six controls set mean speed, meteorological direction, horizontal/vertical gust peaks, duration and period. Cancel/Esc changes nothing. Apply validates once, preserves untouched float64 values and reports refused preference saves. Weather persists through aircraft selection and flight restarts; technical launches ignore player preferences.
 
-A session owns one immutable, spatially uniform air field. Mean wind plus authored repeating cosine pulses affect all four aircraft through their own existing aerodynamic/propulsion data. There is no aircraft "wind sensitivity" multiplier. Density remains the existing 1.225 kg/m³. The periodic practice pattern is not stochastic turbulence or measured site weather.
+A session owns one immutable, spatially uniform air field. Mean wind plus authored repeating cosine pulses affect all four aircraft through their own existing aerodynamic/propulsion data. There is no aircraft "wind sensitivity" multiplier. Density remains the existing 1.225 kg/m³. The optional temporal OU process adds stationary correlated Gaussian wind in independent NED axes. Practice settings are authored, not measured site weather.
 
-The scope includes moving-air trimmed starts, a wind-aware static runway solve, TAS/horizontal GS telemetry, wind-aware checkpoint identity, trace v4 for non-calm flights and existing tree/shader wind hooks. The current windsock mesh and cloud drift remain provisional visual work; their physical response is not accepted here.
+The scope includes moving-air trimmed starts, a wind-aware static runway solve, TAS/horizontal GS telemetry, wind-aware checkpoint identity, trace v4 for deterministic wind and v5 for active turbulence and existing tree/shader wind hooks. The current windsock mesh and cloud drift remain provisional visual work; their physical response is not accepted here.
 
 ## Physical contract
 
@@ -56,12 +56,12 @@ gain = 0 elsewhere
 W = W_mean + gain W_gust_peak
 ```
 
-The pulse starts/ends at zero with zero endpoint slope, peaks at half-duration, and its component integral over one pulse is amplitude × duration/2. Pulses do not overlap. This is a time-parametrized authored input, distinct from certification spatial gust lengths or a random gust schedule. The same settings reproduce the same realization; this implementation has no seed because it has no randomness.
+The pulse starts/ends at zero with zero endpoint slope, peaks at half-duration, and its component integral over one pulse is amplitude × duration/2. Pulses do not overlap. This is a time-parametrized authored input, distinct from certification spatial gust lengths or a random gust schedule. The cosine profile is deterministic. Optional turbulence has a seed and advances once per committed physics tick, outside RK/render queries.
 
 Direct launch examples:
 
 ```sh
-"$(app/get-godot.sh)" --path app -- --weather=gusty
+"$(app/get-godot.sh)" --path app -- --weather=turbulent
 "$(app/get-godot.sh)" --headless --path app -- --weather=gusty --trace=/tmp/gust.csv --t=5
 python3 app/tests/check_wind_trace.py /tmp/gust.csv --duration 5
 ```
@@ -70,13 +70,15 @@ python3 app/tests/check_wind_trace.py /tmp/gust.csv --duration 5
 
 ## Recording and replay
 
-Calm preserves trace v3 columns/semantics and legacy flight-checkpoint v1 fingerprints exactly. `speed_mps` retains its historical 3D ground-speed meaning.
+All-zero turbulence preserves the calm path. Calm preserves trace v3 columns/semantics and legacy flight-checkpoint v1 fingerprints exactly. `speed_mps` retains its historical 3D ground-speed meaning.
 
 Non-calm traces use **openrc-trace v4**, metadata v3, and append state-time wind N/E/D, TAS, horizontal GS, k1 `loads_t_s`, k1 wind and k1 TAS. Tick k state is final, while k1 loads use state k−1 and current sampled auxiliary state. Mid-flight recording preserves the preceding body state at full precision, so the first force/TAS sample is not attributed to the current body. Weather metadata is frozen with its rows; malformed/incomplete weather records refuse saving. The v4 reader verifies these equations independently and rejects old/new timing confusion.
 
 Non-calm checkpoints use **openrc-flight-checkpoint v2**, carry exact weather configuration and include it in the model/ground fingerprint. Restoring a valid same-model wind checkpoint into a fresh calm session reinstates its forcing and repeats continuation bit exactly. Invalid config/hash/layout/timestep fails before changing state. Legacy v1 cannot conceal wind. CSV's nine decimal places are diagnostics; exact replay uses Variant-encoded float64 checkpoint data.
 
-Existing trim/propeller-range readers retain their v3 contract and refuse v4. The new reader handles the weather contract; do not acknowledge "still air" for a windy flight. A permanently portable replay or source-range audit of v4 needs its own extension.
+Active turbulence uses **openrc-trace v5**, metadata v4 and six additional state/k1 OU component columns. The header carries the exact initial seven-value wind interval and the RNG state as a signed decimal string. The independent Python reader reconstructs PCG32/normal53/OU continuation and combined wind/TAS; malformed origin, RNG, cadence or values fail. Checkpoint v2 carries the wind interval in float64 auxiliary state and raw RNG in int64 modes; rollback restores both. Golden v1 is explicitly calm-only because it lacks weather identity and lossless RNG encoding.
+
+Existing trim/propeller-range readers retain their v3 contract and refuse v4. The new reader handles v4/v5 weather contracts; do not acknowledge "still air" for a windy flight. A permanently portable replay or source-range audit of v4 needs its own extension.
 
 ## Step status and evidence
 
@@ -93,7 +95,7 @@ Existing trim/propeller-range readers retain their v3 contract and refuse v4. Th
 | M5-W02c | Seeded gust agenda | Fixed periodic cadence delivered; random/resolved seeded agenda remains planned |
 | M5-W03a | Slow mean direction/speed changes | Planned; shortest-arc 359→1 and 180° tie rule need explicit tests |
 | M5-W03b | Draft UI and persistence | Implemented: [rendered EN/ES evidence](research/wind-implementation/M5-W03b/README.md), numeric precision and future-schema refusal |
-| M5-W04a | Correlated OU turbulence | Planned; filters/RNG/checkpoint/statistical acceptance required |
+| M5-W04a | Correlated OU turbulence | Implemented: [kernel, fleet replay, v5 oracle, FPS, UI and cost evidence](research/wind-implementation/M5-W04a/README.md); temporal practice approximation, physical/spectral acceptance open |
 | M5-W04b | Physical local wind cues | Shader/tree hook and truthful HUD delivered; windsock/inflation calibration and human reading pending |
 | Gate W-B | Owner variable-wind handling/conditions | Open |
 | M5-W05a | AGL shear profile | Planned; simulation-owned terrain and valid surface-layer domain |
@@ -103,6 +105,16 @@ Existing trim/propeller-range readers retain their v3 contract and refuse v4. Th
 | M5-W06b | Accepted spectral backend | Conditional; replace the selected approximation rather than double-count it |
 | M5-W07 | Smoke/cloud/vegetation/audio consumers | Per consumer; physical advection and GPU evidence needed |
 | M5-W08 | Terrain/obstacle wakes/thermals | Later source-grounded extensions |
+
+## M5-W04a turbulence contract
+
+`openrc-weather v2` extends the eight v1 keys with `turbulence_rms_mps` (three NED RMS values, each 0–3 m/s), `turbulence_tau_s` (0.2–30 s) and `turbulence_seed` (uint32; JSON exactly integral numbers canonicalize to int). Legacy v1 stays readable and untouched UI drafts stay v1. Disabled v2 retains tau/seed but draws nothing and preserves calm bytes.
+
+Each stationary reset draws `x0 = sigma * normal53`. At 240 Hz, `a = exp(-dt/tau)` and `x_next = a*x + sigma*sqrt(1-a*a)*normal53`. Between endpoints the held interval interpolates linearly for RK stages. Tau is wall simulation time, including at zero airspeed. Sigma describes tick-boundary RMS; interpolated interior samples have slightly reduced variance. Axes are independent, spatial gradients and angular gusts are absent. This is neither Dryden nor a MIL-HDBK length/altitude calibration.
+
+A private pinned Godot PCG32 supplies raw words, combined into open 53-bit uniforms and Box–Muller normals through float64 math. The seed/state are restored before every draw; there is no hidden Gaussian cache. Render/HUD/trace queries do not draw. Reset repeats the stationary start; pause stops the clock; a failed step restores the preceding OU interval and RNG. `wind_at` samples the current interval only; it is not a random-weather history/future oracle. Configuration on an existing tick-zero session pauses and requires reset before flight or checkpoint production.
+
+Current checkpoints guarantee exact continuation on the pinned local runtime. Godot RNG algorithms and platform libm are not permanent cross-version/platform bit-identity contracts. Source/platform metadata remains part of evidence. Physical gust statistics, pilot handling, GPU/native platform acceptance and the 500 µs target gate stay open.
 
 ## Foundations for later steps
 

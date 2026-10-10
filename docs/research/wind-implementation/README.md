@@ -2,6 +2,8 @@
 
 2026-10-09 · **Status: implemented and software verified.** Owner-selected scope: [WIND-PLAN](../../WIND-PLAN.md), M5-W01a…d/W02b/W03b. Independent pilot/atmosphere validation and wind gates remain open.
 
+Subsequent delivery: [M5-W04a seeded temporal OU turbulence](M5-W04a/README.md). The evidence below describes the earlier uniform-wind/repeating-gust slice.
+
 Home → **Weather** now configures uniform wind, horizontal and vertical repeating gusts, direction, duration and period. Calm remains the default. The editor supports EN/ES, presets, precise unchanged values, Apply/Cancel, persisted preferences and read-only future settings. Restart repeats the weather pattern. Direct CLI presets/files/overrides use the same validation and ignore interactive preferences.
 
 ## Physics and replay proof

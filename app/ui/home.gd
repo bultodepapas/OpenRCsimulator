@@ -316,6 +316,7 @@ func _update_weather_text() -> void:
 	var speed := float(weather_config.speed_mps)
 	var gust := float(weather_config.gust_mps)
 	var gust_up := float(weather_config.gust_up_mps)
+	var turbulence := WeatherSettings.has_turbulence(weather_config)
 	var summary := tr("Calm")
 	if speed > 0.0:
 		var wind_text := tr("%s m/s from %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
@@ -334,8 +335,18 @@ func _update_weather_text() -> void:
 				summary = tr("Updraft %s m/s") % String.num(gust_up, 1)
 			else:
 				summary = tr("Downdraft %s m/s") % String.num(absf(gust_up), 1)
+	if turbulence:
+		var rms: Array = weather_config.turbulence_rms_mps
+		parts.append(tr("Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s") % [
+			String.num(float(rms[0]), 1), String.num(float(rms[1]), 1), String.num(float(rms[2]), 1),
+			String.num(float(weather_config.turbulence_tau_s), 1), str(int(weather_config.turbulence_seed)),
+		])
+		if speed == 0.0 and gust == 0.0 and gust_up == 0.0:
+			summary = tr("Turbulence")
+		else:
+			summary += " + " + tr("Turbulence")
 	weather_button.text = "%s\n%s" % [tr("Weather"), summary]
-	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind with smooth repeating gusts."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
+	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind and repeating gusts, with optional seeded turbulence."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
 
 
 ## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.

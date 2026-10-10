@@ -7,7 +7,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 1
+const SCHEMA := 2
+const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
 const LANGUAGES := { "en": "English", "es": "Español" }
@@ -17,6 +18,7 @@ const DEFAULTS := {
 	first_flight_hint_seen = false,
 	aircraft = Catalog.DEFAULT_ID,
 	start_choice = "airborne",
+	# Keep calm preferences in v1. Opening settings or editing only wind does not migrate a legacy weather object.
 	weather_config = {
 		"format": "openrc-weather v1",
 		"speed_mps": 0.0,
@@ -76,7 +78,8 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	if not checked_weather.ok:
 		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
-	cfg.set_value("meta", "schema", SCHEMA)
+	var schema: int = SCHEMA if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA
+	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))

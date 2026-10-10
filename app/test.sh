@@ -101,6 +101,9 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 echo "== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_weather_cli.py"
 
+echo "== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_turbulence_cli.py"
+
 echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
