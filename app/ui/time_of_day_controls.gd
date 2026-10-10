@@ -264,6 +264,7 @@ func _on_preset_selected(index: int) -> void:
 	preset_picker.select(index)
 	_draft = result.config.duplicate(true)
 	_update_summary()
+	focus_order_changed.emit()
 
 
 func _on_time_slider_changed(value: float) -> void:

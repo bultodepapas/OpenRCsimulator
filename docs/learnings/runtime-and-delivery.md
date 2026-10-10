@@ -12,6 +12,8 @@
 
 - **A smaller probe must retain the contract it tests.** A radio-menu probe without the project's InputMap passed because the unwanted bindings were absent. A minimal physics project at Godot's default 60 Hz rejected aircraft gear before reaching the intended mutation. Preserve relevant project settings, including the app's 240 Hz rate, and establish a valid positive control. [Menu investigations](../research/menu-investigations/README.md), [E0b1](../research/propwash/E0b1/README.md).
 
+- **Test late recording metadata through the serialized artifact.** Weather and coupled-shaft traces freeze a separate physical header at the first sample; changing only the public metadata dictionary left later visual events absent from CSV. Keep physical headers frozen, explicitly carry the permitted visual event fields into serialization, and exercise every header variant after recording has already started. [TOD-08b](../research/time-of-day-investigations/TOD-08b/README.md).
+
 ## Radio input and menus
 
 - **Default UI bindings include joystick axes.** Loading no explicit radio navigation does not isolate RC sticks from menus. Load the real project InputMap, demonstrate that a stick can move focus before isolation, then verify that removing joypad UI bindings preserves flight-axis reads. [UI-00/01 input tests](../../app/tests/test_ui_input.gd).

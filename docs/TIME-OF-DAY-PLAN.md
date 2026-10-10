@@ -1,12 +1,12 @@
 # Time of day: selectable light, credible darkness
 
-2026-10-10 · Revision 2 · Step prefix: **TOD**
+2026-10-10 · Revision 4 · Step prefix: **TOD**
 
-**Status: fixed selectable time (TOD-01…07) implemented and software-verified. Legacy daylight remains the default. Target-display/pilot acceptance is pending; progression, paused editing and richer night lighting remain later slices.**
+**Status: fixed selectable time (TOD-01…07) implemented and software-verified. TOD-08a paired checkpoints are implemented and software-verified; TOD-08b paused editing is implemented, with final regression checks running. Legacy daylight remains the default. Target-display/pilot acceptance is pending; progression and richer night lighting remain later slices.**
 
 Owns this plan, `docs/research/time-of-day-investigations/` and `research/time-of-day/`, `app/environment/` and `app/tests/test_time_of_day_*`. Shared render, field-data, UI, session, trace and scenery changes stay with their existing owners. This is the scoped execution plan for the time-of-day part of [Landscape L19](LANDSCAPE-PLAN.md); L19's unrelated weather/birds proposals retain their owners.
 
-Research: [TOD-00](research/time-of-day-investigations/TOD-00/README.md), [primary sources](research/time-of-day-investigations/TOD-00/primary-sources.md), [integration audit](research/time-of-day-investigations/TOD-00/integration-audit.md). Runtime baseline: `7fe3d84`, inspected 2026-10-10. Implemented command usage and trace boundaries are recorded in [TOD-05](research/time-of-day-investigations/TOD-05/README.md); later-slice names remain proposals.
+Research: [TOD-00](research/time-of-day-investigations/TOD-00/README.md), [primary sources](research/time-of-day-investigations/TOD-00/primary-sources.md), [integration audit](research/time-of-day-investigations/TOD-00/integration-audit.md). Runtime baseline: `7fe3d84`, inspected 2026-10-10. Implemented command usage and trace boundaries are recorded in [TOD-05](research/time-of-day-investigations/TOD-05/README.md); TOD-08a contracts are in its [implementation report](research/time-of-day-investigations/TOD-08a/README.md); TOD-08b behavior and validation are in its [implementation report](research/time-of-day-investigations/TOD-08b/README.md); subsequent slices remain proposals.
 
 ## Outcome and delivery boundaries
 
@@ -14,7 +14,7 @@ The pilot can select any local clock time from 00:00 to 23:59. The sun, sky, clo
 
 First delivery: a static selected time in the existing procedural field, configured from Home and reproducible by CLI. Include the complete dawn–day–dusk–moonless-night range, all four current aircraft, current cameras, scenery on/off and saved preferences. Keep the current daylight rendering as an explicit legacy preset and regression reference until the new default passes owner review. Do not relabel its arbitrary 225° azimuth / 45° elevation as an astronomical noon.
 
-Later deliveries add changing the selection while paused, time progression, moon/stars, equipped-aircraft and field lighting, and optional glare. Live weather, diurnal temperature/wind simulation, photometric display calibration, a global timezone database and a renderer migration are separate projects. The owner authorised implementation of the fixed-time delivery on 2026-10-10. Later slices retain separate proof and review requirements.
+Paused selection is implemented in TOD-08b. Later deliveries add time progression, moon/stars, equipped-aircraft and field lighting, and optional glare. Live weather, diurnal temperature/wind simulation, photometric display calibration, a global timezone database and a renderer migration are separate projects. The owner authorised implementation of the fixed-time delivery on 2026-10-10. Later slices retain separate proof and review requirements.
 
 ## Expected experience
 
@@ -97,7 +97,7 @@ Add a **Time of day** page to the existing Home conditions dialog, alongside the
 - The predicted lighting phase and a contextual note when the chosen aircraft has no supported light equipment. Let the pilot proceed with a dark scene; no repeated confirmation dialog.
 - Apply, Cancel and Restore current daylight. Apply updates the Home backdrop through the same renderer adapter used by flight; preview work is coalesced while dragging and expensive scenery updates happen at commit.
 
-The initial release holds time fixed during flight. Later, reuse this page from Pause; return to Pause after applying and let Continue resume. Progression controls arrive only with TOD-09. Keep the radio exclusively assigned to flight, preserve keyboard focus/Esc behavior and EN/ES strings, and retain a usable layout at 800×600. Lost-aircraft recovery remains the existing pause/restart/end-flight flow; daylight restoration is an explicit selection, never automatic assistance.
+The initial release holds time fixed during flight. TOD-08b reuses these controls in a dedicated Pause dialog; return to Pause after applying and let Continue resume. Progression controls arrive only with TOD-09. Keep the radio exclusively assigned to flight, preserve keyboard focus/Esc behavior and EN/ES strings, and retain a usable layout at 800×600. Lost-aircraft recovery remains the existing pause/restart/end-flight flow; daylight restoration is an explicit selection, never automatic assistance.
 
 ## Astronomical and visual model
 
@@ -147,7 +147,7 @@ The selected civil time identifies an instant; simulation time is elapsed physic
 | Pause, focus loss, calibration, radio disconnect, crash pause | Progressing solar time freezes wherever simulation ticks freeze |
 | Restart | Reuse the most recently applied configured start time at tick zero; reset any solar/adaptation anchors, as well as current flight reset behavior |
 | End flight → Home | Show the configured start selection, not a silently saved elapsed hour. Home is still; its cloud composition keeps its own documented fixed clock |
-| Apply while paused, later | Validate draft, prepare lighting resources, then apply atomically; stay paused and retain aircraft state/controls. Cancel has no effects |
+| Apply while paused | Validate draft, prepare lighting resources, then apply atomically; stay paused and retain aircraft state/controls. Cancel has no effects |
 | App-level checkpoint restore, later | Restore paired visual configuration and time anchor alongside the existing physics restore; old physics-only artifacts identify visual context as missing and use explicit legacy fallback |
 | Recorded context / future visual playback | Reconstruct a lighting sample at a known tick from saved context. A rendered trace player and seek UI require a separate feature plan; they are not supplied by current physics replay |
 | Direct CLI / captures | Resolve solely from explicit arguments or the deterministic legacy default, never the user's preferences |
@@ -172,7 +172,7 @@ Retain ROADMAP's ≤500 µs physics-tick budget and Landscape's ≤300 draws / �
 
 ## Small steps and proofs
 
-Each row is independently reviewable; split it further if it cannot be proven in one small change. Existing owners implement shared-file edits. All rows after TOD-00 are proposed, not completed.
+Each row is independently reviewable; split it further if it cannot be proven in one small change. Existing owners implement shared-file edits. The status column distinguishes implemented steps from proposed follow-up work.
 
 | ID | Step | Proof | Dependency | Status (date) |
 | --- | --- | --- | --- | --- |
@@ -187,8 +187,8 @@ Each row is independently reviewable; split it further if it cannot be proven in
 | TOD-05 | CLI selection, visual manifest and frozen recording context | Complete Home-equivalent config input, fresh-process repeats, invalid flags fail; 30/60/144 fps samples agree at equal ticks; daylight/night physics states and weather RNG identical | TOD-04b; trace/tool owners | Implemented; CLI and physics-independence checks pass ([evidence](research/time-of-day-investigations/TOD-05/README.md)) |
 | TOD-06 | Home Time of day editor and saved selection | Draft/apply/cancel, defaults, migration, EN/ES, keyboard/mouse, radio isolation, 800×600; start/restart/Home consistency | TOD-05; UI owner | Implemented; UI, persistence and EN/ES checks pass ([evidence](research/time-of-day-investigations/TOD-06/README.md)) |
 | TOD-07 | Deliver fixed selectable time for pilot review | Full app suite, exported-build smoke, daylight regression plus twilight/night flight kit and target-GPU timings | TOD-06; existing Gate L/2 review | Software checks and Linux export pass; target GPU/pilot acceptance pending ([evidence](research/time-of-day-investigations/TOD-07/verification.md)) |
-| TOD-08a | Paired visual-context checkpoint restore and edit-log schema | Restored lighting snapshot matches at the saved tick; pure event evaluation at known ticks; old/missing context handled; atomic invalid-restore refusal, without a playback UI | TOD-05; session/trace owners | Proposed |
-| TOD-08b | Paused time editing | Rapid day↔night applies/cancels leave physics unchanged; no partial visible lighting or unintended resume; edit events reconstruct the selected lighting sample | TOD-07, TOD-08a; UI owner | Proposed |
+| TOD-08a | Paired visual-context checkpoint restore and edit-log schema | Restored lighting snapshot matches at the saved tick; pure event evaluation at known ticks; old/missing context handled; atomic invalid-restore refusal, without a playback UI | TOD-05; session/trace owners | Implemented; full suite, atomic restore and rendered round-trips pass ([evidence](research/time-of-day-investigations/TOD-08a/README.md)) |
+| TOD-08b | Paused time editing | Rapid day↔night applies/cancels leave physics unchanged; no partial visible lighting or unintended resume; edit events reconstruct the selected lighting sample | TOD-07, TOD-08a; UI owner | Implemented; final regression running ([evidence](research/time-of-day-investigations/TOD-08b/README.md)) |
 | TOD-09 | Deterministic 1× progression, then bounded acceleration | Pause/focus/crash/restart, midnight/year rollover, equal-tick frame-rate parity, scenery-shadow continuity and worst update hitch | TOD-08a/b; scenery update policy proven | Proposed |
 | TOD-10 | Moon position/phase and restrained stars | Independent lunar fixtures, Moon below horizon contributes zero direct light; correct phase/direction, cloud occlusion; repeatable sky | TOD-07; separate source/data/license review | Optional later slice |
 | TOD-11 | One supported night-equipped airplane and optional field lamps | Authored equipment/anchors, occlusion/sectors, local illumination, target cost and pilot identification evidence | Model/scenery owners; TOD-07 | Optional later slice |

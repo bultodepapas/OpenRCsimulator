@@ -107,6 +107,7 @@ func _run() -> void:
 	await ui.settle()
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_DOWN)
 	_check("pause: Help reachable", ui.focus_name() == "Help", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var tick: int = session.sim.tick

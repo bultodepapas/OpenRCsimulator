@@ -1,0 +1,66 @@
+WorkerThreadPool: 12 threads, 3 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_time_of_day_edit.gd remapped: res://tests/test_time_of_day_edit.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Loading resource: res://render/cloud_field.gdshaderinc remapped: res://render/cloud_field.gdshaderinc
+Completed load for: 'res://render/cloud_field.gdshaderinc' remapped 'res://render/cloud_field.gdshaderinc' at thread -1
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Loading resource: res://render/grass_surface.gdshaderinc remapped: res://render/grass_surface.gdshaderinc
+Completed load for: 'res://render/grass_surface.gdshaderinc' remapped 'res://render/grass_surface.gdshaderinc' at thread -1
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://render/near_grass.gdshader remapped: res://render/near_grass.gdshader
+Completed load for: 'res://render/near_grass.gdshader' remapped 'res://render/near_grass.gdshader' at thread -1
+Loading resource: res://scenery/motion.gdshader remapped: res://scenery/motion.gdshader
+Completed load for: 'res://scenery/motion.gdshader' remapped 'res://scenery/motion.gdshader' at thread -1
+Loading resource: res://scenery/flowers.gdshader remapped: res://scenery/flowers.gdshader
+Completed load for: 'res://scenery/flowers.gdshader' remapped 'res://scenery/flowers.gdshader' at thread -1
+Loading resource: res://scenery/birds.gdshader remapped: res://scenery/birds.gdshader
+Completed load for: 'res://scenery/birds.gdshader' remapped 'res://scenery/birds.gdshader' at thread -1
+Completed load for: 'res://tests/test_time_of_day_edit.gd' remapped 'res://tests/test_time_of_day_edit.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit.csv (1 rows)
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-steady.csv (2 rows)
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-turbulent.csv (2 rows)
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-hot-high.csv (2 rows)
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+trace saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-p51-coupled.csv (2 rows)
+TOD-08b Main lighting edit: 54 checks, 0 failed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

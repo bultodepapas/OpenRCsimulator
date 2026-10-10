@@ -264,7 +264,11 @@ func to_csv() -> String:
 		return ""
 	var lines := PackedStringArray()
 	lines.append("# format: %s" % ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))
-	var written_meta: Dictionary = _weather_meta if _weather != null or _coupled_shaft else meta
+	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft else meta).duplicate(true)
+	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
+	for visual_key: String in ["visual_context", "visual_timeline"]:
+		if meta.has(visual_key):
+			written_meta[visual_key] = meta[visual_key]
 	for key in written_meta:
 		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if _weather != null and key == "dt_s" else str(written_meta[key])
 		lines.append("# %s: %s" % [key, encoded])

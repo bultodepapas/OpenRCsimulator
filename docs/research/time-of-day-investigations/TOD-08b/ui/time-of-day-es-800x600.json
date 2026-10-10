@@ -1,0 +1,27 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "advanced_location_visible": true,
+  "apply_text": "Aplicar",
+  "cancel_text": "Cancelar",
+  "fits_viewport": true,
+  "format": "openrc-tod08b-ui-capture v1",
+  "image": "time-of-day-es-800x600.png",
+  "image_size": [
+    800,
+    600
+  ],
+  "language": "es",
+  "mode": "astronomical",
+  "panel_rect": [
+    40.0,
+    16.0,
+    720.0,
+    568.0
+  ],
+  "performance_claim": false,
+  "renderer": "gl_compatibility",
+  "requested_size": [
+    800,
+    600
+  ]
+}
