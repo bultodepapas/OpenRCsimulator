@@ -15,6 +15,8 @@ const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
+const VisualTimeline = preload("res://environment/visual_timeline.gd")
+const VisualCheckpoint = preload("res://app_state/visual_checkpoint.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
@@ -49,6 +51,11 @@ var weather_config: Dictionary = {}
 ## TOD: immutable selection for this flight; no preference reads on the direct route.
 var lighting_config: Dictionary = {}
 var _lighting: Dictionary = {}
+var _visual_timeline: Dictionary = {}
+var _visual_context_status: String = "present"
+var _world_environment: WorldEnvironment
+var _sun: DirectionalLight3D
+var _field_node: Node3D
 
 
 ## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
@@ -143,6 +150,7 @@ func _ready() -> void:
 		return
 	lighting_config = selected_light.config.duplicate(true)
 	_lighting = TimeOfDayLighting.snapshot(lighting_config)
+	_visual_timeline = VisualTimeline.create(lighting_config).timeline
 	var latency_options: Dictionary = LatencyPatch.options(args)
 	if not latency_options.ok:
 		printerr(latency_options.error)
@@ -497,6 +505,117 @@ func set_overlays_visible(on: bool) -> void:
 			n.visible = on
 
 
+## TOD-08a: paired technical replay checkpoint; native Variant encoding preserves physics bits.
+## This is not a live-input save game or a rendered trace player.
+func checkpoint() -> Dictionary:
+	if session == null or _scripted or _capturing or _capture_scene_id() != "field":
+		return {}
+	var selection: Dictionary = VisualTimeline.evaluate(_visual_timeline, session.sim.tick)
+	if not selection.ok or selection.config != lighting_config:
+		return {} # refuse an unrecorded visual edit
+	var saved: Dictionary = VisualCheckpoint.make(session.checkpoint(), _visual_timeline, _field_identity())
+	return saved.checkpoint if saved.ok else {}
+
+
+## Validate both halves and prepare detached resources before the physics owner commits.
+## No await: an invalid record cannot change the live world, recording or simulation.
+func restore_checkpoint(candidate: Variant) -> Dictionary:
+	if session == null or _scripted or _capturing or _capture_scene_id() != "field" or not startup_error.is_empty():
+		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
+	var decoded: Dictionary = VisualCheckpoint.read(candidate, _field_identity())
+	if not decoded.ok:
+		return decoded
+	var staged: Dictionary = _prepare_checkpoint_lighting(decoded.config)
+	if not staged.ok:
+		return {ok = false, errors = ["could not prepare checkpoint lighting"]}
+	if not session.restore_checkpoint(decoded.physics):
+		staged.root.free()
+		return {ok = false, errors = ["physics checkpoint is invalid or incompatible"]}
+	_commit_lighting(staged, decoded.config)
+	_visual_timeline = decoded.timeline.duplicate(true)
+	_visual_context_status = decoded.context_status
+	_prop_angle = 0.0 # propeller phase was never part of the physical checkpoint contract
+	if _engine_audio != null:
+		_engine_audio.stream_paused = true
+	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	_note = "Checkpoint restored; visual context: " + _visual_context_status
+	return {ok = true, context_status = _visual_context_status, errors = []}
+
+
+## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.
+func apply_lighting_config(raw: Variant) -> Dictionary:
+	if session == null or _scripted or _capturing or _capture_scene_id() != "field" or not startup_error.is_empty():
+		return {ok = false, changed = false, errors = ["lighting edit requires a ready production flight"]}
+	if not session.sim.paused:
+		return {ok = false, changed = false, errors = ["pause the flight before editing lighting"]}
+	var checked: Dictionary = LightingConfig.validate(raw)
+	if not checked.ok:
+		return {ok = false, changed = false, errors = checked.errors}
+	if checked.config == lighting_config:
+		return {ok = true, changed = false, errors = []}
+	var edited: Dictionary = VisualTimeline.append_config_edit(_visual_timeline, session.sim.tick, checked.config)
+	if not edited.ok:
+		return {ok = false, changed = false, errors = edited.errors}
+	var staged: Dictionary = _prepare_checkpoint_lighting(checked.config)
+	if not staged.ok:
+		return {ok = false, changed = false, errors = ["could not prepare lighting"]}
+	# Keep the recording's initial context frozen; the ordered timeline carries subsequent edits.
+	if recorder.recording and not recorder.trace.meta.has("visual_context"):
+		recorder.trace.meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
+	_commit_lighting(staged, checked.config)
+	_visual_timeline = edited.timeline
+	if recorder.recording:
+		recorder.trace.meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
+	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	return {ok = true, changed = true, errors = []}
+
+
+## All resources exist before publishing; no await or physical-session mutation here.
+func _commit_lighting(staged: Dictionary, config: Dictionary) -> void:
+	var old_field: Node3D = _field_node
+	remove_child(old_field)
+	old_field.free()
+	remove_child(_sun)
+	_sun.free()
+	staged.root.remove_child(staged.field)
+	staged.root.remove_child(staged.sun)
+	add_child(staged.field)
+	_field_node = staged.field
+	add_child(staged.sun)
+	_sun = staged.sun
+	_env = staged.environment
+	_world_environment.environment = _env
+	staged.root.free()
+	lighting_config = config.duplicate(true)
+	_lighting = staged.lighting
+	if _treeline_hidden:
+		_hide_field_objects()
+	var current_time: float = session.sim.time()
+	ShaderClock.update(current_time, _render_wind(current_time))
+	Atmosphere.update_clouds(_env, current_time)
+
+
+func _field_identity() -> String:
+	var hashing: HashingContext = HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(var_to_bytes(field))
+	return hashing.finish().hex_encode()
+
+
+## Keep the detached preparation seam small so failure behavior is testable without corrupting resources.
+func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
+	var snapshot: Dictionary = TimeOfDayLighting.snapshot(config)
+	var stage: Node3D = Node3D.new()
+	var prior_cloud_offset: Vector2 = Atmosphere.last_cloud_offset
+	var environment: Environment = Atmosphere.environment(snapshot)
+	var field_node: Node3D = FieldBuilder.build(field, snapshot)
+	stage.add_child(field_node)
+	var sun: DirectionalLight3D = Atmosphere.create_sun(stage, snapshot)
+	# Existing material factories initialise a global cloud offset. Preparation must not publish it.
+	Atmosphere._set_cloud_offset(prior_cloud_offset)
+	return {ok = true, root = stage, field = field_node, sun = sun, environment = environment, lighting = snapshot}
+
+
 ## The session's trace header plus which build flew it (UI-04a): the exported smoke test compares app_build with
 ## the ZIP name. "development" when running from the source tree.
 func _trace_meta() -> Dictionary:
@@ -504,7 +623,11 @@ func _trace_meta() -> Dictionary:
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
-	if lighting_config.get("mode", "legacy") != "legacy":
+	if _visual_context_status != "present":
+		meta.visual_context_status = _visual_context_status
+	if _visual_context_status != "present" or not _visual_timeline.events.is_empty():
+		meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
+	if lighting_config.get("mode", "legacy") != "legacy" or _visual_context_status != "present" or not _visual_timeline.events.is_empty():
 		# Self-contained optional header, copied/frozen by Recorder; CSV columns and physics identity stay unchanged.
 		meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
 	return meta
@@ -512,6 +635,8 @@ func _trace_meta() -> Dictionary:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_visual_timeline = VisualTimeline.create(lighting_config).timeline
+	_visual_context_status = "present"
 	_t = 0.0
 	if recorder.recording:
 		recorder.stop()
@@ -543,14 +668,14 @@ func _view_name() -> String:
 
 
 func _build_world() -> void:
-	var world_env := WorldEnvironment.new()
+	_world_environment = WorldEnvironment.new()
 	_env = Atmosphere.environment(_lighting)
-	world_env.environment = _env
-	add_child(world_env)
+	_world_environment.environment = _env
+	add_child(_world_environment)
 
 	_build_field()
 
-	Atmosphere.create_sun(self, _lighting) # the sky shader draws the sun disc from this light
+	_sun = Atmosphere.create_sun(self, _lighting) # the sky shader draws the sun disc from this light
 
 	_airplane = AirplaneBuilder.build(aircraft_id)
 	add_child(_airplane.root)
@@ -563,7 +688,8 @@ func _build_world() -> void:
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	add_child(FieldBuilder.build(field, _lighting))
+	_field_node = FieldBuilder.build(field, _lighting)
+	add_child(_field_node)
 
 
 ## Hides every field object (today: the treeline) for a background-only capture. False when there is none.

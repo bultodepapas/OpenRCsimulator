@@ -443,6 +443,12 @@ msgstr "No se pudo actualizar la iluminación de Inicio; se conserva la vista an
 msgid "Time of day"
 msgstr "Hora del día"
 
+msgid "Choose the lighting for this flight. Apply updates the paused flight and its future restarts."
+msgstr "Elige la iluminación para este vuelo. Aplicar actualiza el vuelo en pausa y sus futuros reinicios."
+
+msgid "Could not apply lighting. The flight remains paused; check the values and try again."
+msgstr "No se pudo aplicar la iluminación. El vuelo sigue en pausa; revisa los valores e inténtalo de nuevo."
+
 msgid "Lighting model"
 msgstr "Modelo de iluminación"
 
