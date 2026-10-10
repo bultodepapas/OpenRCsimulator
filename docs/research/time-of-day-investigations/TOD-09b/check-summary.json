@@ -1,0 +1,88 @@
+{
+  "format": "openrc-tod09b-checks v1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "full_suite_exit": 0,
+  "gdscript_test_programs": 156,
+  "render_update_checks": 94,
+  "render_update_scenery_on_exit": 0,
+  "scenery_update_checks": 25,
+  "main_edit_checks": 57,
+  "main_checkpoint_checks": 44,
+  "fresh_build_image_pairs": 22,
+  "fresh_build_exact_matches": 12,
+  "fresh_build_parity_gate": "OPEN: scenery-on differs at three static-cell pixels; exact check retains failure",
+  "lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "smoke": {
+    "scenes": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "warnings": 317,
+    "findings": 0
+  },
+  "export_reports": {
+    "off": {
+      "ok": true,
+      "binary_sha256": "ff735cc263cdbd79273f15ab86b9a1396caddf08267bbf3988193b2e7c7664ec",
+      "rows": 73,
+      "edit_tick": 168,
+      "initial_mode": "legacy",
+      "selected_config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 457,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "route": "Home \u2192 Fly \u2192 record \u2192 Pause \u2192 Time of day \u2192 Night \u2192 Apply \u2192 Continue \u2192 stop recording"
+    },
+    "on": {
+      "ok": true,
+      "binary_sha256": "ff735cc263cdbd79273f15ab86b9a1396caddf08267bbf3988193b2e7c7664ec",
+      "rows": 85,
+      "edit_tick": 144,
+      "initial_mode": "legacy",
+      "selected_config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 457,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "route": "Home \u2192 Fly \u2192 record \u2192 Pause \u2192 Time of day \u2192 Night \u2192 Apply \u2192 Continue \u2192 stop recording"
+    }
+  },
+  "limitations": [
+    "Exact scenery-on fresh-build pixel parity is unresolved; no tolerance or waiver applied",
+    "Visible solar progression remains disabled",
+    "llvmpipe/960x540 samples are exploratory, not target-GPU acceptance or the proposed 720p budget",
+    "Synthetic solar steps occur once per rendered sample, not at a production 1 Hz cadence",
+    "Shadow-only geometry preparation still allocates; TOD-09c must establish scheduling and target frame cost"
+  ],
+  "source_sha256": {
+    "app/main.gd": "02bd42e99dd55ad02e301d7a757e054fb3f6f9da3b372a2447772a6f81af1714",
+    "app/render/atmosphere.gd": "68864db506ff7aeb27d43fa642e3582ad64484dec2dcbcd025793ca0a2d446a0",
+    "app/render/field.gd": "37889a8581b839173dc67b8d2ee1481cb01900fb2ca78330a8006216aa9a2bc1",
+    "app/render/near_grass.gd": "0a01a5557ede77c914ea8ddb26473ed2c2dd9e5cfbcd436a0838e35c1b3f8929",
+    "app/scenery/ground_features.gd": "7b959d2bc4905d46c81df6f51430d39d07123cecf0cdf95c2efaf0ba2a89d338",
+    "app/scenery/scenery.gd": "e65605eb28217503c4502aac630cec8f6dee6da0af6020b904c7101a5c407f8e",
+    "app/tests/test_time_of_day_edit.gd": "111243cb6704c969553c52e248bf8ecd44ba215278a1f46c08267c3f71048b4a",
+    "app/tests/test_time_of_day_render_update.gd": "a46aee5de09d29e611c1ee486cb1c1b49f4368972b9d4e0dc5cc75c055dc8e44",
+    "app/tests/test_time_of_day_scenery_update.gd": "b258eb15bd365ee60c624ebf726f58fda746972663fa11a3fc5b4a58e67a8811",
+    "research/time-of-day/tod-09b/render_probe.gd": "fe8ca8023b58f1f0dbfe5e01a5c2b6a2681e577a7c262d27598581032b56c283",
+    "research/time-of-day/tod-09b/capture_probe.sh": "1b4961354cab112b43cf7ad65b9faf9ff978a9c483047c96ca8094aa602f0c01",
+    "research/time-of-day/tod-08b/capture_edit.gd": "90a8b8c4e650c9487cf7eec08934a78782cbfcffa26fc4c8fc1f2ec32ee9e068",
+    "research/time-of-day/tod-08b/export_edit_smoke.py": "2b94328b5c3ab1064388962f3d46793bf79d9ad75ef0815697190724e1ece4ed"
+  }
+}

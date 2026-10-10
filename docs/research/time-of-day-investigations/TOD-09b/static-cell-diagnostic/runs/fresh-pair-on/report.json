@@ -1,0 +1,157 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_cost": {
+		"count": 1,
+		"max": 0.378,
+		"median": 0.378,
+		"p95": 0.378
+	},
+	"capture_update_cpu_samples_ms": [
+		0.378
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_control_exact_match": true,
+			"fresh_control_pixel_difference": {},
+			"fresh_control_png": "00-legacy-fresh-control.png",
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "0f81c2d4f540f6c99e8a60518fb1476d7a76b4dd5aabcbb6647dccb2f3f3dccc",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "3ebf07c04c71feec5ceca5959adc1f668fc38cbc84a8d360002729a7e8a8bf99",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "diagnostic",
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"idle_frame_cost": {
+		"count": 24,
+		"max": 482.532,
+		"median": 433.663,
+		"p95": 459.122
+	},
+	"idle_frame_intervals_ms": [
+		455.825,
+		417.241,
+		417.093,
+		409.311,
+		459.122,
+		421.205,
+		437.454,
+		448.256,
+		456.842,
+		433.663,
+		427.148,
+		448.387,
+		464.592,
+		452.19,
+		445.679,
+		409.615,
+		422.293,
+		482.532,
+		445.972,
+		421.294,
+		425.665,
+		437.863,
+		424.481,
+		428.688
+	],
+	"noop_field_changed": false,
+	"noop_field_is_noop": true,
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/tmp/openrc-tod09b/fresh-pair-on/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"synthetic_solar_update_cpu_cost": {
+		"count": 24,
+		"max": 11.598,
+		"median": 5.073,
+		"p95": 7.035
+	},
+	"synthetic_solar_update_cpu_samples_ms": [
+		8.75,
+		6.973,
+		4.728,
+		4.96,
+		5.22,
+		4.493,
+		7.035,
+		5.725,
+		6.582,
+		6.34,
+		4.676,
+		5.073,
+		4.302,
+		5.369,
+		4.521,
+		11.598,
+		5.675,
+		4.597,
+		5.07,
+		4.287,
+		5.869,
+		4.706,
+		5.322,
+		4.257
+	],
+	"synthetic_solar_update_frame_cost": {
+		"count": 24,
+		"max": 500.079,
+		"median": 480.138,
+		"p95": 494.136
+	},
+	"synthetic_solar_update_frame_intervals_ms": [
+		475.976,
+		468.147,
+		469.073,
+		479.816,
+		488.082,
+		477.151,
+		477.944,
+		475.465,
+		496.287,
+		483.349,
+		492.99,
+		474.279,
+		480.138,
+		476.718,
+		488.345,
+		486.011,
+		494.136,
+		491.805,
+		475.249,
+		488.897,
+		500.079,
+		482.017,
+		487.434,
+		467.658
+	],
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

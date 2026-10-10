@@ -114,9 +114,17 @@ static func _set_haze_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -
 
 
 static func sky_material(lighting: Dictionary = {}) -> ShaderMaterial:
-	var a: Dictionary = parameters(lighting)
-	var mat := ShaderMaterial.new()
+	var mat: ShaderMaterial = ShaderMaterial.new()
 	mat.shader = SKY_SHADER
+	update_sky_material(mat, lighting)
+	mat.set_shader_parameter("cloud_offset", cloud_offset(0.0))
+	_set_cloud_offset(cloud_offset(0.0))
+	return mat
+
+
+## TOD-09b: change solar appearance without rewinding cloud animation or replacing the Sky resource.
+static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
+	var a: Dictionary = parameters(lighting)
 	var z: Color = a.zenith.srgb_to_linear()
 	mat.set_shader_parameter("zenith_lin", Vector3(z.r, z.g, z.b))
 	mat.set_shader_parameter("gradient_curve", a.gradient_curve)
@@ -126,16 +134,13 @@ static func sky_material(lighting: Dictionary = {}) -> ShaderMaterial:
 	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
 	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
-	mat.set_shader_parameter("cloud_offset", cloud_offset(0.0))
 	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
 	mat.set_shader_parameter("cirrus_strength", a.cloud_cirrus_strength)
 	mat.set_shader_parameter("silver_strength", a.cloud_silver_strength)
-	if a.get("disc_cloud_occlusion", false):
-		mat.set_shader_parameter("disc_cloud_occlusion", true)
-		mat.set_shader_parameter("disc_dir", disc_direction(lighting))
-	_set_cloud_offset(cloud_offset(0.0))
+	# Both directions matter: astronomical -> legacy must clear the prior disc override.
+	mat.set_shader_parameter("disc_cloud_occlusion", a.get("disc_cloud_occlusion", false))
+	mat.set_shader_parameter("disc_dir", disc_direction(lighting))
 	_set_haze_uniforms(mat, lighting)
-	return mat
 
 
 static func _set_cloud_offset(off: Vector2) -> void:
@@ -170,26 +175,31 @@ static func update_clouds(env: Environment, sim_time: float) -> bool:
 
 ## The ground's material: grass texture in world space + the haze as custom fog with the rim fade.
 static func ground_material(grass: Texture2D, lighting: Dictionary = {}) -> ShaderMaterial:
-	var a: Dictionary = parameters(lighting)
-	var mat := ShaderMaterial.new()
-	_set_cloud_offset(last_cloud_offset) # register before assigning a shader, also in an empty-project pack probe
+	var mat: ShaderMaterial = ShaderMaterial.new()
+	_set_cloud_offset(last_cloud_offset)
 	mat.shader = GROUND_SHADER
+	mat.set_shader_parameter("grass", grass)
+	mat.set_shader_parameter("tile_m", Spec.GROUND.tile_m)
+	update_ground_material(mat, lighting)
+	return mat
+
+
+## Shared by each ground surface and near-grass material; placement/texture uniforms remain scene-owned.
+static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
+	var a: Dictionary = parameters(lighting)
 	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
 	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
 	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
 	mat.set_shader_parameter("cloud_deck_m", a.cloud_deck_m)
 	mat.set_shader_parameter("cloud_shadow_strength", a.cloud_shadow_strength)
-	mat.set_shader_parameter("grass", grass)
-	mat.set_shader_parameter("tile_m", Spec.GROUND.tile_m)
 	mat.set_shader_parameter("beta", beta())
-	# L7: 40 km visibility retains ~14% contrast at the 20 km mesh edge. Spread the artistic rim
-	# closure in inverse distance (estimated, capture-checked), instead of a sharp distance-space band.
-	mat.set_shader_parameter("rim_start", a.rim_start_m if visibility_m <= a.visibility_m else 3000.0)
-	mat.set_shader_parameter("rim_end", a.rim_end_m)
-	mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
+	if mat.shader == GROUND_SHADER:
+		# L7: spread the artistic rim closure in inverse distance at high visibility.
+		mat.set_shader_parameter("rim_start", a.rim_start_m if visibility_m <= a.visibility_m else 3000.0)
+		mat.set_shader_parameter("rim_end", a.rim_end_m)
+		mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
 	_set_haze_uniforms(mat, lighting)
-	return mat
 
 
 ## The world environment. L1a: the sky drawn per pixel as background; its radiance (QUALITY, refreshed on uniform changes) lights
@@ -198,7 +208,6 @@ static func ground_material(grass: Texture2D, lighting: Dictionary = {}) -> Shad
 ## 30 m view −0.431, ΔE 41.4 (Filmic 0.8: −0.280 / 27.4). Ambient energy has no measurable effect here.
 ## L2: exponential haze for every object (the ground writes its own), density β, colour = the sky's horizon.
 static func environment(lighting: Dictionary = {}) -> Environment:
-	var a: Dictionary = parameters(lighting)
 	var sky := Sky.new()
 	sky.sky_material = sky_material(lighting)
 	sky.process_mode = Sky.PROCESS_MODE_QUALITY # single-frame radiance; refreshes on cloud-uniform changes, no shader TIME
@@ -208,32 +217,46 @@ static func environment(lighting: Dictionary = {}) -> Environment:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = a.exposure
-	env.tonemap_white = a.white
 	env.glow_enabled = false
 	env.fog_enabled = true
 	env.fog_mode = Environment.FOG_MODE_EXPONENTIAL
-	env.fog_density = beta()
-	env.fog_light_color = a.haze
-	env.fog_light_energy = a.haze_energy
-	env.fog_sun_scatter = sun_scatter(lighting)
 	env.fog_sky_affect = 0.0
 	env.fog_aerial_perspective = 0.0
 	env.fog_height_density = 0.0
+	_update_environment_parameters(env, lighting)
 	return env
 
 
 ## The sun: a DirectionalLight3D shining from sun_direction(lighting); PSSM shadows only with engine_shadows (L3).
 static func create_sun(parent: Node, lighting: Dictionary = {}) -> DirectionalLight3D:
-	var sun := DirectionalLight3D.new()
+	var sun: DirectionalLight3D = DirectionalLight3D.new()
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_max_distance = Spec.ATMOSPHERE.shadow_max_distance_m
+	update_sun(sun, lighting)
+	parent.add_child(sun)
+	return sun
+
+
+static func update_environment(env: Environment, lighting: Dictionary = {}) -> void:
+	update_sky_material(env.sky.sky_material as ShaderMaterial, lighting)
+	_update_environment_parameters(env, lighting)
+
+
+static func _update_environment_parameters(env: Environment, lighting: Dictionary) -> void:
+	var a: Dictionary = parameters(lighting)
+	env.tonemap_exposure = a.exposure
+	env.tonemap_white = a.white
+	env.fog_density = beta()
+	env.fog_light_color = a.haze
+	env.fog_light_energy = a.haze_energy
+	env.fog_sun_scatter = sun_scatter(lighting)
+
+
+static func update_sun(sun: DirectionalLight3D, lighting: Dictionary = {}) -> void:
 	sun.light_color = parameters(lighting).sun_color
 	sun.light_energy = light_energy(lighting)
 	sun.shadow_enabled = engine_shadows and shadow_strength(lighting) > 0.0
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = Spec.ATMOSPHERE.shadow_max_distance_m
-	# The light shines along its −Z: toward the origin from the sun's side. Built directly (no scene tree needed).
+	# The light shines along its -Z. Choose a stable up axis for the zenith case.
 	var direction: Vector3 = sun_direction(lighting)
 	var up: Vector3 = Vector3.FORWARD if absf(direction.dot(Vector3.UP)) > 0.9999 else Vector3.UP
 	sun.transform = Transform3D(Basis.looking_at(-direction, up), direction * 100.0)
-	parent.add_child(sun)
-	return sun

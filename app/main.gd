@@ -517,7 +517,7 @@ func checkpoint() -> Dictionary:
 	return saved.checkpoint if saved.ok else {}
 
 
-## Validate both halves and prepare detached resources before the physics owner commits.
+## Validate both halves and prepare detached shadow geometry before the physics owner commits.
 ## No await: an invalid record cannot change the live world, recording or simulation.
 func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if session == null or _scripted or _capturing or _capture_scene_id() != "field" or not startup_error.is_empty():
@@ -529,9 +529,9 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if not staged.ok:
 		return {ok = false, errors = ["could not prepare checkpoint lighting"]}
 	if not session.restore_checkpoint(decoded.physics):
-		staged.root.free()
 		return {ok = false, errors = ["physics checkpoint is invalid or incompatible"]}
-	_commit_lighting(staged, decoded.config)
+	if not _commit_lighting(staged, decoded.config):
+		return {ok = false, physics_restored = true, errors = ["physics restored, but visual scene changed during restoration"]}
 	_visual_timeline = decoded.timeline.duplicate(true)
 	_visual_context_status = decoded.context_status
 	_prop_angle = 0.0 # propeller phase was never part of the physical checkpoint contract
@@ -559,10 +559,12 @@ func apply_lighting_config(raw: Variant) -> Dictionary:
 	var staged: Dictionary = _prepare_checkpoint_lighting(checked.config)
 	if not staged.ok:
 		return {ok = false, changed = false, errors = ["could not prepare lighting"]}
-	# Keep the recording's initial context frozen; the ordered timeline carries subsequent edits.
+	# Prepare the prior context without publishing it until the scene update succeeds.
+	var initial_context: String = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
+	if not _commit_lighting(staged, checked.config):
+		return {ok = false, changed = false, errors = ["visual scene changed during lighting edit"]}
 	if recorder.recording and not recorder.trace.meta.has("visual_context"):
-		recorder.trace.meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
-	_commit_lighting(staged, checked.config)
+		recorder.trace.meta.visual_context = initial_context
 	_visual_timeline = edited.timeline
 	if recorder.recording:
 		recorder.trace.meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
@@ -570,29 +572,19 @@ func apply_lighting_config(raw: Variant) -> Dictionary:
 	return {ok = true, changed = true, errors = []}
 
 
-## All resources exist before publishing; no await or physical-session mutation here.
-func _commit_lighting(staged: Dictionary, config: Dictionary) -> void:
-	var old_field: Node3D = _field_node
-	remove_child(old_field)
-	old_field.free()
-	remove_child(_sun)
-	_sun.free()
-	staged.root.remove_child(staged.field)
-	staged.root.remove_child(staged.sun)
-	add_child(staged.field)
-	_field_node = staged.field
-	add_child(staged.sun)
-	_sun = staged.sun
-	_env = staged.environment
-	_world_environment.environment = _env
-	staged.root.free()
+## TOD-09b: publish in place; no await or physical-session mutation here.
+func _commit_lighting(staged: Dictionary, config: Dictionary) -> bool:
+	var updated: bool = FieldBuilder.commit_lighting(_field_node, staged.field)
+	if staged.field.changed and not updated:
+		return false
+	Atmosphere.update_environment(_env, staged.lighting)
+	Atmosphere.update_sun(_sun, staged.lighting)
 	lighting_config = config.duplicate(true)
 	_lighting = staged.lighting
-	if _treeline_hidden:
-		_hide_field_objects()
 	var current_time: float = session.sim.time()
 	ShaderClock.update(current_time, _render_wind(current_time))
 	Atmosphere.update_clouds(_env, current_time)
+	return true
 
 
 func _field_identity() -> String:
@@ -602,18 +594,11 @@ func _field_identity() -> String:
 	return hashing.finish().hex_encode()
 
 
-## Keep the detached preparation seam small so failure behavior is testable without corrupting resources.
+## Prepare the only replaceable geometry before publishing; the field, Sun and Environment retain ownership.
 func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
 	var snapshot: Dictionary = TimeOfDayLighting.snapshot(config)
-	var stage: Node3D = Node3D.new()
-	var prior_cloud_offset: Vector2 = Atmosphere.last_cloud_offset
-	var environment: Environment = Atmosphere.environment(snapshot)
-	var field_node: Node3D = FieldBuilder.build(field, snapshot)
-	stage.add_child(field_node)
-	var sun: DirectionalLight3D = Atmosphere.create_sun(stage, snapshot)
-	# Existing material factories initialise a global cloud offset. Preparation must not publish it.
-	Atmosphere._set_cloud_offset(prior_cloud_offset)
-	return {ok = true, root = stage, field = field_node, sun = sun, environment = environment, lighting = snapshot}
+	var prepared_field: Dictionary = FieldBuilder.prepare_lighting(_field_node, snapshot)
+	return {ok = prepared_field.ok, field = prepared_field, lighting = snapshot}
 
 
 ## The session's trace header plus which build flew it (UI-04a): the exported smoke test compares app_build with
