@@ -3,6 +3,8 @@ extends CanvasLayer
 
 const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
@@ -56,6 +58,7 @@ const SLIDER_SPECS: Dictionary = {
 }
 const ERROR_TEXT: String = "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
 const ATMOSPHERE_ERROR_TEXT: String = "Check field elevation, temperature, QNH and humidity against the displayed limits."
+const TIME_ERROR_TEXT: String = "Check the time, date, UTC offset and location. Apply will not save invalid lighting."
 
 var preset_picker: OptionButton
 var tab_container: TabBar
@@ -65,6 +68,8 @@ var panel: PanelContainer
 var wind_page: VBoxContainer
 var turbulence_page: VBoxContainer
 var atmosphere_page: VBoxContainer
+var time_of_day_page: VBoxContainer
+var time_of_day_controls: VBoxContainer
 var field_inputs: Dictionary = {}
 var field_sliders: Dictionary = {}
 var turbulence_inputs: Dictionary = {}
@@ -79,6 +84,7 @@ var cancel_button: Button
 var apply_button: Button
 var error_label: Label
 var _base_config: Dictionary
+var applied_lighting_config: Dictionary = {}
 var _initial_text: Dictionary = {}
 var _initial_turbulence_text: Dictionary = {}
 var _initial_atmosphere_text: Dictionary = {}
@@ -91,11 +97,15 @@ var _setting_fields: bool = false
 var _scroll_update_queued: bool = false
 
 
-func _init(initial_config: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_lighting_config: Variant = null) -> void:
 	name = "WeatherDialog"
 	layer = LAYER
 	var checked: Dictionary = WeatherSettings.validate(initial_config if initial_config != null else WeatherSettings.defaults())
 	_base_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
+	var checked_lighting: Dictionary = TimeOfDay.validate(
+		initial_lighting_config if initial_lighting_config != null else TimeOfDay.defaults()
+	)
+	applied_lighting_config = checked_lighting.config.duplicate(true) if checked_lighting.get("ok", false) else TimeOfDay.defaults()
 
 	var screen: Control = Control.new()
 	screen.name = "Modal"
@@ -152,6 +162,7 @@ func _init(initial_config: Variant = null) -> void:
 	tab_container.add_tab(tr("Wind & Gusts"))
 	tab_container.add_tab(tr("Turbulence"))
 	tab_container.add_tab(tr("Atmosphere"))
+	tab_container.add_tab(tr("Time of day"))
 	tab_container.current_tab = 0
 	column.add_child(tab_container)
 	tab_bar = tab_container
@@ -240,6 +251,13 @@ func _init(initial_config: Variant = null) -> void:
 	atmosphere_preview.name = "AtmospherePreview"
 	atmosphere_preview.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	atmosphere_page.add_child(atmosphere_preview)
+	time_of_day_controls = TimeOfDayControls.new(applied_lighting_config) as VBoxContainer
+	time_of_day_controls.name = "TimeOfDayPage"
+	time_of_day_controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	time_of_day_controls.visible = false
+	time_of_day_controls.connect("focus_order_changed", _set_focus_ring)
+	page_stack.add_child(time_of_day_controls)
+	time_of_day_page = time_of_day_controls
 	tab_bar.tab_changed.connect(_on_tab_changed)
 	_set_tab_titles()
 
@@ -313,6 +331,7 @@ func _set_tab_titles() -> void:
 	tab_container.set_tab_title(0, tr("Wind & Gusts"))
 	tab_container.set_tab_title(1, tr("Turbulence"))
 	tab_container.set_tab_title(2, tr("Atmosphere"))
+	tab_container.set_tab_title(3, tr("Time of day"))
 
 
 func _set_atmosphere_mode_titles() -> void:
@@ -544,6 +563,10 @@ func _rms_inputs_have_energy() -> bool:
 
 
 func _on_apply() -> void:
+	var lighting_result: Dictionary = time_of_day_controls.call("read_draft")
+	if not lighting_result.get("ok", false):
+		_show_error()
+		return
 	var raw: Dictionary = _base_config.duplicate(true)
 	for key: String in EDITED_KEYS:
 		var edit: LineEdit = field_inputs[key]
@@ -612,6 +635,7 @@ func _on_apply() -> void:
 	if not checked.ok:
 		_show_error()
 		return
+	applied_lighting_config = lighting_result.config.duplicate(true)
 	applied.emit(checked.config.duplicate(true))
 
 
@@ -630,7 +654,8 @@ func _on_cancel() -> void:
 
 
 func _show_error() -> void:
-	var message: String = ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else ERROR_TEXT
+	var message: String = TIME_ERROR_TEXT if tab_container.current_tab == 3 else \
+		(ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else ERROR_TEXT)
 	error_label.text = tr(message)
 	_set_error_visible(true)
 
@@ -647,6 +672,7 @@ func _on_tab_changed(_tab: int) -> void:
 	wind_page.visible = _tab == 0
 	turbulence_page.visible = _tab == 1
 	atmosphere_page.visible = _tab == 2
+	time_of_day_page.visible = _tab == 3
 	tab_scroll.scroll_vertical = 0
 	_set_focus_ring()
 	_schedule_scroll_height_update()
@@ -671,12 +697,16 @@ func _set_focus_ring() -> void:
 			if turbulence_sliders.has(key):
 				_focus_order.append(turbulence_sliders[key])
 			_focus_order.append(turbulence_inputs[key])
-	else:
+	elif tab_container.current_tab == 2:
 		_focus_order.append(atmosphere_mode_picker)
 		for key: String in ATMOSPHERE_EDITED_KEYS:
 			if atmosphere_sliders.has(key) and atmosphere_sliders[key].focus_mode != Control.FOCUS_NONE:
 				_focus_order.append(atmosphere_sliders[key])
 			_focus_order.append(atmosphere_inputs[key])
+	else:
+		var time_focus: Array[Control] = time_of_day_controls.call("focus_controls")
+		for focus_control: Control in time_focus:
+			_focus_order.append(focus_control)
 	_focus_order.append(cancel_button)
 	_focus_order.append(apply_button)
 	for index: int in _focus_order.size():

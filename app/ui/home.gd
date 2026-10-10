@@ -13,6 +13,8 @@ const Reference := preload("res://ui/controls_reference.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 
@@ -36,6 +38,7 @@ var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "airborne"
 var runway_available: bool = true
 var weather_config: Dictionary = WeatherSettings.defaults()
+var lighting_config: Dictionary = TimeOfDay.defaults()
 var start_button: Button
 
 var fly_button: Button
@@ -251,6 +254,14 @@ func set_weather_config(raw: Variant) -> void:
 		_update_weather_text()
 
 
+## Keeps a complete validated lighting selection for the Home summary and flight handoff.
+func set_lighting_config(raw: Variant) -> void:
+	var checked: Dictionary = TimeOfDay.validate(raw)
+	lighting_config = checked.config.duplicate(true) if checked.get("ok", false) else TimeOfDay.defaults()
+	if is_node_ready():
+		_update_weather_text()
+
+
 ## A rejected launch leaves the same usable Home, including keyboard focus.
 func reject_start(message: String) -> void:
 	_fly_sent = false
@@ -368,8 +379,14 @@ func _update_weather_text() -> void:
 				summary = tr("Reference air")
 			else:
 				summary += " + " + tr("Reference air")
-	weather_button.text = "%s\n%s" % [tr("Weather"), summary]
-	weather_button.tooltip_text = "%s\n%s" % [tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."), " · ".join(parts) if not parts.is_empty() else tr("Calm")]
+	var lighting_summary: String = TimeOfDayControls.summary_text(lighting_config)
+	var lighting_brief: String = TimeOfDayControls.compact_summary_text(lighting_config)
+	weather_button.text = "%s\n%s · %s" % [tr("Weather"), summary, lighting_brief]
+	weather_button.tooltip_text = "%s\n%s\n%s" % [
+		tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."),
+		" · ".join(parts) if not parts.is_empty() else tr("Calm"),
+		lighting_summary,
+	]
 
 
 ## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.

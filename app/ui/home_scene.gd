@@ -8,6 +8,8 @@ extends Node3D
 const Spec := preload("res://spec.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
@@ -30,6 +32,8 @@ const PROP_ANGLE := 0.6 # rad: a blade off the vertical reads better than a sing
 const CLOCK := 37.0
 
 var field: Dictionary = {}
+var lighting_config: Dictionary = {}
+var _lighting: Dictionary = {}
 var field_errors: PackedStringArray = PackedStringArray()
 
 var airplane: Dictionary
@@ -38,8 +42,14 @@ var _shadow: MeshInstance3D
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}) -> void:
 	name = "HomeScene"
+	var checked_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if selected_lighting.is_empty() else selected_lighting)
+	if not checked_light.ok:
+		field_errors = PackedStringArray(checked_light.errors)
+		return
+	lighting_config = checked_light.config.duplicate(true)
+	_lighting = TimeOfDayLighting.snapshot(lighting_config)
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	field_errors = loaded_field.errors
 	if not loaded_field.ok:
@@ -47,12 +57,12 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	field = loaded_field.field
 	ShaderClock.register() # before any material that reads sim_clock compiles
 	var world_env := WorldEnvironment.new()
-	var env := Atmosphere.environment()
+	var env := Atmosphere.environment(_lighting)
 	world_env.environment = env
 	add_child(world_env)
 
-	add_child(FieldBuilder.build(field))
-	Atmosphere.create_sun(self)
+	add_child(FieldBuilder.build(field, _lighting))
+	Atmosphere.create_sun(self, _lighting)
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)
@@ -104,4 +114,6 @@ func show_aircraft(id: String) -> void:
 	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
 	airplane.propeller.rotation.z = PROP_ANGLE
 	var extent := Shadow.model_extent(airplane.root)
-	Shadow.update(_shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction())
+	var strength: float = Atmosphere.shadow_strength(_lighting)
+	_shadow.visible = strength > 0.0
+	Shadow.update(_shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction(_lighting), strength)

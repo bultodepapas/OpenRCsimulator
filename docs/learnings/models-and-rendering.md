@@ -1,6 +1,6 @@
 # Models and rendering
 
-**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-08; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-10; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Aircraft models and references
 
@@ -29,6 +29,8 @@
 - **Probe the pinned renderer instead of generalizing from tutorials or another backend.** Small tests against the project's Godot version and Compatibility renderer have exposed differences in per-instance uniforms, shader bounds, color handling, and particle behavior. A probe establishes only the behavior it actually exercises. ([VQ-00](../research/visual-quality-round2/README.md), [SM-PLAN](../research/smoke-investigations/README.md))
 
 - **Match sky and spatial fog in linear color.** In Compatibility, sky-shader `COLOR` is interpreted as sRGB and decoded after `sky()`, while spatial `FOG` and engine fog operate in linear space. Do atmospheric math in linear values and encode the sky result so the decoded value matches the fog; direct assignment can create a visible horizon seam. ([L1/L2 investigation](../research/landscape-investigations/02-atmosphere-aerial-perspective.md), [sky shader](../../app/render/sky.gdshader))
+
+- **Check darkness through every lighting path.** A dark background does not prove dark ambient or metallic reflections: the pinned Compatibility probe retained daytime radiance for several INCREMENTAL frames. Unshaded grey contact decals can also brighten a nearly black surface despite being called shadows. Initialise radiance before exposing a new scene and make night contact cues darkening-only. ([TOD-01](../research/time-of-day-investigations/TOD-01/README.md), [TOD-04](../research/time-of-day-investigations/TOD-04/README.md))
 
 - **Keep a CPU copy of shader globals sent at runtime.** Godot's global-shader-parameter readback methods are editor-only; in a real renderer they log errors and return null, while headless probes can appear to work. Diagnostics and captures should report the values the application sent instead of relying on a misleading readback. ([ShaderClock](../../app/render/shader_clock.gd), [L0d](../LANDSCAPE-PLAN.md))
 

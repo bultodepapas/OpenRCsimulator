@@ -21,6 +21,7 @@ const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 
@@ -67,6 +68,8 @@ func _ready() -> void:
 	if preferences.note != "":
 		print("settings: ", preferences.note)
 	TranslationServer.set_locale(preferences.language)
+	if preferences.get("lighting_invalid", false):
+		_settings_note = tr("Invalid saved time-of-day settings; using legacy daylight.")
 	show_home()
 
 
@@ -77,7 +80,9 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	home_scene = HomeScene.new(aircraft, field_path) # the chosen airplane over our field, still: no simulation runs behind Home
+	var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
+	var lighting_config: Dictionary = checked_lighting.config if checked_lighting.get("ok", false) else TimeOfDay.defaults()
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config) # still, configured backdrop; no simulation behind Home
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
 		return
@@ -86,6 +91,7 @@ func show_home() -> void:
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
 	home.set_weather_config(preferences.get("weather_config", WeatherSettings.defaults()))
+	home.set_lighting_config(lighting_config)
 	home.fly_requested.connect(start_flight)
 	home.aircraft_requested.connect(set_aircraft)
 	home.start_requested.connect(set_start_choice)
@@ -138,10 +144,14 @@ func start_flight() -> void:
 	var aircraft: String = home.aircraft_id if home != null else ""
 	var chosen_start: String = home.start_choice if home != null else "airborne"
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
+	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
 		var checked_weather := WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults()))
 		if checked_weather.ok:
 			chosen_weather = checked_weather.config.duplicate(true)
+		var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
+		if checked_lighting.get("ok", false):
+			chosen_lighting = checked_lighting.config.duplicate(true)
 	for screen in [home, home_scene]:
 		if screen != null:
 			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
@@ -150,6 +160,7 @@ func start_flight() -> void:
 	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
 	flight.start_choice = chosen_start
 	flight.weather_config = chosen_weather.duplicate(true)
+	flight.lighting_config = chosen_lighting.duplicate(true)
 	flight.interactive_start = has_home
 	add_child(flight)
 	if has_home and not flight.startup_error.is_empty():
@@ -172,6 +183,7 @@ func start_flight() -> void:
 	if has_home:
 		preferences.start_choice = chosen_start
 		preferences.weather_config = chosen_weather.duplicate(true)
+		preferences.lighting_config = chosen_lighting.duplicate(true)
 		var err: Error = Preferences.save_to(preferences_path, preferences)
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
@@ -239,7 +251,10 @@ func open_weather(from: Control = null) -> void:
 	if home == null or weather_dialog != null:
 		return
 	_weather_return_focus = from if from != null else home.weather_button
-	weather_dialog = WeatherDialog.new(preferences.get("weather_config", WeatherSettings.defaults()))
+	weather_dialog = WeatherDialog.new(
+		preferences.get("weather_config", WeatherSettings.defaults()),
+		preferences.get("lighting_config", TimeOfDay.defaults()),
+	)
 	weather_dialog.applied.connect(_on_weather_applied)
 	weather_dialog.cancelled.connect(close_weather)
 	add_child(weather_dialog)
@@ -249,14 +264,47 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var checked := WeatherSettings.validate(raw)
 	if not checked.ok:
 		return
+	if weather_dialog == null:
+		return
+	var lighting_raw: Variant = weather_dialog.get("applied_lighting_config")
+	var checked_lighting: Dictionary = TimeOfDay.validate(lighting_raw)
+	if not checked_lighting.get("ok", false):
+		return
+	var lighting_changed: bool = preferences.get("lighting_config", TimeOfDay.defaults()) != checked_lighting.config
 	preferences.weather_config = checked.config.duplicate(true)
+	preferences.lighting_config = checked_lighting.config.duplicate(true)
+	preferences.lighting_invalid = false
 	if home != null:
 		home.set_weather_config(preferences.weather_config)
+		home.set_lighting_config(preferences.lighting_config)
+	if lighting_changed:
+		_rebuild_home_scene.call_deferred()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 	if home != null:
 		home.set_note(_settings_note)
 	close_weather()
+
+
+## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.
+func _rebuild_home_scene() -> void:
+	if home_scene == null:
+		return
+	var previous: Node3D = home_scene
+	remove_child(previous)
+	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config)
+	if not replacement.field_errors.is_empty():
+		replacement.free()
+		add_child(previous)
+		previous.camera.make_current()
+		if home != null:
+			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
+		return
+	home_scene = replacement
+	add_child(home_scene)
+	previous.queue_free()
+	home_scene.camera.make_current()
 
 
 func close_weather() -> void:

@@ -436,3 +436,105 @@ msgstr "Motor al ralentí en pista. Rodaje experimental."
 
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
+
+msgid "Could not update Home lighting; the previous view remains active."
+msgstr "No se pudo actualizar la iluminación de Inicio; se conserva la vista anterior."
+
+msgid "Time of day"
+msgstr "Hora del día"
+
+msgid "Lighting model"
+msgstr "Modelo de iluminación"
+
+msgid "Time preset"
+msgstr "Preajuste de hora"
+
+msgid "Local time"
+msgstr "Hora local"
+
+msgid "Date (YYYY-MM-DD)"
+msgstr "Fecha (YYYY-MM-DD)"
+
+msgid "UTC offset (minutes)"
+msgstr "Desfase UTC (minutos)"
+
+msgid "Latitude (degrees)"
+msgstr "Latitud (grados)"
+
+msgid "Longitude (degrees)"
+msgstr "Longitud (grados)"
+
+msgid "Location name"
+msgstr "Nombre de ubicación"
+
+msgid "Date and location (advanced)"
+msgstr "Fecha y ubicación (avanzado)"
+
+msgid "Legacy daylight"
+msgstr "Luz diurna clásica"
+
+msgid "Astronomical time"
+msgstr "Hora astronómica"
+
+msgid "Dawn"
+msgstr "Amanecer"
+
+msgid "Noon"
+msgstr "Mediodía"
+
+msgid "Sunset"
+msgstr "Atardecer"
+
+msgid "Night"
+msgstr "Noche"
+
+msgid "Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used."
+msgstr "La fecha, la hora y el desfase UTC son explícitos. La hora seleccionada permanece fija durante el vuelo; no se usa la hora del sistema."
+
+msgid "Legacy daylight keeps the original fixed daylight look; choose astronomical time to use the selected local time."
+msgstr "La luz diurna clásica conserva el aspecto fijo original; elige la hora astronómica para usar la hora local seleccionada."
+
+msgid "The Sun is more than 6° below the horizon. There are no aircraft or field lights, so the airplane may be difficult to see."
+msgstr "El Sol está a más de 6° bajo el horizonte. No hay luces en el avión ni en el campo, así que puede ser difícil ver el avión."
+
+msgid "Check the time, date, UTC offset and location. Apply will not save invalid lighting."
+msgstr "Revisa la hora, la fecha, el desfase UTC y la ubicación. Aplicar no guardará una iluminación no válida."
+
+msgid "Daylight"
+msgstr "Luz diurna"
+
+msgid "Civil twilight"
+msgstr "Crepúsculo civil"
+
+msgid "Nautical twilight"
+msgstr "Crepúsculo náutico"
+
+msgid "Astronomical twilight"
+msgstr "Crepúsculo astronómico"
+
+msgid "Local time %s"
+msgstr "Hora local %s"
+
+msgid "%s · Local time %s · %s · %s · %s"
+msgstr "%s · hora local %s · %s · %s · %s"
+
+msgid "Check the time, date and location to preview the lighting phase."
+msgstr "Revisa la hora, la fecha y la ubicación para ver la fase de iluminación."
+
+msgid "Check the time, date and location."
+msgstr "Revisa la hora, la fecha y la ubicación."
+
+msgid "Fix the time and location before choosing a preset."
+msgstr "Corrige la hora y la ubicación antes de elegir un preajuste."
+
+msgid "This preset is unavailable for the current date and location."
+msgstr "Este preajuste no está disponible para la fecha y ubicación actuales."
+
+msgid "Enter a local time as HH:MM or HH:MM:SS."
+msgstr "Introduce la hora local como HH:MM o HH:MM:SS."
+
+msgid "Lighting phase unavailable."
+msgstr "Fase de iluminación no disponible."
+
+msgid "Invalid saved time-of-day settings; using legacy daylight."
+msgstr "Los ajustes guardados de hora del día no son válidos; se usará la luz diurna clásica."
