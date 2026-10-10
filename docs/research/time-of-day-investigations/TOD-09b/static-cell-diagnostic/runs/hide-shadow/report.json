@@ -1,0 +1,89 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_samples_ms": [
+		0.354
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "e7a2fdec788af0e976e6bb6921db952a8788b5b82b4f063d09bac4171c00020f",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "90ba9d08d3c362eed4df1c52abc02a55651bf7e56c4995494aa71ded5718b3fc",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "diagnostic",
+	"diagnostic_scenery_visibility": {
+		"cell_lift_m": 0.0,
+		"hidden_nodes": [
+			"shadows_-2_-1",
+			"shadows_-2_0",
+			"shadows_-1_-2",
+			"shadows_-1_-1",
+			"shadows_-1_0",
+			"shadows_-1_1",
+			"shadows_0_-1",
+			"shadows_1_1",
+			"shadows_1_3",
+			"shadows_1_4",
+			"shadows_2_2",
+			"shadows_2_3",
+			"shadows_2_4",
+			"shadows_2_5",
+			"shadows_3_2",
+			"shadows_3_3",
+			"shadows_3_4",
+			"shadows_3_5",
+			"shadows_4_1",
+			"shadows_4_2",
+			"shadows_4_3",
+			"shadows_4_4",
+			"shadows_4_5",
+			"shadows_5_3",
+			"shadows_5_4"
+		],
+		"mode": "shadow"
+	},
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/home/bulto/OpenRCsimulator/docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/hide-shadow/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"static_cell_geometry_comparison": {
+		"arrays_bytes_compared": 12488904,
+		"compared_meshes": 48,
+		"first_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a",
+		"mismatched": [],
+		"ok": true,
+		"second_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"
+	},
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

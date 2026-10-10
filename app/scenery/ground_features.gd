@@ -104,7 +104,7 @@ static func _tri_colored(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, ca: Col
 ## "solid" (the footprint swept along the sun to its height), "roof" (only the roof outline, cast from `size.y`),
 ## "crown" (a disc of the crown, cast from 70 % of the height, plus the trunk's line).
 static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
-	var cast := Vector2(-sun.x, -sun.z) / maxf(sun.y, 0.2) # ground offset per metre of height, away from the sun
+	var cast := shadow_cast(sun)
 	var hw := size.x * 0.5
 	var hl := size.z * 0.5
 	var base: Array[Vector2] = []
@@ -146,6 +146,11 @@ static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: Stri
 		_shadow_tri(k, centroid, a, b, core, core, core)
 		_shadow_tri(k, a, ao, bo, core, edge, edge)
 		_shadow_tri(k, a, bo, b, core, edge, core)
+
+
+## Ground-plane offset per metre of height, away from the sun. The 0.2 floor bounds low-angle shadows.
+static func shadow_cast(sun: Vector3) -> Vector2:
+	return Vector2(-sun.x, -sun.z) / maxf(sun.y, 0.2)
 
 
 static func _shadow_tri(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, ca: Color, cb: Color, cc: Color) -> void:

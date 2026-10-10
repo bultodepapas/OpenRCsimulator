@@ -1,0 +1,84 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_samples_ms": [
+		0.327
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "827fc8865bbbde2eddb6b4b0b2f98a34130d8c230f64cd26a64af6c61ed51350",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "6d2f05b6fc9e467d248012111de55eb214382821e11f513c8a799dbaa014303a",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "diagnostic",
+	"diagnostic_scenery_visibility": {
+		"cell_lift_m": 0.0,
+		"hidden_nodes": [
+			"Motion",
+			"flowers_-1_-1",
+			"flowers_-1_0",
+			"flowers_0_-2",
+			"flowers_0_-1",
+			"flowers_0_0",
+			"flowers_0_1",
+			"flowers_1_-2",
+			"flowers_1_-1",
+			"flowers_1_0",
+			"flowers_3_-5",
+			"flowers_3_-4",
+			"flowers_3_-3",
+			"flowers_3_-2",
+			"flowers_3_-1",
+			"flowers_3_0",
+			"flowers_3_1",
+			"flowers_3_2",
+			"flowers_3_3",
+			"flowers_3_4"
+		],
+		"mode": "flowers-motion"
+	},
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/home/bulto/OpenRCsimulator/docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/hide-flowers-motion/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"static_cell_geometry_comparison": {
+		"arrays_bytes_compared": 12488904,
+		"compared_meshes": 48,
+		"first_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a",
+		"mismatched": [],
+		"ok": true,
+		"second_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"
+	},
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

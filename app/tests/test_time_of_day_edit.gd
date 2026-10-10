@@ -11,10 +11,14 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 
 class TestFlight extends Main:
 	var refuse_lighting_preparation: bool = false
+	var refuse_lighting_commit: bool = false
 	var requested_args: Dictionary = {}
 
 	func _user_args() -> Dictionary:
 		return requested_args.duplicate(true) if not requested_args.is_empty() else super._user_args()
+
+	func _commit_lighting(staged: Dictionary, config: Dictionary) -> bool:
+		return false if refuse_lighting_commit else super._commit_lighting(staged, config)
 
 	func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
 		if refuse_lighting_preparation:
@@ -92,6 +96,12 @@ func _run() -> void:
 		and flight.session.input_enabled and flight.session.holds.size() == 2
 		and flight.session.radio.connected and flight.session.radio.profile_source == "calibrated")
 
+	flight.refuse_lighting_commit = true
+	var refused_commit: Dictionary = flight.apply_lighting_config(first_config)
+	_check("TOD-09b refused scene commit reports failure", not refused_commit.ok and not refused_commit.changed)
+	_check("TOD-09b refused scene commit preserves recording and world", _observed(flight) == paused_baseline)
+	flight.refuse_lighting_commit = false
+
 	var invalid_config: Dictionary = first_config.duplicate(true)
 	invalid_config.local_seconds = 86400
 	var invalid: Dictionary = flight.apply_lighting_config(invalid_config)
@@ -118,6 +128,10 @@ func _run() -> void:
 	var baseline_rows: int = flight.recorder.trace.row_count()
 	var first_result: Dictionary = flight.apply_lighting_config(first_config)
 	_check("first paused edit commits", first_result.ok and first_result.changed and first_result.errors.is_empty(), str(first_result))
+	_check("TOD-09b retains field, Sun and environment identity during Apply",
+		flight._field_node.get_instance_id() == paused_baseline.field_id
+		and flight._sun.get_instance_id() == paused_baseline.sun_id
+		and flight._env.get_instance_id() == paused_baseline.environment_id)
 	_check("visual edit preserves exact physical checkpoint bytes", var_to_bytes(flight.session.checkpoint()) == baseline_physics)
 	_check("visual edit preserves input owner, radio provenance, pause reason and holds",
 		_input_snapshot(flight) == baseline_input)

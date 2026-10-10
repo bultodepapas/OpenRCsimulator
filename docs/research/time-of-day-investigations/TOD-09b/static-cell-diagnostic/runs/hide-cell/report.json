@@ -1,0 +1,103 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_samples_ms": [
+		0.254
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": true,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "ef0a6dbde1daac077ad0077e2d26bbcff62a76becae7b00c2894e0a7820e88e1",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "ef0a6dbde1daac077ad0077e2d26bbcff62a76becae7b00c2894e0a7820e88e1",
+			"pixel_difference": {},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "diagnostic",
+	"diagnostic_scenery_visibility": {
+		"cell_lift_m": 0.0,
+		"hidden_nodes": [
+			"cell_-2_-1",
+			"cell_-2_0",
+			"cell_-1_-2",
+			"cell_-1_-1",
+			"cell_-1_0",
+			"cell_-1_1",
+			"cell_-1_7",
+			"cell_-1_8",
+			"cell_-1_9",
+			"cell_-1_7776",
+			"cell_0_-1",
+			"cell_0_8",
+			"cell_0_9",
+			"cell_1_1",
+			"cell_1_3",
+			"cell_1_4",
+			"cell_1_9",
+			"cell_2_2",
+			"cell_2_3",
+			"cell_2_4",
+			"cell_2_5",
+			"cell_3_2",
+			"cell_3_3",
+			"cell_3_4",
+			"cell_3_5",
+			"cell_4_1",
+			"cell_4_2",
+			"cell_4_3",
+			"cell_4_4",
+			"cell_4_5",
+			"cell_5_0",
+			"cell_5_3",
+			"cell_5_4",
+			"cell_6_-6",
+			"cell_6_-2",
+			"cell_6_1",
+			"cell_6_3",
+			"cell_6_6",
+			"cell_999000_994000",
+			"cell_999000_995000",
+			"cell_999000_1004000",
+			"cell_1000000_1001000",
+			"cell_1000000_1003000",
+			"cell_1000000_1011000",
+			"cell_1001000_1000000",
+			"cell_1001000_1010000",
+			"cell_1002000_1009000",
+			"cell_1002000_1010000"
+		],
+		"mode": "cell"
+	},
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"ok": true,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/home/bulto/OpenRCsimulator/docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/hide-cell/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"static_cell_geometry_comparison": {
+		"arrays_bytes_compared": 12488904,
+		"compared_meshes": 48,
+		"first_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a",
+		"mismatched": [],
+		"ok": true,
+		"second_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"
+	},
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}
