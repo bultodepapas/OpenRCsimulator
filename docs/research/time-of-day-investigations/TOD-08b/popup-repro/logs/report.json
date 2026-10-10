@@ -1,0 +1,71 @@
+{
+  "binary_committed": false,
+  "cases": [
+    {
+      "engine_error_count": 0,
+      "engine_errors": [],
+      "label": "source-embedded",
+      "log": "source-embedded.log",
+      "popup_mode": "embedded default",
+      "popup_observed_visible": true,
+      "ready_marker": "ready; subwindows=true; force_native=false",
+      "selected_index_1": true,
+      "selected_marker": "selected=1"
+    },
+    {
+      "engine_error_count": 2,
+      "engine_errors": [
+        "ERROR: Attempt to disconnect a nonexistent connection from 'root:<Window#24595400023>'. Signal: 'focus_entered', callable: ''.",
+        "ERROR: Attempt to disconnect a nonexistent connection from 'root:<Window#24595400023>'. Signal: 'tree_exited', callable: ''."
+      ],
+      "label": "release-embedded",
+      "log": "release-embedded.log",
+      "popup_mode": "embedded default",
+      "popup_observed_visible": true,
+      "ready_marker": "ready; subwindows=true; force_native=false",
+      "selected_index_1": true,
+      "selected_marker": "selected=1"
+    },
+    {
+      "engine_error_count": 0,
+      "engine_errors": [],
+      "label": "source-native",
+      "log": "source-native.log",
+      "popup_mode": "force_native",
+      "popup_observed_visible": true,
+      "ready_marker": "ready; subwindows=true; force_native=true",
+      "selected_index_1": true,
+      "selected_marker": "selected=1"
+    },
+    {
+      "engine_error_count": 0,
+      "engine_errors": [],
+      "label": "release-native",
+      "log": "release-native.log",
+      "popup_mode": "force_native",
+      "popup_observed_visible": true,
+      "ready_marker": "ready; subwindows=true; force_native=true",
+      "selected_index_1": true,
+      "selected_marker": "selected=1"
+    }
+  ],
+  "display": ":106",
+  "engine_binary_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "engine_release_binary_sha256": "fcb5c8047f77de8969854a2c9ed96a94ec40a3865e0d4d35e1390c8bf0952022",
+  "engine_version": "4.7.2.stable.official.ed1daf0bf",
+  "format": "openrc-tod08b-optionbutton-popup-repro v1",
+  "input": "XTestFakeKeyEvent from docs/research/menu-investigations/UI-06c/export_gui_smoke.py",
+  "passed": true,
+  "popup_cpp_sha256": "b75226ee4d75fe8c8f6d2993ea6ef13fc09f903468514719f489228c188e2be1",
+  "renderer": "OpenGL API 4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 20.1.2, 256 bits)",
+  "reproducer_script_sha256": "4c65d6cb4a68091a8835bbcc4d473797acbec423aaa4f04b17f990dc3f728012",
+  "sequence": [
+    "Enter opens OptionButton",
+    "Down",
+    "Enter selects item 1"
+  ],
+  "temporary_work_dir": "/tmp/tod08b-popup-final",
+  "work_dir_preserved": true,
+  "xtest_driver_sha256": "02bb0da9fb58e870e04aca8d23dd9156433315305f876ece034ccec25b5a8490",
+  "xvfb_screen": "1280x720x24 (use the command in README.md)"
+}

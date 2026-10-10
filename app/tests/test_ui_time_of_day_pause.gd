@@ -69,6 +69,11 @@ func _interactive_pause_edit() -> void:
 	var dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = dialog.get("controls") as VBoxContainer
 	var mode_picker: OptionButton = controls.find_child("LightingMode", true, false) as OptionButton
+	var mode_popup: PopupMenu = mode_picker.get_popup()
+	var initial_preset_picker: OptionButton = controls.find_child("TimePreset", true, false) as OptionButton
+	_check("option popups use native windows only when supported",
+		mode_popup.force_native == DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS)
+		and initial_preset_picker.get_popup().force_native == DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS))
 	var time_input: LineEdit = controls.find_child("ExactTime", true, false) as LineEdit
 	var advanced_toggle: CheckButton = controls.find_child("AdvancedLocation", true, false) as CheckButton
 	var apply_button: Button = dialog.get("apply_button") as Button

@@ -1,0 +1,60 @@
+{
+  "format": "openrc-tod09a-checks v1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "scope": "pure deterministic solar clock; production progression remains disabled",
+  "full_suite_exit": 0,
+  "gdscript_test_programs": 154,
+  "clock_checks": 1656,
+  "independent_calendar_cases": 184,
+  "lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "smoke": {
+    "scenes": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "warnings": 317,
+    "findings": 0
+  },
+  "export_smoke": {
+    "binary_sha256": "ceafc4abe7f6e0eda46052b7ff4b1339c3ccd128ac0b302b1ee13c5703c267cf",
+    "scope": "existing fixed-time Linux export smoke, empty working directory, no source project",
+    "cases": {
+      "legacy": {
+        "exit": 0,
+        "errors": false,
+        "sample_rows": 25,
+        "samples_sha256": "88c475a503f523ea1730866b68341466f45fd1aeb44a135b82f6478c08207c83"
+      },
+      "night": {
+        "exit": 0,
+        "errors": false,
+        "sample_rows": 25,
+        "samples_sha256": "88c475a503f523ea1730866b68341466f45fd1aeb44a135b82f6478c08207c83"
+      }
+    },
+    "physics_equal": true,
+    "ok": true
+  },
+  "limitations": [
+    "No production progression or lifecycle adapter in this step",
+    "CPU probe excludes scene updates, rendering and GPU cost",
+    "Target GPU/display and pilot acceptance remain open"
+  ],
+  "source_sha256": {
+    "app/environment/solar_clock.gd": "7b855e2c2a8f03df78635fe57f41069b530d87c8d219f04af079fbe14656a385",
+    "app/environment/time_of_day_config.gd": "f3f2a3c35cfbcd97d3cd4018685cf7fa7e3896da00f1a1d6f2dcf7611867d03d",
+    "app/environment/solar_position.gd": "299bc575a073fc4bd833a9f87e7550775ef832cf801e1041c0e7c014b0becba6",
+    "app/render/time_of_day_lighting.gd": "4c768bdab12b187008792669cd8871590510884130cf6c4b5310ff065ab68bfd",
+    "app/tests/test_time_of_day_clock.gd": "4a5ebebf09883ef4d834aa8f8010c3b6b99cc71131039a87e5d60667ae193c1a",
+    "app/tests/fixtures/time_of_day_clock.json": "47cd80667d7c36a2295e605ee94bb8b2deb13ad179c723bfbbe9658cbcf4b692",
+    "app/test.sh": "0fb964faf24fde2c60832433fe4cd9c8c3298e7224fa8ddcf5aab98944d59361",
+    "app/project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+    "research/time-of-day/tod-09a/calendar_oracles.py": "921e6147bd420bc300b484b7d50742e22b98167f8c1ee23c5d60e4e576d9accd",
+    "research/time-of-day/tod-09a/clock_probe.gd": "c9d3db5c439bbbfb8f9ea8dd2a0cb0ce63f9dba2081af45fe3ea9aad337adc87"
+  }
+}

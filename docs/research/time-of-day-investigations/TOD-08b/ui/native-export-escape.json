@@ -1,0 +1,21 @@
+{
+  "format": "openrc-tod08b-native-escape v1",
+  "binary_sha256": "321df7b978cf6171a7d0255b5ccf3ce1359b3b292a786ba6ad2fa8a4434d5643",
+  "route": [
+    "Home",
+    "Fly",
+    "Pause",
+    "Time of day",
+    "open Time preset",
+    "Esc closes popup",
+    "Esc cancels editor"
+  ],
+  "result": "The first Escape closed only the preset popup; the time editor stayed open over the paused flight. The second Escape cancelled the editor and left the flight paused.",
+  "engine_errors": [],
+  "engine_log": "native-export-escape.log",
+  "screenshots": [
+    "native-export-escape-popup-open.png",
+    "native-export-escape-popup-closed.png",
+    "native-export-escape-dialog-cancelled.png"
+  ]
+}

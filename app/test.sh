@@ -107,6 +107,9 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_turbulence_cli.py"
 echo "== M5-ATM: independent atmosphere, EAS and environment replay checks"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_cli.py"
 
+echo "== TOD-09a: independent Gregorian clock fixtures stay current"
+python3 "$HERE/../research/time-of-day/tod-09a/calendar_oracles.py" --check
+
 echo "== TOD-05/07: selected time, visual context and unchanged flight physics"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_time_of_day_cli.py"
 
