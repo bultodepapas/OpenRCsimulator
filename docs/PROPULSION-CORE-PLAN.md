@@ -9,7 +9,7 @@ The first slice integrates relative propeller shaft RPM with body state in RK4. 
 | G2a, experimental slice | Opt-in shaft/body RK4; stage-local propulsion, wake and rotor momentum; exact endpoint RPM telemetry | [Evidence](research/propulsion/G2a-RK4/README.md): 143-suite gate, 54 focused checks, seven CLI tests, 42 refinement runs and isolated mutations |
 | G2b, propeller slice | Fixed-axis relative-spin reaction with locked inertia and body axial acceleration | Simultaneous body/rotor balances, signs, steady limit and angular-momentum checks |
 | G2a/G2b promotion | Adopt coupling as the production default; validate actual aircraft response and per-tick cost | Open; experimental route remains explicit |
-| G2a stage cost | Reuse one aerodynamic evaluation across the coupled stage's loads and shaft derivative | Pending; [observed cost](research/propulsion/G2a-RK4/cost.md) is 1263–1325 µs/step on this host; 500 µs target remains open |
+| G2a-R1 stage cost | Reuse one aerodynamic evaluation across the coupled stage's loads and shaft derivative | [Verified](research/propulsion/G2a-R1/README.md): exact eight-case frozen-baseline parity, 143-suite gate, 43 joint/coupled checks; measured medians 730–765 µs/step (42–46% lower in matched coupled fixtures). 500 µs acceptance remains open |
 | G2b turbine | Signed spool/body acceleration coupling | Deferred to the turbine owner; no new turbine torque law |
 
 Use `-- --aircraft=p51d-mustang-120 --shaft-integrator=coupled-rk4`. `split` remains the default. Aircraft without shaft data and positive carrier inertia refuse the experiment. This does not create shaft data for glow or electric aircraft.

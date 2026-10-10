@@ -479,6 +479,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 
 
 func _configure_continuous_callbacks() -> void:
+	sim.continuous_evaluate = _coupled_evaluate if shaft_is_coupled() else Callable()
 	sim.continuous_loads = _coupled_loads if shaft_is_coupled() else _wash_loads
 	sim.continuous_derivative = _coupled_derivative if shaft_is_coupled() else _wash_derivative
 	sim.continuous_rotor_momentum = _coupled_rotor if shaft_is_coupled() else Callable()
@@ -1076,6 +1077,18 @@ func _coupled_derivative(s: PackedFloat64Array, values: PackedFloat64Array, time
 		aircraft.model.propulsion, air_density(), values.slice(0, values.size() - 1)) if values.size() > 1 else PackedFloat64Array()
 	wash.append(result.rpm_rate)
 	return wash
+
+
+## One response per RK stage; both the old separate callbacks and this joint path keep the same arithmetic.
+func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	var result: Dictionary = _coupled_response(s, values, time_s)
+	if not result.ok:
+		return {}
+	var air: Dictionary = air_data(s, time_s)
+	var extra: PackedFloat64Array = WashTransport.derivative(air.v_air, _coupled_rpm(values),
+		aircraft.model.propulsion, air_density(), values.slice(0, values.size() - 1)) if values.size() > 1 else PackedFloat64Array()
+	extra.append(result.rpm_rate)
+	return {loads = result.loads, derivative = extra, rotor_momentum = _coupled_rotor(s, values, time_s)}
 
 
 func _shaft_rate(s: PackedFloat64Array, rpm: float, time_s: float) -> float:

@@ -148,7 +148,17 @@ func _run_case(case_name: String, weather: Dictionary, throttle_spec: Variant, m
 		if is_finite(advance):
 			diagnostics.stage_j_min = minf(float(diagnostics.stage_j_min), advance)
 			diagnostics.stage_j_max = maxf(float(diagnostics.stage_j_max), advance)
-	if not session.sim.continuous.is_empty():
+	var has_joint: bool = false
+	for property: Dictionary in session.sim.get_property_list():
+		if property.name == "continuous_evaluate":
+			has_joint = true
+	var joint: Callable = session.sim.get("continuous_evaluate") if has_joint else Callable()
+	if not session.sim.continuous.is_empty() and joint.is_valid():
+		session.sim.continuous_evaluate = func(body: PackedFloat64Array, values: PackedFloat64Array,
+				stage_time: float) -> Dictionary:
+			observe_stage.call(body, values, stage_time)
+			return joint.call(body, values, stage_time)
+	elif not session.sim.continuous.is_empty():
 		var original_continuous_loads: Callable = session.sim.continuous_loads
 		if not original_continuous_loads.is_valid():
 			session.free()

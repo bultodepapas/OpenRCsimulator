@@ -1,0 +1,12 @@
+{
+  "format": "openrc-stage-export-check v1",
+  "command": "app/export.sh",
+  "exit_code": 0,
+  "log_sha256": "7783985f7c22bea74fa8fd54905eeb4293aebbe5115914c2648ee90f75076c20",
+  "packages": [
+    "ce2383dbf4e625252587f1510a0259e38c5df5a21687c548432a72f8c7c17a61  openrc-simulator-v0.1.0-rc6-16-ga035036-dirty-linux-x86_64.zip",
+    "0483ac04924fa97a33346078ca5076d959238a9ccfe227fff99299709138a212  openrc-simulator-v0.1.0-rc6-16-ga035036-dirty-macos-universal.zip",
+    "b8127e86e6a1af33faa831250581197c390bfbb572dc261154c121619eec81dc  openrc-simulator-v0.1.0-rc6-16-ga035036-dirty-windows-x86_64.zip"
+  ],
+  "scope": "Linux flight execution and all-platform pack/resource checks; Windows/macOS native execution not tested"
+}

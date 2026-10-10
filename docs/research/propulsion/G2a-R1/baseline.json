@@ -1,0 +1,255 @@
+{
+	"cases": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"checkpoint_sha256": [
+				{
+					"sha256": "26509b2d719778c9ac126172cd6fd53d68e01e7c51e65580fec21670f4eca78d",
+					"tick": 0
+				},
+				{
+					"sha256": "5c31e8dfa419a3f3ea2aad1b31fdceaef7638da562ccae44f715b888257170ab",
+					"tick": 1
+				},
+				{
+					"sha256": "d95fc3a1ee198710df2bdf9109a25aa10bd9754c80132cfb0664a979adbf0d89",
+					"tick": 120
+				},
+				{
+					"sha256": "4fe9c2e2cbb38a314a130b057113901b577af6aa2f61233a8ad9c12ec7147e5a",
+					"tick": 240
+				},
+				{
+					"sha256": "83a6188030e0c712ae9aed3e738312f8f354f3c963dcddfade0fab1a09ad2e7c",
+					"tick": 480
+				}
+			],
+			"fixture": "catalog default aircraft data and weather",
+			"id": "split-jensen-das-ugly-stik-60",
+			"rows": 481,
+			"shaft_integrator": "split",
+			"trajectory_sha256": "65881a5a8d74ee60f35136ebbc2147b31d2f8ddb3a4d34c6128df3d2f12a4e2c"
+		},
+		{
+			"aircraft_id": "gp-extra-300s-60",
+			"checkpoint_sha256": [
+				{
+					"sha256": "7373647934f96a732333b6e9b13d42a9aa5c1b7746a0649d2eb34b1f001787b3",
+					"tick": 0
+				},
+				{
+					"sha256": "109004b6eaa35d93baecb9773607c8427bf67207beb1bbdc325b34ae8e0aa031",
+					"tick": 1
+				},
+				{
+					"sha256": "becd33062115673c9f8a58eedabb384670940deb0f2576256cf2c62d5c18e048",
+					"tick": 120
+				},
+				{
+					"sha256": "269bbb5c2d5f9d90eaa767e28112245c7a8eafe21b4d41282d19adf77829f5db",
+					"tick": 240
+				},
+				{
+					"sha256": "ce3ccf6ccbee084485fca058b1040cf6a4f27496b650a288fc8b47c8421d57f0",
+					"tick": 480
+				}
+			],
+			"fixture": "catalog default aircraft data and weather",
+			"id": "split-gp-extra-300s-60",
+			"rows": 481,
+			"shaft_integrator": "split",
+			"trajectory_sha256": "e23de0c77e56405102e9d076d71993ba3a3687adaeda5af173aa2794da43c16a"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"checkpoint_sha256": [
+				{
+					"sha256": "fd010d90e4d8983e549229922338f5f46ca4ca636c0ce3a005f40894e2028a07",
+					"tick": 0
+				},
+				{
+					"sha256": "86899d916be064d8c219076ce885d6653ded4b9b2c29da0829cdeadab4b7014e",
+					"tick": 1
+				},
+				{
+					"sha256": "14099f6c50f07d9e3fde4791b3435fd2817fbf03c7f152c582b3305796b88086",
+					"tick": 120
+				},
+				{
+					"sha256": "874254d0c9c6ae3c37459fc1989382cc3a7eea70f84dfe053f6c74c0eed6fcf5",
+					"tick": 240
+				},
+				{
+					"sha256": "c886f1f14d7a2c24dd88e5505a47971adaa356938e3d5a7e2081cef8ef0b67eb",
+					"tick": 480
+				}
+			],
+			"fixture": "catalog default aircraft data and weather",
+			"id": "split-p51d-mustang-120",
+			"rows": 481,
+			"shaft_integrator": "split",
+			"trajectory_sha256": "e67535851f6b121399db5b823a1f9cfd6694f7ad2f9e0507de66bd3a0deba366"
+		},
+		{
+			"aircraft_id": "sebart-avanti-s-a200-p100rx",
+			"checkpoint_sha256": [
+				{
+					"sha256": "6452a479e474ded82a475d3c9951293880c3f3bafa6eaa8e90b5e0c6bea7264f",
+					"tick": 0
+				},
+				{
+					"sha256": "d814945a54acc63aa08fe607ea61e4b808727dc41286107cf36e5419e07cfdec",
+					"tick": 1
+				},
+				{
+					"sha256": "ee03dbf1d40c15f1bc750361e57808cce53a3a3fdf4208f8e155a3012628f13f",
+					"tick": 120
+				},
+				{
+					"sha256": "281a3eb21a543dbf1bf2da2461723eedbc3e127f83d471a960c87980a26be61f",
+					"tick": 240
+				},
+				{
+					"sha256": "1bce376e3f129f63399d9d2c235c3535f7c30a9bd728deb60f076d1e9c601c0c",
+					"tick": 480
+				}
+			],
+			"fixture": "catalog default aircraft data and weather",
+			"id": "split-sebart-avanti-s-a200-p100rx",
+			"rows": 481,
+			"shaft_integrator": "split",
+			"trajectory_sha256": "1f0a9240a81d53a1ad3069bab978c3fe8e71b5e810ccb31a21c2c255d76005e7"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"checkpoint_sha256": [
+				{
+					"sha256": "b8b1de50436fc59c4d7ce5093502b9c87497bbe2c4be61644ec8790492da1857",
+					"tick": 0
+				},
+				{
+					"sha256": "91b3c61e6c6710441184328a1c1b6808184fea995493c06061cd3e9b44e7869f",
+					"tick": 1
+				},
+				{
+					"sha256": "2044487b76a5ff14de494af524c1d4a467daa77564f434956b407cc858d60dbd",
+					"tick": 120
+				},
+				{
+					"sha256": "e95746a27b0e295285e654e5b67e76e6dd925ec8c50027ff3d97c6d54239e6b2",
+					"tick": 240
+				},
+				{
+					"sha256": "62741cccb8ff4873372f51f45fa2a3430d456622b7791ab4658271e2d080abd5",
+					"tick": 480
+				}
+			],
+			"fixture": "calm weather",
+			"id": "p51-coupled-calm",
+			"rows": 481,
+			"shaft_integrator": "coupled-rk4",
+			"trajectory_sha256": "6e553e7ba10429db27fe01f8264a57ca433ad2f934bb0e722b3fa879d0a37468"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"checkpoint_sha256": [
+				{
+					"sha256": "cdd75d4620c4a029a6e0b579b8242488f632694a1f570cdba6f5165c74f1dc27",
+					"tick": 0
+				},
+				{
+					"sha256": "92a5d939202acb3bbf871baa098d3b93955df8b82ccc9cdacc7be90b396db99e",
+					"tick": 1
+				},
+				{
+					"sha256": "fa158722373f0c9f39a46670e7aa9b60769f34cdb4cd02446ef9e89848b40183",
+					"tick": 120
+				},
+				{
+					"sha256": "2dcdc1be46254d7575890ae2e5df5da57b2e2e73555798bb0f36af88d9120231",
+					"tick": 240
+				},
+				{
+					"sha256": "0ad8f9ed777fe6586143dd228c085820bc5a7d58513b8fd76b3bc49cfa294860",
+					"tick": 480
+				}
+			],
+			"fixture": "repeating wind and vertical gust",
+			"id": "p51-coupled-gust",
+			"rows": 481,
+			"shaft_integrator": "coupled-rk4",
+			"trajectory_sha256": "8b15f5c95753d1b1c90c05c61aa7dc2b15626a12dca9ee875c8e5f68d6d47810"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"checkpoint_sha256": [
+				{
+					"sha256": "d824039053c9ef42155e670ef8dcc204263326227d183cce457b65c150b3e9f8",
+					"tick": 0
+				},
+				{
+					"sha256": "34a5b8434bef2c98c7b30802eb17d041cf88ec81126efb084c7325664f560c1f",
+					"tick": 1
+				},
+				{
+					"sha256": "87e0e39919302e23f502fd0110ce4149765493ad03e59236c1b75c4cb2084bdc",
+					"tick": 120
+				},
+				{
+					"sha256": "baf8f040d6b874eaa15e950beedae7d415f68c39479697acb2f48587edf383ba",
+					"tick": 240
+				},
+				{
+					"sha256": "39277bf8fd37516c146e3167fa254cae11318c0764ccb71d6485b7f3c8c46175",
+					"tick": 480
+				}
+			],
+			"fixture": "seeded OU turbulence with hot-high custom atmosphere",
+			"id": "p51-coupled-ou-atmosphere",
+			"rows": 481,
+			"shaft_integrator": "coupled-rk4",
+			"trajectory_sha256": "782f43f47dc7b88121f2f7500dc20717e784aba4d8c0fa77d42eca03bf7a32f5"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"checkpoint_sha256": [
+				{
+					"sha256": "5a1e208099322717f6899a1f155b44f47bb4efcf6e2e1e95f10f9bc0759326a7",
+					"tick": 0
+				},
+				{
+					"sha256": "c79e5ebb356eedfd34477d96bca313c3ab2b8cf94134cc2915883712bbe0b047",
+					"tick": 1
+				},
+				{
+					"sha256": "9b264d8f801d522f7a563ed6195953b7211df0452bf83e2b83bf5386302c5114",
+					"tick": 120
+				},
+				{
+					"sha256": "439a53c639d6a91ce62de1f0f2ba0beb69d7c2162304cb28720f906860b0cd2c",
+					"tick": 240
+				},
+				{
+					"sha256": "6f379a7ecbf65723e3855e36f18a543aaf612e102933e2d4e79a6d771ddc392e",
+					"tick": 480
+				}
+			],
+			"fixture": "P-51 plus validated transported-wash test fixture",
+			"id": "p51-coupled-transported-wash",
+			"rows": 481,
+			"shaft_integrator": "coupled-rk4",
+			"trajectory_sha256": "85ce2918442a0fe7925809f1a28fcc83406544ed95f4383eb0b96405558bd654"
+		}
+	],
+	"checkpoint_ticks": [
+		0,
+		1,
+		120,
+		240,
+		480
+	],
+	"engine": "4.7.2-stable (official)",
+	"format": "openrc-stage-parity-probe v1",
+	"tick_hz": 240,
+	"ticks": 480
+}
