@@ -81,13 +81,19 @@ def independent_solvers() -> dict:
     def periodic_event(t, _y):
         return np.sin(4.0 * np.pi * (t - 0.05))
     event_results = {}
-    for step in (1.0, 0.05):
+    for step in (1.0, 0.05, 0.04):
         solution = solve_ivp(lambda _t, _y: [1.0], (0.0, 1.0), [0.0], first_step=step, max_step=step,
                              events=periodic_event, t_eval=np.linspace(0.0, 1.0, 1001), rtol=1e-10, atol=1e-12)
         roots = solution.t_events[0]
         assert solution.success
         if step == 1.0:
             assert len(roots) == 0
+        elif step == 0.05:
+            # Pinned SciPy reports the first root at both adjacent endpoints.
+            # Keep the raw evidence: resolving crossings also needs an event
+            # identity/re-arm policy, not just a smaller maximum step.
+            assert len(roots) == 5 and abs(roots[0] - roots[1]) < 1e-10
+            assert np.max(np.abs(roots[1:] - [0.05, 0.3, 0.55, 0.8])) < 1e-10
         else:
             assert len(roots) == 4 and np.max(np.abs(roots - [0.05, 0.3, 0.55, 0.8])) < 1e-10
         event_results[str(step)] = {"success": bool(solution.success), "output_samples": len(solution.t), "detected_times_s": roots.tolist()}

@@ -1,12 +1,12 @@
 # Reusable electric propulsion
 
-2026-10-10 · Revision 2 · Step prefix: **EL** (existing ROADMAP M4b namespace)
+2026-10-10 · Revision 3 · Step prefix: **EL** (existing ROADMAP M4b namespace)
 
 **Status: EL1a source kernel software verified; electric aircraft integration remains planned.**
 
 Main-line physics subplan, selected by the owner on 2026-10-10. Owns `app/physics/electric_motor.gd`, electric tests, `research/propulsion/el*/` and `docs/research/propulsion/EL*/`; future loader, propulsion, trim, session and trace edits remain main-line work. Aircraft geometry/data, catalog, input and audio changes follow their owners. Research: [EL1a evidence](research/propulsion/EL1a/README.md), [primary sources](research/propulsion/EL1a/sources.md), [Timber reference](research/propulsion/EL1a/timber-reference.md). Related: [coupled shaft](PROPULSION-CORE-PLAN.md), [Timber](TIMBER-INTEGRATION-PLAN.md), [atmosphere](ATMOSPHERE-PLAN.md), [main roadmap](../ROADMAP.md).
 
-Revision 2 incorporates [twelve targeted Internet investigations, EL1a-R1](research/propulsion/EL1a-R1/README.md). They tighten parameter provenance, ESC behavior, battery/load boundaries, propeller coverage, event handling and physical acceptance. This revision changes the plan and research only; it does not extend the verified EL1a implementation.
+Revision 2 incorporated [twelve hardware and measurement investigations, EL1a-R1](research/propulsion/EL1a-R1/README.md). Revision 3 adds [twelve implementation investigations, EL1a-R2](research/propulsion/EL1a-R2/README.md): Godot ownership/precision, data/replay, numerical physics, verification tools and calibration. Isolated tool probes support the new decisions; the verified EL1a runtime implementation is unchanged.
 
 ## Outcome and first configuration
 
@@ -39,11 +39,15 @@ Invalid types, nonfinite values, negative RPM/voltage, duty outside `[0,1]`, non
 
 Add an explicit `electric_prop` branch to both `aircraft_data.gd` and `openrc-aircraft-v1.schema.json`; keep all existing branches and raw file identities unchanged. Validate the raw block before deriving a normalized model. Reject incompatible combustion/turbine fields and unsupported electric configurations with useful messages.
 
+The current schema uses `if turbine / else glow`, so adding an enum value alone is insufficient. Make branches disjoint while retaining missing-kind legacy glow behavior. Close new electric objects in both schema and loader without retroactively closing legacy objects. Test valid inputs in both validators, integer-valued JSON numbers, unknown/mixed fields, serialized numeric overflow, and separately constructed nonfinite values; schema acceptance cannot replace runtime finiteness and cross-field checks. [R2-04](research/propulsion/EL1a-R2/02-data-state.md)
+
 Proposed raw blocks (final names decided with loader tests): `motor` for Kv, equivalent resistance and no-load current; `esc` for an explicit ideal motoring mode; `battery` for fixed terminal voltage; the existing `propeller` geometry/load block and thrust offset. Every numeric entry retains `{value, unit, kind, source}`. State exactly whether resistance includes controller/wiring losses; never count the same loss twice. Keep rated battery capacity and ESC rating as reference metadata until the implemented law actually consumes them. Do not require a fake glow idle RPM, power curve, combustion lag or friction table.
 
 The measurement manifest records winding connection, line/phase and RMS/peak conventions, temperature, identification method and validity range for Kv/R/I0. Nameplate Kv, phase-pair resistance and bus no-load current do not automatically form a consistent equivalent-port fit. Store I0's voltage/RPM/temperature context; constant I0 is a declared approximation. Keep pilot command, receiver signal and effective motor-port duty distinct. EL1's command-to-duty identity must be explicitly selected as an ideal mapping, with no claim that it matches Avian firmware. [Investigations 01–02](research/propulsion/EL1a-R1/01-motor-esc.md)
 
 Use the loaded `rotor_inertia` for propeller + spinner + motor rotor, separate from aircraft locked inertia. Require positive carrier inertia after rotor subtraction. Begin with `+1` rotor sense and direct drive; reject unsupported reverse/geared configurations rather than assuming the existing coupling handles them. A future gearing step must reflect speed, torque and inertia consistently. Multiple independent configurations must coexist without modifying a global singleton or branching on aircraft name.
+
+Keep normalized definitions immutable by ownership; put future SOC, polarization, ESC modes/timers and sample phase in each simulation's state. The loader currently creates plain dictionaries, so no Resource/cache rewrite is needed. Test two sessions from the same input file as well as two different motor configurations; advancing or restoring one must not mutate the other's definition, state or checkpoint. [R2-05](research/propulsion/EL1a-R2/02-data-state.md)
 
 ### EL1c–d: shared loads, trim and continuous state
 
@@ -56,13 +60,21 @@ Use the loaded `rotor_inertia` for propeller + spinner + motor rotor, separate f
 | `rotor_coupling.gd`, `dynamics.gd` | Reuse signed-axis/locked-inertia contract within its supported sense | Independent momentum and energy checks, tilted axis, source-off behavior; no duplicate stator reaction. |
 | `flight_session.gd` checkpoint/metadata, `trace.gd` | Declare electric identity, source/configuration, integrator and state layout; expose electrical telemetry at one defined sample time | Fresh-session replay, cross-kind/config mismatch rejection, no old readers interpreting an electric drive as combustion shaft balance. |
 
+Keep Godot's existing 240 Hz callback as the sole live clock. Input sampling at priority −1 precedes `Simulation` at priority 0; manual trace stepping remains the existing offline route. Do not add an electric Node clock, Timer or frame accumulator. Keep doubles and packed arrays through physics/checkpoints and convert only detached render state. Extend pause and 30/60/144 FPS checks to electric flight; the configured 12-step catch-up cap permits slow motion below 20 FPS rather than unlimited catch-up. [R2-01/02](research/propulsion/EL1a-R2/01-godot-runtime.md)
+
 The existing v4 checkpoint and weather routes require a version/reader audit before extension; do not simply add fields to a historical layout. Electrical telemetry must identify whether it describes the accepted endpoint or the previous-state load sample. Preserve existing CSV readers until a versioned extension has negative-control tests. Fixed-voltage EL1 needs no SOC state; EL2 must add all continuous battery states to checkpoints, rollback, hashes and replay together.
+
+Retain native-byte checkpoint round trips; compare fresh-session continuation on the same pinned executable. Keep exact input-file SHA, legacy normalized-data digest and complete configuration/state identity distinct: default JSON float formatting already permits a legacy digest collision. Persist existing weather RNG and any newly introduced stochastic state, without adding randomness to the deterministic motor. Cross-platform tolerance evidence stays separate from same-build bitwise replay. [R2-06](research/propulsion/EL1a-R2/02-data-state.md)
+
+EL1a eliminates winding inductance; its exponential fixture validates mechanical RPM response, not electrical settling or PWM ripple. Bound the supported configurations using mechanical timescales and refinement; adding a current state later requires measured `L/R`, a bandwidth requirement and a separate oracle. Reuse G2's body-relative spin and locked inertia. Independently check the axial no-load momentum/work equations; do not use the production coupling function to construct its own expected answer or add stator reaction twice. [R2-07/08](research/propulsion/EL1a-R2/03-numerical-physics.md)
 
 Kv×voltage is an electrical no-load reference, not a mechanical overspeed governor. A propeller driven by the airflow may exceed it while the motoring-only source draws zero current. Define the permitted propeller operating range and root bracket explicitly; do not clamp shaft speed to Kv×voltage or mistake a clamped endpoint for equilibrium.
 
 Treat stopping as a specific numerical step: constant loss near zero can produce negative intermediate RK states. Establish event location or a declared convergence-tested low-speed regularization before flight integration. Do not hide the error with unconditional stage clamping. Test restart from rest, small duty below breakaway, zero-duty deceleration and a throttle chop at several timesteps. The existing propeller cutoff cannot restart a prop from air; stopped-prop drag and windmilling acceptance still depend on G1d. This plan does not promise a physically correct dead-stick glide before that evidence exists.
 
 Specify event direction, trial-state domain and deterministic ordering when a continuous stop/exhaustion crossing meets a command or ESC sample boundary. A negative-RPM-refusing source needs a documented event-localization strategy, not an undefined trial callback. Keep continuous crossings separate from sampled ESC decisions; save the sampled controller's timers and sampling phase in replay. Check event-time convergence independently of smooth-trajectory order. A steady torque zero also needs a stable branch: the fixed-body scalar fixture uses `(dQsource/domega - dQprop/domega)/Jrot < 0`; this is not a whole-aircraft stability proof. [Investigation 10](research/propulsion/EL1a-R1/04-numerics-telemetry-uncertainty.md)
+
+Use offline DOP853/Radau references with independently formulated equations, per-state tolerances and bounded internal steps; dense output alone does not resolve events. Require expected final time/status and event identity/re-arm checks, including a root at a shared endpoint. Compare charge, work and momentum alongside trajectories at 120/240/480/960 Hz. The R2 probes qualify tools on synthetic cases; real-session comparison remains EL1d/EL2 work. [R2-11](research/propulsion/EL1a-R2/04-verification-tools.md)
 
 ### EL1e–f: aircraft and product boundary
 
@@ -71,6 +83,8 @@ Input arming remains in the shared radio path. An armed electric command of zero
 Exercise two synthetic configurations (e.g. 800 Kv/4S and 400 Kv/6S) through the same loader/trim/session route before any model-specific tuning. Preserve reference prop provenance and aircraft mass/CG/inertia; an electric Stik conversion needs its own loadout data, not only a renamed engine. Timber TT-07 supplies its dataset; TT-08 connects it, TT-09 proves isolated flight and TT-10 enables the catalog entry. TT-12 owns motor/prop sound and visual stop behavior. Do not make a generic combustion buzz the acceptance reference for electric audio.
 
 Catalog enablement follows the existing model/menu process, including negative tests for unready data. Export proof must load the new model/data from a clean package. Flaps, slats, floats, water, SAFE/AS3X imitation, thrust reverse, gearboxes and multi-motor aircraft are independent future capabilities.
+
+Preserve the existing timeout/import/parse/error-log gates and require positive completion counts in new isolated suites. Godot can log a runtime error and exit zero. Extend the clean-package field-data pattern to assert electric dataset SHA, selected kind and an advancing trace; the default Stik smoke alone is insufficient. [R2-10](research/propulsion/EL1a-R2/04-verification-tools.md)
 
 ## Battery and ESC growth
 
@@ -84,6 +98,8 @@ Define the auxiliary-load boundary before EL2a: BEC/receiver/servo draw is eithe
 
 EL2b adds a polarization RC branch only with identifiable data: `dVp/dt = Ipack/C1 − Vp/(R1 C1)` and `OCV` above becomes `OCV−Vp`. Use battery pulse tests with known temperature, state and uncertainty. Never transfer another pack's fitted coefficients as Timber measurements. Empty/overdrawn states or an infeasible bus operating point need transactional failure or explicit cutoff events, not silent SOC/voltage clipping.
 
+Start battery curves with bounded linear lookup; retain existing signed propeller interpolation and explicit coverage policy. Keep source knots, RPM/Re/J ranges and gaps visible. PCHIP is a later evidence-based comparison within supported segments, not a dependency or a way to fill missing data; preserve windmill sign crossings and reject undocumented extrapolation. [R2-09](research/propulsion/EL1a-R2/03-numerical-physics.md)
+
 Promote zero-RC to one-RC only when pulse/recovery residuals exceed measurement uncertainty and identified parameters predict held-out traces. Characterize temperature/SOC/current limits first; add a second RC branch, hysteresis or thermal state only if those residuals justify it. Existing UAV papers use different packs and test envelopes, including partial/low-rate discharge; their reported accuracy does not validate a 4S Timber powertrain. [Investigation 04](research/propulsion/EL1a-R1/02-battery.md)
 
 EL3 adds a per-ESC state machine for ramp, signal loss, low-voltage cutoff, recovery/hysteresis and optional braking. Sample discrete transitions on a documented boundary; include timers/modes in reset/replay. Manufacturer settings are configuration-specific: Hobbywing behavior is a separate preset, not Spektrum firmware. A measured brake requires a matching motor/propeller law and G1d, and does not imply battery regeneration. EL4 adds thermal winding resistance and ESC derating only after electrical energy/loss accounting is established.
@@ -93,6 +109,8 @@ The Timber manual establishes soft LVC, but its transmitter alarm setting does n
 ## Physical evidence and promotion
 
 EL5/6 require a measurement protocol before fitting. Preserve raw files, exact hardware/firmware/settings, calibration, environmental conditions and the fit/validation split. Record the observation bandwidth and timestamp meaning alongside the model's state-time convention. The following requirements make the existing accuracy targets interpretable; they do not claim the measurements already exist.
+
+Fit bounded, scaled parameters against appropriately weighted observations and inspect the physical sensitivity Jacobian separately from the optimizer's loss-modified Jacobian. Repeat starts and noise/bound sensitivity; add independent measurements when columns are dependent. A successful RPM fit can determine only a resistance–inertia product in a limiting case. Full numerical rank is necessary for that local fit, not proof of useful uncertainty or global identifiability. Keep SciPy/NumPy as pinned, isolated research tools. [R2-12 and executed counterexample](research/propulsion/EL1a-R2/04-verification-tools.md)
 
 Reuse [VAL-7a static reduction](research/validation/VAL-7a/README.md), [VAL-7c RPM-step diagnostics](research/validation/VAL-7c/README.md), and [G1a1/G1b1 propeller provenance and coverage](research/propulsion/G1b1/README.md) through explicit format extensions where needed. VAL-7c's independent-input uncertainty option does not cover arbitrary filtered/correlated telemetry. G1b1's historical v3 load-time reconstruction does not cover new electric endpoint telemetry or internal coupled stages automatically. Keep those limitations visible and add negative controls when extending the tools.
 
@@ -115,6 +133,7 @@ Keep ROADMAP's ±10% current/thrust and ±15% endurance limits. Predeclare opera
 | --- | --- | --- | --- | --- |
 | EL1a | Pure three-constant source, ideal motoring ESC, fixed bus; research and integration plan | Existing EL scope | [1,057 focused checks, four isolated mutations, existing app regression and import](research/propulsion/EL1a/README.md); hand arithmetic, energy accounting, analytic transient, prop/coupling probes | Complete — software only (2026-10-10) |
 | EL1a-R1 | Twelve targeted investigations and plan revision | EL1a; owner research request | [Question/source/decision/test matrix](research/propulsion/EL1a-R1/README.md); source-scope cross-checks; documentation validation | Complete — research only (2026-10-10) |
+| EL1a-R2 | Twelve code/Godot/numerics/tool investigations and plan revision | EL1a/R1; owner implementation-research request | [Question/code/acceptance matrix and isolated probes](research/propulsion/EL1a-R2/README.md); runner controls, independent smooth reference and identifiability counterexample | Complete — research/tools only (2026-10-10) |
 | EL1b | Provenance-complete `electric_prop` loader/schema and two synthetic configurations | EL1a | Missing/unknown/unit/nonfinite/overflow failures; normalization parity; all old aircraft unchanged | Planned |
 | EL1c | Shared electric source dispatch and steady operating-point/trim support | EL1b, G1 prop support | Residual and bracket checks; independent quadratic fixture; density affects prop load, not motor constants | Planned |
 | EL1d | Coupled session, zero-speed transition, checkpoints and telemetry | EL1c, H8/G2a/G2b | Momentum/work, 120/240/480/960 Hz refinement, exact restart/replay, rollback, defined electrical sampling; cost report | Planned |
@@ -130,5 +149,7 @@ Keep ROADMAP's ±10% current/thrust and ±15% endurance limits. Predeclare opera
 EL1 is complete only after its integration and flight proofs. EL1a numerical verification alone does not close it. Promotion remains experimental until independent physical evidence and pilot acceptance exist. Use one bounded change per substep, preserve old goldens, and do not tune against the same observations reserved for EL5/6 acceptance.
 
 Before declaring the integrated path ready, measure whole-session cost with the existing 500 µs/tick target and report the source's incremental cost separately. A microbenchmark cannot close Gate P. If high-Kv/low-inertia configurations are stiff at 240 Hz, first bound the supported parameter envelope from timestep evidence; introduce substepping/implicit coupling only as a separately verified change.
+
+Use warmed whole-tick batches on the named target, state/telemetry fingerprints and defined median/p95 batch statistics across the fleet and electric regimes. Existing best-of microbenchmarks, smoothed tick timers and frame percentiles answer different questions. Preserve Gate P's prepared/native experiments; require repeatable whole-session gains and platform/numerical parity before selecting GDExtension. [R2-03](research/propulsion/EL1a-R2/01-godot-runtime.md)
 
 **Next step:** EL1b, the electric loader/schema and two synthetic configurations. Obtain the motor's equivalent R/I0, rotor inertia and matched stock-prop thrust/torque data alongside code integration. No real Timber parameter is supplied by the synthetic fixtures.
