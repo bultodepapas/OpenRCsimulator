@@ -63,8 +63,8 @@ func _initialize() -> void:
 	if demo.is_empty():
 		_run_default_session_checks()
 		return
-	if demo not in ["4s", "6s"]:
-		printerr("EL1e electric input requires --electric-demo=4s or --electric-demo=6s")
+	if demo not in ["4s", "6s", "4s-battery", "6s-battery"]:
+		printerr("electric input requires a supported --electric-demo selector")
 		quit(2)
 		return
 	_run(demo)
@@ -117,7 +117,7 @@ func _run(demo: String) -> void:
 	var propulsion: Dictionary = propulsion_value if propulsion_value is Dictionary else {}
 	var path: String = str(_session.get("aircraft_path"))
 	var sim: Node = _session.get("sim") as Node
-	_check("explicit demo selected its synthetic electric Stik data", path.ends_with("synthetic_stik_electric_%s.json" % demo)
+	_check("explicit demo selected its synthetic electric Stik data", path.ends_with("synthetic_stik_electric_%s.json" % demo.replace("-", "_"))
 		and aircraft.get("ok", false) and PROPULSION.is_electric(propulsion), path)
 	_check("direct route starts on keyboard", not _session.get("radio").connected and _panel_has("input: keyboard"))
 	_check("trimmed electric flight is runnable", _session.call("is_flyable") and not sim.get("paused"))
@@ -139,7 +139,7 @@ func _run(demo: String) -> void:
 	_check("untouched throttle stays SAFE", not radio.get("armed") and float(_session.get("commands").throttle) == 0.0)
 
 	var zero: Dictionary = _session.call("electrical_state")
-	_check("safe zero duty draws zero motor and battery current", zero.get("ok", false)
+	_check("safe zero duty draws zero motor and drive-input current", zero.get("ok", false)
 		and float(zero.get("duty", NAN)) == 0.0 and float(zero.get("motor_current_a", NAN)) == 0.0
 		and float(zero.get("battery_current_a", NAN)) == 0.0, str(zero))
 	_motion(2, 1.0)
@@ -169,7 +169,7 @@ func _run(demo: String) -> void:
 	var frozen_continuous: PackedFloat64Array = sim.get("continuous").duplicate()
 	var frozen_aux: PackedFloat64Array = sim.get("aux").duplicate()
 	await _settle()
-	_check("pause freezes the complete aircraft and rotor state", int(sim.get("tick")) == frozen_tick
+	_check("pause freezes the complete aircraft and powertrain state", int(sim.get("tick")) == frozen_tick
 		and sim.get("continuous") == frozen_continuous and sim.get("aux") == frozen_aux
 		and var_to_bytes(_session.call("checkpoint")) == var_to_bytes(frozen))
 

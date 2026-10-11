@@ -3668,6 +3668,205 @@
       },
       "additionalProperties": false
     },
+    "electricOcvPoint": {
+      "type": "object",
+      "required": [
+        "soc",
+        "voltage"
+      ],
+      "properties": {
+        "soc": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "voltage": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "maximum": 1.7976931348623157e308
+                },
+                "unit": {
+                  "const": "V"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricOcvResistanceBattery": {
+      "type": "object",
+      "required": [
+        "kind",
+        "capacity_ah",
+        "resistance_ohm",
+        "auxiliary_current_a",
+        "initial_soc",
+        "ocv_points"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ocv_resistance"
+        },
+        "capacity_ah": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "maximum": 1.7976931348623157e308
+                },
+                "unit": {
+                  "const": "Ah"
+                }
+              }
+            }
+          ]
+        },
+        "resistance_ohm": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.7976931348623157e308
+                },
+                "unit": {
+                  "const": "ohm"
+                }
+              }
+            }
+          ]
+        },
+        "auxiliary_current_a": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.7976931348623157e308
+                },
+                "unit": {
+                  "const": "A"
+                }
+              }
+            }
+          ]
+        },
+        "initial_soc": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "ocv_points": {
+          "type": "array",
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/electricOcvPoint"
+                },
+                {
+                  "properties": {
+                    "soc": {
+                      "allOf": [
+                        {
+                          "$ref": "#/$defs/electricEvidence"
+                        },
+                        {
+                          "properties": {
+                            "value": {
+                              "const": 0.0
+                            },
+                            "unit": {
+                              "const": "1"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/electricOcvPoint"
+          },
+          "contains": {
+            "type": "object",
+            "required": [
+              "soc"
+            ],
+            "properties": {
+              "soc": {
+                "type": "object",
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "const": 1.0
+                  }
+                }
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      },
+      "additionalProperties": false
+    },
     "electricEsc": {
       "type": "object",
       "required": [
@@ -3701,7 +3900,14 @@
           "$ref": "#/$defs/electricMotor"
         },
         "battery": {
-          "$ref": "#/$defs/electricBattery"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/electricBattery"
+            },
+            {
+              "$ref": "#/$defs/electricOcvResistanceBattery"
+            }
+          ]
         },
         "esc": {
           "$ref": "#/$defs/electricEsc"

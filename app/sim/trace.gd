@@ -38,6 +38,11 @@ const ELECTRIC_COLUMNS: Array = ["drive_enabled", "drive_duty", "bus_voltage_v",
 ## Optional recorder-owned endpoint sampler; required only for the versioned electric trace.
 var electrical_sample: Callable
 var _electric: bool = false
+var _battery: bool = false
+var _battery_capacity_c: float = NAN
+var _battery_initial_charge_c: float = NAN
+const BATTERY_COLUMNS: Array = ["battery_soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "pack_exhausted"]
+const BATTERY_KEYS: Array[String] = ["soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j"]
 var _coupled_shaft: bool = false
 var _coupled_start_rpm: float = NAN
 
@@ -52,6 +57,9 @@ func clear() -> void:
 	_weather_meta = {}
 	_coupled_shaft = false
 	_electric = false
+	_battery = false
+	_battery_capacity_c = NAN
+	_battery_initial_charge_c = NAN
 	_coupled_start_rpm = NAN
 	_atmosphere = {}
 	_turbulence_index = -1
@@ -130,15 +138,16 @@ func _prepare_weather() -> void:
 
 
 func _prepare_shaft_metadata() -> void:
-	_electric = meta.get("propulsion_model") == Session.ELECTRIC_LAW
+	_battery = meta.get("propulsion_model") == Session.BATTERY_LAW
+	_electric = meta.get("propulsion_model") in [Session.ELECTRIC_LAW, Session.BATTERY_LAW]
 	if not _electric and (meta.has("electric_configuration") or meta.has("electric_sample_timing")):
 		_invalid_weather = true
 		return
-	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW]:
+	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW]:
 		return
-	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
+	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
 			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1" \
-			or meta.get("continuous_layout") != "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled":
+			or meta.get("continuous_layout") != (Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"):
 		_invalid_weather = true
 		return
 	var values: Variant = JSON.parse_string(str(meta.get("recording_start_continuous", "null")))
@@ -146,14 +155,15 @@ func _prepare_shaft_metadata() -> void:
 	if not values is Array or values.is_empty() or not sampled is Array or sampled.size() != 4:
 		_invalid_weather = true
 		return
-	if (meta.get("propwash_model") == "tail-slipstream-axial-transport-v1") != (values.size() > 1):
+	var shaft_index: int = values.size() - (4 if _battery else 1)
+	if shaft_index < 0 or (meta.get("propwash_model") == "tail-slipstream-axial-transport-v1") != (shaft_index > 0):
 		_invalid_weather = true
 		return
 	for value: Variant in values:
 		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
 			_invalid_weather = true
 			return
-	if values[-1] < 0.0 or typeof(sampled[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sampled[0])) or values[-1] != sampled[0]:
+	if values[shaft_index] < 0.0 or typeof(sampled[0]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sampled[0])) or values[shaft_index] != sampled[0]:
 		_invalid_weather = true
 		return
 	if _electric:
@@ -161,14 +171,46 @@ func _prepare_shaft_metadata() -> void:
 		if not electrical_sample.is_valid() or not configuration is Dictionary \
 				or not configuration.get("motor") is Dictionary or not configuration.get("battery") is Dictionary \
 				or not configuration.get("esc") is Dictionary \
-				or configuration.battery.get("kind") != "fixed_voltage" \
+				or configuration.battery.get("kind") != ("ocv_resistance" if _battery else "fixed_voltage") \
 				or meta.get("electric_sample_timing") != "accepted endpoint; current tick input and source-enabled mode":
 			_invalid_weather = true
 			return
 		_columns.append_array(ELECTRIC_COLUMNS)
+		if _battery:
+			for key: String in ["capacity_ah", "initial_soc"]:
+				if typeof(configuration.battery.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(configuration.battery[key])):
+					_invalid_weather = true
+					return
+			_battery_capacity_c = 3600.0 * float(configuration.battery.capacity_ah)
+			_battery_initial_charge_c = _battery_capacity_c * float(configuration.battery.initial_soc)
+			if not is_finite(_battery_capacity_c) or not is_finite(_battery_initial_charge_c) \
+					or _battery_capacity_c <= 0.0 or _battery_initial_charge_c <= 0.0 or _battery_initial_charge_c > _battery_capacity_c \
+					or values[shaft_index + 1] < 0.0 or values[shaft_index + 1] > _battery_initial_charge_c \
+					or values[shaft_index + 2] < 0.0 or values[shaft_index + 3] < 0.0 \
+					or meta.get("battery_model") != "balanced-pack-ocv-resistance-no-regeneration-v1":
+				_invalid_weather = true
+				return
+			_columns.append_array(BATTERY_COLUMNS)
 	_coupled_shaft = true
-	_coupled_start_rpm = values[-1]
+	_coupled_start_rpm = values[shaft_index]
 	_weather_meta = meta.duplicate(true)
+
+
+## Additional battery channels share the endpoint timestamp and carry their own charge budget.
+func _valid_battery_sample(point: Dictionary) -> bool:
+	for key: String in BATTERY_KEYS:
+		if typeof(point.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(point[key])) or float(point[key]) < 0.0:
+			return false
+	if typeof(point.get("exhausted")) != TYPE_BOOL or point.exhausted != (point.remaining_charge_c == 0.0):
+		return false
+	var tolerance: float = maxf(1e-9, _battery_initial_charge_c * 1e-12)
+	if point.soc > 1.0 or point.remaining_charge_c > _battery_initial_charge_c \
+			or absf(point.soc - point.remaining_charge_c / _battery_capacity_c) > 1e-12 \
+			or absf(point.remaining_charge_c + point.consumed_charge_c - _battery_initial_charge_c) > tolerance:
+		return false
+	if point.exhausted and (point.pack_current_a != 0.0 or point.auxiliary_current_a != 0.0 or point.bus_voltage_v != 0.0):
+		return false
+	return true
 
 
 ## Signature matches Simulation.stepped, so it can be connected directly.
@@ -196,6 +238,13 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 				_invalid_weather = true
 				return
 			electric_row.append(float(point[key]))
+		if _battery:
+			if not _valid_battery_sample(point):
+				_invalid_weather = true
+				return
+			for key: String in BATTERY_KEYS:
+				electric_row.append(float(point[key]))
+			electric_row.append(1.0 if point.exhausted else 0.0)
 	if _weather != null:
 		if tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
 				or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 4) or aux.size() < 4 or not _finite(aux):
@@ -297,7 +346,7 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))))
+	lines.append("# format: %s" % ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))))
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft else meta).duplicate(true)
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
 	for visual_key: String in ["visual_context", "visual_timeline"]:

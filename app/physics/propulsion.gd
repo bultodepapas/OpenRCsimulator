@@ -11,6 +11,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const ElectricMotor := preload("res://physics/electric_motor.gd")
+const ElectricSupply: Script = preload("res://physics/electric_supply.gd")
 
 ## Below this, the engine produces nothing (stopped).
 const STOPPED_RPM := 1.0
@@ -81,7 +82,15 @@ static func has_rotor_dynamics(prop: Dictionary) -> bool:
 ## Motor and ideal ESC output for one trial/accepted RPM and command.
 ## The returned fields include shaft_torque_nm, motor_current_a, battery_current_a,
 ## command_voltage_v, motor_voltage_v, bus_power_w and loss powers for session telemetry.
-static func electric_source_state(rpm: float, duty: float, prop: Dictionary, enabled: bool = true) -> Dictionary:
+static func has_dynamic_battery(prop: Dictionary) -> bool:
+	var battery: Variant = prop.get("battery")
+	return is_electric(prop) and battery is Dictionary and battery.get("kind") == "ocv_resistance"
+
+
+## SOC omitted: initial-charge operating point for trim only. Flight passes its stage SOC.
+## available_at_zero is the connected left limit used only during exhaustion localization.
+static func electric_source_state(rpm: float, duty: float, prop: Dictionary, enabled: bool = true,
+		soc: Variant = null, available_at_zero: bool = false) -> Dictionary:
 	if not is_electric(prop):
 		return {ok = false, message = "source is not electric_prop"}
 	var motor_value: Variant = prop.get("motor", {})
@@ -93,9 +102,22 @@ static func electric_source_state(rpm: float, duty: float, prop: Dictionary, ena
 	var motor: Dictionary = motor_value
 	var battery: Dictionary = battery_value
 	var esc: Dictionary = esc_value
-	if battery.get("kind") != "fixed_voltage" or esc.get("kind") != "ideal_motoring" \
+	if battery.get("kind") not in ["fixed_voltage", "ocv_resistance"] or esc.get("kind") != "ideal_motoring" \
 			or esc.get("command_mapping") != "identity":
 		return {ok = false, message = "unsupported electric battery or ESC mode"}
+	if battery.get("kind") == "ocv_resistance":
+		var pack: Dictionary = {}
+		for key: String in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:
+			pack[key] = battery.get(key)
+		var charge_fraction: Variant = battery.get("initial_soc") if soc == null else soc
+		var point: Dictionary = ElectricSupply.evaluate_available(rpm, duty, charge_fraction, pack, motor, enabled) if available_at_zero else ElectricSupply.evaluate(rpm, duty, charge_fraction, pack, motor, enabled)
+		if not point.get("ok", false):
+			return point
+		var supplied: Dictionary = point.source.duplicate()
+		supplied.merge(point, true)
+		supplied.source_kind = "electric_prop"
+		supplied.enabled = enabled
+		return supplied
 	var voltage_value: Variant = battery.get("voltage_v")
 	if typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
 		return {ok = false, message = "fixed_voltage battery needs numeric voltage_v"}
@@ -130,11 +152,10 @@ static func steady_operating_point(duty: float, u: float, prop: Dictionary, rho:
 	if typeof(motor_value) != TYPE_DICTIONARY or typeof(battery_value) != TYPE_DICTIONARY:
 		return _electric_operating_failure("invalid", "electric equilibrium needs motor and battery dictionaries", NAN, NAN, 0)
 	var motor: Dictionary = motor_value
-	var battery: Dictionary = battery_value
 	var kv_value: Variant = motor.get("kv_rpm_per_volt")
-	var voltage_value: Variant = battery.get("voltage_v")
+	var voltage_value: Variant = _electric_reference_voltage(prop)
 	if typeof(kv_value) not in [TYPE_INT, TYPE_FLOAT] or typeof(voltage_value) not in [TYPE_INT, TYPE_FLOAT]:
-		return _electric_operating_failure("invalid", "electric equilibrium needs numeric Kv and fixed voltage", NAN, NAN, 0)
+		return _electric_operating_failure("invalid", "electric equilibrium needs numeric Kv and source voltage", NAN, NAN, 0)
 	var reference_rpm: float = float(kv_value) * float(voltage_value)
 	if not is_finite(reference_rpm) or reference_rpm <= 0.0:
 		return _electric_operating_failure("invalid", "electric no-load reference must be finite and positive", NAN, NAN, 0)
@@ -200,8 +221,7 @@ static func _electric_search_points(lower_rpm: float, upper_rpm: float, u: float
 		var fraction: float = float(i) / float(ELECTRIC_SEARCH_SAMPLES)
 		points.append(lower_rpm * M.exp_(log_span * fraction))
 	var motor: Dictionary = prop.get("motor", {})
-	var battery: Dictionary = prop.get("battery", {})
-	var current_cutoff_rpm: float = duty * float(battery.get("voltage_v", 0.0)) * float(motor.get("kv_rpm_per_volt", 0.0))
+	var current_cutoff_rpm: float = duty * float(_electric_reference_voltage(prop)) * float(motor.get("kv_rpm_per_volt", 0.0))
 	if current_cutoff_rpm > lower_rpm and current_cutoff_rpm < upper_rpm:
 		points.append(current_cutoff_rpm)
 	var diameter: float = float(prop.get("diameter", 0.0))
@@ -219,6 +239,14 @@ static func _electric_search_points(lower_rpm: float, upper_rpm: float, u: float
 		if unique.is_empty() or absf(point - unique[unique.size() - 1]) > maxf(1e-9, absf(point) * 1e-12):
 			unique.append(point)
 	return unique
+
+
+static func _electric_reference_voltage(prop: Dictionary) -> Variant:
+	if not has_dynamic_battery(prop):
+		return prop.get("battery", {}).get("voltage_v")
+	# Zero motor duty includes auxiliary sag, which sets the no-current cutoff.
+	var point: Dictionary = electric_source_state(0.0, 0.0, prop)
+	return point.bus_voltage_v if point.get("ok", false) else NAN
 
 
 static func _electric_net_torque(rpm: float, duty: float, u: float, prop: Dictionary, rho: float) -> float:

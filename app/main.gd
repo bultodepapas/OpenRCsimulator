@@ -215,8 +215,8 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	_electric_demo = str(args.get("electric-demo", ""))
-	if args.has("electric-demo") and (_electric_demo not in ["4s", "6s"] or aircraft_id != Catalog.DEFAULT_ID or _scripted):
-		printerr("electric demo requires 4s or 6s, the default visual airframe, and a physics flight")
+	if args.has("electric-demo") and (_electric_demo not in ["4s", "6s", "4s-battery", "6s-battery"] or aircraft_id != Catalog.DEFAULT_ID or _scripted):
+		printerr("electric demo requires 4s, 6s, 4s-battery or 6s-battery, the default visual airframe, and a physics flight")
 		set_process(false)
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
@@ -251,7 +251,7 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	var physics_path: String = str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo
+	var physics_path: String = str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_")
 	session.setup(physics_path)
 	if args.has("shaft-integrator") and not session.is_flyable():
 		printerr("shaft integrator refused: ", session.pause_reason)
@@ -425,6 +425,10 @@ func _status() -> String:
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
 	if not _electric_demo.is_empty():
 		line = "Synthetic electric test airframe (%s)\n" % _electric_demo.to_upper() + line
+		if session.battery_is_dynamic():
+			var battery: Dictionary = session.electrical_state()
+			if battery.get("ok", false):
+				line = "Battery %.1f%% | %.2f V | %.1f A%s\n" % [100.0 * battery.soc, battery.bus_voltage_v, battery.pack_current_a, " | depleted" if battery.exhausted else ""] + line
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
 	line += "\n" + session.radio.describe()
 	if session.calibration != null:

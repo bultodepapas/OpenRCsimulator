@@ -1,0 +1,27 @@
+--- a/sim/flight_session.gd
++++ b/sim/flight_session.gd
+@@ -28,6 +28,8 @@
+ var _shaft_explicit: bool = false
+ var _shaft_pending_reset: bool = false
+ var shaft_error: String = ""
++var _el2_probe_events: Array[Dictionary] = []
++var _el2_probe_step_usec: int = -1
+ 
+ 
+ ## G2a/G2b: experimental shaft coupling is a launch-time choice, independent of aircraft coefficients.
+@@ -1242,12 +1244,15 @@
+ func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivative: Callable,
+ 		first: PackedFloat64Array) -> PackedFloat64Array:
+ 	var result: Dictionary
++	var probe_started_usec: int = Time.get_ticks_usec()
+ 	if battery_is_dynamic():
+ 		result = BatteryStep.advance(combined, at, dt, derivative, first,
+ 			RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop)
+ 	else:
+ 		result = ElectricStop.advance(combined, at, dt, derivative, first,
+ 			combined.size() - 1, _project_electric_stop)
++	_el2_probe_step_usec = Time.get_ticks_usec() - probe_started_usec
++	_el2_probe_events = result.get("events", []).duplicate(true)
+ 	return result.state if result.ok else PackedFloat64Array([NAN])
+ 
+ 

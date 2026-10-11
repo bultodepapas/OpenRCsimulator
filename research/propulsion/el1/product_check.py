@@ -65,16 +65,22 @@ def write_summary(path: Path, summary: dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--battery", action="store_true", help="qualify the dynamic OCV/resistance battery routes")
+    parser.add_argument("--app", type=Path, default=APP, help="app checkout to verify")
     parser.add_argument("--out", type=Path, default=Path("/tmp/openrc-el-product"),
                         help="directory for logs and the machine-readable result")
     args = parser.parse_args()
+    app = args.app.resolve()
+    demos = ("4s-battery", "6s-battery") if args.battery else DEMOS
+    law = "electric-ocv-resistance-coupled-events-v1" if args.battery else ELECTRIC_LAW
+    trace_format = "openrc-trace v8" if args.battery else "openrc-trace v7"
     out: Path = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     package_dir = out / "linux-package"
     package_dir.mkdir(parents=True, exist_ok=True)
     summary_path = out / "product-check.json"
     summary: dict[str, Any] = {
-        "format": "openrc-el1e-product-proof v1",
+        "format": "openrc-el2a-product-proof v1" if args.battery else "openrc-el1e-product-proof v1",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "status": "running",
         "engine": "",
@@ -96,16 +102,16 @@ def main() -> int:
             raise RuntimeError(f"pinned Linux export template is not already installed: {template}; no download attempted")
 
         expected_hashes: dict[str, str] = {}
-        for demo in DEMOS:
-            dataset = APP / "data" / "aircraft" / f"synthetic_stik_electric_{demo}.json"
+        for demo in demos:
+            dataset = app / "data" / "aircraft" / f"synthetic_stik_electric_{demo.replace('-', '_')}.json"
             expected_hashes[demo] = sha256(dataset)
             result: dict[str, Any] = {
-                "dataset": str(dataset.relative_to(ROOT)),
+                "dataset": str(dataset.relative_to(ROOT)) if dataset.is_relative_to(ROOT) else str(dataset),
                 "dataset_sha256": expected_hashes[demo],
                 "main_scene_input": {},
                 "fixed_fps": {},
             }
-            main_command = [engine, "--headless", "--path", str(APP), "--audio-driver", "Dummy",
+            main_command = [engine, "--headless", "--path", str(app), "--audio-driver", "Dummy",
                             "--script", "res://tests/test_electric_input.gd", "--", f"--electric-demo={demo}"]
             main_log = out / f"{demo}-main-input.log"
             main_output = run(main_command, ROOT, main_log, timeout=60)
@@ -122,7 +128,7 @@ def main() -> int:
 
             fixed_hashes: dict[str, str] = {}
             for fps in FPCS:
-                command = [engine, "--headless", "--path", str(APP), "--audio-driver", "Dummy",
+                command = [engine, "--headless", "--path", str(app), "--audio-driver", "Dummy",
                            "--fixed-fps", str(fps), "--script", "res://tests/run_fixed_step.gd",
                            "--", f"--electric-demo={demo}"]
                 log_path = out / f"{demo}-fixed-{fps}.log"
@@ -146,11 +152,11 @@ def main() -> int:
 
         summary["invalid_demo_controls"] = []
         for index, options in enumerate((("--electric-demo=3s",),
-                                         ("--electric-demo=4s", "--aircraft=gp-extra-300s-60"),
-                                         ("--electric-demo=6s", "--scripted"))):
+                                         (f"--electric-demo={demos[0]}", "--aircraft=gp-extra-300s-60"),
+                                         (f"--electric-demo={demos[1]}", "--scripted"))):
             refused_trace = out / f"refused-demo-{index}.csv"
             refused_trace.unlink(missing_ok=True)
-            command = [engine, "--headless", "--path", str(APP), "--", *options,
+            command = [engine, "--headless", "--path", str(app), "--", *options,
                        f"--trace={refused_trace}", "--t=0.2"]
             refused = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=60)
             output = refused.stdout + refused.stderr
@@ -160,7 +166,7 @@ def main() -> int:
             summary["invalid_demo_controls"].append({"options": list(options), "exit_code": refused.returncode})
 
         binary = package_dir / "openrc-electric.x86_64"
-        export_command = [engine, "--headless", "--path", str(APP), "--export-release", "Linux", str(binary)]
+        export_command = [engine, "--headless", "--path", str(app), "--export-release", "Linux", str(binary)]
         export_log = out / "linux-export.log"
         export_output = run(export_command, ROOT, export_log, timeout=240)
         if not binary.is_file() or binary.stat().st_size == 0:
@@ -176,7 +182,7 @@ def main() -> int:
             "runs_from_empty_cwd": True,
             "traces": {},
         }
-        for demo in DEMOS:
+        for demo in demos:
             empty_cwd = out / f"empty-cwd-{demo}"
             empty_cwd.mkdir(exist_ok=True)
             if any(empty_cwd.iterdir()):
@@ -189,11 +195,11 @@ def main() -> int:
             if not trace.is_file() or trace.stat().st_size == 0:
                 raise RuntimeError(f"exported {demo} build did not write a trace; see {log_path}")
             metadata, columns, rows = parse_trace(trace)
-            if metadata.get("format") != "openrc-trace v7":
-                raise RuntimeError(f"exported {demo} trace is not v7: {metadata.get('format')!r}")
+            if metadata.get("format") != trace_format:
+                raise RuntimeError(f"exported {demo} trace has wrong version: {metadata.get('format')!r}")
             if metadata.get("aircraft_input_sha256") != expected_hashes[demo]:
                 raise RuntimeError(f"packaged {demo} dataset SHA mismatch: {metadata.get('aircraft_input_sha256')!r}")
-            if metadata.get("propulsion_model") != ELECTRIC_LAW:
+            if metadata.get("propulsion_model") != law:
                 raise RuntimeError(f"packaged {demo} trace has wrong propulsion kind: {metadata.get('propulsion_model')!r}")
             if metadata.get("shaft_integrator") != "coupled-rk4":
                 raise RuntimeError(f"packaged {demo} trace is missing the coupled electric solver")
@@ -201,6 +207,10 @@ def main() -> int:
                 raise RuntimeError(f"packaged {demo} trace did not advance 48 contiguous 240 Hz ticks")
             if not {"drive_duty", "motor_current_a", "drive_bus_current_a"}.issubset(columns):
                 raise RuntimeError(f"packaged {demo} trace is missing electrical columns: {columns}")
+            if args.battery:
+                required = {"battery_soc", "pack_current_a", "remaining_charge_c", "consumed_charge_c", "terminal_energy_j", "pack_heat_j"}
+                if not required.issubset(columns) or not (float(rows[-1]["remaining_charge_c"]) < float(rows[0]["remaining_charge_c"])):
+                    raise RuntimeError(f"packaged {demo} battery did not discharge")
             package_result["traces"][demo] = {
                 "command": command,
                 "log": str(log_path),
@@ -223,7 +233,7 @@ def main() -> int:
         print(json.dumps({"status": summary["status"], "summary": str(summary_path),
                           "binary_sha256": package_result["binary_sha256"],
                           "flight_sha256": {demo: summary["demos"][demo]["fixed_fps"]["30"]["flight_sha256"]
-                                            for demo in DEMOS}}, indent=2))
+                                            for demo in demos}}, indent=2))
         return 0
     except Exception as error:
         summary["status"] = "failed"

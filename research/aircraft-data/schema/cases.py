@@ -187,6 +187,90 @@ def build_cases():
     change('electric-unknown-propeller-field', electric,
            ('propulsion', 'propeller', 'gear_ratio'), 2.0)
 
+    # EL2a battery data uses strict quantity provenance and a closed OCV curve.
+    battery = fleet['synthetic_stik_electric_4s_battery']
+    battery_integer = deepcopy(battery)
+    battery_raw = battery_integer['propulsion']['battery']
+    for key, value in [('capacity_ah', 3), ('resistance_ohm', 0),
+                       ('auxiliary_current_a', 0), ('initial_soc', 1)]:
+        battery_raw[key]['value'] = value
+    battery_raw['ocv_points'] = [
+        {'soc': {'value': 0, 'unit': '1', 'kind': 'estimated', 'source': 'EL2a synthetic authored integer control; not Timber data or a measured LiPo fit'},
+         'voltage': {'value': 12, 'unit': 'V', 'kind': 'estimated', 'source': 'EL2a synthetic authored integer control; not Timber data or a measured LiPo fit'}},
+        {'soc': {'value': 1, 'unit': '1', 'kind': 'estimated', 'source': 'EL2a synthetic authored integer control; not Timber data or a measured LiPo fit'},
+         'voltage': {'value': 17, 'unit': 'V', 'kind': 'estimated', 'source': 'EL2a synthetic authored integer control; not Timber data or a measured LiPo fit'}},
+    ]
+    cases.append(Case('electric-battery-integer-json-numbers', battery_integer, True, True))
+    change('electric-battery-unknown-field', battery,
+           ('propulsion', 'battery', 'controller_mode'), 'ideal')
+    change('electric-battery-mixed-fixed-voltage-field', battery,
+           ('propulsion', 'battery', 'voltage_v'), {
+               'value': 14.8, 'unit': 'V', 'kind': 'estimated',
+               'source': 'EL2a mixed-field negative control',
+           })
+    change('electric-battery-point-unknown-field', battery,
+           ('propulsion', 'battery', 'ocv_points', 0, 'temperature_c'), 25.0)
+    change('electric-battery-missing-initial-soc', battery,
+           ('propulsion', 'battery', 'initial_soc'), delete=True)
+    change('electric-battery-zero-capacity', battery,
+           ('propulsion', 'battery', 'capacity_ah', 'value'), 0.0)
+    change('electric-battery-negative-resistance', battery,
+           ('propulsion', 'battery', 'resistance_ohm', 'value'), -0.01)
+    change('electric-battery-negative-auxiliary-current', battery,
+           ('propulsion', 'battery', 'auxiliary_current_a', 'value'), -0.1)
+    change('electric-battery-zero-initial-soc', battery,
+           ('propulsion', 'battery', 'initial_soc', 'value'), 0.0)
+    change('electric-battery-first-soc-not-zero', battery,
+           ('propulsion', 'battery', 'ocv_points', 0, 'soc', 'value'), 0.1)
+    change('electric-battery-no-full-soc-endpoint', battery,
+           ('propulsion', 'battery', 'ocv_points', 1, 'soc', 'value'), 0.9)
+    change('electric-battery-zero-ocv', battery,
+           ('propulsion', 'battery', 'ocv_points', 0, 'voltage', 'value'), 0.0)
+    change('electric-battery-wrong-voltage-unit', battery,
+           ('propulsion', 'battery', 'ocv_points', 0, 'voltage', 'unit'), 'mV')
+    change('electric-battery-missing-soc-source', battery,
+           ('propulsion', 'battery', 'ocv_points', 0, 'soc', 'source'), delete=True)
+    change('electric-battery-too-few-points', battery,
+           ('propulsion', 'battery', 'ocv_points'), battery['propulsion']['battery']['ocv_points'][:1])
+
+    def fixture_point(soc, voltage):
+        source = 'EL2a synthetic authored runtime control; not Timber data or a measured LiPo fit'
+        return {
+            'soc': {'value': soc, 'unit': '1', 'kind': 'estimated', 'source': source},
+            'voltage': {'value': voltage, 'unit': 'V', 'kind': 'estimated', 'source': source},
+        }
+
+    # Array ordering and physical feasibility remain production-loader checks.
+    curve_order = deepcopy(battery)
+    curve_order['propulsion']['battery']['ocv_points'] = [
+        fixture_point(0.0, 12.0), fixture_point(1.0, 16.0), fixture_point(0.5, 16.8),
+    ]
+    cases.append(Case('electric-battery-runtime-only:soc-order', curve_order, True, False))
+    curve_voltage = deepcopy(battery)
+    curve_voltage['propulsion']['battery']['ocv_points'] = [
+        fixture_point(0.0, 12.0), fixture_point(0.5, 16.0), fixture_point(1.0, 15.0),
+    ]
+    cases.append(Case('electric-battery-runtime-only:voltage-order', curve_voltage, True, False))
+    infeasible = deepcopy(battery)
+    infeasible['propulsion']['battery']['resistance_ohm']['value'] = 60.0
+    cases.append(Case('electric-battery-runtime-only:minimum-ocv-feasibility', infeasible, True, False))
+    slope_overflow = deepcopy(battery)
+    slope_overflow['propulsion']['battery']['ocv_points'] = [
+        fixture_point(0.0, 12.0), fixture_point(3e-308, 24.0), fixture_point(1.0, 25.0),
+    ]
+    cases.append(Case('electric-battery-runtime-only:ocv-slope-overflow', slope_overflow, True, False))
+    coulomb_overflow = deepcopy(battery)
+    coulomb_overflow['propulsion']['battery']['capacity_ah']['value'] = 1e308
+    cases.append(Case('electric-battery-runtime-only:coulomb-overflow', coulomb_overflow, True, False))
+    initial_charge_underflow = deepcopy(battery)
+    initial_charge_underflow['propulsion']['battery']['capacity_ah']['value'] = 3e-308
+    initial_charge_underflow['propulsion']['battery']['initial_soc']['value'] = 1e-21
+    cases.append(Case('electric-battery-runtime-only:initial-charge-underflow', initial_charge_underflow, True, False))
+    auxiliary_overflow = deepcopy(battery)
+    auxiliary_overflow['propulsion']['battery']['resistance_ohm']['value'] = 1e308
+    auxiliary_overflow['propulsion']['battery']['auxiliary_current_a']['value'] = 1e308
+    cases.append(Case('electric-battery-runtime-only:auxiliary-sag-overflow', auxiliary_overflow, True, False))
+
     # Shape cannot enforce relationships between measured quantities. These must
     # pass schema validation while the physics authority refuses them.
     change('runtime-only:reference-area', stik, ('reference', 'wing_area', 'value'), .6, physical=True)
