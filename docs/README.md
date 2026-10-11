@@ -48,7 +48,7 @@ Each question has one canonical document. For implemented behavior, runtime code
 | Which aircraft exist and what may the menu offer? | [`app/app_state/aircraft_catalog.gd`](../app/app_state/aircraft_catalog.gd) | IDs, names and the meaning of flyable / experimental / preview |
 | Which numbers does an aircraft fly with, and where do they come from? | `app/data/aircraft/<id>.json` | Format `openrc-aircraft v1`; generated files name their generator |
 | How were the README images made? | [docs/media/README.md](media/README.md) | |
-| What shipped in a release? | `docs/releases/<tag>.md` | [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md), [rc4](releases/v0.1.0-rc4.md), [rc5](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc5), [rc6](releases/v0.1.0-rc6.md) |
+| What shipped in a release? | `docs/releases/<tag>.md` | [rc2](releases/v0.1.0-rc2.md), [rc3](releases/v0.1.0-rc3.md), [rc4](releases/v0.1.0-rc4.md), [rc5](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc5), [rc6](releases/v0.1.0-rc6.md), [rc7](releases/v0.1.0-rc7.md) |
 
 ## Tracks, plans and step IDs
 
