@@ -1,0 +1,79 @@
+{
+  "format": "openrc-field-lights v1",
+  "field": "default",
+  "conversion": {
+    "value": 100000,
+    "unit": "lux per scene unit",
+    "kind": "borrowed",
+    "source": "Scene irradiance 1 = the calibrated sun (Spec.ATMOSPHERE sun_energy 1), taken as ~1e5 lux of clear-day sunlight; a SpotLight3D's energy is its luminous intensity (cd) divided by this, because its irradiance falls as energy / d²."
+  },
+  "fixtures": [
+    {
+      "id": "flood_west",
+      "type": "flood",
+      "north": {"value": -8, "unit": "m", "kind": "estimated", "source": "Behind the pilot line and the pits, clear of the flight line; club layout estimate."},
+      "east": {"value": -22, "unit": "m", "kind": "estimated", "source": "Symmetric pair either side of the pilot station; estimate."},
+      "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Sports and club field poles are commonly 6-10 m; estimate."},
+      "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Runway centre line (15 m) slightly beyond, so the far edge is lit."},
+      "aim_east": {"value": -12, "unit": "m", "kind": "estimated", "source": "Toward the west half of the 100 m runway."},
+      "intensity": {"value": 30000, "unit": "cd", "kind": "estimated", "source": "A ~200 W LED floodlight (~25,000 lm) into a 60 deg beam."},
+      "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Common 60 deg flood optic."},
+      "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Light window end, beyond the far runway edge; Godot attenuation window."},
+      "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "LED floodlights are commonly sold at 4000-5700 K."}
+    },
+    {
+      "id": "flood_east",
+      "type": "flood",
+      "north": {"value": -8, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
+      "east": {"value": 22, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
+      "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
+      "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
+      "aim_east": {"value": 12, "unit": "m", "kind": "estimated", "source": "Toward the east half of the runway."},
+      "intensity": {"value": 30000, "unit": "cd", "kind": "estimated", "source": "Mirror of flood_west."},
+      "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Mirror of flood_west."},
+      "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
+      "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "Mirror of flood_west."}
+    },
+    {
+      "id": "windsock_flood",
+      "type": "flood",
+      "north": {"value": -6, "unit": "m", "kind": "estimated", "source": "Beside the windsock (field data: north -6 m, east -12 m)."},
+      "east": {"value": -9.5, "unit": "m", "kind": "estimated", "source": "2.5 m east of the windsock pole."},
+      "height": {"value": 1.2, "unit": "m", "kind": "estimated", "source": "A low lamp aimed up at the sleeve."},
+      "aim_north": {"value": -6, "unit": "m", "kind": "estimated", "source": "The windsock pole."},
+      "aim_east": {"value": -12, "unit": "m", "kind": "estimated", "source": "The windsock pole."},
+      "aim_height": {"value": 3.3, "unit": "m", "kind": "estimated", "source": "The sleeve, just below the 3.6 m pole top."},
+      "intensity": {"value": 2500, "unit": "cd", "kind": "estimated", "source": "Floodlit wind cone, after FAA L-807 (lighted wind cone); intensity estimated."},
+      "beam_half_angle": {"value": 25, "unit": "deg", "kind": "estimated", "source": "Covers the 2.5 m sleeve from 2.5 m away."},
+      "range": {"value": 15, "unit": "m", "kind": "estimated", "source": "Local lamp."},
+      "color_temperature": {"value": 4000, "unit": "K", "kind": "estimated", "source": "Neutral white LED."}
+    },
+    {
+      "id": "runway_edge_stakes",
+      "type": "stake_row",
+      "points": {"value": [[9, -50], [9, -30], [9, -10], [9, 10], [9, 30], [9, 50], [21, -50], [21, -30], [21, -10], [21, 10], [21, 30], [21, 50]], "unit": "m", "kind": "estimated", "source": "Both long edges of the 100 x 12 m runway (field data), every 20 m; club night-fly practice of marking edges with solar stake lights, spacing estimated."},
+      "height": {"value": 0.35, "unit": "m", "kind": "estimated", "source": "Garden solar stake height."},
+      "intensity": {"value": 5, "unit": "cd", "kind": "estimated", "source": "Small solar garden light."},
+      "size": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Diffuser diameter."},
+      "color_temperature": {"value": 3000, "unit": "K", "kind": "estimated", "source": "Warm-white solar LED."}
+    },
+    {
+      "id": "threshold_stakes",
+      "type": "stake_row",
+      "points": {"value": [[11, -51], [15, -51], [19, -51], [11, 51], [15, 51], [19, 51]], "unit": "m", "kind": "estimated", "source": "Across both runway ends; green like full-size threshold lights (artistic borrowing, not an RC rule)."},
+      "height": {"value": 0.35, "unit": "m", "kind": "estimated", "source": "Garden solar stake height."},
+      "intensity": {"value": 5, "unit": "cd", "kind": "estimated", "source": "Small solar garden light."},
+      "size": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Diffuser diameter."},
+      "color": {"value": "#20ff60", "unit": "srgb", "kind": "estimated", "source": "Green threshold convention (artistic)."}
+    },
+    {
+      "id": "pilot_station_lamp",
+      "type": "stake_row",
+      "points": {"value": [[0.65, -0.6]], "unit": "m", "kind": "estimated", "source": "Front corner of the pilot station barrier (field data)."},
+      "height": {"value": 0.8, "unit": "m", "kind": "estimated", "source": "Just above the 0.75 m barrier."},
+      "intensity": {"value": 1, "unit": "cd", "kind": "estimated", "source": "A dim red work light."},
+      "size": {"value": 0.04, "unit": "m", "kind": "estimated", "source": "Small lamp."},
+      "color": {"value": "#ff2010", "unit": "srgb", "kind": "borrowed", "source": "Red light preserves dark adaptation (astronomy and night-flying practice)."}
+    }
+  ]
+}

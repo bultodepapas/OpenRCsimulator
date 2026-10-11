@@ -20,6 +20,16 @@ uniform vec3 sun_lin = vec3(3.14159);              // light_color.srgb_to_linear
 uniform float sun_scatter = 0.0;                   // == Environment.fog_sun_scatter
 uniform float gradient_curve = 2.6;
 uniform float sun_radius = 0.0046251;              // rad: half of 0.53° (LIGHT0_SIZE defaults to 0)
+// FW-22 time of day: the physical horizon lobe toward the brighter source (zero in the calibrated fixed-sun mode).
+uniform vec3 lobe_lin = vec3(0.0);
+uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
+uniform float lobe_k = 8.0;
+uniform float sun_disc = 1.0;                      // 0 when the light is the moon (FW-23)
+// FW-24 moon: a 0.52° disc lit on the side facing the sun, with faint earthshine; zero brightness = no moon.
+uniform vec3 moon_dir = vec3(0.0, -1.0, 0.0);
+uniform vec3 moon_lin = vec3(0.0);
+uniform vec3 moon_sun_dir = vec3(0.0, 1.0, 0.0);
+uniform float moon_radius = 0.0045379;             // rad: half of 0.52° (mean apparent diameter)
 
 // L4 fair-weather deck, now able to group into larger patches while keeping the old setting at zero strength.
 uniform vec3 cloud_lin = vec3(0.9);         // lit cloud colour, linear
@@ -33,7 +43,23 @@ uniform float cirrus_coverage : hint_range(0.0, 1.0) = 0.34;
 uniform float silver_strength : hint_range(0.0, 1.0) = 0.0;
 
 vec3 haze(vec3 d) {
-	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter;
+	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter
+		+ lobe_lin * pow(max(dot(d, lobe_dir), 0.0), lobe_k);
+}
+
+// The moon's disc: the sphere's normal under each pixel decides lit or dark (the terminator follows the true sun).
+// Earthshine 2 % (estimate). Smooth 1-pixel edge from the angular radius.
+vec3 moon(vec3 d) {
+	float c = dot(d, moon_dir);
+	if (c < cos(moon_radius * 1.3) || dot(moon_lin, vec3(1.0)) <= 0.0) {
+		return vec3(0.0);
+	}
+	vec3 offset = (d - moon_dir * c) / sin(moon_radius);
+	float r2 = dot(offset, offset);
+	float edge = 1.0 - smoothstep(0.85, 1.0, sqrt(r2));
+	vec3 normal = offset - moon_dir * sqrt(max(1.0 - r2, 0.0));
+	float lit = smoothstep(-0.04, 0.04, dot(normal, moon_sun_dir));
+	return moon_lin * edge * (lit + 0.02);
 }
 
 // Exact inverse of the engine's srgb_to_linear(s) = s·(s·(0.305306011·s + 0.682171111) + 0.012522878):
@@ -51,6 +77,7 @@ vec3 encode_for_engine(vec3 x) {
 void sky() {
 	float y = max(EYEDIR.y, 0.0);
 	vec3 col = mix(haze(EYEDIR), zenith_lin, 1.0 - pow(1.0 - y, gradient_curve));
+	col += moon(EYEDIR); // before the clouds, which hide it
 	float density = 0.0;
 	if (EYEDIR.y > 0.0 && cloud_coverage > 0.0) {
 		vec2 deck = EYEDIR.xz / max(EYEDIR.y, 0.02);                    // flat layer
@@ -76,6 +103,6 @@ void sky() {
 		}
 	}
 	float ang = acos(clamp(dot(EYEDIR, sun_dir), -1.0, 1.0));
-	col += (sun_lin / PI) * (exp(-ang * 18.0) * 0.35 + 4.0 * (1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang)));
+	col += (sun_lin / PI) * (exp(-ang * 18.0) * 0.35 + 4.0 * (1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang))) * sun_disc;
 	COLOR = encode_for_engine(col);
 }

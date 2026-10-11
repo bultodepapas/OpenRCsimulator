@@ -7,7 +7,7 @@ extends SceneTree
 
 const Atmosphere = preload("res://render/atmosphere.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
-const FieldBuilder = preload("res://render/field.gd")
+const World = preload("res://render/world/world.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
@@ -30,19 +30,14 @@ func _run() -> void:
 	ShaderClock.update(float(_args.get("t", "1.5")))
 	var world := Node3D.new()
 	root.add_child(world)
-	var we := WorldEnvironment.new()
-	we.environment = Atmosphere.environment()
-	world.add_child(we)
 	var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
 	if not loaded.ok:
 		printerr("field invalid")
 		quit(1)
 		return
-	var t0 := Time.get_ticks_usec()
-	var field_node := FieldBuilder.build(loaded.field)
-	var build_ms := (Time.get_ticks_usec() - t0) / 1000.0
-	world.add_child(field_node)
-	Atmosphere.create_sun(world)
+	var built: Dictionary = World.build(world, loaded.field) # FW-02: environment, field, sun
+	var field_node: Node3D = built.field
+	var build_ms: float = built.field_build_ms
 	var cam := Camera3D.new()
 	cam.near = 0.1
 	cam.far = 21000.0

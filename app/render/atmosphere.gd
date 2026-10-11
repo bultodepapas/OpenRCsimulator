@@ -36,6 +36,13 @@ static func _visibility_from_args() -> float:
 			push_warning("Unknown visibility preset '%s'; using default (default/hazy/clear)" % preset)
 	return Spec.ATMOSPHERE.visibility_m
 
+## FW-22/23 time of day: render/world/sky_state.gd's output for the chosen hour, set by render/world/world.gd before
+## the environment is built. Empty (the default) = the calibrated fixed 45° sun of Spec.ATMOSPHERE, byte for byte.
+## In time-of-day mode the directional light is the brighter of sun and moon, and the haze's sunward brightening is
+## the physical horizon lobe (lobe_*) drawn identically by the sky and the ground's own fog; the engine's fog keeps
+## only the uniform haze (fog_sun_scatter = 0), which affects near objects by a few percent at most.
+static var state: Dictionary = {}
+
 ## Engine (PSSM) sun shadows: off by default. In Compatibility they double every lit object's draw calls, clip white
 ## surfaces and shift hues (the shadowed light is blended in sRGB after tonemapping: Godot #90259); the sun shadow is
 ## the planar projected silhouette (render/shadow.gd) instead. `--engine_shadows` turns them on for comparison (L3).
@@ -44,6 +51,8 @@ static var engine_shadows := false
 
 ## Unit vector toward the sun in render axes (the light shines along the opposite direction).
 static func sun_direction() -> Vector3:
+	if not state.is_empty():
+		return state.light_dir
 	var az := deg_to_rad(Spec.ATMOSPHERE.sun_azimuth_deg)
 	var el := deg_to_rad(Spec.ATMOSPHERE.sun_elevation_deg)
 	return Frames.ned_to_render([cos(az) * cos(el), sin(az) * cos(el), -sin(el)]).normalized()
@@ -61,6 +70,8 @@ static func transmittance(d: float) -> float:
 
 ## Fog light colour in linear units, as the engine uses it (fog_light_color · fog_light_energy).
 static func haze_linear() -> Vector3:
+	if not state.is_empty():
+		return state.haze_lin
 	var c: Color = Spec.ATMOSPHERE.haze.srgb_to_linear()
 	return Vector3(c.r, c.g, c.b) * Spec.ATMOSPHERE.haze_energy
 
@@ -72,18 +83,40 @@ static func shadow_compensation() -> float:
 
 ## The light's actual energy.
 static func light_energy() -> float:
-	return Spec.ATMOSPHERE.sun_energy * shadow_compensation()
+	var energy: float = state.light_energy if not state.is_empty() else Spec.ATMOSPHERE.sun_energy
+	return energy * shadow_compensation()
 
 
 ## Fog sun scatter as set on the engine: divided by the compensation, so the haze's sun term never changes.
 static func sun_scatter() -> float:
+	if not state.is_empty():
+		return 0.0
 	return Spec.ATMOSPHERE.sun_scatter / shadow_compensation()
 
 
 ## The sun's light in the units of the engine's fog scatter term (linear colour · actual light energy · π).
 static func sun_linear() -> Vector3:
-	var c: Color = Spec.ATMOSPHERE.sun_color.srgb_to_linear()
+	var c: Color = light_color().srgb_to_linear()
 	return Vector3(c.r, c.g, c.b) * light_energy() * PI
+
+
+## The directional light's colour (sRGB): the calibrated sun, or the time-of-day sun/moon.
+static func light_color() -> Color:
+	return state.light_color if not state.is_empty() else Spec.ATMOSPHERE.sun_color
+
+
+## Direction for the planar pilot-aid shadow: the light, with its elevation held at ≥ SHADOW_MIN_ELEVATION_DEG so a
+## low sun gives a long but bounded shadow instead of one stretched to the horizon (estimate).
+const SHADOW_MIN_ELEVATION_DEG := 12.0
+
+
+static func shadow_direction() -> Vector3:
+	var d := sun_direction()
+	var min_y := sin(deg_to_rad(SHADOW_MIN_ELEVATION_DEG))
+	if d.y >= min_y:
+		return d
+	var flat := Vector2(d.x, d.z).normalized() * cos(deg_to_rad(SHADOW_MIN_ELEVATION_DEG))
+	return Vector3(flat.x, min_y, flat.y)
 
 
 static func _set_haze_uniforms(mat: ShaderMaterial) -> void:
@@ -91,6 +124,10 @@ static func _set_haze_uniforms(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("sun_dir", sun_direction())
 	mat.set_shader_parameter("sun_lin", sun_linear())
 	mat.set_shader_parameter("sun_scatter", sun_scatter())
+	if not state.is_empty(): # legacy materials keep the shaders' zero lobe
+		mat.set_shader_parameter("lobe_lin", state.lobe_lin)
+		mat.set_shader_parameter("lobe_dir", state.lobe_dir)
+		mat.set_shader_parameter("lobe_k", state.lobe_k)
 
 
 static func sky_material() -> ShaderMaterial:
@@ -103,6 +140,13 @@ static func sky_material() -> ShaderMaterial:
 	mat.set_shader_parameter("sun_radius", deg_to_rad(a.sun_diameter_deg) / 2.0)
 	var cl: Color = a.cloud_color.srgb_to_linear()
 	mat.set_shader_parameter("cloud_lin", Vector3(cl.r, cl.g, cl.b))
+	if not state.is_empty():
+		mat.set_shader_parameter("zenith_lin", state.zenith_lin)
+		mat.set_shader_parameter("cloud_lin", state.cloud_lin)
+		mat.set_shader_parameter("sun_disc", state.sun_disc)
+		mat.set_shader_parameter("moon_dir", state.moon_dir)
+		mat.set_shader_parameter("moon_lin", state.moon_lin)
+		mat.set_shader_parameter("moon_sun_dir", state.sun_dir)
 	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
 	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
@@ -185,7 +229,7 @@ static func environment() -> Environment:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = a.exposure
+	env.tonemap_exposure = state.exposure if not state.is_empty() else a.exposure
 	env.tonemap_white = a.white
 	env.glow_enabled = false
 	env.fog_enabled = true
@@ -193,17 +237,28 @@ static func environment() -> Environment:
 	env.fog_density = beta()
 	env.fog_light_color = a.haze
 	env.fog_light_energy = a.haze_energy
+	if not state.is_empty():
+		var h: Vector3 = state.haze_lin
+		env.fog_light_color = Color(h.x, h.y, h.z).linear_to_srgb()
+		env.fog_light_energy = 1.0
 	env.fog_sun_scatter = sun_scatter()
 	env.fog_sky_affect = 0.0
 	env.fog_aerial_perspective = 0.0
 	env.fog_height_density = 0.0
+	if not state.is_empty():
+		# FW-23: ambient colour, no sky reflections; the cubemap path double-applies the exposure (sky_state.gd).
+		var amb: Vector3 = state.ambient_lin
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		env.ambient_light_color = Color(amb.x, amb.y, amb.z).linear_to_srgb()
+		env.ambient_light_energy = 1.0
+		env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
 	return env
 
 
 ## The sun: a DirectionalLight3D shining from sun_direction(); PSSM shadows only with engine_shadows (L3).
 static func create_sun(parent: Node) -> DirectionalLight3D:
 	var sun := DirectionalLight3D.new()
-	sun.light_color = Spec.ATMOSPHERE.sun_color
+	sun.light_color = light_color()
 	sun.light_energy = light_energy()
 	sun.shadow_enabled = engine_shadows
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS

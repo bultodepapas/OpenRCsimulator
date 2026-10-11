@@ -25,6 +25,10 @@ python3 "$HERE/../tools/grass/test_place.py"
 echo "== L7 offline hill profile matches committed heights"
 python3 "$HERE/../tools/terrain/gen_terrain.py" --check
 
+echo "== FW-21/FW-24 sky table and star list match their generators"
+python3 "$HERE/../tools/world/sky_table.py" --check
+python3 "$HERE/../tools/world/stars.py" --check
+
 echo "== E0b2: Stik hub and neutral tail geometry stay current"
 python3 "$HERE/../research/propwash/e0b2/derive_geometry.py" --check
 python3 "$HERE/../research/propwash/e0b2/test_geometry.py"

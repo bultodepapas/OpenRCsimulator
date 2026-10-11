@@ -119,3 +119,7 @@ The UIUC 12×6 tunnel file needs both deduplication and sorting; stripping repea
 ## 2026-10-08 · L10c/d — validate the view, not only the footprint
 
 A barrier can clear the runway rectangle yet hide its near edge. Validate its height against the pilot-to-ground sightline, then protect projected runway pixels in on/off captures. Clip bounds and protected polygons at the camera near plane before projection. Keep contact footprints tied to the renderer’s post-layout helper; check stored vertex alpha as a range because the mesh quantizes it to 8-bit values. [Evidence and limits](docs/research/visual-quality-implementation/L10c/README.md).
+
+## 2026-10-10 · FW-23/FW-24 — Compatibility's colour path breaks at night exposures
+
+Values calibrated at exposure 0.6 hide two engine behaviours that a night exposure of 10⁴–10⁵ exposes. Every material's `ALBEDO`/`EMISSION`, unshaded included, passes through the engine's cubic `srgb_to_linear`, so a computed linear radiance must be encoded with that cubic's inverse or faint values lose ~13×; and the sky radiance cubemap already contains the exposure, which `scene.glsl` applies again to ambient, turning lit surfaces white. Probe a constant, known value at two exposures before trusting a brightness model, and read the pinned engine source for the conversion. [FW-24 findings](docs/research/field-world/FW-24/README.md).

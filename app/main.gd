@@ -21,6 +21,7 @@ const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
 const FieldBuilder = preload("res://render/field.gd")
+const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
@@ -158,7 +159,6 @@ func _ready() -> void:
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
-	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
 	Atmosphere.engine_shadows = args.has("engine_shadows") # comparison only (L3); before the sun is built
 	_build_world()
 	_shadow_mode = str(args.get("shadow", "sun"))
@@ -253,8 +253,7 @@ func _process(delta: float) -> void:
 	var visual_clock_s: float = session.sim.time()
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
-	ShaderClock.update(visual_clock_s)
-	Atmosphere.update_clouds(_env, visual_clock_s) # at most once per cloud_update_s of simulation
+	World.update(_env, visual_clock_s) # clouds re-render at most once per cloud_update_s of simulation
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -445,18 +444,12 @@ func _view_name() -> String:
 
 
 func _build_world() -> void:
-	var world_env := WorldEnvironment.new()
-	_env = Atmosphere.environment()
-	world_env.environment = _env
-	add_child(world_env)
-
-	_build_field()
-
-	Atmosphere.create_sun(self) # the sky shader draws the sun disc from this light
+	_env = World.build(self, field, _build_field).environment # FW-02: environment, field seam, sun
 
 	_airplane = AirplaneBuilder.build(aircraft_id)
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root)
+	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_shadow = Shadow.create(self)
 	_camera = PilotCamera.create(self, field.pilot)
 	_panel = InputPanel.create(self)
@@ -490,7 +483,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.sun_direction() if _shadow_mode == "sun" else Vector3.UP)
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.shadow_direction() if _shadow_mode == "sun" else Vector3.UP)
 	if is_nan(_look.x):
 		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
 	else:
@@ -535,8 +528,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
-	ShaderClock.update(t if _scripted else sim.time())
-	Atmosphere.update_clouds(_env, t if _scripted else sim.time())
+	World.update(_env, t if _scripted else sim.time())
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
