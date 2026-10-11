@@ -1,0 +1,53 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+PASS: collector returns a merged mesh and bounds
+PASS: collector keeps both synthetic triangles
+PASS: collector preserves the mesh's off-origin datum
+PASS: receiver activates
+PASS: initial pose schedules one mask render
+PASS: initial mask is 256 by 256
+PASS: pose A has enough interior oracle samples (2538)
+PASS: pose A has enough exterior oracle samples (12938)
+PASS: pose A excludes edge-adjacent samples
+PASS: pose A GPU alpha matches CPU triangle rasterization (0 mismatches)
+PASS: pose A overlapping triangles stay opaque (224 samples, 0 bad)
+PASS: pose A rejects a vertically flipped +Z mapping (2019 distinguishing samples)
+PASS: pose A viewport border remains alpha-clear (0 nonclear pixels)
+PASS: pose A receiver stays anchored to the aircraft datum (error 0.00000 m)
+PASS: pose A receiver extent matches the orthographic mask frame
+PASS: hidden state disables the receiver
+PASS: hidden state disables mask updates
+PASS: hidden state keeps the cached mask has identical cached alpha (0 changed pixels)
+PASS: reactivation shows the receiver
+PASS: reactivation schedules a fresh mask render
+PASS: reactivated mask matches pose A has identical cached alpha (0 changed pixels)
+PASS: basis and sun change schedules a new mask render
+PASS: basis and sun change replaces the cached mask (6874 pixels changed)
+PASS: pose B has enough interior oracle samples (1149)
+PASS: pose B has enough exterior oracle samples (14572)
+PASS: pose B excludes edge-adjacent samples
+PASS: pose B GPU alpha matches CPU triangle rasterization (0 mismatches)
+PASS: pose B overlapping triangles stay opaque (91 samples, 0 bad)
+PASS: pose B rejects a vertically flipped +Z mapping (844 distinguishing samples)
+PASS: pose B viewport border remains alpha-clear (0 nonclear pixels)
+PASS: pose B receiver stays anchored to the aircraft datum (error 0.00000 m)
+PASS: pose B receiver extent matches the orthographic mask frame
+{
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"gpu": "NVIDIA GeForce RTX 3090",
+	"passed": true,
+	"probe": "VQ-04a synthetic 256² shadow-mask GPU oracle",
+	"renderer": "gl_compatibility"
+}

@@ -1,0 +1,85 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "35",
+		"fps": "60",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/audio-pcm-rendered-60"
+	},
+	"audio_sources_sha256": {
+		"adapter": "1ac78e5b90583bc21d631085010051317c4b35bca0c7d735b9e4113098da7a8e",
+		"mixer": "360d59c83490a231eb3360310ede6d752f0c0d2c8f1fcebc7f040e3fecf558ab",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b"
+	},
+	"captured_seconds": 35.0186666666667,
+	"discarded_frames": 0,
+	"display": "Windows",
+	"distance_max_m": 149.136657714844,
+	"distance_min_m": 2.49999403953552,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 4,
+			"wall_s": 0.0021
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 1,
+			"tick": 956,
+			"wall_s": 4.005446
+		},
+		{
+			"paused": false,
+			"rpm": 11147.057689572,
+			"stage": 2,
+			"tick": 1676,
+			"wall_s": 7.005091
+		},
+		{
+			"paused": true,
+			"rpm": 2818.94944137963,
+			"stage": 3,
+			"tick": 2396,
+			"wall_s": 10.005955
+		},
+		{
+			"paused": false,
+			"rpm": 2818.94944137963,
+			"stage": 4,
+			"tick": 2396,
+			"wall_s": 11.003568
+		},
+		{
+			"paused": false,
+			"rpm": 2800.00594685831,
+			"stage": 5,
+			"tick": 2880,
+			"wall_s": 13.010827
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 6,
+			"tick": 0,
+			"wall_s": 15.010859
+		}
+	],
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 1680896,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -1.05907925520555,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 60,
+	"rms_dbfs": -16.284783092448,
+	"soundscape_update_max_us": 325,
+	"soundscape_update_p95_us": 136,
+	"voices": 12,
+	"wav_saved": true
+}

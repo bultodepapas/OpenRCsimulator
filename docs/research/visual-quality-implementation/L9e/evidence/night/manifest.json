@@ -1,0 +1,555 @@
+{
+  "automatic_render_loop": false,
+  "captures": [
+    {
+      "captures": [
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            1.7000000476837158,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a.png",
+          "objects": 9,
+          "primitives": 105569,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a",
+          "state": "off",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -8.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "pilot_near_ground-off.png"
+        },
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            1.7000000476837158,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a.png",
+          "objects": 9,
+          "primitives": 105569,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a",
+          "state": "on",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -8.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "pilot_near_ground-on.png"
+        },
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            1.7000000476837158,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a.png",
+          "objects": 9,
+          "primitives": 105569,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "8684da89a133053d3aaaeb0b3c8a243de83146429729259bec096acd8bc5f95a",
+          "state": "on_repeat",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -8.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "pilot_near_ground-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "fov_deg": 70.0,
+      "id": "pilot_near_ground",
+      "relative_to": "field pilot NED position; eye height 1.7 m, target ground at 8 m north",
+      "target_render_m": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            4.0,
+            0.800000011920929,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de",
+          "state": "off",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "close_detail-off.png"
+        },
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            4.0,
+            0.800000011920929,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de",
+          "state": "on",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "close_detail-on.png"
+        },
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            4.0,
+            0.800000011920929,
+            0.0
+          ],
+          "fov_deg": 70.0,
+          "image": "../frames/3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "3310951c20cacd30091f79d71f8850933bda16dcb02d99d98d258bbbb9eec7de",
+          "state": "on_repeat",
+          "target_render_m": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "close_detail-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        4.0,
+        0.800000011920929,
+        0.0
+      ],
+      "fov_deg": 70.0,
+      "id": "close_detail",
+      "relative_to": "field pilot; eye 4 m east and 0.8 m high, target ground 1 m north",
+      "target_render_m": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2",
+          "state": "off",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "runway_threshold-off.png"
+        },
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2",
+          "state": "on",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "runway_threshold-on.png"
+        },
+        {
+          "draw_calls": 14,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2.png",
+          "objects": 14,
+          "primitives": 127880,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "9d3b0e7de5e520787ad9fe46b1ec17e19a09af1f16c975ff40890e880766cff2",
+          "state": "on_repeat",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "runway_threshold-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -15.0
+      ],
+      "fov_deg": 40.0,
+      "id": "runway_threshold",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -15.0
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            8.0,
+            0.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a.png",
+          "objects": 9,
+          "primitives": 114441,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a",
+          "state": "off",
+          "target_render_m": [
+            12.0,
+            0.0,
+            -18.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "low_pass-off.png"
+        },
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            8.0,
+            0.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a.png",
+          "objects": 9,
+          "primitives": 114441,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a",
+          "state": "on",
+          "target_render_m": [
+            12.0,
+            0.0,
+            -18.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "low_pass-on.png"
+        },
+        {
+          "draw_calls": 9,
+          "eye_render_m": [
+            0.0,
+            8.0,
+            0.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a.png",
+          "objects": 9,
+          "primitives": 114441,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "018588cc98597036c8233e0663c3782460079da6f0c1a43a4f19b9293963df6a",
+          "state": "on_repeat",
+          "target_render_m": [
+            12.0,
+            0.0,
+            -18.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "low_pass-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        0.0,
+        8.0,
+        0.0
+      ],
+      "fov_deg": 50.0,
+      "id": "low_pass",
+      "relative_to": "field pilot render position plus supplied offsets",
+      "target_render_m": [
+        12.0,
+        0.0,
+        -18.0
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 15,
+          "eye_render_m": [
+            160.0,
+            140.0,
+            -140.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694.png",
+          "objects": 15,
+          "primitives": 130538,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694",
+          "state": "off",
+          "target_render_m": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "aerial-off.png"
+        },
+        {
+          "draw_calls": 15,
+          "eye_render_m": [
+            160.0,
+            140.0,
+            -140.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694.png",
+          "objects": 15,
+          "primitives": 130538,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694",
+          "state": "on",
+          "target_render_m": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "aerial-on.png"
+        },
+        {
+          "draw_calls": 15,
+          "eye_render_m": [
+            160.0,
+            140.0,
+            -140.0
+          ],
+          "fov_deg": 50.0,
+          "image": "../frames/d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694.png",
+          "objects": 15,
+          "primitives": 130538,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "d7c8c397c22a61551fa045f5af94676b3b60a9ace0dfe08189d18d52ad932694",
+          "state": "on_repeat",
+          "target_render_m": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "aerial-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "fov_deg": 50.0,
+      "id": "aerial",
+      "relative_to": "field pilot render position plus supplied offsets",
+      "target_render_m": [
+        0.0,
+        0.0,
+        20.0
+      ]
+    }
+  ],
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_id": "default",
+  "field_path": "res://data/fields/default.json",
+  "field_sha256": "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6",
+  "filter_reference_crop": [],
+  "format": "openrc-l9e-turf-capture v1",
+  "ground_builder_sha256": "40f21bc7fb6d1b7f50b496a845249036c6735eaa704b805df1f08a16cb45c44f",
+  "ground_shader_sha256": "a8f9219caa8d4a3918a99a6b4faa35cadb1ecf509619f151e1ca166f8acdf185",
+  "legacy_baseline": false,
+  "manual_draw": true,
+  "mode": "capture",
+  "night": true,
+  "night_config": {
+    "date": "2026-03-20",
+    "format": "openrc-lighting v1",
+    "latitude_deg": 0.0,
+    "local_seconds": 0,
+    "location_name": "Reference field (synthetic)",
+    "longitude_deg": 0.0,
+    "mode": "astronomical",
+    "utc_offset_minutes": 0
+  },
+  "poses": [
+    {
+      "eye_render_m": [
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "fov_deg": 70.0,
+      "id": "pilot_near_ground",
+      "relative_to": "field pilot NED position; eye height 1.7 m, target ground at 8 m north",
+      "target_render_m": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "eye_render_m": [
+        4.0,
+        0.800000011920929,
+        0.0
+      ],
+      "fov_deg": 70.0,
+      "id": "close_detail",
+      "relative_to": "field pilot; eye 4 m east and 0.8 m high, target ground 1 m north",
+      "target_render_m": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -15.0
+      ],
+      "fov_deg": 40.0,
+      "id": "runway_threshold",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -15.0
+      ]
+    },
+    {
+      "eye_render_m": [
+        0.0,
+        8.0,
+        0.0
+      ],
+      "fov_deg": 50.0,
+      "id": "low_pass",
+      "relative_to": "field pilot render position plus supplied offsets",
+      "target_render_m": [
+        12.0,
+        0.0,
+        -18.0
+      ]
+    },
+    {
+      "eye_render_m": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "fov_deg": 50.0,
+      "id": "aerial",
+      "relative_to": "field pilot render position plus supplied offsets",
+      "target_render_m": [
+        0.0,
+        0.0,
+        20.0
+      ]
+    }
+  ],
+  "renderer_adapter": "NVIDIA GeForce RTX 3090",
+  "renderer_driver": "opengl3",
+  "renderer_method": "gl_compatibility",
+  "root_window_viewport": [
+    1280,
+    720
+  ],
+  "shader_time_s": 0.0,
+  "shader_wind_render": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "turf_material_count": 1,
+  "turf_uniform": "turf_detail_strength",
+  "turf_uniform_ablation_strength": 0.0,
+  "turf_uniform_present": true,
+  "turf_uniform_production_strength": 1.0,
+  "turf_uniform_shader_default": 0.0,
+  "viewport": [
+    1280,
+    720
+  ],
+  "viewport_msaa_3d": 2,
+  "vsync": "disabled",
+  "archival_note": "PNG bytes unchanged; image paths deduplicated. Original manifest retained as producer-manifest.json.gz."
+}

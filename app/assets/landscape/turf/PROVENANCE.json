@@ -1,0 +1,17 @@
+{
+  "format": "openrc-turf-data v1",
+  "license": "MIT (repository license)",
+  "source": "Original procedural data; no external images or models",
+  "generator": "tools/ground/turf_generate.py",
+  "seed": 9105,
+  "resolution": [1024, 1024],
+  "tile_m": {"value": 2.0, "kind": "estimated", "source": "L9e artistic scale"},
+  "blade_count": 18000,
+  "blade_length_m": [0.025, 0.110],
+  "blade_width_m": [0.002, 0.005],
+  "channels": ["world X slope, 0..1 encoded", "world Z slope, 0..1 encoded", "centered linear tone multiplier data", "reserved neutral"],
+  "colour_space": "linear data; no source_color or normal-map compression",
+  "mipmapped_rgba8_bytes": 5592404,
+  "sha256": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+  "limits": "Artistic shading, not physical displacement; slopes are not a measured height field"
+}

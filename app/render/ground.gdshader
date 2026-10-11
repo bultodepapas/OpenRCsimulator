@@ -20,6 +20,7 @@ render_mode cull_back;
 
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://render/grass_surface.gdshaderinc"
+#include "res://render/turf_detail.gdshaderinc"
 
 // L15d: the same cumulus density as the sky, projected along the sun ray to a 1.5 km deck.
 // Only direct sunlight is attenuated. Ambient light and the calibrated haze keep their energy.
@@ -173,6 +174,9 @@ void fragment() {
 	vec3 v = to_frag / max(d, 1e-3);
 	// Derivatives must be evaluated before spatially varying branches/loops (including the bounds early-out).
 	vec2 footprint = fwidth(world_pos.xz);
+	// Explicit derivatives outside divergent surface/LOD branches.
+	vec2 turf_dx = dFdx(world_pos.xz);
+	vec2 turf_dy = dFdy(world_pos.xz);
 	if (surface_kind > 0) {
 		col = surface_colour(col, col, world_pos.xz, v, footprint, surface_kind, vec4(rect_center, rect_half));
 	} else if (surface_count > 0) {
@@ -192,6 +196,17 @@ void fragment() {
 		vec2 deck = world_pos.xz + max(cloud_deck_m - world_pos.y, 0.0) * sun_dir.xz / sun_dir.y;
 		float density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset, cloud_seed, cloud_coverage, cluster_strength);
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
+	}
+	float detail_weight = turf_weight(turf_dx, turf_dy, d);
+	if (detail_weight > 0.0) {
+		vec3 detail = turf_sample(world_pos.xz, turf_dx, turf_dy);
+		col *= 1.0 + (detail.b - 0.5) * 0.9 * detail_weight;
+		// Packed slopes are linear data in world x/z. NORMAL is in view space.
+		vec2 slope = (detail.rg * 2.0 - 1.0) * 0.65 * detail_weight;
+		vec3 perturbation = (VIEW_MATRIX * vec4(slope.x, 0.0, slope.y, 0.0)).xyz;
+		vec3 base_normal = normalize(NORMAL);
+		perturbation -= base_normal * dot(base_normal, perturbation);
+		NORMAL = normalize(base_normal + perturbation);
 	}
 	ALBEDO = col;
 	ROUGHNESS = 1.0;

@@ -1,0 +1,114 @@
+{
+  "format": "openrc-el2a-p3-supply-cpu-v1",
+  "ok": true,
+  "runs": [
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 5367958,
+      "snapshot": "baseline",
+      "order": 0,
+      "child_cpu_s": 5.556925000000001
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 5153356,
+      "snapshot": "candidate",
+      "order": 1,
+      "child_cpu_s": 5.316186
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 5661524,
+      "snapshot": "candidate",
+      "order": 2,
+      "child_cpu_s": 5.829371000000001
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 6040392,
+      "snapshot": "baseline",
+      "order": 3,
+      "child_cpu_s": 6.229804999999998
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 5105536,
+      "snapshot": "baseline",
+      "order": 4,
+      "child_cpu_s": 5.258211999999999
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 4828356,
+      "snapshot": "candidate",
+      "order": 5,
+      "child_cpu_s": 4.991895000000004
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 5155664,
+      "snapshot": "candidate",
+      "order": 6,
+      "child_cpu_s": 5.3288360000000035
+    },
+    {
+      "checksum_bytes_sha256": "b92d86337f9af0cb40ff47e19b75d89a164e08fec41ea286911df401ae4cfe8d",
+      "fixture_bytes_sha256": "e94f799505e5e4f81038b20be43584eac6b2f5df89a4cba868a70babec14aebd",
+      "fixture_count": 120,
+      "format": "openrc-el2a-p3-supply-cost-v1",
+      "iterations": 300000,
+      "loop_wall_us": 4630556,
+      "snapshot": "baseline",
+      "order": 7,
+      "child_cpu_s": 4.789157999999996
+    }
+  ],
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "engine_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "driver_sha256": "19f4d83eb4b126be51eb7925c28c812513c62f27e83df757c27a098acbbfa11c",
+  "runner_sha256": "1fa8f1feb799ea14e7abd5923947923b710cd32cbaf77bdb16e0ad463efe8a1e",
+  "scope": "Child user+system CPU includes startup/compilation and 300000 calls. Concurrent host tests remain active; wall time is diagnostic only. Not full-tick or real-time acceptance; cache/frequency interference remains possible.",
+  "sources": {
+    "baseline": {
+      "electric_motor.gd": "f9be10cfb2b9b1d07697aa747a391e7ae20664d424685e68223d79dde2dd06e2",
+      "electric_supply.gd": "d859c1982a464114d41d03c52bcaf1aa7b064ca272eee958373ef84d6f59cb73"
+    },
+    "candidate": {
+      "electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977"
+    }
+  },
+  "median_child_cpu_s": {
+    "baseline": 5.4075685,
+    "candidate": 5.322511000000002
+  },
+  "cpu_reduction_percent": 1.5729343049468159
+}

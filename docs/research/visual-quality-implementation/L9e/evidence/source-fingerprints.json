@@ -1,0 +1,25 @@
+{
+  "baseline": {
+    "render/ground.gd": "1badfd5e0a878ca61516367b9d554490c41c35960105360f9d7f4cded2ba5bc9",
+    "render/ground.gdshader": "0d80d2c22248b93128c97b72c2557ca4e6b188520fbae78b3a33eee87f91bb62",
+    "render/grass_surface.gdshaderinc": "6e2facea11a07c68525dbec49ab325b309de943f2954b83c51b8338f28a95372",
+    "render/atmosphere.gd": "984bae49ac96a14f2df80bb5f4712b19c8424c2f1f25393d633e3ec49c2be940",
+    "render/field.gd": "e0bddf649106b98a5e1e20ba19b2c58d7447b29252a923a9558691cb13c7e0f4",
+    "render/sky.gdshader": "f88d8fae13bc98a52b6f5b692b0cd89201c6ef32d11e2ed1bb8357713b81a170",
+    "project.godot": "4f421adca5cb54f4cb94dc340477e62b32969305947263410a6562a2323f19fc",
+    "physics_tree": "55522e34dd9321785acff6c6543f4e3cd75246c3d72ceada0f6b858d0e31db2f"
+  },
+  "candidate": {
+    "render/ground.gd": "40f21bc7fb6d1b7f50b496a845249036c6735eaa704b805df1f08a16cb45c44f",
+    "render/ground.gdshader": "a8f9219caa8d4a3918a99a6b4faa35cadb1ecf509619f151e1ca166f8acdf185",
+    "render/grass_surface.gdshaderinc": "6e2facea11a07c68525dbec49ab325b309de943f2954b83c51b8338f28a95372",
+    "render/atmosphere.gd": "984bae49ac96a14f2df80bb5f4712b19c8424c2f1f25393d633e3ec49c2be940",
+    "render/field.gd": "e0bddf649106b98a5e1e20ba19b2c58d7447b29252a923a9558691cb13c7e0f4",
+    "render/sky.gdshader": "f88d8fae13bc98a52b6f5b692b0cd89201c6ef32d11e2ed1bb8357713b81a170",
+    "project.godot": "4f421adca5cb54f4cb94dc340477e62b32969305947263410a6562a2323f19fc",
+    "render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "assets/landscape/turf/detail.png": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+    "assets/landscape/turf/detail.png.import": "0d9fde6a5c7d10762ddb7a95722f457dfb9f0c42989e86ea726e69341062ed98",
+    "physics_tree": "55522e34dd9321785acff6c6543f4e3cd75246c3d72ceada0f6b858d0e31db2f"
+  }
+}

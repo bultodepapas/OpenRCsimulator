@@ -1,0 +1,10 @@
+{
+  "raw_hashes_verified": 1631,
+  "line_endings_only": [],
+  "content_changes": [
+    "physics/electric_motor.gd",
+    "physics/electric_supply.gd",
+    "tests/test_electric_motor_compact.gd"
+  ],
+  "ok": true
+}

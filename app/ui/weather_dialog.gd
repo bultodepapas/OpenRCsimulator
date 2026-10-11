@@ -1,6 +1,8 @@
 # Draft-only flight conditions dialog. Legacy v1/v2 weather stays unchanged until its controls are edited.
 extends CanvasLayer
 
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
@@ -107,25 +109,11 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	)
 	applied_lighting_config = checked_lighting.config.duplicate(true) if checked_lighting.get("ok", false) else TimeOfDay.defaults()
 
-	var screen: Control = Control.new()
-	screen.name = "Modal"
-	screen.theme = UiTheme.build()
-	screen.mouse_filter = Control.MOUSE_FILTER_STOP
-	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(screen)
-	var dim: ColorRect = ColorRect.new()
-	dim.name = "Dim"
-	dim.color = Color(0.0, 0.0, 0.0, 0.68)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(dim)
-	var center: CenterContainer = CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.offset_left = 16.0
-	center.offset_top = 16.0
-	center.offset_right = -16.0
-	center.offset_bottom = -16.0
-	screen.add_child(center)
+	var screen := Screen.mount(self, "Modal")
+	screen.escape_before_gui = true
+	screen.close_requested.connect(_on_cancel)
+	screen.dim(0.68, "Dim")
+	var center: CenterContainer = screen.center(16.0)
 	panel = PanelContainer.new()
 	panel.name = "WeatherPanel"
 	panel.theme_type_variation = "Sidebar"
@@ -268,9 +256,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	error_label.visible = false
 	column.add_child(error_label)
 
-	var actions: HBoxContainer = HBoxContainer.new()
-	actions.alignment = BoxContainer.ALIGNMENT_END
-	actions.add_theme_constant_override("separation", 12)
+	var actions := Widgets.button_row()
 	cancel_button = Button.new()
 	cancel_button.name = "Cancel"
 	cancel_button.text = "Cancel"
@@ -306,12 +292,6 @@ func _notification(what: int) -> void:
 		if error_label.visible:
 			_show_error()
 		_schedule_scroll_height_update()
-
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE:
-		get_viewport().set_input_as_handled()
-		_on_cancel()
 
 
 func _fill_presets() -> void:
@@ -867,11 +847,4 @@ static func _format_number(value: float) -> String:
 
 
 static func _label(text: String, variation: String, should_wrap: bool = false, translate: bool = true) -> Label:
-	var label: Label = Label.new()
-	label.text = text
-	label.theme_type_variation = variation
-	if should_wrap:
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	if not translate:
-		label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	return label
+	return Widgets.label(text, variation, should_wrap, translate)

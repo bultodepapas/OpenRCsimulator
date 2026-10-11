@@ -1,0 +1,450 @@
+trace-baseline-jensen-das-ugly-stik-60 passed
+trace-candidate-jensen-das-ugly-stik-60 passed
+trace-baseline-gp-extra-300s-60 passed
+trace-candidate-gp-extra-300s-60 passed
+trace-baseline-p51d-mustang-120 passed
+trace-candidate-p51d-mustang-120 passed
+trace-baseline-sebart-avanti-s-a200-p100rx passed
+trace-candidate-sebart-avanti-s-a200-p100rx passed
+{
+  "compared_pngs": 43,
+  "repeat_differences": {
+    "gp-extra-300s-60-low.png": {
+      "pixels": 2,
+      "max_channel_delta": 1
+    },
+    "p51d-mustang-120-low.png": {
+      "pixels": 2,
+      "max_channel_delta": 1
+    },
+    "p51d-mustang-120-pass.png": {
+      "pixels": 7,
+      "max_channel_delta": 1
+    }
+  },
+  "campaigns": {
+    "aircraft": {
+      "profiles": [
+        {
+          "variant": "baseline",
+          "samples": 2555,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.795,
+              "p95": 3.104
+            },
+            "cpu": {
+              "p50": 0.642000019550323,
+              "p95": 1.06400001049042
+            },
+            "gpu": {
+              "p50": 0.409000009298325,
+              "p95": 1.02400004863739
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 2834,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.5354999999999999,
+              "p95": 3.103
+            },
+            "cpu": {
+              "p50": 0.6289999932050709,
+              "p95": 1.081000000238419
+            },
+            "gpu": {
+              "p50": 0.770999997854233,
+              "p95": 1.917000025510793
+            },
+            "mask_gpu": {
+              "p50": 0.356000006198883,
+              "p95": 0.984000027179718
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 3100,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.485,
+              "p95": 2.512
+            },
+            "cpu": {
+              "p50": 0.6000000089406969,
+              "p95": 0.892000004649163
+            },
+            "gpu": {
+              "p50": 0.756999999284744,
+              "p95": 1.504000037908551
+            },
+            "mask_gpu": {
+              "p50": 0.33050000667572055,
+              "p95": 0.674000024795532
+            }
+          }
+        },
+        {
+          "variant": "baseline",
+          "samples": 2633,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.701,
+              "p95": 3.14
+            },
+            "cpu": {
+              "p50": 0.549000024795532,
+              "p95": 0.980000019073486
+            },
+            "gpu": {
+              "p50": 0.407000005245209,
+              "p95": 0.998000025749207
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "baseline",
+          "samples": 3042,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.499,
+              "p95": 2.629
+            },
+            "cpu": {
+              "p50": 0.518999993801117,
+              "p95": 0.765999972820282
+            },
+            "gpu": {
+              "p50": 0.407000005245209,
+              "p95": 0.970000028610229
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 2887,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.657,
+              "p95": 2.413
+            },
+            "cpu": {
+              "p50": 0.5810000002384179,
+              "p95": 0.956000030040741
+            },
+            "gpu": {
+              "p50": 0.863000005483628,
+              "p95": 1.171999990940094
+            },
+            "mask_gpu": {
+              "p50": 0.460999995470047,
+              "p95": 0.727999985218048
+            }
+          }
+        }
+      ],
+      "median_of_runs_ms": {
+        "baseline": {
+          "wall": {
+            "p50": 1.701,
+            "p95": 3.104
+          },
+          "gpu": {
+            "p50": 0.407000005245209,
+            "p95": 0.998000025749207
+          },
+          "cpu": {
+            "p50": 0.549000024795532,
+            "p95": 0.980000019073486
+          },
+          "mask_gpu": {
+            "p50": 0.0,
+            "p95": 0.0
+          }
+        },
+        "candidate": {
+          "wall": {
+            "p50": 1.5354999999999999,
+            "p95": 2.512
+          },
+          "gpu": {
+            "p50": 0.770999997854233,
+            "p95": 1.504000037908551
+          },
+          "cpu": {
+            "p50": 0.6000000089406969,
+            "p95": 0.956000030040741
+          },
+          "mask_gpu": {
+            "p50": 0.356000006198883,
+            "p95": 0.727999985218048
+          }
+        }
+      },
+      "increment_ms": {
+        "wall": {
+          "p50": -0.1655000000000002,
+          "p95": -0.5920000000000001
+        },
+        "gpu": {
+          "p50": 0.363999992609024,
+          "p95": 0.506000012159344
+        },
+        "cpu": {
+          "p50": 0.050999984145164934,
+          "p95": -0.023999989032745028
+        },
+        "mask_gpu": {
+          "p50": 0.356000006198883,
+          "p95": 0.727999985218048
+        }
+      }
+    },
+    "field": {
+      "profiles": [
+        {
+          "variant": "baseline",
+          "samples": 3059,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.546,
+              "p95": 2.425
+            },
+            "cpu": {
+              "p50": 0.324999988079071,
+              "p95": 0.560000002384186
+            },
+            "gpu": {
+              "p50": 0.541000008583069,
+              "p95": 0.919000029563904
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 3112,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.437,
+              "p95": 2.535
+            },
+            "cpu": {
+              "p50": 0.391000002622604,
+              "p95": 0.61599999666214
+            },
+            "gpu": {
+              "p50": 0.559000015258789,
+              "p95": 1.00100004673004
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 3053,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.501,
+              "p95": 2.673
+            },
+            "cpu": {
+              "p50": 0.402999997138977,
+              "p95": 0.671999990940094
+            },
+            "gpu": {
+              "p50": 0.552999973297119,
+              "p95": 1.25999999046326
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "baseline",
+          "samples": 3316,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.336,
+              "p95": 2.532
+            },
+            "cpu": {
+              "p50": 0.33899998664856,
+              "p95": 0.544000029563904
+            },
+            "gpu": {
+              "p50": 0.541000008583069,
+              "p95": 1.42200005054474
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "baseline",
+          "samples": 3203,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.397,
+              "p95": 2.62
+            },
+            "cpu": {
+              "p50": 0.360000014305115,
+              "p95": 0.584999978542328
+            },
+            "gpu": {
+              "p50": 0.540000021457672,
+              "p95": 1.43299996852875
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        },
+        {
+          "variant": "candidate",
+          "samples": 3190,
+          "timing_ms": {
+            "wall": {
+              "p50": 1.382,
+              "p95": 2.605
+            },
+            "cpu": {
+              "p50": 0.375,
+              "p95": 0.554000020027161
+            },
+            "gpu": {
+              "p50": 0.552999973297119,
+              "p95": 1.51400005817413
+            },
+            "mask_gpu": {
+              "p50": 0.0,
+              "p95": 0.0
+            }
+          }
+        }
+      ],
+      "median_of_runs_ms": {
+        "baseline": {
+          "wall": {
+            "p50": 1.397,
+            "p95": 2.532
+          },
+          "gpu": {
+            "p50": 0.541000008583069,
+            "p95": 1.42200005054474
+          },
+          "cpu": {
+            "p50": 0.33899998664856,
+            "p95": 0.560000002384186
+          },
+          "mask_gpu": {
+            "p50": 0.0,
+            "p95": 0.0
+          }
+        },
+        "candidate": {
+          "wall": {
+            "p50": 1.437,
+            "p95": 2.605
+          },
+          "gpu": {
+            "p50": 0.552999973297119,
+            "p95": 1.25999999046326
+          },
+          "cpu": {
+            "p50": 0.391000002622604,
+            "p95": 0.61599999666214
+          },
+          "mask_gpu": {
+            "p50": 0.0,
+            "p95": 0.0
+          }
+        }
+      },
+      "increment_ms": {
+        "wall": {
+          "p50": 0.040000000000000036,
+          "p95": 0.07299999999999995
+        },
+        "gpu": {
+          "p50": 0.011999964714050071,
+          "p95": -0.16200006008148016
+        },
+        "cpu": {
+          "p50": 0.05200001597404397,
+          "p95": 0.05599999427795399
+        },
+        "mask_gpu": {
+          "p50": 0.0,
+          "p95": 0.0
+        }
+      }
+    }
+  },
+  "trace_sha256": {
+    "jensen-das-ugly-stik-60": {
+      "baseline_file": "82e639ef1602677e7f401dd02bdfb7e1ae4f794bc5536f093dafcaccc7d3dfd3",
+      "candidate_file": "66b3a0c6b4be13506fb0ab7bb05dd3bb08b9cca4fee34e719b80a0fd4a363fdd",
+      "matching_state_and_stable_metadata": "fd28dcf45b009a376cd613fa251f9343eb402e936c9fd8db69c966a8f63bb419",
+      "excluded_metadata": [
+        "# created_utc:",
+        "# aircraft_input_sha256:"
+      ]
+    },
+    "gp-extra-300s-60": {
+      "baseline_file": "ef96522beebead9871a4cebbba46b456ed055f8b661ec42e5ddf78ac6e4f1131",
+      "candidate_file": "912b6c27b674bcd684786ae7c6ddf965fbf3e6982235eeef4f34c757dc03607b",
+      "matching_state_and_stable_metadata": "00a308cd2dbaf15b6dff61028e888df40cdce74a5237ab770bda74e9fbf94729",
+      "excluded_metadata": [
+        "# created_utc:",
+        "# aircraft_input_sha256:"
+      ]
+    },
+    "p51d-mustang-120": {
+      "baseline_file": "21267bd13b3e6d60dcd98ec8c7130b74f051e5dc7252de53d7fc3b3686545e8a",
+      "candidate_file": "61e3c37dc769c9a58e068aa4eae3020e0dc34ecaf7d6df46f220b780d0d25fb4",
+      "matching_state_and_stable_metadata": "86ec658b691b402f460f7c568a8d601350e8fb32d9d1d4fa497907acc71332a2",
+      "excluded_metadata": [
+        "# created_utc:",
+        "# aircraft_input_sha256:"
+      ]
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "baseline_file": "06155b62cc4bbb1f6be1cd49481f464de371bbb94045cfbb0129d89097a1c288",
+      "candidate_file": "729f40f6e35f8fdcbb2ef4766ed07ebb8b057fe996df4e2342478cc3a66030e2",
+      "matching_state_and_stable_metadata": "d6b29c0649e734afc791e17b8a7c7787ae42ea7270a283b68d908931da5d0537",
+      "excluded_metadata": [
+        "# created_utc:",
+        "# aircraft_input_sha256:"
+      ]
+    }
+  },
+  "budget_pass": true
+}

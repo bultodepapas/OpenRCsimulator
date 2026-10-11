@@ -1,0 +1,223 @@
+{
+  "visual": {
+    "pilot_near_ground": {
+      "old_shader_equals_off": true,
+      "repeat_equal": true,
+      "night_equal": true,
+      "mean_rgb_delta_255": 0.00660988136574074,
+      "mean_absolute_rgb_delta_255": 1.1044643373842593,
+      "changed_pixels": 362477,
+      "draw_calls": 9,
+      "primitives": 105569
+    },
+    "close_detail": {
+      "old_shader_equals_off": true,
+      "repeat_equal": true,
+      "night_equal": true,
+      "mean_rgb_delta_255": -0.04231155960648148,
+      "mean_absolute_rgb_delta_255": 1.7268782552083333,
+      "changed_pixels": 390794,
+      "draw_calls": 14,
+      "primitives": 127880
+    },
+    "runway_threshold": {
+      "old_shader_equals_off": true,
+      "repeat_equal": true,
+      "night_equal": true,
+      "mean_rgb_delta_255": 0.005150462962962963,
+      "mean_absolute_rgb_delta_255": 0.7634584780092593,
+      "changed_pixels": 269091,
+      "draw_calls": 14,
+      "primitives": 127880
+    },
+    "low_pass": {
+      "old_shader_equals_off": true,
+      "repeat_equal": true,
+      "night_equal": true,
+      "mean_rgb_delta_255": 0.037241030092592595,
+      "mean_absolute_rgb_delta_255": 0.5039149305555556,
+      "changed_pixels": 318471,
+      "draw_calls": 9,
+      "primitives": 114441
+    },
+    "aerial": {
+      "old_shader_equals_off": true,
+      "repeat_equal": true,
+      "night_equal": true,
+      "mean_rgb_delta_255": 0.0,
+      "mean_absolute_rgb_delta_255": 0.0,
+      "changed_pixels": 0,
+      "draw_calls": 15,
+      "primitives": 130538
+    }
+  },
+  "profile": [
+    {
+      "run": 1,
+      "columns": [
+        "wall_ms",
+        "viewport_cpu_ms",
+        "viewport_gpu_ms"
+      ],
+      "rows": [
+        "p50",
+        "p95"
+      ],
+      "off": [
+        [
+          0.73,
+          0.2329999953508377,
+          0.39500001072883606
+        ],
+        [
+          1.6139999999999999,
+          0.41600000858306885,
+          0.7279999852180481
+        ]
+      ],
+      "on": [
+        [
+          0.788,
+          0.2590000033378601,
+          0.40799999237060547
+        ],
+        [
+          1.8012999999999992,
+          0.46764999926090206,
+          0.7546499997377392
+        ]
+      ],
+      "delta": [
+        [
+          0.05800000000000005,
+          0.0260000079870224,
+          0.01299998164176941
+        ],
+        [
+          0.18729999999999936,
+          0.05164999067783321,
+          0.026650014519691068
+        ]
+      ],
+      "budget_pass": true
+    },
+    {
+      "run": 2,
+      "columns": [
+        "wall_ms",
+        "viewport_cpu_ms",
+        "viewport_gpu_ms"
+      ],
+      "rows": [
+        "p50",
+        "p95"
+      ],
+      "off": [
+        [
+          0.716,
+          0.20900000631809235,
+          0.3970000147819519
+        ],
+        [
+          1.241,
+          0.37664999812841377,
+          0.6586499840021129
+        ]
+      ],
+      "on": [
+        [
+          0.742,
+          0.2290000021457672,
+          0.40700000524520874
+        ],
+        [
+          1.5865999999999996,
+          0.34299999475479126,
+          0.7166000127792352
+        ]
+      ],
+      "delta": [
+        [
+          0.026000000000000023,
+          0.019999995827674866,
+          0.009999990463256836
+        ],
+        [
+          0.34559999999999946,
+          -0.033650003373622506,
+          0.0579500287771223
+        ]
+      ],
+      "budget_pass": true
+    },
+    {
+      "run": 3,
+      "columns": [
+        "wall_ms",
+        "viewport_cpu_ms",
+        "viewport_gpu_ms"
+      ],
+      "rows": [
+        "p50",
+        "p95"
+      ],
+      "off": [
+        [
+          0.769,
+          0.25,
+          0.39800000190734863
+        ],
+        [
+          1.666,
+          0.47699999809265137,
+          0.7705000042915344
+        ]
+      ],
+      "on": [
+        [
+          0.742,
+          0.2240000069141388,
+          0.40700000524520874
+        ],
+        [
+          1.5559499999999988,
+          0.38499999046325684,
+          0.7139999866485596
+        ]
+      ],
+      "delta": [
+        [
+          -0.027000000000000024,
+          -0.025999993085861206,
+          0.009000003337860107
+        ],
+        [
+          -0.11005000000000109,
+          -0.09200000762939453,
+          -0.056500017642974854
+        ]
+      ],
+      "budget_pass": true
+    }
+  ],
+  "limitations": [
+    "Static visual fixture, not whole-app frame cost or minimum hardware acceptance.",
+    "Human Gate L and other GPU vendors remain unverified."
+  ],
+  "filter_reference": {
+    "linear_rgb_rmse_255": {
+      "filtered": [
+        1.6652718223099567,
+        1.666009976170136,
+        1.6606459289396094
+      ],
+      "raw": [
+        6.111505485956044,
+        6.07556363832162,
+        6.09080418530532
+      ]
+    },
+    "reduction_fraction": 0.7268868405602493,
+    "limit": "Three shifted grazing-angle crops; not a universal absence-of-shimmer proof."
+  }
+}

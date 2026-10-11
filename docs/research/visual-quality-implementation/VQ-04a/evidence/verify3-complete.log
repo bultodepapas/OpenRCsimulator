@@ -1,0 +1,14 @@
+trace-baseline-jensen-das-ugly-stik-60 passed
+trace-candidate-jensen-das-ugly-stik-60 passed
+trace-baseline-gp-extra-300s-60 passed
+trace-candidate-gp-extra-300s-60 passed
+trace-baseline-p51d-mustang-120 passed
+trace-candidate-p51d-mustang-120 passed
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 224, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 198, in main
+    run(f"trace-{name}-{aircraft}", projects[name], ["--headless", "--",
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 82, in run
+    raise RuntimeError(f"{label} failed: {log}")
+RuntimeError: trace-baseline-sebart-avanti-s-a200-p100rx failed: C:\DEVELOPMENT\OpenRCsimulator\.tools\vq04a\evidence-final3\trace-baseline-sebart-avanti-s-a200-p100rx.log

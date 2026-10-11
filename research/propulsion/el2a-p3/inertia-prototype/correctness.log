@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   unprimed direct callback equals a fresh inverse
+ok   unprimed callback leaves the tick cache untouched
+ok   stage callback matches direct inversion at call 1
+ok   simulation reset succeeds with coupled callback
+ok   reset seeds the same exact inverse
+ok   matching inertia returns the exact cached inverse
+ok   mutating callback return does not mutate the cached inverse
+ok   cached inverse remains reusable after return mutation
+ok   stage callback matches direct inversion at call 2
+ok   stage callback matches direct inversion at call 3
+ok   same-tick public mutation preserves body cache
+ok   stage callback matches direct inversion at call 4
+ok   stage callback matches direct inversion at call 5
+ok   the stage callback mutated public inertia
+ok   mid-step mutation does not replace the body's tick inverse
+ok   first step still commits
+ok   out-of-step query after mutation equals a fresh inverse
+ok   out-of-step query leaves the body tick inverse unchanged
+ok   stage callback matches direct inversion at call 6
+ok   stage callback matches direct inversion at call 7
+ok   stage callback matches direct inversion at call 8
+ok   stage callback matches direct inversion at call 9
+ok   next tick refreshes the inverse for the new inertia
+ok   next tick remains valid
+ok   signed-zero fixture resets
+ok   signed-zero mutation remains numerically equal to the cache
+ok   signed-zero mutation changes the source bytes
+ok   signed-zero-only mutation falls back to exact direct inversion
+ok   signed-zero fallback does not rewrite the tick cache
+ok   signed-zero result differs from sentinel cache
+ok   checkpoint restore succeeds after signed-zero cache fallback
+ok   restore snapshots exact current inertia bytes
+ok   callback detects signed-zero change after restore
+ok   post-restore signed-zero fallback leaves cached inverse untouched
+34 checks, 0 failed

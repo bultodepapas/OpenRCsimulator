@@ -176,6 +176,8 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 		and _count_type(root, "Camera3D") == 1
 		and _count_type(root, "WorldEnvironment") == 1,
 		"fields=%d cameras=%d environments=%d" % [_count_named(root, "Field"), _count_type(root, "Camera3D"), _count_type(root, "WorldEnvironment")])
+	_check("field shadow masks own isolated 3D worlds",
+		flight is Node3D and _field_shadow_viewports_own_world(flight as Node3D))
 	_check("the flight camera and environment are the active ones",
 		root.get_viewport().get_camera_3d() == flight.get("_camera")
 		and root.get_viewport().world_3d.environment != null
@@ -450,10 +452,42 @@ func _descendants_including_self(parent: Node) -> Array[Node]:
 
 
 func _count_type(parent: Node, type_name: String) -> int:
+	if parent is SubViewport:
+		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
 	var count: int = 1 if parent.is_class(type_name) else 0
 	for child: Node in parent.get_children():
 		count += _count_type(child, type_name)
 	return count
+
+
+func _field_shadow_viewports_own_world(field_node: Node3D) -> bool:
+	var viewport_count := 0
+	var gameplay_world: World3D = field_node.get_viewport().find_world_3d()
+	for node: Node in _descendants_including_self(field_node):
+		if not node is SubViewport:
+			continue
+		viewport_count += 1
+		var shadow_viewport := node as SubViewport
+		var shadow_world: World3D = shadow_viewport.find_world_3d()
+		if not shadow_viewport.own_world_3d or shadow_world == null or shadow_world == gameplay_world:
+			return false
+		var cameras := 0
+		var environments := 0
+		var mask_meshes := 0
+		for child: Node in shadow_viewport.get_children():
+			if child is Camera3D:
+				cameras += 1
+			elif child is WorldEnvironment:
+				var environment_node := child as WorldEnvironment
+				if environment_node.environment != null:
+					environments += 1
+			elif child is MeshInstance3D:
+				mask_meshes += 1
+			else:
+				return false
+		if cameras != 1 or environments != 1 or mask_meshes != 1:
+			return false
+	return viewport_count > 0
 
 
 func _count_named(parent: Node, target_name: String) -> int:

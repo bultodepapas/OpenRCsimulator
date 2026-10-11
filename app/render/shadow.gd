@@ -1,9 +1,10 @@
-# Ground shadow (D7, L3): the main height cue in RC flying. A soft airplane silhouette projected onto the ground along
-# a direction: straight down (the D7 pilot aid, reads height directly) or along the sun (L3: the real shadow's place,
-# offset by height / tan(sun elevation)). A planar projected shadow, the classic low-end technique: one draw call, and
-# none of Compatibility's problems with engine shadows (sRGB blending of the shadowed light, L3 log).
-# Pure helpers (footprint, alpha, silhouette) + a MeshInstance3D to update each frame.
+# Ground shadow (D7, L3, VQ-04a): stable carrier API for the RC height cue.
+# bind_model() upgrades the legacy generic mask to an isolated mesh-derived silhouette
+# and height-softened receiver. The legacy transform/helpers remain for fallback and
+# existing visual consumers; they never feed simulation state.
 extends RefCounted
+
+const Projected = preload("res://render/projected_shadow.gd")
 
 const Spec := preload("res://spec.gd")
 
@@ -21,6 +22,7 @@ static func create(parent: Node3D) -> MeshInstance3D:
 	var quad := PlaneMesh.new() # 1 × 1 in the XZ plane; UV u along +X, v along +Z
 	quad.size = Vector2(1, 1)
 	m.mesh = quad
+	m.set_meta("legacy_shadow_mesh", quad)
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -31,6 +33,23 @@ static func create(parent: Node3D) -> MeshInstance3D:
 	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	parent.add_child(m)
 	return m
+
+
+## Bind the built model without modifying its meshes, materials or hinges.
+static func bind_model(shadow: MeshInstance3D, model: Node3D) -> void:
+	var old := shadow.get_node_or_null("ProjectedShadow")
+	if old != null:
+		shadow.remove_child(old)
+		old.queue_free()
+	var shape: Dictionary = Projected.collect(model)
+	if shape.is_empty():
+		shadow.mesh = shadow.get_meta("legacy_shadow_mesh")
+		return # legacy mask remains a supported fallback
+	var projected := Projected.new()
+	projected.name = "ProjectedShadow"
+	shadow.add_child(projected)
+	projected.setup(model, shape)
+	shadow.mesh = null # carrier keeps the public transform/visibility contract
 
 
 ## Ground transform of the shadow quad for an airplane with model basis `b` (nose −Z, right +X) at render
@@ -80,7 +99,11 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 
 static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP, strength: float = 1.0) -> void:
 	shadow.transform = footprint(b, pos, span, length, along)
-	(shadow.material_override as StandardMaterial3D).albedo_color.a = alpha(pos.y) * clampf(strength, 0.0, 1.0)
+	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0)
+	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
+	var projected := shadow.get_node_or_null("ProjectedShadow")
+	if projected != null:
+		projected.refresh(pos.y, along.normalized(), opacity, shadow.visible and opacity > 0.0)
 
 
 ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).

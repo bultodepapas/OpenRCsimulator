@@ -1,0 +1,1259 @@
+--- a/app/main.gd
++++ b/app/main.gd
+@@ -763,8 +763,9 @@
+ 	_airplane = AirplaneBuilder.build(aircraft_id)
+ 	add_child(_airplane.root)
+ 	_extent = Shadow.model_extent(_airplane.root)
++	_shadow = Shadow.create(self)
++	Shadow.bind_model(_shadow, _airplane.root)
+ 	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
+-	_shadow = Shadow.create(self)
+ 	_camera = PilotCamera.create(self, field.pilot)
+ 	_panel = InputPanel.create(self)
+ 	_hud = Hud.create(self)
+--- a/app/ui/home_scene.gd
++++ b/app/ui/home_scene.gd
+@@ -107,6 +107,7 @@
+ 	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
+ 	airplane.propeller.rotation.z = PROP_ANGLE
+ 	var extent := Shadow.model_extent(airplane.root)
++	Shadow.bind_model(_shadow, airplane.root)
+ 	World.dress_aircraft(airplane.root)
+ 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
+ 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0
+--- a/app/render/field.gd
++++ b/app/render/field.gd
+@@ -9,6 +9,7 @@
+ const Horizon = preload("res://render/horizon.gd")
+ const PilotStation = preload("res://render/pilot_station.gd")
+ const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
++const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
+ const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
+ const Windsock = preload("res://render/windsock.gd")
+ const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
+@@ -67,6 +68,7 @@
+ 	if not field.get("flight_cues", []).is_empty():
+ 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
+ 	Scenery.attach(result, field, lighting)
++	FieldProjectedShadows.attach(result, field, lighting)
+ 	result.set_meta("lighting_materials", materials)
+ 	result.set_meta("lighting_snapshot", lighting.duplicate(true))
+ 	return result
+@@ -94,6 +96,7 @@
+ 	if cues != null and cues.mesh.get_surface_count() > 0:
+ 		var material: StandardMaterial3D = cues.mesh.surface_get_material(0) as StandardMaterial3D
+ 		material.albedo_color = Color.BLACK if lighting.has("solar") else Color.WHITE
++	FieldProjectedShadows.apply_lighting(field_node, lighting)
+ 	field_node.set_meta("lighting_snapshot", lighting.duplicate(true))
+ 	return true
+ 
+--- a/app/render/shadow.gd
++++ b/app/render/shadow.gd
+@@ -1,9 +1,10 @@
+-# Ground shadow (D7, L3): the main height cue in RC flying. A soft airplane silhouette projected onto the ground along
+-# a direction: straight down (the D7 pilot aid, reads height directly) or along the sun (L3: the real shadow's place,
+-# offset by height / tan(sun elevation)). A planar projected shadow, the classic low-end technique: one draw call, and
+-# none of Compatibility's problems with engine shadows (sRGB blending of the shadowed light, L3 log).
+-# Pure helpers (footprint, alpha, silhouette) + a MeshInstance3D to update each frame.
++# Ground shadow (D7, L3, VQ-04a): stable carrier API for the RC height cue.
++# bind_model() upgrades the legacy generic mask to an isolated mesh-derived silhouette
++# and height-softened receiver. The legacy transform/helpers remain for fallback and
++# existing visual consumers; they never feed simulation state.
+ extends RefCounted
++
++const Projected = preload("res://render/projected_shadow.gd")
+ 
+ const Spec := preload("res://spec.gd")
+ 
+@@ -21,6 +22,7 @@
+ 	var quad := PlaneMesh.new() # 1 × 1 in the XZ plane; UV u along +X, v along +Z
+ 	quad.size = Vector2(1, 1)
+ 	m.mesh = quad
++	m.set_meta("legacy_shadow_mesh", quad)
+ 	var mat := StandardMaterial3D.new()
+ 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+ 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+@@ -31,6 +33,23 @@
+ 	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+ 	parent.add_child(m)
+ 	return m
++
++
++## Bind the built model without modifying its meshes, materials or hinges.
++static func bind_model(shadow: MeshInstance3D, model: Node3D) -> void:
++	var old := shadow.get_node_or_null("ProjectedShadow")
++	if old != null:
++		shadow.remove_child(old)
++		old.queue_free()
++	var shape: Dictionary = Projected.collect(model)
++	if shape.is_empty():
++		shadow.mesh = shadow.get_meta("legacy_shadow_mesh")
++		return # legacy mask remains a supported fallback
++	var projected := Projected.new()
++	projected.name = "ProjectedShadow"
++	shadow.add_child(projected)
++	projected.setup(model, shape)
++	shadow.mesh = null # carrier keeps the public transform/visibility contract
+ 
+ 
+ ## Ground transform of the shadow quad for an airplane with model basis `b` (nose −Z, right +X) at render
+@@ -80,7 +99,11 @@
+ 
+ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP, strength: float = 1.0) -> void:
+ 	shadow.transform = footprint(b, pos, span, length, along)
+-	(shadow.material_override as StandardMaterial3D).albedo_color.a = alpha(pos.y) * clampf(strength, 0.0, 1.0)
++	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0)
++	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
++	var projected := shadow.get_node_or_null("ProjectedShadow")
++	if projected != null:
++		projected.refresh(pos.y, along.normalized(), opacity, shadow.visible and opacity > 0.0)
+ 
+ 
+ ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).
+--- /dev/null
++++ b/app/render/projected_shadow.gd
+@@ -0,0 +1,169 @@
++## VQ-04a: one neutral-geometry silhouette draw in an isolated 256² viewport.
++## No light/physics writes. The root's actual model transform supplies the datum.
++extends Node
++
++const MaskShader = preload("res://render/projected_shadow_mask.gdshader")
++const ReceiverShader = preload("res://render/projected_shadow_receiver.gdshader")
++const RESOLUTION := 256
++const Spec = preload("res://spec.gd")
++const HEIGHT: float = Spec.SHADOW.height
++
++var source: Node3D
++var viewport: SubViewport
++var receiver: MeshInstance3D
++var mask_material: ShaderMaterial
++var bounds: AABB
++var triangle_count := 0
++var _last_signature: Array = []
++var _last_request: Array = []
++
++
++## The shape is captured at bind time. Propellers are omitted: a neutral blade
++## would cast a visibly frozen streak while the rendered prop rotates.
++static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
++	var vertices := PackedVector3Array()
++	var meshes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
++	if model is MeshInstance3D:
++		meshes.push_front(model)
++	for item in meshes:
++		var mi := item as MeshInstance3D
++		if mi.mesh == null:
++			continue
++		var transform := Transform3D.IDENTITY
++		var node: Node = mi
++		var include := true
++		while node != model and node != null:
++			if node is Node3D:
++				include = include and node.visible and node.name != &"propeller"
++				transform = node.transform * transform
++			node = node.get_parent()
++		if not include:
++			continue
++		var faces := mi.mesh.get_faces()
++		for first in range(0, faces.size(), 3):
++			var a := transform * faces[first]
++			var b := transform * faces[first + 1]
++			var c := transform * faces[first + 2]
++			if maxf(a.y, maxf(b.y, c.y)) <= min_height:
++				continue # static receivers must not recast their ground/pad polygons
++			vertices.append(a)
++			vertices.append(b)
++			vertices.append(c)
++	if vertices.is_empty():
++		return {}
++	var box := AABB(vertices[0], Vector3.ZERO)
++	for point in vertices:
++		box = box.expand(point)
++	var arrays := []
++	arrays.resize(Mesh.ARRAY_MAX)
++	arrays[Mesh.ARRAY_VERTEX] = vertices
++	var merged := ArrayMesh.new()
++	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++	return {mesh = merged, bounds = box, triangles = vertices.size() / 3}
++
++
++static func project(point: Vector3, direction: Vector3) -> Vector2:
++	var slope := direction / maxf(direction.y, 0.05)
++	return Vector2(point.x - slope.x * point.y, point.z - slope.z * point.y)
++
++
++## Conservative bounds of projected model, with room for every blur tap.
++static func framing(box: AABB, basis: Basis, direction: Vector3, blur_m: float) -> Rect2:
++	var rect := Rect2(project(basis * box.get_endpoint(0), direction), Vector2.ZERO)
++	for i in range(1, 8):
++		rect = rect.expand(project(basis * box.get_endpoint(i), direction))
++	var side := maxf(rect.size.x, rect.size.y) + 2.0 * (blur_m + 0.04)
++	side = maxf(side, 0.1)
++	return Rect2(rect.get_center() - Vector2.ONE * side * 0.5, Vector2.ONE * side)
++
++
++func setup(model: Node3D, shape: Dictionary, resolution: int = RESOLUTION, antialias: int = Viewport.MSAA_4X) -> void:
++	source = model
++	bounds = shape.bounds
++	triangle_count = shape.triangles
++	viewport = SubViewport.new()
++	viewport.name = "Silhouette256"
++	viewport.size = Vector2i(resolution, resolution)
++	viewport.own_world_3d = true
++	viewport.transparent_bg = true
++	viewport.msaa_3d = antialias as Viewport.MSAA
++	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++	add_child(viewport)
++	var environment := WorldEnvironment.new()
++	environment.environment = Environment.new()
++	environment.environment.background_mode = Environment.BG_COLOR
++	environment.environment.background_color = Color.BLACK
++	viewport.add_child(environment)
++	var camera := Camera3D.new()
++	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
++	camera.size = 100.0
++	camera.position = Vector3(0, 10, 0)
++	camera.rotation_degrees.x = -90.0
++	viewport.add_child(camera)
++	camera.current = true
++	var proxy := MeshInstance3D.new()
++	proxy.mesh = shape.mesh
++	# POSITION bypasses the camera; imported/model vertices may be far off origin.
++	proxy.custom_aabb = AABB(Vector3(-1, -1, -1), Vector3(2, 2, 2))
++	proxy.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
++	mask_material = ShaderMaterial.new()
++	mask_material.shader = MaskShader
++	proxy.material_override = mask_material
++	viewport.add_child(proxy)
++	receiver = MeshInstance3D.new()
++	receiver.name = "SoftAircraftShadow"
++	receiver.top_level = true
++	var plane := PlaneMesh.new()
++	plane.size = Vector2.ONE
++	receiver.mesh = plane
++	receiver.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
++	var material := ShaderMaterial.new()
++	material.shader = ReceiverShader
++	material.set_shader_parameter("mask", viewport.get_texture())
++	receiver.material_override = material
++	add_child(receiver)
++	source.visibility_changed.connect(_source_visibility_changed)
++	source.tree_exiting.connect(_source_exiting)
++
++
++func _source_visibility_changed() -> void:
++	if not _last_request.is_empty():
++		refresh(_last_request[0], _last_request[1], _last_request[2], _last_request[3])
++
++
++func _source_exiting() -> void:
++	receiver.visible = false
++	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++
++
++func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> void:
++	_last_request = [height, direction, opacity, shown]
++	if not is_instance_valid(source):
++		receiver.visible = false
++		viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++		return
++	shown = shown and (source.is_visible_in_tree() if source.is_inside_tree() else source.visible)
++	receiver.visible = shown
++	if not shown:
++		viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++		_last_signature.clear()
++		return
++	# Artistic area-light approximation, bounded to keep the RC height cue readable.
++	var blur := clampf(0.018 + maxf(height, 0.0) * 0.0093, 0.018, 0.45)
++	var pose := source.global_transform if source.is_inside_tree() else source.transform
++	var frame := framing(bounds, pose.basis, direction, blur)
++	var center := frame.get_center()
++	var ground_origin := project(pose.origin - Vector3(0, HEIGHT, 0), direction) + center
++	receiver.transform = Transform3D(Basis.from_scale(Vector3(frame.size.x, 1, frame.size.y)),
++		Vector3(ground_origin.x, HEIGHT, ground_origin.y))
++	var material := receiver.material_override as ShaderMaterial
++	material.set_shader_parameter("opacity", opacity)
++	material.set_shader_parameter("blur_uv", blur / frame.size.x)
++	var signature := [pose.basis, direction, frame]
++	if signature != _last_signature:
++		mask_material.set_shader_parameter("aircraft_basis", pose.basis)
++		mask_material.set_shader_parameter("light_direction", direction)
++		mask_material.set_shader_parameter("frame_center", center)
++		mask_material.set_shader_parameter("frame_size", frame.size.x)
++		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
++		_last_signature = signature
+--- /dev/null
++++ b/app/render/field_projected_shadows.gd
+@@ -0,0 +1,112 @@
++## VQ-04a-F1: cached geometry shadows for flight cues and nearby static scenery.
++## Uses the same projection as the aircraft, without changing scenery ownership.
++extends Node
++
++const Projected = preload("res://render/projected_shadow.gd")
++const Atmosphere = preload("res://render/atmosphere.gd")
++const MAX_SCENERY_RANGE := 100.0 # artistic near-field budget, metres from pilot
++const MAX_MAPS := 16
++const MAX_TARGET_PIXELS := 8 * 1024 * 1024 # <=64 MiB nominal RGBA8 + 32-bit depth
++const OPACITY := 0.40 # artistic direct-light reduction, before time-of-day strength
++
++var projectors: Array[Node] = []
++var snapshot: Dictionary = {}
++var target_pixels := 0
++var _light_signature: Array = []
++
++
++static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) -> void:
++	if OS.get_cmdline_user_args().has("--field-shadows=off"):
++		return # explicit evidence/recovery route keeps the legacy contact shadows
++	var manager := new()
++	manager.name = "ProjectedFieldShadows"
++	field_node.add_child(manager)
++	manager.snapshot = lighting.duplicate(true)
++	var cues_complete := true
++	for cue: Dictionary in field.get("flight_cues", []):
++		var model := field_node.get_node_or_null(NodePath(str(cue.id))) as Node3D
++		if model == null or not manager.add_caster(model):
++			cues_complete = false
++	# Legacy cues share one mesh. Keep the complete old set if any new cue fails,
++	# avoiding both missing contacts and overlapping old/new receivers.
++	if not cues_complete:
++		for projector in manager.projectors:
++			projector.free()
++		manager.projectors.clear()
++		manager.target_pixels = 0
++	var contacts := field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
++	if contacts != null and not manager.projectors.is_empty():
++		contacts.visible = false
++	var scenery := field_node.get_node_or_null("Scenery") as Node3D
++	if scenery != null:
++		var pilot := Vector2(float(field.pilot.east), -float(field.pilot.north))
++		for node in scenery.get_children():
++			if not node is MeshInstance3D or not str(node.name).begins_with("cell_"):
++				continue
++			var box: AABB = node.mesh.get_aabb()
++			var centre := box.get_center()
++			if box.size.y < 0.08 or Vector2(centre.x, centre.z).distance_to(pilot) > MAX_SCENERY_RANGE:
++				continue
++			if manager.add_caster(node):
++				var old := scenery.get_node_or_null(NodePath(str(node.name).replace("cell_", "shadows_"))) as MeshInstance3D
++				if old != null:
++					old.visible = false
++	if manager.projectors.is_empty():
++		manager.free()
++		return
++	manager.apply(lighting)
++
++
++static func apply_lighting(field_node: Node3D, lighting: Dictionary) -> void:
++	var manager := field_node.get_node_or_null("ProjectedFieldShadows")
++	if manager != null:
++		manager.apply(lighting)
++
++
++func add_caster(model: Node3D) -> bool:
++	if projectors.size() >= MAX_MAPS:
++		return false
++	var shape := Projected.collect(model, 0.04)
++	if shape.is_empty():
++		return false
++	var longest := maxf(shape.bounds.size.x, shape.bounds.size.z)
++	# At most 1024² per static batch, without an MSAA depth/color target. Small cues
++	# use 256². This preserves the narrow fence slats within the bounded memory cap.
++	var resolution := 256 if longest < 8.0 else (512 if longest < 20.0 else 1024)
++	if target_pixels + resolution * resolution > MAX_TARGET_PIXELS:
++		return false
++	var projector := Projected.new()
++	projector.name = "Caster_" + str(model.name)
++	add_child(projector)
++	projector.setup(model, shape, resolution, Viewport.MSAA_DISABLED)
++	projector.set_meta("soft_height", maxf(shape.bounds.size.y * 0.5, 0.0))
++	projectors.append(projector)
++	target_pixels += resolution * resolution
++	return true
++
++
++func _ready() -> void:
++	# Field and Home are assembled outside the tree; now every source has its final
++	# global transform. No new animation clock.
++	apply(snapshot)
++
++
++func _process(_delta: float) -> void:
++	# FW flowing time changes its shared visual state; read it, never advance it.
++	var signature := [Atmosphere.shadow_direction(), Atmosphere.light_energy()]
++	if signature != _light_signature:
++		apply(snapshot)
++
++
++func apply(lighting: Dictionary) -> void:
++	snapshot = lighting.duplicate(true)
++	var direction := Atmosphere.shadow_direction(lighting)
++	var strength: float = Atmosphere.shadow_strength(lighting)
++	var flowing := lighting.is_empty() and not Atmosphere.state.is_empty()
++	set_process(flowing)
++	if flowing:
++		strength *= clampf(Atmosphere.light_energy() / float(Atmosphere.Spec.ATMOSPHERE.sun_energy), 0.0, 1.0)
++	_light_signature = [direction, Atmosphere.light_energy(lighting)]
++	for projector in projectors:
++		projector.refresh(float(projector.get_meta("soft_height")), direction,
++			OPACITY * strength, strength > 0.0)
+--- /dev/null
++++ b/app/render/projected_shadow_mask.gdshader
+@@ -0,0 +1,20 @@
++shader_type spatial;
++render_mode unshaded, cull_disabled, depth_test_disabled, fog_disabled;
++
++uniform mat3 aircraft_basis;
++uniform vec3 light_direction = vec3(0.0, 1.0, 0.0);
++uniform vec2 frame_center;
++uniform float frame_size = 2.0;
++
++void vertex() {
++	vec3 p = aircraft_basis * VERTEX;
++	vec2 ground = p.xz - light_direction.xz * p.y / max(light_direction.y, 0.05);
++	vec2 clip = (ground - frame_center) * 2.0 / frame_size;
++	// Compatibility render targets flip clip Y: +z must become +V on PlaneMesh.
++	// The asymmetric GPU probe guards this mapping (and catches a negated clip.y).
++	POSITION = vec4(clip.x, clip.y, 0.0, 1.0);
++}
++
++void fragment() {
++	ALBEDO = vec3(1.0);
++}
+--- /dev/null
++++ b/app/render/projected_shadow_receiver.gdshader
+@@ -0,0 +1,19 @@
++shader_type spatial;
++render_mode unshaded, cull_disabled, depth_draw_never;
++
++uniform sampler2D mask : filter_linear, repeat_disable;
++uniform float opacity = 0.5;
++uniform float blur_uv = 0.01;
++
++void fragment() {
++	// Fixed, symmetric 13-tap disk kernel; no random rotation or temporal noise.
++	float coverage = texture(mask, UV).a * 0.2;
++	for (int i = 0; i < 6; i++) {
++		float angle = float(i) * 1.0471975512;
++		vec2 offset = vec2(cos(angle), sin(angle));
++		coverage += texture(mask, UV + offset * blur_uv * 0.45).a * 0.08;
++		coverage += texture(mask, UV + offset * blur_uv).a * 0.0533333333;
++	}
++	ALBEDO = vec3(0.0);
++	ALPHA = coverage * opacity;
++}
+--- /dev/null
++++ b/app/tests/test_projected_shadow.gd
+@@ -0,0 +1,354 @@
++# VQ-04a regression checks: mesh-derived projection, bounds, collection and lifecycle.
++# Run: Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_projected_shadow.gd
++extends SceneTree
++
++const Projected := preload("res://render/projected_shadow.gd")
++const Shadow := preload("res://render/shadow.gd")
++const AirplaneBuilder := preload("res://render/airplane.gd")
++const Commands := preload("res://input/commands.gd")
++
++const GROUND_DATUM := 0.05
++const EPSILON := 0.0001
++
++var _checks := 0
++var _failures := 0
++
++
++func _check(label: String, passed: bool, detail: String = "") -> void:
++	_checks += 1
++	if not passed:
++		_failures += 1
++		printerr("FAIL %s %s" % [label, detail])
++
++
++func _near_vec2(a: Vector2, b: Vector2, tolerance: float = EPSILON) -> bool:
++	return a.distance_to(b) <= tolerance
++
++
++func _near_transform(a: Transform3D, b: Transform3D, tolerance: float = EPSILON) -> bool:
++	return a.origin.distance_to(b.origin) <= tolerance and a.basis.is_equal_approx(b.basis)
++
++
++func _ray_to_ground(point: Vector3, direction: Vector3) -> Vector2:
++	# Independent ray-plane intersection: point - t * direction, where y reaches 0.
++	var t := point.y / direction.y
++	var hit := point - direction * t
++	return Vector2(hit.x, hit.z)
++
++
++func _triangle_mesh(points: PackedVector3Array) -> ArrayMesh:
++	var arrays: Array = []
++	arrays.resize(Mesh.ARRAY_MAX)
++	arrays[Mesh.ARRAY_VERTEX] = points
++	var result := ArrayMesh.new()
++	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++	return result
++
++
++func _new_mesh(parent: Node3D, name: String, points: PackedVector3Array) -> MeshInstance3D:
++	var instance := MeshInstance3D.new()
++	instance.name = name
++	instance.mesh = _triangle_mesh(points)
++	parent.add_child(instance)
++	return instance
++
++
++func _make_fixture(name: String, origin: Vector3 = Vector3.ZERO) -> Dictionary:
++	var model := Node3D.new()
++	model.name = name
++	model.position = origin
++
++	# Asymmetric visible surface with distinct offsets at each vertex.
++	var visible_frame := Node3D.new()
++	visible_frame.name = "VisibleFrame"
++	visible_frame.transform = Transform3D(Basis.from_euler(Vector3(0.13, -0.21, 0.31)), Vector3(0.8, 0.4, -1.2))
++	model.add_child(visible_frame)
++	var points := PackedVector3Array([
++		Vector3(-0.6, 0.15, -1.4),
++		Vector3(1.9, 0.8, 0.3),
++		Vector3(0.25, 1.55, 2.2),
++	])
++	var visible_mesh := _new_mesh(visible_frame, "VisibleSurface", points)
++	visible_mesh.position = Vector3(0.35, -0.2, 0.7)
++
++	# Hidden content beneath a hidden ancestor must not leak into the merged silhouette.
++	var hidden_frame := Node3D.new()
++	hidden_frame.name = "HiddenFrame"
++	hidden_frame.visible = false
++	hidden_frame.position = Vector3(14.0, 8.0, -11.0)
++	model.add_child(hidden_frame)
++	_new_mesh(hidden_frame, "HiddenSurface", PackedVector3Array([
++		Vector3(0, 0, 0), Vector3(2, 0, 0), Vector3(0, 2, 1),
++	]))
++
++	# Propeller descendants are intentionally excluded to avoid a frozen blade streak.
++	var propeller := Node3D.new()
++	propeller.name = "propeller"
++	propeller.position = Vector3(-9.0, 3.0, 12.0)
++	model.add_child(propeller)
++	var propeller_mount := Node3D.new()
++	propeller_mount.name = "Mount"
++	propeller.add_child(propeller_mount)
++	_new_mesh(propeller_mount, "Blade", PackedVector3Array([
++		Vector3(0, 0, 0), Vector3(0, 6, 0.4), Vector3(0.5, 0, 0),
++	]))
++
++	return {
++		"model": model,
++		"visible_frame": visible_frame,
++		"visible_mesh": visible_mesh,
++		"visible_points": points,
++		"hidden_frame": hidden_frame,
++		"propeller": propeller,
++	}
++
++
++func _test_independent_projection_and_datum() -> void:
++	var direction := Vector3(0.6, 0.8, -0.3)
++	var point := Vector3(2.4, 3.0, -1.5)
++	var expected := _ray_to_ground(point, direction)
++	_check("light ray hits y=0 at independently calculated x/z",
++		_near_vec2(Projected.project(point, direction), expected),
++		"got %s expected %s" % [Projected.project(point, direction), expected])
++
++	var fixture := _make_fixture("DatumFixture", Vector3(4.0, 3.5, -6.0))
++	var model := fixture.model as Node3D
++	model.transform = Transform3D(Basis.from_euler(Vector3(-0.18, 0.37, 0.29)), Vector3(4.0, 3.5, -6.0))
++	var shape: Dictionary = Projected.collect(model)
++	_check("datum fixture has collected geometry", not shape.is_empty())
++	if shape.is_empty():
++		model.free()
++		return
++
++	var host := Node3D.new()
++	root.add_child(host)
++	host.transform = Transform3D(Basis(Vector3.UP, 0.5), Vector3(3, 0, 7))
++	host.add_child(model)
++	var carrier := Shadow.create(host)
++	Shadow.bind_model(carrier, model)
++	var projected := carrier.get_node_or_null("ProjectedShadow") as Node
++	_check("bind creates projected shadow node", projected != null)
++	if projected == null:
++		host.free()
++		return
++
++	var renderer := projected as Node
++	renderer.call("refresh", 5.0, Vector3(0.31, 0.91, -0.24).normalized(), 0.6, true)
++	var receiver := renderer.get("receiver") as MeshInstance3D
++	var mask_material := renderer.get("mask_material") as ShaderMaterial
++	var frame_center: Vector2 = mask_material.get_shader_parameter("frame_center")
++	var root_at_datum := model.global_transform.origin - Vector3(0.0, GROUND_DATUM, 0.0)
++	var direction_for_datum := Vector3(0.31, 0.91, -0.24).normalized()
++	var expected_root_shadow := _ray_to_ground(root_at_datum, direction_for_datum)
++	var receiver_origin := Vector2(receiver.transform.origin.x, receiver.transform.origin.z)
++	_check("receiver origin separates mesh-local offset from model datum",
++		_near_vec2(receiver_origin - frame_center, expected_root_shadow),
++		"got %s expected %s" % [receiver_origin - frame_center, expected_root_shadow])
++	_check("receiver sits on the configured ground datum",
++		absf(receiver.transform.origin.y - GROUND_DATUM) <= EPSILON,
++		str(receiver.transform.origin.y))
++	host.free()
++
++
++func _test_collection_excludes_hidden_and_propeller() -> void:
++	var fixture := _make_fixture("CollectionFixture")
++	var model := fixture.model as Node3D
++	var shape: Dictionary = Projected.collect(model)
++	_check("synthetic collection returns one merged surface",
++		not shape.is_empty() and shape.mesh.get_surface_count() == 1)
++	_check("hidden and propeller meshes are excluded",
++		shape.get("triangles", 0) == 1,
++		"collected triangles=%s" % shape.get("triangles", -1))
++
++	if not shape.is_empty():
++		var arrays: Array = shape.mesh.surface_get_arrays(0)
++		var merged: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
++		var frame: Node3D = fixture.visible_frame
++		var mesh: MeshInstance3D = fixture.visible_mesh
++		var local_to_model: Transform3D = frame.transform * mesh.transform
++		var source_points: PackedVector3Array = fixture.visible_points
++		var expected_first := local_to_model * source_points[0]
++		_check("merged vertices preserve descendant transforms",
++			merged.size() == 3 and merged[0].distance_to(expected_first) <= EPSILON,
++			"got %s expected %s" % [merged[0] if not merged.is_empty() else Vector3.INF, expected_first])
++		var expected_bounds := AABB(merged[0], Vector3.ZERO)
++		for vertex: Vector3 in merged:
++			expected_bounds = expected_bounds.expand(vertex)
++		_check("bounds contain only the visible asymmetric mesh",
++			shape.bounds.position.distance_to(expected_bounds.position) <= EPSILON
++				and shape.bounds.size.distance_to(expected_bounds.size) <= EPSILON,
++			"got %s expected %s" % [shape.bounds, expected_bounds])
++	model.free()
++
++
++func _test_conservative_framing() -> void:
++	var fixture := _make_fixture("FramingFixture")
++	var shape: Dictionary = Projected.collect(fixture.model)
++	if shape.is_empty():
++		_check("framing fixture collected", false)
++		fixture.model.free()
++		return
++
++	var low_sun := Vector3(0.994, 0.105, -0.02).normalized() # About six degrees above the horizon.
++	var cases: Array[Dictionary] = [
++		{"name": "bank", "basis": Basis.from_euler(Vector3(0.08, -0.22, deg_to_rad(48.0))), "light": Vector3.UP, "blur": 0.08},
++		{"name": "knife edge", "basis": Basis.from_euler(Vector3(-0.12, 0.18, deg_to_rad(89.5))), "light": Vector3.UP, "blur": 0.16},
++		{"name": "inverted", "basis": Basis.from_euler(Vector3(0.05, 0.39, PI)), "light": Vector3.UP, "blur": 0.22},
++		{"name": "low sun", "basis": Basis.from_euler(Vector3(-0.09, -0.34, deg_to_rad(63.0))), "light": low_sun, "blur": 0.40},
++	]
++
++	for pose: Dictionary in cases:
++		var bounds: AABB = shape.bounds
++		var basis: Basis = pose.basis
++		var direction: Vector3 = pose.light
++		var blur: float = pose.blur
++		var frame: Rect2 = Projected.framing(bounds, basis, direction, blur)
++		var required_padding := blur + 0.04
++		var smallest_padding := INF
++		var right := frame.position.x + frame.size.x
++		var bottom := frame.position.y + frame.size.y
++		for corner in 8:
++			var transformed := basis * bounds.get_endpoint(corner)
++			var projected := _ray_to_ground(transformed, direction)
++			smallest_padding = minf(smallest_padding, projected.x - frame.position.x)
++			smallest_padding = minf(smallest_padding, right - projected.x)
++			smallest_padding = minf(smallest_padding, projected.y - frame.position.y)
++			smallest_padding = minf(smallest_padding, bottom - projected.y)
++		_check("%s frame contains every transformed corner plus blur margin" % pose.name,
++			is_finite(smallest_padding) and smallest_padding + EPSILON >= required_padding,
++			"padding %.6f, required %.6f, frame %s" % [smallest_padding, required_padding, frame])
++	fixture.model.free()
++
++
++func _hinge_node(value: Variant) -> Node3D:
++	if value is Node3D:
++		return value as Node3D
++	if value is Dictionary:
++		return value.get("node") as Node3D
++	return null
++
++
++func _test_neutral_geometry_on_catalog_models() -> void:
++	var ids: Array[String] = [
++		AirplaneBuilder.STIK_ID,
++		AirplaneBuilder.EXTRA_ID,
++		AirplaneBuilder.P51_ID,
++		AirplaneBuilder.AVANTI_ID,
++	]
++	for id: String in ids:
++		var airplane: Dictionary = AirplaneBuilder.build(id)
++		var model := airplane.get("root") as Node3D
++		_check("%s builder returned a root" % id, model != null)
++		if model == null:
++			continue
++		root.add_child(model)
++
++		var before: Dictionary = {}
++		var hinges: Dictionary = airplane.get("hinges", {})
++		for key: String in hinges:
++			var hinge := _hinge_node(hinges[key])
++			if hinge != null:
++				before[key] = hinge.transform
++		var neutral := Commands.neutral_commands()
++		AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations(neutral))
++		var stayed_neutral := true
++		for key: String in before:
++			var hinge := _hinge_node(hinges[key])
++			if hinge == null or not _near_transform(before[key], hinge.transform):
++				stayed_neutral = false
++		_check("%s accepts neutral controls without moving its rest geometry" % id, stayed_neutral)
++
++		var shape: Dictionary = Projected.collect(model)
++		var valid_geometry := not shape.is_empty()
++		if valid_geometry:
++			var box: AABB = shape.bounds
++			valid_geometry = shape.mesh.get_surface_count() == 1 \
++				and int(shape.triangles) > 0 \
++				and is_finite(box.position.x) and is_finite(box.position.y) and is_finite(box.position.z) \
++				and box.size.length() > 0.1
++		_check("%s produces one finite merged neutral silhouette" % id, valid_geometry,
++			"triangles=%s bounds=%s" % [shape.get("triangles", 0), shape.get("bounds", AABB())])
++		model.free()
++
++
++func _test_binding_lifecycle_and_hidden_updates() -> void:
++	var host := Node3D.new()
++	root.add_child(host)
++	var fixture_a := _make_fixture("SourceA", Vector3(1.0, 2.0, 3.0))
++	var fixture_b := _make_fixture("SourceB", Vector3(-4.0, 5.0, 2.0))
++	var model_a: Node3D = fixture_a.model
++	var model_b: Node3D = fixture_b.model
++	host.add_child(model_a)
++	host.add_child(model_b)
++	var carrier := Shadow.create(host)
++
++	Shadow.bind_model(carrier, model_a)
++	var first := carrier.get_node_or_null("ProjectedShadow") as Node
++	_check("initial bind captures first source",
++		first != null and first.get("source") == model_a)
++	if first == null:
++		host.free()
++		return
++	var first_viewport := first.get("viewport") as SubViewport
++	_check("initial viewport starts disabled until a visible refresh",
++		first_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++	first.call("refresh", 2.0, Vector3.UP, 0.5, true)
++	_check("visible refresh schedules one mask redraw",
++		first_viewport.render_target_update_mode == SubViewport.UPDATE_ONCE
++			and (first.get("receiver") as MeshInstance3D).visible)
++
++	Shadow.bind_model(carrier, model_b)
++	var second := carrier.get_node_or_null("ProjectedShadow") as Node
++	_check("swap rebinds to second source and retires old node",
++		second != null and second != first and second.get("source") == model_b
++			and first.is_queued_for_deletion())
++	if second == null:
++		host.free()
++		return
++
++	Shadow.bind_model(carrier, model_b)
++	var rebound := carrier.get_node_or_null("ProjectedShadow") as Node
++	_check("rebind replaces rather than duplicates the projected node",
++		rebound != null and rebound != second and second.is_queued_for_deletion()
++			and carrier.get_children().filter(func(child: Node) -> bool: return child.name == "ProjectedShadow").size() == 1)
++	if rebound == null:
++		host.free()
++		return
++
++	rebound.call("refresh", 3.0, Vector3.UP, 0.5, false)
++	var viewport := rebound.get("viewport") as SubViewport
++	var receiver := rebound.get("receiver") as MeshInstance3D
++	_check("zero visibility hides receiver and disables viewport redraw",
++		not receiver.visible and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++
++	rebound.call("refresh", 3.0, Vector3.UP, 0.5, true)
++	_check("visible again schedules a fresh mask after hidden invalidation",
++		receiver.visible and viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
++
++	var empty := Node3D.new()
++	host.add_child(empty)
++	var fallback := Shadow.create(host)
++	Shadow.bind_model(fallback, model_a)
++	Shadow.bind_model(fallback, empty)
++	_check("empty replacement restores legacy fallback", fallback.mesh is PlaneMesh and fallback.get_node_or_null("ProjectedShadow") == null)
++
++	model_b.free()
++	rebound.call("refresh", 3.0, Vector3.UP, 0.5, true)
++	_check("freed source hides the receiver and disables the viewport",
++		not receiver.visible and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++	host.free()
++
++
++func _initialize() -> void:
++	call_deferred("_run")
++
++
++func _run() -> void:
++	_test_independent_projection_and_datum()
++	_test_collection_excludes_hidden_and_propeller()
++	_test_conservative_framing()
++	_test_neutral_geometry_on_catalog_models()
++	_test_binding_lifecycle_and_hidden_updates()
++	print("Projected shadow regression: %d checks, %d failed" % [_checks, _failures])
++	quit(1 if _failures > 0 else 0)
++
+--- /dev/null
++++ b/app/tests/test_field_projected_shadows.gd
+@@ -0,0 +1,322 @@
++# VQ-04a-F1 regression: field cue and nearby scenery projected-shadow integration.
++# Run with the pinned Godot console binary and --headless --path app --script res://tests/test_field_projected_shadows.gd
++extends SceneTree
++
++const Atmosphere := preload("res://render/atmosphere.gd")
++const FieldBuilder := preload("res://render/field.gd")
++const FieldLoader := preload("res://data/field_loader.gd")
++const FieldShadows := preload("res://render/field_projected_shadows.gd")
++const Projected := preload("res://render/projected_shadow.gd")
++const Scenery := preload("res://scenery/scenery.gd")
++const SceneryLoader := preload("res://scenery/scenery_loader.gd")
++const ShaderClock := preload("res://render/shader_clock.gd")
++const Spec := preload("res://spec.gd")
++const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
++
++var _checks := 0
++var _failures := 0
++
++
++func _check(label: String, passed: bool, detail: String = "") -> void:
++	_checks += 1
++	if not passed:
++		_failures += 1
++		printerr("FAIL %s %s" % [label, detail])
++
++
++func _test_root_mesh_and_flat_ground() -> void:
++	var arrays: Array = []
++	arrays.resize(Mesh.ARRAY_MAX)
++	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([
++		Vector3(-2, 0, -1), Vector3(-1, 0, -1), Vector3(-2, 0, 0), # flat ground
++		Vector3(2, 0.08, 0), Vector3(3, 0.2, 0), Vector3(2, 0.1, 1), # raised surface
++	])
++	var mesh := ArrayMesh.new()
++	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++	var root_mesh := MeshInstance3D.new()
++	root_mesh.mesh = mesh
++	var shape: Dictionary = Projected.collect(root_mesh, 0.04)
++	_check("root MeshInstance is collected and flat ground triangles are skipped",
++		not shape.is_empty() and int(shape.triangles) == 1
++			and shape.bounds.position.x >= 1.99 and shape.bounds.position.y >= 0.079
++			and shape.bounds.size.x <= 1.01,
++		str(shape.get("bounds", AABB())) if not shape.is_empty() else "empty shape")
++	root_mesh.free()
++
++
++func _test_target_budget_rejection() -> void:
++	var manager := FieldShadows.new() as Node
++	var arrays: Array = []
++	arrays.resize(Mesh.ARRAY_MAX)
++	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([
++		Vector3(0, 1, 0), Vector3(25, 1, 0), Vector3(0, 2, 25),
++	])
++	var mesh := ArrayMesh.new()
++	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
++	var caster := MeshInstance3D.new()
++	caster.mesh = mesh
++	var initial_budget := FieldShadows.MAX_TARGET_PIXELS - 1024 * 1024 + 1
++	manager.set("target_pixels", initial_budget)
++	var accepted: bool = manager.call("add_caster", caster)
++	_check("1024² caster exceeding MAX_TARGET_PIXELS is rejected", not accepted)
++	_check("budget rejection preserves allocation counters and creates no children",
++		int(manager.get("target_pixels")) == initial_budget
++			and (manager.get("projectors") as Array).is_empty()
++			and manager.get_child_count() == 0,
++		"pixels=%d children=%d" % [int(manager.get("target_pixels")), manager.get_child_count()])
++	manager.free()
++	caster.free()
++
++
++func _test_incomplete_cue_fallback(field: Dictionary, lighting: Dictionary) -> void:
++	var fixture := FieldBuilder.build(field, lighting)
++	var old_manager := fixture.get_node_or_null("ProjectedFieldShadows")
++	if old_manager != null:
++		fixture.remove_child(old_manager)
++		old_manager.free()
++	var legacy := fixture.get_node_or_null("FlightCueShadows") as MeshInstance3D
++	if legacy != null:
++		legacy.visible = true
++	var eligible_survivors := 0
++	for i in field.flight_cues.size() - 1:
++		var source := fixture.get_node_or_null(NodePath(str(field.flight_cues[i].id))) as Node3D
++		if source != null and not Projected.collect(source, 0.04).is_empty():
++			eligible_survivors += 1
++	_check("fallback fixture has two otherwise valid cue casters", eligible_survivors == 2,
++		"valid=%d" % eligible_survivors)
++	var missing_id := str(field.flight_cues.back().id)
++	var missing := fixture.get_node_or_null(NodePath(missing_id))
++	if missing != null:
++		fixture.remove_child(missing)
++		missing.free()
++	FieldShadows.attach(fixture, field, lighting)
++	var manager := fixture.get_node_or_null("ProjectedFieldShadows")
++	var projectors: Array = manager.get("projectors") if manager != null else []
++	_check("incomplete cue set keeps the complete legacy cue shadow visible",
++		legacy != null and legacy.visible)
++	_check("incomplete cue set rolls back all partial projected maps",
++		manager == null or (projectors.is_empty() and manager.get_child_count() == 0),
++		"projectors=%d children=%d" % [projectors.size(), manager.get_child_count() if manager != null else -1])
++	fixture.free()
++
++
++func _test_flowing_lighting(manager: Node, projectors: Array, lighting: Dictionary) -> void:
++	var saved_state := Atmosphere.state.duplicate(true)
++	var dir_a := Vector3(0.18, 0.96, -0.22).normalized()
++	Atmosphere.state = {light_dir = dir_a, light_energy = Spec.ATMOSPHERE.sun_energy * 0.7}
++	FieldShadows.apply_lighting(manager.get_parent() as Node3D, {})
++	var processing := manager.is_processing()
++	var dir_b := Vector3(-0.53, 0.82, 0.21).normalized()
++	Atmosphere.state = {light_dir = dir_b, light_energy = Spec.ATMOSPHERE.sun_energy * 0.35}
++	var state_before_process := Atmosphere.state.duplicate(true)
++	var clock_before := ShaderClock.last_clock
++	var wind_before := ShaderClock.last_wind
++	manager.call("_process", 0.016)
++	var expected_direction := Atmosphere.shadow_direction()
++	var expected_opacity := 0.40 * 0.35
++	var refreshed := true
++	for projector: Node in projectors:
++		var mask := projector.get("mask_material") as ShaderMaterial
++		var receiver := projector.get("receiver") as MeshInstance3D
++		var receiver_mat := receiver.material_override as ShaderMaterial
++		refreshed = refreshed and mask.get_shader_parameter("light_direction").is_equal_approx(expected_direction)
++		refreshed = refreshed and is_equal_approx(float(receiver_mat.get_shader_parameter("opacity")), expected_opacity)
++	_check("flowing field manager processes lighting snapshots", processing)
++	_check("_process refreshes direction and energy-scaled opacity without mutating state or shader clock",
++		refreshed and Atmosphere.state == state_before_process
++			and ShaderClock.last_clock == clock_before and ShaderClock.last_wind == wind_before)
++	Atmosphere.state = saved_state
++	FieldShadows.apply_lighting(manager.get_parent() as Node3D, lighting)
++
++
++func _test_field_integration() -> void:
++	var loaded := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
++	_check("default field loads", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
++	if not loaded.ok:
++		return
++	var field: Dictionary = loaded.field
++	var daylight: Dictionary = Spec.ATMOSPHERE.duplicate(true)
++	daylight.shadow_strength = 1.0
++	daylight.sun_azimuth_deg = 230.0
++	_test_incomplete_cue_fallback(field, daylight)
++	var field_node := FieldBuilder.build(field, daylight)
++	# FieldBuilder attaches cues before optional scenery. Rebuild its manager after
++	# inserting the deterministic default scenery so one manager sees both sources.
++	var first_manager := field_node.get_node_or_null("ProjectedFieldShadows")
++	if first_manager != null:
++		field_node.remove_child(first_manager)
++		first_manager.free()
++	var scenery_data := SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
++	_check("default scenery loads", bool(scenery_data.get("ok", false)), str(scenery_data.get("errors", [])))
++	if not scenery_data.ok:
++		field_node.free()
++		return
++	var scenery_root := Scenery.build(field, scenery_data.scenery, OPTS, daylight)
++	field_node.add_child(scenery_root)
++	FieldShadows.attach(field_node, field, daylight)
++	root.add_child(field_node)
++	await process_frame
++
++	var manager := field_node.get_node_or_null("ProjectedFieldShadows")	 as Node
++	_check("field manager is attached", manager != null)
++	if manager == null:
++		field_node.free()
++		return
++	var projectors: Array = manager.get("projectors")
++	var cue_projectors := 0
++	for cue: Dictionary in field.flight_cues:
++		var source := field_node.get_node_or_null(NodePath(str(cue.id))) as Node3D
++		var projected := false
++		for projector: Node in projectors:
++			projected = projected or projector.get("source") == source
++		cue_projectors += 1 if source != null and projected else 0
++	_check("all three default field cues have projected maps", field.flight_cues.size() == 3 and cue_projectors == 3,
++		"cues=%d projected=%d" % [field.flight_cues.size(), cue_projectors])
++	var legacy_cues := field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
++	_check("matching legacy cue contact mesh is hidden", legacy_cues != null and not legacy_cues.visible)
++
++	var cell_projectors := 0
++	var matched_legacy := 0
++	var pilot_hits := [false, false]
++	var max_resolution := 0
++	var pixel_sum := 0
++	for projector: Node in projectors:
++		var source := projector.get("source") as Node3D
++		var viewport := projector.get("viewport") as SubViewport
++		if viewport == null:
++			continue
++		max_resolution = maxi(max_resolution, maxi(viewport.size.x, viewport.size.y))
++		pixel_sum += viewport.size.x * viewport.size.y
++		if source == null or not str(source.name).begins_with("cell_"):
++			continue
++		cell_projectors += 1
++		var suffix := str(source.name).trim_prefix("cell_")
++		var legacy := scenery_root.get_node_or_null(NodePath("shadows_" + suffix)) as MeshInstance3D
++		if legacy != null:
++			matched_legacy += 1
++			_check("near %s legacy shadow batch is hidden" % suffix, not legacy.visible)
++		var shape: Dictionary = Projected.collect(source, 0.04)
++		if shape.is_empty():
++			continue
++		var vertices: PackedVector3Array = shape.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
++		for v: Vector3 in vertices:
++			if v.y < 1.45:
++				continue
++			if Vector2(v.x + 13.0, v.z).length() < 0.55:
++				pilot_hits[0] = true
++			if Vector2(v.x - 16.0, v.z - 0.5).length() < 0.55:
++				pilot_hits[1] = true
++	_check("near scenery cells are projected", cell_projectors > 0)
++	_check("pilot and people geometry survives cell collection", pilot_hits[0] and pilot_hits[1], str(pilot_hits))
++	_check("near projected cells hide matching legacy batches", matched_legacy > 0,
++		"matched=%d cells=%d" % [matched_legacy, cell_projectors])
++	_check("map count and each 256/512/1024 target stay bounded",
++		projectors.size() <= 16 and max_resolution <= 1024 and max_resolution > 0,
++		"maps=%d max=%d" % [projectors.size(), max_resolution])
++	_check("aggregate viewport allocation respects MAX_TARGET_PIXELS",
++		pixel_sum == int(manager.get("target_pixels")) and pixel_sum <= FieldShadows.MAX_TARGET_PIXELS,
++		"pixels=%d budget=%d reported=%d" % [pixel_sum, FieldShadows.MAX_TARGET_PIXELS, int(manager.get("target_pixels"))])
++
++	# The old batches for casters beyond the projected near-field radius must remain visible.
++	var groups: Dictionary = scenery_root.get_meta("directional_shadow_groups")
++	var far_legacy := 0
++	var pilot_xz := Vector2(float(field.pilot.east), -float(field.pilot.north))
++	for key: Vector2i in groups:
++		var name := "shadows_%d_%d" % [key.x, key.y]
++		var batch := scenery_root.get_node_or_null(NodePath(name)) as MeshInstance3D
++		for placement: Dictionary in groups[key]:
++			var pos: Vector3 = placement.transform.origin
++			if Vector2(pos.x, pos.z).distance_to(pilot_xz) > 100.0:
++				if batch != null:
++					far_legacy += 1
++					_check("far legacy shadow batch remains visible", batch.visible, name)
++				break
++	_check("at least one far legacy shadow batch is preserved", far_legacy > 0,
++		"far batches=%d" % far_legacy)
++
++	# Reapplying one explicit snapshot must not reschedule a mask draw.
++	var before_modes: Array[int] = []
++	var before_signatures: Array = []
++	for projector: Node in projectors:
++		before_modes.append((projector.get("viewport") as SubViewport).render_target_update_mode)
++		before_signatures.append(projector.get("_last_signature").duplicate(true))
++	FieldShadows.apply_lighting(field_node, daylight)
++	var same_unchanged := true
++	for i in projectors.size():
++		same_unchanged = same_unchanged and (projectors[i].get("viewport") as SubViewport).render_target_update_mode == before_modes[i]
++		same_unchanged = same_unchanged and projectors[i].get("_last_signature") == before_signatures[i]
++	_check("identical lighting snapshot schedules no new mask redraw", same_unchanged)
++
++	var low_sun := daylight.duplicate(true)
++	low_sun.sun_elevation_deg = 2.0
++	FieldShadows.apply_lighting(field_node, low_sun)
++	var bounded_direction := Atmosphere.shadow_direction(low_sun)
++	var low_sun_matches := true
++	for projector: Node in projectors:
++		var mask := projector.get("mask_material") as ShaderMaterial
++		low_sun_matches = low_sun_matches and mask.get_shader_parameter("light_direction").is_equal_approx(bounded_direction)
++	_check("explicit low-sun projection uses the shared 12-degree shadow direction",
++		bounded_direction.y >= sin(deg_to_rad(12.0)) - 0.000001
++			and bounded_direction != Atmosphere.sun_direction(low_sun) and low_sun_matches)
++	FieldShadows.apply_lighting(field_node, daylight)
++
++	var cell_projector: Node
++	for projector: Node in projectors:
++		var source := projector.get("source") as Node3D
++		if source != null and str(source.name).begins_with("cell_"):
++			cell_projector = projector
++			break
++	if cell_projector == null:
++		_check("visibility lifecycle has a projected scenery cell", false)
++	else:
++		var cell_source := cell_projector.get("source") as Node3D
++		var cell_receiver := cell_projector.get("receiver") as MeshInstance3D
++		var cell_viewport := cell_projector.get("viewport") as SubViewport
++		cell_source.visible = false
++		_check("hiding a source hides its receiver and disables redraw",
++			not cell_receiver.visible and cell_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++		cell_source.visible = true
++		_check("showing a source restores its receiver and refreshes its map",
++			cell_receiver.visible and cell_viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
++		scenery_root.visible = false
++		_check("hiding the Scenery ancestor hides the projected receiver",
++			not cell_receiver.visible and cell_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++		scenery_root.visible = true
++		_check("showing the Scenery ancestor restores the projected receiver and map",
++			cell_receiver.visible and cell_viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
++
++	_test_flowing_lighting(manager, projectors, daylight)
++
++	var dark := daylight.duplicate(true)
++	dark.sun_azimuth_deg = 35.0
++	dark.shadow_strength = 0.0
++	FieldShadows.apply_lighting(field_node, dark)
++	var all_disabled := true
++	for projector: Node in projectors:
++		all_disabled = all_disabled and not (projector.get("receiver") as MeshInstance3D).visible
++		all_disabled = all_disabled and (projector.get("viewport") as SubViewport).render_target_update_mode == SubViewport.UPDATE_DISABLED
++	_check("zero-strength explicit snapshot hides maps and disables redraw", all_disabled)
++
++	var restored := dark.duplicate(true)
++	restored.sun_azimuth_deg = 140.0
++	restored.shadow_strength = 1.0
++	_check("restored snapshot changes sun direction", Atmosphere.sun_direction(restored) != Atmosphere.sun_direction(dark))
++	FieldShadows.apply_lighting(field_node, restored)
++	var all_restored := true
++	for projector: Node in projectors:
++		all_restored = all_restored and (projector.get("receiver") as MeshInstance3D).visible
++		all_restored = all_restored and (projector.get("viewport") as SubViewport).render_target_update_mode == SubViewport.UPDATE_ONCE
++	_check("positive strength re-enables receivers and schedules fresh maps", all_restored)
++	field_node.free()
++
++
++func _initialize() -> void:
++	call_deferred("_run")
++
++
++func _run() -> void:
++	_test_root_mesh_and_flat_ground()
++	_test_target_budget_rejection()
++	await _test_field_integration()
++	print("Field projected-shadow regression: %d checks, %d failed" % [_checks, _failures])
++	quit(1 if _failures > 0 else 0)
+--- a/app/tests/test_field_integration.gd
++++ b/app/tests/test_field_integration.gd
+@@ -176,6 +176,8 @@
+ 		and _count_type(root, "Camera3D") == 1
+ 		and _count_type(root, "WorldEnvironment") == 1,
+ 		"fields=%d cameras=%d environments=%d" % [_count_named(root, "Field"), _count_type(root, "Camera3D"), _count_type(root, "WorldEnvironment")])
++	_check("field shadow masks own isolated 3D worlds",
++		flight is Node3D and _field_shadow_viewports_own_world(flight as Node3D))
+ 	_check("the flight camera and environment are the active ones",
+ 		root.get_viewport().get_camera_3d() == flight.get("_camera")
+ 		and root.get_viewport().world_3d.environment != null
+@@ -450,10 +452,42 @@
+ 
+ 
+ func _count_type(parent: Node, type_name: String) -> int:
++	if parent is SubViewport:
++		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
+ 	var count: int = 1 if parent.is_class(type_name) else 0
+ 	for child: Node in parent.get_children():
+ 		count += _count_type(child, type_name)
+ 	return count
++
++
++func _field_shadow_viewports_own_world(field_node: Node3D) -> bool:
++	var viewport_count := 0
++	var gameplay_world: World3D = field_node.get_viewport().find_world_3d()
++	for node: Node in _descendants_including_self(field_node):
++		if not node is SubViewport:
++			continue
++		viewport_count += 1
++		var shadow_viewport := node as SubViewport
++		var shadow_world: World3D = shadow_viewport.find_world_3d()
++		if not shadow_viewport.own_world_3d or shadow_world == null or shadow_world == gameplay_world:
++			return false
++		var cameras := 0
++		var environments := 0
++		var mask_meshes := 0
++		for child: Node in shadow_viewport.get_children():
++			if child is Camera3D:
++				cameras += 1
++			elif child is WorldEnvironment:
++				var environment_node := child as WorldEnvironment
++				if environment_node.environment != null:
++					environments += 1
++			elif child is MeshInstance3D:
++				mask_meshes += 1
++			else:
++				return false
++		if cameras != 1 or environments != 1 or mask_meshes != 1:
++			return false
++	return viewport_count > 0
+ 
+ 
+ func _count_named(parent: Node, target_name: String) -> int:
+--- a/app/tests/test_ui_flight_capture.gd
++++ b/app/tests/test_ui_flight_capture.gd
+@@ -53,6 +53,8 @@
+ 		app.queue_free()
+ 		quit(1)
+ 		return
++	_check("aircraft shadow mask owns an isolated 3D world",
++		_shadow_viewports_own_world(flight, root.get_viewport().find_world_3d()))
+ 	_check("flight camera is active", root.get_viewport().get_camera_3d() == flight.get("_camera"))
+ 	var session: Node = flight.get("session")
+ 	var sim: Node = session.get("sim")
+@@ -74,12 +76,26 @@
+ 
+ 
+ func _count_nodes(parent: Node, type_name: String) -> int:
++	if parent is SubViewport:
++		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
+ 	var count: int = 0
+ 	for child in parent.get_children():
+ 		if child.is_class(type_name):
+ 			count += 1
+ 		count += _count_nodes(child, type_name)
+ 	return count
++
++
++func _shadow_viewports_own_world(parent: Node, gameplay_world: World3D) -> bool:
++	var shadow_viewports: Array[Node] = parent.find_children("Silhouette256", "SubViewport", true, false)
++	if shadow_viewports.is_empty() or gameplay_world == null:
++		return false
++	for node: Node in shadow_viewports:
++		var shadow_viewport := node as SubViewport
++		var shadow_world: World3D = shadow_viewport.find_world_3d()
++		if not shadow_viewport.own_world_3d or shadow_world == null or shadow_world == gameplay_world:
++			return false
++	return true
+ 
+ 
+ func _count_named_nodes(parent: Node, target_name: String) -> int:
+--- a/app/tests/capture_ui.gd
++++ b/app/tests/capture_ui.gd
+@@ -530,6 +530,8 @@
+ 
+ 
+ func _count_nodes(parent: Node, type_name: String) -> int:
++	if parent is SubViewport:
++		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
+ 	var count: int = 0
+ 	for child in parent.get_children():
+ 		if child.is_class(type_name):
+@@ -551,10 +553,10 @@
+ 	var camera: Camera3D = field.get("camera")
+ 	var aircraft: Dictionary = field.get("airplane")
+ 	var airplane_root: Node3D = aircraft.get("root")
+-	var environment_nodes: Array[Node] = field.find_children("*", "WorldEnvironment", true, false)
++	var world_environment: WorldEnvironment = _find_gameplay_environment(field)
+ 	var environment: Environment = null
+-	if not environment_nodes.is_empty():
+-		environment = (environment_nodes[0] as WorldEnvironment).environment
++	if world_environment != null:
++		environment = world_environment.environment
+ 	return {
+ 		"camera_transform": VisualEvidence.transform(camera.global_transform),
+ 		"pilot_eye_position": VisualEvidence.vector(camera.global_position),
+@@ -566,3 +568,15 @@
+ 		"seed": {"kind": "not-used", "note": "Home uses fixed analytic clouds and no RNG"},
+ 		"provenance": VisualEvidence.provenance(),
+ 	}
++
++
++func _find_gameplay_environment(parent: Node) -> WorldEnvironment:
++	for child: Node in parent.get_children():
++		if child is SubViewport:
++			continue
++		if child is WorldEnvironment:
++			return child as WorldEnvironment
++		var nested: WorldEnvironment = _find_gameplay_environment(child)
++		if nested != null:
++			return nested
++	return null

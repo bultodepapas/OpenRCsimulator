@@ -1,0 +1,72 @@
+diff --git a/app/sim/simulation.gd b/.tools/el2a-p3-inertia/app/sim/simulation.gd
+index a8e7d65..14d31a9 100644
+--- a/app/sim/simulation.gd
++++ b/.tools/el2a-p3-inertia/app/sim/simulation.gd
+@@ -64,6 +64,7 @@ var stop_at_tick := -1
+ var step_usec := 0.0
+ var _inertia_inv := PackedFloat64Array()
+ var _inertia_cache := PackedFloat64Array()
++var _inertia_cache_bytes := PackedByteArray()
+ ## A numerical fault is sticky until an explicit, valid reset succeeds.
+ var fault_reason := ""
+ var _last_valid_state := PackedFloat64Array()
+@@ -115,6 +116,7 @@ func reset(initial: PackedFloat64Array) -> bool:
+ 	_fixed_dt = 1.0 / Engine.physics_ticks_per_second
+ 	_inertia_inv = next_inertia_inv
+ 	_inertia_cache = inertia.duplicate()
++	_inertia_cache_bytes = inertia.to_byte_array()
+ 	last_loads = reset_loads
+ 	fault_reason = ""
+ 	_remember_valid_state()
+@@ -344,9 +346,20 @@ func _refresh_inertia_inverse() -> bool:
+ 		return false
+ 	_inertia_inv = next_inverse
+ 	_inertia_cache = inertia.duplicate()
++	_inertia_cache_bytes = inertia.to_byte_array()
+ 	return true
+ 
+ 
++## Inverse for an owner callback. Reuse the reset/step cache only while the public inertia
++## tensor still matches it. A mid-step edit gets a fresh inverse without replacing the
++## body's tick-local derivative cache, matching the old direct-inversion call sites.
++func _inertia_inverse_for_callback() -> PackedFloat64Array:
++	if _same_array(inertia, _inertia_cache) and inertia.to_byte_array() == _inertia_cache_bytes \
++			and _array_is_finite(_inertia_inv, 6):
++		return _inertia_inv.duplicate()
++	return RB.inertia_inverse(inertia)
++
++
+ func _same_array(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
+ 	if left.size() != right.size():
+ 		return false
+@@ -467,6 +480,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
+ 	stop_at_tick = candidate.stop_at_tick
+ 	_inertia_inv = RB.inertia_inverse(inertia)
+ 	_inertia_cache = inertia.duplicate()
++	_inertia_cache_bytes = inertia.to_byte_array()
+ 	fault_reason = ""
+ 	_remember_valid_state()
+ 	set_paused(true)
+
+diff --git a/app/sim/flight_session.gd b/.tools/el2a-p3-inertia/app/sim/flight_session.gd
+index f2de6ad..724c04f 100644
+--- a/app/sim/flight_session.gd
++++ b/.tools/el2a-p3-inertia/app/sim/flight_session.gd
+@@ -1163,7 +1163,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
+ 		elif rpm == 0.0:
+ 			# Static bearing friction may hold the relative rotor against body acceleration.
+ 			var w: PackedFloat64Array = s.slice(RB.RATE, RB.RATE + 3)
+-			var free_body: PackedFloat64Array = RB.inertia_mul(RB.inertia_inverse(sim.inertia),
++			var free_body: PackedFloat64Array = RB.inertia_mul(sim._inertia_inverse_for_callback(),
+ 				M.sub(external.slice(3, 6), M.cross(w, RB.inertia_mul(sim.inertia, w))))
+ 			var required: float = float(prop.rotor_inertia) * M.dot(Propulsion.axis(prop), free_body)
+ 			var drive: float = kt * float(point.motor_current_a)
+@@ -1177,7 +1177,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
+ 				# Use moving-side bearing loss; the isolated motor's rest clamp is not valid here.
+ 				rate = (drive - friction) / float(prop.rotor_inertia) * 60.0 / TAU
+ 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
+-		M.v3(external[3], external[4], external[5]), sim.inertia, RB.inertia_inverse(sim.inertia),
++		M.v3(external[3], external[4], external[5]), sim.inertia, sim._inertia_inverse_for_callback(),
+ 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
+ 	if not response.ok:
+ 		return response

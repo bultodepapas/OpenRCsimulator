@@ -1,5 +1,36 @@
 # Ground surface capture
 
+## L9e turf material
+
+`turf_generate.py --check` verifies the original packed data texture with Python
+stdlib. For capture reduction, install the exact versions in
+`turf_requirements.txt`. The native engine must be Godot 4.7.2 Compatibility.
+
+Freeze a pre-change project as `BASELINE` and the candidate as `APP`. Run the same
+`turf_capture.gd` script with `--path APP --script /absolute/tools/ground/turf_capture.gd`,
+then pass user arguments after `--`:
+
+| Output subfolder | Project | Arguments |
+| --- | --- | --- |
+| `day` | APP | `--mode=capture --out=.../day` |
+| `legacy` | BASELINE | `--mode=capture --legacy --out=.../legacy` |
+| `night` | APP | `--mode=capture --night --out=.../night` |
+| `profile1` … `profile3` | APP | `--mode=profile --out=.../profileN` |
+
+Every output folder must initially be empty. Check successful exit and absence
+of engine errors before running `python tools/ground/turf_verify.py EVIDENCE`.
+Profiles alternate off/on/off/on, warm for >=2 s/60 frames, and measure >=3 s/180
+frames per state. Raw wall/CPU/GPU times are separate. Run profiles serially when
+other GPU work is idle; shader compilation is excluded by warmup.
+
+`--mode=motion` captures 12 threshold-camera steps of 20 mm. `--filter-reference`
+selects a 640x96 exact crop of that camera; `--scale=4` supersamples it and uses
+three steps. The L9e report documents the isolated no-filter mutation used to
+compare the production filter with a supersampled reference. No mutation belongs
+in `app/`. See [L9e evidence](../../docs/research/visual-quality-implementation/L9e/README.md).
+
+## L9c surfaces
+
 Run the L9c Compatibility-renderer review with:
 
 ```bash

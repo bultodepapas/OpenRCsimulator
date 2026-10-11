@@ -1,0 +1,86 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "20",
+		"fps": "30",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/audio-pcm-30",
+		"weather": "gusty"
+	},
+	"audio_sources_sha256": {
+		"adapter": "1ac78e5b90583bc21d631085010051317c4b35bca0c7d735b9e4113098da7a8e",
+		"mixer": "360d59c83490a231eb3360310ede6d752f0c0d2c8f1fcebc7f040e3fecf558ab",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b"
+	},
+	"captured_seconds": 20.0106666666667,
+	"discarded_frames": 0,
+	"display": "headless",
+	"distance_max_m": 171.097183227539,
+	"distance_min_m": 2.49999570846558,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 4,
+			"wall_s": 0.002406
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 1,
+			"tick": 975,
+			"wall_s": 4.011245
+		},
+		{
+			"paused": false,
+			"rpm": 11147.057689572,
+			"stage": 2,
+			"tick": 1695,
+			"wall_s": 7.011148
+		},
+		{
+			"paused": true,
+			"rpm": 2818.94944137963,
+			"stage": 3,
+			"tick": 2415,
+			"wall_s": 10.011645
+		},
+		{
+			"paused": false,
+			"rpm": 2818.94944137963,
+			"stage": 4,
+			"tick": 2415,
+			"wall_s": 11.008345
+		},
+		{
+			"paused": false,
+			"rpm": 2800.0063568294,
+			"stage": 5,
+			"tick": 2895,
+			"wall_s": 13.013245
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 6,
+			"tick": 0,
+			"wall_s": 15.012536
+		}
+	],
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 960512,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -5.47566869062741,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 30,
+	"rms_dbfs": -19.7249557823593,
+	"soundscape_update_max_us": 682,
+	"soundscape_update_p95_us": 186,
+	"voices": 12,
+	"wav_saved": true
+}

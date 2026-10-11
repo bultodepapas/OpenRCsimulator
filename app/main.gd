@@ -15,6 +15,7 @@ const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
+const FlightAudio = preload("res://audio/flight_audio.gd")
 const VisualTimeline = preload("res://environment/visual_timeline.gd")
 const VisualCheckpoint = preload("res://app_state/visual_checkpoint.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
@@ -106,6 +107,7 @@ var _prop_angle := 0.0
 ## --scripted: the Stage 0/1 scripted circle instead of the physics simulation.
 var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
+var _soundscape_audio: FlightAudio
 var _engine_phase := 0.0
 var _cg_model := Vector3.ZERO
 var _env: Environment
@@ -316,7 +318,7 @@ func _ready() -> void:
 		add_child(latency_patch)
 	recorder = Recorder.new(session.sim, session.electrical_state)
 	session.resetting.connect(_on_resetting)
-	if session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
+	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
 	if not _experimental_aircraft_path.is_empty() and (not session.is_flyable() or not session.surface_error.is_empty()):
@@ -346,6 +348,15 @@ func _ready() -> void:
 		# Headless trace: record from the start to t, save, quit. No window needed.
 		_write_trace_and_quit(trace_ticks, str(args.trace))
 		return
+	if not _scripted and not args.has("capture") and str(args.get("soundscape", "on")) == "on":
+		_soundscape_audio = FlightAudio.new()
+		_soundscape_audio.name = "FlightAudio"
+		add_child(_soundscape_audio)
+		_soundscape_audio.configure(self)
+		if session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
+			_engine_audio = _soundscape_audio.soundscape.voices[0] # retain legacy combustion/turbine inspection interface
+	elif str(args.get("soundscape", "on")) == "off":
+		FlightAudio.silence_legacy_ambience(self)
 	if bool(frametime_options.enabled):
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
@@ -405,7 +416,7 @@ func _process(delta: float) -> void:
 		_prop_angle = fposmod(TAU * (sim.aux[0] / 60.0) * _frametimes_elapsed, TAU)
 	elif not frozen:
 		_prop_angle += TAU * (sim.aux[0] / 60.0) * dt
-	if _engine_audio != null:
+	if _engine_audio != null and _soundscape_audio == null:
 		_engine_audio.stream_paused = frozen
 		if not frozen:
 			_engine_phase = EngineSound.update(_engine_audio, _engine_phase, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
@@ -689,7 +700,7 @@ func _on_resetting() -> void:
 	_t = 0.0
 	if recorder.recording:
 		recorder.stop()
-	if _engine_audio != null and _engine_audio.playing:
+	if _engine_audio != null and _soundscape_audio == null and _engine_audio.playing:
 		# A new flight: drop the ~0.19 s of queued sound from the old one (clear_buffer() fails while playing).
 		_engine_audio.stop()
 		_engine_audio.play()
@@ -763,8 +774,9 @@ func _build_world() -> void:
 	_airplane = AirplaneBuilder.build(aircraft_id)
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root)
-	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_shadow = Shadow.create(self)
+	Shadow.bind_model(_shadow, _airplane.root)
+	World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_camera = PilotCamera.create(self, field.pilot)
 	_panel = InputPanel.create(self)
 	_hud = Hud.create(self)

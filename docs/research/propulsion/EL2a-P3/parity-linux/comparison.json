@@ -1,0 +1,740 @@
+{
+  "arguments": {
+    "baseline_app": "/home/bulto/openrc-el2a-p3/baseline/app",
+    "batches": 4,
+    "candidate_app": "/home/bulto/openrc-el2a-p3/candidate/app",
+    "godot": "/home/bulto/openrc-el2a-p3/candidate/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "rounds": 2,
+    "timeout_sec": 900
+  },
+  "batch_count_per_case_per_run": 4,
+  "benchmark_comparison": {
+    "all_batch_endpoint_bytes_identical": true,
+    "case_count": 12,
+    "cases": [
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 303.0083333333333,
+        "baseline_p95_us_per_tick": 365.2583333333333,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          312.78333333333336,
+          304.39166666666665,
+          279.2083333333333,
+          365.2583333333333,
+          269.925,
+          341.4,
+          292.94166666666666,
+          301.625
+        ],
+        "candidate_median_us_per_tick": 261.85416666666663,
+        "candidate_over_baseline_median_ratio": 0.8641814031517284,
+        "candidate_p95_us_per_tick": 283.26666666666665,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          276.075,
+          262.075,
+          257.15,
+          259.8833333333333,
+          261.6333333333333,
+          265.525,
+          258.95,
+          283.26666666666665
+        ],
+        "id": "jensen_ugly_stik_60",
+        "median_change_percent": -13.581859684827158,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "legacy_control"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 327.7291666666667,
+        "baseline_p95_us_per_tick": 393.73333333333335,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          297.5833333333333,
+          323.93333333333334,
+          284.4166666666667,
+          325.60833333333335,
+          393.73333333333335,
+          336.23333333333335,
+          329.85,
+          349.71666666666664
+        ],
+        "candidate_median_us_per_tick": 318.49583333333334,
+        "candidate_over_baseline_median_ratio": 0.9718263301760854,
+        "candidate_p95_us_per_tick": 396.23333333333335,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          335.0,
+          292.4583333333333,
+          363.6166666666667,
+          396.23333333333335,
+          301.9916666666667,
+          335.81666666666666,
+          276.6333333333333,
+          284.2
+        ],
+        "id": "jensen_ugly_stik_60",
+        "median_change_percent": -2.817366982391456,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "legacy_control"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 195.76666666666665,
+        "baseline_p95_us_per_tick": 217.34166666666667,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          190.875,
+          182.825,
+          198.525,
+          209.64166666666668,
+          217.34166666666667,
+          198.5,
+          181.79166666666666,
+          193.03333333333333
+        ],
+        "candidate_median_us_per_tick": 212.54166666666669,
+        "candidate_over_baseline_median_ratio": 1.0856887451047166,
+        "candidate_p95_us_per_tick": 234.23333333333332,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          234.23333333333332,
+          215.525,
+          210.80833333333334,
+          215.71666666666667,
+          209.125,
+          200.40833333333333,
+          186.09166666666667,
+          214.275
+        ],
+        "id": "p51d_mustang_120",
+        "median_change_percent": 8.568874510471659,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "legacy_control"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 421.07916666666665,
+        "baseline_p95_us_per_tick": 475.125,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          472.18333333333334,
+          445.15833333333336,
+          406.56666666666666,
+          475.125,
+          376.0833333333333,
+          401.26666666666665,
+          414.69166666666666,
+          427.46666666666664
+        ],
+        "candidate_median_us_per_tick": 418.2583333333333,
+        "candidate_over_baseline_median_ratio": 0.9933009430134871,
+        "candidate_p95_us_per_tick": 540.5583333333333,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          375.25,
+          431.85,
+          540.5583333333333,
+          417.425,
+          402.05,
+          405.59166666666664,
+          419.09166666666664,
+          422.30833333333334
+        ],
+        "id": "p51d_mustang_120",
+        "median_change_percent": -0.6699056986512852,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "legacy_control"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 731.0,
+        "baseline_p95_us_per_tick": 1172.9083333333333,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          753.5833333333334,
+          825.35,
+          1146.7916666666667,
+          1172.9083333333333,
+          579.4166666666666,
+          671.6833333333333,
+          708.4166666666666,
+          589.5916666666667
+        ],
+        "candidate_median_us_per_tick": 646.6166666666666,
+        "candidate_over_baseline_median_ratio": 0.884564523483812,
+        "candidate_p95_us_per_tick": 843.6,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          667.675,
+          670.8833333333333,
+          758.3083333333333,
+          843.6,
+          625.5583333333333,
+          570.975,
+          517.0666666666667,
+          502.26666666666665
+        ],
+        "id": "synthetic_stik_electric_4s",
+        "median_change_percent": -11.543547651618802,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 643.5,
+        "baseline_p95_us_per_tick": 775.0083333333333,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          610.45,
+          643.2333333333333,
+          637.5,
+          702.825,
+          775.0083333333333,
+          643.7666666666667,
+          665.0666666666667,
+          574.4083333333333
+        ],
+        "candidate_median_us_per_tick": 598.4708333333333,
+        "candidate_over_baseline_median_ratio": 0.9300246050246049,
+        "candidate_p95_us_per_tick": 832.775,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          645.5666666666667,
+          832.775,
+          782.525,
+          607.0333333333333,
+          534.425,
+          589.9083333333333,
+          490.05833333333334,
+          533.5
+        ],
+        "id": "synthetic_stik_electric_4s",
+        "median_change_percent": -6.997539497539506,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 772.5583333333334,
+        "baseline_p95_us_per_tick": 1026.9416666666666,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          752.0083333333333,
+          750.3166666666667,
+          753.4,
+          1026.9416666666666,
+          721.5166666666667,
+          849.05,
+          840.6,
+          791.7166666666667
+        ],
+        "candidate_median_us_per_tick": 814.2208333333333,
+        "candidate_over_baseline_median_ratio": 1.0539279666044634,
+        "candidate_p95_us_per_tick": 1243.5416666666667,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          1180.175,
+          1243.5416666666667,
+          1058.3083333333334,
+          716.025,
+          707.3666666666667,
+          830.2833333333333,
+          798.1583333333333,
+          790.8333333333334
+        ],
+        "id": "synthetic_stik_electric_4s_battery",
+        "median_change_percent": 5.392796660446342,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 858.9749999999999,
+        "baseline_p95_us_per_tick": 1098.2666666666667,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          1098.2666666666667,
+          960.725,
+          920.0666666666667,
+          911.1666666666666,
+          806.7833333333333,
+          738.85,
+          701.7083333333334,
+          714.7583333333333
+        ],
+        "candidate_median_us_per_tick": 792.0375,
+        "candidate_over_baseline_median_ratio": 0.9220728193486424,
+        "candidate_p95_us_per_tick": 1084.7333333333333,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          798.9583333333334,
+          838.6166666666667,
+          953.0583333333333,
+          1084.7333333333333,
+          626.1083333333333,
+          635.2416666666667,
+          785.1166666666667,
+          625.9583333333334
+        ],
+        "id": "synthetic_stik_electric_4s_battery",
+        "median_change_percent": -7.792718065135762,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 651.5875,
+        "baseline_p95_us_per_tick": 831.8916666666667,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          594.0166666666667,
+          831.8916666666667,
+          645.925,
+          555.3583333333333,
+          657.25,
+          697.5083333333333,
+          805.5583333333333,
+          634.35
+        ],
+        "candidate_median_us_per_tick": 585.8125,
+        "candidate_over_baseline_median_ratio": 0.8990542329311106,
+        "candidate_p95_us_per_tick": 752.8,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          597.6,
+          553.0583333333333,
+          574.025,
+          740.225,
+          519.5,
+          752.8,
+          662.7833333333333,
+          541.5166666666667
+        ],
+        "id": "synthetic_stik_electric_6s",
+        "median_change_percent": -10.094576706888937,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 663.9458333333333,
+        "baseline_p95_us_per_tick": 1177.425,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          685.9916666666667,
+          612.6666666666666,
+          639.625,
+          641.9,
+          582.0833333333334,
+          828.6416666666667,
+          1177.425,
+          1027.975
+        ],
+        "candidate_median_us_per_tick": 630.2874999999999,
+        "candidate_over_baseline_median_ratio": 0.9493056034942609,
+        "candidate_p95_us_per_tick": 681.4666666666667,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          681.4666666666667,
+          619.2833333333333,
+          645.8416666666667,
+          660.725,
+          577.8916666666667,
+          518.4,
+          641.2916666666666,
+          576.7083333333334
+        ],
+        "id": "synthetic_stik_electric_6s",
+        "median_change_percent": -5.069439650573915,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 736.6625,
+        "baseline_p95_us_per_tick": 809.5416666666666,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          698.6,
+          642.7916666666666,
+          653.3166666666667,
+          727.0916666666667,
+          782.8416666666667,
+          790.725,
+          746.2333333333333,
+          809.5416666666666
+        ],
+        "candidate_median_us_per_tick": 695.3333333333333,
+        "candidate_over_baseline_median_ratio": 0.9438967414974065,
+        "candidate_p95_us_per_tick": 962.7416666666667,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          619.8416666666667,
+          735.8666666666667,
+          683.6833333333333,
+          682.325,
+          962.7416666666667,
+          774.7333333333333,
+          683.1,
+          706.9833333333333
+        ],
+        "id": "synthetic_stik_electric_6s_battery",
+        "median_change_percent": -5.610325850259345,
+        "mode": "coast",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      },
+      {
+        "all_batch_endpoint_bytes_identical": true,
+        "baseline_median_us_per_tick": 757.2083333333333,
+        "baseline_p95_us_per_tick": 1054.4416666666666,
+        "baseline_sample_count": 8,
+        "baseline_samples_us_per_tick": [
+          733.6666666666666,
+          1054.4416666666666,
+          792.9333333333333,
+          780.75,
+          615.7666666666667,
+          924.8083333333333,
+          612.8666666666667,
+          671.1333333333333
+        ],
+        "candidate_median_us_per_tick": 734.1375,
+        "candidate_over_baseline_median_ratio": 0.9695317228855996,
+        "candidate_p95_us_per_tick": 1249.575,
+        "candidate_sample_count": 8,
+        "candidate_samples_us_per_tick": [
+          701.2833333333333,
+          623.3916666666667,
+          636.575,
+          710.0833333333334,
+          758.1916666666667,
+          864.5333333333333,
+          889.0916666666667,
+          1249.575
+        ],
+        "id": "synthetic_stik_electric_6s_battery",
+        "median_change_percent": -3.0468277114400366,
+        "mode": "powered",
+        "seed_checkpoint_bytes_identical": true,
+        "trajectory_fingerprints_identical": true,
+        "type": "electric"
+      }
+    ],
+    "failures": [],
+    "round_count": 2,
+    "seed_checkpoints_identical": true,
+    "status": "passed",
+    "trajectory_fingerprints_identical": true
+  },
+  "benchmark_runs": [
+    {
+      "log": "timings/round-01/baseline/benchmark.log",
+      "order_index": 1,
+      "results": "timings/round-01/baseline/benchmark.json",
+      "round": 1,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "timings/round-02/baseline/benchmark.log",
+      "order_index": 4,
+      "results": "timings/round-02/baseline/benchmark.json",
+      "round": 2,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "timings/round-01/candidate/benchmark.log",
+      "order_index": 2,
+      "results": "timings/round-01/candidate/benchmark.json",
+      "round": 1,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "timings/round-02/candidate/benchmark.log",
+      "order_index": 3,
+      "results": "timings/round-02/candidate/benchmark.json",
+      "round": 2,
+      "snapshot": "candidate"
+    }
+  ],
+  "changed_app_path_count": 4,
+  "changed_app_paths": [
+    {
+      "baseline_sha256": "f9be10cfb2b9b1d07697aa747a391e7ae20664d424685e68223d79dde2dd06e2",
+      "candidate_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "change": "modified",
+      "path": "physics/electric_motor.gd"
+    },
+    {
+      "baseline_sha256": "d859c1982a464114d41d03c52bcaf1aa7b064ca272eee958373ef84d6f59cb73",
+      "candidate_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "change": "modified",
+      "path": "physics/electric_supply.gd"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "da4f02781fa0b78656006ff3a22ca7aa0da3761128ede8578c4121887e143260",
+      "change": "added",
+      "path": "tests/test_electric_motor_compact.gd"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "7994d5615331afecc6718a0c7d1a16300a1cbad009dec0a320d39c61aff76419",
+      "change": "added",
+      "path": "tests/test_electric_motor_compact.gd.uid"
+    }
+  ],
+  "commands": [
+    {
+      "log": "timings/round-01/baseline/benchmark.log",
+      "order_index": 1,
+      "results": "timings/round-01/baseline/benchmark.json",
+      "round": 1,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "timings/round-01/candidate/benchmark.log",
+      "order_index": 2,
+      "results": "timings/round-01/candidate/benchmark.json",
+      "round": 1,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "timings/round-02/candidate/benchmark.log",
+      "order_index": 3,
+      "results": "timings/round-02/candidate/benchmark.json",
+      "round": 2,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "timings/round-02/baseline/benchmark.log",
+      "order_index": 4,
+      "results": "timings/round-02/baseline/benchmark.json",
+      "round": 2,
+      "snapshot": "baseline"
+    }
+  ],
+  "completed_utc": "2026-10-11T20:17:20.895952+00:00",
+  "engine": {
+    "bytes": 146414384,
+    "path": "/home/bulto/openrc-el2a-p3/candidate/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+    "version": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "event_comparison": {
+    "all_endpoint_checkpoint_bytes_identical": true,
+    "all_seed_checkpoint_bytes_identical": true,
+    "baseline_median_event_tick_wall_usec": 5034.0,
+    "baseline_p95_event_tick_wall_usec": 7467.0,
+    "candidate_median_event_tick_wall_usec": 4521.0,
+    "candidate_over_baseline_median_ratio": 0.898092967818832,
+    "candidate_p95_event_tick_wall_usec": 7405.0,
+    "case_count": 8,
+    "failures": [],
+    "rows": [
+      {
+        "baseline_event_tick_wall_usec": 7467.0,
+        "candidate_event_tick_wall_usec": 4712.0,
+        "candidate_over_baseline_ratio": 0.6310432569974554,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "65a1ae5e537fc7a462356368ae836dd19f201546a92e70bb97ca1033367c916f",
+        "event_metadata_identical": true,
+        "event_tick": 1,
+        "hz": 120,
+        "pack": "4s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "74aad40525c203eb77856672eda08a8b034093342c8cc8ef23bbc72c6dcbb07e"
+      },
+      {
+        "baseline_event_tick_wall_usec": 5674.0,
+        "candidate_event_tick_wall_usec": 7405.0,
+        "candidate_over_baseline_ratio": 1.305075784279168,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "f41019c022b6e9f881741e7c2e340f1981710a12d9d706f3ab2e16f19d7a1e5c",
+        "event_metadata_identical": true,
+        "event_tick": 1,
+        "hz": 240,
+        "pack": "4s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "4409287a1fcf354b3542c3830bade5523b2bf4f59313beda205f1d2adf94590f"
+      },
+      {
+        "baseline_event_tick_wall_usec": 3985.0,
+        "candidate_event_tick_wall_usec": 6157.0,
+        "candidate_over_baseline_ratio": 1.54504391468005,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "1226fb8e2179c366708045828c0c89cbec5be9aff14ed0dedaf9cf7fc4c5bf92",
+        "event_metadata_identical": true,
+        "event_tick": 2,
+        "hz": 480,
+        "pack": "4s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "86550cc7595599e50d49762397e6eb29f60c920f57266c3742ddcb6d37af7f08"
+      },
+      {
+        "baseline_event_tick_wall_usec": 3848.0,
+        "candidate_event_tick_wall_usec": 3879.0,
+        "candidate_over_baseline_ratio": 1.008056133056133,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "760f1022940aa7ce21ae9eb8ed7ad8ad199f4f891fb9720ffbb3d565ecbb4131",
+        "event_metadata_identical": true,
+        "event_tick": 4,
+        "hz": 960,
+        "pack": "4s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "101cd4eb9bb2f0074859408b17e1f523ff4a46621e29351f121672b29aa6aebb"
+      },
+      {
+        "baseline_event_tick_wall_usec": 5002.0,
+        "candidate_event_tick_wall_usec": 5798.0,
+        "candidate_over_baseline_ratio": 1.1591363454618153,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "ba8f2152c04fbcd0167ae2907c3ae56320f2e7f0e13a3f502eb1fb38f582d8c3",
+        "event_metadata_identical": true,
+        "event_tick": 1,
+        "hz": 120,
+        "pack": "6s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "7b2bfd4d74670ca5eaab41a9068f72310ba824e3f04c8e6a26f87629971c6ef7"
+      },
+      {
+        "baseline_event_tick_wall_usec": 5066.0,
+        "candidate_event_tick_wall_usec": 4330.0,
+        "candidate_over_baseline_ratio": 0.8547177260165811,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "2c3330dd302d0843ba9ef73652fe727311a7b555faa835de50d6036e9ba5738f",
+        "event_metadata_identical": true,
+        "event_tick": 2,
+        "hz": 240,
+        "pack": "6s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "eb7a4cf77acd72e4bf583ad55c65511684f79d1d3ae142c8516c8dcf5dabaa39"
+      },
+      {
+        "baseline_event_tick_wall_usec": 3725.0,
+        "candidate_event_tick_wall_usec": 4309.0,
+        "candidate_over_baseline_ratio": 1.1567785234899328,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "17ff04a0ac8420b7955ece90003cadacd2d49bf6fa45097fa1a2bbbde76b9865",
+        "event_metadata_identical": true,
+        "event_tick": 3,
+        "hz": 480,
+        "pack": "6s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "38056b6e1cd243233d8a997af537b129aafe03779087b9fbf32d027625ff9428"
+      },
+      {
+        "baseline_event_tick_wall_usec": 5829.0,
+        "candidate_event_tick_wall_usec": 3725.0,
+        "candidate_over_baseline_ratio": 0.6390461485675073,
+        "endpoint_checkpoint_bytes": 1436,
+        "endpoint_checkpoint_bytes_identical": true,
+        "endpoint_checkpoint_sha256": "22dbe46238dfba4a532114147f60a528eb12d9877ad31febedf1fee01ffea3c5",
+        "event_metadata_identical": true,
+        "event_tick": 5,
+        "hz": 960,
+        "pack": "6s",
+        "seed_checkpoint_bytes": 1436,
+        "seed_checkpoint_bytes_identical": true,
+        "seed_checkpoint_sha256": "4d6bc8fa85e123d66822363c8fe916a8d1c35c760e222649717dcc9342b27847"
+      }
+    ],
+    "status": "passed",
+    "timing_note": "one event-tick wall sample per pack/rate; diagnostic, not a repeated timing distribution",
+    "type": "powered_exhaustion_control_diagnostic"
+  },
+  "event_runs": {
+    "baseline": {
+      "log": "baseline-events/probe.log",
+      "mode": "control",
+      "results": "baseline-events/control/results.json",
+      "row_count": 8
+    },
+    "candidate": {
+      "log": "candidate-events/probe.log",
+      "mode": "control",
+      "results": "candidate-events/control/results.json",
+      "row_count": 8
+    }
+  },
+  "excluded_directories": [
+    ".godot",
+    "captures"
+  ],
+  "failures": [],
+  "format": "openrc-el2a-p1-compare-v1",
+  "round_count": 2,
+  "run_order": [
+    {
+      "log": "timings/round-01/baseline/benchmark.log",
+      "order_index": 1,
+      "results": "timings/round-01/baseline/benchmark.json",
+      "round": 1,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "timings/round-01/candidate/benchmark.log",
+      "order_index": 2,
+      "results": "timings/round-01/candidate/benchmark.json",
+      "round": 1,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "timings/round-02/candidate/benchmark.log",
+      "order_index": 3,
+      "results": "timings/round-02/candidate/benchmark.json",
+      "round": 2,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "timings/round-02/baseline/benchmark.log",
+      "order_index": 4,
+      "results": "timings/round-02/baseline/benchmark.json",
+      "round": 2,
+      "snapshot": "baseline"
+    }
+  ],
+  "scope_note": "Software timing and exact replay comparison only; this report does not close Gate P or validate synthetic packs as hardware.",
+  "source_manifest": "source-manifest.json",
+  "started_utc": "2026-10-11T20:15:37.366553+00:00",
+  "status": "passed",
+  "type": "performance_comparison"
+}

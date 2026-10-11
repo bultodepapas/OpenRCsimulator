@@ -530,6 +530,8 @@ func _check_start_selector(home: Control, choice: String, lang: String) -> Dicti
 
 
 func _count_nodes(parent: Node, type_name: String) -> int:
+	if parent is SubViewport:
+		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
 	var count: int = 0
 	for child in parent.get_children():
 		if child.is_class(type_name):
@@ -551,10 +553,10 @@ func _home_field_evidence(field: Node3D) -> Dictionary:
 	var camera: Camera3D = field.get("camera")
 	var aircraft: Dictionary = field.get("airplane")
 	var airplane_root: Node3D = aircraft.get("root")
-	var environment_nodes: Array[Node] = field.find_children("*", "WorldEnvironment", true, false)
+	var world_environment: WorldEnvironment = _find_gameplay_environment(field)
 	var environment: Environment = null
-	if not environment_nodes.is_empty():
-		environment = (environment_nodes[0] as WorldEnvironment).environment
+	if world_environment != null:
+		environment = world_environment.environment
 	return {
 		"camera_transform": VisualEvidence.transform(camera.global_transform),
 		"pilot_eye_position": VisualEvidence.vector(camera.global_position),
@@ -566,3 +568,15 @@ func _home_field_evidence(field: Node3D) -> Dictionary:
 		"seed": {"kind": "not-used", "note": "Home uses fixed analytic clouds and no RNG"},
 		"provenance": VisualEvidence.provenance(),
 	}
+
+
+func _find_gameplay_environment(parent: Node) -> WorldEnvironment:
+	for child: Node in parent.get_children():
+		if child is SubViewport:
+			continue
+		if child is WorldEnvironment:
+			return child as WorldEnvironment
+		var nested: WorldEnvironment = _find_gameplay_environment(child)
+		if nested != null:
+			return nested
+	return null

@@ -262,6 +262,8 @@ func _configure_mode() -> bool:
 	if _mode == "legacy":
 		for key: String in SKY_STRENGTH_KEYS:
 			_sky_material.set_shader_parameter(key, 0.0)
+		# L4c: the reference must also disable the later background-only relief.
+		_sky_material.set_shader_parameter("cloud_relief_strength", 0.0)
 		for material: ShaderMaterial in _ground_materials:
 			material.set_shader_parameter("cloud_shadow_strength", 0.0)
 	else:

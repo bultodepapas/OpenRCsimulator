@@ -1,0 +1,41 @@
+{
+  "step": "UI-21",
+  "date": "2026-10-11",
+  "status": "software-verified",
+  "baseline_commit": "38847b4f8d65af8c1fb2424b2f7eda3e007e950d",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "full_suite": {
+    "command": "app/test.sh",
+    "platform": "Linux (WSL)",
+    "source": "isolated baseline plus UI-21",
+    "exit_code": 0,
+    "gdscript_test_scripts": 180,
+    "unexpected_engine_errors": 0,
+    "log": "app-test.log",
+    "log_sha256": "ca229fb3a9d1ac09abe1aa49899602059218fb323aac5a5371143f65357a18fb"
+  },
+  "existing_ui_tests_changed": false,
+  "ui_tests_per_platform": 16,
+  "ui_platforms": [
+    "Linux",
+    "Windows"
+  ],
+  "native_windows_report": "native-windows.json",
+  "capture_pairs_identical": 16,
+  "capture_report": "parity.json",
+  "direct_flight_samples_identical": 721,
+  "trace_excluded_metadata": [
+    "created_utc"
+  ],
+  "home_fly_end_cycles": 5,
+  "home_node_counts": [
+    234,
+    234,
+    234,
+    234,
+    234
+  ],
+  "regression_log": "screen-stack.log",
+  "native_parser_exit_code": 0,
+  "performance_or_hardware_acceptance_claim": false
+}

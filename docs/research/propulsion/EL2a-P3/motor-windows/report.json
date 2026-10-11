@@ -1,0 +1,86 @@
+{
+  "format": "openrc-el2a-p3-motor-verification v1",
+  "started_utc": "2026-10-11T20:12:30.103084+00:00",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "godot_executable_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "godot_version": {
+    "expected": "4.7.2.stable.official.ed1daf0bf",
+    "actual": "4.7.2.stable.official.ed1daf0bf",
+    "exit_code": 0,
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\logs\\godot_version.log"
+  },
+  "app_source": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-dev\\app",
+  "workspace_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\workspace\\app",
+  "timeout_seconds": 120,
+  "status": "passed",
+  "source_hashes": {
+    "candidate/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+    "candidate/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+    "candidate/tests/test_electric_motor_compact.gd": "da4f02781fa0b78656006ff3a22ca7aa0da3761128ede8578c4121887e143260",
+    "frozen/EL2a-P1/electric_motor.gd": "1f346e9752389d68f774d6ba5532577312d5e07f7626f7da0341ac8791497289",
+    "motor_oracle.gd": "ed0c5c03c299e3f086c0846d1be60acc6d48af9979f78f08be7b7fe2906c21ad",
+    "verify_motor.py": "e8de89dc51c8b534da80f5e16857f1d2a1a881831d0f56d793ef71ce2510c924"
+  },
+  "positive_runs": {
+    "oracle": {
+      "script": "res://../research/propulsion/el2a-p3/motor_oracle.gd",
+      "exit_code": 0,
+      "summary": {
+        "count": 20043,
+        "failures": 0,
+        "samples": 10000
+      },
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\logs\\positive_oracle.log"
+    },
+    "app_test": {
+      "script": "res://tests/test_electric_motor_compact.gd",
+      "exit_code": 0,
+      "summary": {
+        "count": 13,
+        "failures": 0
+      },
+      "expected_count": 13,
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\logs\\positive_app_test.log"
+    }
+  },
+  "mutations": [
+    {
+      "name": "compact torque offset",
+      "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\workspace\\app\\physics\\electric_motor.gd",
+      "sha256_before": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "sha256_mutated": "169876743ba66a22b63209167953af70011c7520569773073f71c86c9db6604f",
+      "oracle": "res://../research/propulsion/el2a-p3/motor_oracle.gd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\logs\\mutation_compact_torque.log",
+      "expected_evidence": "first mismatch: seed 00000 compact source",
+      "exit_code": 1,
+      "summary": {
+        "count": 20043,
+        "failures": 10004,
+        "samples": 10000
+      },
+      "rejected_as_expected": true,
+      "sha256_after_restore": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "restored": true
+    },
+    {
+      "name": "shared bus-power finite guard removed",
+      "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\workspace\\app\\physics\\electric_motor.gd",
+      "sha256_before": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "sha256_mutated": "c76501943e157259dd3f37c29770ee70467f88ea488aa1196702a2cdc0bc3b88",
+      "oracle": "res://../research/propulsion/el2a-p3/motor_oracle.gd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-motor-windows-verified\\logs\\mutation_bus_power_guard.log",
+      "expected_evidence": "first mismatch: overflow bus power overflow full",
+      "exit_code": 1,
+      "summary": {
+        "count": 20043,
+        "failures": 3,
+        "samples": 10000
+      },
+      "rejected_as_expected": true,
+      "sha256_after_restore": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+      "restored": true
+    }
+  ],
+  "frozen_motor_lf_sha256": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+  "finished_utc": "2026-10-11T20:12:33.971581+00:00"
+}

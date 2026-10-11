@@ -9,6 +9,7 @@
 # frees it and shows Home again (UI-03). Menus hold the session; continuing is always an explicit action.
 extends Node
 
+const ScreenStack := preload("res://ui/screen_stack.gd")
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -33,20 +34,30 @@ var preferences_path := Preferences.DEFAULT_PATH
 ## Test seam; both routes always use the same file, including after Home → Fly.
 var field_path: String = FieldLoader.DEFAULT_PATH
 var preferences := {}
-var home: Control
+var screens: ScreenStack = ScreenStack.new(self)
+# Compatibility views for the UI driver/capture contracts. All membership lives in the stack.
+var home: Control:
+	get:
+		return screens.get_screen("home") as Control
 var home_scene: Node3D
 var flight: Node
-var pause_menu: CanvasLayer
-var help: CanvasLayer
-var weather_dialog: CanvasLayer
-var time_of_day_dialog: CanvasLayer
+var pause_menu: CanvasLayer:
+	get:
+		return screens.get_screen("pause") as CanvasLayer
+var help: CanvasLayer:
+	get:
+		return screens.get_screen("help") as CanvasLayer
+var weather_dialog: CanvasLayer:
+	get:
+		return screens.get_screen("weather") as CanvasLayer
+var time_of_day_dialog: CanvasLayer:
+	get:
+		return screens.get_screen("time_of_day") as CanvasLayer
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
-var _weather_return_focus: Control
-var _time_of_day_return_focus: Control
 
 
 func _ready() -> void:
@@ -95,7 +106,7 @@ func show_home() -> void:
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
 		return
-	home = Home.new()
+	var home := Home.new()
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
@@ -110,7 +121,7 @@ func show_home() -> void:
 	home.help_requested.connect(open_help)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
-	add_child(home)
+	screens.push("home", home)
 	home.set_note(_settings_note)
 
 
@@ -165,10 +176,11 @@ func set_time_of_day(preset: String) -> void:
 func start_flight() -> void:
 	if flight != null:
 		return
-	close_weather()
-	close_help()
-	var aircraft: String = home.aircraft_id if home != null else ""
-	var chosen_start: String = home.start_choice if home != null else "airborne"
+	while screens.top() != null and not screens.is_top("home"):
+		screens.pop()
+	var departing_home: Control = home
+	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
+	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -178,9 +190,10 @@ func start_flight() -> void:
 		var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
 		if checked_lighting.get("ok", false):
 			chosen_lighting = checked_lighting.config.duplicate(true)
-	for screen in [home, home_scene]:
-		if screen != null:
-			remove_child(screen) # out of the tree now: one camera and one WorldEnvironment when the flight builds its own
+	if departing_home != null:
+		screens.pop(false, false)
+	if home_scene != null:
+		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = load(FLIGHT_SCENE).instantiate()
 	flight.field_path = field_path
 	flight.aircraft_id = aircraft # "" on the direct route: main.gd reads --aircraft=<id> or flies the Ugly Stik
@@ -198,13 +211,12 @@ func start_flight() -> void:
 		flight = null
 		add_child(home_scene)
 		home_scene.camera.make_current()
-		add_child(home)
-		home.reject_start(tr("Could not start flight: %s") % reason)
+		screens.push("home", departing_home)
+		departing_home.reject_start(tr("Could not start flight: %s") % reason)
 		return
-	for screen in [home, home_scene]:
+	for screen in [departing_home, home_scene]:
 		if screen != null:
 			screen.queue_free()
-	home = null
 	home_scene = null
 	if has_home:
 		preferences.start_choice = chosen_start
@@ -214,6 +226,7 @@ func start_flight() -> void:
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
 	if flight.session != null:
+		screens.set_session(flight.session)
 		flight.pause_requested.connect(open_pause)
 		_keyboard_reader = flight.session.read_raw
 		if has_home and not preferences.get("first_flight_hint_seen", false):
@@ -241,15 +254,14 @@ func open_pause() -> void:
 		return
 	var session: Node = flight.session
 	session.cancel_calibration()
-	session.hold("menu")
-	pause_menu = PauseMenu.new(has_home)
+	var pause_menu := PauseMenu.new(has_home)
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
-	add_child(pause_menu)
+	screens.push("pause", pause_menu)
 	pause_menu.show_for(session)
 	flight.set_overlays_visible(false)
 
@@ -258,35 +270,32 @@ func open_pause() -> void:
 ## shown, invalid data or a fault); keys still held from the menu stay masked until released.
 ## Help over whatever is showing (Home or the pause menu); closing it gives the focus back to `from`.
 func open_help(from: Control = null) -> void:
-	if help != null or time_of_day_dialog != null:
+	if not (screens.is_top("home") or screens.is_top("pause")):
 		return
-	help = HelpScreen.new(from)
+	var help := HelpScreen.new(from)
 	help.closed.connect(close_help)
-	add_child(help)
+	screens.push("help", help, from)
 
 
 func close_help() -> void:
-	if help == null:
-		return
-	remove_child(help) # deferred-safe: the Help screen marked its key event handled before asking
-	help.queue_free()
-	help = null
+	if screens.is_top("help"):
+		screens.pop()
 
 
 ## Opens a lighting draft over the paused production flight. It has no weather or Home-world side effects.
 func open_time_of_day(from: Control = null) -> void:
-	if pause_menu == null or flight == null or flight.session == null or time_of_day_dialog != null or help != null:
+	if not screens.is_top("pause") or flight == null or flight.session == null:
 		return
 	if not flight.session.sim.paused:
 		return
 	if bool(flight.get("_field_world_lighting")):
 		pause_menu.set_note(tr("End this flight to change its time-of-day settings."))
 		return
-	_time_of_day_return_focus = from if from != null else pause_menu.time_of_day_button
-	time_of_day_dialog = TimeOfDayDialog.new(flight.lighting_config.duplicate(true))
+	from = from if from != null else pause_menu.time_of_day_button
+	var time_of_day_dialog := TimeOfDayDialog.new(flight.lighting_config.duplicate(true))
 	time_of_day_dialog.applied.connect(_on_time_of_day_applied)
 	time_of_day_dialog.cancelled.connect(close_time_of_day)
-	add_child(time_of_day_dialog)
+	screens.push("time_of_day", time_of_day_dialog, from)
 
 
 ## The flight owner validates and commits its visual snapshot/timeline atomically. Failures leave the draft open.
@@ -318,31 +327,22 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 
 ## Cancel and successful Apply both return focus to the pause button without releasing the menu hold.
 func close_time_of_day() -> void:
-	if time_of_day_dialog == null:
-		return
-	var dialog: CanvasLayer = time_of_day_dialog
-	time_of_day_dialog = null
-	if dialog.is_inside_tree():
-		remove_child(dialog)
-	dialog.queue_free()
-	if _time_of_day_return_focus != null and is_instance_valid(_time_of_day_return_focus) \
-		and _time_of_day_return_focus.is_inside_tree():
-		_time_of_day_return_focus.grab_focus()
-	_time_of_day_return_focus = null
+	if screens.is_top("time_of_day"):
+		screens.pop()
 
 
 ## Opens a draft over Home. Nothing is stored or used by a flight until Apply is pressed.
 func open_weather(from: Control = null) -> void:
-	if home == null or weather_dialog != null:
+	if not screens.is_top("home"):
 		return
-	_weather_return_focus = from if from != null else home.weather_button
-	weather_dialog = WeatherDialog.new(
+	from = from if from != null else home.weather_button
+	var weather_dialog := WeatherDialog.new(
 		preferences.get("weather_config", WeatherSettings.defaults()),
 		preferences.get("lighting_config", TimeOfDay.defaults()),
 	)
 	weather_dialog.applied.connect(_on_weather_applied)
 	weather_dialog.cancelled.connect(close_weather)
-	add_child(weather_dialog)
+	screens.push("weather", weather_dialog, from)
 
 
 func _on_weather_applied(raw: Dictionary) -> void:
@@ -399,20 +399,12 @@ func _rebuild_home_scene() -> void:
 
 
 func close_weather() -> void:
-	if weather_dialog == null:
-		return
-	var dialog := weather_dialog
-	weather_dialog = null
-	if dialog.is_inside_tree():
-		remove_child(dialog)
-	dialog.queue_free()
-	if _weather_return_focus != null and is_instance_valid(_weather_return_focus) and _weather_return_focus.is_inside_tree():
-		_weather_return_focus.grab_focus()
-	_weather_return_focus = null
+	if screens.is_top("weather"):
+		screens.pop()
 
 
 func continue_flight() -> void:
-	if pause_menu == null or help != null or time_of_day_dialog != null:
+	if not screens.is_top("pause"):
 		return
 	var session: Node = flight.session
 	if not session.is_flyable():
@@ -422,7 +414,7 @@ func continue_flight() -> void:
 
 
 func restart_flight() -> void:
-	if pause_menu == null or help != null or time_of_day_dialog != null:
+	if not screens.is_top("pause"):
 		return
 	_close_pause()
 	flight.session.reset() # the selected launch; the recorder closes its file on reset
@@ -431,14 +423,11 @@ func restart_flight() -> void:
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
 ## ends without it (an explicit discard).
 func end_flight() -> void:
-	if flight == null or not has_home or help != null or time_of_day_dialog != null \
+	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
 		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
 		return
-	close_help()
-	if pause_menu != null:
-		remove_child(pause_menu)
-		pause_menu.queue_free()
-		pause_menu = null
+	screens.clear()
+	screens.set_session(null)
 	flight.recorder.detach()
 	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
 	flight.queue_free()
@@ -453,13 +442,9 @@ func quit_app() -> void:
 
 
 func _close_pause() -> void:
-	close_help()
 	var session: Node = flight.session
-	session.release("menu")
+	screens.pop() # releases only the menu hold; Continue/Restart decide what the flight does next
 	flight.set_overlays_visible(true)
-	remove_child(pause_menu)
-	pause_menu.queue_free()
-	pause_menu = null
 	HeldKeys.mask(session, _keyboard_reader)
 
 

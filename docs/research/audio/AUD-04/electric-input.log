@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   explicit demo selected its synthetic electric Stik data
+ok   direct route starts on keyboard
+ok   trimmed electric flight is runnable
+ok   electric demo does not attach combustion audio
+radio connected: el1e-fake|1209:4f54|Fake EdgeTX (default profile)
+ok   fake radio connects without querying a physical device
+ok   untouched throttle stays SAFE
+ok   safe zero duty draws zero motor and drive-input current
+ok   high throttle on connection stays unarmed and at zero duty
+ok   a fresh low-throttle event arms the radio
+ok   armed full throttle reaches the motor and bus
+failsafe: radio disconnected
+ok   unplug pauses and selects the keyboard
+ok   unplug commands zero duty
+ok   pause freezes the complete aircraft and powertrain state
+ok   P resumes into keyboard input
+ok   keyboard throttle command reaches the electric ESC
+ok   R resets the powered trimmed electric flight
+ok   reset keeps keyboard selection
+radio connected: el1e-fake|1209:4f54|Fake EdgeTX (default profile)
+ok   reconnect with retained high throttle remains SAFE
+ok   reconnected radio requires and accepts a fresh low event
+failsafe: radio disconnected
+EL1e electric input 4s: 19 checks, 0 failed

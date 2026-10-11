@@ -107,6 +107,7 @@ func show_aircraft(id: String) -> void:
 	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
 	airplane.propeller.rotation.z = PROP_ANGLE
 	var extent := Shadow.model_extent(airplane.root)
+	Shadow.bind_model(_shadow, airplane.root)
 	World.dress_aircraft(airplane.root)
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0

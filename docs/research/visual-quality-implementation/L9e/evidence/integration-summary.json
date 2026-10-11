@@ -1,0 +1,7 @@
+{
+  "red_aircraft_interior_pixels": 15045,
+  "unchanged": true,
+  "shared_snapshot_import": true,
+  "shared_snapshot_low_flight_capture": true,
+  "limits": "Red interior paint check excludes antialiased edges and does not measure pilot attitude readability"
+}

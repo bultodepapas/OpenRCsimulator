@@ -1,0 +1,15 @@
+refactor(physics): compact nested electric stage results (EL2a-P3)
+
+Build five consumed motor fields instead of thirteen telemetry fields during
+battery stage evaluation. Preserve all arithmetic, validation, overflow guards,
+first-field diagnostics and full endpoint telemetry. Add permanent regression,
+frozen motor oracle, actual defects and complete maneuver trace comparison.
+
+Proof: 70,256 checks and five defect controls per platform; exact twelve-session
+and eight exhaustion native-state comparisons; twelve independently checked
+E1 maneuver traces / 106,572 unchanged samples on Windows and Linux.
+Frozen candidate app/test.sh passes (181 GDScript programs, 72 Python cases);
+research/test-tools.sh passes 258 cases. Selected live source hashes match.
+
+Reject the protected inertia-cache experiment. Host workloads make paired
+wall-clock timing inconclusive; no whole-session speedup or Gate P claim.

@@ -1,0 +1,287 @@
+{
+	"godot": "4.7.2-stable (official)",
+	"measurement": "Elapsed wall time; five alternating pairs, no refill, same-build complete checkpoint identity.",
+	"rows": [
+		{
+			"aircraft": "jensen_ugly_stik_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 312.545833333333,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			},
+			"pair": 0,
+			"quiet": {
+				"elapsed_usec_per_tick": 327.503125,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "jensen_ugly_stik_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 337.603125,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			},
+			"pair": 1,
+			"quiet": {
+				"elapsed_usec_per_tick": 320.819791666667,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "jensen_ugly_stik_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 343.014583333333,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			},
+			"pair": 2,
+			"quiet": {
+				"elapsed_usec_per_tick": 373.465625,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "jensen_ugly_stik_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 338.259375,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			},
+			"pair": 3,
+			"quiet": {
+				"elapsed_usec_per_tick": 347.842708333333,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "jensen_ugly_stik_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 326.28125,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			},
+			"pair": 4,
+			"quiet": {
+				"elapsed_usec_per_tick": 365.621875,
+				"endpoint_sha256": "6174306daa99aa96daefee627e1c2e0a829794e840a8088704c6c026561b9387",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "gp_extra_300s_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 251.102083333333,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			},
+			"pair": 0,
+			"quiet": {
+				"elapsed_usec_per_tick": 236.442708333333,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "gp_extra_300s_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 245.95625,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			},
+			"pair": 1,
+			"quiet": {
+				"elapsed_usec_per_tick": 250.490625,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "gp_extra_300s_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 227.826041666667,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			},
+			"pair": 2,
+			"quiet": {
+				"elapsed_usec_per_tick": 222.958333333333,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "gp_extra_300s_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 257.134375,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			},
+			"pair": 3,
+			"quiet": {
+				"elapsed_usec_per_tick": 232.746875,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "gp_extra_300s_60.json",
+			"observed": {
+				"elapsed_usec_per_tick": 230.530208333333,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			},
+			"pair": 4,
+			"quiet": {
+				"elapsed_usec_per_tick": 227.253125,
+				"endpoint_sha256": "3225100c4b56cf0ac2dcab2ebf1bc5a00fb7e36b61466551c3c0c4c291b872ae",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "p51d_mustang_120.json",
+			"observed": {
+				"elapsed_usec_per_tick": 494.761458333333,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			},
+			"pair": 0,
+			"quiet": {
+				"elapsed_usec_per_tick": 458.5875,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "p51d_mustang_120.json",
+			"observed": {
+				"elapsed_usec_per_tick": 484.361458333333,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			},
+			"pair": 1,
+			"quiet": {
+				"elapsed_usec_per_tick": 468.898958333333,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "p51d_mustang_120.json",
+			"observed": {
+				"elapsed_usec_per_tick": 632.317708333333,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			},
+			"pair": 2,
+			"quiet": {
+				"elapsed_usec_per_tick": 456.969791666667,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "p51d_mustang_120.json",
+			"observed": {
+				"elapsed_usec_per_tick": 451.011458333333,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			},
+			"pair": 3,
+			"quiet": {
+				"elapsed_usec_per_tick": 489.547916666667,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "p51d_mustang_120.json",
+			"observed": {
+				"elapsed_usec_per_tick": 484.6375,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			},
+			"pair": 4,
+			"quiet": {
+				"elapsed_usec_per_tick": 456.51875,
+				"endpoint_sha256": "20b41769b1516733bcb2a2d2958d0fde64d813af3e2cd23c83b6189b2f60e3d1",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "sebart_avanti_s_a200.json",
+			"observed": {
+				"elapsed_usec_per_tick": 321.795833333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			},
+			"pair": 0,
+			"quiet": {
+				"elapsed_usec_per_tick": 266.86875,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "sebart_avanti_s_a200.json",
+			"observed": {
+				"elapsed_usec_per_tick": 251.848958333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			},
+			"pair": 1,
+			"quiet": {
+				"elapsed_usec_per_tick": 257.419791666667,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "sebart_avanti_s_a200.json",
+			"observed": {
+				"elapsed_usec_per_tick": 270.908333333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			},
+			"pair": 2,
+			"quiet": {
+				"elapsed_usec_per_tick": 295.402083333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "sebart_avanti_s_a200.json",
+			"observed": {
+				"elapsed_usec_per_tick": 264.271875,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			},
+			"pair": 3,
+			"quiet": {
+				"elapsed_usec_per_tick": 287.089583333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			}
+		},
+		{
+			"aircraft": "sebart_avanti_s_a200.json",
+			"observed": {
+				"elapsed_usec_per_tick": 292.563541666667,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			},
+			"pair": 4,
+			"quiet": {
+				"elapsed_usec_per_tick": 300.617708333333,
+				"endpoint_sha256": "d8a92e343d0153a3a6fcf294cb3fda678624fc9229b5050aef417069de5cc5f8",
+				"valid": true
+			}
+		}
+	],
+	"timed_ticks": 960
+}

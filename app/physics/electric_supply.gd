@@ -64,7 +64,7 @@ static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, 
 	if soc_value == 0.0 and not available_at_zero:
 		var exhausted_source: Dictionary = Electric._evaluate_validated(rpm_value, requested_duty, 0.0,
 			motor_validation.kv_rpm_per_volt, motor_validation.resistance_ohm,
-			motor_validation.no_load_current_a, false)
+			motor_validation.no_load_current_a, false, dynamics_only)
 		if not exhausted_source.ok:
 			return _failure("source evaluation failed: " + str(exhausted_source.message))
 		return _assemble_result("exhausted", rpm_value, requested_duty, 0.0, soc_value, ocv,
@@ -102,7 +102,7 @@ static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, 
 
 	var source: Dictionary = Electric._evaluate_validated(rpm_value, requested_duty, bus_voltage_v,
 		motor_validation.kv_rpm_per_volt, motor_validation.resistance_ohm,
-		motor_validation.no_load_current_a, enabled)
+		motor_validation.no_load_current_a, enabled, dynamics_only)
 	if not source.ok:
 		return _failure("source evaluation failed: " + str(source.message))
 	var source_motor_current_a: float = float(source.motor_current_a)
@@ -227,6 +227,21 @@ static func _assemble_result(mode: String, rpm: float, requested_duty: float, ef
 	var finite_result: bool = is_finite(pack_current_a) and is_finite(soc_rate_per_s) \
 			and is_finite(pack_terminal_power_w) and is_finite(pack_loss_w) \
 			and is_finite(pack_open_circuit_power_w) and is_finite(power_balance_residual_w)
+	# Match the full result's insertion-order diagnostic when the compact motor omitted telemetry.
+	# `energy_rate_j_per_s` is the first result field backed by pack_terminal_power_w.
+	if dynamics_only and not finite_result:
+		if not is_finite(pack_current_a):
+			return _failure("battery evaluation overflow: pack_current_a")
+		if not is_finite(soc_rate_per_s):
+			return _failure("battery evaluation overflow: soc_rate_per_s")
+		if not is_finite(pack_terminal_power_w):
+			return _failure("battery evaluation overflow: energy_rate_j_per_s")
+		if not is_finite(pack_open_circuit_power_w):
+			return _failure("battery evaluation overflow: pack_open_circuit_power_w")
+		if not is_finite(pack_loss_w):
+			return _failure("battery evaluation overflow: pack_loss_w")
+		if not is_finite(power_balance_residual_w):
+			return _failure("battery evaluation overflow: pack_power_balance_residual_w")
 	if dynamics_only and finite_result:
 		return {"ok": true, "shaft_torque_nm": float(source.shaft_torque_nm),
 			"motor_current_a": motor_current_a, "pack_current_a": pack_current_a,

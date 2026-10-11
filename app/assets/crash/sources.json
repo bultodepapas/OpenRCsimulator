@@ -1,0 +1,21 @@
+{
+  "author": "Kenney",
+  "license": "CC0-1.0",
+  "page": "https://kenney.nl/assets/smoke-particles",
+  "download": "https://kenney.nl/media/pages/assets/smoke-particles/23249a0d35-1677695171/kenney_smoke-particles.zip",
+  "retrieved": "2026-10-11",
+  "archive_sha256": "97a1d09c66e4fd6c247c8ea87f84c0cc59caaeceae19414c995afb1616a1e1c9",
+  "modifications": "None",
+  "files": [
+    {
+      "path": "smoke.png",
+      "source_member": "PNG/White puff/whitePuff00.png",
+      "sha256": "33f894c2279bee9f77874dbfa3c0e9f071a0ee5e1a7065dcc40196029d699f58"
+    },
+    {
+      "path": "flame.png",
+      "source_member": "PNG/Explosion/explosion00.png",
+      "sha256": "bfd931b030a6ac464fbdd439a5230933571f52da9b0b94d197fce18c1e081260"
+    }
+  ]
+}

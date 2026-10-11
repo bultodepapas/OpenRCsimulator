@@ -1,0 +1,28 @@
+{
+	"benchmark": "G3b warm engine voice CPU",
+	"frames_per_run": 22050,
+	"godot": "4.7.2-stable (official)",
+	"measurement": "Elapsed wall time; warm medians exclude one-time table preparation.",
+	"rate_hz": 22050.0,
+	"runs": 7,
+	"runtime_render": {
+		"frame_count": 22050,
+		"frequency_hz": 85.0,
+		"max_abs": 0.246260136365891,
+		"median_7_runs_usec": 8512.0,
+		"median_usec_per_audio_second": 8512.0,
+		"rms_per_channel": 0.123123802728195,
+		"valid": true
+	},
+	"synthesis": {
+		"frequency_hz": 85.0,
+		"max_abs": 0.346018761396408,
+		"median_7_runs_usec": 6266.0,
+		"median_usec_per_audio_second": 6266.0,
+		"rms": 0.173000526238664,
+		"sample_count": 22050,
+		"valid": true
+	},
+	"table_initialize_usec": 13008,
+	"variant": "candidate"
+}

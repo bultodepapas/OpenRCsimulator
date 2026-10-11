@@ -63,6 +63,10 @@ Each reducer README lists its `test_*.py` command and measurement contract. Thos
 
 ## Flight and physics experiments
 
+Procedural audio qualification: [G3b tools](../research/audio/g3b/README.md) run focused tests and disposable defects, native mixer capture at 30/60/144 FPS, synthesis timing and four-aircraft observer timing. Use a fresh output directory. Dummy-driver burst stability and native response are separate; captured audio and reported driver latency do not establish acoustic calibration or speaker onset.
+
+Immersive soundscape: [AUD tools](../tools/audio/README.md) regenerate and verify the original PCM library, compare exact simulation checkpoints with audio on/off, capture real gameplay through WASAPI, check pause/clipping/dropouts and inspect exported audio resources. [AUD-04](research/audio/AUD-04/README.md) records stereo-speaker feedback, performance measurements and their limits. Gameplay defaults to the new mix; `--soundscape=off` silences it and `--soundscape=legacy` retains the G3b comparison route.
+
 | Work | Entrypoint | Interpretation |
 | --- | --- | --- |
 | [EL2a-P1 electric stage optimization](../research/propulsion/el2a-p1/README.md) | `python3 research/propulsion/el2a-p1/verify_oracles.py --godot "$(app/get-godot.sh)" --app app --out /absolute/fresh/oracles`; paired timing and flight commands in the linked README | Frozen native-byte oracles and three real defects in disposable copies; complete session/event parity and alternating baseline/candidate timing. Requires Python 3.10+, pinned Godot and durable fresh outputs. Run timing alone. Batch p95 is not individual-tick latency; synthetic preservation does not validate hardware. |

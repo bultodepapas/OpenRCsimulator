@@ -1,0 +1,5 @@
+{
+  "performance_acceptance": false,
+  "reason": "Run for exact state preservation under concurrent test workloads; wall-clock timing is not acceptance evidence.",
+  "exact_trajectory_and_event_parity": true
+}

@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-el2a-p3/envelope-linux/cases/6s_landing_480.csv (22081 rows)
+{
+	"actual_duration_s": 46.0,
+	"completed": true,
+	"crash": "",
+	"criteria": {
+		"approach_speed_above_1_15_vs": true,
+		"battery_not_exhausted": true,
+		"complete_v8_trace": true,
+		"exact_planned_tick_count": true,
+		"final_speed_below_0_02_mps": true,
+		"final_speed_below_3_mps": true,
+		"no_bounce_over_0_5_s": true,
+		"no_crash": true,
+		"no_simulation_fault": true,
+		"not_paused": true,
+		"rollout_under_200_m": true,
+		"stop_inside_runway_with_0_5_m_margin": true,
+		"stopped_and_held_for_2_s": true,
+		"touchdown_inside_first_half": true,
+		"touchdown_sink_below_1_2_mps": true,
+		"wheel_path_inside_runway_with_0_5_m_margin": true
+	},
+	"duration_s": 46.0,
+	"error": "",
+	"expected_ticks": 22080,
+	"fault": "",
+	"format": "openrc-el2a-e1-case v1",
+	"hz": 480,
+	"maneuver": "landing",
+	"metrics": {
+		"airborne_after_touch_s": 0.0,
+		"approach_speed_mps": 12.0,
+		"approach_speed_vs": 1.262097401456826,
+		"battery_exhausted": false,
+		"final_speed_mps": 1.3402070390148406e-13,
+		"initial_battery_soc": 0.95,
+		"max_contact_sink_mps": 0.45137203061034703,
+		"max_stop_drift_m": 7.386094178189313e-05,
+		"minimum_lateral_margin_m": 5.138629258547903,
+		"minimum_longitudinal_margin_m": 2.7325393916952336,
+		"minimum_runway_margin_m": 2.7325393916952336,
+		"rollout_distance_m": 40.39321632634766,
+		"start_shift_along_runway_m": 2.0,
+		"stop_dwell_s": 27.041666666674704,
+		"stop_runway_margin_m": 5.287725006000143,
+		"stop_time_s": 20.958333333333332,
+		"stopped_then_moved": false,
+		"touchdown_detected": true,
+		"touchdown_from_threshold_m": 2.7374245592944035,
+		"touchdown_sink_mps": 0.45137203061034703,
+		"touchdown_speed_mps": 10.159361575266551,
+		"touchdown_time_s": 8.154166666666667
+	},
+	"pack": "6s",
+	"passed": true,
+	"pause_reason": "",
+	"planned_duration_s": 46.0,
+	"simulation_hz": 480,
+	"ticks": 22080,
+	"trace": {
+		"continuous": true,
+		"expected_rows": 22081,
+		"format_v8": true,
+		"gaps": [],
+		"path": "/home/bulto/openrc-el2a-p3/envelope-linux/cases/6s_landing_480.csv",
+		"row_count": 22081,
+		"save_ok": true
+	}
+}

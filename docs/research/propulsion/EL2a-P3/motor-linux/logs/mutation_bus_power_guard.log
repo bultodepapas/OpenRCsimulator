@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: overflow bus power overflow full
+FAIL: overflow bus power overflow compact source
+FAIL: overflow diagnostic: bus power overflow (expected motor evaluation overflow: bus_power_w; got )
+EL2a-P3 motor oracle: 20043 byte comparisons, 3 failures, samples=10000
+first mismatch: overflow bus power overflow full
