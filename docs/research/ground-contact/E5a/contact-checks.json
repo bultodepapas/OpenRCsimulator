@@ -1,0 +1,203 @@
+{
+	"checks": 22,
+	"failures": 0,
+	"format": "openrc-e5a-checks v1",
+	"results": {
+		"gp-extra-300s-60": {
+			"equilibrium": {
+				"actual_tail_share": 0.141588732892473,
+				"compressions_m": [
+					0.0210190484318956,
+					0.0210190484318956,
+					0.0210190687756817
+				],
+				"every_wheel_loaded": true,
+				"extra_compression_spread_m": 0.0000000203437861001632,
+				"extra_compressions_ok": true,
+				"geometric_pitch_deg": 10.8624313738168,
+				"moment_balance_ok": true,
+				"moment_norm_nm": 0.0,
+				"moment_ratio": 0.0,
+				"moment_share_ok": true,
+				"normal_force_error_fraction": 0.000000000000000215363500589946,
+				"normal_force_ok": true,
+				"ok": true,
+				"oracle_tail_share": 0.141588732892473,
+				"pitch_deg": 10.8624325994359,
+				"pitch_error_deg": 0.00000122561905751102,
+				"pitch_ok": true,
+				"pitch_tolerance_deg": 0.001,
+				"settled_ok": true,
+				"tail_share_error": 0.000000000000000388578058618805
+			},
+			"geometry": {
+				"loaded_error_m": 0.0,
+				"loaded_ok": true,
+				"ok": true,
+				"positions_le": [
+					[
+						0.0186,
+						-0.16,
+						-0.268825
+					],
+					[
+						0.0186,
+						0.16,
+						-0.268825
+					],
+					[
+						0.9526,
+						0.0,
+						-0.0896
+					]
+				],
+				"source_error_m": 0.00000000000000000693889390390723,
+				"source_ok": true
+			},
+			"ok": true,
+			"refinement": {
+				"delta_position_m": 0.00000204665402078752,
+				"delta_quaternion": 0.00000100365336341834,
+				"delta_rate_rad_s": 0.000000116268527840246,
+				"delta_velocity_m_s": 0.0000000597942551305852,
+				"negative_yaw_deg": -16.0683493924303,
+				"ok": true,
+				"positive_yaw_deg": 16.0683493924303
+			},
+			"signs": {
+				"left_command_loads": [
+					3.36716844484842,
+					3.29163788864162,
+					-32.948526051937,
+					-0.214795893769552,
+					-0.647520881541155,
+					-2.77748369302778
+				],
+				"main_only_sideslip_loads": [
+					4.22464214631638,
+					-10.7783749155538,
+					-28.0273615558571,
+					2.63509730678007,
+					3.56091164879907,
+					-0.972210587705391
+				],
+				"ok": true,
+				"right_command_loads": [
+					3.36716844484842,
+					-3.29163788864162,
+					-32.948526051937,
+					0.214795893769552,
+					-0.647520881541155,
+					2.77748369302778
+				],
+				"tail_only_sideslip_loads": [
+					0.696824181300203,
+					-1.77781502341594,
+					-4.62291067355705,
+					0.11601135356634,
+					-3.85534024902817,
+					1.50012012372215
+				],
+				"tail_steering_deg": -25.0
+			}
+		},
+		"p51d-mustang-120": {
+			"equilibrium": {
+				"actual_tail_share": 0.199594368673517,
+				"compressions_m": [
+					0.019151631966228,
+					0.019151631966228,
+					0.0345151535088941
+				],
+				"every_wheel_loaded": true,
+				"extra_compression_spread_m": 0.0153635215426661,
+				"extra_compressions_ok": true,
+				"geometric_pitch_deg": 13.8924153222941,
+				"moment_balance_ok": true,
+				"moment_norm_nm": 0.0,
+				"moment_ratio": 0.0,
+				"moment_share_ok": true,
+				"normal_force_error_fraction": 0.0,
+				"normal_force_ok": true,
+				"ok": true,
+				"oracle_tail_share": 0.199594368673517,
+				"pitch_deg": 14.5723450887663,
+				"pitch_error_deg": 0.679929766472224,
+				"pitch_ok": true,
+				"pitch_tolerance_deg": 2.0,
+				"settled_ok": true,
+				"tail_share_error": 0.000000000000000555111512312578
+			},
+			"geometry": {
+				"loaded_error_m": 0.0,
+				"loaded_ok": true,
+				"ok": true,
+				"positions_le": [
+					[
+						0.025,
+						-0.451,
+						-0.5105
+					],
+					[
+						0.025,
+						0.451,
+						-0.5105
+					],
+					[
+						1.2818,
+						0.0,
+						-0.19965
+					]
+				],
+				"source_error_m": 0.0,
+				"source_ok": true
+			},
+			"ok": true,
+			"refinement": {
+				"delta_position_m": 0.00000146153159877316,
+				"delta_quaternion": 0.00000067643773513093,
+				"delta_rate_rad_s": 0.00000000810208528045919,
+				"delta_velocity_m_s": 0.0000000478206902965184,
+				"negative_yaw_deg": -13.8167513636853,
+				"ok": true,
+				"positive_yaw_deg": 13.8167513636853
+			},
+			"signs": {
+				"left_command_loads": [
+					32.9156074304647,
+					29.7607639243462,
+					-209.294166278648,
+					-3.82437607162462,
+					-8.28776600267922,
+					-32.856992151232
+				],
+				"main_only_sideslip_loads": [
+					37.5604385519119,
+					-64.2257264856163,
+					-164.604824021257,
+					28.217827383424,
+					41.6478120144112,
+					-9.81129818801559
+				],
+				"ok": true,
+				"right_command_loads": [
+					32.9156074304647,
+					-29.7607639243462,
+					-209.294166278648,
+					3.82437607162462,
+					-8.28776600267922,
+					32.856992151232
+				],
+				"tail_only_sideslip_loads": [
+					9.36631593588996,
+					-16.0157460527233,
+					-41.0469325118193,
+					2.0580868195774,
+					-44.1137340481539,
+					17.6819803311556
+				],
+				"tail_steering_deg": -25.0
+			}
+		}
+	}
+}

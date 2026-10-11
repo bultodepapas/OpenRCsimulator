@@ -1,0 +1,95 @@
+{
+  "format": "openrc-solar-oracles v1",
+  "cases": [
+    {
+      "id": "usno-equator-east-longitude-midday",
+      "source": "USNO Altitude and Azimuth of the Sun During One Day table, 2024-03-10, 0 N, 45 E, UT, 12:00 row; table reports 47.4 degrees altitude and 264.4 degrees azimuth, rounded to 0.1 degree.",
+      "source_url": "https://aa.usno.navy.mil/calculated/altaz?body=10&date=2024-03-10&intv_mag=10&lat=0.0000&lon=45&tz=0.00&tz_sign=1",
+      "config": {
+        "format": "openrc-lighting v1",
+        "mode": "astronomical",
+        "date": "2024-03-10",
+        "local_seconds": 43200,
+        "utc_offset_minutes": 0,
+        "latitude_deg": 0.0,
+        "longitude_deg": 45.0,
+        "location_name": "USNO table fixture"
+      },
+      "expected_azimuth_deg": 264.4,
+      "expected_elevation_deg": 47.4,
+      "angular_tolerance_deg": 0.09
+    },
+    {
+      "id": "usno-equator-east-longitude-morning",
+      "source": "Same USNO table, 06:00 UT row; altitude and azimuth rounded to 0.1 degree.",
+      "source_url": "https://aa.usno.navy.mil/calculated/altaz?body=10&date=2024-03-10&intv_mag=10&lat=0.0000&lon=45&tz=0.00&tz_sign=1",
+      "config": {
+        "format": "openrc-lighting v1",
+        "mode": "astronomical",
+        "date": "2024-03-10",
+        "local_seconds": 21600,
+        "utc_offset_minutes": 0,
+        "latitude_deg": 0.0,
+        "longitude_deg": 45.0,
+        "location_name": "USNO table fixture"
+      },
+      "expected_azimuth_deg": 95.3,
+      "expected_elevation_deg": 42.3,
+      "angular_tolerance_deg": 0.09
+    },
+    {
+      "id": "usno-equator-east-longitude-near-zenith",
+      "source": "Same USNO table, 09:10 UT row; altitude and azimuth rounded to 0.1 degree. Direction-angle comparison is used because azimuth is ill-conditioned near zenith.",
+      "source_url": "https://aa.usno.navy.mil/calculated/altaz?body=10&date=2024-03-10&intv_mag=10&lat=0.0000&lon=45&tz=0.00&tz_sign=1",
+      "config": {
+        "format": "openrc-lighting v1",
+        "mode": "astronomical",
+        "date": "2024-03-10",
+        "local_seconds": 33000,
+        "utc_offset_minutes": 0,
+        "latitude_deg": 0.0,
+        "longitude_deg": 45.0,
+        "location_name": "USNO table fixture"
+      },
+      "expected_azimuth_deg": 179.4,
+      "expected_elevation_deg": 86.2,
+      "angular_tolerance_deg": 0.09
+    }
+  ],
+  "event_cases": [
+    {
+      "id": "noaa-santiago-winter-solstice-noon",
+      "source": "NOAA/GML 2024 Solar Noon Table for latitude -33.425, longitude -70.567; 21 June row is 12:44:08 local standard time (UTC-04:00).",
+      "source_url": "https://gml.noaa.gov/grad/solcalc/table.php?lat=-33.425&lon=-70.567&year=2024",
+      "config": {
+        "format": "openrc-lighting v1",
+        "mode": "astronomical",
+        "date": "2024-06-21",
+        "local_seconds": 43200,
+        "utc_offset_minutes": -240,
+        "latitude_deg": -33.425,
+        "longitude_deg": -70.567,
+        "location_name": "NOAA table comparison (not simulator field)"
+      },
+      "expected_local_seconds": 45848,
+      "time_tolerance_seconds": 45
+    },
+    {
+      "id": "noaa-santiago-summer-solstice-noon",
+      "source": "NOAA/GML 2024 Solar Noon Table for latitude -33.425, longitude -70.567; 21 December row is 13:40:26 local daylight time (UTC-03:00).",
+      "source_url": "https://gml.noaa.gov/grad/solcalc/table.php?lat=-33.425&lon=-70.567&year=2024",
+      "config": {
+        "format": "openrc-lighting v1",
+        "mode": "astronomical",
+        "date": "2024-12-21",
+        "local_seconds": 43200,
+        "utc_offset_minutes": -180,
+        "latitude_deg": -33.425,
+        "longitude_deg": -70.567,
+        "location_name": "NOAA table comparison (not simulator field)"
+      },
+      "expected_local_seconds": 49226,
+      "time_tolerance_seconds": 45
+    }
+  ]
+}

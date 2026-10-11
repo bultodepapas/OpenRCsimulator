@@ -1,0 +1,13 @@
+{
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "cpu": {
+    "Architecture": "x86_64",
+    "CPU(s)": "12",
+    "Model name": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "Thread(s) per core": "1",
+    "Core(s) per socket": "12",
+    "Socket(s)": "1"
+  },
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "scope": "Linux headless; complete evolving Simulation.step batches; synthetic battery fixtures; no rendered or cross-platform acceptance"
+}

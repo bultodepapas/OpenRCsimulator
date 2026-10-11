@@ -1,0 +1,33 @@
+{
+  "format": "openrc-el2a-clean-checkout v1",
+  "base_commit": "066c734cb53387be9efaa0a4f81d84f7a3eb5915",
+  "cache_copied": false,
+  "checks": {
+    "import": {
+      "exit_code": 0,
+      "log_tail": [
+        "[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m",
+        "\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m",
+        "\u001b[0m"
+      ]
+    },
+    "data": {
+      "exit_code": 0,
+      "log_tail": [
+        "         [0] load_file (res://physics/aircraft_data.gd:48)",
+        "         [1] _check_serialized_overflow (res://tests/test_electric_battery_data.gd:208)",
+        "         [2] _initialize (res://tests/test_electric_battery_data.gd:159)"
+      ],
+      "checks": 67
+    },
+    "session": {
+      "exit_code": 0,
+      "log_tail": [
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value",
+        "EL2a battery session: 103 checks, 0 failed"
+      ],
+      "checks": 103
+    }
+  }
+}

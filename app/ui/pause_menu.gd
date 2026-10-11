@@ -8,6 +8,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 
 signal continue_requested
 signal restart_requested
+signal time_of_day_requested(from: Control)
 signal end_requested
 signal help_requested(from: Control)
 signal quit_requested
@@ -17,6 +18,7 @@ const WIDTH := 400
 
 var continue_button: Button
 var restart_button: Button
+var time_of_day_button: Button
 var end_button: Button
 var help_button: Button
 var quit_button: Button
@@ -63,6 +65,9 @@ func _init(can_end := true) -> void:
 	restart_button = _button("Restart flight", "", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
+	time_of_day_button = _button("Time of day", "", "TimeOfDay")
+	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
+	column.add_child(time_of_day_button)
 	help_button = _button("Help", "", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	column.add_child(help_button)

@@ -1,0 +1,1 @@
+{"atmosphere_mode":"custom","field_elevation_m":1500.0,"format":"openrc-weather v3","from_deg":0.0,"gust_delay_s":2.0,"gust_duration_s":4.0,"gust_mps":0.0,"gust_period_s":12.0,"gust_up_mps":0.0,"qnh_hpa":1013.25,"relative_humidity_pct":50.0,"speed_mps":0.0,"temperature_c":35.0,"turbulence_rms_mps":[0.0,0.0,0.0],"turbulence_seed":20261009,"turbulence_tau_s":2.0}

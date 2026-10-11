@@ -5,6 +5,9 @@
 # Run: godot --headless --path . --script res://tests/test_world_flow.gd
 extends SceneTree
 
+const LightingConfig := preload("res://environment/time_of_day_config.gd")
+const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
+
 const World := preload("res://render/world/world.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
@@ -72,6 +75,21 @@ func _initialize() -> void:
 	World.build(frozen, field, Callable(), Conditions.resolve(PackedStringArray(["--time_of_day=sunset"])))
 	_check("frozen preset: no flow", not World.flow_to(300.0) and World.flow_hour() < 0.0)
 	frozen.free()
+	# Merge regression: a scene-local snapshot must retire the previous flowing world.
+	var flowing_holder := Node3D.new()
+	World.build(flowing_holder, field, Callable(), c)
+	var config: Dictionary = LightingConfig.defaults()
+	config.mode = "astronomical"
+	var snapshot: Dictionary = SnapshotLighting.snapshot(config)
+	var snapshot_holder := Node3D.new()
+	var snapshot_world: Dictionary = World.build(snapshot_holder, field, Callable(), c, snapshot)
+	_check("explicit snapshot retires prior world flow", not World.flow_to(300.0) and World.flow_hour() < 0.0)
+	_check("explicit snapshot clears global sky state", Atmosphere.state.is_empty())
+	_check("snapshot composition owns one environment", snapshot_world.world_environment.environment == snapshot_world.environment)
+	_check("snapshot light uses the selected solar direction", (snapshot_world.sun as DirectionalLight3D).transform.basis.z.distance_to(Atmosphere.sun_direction(snapshot)) < 1e-4)
+	_check("snapshot composition does not inherit field-world stars or lights", snapshot_holder.get_node_or_null("Stars") == null and snapshot_holder.get_node_or_null("FieldLights") == null)
+	snapshot_holder.free()
+	flowing_holder.free()
 	Atmosphere.state = {}
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

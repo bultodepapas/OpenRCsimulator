@@ -75,8 +75,8 @@ static func surface_material(grass: ShaderMaterial, type: String, center: Vector
 
 
 ## The grass: texture in world space, matte, with the haze and the rim fade as custom fog (render/ground.gdshader).
-static func grass_material() -> ShaderMaterial:
-	return Atmosphere.ground_material(ImageTexture.create_from_image(grass_image()))
+static func grass_material(lighting: Dictionary = {}) -> ShaderMaterial:
+	return Atmosphere.ground_material(ImageTexture.create_from_image(grass_image()), lighting)
 
 
 ## Pack contained, flat surface rectangles into the ground pass. Return false before changing the material

@@ -85,7 +85,7 @@ class ContractTests(unittest.TestCase):
     def test_cli_exit_status_and_diagnostic(self):
         run = subprocess.run([sys.executable, str(HERE / 'check.py')], capture_output=True, text=True)
         self.assertEqual(run.returncode, 0, run.stderr)
-        self.assertIn('4 aircraft, 0 failed', run.stdout)
+        self.assertIn(f'{len(list(FLEET.glob("*.json")))} aircraft, 0 failed', run.stdout)
         with tempfile.TemporaryDirectory() as folder:
             bad = Path(folder) / 'bad.json'
             data = read_json(FLEET / 'jensen_ugly_stik_60.json')

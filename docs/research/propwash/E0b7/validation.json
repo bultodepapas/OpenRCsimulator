@@ -1,0 +1,42 @@
+{
+  "checks": {
+    "clean-checkout.log": {
+      "sha256": "15baebcf7eff8dc83b0651ef6e41d2f0e30a095fdd7005cc6b62fbf0fca2f2a2",
+      "test_programs": 12,
+      "tests": 214
+    },
+    "offline-tools.log": {
+      "sha256": "82a1a2072e260e31e795f28e294fa440769f2a571d5f11f2c89d42df64906e3e",
+      "test_programs": 12,
+      "tests": 214
+    },
+    "tests.log": {
+      "sha256": "dbdbb6e4557345bfc2520fc742271c0e25cf071214dcec1fc0a737df9dcaa0e6",
+      "test_programs": 1,
+      "tests": 19
+    }
+  },
+  "date": "2026-10-09",
+  "fresh_checkout_report_byte_identical": true,
+  "input_sha256": {
+    "research/propwash/e0b7/check_mutations.py": "9cd99fecfaf41b79381cf920251a9b99f1ef3cee9bd341308e430063d651c5f3",
+    "research/propwash/e0b7/example.synthetic.json": "eeeaa80505017f7a62c7d2e9669c2301326749541d51e7aa6febe1d65c3fb07e",
+    "research/propwash/e0b7/reduce.py": "a906cf9e79b1cc698c6d613e0b640687c9cf94f50da3d8d5697a890b9eeb4db2",
+    "research/propwash/e0b7/test_reduce.py": "ffd62b50c27d00c392f9f0d889f2d03499619d943ade900d85e29765b153711d",
+    "research/test-tools.sh": "e00b388bfd2699fb1c1353b86663cbbe6ff346aece3d6651c5f477b23790befb"
+  },
+  "mutation_control_passed": true,
+  "physical_observations_available": false,
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "rejected_mutations": [
+    "allow_split_leakage",
+    "ignore_clearance_error",
+    "ignore_source_hash",
+    "subtract_bound"
+  ],
+  "scope": "offline observation tooling; no physical acceptance",
+  "source_commit": "5282c204dde32f8960cbef41dd80a2f29c169e6f",
+  "step": "E0b7",
+  "tracked_app_changes": false
+}

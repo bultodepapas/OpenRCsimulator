@@ -72,8 +72,8 @@ def check_metadata(metadata: dict, first: dict) -> None:
             raise ValueError(f'missing flight metadata: {key}')
     for key, allowed in {
         'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle'),
-        'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1'),
-        'propwash_model': ('none', 'tail-slipstream-increment-v1'),
+        'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1', 'propeller-shaft-coupled-rk4-v1'),
+        'propwash_model': ('none', 'tail-slipstream-increment-v1', 'tail-slipstream-axial-transport-v1'),
     }.items():
         if metadata.get(key) not in allowed:
             raise ValueError(f'missing or unsupported {key}')
@@ -110,6 +110,33 @@ def check_metadata(metadata: dict, first: dict) -> None:
         raise ValueError('turbine metadata declares propeller features')
     if not turbine and (features['turbine_ram_flow'] or features['turbine_ram_jet']):
         raise ValueError('propeller metadata declares turbine features')
+    check_coupled_metadata(metadata)
+
+
+def check_coupled_metadata(metadata: dict) -> None:
+    """Optional model extension shared by calm, wind and atmosphere readers."""
+    if metadata.get('propulsion_model') != 'propeller-shaft-coupled-rk4-v1':
+        if any(key in metadata for key in ('shaft_integrator', 'rotor_coupling', 'recording_start_continuous')):
+            raise ValueError('coupled shaft metadata has the wrong propulsion model')
+        return
+    if (metadata.get('shaft_integrator') != 'coupled-rk4'
+            or metadata.get('rotor_coupling') != 'relative-spin-locked-inertia-reaction-v1'
+            or metadata.get('continuous_layout') != 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled'):
+        raise ValueError('missing or unsupported coupled shaft semantics')
+    try:
+        continuous = json.loads(metadata['recording_start_continuous'])
+        aux = json.loads(metadata['recording_start_aux'])
+    except (KeyError, ValueError) as error:
+        raise ValueError('missing coupled shaft recording state') from error
+    if (not isinstance(continuous, list) or not continuous or any(
+            type(value) not in (int, float) or not math.isfinite(value) for value in continuous)
+            or continuous[-1] < 0
+            or not isinstance(aux, list) or len(aux) != 4
+            or type(aux[0]) not in (int, float) or not math.isfinite(aux[0])
+            or abs(continuous[-1] - aux[0]) > 1e-9):
+        raise ValueError('continuous shaft RPM disagrees with boundary mirror')
+    if (metadata.get('propwash_model') == 'tail-slipstream-axial-transport-v1') != (len(continuous) > 1):
+        raise ValueError('continuous layout disagrees with transported-wash model')
 
 
 def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,

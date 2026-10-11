@@ -1,0 +1,2363 @@
+{
+  "audio_policy": "Godot Dummy driver; scenery audio/birds disabled; engine stream stopped and detached",
+  "clock_policy": "freeze sim and presentation at tick zero before first await in each process",
+  "comparison": "exact byte equality of Image.get_data() RGBA buffers; no tolerance",
+  "elapsed_s": 115.823,
+  "format": "tod09b-independent-process-matrix v1",
+  "git_head": "6f552bcd26ceb08c39874f59df34b48a4cbdc1d1",
+  "git_revision": "v0.1.0-rc6-21-g6f552bc-dirty",
+  "git_status": "M ROADMAP.md\n M docs/PROPULSION-CORE-PLAN.md\n M docs/README.md\n M docs/TIMBER-INTEGRATION-PLAN.md\n M docs/learnings/models-and-rendering.md\n M docs/research/README.md\n M docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/README.md\n M research/time-of-day/tod-09b/capture_probe.sh\n M research/time-of-day/tod-09b/process_oracle.gd\n M research/time-of-day/tod-09b/process_oracle.py\n?? app/physics/electric_motor.gd\n?? app/tests/test_electric_motor.gd\n?? docs/ELECTRIC-PROPULSION-PLAN.md\n?? docs/research/propulsion/EL1a/\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/cell-ray-hits.json\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/engine-source.json\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/audio-exit-verbose.log\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/near-plane/\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/share-material/\n?? docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/share-mesh/\n?? research/propulsion/el1a/",
+  "godot_binary": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "matrix": {
+    "modes": [
+      {
+        "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "capture_count": 11,
+        "in_place_report": "/tmp/tod09b-process-matrix/scenery-off/in-place/report.json",
+        "ok": true,
+        "pairs": [
+          {
+            "fresh_image_sha256": "546e13a7187f7c8eff2bcdd40361e664cc8d26843dacae7f21a110e7e067d654",
+            "id": "00-legacy",
+            "in_place_image_sha256": "546e13a7187f7c8eff2bcdd40361e664cc8d26843dacae7f21a110e7e067d654",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "9356216adeb90b68eb2846916b5b382f2b8967ea84445228343c8e0f106573c0",
+            "id": "noon",
+            "in_place_image_sha256": "9356216adeb90b68eb2846916b5b382f2b8967ea84445228343c8e0f106573c0",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "921f10c2da64aa386b521ef021cdfe0dd7bbe66dc2ad2892b6ca469fa6695a0b",
+            "id": "night",
+            "in_place_image_sha256": "921f10c2da64aa386b521ef021cdfe0dd7bbe66dc2ad2892b6ca469fa6695a0b",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "10f3fbbcefa2b3195b42b01de16dbb2290fe74ce1c66ead2c7650cb108aa4b85",
+            "id": "dawn",
+            "in_place_image_sha256": "10f3fbbcefa2b3195b42b01de16dbb2290fe74ce1c66ead2c7650cb108aa4b85",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "71c311e7a1247d7e634d428f156303514d6db0f5241b9338848e60b74d706c0e",
+            "id": "sunrise-60",
+            "in_place_image_sha256": "71c311e7a1247d7e634d428f156303514d6db0f5241b9338848e60b74d706c0e",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "4de5e9b8a4eeafa6f7b11ce7e4bc3671bd384ecf942408701589f99e9a43d2db",
+            "id": "sunset-60",
+            "in_place_image_sha256": "4de5e9b8a4eeafa6f7b11ce7e4bc3671bd384ecf942408701589f99e9a43d2db",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "bd3eb9d21a146a4d2ea06c3d91ded8e514cf9c405ca1346d40d3d64afc7dde70",
+            "id": "sunrise+0",
+            "in_place_image_sha256": "bd3eb9d21a146a4d2ea06c3d91ded8e514cf9c405ca1346d40d3d64afc7dde70",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "8fdbfab1790efd591d228600c0dc355a28822d1fef56aec296afc98383e59410",
+            "id": "sunset+0",
+            "in_place_image_sha256": "8fdbfab1790efd591d228600c0dc355a28822d1fef56aec296afc98383e59410",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "68b82861dcaa75d98758a6d39cc1f71bdb00b9e0292116bc32b25b8ddc349125",
+            "id": "sunrise+60",
+            "in_place_image_sha256": "68b82861dcaa75d98758a6d39cc1f71bdb00b9e0292116bc32b25b8ddc349125",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "c488b46bf64c9b58a6dbf245a2eaf4a4977f6c72175534256b67ed7b7ae2985d",
+            "id": "sunset+60",
+            "in_place_image_sha256": "c488b46bf64c9b58a6dbf245a2eaf4a4977f6c72175534256b67ed7b7ae2985d",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "546e13a7187f7c8eff2bcdd40361e664cc8d26843dacae7f21a110e7e067d654",
+            "id": "99-legacy-again",
+            "in_place_image_sha256": "546e13a7187f7c8eff2bcdd40361e664cc8d26843dacae7f21a110e7e067d654",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          }
+        ],
+        "renderer": "gl_compatibility",
+        "scenery": "off"
+      },
+      {
+        "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+        "capture_count": 11,
+        "in_place_report": "/tmp/tod09b-process-matrix/scenery-on/in-place/report.json",
+        "ok": true,
+        "pairs": [
+          {
+            "fresh_image_sha256": "2f35e9d8ae5551c742b4130c772de71352239a294f536286fdd84a65f40c0f5a",
+            "id": "00-legacy",
+            "in_place_image_sha256": "2f35e9d8ae5551c742b4130c772de71352239a294f536286fdd84a65f40c0f5a",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "346f14c7a4d4b0c621992cc651dfe766a85e3a6e3ac8aa7997d14a27242eae80",
+            "id": "noon",
+            "in_place_image_sha256": "346f14c7a4d4b0c621992cc651dfe766a85e3a6e3ac8aa7997d14a27242eae80",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "747aae05be3eca3c769c5da748d6ddf06b20555fa476d91aa7ea83bd42f8510b",
+            "id": "night",
+            "in_place_image_sha256": "747aae05be3eca3c769c5da748d6ddf06b20555fa476d91aa7ea83bd42f8510b",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "53a952731ec78a2980bb0146e37c775ac34ad556856946b4a58f293de6375bb4",
+            "id": "dawn",
+            "in_place_image_sha256": "53a952731ec78a2980bb0146e37c775ac34ad556856946b4a58f293de6375bb4",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "6cbdcbee9a0410d715dced0d469a7cf195056a67cca3b37bfa5a6d4b03ae3d51",
+            "id": "sunrise-60",
+            "in_place_image_sha256": "6cbdcbee9a0410d715dced0d469a7cf195056a67cca3b37bfa5a6d4b03ae3d51",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "91a693ee228502539097d9567fd1043daac79e96b9c3aa6ca95028a2a8a1541d",
+            "id": "sunset-60",
+            "in_place_image_sha256": "91a693ee228502539097d9567fd1043daac79e96b9c3aa6ca95028a2a8a1541d",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "7ef02d865746dcb303334b983cce5cdc965548aaef6ca508658910d17c7e0c95",
+            "id": "sunrise+0",
+            "in_place_image_sha256": "7ef02d865746dcb303334b983cce5cdc965548aaef6ca508658910d17c7e0c95",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "a4fafea85f6dd4073569cdd377aeb923cc273ade4427cd4a2d058e0c9f302413",
+            "id": "sunset+0",
+            "in_place_image_sha256": "a4fafea85f6dd4073569cdd377aeb923cc273ade4427cd4a2d058e0c9f302413",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "99e18aa02050461c47cb9184219b74c97a6c5ced5af5a01334df0c286a166b72",
+            "id": "sunrise+60",
+            "in_place_image_sha256": "99e18aa02050461c47cb9184219b74c97a6c5ced5af5a01334df0c286a166b72",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "5cfea97ddfdf50a0de5bdb5cf8cdb5b7a5711054f6cc0bb796d0685387dd0475",
+            "id": "sunset+60",
+            "in_place_image_sha256": "5cfea97ddfdf50a0de5bdb5cf8cdb5b7a5711054f6cc0bb796d0685387dd0475",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          },
+          {
+            "fresh_image_sha256": "2f35e9d8ae5551c742b4130c772de71352239a294f536286fdd84a65f40c0f5a",
+            "id": "99-legacy-again",
+            "in_place_image_sha256": "2f35e9d8ae5551c742b4130c772de71352239a294f536286fdd84a65f40c0f5a",
+            "in_place_log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+            "invariants_ok": true,
+            "metadata_equal": {
+              "aircraft_transform_sha256": true,
+              "camera_far": true,
+              "camera_fov": true,
+              "camera_near": true,
+              "camera_transform_sha256": true,
+              "cloud_offset": true,
+              "godot_version": true,
+              "image_channels_per_pixel": true,
+              "image_data_bytes": true,
+              "image_data_valid": true,
+              "image_format_enum": true,
+              "image_format_name": true,
+              "image_size": true,
+              "lighting_config": true,
+              "lighting_context": true,
+              "lighting_snapshot": true,
+              "registered_cloud_offset": true,
+              "shader_clock_s": true,
+              "shader_wind": true,
+              "state_sha256": true
+            },
+            "mutation_applied": {
+              "fresh": false,
+              "in_place": false
+            },
+            "ok": true,
+            "pixels": {
+              "buffers_valid": true,
+              "channels_per_pixel": 4,
+              "exact_pixels": true,
+              "expected_bytes": 2073600,
+              "first_difference": null,
+              "left_bytes": 2073600,
+              "right_bytes": 2073600
+            }
+          }
+        ],
+        "renderer": "gl_compatibility",
+        "scenery": "on"
+      }
+    ],
+    "ok": true
+  },
+  "mutation_control": {
+    "mutation": "stale-environment after production Apply",
+    "ok": true,
+    "pair": {
+      "expected_failure_detected": true,
+      "fresh_image_sha256": "9356216adeb90b68eb2846916b5b382f2b8967ea84445228343c8e0f106573c0",
+      "id": "noon",
+      "in_place_image_sha256": "25ec94d1b5e2932b1998109e5a201ef372a327b0cb15d65cc687aa2a0a72b979",
+      "in_place_log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+      "invariants_ok": true,
+      "metadata_equal": {
+        "aircraft_transform_sha256": true,
+        "camera_far": true,
+        "camera_fov": true,
+        "camera_near": true,
+        "camera_transform_sha256": true,
+        "cloud_offset": true,
+        "godot_version": true,
+        "image_channels_per_pixel": true,
+        "image_data_bytes": true,
+        "image_data_valid": true,
+        "image_format_enum": true,
+        "image_format_name": true,
+        "image_size": true,
+        "lighting_config": true,
+        "lighting_context": true,
+        "lighting_snapshot": true,
+        "registered_cloud_offset": true,
+        "shader_clock_s": true,
+        "shader_wind": true,
+        "state_sha256": true
+      },
+      "mutation_applied": {
+        "fresh": false,
+        "in_place": true
+      },
+      "ok": false,
+      "pixels": {
+        "buffers_valid": true,
+        "channels_per_pixel": 4,
+        "exact_pixels": false,
+        "expected_bytes": 2073600,
+        "first_difference": {
+          "byte_offset": 0,
+          "channel": 0,
+          "x": 0,
+          "y": 0
+        },
+        "left_bytes": 2073600,
+        "right_bytes": 2073600
+      },
+      "strict_comparison_ok": false,
+      "strict_comparison_verdict": "fail",
+      "valid_negative_control": true
+    },
+    "scope": "scratch oracle only; production files are not mutated"
+  },
+  "ok": true,
+  "output": "/tmp/tod09b-process-matrix",
+  "processes": [
+    {
+      "case_index": null,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=in-place",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/in-place"
+      ],
+      "elapsed_s": 12.482,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+      "mutation": "",
+      "role": "in-place",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 0,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/00-legacy",
+        "--oracle-case-index=0"
+      ],
+      "elapsed_s": 3.644,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/00-legacy/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 1,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/noon",
+        "--oracle-case-index=1"
+      ],
+      "elapsed_s": 3.65,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/noon/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 2,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/night",
+        "--oracle-case-index=2"
+      ],
+      "elapsed_s": 3.358,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/night/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 3,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/dawn",
+        "--oracle-case-index=3"
+      ],
+      "elapsed_s": 3.689,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/dawn/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 4,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise-60",
+        "--oracle-case-index=4"
+      ],
+      "elapsed_s": 3.563,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise-60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 5,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunset-60",
+        "--oracle-case-index=5"
+      ],
+      "elapsed_s": 3.466,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset-60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 6,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+0",
+        "--oracle-case-index=6"
+      ],
+      "elapsed_s": 3.442,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+0/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 7,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+0",
+        "--oracle-case-index=7"
+      ],
+      "elapsed_s": 3.335,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+0/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 8,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+60",
+        "--oracle-case-index=8"
+      ],
+      "elapsed_s": 3.763,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 9,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+60",
+        "--oracle-case-index=9"
+      ],
+      "elapsed_s": 3.577,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 10,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-off/fresh/99-legacy-again",
+        "--oracle-case-index=10"
+      ],
+      "elapsed_s": 3.925,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/99-legacy-again/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": null,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=in-place",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/in-place"
+      ],
+      "elapsed_s": 13.716,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+      "mutation": "",
+      "role": "in-place",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 0,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/00-legacy",
+        "--oracle-case-index=0"
+      ],
+      "elapsed_s": 4.024,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/00-legacy/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 1,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/noon",
+        "--oracle-case-index=1"
+      ],
+      "elapsed_s": 3.859,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/noon/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 2,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/night",
+        "--oracle-case-index=2"
+      ],
+      "elapsed_s": 3.652,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/night/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 3,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/dawn",
+        "--oracle-case-index=3"
+      ],
+      "elapsed_s": 3.743,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/dawn/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 4,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise-60",
+        "--oracle-case-index=4"
+      ],
+      "elapsed_s": 3.665,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise-60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 5,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunset-60",
+        "--oracle-case-index=5"
+      ],
+      "elapsed_s": 3.802,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset-60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 6,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+0",
+        "--oracle-case-index=6"
+      ],
+      "elapsed_s": 3.807,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+0/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 7,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+0",
+        "--oracle-case-index=7"
+      ],
+      "elapsed_s": 3.761,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+0/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 8,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+60",
+        "--oracle-case-index=8"
+      ],
+      "elapsed_s": 3.77,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 9,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+60",
+        "--oracle-case-index=9"
+      ],
+      "elapsed_s": 3.883,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+60/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 10,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=on",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/scenery-on/fresh/99-legacy-again",
+        "--oracle-case-index=10"
+      ],
+      "elapsed_s": 4.128,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/99-legacy-again/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "on",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 1,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=in-place",
+        "--oracle-out=/tmp/tod09b-process-matrix/mutation-control-scenery-off/in-place-mutated",
+        "--oracle-case-index=1",
+        "--oracle-mutation=stale-environment"
+      ],
+      "elapsed_s": 4.239,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/mutation-control-scenery-off/in-place-mutated/godot.log",
+      "mutation": "stale-environment",
+      "role": "in-place",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "case_index": 1,
+      "command": [
+        "/usr/bin/xvfb-run",
+        "-a",
+        "-s",
+        "-screen 0 1280x720x24",
+        "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--path",
+        "/home/bulto/OpenRCsimulator/app",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/home/bulto/OpenRCsimulator/research/time-of-day/tod-09b/process_oracle.gd",
+        "--",
+        "--scenery=off",
+        "--scenery_theme=temperate",
+        "--scenery_quality=high",
+        "--scenery_audio=off",
+        "--scenery_birds=off",
+        "--scenery_file=res://data/scenery/default.json",
+        "--oracle-role=fresh",
+        "--oracle-out=/tmp/tod09b-process-matrix/mutation-control-scenery-off/fresh-noon",
+        "--oracle-case-index=1"
+      ],
+      "elapsed_s": 3.88,
+      "errors": [],
+      "exit_code": 0,
+      "log": "/tmp/tod09b-process-matrix/mutation-control-scenery-off/fresh-noon/godot.log",
+      "mutation": "",
+      "role": "fresh",
+      "scenery": "off",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ],
+  "resolution": [
+    960,
+    540
+  ],
+  "scenery_modes_requested": [
+    "off",
+    "on"
+  ],
+  "source_sha256": {
+    "app/aircraft/avanti_s_geometry.gd": "b16dac1e5ed1c326df0ce58f1cef859f5aa1479f242ee22dca3f6f4931803adf",
+    "app/aircraft/avanti_s_model.gd": "636b538c1ae3481a1a7743755d1022afe156ee00ce1da23d89f96b4cb8c66e4c",
+    "app/aircraft/extra_300s_appearance.gd": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+    "app/aircraft/extra_300s_finish.gd": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+    "app/aircraft/extra_300s_geometry.gd": "1a020f005f75b98e063f678c43b93aec39fb2807f1c56f52fa81b425d64e915f",
+    "app/aircraft/extra_300s_model.gd": "4637d4937b6b84e584a6015f0d95a78b59ea4565717d7486b9d394654d27fd6e",
+    "app/aircraft/extra_clearance.gd": "ce522dbd4d599fe4fc417bc8923e11931c4d7da99e151435ceaba7b3e91e40d1",
+    "app/aircraft/inspect_extra.gd": "3d5c8b3489e4df5b9045261a18c252b8f7309c8030b1d3cc979200295730c441",
+    "app/aircraft/inspect_model.gd": "ed0f7da632827ce0c8071e04813ac91a5812dd560c9d57e8112dfdfcbcc4a14b",
+    "app/aircraft/inspect_p51.gd": "29b0f35b008a2fd0c12da40ff25650b60034ee2700345536149f1685b9818023",
+    "app/aircraft/model_clearance.gd": "f648b9124e5accea16e7a678591d12917dd9bf3dc431683d86af35400b3e59cc",
+    "app/aircraft/p51d_appearance.gd": "9dad3008e70cb8e1f04f24da6a10f0a76a843f31f47bb15b45b47a235590812b",
+    "app/aircraft/p51d_finish.gd": "4e536c5061fbea389fad0265c50a4859515b7af494f95dbb86c25a477720a51c",
+    "app/aircraft/p51d_geometry.gd": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+    "app/aircraft/p51d_model.gd": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+    "app/aircraft/ugly_stik_appearance.gd": "8275d110e7c5a7fbf49d5f7ce58d8e37a9cf6cb8035a215557a2acdf5b7c27ce",
+    "app/aircraft/ugly_stik_controls.gd": "dead99d05544e295a7411cf7ae61dd04dae00b45a9f3d5492bc0c9804f1a8480",
+    "app/aircraft/ugly_stik_equipment.gd": "31e1616b7ab09a146da4438c13201eef848a6bdb2eb6b22c4db387d05f868cd6",
+    "app/aircraft/ugly_stik_finish.gd": "e3baf21ea5f2fff52286d8949d5bf4dee7af360c237436c273d5f2c09e0f859e",
+    "app/aircraft/ugly_stik_geometry.gd": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
+    "app/aircraft/ugly_stik_model.gd": "48062ee8f16a5c622e104cf86e341d9117093f5be85f551ea9280d74983c8dcc",
+    "app/aircraft/verify_avanti.gd": "676558ae2e0eb38e780a7d13cf8f10e6945863c690ee289801f0085285a2f573",
+    "app/aircraft/verify_controls.gd": "0b030238dafbaa1f7f4dba4ea5882aad8199b1e51cd52d44e8764e39e009c641",
+    "app/aircraft/verify_extra.gd": "aec52f75bd06e4b2b3a81b8945e0303dc2662f0698d2d3e04db7358696761cf7",
+    "app/aircraft/verify_model.gd": "8e28cc219e6282f5ca42192b8a607900d5fab920d605a9108df77aed960753ed",
+    "app/aircraft/verify_p51.gd": "4fe4c33d40a8bb10e7a07963177179cbbfd557518242a25c3488ea9f15efccf7",
+    "app/aircraft/verify_p51_clearance.gd": "b968102f8cec89e78d7568d492cb9590fe78e74bc447f7272626330556b6bb12",
+    "app/aircraft/visual_checks.gd": "b3c7d491f3f8665d2eb8ca76d4d479faf9729884a97a037595d076e994544b7b",
+    "app/app_state/aircraft_catalog.gd": "df31f5eb2fb6261b5643e0d244087efe245da070aba60105c3f30f807bf62ad9",
+    "app/assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+    "app/assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+    "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+    "app/assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/field_loader.gd": "3dd8e1b3d227176c54e937243cdd35ceb5d7144bcfddf7baf99a4d6c996d9b48",
+    "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "app/data/scenery/default.json": "a9362f52a813b1fa3c0923f38023e01c08b4fc0a78e9029c6504ae88c34c2d23",
+    "app/data/scenery/models/car_hatch.json": "47725a37414734ef89e7c97113072da0669840156d186145992ebd72df8d42e5",
+    "app/data/scenery/models/car_sedan.json": "9cb24db341cb40afd2ba48e0e9a1a9c4b6d79e7d409e0f7c1a141c0e9b0b7b75",
+    "app/data/scenery/models/car_sport.json": "be6014ab38658d06505f70857a5020f772c8d2d7969a0c85df735ac7cb52e69f",
+    "app/data/scenery/models/car_suv.json": "4af69a9eeadf308fcb5db07e2b43090a8fc1325b7249a69a370c2848512e2610",
+    "app/data/scenery/models/cow.json": "b3faecaaf20a5122e93599230b05ff8f318a906fe3bf1fc9012dac0dc78593c8",
+    "app/data/scenery/models/fleet_avanti.json": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec",
+    "app/data/scenery/models/fleet_extra.json": "9920c2b286ca0613df34b41ffcc9e26d0f1ae6b7b8747db54e18f57787984057",
+    "app/data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
+    "app/data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
+    "app/data/scenery/models/sheep.json": "7f0db95fb1c5f7a4cefb4ae6b80b913d0ffcf83295fc858cf11597fab8884338",
+    "app/environment/solar_clock.gd": "7b855e2c2a8f03df78635fe57f41069b530d87c8d219f04af079fbe14656a385",
+    "app/environment/solar_position.gd": "299bc575a073fc4bd833a9f87e7550775ef832cf801e1041c0e7c014b0becba6",
+    "app/environment/time_of_day_config.gd": "f3f2a3c35cfbcd97d3cd4018685cf7fa7e3896da00f1a1d6f2dcf7611867d03d",
+    "app/environment/visual_timeline.gd": "51f39087e1fb0db4896bdcea6934587a915141f88275788f562b1b97ef7cab09",
+    "app/main.gd": "02bd42e99dd55ad02e301d7a757e054fb3f6f9da3b372a2447772a6f81af1714",
+    "app/render/airplane.gd": "7a3315cb1d7588ab600078f17fc91c062b73c7bf41ec2f6cde7e876a01b59dd3",
+    "app/render/atmosphere.gd": "68864db506ff7aeb27d43fa642e3582ad64484dec2dcbcd025793ca0a2d446a0",
+    "app/render/cloud_field.gdshaderinc": "d81a737759b3cf63249a99afcfca708ffa3e0c0442c31b7ff8ac136e049b4cce",
+    "app/render/engine_sound.gd": "b51d2c9c81a648f3068de5eaa1e3f94944bc0e842345924c630e9a9598bdba1b",
+    "app/render/field.gd": "37889a8581b839173dc67b8d2ee1481cb01900fb2ca78330a8006216aa9a2bc1",
+    "app/render/flight_cue_shadows.gd": "d237b3e6bb2a50e8b5a52d06ebc0010542a0fbac4e88a87dde220085ffe43627",
+    "app/render/flightline_barrier.gd": "c5a998395659593a5982a7f9fd65d69e2a927df21984052769b47b87856da873",
+    "app/render/frame_samples.gd": "7e67fd69e530a1a881c7b760b2c466070e58e03f401cbf6e8110a6473023ee67",
+    "app/render/frames.gd": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+    "app/render/grass_surface.gdshaderinc": "634a2660ae11231d716672e7a1e8345a3f8293bf2c0cc83c8ab346a4578e423c",
+    "app/render/ground.gd": "90d6bc92025b06dd7421daa8d960a3c1dfb59108af9ad71d5829a91bd1e22fa6",
+    "app/render/ground.gdshader": "9b64f95099c16e5b52685e69f33de004f8af32f3f21d56d7c5a6d55b4ffcf61d",
+    "app/render/horizon.gd": "194cbdf4ada2375adda36b3b25de1a39e82d7b68f60b787ece8e6b44509e130d",
+    "app/render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "app/render/near_grass.gd": "0a01a5557ede77c914ea8ddb26473ed2c2dd9e5cfbcd436a0838e35c1b3f8929",
+    "app/render/near_grass.gdshader": "ff662b61f0ff8423f09f92f220a1710968f0ef0d80065ef00cc6f5abde7211e6",
+    "app/render/panel.gd": "f9895ee1879809c04c1484008aeff060a00a5b12f70ddbbe05a80ce863c940a8",
+    "app/render/pilot_camera.gd": "40f7b33ed20506065e9be04f11b7d4f5463f2209163c06eff9a65a1895750ce7",
+    "app/render/pilot_station.gd": "e14a8dd215d8cfc45c74bddef3cbdecb62c957239fd2b026030d0178126cc286",
+    "app/render/shader_clock.gd": "033a48f75c795f06dd2880f8b68e1e247aed3a264cb9530a7493db99a07baecd",
+    "app/render/shadow.gd": "f3853f671f3e8f9022db0b6c68b4c6924556892ca6e6eb67693b0455f8cb5e07",
+    "app/render/sky.gdshader": "3646b180fa9dc94c770baea4b7d7caa42547c8334f0d15cc0c00a5fdf05609c6",
+    "app/render/time_of_day_lighting.gd": "4c768bdab12b187008792669cd8871590510884130cf6c4b5310ff065ab68bfd",
+    "app/render/tree_assets.gd": "bff775b4451b8e80a7ab69e6c9790ad00f5ee696bee582eaffb1869baf68d68d",
+    "app/render/tree_identity.gdshaderinc": "d501de11fdca1d5d582404f4575d631ad484d93c60a21d802c5728d433f5d92c",
+    "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+    "app/render/treeline.gd": "74bac22b7a839a61af50a307408e0903e406722c2960658dc6216354d4db4872",
+    "app/render/treeline.gdshader": "1729b1b30aa6055dc68473937a7ce32ba3b010f1777e8dcf1c684498e838555a",
+    "app/render/visual_evidence.gd": "1459da195a587a65c3472f15f86af54267d714c3e86c77d4fbb07ac87e0f4a80",
+    "app/render/windsock.gd": "bcd10199489cd77604b5d3a2361b305215a53df8dcb25b1d8b40dc278a1bdd45",
+    "app/scenery/ambience.gd": "735a9374d85cdcc05d93334c983e4447a3050515c38109851d3ac31119f7ca86",
+    "app/scenery/ambience_player.gd": "2ffe03adbbba99ee8a545e732f80f50010861fc29c000617c053b6f2e82857b3",
+    "app/scenery/birds.gd": "fc0fb8a98290bcb8b4ed826fc567e8755f096fa896c5ec2f1bda7145eeb6deb0",
+    "app/scenery/birds.gdshader": "e38aa2b3ee9fe3b4bcdd98b915304f5fd16d0e4f1c788193f089e1322bf6cb9f",
+    "app/scenery/capture_views.gd": "292442d8cad3f86e19a3014848bb0ba5fa84b2367a9c6201548d8accf2aa9981",
+    "app/scenery/fleet.gd": "943b67c3519834264332ed2b483ccff68f96626fb2984036e6e8d26f88406339",
+    "app/scenery/flowers.gd": "4eeb931918f79de3e628e3b88e3dbda810e0dcd39fcd002c09d9fb39d080e009",
+    "app/scenery/flowers.gdshader": "dbcc0ded552366eccf008b9fee243605733f21e12f4607d8c5ecd60a35092083",
+    "app/scenery/ground_features.gd": "7b959d2bc4905d46c81df6f51430d39d07123cecf0cdf95c2efaf0ba2a89d338",
+    "app/scenery/mesh_kit.gd": "f6bfde56ef1a879694c9ef746de8082360384c6730d1f4364fe14b3898d5455a",
+    "app/scenery/models.gd": "10d94822d3841351ad81d95232dc276dc601af23b54a94a12d603100020a0c0c",
+    "app/scenery/motion.gdshader": "9cd2df6f7499bfb972e3c90eb2ad2542b12b003e4180b00666255e4c86e651a0",
+    "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
+    "app/scenery/postcards.gd": "e75d9ca1c7fe89dfd89bbe0341ba13c3d6c4ac3a2d2c44d307c32aff74ea0e1c",
+    "app/scenery/prefabs.gd": "77717b7994d91bc28f60da3c8f72ff89107be559d271315bc9f34eb8e540ff07",
+    "app/scenery/runway_scenario.gd": "aa03f1fbfb14d977c5136bf0c54917e3a7f0a895a998eace1655991f4f6fb604",
+    "app/scenery/scenery.gd": "e65605eb28217503c4502aac630cec8f6dee6da0af6020b904c7101a5c407f8e",
+    "app/scenery/scenery_loader.gd": "27b1cce3a2ba6db18a116ba48a1e8681c31a3f95d79ff56d7d7c9291656e2d2b",
+    "app/scenery/takeoff_pilot.gd": "6f9f9bbc003b9f5d71f6f79f3e8c160b8d6cf88283bc2579490fe5ddba87f513",
+    "app/sim/flight_session.gd": "bc180b03b2848fb4c4e54133f18e6c76fea983afe5cfbaf66095013d96d5f603",
+    "app/sim/landing_maneuver.gd": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
+    "app/sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+    "app/sim/recorder.gd": "53084c3d700b16d74c7698e66c8d8d33923e84105a60597b553b5725ba24cc47",
+    "app/sim/scenarios.gd": "756b95412911c5f1b0c5774d1f0901909e0b157731ca624663f72442df3458a8",
+    "app/sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+    "app/sim/simulation.gd": "f4fc472092368ed7c259df8c68c68f7d8dba3b736e5dc245f7778a9e3e43f8a7",
+    "app/sim/trace.gd": "59c85dcc970a30e86e235806f12f56d8cada8ff1bb431e13e7565dde52b33276",
+    "app/spec.gd": "9c4e0c7a1539f7d4ea4a847c0346b60cbad90a75ecce140c8cf58f751310618b",
+    "research/time-of-day/tod-09b/process_oracle.gd": "251f60679a31380eb21cfa99670262d9bf70f4125dae32fea92d966aa81c657c",
+    "research/time-of-day/tod-09b/process_oracle.py": "6154c88453c47925b77349aa7a92e12cb96b0f912a1c59de55ffa10387dfccaa"
+  },
+  "warnings": [
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/in-place/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/00-legacy/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/noon/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/night/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/dawn/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise-60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset-60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+0/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+0/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunrise+60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/sunset+60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-off/fresh/99-legacy-again/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/in-place/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/00-legacy/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/noon/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/night/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/dawn/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise-60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset-60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+0/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+0/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunrise+60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/sunset+60/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/scenery-on/fresh/99-legacy-again/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/mutation-control-scenery-off/in-place-mutated/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    },
+    {
+      "log": "/tmp/tod09b-process-matrix/mutation-control-scenery-off/fresh-noon/godot.log",
+      "warnings": [
+        "WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.",
+        "aircraft data warning: inertia: Jyy = 0.3871 kg\u00b7m2 is 2.11\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ]
+}

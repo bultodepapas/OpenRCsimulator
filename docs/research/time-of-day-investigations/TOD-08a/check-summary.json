@@ -1,0 +1,88 @@
+{
+  "format": "openrc-tod08-checks v1",
+  "date": "2026-10-10",
+  "baseline_commit": "43cd8c2",
+  "focused": {
+    "timeline": 53,
+    "envelope": 40,
+    "main": 44,
+    "failures": 0,
+    "also_pass_in_full_project_run": true
+  },
+  "baseline_exit": 0,
+  "post_integration": {
+    "exit": 0,
+    "gdscript_test_programs": 151,
+    "all_integration_blocks_pass": true,
+    "log_sha256": "4178c4e49f7e13bc5db0884432725185a7c5cfdeff806bc811055e0ebbe674c3"
+  },
+  "linter": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "linter_diagnostics_unchanged": true,
+  "smoke": {
+    "scenes": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "warnings": 317,
+    "findings": 0
+  },
+  "source_sha256": {
+    "app/main.gd": "31a32bbd89c32a05493f33b63d544f45e714570a1f1a00fee284fd89797c2a9f",
+    "app/environment/visual_timeline.gd": "51f39087e1fb0db4896bdcea6934587a915141f88275788f562b1b97ef7cab09",
+    "app/app_state/visual_checkpoint.gd": "952fcbd82ee80494bcf87940533285b9a33dcc94745e2fb384743769783a35e9",
+    "app/tests/test_time_of_day_checkpoint.gd": "a7bee4c671d25b519ec585b2fc17400f5bfaafafbe49075a9a22d4c77080a22c",
+    "app/tests/test_visual_timeline.gd": "1206317740a8e44052384659dd68dc20c30c6d217994270a584d832bc98390f9",
+    "app/tests/test_visual_checkpoint.gd": "ceddffeaa8d49879f27c30f3c2671a76a439a1685451fc7a8b6a6846555dae19",
+    "research/time-of-day/tod-08a/capture_restore.gd": "b6cfc8040accb91153ae683a5c86765364121cb1d03d36c2786310046033fa2b"
+  },
+  "rendered": {
+    "default": {
+      "ok": true,
+      "checks": {
+        "day_night_differ": true,
+        "legacy-before_first_frame_settled": true,
+        "legacy-before_saved": true,
+        "legacy-restored_first_frame_settled": true,
+        "legacy-restored_saved": true,
+        "legacy_pixels_exact": true,
+        "legacy_restore": true,
+        "night-repeated_first_frame_settled": true,
+        "night-repeated_saved": true,
+        "night-restored_first_frame_settled": true,
+        "night-restored_saved": true,
+        "night_pixels_exact": true,
+        "night_repeat_restore": true,
+        "night_restore": true,
+        "paused": true,
+        "physics_exact": true
+      }
+    },
+    "scenery": {
+      "ok": true,
+      "checks": {
+        "day_night_differ": true,
+        "legacy-before_first_frame_settled": true,
+        "legacy-before_saved": true,
+        "legacy-restored_first_frame_settled": true,
+        "legacy-restored_saved": true,
+        "legacy_pixels_exact": true,
+        "legacy_restore": true,
+        "night-repeated_first_frame_settled": true,
+        "night-repeated_saved": true,
+        "night-restored_first_frame_settled": true,
+        "night-restored_saved": true,
+        "night_pixels_exact": true,
+        "night_repeat_restore": true,
+        "night_restore": true,
+        "paused": true,
+        "physics_exact": true
+      }
+    }
+  },
+  "export": true
+}

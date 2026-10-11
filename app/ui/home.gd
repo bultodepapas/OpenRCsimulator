@@ -12,9 +12,12 @@ const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const Conditions := preload("res://render/world/conditions.gd")
+const WeatherSettings := preload("res://physics/wind_config.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
-const Conditions := preload("res://render/world/conditions.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -26,7 +29,9 @@ signal help_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 signal start_requested(choice: String)
-## The player asked for the next time of day (a Conditions.HOME_CHOICES value); the owner rebuilds the backdrop.
+## The player asked to edit draft flight conditions; closing the dialog returns focus to `from`.
+signal weather_requested(from: Control)
+## The player chose another FW Home preset; the owner rebuilds the backdrop and remembers it.
 signal time_requested(preset: String)
 
 const SIDEBAR_WIDTH := 440
@@ -35,11 +40,14 @@ const SIDEBAR_WIDTH := 440
 var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "airborne"
 var runway_available: bool = true
+var weather_config: Dictionary = WeatherSettings.defaults()
+var lighting_config: Dictionary = TimeOfDay.defaults()
+var time_of_day: String = "day"
 var start_button: Button
-var time_of_day := "day"
-var time_button: Button
 
 var fly_button: Button
+var weather_button: Button
+var time_button: Button
 var language_button: Button
 var help_button: Button
 var quit_button: Button
@@ -59,6 +67,9 @@ var _fly_sent := false
 func _init() -> void:
 	name = "Home"
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
+	var sidebar_style: StyleBoxFlat = theme.get_stylebox("panel", "Sidebar") as StyleBoxFlat
+	sidebar_style.content_margin_top = 36
+	sidebar_style.content_margin_bottom = 24
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -140,12 +151,24 @@ func _init() -> void:
 	fly_button.name = "Fly"
 	fly_button.custom_minimum_size.y = 66
 	fly_button.pressed.connect(_on_fly)
-	column.add_child(fly_button)
+	var fly_row := HBoxContainer.new()
+	fly_row.add_theme_constant_override("separation", 12)
+	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fly_row.add_child(fly_button)
+	weather_button = _button("", "")
+	weather_button.name = "Weather"
+	weather_button.custom_minimum_size = Vector2(170, 66)
+	weather_button.add_theme_font_size_override("font_size", 17)
+	weather_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # the compact dynamic summary is built with tr()
+	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
+	fly_row.add_child(weather_button)
+	column.add_child(fly_row)
 	column.add_child(_gap(12))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	language_button = _button("", "")
 	language_button.name = "Language"
+	language_button.add_theme_font_size_override("font_size", 16)
 	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
 	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
@@ -196,6 +219,11 @@ func _ready() -> void:
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
+	weather_button.focus_neighbor_top = weather_button.get_path_to(fly_button)
+	weather_button.focus_neighbor_bottom = weather_button.get_path_to(language_button)
+	for button: Button in [language_button, help_button, quit_button]:
+		button.focus_neighbor_top = button.get_path_to(fly_button)
+	time_button.focus_neighbor_top = time_button.get_path_to(language_button)
 	Input.joy_connection_changed.connect(_on_joy_changed)
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
@@ -230,7 +258,23 @@ func set_start_choice(choice: String) -> void:
 	limits_label.text = "Starts at idle on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
 
 
-## Shows the time of day Fly will use (FW-27). Unknown values fall back to "day".
+## Keeps only a complete validated config. A corrupt preference can never stop Home from opening.
+func set_weather_config(raw: Variant) -> void:
+	var checked := WeatherSettings.validate(raw)
+	weather_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
+	if is_node_ready():
+		_update_weather_text()
+
+
+## Keeps a complete validated lighting selection for the Home summary and flight handoff.
+func set_lighting_config(raw: Variant) -> void:
+	var checked: Dictionary = TimeOfDay.validate(raw)
+	lighting_config = checked.config.duplicate(true) if checked.get("ok", false) else TimeOfDay.defaults()
+	if is_node_ready():
+		_update_weather_text()
+
+
+## Shows the FW preset that Home and the next flight will use; unknown values fall back to the fixed daytime world.
 func set_time_of_day(preset: String) -> void:
 	time_of_day = preset if Conditions.HOME_CHOICES.has(preset) else "day"
 	if is_node_ready():
@@ -292,7 +336,80 @@ func _update_texts() -> void:
 	aircraft_count_label.text = tr("Aircraft %d of %d") % [Catalog.ids().find(aircraft_id) + 1, Catalog.ids().size()]
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")
+	_update_weather_text()
 	_update_control()
+
+
+func _update_weather_text() -> void:
+	if weather_button == null:
+		return
+	var parts := PackedStringArray()
+	var speed := float(weather_config.speed_mps)
+	var gust := float(weather_config.gust_mps)
+	var gust_up := float(weather_config.gust_up_mps)
+	var turbulence := WeatherSettings.has_turbulence(weather_config)
+	var summary := tr("Calm")
+	if speed > 0.0:
+		var wind_text := tr("%s m/s from %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+		parts.append(wind_text)
+		summary = tr("%s m/s · %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+	if gust > 0.0:
+		parts.append(tr("gust %s m/s") % String.num(gust, 1))
+		if speed == 0.0:
+			summary = tr("Gust %s m/s") % String.num(gust, 1)
+		else:
+			summary += " +%s" % String.num(gust, 1)
+	if gust_up != 0.0:
+		parts.append(tr("up %s m/s") % String.num(gust_up, 1))
+		if speed == 0.0 and gust == 0.0:
+			if gust_up > 0.0:
+				summary = tr("Updraft %s m/s") % String.num(gust_up, 1)
+			else:
+				summary = tr("Downdraft %s m/s") % String.num(absf(gust_up), 1)
+	if turbulence:
+		var rms: Array = weather_config.turbulence_rms_mps
+		parts.append(tr("Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s") % [
+			String.num(float(rms[0]), 1), String.num(float(rms[1]), 1), String.num(float(rms[2]), 1),
+			String.num(float(weather_config.turbulence_tau_s), 1), str(int(weather_config.turbulence_seed)),
+		])
+		if speed == 0.0 and gust == 0.0 and gust_up == 0.0:
+			summary = tr("Turbulence")
+		else:
+			summary += " + " + tr("Turbulence")
+	if weather_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT:
+		if WeatherSettings.has_atmosphere(weather_config):
+			var air: Dictionary = WeatherSettings.atmosphere(weather_config)
+			if air.get("ok", false):
+				var atmosphere_summary: String = tr("Thin air") if float(air.rho_kgm3) < 1.225 else tr("Custom air")
+				parts.append(tr("Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m") % [
+					String.num(float(weather_config.field_elevation_m), 1),
+					String.num(float(weather_config.temperature_c), 1),
+					String.num(float(weather_config.qnh_hpa), 1),
+					String.num(float(weather_config.relative_humidity_pct), 0),
+					String.num(float(air.rho_kgm3), 3),
+					String.num(float(air.density_altitude_m), 0),
+				])
+				if speed == 0.0 and gust == 0.0 and gust_up == 0.0 and not turbulence:
+					summary = atmosphere_summary
+				else:
+					summary += " + " + atmosphere_summary
+		else:
+			parts.append(tr("Reference air · fixed density 1.225 kg/m³"))
+			if speed == 0.0 and gust == 0.0 and gust_up == 0.0 and not turbulence:
+				summary = tr("Reference air")
+			else:
+				summary += " + " + tr("Reference air")
+	var lighting_summary: String = TimeOfDayControls.summary_text(lighting_config)
+	var lighting_brief: String = TimeOfDayControls.compact_summary_text(lighting_config)
+	if lighting_config.mode == "legacy":
+		lighting_summary = tr(Conditions.HOME_LABELS[time_of_day])
+		lighting_brief = tr(Conditions.HOME_LABELS[time_of_day])
+	weather_button.text = "%s\n%s · %s" % [tr("Weather"), summary, lighting_brief]
+	weather_button.tooltip_text = "%s\n%s\n%s" % [
+		tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."),
+		" · ".join(parts) if not parts.is_empty() else tr("Calm"),
+		lighting_summary,
+	]
 
 
 ## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.

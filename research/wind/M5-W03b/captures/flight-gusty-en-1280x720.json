@@ -1,0 +1,96 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "flight": {
+    "ground_speed_mps": 19.8496785688454,
+    "hud_text": "airspeed  14.0 m/s   altitude  29.6 m   AoA  +4.5°   throttle  28%\nground speed 19.8 m/s  wind 6.0 m/s from 270°  up +1.5 m/s",
+    "simulation_time_s": 4.0,
+    "tas_mps": 14.0351783172225,
+    "ticks": 960,
+    "weather_config": {
+      "format": "openrc-weather v1",
+      "from_deg": 270.0,
+      "gust_delay_s": 2.0,
+      "gust_duration_s": 4.0,
+      "gust_mps": 3.0,
+      "gust_period_s": 12.0,
+      "gust_up_mps": 1.5,
+      "speed_mps": 3.0
+    },
+    "wind_ned_mps": [
+      0.0,
+      6.0,
+      -1.5
+    ]
+  },
+  "format": "openrc-wind-ui-capture v1",
+  "image": "flight-gusty-en-1280x720.png",
+  "image_check": {
+    "nonuniform_samples": 230370,
+    "not_blank": true,
+    "sample_stride_px": 2,
+    "samples": 230400,
+    "unique_colors": 7299
+  },
+  "language": "en",
+  "layout": {
+    "container_overlap_count": 0,
+    "control_count": 3,
+    "controls": [
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@89",
+        "rect": [
+          8.0,
+          8.0,
+          490.0,
+          233.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@88",
+        "rect": [
+          18.0,
+          16.0,
+          470.0,
+          217.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@91",
+        "rect": [
+          12.0,
+          656.0,
+          676.0,
+          64.0
+        ]
+      }
+    ],
+    "findings": [],
+    "offscreen_count": 0,
+    "ok": true,
+    "target": "Main",
+    "zero_size_count": 0
+  },
+  "producer": "research/wind/M5-W03b/capture.gd",
+  "renderer": "gl_compatibility",
+  "screen": "flight",
+  "selected_dialog_preset": "",
+  "sha256": "718fd22f7cfccd33c16cf2ac95b0cef2d0785424e7299ef5a9dca7d145e46646",
+  "size": [
+    1280,
+    720
+  ],
+  "weather_config": {
+    "format": "openrc-weather v1",
+    "from_deg": 270.0,
+    "gust_delay_s": 2.0,
+    "gust_duration_s": 4.0,
+    "gust_mps": 3.0,
+    "gust_period_s": 12.0,
+    "gust_up_mps": 1.5,
+    "speed_mps": 3.0
+  },
+  "weather_preset": "gusty"
+}

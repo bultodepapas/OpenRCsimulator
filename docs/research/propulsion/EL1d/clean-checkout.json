@@ -1,0 +1,30 @@
+{
+  "format": "openrc-electric-clean-checkout v1",
+  "snapshot_method": "fresh local clone plus tracked binary diff and untracked task files; no .godot or .tools copied",
+  "tests": {
+    "test_electric_data.gd": {
+      "exit_code": 0,
+      "checks": 43
+    },
+    "test_electric_session.gd": {
+      "exit_code": 0,
+      "checks": 86
+    },
+    "test_electric_input.gd": {
+      "exit_code": 0,
+      "checks": 6
+    }
+  },
+  "traces": {
+    "4s": {
+      "rows": 49,
+      "data_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "csv_sha256": "3e4d48dfef85f718fc9ad7e68560a7b0d9fea20f501d9779b4c2e709c326d0fe"
+    },
+    "6s": {
+      "rows": 49,
+      "data_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "csv_sha256": "cee424cc515089b8f89ff7d9969a1ad6bb0807a89c0d4de4dc4d6bc9818c2d01"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Free and open source software under the terms of the MIT license.
+(c) 2014-present Godot Engine contributors. (c) 2007-present Juan Linietsky, Ariel Manzur.
+
+Usage:
+  /tmp/openrc-tod08-export/openrc-simulator.x86_64 [options] [path to "project.godot" file]
+
+Option legend (this build = release export template):
+  R  Available in editor builds, debug export templates and release export templates.
+
+General options:
+  -h, --help                        R  Display this help message.
+  --version                         R  Display the version string.
+  -v, --verbose                     R  Use verbose stdout mode.
+  --quiet                           R  Quiet mode, silences stdout messages. Errors are still displayed.
+  --no-header                       R  Do not print engine version and rendering driver/method header on startup.
+
+Run options:
+  --, ++                            R  Separator for user-provided arguments. Following arguments are not used by the engine, but can be read from `OS.get_cmdline_user_args()`.
+  --quit                            R  Quit after the first iteration.
+  --quit-after <int>                R  Quit after the given number of iterations. Set to 0 to disable.
+  -l, --language <locale>           R  Use a specific locale (<locale> being a two-letter code).
+  --render-thread <mode>            R  Render thread mode ("unsafe" [deprecated], "safe", "separate").
+  --audio-driver <driver>           R  Audio driver ["PulseAudio", "ALSA", "Dummy"].
+  --display-driver <driver>         R  Display driver (and rendering driver) ["x11" ("vulkan", "opengl3", "opengl3_es", "dummy"), "wayland" ("vulkan", "opengl3", "opengl3_es", "dummy"), "headless" ("dummy")].
+  --audio-output-latency <ms>       R  Override audio output latency in milliseconds (default is 15 ms).
+                                       Lower values make sound playback more reactive but increase CPU usage, and may result in audio cracking if the CPU can't keep up.
+  --rendering-method <renderer>     R  Renderer name. Requires driver support.
+  --rendering-driver <driver>       R  Rendering driver (depends on display driver).
+  --gpu-index <device_index>        R  Use a specific GPU (only available on the Forward+/Mobile renderers; run with --verbose to get a list of available devices).
+  --text-driver <driver>            R  Text driver (used for font rendering, bidirectional support and shaping).
+  --tablet-driver <driver>          R  Pen tablet input driver.
+  --headless                        R  Enable headless mode (--display-driver headless --audio-driver Dummy). Useful for servers and with --script.
+  --log-file <file>                 R  Write output/error log to the specified path instead of the default location defined by the project.
+                                       <file> path should be absolute or relative to the project directory.
+  --write-movie <file>              R  Write a video to the specified path (usually with .avi or .png extension).
+                                       --fixed-fps is forced when enabled, but it can be used to change movie FPS.
+                                       --disable-vsync can speed up movie writing but makes interaction more difficult.
+                                       --quit-after can be used to specify the number of frames to write.
+
+Display options:
+  -f, --fullscreen                  R  Request fullscreen mode.
+  -m, --maximized                   R  Request a maximized window.
+  -w, --windowed                    R  Request windowed mode.
+  -t, --always-on-top               R  Request an always-on-top window.
+  --resolution <W>x<H>              R  Request window resolution.
+  --position <X>,<Y>                R  Request window position.
+  --screen <N>                      R  Request window screen.
+  --single-window                   R  Use a single window (no separate subwindows).
+  --xr-mode <mode>                  R  Select XR (Extended Reality) mode ["default", "off", "on"].
+  --wid <window_id>                 R  Request parented to window.
+  --accessibility <mode>            R  Select accessibility mode ['auto' (when screen reader is running, default), 'always', 'disabled'].
+  --accessibility-driver <driver>   R  Select accessibility driver ['accesskit', 'dummy'].
+
+Debug options:
+  -d, --debug                       R  Debug (local stdout debugger).
+  -b, --breakpoints                 R  Breakpoint list as source::line comma-separated pairs, no spaces (use %%20 instead).
+  --ignore-error-breaks             R  If debugger is connected, prevents sending error breakpoints.
+  --profiling                       R  Enable profiling in the script debugger.
+  --gpu-profile                     R  Show a GPU profile of the tasks that took the most time during frame rendering.
+  --gpu-validation                  R  Enable graphics API validation layers for debugging.
+  --generate-spirv-debug-info       R  Generate SPIR-V debug information (Vulkan only). This allows source-level shader debugging with RenderDoc.
+  --single-threaded-scene           R  Force scene tree to run in single-threaded mode. Sub-thread groups are disabled and run on the main thread.
+  --max-fps <fps>                   R  Set a maximum number of frames per second rendered (can be used to limit power usage). A value of 0 results in unlimited framerate.
+  --frame-delay <ms>                R  Simulate high CPU load (delay each frame by <ms> milliseconds). Do not use as a FPS limiter; use --max-fps instead.
+  --time-scale <scale>              R  Force time scale (higher values are faster, 1.0 is normal speed).
+  --disable-vsync                   R  Forces disabling of vertical synchronization, even if enabled in the project settings. Does not override driver-level V-Sync enforcement.
+  --disable-render-loop             R  Disable render loop so rendering only occurs when called explicitly from script.
+  --disable-crash-handler           R  Disable crash handler when supported by the platform code.
+  --fixed-fps <fps>                 R  Force a fixed number of frames per second. This setting disables real-time synchronization.
+  --delta-smoothing <enable>        R  Enable or disable frame delta smoothing ["enable", "disable"].
+  --print-fps                       R  Print the frames per second to the stdout.
+

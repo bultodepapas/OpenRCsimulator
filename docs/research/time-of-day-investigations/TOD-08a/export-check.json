@@ -1,0 +1,87 @@
+{
+  "format": "openrc-tod-export-check v1",
+  "ok": true,
+  "binary_sha256": "8fd273bac231d6accb71d52027816ea7d612e69e91c5dbba0b529db50f26eff9",
+  "routes": {
+    "legacy": {
+      "context": null,
+      "physics_sha256": "15b74009c322f3fa6066a6764e36ff8a862185650d995218d9ef35855a3fb017",
+      "data_rows": 25
+    },
+    "night": {
+      "context": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.7616633245703,
+          "direction_ned": [
+            -0.004217386667468851,
+            -0.03320535955917343,
+            0.9994396518781128
+          ],
+          "elevation_deg": -88.08183098077305,
+          "errors": [],
+          "hour_angle_deg": 178.09710631765535,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      },
+      "physics_sha256": "15b74009c322f3fa6066a6764e36ff8a862185650d995218d9ef35855a3fb017",
+      "data_rows": 25
+    },
+    "noon": {
+      "context": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.35081909677777,
+          "direction_ned": [
+            -0.0007678482644554136,
+            0.03256269724115908,
+            -0.9994693998104311
+          ],
+          "elevation_deg": 88.13344609948263,
+          "errors": [],
+          "hour_angle_deg": -1.8660355394800945,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      },
+      "physics_sha256": "15b74009c322f3fa6066a6764e36ff8a862185650d995218d9ef35855a3fb017",
+      "data_rows": 25
+    }
+  },
+  "invalid_refused": true,
+  "physics_equal": true,
+  "scope": "Linux native headless, embedded pack, empty working directory; no source --path"
+}

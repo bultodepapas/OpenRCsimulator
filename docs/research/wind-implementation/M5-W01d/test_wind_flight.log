@@ -1,0 +1,94 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   res://data/aircraft/jensen_ugly_stik_60.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/jensen_ugly_stik_60.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/jensen_ugly_stik_60.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/gp_extra_300s_60.json
+ok   configured session remains flyable: res://data/aircraft/gp_extra_300s_60.json
+ok   res://data/aircraft/gp_extra_300s_60.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/gp_extra_300s_60.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/gp_extra_300s_60.json world position differs by W·t  max NED error 0.000000000001 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   res://data/aircraft/p51d_mustang_120.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/p51d_mustang_120.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/p51d_mustang_120.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/sebart_avanti_s_a200.json
+ok   configured session remains flyable: res://data/aircraft/sebart_avanti_s_a200.json
+ok   res://data/aircraft/sebart_avanti_s_a200.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/sebart_avanti_s_a200.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/sebart_avanti_s_a200.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   default ground field loads for windy runway  []
+ok   wind-aware runway static solve succeeds
+ok   same-state session loads equal Dynamics(wind, lag, wash) plus ground contacts  total [-0.7200886315248, 0.05107545513471, -28.2789458056474, -0.00000000000004, 0.00330264089654, -0.00000000000042]; wind aircraft delta 0.249091446 N
+ok   wind changes aircraft loads while wheel loads remain ground-relative  wind does not enter Ground.loads; local TAS 1.5000 m/s
+ok   mild wind runway equilibrium has negligible residual acceleration  linear 0.000000000000 m/s², angular 0.000000000001 rad/s²
+ok   wind-on Stik runway idle hold stays parked for 10 seconds  drift 0.000000000000 m, ground speed 0.000000000000 m/s, fault ''
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   real session load callback sees k1/k2/k3/k4 absolute stage times  [0.0, 0.00208333333333, 0.00208333333333, 0.00416666666667]
+ok   gust changes between RK stages and both midpoint samples agree  stage gust north components [0.0, -0.00027798956396, -0.00027798956396, -0.00237497136586]
+ok   manufactured-cosine field builds  []
+ok   RK4 resolves a partial integral of the 3 m/s cosine gust  absolute errors at 30/60/120 Hz: ["1.3830925582603015e-07", "8.635863357753237e-09", "5.396094682197372e-10"] m
+ok   manufactured forcing converges at fourth order under rate doubling  absolute errors ["1.3830925582603015e-07", "8.635863357753237e-09", "5.396094682197372e-10"] m; ratios ["16.015683678211136", "16.003913693813434"]
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   P-51 shaft pre-step uses air-relative inflow, not ground speed  air axial 24.977108 m/s, ground axial 19.982126 m/s; rpm 3545.839532281 vs wrong-input 3543.069788877
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   reset returns gust sampling and default air query to stage time zero  pre-reset t 0.350000 s, gust 2.000000 m/s; post-reset t 0.0 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   invalid weather at reset boundary is rejected atomically  'gust_period_s' must be in [0.5, 120.0]; gust_period_s must be greater than or equal to gust_duration_s
+ok   live weather change after tick zero is refused without state mutation  weather changes require a new flight or reset boundary
+ok   non-calm complete session checkpoint has version 2 and the authored weather  openrc-flight-checkpoint v2
+ok   invalid checkpoint weather is rejected with owner state intact  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   changed checkpoint fingerprint is rejected atomically  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   wind checkpoint rollback and recorded control tail replay byte-exactly  restore true, tick 160
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   fresh calm destination refuses altered weather fingerprint without partial restore  { "format": "openrc-weather v1", "speed_mps": 0.0, "from_deg": 0.0, "gust_mps": 0.0, "gust_up_mps": 0.0, "gust_duration_s": 4.0, "gust_period_s": 12.0, "gust_delay_s": 2.0 }
+ok   fresh calm destination refuses malformed weather checkpoint atomically  { "format": "openrc-weather v1", "speed_mps": 0.0, "from_deg": 0.0, "gust_mps": 0.0, "gust_up_mps": 0.0, "gust_duration_s": 4.0, "gust_period_s": 12.0, "gust_delay_s": 2.0 }
+ok   fresh calm session adopts valid wind checkpoint identity  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   fresh cross-session wind replay continues byte-exactly  tick 160 expected source tail 160
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   default calm checkpoint retains version 1
+wind flight: 51 checks, 0 failed
+WARNING: The parameter "rates" is never used in the function "coefficients()". If this is intended, prefix it with an underscore: "_rates".
+     at: GDScript::reload (res://physics/aero.gd:62)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:31)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:44)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/propulsion.gd:28)
+WARNING: The local variable "derivative" is shadowing an already-declared function at line 55 in the current class.
+     at: GDScript::reload (res://physics/dynamics.gd:46)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://physics/aircraft_data.gd:104)
+WARNING: The variable "a0" is declared below in the parent block.
+     at: GDScript::reload (res://physics/aircraft_data.gd:510)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/aircraft_data.gd:779)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1051)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1067)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://sim/simulation.gd:238)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/hull_crossing.gd:66)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/impact_snapshot.gd:55)
+WARNING: The local function parameter "is_connected" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://sim/flight_session.gd:181)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:391)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:847)

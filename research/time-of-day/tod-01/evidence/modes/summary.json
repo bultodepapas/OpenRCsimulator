@@ -1,0 +1,3318 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "adapter_api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "cloud_update_interval_s": 1.0,
+  "display_server": "X11",
+  "format": "openrc-tod-01-probe v1",
+  "godot": "4.7.2-stable (official)",
+  "images": [
+    {
+      "file": "initial-night-first-frame.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "quality-day-build-012.png",
+      "sha256": "698b10258e97037ae39146b694ff148621c9700e59719b39339cff8402f48c21"
+    },
+    {
+      "file": "quality-day-to-night-001.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "quality-day-to-night-008.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "quality-day-to-night-060.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "quality-night-to-day-001.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "quality-night-to-day-008.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "quality-night-to-day-060.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "incremental-day-build-012.png",
+      "sha256": "698b10258e97037ae39146b694ff148621c9700e59719b39339cff8402f48c21"
+    },
+    {
+      "file": "incremental-day-to-night-001.png",
+      "sha256": "7bfff54abc1e05f5d827a81345207dbda55c65f9364401d93cf97d4714eed7b1"
+    },
+    {
+      "file": "incremental-day-to-night-008.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "incremental-day-to-night-060.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "incremental-night-to-day-001.png",
+      "sha256": "c68606bc7790cae3a7136b5e4db9a87a0a3c1487bfe8b8975cccb05d2bc477fc"
+    },
+    {
+      "file": "incremental-night-to-day-008.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "incremental-night-to-day-060.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "realtime-day-build-012.png",
+      "sha256": "698b10258e97037ae39146b694ff148621c9700e59719b39339cff8402f48c21"
+    },
+    {
+      "file": "realtime-day-to-night-001.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "realtime-day-to-night-008.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "realtime-day-to-night-060.png",
+      "sha256": "1d7d86caa8af8a4608affbed22c3a885a5336c1690c289ea4ecd09dc8d96c183"
+    },
+    {
+      "file": "realtime-night-to-day-001.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "realtime-night-to-day-008.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    },
+    {
+      "file": "realtime-night-to-day-060.png",
+      "sha256": "23a57e95b65caf86ffb6c1bf31a16c5e7140ac14982b7dd610ffe287360a700f"
+    }
+  ],
+  "lp_num_threads": "1",
+  "max_fps": 60,
+  "night_initialization": {
+    "first_frame_max_rgb": 0.000508235301822424,
+    "first_frame_signature": {
+      "matte_rgb": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sky_rgb": [
+        0.000489411759190261,
+        0.000508235301822424,
+        0.000489411759190261
+      ],
+      "specular_rgb": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "fog_energy": 0.0,
+    "interpretation": "The initial environment was set to zero sun, haze, scatter, zenith, clouds, and fog before it entered the rendered tree. The first completed frame was sampled. This checks initialization/update behavior, not a calibrated night sky.",
+    "passes_dark_check": true,
+    "sky_haze_linear": "(0.0, 0.0, 0.0)",
+    "sky_sun_linear": "(0.0, 0.0, 0.0)",
+    "sun_energy": 0.0,
+    "threshold_rgb": 0.00392156862745098
+  },
+  "per_frame_csv": "frame-metrics.csv",
+  "phases": [
+    {
+      "first_stable_frame": -1,
+      "frame_count": 12,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 134.994,
+        "p95": 240.697,
+        "p99": 240.697,
+        "worst": 240.697
+      },
+      "frame_times_ms": [
+        240.697,
+        151.266,
+        137.746,
+        134.994,
+        132.061,
+        135.679,
+        134.772,
+        131.193,
+        134.493,
+        139.393,
+        132.595,
+        144.804
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642597675323486,
+          0.723319232463837,
+          0.781847834587097
+        ],
+        "specular_rgb": [
+          0.678858041763306,
+          0.714767098426819,
+          0.733427464962006
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "QUALITY",
+      "phase": "day-build"
+    },
+    {
+      "cloud_offset": "(0.004, 0.0015)",
+      "cloud_uniform_changed": true,
+      "first_stable_frame": -1,
+      "frame_count": 20,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 136.41,
+        "p95": 161.901,
+        "p99": 311.009,
+        "worst": 311.009
+      },
+      "frame_times_ms": [
+        311.009,
+        124.753,
+        136.41,
+        132.188,
+        137.73,
+        161.901,
+        136.169,
+        133.933,
+        137.911,
+        143.076,
+        151.541,
+        131.659,
+        129.272,
+        127.492,
+        144.259,
+        135.028,
+        143.532,
+        132.849,
+        140.63,
+        149.508
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "QUALITY",
+      "phase": "cloud-update"
+    },
+    {
+      "first_stable_frame": 1,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 109.481,
+        "p95": 127.785,
+        "p99": 178.446,
+        "worst": 178.446
+      },
+      "frame_times_ms": [
+        178.446,
+        151.077,
+        113.065,
+        107.901,
+        113.423,
+        110.044,
+        120.135,
+        117.67,
+        143.362,
+        95.911,
+        99.292,
+        107.859,
+        106.808,
+        99.731,
+        109.568,
+        114.971,
+        113.494,
+        106.486,
+        113.521,
+        127.246,
+        108.469,
+        108.735,
+        120.212,
+        103.158,
+        127.785,
+        109.481,
+        104.552,
+        100.635,
+        110.374,
+        109.555,
+        111.446,
+        115.034,
+        108.203,
+        104.427,
+        110.205,
+        107.074,
+        107.427,
+        102.123,
+        113.55,
+        121.542,
+        119.208,
+        106.747,
+        104.441,
+        105.143,
+        122.329,
+        101.48,
+        109.504,
+        112.377,
+        117.813,
+        107.138,
+        105.309,
+        121.132,
+        99.282,
+        104.744,
+        101.639,
+        126.531,
+        103.588,
+        104.57,
+        97.524,
+        110.608
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sky_rgb": [
+          0.000489411759190261,
+          0.000508235301822424,
+          0.000489411759190261
+        ],
+        "specular_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "QUALITY",
+      "phase": "day-to-night",
+      "settle_frame": 1
+    },
+    {
+      "first_stable_frame": 1,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 137.349,
+        "p95": 158.959,
+        "p99": 266.739,
+        "worst": 266.739
+      },
+      "frame_times_ms": [
+        223.03,
+        257.443,
+        126.819,
+        126.811,
+        127.137,
+        135.178,
+        151.383,
+        152.666,
+        266.739,
+        140.063,
+        138.943,
+        142.211,
+        148.611,
+        133.389,
+        145.431,
+        126.951,
+        143.259,
+        125.645,
+        128.931,
+        143.899,
+        157.107,
+        158.959,
+        148.113,
+        137.349,
+        139.357,
+        135.484,
+        137.365,
+        140.321,
+        143.53,
+        128.863,
+        149.131,
+        137.852,
+        136.633,
+        125.54,
+        135.061,
+        138.687,
+        131.353,
+        147.729,
+        155.093,
+        136.568,
+        140.145,
+        143.265,
+        142.05,
+        124.845,
+        131.88,
+        128.775,
+        129.391,
+        126.786,
+        145.259,
+        127.009,
+        127.346,
+        150.743,
+        131.918,
+        124.269,
+        136.004,
+        130.838,
+        121.36,
+        141.481,
+        131.479,
+        121.311
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "QUALITY",
+      "phase": "night-to-day",
+      "settle_frame": 1
+    },
+    {
+      "first_stable_frame": -1,
+      "frame_count": 12,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 126.799,
+        "p95": 318.295,
+        "p99": 318.295,
+        "worst": 318.295
+      },
+      "frame_times_ms": [
+        318.295,
+        147.876,
+        135.039,
+        130.343,
+        130.417,
+        130.659,
+        126.711,
+        123.119,
+        123.11,
+        124.733,
+        125.278,
+        126.799
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642597675323486,
+          0.723319232463837,
+          0.781847834587097
+        ],
+        "specular_rgb": [
+          0.678858041763306,
+          0.714767098426819,
+          0.733427464962006
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "INCREMENTAL",
+      "phase": "day-build"
+    },
+    {
+      "cloud_offset": "(0.004, 0.0015)",
+      "cloud_uniform_changed": true,
+      "first_stable_frame": -1,
+      "frame_count": 20,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0000125765800476074,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0000125765800476074,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 130.976,
+        "p95": 138.676,
+        "p99": 283.174,
+        "worst": 283.174
+      },
+      "frame_times_ms": [
+        283.174,
+        138.676,
+        133.163,
+        130.05,
+        132.044,
+        125.448,
+        121.155,
+        126.371,
+        126.352,
+        128.361,
+        127.998,
+        130.684,
+        132.176,
+        132.132,
+        130.976,
+        133.889,
+        132.544,
+        135.773,
+        133.653,
+        129.151
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.0000125765800476074,
+      "mode": "INCREMENTAL",
+      "phase": "cloud-update"
+    },
+    {
+      "first_stable_frame": 6,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.815774142742157
+        },
+        {
+          "delta": 0.446983575820923,
+          "frame": 2,
+          "target_distance": 0.815774142742157
+        },
+        {
+          "delta": 0.161531001329422,
+          "frame": 3,
+          "target_distance": 0.815774142742157
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.815774142742157
+        },
+        {
+          "delta": 0.00130510330200195,
+          "frame": 5,
+          "target_distance": 0.814563155174255
+        },
+        {
+          "delta": 0.814563155174255,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 103.11,
+        "p95": 112.614,
+        "p99": 170.302,
+        "worst": 170.302
+      },
+      "frame_times_ms": [
+        116.715,
+        170.302,
+        112.614,
+        102.485,
+        110.062,
+        98.574,
+        106.453,
+        96.682,
+        148.301,
+        104.766,
+        103.685,
+        102.823,
+        99.88,
+        103.11,
+        98.102,
+        100.107,
+        96.814,
+        106.108,
+        97.434,
+        100.772,
+        107.272,
+        110.37,
+        102.1,
+        107.1,
+        100.928,
+        103.551,
+        100.453,
+        108.7,
+        96.964,
+        107.418,
+        99.746,
+        106.982,
+        111.183,
+        109.856,
+        100.117,
+        105.085,
+        111.628,
+        102.579,
+        112.563,
+        95.715,
+        101.793,
+        98.601,
+        105.423,
+        98.494,
+        107.953,
+        101.938,
+        110.096,
+        103.773,
+        107.803,
+        96.605,
+        101.718,
+        97.029,
+        102.924,
+        99.149,
+        111.137,
+        98.685,
+        102.59,
+        107.984,
+        109.715,
+        112.523
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sky_rgb": [
+          0.000489411759190261,
+          0.000508235301822424,
+          0.000489411759190261
+        ],
+        "specular_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "max_signature_delta": 0.814563155174255,
+      "mode": "INCREMENTAL",
+      "phase": "day-to-night",
+      "settle_frame": 6
+    },
+    {
+      "first_stable_frame": 6,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.660329461097717
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": 0.660329461097717
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": 0.660329461097717
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.660329461097717
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": 0.660329461097717
+        },
+        {
+          "delta": 0.660329461097717,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 129.23,
+        "p95": 212.84,
+        "p99": 259.491,
+        "worst": 259.491
+      },
+      "frame_times_ms": [
+        212.84,
+        259.491,
+        129.192,
+        132.827,
+        131.401,
+        126.049,
+        128.087,
+        127.164,
+        253.714,
+        125.916,
+        128.43,
+        129.417,
+        126.89,
+        131.399,
+        129.751,
+        128.072,
+        126.845,
+        127.248,
+        129.233,
+        131.872,
+        130.227,
+        127.553,
+        128.547,
+        128.422,
+        119.554,
+        126.519,
+        123.939,
+        137.31,
+        135.637,
+        125.807,
+        126.644,
+        125.404,
+        124.693,
+        127.909,
+        129.23,
+        124.804,
+        142.893,
+        129.35,
+        125.037,
+        146.322,
+        133.394,
+        130.912,
+        128.218,
+        131.333,
+        129.873,
+        128.663,
+        132.605,
+        125.881,
+        135.483,
+        134.02,
+        127.052,
+        135.153,
+        137.11,
+        144.438,
+        128.983,
+        129.319,
+        123.314,
+        194.345,
+        224.001,
+        133.501
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.660329461097717,
+      "mode": "INCREMENTAL",
+      "phase": "night-to-day",
+      "settle_frame": 6
+    },
+    {
+      "first_stable_frame": -1,
+      "frame_count": 12,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 128.666,
+        "p95": 323.845,
+        "p99": 323.845,
+        "worst": 323.845
+      },
+      "frame_times_ms": [
+        323.845,
+        127.25,
+        152.23,
+        128.619,
+        127.238,
+        130.0,
+        130.173,
+        125.631,
+        135.567,
+        128.666,
+        135.172,
+        127.397
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642597675323486,
+          0.723319232463837,
+          0.781847834587097
+        ],
+        "specular_rgb": [
+          0.678858041763306,
+          0.714767098426819,
+          0.733427464962006
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "REALTIME",
+      "phase": "day-build"
+    },
+    {
+      "cloud_offset": "(0.004, 0.0015)",
+      "cloud_uniform_changed": true,
+      "first_stable_frame": -1,
+      "frame_count": 20,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": -1.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": -1.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 128.032,
+        "p95": 141.413,
+        "p99": 306.358,
+        "worst": 306.358
+      },
+      "frame_times_ms": [
+        306.358,
+        131.105,
+        137.793,
+        136.86,
+        130.814,
+        125.023,
+        130.75,
+        127.719,
+        127.482,
+        130.809,
+        141.413,
+        128.032,
+        134.434,
+        126.123,
+        122.155,
+        124.347,
+        129.796,
+        122.342,
+        125.332,
+        127.525
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "REALTIME",
+      "phase": "cloud-update"
+    },
+    {
+      "first_stable_frame": 1,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 102.053,
+        "p95": 109.346,
+        "p99": 153.744,
+        "worst": 153.744
+      },
+      "frame_times_ms": [
+        141.573,
+        136.405,
+        105.971,
+        100.007,
+        103.624,
+        97.603,
+        105.223,
+        100.835,
+        153.744,
+        105.093,
+        104.031,
+        101.477,
+        104.988,
+        100.463,
+        105.374,
+        99.624,
+        102.063,
+        100.612,
+        104.768,
+        103.602,
+        98.748,
+        106.356,
+        99.864,
+        108.137,
+        100.942,
+        104.29,
+        99.548,
+        98.996,
+        107.395,
+        99.678,
+        103.188,
+        107.685,
+        100.172,
+        103.164,
+        96.83,
+        101.378,
+        96.562,
+        101.952,
+        99.086,
+        109.346,
+        101.581,
+        106.299,
+        101.266,
+        103.589,
+        98.251,
+        104.057,
+        96.618,
+        100.634,
+        96.397,
+        108.823,
+        100.493,
+        105.973,
+        103.28,
+        103.807,
+        102.053,
+        101.78,
+        100.772,
+        107.13,
+        98.791,
+        106.343
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sky_rgb": [
+          0.000489411759190261,
+          0.000508235301822424,
+          0.000489411759190261
+        ],
+        "specular_rgb": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "REALTIME",
+      "phase": "day-to-night",
+      "settle_frame": 1
+    },
+    {
+      "first_stable_frame": 1,
+      "frame_count": 60,
+      "frame_deltas": [
+        {
+          "delta": 0.0,
+          "frame": 1,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 2,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 3,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 4,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 5,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 6,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 7,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 8,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 9,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 10,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 11,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 12,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 13,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 14,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 15,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 16,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 17,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 18,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 19,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 20,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 21,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 22,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 23,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 24,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 25,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 26,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 27,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 28,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 29,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 30,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 31,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 32,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 33,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 34,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 35,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 36,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 37,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 38,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 39,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 40,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 41,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 42,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 43,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 44,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 45,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 46,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 47,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 48,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 49,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 50,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 51,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 52,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 53,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 54,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 55,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 56,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 57,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 58,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 59,
+          "target_distance": 0.0
+        },
+        {
+          "delta": 0.0,
+          "frame": 60,
+          "target_distance": 0.0
+        }
+      ],
+      "frame_interval_ms": {
+        "p50": 129.263,
+        "p95": 232.189,
+        "p99": 255.272,
+        "worst": 255.272
+      },
+      "frame_times_ms": [
+        216.116,
+        255.272,
+        139.996,
+        141.339,
+        232.189,
+        226.716,
+        239.866,
+        128.498,
+        251.084,
+        127.753,
+        122.275,
+        133.25,
+        129.135,
+        122.557,
+        136.65,
+        129.303,
+        127.916,
+        129.709,
+        129.63,
+        127.474,
+        134.351,
+        127.425,
+        129.263,
+        129.991,
+        124.185,
+        195.88,
+        154.447,
+        130.211,
+        126.437,
+        128.622,
+        145.13,
+        126.964,
+        129.776,
+        126.838,
+        133.604,
+        126.865,
+        133.213,
+        126.284,
+        125.195,
+        126.17,
+        126.307,
+        138.849,
+        129.663,
+        123.898,
+        126.53,
+        128.1,
+        137.554,
+        126.073,
+        123.016,
+        132.873,
+        129.127,
+        198.954,
+        216.465,
+        143.993,
+        123.144,
+        128.542,
+        122.825,
+        123.695,
+        149.984,
+        128.684
+      ],
+      "last_signature": {
+        "matte_rgb": [
+          0.912238478660583,
+          0.913311421871185,
+          0.914277613162994
+        ],
+        "sky_rgb": [
+          0.642585098743439,
+          0.723338007926941,
+          0.781829059123993
+        ],
+        "specular_rgb": [
+          0.678870618343353,
+          0.714767098426819,
+          0.733440041542053
+        ]
+      },
+      "max_signature_delta": 0.0,
+      "mode": "REALTIME",
+      "phase": "night-to-day",
+      "settle_frame": 1
+    }
+  ],
+  "renderer": "gl_compatibility",
+  "resolution": "1280x720",
+  "sample_regions": {
+    "matte": {
+      "center_px": [
+        483,
+        360
+      ],
+      "radius_px": 12
+    },
+    "sky": {
+      "center_px": [
+        640,
+        60
+      ],
+      "radius_px": 12
+    },
+    "specular": {
+      "center_px": [
+        797,
+        360
+      ],
+      "radius_px": 12
+    },
+    "values": "mean display-referred RGB from the captured Compatibility viewport image, each channel in [0,1]"
+  },
+  "settle_definition": {
+    "caveat": "An 8-frame stable sample is an operational capture criterion; it does not measure hidden cubemap state or target-GPU cost.",
+    "consecutive_frames": 8,
+    "metric": "maximum absolute channel difference from a same-renderer target across sky, matte, and specular RGB means",
+    "threshold": 0.00392156862745098
+  }
+}

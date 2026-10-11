@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_left at 240 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_left at 480 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_left at 960 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_right at 240 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_right at 480 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting
+FAIL coast_right at 960 Hz completes without crash/fault CRASH at 3.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 3.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL idle at 240 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL idle at 480 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL idle at 960 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL pulse at 240 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL pulse at 480 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting
+FAIL pulse at 960 Hz completes without crash/fault CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 11), point speed 0.0 m/s at detected tick) - restarting 
+12 checks, 12 failed

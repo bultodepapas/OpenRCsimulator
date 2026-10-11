@@ -1,0 +1,9 @@
+PASS gp_extra_300s_60.json
+PASS jensen_ugly_stik_60.json
+PASS p51d_mustang_120.json
+PASS sebart_avanti_s_a200.json
+PASS synthetic_stik_electric_4s.json
+PASS synthetic_stik_electric_4s_battery.json
+PASS synthetic_stik_electric_6s.json
+PASS synthetic_stik_electric_6s_battery.json
+8 aircraft, 0 failed structural preflight

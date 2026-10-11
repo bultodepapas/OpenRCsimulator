@@ -1,0 +1,15 @@
+; Minimal OptionButton popup export reproduction for TOD-08b.
+config_version=5
+
+[application]
+config/name="TOD-08b OptionButton Repro"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.7")
+
+[display]
+window/size/viewport_width=800
+window/size/viewport_height=600
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

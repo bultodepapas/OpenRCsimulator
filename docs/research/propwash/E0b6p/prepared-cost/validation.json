@@ -1,0 +1,83 @@
+{
+  "whole_tick": [
+    {
+      "run": 1,
+      "comparison": {
+        "cases": 12,
+        "boundaries_per_case": 240,
+        "scalars_compared": 95040,
+        "fields": [
+          "state",
+          "aux",
+          "continuous",
+          "loads"
+        ],
+        "bit_exact": true
+      },
+      "negative_controls": 12,
+      "raw_hashes_verified": true
+    },
+    {
+      "run": 2,
+      "comparison": {
+        "cases": 12,
+        "boundaries_per_case": 240,
+        "scalars_compared": 95040,
+        "fields": [
+          "state",
+          "aux",
+          "continuous",
+          "loads"
+        ],
+        "bit_exact": true
+      },
+      "negative_controls": 12,
+      "raw_hashes_verified": true
+    }
+  ],
+  "source_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "staged_lint": {
+    "total": 12,
+    "errors": 0,
+    "warnings": 12,
+    "parse_errors": 0
+  },
+  "production_app_changes": false,
+  "full_app_suite": "Not rerun: measurement-only disposable instrumentation; no production changes.",
+  "native": {
+    "status": "pass",
+    "provenance_stable": true,
+    "negative_controls": 9,
+    "artifact_sha256": {
+      "build.json": "d06680a8918ba83b590225777b2b0efa9d3d91d05abe4f6b4d09d8007308b0c0",
+      "instrumented-verify_adapter.json": "15c8b046ef90dcd01e3ad63d284b2133dcfe4a6e284ce76a471ce17738d10275",
+      "instrumented-verify_adapter.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "instrumented-verify_adapter.run.log": "4d3144409116c4fec4a070b70273b06230596fc677059f99dbcb937d63fd46e3",
+      "instrumented-verify_fields.json": "7f9a3e0bbf720740d277bd4e9472b62e6f93368168a11de92d15040dd6101a2f",
+      "instrumented-verify_fields.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "instrumented-verify_fields.run.log": "43db2850e2a94bf2f41e63e53347d14d88f40a90d1240a901a5016d015fcfa6e",
+      "instrumented-verify_lifecycle.json": "3d5237776bfe4fee38be53022d8bd6c9dceb86581592fe96d98ca98c63cc9f75",
+      "instrumented-verify_lifecycle.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "instrumented-verify_lifecycle.run.log": "7e569747917bc5c2728a9fa2637825f0ce755b38e58914431d25193dd74e73e9",
+      "instrumented-verify_native.json": "adc9fc2026d30fb1169af2a3848331d85e162bed3869a58e147450671c98f681",
+      "instrumented-verify_native.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "instrumented-verify_native.run.log": "42341b429072b09a7b2a0898800cf63be72caec3dec72fa6782a15ef21f07cf2",
+      "mutation_allow_route_change.json": "9cf531337b7363021e3fe33775ae3fff85c9c35e44daebcb7402c05370e495e6",
+      "mutation_allow_route_change.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "mutation_allow_route_change.run.log": "1316c7d167c2f445fcdbe1a62de264e50ee92ffa2066506ade506213cb8f0fcb",
+      "mutation_bypass_prepared_dispatch.json": "bd6945df84480b379eeb5703347e43e3b505572c7b045288d252d0c968ef1fb3",
+      "mutation_bypass_prepared_dispatch.parse.log": "6d1c065383a27c36804949b6ffa4b09714470b112e5dacc0bd5aeb7b9c147c4e",
+      "mutation_bypass_prepared_dispatch.run.log": "7d04f5fd330aa63fc5fd1ec42f0cbdbf6a6fd226724149b6412ee2a55951c16c",
+      "native-baseline-profile.json": "7635464201f84cc1cf0ecffbc738b07916057826915b6ca1015cc4b0ced48417",
+      "native-baseline-profile.log": "2d75cb9fe5e284a3b35d4bb598c40dd79f70c3d529145a398b112cbf1d1bcce5",
+      "native-evidence.json": "356eea3741b5b4ace350f49c64ea1f247f108cb3f6f67d84404d09fea6e27289",
+      "native-instrumented-profile.json": "bd74e8ede76f29cd14f1762833532da32ede3b894f4e0443cc237a8eb92a9445",
+      "native-instrumented-profile.log": "6c0109fc999ae3946b9fa33d0a8ce6189b7ada1c89a53714da76c0f8c9fe436d"
+    }
+  }
+}

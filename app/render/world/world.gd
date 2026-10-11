@@ -55,10 +55,13 @@ static var _flow := {}
 ## `build_field`, when valid, replaces the production field: it must add its own nodes to `parent` (main.gd's seam,
 ## overridden by the frozen L1–L4 atmosphere fixture). Otherwise the field is built from `field` (openrc-field data).
 ## `conditions` (FW-03): Conditions.resolve() output; empty = resolve from the command line and environment.
-## Returns {environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
-static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}) -> Dictionary:
+## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow.
+## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
+static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}) -> Dictionary:
 	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
-	if conditions.is_empty():
+	if not lighting.is_empty():
+		conditions = {time_of_day = false}
+	elif conditions.is_empty():
 		conditions = Conditions.resolve()
 	# FW-22/23: every material built below reads the chosen hour; no time = the calibrated fixed sun.
 	Atmosphere.state = SkyState.state(Ephemeris.sky(conditions.when)) if conditions.time_of_day else {}
@@ -86,7 +89,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	if not Atmosphere.state.is_empty():
 		Exposure.set_value(Atmosphere.state.exposure)
 	var world_environment := WorldEnvironment.new()
-	var environment := Atmosphere.environment()
+	var environment := Atmosphere.environment(lighting)
 	world_environment.environment = environment
 	parent.add_child(world_environment)
 
@@ -95,12 +98,12 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	if build_field.is_valid():
 		build_field.call()
 	else:
-		field_node = FieldBuilder.build(field)
+		field_node = FieldBuilder.build(field, lighting)
 	var field_build_ms := (Time.get_ticks_usec() - t0) / 1000.0
 	if field_node != null:
 		parent.add_child(field_node)
 
-	var sun := Atmosphere.create_sun(parent) # the sky shader draws the sun disc from this light
+	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
 	var stars: Node3D = null
 	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
 		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg)) # FW-24
@@ -115,7 +118,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
 			materials = haze_materials(parent), tonemapper = Atmosphere.state.tonemapper,
 			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg)}
-	return {environment = environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
+	return {environment = environment, world_environment = world_environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
 		conditions = conditions, sky = Atmosphere.state}
 
 

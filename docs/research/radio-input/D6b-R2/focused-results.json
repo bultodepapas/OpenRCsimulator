@@ -1,0 +1,47 @@
+{
+  "test_rc_input": {
+    "exit_code": 0,
+    "summaries": [
+      "41 checks, 0 failed"
+    ],
+    "passed_assertions": 0
+  },
+  "test_rc_axis_history": {
+    "exit_code": 0,
+    "summaries": [
+      "F3b: 9252 checks, 0 failed; all 1024 axis-history combinations"
+    ],
+    "passed_assertions": 0
+  },
+  "test_rc_calibration": {
+    "exit_code": 0,
+    "summaries": [
+      "19 checks, 0 failed"
+    ],
+    "passed_assertions": 0
+  },
+  "test_rc_profile_validation": {
+    "exit_code": 0,
+    "summaries": [
+      "D6b-R1: 720 checks, 0 failed"
+    ],
+    "passed_assertions": 0
+  },
+  "test_e2e_radio": {
+    "exit_code": 0,
+    "summaries": [],
+    "passed_assertions": 38
+  },
+  "test_latency_patch": {
+    "exit_code": 0,
+    "summaries": [
+      "F6a: 533 checks, 0 failed; 240 same-tick marker updates and exact checkpoint pairs"
+    ],
+    "passed_assertions": 0
+  },
+  "test_ui_input": {
+    "exit_code": 0,
+    "summaries": [],
+    "passed_assertions": 17
+  }
+}

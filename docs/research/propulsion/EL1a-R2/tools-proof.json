@@ -1,0 +1,168 @@
+{
+  "format": "openrc-electric-research-tools v1",
+  "scope": "Research-only tool qualification; no production implementation or physical validation",
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "headless": {
+    "control": {
+      "exit_code": 0,
+      "timed_out": false,
+      "completion": "EL-R2 COMPLETE 1 0",
+      "engine_error": false,
+      "accepted": true,
+      "diagnostics": []
+    },
+    "explicit_failure": {
+      "exit_code": 1,
+      "timed_out": false,
+      "completion": "EL-R2 COMPLETE 1 1",
+      "engine_error": false,
+      "accepted": false,
+      "diagnostics": []
+    },
+    "logged_runtime_error": {
+      "exit_code": 0,
+      "timed_out": false,
+      "completion": "EL-R2 COMPLETE 1 0",
+      "engine_error": true,
+      "accepted": false,
+      "diagnostics": [
+        "SCRIPT ERROR: Invalid access to property or key 'missing' on a base object of type 'Dictionary'."
+      ]
+    },
+    "missing_completion": {
+      "exit_code": 0,
+      "timed_out": false,
+      "completion": null,
+      "engine_error": false,
+      "accepted": false,
+      "diagnostics": []
+    },
+    "parse_failure": {
+      "exit_code": 1,
+      "timed_out": false,
+      "completion": null,
+      "engine_error": true,
+      "accepted": false,
+      "diagnostics": [
+        "SCRIPT ERROR: Parse Error: Expected expression for variable initial value after \"=\".",
+        "ERROR: Failed to load script \"res://probe.gd\" with error \"Parse error\"."
+      ]
+    },
+    "timeout": {
+      "exit_code": null,
+      "timed_out": true,
+      "completion": null,
+      "engine_error": false,
+      "accepted": false,
+      "diagnostics": []
+    }
+  },
+  "solvers": {
+    "scope": "Independent numerical methods versus a derived smooth oracle, not Godot integration or physical measurements",
+    "fixture": {
+      "kv_rpm_per_v": 800.0,
+      "resistance_ohm": 0.06,
+      "rotor_inertia_kgm2": 0.0001,
+      "i0_a": 1.0,
+      "effective_voltage_v": 6.0,
+      "initial_radps": 1.0,
+      "tau_s": 0.0421103121113146
+    },
+    "rtol": 1e-11,
+    "atol_radps": 1e-11,
+    "max_step_s": 0.01,
+    "methods": {
+      "DOP853": {
+        "success": true,
+        "status": 0,
+        "max_error_radps": 2.174715518776793e-09,
+        "rhs_evaluations": 194
+      },
+      "Radau": {
+        "success": true,
+        "status": 0,
+        "max_error_radps": 4.832827471545897e-10,
+        "rhs_evaluations": 2983
+      }
+    },
+    "max_between_method_radps": 2.145441158063477e-09,
+    "synthetic_periodic_event_counterexample": {
+      "1.0": {
+        "success": true,
+        "output_samples": 1001,
+        "detected_times_s": []
+      },
+      "0.05": {
+        "success": true,
+        "output_samples": 1001,
+        "detected_times_s": [
+          0.05,
+          0.05,
+          0.3,
+          0.5499999999999999,
+          0.8000000000000002
+        ]
+      },
+      "0.04": {
+        "success": true,
+        "output_samples": 1001,
+        "detected_times_s": [
+          0.05,
+          0.3,
+          0.55,
+          0.8000000000000002
+        ]
+      }
+    }
+  },
+  "identifiability": {
+    "scope": "Original noiseless synthetic local-identifiability example, not fitted Timber data",
+    "parameterization": "theta=log([R/Rref, J/Jref]); normalized speed=1-exp(-t/(0.04*exp(sum(theta))))",
+    "assumed_scales": {
+      "normalized_speed": 0.001,
+      "independent_relative_resistance": 0.01
+    },
+    "speed_only_fits": [
+      {
+        "success": true,
+        "relative_R_J": [
+          0.5,
+          2.0
+        ],
+        "max_scaled_residual": 0.0
+      },
+      {
+        "success": true,
+        "relative_R_J": [
+          2.0,
+          0.5
+        ],
+        "max_scaled_residual": 0.0
+      }
+    ],
+    "speed_only_rank": 1,
+    "speed_only_singular_values": [
+      2795.093583282641,
+      1.0491037770232056e-13
+    ],
+    "with_resistance_rank": 2,
+    "with_resistance_relative_R_J": [
+      1.0,
+      0.9999999999999999
+    ],
+    "with_resistance_singular_values": [
+      2795.9884369014767,
+      70.68804722885217
+    ]
+  },
+  "electric_files_unchanged_sha256": {
+    "app/physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+    "app/tests/test_electric_motor.gd": "ef0cc4f377875cce3038281bc7601e734e9088a1c8e8055738ae3efe7bbaf394"
+  },
+  "probe_sha256": "6fb850dda62b962f94be2cb6e73908d19250a6bb35fabdca32706a0fe541b8aa",
+  "ok": true
+}

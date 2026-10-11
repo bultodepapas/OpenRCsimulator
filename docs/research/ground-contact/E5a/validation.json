@@ -1,0 +1,42 @@
+{
+  "airborne_preservation": "preservation.json",
+  "aircraft_sections_changed": [
+    "crash_hull",
+    "landing_gear"
+  ],
+  "app_lint": {
+    "errors": 0,
+    "parse_errors": 0,
+    "total": 12,
+    "warnings": 12
+  },
+  "app_suite": {
+    "exit_code": 0,
+    "gdscript_test_programs": 125,
+    "log_sha256": "661a0cc0df851702cc7a43fbe7fff9ad1cd5b41b92cc84f7d0d408360846c25a",
+    "sections": 153,
+    "test_script_sha256_before_hook": "6c4eb471dcce5cb88c34735c9593f89f6e688f3eb327e3e26929397629e6fede"
+  },
+  "date": "2026-10-09",
+  "focused_verification": "verification/verification.json",
+  "goldens_changed": false,
+  "isolated_mutations_rejected": 5,
+  "new_app_test_hook": {
+    "executed_verbatim_separately_after_full_suite": true,
+    "exit_code": 0,
+    "focused_assertions": 84,
+    "log_sha256": "99e38294f4969dda02c828ec72c58fba0e62811d1b864c4692911598bf7bef89",
+    "test_script_sha256": "279e47567034db2fefe4699678ae3c7bc2d4ff9dc0b1eab154f90ce2bdf2ab28"
+  },
+  "new_script_lint": {
+    "errors": 0,
+    "parse_errors": 0,
+    "total": 0,
+    "warnings": 0
+  },
+  "physical_acceptance": false,
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "source_commit": "5ae879878187c6a8b8dfc05207e8f339308c8679",
+  "step": "E5a"
+}

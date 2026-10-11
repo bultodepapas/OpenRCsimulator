@@ -1,0 +1,629 @@
+{
+	"calls_per_batch": 3000,
+	"cpu": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+	"format": "openrc-e0b6p-prepared-native-attribution-profile v1",
+	"godot": "4.7.2-stable (official)",
+	"instrumented": false,
+	"measured_batches": 7,
+	"rows": [
+		{
+			"adapter_external_us_per_call_batches": [
+				44.792,
+				43.891666666666666,
+				44.11033333333334,
+				47.029,
+				45.83166666666666,
+				42.96333333333333,
+				44.674
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"adapter_loads_bytes_hex": "306633ea28c3d5bf40ad9b8c0269c0bfeb61deb47ac005c0aede043c7d7dc33f0489ed212e5bffbfb036fb73c333b83f",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.021333333333333333,
+				0.020666666666666667,
+				0.021666666666666667,
+				0.020666666666666667,
+				0.020666666666666667,
+				0.020666666666666667,
+				0.020666666666666667
+			],
+			"direct_external_us_per_call_batches": [
+				33.395,
+				34.669333333333334,
+				33.17166666666667,
+				33.56166666666667,
+				32.378,
+				40.583,
+				32.248
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.3400366103283856,
+				-0.1282046495974587,
+				-2.718984044109893,
+				0.15226712637535428,
+				-1.9597607922847269,
+				0.09453984815192018
+			],
+			"direct_loads_bytes_hex": "306633ea28c3d5bf40ad9b8c0269c0bfeb61deb47ac005c0aede043c7d7dc33f0489ed212e5bffbfb036fb73c333b83f",
+			"fade": 1.0,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "forward"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				46.254666666666665,
+				46.87766666666667,
+				47.615,
+				48.638333333333335,
+				47.821,
+				47.690333333333335,
+				47.003
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"adapter_loads_bytes_hex": "4cf56f5ab234c8bf5e4697d5c41706c0b2c7af015132b6bfba15f112937bbabf437ae4732a98aabf02aded9442590040",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.020666666666666667,
+				0.021,
+				0.020666666666666667,
+				0.020666666666666667,
+				0.023,
+				0.020666666666666667,
+				0.020666666666666667
+			],
+			"direct_external_us_per_call_batches": [
+				37.105666666666664,
+				35.664,
+				36.26433333333333,
+				33.71333333333333,
+				36.48533333333334,
+				33.67166666666667,
+				36.42366666666667
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.18910817542920666,
+				-2.7616059004583766,
+				-0.08670526782205348,
+				-0.10344809734768648,
+				-0.05194218315795187,
+				2.0435840258629705
+			],
+			"direct_loads_bytes_hex": "4cf56f5ab234c8bf5e4697d5c41706c0b2c7af015132b6bfba15f112937bbabf437ae4732a98aabf02aded9442590040",
+			"fade": 1.0,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "stall"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				44.400333333333336,
+				43.08733333333333,
+				41.135666666666665,
+				44.09866666666667,
+				41.745,
+				41.512,
+				43.358
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"adapter_loads_bytes_hex": "6ab349439d62b3bf167bff0e1004d93fa1fb69bb88ede8bf94ff0d6b9808ba3f354c8a1e4103e2bfd5cd256538a5d2bf",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.020666666666666667,
+				0.028,
+				0.020333333333333332,
+				0.021333333333333333,
+				0.026333333333333334,
+				0.021,
+				0.020333333333333332
+			],
+			"direct_external_us_per_call_batches": [
+				30.226,
+				32.11266666666667,
+				32.76833333333333,
+				30.578,
+				29.950333333333333,
+				31.8,
+				29.753333333333334
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.07572348492403838,
+				0.3908729692902154,
+				-0.7789958630017858,
+				0.10169365514411616,
+				-0.5628972622383858,
+				-0.29133424642279
+			],
+			"direct_loads_bytes_hex": "6ab349439d62b3bf167bff0e1004d93fa1fb69bb88ede8bf94ff0d6b9808ba3f354c8a1e4103e2bfd5cd256538a5d2bf",
+			"fade": 1.0,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "static"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				50.52633333333333,
+				49.067,
+				49.842333333333336,
+				49.444,
+				54.60633333333333,
+				49.41766666666667,
+				49.315666666666665
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"adapter_loads_bytes_hex": "279b60d451afc9bf885ab67a36c0febf5ee08f612942b2bfe6745822b46da5bf2842e6c1349ea5bf36fc6a796bc1f63f",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.020666666666666667,
+				0.020666666666666667,
+				0.020666666666666667,
+				0.028333333333333332,
+				0.034666666666666665,
+				0.020666666666666667,
+				0.023666666666666666
+			],
+			"direct_external_us_per_call_batches": [
+				40.304,
+				38.736,
+				43.132333333333335,
+				42.072,
+				40.064,
+				38.43666666666667,
+				38.11066666666667
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.20066283102024693,
+				-1.921926955552097,
+				-0.07132204658398808,
+				-0.0418525974202824,
+				-0.04222264162956818,
+				1.4222216360938211
+			],
+			"direct_loads_bytes_hex": "279b60d451afc9bf885ab67a36c0febf5ee08f612942b2bfe6745822b46da5bf2842e6c1349ea5bf36fc6a796bc1f63f",
+			"fade": 1.0,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "spin"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				44.35066666666667,
+				40.76433333333333,
+				40.11333333333334,
+				39.547333333333334,
+				39.955,
+				40.955,
+				39.611333333333334
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"adapter_loads_bytes_hex": "bec02762800094bf4c176d9458accd3fc16ca6426eb2d4bfca5e4fcbf38aa93fc47ff029c4efcdbfd14798e0b716c6bf",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 3000,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 3000,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.03666666666666667,
+				0.021,
+				0.020666666666666667,
+				0.020666666666666667,
+				0.023333333333333334,
+				0.020666666666666667,
+				0.020333333333333332
+			],
+			"direct_external_us_per_call_batches": [
+				30.055333333333333,
+				31.356666666666666,
+				30.099333333333334,
+				30.195,
+				30.257666666666665,
+				29.781,
+				30.040666666666667
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				-0.019533163062022345,
+				0.23182208297128637,
+				-0.32339054592894106,
+				0.04988824707805646,
+				-0.23387958572220502,
+				-0.17256830660386283
+			],
+			"direct_loads_bytes_hex": "bec02762800094bf4c176d9458accd3fc16ca6426eb2d4bfca5e4fcbf38aa93fc47ff029c4efcdbfd14798e0b716c6bf",
+			"fade": 0.5000000000000002,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "reverse_fade"
+		},
+		{
+			"adapter_external_us_per_call_batches": [
+				3.223,
+				3.219,
+				3.2503333333333333,
+				3.3866666666666667,
+				3.1353333333333335,
+				3.027,
+				3.099
+			],
+			"adapter_internal_stats_batches": [],
+			"adapter_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"adapter_loads_bytes_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+			"adapter_routes_batches": [
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				},
+				{
+					"kernel_calls": 0,
+					"legacy": 0,
+					"native": 3000,
+					"refused": 0
+				}
+			],
+			"adapter_routes_last_batch": {
+				"kernel_calls": 0,
+				"legacy": 0,
+				"native": 3000,
+				"refused": 0
+			},
+			"direct_empty_loop_us_per_iteration_batches": [
+				0.020666666666666667,
+				0.033666666666666664,
+				0.03133333333333333,
+				0.033666666666666664,
+				0.021333333333333333,
+				0.020666666666666667,
+				0.021333333333333333
+			],
+			"direct_external_us_per_call_batches": [
+				12.674666666666667,
+				14.374333333333333,
+				11.960666666666667,
+				11.665,
+				11.662666666666667,
+				11.458333333333334,
+				12.89
+			],
+			"direct_internal_stats_batches": [],
+			"direct_loads": [
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"direct_loads_bytes_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+			"fade": 0.0,
+			"preparation_stats": {},
+			"prepared_token": 0,
+			"regime": "reverse_off"
+		}
+	],
+	"warmup_calls_per_regime": 500
+}

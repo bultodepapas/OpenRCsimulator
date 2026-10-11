@@ -1,0 +1,8 @@
+{
+  "baseline_commit": "d61d268d857b07f891dcaf6dbca44552128e5dec",
+  "loader_sha256": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+  "test_sha256": "1f1ea72c399808c72f85de211a44d08deba0b6b63c39d9918c22695c76666b6a",
+  "checks": 168,
+  "failures": 86,
+  "exit_code": 1
+}

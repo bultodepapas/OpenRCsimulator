@@ -8,7 +8,7 @@ func _build_field() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(Spec.GROUND_SIZE, Spec.GROUND_SIZE)
 	ground.mesh = plane
-	var grass: ShaderMaterial = Ground.grass_material()
+	var grass: ShaderMaterial = Ground.grass_material(_lighting)
 	# L1–L4 isolates sky/radiance drift; L15d moving ground shadows are checked on the production field.
 	grass.set_shader_parameter("cloud_shadow_strength", 0.0)
 	ground.material_override = grass

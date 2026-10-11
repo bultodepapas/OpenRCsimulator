@@ -1,0 +1,1376 @@
+{
+	"aircraft": [
+		{
+			"id": "jensen-das-ugly-stik-60",
+			"regimes": {
+				"ground": {
+					"fixture": {
+						"air_speed_mps": 2.0,
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 520.0083333333333,
+						"median_us_per_tick": 430.4916666666667,
+						"min_batch_mean_us_per_tick": 375.97083333333336,
+						"p95_batch_mean_us_per_tick": 520.0083333333333,
+						"samples_us_per_tick": [
+							426.84583333333336,
+							520.0083333333333,
+							426.89166666666665,
+							375.97083333333336,
+							453.5541666666667,
+							430.4916666666667,
+							437.20416666666665
+						]
+					}
+				},
+				"stall": {
+					"fixture": {
+						"air_speed_mps": 15.000000000000002,
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 389.3666666666667,
+						"median_us_per_tick": 383.82916666666665,
+						"min_batch_mean_us_per_tick": 354.49583333333334,
+						"p95_batch_mean_us_per_tick": 389.3666666666667,
+						"samples_us_per_tick": [
+							383.82916666666665,
+							389.3666666666667,
+							369.34166666666664,
+							385.5208333333333,
+							354.49583333333334,
+							387.59583333333336,
+							378.97083333333336
+						]
+					}
+				},
+				"trim": {
+					"checkpoints": {
+						"checkpoints": [
+							{
+								"aux": [
+									5174.245356528435,
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.4067234871030826
+								],
+								"continuous": [],
+								"inputs": [
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.28437481812533655
+								],
+								"loads": [
+									2.1018068206940055,
+									3.8163916471489756e-17,
+									-28.214579573643206,
+									-7.466249840604178e-15,
+									-1.6653345369377348e-16,
+									-1.0577513639146087e-17
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "70f6ea089f4824bd859fd477a5f9fe61a920c4cd34fbd95abc97da6613112560",
+								"state": [
+									60.0,
+									-40.0,
+									-30.0,
+									14.958487771254743,
+									-0.044179276920626606,
+									1.1143122491981685,
+									0.7066181506762492,
+									-0.02628286770650505,
+									0.026282867706505054,
+									0.7066181506762491,
+									0.0,
+									0.0,
+									0.0
+								],
+								"tick": 0,
+								"trajectory_sha256": "70f6ea089f4824bd859fd477a5f9fe61a920c4cd34fbd95abc97da6613112560"
+							},
+							{
+								"aux": [
+									5174.245356528435,
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.4067234871030826
+								],
+								"continuous": [],
+								"inputs": [
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.28437481812533655
+								],
+								"loads": [
+									2.1018068206940055,
+									1.7850304567801345e-15,
+									-28.214579573643206,
+									2.7755575615628914e-17,
+									-4.440892098500626e-16,
+									-1.4421592360738374e-15
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "bc96a1560e3cfabbceded978335a4e2c3f2f489bd13f186161a8976443ee053a",
+								"state": [
+									60.04417927692032,
+									-25.00006506042513,
+									-30.0,
+									14.958487771254743,
+									-0.044179276920627716,
+									1.1143122491981685,
+									0.7066181506762492,
+									-0.0262828677065064,
+									0.02628286770650365,
+									0.7066181506762491,
+									-3.7208499247085014e-15,
+									5.909959670547162e-17,
+									-2.46344481961678e-15
+								],
+								"tick": 240,
+								"trajectory_sha256": "b6e0d514da1b3af90ed9eda1b417ab12c3dc50eb4f0da7c7b894622feed1e710"
+							},
+							{
+								"aux": [
+									5174.245356528435,
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.0,
+									0.4067234871030826
+								],
+								"continuous": [],
+								"inputs": [
+									0.02052601619583048,
+									0.262836484934918,
+									0.02638659935553704,
+									0.28437481812533655
+								],
+								"loads": [
+									2.1018068206940055,
+									5.8859167539893065e-15,
+									-28.214579573643206,
+									-5.551115123125783e-17,
+									-9.298117831235686e-16,
+									-1.420840336527087e-15
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "b81f04c01f1087a7977e30f4de06163595d631c9fc85e4a95c02f36c6ab74f96",
+								"state": [
+									60.088358553840635,
+									-10.000130120849803,
+									-30.0,
+									14.958487771254743,
+									-0.04417927692063016,
+									1.1143122491981685,
+									0.7066181506762492,
+									-0.026282867706508065,
+									0.026282867706501983,
+									0.7066181506762491,
+									-3.927083322488977e-15,
+									3.8381643243079234e-16,
+									-5.6542804462382655e-15
+								],
+								"tick": 480,
+								"trajectory_sha256": "c5d2465231e1acdccd55d911e53e88fcfd80bb55c5a54f7b4907515b93cf2a6b"
+							}
+						],
+						"fault": "",
+						"ok": true,
+						"ticks": 480
+					},
+					"fixture": {
+						"air_speed_mps": 15.0,
+						"alpha_deg": 4.260302408165469,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 440.78333333333336,
+						"median_us_per_tick": 369.69166666666666,
+						"min_batch_mean_us_per_tick": 343.94166666666666,
+						"p95_batch_mean_us_per_tick": 440.78333333333336,
+						"samples_us_per_tick": [
+							368.9125,
+							377.4291666666667,
+							387.6333333333333,
+							369.69166666666666,
+							440.78333333333336,
+							350.24583333333334,
+							343.94166666666666
+						]
+					}
+				}
+			},
+			"weather_samples_ned_mps": [
+				{
+					"time_s": 0.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 0.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 1.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 3.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 4.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 6.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 10.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 14.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				}
+			],
+			"weather_setup": {
+				"api_available": true,
+				"configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				},
+				"ok": true,
+				"requested_configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				}
+			}
+		},
+		{
+			"id": "gp-extra-300s-60",
+			"regimes": {
+				"ground": {
+					"fixture": {
+						"air_speed_mps": 2.0,
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 429.77916666666664,
+						"median_us_per_tick": 420.3208333333333,
+						"min_batch_mean_us_per_tick": 372.7125,
+						"p95_batch_mean_us_per_tick": 429.77916666666664,
+						"samples_us_per_tick": [
+							422.82916666666665,
+							429.77916666666664,
+							420.3208333333333,
+							423.9291666666667,
+							411.37916666666666,
+							372.7125,
+							376.175
+						]
+					}
+				},
+				"stall": {
+					"fixture": {
+						"air_speed_mps": 17.0,
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 297.8208333333333,
+						"median_us_per_tick": 285.09583333333336,
+						"min_batch_mean_us_per_tick": 279.3958333333333,
+						"p95_batch_mean_us_per_tick": 297.8208333333333,
+						"samples_us_per_tick": [
+							285.09583333333336,
+							297.79583333333335,
+							297.8208333333333,
+							280.7291666666667,
+							284.6041666666667,
+							289.6333333333333,
+							279.3958333333333
+						]
+					}
+				},
+				"trim": {
+					"checkpoints": {
+						"checkpoints": [
+							{
+								"aux": [
+									5756.467138469301,
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623
+								],
+								"continuous": [],
+								"inputs": [
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623,
+									0.354110329197425
+								],
+								"loads": [
+									3.0152709252502827,
+									-6.071532165918825e-18,
+									-32.8546437745714,
+									-2.195466031196247e-14,
+									-1.8957058145474548e-14,
+									7.353816215230508e-18
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "00e73b30e516051976f3ffd295cf42a414f067f8b3294f49f7be57d1467d91d0",
+								"state": [
+									60.0,
+									-40.0,
+									-30.0,
+									16.92882908220284,
+									-0.029678418077543837,
+									1.5536618348481914,
+									0.7063665820481423,
+									-0.032345815272229225,
+									0.03234581527222923,
+									0.7063665820481422,
+									0.0,
+									0.0,
+									0.0
+								],
+								"tick": 0,
+								"trajectory_sha256": "00e73b30e516051976f3ffd295cf42a414f067f8b3294f49f7be57d1467d91d0"
+							},
+							{
+								"aux": [
+									5756.467138469301,
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623
+								],
+								"continuous": [],
+								"inputs": [
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623,
+									0.354110329197425
+								],
+								"loads": [
+									3.0152709252502548,
+									7.645793720367777e-15,
+									-32.85464377457115,
+									-2.7755575615628914e-17,
+									-5.273559366969494e-16,
+									-6.89183994873655e-16
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "447eab9a97b063c643592a1d684872f5f8346ae6034d018d13ff2c5c7659ad39",
+								"state": [
+									60.02967841807788,
+									-23.00002590615179,
+									-30.0,
+									16.92882908220284,
+									-0.0296784180775478,
+									1.5536618348481817,
+									0.7063665820481424,
+									-0.03234581527222923,
+									0.03234581527222538,
+									0.7063665820481423,
+									-6.037852037154457e-15,
+									-5.720575554496554e-15,
+									-3.2136500631797197e-15
+								],
+								"tick": 240,
+								"trajectory_sha256": "cd4e871aa329d52721e45789aa8e2281bd65bab3eee4e5c3589ebcbfd6d937c5"
+							},
+							{
+								"aux": [
+									5756.467138469301,
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623
+								],
+								"continuous": [],
+								"inputs": [
+									0.011280504042928054,
+									0.09849700797190823,
+									0.007173615519621623,
+									0.354110329197425
+								],
+								"loads": [
+									3.0152709252502556,
+									1.2277505401225852e-14,
+									-32.85464377457116,
+									-5.551115123125783e-17,
+									-1.4155343563970746e-15,
+									-7.924571795467444e-16
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "2146c3f37bc229ba4934adba518cfbcc19e1c0efa287d2cf11f46963a3e81b0a",
+								"state": [
+									60.05935683615576,
+									-6.000051812303808,
+									-30.0,
+									16.92882908220284,
+									-0.02967841807755161,
+									1.5536618348481817,
+									0.7063665820481425,
+									-0.03234581527222924,
+									0.03234581527222039,
+									0.7063665820481424,
+									-6.6959448097169855e-15,
+									-5.242587426530399e-15,
+									-7.40568105551648e-15
+								],
+								"tick": 480,
+								"trajectory_sha256": "ea081708f6628888970dd14d208cc45d8e41f21185c0d74db8ae5057eca89e6c"
+							}
+						],
+						"fault": "",
+						"ok": true,
+						"ticks": 480
+					},
+					"fixture": {
+						"air_speed_mps": 17.0,
+						"alpha_deg": 5.243693571422133,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 310.0083333333333,
+						"median_us_per_tick": 274.05,
+						"min_batch_mean_us_per_tick": 257.3125,
+						"p95_batch_mean_us_per_tick": 310.0083333333333,
+						"samples_us_per_tick": [
+							310.0083333333333,
+							261.01666666666665,
+							274.05,
+							275.175,
+							281.64166666666665,
+							270.0083333333333,
+							257.3125
+						]
+					}
+				}
+			},
+			"weather_samples_ned_mps": [
+				{
+					"time_s": 0.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 0.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 1.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 3.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 4.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 6.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 10.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 14.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				}
+			],
+			"weather_setup": {
+				"api_available": true,
+				"configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				},
+				"ok": true,
+				"requested_configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				}
+			}
+		},
+		{
+			"id": "p51d-mustang-120",
+			"regimes": {
+				"ground": {
+					"fixture": {
+						"air_speed_mps": 2.0,
+						"alpha_deg": 0.0,
+						"ground_contacts": 3,
+						"ground_touched": true,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 384.75416666666666,
+						"median_us_per_tick": 370.2416666666667,
+						"min_batch_mean_us_per_tick": 324.6375,
+						"p95_batch_mean_us_per_tick": 384.75416666666666,
+						"samples_us_per_tick": [
+							384.75416666666666,
+							383.7875,
+							376.35833333333335,
+							361.2916666666667,
+							324.6375,
+							370.2416666666667,
+							338.9166666666667
+						]
+					}
+				},
+				"stall": {
+					"fixture": {
+						"air_speed_mps": 24.999999999999996,
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 608.6166666666667,
+						"median_us_per_tick": 574.0541666666667,
+						"min_batch_mean_us_per_tick": 545.0458333333333,
+						"p95_batch_mean_us_per_tick": 608.6166666666667,
+						"samples_us_per_tick": [
+							578.1458333333334,
+							571.3333333333334,
+							574.0541666666667,
+							608.6166666666667,
+							578.525,
+							554.9208333333333,
+							545.0458333333333
+						]
+					}
+				},
+				"trim": {
+					"checkpoints": {
+						"checkpoints": [
+							{
+								"aux": [
+									3545.8395322805127,
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661
+								],
+								"continuous": [],
+								"inputs": [
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661,
+									0.14112970912593273
+								],
+								"loads": [
+									15.129251109932175,
+									-2.8332891588433995e-13,
+									-210.2994572802713,
+									-1.3100631690576847e-13,
+									2.4780177909633494e-13,
+									3.7925218521195347e-13
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "546cefb599c50a707475a77d09fa87f6552868504ad06a5a1b5107033cee6433",
+								"state": [
+									60.0,
+									-40.0,
+									-30.0,
+									24.935091131710166,
+									0.15254986952013652,
+									1.793866993569618,
+									0.7066509418766005,
+									-0.025385947784423775,
+									0.02538594778442378,
+									0.7066509418766004,
+									0.0,
+									0.0,
+									0.0
+								],
+								"tick": 0,
+								"trajectory_sha256": "546cefb599c50a707475a77d09fa87f6552868504ad06a5a1b5107033cee6433"
+							},
+							{
+								"aux": [
+									3545.8395322805127,
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661
+								],
+								"continuous": [],
+								"inputs": [
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661,
+									0.14112970912593273
+								],
+								"loads": [
+									15.129251109932845,
+									6.128431095930864e-14,
+									-210.29945728027744,
+									-1.554312234475219e-14,
+									-5.284661597215745e-14,
+									3.8191672047105385e-14
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "2bba8d13fd17f3e71fd70b2e6acca75557456478cf01070cfd38100e1260adb1",
+								"state": [
+									59.847450130479274,
+									-15.000465433586214,
+									-30.0,
+									24.935091131710166,
+									0.15254986952011834,
+									1.7938669935696807,
+									0.7066509418766004,
+									-0.0253859477844265,
+									0.02538594778442721,
+									0.7066509418766003,
+									-3.3591261206580227e-16,
+									1.1590910809620717e-14,
+									-1.3851775234375068e-15
+								],
+								"tick": 240,
+								"trajectory_sha256": "540704a5ca124c5fb40877712d907969a50cb5af467d185b8d54cd67d0e9c5eb"
+							},
+							{
+								"aux": [
+									3545.8395322805127,
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661
+								],
+								"continuous": [],
+								"inputs": [
+									0.020990150685951423,
+									0.40799134102681295,
+									0.11549641511967661,
+									0.14112970912593273
+								],
+								"loads": [
+									15.12925110993281,
+									1.7674750552032492e-13,
+									-210.2994572802771,
+									-4.884981308350689e-15,
+									4.440892098500626e-16,
+									-6.661338147750939e-14
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "2bbd7889c289f4a604551713cbd35b07c40eb882bf89f53bead3490bad97d1d5",
+								"state": [
+									59.69490026095855,
+									9.999069132827458,
+									-30.0,
+									24.935091131710166,
+									0.15254986952011043,
+									1.7938669935696776,
+									0.7066509418766003,
+									-0.025385947784430003,
+									0.025385947784430925,
+									0.7066509418766002,
+									5.135090422411574e-16,
+									1.0286242966132913e-14,
+									-4.3841275452932525e-17
+								],
+								"tick": 480,
+								"trajectory_sha256": "96cab339a1dfe5d354c7c94365eb1401dff3ce3cca92fa21e7a29f70f7a539ea"
+							}
+						],
+						"fault": "",
+						"ok": true,
+						"ticks": 480
+					},
+					"fixture": {
+						"air_speed_mps": 25.0,
+						"alpha_deg": 4.114853195505726,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 568.8333333333334,
+						"median_us_per_tick": 547.4416666666667,
+						"min_batch_mean_us_per_tick": 508.9166666666667,
+						"p95_batch_mean_us_per_tick": 568.8333333333334,
+						"samples_us_per_tick": [
+							568.8333333333334,
+							558.4125,
+							509.95,
+							563.4,
+							508.9166666666667,
+							547.4416666666667,
+							528.7416666666667
+						]
+					}
+				}
+			},
+			"weather_samples_ned_mps": [
+				{
+					"time_s": 0.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 0.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 1.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 3.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 4.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 6.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 10.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 14.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				}
+			],
+			"weather_setup": {
+				"api_available": true,
+				"configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				},
+				"ok": true,
+				"requested_configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				}
+			}
+		},
+		{
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regimes": {
+				"ground": {
+					"fixture": {
+						"air_speed_mps": 2.0,
+						"alpha_deg": 0.0,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 296.1625,
+						"median_us_per_tick": 287.5541666666667,
+						"min_batch_mean_us_per_tick": 246.7875,
+						"p95_batch_mean_us_per_tick": 296.1625,
+						"samples_us_per_tick": [
+							268.98333333333335,
+							246.7875,
+							296.1625,
+							295.34166666666664,
+							293.62083333333334,
+							287.5541666666667,
+							284.37916666666666
+						]
+					}
+				},
+				"stall": {
+					"fixture": {
+						"air_speed_mps": 29.0,
+						"alpha_deg": 14.999999999999998,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 377.7083333333333,
+						"median_us_per_tick": 319.7875,
+						"min_batch_mean_us_per_tick": 296.17083333333335,
+						"p95_batch_mean_us_per_tick": 377.7083333333333,
+						"samples_us_per_tick": [
+							296.17083333333335,
+							350.59583333333336,
+							302.9375,
+							301.15,
+							340.2916666666667,
+							377.7083333333333,
+							319.7875
+						]
+					}
+				},
+				"trim": {
+					"checkpoints": {
+						"checkpoints": [
+							{
+								"aux": [
+									92143.70205703568,
+									0.0,
+									0.0586372668883761,
+									0.0
+								],
+								"continuous": [],
+								"inputs": [
+									0.0,
+									0.0586372668883761,
+									0.0,
+									0.08616850556827785
+								],
+								"loads": [
+									8.169527028442275,
+									0.0,
+									-115.00009600442466,
+									0.0,
+									3.3880398486729746e-12,
+									0.0
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "b4be80cf5ff24dfe4b1a980c2bd0f1412c663d3f283daff5a2aa6b912cdeecb1",
+								"state": [
+									60.0,
+									-40.0,
+									-30.0,
+									28.927100351072955,
+									0.0,
+									2.0549611380643884,
+									0.7066622635677025,
+									-0.025068810290300413,
+									0.025068810290300416,
+									0.7066622635677023,
+									0.0,
+									0.0,
+									0.0
+								],
+								"tick": 0,
+								"trajectory_sha256": "b4be80cf5ff24dfe4b1a980c2bd0f1412c663d3f283daff5a2aa6b912cdeecb1"
+							},
+							{
+								"aux": [
+									92143.70205703568,
+									0.0,
+									0.0586372668883761,
+									0.0
+								],
+								"continuous": [],
+								"inputs": [
+									0.0,
+									0.0586372668883761,
+									0.0,
+									0.08616850556827785
+								],
+								"loads": [
+									8.169527028425238,
+									3.771356310401965e-13,
+									-115.00009600461318,
+									-6.721017184529634e-16,
+									8.26116952623579e-13,
+									-1.642347609891908e-13
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "40572db05ffc8db65bfbbe249e2f595b6dce07a3dc23e9df22b0998ea8404bcb",
+								"state": [
+									60.0,
+									-10.999999999986473,
+									-30.000000000004196,
+									28.927100351098897,
+									-3.321267038560872e-14,
+									2.054961138065799,
+									0.7066622635676979,
+									-0.025068810290429244,
+									0.02506881029043323,
+									0.7066622635676978,
+									8.297789900927169e-15,
+									5.75597743737569e-13,
+									3.500799012937538e-15
+								],
+								"tick": 240,
+								"trajectory_sha256": "f9c9af9051f3f2729cd98cabbba4ea434f624bb84b0de29663a87fc93563d117"
+							},
+							{
+								"aux": [
+									92143.70205703568,
+									0.0,
+									0.0586372668883761,
+									0.0
+								],
+								"continuous": [],
+								"inputs": [
+									0.0,
+									0.0586372668883761,
+									0.0,
+									0.08616850556827785
+								],
+								"loads": [
+									8.169527028409973,
+									6.134710803044655e-13,
+									-115.00009600470898,
+									1.7923578045591946e-15,
+									5.838662886503698e-13,
+									-2.7166594603285786e-13
+								],
+								"modes": [
+									1
+								],
+								"snapshot_sha256": "08f38901b1a496ff94ddc04d6adfc783353a04dbca3b0b9748bc3e9be9820ca2",
+								"state": [
+									60.0,
+									18.000000000049326,
+									-30.000000000025764,
+									28.92710035111703,
+									-5.268826332313546e-14,
+									2.0549611380661883,
+									0.7066622635676871,
+									-0.025068810290684043,
+									0.025068810290696356,
+									0.7066622635676901,
+									1.3705435853851511e-14,
+									8.747451111937183e-13,
+									9.071842946131416e-15
+								],
+								"tick": 480,
+								"trajectory_sha256": "5c04afcb0582579418f240aa3390a094374ccbf3d93dbcc6d29f2ccba20fed18"
+							}
+						],
+						"fault": "",
+						"ok": true,
+						"ticks": 480
+					},
+					"fixture": {
+						"air_speed_mps": 29.0,
+						"alpha_deg": 4.063426124524857,
+						"ground_contacts": 0,
+						"ground_touched": false,
+						"p_radps": 0.0,
+						"r_radps": 0.0
+					},
+					"timing": {
+						"fault": "",
+						"max_batch_mean_us_per_tick": 364.5375,
+						"median_us_per_tick": 319.19166666666666,
+						"min_batch_mean_us_per_tick": 300.17083333333335,
+						"p95_batch_mean_us_per_tick": 364.5375,
+						"samples_us_per_tick": [
+							323.23333333333335,
+							364.5375,
+							315.125,
+							340.73333333333335,
+							319.19166666666666,
+							300.575,
+							300.17083333333335
+						]
+					}
+				}
+			},
+			"weather_samples_ned_mps": [
+				{
+					"time_s": 0.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 0.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 1.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 2.5,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 3.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 4.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 6.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 10.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"time_s": 14.0,
+					"wind_ned_mps": [
+						0.0,
+						0.0,
+						0.0
+					]
+				}
+			],
+			"weather_setup": {
+				"api_available": true,
+				"configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				},
+				"ok": true,
+				"requested_configuration": {
+					"format": "openrc-weather v1",
+					"from_deg": 0.0,
+					"gust_delay_s": 2.0,
+					"gust_duration_s": 4.0,
+					"gust_mps": 0.0,
+					"gust_period_s": 12.0,
+					"gust_up_mps": 0.0,
+					"speed_mps": 0.0
+				}
+			}
+		}
+	],
+	"fingerprint_method": "SHA-256 over complete packed session snapshots: rigid-body state, auxiliary state, continuous state, modes, inputs, and start-of-tick loads. Snapshot and cumulative trajectory hashes plus numeric values are captured at tick 0, 240, and 480.",
+	"fixtures": "trim uses the catalog start; stall sets air-relative alpha to 15 degrees at the same initial airspeed; ground sets a 2 m/s forward body speed and settles landing-gear compression by 1 cm. All command inputs are neutral except the engine/throttle state retained by trim.",
+	"format": "openrc-wind-bench v1",
+	"machine": {
+		"architecture": "x86_64",
+		"godot": {
+			"build": "official",
+			"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+			"hex": 263938,
+			"major": 4,
+			"minor": 7,
+			"patch": 2,
+			"status": "stable",
+			"string": "4.7.2-stable (official)",
+			"timestamp": 0
+		},
+		"logical_cpu_count": 12,
+		"os": "Linux",
+		"processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz"
+	},
+	"samples": 7,
+	"source_revision": "9a4eabd+candidate-working-tree",
+	"tick_hz": 240.0,
+	"ticks_per_sample": 240,
+	"timing_method": "Each timing sample restores a fixture, performs warmup_ticks_per_sample untimed whole-session steps, restores again, then times ticks_per_sample whole-session sim.step calls. Reported percentiles are over batch means, not individual ticks.",
+	"warmup_ticks_per_sample": 240,
+	"weather_options": {
+		"gust_delay_override_s": null
+	},
+	"weather_requested": "calm"
+}

@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-10",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "os": "Windows",
+  "renderer": "OpenGL Compatibility",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "resolution": [
+    1280,
+    720
+  ],
+  "scene": "scripted circle with inspect camera, except Home",
+  "cases": [
+    {
+      "case": "day",
+      "file": "day.png",
+      "sha256": "0fa115cc2509835cea2289593b884b2027757b3caebe40a1f20add7013a31871",
+      "bytes": 970481,
+      "selection_args": []
+    },
+    {
+      "case": "world-night",
+      "file": "world-night.png",
+      "sha256": "19a798386bcda19c0f4cc25c621dcb0c95430e12933f2f74117972382b91fddd",
+      "bytes": 236326,
+      "selection_args": [
+        "--time_of_day=night"
+      ]
+    },
+    {
+      "case": "solar-noon",
+      "file": "solar-noon.png",
+      "sha256": "e34688757e5036ed7ebb1cfba694d960d9bc76bdc6a5ae92c094f58936f62142",
+      "bytes": 1019665,
+      "selection_args": [
+        "--time-of-day=12:00"
+      ]
+    },
+    {
+      "case": "home",
+      "file": "home.png",
+      "sha256": "8dc2fb6b555a163c53ed96861fbee63bf013552b989ca3f8a11a091441d0b1b8",
+      "bytes": 431717,
+      "selection_args": [
+        "--script=res://tests/capture_ui.gd",
+        "--screen=home",
+        "--lang=en"
+      ]
+    }
+  ],
+  "result": "all exited 0 without script/shader errors; images visually inspected",
+  "limits": "Two fixed views prove local pixel parity on this adapter/renderer; they do not establish general visual parity, pilot acceptance or performance.",
+  "baseline_main": "e39259e",
+  "parity": {
+    "day": "PNG bytes identical to the same capture from main",
+    "world-night": "PNG bytes identical to the same capture from main"
+  }
+}

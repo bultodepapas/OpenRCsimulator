@@ -32,11 +32,15 @@ Start here for mistakes worth avoiding. Commands and working rules live in [AGEN
 
 ## Respect the boundaries between systems
 
+- **Observation history and operational permission can need different lifetimes.** A raw throttle event remained useful to the latency marker after calibration, but could not justify arming under the new mapping. Keep connection-wide diagnostics while resetting profile-specific low-throttle evidence; check both the fresh event and current polled position. [Rearming repair, D6b-R2](docs/research/radio-input/D6b-R2/README.md).
+
 - **Keep float64 physics separate from rendering types.** A small-acceleration test lost the entire velocity increment in Godot's float32 `Vector3`, while the float64 state preserved it. Convert at the rendering boundary; seeded quaternion composition checks also caught an error missed by individual known-answer cases. [Math tests](app/tests/test_math3d.gd).
 
 - **The body array is not the whole simulation.** A wake lag advanced outside RK stages can lower integration order, and restoring only the rigid body leaves engine mode, sampled state or clock inconsistent. Define continuous, sampled and discrete state before extending the model, and test complete rollback and continuation. [H8a](docs/research/simulation-state/H8a/README.md), [H8](docs/research/simulation-state/H8/README.md), [E0b5](docs/research/propwash/E0b5/README.md).
 
-- **Integration errors often hide between two locally correct systems.** A model verifier existed without running in CI, generated reports could lag current runtime data, and visual coordinates could introduce a false force arm when copied into physics. Check the complete generation chain, shared datums and session wiring. [DATA-1](docs/research/aircraft-validation/DATA-1/README.md), [E0b2](docs/research/propwash/E0b2/README.md).
+- **Use one air-relative flow and keep ground velocity intact.** A new wind path must also reach shaft inflow, wake transport, downwash, reset equilibrium and telemetry; changing only the main aero load leaves locally valid consumers inconsistent. Uniform-wind Galilean tests expose missed consumers without tuning aircraft coefficients. Trace state-time and k1 load-time samples separately, and fingerprint forcing in replay. [Wind delivery and proofs](docs/research/wind-implementation/README.md).
+
+- **Integration errors often hide between two locally correct systems.** A model verifier existed without running in CI, generated reports could lag current runtime data, and visual coordinates could introduce a false force arm when copied into physics. Check the complete generation chain, shared datums and session wiring. Audit executable source and tracked tests when resuming a report: D1-R5 retained a patch and passing logs while the app still used the old loader and the referenced regression source was absent. [DATA-1](docs/research/aircraft-validation/DATA-1/README.md), [E0b2](docs/research/propwash/E0b2/README.md), [D1-R5 integration](docs/research/aircraft-validation/D1-R5/integration/README.md).
 
 - **Source inspection proposes a behavior; the shipped path establishes it.** Real exports disproved the claim that JSON always needed an include filter. A scenery probe also reversed a paper recommendation for mesh merging. Read the pinned engine when needed, then reproduce the exact backend, import path and exported configuration before writing a rule. [SC-01](docs/research/scenery-implementation/SC-01/README.md), [runtime lessons](docs/learnings/runtime-and-delivery.md#clean-builds-and-desktop-evidence).
 
@@ -123,3 +127,24 @@ A barrier can clear the runway rectangle yet hide its near edge. Validate its he
 ## 2026-10-10 · FW-23/FW-24 — Compatibility's colour path breaks at night exposures
 
 Values calibrated at exposure 0.6 hide two engine behaviours that a night exposure of 10⁴–10⁵ exposes. Every material's `ALBEDO`/`EMISSION`, unshaded included, passes through the engine's cubic `srgb_to_linear`, so a computed linear radiance must be encoded with that cubic's inverse or faint values lose ~13×; and the sky radiance cubemap already contains the exposure, which `scene.glsl` applies again to ambient, turning lit surfaces white. Probe a constant, known value at two exposures before trusting a brightness model, and read the pinned engine source for the conversion. [FW-24 findings](docs/research/field-world/FW-24/README.md).
+
+## 2026-10-09 · M5-W04a — keep random forcing inside the transaction
+
+A seeded RNG is insufficient for deterministic simulation: stage/render queries must never advance it. Store the exact RNG bits beside the filter interval in the existing sampled/discrete checkpoint and rollback both on a failed step. Reconstruct Gaussian samples from raw integer words when an engine's normal helpers use float32. A seed's PCG sequence initializer differs from the runtime recurrence increment; independent replay exposed this distinction. For replay, keep int64 state out of JSON numeric fields. [Kernel and integrated proof](docs/research/wind-implementation/M5-W04a/README.md).
+
+
+## 2026-10-09 · M5-ATM-2/3 — density is shared, engine charge is distinct
+
+Thread one field density through trim, aero, propeller load, wake and telemetry before exposing an atmosphere control. Moist aerodynamic density includes vapor; a naturally aspirated engine's oxygen-bearing charge follows dry partial pressure. Scale indicated torque explicitly and keep friction fixed, while leaving other propulsion laws separate. Preserve the literal reference branch instead of recomputing a nearly identical baseline, and reject a new environment's failed trim rather than flying its previous solution. [Equations and fleet proof](docs/research/atmosphere/M5-ATM-2/README.md).
+
+## 2026-10-09 · G2a/G2b — relative rotor speed couples to body acceleration
+
+With locked aircraft inertia, relative shaft acceleration and body acceleration along the shaft must be solved together. Add relative-spin reaction once over the existing external propeller torque, and use stage RPM for both loads and gyro momentum. Check angular momentum and motor work independently; algebra alone can hide an omitted body-acceleration term. Quantify table-knot crossings separately from smooth RK4 order, and use quaternion chord distance when errors are too small for `acos(dot)`. Continuous wake increments are signed; only the RPM suffix has a nonnegative domain. [Equations, conservation and refinement](docs/research/propulsion/G2a-RK4/README.md).
+
+## 2026-10-09 · G2a-R1 — reuse work inside the RK stage
+
+Coupled equations can need the same expensive loads to obtain forces and continuous derivatives. Return loads, derivatives and spinning momentum together from one pure stage evaluation, then validate the complete payload before consuming it. Keep that result inside the step; a persistent query cache would need every state, command, environment and model dependency in its key. Prove full checkpoint and trajectory bits against the frozen pre-optimization implementation, including sampled RNG and optional wake state. [Exact parity and measured cost](docs/research/propulsion/G2a-R1/README.md).
+
+## 2026-10-10 · Rendering — scene snapshots must retire global progression
+
+A scene-local lighting snapshot must retire any previous global sky progression before updates resume; changing only the Sun and Environment leaves a controller that can overwrite the new scene. Pass the same explicit snapshot to the sky, light and ground, while keeping empty arguments on the legacy route. Test the transition from a flowing world as well as each renderer separately. [Integration proof and limits](docs/research/branch-integration-2026-10-10.md).

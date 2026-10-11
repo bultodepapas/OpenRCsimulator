@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coast_left at 240 Hz completes without crash/fault  
+ok coast_left retains three wheel contacts 3
+ok ground heading follows yaw command -29.122435 deg
+ok coast_left at 480 Hz completes without crash/fault  
+ok coast_left retains three wheel contacts 3
+ok ground heading follows yaw command -29.101252 deg
+FAIL coast_left: matched 20 Hz samples refine within 1 mm / 1 cm/s / 0.001 attitude-rate components [0.00117413417191, 0.00067562616382, 0.00363678086662]
+ok coast_right at 240 Hz completes without crash/fault  
+ok coast_right retains three wheel contacts 3
+ok ground heading follows yaw command 29.122435 deg
+ok coast_right at 480 Hz completes without crash/fault  
+ok coast_right retains three wheel contacts 3
+ok ground heading follows yaw command 29.101252 deg
+FAIL coast_right: matched 20 Hz samples refine within 1 mm / 1 cm/s / 0.001 attitude-rate components [0.00117413415867, 0.00067562616206, 0.00363678086642]
+ok idle at 240 Hz completes without crash/fault  
+ok idle retains three wheel contacts 3
+ok idle at 480 Hz completes without crash/fault  
+ok idle retains three wheel contacts 3
+ok idle: matched 20 Hz samples refine within 1 mm / 1 cm/s / 0.001 attitude-rate components [0.00000000019709, 0.00000001581686, 0.0000000629455]
+ok pulse at 240 Hz completes without crash/fault  
+ok pulse retains three wheel contacts 3
+ok pulse at 480 Hz completes without crash/fault  
+ok pulse retains three wheel contacts 3
+FAIL pulse: matched 20 Hz samples refine within 1 mm / 1 cm/s / 0.001 attitude-rate components [0.0011414841358, 0.00130711624678, 0.00021433098168]
+ok report opened 
+25 checks, 3 failed

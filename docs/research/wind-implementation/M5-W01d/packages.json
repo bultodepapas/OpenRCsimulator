@@ -1,0 +1,17 @@
+{
+  "linux": {
+    "file": "dist/wind-preview/openrc-wind-preview-linux.zip",
+    "bytes": 29810746,
+    "sha256": "a9ee363a5bdd679563d913483ab325ee034710981966e6cd2fc938b54806ab0f"
+  },
+  "windows": {
+    "file": "dist/wind-preview/openrc-wind-preview-windows.zip",
+    "bytes": 39408699,
+    "sha256": "bfe42cc60b2490c2c6daaec1ff956c5751c35b44f88862db02db50fe561fa6c9"
+  },
+  "macos": {
+    "file": "dist/wind-preview/macos/OpenRC Simulator.zip",
+    "bytes": 61852147,
+    "sha256": "a09835b7bcd31256c76f73b7ed14c02101220aea07ad765cec1054b86b3651b0"
+  }
+}

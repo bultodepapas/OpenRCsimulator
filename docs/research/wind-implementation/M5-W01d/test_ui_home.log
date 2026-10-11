@@ -1,0 +1,248 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default start choice
+all UI home checks passed
+WARNING: The parameter "assembly" is never used in the function "_build_wing_mechanism()". If this is intended, prefix it with an underscore: "_assembly".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:207)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:214)
+WARNING: The local variable "bell_input_zero" is declared but never used in the block. If this is intended, prefix it with an underscore: "_bell_input_zero".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:244)
+WARNING: The parameter "assembly" is never used in the function "_build_tail_mechanism()". If this is intended, prefix it with an underscore: "_assembly".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:305)
+WARNING: The parameter "root" is never used in the function "_build_throttle_approximation()". If this is intended, prefix it with an underscore: "_root".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:362)
+WARNING: The local variable "v" is declared but never used in the block. If this is intended, prefix it with an underscore: "_v".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:372)
+WARNING: The parameter "normal" is never used in the function "_add_control_horn()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:384)
+WARNING: The parameter "arm_radius" is never used in the function "_add_bellcrank_support()". If this is intended, prefix it with an underscore: "_arm_radius".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:422)
+WARNING: The parameter "arm_u" is never used in the function "_add_servo()". If this is intended, prefix it with an underscore: "_arm_u".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:438)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:448)
+WARNING: The parameter "u" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_u".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+WARNING: The parameter "v" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_v".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+WARNING: The parameter "normal" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+WARNING: The parameter "angle" is never used in the function "_update_arm()". If this is intended, prefix it with an underscore: "_angle".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:484)
+WARNING: The parameter "normal" is never used in the function "_update_beam()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:551)
+WARNING: The parameter "normal" is never used in the function "_beam_transform()". If this is intended, prefix it with an underscore: "_normal".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:559)
+WARNING: The parameter "root" is never used in the function "_add_tail_guide()". If this is intended, prefix it with an underscore: "_root".
+     at: GDScript::reload (res://aircraft/ugly_stik_controls.gd:579)
+WARNING: The local variable "reference" is shadowing an already-declared method in the base class "RefCounted".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:113)
+WARNING: The local variable "a" is declared but never used in the block. If this is intended, prefix it with an underscore: "_a".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:151)
+WARNING: The local variable "b" is declared but never used in the block. If this is intended, prefix it with an underscore: "_b".
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:152)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_equipment.gd:621)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/ugly_stik_model.gd:230)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:414)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:453)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:511)
+WARNING: The variable "outline" is declared below in the parent block.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:512)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:562)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/extra_300s_model.gd:583)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:317)
+WARNING: The local variable "tr" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://aircraft/p51d_model.gd:595)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:681)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:744)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:788)
+WARNING: The local variable "le_root" is declared but never used in the block. If this is intended, prefix it with an underscore: "_le_root".
+     at: GDScript::reload (res://aircraft/p51d_model.gd:793)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:813)
+WARNING: The "for" iterator variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:964)
+WARNING: The variable "hub" is declared below in the parent block.
+     at: GDScript::reload (res://aircraft/p51d_model.gd:1027)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://render/ground.gd:17)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:19)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:184)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/mesh_kit.gd:207)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/flightline_barrier.gd:54)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/windsock.gd:32)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://render/windsock.gd:32)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:43)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:79)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:131)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:147)
+WARNING: The parameter "seed" is never used in the function "_pavilion()". If this is intended, prefix it with an underscore: "_seed".
+     at: GDScript::reload (res://scenery/prefabs.gd:161)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:161)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:302)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:316)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:339)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:346)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:360)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:497)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/prefabs.gd:574)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://scenery/models.gd:72)
+WARNING: The variable "rows" is declared below in the parent block.
+     at: GDScript::reload (res://scenery/scenery_loader.gd:283)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:65)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:76)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:165)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:192)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ground_features.gd:206)
+WARNING: The variable "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience_player.gd:11)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience_player.gd:15)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:15)
+WARNING: The local variable "calls" is declared but never used in the block. If this is intended, prefix it with an underscore: "_calls".
+     at: GDScript::reload (res://scenery/ambience.gd:42)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:84)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/ambience.gd:101)
+WARNING: The local variable "get" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://scenery/scenery.gd:34)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/scenery.gd:88)
+WARNING: The function parameter "seed" has the same name as a built-in function.
+     at: GDScript::reload (res://scenery/scenery.gd:238)
+WARNING: The local variable "basis" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://ui/home_scene.gd:102)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://ui/help_screen.gd:96)
+WARNING: The function parameter "wrap" has the same name as a built-in function.
+     at: GDScript::reload (res://ui/help_screen.gd:150)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://tests/ui_driver.gd:49)
+WARNING: The parameter "rates" is never used in the function "coefficients()". If this is intended, prefix it with an underscore: "_rates".
+     at: GDScript::reload (res://physics/aero.gd:62)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://physics/aircraft_data.gd:104)
+WARNING: The variable "a0" is declared below in the parent block.
+     at: GDScript::reload (res://physics/aircraft_data.gd:510)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/aircraft_data.gd:779)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1051)
+WARNING: The function parameter "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://physics/aircraft_data.gd:1067)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:31)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/turbine.gd:44)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/propulsion.gd:28)
+WARNING: The local variable "derivative" is shadowing an already-declared function at line 55 in the current class.
+     at: GDScript::reload (res://physics/dynamics.gd:46)
+WARNING: The variable "sign" has the same name as a built-in function.
+     at: GDScript::reload (res://sim/simulation.gd:238)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/hull_crossing.gd:66)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://physics/impact_snapshot.gd:55)
+WARNING: The local function parameter "is_connected" is shadowing an already-declared method in the base class "Object".
+     at: GDScript::reload (res://sim/flight_session.gd:181)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:391)
+WARNING: The local variable "surfaces" is shadowing an already-declared function at line 786 in the current class.
+     at: GDScript::reload (res://sim/flight_session.gd:847)
+WARNING: Integer division. Decimal part will be discarded.
+     at: GDScript::reload (res://sim/trace.gd:45)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "position" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:406)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: Values of the ternary operator are not mutually compatible.
+     at: GDScript::reload (res://main.gd:496)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "visible" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:627)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "position" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:765)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)
+WARNING: The local variable "basis" is shadowing an already-declared property in the base class "Node3D".
+     at: GDScript::reload (res://main.gd:766)
+     GDScript backtrace (most recent call first):
+         [0] start_flight (res://app_root.gd:148)
+         [1] _on_fly (res://ui/home.gd:365)

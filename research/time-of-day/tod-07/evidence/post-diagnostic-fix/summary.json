@@ -1,0 +1,153 @@
+{
+  "baseline_png": "/home/bulto/OpenRCsimulator/research/time-of-day/tod-01/evidence/legacy-production.png",
+  "baseline_sha256": "98368c07ecbbe69c8064679226b2bda9c0ae37c3ad52a29c55c2098b0ed1a855",
+  "captures": [
+    {
+      "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+      "camera_look_sun_angles_deg": null,
+      "capture_seconds": 13.0573,
+      "case_id": "default-18-00",
+      "date": "2026-03-20",
+      "draw_calls": {
+        "shadow": 0,
+        "visible": 110
+      },
+      "godot": "4.7.2-stable (official)",
+      "label": "default aircraft time sweep",
+      "light": {
+        "color": "(1.0, 0.5972, 0.3606, 1.0)",
+        "direction": [
+          -0.999235928058624,
+          0.0390729755163193,
+          -0.00095636211335659
+        ],
+        "energy": 0.238686275137452
+      },
+      "lighting_mode": "astronomical",
+      "local_time": "18:00",
+      "log": "logs/default-18-00.log",
+      "metadata": "images/default-18-00.json",
+      "metadata_sha256": "b9d96d373e362774bdb5a5ce92fd8654bd44833f5afe30f7884ba91fd23b270b",
+      "png": "images/default-18-00.png",
+      "png_sha256": "4718f02db9b3c25790dd52a7a002e7e8d96056ae31304d1425265f7c1f4f8ad5",
+      "primitives": {
+        "shadow": 0,
+        "visible": 162769
+      },
+      "renderer": "gl_compatibility",
+      "roi": {
+        "absolute_luma_separation_code": 1.1575338378378888,
+        "aircraft_context_patch": {
+          "box_xyxy": [
+            622,
+            347,
+            659,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 154.3362791351351,
+          "mean_rgb_code_0_255": [
+            167.13945945945946,
+            150.4572972972973,
+            155.06054054054053
+          ],
+          "pixel_count": 925
+        },
+        "aircraft_minus_background_luma_code": -1.1575338378378888,
+        "background_patch": {
+          "box_xyxy": [
+            681,
+            347,
+            718,
+            372
+          ],
+          "mean_rec709_code_luma_0_255": 155.493812972973,
+          "mean_rgb_code_0_255": [
+            167.11675675675676,
+            151.89513513513515,
+            156.91675675675677
+          ],
+          "pixel_count": 925
+        },
+        "camera_depth_m": 97.95574918916837,
+        "catalog_span_m": 1.52,
+        "method": "model origin projected from capture metadata; square patch spans are estimated from catalog wing span, camera depth and FOV; background patch is adjacent at the same screen height",
+        "projected_aircraft_origin_px": [
+          640.0000077054376,
+          359.99999498296023
+        ],
+        "projected_span_px": 11.979635668312458
+      },
+      "scenery_enabled": false,
+      "solar_projection": {
+        "on_screen": false,
+        "reason": "selected Sun direction is behind the camera"
+      },
+      "visual_lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 64800,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "2c54b6aea41c9f9574d2f0160ff7b692450528a82434c3d8758d5472f2a087b5",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 270.054837396636,
+          "direction_ned": [
+            0.000956595428712143,
+            -0.999479687095003,
+            -0.0322403475425062
+          ],
+          "elevation_deg": 1.84755600914033,
+          "errors": [],
+          "hour_angle_deg": 88.15244314524,
+          "julian_date": 2461120.25,
+          "ok": true
+        }
+      }
+    }
+  ],
+  "completed_utc": "2026-10-10T13:33:44Z",
+  "date": "2026-03-20",
+  "format": "openrc-tod-07-capture-matrix v1",
+  "godot_binary": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "last_updated_utc": "2026-10-10T13:33:44Z",
+  "legacy_pixel_exact": false,
+  "planned_full_matrix_cases": [
+    "legacy-default",
+    "default-00-00",
+    "default-05-45",
+    "default-06-00",
+    "default-12-00",
+    "default-18-00",
+    "default-18-30",
+    "gp-extra-300s-60-noon",
+    "gp-extra-300s-60-night",
+    "p51d-mustang-120-noon",
+    "p51d-mustang-120-night",
+    "sebart-avanti-s-a200-p100rx-noon",
+    "sebart-avanti-s-a200-p100rx-night",
+    "default-night-scenery",
+    "default-noon-scenery",
+    "sun-centered-18-00"
+  ],
+  "project_kind": "working-tree",
+  "project_root": "/home/bulto/OpenRCsimulator/app",
+  "reference_location": "Reference field (synthetic), latitude 0\u00b0, longitude 0\u00b0, UTC offset 0",
+  "renderer_request": "opengl3 / Compatibility",
+  "run_status": "complete",
+  "software_renderer_note": "llvmpipe measurements are reproducible software-renderer evidence, not target-GPU performance or physical validation",
+  "started_utc": "2026-10-10T13:33:31Z",
+  "ui_capture": "skipped: current Home has no TOD selection control or capture seam"
+}

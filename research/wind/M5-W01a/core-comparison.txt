@@ -1,0 +1,15 @@
+aircraft | fixture | baseline calm | core calm | steady 3 m/s | gusty delay 0 s | steady Δ vs calm | gusty Δ vs calm
+jensen-das-ugly-stik-60 | trim | 242.30 | 284.36 | 269.90 | 271.43 | -5.1% | -4.5%
+jensen-das-ugly-stik-60 | stall | 268.34 | 273.32 | 268.67 | 269.98 | -1.7% | -1.2%
+jensen-das-ugly-stik-60 | ground | 284.46 | 282.44 | 323.10 | 328.35 | +14.4% | +16.3%
+gp-extra-300s-60 | trim | 241.20 | 241.35 | 237.70 | 277.86 | -1.5% | +15.1%
+gp-extra-300s-60 | stall | 257.90 | 261.03 | 260.07 | 272.23 | -0.4% | +4.3%
+gp-extra-300s-60 | ground | 387.31 | 370.98 | 355.94 | 332.98 | -4.1% | -10.2%
+p51d-mustang-120 | trim | 493.90 | 484.66 | 492.34 | 491.35 | +1.6% | +1.4%
+p51d-mustang-120 | stall | 509.86 | 491.51 | 504.59 | 530.08 | +2.7% | +7.8%
+p51d-mustang-120 | ground | 337.55 | 357.50 | 342.62 | 345.80 | -4.2% | -3.3%
+sebart-avanti-s-a200-p100rx | trim | 299.42 | 265.39 | 274.88 | 293.51 | +3.6% | +10.6%
+sebart-avanti-s-a200-p100rx | stall | 289.38 | 278.65 | 308.37 | 305.21 | +10.7% | +9.5%
+sebart-avanti-s-a200-p100rx | ground | 271.09 | 261.29 | 249.42 | 270.10 | -4.5% | +3.4%
+calm checkpoints at ticks 0/240/480: exact numeric and hash parity for state, auxiliary, continuous, modes, inputs, and loads on all four aircraft
+steady/gust checkpoints at 240/480: complete, fault-free, and distinct after the gust waveform begins

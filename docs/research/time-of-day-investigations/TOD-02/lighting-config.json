@@ -1,0 +1,10 @@
+{
+  "format": "openrc-lighting v1",
+  "mode": "astronomical",
+  "date": "2024-06-21",
+  "local_seconds": 45848,
+  "utc_offset_minutes": -240,
+  "latitude_deg": -33.425,
+  "longitude_deg": -70.567,
+  "location_name": "NOAA comparison fixture (not a simulator field)"
+}
