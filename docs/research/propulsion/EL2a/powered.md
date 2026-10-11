@@ -18,7 +18,7 @@ Against the 960 Hz endpoint, the 120 Hz cases differ by at most 2.17e−6 RPM, 2
 
 The runner creates fresh copies of the app without `.godot` or captures. One copy is unmodified; the other applies the [small observation patch](../../../../research/propulsion/el2/powered/instrument-flight-session.patch), which times the existing callback and copies its returned event list. It returns the original state. Both copies run the same probe from identical checkpoint blobs. All eight complete 1,436-byte endpoint checkpoints match byte for byte; the only differing app source is the patched session script. [Parity and checkpoint hashes](powered-parity.json), [source/tool hashes](powered-source.json)
 
-The report records the whole exhaustion tick in both copies and the event callback in the observed copy. These timings were collected while other checks ran and are diagnostic; they expose a tens-of-milliseconds event spike that ordinary warmed batches do not exercise. They do not close the 500 µs/tick performance gate. See the [whole-tick cost record](README.md#performance).
+The report records the whole exhaustion tick in both copies and the event callback in the observed copy. These are individual headless fixture timings, not controlled performance batches; they expose a tens-of-milliseconds event spike that ordinary warmed batches do not exercise. They do not close the 500 µs/tick performance gate. See the [whole-tick cost record](README.md#performance).
 
 Reproduce from the repository root (the default creates a new temporary output directory):
 
@@ -26,4 +26,4 @@ Reproduce from the repository root (the default creates a new temporary output d
 python3 research/propulsion/el2/powered/reproduce_and_compare.py --godot "$(app/get-godot.sh)"
 ```
 
-The runner refuses nonempty explicit output directories, bounds subprocess time, rejects Godot errors, checks complete native-byte parity and then runs the independent chemistry verifier. It never patches the live app. This evidence does not establish real-pack LVC, brownout, temperature, endurance or aircraft calibration.
+The runner refuses nonempty output directories and destinations inside the source app, bounds subprocess time, rejects Godot errors, checks complete native-byte parity and then runs the independent chemistry verifier. It never patches the live app. This evidence does not establish real-pack LVC, brownout, temperature, endurance or aircraft calibration.

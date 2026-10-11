@@ -1,7 +1,7 @@
 {
   "format": "el2-powered-session-parity-v1",
-  "control_app": "/tmp/openrc-el2-powered-verified/control/app",
-  "instrumented_app": "/tmp/openrc-el2-powered-verified/instrumented/app",
+  "control_app": "/tmp/openrc-el2-powered-z3tu9ljh/control/app",
+  "instrumented_app": "/tmp/openrc-el2-powered-z3tu9ljh/instrumented/app",
   "probe": "/home/bulto/OpenRCsimulator/research/propulsion/el2/powered/powered_parity_probe.gd",
   "instrumentation_patch": "/home/bulto/OpenRCsimulator/research/propulsion/el2/powered/instrument-flight-session.patch",
   "changed_app_paths": [
@@ -26,9 +26,9 @@
         "time_s": 0.00398071816501518,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 24876,
-      "event_tick_wall_usec_instrumented": 25282,
-      "event_tick_wall_usec_control": 28036
+      "event_step_usec": 23714,
+      "event_tick_wall_usec_instrumented": 24082,
+      "event_tick_wall_usec_control": 24971
     },
     {
       "pack": "4s",
@@ -45,9 +45,9 @@
         "time_s": 0.00398071816501518,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 22633,
-      "event_tick_wall_usec_instrumented": 23017,
-      "event_tick_wall_usec_control": 22810
+      "event_step_usec": 24640,
+      "event_tick_wall_usec_instrumented": 25087,
+      "event_tick_wall_usec_control": 23122
     },
     {
       "pack": "4s",
@@ -64,9 +64,9 @@
         "time_s": 0.00398071816307493,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 22345,
-      "event_tick_wall_usec_instrumented": 22639,
-      "event_tick_wall_usec_control": 22144
+      "event_step_usec": 23302,
+      "event_tick_wall_usec_instrumented": 23630,
+      "event_tick_wall_usec_control": 23150
     },
     {
       "pack": "4s",
@@ -83,9 +83,9 @@
         "time_s": 0.00398071816307493,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 21023,
-      "event_tick_wall_usec_instrumented": 21295,
-      "event_tick_wall_usec_control": 22329
+      "event_step_usec": 21858,
+      "event_tick_wall_usec_instrumented": 22147,
+      "event_tick_wall_usec_control": 21232
     },
     {
       "pack": "6s",
@@ -102,9 +102,9 @@
         "time_s": 0.00439764007460326,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 24501,
-      "event_tick_wall_usec_instrumented": 24939,
-      "event_tick_wall_usec_control": 24668
+      "event_step_usec": 23523,
+      "event_tick_wall_usec_instrumented": 23874,
+      "event_tick_wall_usec_control": 24982
     },
     {
       "pack": "6s",
@@ -121,9 +121,9 @@
         "time_s": 0.004397640072663,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 23723,
-      "event_tick_wall_usec_instrumented": 24083,
-      "event_tick_wall_usec_control": 23999
+      "event_step_usec": 23448,
+      "event_tick_wall_usec_instrumented": 23745,
+      "event_tick_wall_usec_control": 22598
     },
     {
       "pack": "6s",
@@ -140,9 +140,9 @@
         "time_s": 0.00439764006296173,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 22565,
-      "event_tick_wall_usec_instrumented": 22850,
-      "event_tick_wall_usec_control": 23694
+      "event_step_usec": 21764,
+      "event_tick_wall_usec_instrumented": 22078,
+      "event_tick_wall_usec_control": 22486
     },
     {
       "pack": "6s",
@@ -159,9 +159,9 @@
         "time_s": 0.0043976400619916,
         "type": "battery_exhausted"
       },
-      "event_step_usec": 22181,
-      "event_tick_wall_usec_instrumented": 22487,
-      "event_tick_wall_usec_control": 23911
+      "event_step_usec": 21491,
+      "event_tick_wall_usec_instrumented": 21835,
+      "event_tick_wall_usec_control": 20519
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "format": "el2-powered-exhaustion-verified-v1",
-  "source_results": "/tmp/openrc-el2-powered-verified/instrumented/results.json",
+  "source_results": "/tmp/openrc-el2-powered-z3tu9ljh/instrumented/results.json",
   "independent_chemical_budget": "exact integral of each fixture's declared two-knot linear OCV curve over the injected event-start charge Q0",
   "refinement_reference": "960 Hz FlightSession endpoint at the shared 50 ms horizon; convergence diagnostic, not an exact oracle",
   "cases_passed": 8,
@@ -90,9 +90,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.2,
-      "event_step_usec": 24876,
+      "event_step_usec": 23714,
       "event_tick": 1,
-      "event_tick_wall_usec": 25282,
+      "event_tick_wall_usec": 24082,
       "events": [
         {
           "charge_residual_c": -3.24922311278897e-11,
@@ -321,9 +321,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.2,
-      "event_step_usec": 22633,
+      "event_step_usec": 24640,
       "event_tick": 1,
-      "event_tick_wall_usec": 23017,
+      "event_tick_wall_usec": 25087,
       "events": [
         {
           "charge_residual_c": -3.24922311278897e-11,
@@ -552,9 +552,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.2,
-      "event_step_usec": 22345,
+      "event_step_usec": 23302,
       "event_tick": 2,
-      "event_tick_wall_usec": 22639,
+      "event_tick_wall_usec": 23630,
       "events": [
         {
           "charge_residual_c": -2.88337548282058e-11,
@@ -783,9 +783,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.2,
-      "event_step_usec": 21023,
+      "event_step_usec": 21858,
       "event_tick": 4,
-      "event_tick_wall_usec": 21295,
+      "event_tick_wall_usec": 22147,
       "events": [
         {
           "charge_residual_c": -3.47475173634315e-11,
@@ -1014,9 +1014,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.12,
-      "event_step_usec": 24501,
+      "event_step_usec": 23523,
       "event_tick": 1,
-      "event_tick_wall_usec": 24939,
+      "event_tick_wall_usec": 23874,
       "events": [
         {
           "charge_residual_c": -8.3013318441516e-12,
@@ -1245,9 +1245,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.12,
-      "event_step_usec": 23723,
+      "event_step_usec": 23448,
       "event_tick": 2,
-      "event_tick_wall_usec": 24083,
+      "event_tick_wall_usec": 23745,
       "events": [
         {
           "charge_residual_c": -2.47877300282862e-11,
@@ -1476,9 +1476,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.12,
-      "event_step_usec": 22565,
+      "event_step_usec": 21764,
       "event_tick": 3,
-      "event_tick_wall_usec": 22850,
+      "event_tick_wall_usec": 22078,
       "events": [
         {
           "charge_residual_c": -1.22854443632137e-11,
@@ -1707,9 +1707,9 @@
         "time_s": 0.05
       },
       "event_start_charge_c": 0.12,
-      "event_step_usec": 22181,
+      "event_step_usec": 21491,
       "event_tick": 5,
-      "event_tick_wall_usec": 22487,
+      "event_tick_wall_usec": 21835,
       "events": [
         {
           "charge_residual_c": -1.36515451720776e-12,
@@ -1861,8 +1861,8 @@
       "hz": 120,
       "event_time_s": 0.00398071816501518,
       "event_tick": 1,
-      "event_localization_wall_ms": 24.876,
-      "whole_event_tick_wall_ms": 25.282,
+      "event_localization_wall_ms": 23.714,
+      "whole_event_tick_wall_ms": 24.082,
       "event_time_delta_vs_960_s": 1.9402500439635872e-12,
       "rotor_rpm_delta_vs_960": 1.9283297660876997e-06,
       "max_body_rate_delta_vs_960_rad_s": 1.8527015450270357e-07,
@@ -1877,8 +1877,8 @@
       "hz": 240,
       "event_time_s": 0.00398071816501518,
       "event_tick": 1,
-      "event_localization_wall_ms": 22.633,
-      "whole_event_tick_wall_ms": 23.017,
+      "event_localization_wall_ms": 24.64,
+      "whole_event_tick_wall_ms": 25.087,
       "event_time_delta_vs_960_s": 1.9402500439635872e-12,
       "rotor_rpm_delta_vs_960": 9.195991879096255e-08,
       "max_body_rate_delta_vs_960_rad_s": 2.050444364797531e-08,
@@ -1893,8 +1893,8 @@
       "hz": 480,
       "event_time_s": 0.00398071816307493,
       "event_tick": 2,
-      "event_localization_wall_ms": 22.345,
-      "whole_event_tick_wall_ms": 22.639,
+      "event_localization_wall_ms": 23.302,
+      "whole_event_tick_wall_ms": 23.63,
       "event_time_delta_vs_960_s": 0.0,
       "rotor_rpm_delta_vs_960": 6.170012056827545e-09,
       "max_body_rate_delta_vs_960_rad_s": 4.026128269966553e-09,
@@ -1909,8 +1909,8 @@
       "hz": 960,
       "event_time_s": 0.00398071816307493,
       "event_tick": 4,
-      "event_localization_wall_ms": 21.023,
-      "whole_event_tick_wall_ms": 21.295,
+      "event_localization_wall_ms": 21.858,
+      "whole_event_tick_wall_ms": 22.147,
       "event_time_delta_vs_960_s": 0.0,
       "rotor_rpm_delta_vs_960": 0.0,
       "max_body_rate_delta_vs_960_rad_s": 0.0,
@@ -1925,8 +1925,8 @@
       "hz": 120,
       "event_time_s": 0.00439764007460326,
       "event_tick": 1,
-      "event_localization_wall_ms": 24.501,
-      "whole_event_tick_wall_ms": 24.939,
+      "event_localization_wall_ms": 23.523,
+      "whole_event_tick_wall_ms": 23.874,
       "event_time_delta_vs_960_s": 1.2611659980232837e-11,
       "rotor_rpm_delta_vs_960": 2.1644200387527235e-06,
       "max_body_rate_delta_vs_960_rad_s": 2.1593542530451426e-07,
@@ -1941,8 +1941,8 @@
       "hz": 240,
       "event_time_s": 0.004397640072663,
       "event_tick": 2,
-      "event_localization_wall_ms": 23.723,
-      "whole_event_tick_wall_ms": 24.083,
+      "event_localization_wall_ms": 23.448,
+      "whole_event_tick_wall_ms": 23.745,
       "event_time_delta_vs_960_s": 1.0671400395290132e-11,
       "rotor_rpm_delta_vs_960": 9.284030966227874e-08,
       "max_body_rate_delta_vs_960_rad_s": 1.9302694816017776e-08,
@@ -1957,8 +1957,8 @@
       "hz": 480,
       "event_time_s": 0.00439764006296173,
       "event_tick": 3,
-      "event_localization_wall_ms": 22.565,
-      "whole_event_tick_wall_ms": 22.85,
+      "event_localization_wall_ms": 21.764,
+      "whole_event_tick_wall_ms": 22.078,
       "event_time_delta_vs_960_s": 9.701302261522216e-13,
       "rotor_rpm_delta_vs_960": 1.0450094123370945e-08,
       "max_body_rate_delta_vs_960_rad_s": 3.803460870040187e-09,
@@ -1973,8 +1973,8 @@
       "hz": 960,
       "event_time_s": 0.0043976400619916,
       "event_tick": 5,
-      "event_localization_wall_ms": 22.181,
-      "whole_event_tick_wall_ms": 22.487,
+      "event_localization_wall_ms": 21.491,
+      "whole_event_tick_wall_ms": 21.835,
       "event_time_delta_vs_960_s": 0.0,
       "rotor_rpm_delta_vs_960": 0.0,
       "max_body_rate_delta_vs_960_rad_s": 0.0,

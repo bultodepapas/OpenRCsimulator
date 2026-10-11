@@ -1,6 +1,6 @@
 # EL2a — Coupled OCV/resistance battery state
 
-2026-10-11 · **Status: synthetic integration, numerical, flight and product checks pass; full regression and cost measurement in progress. Identified battery data and physical acceptance remain open. Step prefix: EL.**
+2026-10-11 · **Status: synthetic integration, numerical, flight, product and full regression checks pass; the 500 µs/tick target is missed. Identified battery data and physical acceptance remain open. Step prefix: EL.**
 
 This branch adds a balanced aggregate OCV/resistance battery to the electric flight session. It integrates remaining charge, terminal energy and pack heat with the motor/rotor state. The existing fixed-voltage path retains its arithmetic and native Variant key types; the data checks compare normalized native bytes against the prior fixed-route representation.
 
@@ -60,14 +60,36 @@ python3 research/propulsion/el1/product_check.py --battery --out /tmp/el2-produc
 app/test.sh
 ```
 
+Full `app/test.sh` runs before and after integration exit 0. The final run executes 168 GDScript test suites, including 1,577 electric checks, then the existing model contracts, golden flights, trace/CLI/weather/FPS and ground-contact checks. No engine errors occurred. [Baseline log](baseline-app.log), [final log](app-regression.log), [verification manifest](verification.json). The physics/simulation linter reports zero errors or warnings.
+
 The independent oracle uses the [pinned NumPy/SciPy environment](../../../../research/propulsion/el1a-r2/requirements.txt). Product export requires the already-installed pinned Linux export template; its runner does not download one.
 
 ## Limits and pending gates
 
 The fixtures do not identify the Timber or any measured battery. The model has no per-cell imbalance or weakest-cell protection, measured ESC/LVC behavior, BEC/receiver model, RC polarization fit, or thermal fit. The constant auxiliary pack current is a declared fixture input; it does not establish receiver/servo consumption. No endurance or hardware-safety conclusion follows from these traces.
 
-- Full app regression: **Pending — evidence to be added.**
-- Electric tick-cost measurement: **Pending — evidence to be added.**
 - Identified Timber pack/load data and physical acceptance: **Pending.**
 
 See the [electric propulsion plan](../../../ELECTRIC-PROPULSION-PLAN.md#battery-and-esc-growth) for EL2a dependencies and later ESC, polarization, and thermal steps.
+
+## Performance
+
+The [recorded Linux/i5-10500 profile](machine.json) matches the owner-confirmed target machine class. Godot 4.7.2 times complete evolving `Simulation.step()` calls after the full regression and powered-event probes finish. Each case warms 240 ticks, then runs 40 batches of 120 ticks, restoring the warm checkpoint outside each timer. Median averages ranks 20/21; p95 is nearest rank 38. These are batch-average tick costs, not rendered-frame percentiles or worst-case latency. [All batches and fingerprints](cost.json), [run log](cost.log).
+
+| Configuration | Median µs/tick | p95 µs/tick |
+| --- | ---: | ---: |
+| 4S battery, powered | 987.69 | 1062.46 |
+| 4S battery, coast | 1020.89 | 1088.67 |
+| 6S battery, powered | 1040.37 | 1159.79 |
+| 6S battery, coast | 1015.90 | 1118.38 |
+| Legacy Stik | 380.94 | 478.27 |
+| Legacy Extra | 254.75 | 282.27 |
+| Legacy P-51 | 482.44 | 550.16 |
+| Legacy Avanti | 293.65 | 328.38 |
+
+Battery medians are **988–1,040 µs/tick**, exceeding the unchanged **500 µs/tick** target. Separate source-call measurements are 54.4–59.1 µs/call; they do not isolate the battery addition’s causal whole-session cost. The [powered-event control](powered.md) observes an additional rare-event concern: uninstrumented exhaustion ticks take **20.5–25.0 ms** in individual headless probes. Neither warm batches nor those individual diagnostic samples close [Gate P](../../simulation-state/Gate-P/README.md). Keep this route experimental; optimize with full-state parity and event/energy proofs before promotion.
+
+```sh
+mkdir -p /tmp/el2-cost
+"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/propulsion/el1/flight_probe.gd" -- cost /tmp/el2-cost battery
+```
