@@ -26,6 +26,8 @@ Updating a continuous wake or other lag once per tick while integrating the body
 
 An adaptive reference solver needs independent qualification too. Dense output samples do not bound internal event steps, and a root at a shared step endpoint can be reported twice. Verify final time/status, step refinement, event identity/direction and re-arm behavior before treating its output as an oracle; preserve the raw event counterexample. ([EL1a-R2 tool probes](../research/propulsion/EL1a-R2/04-verification-tools.md#11--how-should-an-independent-solver-verify-the-fixed-step-implementation))
 
+Keep local event-bracket error separate from absolute-clock rounding. A positive post-event remainder can be smaller than one float64 clock increment while still having a meaningful state increment; refusing it because `time + remainder == time` can abort an otherwise valid tick. Test near-endpoint events at nonzero clocks, and require both residual and local-time bounds before accepting a root. An exact interpolated root may need no projection correction; do not require the old solver's roundoff to be nonzero. ([EL2a-P2](../research/propulsion/EL2a-P2/README.md))
+
 ### A unilateral rotor stop is a coupled constraint
 
 A combustion cutoff that suppresses deceleration below 1 RPM prevents an electric rotor from reaching its actual rest boundary. Localize the crossing, define the trial continuation and preserve momentum when projecting the tiny residual. At relative rest, include the body's angular acceleration in static-friction/breakaway decisions: body-driven forward spin still needs moving-side bearing loss even with the electrical source off. Scalar rotor tests alone miss that case. ([EL1d](../research/propulsion/EL1d/README.md))

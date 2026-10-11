@@ -1,0 +1,21 @@
+{
+  "format": "openrc-el2a-p2-source-audit-v1",
+  "ok": true,
+  "content_comparison": "CRLF normalized to LF only; generated .uid and .pyc excluded",
+  "source_files_compared": 446,
+  "intentional_changed_files": {
+    "physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "physics/electric_stop.gd": "b86a0c87fb305e926f1074b49cedda22618af560614e830091f34dde1c7476ef",
+    "physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+    "tests/test_electric_event_localization.gd": "6d2411f19009cc65e0183e518f2038f1a4c24fee134715a708a21424edfdfe1e",
+    "tests/test_electric_stop.gd": "63cdd864700bffa1ceee7abf1dff00e8f26c7b6f2c77b470e8131374673c656d"
+  },
+  "mismatches": [],
+  "tools_sha256": {
+    "research/propulsion/el2a-p2/compare_events.py": "340fd0773b3c5eb66cf5e65681deb203251612add2ec0c729fb16d4af0efb6e2",
+    "research/propulsion/el2a-p2/event_probe.gd": "427295fa996b4e7a43d47e06ecd55bf65b3e4a9d1f47b9aa4d7eb52f680767c3",
+    "research/propulsion/el2a-p2/test_compare_events.py": "2c1bab25599834a727e97b203cabe1c961f38693bc34587e1905eafc4462692a",
+    "research/propulsion/el2a-p2/verify_independent.py": "d5bed812da96751f2365dff2de16a66a94866786aceda9c94f5b130ed3c8f0df",
+    "research/propulsion/el2a-p2/verify_localization.py": "edc0c04622470831888b5ebe1f8ffa78e05b0d0a17e3cb1db659ec8a5e552d0a"
+  }
+}

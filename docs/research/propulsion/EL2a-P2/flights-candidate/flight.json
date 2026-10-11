@@ -1,0 +1,102 @@
+{
+	"cases": {
+		"4s_battery-chop": {
+			"altitude_change_m": -23.530445969508946,
+			"checkpoint_sha256": "9197f1af14231e41bac5cd1ff5237d3a831f3f74de00d7df5970cac651404033",
+			"fault": "",
+			"final_roll_deg": -0.2142271972580148,
+			"final_rpm": 5161.615813429159,
+			"final_speed_mps": 14.984866492424619,
+			"final_yaw_deg": 97.79055223949284,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"4s_battery-climb": {
+			"altitude_change_m": 66.95444337151315,
+			"checkpoint_sha256": "a5ed1ae3a0b5221beb47f78a303a439cbbe6ca65849a62a9331b60addea6119e",
+			"fault": "",
+			"final_roll_deg": -1.585822279974586,
+			"final_rpm": 6784.443726610716,
+			"final_speed_mps": 16.954535509716514,
+			"final_yaw_deg": 57.63116441768412,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"4s_battery-level": {
+			"altitude_change_m": -0.5293499736171157,
+			"checkpoint_sha256": "4ee31fafd2f1678bb7d3b17608d53b0704aea9ef7ddbf7bed5d973d00be4c096",
+			"fault": "",
+			"final_roll_deg": 2.105936753901137,
+			"final_rpm": 5159.379757875717,
+			"final_speed_mps": 15.03538275170357,
+			"final_yaw_deg": 99.65801424038433,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"4s_battery-turn": {
+			"altitude_change_m": 1.9830337332026886,
+			"checkpoint_sha256": "87f4b1a01f70a5773b32077152885f80f40a77ffc103ec5187ad64af68c2abde",
+			"fault": "",
+			"final_roll_deg": 21.541893655999075,
+			"final_rpm": 5931.129366964462,
+			"final_speed_mps": 17.26316007663777,
+			"final_yaw_deg": 85.78235755583631,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"6s_battery-chop": {
+			"altitude_change_m": -23.59786620590478,
+			"checkpoint_sha256": "d249b6fcaf851e7cf3eea3bf4eb1d51f0a072340f956f1fc61f82874ca88cc65",
+			"fault": "",
+			"final_roll_deg": -0.21223648546733787,
+			"final_rpm": 5158.980749684649,
+			"final_speed_mps": 14.980756954706397,
+			"final_yaw_deg": 99.26436930787209,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"6s_battery-climb": {
+			"altitude_change_m": 63.20015690677991,
+			"checkpoint_sha256": "51945893e080dc25d4cb5ad10090186a1fefdb11f1dd0c8d9e6724cf3e732d5d",
+			"fault": "",
+			"final_roll_deg": -1.559241464006062,
+			"final_rpm": 6679.945094906573,
+			"final_speed_mps": 16.736004989342508,
+			"final_yaw_deg": 57.716151080794,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"6s_battery-level": {
+			"altitude_change_m": -0.7354250951893277,
+			"checkpoint_sha256": "9a0f80954a4c3815413fcad9b6d9515a32c523d47ee89fe76adffb4a0e69eac6",
+			"fault": "",
+			"final_roll_deg": 2.7739364205224883,
+			"final_rpm": 5155.682538758667,
+			"final_speed_mps": 15.062289406089103,
+			"final_yaw_deg": 102.50992263431858,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		},
+		"6s_battery-turn": {
+			"altitude_change_m": -1.2881088991016725,
+			"checkpoint_sha256": "36e8d8bbdce9c70a941fc403c575453137a0b801f5a210d66d76d9f1538f9bc2",
+			"fault": "",
+			"final_roll_deg": 21.594112452593546,
+			"final_rpm": 5833.843252105455,
+			"final_speed_mps": 17.149159277479644,
+			"final_yaw_deg": 89.64633221616997,
+			"ok": true,
+			"rows": 7201,
+			"tick": 7200
+		}
+	},
+	"format": "openrc-electric-session-proof v1",
+	"mode": "flight"
+}

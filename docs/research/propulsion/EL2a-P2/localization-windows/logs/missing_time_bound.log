@@ -1,0 +1,380 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.037 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.08 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.099999 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.0625 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.74 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=1.6 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=1.99998 analytic event time
+FAIL: battery d=1 I=0.000000000001 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=1 I=0.2 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=1 I=30.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.037 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.08 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.099999 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.0625 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.74 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=1.6 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=1.99998 analytic event time
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=2 I=0.2 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=2 I=0.2 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=2 I=0.2 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=2 I=30.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=2 I=30.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=2 I=30.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=2 I=30.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=2 I=30.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=2 I=30.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=2 I=1000.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=2 I=1000.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=2 I=1000.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.037 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.08 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.099999 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.0625 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.74 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=1.6 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=1.99998 analytic event time
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=3 I=0.2 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=3 I=0.2 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=3 I=30.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=3 I=30.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=3 I=1000.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.037 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.037 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.08 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.08 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.099999 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.099999 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.0625 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.0625 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.74 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=1.6 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=1.99998 analytic event time
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=4 I=0.2 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=4 I=0.2 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00333333333333 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00333333333333 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.003125 analytic event time
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.003125 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=4 I=30.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00000001041667 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00000001041667 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00003255208333 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00003255208333 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00038541666667 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00038541666667 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00083333333333 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00083333333333 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00104165625 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00000004166667 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00000004166667 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00013020833333 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00013020833333 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00154166666667 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00154166666667 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.004166625 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=0.1 root=0.000001 analytic event time
+FAIL: battery d=4 I=1000.0 dt=0.1 root=0.000001 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=2.0 root=0.00002 analytic event time
+FAIL: battery d=4 I=1000.0 dt=2.0 root=0.00002 upper residual and time both bounded
+FAIL: reported local bracket stays bounded
+EL2a-P2 event localization: 2946 checks, 377 failed; max linear calls=20, nonlinear=143

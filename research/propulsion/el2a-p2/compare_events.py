@@ -32,6 +32,7 @@ RPM_ABS_TOL = 1e-5
 CHARGE_ABS_TOL_C = 1e-8
 ENERGY_ABS_TOL_J = 1e-6
 HEAT_ABS_TOL_J = 1e-6
+POST_EVENT_TICKS = 8
 
 FULL_CASE_CONTRACT = {
     "battery-powered-4s": {"mode": "battery", "required_events": ["battery_exhausted"],
@@ -69,6 +70,10 @@ class CompareError(RuntimeError):
 def require(ok: bool, message: str) -> None:
     if not ok:
         raise CompareError(message)
+
+
+def _is_finite_number(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value))
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -147,51 +152,106 @@ def run_command(command: list[str], timeout: int, log_path: Path,
 
 
 def validate_probe(report: dict[str, Any], smoke: bool) -> dict[str, dict[str, Any]]:
-    expected = SMOKE_CASES if smoke else FULL_CASES
+    contracts = SMOKE_CASE_CONTRACT if smoke else FULL_CASE_CONTRACT
+    expected = set(contracts)
     require(report.get("format") == "el2a-p2-whole-session-event-probe-v1", "wrong event probe report format")
     require(report.get("tick_hz") == 240 and report.get("smoke") is smoke, "wrong tick or smoke mode")
     rows = report.get("rows")
-    require(isinstance(rows, list) and report.get("failures") == [], "probe reports failures or missing rows")
+    require(isinstance(rows, list) and len(rows) == len(expected) and report.get("failures") == [],
+            "probe reports failures or missing rows")
     decoded: dict[str, dict[str, Any]] = {}
     for row in rows:
         require(isinstance(row, dict) and row.get("ok") is True and row.get("all_finite") is True,
                 "probe case failed or contains nonfinite state")
         case_id = row.get("id")
         require(case_id in expected and case_id not in decoded, f"unexpected or duplicate case {case_id}")
-        require(row.get("tick_hz") == 240 and row.get("ticks", 0) > 0
-                and math.isclose(float(row.get("end_time_s", math.nan)), row["ticks"] / 240,
-                                 rel_tol=1e-12, abs_tol=1e-15),
-                f"{case_id}: incomplete tick report")
-        require(isinstance(row.get("event_types"), list) and row.get("event_types") == [
-            event.get("type") for event in row.get("events", [])], f"{case_id}: event list mismatch")
-        require(isinstance(row.get("events"), list), f"{case_id}: malformed event list")
+        contract = contracts[case_id]
+        require(row.get("mode") == contract["mode"], f"{case_id}: wrong simulation mode")
+        require(row.get("required_events") == contract["required_events"],
+                f"{case_id}: wrong required-event contract")
+        require(row.get("engine_running") is contract["engine_running"]
+                and row.get("initial_throttle") == contract["initial_throttle"]
+                and row.get("initial_charge_c") == contract["initial_charge_c"]
+                and row.get("cut_after_ticks") == contract["cut_after_ticks"],
+                f"{case_id}: scenario inputs differ from the declared case")
+        ticks = row.get("ticks")
+        require(row.get("tick_hz") == 240 and isinstance(ticks, int) and not isinstance(ticks, bool)
+                and 0 < ticks <= contract["max_ticks"] and _is_finite_number(row.get("end_time_s"))
+                and math.isclose(float(row["end_time_s"]), ticks / 240, rel_tol=1e-12, abs_tol=1e-15),
+                f"{case_id}: invalid tick count or duration")
+        require(_is_finite_number(row.get("final_charge_c")) and _is_finite_number(row.get("final_rotor_rpm"))
+                and row["final_rotor_rpm"] >= 0.0, f"{case_id}: invalid final electrical or rotor state")
+        events = row.get("events")
+        require(isinstance(events, list) and all(isinstance(event, dict) for event in events),
+                f"{case_id}: malformed event list")
+        event_types = row.get("event_types")
+        require(isinstance(event_types, list) and event_types == [event.get("type") for event in events],
+                f"{case_id}: event list mismatch")
+        require(event_types == contract["required_events"],
+                f"{case_id}: observed event types do not meet the case contract")
         last_tick = 0
-        for event in row["events"]:
-            require(isinstance(event, dict) and event.get("type") in {"battery_exhausted", "rotor_stop"},
+        for event in events:
+            require(event.get("type") in {"battery_exhausted", "rotor_stop"},
                     f"{case_id}: invalid event type")
-            require(isinstance(event.get("tick"), int) and event["tick"] >= last_tick,
+            event_tick = event.get("tick")
+            require(isinstance(event_tick, int) and not isinstance(event_tick, bool)
+                    and 0 < event_tick <= ticks and event_tick >= last_tick,
                     f"{case_id}: events are not in chronological tick order")
-            require(math.isclose(float(event.get("containing_tick_time_s", math.nan)), event["tick"] / 240,
+            require(_is_finite_number(event.get("containing_tick_time_s"))
+                    and math.isclose(float(event["containing_tick_time_s"]), event_tick / 240,
                                  rel_tol=1e-12, abs_tol=1e-15),
                     f"{case_id}: event is not at its containing full-step endpoint")
             require(isinstance(event.get("event_tick_wall_usec"), int)
+                    and not isinstance(event["event_tick_wall_usec"], bool)
                     and event["event_tick_wall_usec"] > 0, f"{case_id}: missing event-tick timing")
-            require(event.get("rotor_rpm", -1) >= 0, f"{case_id}: accepted rotor RPM is negative")
+            require(_is_finite_number(event.get("rotor_rpm")) and event["rotor_rpm"] >= 0.0,
+                    f"{case_id}: accepted rotor RPM is invalid or negative")
             require(isinstance(event.get("body_state"), list) and len(event["body_state"]) == 13,
                     f"{case_id}: malformed rigid-body event state")
-            require(isinstance(event.get("continuous_state"), list), f"{case_id}: missing continuous event state")
-            require(all(isinstance(x, (int, float)) and math.isfinite(float(x)) for x in
-                        event["body_state"] + event["continuous_state"]), f"{case_id}: nonfinite event state")
+            continuous = event.get("continuous_state")
+            require(isinstance(continuous, list), f"{case_id}: missing continuous event state")
+            require(all(_is_finite_number(x) for x in event["body_state"] + continuous),
+                    f"{case_id}: nonfinite event state")
+            rotor_index = event.get("rotor_index")
+            charge_index = event.get("charge_index")
+            require(isinstance(rotor_index, int) and not isinstance(rotor_index, bool) and rotor_index >= 0
+                    and isinstance(charge_index, int) and not isinstance(charge_index, bool),
+                    f"{case_id}: invalid continuous-state indexes")
+            if contract["mode"] == "battery":
+                require(charge_index == rotor_index + 1 and len(continuous) == charge_index + 3,
+                        f"{case_id}: invalid wash/RPM/electrical state layout")
+                require(_is_finite_number(event.get("remaining_charge_c"))
+                        and event["remaining_charge_c"] == continuous[charge_index]
+                        and _is_finite_number(event.get("terminal_energy_j"))
+                        and event["terminal_energy_j"] == continuous[charge_index + 1]
+                        and _is_finite_number(event.get("pack_heat_j"))
+                        and event["pack_heat_j"] == continuous[charge_index + 2],
+                        f"{case_id}: electrical event fields differ from continuous state")
+            else:
+                require(charge_index == -1 and len(continuous) == rotor_index + 1,
+                        f"{case_id}: invalid fixed-voltage rotor state layout")
             if event["type"] == "battery_exhausted":
                 require(event.get("remaining_charge_c") == 0.0, f"{case_id}: accepted charge is not exactly zero")
+            if event["type"] == "rotor_stop":
+                require(event["rotor_rpm"] == 0.0, f"{case_id}: rotor-stop event did not accept zero RPM")
             last_tick = event["tick"]
-        if row.get("mode") == "no_event":
-            require(row["events"] == [] and row.get("final_charge_c") > 0,
-                    f"{case_id}: no-event control crossed a boundary")
-        require(row.get("seed_checkpoint_file") and row.get("endpoint_checkpoint_file"),
-                f"{case_id}: missing full native checkpoints")
+        required_ticks = [event["tick"] for event in events if event["type"] in contract["required_events"]]
+        if contract["required_events"]:
+            require(len(required_ticks) == len(contract["required_events"]),
+                    f"{case_id}: a required event is missing")
+            expected_ticks = min(contract["max_ticks"], max(required_ticks) + POST_EVENT_TICKS)
+            require(ticks == expected_ticks, f"{case_id}: session stopped at the wrong tick count")
+        else:
+            require(ticks == contract["max_ticks"] and events == [] and row["final_charge_c"] > 0.0,
+                    f"{case_id}: no-event control crossed a boundary or stopped early")
+        for file_key, size_key in (("seed_checkpoint_file", "seed_checkpoint_bytes"),
+                                   ("endpoint_checkpoint_file", "endpoint_checkpoint_bytes")):
+            filename, size = row.get(file_key), row.get(size_key)
+            require(isinstance(filename, str) and Path(filename).name == filename
+                    and isinstance(size, int) and not isinstance(size, bool) and size > 0,
+                    f"{case_id}: invalid full native checkpoint metadata")
         decoded[case_id] = row
-    require(decoded.keys() == expected, "probe is missing expected event cases")
+    require(set(decoded) == expected, "probe is missing expected event cases")
     return decoded
 
 

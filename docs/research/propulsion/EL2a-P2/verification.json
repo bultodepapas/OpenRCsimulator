@@ -1,0 +1,78 @@
+{
+  "format": "openrc-el2a-p2-verification-v1",
+  "status": "passed",
+  "date": "2026-10-11",
+  "baseline_revision": "5f85109ada405071864ee1c3c5c2a97ecaa4bc84",
+  "app_test_sh": {
+    "baseline": {
+      "exit_code": 0,
+      "gdscript_test_programs": 178,
+      "python_unittest_cases": 72,
+      "engine_error_lines": 0,
+      "objectdb_warning_lines": 11,
+      "log": "baseline-app.log"
+    },
+    "candidate": {
+      "exit_code": 0,
+      "gdscript_test_programs": 179,
+      "python_unittest_cases": 72,
+      "engine_error_lines": 0,
+      "objectdb_warning_lines": 8,
+      "log": "candidate-app.log"
+    }
+  },
+  "offline_tools": {
+    "exit_code": 0,
+    "tests": 230,
+    "log": "offline-tools.log"
+  },
+  "localization": {
+    "platforms": [
+      "Windows",
+      "Linux"
+    ],
+    "checks_per_platform": 3046,
+    "real_mutations_detected_per_platform": 5
+  },
+  "independent_references": "original EL1d / EL2a analytic and SciPy DOP853 checks passed unchanged",
+  "flight_parity": {
+    "flights": 8,
+    "seconds_each": 30,
+    "samples_each": 7201,
+    "refinement_endpoints": 10,
+    "corruption_controls_per_snapshot": 48,
+    "result": "exact after excluding only the CSV wall-clock creation header"
+  },
+  "paired_event_measurements": {
+    "rounds": 6,
+    "cases": 6,
+    "order": "alternating AB/BA",
+    "result": "passed; complete native replay exact within each implementation; cross-version event states within predeclared bounds"
+  },
+  "commands": {
+    "full_app": "bash app/test.sh (fresh baseline/candidate checkouts; isolated candidate XDG_DATA_HOME and XDG_CONFIG_HOME)",
+    "offline_tools": "bash research/test-tools.sh",
+    "localization": "python research/propulsion/el2a-p2/verify_localization.py --godot <pinned-engine> --app <snapshot>/app --out <fresh-output>",
+    "references": "<pinned-scipy-env>/bin/python research/propulsion/el2a-p2/verify_independent.py --godot <pinned-engine> --app <candidate>/app --out <fresh-json>",
+    "flights": "python3 research/propulsion/el2/verify_flights.py --godot <pinned-engine> --app <snapshot>/app --out <fresh-output>",
+    "flight_comparison": "python3 research/propulsion/el2a-p1/compare_flights.py <baseline-flights> <candidate-flights> --out <fresh-json>",
+    "performance": "python3 research/propulsion/el2a-p2/compare_events.py --baseline-app <baseline>/app --candidate-app <candidate>/app --godot <pinned-engine> --out <fresh-output> --rounds 6"
+  },
+  "evidence_sha256": {
+    "source-audit.json": "9167bbb54256f13501b6cba53d7d0fe534407a337667ab2f53e338315e3f838c",
+    "localization-linux/report.json": "1f125460e11438868f6bf434d9e1e89699986ab09776082dfa77fa04493e0921",
+    "localization-windows/report.json": "58ccdbec14696404b2bec04595243a78fab650eb066649c80c24864b56962c0c",
+    "independent.json": "520f22d02e42fcfbd1c56275966fadce0b6e76b76d1f865380ba46065f228a7d",
+    "fresh-flight-parity.json": "88fddc0c533bbfa73fcaf5a4c6dc2b3f4eac0698978f0e1eb948e72cfb303333",
+    "performance/comparison.json": "b76a6df36b8c9128a1f081df4c78e5e09b6c48edff1ec7a341909bc2255eebfd",
+    "performance/source-manifest.json": "c285224f0b47fd1dcd20878024cbe99d5b5ad5518d751a58e8ceeea499c08ae1",
+    "baseline-app.log": "bb0afa1a42f50226b7db15bba2d5b81649a2140292e1a2e27c1df2f663fdb48b",
+    "candidate-app.log": "70c8e827ae4fd08ae90fa83a42cd0afd58f6a455ec4565cd0632d4857eb3a1bc",
+    "offline-tools.log": "5e6d342eb36a97c1f4e02f9a15b428126693184e4b40ee374bd5fbfeb5e1d27e"
+  },
+  "remaining_acceptance": [
+    "500 microsecond physics budget",
+    "original target hardware and rendered-frame acceptance",
+    "identified motor/battery/aircraft physical validation"
+  ]
+}

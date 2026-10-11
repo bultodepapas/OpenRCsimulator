@@ -1,0 +1,136 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=2 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=2 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.000001 completes
+FAIL: battery d=2 I=0.000000000001 dt=0.1 root=0.003125 completes
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.00002 completes
+FAIL: battery d=2 I=0.000000000001 dt=2.0 root=0.0625 completes
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=2 I=0.2 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=2 I=0.2 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=2 I=0.2 dt=0.1 root=0.000001 completes
+FAIL: battery d=2 I=0.2 dt=0.1 root=0.003125 completes
+FAIL: battery d=2 I=0.2 dt=2.0 root=0.00002 completes
+FAIL: battery d=2 I=0.2 dt=2.0 root=0.0625 completes
+FAIL: battery d=2 I=30.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=2 I=30.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=2 I=30.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=2 I=30.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=2 I=30.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=2 I=30.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=2 I=30.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=2 I=30.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=2 I=1000.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=2 I=1000.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=2 I=1000.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=2 I=1000.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=2 I=1000.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=2 I=1000.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=2 I=1000.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=2 I=1000.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.000001 completes
+FAIL: battery d=3 I=0.000000000001 dt=0.1 root=0.003125 completes
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.00002 completes
+FAIL: battery d=3 I=0.000000000001 dt=2.0 root=0.0625 completes
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=3 I=0.2 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=3 I=0.2 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.000001 completes
+FAIL: battery d=3 I=0.2 dt=0.1 root=0.003125 completes
+FAIL: battery d=3 I=0.2 dt=2.0 root=0.00002 completes
+FAIL: battery d=3 I=0.2 dt=2.0 root=0.0625 completes
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=3 I=30.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=3 I=30.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=3 I=30.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=3 I=30.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=3 I=30.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=3 I=30.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=3 I=1000.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=3 I=1000.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=3 I=1000.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=3 I=1000.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00104166666667 root=0.00038541666667 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.00416666666667 root=0.00154166666667 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.000001 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.003125 completes
+FAIL: battery d=4 I=0.000000000001 dt=0.1 root=0.037 completes
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.00002 completes
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.0625 completes
+FAIL: battery d=4 I=0.000000000001 dt=2.0 root=0.74 completes
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=4 I=0.2 dt=0.00104166666667 root=0.00038541666667 completes
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=4 I=0.2 dt=0.00416666666667 root=0.00154166666667 completes
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.000001 completes
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.003125 completes
+FAIL: battery d=4 I=0.2 dt=0.1 root=0.037 completes
+FAIL: battery d=4 I=0.2 dt=2.0 root=0.00002 completes
+FAIL: battery d=4 I=0.2 dt=2.0 root=0.0625 completes
+FAIL: battery d=4 I=0.2 dt=2.0 root=0.74 completes
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=4 I=30.0 dt=0.00104166666667 root=0.00038541666667 completes
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=4 I=30.0 dt=0.00416666666667 root=0.00154166666667 completes
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=4 I=30.0 dt=0.1 root=0.037 completes
+FAIL: battery d=4 I=30.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=4 I=30.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=4 I=30.0 dt=2.0 root=0.74 completes
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00000001041667 completes
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00003255208333 completes
+FAIL: battery d=4 I=1000.0 dt=0.00104166666667 root=0.00038541666667 completes
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00000004166667 completes
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00013020833333 completes
+FAIL: battery d=4 I=1000.0 dt=0.00416666666667 root=0.00154166666667 completes
+FAIL: battery d=4 I=1000.0 dt=0.1 root=0.000001 completes
+FAIL: battery d=4 I=1000.0 dt=0.1 root=0.003125 completes
+FAIL: battery d=4 I=1000.0 dt=0.1 root=0.037 completes
+FAIL: battery d=4 I=1000.0 dt=2.0 root=0.00002 completes
+FAIL: battery d=4 I=1000.0 dt=2.0 root=0.0625 completes
+FAIL: battery d=4 I=1000.0 dt=2.0 root=0.74 completes
+FAIL: rotor d=2 rate=0.000000001 root=0.000001 completes
+FAIL: rotor d=2 rate=0.000000001 root=0.03 completes
+FAIL: rotor d=2 rate=1.0 root=0.000001 completes
+FAIL: rotor d=2 rate=1.0 root=0.03 completes
+FAIL: rotor d=2 rate=3000.0 root=0.000001 completes
+FAIL: rotor d=2 rate=3000.0 root=0.03 completes
+FAIL: rotor d=3 rate=0.000000001 root=0.000001 completes
+FAIL: rotor d=3 rate=0.000000001 root=0.03 completes
+FAIL: rotor d=3 rate=1.0 root=0.000001 completes
+FAIL: rotor d=3 rate=1.0 root=0.03 completes
+FAIL: rotor d=3 rate=3000.0 root=0.000001 completes
+FAIL: rotor d=3 rate=3000.0 root=0.03 completes
+FAIL: rotor d=4 rate=0.000000001 root=0.000001 completes
+FAIL: rotor d=4 rate=0.000000001 root=0.03 completes
+FAIL: rotor d=4 rate=0.000000001 root=0.37 completes
+FAIL: rotor d=4 rate=1.0 root=0.000001 completes
+FAIL: rotor d=4 rate=1.0 root=0.03 completes
+FAIL: rotor d=4 rate=1.0 root=0.37 completes
+FAIL: rotor d=4 rate=3000.0 root=0.000001 completes
+FAIL: rotor d=4 rate=3000.0 root=0.03 completes
+FAIL: rotor d=4 rate=3000.0 root=0.37 completes
+EL2a-P2 event localization: 2078 checks, 133 failed; max linear calls=20, nonlinear=281

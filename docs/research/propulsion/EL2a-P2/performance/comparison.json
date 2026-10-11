@@ -1,0 +1,395 @@
+{
+  "arguments": {
+    "baseline_app": "/home/bulto/openrc-el2a-p2/baseline/app",
+    "candidate_app": "/home/bulto/openrc-el2a-p2/candidate/app",
+    "expected_baseline_revision": "5f85109ada405071864ee1c3c5c2a97ecaa4bc84",
+    "godot": "/home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "observed_baseline_revision": "5f85109ada405071864ee1c3c5c2a97ecaa4bc84",
+    "timeout_sec": 1800
+  },
+  "changed_app_path_count": 10,
+  "changed_app_paths": [
+    {
+      "baseline_sha256": "7d42ec652b1ab00f1fc335b92407740dde8b61eaf7fa058272fd10ef8d369997",
+      "candidate_sha256": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+      "change": "modified",
+      "path": "physics/electric_battery_step.gd"
+    },
+    {
+      "baseline_sha256": "96cffdbccdc60239d1864106141c567b70fda64a5b1415698c7169d6cf4be96d",
+      "candidate_sha256": "b86a0c87fb305e926f1074b49cedda22618af560614e830091f34dde1c7476ef",
+      "change": "modified",
+      "path": "physics/electric_stop.gd"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "change": "added",
+      "path": "physics/event_bracket.gd"
+    },
+    {
+      "baseline_sha256": "95dba8879d5a5e1d96fbbbd5bca79682059f3c94f894b501114c208f6f4aa053",
+      "candidate_sha256": null,
+      "change": "removed",
+      "path": "tests/__pycache__/check_atmosphere_trace.cpython-312.pyc"
+    },
+    {
+      "baseline_sha256": "61a2d20f8769bd634b7d14a5613efa70934cc666389c5ba1d013eaddccbc4a70",
+      "candidate_sha256": null,
+      "change": "removed",
+      "path": "tests/__pycache__/check_trimmed_flight.cpython-312.pyc"
+    },
+    {
+      "baseline_sha256": "aae2bd9a79092e29c8b4cf9201027fb0b3c1eb4d3574498322895cd8aa8539f3",
+      "candidate_sha256": null,
+      "change": "removed",
+      "path": "tests/__pycache__/check_wind_trace.cpython-312.pyc"
+    },
+    {
+      "baseline_sha256": "368394ec91daf48067253210f0dc634de97e408ea5e0cd3374919940245a2f22",
+      "candidate_sha256": null,
+      "change": "removed",
+      "path": "tests/__pycache__/test_atmosphere_cli.cpython-312.pyc"
+    },
+    {
+      "baseline_sha256": "776b6db2834deeb882b9dcd91e7e69ecae8209c387cae1ff1e348fc68c1ed998",
+      "candidate_sha256": null,
+      "change": "removed",
+      "path": "tests/test_electric_dynamics.gd.uid"
+    },
+    {
+      "baseline_sha256": null,
+      "candidate_sha256": "6d2411f19009cc65e0183e518f2038f1a4c24fee134715a708a21424edfdfe1e",
+      "change": "added",
+      "path": "tests/test_electric_event_localization.gd"
+    },
+    {
+      "baseline_sha256": "8dac8a50ec57b499244b67e4c731b9a5102b22293a46968b99c7f0fb25e2d27d",
+      "candidate_sha256": "63cdd864700bffa1ceee7abf1dff00e8f26c7b6f2c77b470e8131374673c656d",
+      "change": "modified",
+      "path": "tests/test_electric_stop.gd"
+    }
+  ],
+  "comparison": {
+    "absolute_tolerances": {
+      "body_state": 1e-08,
+      "pack_heat_j": 1e-06,
+      "remaining_charge_c": 1e-08,
+      "rotor_rpm": 1e-05,
+      "terminal_energy_j": 1e-06,
+      "wash_state_m_s": 1e-08
+    },
+    "case_count": 6,
+    "cases": [
+      {
+        "baseline_event_tick_wall_usec": [
+          13871.0,
+          13584.0,
+          14274.0,
+          15059.0,
+          13322.0,
+          12943.0
+        ],
+        "baseline_median_event_tick_wall_usec": 13727.5,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [
+          1458.0,
+          1513.0,
+          1376.0,
+          1521.0,
+          1399.0,
+          1422.0
+        ],
+        "candidate_median_event_tick_wall_usec": 1440.0,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [
+          {
+            "body_state_max_abs": 0.0,
+            "charge_abs_c": 0.0,
+            "pack_heat_abs_j": 5.700735022928782e-16,
+            "rotor_rpm_abs": 0.0,
+            "terminal_energy_abs_j": 1.1297629498585593e-12,
+            "wash_state_max_abs_m_s": 0.0
+          }
+        ],
+        "event_ticks": [
+          301
+        ],
+        "event_types": [
+          "battery_exhausted"
+        ],
+        "id": "battery-coast-4s",
+        "native_seed_bytes_identical_across_implementations": true
+      },
+      {
+        "baseline_event_tick_wall_usec": [
+          16102.0,
+          13523.0,
+          13165.0,
+          15230.0,
+          13598.0,
+          13020.0
+        ],
+        "baseline_median_event_tick_wall_usec": 13560.5,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [
+          1541.0,
+          1531.0,
+          1619.0,
+          1487.0,
+          1465.0,
+          1418.0
+        ],
+        "candidate_median_event_tick_wall_usec": 1509.0,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [
+          {
+            "body_state_max_abs": 9.71445146547012e-17,
+            "charge_abs_c": 0.0,
+            "pack_heat_abs_j": 4.800847219765814e-16,
+            "rotor_rpm_abs": 0.0,
+            "terminal_energy_abs_j": 1.270095140171179e-12,
+            "wash_state_max_abs_m_s": 0.0
+          }
+        ],
+        "event_ticks": [
+          401
+        ],
+        "event_types": [
+          "battery_exhausted"
+        ],
+        "id": "battery-coast-6s",
+        "native_seed_bytes_identical_across_implementations": true
+      },
+      {
+        "baseline_event_tick_wall_usec": [],
+        "baseline_median_event_tick_wall_usec": null,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [],
+        "candidate_median_event_tick_wall_usec": null,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [],
+        "event_ticks": [],
+        "event_types": [],
+        "id": "battery-no-event-4s",
+        "native_no_event_endpoint_bytes_identical": true,
+        "native_no_event_seed_bytes_identical": true,
+        "native_seed_bytes_identical_across_implementations": true
+      },
+      {
+        "baseline_event_tick_wall_usec": [
+          13476.0,
+          12978.0,
+          13747.0,
+          13438.0,
+          12711.0,
+          12733.0
+        ],
+        "baseline_median_event_tick_wall_usec": 13208.0,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [
+          5189.0,
+          4395.0,
+          6023.0,
+          4394.0,
+          4328.0,
+          4384.0
+        ],
+        "candidate_median_event_tick_wall_usec": 4394.5,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [
+          {
+            "body_state_max_abs": 3.0119795546568184e-12,
+            "charge_abs_c": 0.0,
+            "pack_heat_abs_j": 3.916955648719522e-11,
+            "rotor_rpm_abs": 6.830305210314691e-09,
+            "terminal_energy_abs_j": 3.22096127547411e-10,
+            "wash_state_max_abs_m_s": 0.0
+          }
+        ],
+        "event_ticks": [
+          21
+        ],
+        "event_types": [
+          "battery_exhausted"
+        ],
+        "id": "battery-powered-4s",
+        "native_seed_bytes_identical_across_implementations": true
+      },
+      {
+        "baseline_event_tick_wall_usec": [
+          13323.0,
+          13426.0,
+          17888.0,
+          13929.0,
+          14279.0,
+          22015.0
+        ],
+        "baseline_median_event_tick_wall_usec": 14104.0,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [
+          4428.0,
+          3968.0,
+          4039.0,
+          4286.0,
+          4387.0,
+          3943.0
+        ],
+        "candidate_median_event_tick_wall_usec": 4162.5,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [
+          {
+            "body_state_max_abs": 4.798939023942239e-14,
+            "charge_abs_c": 0.0,
+            "pack_heat_abs_j": 2.3003821070233244e-13,
+            "rotor_rpm_abs": 8.003553375601768e-11,
+            "terminal_energy_abs_j": 4.199307568342192e-12,
+            "wash_state_max_abs_m_s": 0.0
+          }
+        ],
+        "event_ticks": [
+          25
+        ],
+        "event_types": [
+          "battery_exhausted"
+        ],
+        "id": "battery-powered-6s",
+        "native_seed_bytes_identical_across_implementations": true
+      },
+      {
+        "baseline_event_tick_wall_usec": [
+          11576.0,
+          10502.0,
+          10376.0,
+          10001.0,
+          10496.0,
+          11610.0
+        ],
+        "baseline_median_event_tick_wall_usec": 10499.0,
+        "baseline_replay_checkpoint_bytes_identical": true,
+        "candidate_event_tick_wall_usec": [
+          3713.0,
+          2354.0,
+          2482.0,
+          2194.0,
+          2372.0,
+          2332.0
+        ],
+        "candidate_median_event_tick_wall_usec": 2363.0,
+        "candidate_replay_checkpoint_bytes_identical": true,
+        "event_state_maxima": [
+          {
+            "body_state_max_abs": 9.992007221626409e-16,
+            "rotor_rpm_abs": 0.0,
+            "wash_state_max_abs_m_s": 0.0
+          }
+        ],
+        "event_ticks": [
+          3414
+        ],
+        "event_types": [
+          "rotor_stop"
+        ],
+        "id": "fixed-voltage-rotor-stop",
+        "native_seed_bytes_identical_across_implementations": true
+      }
+    ],
+    "failures": [],
+    "root_bits_compared": false,
+    "status": "passed",
+    "timing_scope": "only the wall time of the simulation tick in which an accepted event was observed"
+  },
+  "completed_utc": "2026-10-11T18:42:22.333539+00:00",
+  "engine": {
+    "bytes": 146414384,
+    "path": "/home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+    "version": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "format": "el2a-p2-event-comparison-v1",
+  "machine": {
+    "architecture": "x86_64",
+    "logical_cpu_count": 24,
+    "os": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "processor": "x86_64"
+  },
+  "round_count": 6,
+  "run_order": [
+    {
+      "log": "runs/round-01/baseline/probe.log",
+      "probe": "runs/round-01/baseline/probe.json",
+      "round": 1,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "runs/round-01/candidate/probe.log",
+      "probe": "runs/round-01/candidate/probe.json",
+      "round": 1,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-02/candidate/probe.log",
+      "probe": "runs/round-02/candidate/probe.json",
+      "round": 2,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-02/baseline/probe.log",
+      "probe": "runs/round-02/baseline/probe.json",
+      "round": 2,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "runs/round-03/baseline/probe.log",
+      "probe": "runs/round-03/baseline/probe.json",
+      "round": 3,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "runs/round-03/candidate/probe.log",
+      "probe": "runs/round-03/candidate/probe.json",
+      "round": 3,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-04/candidate/probe.log",
+      "probe": "runs/round-04/candidate/probe.json",
+      "round": 4,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-04/baseline/probe.log",
+      "probe": "runs/round-04/baseline/probe.json",
+      "round": 4,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "runs/round-05/baseline/probe.log",
+      "probe": "runs/round-05/baseline/probe.json",
+      "round": 5,
+      "snapshot": "baseline"
+    },
+    {
+      "log": "runs/round-05/candidate/probe.log",
+      "probe": "runs/round-05/candidate/probe.json",
+      "round": 5,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-06/candidate/probe.log",
+      "probe": "runs/round-06/candidate/probe.json",
+      "round": 6,
+      "snapshot": "candidate"
+    },
+    {
+      "log": "runs/round-06/baseline/probe.log",
+      "probe": "runs/round-06/baseline/probe.json",
+      "round": 6,
+      "snapshot": "baseline"
+    }
+  ],
+  "smoke": false,
+  "source_manifest": "source-manifest.json",
+  "started_utc": "2026-10-11T18:40:25.960315+00:00",
+  "status": "passed"
+}
