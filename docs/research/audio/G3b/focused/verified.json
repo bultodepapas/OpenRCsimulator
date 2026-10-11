@@ -1,0 +1,169 @@
+{
+  "ok": true,
+  "results": {
+    "import": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--import"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "test_engine_sound": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_sound.gd"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "test_engine_voice": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_voice.gd"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "test_engine_audio": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_audio.gd"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "test_ui_pause": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_ui_pause.gd"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "phase_reset": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_voice.gd"
+      ],
+      "exit_code": 1,
+      "expected_failure": "pure oscillator partitioning"
+    },
+    "dc_at_rest": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_voice.gd"
+      ],
+      "exit_code": 1,
+      "expected_failure": "zero frequency returns exact silence"
+    },
+    "missed_endpoint": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_audio.gd"
+      ],
+      "exit_code": 1,
+      "expected_failure": "observes every accepted endpoint"
+    },
+    "stale_resume": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_audio.gd"
+      ],
+      "exit_code": 1,
+      "expected_failure": "resume replaces old playback queue"
+    },
+    "unowned_source": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_audio.gd"
+      ],
+      "exit_code": 1,
+      "expected_failure": "playback retains its source after node removal"
+    },
+    "restored": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--display-driver",
+        "headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\g3b-work\\pinned-focused\\app",
+        "--script",
+        "res://tests/test_engine_audio.gd"
+      ],
+      "exit_code": 0,
+      "expected_failure": null
+    }
+  }
+}

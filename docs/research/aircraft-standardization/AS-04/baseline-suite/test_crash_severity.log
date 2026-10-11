@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   mass increases estimated energy
+ok   normal speed increases estimated energy quadratically
+ok   steeper incidence increases estimate at fixed point speed
+ok   hard surface estimate exceeds grass estimate
+ok   controller surface ids have explicit profiles
+ok   tangential surface aliases share their estimates
+ok   raw kinematic energy is surface independent
+ok   class is within C0 to C4
+ok   class energy bin 0
+ok   class energy bin 1
+ok   class energy bin 2
+ok   class energy bin 3
+ok   class energy bin 4
+ok   affected component is preserved
+ok   component group identifies wingtip
+ok   controller engine id has an explicit group
+ok   component susceptibility changes bounded damage
+ok   component damage stays in zero to one
+ok   severity stays in zero to one
+ok   unknown surface and component use explicit fallbacks
+ok   zero mass is rejected
+ok   negative velocity is rejected
+ok   negative tangential velocity is rejected
+ok   NaN mass is rejected
+ok   NaN angle is rejected
+ok   infinite speed is rejected
+ok   overflowed energy is rejected
+ok   out-of-range angle is rejected
+ok   angle inconsistent with components is rejected
+ok   zero velocity is valid and finite
+ok   hull snapshot uses detected point kinematics
+ok   unlabelled hull uses labelled fuselage estimate
+ok   flat-ground normal gives downward impact speed
+ok   separating normal motion has no tangent exposure
+ok   gear estimate stays unavailable without a velocity proxy
+ok   gear uses CG velocity only as a marked proxy
+ok   gear component keeps its leg name
+ok   accumulation does not mutate its input
+ok   repeated event increases component damage
+ok   component damage never exceeds one
+ok   event count advances
+ok   repeated impacts raise the cumulative class
+ok   cumulative exposure is finite
+ok   invalid events do not advance the state
+44 checks, 0 failed

@@ -1,0 +1,36 @@
+{
+  "format": "openrc-ground-physics-codehashes-v1",
+  "recorded_on": "2026-10-11",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "source_snapshot": ".tools/gp-work/app (isolated, gitignored draft app; keys are relative to this root)",
+  "source_sha256": {
+    "tests/check_trimmed_flight.py": "f90dd2374515f0314c20156e68343d9e47bb7103ad6bf063b07d234751a59821",
+    "tests/test_wind_trace.gd": "7e958df5b9c5cff41b8be543445544fd272cc46d69db22da4d7c268320a947ba",
+    "tests/test_atmosphere_cli.py": "d8ba1692b25cf15704939647e91cc6bbb066dce43c6f08ecf0caf15a58125273",
+    "physics/ground_surfaces.gd": "b501ac2a568b295f44b796c24ce96defcbc5e6d0d14d3bf4f92c7b69bb88ad6f",
+    "tests/test_atmosphere_flight.gd": "8f005279bace1f8b65fc81c2cfd651a6fe1d7004bf7f66a6ec7b3b7702165cee",
+    "physics/ground_contact.gd": "868f196ecaab082234e5cc6e5268187b628c108221a9e070576fefa24f5001dc",
+    "physics/ground_terrain.gd": "1b129c16bacaa60102be5c29f71c2d1f2405cbcd05f015dc28935d52679b0b2c",
+    "render/ground_gear.gd": "1a1e7f2a6dfd5f2f086c3a64a23480029bfce37832c9337454941ad7636c0d9f",
+    "physics/ground_wheels.gd": "e2ac034d3705e7d66f940464417c68b9aa6a848a40c445ece5ce8f1e2ab9fecf",
+    "tests/test_shaft_cli.py": "334c7105f357259f108444ecf57db9b8a5f5c4e717a4bca5abed3c19e61334da",
+    "sim/trace.gd": "eb41f296179e5eadb81a9b5f065ece532f91220df01ad10a6f9ea232085ef563",
+    "tests/test_weather_cli.py": "07f8422022e416bcff9f693d130b38357db789b33c42f2ce5da1d8e8453857a3",
+    "tests/test_trace_metadata.gd": "b1cd9dedd714fda28664b573612a4cb9ef125b57eb8be074ec75025bea50a2e5",
+    "data/ground/wheel_profiles.json": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+    "tests/test_wind_flight.gd": "6365a10c8c41dd9c0faa82da3b516d60fcb97ab09233663cde8a8b7599896fc4",
+    "tests/check_wind_trace.py": "d4c724df5919ed91a0249169d92f6e538132f14d21e7a24710fe4749f5c01f2c",
+    "tests/check_atmosphere_trace.py": "e936f1f1fd6afa44e4b00b77621e8ffc7f32d47235d8fea6d975d5a42dc3d74b",
+    "sim/simulation.gd": "803326a750739201619e21d426f355a12a0514f3d5ea62433713c9c45a82ffde",
+    "sim/flight_session.gd": "dbde708784dd25814bc4836e53b3cf110b842d769ca667af4e841ed96fd4fe61"
+  },
+  "evidence_sha256": {
+    "wind-flight.log": "6b253b90e4fcf3b16b7a9ad0ac81130105284a2fdbf784ea6c5dde2a351d81e5",
+    "profiles.json": "29d83a010df0668057d903f5ff34a48c7a8c50da5827888ffbea35791a0fe806",
+    "atmosphere-cli.log": "845c64cc9df7b77bdf377c4620e56016f6bb34baec2b0335c158d738dd7547cc",
+    "wind-trace.log": "afda27fe33fec2b32f62f81ca2fbe846cd8bec11a18695cf06b564ab6de2542a",
+    "shaft-cli.log": "b5df5ba3cae6b8a89a79c4a2cf48c03263b7d12e8f073c3cb88c987e3af74476",
+    "weather-cli.log": "50887dfcc1a2f69de3e88cb6e0c60df2957fce1d983f3f559c735ce9e9dbd625",
+    "atmosphere-flight.log": "9b04d0b9e363846b4f2ec1da99a735a1d03e015ec051d5efb1385456a6f586a4"
+  }
+}

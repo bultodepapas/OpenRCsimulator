@@ -86,6 +86,8 @@ func _particles(count: int, lifetime_s: float, texture: Texture2D, hot: bool) ->
 	p.amount = count
 	p.lifetime = lifetime_s
 	p.local_coords = false
+	# Alpha particle cards must not cast opaque quad silhouettes on the field.
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	p.direction = Vector3.UP
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
 	p.emission_sphere_radius = 0.25
@@ -125,27 +127,16 @@ func _curve(points: Array) -> Curve:
 	return curve
 
 func _build_marks() -> void:
-	var shader := Shader.new()
-	shader.code = """shader_type spatial;
-render_mode unshaded, cull_disabled, depth_draw_never;
-uniform vec4 tint : source_color = vec4(0.09,0.065,0.035,0.8);
-void fragment() {
- vec2 p = UV * 2.0 - 1.0;
- float theta = atan(p.y,p.x);
- float edge = 0.84 + 0.06*sin(theta*11.0) + 0.035*sin(theta*23.0);
- float r = length(p);
- float grain = fract(sin(dot(UV,vec2(127.1,311.7)))*43758.5453);
- ALBEDO = tint.rgb*(0.75+0.5*grain);
- ALPHA = tint.a*(1.0-smoothstep(edge-0.25,edge,r));
-}
-"""
 	for i in MAX_MARKS:
 		var mark := MeshInstance3D.new()
 		var plane := PlaneMesh.new()
 		plane.size = Vector2.ONE * 2
 		mark.mesh = plane
-		var mat := ShaderMaterial.new()
-		mat.shader = shader
+		var mat := StandardMaterial3D.new()
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_texture = load("res://assets/crash/smoke.png")
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		mark.material_override = mat
 		mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mark.visible = false
@@ -182,7 +173,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	var level := clampi(int(severity.get("class",0)),0,4)
 	var power := clampf(float(severity.get("severity",0.0)),0.0,1.0)
 	var radius := 0.2 + 1.0*power
-	_fire_duration = minf(50.0, fuel_kg / 0.035) if hot_turbine and level >= 3 and fuel_kg > 0.0 else 0.0
+	_fire_duration = minf(50.0, fuel_kg / 0.035) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
 	for p in emitters:
 		p.global_position = _origin
 		p.visible = true
@@ -219,8 +210,10 @@ func mark(point: Vector3, direction: Vector3, radius: float, burned: bool = fals
 	_mark_index += 1
 	item.position = Vector3(point.x,0.012 + float(_mark_index % MAX_MARKS)*0.0002,point.z)
 	item.rotation.y = atan2(direction.x,direction.z)
-	item.scale = Vector3(clampf(radius,0.12,2.0),1,clampf(radius+direction.length()*0.07,0.2,4.0))
-	(item.material_override as ShaderMaterial).set_shader_parameter("tint",Color(0.025,0.021,0.018,0.9) if burned else Color(0.15,0.09,0.035,0.82))
+	# Vertical impact speed must not elongate a horizontal ground scuff.
+	var slide_speed := Vector2(direction.x,direction.z).length()
+	item.scale = Vector3(clampf(radius*0.8,0.12,1.4),1,clampf(radius+slide_speed*0.035,0.2,2.5))
+	(item.material_override as StandardMaterial3D).albedo_color = Color(0.035,0.029,0.025,0.88) if burned else Color(0.12,0.075,0.025,0.78)
 	item.visible = true
 
 func secondary(point: Vector3, strength: float) -> void:
@@ -267,6 +260,7 @@ func fire_strength() -> float:
 
 func reset() -> void:
 	_active = false
+	_paused = false
 	_age = 0
 	_fire_duration = 0
 	_mark_index = 0

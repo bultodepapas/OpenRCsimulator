@@ -1,0 +1,68 @@
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m
+verify_extra: 123 checks, 0 failures
+== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)
+P-51 appearance source/runtime: identical
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+verify_p51: 248 checks, 0 failed
+== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)
+verify_p51_clearance: 12 checks, 0 failed (27256 ms)
+== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)
+PASS 137 checks
+== C7-R1: trace completion, finite samples and failure exits
+FFF.......F....
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='jensen-das-ugly-stik-60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/gp-work/app/tests/test_trace_acceptance.py", line 84, in test_active_aircraft_metadata
+    self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2')
+AssertionError: 'openrc-flight-meta v6' != 'openrc-flight-meta v2'
+- openrc-flight-meta v6
+?                     ^
++ openrc-flight-meta v2
+?                     ^
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='gp-extra-300s-60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/gp-work/app/tests/test_trace_acceptance.py", line 84, in test_active_aircraft_metadata
+    self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2')
+AssertionError: 'openrc-flight-meta v6' != 'openrc-flight-meta v2'
+- openrc-flight-meta v6
+?                     ^
++ openrc-flight-meta v2
+?                     ^
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='p51d-mustang-120')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/gp-work/app/tests/test_trace_acceptance.py", line 84, in test_active_aircraft_metadata
+    self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2')
+AssertionError: 'openrc-flight-meta v6' != 'openrc-flight-meta v2'
+- openrc-flight-meta v6
+?                     ^
++ openrc-flight-meta v2
+?                     ^
+
+
+======================================================================
+FAIL: test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes (__main__.TraceAcceptance.test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/gp-work/app/tests/test_trace_acceptance.py", line 154, in test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes
+    self.rejected(meta=legacy, diagnostic='legacy metadata v1')
+  File "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/gp-work/app/tests/test_trace_acceptance.py", line 59, in rejected
+    self.assertIn(diagnostic, result.stderr)
+AssertionError: 'legacy metadata v1' not found in 'FAIL metadata v2 must use explicit input/semantic hash names\n'
+
+----------------------------------------------------------------------
+Ran 13 tests in 417.672s
+
+FAILED (failures=4)

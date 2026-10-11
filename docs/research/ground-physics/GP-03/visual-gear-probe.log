@@ -1,0 +1,50 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GP-03 visual gear probe: integrated app source, native session + model builders
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+PASS jensen-das-ugly-stik-60 contact count matches rendered wheels — contacts=3 wheels=3
+PASS jensen-das-ugly-stik-60 main_left pivot exists — mapped pivot=left
+PASS jensen-das-ugly-stik-60 main_right pivot exists — mapped pivot=right
+PASS jensen-das-ugly-stik-60 nose pivot exists — mapped pivot=nose
+jensen-das-ugly-stik-60 contact order=["left", "right", "nose"] wheel_index=0
+PASS jensen-das-ugly-stik-60 loads contact-height state
+jensen-das-ugly-stik-60 rest wheel-center mapping: left contact=0.0431 m contact+radius=0.0050 m; right contact=0.0431 m contact+radius=0.0050 m; nose contact=0.0399 m contact+radius=0.0050 m
+PASS jensen-das-ugly-stik-60 rendered wheel center maps to contact/axle coordinates — best per-contact residual <= 0.010 m; worst=0.005000 m
+PASS jensen-das-ugly-stik-60 physics compression articulates every matching pivot — max simultaneous support=3/3 max compression=0.019213 m max local pivot error=0.000000000 m
+PASS jensen-das-ugly-stik-60 reset to airborne spin/steer state
+PASS jensen-das-ugly-stik-60 has a physics steering contact — [0.0, 0.0, 0.34906585039887]
+PASS jensen-das-ugly-stik-60 positive forward rim speed rotates about -X — left angle_x=-2.624672 rim=0.500 radius=0.0381; right angle_x=-2.624672 rim=0.500 radius=0.0381; nose angle_x=-2.863278 rim=0.500 radius=0.0349
+PASS jensen-das-ugly-stik-60 steering pivot follows servo limit and physical wheel heading — servo=0.300000 max=0.349066 pivot_y=-0.104720 expected=-0.104720 heading_dot=0.999995827675
+PASS jensen-das-ugly-stik-60 remains finite and fault-free through spin/steer ticks — tick=48 fault=''
+PASS jensen-das-ugly-stik-60 observer survives session teardown — observer freed with session
+PASS gp-extra-300s-60 contact count matches rendered wheels — contacts=3 wheels=3
+PASS gp-extra-300s-60 main_left pivot exists — mapped pivot=left
+PASS gp-extra-300s-60 main_right pivot exists — mapped pivot=right
+PASS gp-extra-300s-60 tail pivot exists — mapped pivot=tail
+gp-extra-300s-60 contact order=["left", "right", "tail"] wheel_index=0
+PASS gp-extra-300s-60 loads contact-height state
+gp-extra-300s-60 rest wheel-center mapping: left contact=0.0349 m contact+radius=0.0000 m; right contact=0.0349 m contact+radius=0.0000 m; tail contact=0.0127 m contact+radius=0.0000 m
+PASS gp-extra-300s-60 rendered wheel center maps to contact/axle coordinates — best per-contact residual <= 0.010 m; worst=0.000001 m
+PASS gp-extra-300s-60 physics compression articulates every matching pivot — max simultaneous support=3/3 max compression=0.021721 m max local pivot error=0.000000000 m
+PASS gp-extra-300s-60 reset to airborne spin/steer state
+PASS gp-extra-300s-60 has a physics steering contact — [0.0, 0.0, -0.43633231299858]
+PASS gp-extra-300s-60 positive forward rim speed rotates about -X — left angle_x=-2.863278 rim=0.500 radius=0.0349; right angle_x=-2.863278 rim=0.500 radius=0.0349; tail angle_x=-1.590830 rim=0.500 radius=0.0127
+PASS gp-extra-300s-60 steering pivot follows servo limit and physical wheel heading — servo=0.300000 max=-0.436332 pivot_y=0.130900 expected=0.130900 heading_dot=0.999999821186
+PASS gp-extra-300s-60 remains finite and fault-free through spin/steer ticks — tick=48 fault=''
+PASS gp-extra-300s-60 observer survives session teardown — observer freed with session
+PASS p51d-mustang-120 contact count matches rendered wheels — contacts=3 wheels=3
+PASS p51d-mustang-120 main_left pivot exists — mapped pivot=left
+PASS p51d-mustang-120 main_right pivot exists — mapped pivot=right
+PASS p51d-mustang-120 tail pivot exists — mapped pivot=tail
+p51d-mustang-120 contact order=["left", "right", "tail"] wheel_index=0
+PASS p51d-mustang-120 loads contact-height state
+p51d-mustang-120 rest wheel-center mapping: left contact=0.0857 m contact+radius=0.0000 m; right contact=0.0857 m contact+radius=0.0000 m; tail contact=0.0397 m contact+radius=0.0000 m
+PASS p51d-mustang-120 rendered wheel center maps to contact/axle coordinates — best per-contact residual <= 0.010 m; worst=0.000001 m
+PASS p51d-mustang-120 physics compression articulates every matching pivot — max simultaneous support=3/3 max compression=0.021657 m max local pivot error=0.000000000 m
+PASS p51d-mustang-120 reset to airborne spin/steer state
+PASS p51d-mustang-120 has a physics steering contact — [0.0, 0.0, -0.43633231299858]
+PASS p51d-mustang-120 positive forward rim speed rotates about -X — left angle_x=-1.166861 rim=0.500 radius=0.0857; right angle_x=-1.166861 rim=0.500 radius=0.0857; tail angle_x=-2.515723 rim=0.500 radius=0.0398
+PASS p51d-mustang-120 steering pivot follows servo limit and physical wheel heading — servo=0.300000 max=-0.436332 pivot_y=0.130900 expected=0.130900 heading_dot=0.999997258186
+PASS p51d-mustang-120 remains finite and fault-free through spin/steer ticks — tick=48 fault=''
+PASS p51d-mustang-120 observer survives session teardown — observer freed with session
+visual gear probe: 39 checks, 0 failed

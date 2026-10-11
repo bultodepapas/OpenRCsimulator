@@ -1,0 +1,33 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Stik data loads with tyre friction and a steerable nose wheel  []
+ok   only the nose wheel steers (20°)
+ok   rolling ahead at 2 m/s: F_x = −C_rr·N = −4 N, no side force  [-4.0, 0.0, -100.0, 0.0, 29.2, 0.0]
+ok     and its moment: M_y = 0.2·(−4) + 0.3·100 = 29.2 N·m  [-4.0, 0.0, -100.0, 0.0, 29.2, 0.0]
+ok   slip angle below the peak: F_y = −μ·N·tan(slip)/tan 6° = -38.057 N  [-4.0, -38.0574578168903, -100.0, 7.61149156337807, 29.2, -11.4172373450671]
+ok   rolling backwards at the same slip: same side force, rolling drag forward (+4 N)  [4.0, -38.0574578168903, -100.0, 7.61149156337807, 30.8, -11.4172373450671]
+ok   sliding sideways: saturated at −μ·N = −80 N, no rolling drag  [0.0, -80.0, -100.0, 16.0, 30.0, -24.0]
+ok   at rest: normal force only (no friction without motion)  [0.0, 0.0, -100.0, 0.0, 30.0, 0.0]
+ok   heading does not matter (yaw 45° gives the same body loads)  [-4.0, -38.0574578168904, -100.0, 7.61149156337808, 29.2, -11.4172373450671] vs [-4.0, -38.0574578168903, -100.0, 7.61149156337807, 29.2, -11.4172373450671]
+ok   steered right: side force to the right (F_y > 0), nose-right yaw moment (M_z > 0)  [-31.0815542585325, 73.7152425545348, -100.0, -14.743048510907, 23.7836891482935, 22.1145727663604]
+ok     inside the friction circle: |F_tangential| ≤ μ·N  80.000000 N
+ok   steered left: side force to the left, nose-left yaw moment  [-31.0815542585325, -73.7152425545348, -100.0, 14.743048510907, 23.7836891482935, -22.1145727663604]
+ok   a gear without friction data stays normal-only (E1 behaviour)  [0.0, 0.0, -100.0, 0.0, 30.0, 0.0]
+ok   friction never produces power (2000 random states, 1404 touching): max P ≤ 1e-12 W  max P -0.14310953022115 W
+ok   coast-down decelerates at C_rr·g = 0.3923 m/s² within 1 %  0.39218 m/s²
+ok   then stops and stays stopped (no creep, no chatter)  u 0.00000488132557, v 0.00000035811898 m/s, rolled 11.46 m (v²/2a = 11.47)
+ok   full right steer at 1 m/s: radius = wheelbase / tan 20° = 0.964 m within 3 %  0.9772 m (main-axle slip -0.49°)
+ok   right steer turns right (yaw rate > 0), left steer turns left
+ok   at 3 m/s the turn opens (understeer from tyre slip), still on three wheels  radius 1.348 m, main-axle slip -3.43°
+ok   tip-over, rigid limit: speeding up slowly in a full-steer turn, the inside wheel unloads at a_lat = g·d/h = 4.47 m/s² within 3 % (d 0.117 m, h 0.257 m; d/h 0.46 < μ: it tips before it slides)  a_lat 4.498 m/s² at 2.06 m/s
+ok   tip-over, real gear: unloads earlier (roll on 18 mm-sag springs moves the CG out) but above 0.6× rigid  a_lat 3.46 m/s² (77 % of rigid) at 1.85 m/s, radius 0.99 m
+ok   h vs h/2 after a 3 s turn at 1.5 m/s: position within 0.1 mm, yaw rate within 1e-4 rad/s  Δpos 0.0000029012789 m, Δr 0.00000000638438 rad/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   parked with the engine off: stays within 1 mm for 10 s, no crash  moved 0.00000007739407 m
+info idle: static thrust 2.60 N vs rolling resistance C_rr·m·g 1.13 N; after 10 s at idle 3.78 m/s, 21.0 m
+ok   figure-eight at idle: two full turns (right, then left), no crash, all three wheels on the ground throughout (≥ 1 mm compression)  crashes 0, turns [-0.04823902434301, 360.190349142166, -360.127317040188]°, ticks with a wheel up 0, least compression 1.60 mm
+ok   figure-eight: the right loop lies east of the start line, the left loop west, each > 2 m wide  east 9.71 m, west -9.57 m
+ok   figure-eight: the right loop closes within 0.3 m of the crossing; the left loop passes within 25 % of its width of it; below 4.5 m/s  right 0.050 m, left 1.064 m (width 9.57 m), max speed 4.29 m/s, 21.5 s
+CRASH at 1.9 m/s (sink -0.0 m/s, airframe contact (hull point 1), point speed 2.9 m/s at detected tick) - restarting
+info full-steer figure-eight at idle: crashes 1 after turns [-0.04823902434301, 360.261581663266]° (reversal at 1.89 m/s)
+26 checks, 0 failed

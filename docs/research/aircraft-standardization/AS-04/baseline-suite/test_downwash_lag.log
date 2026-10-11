@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik: one lagged wing CL after the anchors
+ok   gp-extra-300s-60 (no downwash gradient): no lag entry
+ok   p51d-mustang-120 (no downwash gradient): no lag entry
+ok   sebart-avanti-s-a200-p100rx (no downwash gradient): no lag entry
+ok   reset starts the lag settled at the start state's wing CL
+ok   lag = instantaneous wing CL reproduces the quasi-static local loads byte for byte (2000 states incl. stall, rates, controls)  2000/2000
+ok   D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)  2000/2000
+ok   FlightSession._loads feeds the lagged CL to the tail (equals Dynamics with it, differs from quasi-static)  pitch -3.0608 vs quasi-static -2.3998 N·m
+ok   step response: exact first-order lag over 24 ticks (τ = l/V = 51.0 ms)  1.1102230246251565e-16
+info Cmα̇: quasi-steady theory -3.593, at k 0.02 -3.557; measured -3.424 (240 Hz), -3.495 (480 Hz)
+ok   Cmα̇ from the plunge oscillation -3.424 within 5 % of the lag theory -3.557
+ok   tick refinement: the error to theory halves at 480 Hz (held lag input, first order)  0.1332 → 0.0618
+ok   D11g: the oracle regime's Cmα̇ -3.437 within 3 % of the local regime's -3.424 (one lag, one tail)
+info effective pitch damping: local Cmq -7.48 + Cmα̇ -3.42 = -10.93; oracle Cmq -7.48 + Cmα̇ -3.44 = -10.95
+ok   effective pitch damping Cmq + Cmα̇ -10.93 within 10 % of the geometry estimate −2·a_t·η·V_H·(l_t/c)·(1 + lag) + wing (-11.07)
+ok   checkpoint mid-pull: restore and replay 200 ticks byte-identical, lag included
+14 checks, 0 failed

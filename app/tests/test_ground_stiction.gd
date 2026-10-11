@@ -126,6 +126,10 @@ func _anchors() -> PackedFloat64Array:
 func _unit_checks(gear: Dictionary, settled_state: PackedFloat64Array) -> void:
 	var rects: PackedFloat64Array = _session.ground_surfaces
 	var parked := settled_state.duplicate() # exactly at rest: E2 and the anchor law both give zero tangential force
+	# The hand oracle below is defined along exact east on flat E2 ground, independent of the profiled terrain pose.
+	var east_heading := M.q_from_euler(PI / 2.0, 0.0, 0.0)
+	for i in 4:
+		parked[RB.ATT + i] = east_heading[i]
 	for i in 3:
 		parked[RB.VEL + i] = 0.0
 		parked[RB.RATE + i] = 0.0
@@ -281,8 +285,12 @@ func _predicted_breakaway(model: Dictionary, mass: float, torque_per_newton: flo
 
 
 ## Engine off, a 1.5 cm/s eastward nudge (below STICK_SPEED): the anchors catch it and ring it down unclamped.
-func _energy_and_refinement(parked: PackedFloat64Array, model: Dictionary) -> void:
-	var nudged := parked.duplicate()
+func _energy_and_refinement(_terrain_parked: PackedFloat64Array, model: Dictionary) -> void:
+	# This strict energy oracle is flat: terrain normal-gap curvature is not an exact spring potential.
+	# Keep production wheel spin active, and include its kinetic energy below.
+	var saved_surfaces: PackedFloat64Array = _session.ground_surfaces
+	_session.ground_surfaces = PackedFloat64Array()
+	var nudged := _parked()
 	nudged[RB.VEL] = 0.015
 	nudged[RB.RATE + 2] = 0.02
 	_start(nudged, false)
@@ -306,6 +314,7 @@ func _energy_and_refinement(parked: PackedFloat64Array, model: Dictionary) -> vo
 	for i in 3:
 		gap = maxf(gap, absf(at_240[RB.POS + i] - at_480[RB.POS + i]))
 	_check("240 vs 480 Hz: the same ring-down within 1 µm after 1 s (tick-independent anchor springs)", gap < 1e-6 and _session.sim.fault_reason.is_empty(), String.num_scientific(gap) + " m")
+	_session.ground_surfaces = saved_surfaces
 
 
 func _energy(model: Dictionary) -> float:
@@ -316,7 +325,12 @@ func _energy(model: Dictionary) -> float:
 	var r := s[RB.RATE + 2]
 	var rot := 0.5 * (I[0] * p * p + I[1] * q * q + I[2] * r * r) + I[3] * p * q + I[4] * p * r + I[5] * q * r
 	var kin: float = 0.5 * model.mass_kg * (s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
-	return kin + rot - model.mass_kg * G * s[RB.POS + 2] + Ground.spring_energy(s, model.landing_gear) \
+	var wheel_energy := 0.0
+	for i in _session.wheel_count():
+		var c: Dictionary = model.landing_gear.contacts[i]
+		var omega: float = _session.sim.continuous[_session.wheel_index() + i] / c.wheel_radius
+		wheel_energy += 0.5 * c.wheel_inertia * omega * omega
+	return wheel_energy + kin + rot - model.mass_kg * G * s[RB.POS + 2] + Ground.spring_energy(s, model.landing_gear) \
 		+ Ground.anchor_energy(s, model.landing_gear, _anchors())
 
 

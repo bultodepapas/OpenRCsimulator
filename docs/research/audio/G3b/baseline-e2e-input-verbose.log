@@ -1,0 +1,77 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_e2e_input.gd remapped: res://tests/test_e2e_input.gd
+Completed load for: 'res://tests/test_e2e_input.gd' remapped 'res://tests/test_e2e_input.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://main.tscn remapped: res://main.tscn
+Loading resource: res://main.gd remapped: res://main.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Loading resource: res://render/cloud_field.gdshaderinc remapped: res://render/cloud_field.gdshaderinc
+Completed load for: 'res://render/cloud_field.gdshaderinc' remapped 'res://render/cloud_field.gdshaderinc' at thread -1
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Loading resource: res://render/grass_surface.gdshaderinc remapped: res://render/grass_surface.gdshaderinc
+Completed load for: 'res://render/grass_surface.gdshaderinc' remapped 'res://render/grass_surface.gdshaderinc' at thread -1
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://render/near_grass.gdshader remapped: res://render/near_grass.gdshader
+Completed load for: 'res://render/near_grass.gdshader' remapped 'res://render/near_grass.gdshader' at thread -1
+Loading resource: res://scenery/motion.gdshader remapped: res://scenery/motion.gdshader
+Completed load for: 'res://scenery/motion.gdshader' remapped 'res://scenery/motion.gdshader' at thread -1
+Loading resource: res://scenery/flowers.gdshader remapped: res://scenery/flowers.gdshader
+Completed load for: 'res://scenery/flowers.gdshader' remapped 'res://scenery/flowers.gdshader' at thread -1
+Loading resource: res://scenery/birds.gdshader remapped: res://scenery/birds.gdshader
+Completed load for: 'res://scenery/birds.gdshader' remapped 'res://scenery/birds.gdshader' at thread -1
+Loading resource: res://render/world/stars.gdshader remapped: res://render/world/stars.gdshader
+Loading resource: res://render/world/engine_srgb.gdshaderinc remapped: res://render/world/engine_srgb.gdshaderinc
+Completed load for: 'res://render/world/engine_srgb.gdshaderinc' remapped 'res://render/world/engine_srgb.gdshaderinc' at thread -1
+Completed load for: 'res://render/world/stars.gdshader' remapped 'res://render/world/stars.gdshader' at thread -1
+Loading resource: res://render/world/light_sprite.gdshader remapped: res://render/world/light_sprite.gdshader
+Completed load for: 'res://render/world/light_sprite.gdshader' remapped 'res://render/world/light_sprite.gdshader' at thread -1
+Loading resource: res://render/world/led_strip.gdshader remapped: res://render/world/led_strip.gdshader
+Completed load for: 'res://render/world/led_strip.gdshader' remapped 'res://render/world/led_strip.gdshader' at thread -1
+Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   hold -> roll +1, aileron +20°
+ok   release -> stick re-centers, aileron back to trim
+ok   throttle rose and holds after release
+ok   reset -> throttle back to its trimmed setting
+ok   physics: trimmed level flight holds altitude hands-off
+ok   physics: throttle back → descends
+ok   physics: R restarts at 30 m
+CRASH at 15.0 m/s (sink 0.0 m/s, airframe contact (hull point 1), point speed 15.0 m/s at detected tick) - restarting
+ok   physics: ground contact → CRASH shown
+ok   physics: restarts by itself after the crash
+ok   L0d: sim_clock = simulation time mod 1024 at three ticks
+ok   T: recording shows in the panel
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-11T20-31-51.csv (122 rows)
+ok   T again: trace saved with ~0.5 s of ticks
+all e2e checks passed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Leaked instance: AudioStreamGeneratorPlayback:9223372133340547064 - Reference count: 1
+Hint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).
+Orphan StringName: Master (static: 0, total: 2)
+StringName: 1 unclaimed string names at exit.
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

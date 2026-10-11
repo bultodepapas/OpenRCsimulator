@@ -53,7 +53,10 @@ func _initialize() -> void:
 	for id: String in Catalog.ids():
 		var legacy: Node = Flight.new()
 		legacy.setup(Catalog.entry(id).data)
-		check(id + " production keeps empty continuous state", legacy.sim.continuous.is_empty())
+		var wheel_state := PackedFloat64Array()
+		wheel_state.resize(legacy.wheel_count())
+		check(id + " production has only zero wheel state, no wash transport",
+			legacy._rotor_index() == 0 and legacy.sim.continuous == wheel_state)
 		legacy.free()
 	print("E0b5 transport: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
@@ -166,7 +169,10 @@ func _session_checks() -> void:
 		and flight.sim.continuous == flight._settled_wash(flight.sim.state, flight.sim.aux))
 	check("switch back to production drops continuous layout", flight._apply(AD.load_file(Flight.Scenarios.AIRCRAFT)))
 	flight.reset()
-	check("production reset has no lag state", flight.sim.continuous.is_empty() and flight.is_flyable())
+	var production_wheels := PackedFloat64Array()
+	production_wheels.resize(flight.wheel_count())
+	check("production reset has zero wheel state and no wash lag",
+		flight._rotor_index() == 0 and flight.sim.continuous == production_wheels and flight.is_flyable())
 	flight.free()
 
 

@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   legacy live flight
+ok   legacy advances physics
+ok   legacy selects G3b generator only
+ok   legacy observes accepted state
+ok   legacy pause freezes physics
+ok   legacy resumes physics
+ok   legacy restart remains flyable
+ok   legacy ends to Home
+G3b/AUD routes: 0 failed

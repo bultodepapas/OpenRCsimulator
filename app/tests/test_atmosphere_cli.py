@@ -145,6 +145,9 @@ class AtmosphereCLI(unittest.TestCase):
                 with self.subTest(aircraft=aircraft, duration=duration):
                     result = check(self.aircraft_traces[(aircraft, duration)], float(duration))
                     self.assertEqual(result['format'], 'openrc-trace v6')
+                    expected_schema = ('openrc-flight-meta v5' if aircraft == 'sebart-avanti-s-a200-p100rx'
+                                       else 'openrc-flight-meta v6')
+                    self.assertEqual(result['metadata_schema'], expected_schema)
                     self.assertEqual((result['rows'], result['first_tick'], result['last_tick']),
                                      (rows, 0, rows - 1))
                     self.assertLess(result['rho_kgm3'], 1.0)
@@ -184,6 +187,8 @@ class AtmosphereCLI(unittest.TestCase):
         )
         cases = (
             ('schema', {'metadata_schema': 'openrc-flight-meta v4'}, None, None, None),
+            ('wheel schema downgrade', {'metadata_schema': 'openrc-flight-meta v5'}, None, None, None),
+            ('malformed wheel layout', {'wheel_state_layout': '[]'}, None, None, None),
             ('atmosphere model', {'atmosphere_model': 'unknown'}, None, None, None),
             ('kernel state', {'atmosphere_state': json.dumps(state)}, None, None, None),
             ('out-of-range elevation', {'weather_config': json.dumps(outside_bounds)}, None, None, None),
@@ -202,6 +207,17 @@ class AtmosphereCLI(unittest.TestCase):
                                row_change, header_change, remove_row)
                 with self.assertRaises(ValueError):
                     check(path)
+
+        # v6 without wheel provenance is invalid, while the existing v5 Avanti
+        # trace remains the supported no-wheel atmosphere path.
+        _comments, avanti_metadata, _rows = _read_parts(
+            self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')])
+        self.assertEqual(avanti_metadata.get('metadata_schema'), 'openrc-flight-meta v5')
+        path = self.directory / 'mutated-no-wheel-v6.csv'
+        _rewrite_trace(self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')], path,
+                       {'metadata_schema': 'openrc-flight-meta v6'})
+        with self.assertRaises(ValueError):
+            check(path)
 
     def test_invalid_weather_is_refused_before_trace_creation_and_reference_v6_is_rejected(self):
         invalid = dict(MIXED_CONFIG, field_elevation_m=4000.1)

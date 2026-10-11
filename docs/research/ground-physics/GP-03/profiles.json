@@ -1,0 +1,578 @@
+{
+	"aircraft": [
+		{
+			"cg_le_m": [
+				0.1209,
+				0.0,
+				0.00000000000000000120255696833718
+			],
+			"id": "jensen-das-ugly-stik-60",
+			"inertia_kgm2": [
+				0.115406780100174,
+				0.387085613993545,
+				0.484107590445279,
+				-0.00954,
+				0.0072395,
+				0.000455256937359402
+			],
+			"input_identity": {
+				"format": "openrc-aircraft v1",
+				"sha256": "fcf07a988155d937d365c65c659d8ef1d4693320f48ac7085414b87e1fdb7eb4"
+			},
+			"landing_gear": {
+				"breakaway_factor": 1.25,
+				"contacts": [
+					{
+						"anchor_damping": 28.1208420697406,
+						"anchor_stiffness": 385.657262670729,
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 18.6,
+						"damping_onset": 0.00916013153311085,
+						"max_compression": 0.12,
+						"max_steering": 0.0,
+						"name": "main_left",
+						"position": [
+							-0.0941,
+							-0.18,
+							0.2581
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 560.0,
+						"wheel_inertia": 0.0000290322,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "app/data/aircraft/jensen_ugly_stik_60.json landing_gear description explicitly states brakes: none",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 tire spin-slip relaxation parameter; shared numerical model value, not a measured aircraft property",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass and the sourced 0.0381 m radius; mass is not independently measured",
+								"unit": "kg·m2",
+								"value": 0.0000290322
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/ugly-stik/model-v3/equipment-handoff.json: selected 3 in wheel callout; 3 in / 2, consistent with assets/aircraft/ugly-stik-60/geometry.json",
+								"unit": "m",
+								"value": 0.0381
+							}
+						},
+						"wheel_radius": 0.0381
+					},
+					{
+						"anchor_damping": 28.1208420697406,
+						"anchor_stiffness": 385.657262670729,
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 18.6,
+						"damping_onset": 0.00916013153311085,
+						"max_compression": 0.12,
+						"max_steering": 0.0,
+						"name": "main_right",
+						"position": [
+							-0.0941,
+							0.18,
+							0.2581
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 560.0,
+						"wheel_inertia": 0.0000290322,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "app/data/aircraft/jensen_ugly_stik_60.json landing_gear description explicitly states brakes: none",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 tire spin-slip relaxation parameter; shared numerical model value, not a measured aircraft property",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass and the sourced 0.0381 m radius; mass is not independently measured",
+								"unit": "kg·m2",
+								"value": 0.0000290322
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/ugly-stik/model-v3/equipment-handoff.json: selected 3 in wheel callout; 3 in / 2, consistent with assets/aircraft/ugly-stik-60/geometry.json",
+								"unit": "m",
+								"value": 0.0381
+							}
+						},
+						"wheel_radius": 0.0381
+					},
+					{
+						"anchor_damping": 21.3086827237748,
+						"anchor_stiffness": 292.233363068912,
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 16.5,
+						"damping_onset": 0.0088341616541999,
+						"max_compression": 0.12,
+						"max_steering": 0.349065850398866,
+						"name": "nose",
+						"position": [
+							0.2569,
+							0.0,
+							0.2549
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 440.0,
+						"wheel_inertia": 0.0000182943,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "app/data/aircraft/jensen_ugly_stik_60.json landing_gear description explicitly states brakes: none",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 tire spin-slip relaxation parameter; shared numerical model value, not a measured aircraft property",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.030 kg rotating wheel mass and the sourced 0.034925 m radius; mass is not independently measured",
+								"unit": "kg·m2",
+								"value": 0.0000182943
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/ugly-stik/model-v3/equipment-handoff.json: equipment table radius_m for nose wheel; 2.75 in / 2",
+								"unit": "m",
+								"value": 0.034925
+							}
+						},
+						"wheel_radius": 0.034925
+					}
+				],
+				"heave_omega": 23.2533218665891,
+				"reach": 0.361900013815971,
+				"rolling_resistance": 0.04,
+				"side_friction": 0.8,
+				"static_sag": 0.0181363826217078,
+				"tan_peak_slip": 0.105104235265676
+			},
+			"mass_kg": 2.88505829104375,
+			"source": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"wheel_profile": {
+				"aircraft_id": "jensen-das-ugly-stik-60",
+				"contact_order": [
+					"main_left",
+					"main_right",
+					"nose"
+				],
+				"format": "openrc-wheel-profiles v1",
+				"input_sha256": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+				"profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+				"status": "applied"
+			}
+		},
+		{
+			"cg_le_m": [
+				0.108800108580602,
+				0.0,
+				-0.0243449807554035
+			],
+			"id": "gp-extra-300s-60",
+			"inertia_kgm2": [
+				0.166619981270136,
+				0.311965498090718,
+				0.455488826891415,
+				0.0,
+				-0.0153611453585115,
+				0.0
+			],
+			"input_identity": {
+				"format": "openrc-aircraft v1",
+				"sha256": "1029b5598dc973ae27c5169ebed51f5843a57828c5269aabc0ec1a5265fd2233"
+			},
+			"landing_gear": {
+				"contacts": [
+					{
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 16.492048,
+						"damping_onset": 0.0105095242773839,
+						"max_compression": 0.08,
+						"max_steering": 0.0,
+						"name": "main_left",
+						"position": [
+							0.0902001085806022,
+							-0.16,
+							0.244480019244596
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 673.706077,
+						"wheel_inertia": 0.0000244025,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "research/extra-300/ex05/derive_physics.py landing-gear description explicitly says no brakes",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass; the generated 0.20 kg main gear item also includes strap and two pants",
+								"unit": "kg·m2",
+								"value": 0.0000244025
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/extra-300/ex05/derive_physics.py: 2-3/4 in main wheels / 2; wheel size is source-derived, contact mechanics remain provisional",
+								"unit": "m",
+								"value": 0.034925
+							}
+						},
+						"wheel_radius": 0.034925
+					},
+					{
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 16.492048,
+						"damping_onset": 0.0105095242773839,
+						"max_compression": 0.08,
+						"max_steering": 0.0,
+						"name": "main_right",
+						"position": [
+							0.0902001085806022,
+							0.16,
+							0.244480019244596
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 673.706077,
+						"wheel_inertia": 0.0000244025,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "research/extra-300/ex05/derive_physics.py landing-gear description explicitly says no brakes",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.040 kg rotating wheel mass; the generated 0.20 kg main gear item also includes strap and two pants",
+								"unit": "kg·m2",
+								"value": 0.0000244025
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/extra-300/ex05/derive_physics.py: 2-3/4 in main wheels / 2; wheel size is source-derived, contact mechanics remain provisional",
+								"unit": "m",
+								"value": 0.034925
+							}
+						},
+						"wheel_radius": 0.034925
+					},
+					{
+						"brake_availability": "none",
+						"brake_torque": 0.0,
+						"damping": 9.472313,
+						"damping_onset": 0.0105095340153715,
+						"max_compression": 0.05,
+						"max_steering": -0.436332312998582,
+						"name": "tail",
+						"position": [
+							-0.843799891419398,
+							0.0,
+							0.0652550192445965
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 222.245679,
+						"wheel_inertia": 0.00000080645,
+						"wheel_provenance": {
+							"brake_availability": "none",
+							"brake_torque": {
+								"kind": "manual",
+								"source": "research/extra-300/ex05/derive_physics.py landing-gear description explicitly says no brakes",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.010 kg rotating wheel mass; the generated 0.030 kg tail assembly also includes wire",
+								"unit": "kg·m2",
+								"value": 0.00000080645
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "research/extra-300/ex05/derive_physics.py: 1 in tail wheel / 2",
+								"unit": "m",
+								"value": 0.0127
+							}
+						},
+						"wheel_radius": 0.0127
+					}
+				],
+				"heave_omega": 21.6000015635205,
+				"reach": 0.846319368971312,
+				"rolling_resistance": 0.04,
+				"side_friction": 0.8,
+				"static_sag": 0.0210190513123442,
+				"tan_peak_slip": 0.105104235265676
+			},
+			"mass_kg": 3.364321,
+			"source": "res://data/aircraft/gp_extra_300s_60.json",
+			"wheel_profile": {
+				"aircraft_id": "gp-extra-300s-60",
+				"contact_order": [
+					"main_left",
+					"main_right",
+					"tail"
+				],
+				"format": "openrc-wheel-profiles v1",
+				"input_sha256": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+				"profile_sha256": "72c9d754277eed6a6db76894c76fd16e860e5b71569928d3f9d1bbbeb3ab6d97",
+				"status": "applied"
+			}
+		},
+		{
+			"cg_le_m": [
+				0.177762743605756,
+				0.0,
+				-0.0711460381613041
+			],
+			"id": "p51d-mustang-120",
+			"inertia_kgm2": [
+				3.41223007472548,
+				6.81798850190082,
+				9.4966221216146,
+				0.0,
+				-0.26980711094341,
+				0.0
+			],
+			"input_identity": {
+				"format": "openrc-aircraft v1",
+				"sha256": "c7befa76d077b6df20bff2969a6e7368d67ea836a0ea2b0929ca4e1e5d1ce90d"
+			},
+			"landing_gear": {
+				"contacts": [
+					{
+						"brake_availability": "unspecified",
+						"brake_torque": 0.0,
+						"damping": 106.617031,
+						"damping_onset": 0.00961856600200869,
+						"max_compression": 0.12,
+						"max_steering": 0.0,
+						"name": "main_left",
+						"position": [
+							0.152762743605756,
+							-0.451,
+							0.439353961838696
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 4405.88815,
+						"wheel_inertia": 0.000367249,
+						"wheel_provenance": {
+							"brake_availability": "unspecified",
+							"brake_torque": {
+								"kind": "estimated",
+								"source": "P51-12 landing_gear declares steering/friction but no brake control; brake hardware and torque are unspecified and not modeled",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.100 kg rotating wheel mass and sourced 0.0857 m radius; generated retract/strut mass is not a wheel-only measurement",
+								"unit": "kg·m2",
+								"value": 0.000367249
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "assets/aircraft/p51d-mustang-120/geometry.json main wheel diameter 0.1714 m / 2; underlying 27 in full-size callout is explicitly unverified",
+								"unit": "m",
+								"value": 0.0857
+							}
+						},
+						"wheel_radius": 0.0857
+					},
+					{
+						"brake_availability": "unspecified",
+						"brake_torque": 0.0,
+						"damping": 106.617031,
+						"damping_onset": 0.00961856600200869,
+						"max_compression": 0.12,
+						"max_steering": 0.0,
+						"name": "main_right",
+						"position": [
+							0.152762743605756,
+							0.451,
+							0.439353961838696
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 4405.88815,
+						"wheel_inertia": 0.000367249,
+						"wheel_provenance": {
+							"brake_availability": "unspecified",
+							"brake_torque": {
+								"kind": "estimated",
+								"source": "P51-12 landing_gear declares steering/friction but no brake control; brake hardware and torque are unspecified and not modeled",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.100 kg rotating wheel mass and sourced 0.0857 m radius; generated retract/strut mass is not a wheel-only measurement",
+								"unit": "kg·m2",
+								"value": 0.000367249
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "assets/aircraft/p51d-mustang-120/geometry.json main wheel diameter 0.1714 m / 2; underlying 27 in full-size callout is explicitly unverified",
+								"unit": "m",
+								"value": 0.0857
+							}
+						},
+						"wheel_radius": 0.0857
+					},
+					{
+						"brake_availability": "unspecified",
+						"brake_torque": 0.0,
+						"damping": 56.086539,
+						"damping_onset": 0.0169486168056826,
+						"max_compression": 0.08,
+						"max_steering": -0.436332312998582,
+						"name": "tail",
+						"position": [
+							-1.10403725639424,
+							0.0,
+							0.128503961838696
+						],
+						"spin_relaxation": 0.03,
+						"stiffness": 1219.263548,
+						"wheel_inertia": 0.0000158006,
+						"wheel_provenance": {
+							"brake_availability": "unspecified",
+							"brake_torque": {
+								"kind": "estimated",
+								"source": "P51-12 landing_gear declares steering/friction but no brake control; brake hardware and torque are unspecified and not modeled",
+								"unit": "N·m",
+								"value": 0.0
+							},
+							"spin_relaxation": {
+								"kind": "estimated",
+								"source": "GP-02 shared tire spin-slip relaxation parameter; not measured",
+								"unit": "s",
+								"value": 0.03
+							},
+							"wheel_inertia": {
+								"kind": "estimated",
+								"source": "Uniform solid-disk estimate, 0.020 kg rotating wheel mass and sourced 0.03975 m radius; retract unit mass includes doors/structure and is not wheel-only",
+								"unit": "kg·m2",
+								"value": 0.0000158006
+							},
+							"wheel_radius": {
+								"kind": "derived",
+								"source": "assets/aircraft/p51d-mustang-120/geometry.json tail wheel diameter 0.0795 m / 2; underlying 12.5 in full-size callout is explicitly unverified",
+								"unit": "m",
+								"value": 0.03975
+							}
+						},
+						"wheel_radius": 0.03975
+					}
+				],
+				"heave_omega": 21.6000003386736,
+				"reach": 1.11149067999456,
+				"rolling_resistance": 0.03,
+				"side_friction": 0.8,
+				"static_sag": 0.0210190536961518,
+				"tan_peak_slip": 0.105104235265676
+			},
+			"mass_kg": 21.499999,
+			"source": "res://data/aircraft/p51d_mustang_120.json",
+			"wheel_profile": {
+				"aircraft_id": "p51d-mustang-120",
+				"contact_order": [
+					"main_left",
+					"main_right",
+					"tail"
+				],
+				"format": "openrc-wheel-profiles v1",
+				"input_sha256": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+				"profile_sha256": "6f4c5f4b64a38da81340838551b34e2aaa4252807d9d3a4cf57f9d99b4810049",
+				"status": "applied"
+			}
+		},
+		{
+			"cg_le_m": [
+				0.240000004423161,
+				0.0,
+				0.00513024566659967
+			],
+			"id": "sebart-avanti-s-a200-p100rx",
+			"inertia_kgm2": [
+				0.620508009016858,
+				2.44037030230075,
+				2.96817103691004,
+				0.0,
+				-0.0269038187573472,
+				0.0
+			],
+			"input_identity": {
+				"format": "openrc-aircraft v1",
+				"sha256": "752c6bd13497cae75fcc8f365182421ee84605b38a20f36ef0761f4c34a5a5c7"
+			},
+			"landing_gear": {},
+			"mass_kg": 11.756299,
+			"source": "res://data/aircraft/sebart_avanti_s_a200.json",
+			"wheel_profile": {
+				"aircraft_id": "sebart-avanti-s-a200-p100rx",
+				"format": "openrc-wheel-profiles v1",
+				"input_sha256": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+				"status": "no_gear"
+			}
+		}
+	],
+	"engine": "4.7.2-stable (official)"
+}

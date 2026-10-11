@@ -14,6 +14,7 @@ from check_trimmed_flight import check_coupled_metadata
 
 FORMAT = 'openrc-trace v6'
 METADATA_SCHEMA = 'openrc-flight-meta v5'
+WHEEL_METADATA_SCHEMA = 'openrc-flight-meta v6'
 ATMOSPHERE_MODEL = 'uniform-field-qnh-isa-buck-liquid-v1'
 COSINE_MODEL = 'uniform-ned-repeating-cosine-v1'
 ATMOSPHERIC_COLUMNS = [
@@ -208,8 +209,8 @@ def check(path, duration=None):
             data_lines.append(line)
     if metadata.get('format') != FORMAT:
         raise ValueError('expected custom-atmosphere trace v6')
-    if metadata.get('metadata_schema') != METADATA_SCHEMA:
-        raise ValueError('trace v6 requires flight metadata v5')
+    if metadata.get('metadata_schema') not in (METADATA_SCHEMA, WHEEL_METADATA_SCHEMA):
+        raise ValueError('trace v6 requires flight metadata v5 or wheel metadata v6')
     if metadata.get('atmosphere_model') != ATMOSPHERE_MODEL:
         raise ValueError('unsupported atmosphere_model')
     if metadata.get('atmosphere_scope') != ATMOSPHERE_SCOPE:
@@ -312,7 +313,7 @@ def check(path, duration=None):
 
     result = {
         'format': FORMAT,
-        'metadata_schema': METADATA_SCHEMA,
+        'metadata_schema': metadata['metadata_schema'],
         'rows': len(rows),
         'first_tick': int(float(rows[0]['tick'])),
         'last_tick': int(float(rows[-1]['tick'])),
@@ -342,7 +343,10 @@ def _project_weather_trace(metadata, config, expected_columns, rows, has_turbule
     projected_metadata = dict(metadata)
     trace_version = 5 if has_turbulence else 4
     projected_metadata['format'] = f'openrc-trace v{trace_version}'
-    projected_metadata['metadata_schema'] = 'openrc-flight-meta v4' if has_turbulence else 'openrc-flight-meta v3'
+    projected_metadata['metadata_schema'] = (
+        WHEEL_METADATA_SCHEMA if metadata.get('metadata_schema') == WHEEL_METADATA_SCHEMA else
+        'openrc-flight-meta v4' if has_turbulence else 'openrc-flight-meta v3'
+    )
     projected_metadata['weather_model'] = TURBULENCE_MODEL if has_turbulence else COSINE_MODEL
     projected_config = {key: value for key, value in config.items() if key not in ATMOSPHERE_KEYS}
     projected_config['format'] = 'openrc-weather v2'

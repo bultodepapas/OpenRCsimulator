@@ -1,0 +1,37 @@
+{
+  "status": "software-qualified",
+  "step": "G3b",
+  "route": "--soundscape=legacy",
+  "full_suite": {
+    "exit_code": 0,
+    "frozen_snapshot": "b5febac + UI-21/EL2a-P3 source snapshot + final G3b",
+    "sections": 222,
+    "engine_errors": 0
+  },
+  "focused_assertions": 223,
+  "real_defects_rejected": 5,
+  "native_fps": [
+    30,
+    60,
+    144
+  ],
+  "root_routes": [
+    "legacy",
+    "on",
+    "off"
+  ],
+  "crash_presentation_during_route_smoke": "off (parallel CR work)",
+  "ownership_preserved": [
+    "UI-21",
+    "EL2a-P3",
+    "AUD",
+    "landscape/shadows",
+    "CR in progress"
+  ],
+  "limitations": [
+    "physical acoustics and speaker onset unmeasured",
+    "other native audio drivers unqualified",
+    "original target-machine physics budget remains open",
+    "immediate exit before mixer retirement produces known playback/source warnings"
+  ]
+}

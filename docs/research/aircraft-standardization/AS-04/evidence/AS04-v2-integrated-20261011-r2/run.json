@@ -1,0 +1,10 @@
+{
+  "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "driver": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\verify.gd",
+  "driver_sha256": "18bebd1ea0bc643189d63f750d1bba6e3a793dc9c4c912641a28e78965fed9e9",
+  "run_id": "AS04-v2-integrated-20261011-r2",
+  "started_utc": "2026-10-11T22:01:21.256495+00:00",
+  "comparator_self_test": "pass: detected one deliberate numeric model and state-byte change",
+  "alternating_runs": 2
+}

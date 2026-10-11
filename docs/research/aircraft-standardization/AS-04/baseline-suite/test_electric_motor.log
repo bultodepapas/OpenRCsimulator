@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+EL1a synthetic static: rho=0.800 rpm=6246.823214 battery_A=10.714710
+EL1a synthetic static: rho=1.225 rpm=5936.859471 battery_A=14.589257
+EL1a synthetic static: rho=1.600 rpm=5705.821175 battery_A=17.477235
+EL1a no-load: Hz=120 rpm_error=0.015830550908
+EL1a no-load: Hz=240 rpm_error=0.000910824056
+EL1a no-load: Hz=480 rpm_error=0.000054623271
+EL1a no-load: Hz=960 rpm_error=0.000003344239
+EL1a electric source: 1057 checks, 0 failed

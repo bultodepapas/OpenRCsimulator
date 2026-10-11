@@ -1,4 +1,4 @@
-# Loads, validates and derives the physics data of an aircraft (format "openrc-aircraft v1").
+# Loads/derives strict openrc-aircraft v2, with explicit historical v1 compatibility.
 # 64-bit floats only (guarded). Errors block use; warnings are data-quality notes to show, not hide.
 # Result: { ok: bool, errors: PackedStringArray, warnings: PackedStringArray, model: Dictionary }
 # Successful file loads also carry input_identity: {format, sha256 of exact loaded bytes}.
@@ -13,10 +13,13 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const FORMAT := "openrc-aircraft v1"
+const FORMAT := "openrc-aircraft v2"
+const LEGACY_FORMAT := "openrc-aircraft v1"
+const Contract := preload("res://physics/aircraft_contract.gd")
 const Aero := preload("res://physics/aero.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## D1-R3 ground_support() tolerances (m, m²): contacts within 1 mm of a facet plane count as on it (data rounding, far
@@ -52,12 +55,22 @@ static func load_file(path: String) -> Dictionary:
 		return _fail("%s: top level must be an object" % path)
 	var result: Dictionary = validate_and_derive(json.data)
 	if result.ok:
+		# Aircraft files remain the generated/source-owned physics record. Ground wheel spin parameters come from a
+		# separate provenance-bearing profile, applied only at the file boundary (never to in-memory fixtures).
+		var profiled: Dictionary = WheelProfiles.apply_to_model(result.model)
+		if not profiled.ok:
+			result.ok = false
+			result.errors.append_array(profiled.errors)
+			result.model = {}
+			return result
+		result.model = profiled.model
+		result.wheel_profile_identity = profiled.identity
 		var digest: HashingContext = HashingContext.new()
 		digest.start(HashingContext.HASH_SHA256)
 		digest.update(bytes)
 		# Source identity is outside the derived model/checkpoint fingerprint.
 		# In-memory validate_and_derive() calls cannot claim an input file identity.
-		result.input_identity = {format = FORMAT, sha256 = digest.finish().hex_encode()}
+		result.input_identity = {format = str(json.data.format), sha256 = digest.finish().hex_encode()}
 	return result
 
 
@@ -122,10 +135,42 @@ static func _q(errors: PackedStringArray, path: String, node: Variant, unit: Str
 
 
 static func validate_and_derive(raw: Dictionary) -> Dictionary:
+	if raw.get("format") == LEGACY_FORMAT:
+		return _validate_legacy(raw)
+	if raw.get("format") != FORMAT:
+		return _fail("format must be '%s' or explicit legacy '%s'" % [FORMAT, LEGACY_FORMAT])
+	var structural: PackedStringArray = Contract.validate(raw)
+	if not structural.is_empty():
+		return {ok = false, errors = structural, warnings = PackedStringArray(), model = {}}
+	var result: Dictionary = _validate_legacy(legacy_v1_input(raw))
+	if result.ok:
+		# Identity describes authored v2, never the internal compatibility representation.
+		result.model.data_sha256 = JSON.stringify(raw, "", true).sha256_text()
+		result.model.capabilities = raw.capabilities.duplicate(true)
+		result.model.convention_id = raw.convention_id
+	return result
+
+
+## Explicit adapter for the shared numerical derivation and historical v1 research fixtures.
+## It does not validate or authorize a v2 file; production must use validate_and_derive/load_file.
+static func legacy_v1_input(raw: Dictionary) -> Dictionary:
+	var out: Dictionary = raw.duplicate(true)
+	out.format = LEGACY_FORMAT
+	out.erase("capabilities")
+	out.erase("convention_id")
+	if typeof(out.get("aero")) == TYPE_DICTIONARY:
+		var reference: Variant = out.aero.get("reference_coefficients")
+		if typeof(reference) == TYPE_DICTIONARY and reference.has("CLadot") and typeof(out.aero.get("coefficients")) == TYPE_DICTIONARY:
+			out.aero.coefficients.CLadot = reference.CLadot
+		out.aero.erase("reference_coefficients")
+	return out
+
+
+static func _validate_legacy(raw: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
 	var warnings := PackedStringArray()
-	if raw.get("format") != FORMAT:
-		errors.append("format must be '%s', got '%s'" % [FORMAT, raw.get("format")])
+	if raw.get("format") != LEGACY_FORMAT:
+		errors.append("format must be '%s', got '%s'" % [LEGACY_FORMAT, raw.get("format")])
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
 
 	var ref := _dictionary(errors, "reference", raw.get("reference", {}))

@@ -20,7 +20,8 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _raw(path: String) -> Dictionary:
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-	return parsed if typeof(parsed) == TYPE_DICTIONARY else {}
+	# EL1b tests legacy diagnostics; AS-01 covers the v2 preflight independently.
+	return AD.legacy_v1_input(parsed) if typeof(parsed) == TYPE_DICTIONARY else {}
 
 
 func _rejects(label: String, path: String, mutate: Callable, needle: String) -> void:

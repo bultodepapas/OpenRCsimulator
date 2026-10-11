@@ -1,0 +1,144 @@
+{
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "focused_programs": {
+    "test_aircraft_contract.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_aircraft_contract.gd.log"
+    },
+    "test_aircraft_data.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_aircraft_data.gd.log"
+    },
+    "test_ground_physics.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_ground_physics.gd.log"
+    },
+    "test_ground_terrain.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_ground_terrain.gd.log"
+    },
+    "test_field_surfaces.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_field_surfaces.gd.log"
+    },
+    "test_wheel_session.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_wheel_session.gd.log"
+    },
+    "test_checkpoint.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_checkpoint.gd.log"
+    },
+    "test_ground_stiction.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_ground_stiction.gd.log"
+    },
+    "test_p51_ground.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_p51_ground.gd.log"
+    },
+    "test_runway_start.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_runway_start.gd.log"
+    },
+    "test_takeoff_roll.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_takeoff_roll.gd.log"
+    },
+    "test_slipstream_downwash.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_slipstream_downwash.gd.log"
+    },
+    "test_session_guards.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_session_guards.gd.log"
+    },
+    "test_shaft_coupled.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_shaft_coupled.gd.log"
+    },
+    "test_electric_battery_session.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_electric_battery_session.gd.log"
+    },
+    "test_wash_transport.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_wash_transport.gd.log"
+    },
+    "test_trace_metadata.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_trace_metadata.gd.log"
+    },
+    "test_golden.gd": {
+      "ok": true,
+      "evidence": "gp-integrated/test_golden.gd.log"
+    },
+    "test_atmosphere_flight.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_atmosphere_flight.gd.log"
+    },
+    "test_wind_flight.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_wind_flight.gd.log"
+    },
+    "test_wind_trace.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_wind_trace.gd.log"
+    },
+    "test_crash_audio.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_crash_audio.gd.log"
+    },
+    "test_e2e_input.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_e2e_input.gd.log"
+    },
+    "test_ui_pause.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_ui_pause.gd.log"
+    },
+    "test_ui_runway.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_ui_runway.gd.log"
+    },
+    "test_crash_integration.gd": {
+      "ok": true,
+      "evidence": "gp-integrated-followup/test_crash_integration.gd.log"
+    },
+    "test_crash.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_crash.gd.log"
+    },
+    "test_crash_snapshot.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_crash_snapshot.gd.log"
+    },
+    "test_crash_severity.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_crash_severity.gd.log"
+    },
+    "test_landing_maneuver.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_landing_maneuver.gd.log"
+    },
+    "test_landing_variations.gd": {
+      "ok": true,
+      "evidence": "gp-final-ground/test_landing_variations.gd.log"
+    }
+  },
+  "focused_programs_passed": 31,
+  "focused_programs_total": 31,
+  "ground_scenarios": 108,
+  "powered_scenarios": 12,
+  "airborne_exact_cases": 8,
+  "trace_cli_tests": 14,
+  "turbulence_cli_linux_tests": 10,
+  "time_of_day_cli_tests": 5,
+  "full_shell_suite_passed": false,
+  "physical_calibration_complete": false,
+  "performance_budget_met": false,
+  "known_external_suite_issues": [
+    "generated grass freshness mismatch",
+    "legacy wing-polar candidate differs from migrated v2 catalog"
+  ]
+}

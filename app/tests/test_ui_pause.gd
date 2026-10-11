@@ -97,7 +97,7 @@ func _run() -> void:
 	_key_down(KEY_RIGHT, false)
 	await _wait(0.3)
 
-	# --- A crash shown under the menu: its countdown stops, Continue lets it finish and restart.
+	# --- CR-22a: Continue returns to the persistent wreck; Restart recovers flight.
 	var near: PackedFloat64Array = session.sim.state
 	near[2] = 0.1
 	session.sim.state = near
@@ -113,7 +113,12 @@ func _run() -> void:
 	app.continue_flight()
 	_check("Continue does not fly through the crash", app.pause_menu == null and session.sim.paused and not session.crash.is_empty())
 	await _wait(1.8)
-	_check("then the crash restarts the flight by itself", session.crash.is_empty() and not session.sim.paused)
+	_check("wreck persists after Continue until explicit restart", not session.crash.is_empty() and session.sim.paused)
+	app.open_pause()
+	await ui.settle()
+	app.restart_flight()
+	await ui.settle()
+	_check("menu Restart clears the wreck and resumes flight", session.crash.is_empty() and not session.sim.paused and app.pause_menu == null)
 
 	# --- Losing focus pauses (simulation.gd) and shows the menu.
 	# The real path (research 24): SceneTree releases held keys, then propagates to every node.

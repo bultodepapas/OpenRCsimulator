@@ -75,7 +75,7 @@ func _initialize() -> void:
         replay["trajectory_sha256"] = trajectory_hash.finish().hex_encode()
         replay["branch_signature"] = {
             "aero": Aero.h7_branch_tape.duplicate(),
-            "ground": Ground.h7_branch_tape.duplicate(),
+            "ground": Ground.h7_branch_tape.duplicate() + Ground.Wheels.h7_branch_tape.duplicate(),
             "propulsion": Propulsion.h7_branch_tape.duplicate(),
         }
         report.goldens[name] = replay
@@ -183,6 +183,23 @@ def instrument_branches(project: Path) -> None:
     )
     ground_path.write_text(ground, encoding="utf-8")
 
+    # GP-03: production profiles use the enhanced evaluator instead of legacy Ground.loads.
+    # Instrument its actual reach/contact branches too; do not count a delegating wrapper as coverage.
+    wheels_path = project / "physics" / "ground_wheels.gd"
+    wheels = wheels_path.read_text(encoding="utf-8")
+    wheels = replace_once(wheels, "extends RefCounted\n",
+                          "extends RefCounted\n\nstatic var h7_branch_tape: Array[int] = []\n",
+                          "wheel branch tape declaration")
+    wheels = replace_once(wheels,
+        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n",
+        "\tif -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces):\n\t\th7_branch_tape.append(50)\n\t\treturn {loads = loads, derivative = rates, wheels = diagnostics}\n\th7_branch_tape.append(51)\n",
+        "enhanced wheel reach branch")
+    wheels = replace_once(wheels,
+        "\t\tif n <= 0.0:\n\t\t\tcontinue\n",
+        "\t\tif n <= 0.0:\n\t\t\th7_branch_tape.append(52)\n\t\t\tcontinue\n\t\th7_branch_tape.append(53)\n",
+        "enhanced normal-load branch")
+    wheels_path.write_text(wheels, encoding="utf-8")
+
     prop_path = project / "physics" / "propulsion.gd"
     prop = prop_path.read_text(encoding="utf-8")
     prop = replace_once(
@@ -205,7 +222,7 @@ def instrument_branches(project: Path) -> None:
     golden = replace_once(
         golden,
         "\tsession.reset()\n\tvar sim: Node = session.sim\n",
-        "\tsession.reset()\n\tAero.h7_branch_tape.clear()\n\tGround.h7_branch_tape.clear()\n\tPropulsion.h7_branch_tape.clear()\n\tvar sim: Node = session.sim\n",
+        "\tsession.reset()\n\tAero.h7_branch_tape.clear()\n\tGround.h7_branch_tape.clear()\n\tGround.Wheels.h7_branch_tape.clear()\n\tPropulsion.h7_branch_tape.clear()\n\tvar sim: Node = session.sim\n",
         "golden replay instrumentation reset",
     )
     golden = replace_once(

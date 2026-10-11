@@ -1,0 +1,118 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_ui_help.gd remapped: res://tests/test_ui_help.gd
+Completed load for: 'res://tests/test_ui_help.gd' remapped 'res://tests/test_ui_help.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+ok   headless (no layout): QWERTY names
+ok   AZERTY: physical A, W, Z print Q, Z, W
+ok   Russian: physical A, W print Ф, Ц
+ok   named keys get names, arrows are drawn
+ok   named keys are translated
+Loading resource: res://app_root.tscn remapped: res://app_root.tscn
+Loading resource: res://app_root.gd remapped: res://app_root.gd
+Loading resource: res://render/sky.gdshader remapped: res://render/sky.gdshader
+Loading resource: res://render/cloud_field.gdshaderinc remapped: res://render/cloud_field.gdshaderinc
+Completed load for: 'res://render/cloud_field.gdshaderinc' remapped 'res://render/cloud_field.gdshaderinc' at thread -1
+Loading resource: res://render/cloud_relief.gdshaderinc remapped: res://render/cloud_relief.gdshaderinc
+Completed load for: 'res://render/cloud_relief.gdshaderinc' remapped 'res://render/cloud_relief.gdshaderinc' at thread -1
+Completed load for: 'res://render/sky.gdshader' remapped 'res://render/sky.gdshader' at thread -1
+Loading resource: res://render/ground.gdshader remapped: res://render/ground.gdshader
+Loading resource: res://render/grass_surface.gdshaderinc remapped: res://render/grass_surface.gdshaderinc
+Completed load for: 'res://render/grass_surface.gdshaderinc' remapped 'res://render/grass_surface.gdshaderinc' at thread -1
+Loading resource: res://render/turf_detail.gdshaderinc remapped: res://render/turf_detail.gdshaderinc
+Completed load for: 'res://render/turf_detail.gdshaderinc' remapped 'res://render/turf_detail.gdshaderinc' at thread -1
+Completed load for: 'res://render/ground.gdshader' remapped 'res://render/ground.gdshader' at thread -1
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://assets/landscape/turf/detail.png remapped: res://assets/landscape/turf/detail.png
+Loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex remapped: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex
+Completed load for: 'res://assets/landscape/turf/detail.png' remapped 'res://assets/landscape/turf/detail.png' at thread -1
+Loading resource: res://render/near_grass.gdshader remapped: res://render/near_grass.gdshader
+Completed load for: 'res://render/near_grass.gdshader' remapped 'res://render/near_grass.gdshader' at thread -1
+Loading resource: res://scenery/motion.gdshader remapped: res://scenery/motion.gdshader
+Completed load for: 'res://scenery/motion.gdshader' remapped 'res://scenery/motion.gdshader' at thread -1
+Loading resource: res://scenery/flowers.gdshader remapped: res://scenery/flowers.gdshader
+Completed load for: 'res://scenery/flowers.gdshader' remapped 'res://scenery/flowers.gdshader' at thread -1
+Loading resource: res://scenery/birds.gdshader remapped: res://scenery/birds.gdshader
+Completed load for: 'res://scenery/birds.gdshader' remapped 'res://scenery/birds.gdshader' at thread -1
+Loading resource: res://render/world/stars.gdshader remapped: res://render/world/stars.gdshader
+Loading resource: res://render/world/engine_srgb.gdshaderinc remapped: res://render/world/engine_srgb.gdshaderinc
+Completed load for: 'res://render/world/engine_srgb.gdshaderinc' remapped 'res://render/world/engine_srgb.gdshaderinc' at thread -1
+Completed load for: 'res://render/world/stars.gdshader' remapped 'res://render/world/stars.gdshader' at thread -1
+Loading resource: res://render/world/light_sprite.gdshader remapped: res://render/world/light_sprite.gdshader
+Completed load for: 'res://render/world/light_sprite.gdshader' remapped 'res://render/world/light_sprite.gdshader' at thread -1
+Loading resource: res://render/world/led_strip.gdshader remapped: res://render/world/led_strip.gdshader
+Completed load for: 'res://render/world/led_strip.gdshader' remapped 'res://render/world/led_strip.gdshader' at thread -1
+Loading resource: res://ui/slider_grabber.svg remapped: res://ui/slider_grabber.svg
+Loading resource: res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex remapped: res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex
+Completed load for: 'res://ui/slider_grabber.svg' remapped 'res://ui/slider_grabber.svg' at thread -1
+Completed load for: 'res://app_root.gd' remapped 'res://app_root.gd' at thread -1
+Completed load for: 'res://app_root.tscn' remapped 'res://app_root.tscn' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+ok   Home: Help reachable by keyboard
+ok   Enter opens Help, focus on Close
+ok   Help shows every key of the shared table (20)
+ok   about: development build, Godot, licence
+ok   Help scrolls to keyboard focus
+ok   English Help fits without scrolling (582 <= 600 px)
+ok   Esc closes Help, focus back on Help
+ok   Esc in Help did not start or quit anything
+ok   Help: every text translated to Spanish
+ok   about in Spanish
+ok   Spanish Help fits without scrolling (582 <= 600 px)
+Loading resource: res://main.tscn remapped: res://main.tscn
+Loading resource: res://main.gd remapped: res://main.gd
+Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause: Help reachable
+ok   Help over the pause menu swallows flight keys
+ok   Esc closes Help, the pause menu stays
+ok   Esc again continues the flight
+Loading resource: res://app_root.tscn remapped: res://app_root.tscn
+Completed load for: 'res://app_root.tscn' remapped 'res://app_root.tscn' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   first flight: the hint shows, three items
+ok   the hint takes no keyboard focus
+ok   flight keys fly under the hint
+ok   paused time does not use the hint up
+ok   after 0.5 s flown it goes and is remembered
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   next flight: no hint
+Loading resource: res://app_root.tscn remapped: res://app_root.tscn
+Completed load for: 'res://app_root.tscn' remapped 'res://app_root.tscn' at thread -1
+Loading resource: res://main.tscn remapped: res://main.tscn
+Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+Loading resource: res://assets/landscape/trees/atlas.png remapped: res://assets/landscape/trees/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex remapped: res://.godot/imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex
+Completed load for: 'res://assets/landscape/trees/atlas.png' remapped 'res://assets/landscape/trees/atlas.png' at thread -1
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route: no hint, no settings
+all UI help checks passed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

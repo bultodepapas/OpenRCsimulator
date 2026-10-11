@@ -7,6 +7,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Trace := preload("res://sim/trace.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const PROFILED_AIRCRAFT := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120"]
+const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 
 var _failures: int = 0
 var _checks: int = 0
@@ -31,6 +33,24 @@ func _aux_matches(encoded: String, aux: PackedFloat64Array) -> bool:
 	return true
 
 
+func _without_wheel_profile(model: Dictionary) -> Dictionary:
+	var out: Dictionary = model.duplicate(true)
+	out.erase("wheel_profile")
+	var gear: Dictionary = out.get("landing_gear", {})
+	if not gear.is_empty():
+		gear.erase("rolling_reference_radius")
+		gear.erase("rolling_reference_radius_provenance")
+		var contacts: Array = gear.get("contacts", []).duplicate(true)
+		for index in contacts.size():
+			var contact: Dictionary = contacts[index]
+			for key in ["wheel_radius", "wheel_inertia", "spin_relaxation", "brake_torque", "brake_availability", "wheel_provenance"]:
+				contact.erase(key)
+			contacts[index] = contact
+		gear.contacts = contacts
+		out.landing_gear = gear
+	return out
+
+
 func _initialize() -> void:
 	var session: Node = Session.new()
 	session.input_enabled = false
@@ -42,7 +62,16 @@ func _initialize() -> void:
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
 		var meta: Dictionary = session.trace_meta()
 		_check("active aircraft " + entry.id, meta.aircraft.begins_with(entry.id))
-		_check("metadata schema", meta.metadata_schema == "openrc-flight-meta v2")
+		var wheel_profiled: bool = entry.id in PROFILED_AIRCRAFT
+		_check("metadata schema", meta.metadata_schema == ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2"))
+		if wheel_profiled:
+			_check("wheel trace layout names appended rim-speed tail", str(meta.continuous_layout).ends_with(WHEEL_LAYOUT_SUFFIX))
+			_check("wheel trace records selected-profile and source-file identity", str(meta.wheel_profile_sha256).length() == 64
+				and str(meta.wheel_profile_input_sha256).length() == 64)
+			_check("wheel trace has one state entry per gear contact", JSON.parse_string(meta.wheel_state_layout).size()
+				== session.wheel_count())
+		else:
+			_check("gearless Avanti has no wheel-state metadata", not meta.has("wheel_state_model") and not meta.has("wheel_state_layout"))
 		_check("input schema", meta.aircraft_input_format == AircraftData.FORMAT)
 		_check("raw input identity " + entry.id, meta.aircraft_input_sha256 == FileAccess.get_sha256(entry.data))
 		_check("semantic hash is separately named", meta.aircraft_semantic_sha256 == session.aircraft.model.data_sha256)
@@ -127,7 +156,8 @@ func _test_input_identity(session: Node) -> void:
 	var raw: Dictionary = JSON.parse_string(source)
 	var memory: Dictionary = AircraftData.validate_and_derive(raw)
 	_check("in-memory input has no file identity", memory.ok and not memory.has("input_identity"))
-	_check("file identity does not change derived model/checkpoints", original.model == memory.model)
+	_check("file identity is separate from the aircraft model; only the profile overlay adds wheel physics",
+		_without_wheel_profile(original.model) == memory.model)
 
 	# Both formatting-only changes and late numerical digits escaped the old fingerprint.
 	var formatted: String = source.replace("\n", "\r\n") + " \t\r\n"

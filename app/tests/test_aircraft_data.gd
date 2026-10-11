@@ -20,7 +20,8 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _raw() -> Dictionary:
-	return JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	# Preserve D1 v1 default/error contract; production positives above load v2.
+	return AD.legacy_v1_input(JSON.parse_string(FileAccess.get_file_as_string(PATH)))
 
 
 ## Expect the mutated data to fail with an error containing `needle`.

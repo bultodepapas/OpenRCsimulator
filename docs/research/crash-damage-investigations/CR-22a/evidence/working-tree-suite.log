@@ -1,0 +1,5 @@
+== import resource dependencies
+== AS-01/02: versioned aircraft contract and migration stay current
+usage: build_schema.py [-h] [--root ROOT] [--output OUTPUT]
+                       [--contract CONTRACT]
+build_schema.py: error: unrecognized arguments: --check

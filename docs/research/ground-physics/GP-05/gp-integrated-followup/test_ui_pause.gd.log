@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flying with engine sound
+ok   Esc opens the pause menu, focus on Continue
+ok   the session is held and paused
+ok   simulation frozen (tick 109)
+ok   propeller frozen
+ok   engine sound paused and silent (-200.0 dB)
+ok   Down navigates the menu -> Restart
+ok   navigation keys never reach the flight commands
+ok   R, T and P do nothing behind the menu
+ok   Esc again: back to the flight
+ok   flying again: ticks, sound
+ok   a key held through Continue does not fly
+ok   pressed again after release, it flies
+CRASH at 15.0 m/s (sink 0.0 m/s, airframe contact (hull point 2), point speed 14.6 m/s at detected tick) - [R] restart
+ok   crash shown
+ok   menu explains the crash
+ok   crash countdown frozen under the menu (360 ticks left)
+ok   Continue does not fly through the crash
+ok   wreck persists after Continue until explicit restart
+ok   menu Restart clears the wreck and resumes flight
+ok   focus lost -> paused with the menu open
+ok   Enter on Continue resumes
+ok   Esc in the calibration wizard cancels it, no menu
+ok   fault: Continue disabled, focus on Restart, reason shown
+ok   fault: Continue refused, menu stays
+ok   Restart: a fresh trimmed flight
+ok   End flight reachable by keyboard
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-11T22-12-39.csv (74 rows)
+ok   End flight saved the trace
+ok   back on Home, flight freed
+ok   focus on Fly again
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   failed save: still in the flight, the menu explains
+ok   End again: Home, without the trace
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   5 cycles: same node count on Home every time [260.0, 260.0, 260.0, 260.0, 260.0, 260.0]
+ok   5 cycles: no session, engine sound or pause menu left
+all UI pause checks passed

@@ -1,0 +1,103 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "20",
+		"fps": "60",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/aud05-transitions",
+		"resume-focus": true,
+		"time-of-day": "23:00"
+	},
+	"audio_sources_sha256": {
+		"adapter": "0dfe9dbf814c4fab89b0f09086e7197e57c23e22e137df20734984f49ee894da",
+		"mixer": "aec009ff2d14e192fccc363d1e829a1770e9e9d4ab0019a97c196841a533970f",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b",
+		"wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+	},
+	"captured_seconds": 20.0,
+	"discarded_frames": 0,
+	"display": "Windows",
+	"distance_max_m": 148.894683837891,
+	"distance_min_m": 2.49999761581421,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 9,
+			"wall_s": 0.005731
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 1,
+			"tick": 949,
+			"wall_s": 4.008806
+		},
+		{
+			"paused": false,
+			"rpm": 11147.057689572,
+			"stage": 2,
+			"tick": 1669,
+			"wall_s": 7.008567
+		},
+		{
+			"paused": true,
+			"rpm": 2818.94944137963,
+			"stage": 3,
+			"tick": 2389,
+			"wall_s": 10.008454
+		},
+		{
+			"paused": false,
+			"rpm": 2818.94944137963,
+			"stage": 4,
+			"tick": 2389,
+			"wall_s": 11.006074
+		},
+		{
+			"paused": false,
+			"rpm": 2800.0063568294,
+			"stage": 5,
+			"tick": 2869,
+			"wall_s": 13.007562
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 6,
+			"tick": 0,
+			"wall_s": 15.007963
+		}
+	],
+	"final_pause_reason": "",
+	"final_paused": false,
+	"final_tick": 1200,
+	"focus_resumes": 0,
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 960000,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -0.999998547350807,
+	"pilot_distance_min_m": 66.4478378295898,
+	"pilot_doppler_max": 1.04369086969501,
+	"pilot_doppler_min": 0.935861247819744,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 60,
+	"rms_dbfs": -19.6722171591474,
+	"soundscape_update_max_us": 447,
+	"soundscape_update_p95_us": 201,
+	"voices": 14,
+	"wav_saved": true,
+	"wildlife_activity": {
+		"bird": 0.0,
+		"cricket": 0.778664953039718,
+		"crow": 0.0,
+		"dog": 0.397278037265162,
+		"owl": 0.993195093162906
+	},
+	"wildlife_events": []
+}

@@ -1,0 +1,62 @@
+{
+  "results": [
+    {
+      "name": "fps-30",
+      "ok": true,
+      "command": [
+        "--fixed-fps",
+        "30",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ]
+    },
+    {
+      "name": "fps-60",
+      "ok": true,
+      "command": [
+        "--fixed-fps",
+        "60",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ]
+    },
+    {
+      "name": "fps-144",
+      "ok": true,
+      "command": [
+        "--fixed-fps",
+        "144",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ]
+    },
+    {
+      "name": "airborne",
+      "ok": true,
+      "command": [
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ground-physics\\airborne_parity.gd",
+        "--",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ground-physics\\GP-05\\airborne-final.json"
+      ]
+    },
+    {
+      "name": "acceleration",
+      "ok": true,
+      "command": [
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ground-physics\\session_acceleration.gd",
+        "--",
+        "--support=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ground-physics\\GP-04\\aircraft_ground_scenarios.json",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ground-physics\\GP-04\\session_acceleration.json"
+      ]
+    }
+  ],
+  "fixed_fps_hashes": [
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc",
+    "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+  ],
+  "fps_equal": true,
+  "airborne_exact": true
+}

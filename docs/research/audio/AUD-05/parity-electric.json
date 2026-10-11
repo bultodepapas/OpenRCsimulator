@@ -1,0 +1,97 @@
+{
+	"accepted_input_tape": [
+		{
+			"end": 240,
+			"input": [
+				0.0,
+				0.0,
+				0.0,
+				0.45
+			]
+		},
+		{
+			"end": 480,
+			"input": [
+				0.06,
+				-0.03,
+				0.0,
+				0.6
+			]
+		},
+		{
+			"end": 720,
+			"input": [
+				-0.06,
+				0.04,
+				0.02,
+				0.53
+			]
+		},
+		{
+			"end": 960,
+			"input": [
+				0.03,
+				0.0,
+				-0.02,
+				0.68
+			]
+		},
+		{
+			"end": 1200,
+			"input": [
+				0.0,
+				0.0,
+				0.0,
+				0.5
+			]
+		}
+	],
+	"audio_modules_sha256": {
+		"flight_audio.gd": "0dfe9dbf814c4fab89b0f09086e7197e57c23e22e137df20734984f49ee894da",
+		"soundscape.gd": "aec009ff2d14e192fccc363d1e829a1770e9e9d4ab0019a97c196841a533970f",
+		"soundscape_model.gd": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b"
+	},
+	"checkpoint_encoding": "var_to_bytes(FlightSession.checkpoint()) exact Variant bytes",
+	"checks": 4,
+	"engine": "4.7.2-stable (official)",
+	"expected_pairs": 1,
+	"failures": [],
+	"format": "openrc-audio-simulation-parity v1",
+	"headless": true,
+	"passed_pairs": 1,
+	"pause_samples_per_pair": 24,
+	"physics_hz": 240,
+	"project_route": "C:/DEVELOPMENT/OpenRCsimulator/app/main.tscn",
+	"runs": [
+		{
+			"accepted_ticks_compared": 1200,
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"audio_rng_advanced_during_configure": true,
+			"checkpoint_hash_off_after_tape": "e9d9f18277b7c23cf8bfac0baa927d5856e31b875bde24c09590b15ba057838a",
+			"checkpoint_hash_on_after_tape": "e9d9f18277b7c23cf8bfac0baa927d5856e31b875bde24c09590b15ba057838a",
+			"configure_read_only": true,
+			"electric_demo": "4s",
+			"error": "",
+			"full_checkpoint_equal_each_step": true,
+			"max_update_usec_observed": 366,
+			"ok": true,
+			"paired_simulated_seconds_total": 10.0,
+			"pause_samples": 24,
+			"post_reset_checkpoint_hash_off": "970c94a3b7be7dc2b11622bc6e9ae2558caf242ef8d7e91185454214578e1902",
+			"post_reset_checkpoint_hash_on": "970c94a3b7be7dc2b11622bc6e9ae2558caf242ef8d7e91185454214578e1902",
+			"propulsion_kind": "electric_prop",
+			"restart_audio_read_only": true,
+			"restart_checkpoint_equal": true,
+			"simulated_seconds_per_run": 5.0,
+			"snapshot_read_only_checks": 1200,
+			"turbulence_rng_advanced_identically": true,
+			"update_read_only_checks": 1200
+		}
+	],
+	"scope": "simulation parity only; no acoustic, latency, speaker, or human acceptance",
+	"simulated_seconds_per_run": 5.0,
+	"status": "pass",
+	"tested_at_utc": "2026-10-11 21:47:05",
+	"ticks_per_pair_run": 1200,
+	"weather": "turbulent"
+}

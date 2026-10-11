@@ -1,0 +1,132 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce RTX 3090
+NVAPI: Init OK!
+NVAPI: Application not found in profile, creating...
+NVAPI: Error creating application: NVAPI_EXECUTABLE_ALREADY_IN_USE(code -167)
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: bcf622261d8230341b0d3aa86d8cd95ee09925cda953aa4c58d1e5dd0327aaa1
+Shader 'SkeletonShaderGLES3' SHA256: 1ed966a6d71ec3fe0f04e63935f2fbd0a664dfb1ef000553923d209372e106b3
+Shader 'ParticlesShaderGLES3' SHA256: 0846b56cf77e00f1ebb8e1af26d9e333881a5dd366b96f40c0aa6db768b9e5af
+Shader 'ParticlesCopyShaderGLES3' SHA256: 7a9fe6010ed3e7823060ff66d15e973b458e0a1a97e4ec14d2542596af87e466
+Shader 'CopyShaderGLES3' SHA256: 0f95e9d8162f0a48740ac240ca0b8ea2cb86a2be986de3cbc87f794718ea848f
+Shader 'CubemapFilterShaderGLES3' SHA256: b0afd32f136571f6342de576d0d60044adc05fbffdd7bd811daec143e765c5f1
+Shader 'GlowShaderGLES3' SHA256: 56519597c1c3526d5480b78cb66b0165a8b325d64b0d47fd7b1441ec6a8ec614
+Shader 'PostShaderGLES3' SHA256: 78de008caefe8a1f849095618ad7501f149118dd01542d74d40a4ab2e5c377c9
+Shader 'FeedShaderGLES3' SHA256: 1593b65bfbfc0875e5ecfd808c92a69898ac75ecf9d64c69509f2f6807b0c9be
+Shader 'CanvasShaderGLES3' SHA256: cc45952ace5485ebbf54e39aa0a87cf4978afb85f49a9d7bc1f195b5c133e509
+Shader 'CanvasOcclusionShaderGLES3' SHA256: 57e02805adce36250a1929cfe9d0a542f6468fe593cc58ceeb0cce270db17492
+Shader 'SceneShaderGLES3' SHA256: 1c32abf65da2b2b73056815fcf8eba89426f63a9e88ba0a685a99967e0c87a6f
+Shader 'SkyShaderGLES3' SHA256: 3535f5a0dbea97d035639a0515c513116c9811dd7d0e1fa9a9da3e4f5d03f323
+Shader 'TexBlitShaderGLES3' SHA256: 694b98cba401d065743fc551ca81698da07a19db68767ef96d3d2ed8544ce38d
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 48000
+WASAPI: fundamental_period_frames = 480
+WASAPI: min_period_frames = 480
+WASAPI: max_period_frames = 480
+WASAPI: selected a period frame size of 480
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 480 calculated latency: 10ms
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_crash_audio.gd remapped: res://tests/test_crash_audio.gd
+Completed load for: 'res://tests/test_crash_audio.gd' remapped 'res://tests/test_crash_audio.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Accessibility: window 0 adapter activated.
+Accessibility: window 0 adapter initial update completed.
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/crack_heavy.wav remapped: res://assets/audio/crash/crack_heavy.wav
+Loading resource: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample remapped: res://.godot/imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample
+Completed load for: 'res://assets/audio/crash/crack_heavy.wav' remapped 'res://assets/audio/crash/crack_heavy.wav' at thread -1
+Loading resource: res://assets/audio/crash/tear.wav remapped: res://assets/audio/crash/tear.wav
+Loading resource: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample remapped: res://.godot/imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample
+Completed load for: 'res://assets/audio/crash/tear.wav' remapped 'res://assets/audio/crash/tear.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_hard.wav remapped: res://assets/audio/crash/impact_hard.wav
+Loading resource: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample remapped: res://.godot/imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample
+Completed load for: 'res://assets/audio/crash/impact_hard.wav' remapped 'res://assets/audio/crash/impact_hard.wav' at thread -1
+Loading resource: res://assets/audio/crash/scrape.wav remapped: res://assets/audio/crash/scrape.wav
+Loading resource: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample remapped: res://.godot/imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample
+Completed load for: 'res://assets/audio/crash/scrape.wav' remapped 'res://assets/audio/crash/scrape.wav' at thread -1
+Loading resource: res://assets/audio/crash/debris.wav remapped: res://assets/audio/crash/debris.wav
+Loading resource: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample remapped: res://.godot/imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample
+Completed load for: 'res://assets/audio/crash/debris.wav' remapped 'res://assets/audio/crash/debris.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/turbine_spool.wav remapped: res://assets/audio/crash/turbine_spool.wav
+Loading resource: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample remapped: res://.godot/imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample
+Completed load for: 'res://assets/audio/crash/turbine_spool.wav' remapped 'res://assets/audio/crash/turbine_spool.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+OK: setup creates exactly eight bounded voices
+OK: setup adds one isolated bus
+OK: crash bus routes directly to Master
+OK: crash bus has a -1.25 dBFS hard limiter
+OK: ground-surface aliases resolve
+OK: invalid severity produces no sound
+OK: fire stays off without an ignition input
+OK: severe impact layers crack, surface, tear, debris, scrape and turbine rundown
+OK: one primary impact per flight is accepted
+OK: user pause silences one-shot voices
+OK: resume restores remaining one-shot voices
+OK: fire starts only after separate positive input
+OK: secondary debris stays within the eight-voice bound
+OK: reset clears old-flight voices and fire
+OK: reset allows the next flight impact
+OK: shutdown removes only its own bus
+Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_light.wav
+Loading resource: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample remapped: res://.godot/imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample
+Completed load for: 'res://assets/audio/crash/crack_light.wav' remapped 'res://assets/audio/crash/crack_light.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_grass.wav remapped: res://assets/audio/crash/impact_grass.wav
+Loading resource: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample remapped: res://.godot/imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample
+Completed load for: 'res://assets/audio/crash/impact_grass.wav' remapped 'res://assets/audio/crash/impact_grass.wav' at thread -1
+Loading resource: res://assets/audio/crash/impact_dirt.wav remapped: res://assets/audio/crash/impact_dirt.wav
+Loading resource: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample remapped: res://.godot/imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample
+Completed load for: 'res://assets/audio/crash/impact_dirt.wav' remapped 'res://assets/audio/crash/impact_dirt.wav' at thread -1
+Loading resource: res://assets/audio/crash/secondary_hit.wav remapped: res://assets/audio/crash/secondary_hit.wav
+Loading resource: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample remapped: res://.godot/imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample
+Completed load for: 'res://assets/audio/crash/secondary_hit.wav' remapped 'res://assets/audio/crash/secondary_hit.wav' at thread -1
+Loading resource: res://assets/audio/crash/engine_cut.wav remapped: res://assets/audio/crash/engine_cut.wav
+Loading resource: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample remapped: res://.godot/imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample
+Completed load for: 'res://assets/audio/crash/engine_cut.wav' remapped 'res://assets/audio/crash/engine_cut.wav' at thread -1
+Loading resource: res://assets/audio/crash/fire_loop.wav remapped: res://assets/audio/crash/fire_loop.wav
+Loading resource: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample remapped: res://.godot/imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample
+Completed load for: 'res://assets/audio/crash/fire_loop.wav' remapped 'res://assets/audio/crash/fire_loop.wav' at thread -1
+OK: native crash-bus capture contains event audio
+OK: native post-limiter crash-bus peak stays <= -1 dBFS
+Native crash bus capture: driver=WASAPI peak=0.865965 (-1.25 dBFS), frames=147456
+18 checks, 0 failed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Accessibility: window 0 adapter destroyed.

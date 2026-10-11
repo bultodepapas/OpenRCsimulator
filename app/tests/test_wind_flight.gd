@@ -172,9 +172,17 @@ func _test_same_state_wind_loads_and_ground_separation() -> void:
 	var expected_aircraft: PackedFloat64Array = Dynamics.loads(state, session.aircraft.model,
 		session._deflections(session.sim.aux), session.sim.aux[FlightSession.AUX_RPM], Air.RHO_SEA_LEVEL,
 		session.wind_at(stage_time), downwash_cl, session.sim.continuous)
-	var expected_ground: PackedFloat64Array = Ground.loads(state, session.aircraft.model.landing_gear,
-		session.sim.aux[FlightSession.AUX_SERVO + 2], session.ground_surfaces,
-		session.sim.aux.slice(FlightSession.AUX_ANCHORS))
+	var anchors: PackedFloat64Array = session.sim.aux.slice(FlightSession.AUX_ANCHORS,
+		FlightSession.AUX_ANCHORS + session.anchor_count() * Ground.ANCHOR_STRIDE)
+	var expected_ground: PackedFloat64Array
+	if session.wheel_count() > 0:
+		var wheel_speeds: PackedFloat64Array = session.sim.continuous.slice(session.wheel_index())
+		var ground: Dictionary = Ground.evaluate(state, session.aircraft.model.landing_gear,
+			session.sim.aux[FlightSession.AUX_SERVO + 2], session.ground_surfaces, anchors, wheel_speeds, 0.0, false)
+		expected_ground = ground.get("loads", PackedFloat64Array([NAN]))
+	else:
+		expected_ground = Ground.loads(state, session.aircraft.model.landing_gear,
+			session.sim.aux[FlightSession.AUX_SERVO + 2], session.ground_surfaces, anchors)
 	var expected_total: PackedFloat64Array = expected_aircraft.duplicate()
 	for axis in expected_ground.size():
 		expected_total[axis] += expected_ground[axis]
@@ -186,10 +194,10 @@ func _test_same_state_wind_loads_and_ground_separation() -> void:
 		"total %s; wind aircraft delta %.9f N" % [str(actual), _max_diff(expected_aircraft, calm_aircraft)])
 	_check("wind changes aircraft loads while wheel loads remain ground-relative",
 		_max_diff(expected_aircraft, calm_aircraft) > 1e-6 and not expected_ground.is_empty()
-			and _max_diff(expected_ground, Ground.loads(state, session.aircraft.model.landing_gear,
-				session.sim.aux[FlightSession.AUX_SERVO + 2], session.ground_surfaces,
-				session.sim.aux.slice(FlightSession.AUX_ANCHORS))) == 0.0,
-		"wind does not enter Ground.loads; local TAS %.4f m/s" % float(air.V))
+			and _max_diff(expected_ground, Ground.evaluate(state, session.aircraft.model.landing_gear,
+				session.sim.aux[FlightSession.AUX_SERVO + 2], session.ground_surfaces, anchors,
+				session.sim.continuous.slice(session.wheel_index()), 0.0, false).loads) == 0.0,
+		"wind does not enter the same-state ground evaluation; local TAS %.4f m/s" % float(air.V))
 	session.sim.aux = original_aux
 	_test_windy_runway_hold(session, state)
 	session.free()
@@ -230,7 +238,14 @@ func _test_stage_wind_sampling() -> void:
 		return
 	var times: Array[float] = []
 	var samples: Array[PackedFloat64Array] = []
-	if session.sim.continuous.is_empty():
+	if session.sim.continuous_evaluate.is_valid():
+		var previous_evaluate: Callable = session.sim.continuous_evaluate
+		session.sim.continuous_evaluate = func(state: PackedFloat64Array, continuous: PackedFloat64Array,
+				time_s: float) -> Dictionary:
+			times.append(time_s)
+			samples.append(session.wind_at(time_s))
+			return previous_evaluate.call(state, continuous, time_s)
+	elif session.sim.continuous.is_empty():
 		var previous_loads: Callable = session.sim.loads
 		session.sim.loads = func(state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 			times.append(time_s)

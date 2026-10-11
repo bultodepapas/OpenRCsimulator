@@ -1,0 +1,230 @@
+{
+  "format": "openrc-as04-comparison-v1",
+  "baseline_engine": "4.7.2-stable (official)",
+  "candidate_engine": "4.7.2-stable (official)",
+  "physics_ticks_per_second": 240,
+  "cases": [
+    {
+      "key": "gp-extra-300s-60",
+      "kind": "catalog",
+      "baseline_model_id": "gp-extra-300s-60",
+      "candidate_model_id": "gp-extra-300s-60",
+      "baseline_start_speed_mps": 17.0,
+      "candidate_start_speed_mps": 17.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "jensen-das-ugly-stik-60",
+      "kind": "catalog",
+      "baseline_model_id": "jensen-das-ugly-stik-60",
+      "candidate_model_id": "jensen-das-ugly-stik-60",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": null,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": null,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "p51d-mustang-120",
+      "kind": "catalog",
+      "baseline_model_id": "p51d-mustang-120",
+      "candidate_model_id": "p51d-mustang-120",
+      "baseline_start_speed_mps": 25.0,
+      "candidate_start_speed_mps": 25.0,
+      "baseline_sample_count": 241,
+      "candidate_sample_count": 241,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "sebart-avanti-s-a200-p100rx",
+      "kind": "catalog",
+      "baseline_model_id": "sebart-avanti-s-a200-p100rx",
+      "candidate_model_id": "sebart-avanti-s-a200-p100rx",
+      "baseline_start_speed_mps": 29.0,
+      "candidate_start_speed_mps": 29.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_4s",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_4s",
+      "candidate_model_id": "synthetic_stik_electric_4s",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_4s_battery",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_4s_battery",
+      "candidate_model_id": "synthetic_stik_electric_4s_battery",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_6s",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_6s",
+      "candidate_model_id": "synthetic_stik_electric_6s",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_6s_battery",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_6s_battery",
+      "candidate_model_id": "synthetic_stik_electric_6s_battery",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    }
+  ],
+  "failures": [],
+  "comparison_policy": "exact numeric normalized models and exact per-tick float64 array bytes on the same engine/platform; source hashes are provenance only",
+  "baseline_source_manifest_sha256": "ec0f0ca2df96abe701ab290b60ef6cb8eedfee8abb2321fcb46e61e75a1bd421",
+  "candidate_source_manifest_sha256": "574dc2c545f82d5698113133e60e283288c1864808f166cb6e0f1062e87755d0",
+  "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "driver_sha256": "43d2580ac4fd49f02ab8ce2d28cae3c4af5d4e4b847785fae93bda152301c030"
+}

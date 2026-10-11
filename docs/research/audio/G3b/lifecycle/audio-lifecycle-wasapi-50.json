@@ -1,0 +1,50 @@
+{
+	"audio_driver_requested": "WASAPI",
+	"audio_driver_runtime": "WASAPI",
+	"baseline_object_counts": {
+		"node_count": 3,
+		"object_count": 1494,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"counts_after_mixer_drain": {
+		"node_count": 3,
+		"object_count": 1495,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"counts_before_free": {
+		"node_count": 103,
+		"object_count": 1945,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"counts_immediately_after_free": {
+		"node_count": 3,
+		"object_count": 1695,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"cycles_completed": 50,
+	"cycles_requested": 50,
+	"failure": "",
+	"fps_requested": 30,
+	"interpretation": "AudioServer playback cleanup probe; Object/Resource counters are sampled after the mixer drain and monitor update window, not immediately on Node.free().",
+	"maximum_mixer_drain_frames": 120,
+	"mixer_drain_frames": 2,
+	"node_count_delta_after_drain": 0,
+	"object_count_delta_after_drain": 1,
+	"playback_alive_without_source_observations": 0,
+	"playback_alive_without_source_while_active": 0,
+	"probe": "g3b-audio-lifecycle-stress",
+	"resource_count_delta_after_drain": 0,
+	"status": "ok",
+	"weakrefs_alive_after_drain": {
+		"playbacks": 0,
+		"sources": 0
+	},
+	"weakrefs_alive_immediately": {
+		"playbacks": 50,
+		"sources": 50
+	}
+}

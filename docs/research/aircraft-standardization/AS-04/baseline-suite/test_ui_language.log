@@ -1,0 +1,357 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   Spanish catalog: 187 texts, none untranslated
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+ok   English by default, even on a Spanish OS
+ok   language button names the language in itself
+ok   Enter on Language -> Spanish at once
+ok   dynamic texts rebuilt in Spanish
+ok   focus stays on Language
+ok   every translatable Home text has a Spanish translation
+ok   choice saved
+ok   next start remembers Spanish
+ok   and cycles back to English
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:124)
+       [7] _run (res://tests/test_ui_language.gd:32)
+       [8] _default_and_switch (res://tests/test_ui_language.gd:117)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ok   direct flight: English, no settings file created
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:128)
+       [4] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route (res://tests/test_ui_language.gd:133)
+       [7] settle (res://tests/ui_driver.gd:55)
+ok   direct flight ignores a saved Spanish preference and leaves the file alone
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _direct_route (res://tests/test_ui_language.gd:137)
+       [4] settle (res://tests/ui_driver.gd:55)
+all UI language checks passed
+WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

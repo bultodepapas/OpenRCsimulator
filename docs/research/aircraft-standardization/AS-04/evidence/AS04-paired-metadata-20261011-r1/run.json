@@ -1,0 +1,13 @@
+{
+  "run_id": "AS04-paired-metadata-20261011-r1",
+  "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+  "engine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "driver": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+  "driver_sha256": "b15c100e8e993b848a9fd7a9ba71bee42dd651aeb990c0b743f094ee688680d0",
+  "wrapper_sha256": "6e3ee6400265aec2e66aebba84b8371847106c72165d2663d1aad597e346237a",
+  "started_utc": "2026-10-11T22:28:23.855425+00:00",
+  "method": "explicit AircraftData.legacy_v1_input clone; six ABBA-paired 120-tick batches per aircraft after a 120-tick warmup; reset and input preparation outside individual Simulation.step timers",
+  "timing_policy": "descriptive only; no threshold; prior cross-process measurements do not establish regression",
+  "host_context_policy": "record visible Godot processes immediately before and after each engine phase; this is residual-variability context, not a CPU/load measurement"
+}

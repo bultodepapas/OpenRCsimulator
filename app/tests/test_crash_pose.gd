@@ -32,6 +32,7 @@ func _run() -> void:
 	for entry: Dictionary in Catalog.ENTRIES:
 		var flight: Node = load("res://main.tscn").instantiate()
 		flight.aircraft_id = entry.id
+		flight.crash_effects_enabled = false # CR-01 diagnostic pose and legacy timer fixture
 		root.add_child(flight)
 		flight.set_process(false)
 		var session: Node = flight.session

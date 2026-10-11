@@ -1,0 +1,48 @@
+{
+  "format": "openrc-ground-physics-visual-gear-evidence-v1",
+  "recorded_on": "2026-10-11",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "renderer": "OpenGL 3.3 Compatibility, NVIDIA GeForce RTX 3090",
+  "source_sha256": {
+    "research/ground-physics/visual_gear_probe.gd": "b39644eb97a856c51e28c7305f481bea6cadae8e833bdc6d08f2aeeb81da14f5",
+    "app/render/ground_gear.gd": "545a0688cb32848c05dc6639abe60a4ac153e1b8396821eb7ad53d61d52f98e6",
+    "app/render/airplane.gd": "85d511f88314d9cb24c6d4cc970ac29914f1f50775b56c5f2a82107a2bc135c2",
+    "app/render/frames.gd": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+    "app/physics/ground_wheels.gd": "c9e2b6953ba9c244d2c8adbb5efdb8ccafeb61e3f60bfb98942e55ecb99cda62",
+    "app/sim/flight_session.gd": "e92208bc254c0159427ca9da0b5532311ccb23ad44754b7077891502c6b07bc0",
+    "app/app_state/aircraft_catalog.gd": "b1362914c9219a7023c07a4c9147cce5825c08c5b98f63d5c8f1f66d009ea35f",
+    "app/aircraft/ugly_stik_model.gd": "22f6d5bb09d8bf2dd00ce369475c62c1b738e838e73535e1a11b469d9ce4a97c",
+    "app/aircraft/ugly_stik_geometry.gd": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f",
+    "app/aircraft/extra_300s_model.gd": "f29faaa19baea94551b9ba473683003b97da517b962b5583fd3e055fb20260da",
+    "app/aircraft/extra_300s_geometry.gd": "56644912fd5afbc4b65a7981fae49b920e7c2606e5feebe1fb2b1df0fd8d2eef",
+    "app/aircraft/p51d_model.gd": "ab81c7aba2545685a5b9e0bda390d504510a1bbb480e16f299152e95f1a42e7b",
+    "app/aircraft/p51d_geometry.gd": "aedf9faec3fce78a27c286bdf349231254dda136bdc02cae55a685f17b629dfa",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "987ca85cfc10388683fe024a0d3dd3ee26421bfafaf928b459b9604674c4c3da",
+    "app/data/aircraft/gp_extra_300s_60.json": "16d387b027957f2fdf247f3b577523093a24a79e8b59230a3b5bdd358cb8d0b8",
+    "app/data/aircraft/p51d_mustang_120.json": "16b0bba3ba1df21dbc83b623e463634f8146ba2f71fbfd94ed50f6e98828b52e",
+    "app/data/fields/default.json": "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6"
+  },
+  "evidence_sha256": {
+    "docs/research/ground-physics/GP-03/visual-gear-probe.log": "e5486b9ddaa9df5975153b1cb74012d177a5e381799afc684e2be9ea8204da71",
+    "docs/research/ground-physics/GP-03/visual-gear-capture.log": "506f5720727d5de57dcc32e5647d4f86ba309a4ea8ac203dc224b059faa0c48b",
+    "docs/research/ground-physics/GP-03/visual-gear-stik.png": "bdb40feb40f7df79d6fd65e9b79f6b314e0dc4a0289c90706a2a6f8f985a9138",
+    "docs/research/ground-physics/GP-03/visual-gear-stik.json": "4c62c7745a52fa49a357f47b92015c77903005a5307df47822f0f01f25dd0728",
+    "docs/research/ground-physics/GP-03/visual-gear-extra.png": "f5f585d675138c7892b4dada4fa9f3d69e74d301d2ef56d88d4f8f080f0e3af9",
+    "docs/research/ground-physics/GP-03/visual-gear-extra.json": "226a42b6ddb958c3e022e4ef61c823b26d22e6fde31c806490682239c1267840",
+    "docs/research/ground-physics/GP-03/visual-gear-p51.png": "fcb01375a3296fc9009f49c1a7427e714ae1225cccc26ac8db92e59c5010fbc7",
+    "docs/research/ground-physics/GP-03/visual-gear-p51.json": "ea3a71c8fa6b6cf67bb133e662d92bfe605b1a19c2f715d87cfe942777532761"
+  },
+  "probe": {
+    "command": "& $Godot --headless --audio-driver Dummy --path app --script research/ground-physics/visual_gear_probe.gd",
+    "checks": 39,
+    "failures": 0,
+    "spin_steer_ticks_per_aircraft": 48,
+    "maximum_pivot_alignment_error_m": 0.0,
+    "rest_wheel_center_residual_m": {
+      "jensen-das-ugly-stik-60": 0.005,
+      "gp-extra-300s-60": 1E-06,
+      "p51d-mustang-120": 1E-06
+    }
+  },
+  "capture_resolution": "1280x720"
+}

@@ -278,6 +278,9 @@ msgstr "Este vuelo no puede continuar: %s"
 msgid "Crashed. The flight restarts by itself after you continue."
 msgstr "Accidente. El vuelo se reinicia solo al continuar."
 
+msgid "Crashed. Continue to inspect the wreck, or restart the flight."
+msgstr "Accidente. Continúa para inspeccionar los restos o reinicia el vuelo."
+
 msgid "The radio was disconnected: engine at idle, sticks centred. Continue flies with the keyboard, or plug the radio back in."
 msgstr "La radio se desconectó: motor al ralentí y mandos centrados. Continuar vuela con el teclado, o vuelve a conectar la radio."
 

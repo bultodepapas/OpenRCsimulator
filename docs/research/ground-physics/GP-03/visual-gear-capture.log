@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+saved docs/research/ground-physics/GP-03/visual-gear-stik.png (error 0) draw_calls=120 primitives=173330 sun_px=behind sim_clock=0.00833333333333 shadow_px=569.0,424.3 below_px=640.0,431.6
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+saved docs/research/ground-physics/GP-03/visual-gear-extra.png (error 0) draw_calls=52 primitives=145992 sun_px=behind sim_clock=0.00833333333333 shadow_px=564.2,429.1 below_px=640.0,437.0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+saved docs/research/ground-physics/GP-03/visual-gear-p51.png (error 0) draw_calls=160 primitives=179183 sun_px=behind sim_clock=0.00833333333333 shadow_px=496.1,486.8 below_px=640.0,503.6

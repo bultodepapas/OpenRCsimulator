@@ -19,11 +19,16 @@ var _fire_gain: float = 0.0
 var _fire_position: Vector3 = Vector3.ZERO
 var _primary_played: bool = false
 var _secondary_cooldown: float = 0.0
+var _user_paused: bool = false
+var _dummy_audio_driver: bool = false
 
 
 func setup() -> void:
 	if _setup_complete:
 		return
+	# Godot's Dummy driver has no mixer to retire AudioStreamPlaybackWAV references.
+	# Keep the pool and bus available for tests, but never queue playback on that backend.
+	_dummy_audio_driver = AudioServer.get_driver_name() == "Dummy"
 	var audio_seed: int = Time.get_ticks_usec()
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--audio-seed="):
@@ -31,13 +36,18 @@ func setup() -> void:
 	_rng.seed = audio_seed
 	_create_bus()
 	_load_streams()
-	for i: int in ONE_SHOT_VOICES:
-		var voice: AudioStreamPlayer3D = _make_voice("ImpactVoice%d" % i)
-		add_child(voice)
-		_voices.append(voice)
-	_voice_gain.resize(ONE_SHOT_VOICES)
-	_voice_gain.fill(0.0)
-	_fire_voice = _make_voice("FireVoice")
+	if _voices.is_empty():
+		for i: int in ONE_SHOT_VOICES:
+			var voice: AudioStreamPlayer3D = _make_voice("ImpactVoice%d" % i)
+			add_child(voice)
+			_voices.append(voice)
+		_voice_gain.resize(ONE_SHOT_VOICES)
+		_voice_gain.fill(0.0)
+	else:
+		for voice: AudioStreamPlayer3D in _voices:
+			voice.bus = _bus_name
+	if _fire_voice == null:
+		_fire_voice = _make_voice("FireVoice")
 	var fire: AudioStreamWAV = _streams.get("fire_loop") as AudioStreamWAV
 	if fire != null:
 		fire = fire.duplicate() as AudioStreamWAV
@@ -45,7 +55,9 @@ func setup() -> void:
 		fire.loop_begin = 0
 		fire.loop_end = roundi(fire.get_length() * fire.mix_rate)
 		_fire_voice.stream = fire
-	add_child(_fire_voice)
+	_fire_voice.bus = _bus_name
+	if _fire_voice.get_parent() != self:
+		add_child(_fire_voice)
 	_setup_complete = true
 	reset()
 
@@ -58,7 +70,7 @@ func _create_bus() -> void:
 	AudioServer.set_bus_send(bus_index, &"Master")
 	AudioServer.set_bus_volume_db(bus_index, -2.0)
 	var limiter: AudioEffectHardLimiter = AudioEffectHardLimiter.new()
-	limiter.ceiling_db = -1.0
+	limiter.ceiling_db = -1.25
 	limiter.release = 0.12
 	AudioServer.add_bus_effect(bus_index, limiter)
 	_bus_created = true
@@ -88,7 +100,6 @@ func _make_voice(label: String) -> AudioStreamPlayer3D:
 	voice.attenuation_filter_cutoff_hz = 7_000.0
 	voice.attenuation_filter_db = -8.0
 	voice.volume_db = -80.0
-	voice.stream_paused = false
 	return voice
 
 
@@ -135,37 +146,48 @@ func update(delta: float, paused: bool, fire_strength: float) -> void:
 	var dt: float = clampf(delta, 0.0, 0.1)
 	_secondary_cooldown = maxf(0.0, _secondary_cooldown - dt)
 	# `paused` is the user pause/menu state, never the post-crash hold.
-	for voice: AudioStreamPlayer3D in _voices:
-		voice.stream_paused = paused
+	_user_paused = paused
+	for i: int in _voices.size():
+		var voice: AudioStreamPlayer3D = _voices[i]
+		if voice.has_stream_playback():
+			voice.stream_paused = paused
+		voice.volume_db = -80.0 if paused else linear_to_db(maxf(_voice_gain[i], 0.0001))
 	var target: float = clampf(fire_strength, 0.0, 1.0) * 0.22 if not paused else 0.0
 	_fire_gain = lerpf(_fire_gain, target, 1.0 - exp(-dt / 0.22))
 	if _fire_voice == null or _fire_voice.stream == null:
 		return
-	if _fire_gain > 0.002:
+	if _fire_voice.has_stream_playback():
+		_fire_voice.stream_paused = paused
+	if _fire_gain > 0.002 and not _dummy_audio_driver:
 		_fire_voice.global_position = _fire_position
 		_fire_voice.volume_db = linear_to_db(_fire_gain)
-		_fire_voice.stream_paused = paused
 		if not _fire_voice.playing:
 			_fire_voice.play()
+			if _fire_voice.has_stream_playback():
+				_fire_voice.stream_paused = paused
 	elif _fire_voice.playing:
 		_fire_voice.stop()
 		_fire_voice.volume_db = -80.0
-		_fire_voice.stream_paused = paused
 
 
 func reset() -> void:
 	_primary_played = false
 	_secondary_cooldown = 0.0
+	_user_paused = false
 	_fire_gain = 0.0
 	for i: int in _voices.size():
-		_voices[i].stop()
-		_voices[i].volume_db = -80.0
-		_voices[i].stream_paused = false
+		var voice: AudioStreamPlayer3D = _voices[i]
+		if voice.has_stream_playback():
+			voice.stream_paused = false
+		voice.stop()
+		voice.volume_db = -80.0
+		voice.stream = null
 		_voice_gain[i] = 0.0
 	if _fire_voice != null:
+		if _fire_voice.has_stream_playback():
+			_fire_voice.stream_paused = false
 		_fire_voice.stop()
 		_fire_voice.volume_db = -80.0
-		_fire_voice.stream_paused = false
 
 
 func shutdown() -> void:
@@ -174,6 +196,9 @@ func shutdown() -> void:
 		var index: int = AudioServer.get_bus_index(_bus_name)
 		if index > 0:
 			AudioServer.remove_bus(index)
+	if _fire_voice != null:
+		_fire_voice.stream = null
+	_streams.clear()
 	_bus_created = false
 	_setup_complete = false
 
@@ -208,7 +233,7 @@ func _surface_sample(surface: String) -> String:
 
 func _play(sample_name: String, position: Vector3, gain: float, pitch: float) -> void:
 	var stream: AudioStreamWAV = _streams.get(sample_name) as AudioStreamWAV
-	if stream == null or gain <= 0.0001 or _voices.is_empty():
+	if _dummy_audio_driver or stream == null or gain <= 0.0001 or _voices.is_empty():
 		return
 	var slot: int = _choose_slot()
 	var voice: AudioStreamPlayer3D = _voices[slot]
@@ -216,9 +241,11 @@ func _play(sample_name: String, position: Vector3, gain: float, pitch: float) ->
 	voice.stream = stream
 	voice.global_position = position
 	voice.pitch_scale = clampf(pitch, 0.65, 1.35)
-	voice.volume_db = linear_to_db(clampf(gain, 0.0001, 0.95))
+	voice.volume_db = -80.0 if _user_paused else linear_to_db(clampf(gain, 0.0001, 0.95))
 	_voice_gain[slot] = gain
 	voice.play()
+	if voice.has_stream_playback():
+		voice.stream_paused = _user_paused
 
 
 func _choose_slot() -> int:

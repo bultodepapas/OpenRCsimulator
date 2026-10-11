@@ -21,6 +21,7 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 
 const RB := preload("res://physics/rigid_body.gd")
+const Wheels := preload("res://physics/ground_wheels.gd")
 
 ## Below this wheel rolling speed (m/s) the slip angle is measured against it instead of |v_long|: the side force
 ## becomes a stiff damper, F = −(μ·N / (tan α_peak · SLIP_FLOOR))·v_lat, instead of dividing by zero at rest. Summed
@@ -70,7 +71,9 @@ const DAMPING_ONSET_FRACTION := 0.5
 ## everywhere (factors 1, the gear's own coefficients).
 ## anchors: E3b1 per-contact [north, east, stuck] (ANCHOR_STRIDE floats each); empty = no stiction (E2 exactly).
 static func loads(s: PackedFloat64Array, gear: Dictionary, steer := 0.0, surfaces := PackedFloat64Array(),
-		anchors := PackedFloat64Array()) -> PackedFloat64Array:
+		anchors := PackedFloat64Array(), wheels := PackedFloat64Array(), brake := 0.0) -> PackedFloat64Array:
+	if not wheels.is_empty():
+		return evaluate(s, gear, steer, surfaces, anchors, wheels, brake).loads
 	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -174,7 +177,9 @@ static func damping(contact: Dictionary, compression: float) -> float:
 
 
 static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
-		anchors: PackedFloat64Array) -> PackedFloat64Array:
+		anchors: PackedFloat64Array, enhanced := false, speeds := PackedFloat64Array()) -> PackedFloat64Array:
+	if enhanced:
+		return Wheels.anchor_step(s, gear, steer, surfaces, anchors, speeds)
 	var out := PackedFloat64Array()
 	out.resize(anchors.size()) # zero-filled: sliding
 	if gear.is_empty() or anchors.size() != gear.contacts.size() * ANCHOR_STRIDE or -s[RB.POS + 2] > gear.reach:
@@ -269,7 +274,9 @@ static func surface_at(table: PackedFloat64Array, north: float, east: float) -> 
 
 
 ## Compression of every contact (m, ≤ 0 when above the ground), in the order of gear.contacts.
-static func compressions(s: PackedFloat64Array, gear: Dictionary) -> PackedFloat64Array:
+static func compressions(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> PackedFloat64Array:
+	if not surfaces.is_empty():
+		return Wheels.compressions(s, gear, surfaces)
 	var out := PackedFloat64Array()
 	if gear.is_empty():
 		return out
@@ -281,10 +288,10 @@ static func compressions(s: PackedFloat64Array, gear: Dictionary) -> PackedFloat
 
 
 ## True when any contact is pushed past its travel: the gear has collapsed (a crash, like any other hull point).
-static func collapsed(s: PackedFloat64Array, gear: Dictionary) -> bool:
-	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
+static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> bool:
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Wheels.Terrain.max_height(surfaces):
 		return false
-	var c := compressions(s, gear)
+	var c := compressions(s, gear, surfaces)
 	for i in c.size():
 		if c[i] > gear.contacts[i].max_compression:
 			return true
@@ -321,3 +328,10 @@ static func _down_row(s: PackedFloat64Array) -> PackedFloat64Array:
 	var y := s[RB.ATT + 2]
 	var z := s[RB.ATT + 3]
 	return PackedFloat64Array([2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)])
+
+
+## GP-02: continuous wheel rim speeds in contact order; returns stage loads, rim derivatives and wheel diagnostics.
+## The legacy loads() API without wheel state is retained for the E1–E5 analytic reference fixtures.
+static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surfaces: PackedFloat64Array,
+		anchors: PackedFloat64Array, wheels: PackedFloat64Array, brake := 0.0, diagnostics_enabled := true) -> Dictionary:
+	return Wheels.evaluate(s, gear, steer, surfaces, anchors, wheels, brake, diagnostics_enabled)

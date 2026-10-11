@@ -1,0 +1,16 @@
+F..
+======================================================================
+FAIL: test_candidate_trace_uses_exact_input_bytes (__main__.PullupCandidateCli.test_candidate_trace_uses_exact_input_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\app\tests\test_pullup_cli.py", line 50, in test_candidate_trace_uses_exact_input_bytes
+    self.assertEqual(result.returncode, 0, result.stdout)
+AssertionError: 31 != 0 : Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+experimental aircraft data refused: candidate may change only aero.wing_polar from catalog default data; reference geometry and other data must match
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 37.793s
+
+FAILED (failures=1)

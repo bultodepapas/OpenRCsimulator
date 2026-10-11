@@ -4,6 +4,7 @@ extends RefCounted
 
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const TURF_DETAIL := preload("res://assets/landscape/turf/detail.png")
 
 const SIZE := 256
@@ -111,6 +112,9 @@ static func configure_surfaces(material: ShaderMaterial, surfaces: Array) -> boo
 			break
 		if not covered:
 			return false
+	# Do not mutate either uniform set until every layout/containment check has passed: callers use false
+	# as the contract to preserve this material and render the complete legacy plane set instead.
+	_configure_terrain_surfaces(material, surfaces)
 	var rectangles: PackedVector4Array = PackedVector4Array()
 	var kinds: PackedInt32Array = PackedInt32Array()
 	rectangles.resize(MAX_SURFACES)
@@ -129,6 +133,45 @@ static func configure_surfaces(material: ShaderMaterial, surfaces: Array) -> boo
 	material.set_shader_parameter("surface_bounds", Vector4(bounds.position.x, bounds.position.y, bounds.end.x, bounds.end.y))
 	material.set_shader_parameter("surface_count", ordered.size())
 	return true
+
+
+## Configure the ground shader's analytic normal cue from the same field rectangles and precedence as physics.
+## This stays useful for legacy plane layouts, where colour overlays remain separate meshes.
+static func _configure_terrain_surfaces(material: ShaderMaterial, surfaces: Array) -> void:
+	var ordered: Array[Dictionary] = []
+	for kind: String in ["mown", "runway"]:
+		for surface: Dictionary in surfaces:
+			if surface.get("type", "") == kind:
+				ordered.append(surface)
+	if ordered.size() > MAX_SURFACES:
+		material.set_shader_parameter("terrain_relief_enabled", false)
+		material.set_shader_parameter("terrain_surface_count", 0)
+		return
+	var rectangles: PackedVector4Array = PackedVector4Array()
+	var kinds: PackedInt32Array = PackedInt32Array()
+	var size: int = ordered.size()
+	rectangles.resize(MAX_SURFACES)
+	kinds.resize(MAX_SURFACES)
+	for index: int in size:
+		var surface: Dictionary = ordered[index]
+		var rect: Rect2 = surface_rect(surface)
+		var center: Vector2 = rect.get_center()
+		var half: Vector2 = rect.size / 2.0
+		rectangles[index] = Vector4(center.x, center.y, half.x, half.y)
+		kinds[index] = SURFACE_KIND[surface.type]
+	var profile: Dictionary = GroundTerrain.renderer_profile()
+	material.set_shader_parameter("terrain_surface_rects", rectangles)
+	material.set_shader_parameter("terrain_surface_kinds", kinds)
+	material.set_shader_parameter("terrain_surface_count", size)
+	material.set_shader_parameter("terrain_runway_amplitude_m", profile.runway_amplitude_m)
+	material.set_shader_parameter("terrain_mown_amplitude_m", profile.mown_amplitude_m)
+	material.set_shader_parameter("terrain_rough_amplitude_m", profile.rough_amplitude_m)
+	material.set_shader_parameter("terrain_edge_blend_m", profile.edge_blend_m)
+	material.set_shader_parameter("terrain_relief_start_m", profile.visibility_start_m)
+	material.set_shader_parameter("terrain_relief_end_m", profile.visibility_end_m)
+	material.set_shader_parameter("terrain_footprint_start_m", profile.footprint_start_m)
+	material.set_shader_parameter("terrain_footprint_end_m", profile.footprint_end_m)
+	material.set_shader_parameter("terrain_relief_enabled", true)
 
 
 ## Renderer-only x/z rectangle: east -> x, north -> -z. Input stays in float64 field coordinates.

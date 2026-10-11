@@ -14,14 +14,19 @@ func run() -> void:
 	root.add_child(fx)
 	fx.prepare()
 	check("particle budget",fx.stats().particles <= 700)
+	check("transparent particles do not cast card shadows",fx.emitters.all(func(p): return p.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF))
 	check("no live effects before collision",fx.stats().fire == 0 and fx.stats().splinters == 0)
+	fx.mark(Vector3.ZERO,Vector3(0,-100,0),0.5)
+	check("vertical speed does not lengthen the horizontal gouge",is_equal_approx(fx.marks[0].scale.z,0.5))
 	for hot: bool in [false,true]:
 		for fuel: float in [0.0,1.28]:
 			for level: int in [0,1,2,3,4]:
-				fx.start(Vector3(10,0,20),Vector3(50,-30,0),{"class":level,"severity":level/4.0},fuel,hot,Vector3(4,0,0))
+				fx.start(Vector3(10,0,20),Vector3(50,-30,0),{"class":level,"severity":level/4.0,"tank_ruptured":true},fuel,hot,Vector3(4,0,0))
 				check("fire needs severe + fuel + hot engine %s/%s/%s" % [hot,fuel,level],(fx.fire_strength() > 0) == (hot and fuel>0 and level>=3))
 				check("fragment budget",fx.stats().splinters <= 160)
-	fx.start(Vector3.ZERO,Vector3(40,-50,0),{"class":4,"severity":1.0},1.28,true,Vector3.ZERO)
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),{"class":4,"severity":1.0,"tank_ruptured":false},1.28,true,Vector3.ZERO)
+	check("intact tank does not ignite",fx.fire_strength() == 0)
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),{"class":4,"severity":1.0,"tank_ruptured":true},1.28,true,Vector3.ZERO)
 	var before: Transform3D = fx.fragments.multimesh.get_instance_transform(0)
 	fx.update(1.0,true)
 	check("pause freezes fragment poses",fx.fragments.multimesh.get_instance_transform(0) == before)

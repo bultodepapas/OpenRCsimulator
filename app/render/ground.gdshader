@@ -65,6 +65,21 @@ uniform int surface_count = 0;
 uniform vec4 surface_rects[32];
 uniform int surface_kinds[32];
 uniform vec4 surface_bounds = vec4(0.0);
+// GP-01: deterministic soil micro-relief. These amplitudes match GroundTerrain's estimates at the
+// field's current rolling factors; terrain rectangles below use the same NED field layout and order.
+uniform bool terrain_relief_enabled = false;
+uniform float terrain_runway_amplitude_m = 0.001;
+uniform float terrain_mown_amplitude_m = 0.004;
+uniform float terrain_rough_amplitude_m = 0.007;
+uniform float terrain_edge_blend_m = 0.5;
+// Visual-only anti-aliasing: physics still samples relief at every wheel at every stage.
+uniform float terrain_relief_start_m = 20.0;
+uniform float terrain_relief_end_m = 80.0;
+uniform float terrain_footprint_start_m = 0.08;
+uniform float terrain_footprint_end_m = 0.41;
+uniform int terrain_surface_count = 0;
+uniform vec4 terrain_surface_rects[32];
+uniform int terrain_surface_kinds[32];
 uniform float mown_value = 1.25;      // report 04: rough = 0.75-0.85 × mown; the top keeps the runway readable at 100 m+
 uniform float mown_desat = 0.15;      // saturation -0.05...-0.10 at this grass colour
 uniform float stripe_m = 1.5;         // one ride-on deck (1.2-1.8 m)
@@ -152,6 +167,63 @@ vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footpri
 	return mix(underneath, mown, inside);
 }
 
+// Cubic edge feather and its derivative, matching GroundTerrain's C1 rectangle mask.
+vec2 terrain_edge(float distance_m) {
+	if (distance_m <= 0.0) return vec2(0.0);
+	if (distance_m >= terrain_edge_blend_m) return vec2(1.0, 0.0);
+	float t = distance_m / terrain_edge_blend_m;
+	return vec2(t * t * (3.0 - 2.0 * t), 6.0 * t * (1.0 - t) / terrain_edge_blend_m);
+}
+
+// Rectangle coverage and gradient in renderer coordinates (east, -north).
+vec3 terrain_rect_mask(vec2 p, vec4 rect) {
+	vec2 low_x = terrain_edge(p.x - (rect.x - rect.z));
+	vec2 high_x = terrain_edge((rect.x + rect.z) - p.x);
+	vec2 low_y = terrain_edge(p.y - (rect.y - rect.w));
+	vec2 high_y = terrain_edge((rect.y + rect.w) - p.y);
+	float x = low_x.x * high_x.x;
+	float y = low_y.x * high_y.x;
+	return vec3(x * y,
+		(low_x.y * high_x.x - low_x.x * high_x.y) * y,
+		(low_y.y * high_y.x - low_y.x * high_y.y) * x);
+}
+
+// Layer mown and runway amplitudes over rough in the same low-to-high precedence order as the field.
+vec3 terrain_amplitude(vec2 p) {
+	float amplitude = terrain_rough_amplitude_m;
+	vec2 gradient = vec2(0.0);
+	for (int i = 0; i < min(terrain_surface_count, 32); i++) {
+		vec3 mask = terrain_rect_mask(p, terrain_surface_rects[i]);
+		int kind = terrain_surface_kinds[i];
+		float target = kind == 2 ? terrain_runway_amplitude_m : terrain_mown_amplitude_m;
+		float difference = target - amplitude;
+		gradient = gradient * (1.0 - mask.x) + difference * mask.yz;
+		amplitude += difference * mask.x;
+	}
+	return vec3(amplitude, gradient);
+}
+
+// [height, dh/dnorth, dh/deast], exactly the directional waves used by physics/ground_terrain.gd.
+vec3 terrain_height(vec2 north_east) {
+	vec3 amplitude_data = terrain_amplitude(vec2(north_east.y, -north_east.x));
+	float amplitude = amplitude_data.x;
+	float wave = 0.45 * sin(6.283185307179586 * (0.8 * north_east.x + 0.6 * north_east.y) / 1.2 + 0.17)
+		+ 0.35 * sin(6.283185307179586 * (-0.35 * north_east.x + 0.9367496998 * north_east.y) / 0.73 + 2.11)
+		+ 0.20 * sin(6.283185307179586 * (0.6 * north_east.x - 0.8 * north_east.y) / 0.41 + 4.73);
+	float wave_north = 0.45 * 6.283185307179586 / 1.2 * 0.8 * cos(6.283185307179586 * (0.8 * north_east.x + 0.6 * north_east.y) / 1.2 + 0.17)
+		+ 0.35 * 6.283185307179586 / 0.73 * -0.35 * cos(6.283185307179586 * (-0.35 * north_east.x + 0.9367496998 * north_east.y) / 0.73 + 2.11)
+		+ 0.20 * 6.283185307179586 / 0.41 * 0.6 * cos(6.283185307179586 * (0.6 * north_east.x - 0.8 * north_east.y) / 0.41 + 4.73);
+	float wave_east = 0.45 * 6.283185307179586 / 1.2 * 0.6 * cos(6.283185307179586 * (0.8 * north_east.x + 0.6 * north_east.y) / 1.2 + 0.17)
+		+ 0.35 * 6.283185307179586 / 0.73 * 0.9367496998 * cos(6.283185307179586 * (-0.35 * north_east.x + 0.9367496998 * north_east.y) / 0.73 + 2.11)
+		- 0.20 * 6.283185307179586 / 0.41 * 0.8 * cos(6.283185307179586 * (0.6 * north_east.x - 0.8 * north_east.y) / 0.41 + 4.73);
+	// gradient is dA/d(east), dA/d(-north) because renderer y = -north.
+	float amplitude_north = -amplitude_data.z;
+	float amplitude_east = amplitude_data.y;
+	return vec3(amplitude * wave,
+		amplitude_north * wave + amplitude * wave_north,
+		amplitude_east * wave + amplitude * wave_east);
+}
+
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
@@ -166,14 +238,31 @@ vec3 lobe_term(vec3 d) {
 
 void fragment() {
 	vec3 col = rough_grass_colour(world_pos.xz);
-	float dist_pilot = distance(world_pos.xz, pilot_xz);
-	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot));
-	col *= mix(vec3(1.0), parcel(world_pos.xz), far * parcel_strength);
+	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
+	vec2 footprint = fwidth(world_pos.xz);
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);
+	if (terrain_relief_enabled && d < terrain_relief_end_m) {
+		float distance_weight = 1.0 - smoothstep(terrain_relief_start_m, terrain_relief_end_m, d);
+		float footprint_m = max(footprint.x, footprint.y);
+		float footprint_weight = 1.0 - smoothstep(terrain_footprint_start_m, terrain_footprint_end_m, footprint_m);
+		float relief_weight = distance_weight * footprint_weight;
+		if (relief_weight > 0.001) {
+			vec3 relief = terrain_height(vec2(-world_pos.z, world_pos.x));
+			vec3 base_normal = normalize(NORMAL);
+			vec3 east_view = (VIEW_MATRIX * vec4(1.0, 0.0, 0.0, 0.0)).xyz;
+			vec3 north_view = (VIEW_MATRIX * vec4(0.0, 0.0, -1.0, 0.0)).xyz;
+			vec3 perturbation = -relief.z * east_view - relief.y * north_view;
+			perturbation *= relief_weight;
+			perturbation -= base_normal * dot(base_normal, perturbation);
+			NORMAL = normalize(base_normal + perturbation);
+		}
+	}
+	float dist_pilot = distance(world_pos.xz, pilot_xz);
+	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot));
+	col *= mix(vec3(1.0), parcel(world_pos.xz), far * parcel_strength);
 	// Derivatives must be evaluated before spatially varying branches/loops (including the bounds early-out).
-	vec2 footprint = fwidth(world_pos.xz);
 	// Explicit derivatives outside divergent surface/LOD branches.
 	vec2 turf_dx = dFdx(world_pos.xz);
 	vec2 turf_dy = dFdy(world_pos.xz);

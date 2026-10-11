@@ -1,0 +1,9 @@
+{
+  "full": {
+    "checks": 125,
+    "failures": 0,
+    "exit_code": 0,
+    "scope": "full",
+    "expected_failure": null
+  }
+}

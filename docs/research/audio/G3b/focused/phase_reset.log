@@ -1,0 +1,48 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+70 checks, 45 failed
+FAIL Stik idle analytic waveform, phase 0 worst=0.18772990592313837 at sample 941 (allowed 1e-05)
+FAIL Stik idle analytic waveform, phase 1 worst=0.7438626938511825 at sample 436 (allowed 1e-05)
+FAIL Stik idle analytic waveform, phase 2 worst=0.007779912781313634 at sample 0 (allowed 1e-05)
+FAIL Stik mid analytic waveform, phase 0 worst=0.187728481996514 at sample 1016 (allowed 1e-05)
+FAIL Stik mid analytic waveform, phase 1 worst=0.7438659393201308 at sample 164 (allowed 1e-05)
+FAIL Stik mid analytic waveform, phase 2 worst=0.007779912781313634 at sample 0 (allowed 1e-05)
+FAIL Stik static maximum analytic waveform, phase 0 worst=0.18772937092200823 at sample 355 (allowed 1e-05)
+FAIL Stik static maximum analytic waveform, phase 1 worst=0.7438415558507142 at sample 333 (allowed 1e-05)
+FAIL Stik static maximum analytic waveform, phase 2 worst=0.007779997199959064 at sample 712 (allowed 1e-05)
+FAIL P-51 idle analytic waveform, phase 0 worst=0.18772990592345057 at sample 937 (allowed 1e-05)
+FAIL P-51 idle analytic waveform, phase 1 worst=0.7438626938511759 at sample 872 (allowed 1e-05)
+FAIL P-51 idle analytic waveform, phase 2 worst=0.007779912781313824 at sample 945 (allowed 1e-05)
+FAIL P-51 mid analytic waveform, phase 0 worst=0.18772848199676098 at sample 410 (allowed 1e-05)
+FAIL P-51 mid analytic waveform, phase 1 worst=0.7438645261719208 at sample 333 (allowed 1e-05)
+FAIL P-51 mid analytic waveform, phase 2 worst=0.007780152840495747 at sample 827 (allowed 1e-05)
+FAIL P-51 static maximum analytic waveform, phase 0 worst=0.18772702584771933 at sample 265 (allowed 1e-05)
+FAIL P-51 static maximum analytic waveform, phase 1 worst=0.7438602846091535 at sample 781 (allowed 1e-05)
+FAIL P-51 static maximum analytic waveform, phase 2 worst=0.007779912781313634 at sample 0 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=1837.49 phase=0.123457 worst=0.9833549798217511 at sample 11 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=1837.49 phase=0.723819 worst=0.8210039479656109 at sample 505 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=1837.5 phase=0.123457 worst=0.9470568631000537 at sample 503 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=1837.5 phase=0.723819 worst=0.7971431848027943 at sample 14 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2204.99 phase=0.123457 worst=0.781927458210537 at sample 9 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2204.99 phase=0.723819 worst=0.7987490033074076 at sample 331 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2205.0 phase=0.123457 worst=0.7412030778131236 at sample 9 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2205.0 phase=0.723819 worst=0.8400297990135119 at sample 1 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2756.24 phase=0.123457 worst=0.4999141607087411 at sample 504 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2756.24 phase=0.723819 worst=0.8957067575000282 at sample 1 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2756.25 phase=0.123457 worst=0.493712527518779 at sample 0 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=2756.25 phase=0.723819 worst=0.9513639125879623 at sample 1 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=3674.99 phase=0.123457 worst=0.4953591157197452 at sample 510 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=3674.99 phase=0.723819 worst=0.9126375589410629 at sample 511 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=3675.0 phase=0.123457 worst=0.39441360718952595 at sample 510 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=3675.0 phase=0.723819 worst=0.7916111632228344 at sample 1 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=5512.49 phase=0.123457 worst=0.3950550031157463 at sample 508 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=5512.49 phase=0.723819 worst=0.41332260404174503 at sample 509 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=5512.5 phase=0.123457 worst=0.21242536488065908 at sample 2 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=5512.5 phase=0.723819 worst=0.35305052345766974 at sample 1 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=11024.5 phase=0.123457 worst=0.21817545050267753 at sample 511 (allowed 1e-05)
+FAIL Nyquist-truncated oracle f=11024.5 phase=0.723819 worst=0.2992753858656563 at sample 0 (allowed 1e-05)
+FAIL pure oscillator partitioning is sample-exact parts=[1, 17, 257, 3, 1024, 91, 511]
+FAIL pure oscillator partitioning preserves exact phase whole=0.04512169312172 split=0.30622751322752
+FAIL pure oscillator partitioning is sample-exact parts=[137, 1200, 1, 642, 19, 3001]
+FAIL pure oscillator partitioning preserves exact phase whole=0.09410430839007 split=0.66268140589572
+FAIL zero frequency returns exact silence and normalized phase frames=128 phase=0.0

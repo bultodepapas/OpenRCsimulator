@@ -9,6 +9,7 @@ python research/audio/g3b/verify.py --godot /absolute/godot --app app --out /abs
 godot --headless --path app --script /absolute/research/audio/g3b/voice_bench.gd -- --out=/absolute/bench.json
 godot --headless --path app --script /absolute/research/audio/g3b/observer_bench.gd -- --out=/absolute/observer.json
 godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/research/audio/g3b/audio_probe.gd -- --driver=WASAPI --fps=60 --out=/absolute/mixer.json
+godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/research/audio/g3b/audio_lifecycle_stress.gd -- --driver=WASAPI --fps=30 --cycles=50 --out=/absolute/lifecycle.json
 ```
 
 `verify.py` copies the app to a fresh output folder, imports resources, runs the four focused programs, injects five real defects in that disposable copy, and restores the source between mutations. It rejects engine errors even with an exit code of zero. Never run deliberate defects in the live working tree.
@@ -18,3 +19,5 @@ godot --display-driver headless --audio-driver WASAPI --path app --script /absol
 `audio_probe.gd` captures a dedicated Godot mixer bus before muted Master. Repeat at 30/60/144 FPS. On Windows use `--display-driver headless --audio-driver WASAPI`; `--headless` selects Dummy. Echo the requested driver with the user argument `--driver=WASAPI`: Godot can strip recognized engine flags from its argument query. The checker requires that label to match the actual runtime driver. Other platforms need their native driver name. No latency override was used for the retained Windows runs. Reports distinguish request-to-refill delay, spectral capture response and the driver's reported latency estimate. The 1024-frame Goertzel window and 256-frame hop limit temporal resolution. `status=ok` means the probe completed; inspect the queue, skips, capture validity and response fields to decide acceptance.
 
 Dummy mixes 4096 output frames in a burst. It tests fallback stability, not the native 70 ms response gate. A microphone/loopback trial, multiple phase-aligned repetitions, other native drivers and real pilot evaluation remain separate evidence. Retained results and scope: [G3b report](../../../docs/research/audio/G3b/README.md).
+
+`audio_lifecycle_stress.gd` creates 50 voices, frees their nodes, and monitors individual playback/source WeakRefs until mixer retirement. The source must survive every still-live playback and both must release. `--cycles=1 --exit-before-drain` deliberately reproduces immediate-quit warnings. ResourceCache counters exclude dynamic generator resources; the WeakRefs are the direct lifetime check.

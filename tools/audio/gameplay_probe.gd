@@ -17,6 +17,10 @@ var dropped: int = 0
 var pilot_doppler_min: float = 1.0
 var pilot_doppler_max: float = 1.0
 var pilot_distance_min: float = INF
+var wildlife_events: Array[Dictionary] = []
+var wildlife_serial: int = 0
+var focus_resumes: int = 0
+var focus_resume_pending: bool = false
 
 
 func _initialize() -> void:
@@ -35,6 +39,7 @@ func _run() -> void:
 	scene = load("res://main.tscn").instantiate()
 	root.title = "OpenRC Audio Review"
 	root.add_child(scene)
+	root.focus_exited.connect(func() -> void: focus_resume_pending = true)
 	var adapter: Node = scene.get("_soundscape_audio")
 	if adapter == null:
 		printerr("probe requires soundscape=on and a physics flight")
@@ -50,6 +55,15 @@ func _run() -> void:
 	while elapsed < duration:
 		await process_frame
 		elapsed = float(Time.get_ticks_usec() - start_usec) / 1000000.0
+		# Opt-in automated review only: explicitly resume a focus pause, never a fault,
+		# crash, held session, or the intentional pause in the transition tape.
+		if focus_resume_pending:
+			focus_resume_pending = false
+			if args.has("resume-focus") and stage != 3 and scene.session.sim.paused \
+					and scene.session.holds.is_empty() and scene.session.crash.is_empty() \
+					and scene.session.pause_reason.is_empty() and scene.session.sim.fault_reason.is_empty():
+				scene.session.resume()
+				focus_resumes += 1
 		var next_stage: int = _stage_at(elapsed)
 		if next_stage != stage:
 			stage = next_stage
@@ -68,6 +82,11 @@ func _run() -> void:
 			events.append({wall_s = elapsed, stage = stage, tick = scene.session.sim.tick,
 				rpm = scene.session.sim.aux[0], paused = scene.session.sim.paused})
 		var buffer: PackedVector2Array = capture.get_buffer(capture.get_frames_available())
+		if adapter.soundscape.wildlife.serial > wildlife_serial:
+			wildlife_serial = adapter.soundscape.wildlife.serial
+			var animal_event: Dictionary = adapter.soundscape.wildlife.last_event.duplicate()
+			animal_event.wall_s = elapsed
+			wildlife_events.append(animal_event)
 		for frame: Vector2 in buffer:
 			peak = maxf(peak, maxf(absf(frame.x), absf(frame.y)))
 		samples.append_array(buffer)
@@ -107,6 +126,7 @@ func _run() -> void:
 			adapter = FileAccess.get_sha256("res://audio/flight_audio.gd"),
 			mixer = FileAccess.get_sha256("res://audio/soundscape.gd"),
 			model = FileAccess.get_sha256("res://audio/soundscape_model.gd"),
+			wildlife = FileAccess.get_sha256("res://audio/wildlife.gd"),
 		},
 		driver = AudioServer.get_driver_name(), display = DisplayServer.get_name(), requested_fps = Engine.max_fps,
 		aircraft = scene.aircraft_id, frames = samples.size(), mix_rate = wav.mix_rate,
@@ -117,6 +137,9 @@ func _run() -> void:
 		distance_min_m = position_min, distance_max_m = position_max, voices = adapter.soundscape.voices.size(),
 		pilot_doppler_min = pilot_doppler_min, pilot_doppler_max = pilot_doppler_max, pilot_distance_min_m = pilot_distance_min,
 		events = events, wav_saved = saved == OK,
+		wildlife_events = wildlife_events, wildlife_activity = adapter.soundscape.wildlife_presence,
+		final_tick = scene.session.sim.tick, final_paused = scene.session.sim.paused,
+		final_pause_reason = scene.session.pause_reason, focus_resumes = focus_resumes,
 		note = "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
 	}
 	var file: FileAccess = FileAccess.open(output + ".json", FileAccess.WRITE)
@@ -130,6 +153,8 @@ func _run() -> void:
 
 
 func _stage_at(time_s: float) -> int:
+	if args.has("wildlife-review"):
+		return 0 # real trimmed flight, fixed pilot view; leave space for the field to be heard
 	if time_s < 4.0: return 0
 	if time_s < 7.0: return 1
 	if time_s < 10.0: return 2

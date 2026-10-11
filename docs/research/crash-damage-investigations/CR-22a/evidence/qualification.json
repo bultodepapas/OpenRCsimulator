@@ -1,0 +1,87 @@
+{
+  "tests": {
+    "severity": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "44 checks, 0 failed\r"
+      ]
+    },
+    "effects": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "56 checks, 0 failures\r"
+      ]
+    },
+    "wreck": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "135 checks, 0 failed\r"
+      ]
+    },
+    "audio": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "12 checks, 0 failed\r"
+      ]
+    },
+    "integration": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "76 checks, 0 failed\r"
+      ]
+    },
+    "pose": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "84 checks, 0 failed\r"
+      ]
+    },
+    "integration-native": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": [
+        "84 checks, 0 failed\r"
+      ]
+    }
+  },
+  "scenarios": {
+    "ugly-flown": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": []
+    },
+    "jet-flown": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": []
+    },
+    "scrape": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": []
+    },
+    "wingtip": {
+      "exit_code": 0,
+      "engine_errors": [],
+      "checks": []
+    }
+  },
+  "source_sha256": {
+    "app/render/crash/crash_audio.gd": "3c005524c877fd13c69ddf2d4f8c6eea9c26df463776c4bfabc7667bd5ed2e3d",
+    "app/render/crash/director.gd": "909bb3cd9b6fb788486ebd8fb126c9a2f538bc577fdd45eecf54928cfa7ccd06",
+    "app/render/crash/effects.gd": "22721aa74e74a536d1c541c94bb5d84f604818c93de05281fe87650425cb2023",
+    "app/render/crash/severity.gd": "0e427f00f9e33d836fafbaa052f73bcc6e2b6e02b2fa10922bcb7443e8346837",
+    "app/render/crash/wreck.gd": "6e9c76196573eb2775c427ea1a368109e5739feb683150e719684db66f45878c",
+    "app/main.gd": "30b1152063d2b3de3f48ed903e8424737475eb9bbe68dec6dbeeff84535f52a9",
+    "app/sim/flight_session.gd": "d14eb5bdea6f11dffdc049fbfc537517e16be1508d971fee249bf2b487aa050e",
+    "research/crash-damage/cr-22a/scenario.gd": "b22ab8058950a13cf1184aa6b0afb56f228e24e5493449b1afec3969b3ceb5b2"
+  },
+  "source_unchanged": true,
+  "passed": true
+}

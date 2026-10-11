@@ -26,18 +26,30 @@ def analyze(prefix: Path) -> dict:
     if np.any(np.abs(pcm.astype(np.int32)) >= 32767):
         failures.append('PCM reached a full-scale rail')
     events = {int(e['stage']): e for e in report['events']}
-    if set(events) != set(range(7)):
+    wildlife_review = bool(report.get('arguments', {}).get('wildlife-review', False))
+    if not wildlife_review and set(events) != set(range(7)):
         failures.append('transition tape did not complete')
     pause = (audio[int((events[3]['wall_s'] + .35) * rate):int((events[4]['wall_s'] - .15) * rate)]
              if 3 in events and 4 in events else audio[:0])
     pause_peak = float(np.max(np.abs(pause))) if pause.size else 1.0
-    if pause_peak > 1.0 / 32768.0:
+    if not wildlife_review and pause_peak > 1.0 / 32768.0:
         failures.append('pause did not reach silence')
-    if report['distance_min_m'] > 4.0:
+    if not wildlife_review and report['distance_min_m'] > 4.0:
         failures.append('camera change did not reach close aircraft view')
-    if not (all(i in events for i in (1, 2, 3)) and
+    if not wildlife_review and not (all(i in events for i in (1, 2, 3)) and
             events[2]['rpm'] > events[1]['rpm'] and events[2]['rpm'] > events[3]['rpm']):
         failures.append('real RPM did not rise and fall across throttle tape')
+    if wildlife_review:
+        if report.get('final_paused', True) or report.get('final_tick', 0) < report['captured_seconds'] * 240 * .85:
+            failures.append('wildlife review did not sustain the actual flight')
+        previous = {}
+        for event in report.get('wildlife_events', []):
+            species = event['species']
+            if previous.get(species) == event['variant']:
+                failures.append('adjacent wildlife variant repeated')
+            previous[species] = event['variant']
+        if not previous:
+            failures.append('wildlife review captured no animal calls')
     if report['soundscape_update_p95_us'] > 500:
         failures.append('adapter update p95 exceeded 0.5 ms budget')
     result = {
@@ -45,7 +57,9 @@ def analyze(prefix: Path) -> dict:
         'driver': report['driver'], 'display': report['display'], 'fps': report['requested_fps'],
         'aircraft': report['aircraft'], 'seconds': len(pcm) / rate,
         'peak_dbfs': report['peak_dbfs'], 'rms_dbfs': report['rms_dbfs'],
-        'pause_peak_linear': pause_peak, 'dropped_frames': report['discarded_frames'],
+        'pause_peak_linear': None if wildlife_review else pause_peak, 'dropped_frames': report['discarded_frames'],
+        'review_kind': 'wildlife' if wildlife_review else 'transitions',
+        'wildlife_event_count': len(report.get('wildlife_events', [])),
         'adapter_p95_us': report['soundscape_update_p95_us'],
         'adapter_max_us': report['soundscape_update_max_us'],
         'stereo_difference_rms': float(np.sqrt(np.mean((audio[:, 0] - audio[:, 1]) ** 2))),

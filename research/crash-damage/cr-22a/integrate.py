@@ -1,4 +1,8 @@
-"""Apply guarded, additive crash seams to a selected app (used first on a copy)."""
+"""Historical initial integration scaffold, first exercised on a disposable copy.
+
+Not an installer for the final revision: later UI/lifecycle fixes live in app/.
+Refuses changed anchors rather than replacing concurrent developer changes.
+"""
 from pathlib import Path
 import sys
 

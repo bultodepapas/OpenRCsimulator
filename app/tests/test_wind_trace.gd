@@ -25,7 +25,10 @@ func _initialize() -> void:
 	recorder.start(session.trace_meta())
 	session.sim.step()
 	check("calm CSV keeps v3 format", recorder.trace.to_csv().begins_with("# format: openrc-trace v3\n"))
-	check("calm schema/columns unchanged", recorder.trace.meta.metadata_schema == "openrc-flight-meta v2" and recorder.trace.columns() == Trace.COLUMNS)
+	check("calm v3 columns stay unchanged with wheel metadata v6",
+		recorder.trace.meta.metadata_schema == "openrc-flight-meta v6"
+		and recorder.trace.meta.wheel_state_model == "relative-wheel-rim-speed-rk4-v1"
+		and recorder.trace.columns() == Trace.COLUMNS)
 	recorder.recording = false
 	session.reset()
 	check("gust weather config accepted", session.setup_weather(Config.preset("gusty")))
@@ -46,7 +49,9 @@ func _initialize() -> void:
 	var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 	var load_wind: PackedFloat64Array = session.wind_at(load_time)
 	check("weather trace is v4", recorder.trace.to_csv().begins_with("# format: openrc-trace v4\n"))
-	check("v4 metadata schema follows weather", recorder.trace.meta.metadata_schema == "openrc-flight-meta v3")
+	check("weather v4 retains wheel metadata v6",
+		recorder.trace.meta.metadata_schema == "openrc-flight-meta v6"
+		and recorder.trace.meta.wheel_state_model == "relative-wheel-rim-speed-rk4-v1")
 	check("all tick rows remain continuous", recorder.trace.row_count() == 841 and recorder.trace.is_continuous())
 	check("k1 time is previous tick", recorder.trace.value(row, "loads_t_s") == load_time)
 	for axis: int in 3:

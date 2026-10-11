@@ -61,10 +61,17 @@ func _initialize() -> void:
 	_check("rejected reload preserves start and trims", session.start.state == old_start and session.trims == old_trims)
 	_check("rejected reload preserves current and previous state", session.sim.state == old_state and session.sim.previous == old_previous)
 	_check("rejected reload preserves tick and pause status", session.sim.tick == old_tick and session.sim.paused == old_paused)
+	var session_loads: Callable = session.sim.loads
+	var session_evaluate: Callable = session.sim.continuous_evaluate
 	session.sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0])
+	if session_evaluate.is_valid():
+		session.sim.continuous_evaluate = func(_s: PackedFloat64Array, _values: PackedFloat64Array, _t: float) -> Dictionary:
+			return {}
 	session.sim.step()
 	_check("session exposes a runtime fault and pauses", session.sim.paused and session.pause_reason.begins_with("simulation fault:"))
+	session.sim.loads = session_loads
+	session.sim.continuous_evaluate = session_evaluate
 	session.resume()
 	_check("session resume cannot bypass a runtime fault", session.sim.paused and session.pause_reason.begins_with("simulation fault:"))
 

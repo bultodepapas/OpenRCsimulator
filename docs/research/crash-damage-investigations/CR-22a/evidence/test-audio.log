@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+OK: setup creates exactly eight bounded voices
+OK: setup adds one isolated bus
+OK: crash bus routes directly to Master
+OK: crash bus has a -1.25 dBFS hard limiter
+OK: ground-surface aliases resolve
+OK: invalid severity produces no sound
+OK: fire stays off without an ignition input
+OK: Dummy driver allocates bounded pool without attempting playback
+OK: Dummy driver suppresses one-shot, secondary and fire playback
+OK: native peak capture is reserved for a real audio driver
+OK: reset clears Dummy-driver state
+OK: shutdown removes only its own bus
+12 checks, 0 failed

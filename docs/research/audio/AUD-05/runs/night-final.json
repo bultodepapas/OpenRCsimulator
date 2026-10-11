@@ -1,0 +1,96 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "130",
+		"fps": "60",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/aud05-night-final",
+		"resume-focus": true,
+		"time-of-day": "23:00",
+		"wildlife-review": true
+	},
+	"audio_sources_sha256": {
+		"adapter": "0dfe9dbf814c4fab89b0f09086e7197e57c23e22e137df20734984f49ee894da",
+		"mixer": "aec009ff2d14e192fccc363d1e829a1770e9e9d4ab0019a97c196841a533970f",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b",
+		"wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+	},
+	"captured_seconds": 130.016,
+	"discarded_frames": 0,
+	"display": "Windows",
+	"distance_max_m": 1910.78662109375,
+	"distance_min_m": 66.4478454589844,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 5,
+			"wall_s": 0.002984
+		}
+	],
+	"final_pause_reason": "",
+	"final_paused": false,
+	"final_tick": 31196,
+	"focus_resumes": 0,
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 6240768,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -1.0143659725147,
+	"pilot_distance_min_m": 66.4478454589844,
+	"pilot_doppler_max": 1.02169828108938,
+	"pilot_doppler_min": 0.957803886762454,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 60,
+	"rms_dbfs": -40.7065959055722,
+	"soundscape_update_max_us": 869,
+	"soundscape_update_p95_us": 195,
+	"voices": 14,
+	"wav_saved": true,
+	"wildlife_activity": {
+		"bird": 0.0,
+		"cricket": 0.783999999999987,
+		"crow": 0.0,
+		"dog": 0.399999999999993,
+		"owl": 0.999999999999987
+	},
+	"wildlife_events": [
+		{
+			"answering": false,
+			"level": 0.814753830432892,
+			"perch": 1,
+			"pitch": 0.946300983428955,
+			"serial": 1,
+			"slot": 0,
+			"species": "owl",
+			"variant": 0,
+			"wall_s": 15.430418
+		},
+		{
+			"answering": false,
+			"level": 0.919011116027832,
+			"perch": 5,
+			"pitch": 0.976586222648621,
+			"serial": 2,
+			"slot": 0,
+			"species": "owl",
+			"variant": 1,
+			"wall_s": 77.543766
+		},
+		{
+			"answering": false,
+			"level": 0.936004996299744,
+			"perch": 1,
+			"pitch": 1.03636527061462,
+			"serial": 3,
+			"slot": 0,
+			"species": "dog",
+			"variant": 2,
+			"wall_s": 95.56135
+		}
+	]
+}

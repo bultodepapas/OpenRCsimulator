@@ -14,6 +14,12 @@ if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --impor
 fi
 rm -f "$IMPORT_LOG"
 
+echo "== AS-01/02: versioned aircraft contract and migration stay current"
+python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
+python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check
+python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
+python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
+
 echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
 python3 "$HERE/../tools/trees/test_place.py"

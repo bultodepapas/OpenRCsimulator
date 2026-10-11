@@ -71,13 +71,15 @@ def quantity(node, unit):
 
 
 def propeller(data):
-    if data.get('format') != 'openrc-aircraft v1':
-        raise ValueError('expected openrc-aircraft v1')
+    aircraft_format = data.get('format')
+    if aircraft_format not in ('openrc-aircraft v1', 'openrc-aircraft v2'):
+        raise ValueError('expected openrc-aircraft v1 or v2')
     propulsion = data['propulsion']
     if not isinstance(propulsion, dict):
         raise ValueError('propulsion must be an object')
-    if propulsion.get('kind', 'glow_prop') != 'glow_prop':
-        raise ValueError('propeller audit cannot interpret turbine spool RPM')
+    kind = propulsion.get('kind', 'glow_prop' if aircraft_format == 'openrc-aircraft v1' else None)
+    if kind != 'glow_prop':
+        raise ValueError('propeller audit supports glow_prop combustion propulsion only')
     prop = propulsion['propeller']
     if not isinstance(prop, dict):
         raise ValueError('propeller must be an object')
@@ -268,6 +270,8 @@ def audit(trace: bytes, aircraft: bytes, *, ticks: int, hz=240, still_air=False,
     aircraft_hash = digest(aircraft)
     support = coverage_contract(coverage, aircraft_hash, tables)
     meta, samples = read_trace(trace, aircraft_hash, ticks, hz)
+    if meta['aircraft_input_format'] != data['format']:
+        raise ValueError('trace aircraft input format disagrees with hashed aircraft data')
     points = [classify(samples[0], diameter, axis, tables, support)]
     for previous, current in zip(samples, samples[1:]):
         query = dict(current)

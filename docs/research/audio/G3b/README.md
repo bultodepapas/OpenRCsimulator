@@ -1,6 +1,6 @@
 # G3b — Responsive procedural engine audio
 
-2026-10-11 · **Status: implementation and qualification in progress.** Existing G3 namespace; main-line audio adapter work.
+2026-10-11 · **Status: bounded generator milestone delivered and software-qualified. Physical acoustics, speaker onset and other native drivers remain open.** Existing G3 namespace; main-line audio adapter work.
 
 ## Audit and scope
 
@@ -32,3 +32,27 @@ Pinned source: [generator](https://github.com/godotengine/godot/blob/4.7.2-stabl
 `engine_audio.gd` owns queue accounting and a three-scalar accepted-tick RPM observation. It never changes physics arrays, commands, clocks or data. Pause/resume replaces queued sound, including the no-`stepped` checkpoint-restoration route; reset retains the application's stop/play lifecycle. Retain playback identity, not a playback reference, so the adapter does not keep old playbacks alive. Five UI flight cycles retain identical node counts and free all flight/audio nodes. Main integration replaces only audio creation/refill/restart and removes its redundant phase state. Immediate process exit can still report an engine playback warning; the unmodified Windows baseline reproduces it too. It is distinct from sustained-cycle lifetime checks.
 
 The final lifecycle review also found a source-ownership gap: Godot's generator playback stores a raw stream pointer while the server owns an asynchronously retired playback. Each new playback now retains its stream in metadata; the stream does not retain the playback. Weak-reference checks establish both source survival after node removal and release without a cycle, and an unowned-source defect fails that check. This fixes the demonstrated ownership gap. An intermittent integrated UI-help stop is retained as a diagnostic; source inspection suggests this gap could explain it, but a single isolated repeat did not establish causality. Immediate exit can retain both the playback and its pinned source until engine shutdown; sustained-cycle checks must be distinguished from that diagnostic warning.
+
+## Qualification results
+
+Host: Windows, Ryzen 9 5900X, pinned Godot `4.7.2.stable.official.ed1daf0bf`; native WASAPI at 48000 Hz, configured latency 15 ms, reported latency 10 ms, no override. Dedicated capture precedes muted Master. Final source-hashed runs after the lifetime correction measured:
+
+| Render FPS | Request → mixer capture | Maximum queue | Steady skips (10 s) |
+| --- | --- | --- | --- |
+| 30 | 54.41 ms | 50.02 ms | 0 |
+| 60 | 53.68 ms | 35.01 ms | 0 |
+| 144 | 54.84 ms | 35.01 ms | 0 |
+
+All native runs contain nonzero audio and zero capture loss. Earlier repeats retain phase-dependent results (request → capture 37.9–64.9 ms). The original native baseline measured 192.93 ms and is rejected by the same reader. The 1024-frame spectral window and 256-frame hop limit resolution; reported device latency is an estimate, not speaker onset. Dummy's 98.68 ms reserve produces zero steady skips but deliberately does not qualify the native latency gate. [Mixer artifacts](mixer/).
+
+Warm seven-run elapsed synthesis median: 6.266 ms per second of mono audio, 8.512 ms for the stateful stereo renderer; one-time table preparation 13.008 ms. Earlier baseline medians were 15.490 ms and, under concurrent test load, 24.206 ms. Timings are indicative host measurements; the noisy paired observer deltas do not establish a tick-cost improvement or close the original-target 500 µs gate. All 20 observer benchmark pairs retain exact complete simulation endpoints. [Performance](performance/).
+
+Source lifetime: 50 voices on each driver retain their sources for every still-live playback; all pairs release within two WASAPI / three Dummy render frames, node count returns to baseline, and drained runs have no exit warning. Immediate-quit control reproduces the deferred playback/source warning pair. Dynamic resources are checked with WeakRefs, not ResourceCache counts. [Lifecycle evidence](lifecycle/).
+
+Software checks: **223 focused audio assertions**, five real defects rejected (phase reset, stopped DC, missed endpoint, stale resume, unowned source), and exact complete simulation checkpoints for all four aircraft under 30/60/144 FPS refill grouping. The final frozen app snapshot, including UI-21 and EL2a-P3 integration, passes full `app/test.sh` with exit 0: guards, every-script parsing, unit/UI/input tests, goldens, all-aircraft trim traces, fixed-rate flights, model contracts and ground verification. [Full log](full-suite.log), [focused checks](focused/), [summary and source inventory](verification.json), [owned source hashes](source-sha256.json).
+
+After installation, the current shared tree passes actual Home → Fly → pause/resume → restart → End checks for **legacy/on/off** routes; G3b receives accepted physics samples, AUD remains the default, and off remains silent. Crash presentation is explicitly off in these route fixtures while CR work is active. Shared `main.gd` changes preserve AUD and projected-shadow hooks. [Integration logs](integration/). Later concurrent CR/visual edits are not claimed as part of the frozen full-suite qualification.
+
+Initial mounted-Windows baseline testing stopped at the input-report CLI fixture; native Linux snapshots avoid that environment issue. One later integrated run stopped during UI-help teardown without an engine error; its isolated repeat, final full regression and lifetime stress pass. The diagnostic [stopped run](accepted-suite.log), [isolated repeat](ui-help-repeat.log) and [unmodified baseline exit warning](baseline-e2e-input-verbose.log) remain available. Do not infer physical validation or a universal timing guarantee from these software results.
+
+Reproduce with the [G3b tools](../../../../research/audio/g3b/README.md). Ready commit message: `G3b: qualify target-filled legacy engine audio; proof: full app suite exit 0, 223 assertions, five defects, native FPS response and source-lifetime checks`.

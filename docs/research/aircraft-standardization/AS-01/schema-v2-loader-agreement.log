@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "cases": 62,
+    "schema_loader_agreements": 60,
+    "positive_fleet": 8,
+    "combustion_masks": 18,
+    "turbine_masks": 8,
+    "legacy_v1": 2,
+    "runtime_only_coupled_cases": 2
+  },
+  "failures": [],
+  "report": "docs\\research\\aircraft-standardization\\AS-01\\schema-v2-loader-agreement.json"
+}

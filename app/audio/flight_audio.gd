@@ -58,6 +58,7 @@ func snapshot() -> Dictionary:
 		load = load_amount, throttle = session.sim.inputs[3], running = session.engine_running,
 		blades = blades, sound_speed = sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15))),
 		airspeed = air.V,
+		temperature_c = float(atmosphere.get("temperature_k", 288.15)) - 273.15,
 		wind_speed = wind.length(), wind_direction = wind,
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position,
 		paused = session.sim.paused, sun_elevation = elevation,

@@ -25,6 +25,24 @@ AUX_LAYOUT = 'engine_rpm srv_roll srv_pitch srv_yaw'.split()
 SEMANTIC_HASH_CONVENTION = ('sha256 of Godot JSON.stringify(parsed_input, indent=empty, '
                             'sort_keys=true, full_precision=false); not file bytes')
 INPUT_HASH_CONVENTION = 'sha256 of exact aircraft input file bytes'
+WHEEL_STATE_MODEL = 'relative-wheel-rim-speed-rk4-v1'
+WHEEL_LAYOUT_SUFFIX = 'wheel rim speeds in m/s, landing-gear contact order, appended continuous tail'
+WHEEL_PROFILE_HASH_CONVENTION = (
+    'profile_sha256 is canonical JSON for the selected aircraft profile; '
+    'input_sha256 is SHA-256 of exact wheel_profiles.json bytes')
+SHAFT_LAYOUT = 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled'
+BATTERY_LAYOUT = ('axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, '
+                  'remaining charge C, terminal energy J, pack heat J; RK4 coupled')
+WASH_ONLY_LAYOUT = 'axial wash increment m/s, slipstream.pieces order; RK4 coupled; checkpoint only'
+
+
+def _finite_number(value: object) -> bool:
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(float(value))
+    except OverflowError:
+        return False
 
 
 def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Path | None) -> str:
@@ -39,10 +57,10 @@ def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Pat
             raise ValueError('legacy metadata cannot verify --aircraft-input')
         digest_key, convention_key = 'aircraft_data_sha256', 'aircraft_data_hash_convention'
         identity = 'legacy semantic-only metadata; exact input identity unavailable'
-    elif schema == 'openrc-flight-meta v2':
+    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 7)}:
         if any(key in metadata for key in ('aircraft_data_sha256', 'aircraft_data_hash_convention')):
             raise ValueError('metadata v2 must use explicit input/semantic hash names')
-        if metadata.get('aircraft_input_format') != 'openrc-aircraft v1':
+        if metadata.get('aircraft_input_format') not in ('openrc-aircraft v1', 'openrc-aircraft v2'):
             raise ValueError('missing or unsupported aircraft input format')
         if metadata.get('aircraft_input_hash_convention') != INPUT_HASH_CONVENTION:
             raise ValueError('missing or unsupported aircraft input hash convention')
@@ -72,7 +90,9 @@ def check_metadata(metadata: dict, first: dict) -> None:
             raise ValueError(f'missing flight metadata: {key}')
     for key, allowed in {
         'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle'),
-        'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1', 'propeller-shaft-coupled-rk4-v1'),
+        'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
+                             'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
+                             'electric-ocv-resistance-coupled-events-v1'),
         'propwash_model': ('none', 'tail-slipstream-increment-v1', 'tail-slipstream-axial-transport-v1'),
     }.items():
         if metadata.get(key) not in allowed:
@@ -89,9 +109,7 @@ def check_metadata(metadata: dict, first: dict) -> None:
         raise ValueError('missing or invalid structured flight metadata') from error
     if state_layout != STATE_LAYOUT or aux_layout != AUX_LAYOUT:
         raise ValueError('state/aux layout disagrees with trace v3')
-    if not isinstance(aux, list) or len(aux) != len(AUX_LAYOUT) or any(
-        type(value) not in (int, float) or not math.isfinite(value) for value in aux
-    ):
+    if not isinstance(aux, list) or len(aux) != len(AUX_LAYOUT) or any(not _finite_number(value) for value in aux):
         raise ValueError('invalid recording_start_aux')
     if any(abs(value - first[column]) > 1e-9 for column, value in zip(AUX_LAYOUT, aux)):
         raise ValueError('recording_start_aux disagrees with first sample')
@@ -115,28 +133,162 @@ def check_metadata(metadata: dict, first: dict) -> None:
 
 def check_coupled_metadata(metadata: dict) -> None:
     """Optional model extension shared by calm, wind and atmosphere readers."""
-    if metadata.get('propulsion_model') != 'propeller-shaft-coupled-rk4-v1':
-        if any(key in metadata for key in ('shaft_integrator', 'rotor_coupling', 'recording_start_continuous')):
+    wheel_keys = {
+        'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+        'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
+        'launch_continuous',
+    }
+    has_wheel_metadata = any(key in metadata for key in wheel_keys)
+    if has_wheel_metadata:
+        wheel = _check_wheel_metadata(metadata)
+    else:
+        if metadata.get('metadata_schema') == 'openrc-flight-meta v6':
+            raise ValueError('metadata v6 is missing wheel-state metadata')
+        wheel = None
+
+    propulsion_model = metadata.get('propulsion_model')
+    shaft_models = {
+        'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
+        'electric-ocv-resistance-coupled-events-v1',
+    }
+    has_shaft_fields = any(key in metadata for key in ('shaft_integrator', 'rotor_coupling'))
+    shaft = propulsion_model in shaft_models
+    if not shaft and not has_shaft_fields:
+        if 'recording_start_continuous' in metadata and wheel is None:
             raise ValueError('coupled shaft metadata has the wrong propulsion model')
+        if wheel is not None:
+            _check_wheel_continuous(metadata, wheel, shaft=False)
         return
-    if (metadata.get('shaft_integrator') != 'coupled-rk4'
-            or metadata.get('rotor_coupling') != 'relative-spin-locked-inertia-reaction-v1'
-            or metadata.get('continuous_layout') != 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled'):
+    if not shaft or (metadata.get('shaft_integrator') != 'coupled-rk4'
+                     or metadata.get('rotor_coupling') != 'relative-spin-locked-inertia-reaction-v1'):
         raise ValueError('missing or unsupported coupled shaft semantics')
+
     try:
         continuous = json.loads(metadata['recording_start_continuous'])
         aux = json.loads(metadata['recording_start_aux'])
     except (KeyError, ValueError) as error:
         raise ValueError('missing coupled shaft recording state') from error
-    if (not isinstance(continuous, list) or not continuous or any(
-            type(value) not in (int, float) or not math.isfinite(value) for value in continuous)
-            or continuous[-1] < 0
+    layout = metadata.get('continuous_layout')
+    battery = layout == BATTERY_LAYOUT or (
+        isinstance(layout, str) and layout.startswith(BATTERY_LAYOUT + '; ' + WHEEL_LAYOUT_SUFFIX))
+    expected_base = BATTERY_LAYOUT if battery else SHAFT_LAYOUT
+    if wheel is not None:
+        expected_layout = expected_base + '; ' + WHEEL_LAYOUT_SUFFIX
+    else:
+        expected_layout = expected_base
+    if layout != expected_layout:
+        raise ValueError('missing or unsupported coupled shaft semantics')
+    if (not isinstance(continuous, list) or not continuous or any(not _finite_number(value) for value in continuous)
             or not isinstance(aux, list) or len(aux) != 4
-            or type(aux[0]) not in (int, float) or not math.isfinite(aux[0])
-            or abs(continuous[-1] - aux[0]) > 1e-9):
+            or not _finite_number(aux[0])):
+        raise ValueError('invalid coupled shaft recording state')
+
+    if wheel is None:
+        # Legacy shaft traces placed RPM at the end, immediately after any wash states.
+        shaft_index = len(continuous) - (4 if battery else 1)
+    else:
+        # The wheel tail is last; shaft RPM precedes optional battery states.
+        shaft_index = wheel['first_index'] - (3 if battery else 0) - 1
+    if shaft_index < 0 or continuous[shaft_index] < 0 or abs(continuous[shaft_index] - aux[0]) > 1e-9:
         raise ValueError('continuous shaft RPM disagrees with boundary mirror')
-    if (metadata.get('propwash_model') == 'tail-slipstream-axial-transport-v1') != (len(continuous) > 1):
+    wash_count = shaft_index
+    if (metadata.get('propwash_model') == 'tail-slipstream-axial-transport-v1') != (wash_count > 0):
         raise ValueError('continuous layout disagrees with transported-wash model')
+    if wheel is not None:
+        _check_wheel_continuous(metadata, wheel, shaft=True, battery=battery, wash_count=wash_count)
+
+
+def _check_wheel_metadata(metadata: dict) -> dict:
+    """Validate v6 wheel provenance, contact ordering, and the declared continuous tail."""
+    required = {
+        'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+        'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
+        'recording_start_continuous', 'launch_continuous',
+    }
+    if metadata.get('metadata_schema') != 'openrc-flight-meta v6' or not required.issubset(metadata):
+        raise ValueError('incomplete or unsupported wheel-state metadata')
+    if metadata.get('wheel_state_model') != WHEEL_STATE_MODEL:
+        raise ValueError('unsupported wheel-state model')
+    if metadata.get('wheel_profile_status') != 'applied':
+        raise ValueError('wheel profile is not applied')
+    for key in ('wheel_profile_sha256', 'wheel_profile_input_sha256'):
+        if not re.fullmatch(r'[0-9a-f]{64}', metadata.get(key, '')):
+            raise ValueError('missing or invalid wheel profile SHA-256')
+    if metadata.get('wheel_profile_hash_convention') != WHEEL_PROFILE_HASH_CONVENTION:
+        raise ValueError('missing or unsupported wheel profile hash convention')
+    try:
+        entries = json.loads(metadata['wheel_state_layout'])
+        brakes = json.loads(metadata['wheel_brakes'])
+    except (TypeError, ValueError) as error:
+        raise ValueError('invalid wheel-state metadata JSON') from error
+    if type(entries) is not list or not entries:
+        raise ValueError('wheel_state_layout must be a nonempty array')
+    contacts = []
+    indices = []
+    for entry in entries:
+        if (type(entry) is not dict or set(entry) != {'index', 'contact', 'unit'}
+                or type(entry['index']) is not int or entry['index'] < 0
+                or type(entry['contact']) is not str or not entry['contact']
+                or entry['unit'] != 'm/s rim speed'):
+            raise ValueError('invalid wheel_state_layout entry')
+        indices.append(entry['index'])
+        contacts.append(entry['contact'])
+    if indices != list(range(indices[0], indices[0] + len(indices))) or len(set(contacts)) != len(contacts):
+        raise ValueError('wheel state indices or contacts are not contiguous and unique')
+    if type(brakes) is not list or len(brakes) != len(entries):
+        raise ValueError('wheel_brakes does not match wheel contacts')
+    for contact, brake in zip(contacts, brakes):
+        if (type(brake) is not dict or set(brake) != {'contact', 'availability', 'max_torque_nm'}
+                or brake['contact'] != contact or type(brake['availability']) is not str
+                or not brake['availability'] or not _finite_number(brake['max_torque_nm'])
+                or brake['max_torque_nm'] < 0):
+            raise ValueError('invalid wheel brake metadata')
+    layout = metadata.get('continuous_layout')
+    if (not isinstance(layout, str)
+            or (layout != WHEEL_LAYOUT_SUFFIX and not layout.endswith('; ' + WHEEL_LAYOUT_SUFFIX))):
+        raise ValueError('continuous layout is missing the wheel-state tail')
+    return {'entries': entries, 'first_index': indices[0], 'contacts': contacts}
+
+
+def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
+                            battery: bool = False, wash_count: int | None = None) -> None:
+    """Check wheel state arrays and ensure all declared wheel slots are the final slots."""
+    try:
+        continuous = json.loads(metadata['recording_start_continuous'])
+        launch = json.loads(metadata['launch_continuous'])
+    except (KeyError, ValueError) as error:
+        raise ValueError('missing or invalid wheel continuous state') from error
+    # Physics checkpoints deliberately discard original launch provenance. The
+    # current recording state is still mandatory; do not invent launch rim speeds.
+    unknown_launch = (metadata.get('launch_kind') == 'checkpoint_restore'
+                      and metadata.get('launch_choice') == 'unknown' and launch == [])
+    if (type(continuous) is not list or not continuous or type(launch) is not list
+            or (len(launch) != len(continuous) and not unknown_launch)
+            or any(not _finite_number(value) for value in continuous + launch)):
+        raise ValueError('invalid wheel continuous state')
+    entries = wheel['entries']
+    first_index = wheel['first_index']
+    if first_index + len(entries) != len(continuous):
+        raise ValueError('wheel states are not a contiguous continuous-state tail')
+    if shaft:
+        prefix = BATTERY_LAYOUT if battery else SHAFT_LAYOUT
+        if metadata.get('continuous_layout') != prefix + '; ' + WHEEL_LAYOUT_SUFFIX:
+            raise ValueError('unsupported wheel continuous-state prefix')
+        if wash_count is None or first_index != wash_count + 1 + (3 if battery else 0):
+            raise ValueError('wheel state tail disagrees with shaft prefix')
+    else:
+        layout = metadata.get('continuous_layout')
+        base_layout = ('none' if layout == WHEEL_LAYOUT_SUFFIX
+                       else layout.removesuffix('; ' + WHEEL_LAYOUT_SUFFIX))
+        if base_layout not in ('none', WASH_ONLY_LAYOUT):
+            raise ValueError('unsupported nonshaft wheel continuous-state prefix')
+        expected_wash = first_index
+        if base_layout == 'none' and expected_wash != 0:
+            raise ValueError('wheel state tail disagrees with empty continuous prefix')
+        if base_layout == WASH_ONLY_LAYOUT and expected_wash == 0:
+            raise ValueError('wheel state tail disagrees with wash-only prefix')
+        if (metadata.get('propwash_model') == 'tail-slipstream-axial-transport-v1') != (expected_wash > 0):
+            raise ValueError('continuous layout disagrees with transported-wash model')
 
 
 def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,

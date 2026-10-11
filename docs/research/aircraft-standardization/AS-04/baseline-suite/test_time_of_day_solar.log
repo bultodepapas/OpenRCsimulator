@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+solar oracle fixture could not be loaded: Unknown error getting token
+FAIL independent oracle fixture loads 
+SCRIPT ERROR: Invalid access to property or key 'cases' on a base object of type 'Dictionary'.
+   at: _check_independent_oracles (res://tests/test_time_of_day_solar.gd:50)
+   GDScript backtrace (most recent call first):
+       [0] _check_independent_oracles (res://tests/test_time_of_day_solar.gd:50)
+       [1] _initialize (res://tests/test_time_of_day_solar.gd:19)
+solar oracle fixture could not be loaded: Unknown error getting token
+SCRIPT ERROR: Invalid access to property or key 'cases' on a base object of type 'Dictionary'.
+   at: _check_seasons_and_direction (res://tests/test_time_of_day_solar.gd:165)
+   GDScript backtrace (most recent call first):
+       [0] _check_seasons_and_direction (res://tests/test_time_of_day_solar.gd:165)
+       [1] _initialize (res://tests/test_time_of_day_solar.gd:22)
+16 checks, 1 failed

@@ -260,7 +260,11 @@ def check(path, duration=None):
         expected_model = TURBULENCE_MODEL
     else:
         raise ValueError('expected weather trace v4 or v5')
-    if metadata.get('metadata_schema') != expected_schema or metadata.get('weather_model') != expected_model:
+    # Flight metadata v6 is emitted only when validated wheel-state metadata is
+    # present. check_coupled_metadata above rejects v6 without that payload and
+    # rejects wheel metadata attached to a legacy schema.
+    if (metadata.get('metadata_schema') not in (expected_schema, 'openrc-flight-meta v6')
+            or metadata.get('weather_model') != expected_model):
         raise ValueError('weather trace metadata schema/model mismatch')
     if 'weather_config' not in metadata:
         raise ValueError('missing weather_config')

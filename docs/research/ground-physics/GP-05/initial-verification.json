@@ -1,0 +1,11 @@
+{
+  "plan_sha256": "c069c6961b976d6bf3d23c2aefcc6d7f80457ac36bd4f488beec49f2d4e93191",
+  "plan_completed_before_code": true,
+  "isolation": "frozen baseline plus isolated app draft; shared app not yet modified",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "parity": {
+    "cases": 8,
+    "ticks_per_case": 1200,
+    "exact_body_aux_loads_inputs": true
+  }
+}

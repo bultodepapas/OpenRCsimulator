@@ -1,0 +1,12 @@
+{
+  "app/render/engine_sound.gd": "8e93361c342279b166849daec302837f53bcf74829b767eda5f491c5c71293e8",
+  "app/render/engine_audio.gd": "82d221f39818bec1c3b2fd3bec72f5a3798cb8c6ab6936f5181f285517df8ec8",
+  "app/render/engine_voice.gd": "fa7279d2c7fed450b773ead4ea930fb9d3869e9fdee98cf41aad4c25e8e8c926",
+  "app/tests/test_engine_audio.gd": "e9908d8e181fe13beaf43b6c908d3618b75898eb5286b59735c39817ea5f04ce",
+  "app/tests/test_engine_voice.gd": "bf80cac088ef4f0712017c412a74a1eef42e4a35ec7f17ac62483f10d2d85c1e",
+  "research/audio/g3b/verify.py": "0d32f3ef74ad3c86904dbdc41b0c98ea8e207290b3aff9c6561224a41dc95aa2",
+  "research/audio/g3b/audio_probe.gd": "562b5ee260413b77a93030f85f614388e93f50b60dfd422fa8aed833f508edcc",
+  "research/audio/g3b/check_reports.py": "b6f5054d41844feb461495bce529445ee575de14e8afad3f424aea797eeecb38",
+  "research/audio/g3b/check_routes.gd": "8741453a51ab962335c69c81a7e483adec15bdb4e3f2ad3c3598ef6cfb54172d",
+  "research/audio/g3b/audio_lifecycle_stress.gd": "91c5f65ff5375fd2d113f167430fa6c233fd086bd6019207b90a8adc001e78a6"
+}

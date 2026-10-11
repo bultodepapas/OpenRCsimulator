@@ -11,7 +11,19 @@ const MAX_POINT_SPEED_MPS := 120.0
 const MAX_SCATTER_SPEED_MPS := 14.0
 const MAX_ANGULAR_SPEED_RAD_S := 30.0
 const MAX_SCATTER_ENERGY_J := 600.0
+const MAX_SCATTER_ENERGY_FRACTION := 0.12
+const SHADOW_FADE_HEIGHT_M := 7.0
 const MIN_BOX_EDGE_M := 0.035
+const MAX_C3_CONTACT_EXPOSURE_INDEX_J := 1000.0
+
+# Provisional cosmetic breakup exposure thresholds; these are not material limits.
+const C3_CONTACT_RELEASE_ORDER := ["propeller", "gear", "canopy", "engine"]
+const C3_CONTACT_RELEASE_THRESHOLDS_J := {
+	"propeller": 4.0,
+	"gear": 12.0,
+	"canopy": 25.0,
+	"engine": 50.0,
+}
 
 const GROUP_ORDER := [
 	"wing_left", "wing_right", "wing_center", "engine", "propeller",
@@ -41,11 +53,14 @@ const GROUP_MASS_WEIGHTS := {
 	"canopy": 0.02
 }
 
-var _source_airplane: Node3D
 var _twin: Node3D
 var _ground: StaticBody3D
 var _bodies: Array[RigidBody3D] = []
 var _shape_nodes: Array[CollisionShape3D] = []
+var _shadows: Array[MeshInstance3D] = []
+var _shadow_materials: Array[ShaderMaterial] = []
+var _shadow_shader: Shader
+var _shadow_mesh: PlaneMesh
 var _groups: Array[Dictionary] = []
 var _prepared_groups: Array[Dictionary] = []
 var _member_records: Array[Dictionary] = []
@@ -61,10 +76,17 @@ var _secondary_count := 0
 var _secondary_lockout_s := 0.0
 var _max_speed_seen_mps := 0.0
 var _scatter_energy_j := 0.0
+var _normal_impact_energy_estimate_j := 0.0
+var _scatter_energy_fraction := 0.0
+var _energy_estimate_source := "unavailable"
 var _last_class_level := -1
 var _last_mass_kg := 0.0
+var _last_group_weight_total := 0.0
 var _last_component_hint := ""
-var _last_pose := Transform3D.IDENTITY
+var _last_cg_model := Vector3.ZERO
+var _c3_contact_exposure_index_j := 0.0
+var _c3_contact_release_pending := false
+var _run_generation := 0
 var _rng := RandomNumberGenerator.new()
 
 
@@ -80,7 +102,6 @@ func prepare(airplane: Node3D) -> bool:
 	reset()
 	_clear_prepared_copy()
 	_ensure_pool()
-	_source_airplane = airplane
 	_twin = airplane.duplicate() as Node3D
 	if _twin == null:
 		push_error("Wreck.prepare: airplane could not be duplicated")
@@ -106,6 +127,9 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		return
 	if _started:
 		reset()
+	_run_generation += 1
+	_c3_contact_release_pending = false
+	_c3_contact_exposure_index_j = 0.0
 	# Use a fresh runtime copy of the prepared section descriptors on every crash.
 	_groups = _copy_groups(_prepared_groups)
 	_started = false
@@ -116,24 +140,24 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_secondary_lockout_s = 0.0
 	_max_speed_seen_mps = 0.0
 	_scatter_energy_j = 0.0
-	_last_pose = pose
+	_normal_impact_energy_estimate_j = 0.0
+	_scatter_energy_fraction = 0.0
+	_energy_estimate_source = "unavailable"
 	_rng.seed = int(severity.get("seed", 0x4D595DF4))
 	var safe_velocity := _clamp_vector(_finite_vector(velocity), MAX_INPUT_SPEED_MPS)
 	var safe_angular := _clamp_vector(_finite_vector(angular_velocity), MAX_ANGULAR_SPEED_RAD_S)
+	var cg_model: Vector3 = _finite_vector(severity.get("cg_model", Vector3.ZERO))
 	var class_level := _class_level(severity)
 	var total_mass := clampf(_finite_number(severity.get("mass_kg", severity.get("aircraft_mass_kg", 2.5)), 2.5), 0.1, 80.0)
 	var severity_scale := clampf(_finite_number(severity.get("scale", severity.get("severity", 1.0)), 1.0), 0.0, 4.0)
-	var budget_value: Variant = severity.get("fragment_energy_j", severity.get("energy_j", -1.0))
-	var requested_energy := _finite_number(budget_value, -1.0)
-	if requested_energy < 0.0:
-		requested_energy = 30.0 * severity_scale
-	var scatter_budget := clampf(requested_energy, 0.0, MAX_SCATTER_ENERGY_J)
+	var scatter_budget := _scatter_energy_budget(severity, total_mass, safe_velocity)
 	if class_level < 3:
 		scatter_budget = 0.0
 	var component_hint := _component_description(severity).to_lower()
 	_last_class_level = class_level
 	_last_mass_kg = total_mass
 	_last_component_hint = component_hint
+	_last_cg_model = cg_model
 	var total_weight := _group_weight("core")
 	_groups[0].undetached_weight = 0.0
 	for i in range(1, _groups.size()):
@@ -144,6 +168,7 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		if not bool(group.detached):
 			_groups[0].undetached_weight += _group_weight(String(group.kind))
 		_groups[i] = group
+	_last_group_weight_total = total_weight
 	var core_bounds: AABB = _whole_bounds if class_level < 3 else _core_bounds
 	_groups[0].bounds = core_bounds
 	_groups[0].center = core_bounds.get_center()
@@ -154,6 +179,11 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_core_body.global_transform = pose * Transform3D(Basis.IDENTITY, core_center)
 	_twin.reparent(_core_body, false)
 	_twin.transform = Transform3D(Basis.IDENTITY, -core_center)
+	_twin.visible = true
+	var detached_weight_total := 0.0
+	for i in range(1, _groups.size()):
+		if bool(_groups[i].get("detached", false)):
+			detached_weight_total += _group_weight(String(_groups[i].kind))
 	for i in range(1, _groups.size()):
 		var group: Dictionary = _groups[i]
 		var body: RigidBody3D = _bodies[i]
@@ -173,7 +203,8 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 			group.due_s = 0.14 if String(group.kind).begins_with("wing_") else 0.32
 		group.base_velocity = safe_velocity
 		group.base_angular_velocity = safe_angular
-		group.scatter_energy_j = scatter_budget * mass_share
+		var detached_share := _group_weight(String(group.kind)) / maxf(detached_weight_total, 0.0001) if detached_weight_total > 0.0 else 0.0
+		group.scatter_energy_j = scatter_budget * detached_share
 		group.severity_scale = severity_scale
 		_groups[i] = group
 		body.freeze = true
@@ -186,9 +217,11 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 	_groups[0].mass = _core_body.mass
 	_groups[0].base_velocity = safe_velocity
 	_groups[0].base_angular_velocity = safe_angular
-	_groups[0].scatter_energy_j = scatter_budget * ((_group_weight("core") + float(_groups[0].undetached_weight)) / maxf(total_weight, 0.0001))
+	# Keep the intact core free of artificial separation impulses. Delayed parts inherit
+	# its physical point velocity, then consume only their share of the one scatter budget.
+	_groups[0].scatter_energy_j = 0.0
 	_groups[0].severity_scale = severity_scale
-	_apply_launch(_core_body, _groups[0], pose, safe_velocity, safe_angular, true)
+	_apply_launch(_core_body, _groups[0], pose, safe_velocity, safe_angular, cg_model, true)
 	_started = true
 	for i in range(1, _groups.size()):
 		if bool(_groups[i].get("detached", false)) and float(_groups[i].due_s) <= 0.0:
@@ -206,19 +239,26 @@ func set_paused(paused: bool) -> void:
 		if paused:
 			body.set_meta("wreck_pause_linear", body.linear_velocity)
 			body.set_meta("wreck_pause_angular", body.angular_velocity)
+			body.set_meta("wreck_pause_sleeping", body.sleeping)
 			body.freeze = true
 		else:
+			var was_sleeping: bool = bool(body.get_meta("wreck_pause_sleeping", false))
 			body.freeze = false
 			body.linear_velocity = _finite_vector(body.get_meta("wreck_pause_linear", Vector3.ZERO))
 			body.angular_velocity = _finite_vector(body.get_meta("wreck_pause_angular", Vector3.ZERO))
-			body.sleeping = false
+			body.sleeping = was_sleeping
+	_queue_c3_contact_release()
 
 
 ## Return the mesh twin and pooled bodies to a clean pre-crash state.
 func reset() -> void:
+	_run_generation += 1
+	_c3_contact_release_pending = false
+	_c3_contact_exposure_index_j = 0.0
 	if _bodies.is_empty():
 		_started = false
 		_paused = false
+		_last_group_weight_total = 0.0
 		return
 	for body in _bodies:
 		if body == null:
@@ -231,6 +271,9 @@ func reset() -> void:
 		body.collision_layer = 0
 		body.collision_mask = 0
 		body.global_transform = Transform3D.IDENTITY
+		var body_index := _bodies.find(body)
+		if body_index >= 0 and body_index < _shadows.size():
+			_shadows[body_index].visible = false
 	if _twin != null and is_instance_valid(_twin):
 		_member_records.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 			if a.parent.get_instance_id() == b.parent.get_instance_id():
@@ -258,10 +301,17 @@ func reset() -> void:
 	_secondary_lockout_s = 0.0
 	_max_speed_seen_mps = 0.0
 	_scatter_energy_j = 0.0
+	_normal_impact_energy_estimate_j = 0.0
+	_scatter_energy_fraction = 0.0
+	_energy_estimate_source = "unavailable"
+	if not _prepared_groups.is_empty():
+		_groups = _copy_groups(_prepared_groups)
 	_core_body = null
 	_last_class_level = -1
 	_last_mass_kg = 0.0
+	_last_group_weight_total = 0.0
 	_last_component_hint = ""
+	_last_cg_model = Vector3.ZERO
 
 
 func get_stats() -> Dictionary:
@@ -274,6 +324,7 @@ func get_stats() -> Dictionary:
 		"started": _started,
 		"paused": _paused,
 		"pool_size": _bodies.size(),
+		"contact_shadow_count": _shadows.size(),
 		"active_body_count": _active_body_count,
 		"detached_group_count": _detached_group_count(),
 		"sleeping_body_count": sleeping,
@@ -282,9 +333,19 @@ func get_stats() -> Dictionary:
 		"secondary_impacts": _secondary_count,
 		"max_speed_seen_mps": _max_speed_seen_mps,
 		"scatter_energy_j": _scatter_energy_j,
+		"normal_impact_energy_estimate_j": _normal_impact_energy_estimate_j,
+		"scatter_energy_fraction": _scatter_energy_fraction,
+		"energy_estimate_source": _energy_estimate_source,
+		"secondary_impact_strength_unit": "J",
+		"c3_contact_exposure_index_j": _c3_contact_exposure_index_j,
+		"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+		"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+		"c3_contact_release_thresholds_j": C3_CONTACT_RELEASE_THRESHOLDS_J.duplicate(),
+		"c3_contact_release_pending": _c3_contact_release_pending,
 		"class_level": _last_class_level,
 		"mass_kg": _last_mass_kg,
-		"component_hint": _last_component_hint
+		"component_hint": _last_component_hint,
+		"cg_model": _last_cg_model
 	}
 
 
@@ -315,6 +376,8 @@ func _process(delta: float) -> void:
 			var speed_sq := body.linear_velocity.length_squared()
 			if is_finite(speed_sq):
 				_max_speed_seen_mps = maxf(_max_speed_seen_mps, sqrt(speed_sq))
+	for i in range(_bodies.size()):
+		_update_contact_shadow(i)
 
 
 func _ensure_pool() -> void:
@@ -331,6 +394,9 @@ func _ensure_pool() -> void:
 		_ground.add_child(ground_shape)
 		add_child(_ground)
 		_ground.global_transform = Transform3D.IDENTITY
+	if _shadow_mesh == null:
+		_shadow_mesh = PlaneMesh.new()
+		_shadow_mesh.size = Vector2.ONE
 	while _bodies.size() < MAX_BODIES:
 		var body := RigidBody3D.new()
 		body.name = "WreckPool_%02d" % _bodies.size()
@@ -356,13 +422,22 @@ func _ensure_pool() -> void:
 		add_child(body)
 		_bodies.append(body)
 		_shape_nodes.append(shape_node)
+		var shadow := MeshInstance3D.new()
+		shadow.name = "WreckContactShadow_%02d" % _shadows.size()
+		shadow.mesh = _shadow_mesh
+		shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		shadow.visible = false
+		var shadow_material := _make_shadow_material()
+		shadow.material_override = shadow_material
+		add_child(shadow)
+		_shadows.append(shadow)
+		_shadow_materials.append(shadow_material)
 
 
 func _clear_prepared_copy() -> void:
 	if _twin != null and is_instance_valid(_twin):
 		_twin.free()
 	_twin = null
-	_source_airplane = null
 	_groups.clear()
 	_prepared_groups.clear()
 	_member_records.clear()
@@ -371,8 +446,7 @@ func _clear_prepared_copy() -> void:
 
 func _collect_fragment_groups(node: Node) -> void:
 	var groups_by_kind: Dictionary = {}
-	var candidate_nodes: Array[Node3D] = []
-	_collect_candidate_nodes(_twin, candidate_nodes, groups_by_kind)
+	_collect_candidate_nodes(_twin, groups_by_kind)
 	for kind in GROUP_ORDER:
 		var members: Array = groups_by_kind.get(kind, [])
 		if members.is_empty():
@@ -431,7 +505,7 @@ func _collect_fragment_groups(node: Node) -> void:
 			})
 
 
-func _collect_candidate_nodes(node: Node, candidates: Array[Node3D], groups_by_kind: Dictionary) -> void:
+func _collect_candidate_nodes(node: Node, groups_by_kind: Dictionary) -> void:
 	for child in node.get_children():
 		if child is Node3D:
 			var part_kind := _fragment_kind(String(child.name))
@@ -439,10 +513,9 @@ func _collect_candidate_nodes(node: Node, candidates: Array[Node3D], groups_by_k
 				if not groups_by_kind.has(part_kind):
 					groups_by_kind[part_kind] = []
 				groups_by_kind[part_kind].append(child)
-				candidates.append(child)
 				# A selected model subtree already contains its wing, tail, propeller or gear meshes.
 				continue
-		_collect_candidate_nodes(child, candidates, groups_by_kind)
+		_collect_candidate_nodes(child, groups_by_kind)
 
 
 func _fragment_kind(raw_name: String) -> String:
@@ -481,6 +554,7 @@ func _configure_pool_shapes() -> void:
 		body.visible = false
 		body.collision_layer = 0
 		body.collision_mask = 0
+		_shadows[i].visible = false
 		if i < _groups.size():
 			var bounds: AABB = _groups[i].bounds
 			_set_shape_bounds(i, bounds)
@@ -505,10 +579,10 @@ func _activate_group(index: int) -> void:
 	var local_offset: Vector3 = aircraft_pose.basis * (center - _groups[0].center)
 	var inherited_velocity := _core_body.linear_velocity + _core_body.angular_velocity.cross(local_offset)
 	var inherited_angular := _core_body.angular_velocity
-	_apply_launch(body, group, aircraft_pose, inherited_velocity, inherited_angular, false)
+	_apply_launch(body, group, aircraft_pose, inherited_velocity, inherited_angular, Vector3.ZERO, false)
 
 
-func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transform3D, inherited_velocity: Vector3, inherited_angular: Vector3, is_core: bool) -> void:
+func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transform3D, inherited_velocity: Vector3, inherited_angular: Vector3, cg_model: Vector3, is_core: bool) -> void:
 	body.visible = true
 	body.collision_layer = DEBRIS_LAYER
 	body.collision_mask = DEBRIS_LAYER
@@ -518,22 +592,25 @@ func _apply_launch(body: RigidBody3D, group: Dictionary, aircraft_pose: Transfor
 	body.linear_damp = 1.5
 	body.angular_damp = 2.0
 	var center: Vector3 = group.center
-	var world_offset: Vector3 = aircraft_pose.basis * center
+	var world_offset: Vector3 = aircraft_pose.basis * (center - cg_model)
 	var point_velocity: Vector3 = inherited_velocity + inherited_angular.cross(world_offset) if is_core else inherited_velocity
 	body.linear_velocity = _clamp_vector(_finite_vector(point_velocity), MAX_POINT_SPEED_MPS)
 	body.angular_velocity = _clamp_vector(_finite_vector(inherited_angular), MAX_ANGULAR_SPEED_RAD_S)
 	body.set_meta("wreck_group_kind", group.kind)
 	var scatter_energy := maxf(_finite_number(group.get("scatter_energy_j", 0.0), 0.0), 0.0)
 	if scatter_energy > 0.0 and body.mass > 0.0:
-		var speed := minf(sqrt(2.0 * scatter_energy / body.mass), MAX_SCATTER_SPEED_MPS)
-		var outward := (aircraft_pose.basis * center).normalized()
+		var outward: Vector3 = (aircraft_pose.basis * (center - _groups[0].center)).normalized()
 		if outward.length_squared() < 0.01:
 			outward = Vector3.UP
 		var variation := Vector3(_rng.randf_range(-0.18, 0.18), _rng.randf_range(-0.08, 0.20), _rng.randf_range(-0.18, 0.18))
-		var direction := (outward + aircraft_pose.basis * variation).normalized()
+		var direction: Vector3 = (outward + aircraft_pose.basis * variation).normalized()
 		if direction.length_squared() > 0.5:
-			body.apply_central_impulse(direction * body.mass * speed)
-			_scatter_energy_j += 0.5 * body.mass * speed * speed
+			var before_velocity := body.linear_velocity
+			var parallel_speed := before_velocity.dot(direction)
+			var delta_speed := sqrt(parallel_speed * parallel_speed + 2.0 * scatter_energy / body.mass) - parallel_speed
+			body.linear_velocity = _clamp_vector(before_velocity + direction * minf(delta_speed, MAX_SCATTER_SPEED_MPS), MAX_POINT_SPEED_MPS)
+			var actual_delta_energy := 0.5 * body.mass * (body.linear_velocity.length_squared() - before_velocity.length_squared())
+			_scatter_energy_j += maxf(actual_delta_energy, 0.0)
 	body.linear_velocity = _clamp_vector(body.linear_velocity, MAX_POINT_SPEED_MPS)
 	_limit_ground_rebound(body)
 	_max_speed_seen_mps = maxf(_max_speed_seen_mps, body.linear_velocity.length())
@@ -547,15 +624,82 @@ func _group_index_for_body(body: RigidBody3D) -> int:
 	return _bodies.find(body)
 
 
-func _mass_weight_total() -> float:
-	var total := _group_weight("core")
-	for i in range(1, _groups.size()):
-		total += _group_weight(String(_groups[i].kind))
-	return maxf(total, 0.0001)
-
-
 func _group_weight(kind: String) -> float:
 	return float(GROUP_MASS_WEIGHTS.get(kind, 0.03))
+
+
+func _scatter_energy_budget(severity: Dictionary, total_mass: float, impact_velocity: Vector3) -> float:
+	var explicit_energy := -1.0
+	var explicit_source := ""
+	for key in ["dissipated_normal_energy_j", "normal_impact_energy_j", "normal_energy_j"]:
+		if severity.has(key):
+			explicit_energy = _finite_number(severity[key], -1.0)
+			if explicit_energy >= 0.0:
+				explicit_source = key
+				break
+	var normal_energy := explicit_energy
+	if normal_energy < 0.0:
+		var normal: Vector3 = _finite_vector(severity.get("contact_normal", Vector3.UP))
+		if normal.length_squared() < 1e-6:
+			normal = Vector3.UP
+		else:
+			normal = normal.normalized()
+		var supplied_speed := _finite_number(severity.get("normal_speed_mps", -1.0), -1.0)
+		var normal_speed := supplied_speed if supplied_speed >= 0.0 else absf(impact_velocity.dot(normal))
+		normal_energy = 0.5 * total_mass * normal_speed * normal_speed
+		_energy_estimate_source = "normal_speed_mps" if supplied_speed >= 0.0 else "cg_velocity_projection"
+	else:
+		_energy_estimate_source = explicit_source
+	_normal_impact_energy_estimate_j = clampf(normal_energy, 0.0, 1_000_000.0)
+	var requested_fraction := _finite_number(severity.get("scatter_energy_fraction", MAX_SCATTER_ENERGY_FRACTION), MAX_SCATTER_ENERGY_FRACTION)
+	_scatter_energy_fraction = clampf(requested_fraction, 0.0, MAX_SCATTER_ENERGY_FRACTION)
+	return minf(_normal_impact_energy_estimate_j * _scatter_energy_fraction, MAX_SCATTER_ENERGY_J)
+
+
+func _make_shadow_material() -> ShaderMaterial:
+	if _shadow_shader == null:
+		_shadow_shader = Shader.new()
+		_shadow_shader.code = """
+shader_type spatial;
+render_mode unshaded, blend_mix, depth_draw_never, cull_disabled;
+uniform float opacity : hint_range(0.0, 0.35) = 0.0;
+void fragment() {
+	float radius = length(UV - vec2(0.5)) * 2.0;
+	float soft_edge = 1.0 - smoothstep(0.16, 1.0, radius);
+	ALBEDO = vec3(0.025, 0.031, 0.04);
+	ALPHA = soft_edge * opacity;
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = _shadow_shader
+	material.set_shader_parameter("opacity", 0.0)
+	return material
+
+
+func _update_contact_shadow(index: int) -> void:
+	if index < 0 or index >= _bodies.size() or index >= _shadows.size():
+		return
+	var body := _bodies[index]
+	var shadow := _shadows[index]
+	if not body.visible:
+		shadow.visible = false
+		return
+	var shape := _shape_nodes[index].shape as BoxShape3D
+	var half := shape.size * 0.5
+	var basis := body.global_transform.basis
+	var horizontal_x := absf(basis.x.x) * half.x + absf(basis.y.x) * half.y + absf(basis.z.x) * half.z
+	var horizontal_z := absf(basis.x.z) * half.x + absf(basis.y.z) * half.y + absf(basis.z.z) * half.z
+	var vertical_extent := absf(basis.x.y) * half.x + absf(basis.y.y) * half.y + absf(basis.z.y) * half.z
+	var height := maxf(body.global_position.y - vertical_extent, 0.0)
+	var fade := clampf(1.0 - height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0)
+	var shrink := lerpf(1.0, 0.35, clampf(height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0))
+	var alpha := 0.22 * fade
+	shadow.visible = alpha > 0.002
+	shadow.global_transform = Transform3D(
+		Basis.IDENTITY.scaled(Vector3(maxf(horizontal_x * 2.0 + 0.35, 0.65) * shrink, 1.0, maxf(horizontal_z * 2.0 + 0.35, 0.65) * shrink)),
+		Vector3(body.global_position.x, 0.012, body.global_position.z)
+	)
+	_shadow_materials[index].set_shader_parameter("opacity", alpha)
 
 
 func _group_names() -> Array[String]:
@@ -659,7 +803,7 @@ func _limit_ground_rebound(body: RigidBody3D) -> void:
 func _on_body_entered(other: Node, fragment: RigidBody3D) -> void:
 	if not _started or _paused or _secondary_lockout_s > 0.0 or not is_instance_valid(fragment):
 		return
-	if other == null or (other != _ground and not _bodies.has(other)):
+	if other == null or (other != _ground and not _is_pool_body(other)):
 		return
 	var relative_speed := fragment.linear_velocity.length()
 	if other is RigidBody3D:
@@ -669,7 +813,89 @@ func _on_body_entered(other: Node, fragment: RigidBody3D) -> void:
 		return
 	_secondary_lockout_s = 0.08
 	_secondary_count += 1
+	if fragment == _core_body:
+		_record_c3_contact_exposure(energy)
 	secondary_impact.emit(fragment.global_position, energy)
+
+
+func _record_c3_contact_exposure(contact_energy_j: float) -> void:
+	if not _started or _paused or _last_class_level != 3:
+		return
+	var safe_energy := clampf(_finite_number(contact_energy_j, 0.0), 0.0, 250.0)
+	_c3_contact_exposure_index_j = minf(
+		_c3_contact_exposure_index_j + safe_energy,
+		MAX_C3_CONTACT_EXPOSURE_INDEX_J
+	)
+	_queue_c3_contact_release()
+
+
+func _queue_c3_contact_release() -> void:
+	if _c3_contact_release_pending or not _started or _paused or _last_class_level != 3:
+		return
+	var index := _next_c3_contact_release_index()
+	if index < 1:
+		return
+	var kind := String(_groups[index].kind)
+	var threshold := float(C3_CONTACT_RELEASE_THRESHOLDS_J.get(kind, INF))
+	if _c3_contact_exposure_index_j + 0.0001 < threshold:
+		return
+	_c3_contact_release_pending = true
+	# body_entered is raised while the physics server may be flushing; defer tree changes.
+	call_deferred("_release_pending_c3_contact_group", _run_generation)
+
+
+func _release_pending_c3_contact_group(generation: int) -> void:
+	if generation != _run_generation:
+		return
+	_c3_contact_release_pending = false
+	if not _started or _paused or _last_class_level != 3 or _core_body == null:
+		return
+	var index := _next_c3_contact_release_index()
+	if index < 1:
+		return
+	var group: Dictionary = _groups[index]
+	var kind := String(group.kind)
+	var threshold := float(C3_CONTACT_RELEASE_THRESHOLDS_J.get(kind, INF))
+	if _c3_contact_exposure_index_j + 0.0001 < threshold:
+		return
+	var group_weight := _group_weight(kind)
+	var release_mass := _last_mass_kg * group_weight / maxf(_last_group_weight_total, 0.0001)
+	if not is_finite(release_mass) or release_mass <= 0.0 or release_mass >= _core_body.mass:
+		return
+	# Transfer the group's estimated mass out of the core; no new scatter impulse is added.
+	_core_body.mass -= release_mass
+	var core_group: Dictionary = _groups[0]
+	core_group.mass = _core_body.mass
+	core_group.undetached_weight = maxf(float(core_group.get("undetached_weight", 0.0)) - group_weight, 0.0)
+	_groups[0] = core_group
+	group.detached = true
+	group.activated = false
+	group.due_s = 0.0
+	group.mass = release_mass
+	group.scatter_energy_j = 0.0
+	group.severity_scale = 0.0
+	_groups[index] = group
+	_bodies[index].mass = release_mass
+	_activate_group(index)
+
+
+func _next_c3_contact_release_index() -> int:
+	for kind in C3_CONTACT_RELEASE_ORDER:
+		for i in range(1, _groups.size()):
+			var group: Dictionary = _groups[i]
+			if String(group.kind) != String(kind):
+				continue
+			if bool(group.get("detached", false)) or bool(group.get("activated", false)):
+				break
+			return i
+	return -1
+
+
+func _is_pool_body(candidate: Node) -> bool:
+	for body in _bodies:
+		if body == candidate:
+			return true
+	return false
 
 
 func _subtree_has_mesh(node: Node) -> bool:

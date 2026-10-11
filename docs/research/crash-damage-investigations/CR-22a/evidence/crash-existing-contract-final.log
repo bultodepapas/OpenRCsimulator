@@ -1,0 +1,29 @@
+== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)
+refused
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+frame-time report: 218 frames, p50 6.85 <= p95 7.51 <= p99 7.78 ms
+== VQ-01b: scripted logger disables input and identifies its route
+scripted route, raw samples and disabled input verified
+== VQ-01b: invalid logger options and output write failures fail the process
+== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering
+ticks=480 frames=61 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=121 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+ticks=480 frames=289 throttle=0.5344 state_sha256=8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc
+identical
+== E0b5: experimental wash transport at 30/60/144 fps
+30 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=60
+60 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=120
+144 fps: hash=65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5 ticks=480 frames=288
+E0b5: identical body/wash/aux/load/input hashes at 30/60/144 fps
+== E0b6p: distributed swirl at 30/60/144 fps
+30 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=60
+60 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=120
+144 fps: hash=f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3 ticks=480 frames=288
+E0b6p: identical body/aux/load/input with swirl hashes at 30/60/144 fps
+== E5a: generated Extra taildragger contacts, P-51 review and session refinement
+Traceback (most recent call last):
+  File "/home/bulto/openrc-crash-validation-20261011/app/../research/ground-contact/e5a/verify.py", line 131, in <module>
+    main()
+  File "/home/bulto/openrc-crash-validation-20261011/app/../research/ground-contact/e5a/verify.py", line 55, in main
+    raise RuntimeError("generated Extra files are stale")
+RuntimeError: generated Extra files are stale

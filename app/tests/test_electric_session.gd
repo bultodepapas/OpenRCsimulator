@@ -54,7 +54,9 @@ func check_rest_coupling(path: String) -> void:
 		var alpha_free: PackedFloat64Array = RB.inertia_mul(inverse,
 			M.sub(external.slice(3, 6), M.cross(rates, RB.inertia_mul(a.sim.inertia, rates))))
 		var required: float = jr * M.dot(axis, alpha_free)
-		var response: Dictionary = a._coupled_response(state, PackedFloat64Array([0.0]), 0.0)
+		var continuous := PackedFloat64Array()
+		continuous.resize(1 + a.wheel_count())
+		var response: Dictionary = a._coupled_response(state, continuous, 0.0)
 		if absf(required) <= friction:
 			check("static bearing holds body-driven relative rest", response.ok and response.spin_acceleration == 0.0)
 		elif required < -friction:

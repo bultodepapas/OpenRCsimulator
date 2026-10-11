@@ -77,7 +77,8 @@ func aux_budget(config: String) -> void:
 
 func session_checks(config: String) -> void:
 	var a: Node = flight(config)
-	check("battery flight trims and selects coupled state", a.is_flyable() and a.battery_is_dynamic() and a.sim.continuous.size() == 4)
+	check("battery state remains before appended wheel speeds", a.is_flyable() and a.battery_is_dynamic()
+		and a.wheel_index() == 4 and a.sim.continuous.size() == 4 + a.wheel_count())
 	if not a.is_flyable():
 		a.free()
 		return
