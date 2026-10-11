@@ -72,9 +72,9 @@ Wheels can contact the ground for experimental landing and rollout. A hull strik
 
 On Home, **Weather** opens the flight conditions editor. Choose Calm, Steady breeze, Crosswind, Gusty or Updraft, or edit the values. Direction is where the wind comes from; vertical gust values are positive upward. **Apply** validates and remembers the settings; **Cancel/Esc** keeps the previous settings. Restart repeats the same wind and gust timing. The HUD separates airspeed from horizontal ground speed and shows the current wind.
 
-The current source build also offers **Weather → Time of day**. Choose **Astronomical time**, set an exact local time or use Dawn, Noon, Sunset or Night, then **Apply**. Date/location settings include an explicit UTC offset; the default reference is synthetic, not a real flying site. The selected time stays fixed during flight and survives restart. **Legacy daylight** restores the original appearance. Night currently has no Moon or aircraft/field lights, so the airplane may become invisible; changing time does not change wind, temperature or flight physics. [Scope and evidence](TIME-OF-DAY-PLAN.md).
+**rc7 / current source:** Home's **Time of day** choice offers Day, Dawn, Golden hour, Sunset, Blue hour, Evening (time passing), full-moon night and moonless night. The choice is remembered for Fly. Evening advances the visual sky at 20× on simulation time; the other presets stay fixed. Pause → **Time of day** supports exact astronomical time and date/location settings with an explicit UTC offset. The reference location is synthetic, not a real flying site. Night includes moonlight, stars, field lamps and an experimental aircraft light kit. Changing visual time does not change wind, temperature or flight physics. [Field-world scope](FIELD-WORLD-PLAN.md) · [Exact-time editor and evidence](TIME-OF-DAY-PLAN.md).
 
-The wind is spatially uniform, with smooth periodic practice gusts. The presets are authored conditions rather than measured site weather; turbulence and windsock dynamics remain future work. Non-calm traces use v4; calm retains v3.
+**rc7 / current source:** wind is spatially uniform, with smooth periodic practice gusts and optional seeded temporal turbulence. Weather also supports field elevation, temperature, QNH and humidity for shared air-density calculations. Presets are authored practice conditions rather than measured site weather; windsock dynamics remain future work. See the [wind](WIND-PLAN.md) and [atmosphere](ATMOSPHERE-PLAN.md) contracts for scope and recording formats. These controls are not included in rc6.
 
 **It has:**
 
@@ -87,7 +87,7 @@ The wind is spatially uniform, with smooth periodic practice gusts. The presets 
 **It does not have yet:**
 
 - validated takeoff/landing behavior or a guided circuit lesson (the Stik runway start is experimental; automated verification is not pilot acceptance);
-- wind;
+- terrain/obstacle collisions or spatially varying weather;
 - validated engine response or recorded engine audio. RPM lag, P-51 shaft dynamics and Avanti turbine response are implemented but remain under evaluation.
 
 ## 5. Measure frame times (for the landscape work)

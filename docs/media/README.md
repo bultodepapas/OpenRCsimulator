@@ -2,11 +2,13 @@
 
 These are actual Godot renders of the current catalog models, captured from source commit `a6a3abf`. The four aircraft stills and animated tour use a separate studio camera with a neutral three-light setup and dark background. The tour changes the camera angle; it does not represent flown maneuvers. Aircraft geometry, materials and controls are unchanged.
 
-`flight.png` is the real application at a fixed 1.5 seconds of trimmed Stik flight, using the close-up camera and production field. Its capture sidecar is `flight.json`. The Home screenshot linked by the root README comes from the existing L6b evidence set.
+`flight.png` is the real application at a fixed 1.5 seconds of trimmed Stik flight, using the close-up camera and production field. Its capture sidecar is `flight.json`.
 
 `manifest.json` records model bounds, catalog status, engine/renderer, animation dimensions and SHA-256 hashes. The GIF contains 96 frames at 640×360, lasts 10.56 seconds and stays below 2 MB. Four static 960×540 views provide an alternative to the animation. No external stock imagery or generated airplane artwork is used.
 
 ## Reproduce
+
+The three `download-*.svg` files are source-authored platform download buttons for the root README. They use text and a simple download arrow, contain no external fonts/scripts, and are project artwork under the MIT license. Their links and release version live in the README, so the artwork does not need regenerating for a release.
 
 From the repository root on Linux with Xvfb and Mesa:
 
