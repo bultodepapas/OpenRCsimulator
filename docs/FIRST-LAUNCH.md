@@ -41,7 +41,7 @@ You need OpenGL 3.3 graphics.
 
 ## 3. Fly
 
-Home lets you choose the aircraft and switch between English and Spanish. **Fly** starts in the air by default, trimmed for level flight (15 m/s for the Stik). In the current source build, the Stik also offers **Start: runway (experimental)**: click the start selector, or press Up from Fly and Enter, then Down and Enter to fly. The airplane starts at idle near the runway threshold. Fly remembers the choice; R, pause Restart and crash recovery use it again. Other aircraft start in the air.
+Home lets you choose the aircraft and switch between English and Spanish. **Fly** starts in the air by default, trimmed for level flight (15 m/s for the Stik). In rc7, the Stik also offers **Start: runway (experimental)**: click the start selector, or press Up from Fly and Enter, then Down and Enter to fly. The airplane starts at idle near the runway threshold. Fly remembers the choice; R, pause Restart and crash recovery use it again. Other aircraft start in the air.
 
 Navigate menus with the keyboard or mouse; the radio controls only flight. **Esc** opens the pause menu with Continue, Restart flight, End flight and Quit. Losing window focus also pauses. The [runway flight card](research/menu-investigations/UI-06c/FLIGHT-CARD.md) describes the pending manual circuit trial. Direct CLI flights ignore the saved start choice.
 
@@ -70,7 +70,7 @@ Wheels can contact the ground for experimental landing and rollout. A hull strik
 
 ## 4. What this build is (v0.1 alpha)
 
-On Home, **Weather** opens the flight conditions editor. Choose Calm, Steady breeze, Crosswind, Gusty or Updraft, or edit the values. Direction is where the wind comes from; vertical gust values are positive upward. **Apply** validates and remembers the settings; **Cancel/Esc** keeps the previous settings. Restart repeats the same wind and gust timing. The HUD separates airspeed from horizontal ground speed and shows the current wind.
+In rc7, Home's **Weather** opens the flight conditions editor. Choose Calm, Steady breeze, Crosswind, Gusty or Updraft, or edit the values. Direction is where the wind comes from; vertical gust values are positive upward. **Apply** validates and remembers the settings; **Cancel/Esc** keeps the previous settings. Restart repeats the same wind and gust timing. The HUD separates airspeed from horizontal ground speed and shows the current wind.
 
 **rc7 / current source:** Home's **Time of day** choice offers Day, Dawn, Golden hour, Sunset, Blue hour, Evening (time passing), full-moon night and moonless night. The choice is remembered for Fly. Evening advances the visual sky at 20× on simulation time; the other presets stay fixed. Pause → **Time of day** supports exact astronomical time and date/location settings with an explicit UTC offset. The reference location is synthetic, not a real flying site. Night includes moonlight, stars, field lamps and an experimental aircraft light kit. Changing visual time does not change wind, temperature or flight physics. [Field-world scope](FIELD-WORLD-PLAN.md) · [Exact-time editor and evidence](TIME-OF-DAY-PLAN.md).
 
