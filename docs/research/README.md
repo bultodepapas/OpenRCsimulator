@@ -196,6 +196,8 @@ Experimental Stik runway delivery: [UI-06a session and trace contract](menu-inve
 
 [menu-investigations/README.md](menu-investigations/README.md): 25 numbered investigations (01-22, 24, 25; number 23 is a probe only, explained in the README), Godot probes under `probes/`, a contrast checker and `sources.json`. Start with [02 input focus and radio isolation](menu-investigations/02-input-focus-radio-isolation.md). Plan: [MENU-PLAN](../MENU-PLAN.md).
 
+[UI-20 shell audit](menu-investigations/UI-20/README.md) (2026-10-11): the current Home, pause, Help, first flight, Flight conditions and Time of day captured at 720p and 1080p in EN/ES, code measurements and an independent review; it grounds the [redesign plan](../MENU-REDESIGN-PLAN.md) (UI-21…29).
+
 ### Visual quality and landscape
 
 | Topic | Read first | Then |
