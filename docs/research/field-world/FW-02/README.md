@@ -15,8 +15,9 @@
 | Baseline repeated | 89/89 identical | identical |
 | FW-02 composer | 89/89 identical | identical |
 | All FW work of 2026-10-10 (time of day off by default) | 89/89 identical | identical |
+| + FW-27 Home time button, view adaptation, AgX at night | 88/89 identical; `home.png` differs only inside the menu column (x ≤ 446 px: the new button), the 3D backdrop is identical | identical |
 
-`app/test.sh` passes with the same changes (158 sections, exit 0).
+`app/test.sh` passes with the same changes (158 sections, exit 0; 159 with the FW-27 UI test).
 
 ## What it does not prove
 

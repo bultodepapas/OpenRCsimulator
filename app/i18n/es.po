@@ -238,3 +238,27 @@ msgstr "Motor al ralentí en pista. Rodaje experimental."
 
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
+
+msgid "Time of day: %s"
+msgstr "Hora del día: %s"
+
+msgid "Day"
+msgstr "Día"
+
+msgid "Dawn"
+msgstr "Amanecer"
+
+msgid "Golden hour"
+msgstr "Hora dorada"
+
+msgid "Sunset"
+msgstr "Atardecer"
+
+msgid "Blue hour"
+msgstr "Hora azul"
+
+msgid "Night, full moon"
+msgstr "Noche, luna llena"
+
+msgid "Night, no moon"
+msgstr "Noche sin luna"

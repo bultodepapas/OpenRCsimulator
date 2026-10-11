@@ -16,7 +16,7 @@
       "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Sports and club field poles are commonly 6-10 m; estimate."},
       "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Runway centre line (15 m) slightly beyond, so the far edge is lit."},
       "aim_east": {"value": -12, "unit": "m", "kind": "estimated", "source": "Toward the west half of the 100 m runway."},
-      "intensity": {"value": 30000, "unit": "cd", "kind": "estimated", "source": "A ~200 W LED floodlight (~25,000 lm) into a 60 deg beam."},
+      "intensity": {"value": 12000, "unit": "cd", "kind": "estimated", "source": "A ~100 W club LED floodlight (~10,000-13,000 lm) into a 60 deg beam (~0.84 sr); revised from 30,000 cd (a stadium-class figure) after FW-35 captures clipped the lit ground."},
       "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Common 60 deg flood optic."},
       "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Light window end, beyond the far runway edge; Godot attenuation window."},
       "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "LED floodlights are commonly sold at 4000-5700 K."}
@@ -29,7 +29,7 @@
       "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
       "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
       "aim_east": {"value": 12, "unit": "m", "kind": "estimated", "source": "Toward the east half of the runway."},
-      "intensity": {"value": 30000, "unit": "cd", "kind": "estimated", "source": "Mirror of flood_west."},
+      "intensity": {"value": 12000, "unit": "cd", "kind": "estimated", "source": "Mirror of flood_west."},
       "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Mirror of flood_west."},
       "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
       "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "Mirror of flood_west."}

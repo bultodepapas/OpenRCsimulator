@@ -14,6 +14,7 @@ const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Conditions := preload("res://render/world/conditions.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -25,6 +26,8 @@ signal help_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 signal start_requested(choice: String)
+## The player asked for the next time of day (a Conditions.HOME_CHOICES value); the owner rebuilds the backdrop.
+signal time_requested(preset: String)
 
 const SIDEBAR_WIDTH := 440
 
@@ -33,6 +36,8 @@ var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "airborne"
 var runway_available: bool = true
 var start_button: Button
+var time_of_day := "day"
+var time_button: Button
 
 var fly_button: Button
 var language_button: Button
@@ -156,6 +161,12 @@ func _init() -> void:
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	row.add_child(quit_button)
 	column.add_child(row)
+	column.add_child(_gap(12))
+	time_button = _button("", "")
+	time_button.name = "TimeOfDay"
+	time_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
+	time_button.pressed.connect(func() -> void: time_requested.emit(Conditions.next_home_choice(time_of_day)))
+	column.add_child(time_button)
 	note_label = _label("", "SecondaryLabel", false)
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
@@ -219,6 +230,13 @@ func set_start_choice(choice: String) -> void:
 	limits_label.text = "Starts at idle on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
 
 
+## Shows the time of day Fly will use (FW-27). Unknown values fall back to "day".
+func set_time_of_day(preset: String) -> void:
+	time_of_day = preset if Conditions.HOME_CHOICES.has(preset) else "day"
+	if is_node_ready():
+		_update_texts()
+
+
 ## A rejected launch leaves the same usable Home, including keyboard focus.
 func reject_start(message: String) -> void:
 	_fly_sent = false
@@ -270,6 +288,7 @@ static func next_language(code: String) -> String:
 
 func _update_texts() -> void:
 	language_button.text = tr("Language: %s") % Preferences.LANGUAGES[current_language()]
+	time_button.text = tr("Time of day: %s") % tr(Conditions.HOME_LABELS[time_of_day])
 	aircraft_count_label.text = tr("Aircraft %d of %d") % [Catalog.ids().find(aircraft_id) + 1, Catalog.ids().size()]
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")

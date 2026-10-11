@@ -253,7 +253,7 @@ func _process(delta: float) -> void:
 	var visual_clock_s: float = session.sim.time()
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
-	World.update(_env, visual_clock_s) # clouds re-render at most once per cloud_update_s of simulation
+	World.update(_env, visual_clock_s, Vector3.ZERO, _last_render_pose.get("pos"), _camera) # clouds ≤ once per cloud_update_s; eye adapts to the view
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -528,7 +528,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
-	World.update(_env, t if _scripted else sim.time())
+	World.update(_env, t if _scripted else sim.time(), Vector3.ZERO, pose.pos, _camera)
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
