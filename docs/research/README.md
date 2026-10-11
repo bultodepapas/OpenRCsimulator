@@ -101,6 +101,8 @@ Electric plan reinforcement: [EL1a-R1](propulsion/EL1a-R1/README.md) records twe
 
 Electric implementation research: [EL1a-R2](propulsion/EL1a-R2/README.md) adds twelve investigations on Godot clock/precision/performance, schema and session ownership, checkpoints, motor timescales, rotor coupling, interpolation, headless/export gates, independent solvers and calibration. Revision 3 incorporates their code seams and acceptance checks; isolated runner, solver/event and identifiability probes are recorded without changing app physics.
 
+Electric integration: [EL1b](propulsion/EL1b/README.md) adds strict data/schema branches and two synthetic configurations; [EL1c](propulsion/EL1c/README.md) adds source dispatch and stable trim; [EL1d](propulsion/EL1d/README.md) couples rotor/body stopping, checkpoint v5 and trace v7 with independent numerical proofs. [EL1e](propulsion/EL1e/README.md) records eight 30-second flights, input/FPS and Linux-package checks. [EL1f](propulsion/EL1f/README.md) records the open Timber handoff; [EL2a](propulsion/EL2a/README.md) verifies stateless battery sag/auxiliary-current algebra without claiming integrated SOC or endurance.
+
 Aircraft input validation: [D1-R2](aircraft-validation/D1-R2/README.md) enforces finite numeric shaft tables, units and provenance; records malformed-input and session-reload checks. [D1-R3](aircraft-validation/D1-R3/README.md) replaces the gear bounding-box check with the resting-facet support polygon (taildraggers at their three-point attitude).
 
 Solved stall-envelope integrity: [D1-R4](aircraft-validation/D1-R4/README.md) rejects unreachable, nonfinite or collapsed derived transitions, preserves valid fleet models and verifies refused reloads and solver faults.

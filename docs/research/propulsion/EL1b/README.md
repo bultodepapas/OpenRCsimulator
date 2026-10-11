@@ -1,6 +1,6 @@
 # EL1b — Electric aircraft data
 
-2026-10-10 · **Status: live loader/schema and synthetic-data checks pass; full integration regression remains open. Step prefix: EL.**
+2026-10-10 · **Status: loader/schema, synthetic-data checks and full app regression pass. Step prefix: EL.**
 
 EL1b adds an explicit `electric_prop` branch to the v1 aircraft loader and schema, plus two synthetic Stik-based electric demo datasets. The implementation is in [aircraft_data.gd](../../../../app/physics/aircraft_data.gd), [the v1 schema](../../../../app/data/schema/openrc-aircraft-v1.schema.json), [focused checks](../../../../app/tests/test_electric_data.gd), and the [800 Kv/4S](../../../../app/data/aircraft/synthetic_stik_electric_4s.json) and [400 Kv/6S](../../../../app/data/aircraft/synthetic_stik_electric_6s.json) datasets. The owning [Electric Propulsion Plan](../../../ELECTRIC-PROPULSION-PLAN.md) tracks the remaining integration and physical-validation steps.
 
@@ -40,6 +40,6 @@ python3 research/aircraft-data/schema/test_contract.py
 python3 research/aircraft-data/schema/check.py
 ```
 
-The focused GDScript test passed **43 checks**. The [schema/loader harness](../../../../research/aircraft-data/schema/test_contract.py) passed **1,779 cases**, including **139 valid controls** and **13 schema-valid/runtime-only cross-field controls**; all four schema-contract tests passed. The [structural preflight](../../../../research/aircraft-data/schema/check.py) passed all **six aircraft files** (four existing aircraft and the two synthetic demos). The deliberate serialized `1e999` negative control causes Godot to print `WARNING: Exponent too high`; the loader rejects it, the test passes, and the run has no `SCRIPT ERROR`. No post-install full `app/test.sh` run is claimed here.
+The focused GDScript test passed **43 checks**. The [schema/loader harness](../../../../research/aircraft-data/schema/test_contract.py) passed **1,779 cases**, including **139 valid controls** and **13 schema-valid/runtime-only cross-field controls**; all four schema-contract tests passed. The [structural preflight](../../../../research/aircraft-data/schema/check.py) passed all **six aircraft files** (four existing aircraft and the two synthetic demos). The deliberate serialized `1e999` negative control causes Godot to print `WARNING: Exponent too high`; the loader rejects it, the test passes, and the run has no `SCRIPT ERROR`. The post-install full `app/test.sh` also passed; [EL1d preserves its log and source hashes](../EL1d/README.md).
 
 These results establish software parsing, schema/loader agreement, normalization, and preservation of the inherited airframe identity. They do not establish motor R/I0, rotor inertia, bus behavior, propeller performance, flight handling, endurance, or physical accuracy. EL1c–f and EL5/6 remain responsible for operating-point behavior, session integration, measured Timber data, and physical acceptance.

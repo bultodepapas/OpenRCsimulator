@@ -81,26 +81,32 @@ func cost(config: String, coast: bool) -> Dictionary:
 		flight.engine_running = false
 	for tick: int in 240:
 		flight.sim.step()
+	var warm: Dictionary = flight.checkpoint()
 	var samples: Array[float] = []
 	for batch: int in 40:
+		if not flight.restore_checkpoint(warm):
+			failures += 1
+			flight.free()
+			return {ok = false, message = "warm checkpoint refused"}
 		var before: int = Time.get_ticks_usec()
 		for tick: int in 120:
 			flight.sim.step()
 		samples.append(float(Time.get_ticks_usec() - before) / 120.0)
 	samples.sort()
-	var result: Dictionary = {ok = flight.sim.fault_reason.is_empty() and flight.sim.tick == 5040,
+	var result: Dictionary = {ok = flight.sim.fault_reason.is_empty() and flight.sim.tick == 360,
 		median_us_per_tick = (samples[19] + samples[20]) * 0.5, p95_us_per_tick = samples[37],
-		batch_ticks = 120, batches = 40, warmup_ticks = 240,
+		batch_ticks = 120, batches = 40, warmup_ticks = 240, sorted_batch_us_per_tick = samples,
+		restored_before_each_batch = true,
 		fingerprint = var_to_bytes(flight.checkpoint()).hex_encode().sha256_text()}
 	# Source-only cost is reported separately; it is not the whole-tick budget.
 	var prop: Dictionary = flight.aircraft.model.propulsion
-	var before: int = Time.get_ticks_usec()
-	var sink: float = 0.0
-	for sample: int in 10000:
-		sink += Prop.electric_source_state(5000.0, 0.6, prop).motor_current_a if Prop.is_electric(prop) else 0.0
 	if Prop.is_electric(prop):
+		var before: int = Time.get_ticks_usec()
+		var sink: float = 0.0
+		for sample: int in 10000:
+			sink += Prop.electric_source_state(5000.0, 0.6, prop).motor_current_a
 		result.source_us_per_call = float(Time.get_ticks_usec() - before) / 10000.0
-	result.source_sink = sink
+		result.source_sink = sink
 	if not result.ok:
 		failures += 1
 	flight.free()

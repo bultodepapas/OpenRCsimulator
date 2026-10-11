@@ -4,6 +4,10 @@ const Flight: Script = preload("res://sim/flight_session.gd")
 const Recorder: Script = preload("res://sim/recorder.gd")
 const Trace: Script = preload("res://sim/trace.gd")
 const Weather: Script = preload("res://physics/wind_config.gd")
+const M: Script = preload("res://physics/math3d.gd")
+const RB: Script = preload("res://physics/rigid_body.gd")
+const Dynamics: Script = preload("res://physics/dynamics.gd")
+const Propulsion: Script = preload("res://physics/propulsion.gd")
 const PATHS: Array[String] = ["res://data/aircraft/synthetic_stik_electric_4s.json", "res://data/aircraft/synthetic_stik_electric_6s.json"]
 var checks: int = 0
 var failures: int = 0
@@ -25,8 +29,45 @@ func advance(value: Node, count: int) -> bool:
 			print("flight fault: ", value.sim.fault_reason)
 			return false
 	return value.sim.tick == initial + count
+
+
+func check_rest_coupling(path: String) -> void:
+	var a: Node = flight(path)
+	a.engine_running = false
+	a.sim.inputs[3] = 0.0
+	var prop: Dictionary = a.aircraft.model.propulsion
+	var axis: PackedFloat64Array = Propulsion.axis(prop)
+	var inverse: PackedFloat64Array = RB.inertia_inverse(a.sim.inertia)
+	var jr: float = prop.rotor_inertia
+	var friction: float = 60.0 / (TAU * prop.motor.kv_rpm_per_volt) * prop.motor.no_load_current_a
+	var carrier: float = 1.0 - jr * M.dot(axis, RB.inertia_mul(inverse, axis))
+	for rates: PackedFloat64Array in [PackedFloat64Array([0.0, 4.0, 4.0]), PackedFloat64Array([0.0, 10.0, 10.0]), PackedFloat64Array([0.0, -10.0, 10.0])]:
+		var state: PackedFloat64Array = a.sim.state.duplicate()
+		for i: int in 3:
+			state[3 + i] = 0.0
+			state[10 + i] = rates[i]
+		var lag: int = a.downwash_index()
+		# Shared external aerodynamics are inputs to this independent angular-momentum equation.
+		# The expected acceleration never calls the production rotor-coupling solver.
+		var external: PackedFloat64Array = Dynamics.loads(state, a.aircraft.model, a._deflections(a.sim.aux),
+			0.0, a.air_density(), a.wind_at(0.0), a.sim.aux[lag] if lag >= 0 else NAN)
+		var alpha_free: PackedFloat64Array = RB.inertia_mul(inverse,
+			M.sub(external.slice(3, 6), M.cross(rates, RB.inertia_mul(a.sim.inertia, rates))))
+		var required: float = jr * M.dot(axis, alpha_free)
+		var response: Dictionary = a._coupled_response(state, PackedFloat64Array([0.0]), 0.0)
+		if absf(required) <= friction:
+			check("static bearing holds body-driven relative rest", response.ok and response.spin_acceleration == 0.0)
+		elif required < -friction:
+			var expected: float = (-friction / jr - M.dot(axis, alpha_free)) / carrier
+			check("body-driven forward breakaway retains bearing loss", response.ok and expected > 0.0 and absf(response.spin_acceleration - expected) < 1e-10)
+		else:
+			check("body-driven reverse breakaway is refused", not response.ok)
+	a.free()
+
+
 func _initialize() -> void:
 	for path: String in PATHS:
+		check_rest_coupling(path)
 		var a: Node = flight(path)
 		check("electric auto-selects the coupled solver", a.is_flyable() and a.shaft_is_coupled())
 		if not a.is_flyable():

@@ -131,8 +131,13 @@ def verify(directory):
             require(at["ok"] and ref["ok"], "refinement did not finish")
             body = max(abs(a - b) for a, b in zip(at["body"], ref["body"]))
             rpm = abs(at["rpm"] - ref["rpm"])
-            require(body < 2e-6 and rpm < 1e-4, "refinement exceeded declared endpoint tolerance")
-            errors[str(rate)] = {"body_max_absolute": body, "rpm_absolute": rpm}
+            groups = {}
+            for name, start, end, limit in (("position_m", 0, 3, 2e-6), ("velocity_mps", 3, 6, 2e-6),
+                                            ("quaternion", 6, 10, 2e-7), ("body_rate_radps", 10, 13, 2e-6)):
+                groups[name] = max(abs(at["body"][i] - ref["body"][i]) for i in range(start, end))
+                require(groups[name] < limit, "refinement exceeded declared " + name + " tolerance")
+            require(rpm < 1e-4, "RPM refinement exceeded declared endpoint tolerance")
+            errors[str(rate)] = {"body_max_absolute": body, "components": groups, "rpm_absolute": rpm}
         require(errors["240"]["body_max_absolute"] < errors["120"]["body_max_absolute"] and
                 errors["480"]["body_max_absolute"] < errors["240"]["body_max_absolute"], "body refinement did not converge")
         report["refinement"][config] = errors
