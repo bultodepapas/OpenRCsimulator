@@ -11,6 +11,10 @@ uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
 uniform vec3 sun_dir = vec3(0.0, 0.707, 0.707);
 uniform vec3 sun_lin = vec3(3.14159);
 uniform float sun_scatter = 0.0;
+// FW-22 time of day: the physical horizon lobe toward the brighter source (zero in the calibrated fixed-sun mode).
+uniform vec3 lobe_lin = vec3(0.0);
+uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
+uniform float lobe_k = 8.0;
 uniform float beta = 0.00017;
 uniform float cloud_coverage = 0.35;
 uniform float cloud_scale = 6.0;
@@ -55,7 +59,8 @@ void fragment() {
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);
-	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter;
+	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter
+		+ lobe_lin * pow(max(dot(v, lobe_dir), 0.0), lobe_k);
 	FOG = vec4(haze, 1.0 - exp(-beta * d));
 }
 

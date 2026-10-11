@@ -2,7 +2,7 @@
 # field, rendered from the same builders the flight uses (sky, clouds, grass, runway, sun, the model team's airplane), posed in a fixed, still composition.
 # No simulation, no input, no animation: shaders get a fixed sim_clock, so every frame is the same picture.
 # A live still render follows the current models, imported tree atlas and landscape.
-# FieldBuilder owns the shared field geometry.
+# World (render/world/world.gd, FW-02) composes the environment, field and sun exactly as the flight does.
 extends Node3D
 
 const Spec := preload("res://spec.gd")
@@ -12,7 +12,7 @@ const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
-const FieldBuilder = preload("res://render/field.gd")
+const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 
 ## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
@@ -45,14 +45,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	if not loaded_field.ok:
 		return
 	field = loaded_field.field
-	ShaderClock.register() # before any material that reads sim_clock compiles
-	var world_env := WorldEnvironment.new()
-	var env := Atmosphere.environment()
-	world_env.environment = env
-	add_child(world_env)
-
-	add_child(FieldBuilder.build(field))
-	Atmosphere.create_sun(self)
+	var env: Environment = World.build(self, field).environment # FW-02: environment, field, sun
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)
@@ -71,8 +64,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	camera.look_at_from_position(camera.position, camera.position + look, Vector3.UP)
 	camera.current = true
 
-	ShaderClock.update(CLOCK)
-	Atmosphere.update_clouds(env, CLOCK)
+	World.update(env, CLOCK)
 
 
 func _composition_position(offset_ned: Array) -> Vector3:
@@ -104,4 +96,5 @@ func show_aircraft(id: String) -> void:
 	airplane.root.transform = Frames.root_transform(basis, pos, Vector3.ZERO)
 	airplane.propeller.rotation.z = PROP_ANGLE
 	var extent := Shadow.model_extent(airplane.root)
-	Shadow.update(_shadow, basis, pos, extent.x, extent.y, Atmosphere.sun_direction())
+	World.dress_aircraft(airplane.root)
+	Shadow.update(_shadow, basis, pos, extent.x, extent.y, Atmosphere.shadow_direction())

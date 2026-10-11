@@ -1,0 +1,17 @@
+{
+  "format": "openrc-sky-provenance v1",
+  "step": "FW-24",
+  "files": [
+    {
+      "path": "bsc5.dat.gz",
+      "title": "Yale Bright Star Catalogue, 5th Revised Ed. (Hoffleit & Warren 1991), ASCII byte-by-byte format",
+      "source": "http://tdc-www.harvard.edu/catalogs/bsc5.dat.gz",
+      "mirror_of": "NASA Astronomical Data Center / CDS catalogue V/50",
+      "retrieved": "2026-10-10",
+      "sha256": "0471ced07fc241e625613baa689b2fa5f4b59fd733f731003e57d2d436036cdb",
+      "bytes": 590228,
+      "license": "No explicit licence in the distribution; freely distributed by SAO TDC and CDS for scientific use. The game uses only factual data derived from it (positions, magnitudes, colour indices), which are facts rather than creative expression. Owner review requested before release (open decision D-7 in FIELD-WORLD-PLAN).",
+      "derived": ["app/data/sky/stars.json (tools/world/stars.py)"]
+    }
+  ]
+}

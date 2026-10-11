@@ -194,6 +194,18 @@ Plans: [VISUAL-QUALITY-PLAN](../VISUAL-QUALITY-PLAN.md), [LANDSCAPE-PLAN](../LAN
 
 Plan: [SCENERY-PLAN](../SCENERY-PLAN.md).
 
+### Field world (time of day and night)
+
+| Topic | Read first | Then |
+| --- | --- | --- |
+| One composer, parity harness | [FW-02](field-world/FW-02/README.md) | [tools/world](../../tools/world/README.md) |
+| Sun, moon, sidereal time | [FW-20](field-world/FW-20/README.md) | Meeus test cases in `app/tests/test_world_ephemeris.gd` |
+| Physical twilight sky, haze lobe, light and adaptation | [FW-23](field-world/FW-23/README.md) | `tools/world/sky_table.py` |
+| Stars, moon disc; Compatibility colour findings (ALBEDO linearisation, radiance exposure, ACES black point) | [FW-24](field-world/FW-24/README.md) | [LEARNINGS](../../LEARNINGS.md) |
+| Field floodlights, lamp sprites, aircraft night kit | [FW-35](field-world/FW-35/README.md) | [lights.json](../../app/data/fields/lights.json) |
+
+Plan: [FIELD-WORLD-PLAN](../FIELD-WORLD-PLAN.md).
+
 ### Smoke
 
 [rc-exhaust-smoke.md](rc-exhaust-smoke.md), then [smoke-investigations/README.md](smoke-investigations/README.md) (01-12) and the isolated emission experiment in [godot-evidence/](smoke-investigations/godot-evidence/README.md). Plan: [SMOKE-PLAN](../SMOKE-PLAN.md).

@@ -11,7 +11,7 @@ extends SceneTree
 
 const Atmosphere = preload("res://render/atmosphere.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
-const FieldBuilder = preload("res://render/field.gd")
+const World = preload("res://render/world/world.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const AirplaneBuilder = preload("res://render/airplane.gd")
@@ -114,15 +114,11 @@ func _run() -> void:
 func _build_world(field: Dictionary, aircraft: String) -> void:
 	_world = Node3D.new()
 	root.add_child(_world)
-	var we := WorldEnvironment.new()
-	_env = Atmosphere.environment()
-	we.environment = _env
-	_world.add_child(we)
-	_world.add_child(FieldBuilder.build(field))
-	Atmosphere.create_sun(_world)
+	_env = World.build(_world, field).environment # FW-02: environment, field, sun
 	_airplane = AirplaneBuilder.build(aircraft)
 	_world.add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root)
+	World.dress_aircraft(_airplane.root)
 	_shadow = Shadow.create(_world)
 	_camera = PilotCamera.create(_world, field.pilot)
 	_camera.current = true
@@ -148,7 +144,7 @@ func _render(view: String) -> Dictionary:
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = _prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(_session.surfaces(), _session.throws_deg()))
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.sun_direction())
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.shadow_direction())
 	var target: Vector3 = pose.pos
 	match view:
 		"pilot":
@@ -172,8 +168,7 @@ func _render(view: String) -> Dictionary:
 
 func _capture_all(out: String, t: float, phase: String) -> void:
 	var sim: Node = _session.sim
-	ShaderClock.update(sim.time())
-	Atmosphere.update_clouds(_env, sim.time())
+	World.update(_env, sim.time())
 	for view: String in VIEWS:
 		if view == "closeup" and not CLOSEUP_TIMES.has(t):
 			continue
