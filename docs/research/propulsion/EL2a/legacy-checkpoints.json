@@ -1,0 +1,14 @@
+{
+  "4s": {
+    "ticks": 480,
+    "fps": 30,
+    "flight_sha256": "e636411ca829ad349490339bb688ed225fd6c76600838275325aa433584858d7",
+    "matches_EL1e": true
+  },
+  "6s": {
+    "ticks": 480,
+    "fps": 30,
+    "flight_sha256": "07f49cb96a851d9d07fe9027a6ad8498cc148753600ee159e25efd888098239d",
+    "matches_EL1e": true
+  }
+}

@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-10. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), and electric propulsion (EL), recorded from 2026-10-06 to 2026-10-11. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -35,6 +35,8 @@ A combustion cutoff that suppresses deceleration below 1 RPM prevents an electri
 Body position and attitude alone do not define a resumable simulation. Include the previous rigid-body state, auxiliary lags, engine mode, sampled inputs, tick and timestep, configuration, mass properties, and stop condition; restore and roll them back together after a failed tick. JSON is useful diagnostic data but is not a bit-exact checkpoint, and recorded tolerance metadata must never loosen code-owned acceptance limits. ([H8](../research/simulation-state/H8/README.md), [H9](../research/simulation-state/H9/README.md), [C7-R2](../research/trace-integrity/C7-R2/README.md))
 
 Checkpoint producers and consumers should share acceptance rules. Verify restoration by advancing a compatible fresh owner, not only by comparing serialized fields: an omitted fixed timestep can leave an accepted snapshot unable to advance. Validate derived caches before committing rollback history; finite positive-definite inertia can still have a nonfinite numerical inverse. ([H8-R1](../research/simulation-state/H8-R1/README.md))
+
+Native configuration identity includes dictionary key types. In Godot 4.7.2, refactoring `{kind = value}` into `{"kind": value}` changed `StringName` keys to `String` keys and invalidated an existing checkpoint hash despite identical body motion and JSON data. Preserve native model bytes as well as semantic values during loader refactors; EL2a guards both fixed-voltage routes against their prior complete checkpoint hashes. ([EL2a](../research/propulsion/EL2a/README.md), [legacy hashes](../research/propulsion/EL2a/legacy-checkpoints.json))
 
 ### Exact equivalence and physical correctness are separate claims
 

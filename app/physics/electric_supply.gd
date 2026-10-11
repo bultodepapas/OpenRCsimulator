@@ -14,6 +14,18 @@ const Electric: Script = preload("res://physics/electric_motor.gd")
 ## not an ESC/BMS low-voltage-cutoff model. The caller owns SOC integration and event location.
 static func evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, motor: Variant,
 		enabled: Variant = true) -> Dictionary:
+	return _evaluate(rpm, duty, soc, pack, motor, enabled, false)
+
+
+## Evaluate the connected motoring branch at SOC=0. This is the left-limit used only while
+## locating exhaustion; the accepted Q=0 boundary still uses evaluate() and disconnects all loads.
+static func evaluate_available(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, motor: Variant,
+		enabled: Variant = true) -> Dictionary:
+	return _evaluate(rpm, duty, soc, pack, motor, enabled, true)
+
+
+static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, motor: Variant,
+		enabled: Variant, available_at_zero: bool) -> Dictionary:
 	if not _is_number(rpm) or not is_finite(float(rpm)) or float(rpm) < 0.0:
 		return _failure("rpm must be a finite number >= 0")
 	if not _is_number(duty) or not is_finite(float(duty)) or float(duty) < 0.0 or float(duty) > 1.0:
@@ -40,7 +52,7 @@ static func evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, m
 	if not is_finite(ocv) or ocv <= 0.0:
 		return _failure("OCV interpolation did not produce a finite positive voltage")
 
-	if soc_value == 0.0:
+	if soc_value == 0.0 and not available_at_zero:
 		var exhausted_source: Dictionary = Electric.evaluate(rpm_value, requested_duty, 0.0, motor, false)
 		if not exhausted_source.ok:
 			return _failure("source evaluation failed: " + str(exhausted_source.message))
@@ -132,6 +144,9 @@ static func _validate_pack(raw_pack: Variant) -> Dictionary:
 	if not _is_number(pack.get("capacity_ah")) or not is_finite(float(pack.capacity_ah)) \
 			or float(pack.capacity_ah) <= 0.0:
 		return _failure("pack.capacity_ah must be finite and > 0")
+	var capacity_c: float = 3600.0 * float(pack.capacity_ah)
+	if not is_finite(capacity_c) or capacity_c <= 0.0:
+		return _failure("pack capacity in coulombs must be finite and > 0")
 	if not _is_number(pack.get("resistance_ohm")) or not is_finite(float(pack.resistance_ohm)) \
 			or float(pack.resistance_ohm) < 0.0:
 		return _failure("pack.resistance_ohm must be finite and >= 0")

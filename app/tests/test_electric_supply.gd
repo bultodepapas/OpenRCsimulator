@@ -187,6 +187,10 @@ func _invalid_inputs() -> void:
 func _overflow_and_input_immutability() -> void:
 	var pack: Dictionary = pack_fixture()
 	var motor: Dictionary = motor_fixture()
+	var huge_capacity: Dictionary = pack.duplicate(true)
+	huge_capacity.capacity_ah = 1e308
+	check("finite capacity overflowing coulombs rejected", not Supply.evaluate(1800.0, 0.5, 0.5, huge_capacity, motor).ok)
+	check("connected boundary also rejects capacity overflow", not Supply.evaluate_available(1800.0, 0.5, 0.0, huge_capacity, motor).ok)
 	var tiny_capacity: Dictionary = pack.duplicate(true)
 	tiny_capacity.capacity_ah = 1e-320
 	check("finite inputs overflowing SOC rate fail closed",

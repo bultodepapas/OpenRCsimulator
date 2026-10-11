@@ -1,0 +1,1357 @@
+{
+  "format": "openrc-aircraft v1",
+  "id": "synthetic_stik_electric_6s_battery",
+  "description": "Synthetic authored electric aircraft fixture based on the Ugly Stik geometry and original inventory mass distribution. The battery values are test inputs, not Timber data, measured hardware, or a measured LiPo fit.",
+  "frames": {
+    "le_frame": "positions in metres from the wing leading edge at the fuselage centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line",
+    "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.464515,
+      "unit": "m2",
+      "kind": "manual",
+      "source": "720 sq in, oz1253 title block (an older Jensen sheet image JEN-01 prints 723 sq in, +0.4 %)"
+    },
+    "wing_span": {
+      "value": 1.524,
+      "unit": "m",
+      "kind": "manual",
+      "source": "60 in, oz1253 title block"
+    },
+    "mean_chord": {
+      "value": 0.3048,
+      "unit": "m",
+      "kind": "derived",
+      "source": "area / span = 12 in (rectangular planform); plan chord reads 12.07 in"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.1209,
+        0.0,
+        0.07
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)"
+    },
+    "planform": "rectangular"
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.1209,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "manual",
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line"
+    },
+    "firewall": {
+      "value": [
+        -0.1763,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "manual",
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE"
+    },
+    "configuration": "virtual-balanced-reference-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+    }
+  },
+  "inventory": [
+    {
+      "name": "engine O.S. MAX-61FX",
+      "mass": {
+        "value": 0.55,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "O.S. catalog 17750 (RESEARCH.md)"
+      },
+      "position": {
+        "value": [
+          -0.226,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "crankcase ~2 in ahead of the firewall"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.05,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "muffler E-4010",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "sibling E-4010A is 156 g (O.S. catalog)"
+      },
+      "position": {
+        "value": [
+          -0.21,
+          0.06,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "side-mounted"
+      }
+    },
+    {
+      "name": "propeller APC 12x6 Sport",
+      "mass": {
+        "value": 0.046,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "APC LP12060 1.62 oz"
+      },
+      "position": {
+        "value": [
+          -0.286,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "~4.3 in ahead of firewall"
+      },
+      "size": {
+        "value": [
+          0.01,
+          0.305,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "spinner and prop nut",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "typical 2.25 in spinner"
+      },
+      "position": {
+        "value": [
+          -0.3,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      }
+    },
+    {
+      "name": "engine mount and bolts",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "nylon beam mount"
+      },
+      "position": {
+        "value": [
+          -0.19,
+          0.0,
+          -0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      }
+    },
+    {
+      "name": "fuel tank (empty)",
+      "mass": {
+        "value": 0.055,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "8-10 oz clunk tank"
+      },
+      "position": {
+        "value": [
+          -0.1,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: 'fuel tank & battery compartment' F1-F2"
+      }
+    },
+    {
+      "name": "fuel (half tank)",
+      "mass": {
+        "value": 0.12,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank"
+      },
+      "position": {
+        "value": [
+          -0.1,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "same as tank"
+      }
+    },
+    {
+      "name": "receiver battery 4.8 V 600 mAh",
+      "mass": {
+        "value": 0.105,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "NiMH pack"
+      },
+      "position": {
+        "value": [
+          -0.12,
+          0.0,
+          -0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: tank & battery compartment"
+      }
+    },
+    {
+      "name": "receiver",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "typical 6-8 ch receiver"
+      },
+      "position": {
+        "value": [
+          0.04,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: receiver compartment F2-F3"
+      }
+    },
+    {
+      "name": "fuselage servos (3)",
+      "mass": {
+        "value": 0.135,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "3 standard servos ~45 g"
+      },
+      "position": {
+        "value": [
+          0.15,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: hardwood servo rails behind F3"
+      }
+    },
+    {
+      "name": "aileron servo",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "standard servo"
+      },
+      "position": {
+        "value": [
+          0.15,
+          0.0,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "centre of wing"
+      }
+    },
+    {
+      "name": "nose gear and 2.75 in wheel",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "steerable nose leg"
+      },
+      "position": {
+        "value": [
+          -0.17,
+          0.0,
+          -0.12
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: nylon bearings at F1"
+      }
+    },
+    {
+      "name": "main gear and 3 in wheels",
+      "mass": {
+        "value": 0.13,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "0.090 in 2024-T3 gear (plan) and wheels"
+      },
+      "position": {
+        "value": [
+          0.137,
+          0.0,
+          -0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "plan: main gear leg ~5.4 in aft of LE"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.36,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "wing incl. ailerons",
+      "mass": {
+        "value": 0.52,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "built-up 60 x 12 in thick-section wing, covered"
+      },
+      "position": {
+        "value": [
+          0.12,
+          0.0,
+          0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "centroid ~40 % chord, wing on top of fuselage"
+      },
+      "size": {
+        "value": [
+          0.3048,
+          1.524,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fuselage front (firewall to F4)",
+      "mass": {
+        "value": 0.22,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "ply firewall/doublers, balsa sides"
+      },
+      "position": {
+        "value": [
+          0.04,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.43,
+          0.1,
+          0.13
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fuselage rear (F4 to tail)",
+      "mass": {
+        "value": 0.14,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "balsa sides and sheeting"
+      },
+      "position": {
+        "value": [
+          0.5,
+          0.0,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.65,
+          0.07,
+          0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "stabilizer and elevator",
+      "mass": {
+        "value": 0.1,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "1/16 sheeted built-up stab, 1/4 sheet elevator"
+      },
+      "position": {
+        "value": [
+          0.78,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.2,
+          0.56,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "fin and rudder",
+      "mass": {
+        "value": 0.055,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "1/4 sheet fin and rudder"
+      },
+      "position": {
+        "value": [
+          0.8,
+          0.0,
+          0.1
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0.2,
+          0.01,
+          0.2
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "name": "pushrods, horns, hardware",
+      "mass": {
+        "value": 0.07,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "clevises, horns, pushrods, screws, switch harness: rough sum"
+      },
+      "position": {
+        "value": [
+          0.35,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "spread along the fuselage"
+      }
+    },
+    {
+      "name": "virtual reference-build balancing mass",
+      "mass": {
+        "value": 0.2840582910437526,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      },
+      "position": {
+        "value": [
+          0.85,
+          -0.03168363777353627,
+          -0.07058410415104471
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      },
+      "size": {
+        "value": [
+          0.025,
+          0.025,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+      }
+    }
+  ],
+  "crash_hull": {
+    "value": [
+      [
+        0.15,
+        -0.762,
+        0.05
+      ],
+      [
+        0.15,
+        0.762,
+        0.05
+      ],
+      [
+        -0.33,
+        0.0,
+        0.0
+      ],
+      [
+        0.99,
+        0.0,
+        0.02
+      ],
+      [
+        0.93,
+        -0.28,
+        0.02
+      ],
+      [
+        0.93,
+        0.28,
+        0.02
+      ],
+      [
+        0.97,
+        0.0,
+        0.26
+      ],
+      [
+        0.12,
+        0.0,
+        -0.053
+      ]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Points that hit the ground first (le frame): wing tips (60 in span, slight dihedral), spinner tip (firewall 6.94 in ahead of LE plus engine and spinner), tail end and stabilizer tips (52 in overall length), fin top, belly under the CG (fuselage bottom 0.053 m below the thrust line, from the model team's fuselage stations). Read from the Jensen plan and the visual model. Since E1 the wheels are landing_gear contacts, not hull points: a wheel on the ground is a landing, a leg pushed past its travel is a crash"
+  },
+  "landing_gear": {
+    "description": "E1: the wheels as spring-damper contacts with the flat ground (physics/ground_contact.gd): F_up = max(0, k·compression + c·rate) at each wheel bottom. Stiffness from the ROADMAP E1 rule ω·dt < 0.1 (ω = sqrt(Σk/m) at the 240 Hz tick), checked by the loader; the CG must lie inside the wheel footprint. E2: tyre forces in the ground plane along each wheel's heading: rolling resistance C_rr·N and a slip-angle side force saturating at μ·N (friction circle); the nose wheel steers with the rudder servo. Coefficients are for a tyre on dry pavement; per-surface factors (grass) come with the field surfaces (E3). Brakes: none.",
+    "contacts": [
+      {
+        "name": "main_left",
+        "position": {
+          "value": [
+            0.215,
+            -0.18,
+            -0.2581
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+        },
+        "stiffness": {
+          "value": 560.0,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "ROADMAP E1 rule: ω·dt < 0.1 at 240 Hz → Σk < 1662 N/m for 2.885 kg. Mains 560 N/m, nose 440 N/m: Σ 1560 N/m, ω 23.3 rad/s (3.7 Hz), static sag 18 mm, like a wire leg plus a foam tyre; the split (nose 27 % of the weight, mains 73 %) makes the airplane sit level (test_ground_contact: rests within 1°). Not measured; a stiffer measured gear needs a finer tick or substeps"
+        },
+        "damping": {
+          "value": 18.6,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio ζ ≈ 0.4 of the contact's share m/3: c = 2ζ·sqrt(k·m/3). A bent wire leg and a tyre damp little; structural guess, not measured"
+        },
+        "max_compression": {
+          "value": 0.12,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        }
+      },
+      {
+        "name": "main_right",
+        "position": {
+          "value": [
+            0.215,
+            0.18,
+            -0.2581
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+        },
+        "stiffness": {
+          "value": 560.0,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "ROADMAP E1 rule: ω·dt < 0.1 at 240 Hz → Σk < 1662 N/m for 2.885 kg. Mains 560 N/m, nose 440 N/m: Σ 1560 N/m, ω 23.3 rad/s (3.7 Hz), static sag 18 mm, like a wire leg plus a foam tyre; the split (nose 27 % of the weight, mains 73 %) makes the airplane sit level (test_ground_contact: rests within 1°). Not measured; a stiffer measured gear needs a finer tick or substeps"
+        },
+        "damping": {
+          "value": 18.6,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio ζ ≈ 0.4 of the contact's share m/3: c = 2ζ·sqrt(k·m/3). A bent wire leg and a tyre damp little; structural guess, not measured"
+        },
+        "max_compression": {
+          "value": 0.12,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        }
+      },
+      {
+        "name": "nose",
+        "position": {
+          "value": [
+            -0.136,
+            0.0,
+            -0.2549
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0349 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+        },
+        "stiffness": {
+          "value": 440.0,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "ROADMAP E1 rule: ω·dt < 0.1 at 240 Hz → Σk < 1662 N/m for 2.885 kg. Mains 560 N/m, nose 440 N/m: Σ 1560 N/m, ω 23.3 rad/s (3.7 Hz), static sag 18 mm, like a wire leg plus a foam tyre; the split (nose 27 % of the weight, mains 73 %) makes the airplane sit level (test_ground_contact: rests within 1°). Not measured; a stiffer measured gear needs a finer tick or substeps"
+        },
+        "damping": {
+          "value": 16.5,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio ζ ≈ 0.4 of the contact's share m/3: c = 2ζ·sqrt(k·m/3). A bent wire leg and a tyre damp little; structural guess, not measured"
+        },
+        "max_compression": {
+          "value": 0.12,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        },
+        "max_steering": {
+          "value": 20.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "Nose wheel steering at full rudder, linked to the rudder servo. RC tricycle setups use about 15-25° (less throw than the rudder's, to avoid swerving at speed); 20° gives a kinematic turn radius of wheelbase/tan 20° = 0.351/0.364 = 0.96 m at walking speed. Guess, not measured; JSBSim's full-size C172 uses 10°"
+        }
+      }
+    ],
+    "rolling_resistance": {
+      "value": 0.04,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Rolling resistance coefficient on dry pavement. Borrowed base 0.022 (JSBSim c172x rolling_friction, a full-size tyre on concrete), doubled for a 76 mm RC wheel (resistance grows as the wheel shrinks: deformation and bumps are larger relative to the radius). Guess; a coast-down on the owner's field would measure it (E2 report)"
+    },
+    "side_friction": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "Peak tyre friction coefficient μ on dry pavement: JSBSim c172x static_friction 0.8 (github.com/JSBSim-Team/jsbsim, aircraft/c172x/c172x.xml). One value for side force and friction circle (JSBSim's 0.5 dynamic friction for a skid is not modelled). Grass is lower (E3, field surfaces)"
+    },
+    "peak_slip_angle": {
+      "value": 6.0,
+      "unit": "deg",
+      "kind": "borrowed",
+      "source": "Slip angle where the side force reaches μ·N in our linear-then-saturated law. Matches the initial slope of JSBSim's default Pacejka side-force curve (FGLGear: stiffness 0.06/deg, shape 2.8, curvature 1.03; slope at zero μ·2.8·0.06 per degree, so μ is reached linearly at 1/0.168 = 5.95°). A small RC wheel's real curve is unmeasured. Also sets the low-speed damping the loader checks: μ·g·dt/(tan 6°·1 m/s) = 0.31 at 240 Hz"
+    },
+    "breakaway_factor": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "E3b1: static ÷ rolling resistance of a wheel at rest (bearing and axle friction, tyre flat spot, the small mound in front of a wheel parked on grass). The ground knowledge base (docs/research/roadmap-investigations/04, §3) brackets it at 1.0-1.5 without a measurement; 1.25 is the middle. On the mown runway the hold is 1.25 × 2.8 N = 3.5 N against 2.6 N of idle thrust; on dry pavement 1.4 N, so the Stik rolls at idle there. A luggage-scale pull on the owner's field (breakaway force, then the steady rolling force) would measure it"
+    }
+  },
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        2.3,
+        3.4
+      ],
+      "unit": "kg",
+      "kind": "borrowed",
+      "source": "Stick-family .60 manuals: Ultra Stick .60 6-7 lb, Big Stik .60 6.5 lb (RESEARCH.md), widened"
+    },
+    "inertia_reference": {
+      "value": [
+        0.07151,
+        0.08636,
+        0.15364
+      ],
+      "unit": "kg·m2",
+      "kind": "borrowed",
+      "source": "UltraStick25e Jxx Jyy Jzz (1.959 kg, 1.27 m span); compared after scaling by m·b²"
+    }
+  },
+  "controls": {
+    "max_throw": {
+      "aileron": {
+        "value": 20.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      },
+      "elevator": {
+        "value": 20.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      },
+      "rudder": {
+        "value": 25.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Not on the Jensen plan or in its notes; typical low-rate sport throw used since Stage 1 (formerly app/spec.gd CONTROLS). Open research track: control throws (ROADMAP)"
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.14,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface"
+    }
+  },
+  "aero": {
+    "source": "OpenFlightSim UltraStick25e AeroOpenFlight.xml @ b020511 (sha256 43ff5c1e…); nondimensional, applied to the Ugly Stik as a geometrically similar Stik; Cmq, CLq and Cnr derived from the Stik itself (D11g)",
+    "envelope": {
+      "CL_max": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Whole-airplane maximum lift: mid value of the CLmax 1.0-1.2 assumed in the ROADMAP predicted-handling table (semi-symmetric Jensen section, Re about 3e5); gives a 1-g stall near 9.0 m/s"
+      },
+      "CL_min": {
+        "value": -0.8,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Negative stall of a semi-symmetric section is weaker than the positive one; assumed about 0.7 x CL_max"
+      },
+      "stall_blend_width": {
+        "value": 6.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Width of the smooth transition from attached flow to flat-plate flow (PicaSim uses a cosine ramp of about 10 deg, YASim a stall-width parameter); the start is solved so the lift peak equals CL_max"
+      },
+      "CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "Flat-plate drag of the finite wing at 90 deg: Viterna CDmax = 1.11 + 0.018 AR with AR = b^2/S = 5.0 (NASA CR-1983, RESEARCH.md plan review #3)"
+      },
+      "sideslip_blend": {
+        "value": [
+          15.0,
+          25.0
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Sideslip range where the linear beta terms (CYb, Clb, Cnb) give way to their sin(beta) form, finite and restoring up to knife edge"
+      }
+    },
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.1068,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLa": {
+        "value": 4.58,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLadot": {
+        "value": 1.9724,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLq": {
+        "value": 2.951,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639"
+      },
+      "CLde": {
+        "value": 0.0983,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CLda_each": {
+        "value": 0.23755,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CD0": {
+        "value": 0.0434,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CL_minD": {
+        "value": 0.23,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "k_induced": {
+        "value": 0.0814934,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDda_each": {
+        "value": 0.0151,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDdr": {
+        "value": 0.0303,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CDde": {
+        "value": 0.0135,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYb": {
+        "value": -0.4889,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYp": {
+        "value": -0.0375,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYr": {
+        "value": 0.15,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "CYdr": {
+        "value": 0.13753700095798843,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+      },
+      "Clb": {
+        "value": -0.0545,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clp": {
+        "value": -0.4496,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clr": {
+        "value": 0.1086,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clda_right": {
+        "value": -0.0823,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Clda_left": {
+        "value": 0.0823,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cldr": {
+        "value": 0.00045123687978342573,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+      },
+      "Cm0": {
+        "value": -0.0278,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cma": {
+        "value": -0.723,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cmq": {
+        "value": -7.476,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both"
+      },
+      "Cmde": {
+        "value": -0.8488,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cmda_each": {
+        "value": 0.02335,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnb": {
+        "value": 0.1214237421962675,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+      },
+      "Cnp": {
+        "value": 0.118,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnr": {
+        "value": -0.1319,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb"
+      },
+      "Cnda_right": {
+        "value": 0.0287,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cnda_left": {
+        "value": -0.0287,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      },
+      "Cndr": {
+        "value": -0.06678305820794714,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+      }
+    },
+    "surfaces": {
+      "wing_aileron_effectiveness": {
+        "value": 0.144,
+        "unit": "1",
+        "kind": "derived",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; |Clda_right|/(0.125*CLa), rounded"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; retained small-angle oracle validity limit"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; complete local loads before tail stall"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; symmetric tail blend width 12 deg"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data"
+      },
+      "tail_CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; same flat-plate approximation as wing"
+      },
+      "horizontal": {
+        "area": {
+          "value": 0.0956,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+        },
+        "position": {
+          "value": [
+            0.8409,
+            0,
+            -0.04564
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+        },
+        "lift_slope": {
+          "value": 1.75,
+          "unit": "1/rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; effective finite-span surface slope"
+        },
+        "control_effectiveness": {
+          "value": 1.174,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data ; effective whole-tail calibration Cmde/Cma including omitted downwash"
+        },
+        "incidence": {
+          "value": 0.03845,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+        },
+        "downwash_gradient": {
+          "value": 0.457,
+          "unit": "1",
+          "kind": "derived",
+          "source": "E0a2: dε/dα at the horizontal tail point from a flat-wing vortex lattice of the AR 5 rectangular wing (docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T2: VLM 0.457; elliptic estimate 2·CLα/(πA) = 0.50). With it the tail's free slope is lift_slope/(1 − dε/dα) = 3.22/rad, which a Helmbold tail of AR 3.27 with η 0.9 also gives (3.17); downwash follows the wing's lift, pitch rate and elevator do not. Not measured"
+        }
+      },
+      "vertical": {
+        "area": {
+          "value": 0.0484,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; summed fixed/moving outline polygon areas in assets/aircraft/ugly-stik-60/geometry.json, rounded"
+        },
+        "position": {
+          "value": [
+            0.8609,
+            0,
+            0.075
+          ],
+          "unit": "m",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; pressure centre in LE [aft,right,up], inside tail outline; not visual origin"
+        },
+        "lift_slope": {
+          "value": 2.4,
+          "unit": "1/rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; effective finite-span surface slope"
+        },
+        "control_effectiveness": {
+          "value": 0.55,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; finite-span rudder effectiveness, provisional handling calibration"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "estimated",
+          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+        }
+      }
+    }
+  },
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 400,
+        "unit": "rpm/V",
+        "kind": "estimated",
+        "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s Kv); no Timber measurement or configuration claim"
+      },
+      "resistance_ohm": {
+        "value": 0.14,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s equivalent motor resistance); no Timber measurement or configuration claim"
+      },
+      "resistance_scope": "motor_winding_equivalent",
+      "no_load_current_a": {
+        "value": 1.6,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s no-load current); no Timber measurement or configuration claim"
+      },
+      "no_load_context": {
+        "voltage_v": {
+          "value": 22.2,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s synthetic no-load voltage); no Timber measurement or configuration claim"
+        },
+        "rpm": {
+          "value": 8880.0,
+          "unit": "rpm",
+          "kind": "estimated",
+          "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s synthetic no-load speed); no Timber measurement or configuration claim"
+        },
+        "temperature_c": {
+          "value": 25.0,
+          "unit": "°C",
+          "kind": "estimated",
+          "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s synthetic winding temperature); no Timber measurement or configuration claim"
+        }
+      }
+    },
+    "battery": {
+      "kind": "ocv_resistance",
+      "capacity_ah": {
+        "value": 2.2,
+        "unit": "Ah",
+        "kind": "estimated",
+        "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+      },
+      "resistance_ohm": {
+        "value": 0.045,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+      },
+      "auxiliary_current_a": {
+        "value": 0.15,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+      },
+      "initial_soc": {
+        "value": 0.95,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+      },
+      "ocv_points": [
+        {
+          "soc": {
+            "value": 0.0,
+            "unit": "1",
+            "kind": "estimated",
+            "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+          },
+          "voltage": {
+            "value": 18.0,
+            "unit": "V",
+            "kind": "estimated",
+            "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+          }
+        },
+        {
+          "soc": {
+            "value": 1.0,
+            "unit": "1",
+            "kind": "estimated",
+            "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+          },
+          "voltage": {
+            "value": 25.2,
+            "unit": "V",
+            "kind": "estimated",
+            "source": "EL2a synthetic authored fixture for loader and supply integration; not Timber data, a measured LiPo fit, or a real battery specification."
+          }
+        }
+      ]
+    },
+    "esc": {
+      "kind": "ideal_motoring",
+      "command_mapping": "identity"
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.3048,
+        "unit": "m",
+        "kind": "manual",
+        "source": "12 in nominal"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.113
+          ],
+          [
+            0.373,
+            0.0796
+          ],
+          [
+            0.414,
+            0.0725
+          ],
+          [
+            0.457,
+            0.0633
+          ],
+          [
+            0.504,
+            0.0537
+          ],
+          [
+            0.55,
+            0.0437
+          ],
+          [
+            0.592,
+            0.0351
+          ],
+          [
+            0.634,
+            0.0271
+          ],
+          [
+            0.679,
+            0.018
+          ],
+          [
+            0.724,
+            0.0095
+          ],
+          [
+            0.767,
+            0.001
+          ],
+          [
+            0.788,
+            -0.0034
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC propeller database vol. 1, measured APC Sport 11x6: apcsp_11x6_static_rd0488.txt (sha256 911866f1…) and apcsp_11x6_rd0495_6000.txt (sha256 987b1268…); applied to the 12x6 Sport by T = Ct·ρ·n²·D⁴ (APC's own 12x6 file is not reachable here); J = 0 row from the static run at 5,954 rpm, linear between J = 0 and 0.373 (no measurements there)"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0471
+          ],
+          [
+            0.373,
+            0.0489
+          ],
+          [
+            0.457,
+            0.0442
+          ],
+          [
+            0.55,
+            0.036
+          ],
+          [
+            0.634,
+            0.0278
+          ],
+          [
+            0.724,
+            0.0176
+          ],
+          [
+            0.788,
+            0.0092
+          ],
+          [
+            0.9,
+            -0.02
+          ]
+        ],
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Synthetic signed-Cp extension for EL1b loader coverage; lower rows are the retained Stik prop table. Not an electric propeller map, Timber data, or calibration."
+      },
+      "rotating_inertia": {
+        "value": 0.00068,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "Synthetic EL1b demo only (synthetic_stik_electric_6s rotor inertia); no Timber measurement or configuration claim"
+      },
+      "thrust_line_offset": {
+        "value": [
+          -0.414176,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
+      }
+    }
+  }
+}

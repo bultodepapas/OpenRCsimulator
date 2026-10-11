@@ -25,6 +25,7 @@ const SUPPORT_AREA_MIN := 1e-6
 const SUPPORT_UP_MIN := 1e-6
 const SUPPORT_EDGE_MIN := 1e-9
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
+const MAX_FINITE := 1.7976931348623157e308
 
 ## Coefficient name → [unit, required sign (+1, -1 or 0 = any)]. Signs encode a statically stable airplane.
 const COEFFICIENTS := {
@@ -805,10 +806,9 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 	var context_rpm = _electric_q(errors, "propulsion.motor.no_load_context.rpm", context_raw.get("rpm"), "rpm", 1.0, 1.0e7)
 	_electric_q(errors, "propulsion.motor.no_load_context.temperature_c", context_raw.get("temperature_c"), "°C", -100.0, 300.0)
 	var battery_raw := _dictionary(errors, "propulsion.battery", node.get("battery", {}))
-	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, ["kind", "voltage_v"])
-	if battery_raw.get("kind") != "fixed_voltage":
-		errors.append("propulsion.battery.kind: only 'fixed_voltage' is supported")
-	var bus_voltage = _electric_q(errors, "propulsion.battery.voltage_v", battery_raw.get("voltage_v"), "V", 0.1, 1000.0)
+	var battery_result: Dictionary = _electric_battery(errors, battery_raw)
+	var battery: Dictionary = battery_result.get("battery", {})
+	var reference_voltage: float = float(battery_result.get("reference_voltage", 0.0))
 	var esc_raw := _dictionary(errors, "propulsion.esc", node.get("esc", {}))
 	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping"])
 	if esc_raw.get("kind") != "ideal_motoring":
@@ -853,15 +853,18 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		var down := deg_to_rad(angles[0])
 		var right := deg_to_rad(angles[1])
 		axis = PackedFloat64Array([M.cos_(down) * M.cos_(right), M.cos_(down) * M.sin_(right), M.sin_(down)])
-	var max_rpm: float = kv * bus_voltage
+	var max_rpm: float = kv * reference_voltage
 	if not is_finite(max_rpm) or max_rpm <= 0.0:
-		errors.append("propulsion: derived Kv × fixed voltage reference RPM is nonfinite or nonpositive")
+		if battery_raw.get("kind") == "fixed_voltage":
+			errors.append("propulsion: derived Kv × fixed voltage reference RPM is nonfinite or nonpositive")
+		else:
+			errors.append("propulsion: derived Kv × maximum OCV reference RPM is nonfinite or nonpositive")
 	if not errors.is_empty():
 		return {}
 	var out := {
 		kind = "electric_prop",
 		motor = {kv_rpm_per_volt = kv, resistance_ohm = resistance, no_load_current_a = idle_current},
-		battery = {kind = "fixed_voltage", voltage_v = bus_voltage},
+		battery = battery,
 		esc = {kind = "ideal_motoring", command_mapping = "identity"},
 		max_rpm = max_rpm,
 		diameter = diameter,
@@ -877,6 +880,96 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 	if cp_min < 0.0:
 		out.cp_min = cp_min
 	return out
+
+
+## Parse one closed battery branch. Fixed-voltage normalization stays unchanged for EL1b callers.
+static func _electric_battery(errors: PackedStringArray, battery_raw: Dictionary) -> Dictionary:
+	var battery_kind: Variant = battery_raw.get("kind")
+	if battery_kind == "fixed_voltage":
+		_reject_unknown_keys(errors, "propulsion.battery", battery_raw, ["kind", "voltage_v"])
+		var bus_voltage: Variant = _electric_q(errors, "propulsion.battery.voltage_v", battery_raw.get("voltage_v"), "V", 0.1, 1000.0)
+		if not errors.is_empty():
+			return {}
+		# Preserve StringName keys: native model bytes identify existing v5 checkpoints.
+		return {"battery": {kind = "fixed_voltage", voltage_v = bus_voltage}, "reference_voltage": float(bus_voltage)}
+	if battery_kind != "ocv_resistance":
+		errors.append("propulsion.battery.kind: must be 'fixed_voltage' or 'ocv_resistance'")
+		return {}
+
+	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, [
+		"kind", "capacity_ah", "resistance_ohm", "auxiliary_current_a", "initial_soc", "ocv_points",
+	])
+	var capacity_ah: Variant = _electric_q(errors, "propulsion.battery.capacity_ah", battery_raw.get("capacity_ah"), "Ah", 0.0, MAX_FINITE)
+	var resistance_ohm: Variant = _electric_q(errors, "propulsion.battery.resistance_ohm", battery_raw.get("resistance_ohm"), "ohm", 0.0, MAX_FINITE)
+	var auxiliary_current_a: Variant = _electric_q(errors, "propulsion.battery.auxiliary_current_a", battery_raw.get("auxiliary_current_a"), "A", 0.0, MAX_FINITE)
+	var initial_soc: Variant = _electric_q(errors, "propulsion.battery.initial_soc", battery_raw.get("initial_soc"), "1", 0.0, 1.0)
+	var raw_points: Array = _array(errors, "propulsion.battery.ocv_points", battery_raw.get("ocv_points"))
+	var ocv_points: PackedFloat64Array = PackedFloat64Array()
+	for index: int in raw_points.size():
+		var point_path: String = "propulsion.battery.ocv_points[%d]" % index
+		var point_raw: Dictionary = _dictionary(errors, point_path, raw_points[index])
+		_reject_unknown_keys(errors, point_path, point_raw, ["soc", "voltage"])
+		var knot_soc: Variant = _electric_q(errors, point_path + ".soc", point_raw.get("soc"), "1", 0.0, 1.0)
+		var knot_voltage: Variant = _electric_q(errors, point_path + ".voltage", point_raw.get("voltage"), "V", 0.0, MAX_FINITE)
+		if knot_soc == null or knot_voltage == null:
+			continue
+		if not ocv_points.is_empty():
+			var previous_soc: float = ocv_points[ocv_points.size() - 2]
+			var previous_voltage: float = ocv_points[ocv_points.size() - 1]
+			if float(knot_soc) <= previous_soc:
+				errors.append("%s.soc: knots must be strictly increasing" % point_path)
+			if float(knot_voltage) < previous_voltage:
+				errors.append("%s.voltage: OCV must be nondecreasing with SOC" % point_path)
+		ocv_points.append(float(knot_soc))
+		ocv_points.append(float(knot_voltage))
+	if raw_points.size() < 2 or ocv_points.size() < 4:
+		errors.append("propulsion.battery.ocv_points: needs at least two valid SOC/voltage pairs")
+	if not ocv_points.is_empty() and ocv_points[0] != 0.0:
+		errors.append("propulsion.battery.ocv_points: first SOC knot must be 0")
+	if ocv_points.size() >= 2 and ocv_points[ocv_points.size() - 2] != 1.0:
+		errors.append("propulsion.battery.ocv_points: last SOC knot must be 1")
+	if not errors.is_empty():
+		return {}
+	if float(capacity_ah) <= 0.0:
+		errors.append("propulsion.battery.capacity_ah: must be > 0")
+	if float(initial_soc) <= 0.0:
+		errors.append("propulsion.battery.initial_soc: must be in (0, 1]")
+	var capacity_coulombs: float = 3600.0 * float(capacity_ah)
+	if not is_finite(capacity_coulombs) or capacity_coulombs <= 0.0:
+		errors.append("propulsion.battery.capacity_ah: 3600 × capacity must be finite and > 0 C")
+	var initial_charge_coulombs: float = capacity_coulombs * float(initial_soc)
+	if not is_finite(initial_charge_coulombs) or initial_charge_coulombs <= 0.0:
+		errors.append("propulsion.battery.initial_soc: initial charge must be finite and > 0 C")
+	var minimum_ocv: float = ocv_points[1]
+	var maximum_ocv: float = ocv_points[ocv_points.size() - 1]
+	if minimum_ocv <= 0.0:
+		errors.append("propulsion.battery.ocv_points: voltages must be positive")
+	for index: int in range(0, ocv_points.size() - 2, 2):
+		var soc_width: float = ocv_points[index + 2] - ocv_points[index]
+		var voltage_rise: float = ocv_points[index + 3] - ocv_points[index + 1]
+		var ocv_slope: float = voltage_rise / soc_width if soc_width > 0.0 else INF
+		if not is_finite(soc_width) or soc_width <= 0.0:
+			errors.append("propulsion.battery.ocv_points: SOC segment widths must be finite and > 0")
+		if not is_finite(ocv_slope) or ocv_slope < 0.0:
+			errors.append("propulsion.battery.ocv_points: OCV segment slope must be finite and >= 0 V/SOC")
+	var auxiliary_voltage_drop_v: float = float(resistance_ohm) * float(auxiliary_current_a)
+	if not is_finite(auxiliary_voltage_drop_v):
+		errors.append("propulsion.battery: resistance × auxiliary current is nonfinite")
+	elif auxiliary_voltage_drop_v >= minimum_ocv:
+		errors.append("propulsion.battery: auxiliary load leaves no positive feasible bus at minimum OCV")
+	if not errors.is_empty():
+		return {}
+	return {
+		"battery": {
+			"kind": "ocv_resistance",
+			"capacity_ah": float(capacity_ah),
+			"resistance_ohm": float(resistance_ohm),
+			"auxiliary_current_a": float(auxiliary_current_a),
+			"initial_soc": float(initial_soc),
+			"ocv_points": ocv_points,
+		},
+		"reference_voltage": maximum_ocv,
+	}
 
 
 ## Removing the rotor's axial spin inertia must leave a positive definite locked carrier tensor.

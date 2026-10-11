@@ -69,6 +69,8 @@ func refinement(config: String, rate: int) -> Dictionary:
 		flight.sim.step()
 	var ok: bool = flight.sim.tick == rate / 2 and flight.sim.fault_reason.is_empty()
 	var result: Dictionary = {ok = ok, body = Array(flight.sim.state), rpm = flight.sim.aux[0]}
+	if flight.battery_is_dynamic():
+		result.continuous = Array(flight.sim.continuous)
 	if not ok:
 		failures += 1
 	flight.free()
@@ -115,12 +117,13 @@ func cost(config: String, coast: bool) -> Dictionary:
 
 func _initialize() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
-	if args.size() != 2 or args[0] not in ["flight", "refinement", "cost"]:
-		printerr("usage: -- flight|refinement|cost ABSOLUTE_OUTPUT_DIRECTORY")
+	if args.size() not in [2, 3] or args[0] not in ["flight", "refinement", "cost"] or (args.size() == 3 and args[2] != "battery"):
+		printerr("usage: -- flight|refinement|cost ABSOLUTE_OUTPUT_DIRECTORY [battery]")
 		quit(2)
 		return
 	var result: Dictionary = {format = "openrc-electric-session-proof v1", mode = args[0], cases = {}}
-	for config: String in ["4s", "6s"]:
+	for label: String in ["4s", "6s"]:
+		var config: String = label + ("_battery" if args.size() == 3 else "")
 		if args[0] == "flight":
 			for scenario: String in ["level", "turn", "climb", "chop"]:
 				result.cases[config + "-" + scenario] = run_scenario(config, scenario, args[1])

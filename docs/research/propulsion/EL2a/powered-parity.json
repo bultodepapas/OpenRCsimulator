@@ -1,0 +1,167 @@
+{
+  "format": "el2-powered-session-parity-v1",
+  "control_app": "/tmp/openrc-el2-powered-verified/control/app",
+  "instrumented_app": "/tmp/openrc-el2-powered-verified/instrumented/app",
+  "probe": "/home/bulto/OpenRCsimulator/research/propulsion/el2/powered/powered_parity_probe.gd",
+  "instrumentation_patch": "/home/bulto/OpenRCsimulator/research/propulsion/el2/powered/instrument-flight-session.patch",
+  "changed_app_paths": [
+    "sim/flight_session.gd"
+  ],
+  "cases_compared": 8,
+  "all_seed_checkpoints_identical": true,
+  "all_endpoint_checkpoint_bytes_identical": true,
+  "rows": [
+    {
+      "pack": "4s",
+      "hz": 120,
+      "event_tick": 1,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "74aad40525c203eb77856672eda08a8b034093342c8cc8ef23bbc72c6dcbb07e",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "3a7ee5221425407adf4a68aaeefd19f27d7e65ea06ff7433b75739f267c9819f",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -3.24922311278897e-11,
+        "time_error_bound_s": 9.70127624067008e-13,
+        "time_s": 0.00398071816501518,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 24876,
+      "event_tick_wall_usec_instrumented": 25282,
+      "event_tick_wall_usec_control": 28036
+    },
+    {
+      "pack": "4s",
+      "hz": 240,
+      "event_tick": 1,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "4409287a1fcf354b3542c3830bade5523b2bf4f59313beda205f1d2adf94590f",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "fd687828233bbd2683a4f5d2b4982e3d699fade7515822269f2a320d1c603df1",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -3.24922311278897e-11,
+        "time_error_bound_s": 9.70127624067008e-13,
+        "time_s": 0.00398071816501518,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 22633,
+      "event_tick_wall_usec_instrumented": 23017,
+      "event_tick_wall_usec_control": 22810
+    },
+    {
+      "pack": "4s",
+      "hz": 480,
+      "event_tick": 2,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "86550cc7595599e50d49762397e6eb29f60c920f57266c3742ddcb6d37af7f08",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "c8688e5aeee0958dc1cd63d74ce2f47d9bc87c0d770ea5aa8e1d85155aac2a59",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -2.88337548282058e-11,
+        "time_error_bound_s": 9.70127624067008e-13,
+        "time_s": 0.00398071816307493,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 22345,
+      "event_tick_wall_usec_instrumented": 22639,
+      "event_tick_wall_usec_control": 22144
+    },
+    {
+      "pack": "4s",
+      "hz": 960,
+      "event_tick": 4,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "101cd4eb9bb2f0074859408b17e1f523ff4a46621e29351f121672b29aa6aebb",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "1f17d6aa1dae0193c64632d617ea538b390cb84d5408ffad4f7d53ed26ec5045",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -3.47475173634315e-11,
+        "time_error_bound_s": 9.70127732487225e-13,
+        "time_s": 0.00398071816307493,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 21023,
+      "event_tick_wall_usec_instrumented": 21295,
+      "event_tick_wall_usec_control": 22329
+    },
+    {
+      "pack": "6s",
+      "hz": 120,
+      "event_tick": 1,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "7b2bfd4d74670ca5eaab41a9068f72310ba824e3f04c8e6a26f87629971c6ef7",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "206f85172ca4bebc7f42ff9d7650facd5251952c7192069bd783e2c0f112cfde",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -8.3013318441516e-12,
+        "time_error_bound_s": 9.70127624067008e-13,
+        "time_s": 0.00439764007460326,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 24501,
+      "event_tick_wall_usec_instrumented": 24939,
+      "event_tick_wall_usec_control": 24668
+    },
+    {
+      "pack": "6s",
+      "hz": 240,
+      "event_tick": 2,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "eb7a4cf77acd72e4bf583ad55c65511684f79d1d3ae142c8516c8dcf5dabaa39",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "eb196dba48b3a65ee8efe0ef940024707e1680d51d0226c52cfdc71915f99085",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -2.47877300282862e-11,
+        "time_error_bound_s": 9.70127678277116e-13,
+        "time_s": 0.004397640072663,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 23723,
+      "event_tick_wall_usec_instrumented": 24083,
+      "event_tick_wall_usec_control": 23999
+    },
+    {
+      "pack": "6s",
+      "hz": 480,
+      "event_tick": 3,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "38056b6e1cd243233d8a997af537b129aafe03779087b9fbf32d027625ff9428",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "73594e1a5e0a8777bd919f0fae5b3e9bd577c87cb262c06eda1c5dab4f9febf7",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -1.22854443632137e-11,
+        "time_error_bound_s": 9.70127678277116e-13,
+        "time_s": 0.00439764006296173,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 22565,
+      "event_tick_wall_usec_instrumented": 22850,
+      "event_tick_wall_usec_control": 23694
+    },
+    {
+      "pack": "6s",
+      "hz": 960,
+      "event_tick": 5,
+      "seed_checkpoint_bytes": 1436,
+      "seed_checkpoint_sha256": "4d6bc8fa85e123d66822363c8fe916a8d1c35c760e222649717dcc9342b27847",
+      "endpoint_checkpoint_bytes": 1436,
+      "endpoint_checkpoint_sha256": "22f0a768607a95e8aa91836ff7140ab18b2694f9f10517dcbbb43de2983e3c8f",
+      "checkpoint_bytes_identical": true,
+      "event": {
+        "charge_residual_c": -1.36515451720776e-12,
+        "time_error_bound_s": 9.70127678277116e-13,
+        "time_s": 0.0043976400619916,
+        "type": "battery_exhausted"
+      },
+      "event_step_usec": 22181,
+      "event_tick_wall_usec_instrumented": 22487,
+      "event_tick_wall_usec_control": 23911
+    }
+  ]
+}
