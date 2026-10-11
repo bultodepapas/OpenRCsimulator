@@ -7,7 +7,8 @@ spherical atmosphere (Rayleigh + Mie + ozone absorption, Earth shadow included) 
 - zenith:   sky radiance straight up;
 - haze:     horizon radiance (view elevation 1 degree) away from the sun: the colour distant objects fade to;
 - lobe:     extra horizon radiance toward the sun's azimuth, and lobe_k, its fitted angular exponent
-            (horizon(az) = haze + lobe * cos(az)^lobe_k);
+            (horizon(az) = haze + lobe * cos(az)^lobe_k); lobe_height_deg, its vertical e-folding height fitted
+            between 1 and 15 degrees of view elevation (the twilight arch hugs the horizon);
 - sun:      transmittance from the ground to the sun (the direct light's colour and strength);
 - cloud:    transmittance to the sun from the cloud deck (1.5 km): clouds stay lit after sunset.
 
@@ -48,6 +49,7 @@ ELEVATIONS = [e / 2.0 for e in range(-40, 181)]
 VIEW_STEPS = 96
 SUN_STEPS = 32
 HORIZON_VIEW_DEG = 1.0
+LOBE_HIGH_DEG = 15.0
 SUN_RADIUS_DEG = 0.2665
 ZENITH_MIE_MU_MAX = math.cos(math.radians(35.0))  # aureole excluded from the zenith sample (estimate: halo width)
 
@@ -247,10 +249,17 @@ def row(elevation_deg, psi):
     side = radiance(direction(HORIZON_VIEW_DEG, 45.0), sun, psi)
     away = radiance(direction(HORIZON_VIEW_DEG, 180.0), sun, psi)
     lobe = [max(toward[c] - away[c], 0.0) for c in range(3)]
+    high_toward = radiance(direction(LOBE_HIGH_DEG, 0.0), sun, psi)
+    high_away = radiance(direction(LOBE_HIGH_DEG, 180.0), sun, psi)
     # cos(45°)^k = (side - away) / (toward - away), fitted on luminance.
     lum = lambda v: 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]
     ratio = (lum(side) - lum(away)) / max(lum(toward) - lum(away), 1e-30)
     lobe_k = math.log(min(max(ratio, 1e-6), 0.999999)) / math.log(math.cos(math.radians(45.0)))
+    # Vertical decay of the sunward excess: excess(15°) / excess(1°) = exp(-14° / h).
+    excess_low = max(lum(toward) - lum(away), 1e-30)
+    excess_high = max(lum(high_toward) - lum(high_away), 1e-30)
+    v_ratio = min(max(excess_high / excess_low, 1e-6), 0.999999)
+    lobe_height = (LOBE_HIGH_DEG - HORIZON_VIEW_DEG) / -math.log(v_ratio)
     lift = [0.0, R_GROUND + OBSERVER_M, 0.0]
     visible = sun_visible_fraction(elevation_deg)
     # Above the horizon the disc is lifted a little so the transmittance is evaluated where the light comes from.
@@ -262,6 +271,7 @@ def row(elevation_deg, psi):
         "haze": away,
         "lobe": lobe,
         "lobe_k": min(max(lobe_k, 1.0), 64.0),
+        "lobe_height_deg": min(max(lobe_height, 1.0), 90.0),
         "sun": [x * visible for x in sun_t],
         "cloud": cloud_t,
     }
@@ -292,6 +302,7 @@ def table():
             "haze": {"unit": "relative radiance (RGB)", "kind": "derived", "source": "Horizon (1° up) opposite the sun"},
             "lobe": {"unit": "relative radiance (RGB)", "kind": "derived", "source": "Horizon toward the sun minus haze"},
             "lobe_k": {"unit": "1", "kind": "derived", "source": "Exponent of cos(azimuth) fitted at 45° on luminance"},
+            "lobe_height_deg": {"unit": "deg", "kind": "derived", "source": "Vertical e-folding height of the sunward excess, fitted between 1° and 15° of view elevation"},
             "sun": {"unit": "transmittance (RGB)", "kind": "derived", "source": "Ground to sun, times the visible disc share"},
             "cloud": {"unit": "transmittance (RGB)", "kind": "derived", "source": "1.5 km deck to sun, Earth shadow included"},
         },

@@ -58,7 +58,7 @@ func _preference_cases() -> void:
 		c = Conditions.next_home_choice(c)
 	_check("the button cycles every choice and wraps to day", c == "day" and seen.size() == Conditions.HOME_CHOICES.size())
 	for choice: String in Conditions.HOME_CHOICES:
-		_check("choice %s is day or a solvable preset" % choice, choice == "day" or Conditions.PRESETS.has(choice))
+		_check("choice %s is day, a solvable preset or a flowing start" % choice, choice == "day" or Conditions.PRESETS.has(choice) or Conditions.FLOWING.has(choice))
 	Conditions.session_preset = "sunset"
 	_check("session choice applies without arguments", Conditions.resolve(PackedStringArray()).get("preset", "") == "sunset")
 	_check("arguments win over the session choice",

@@ -7,7 +7,8 @@
 #   --time=HH:MM           | OPENRC_TIME          local clock time on --date
 #   --date=YYYY-MM-DD      | OPENRC_DATE          default REFERENCE date
 #   --lat=<deg> --lon=<deg east> --utc_offset=<h> | OPENRC_LAT / OPENRC_LON / OPENRC_UTC_OFFSET
-# The time is frozen for the session (D-6): one sky per build, deterministic.
+#   --time_scale=<x>     | OPENRC_TIME_SCALE     sky seconds per simulated second (FW-61; 0 = frozen, the default)
+# The time is frozen by default (D-6); with a time scale the sky advances on simulation time, still deterministic.
 extends RefCounted
 
 const Ephemeris := preload("res://render/world/ephemeris.gd")
@@ -34,10 +35,13 @@ const PRESETS := {
 
 
 ## The Home choices (FW-27), in the order the Home button cycles; "day" is the calibrated fixed sun.
-const HOME_CHOICES: Array[String] = ["day", "dawn", "golden_hour", "sunset", "blue_hour", "night", "night_dark"]
+const HOME_CHOICES: Array[String] = ["day", "dawn", "golden_hour", "sunset", "blue_hour", "evening", "night", "night_dark"]
 ## English labels of the Home choices (translated by the interface).
 const HOME_LABELS := {day = "Day", dawn = "Dawn", golden_hour = "Golden hour", sunset = "Sunset",
-	blue_hour = "Blue hour", night = "Night, full moon", night_dark = "Night, no moon"}
+	blue_hour = "Blue hour", evening = "Evening, time passing", night = "Night, full moon", night_dark = "Night, no moon"}
+## Flowing choices (FW-61): a start preset and a time scale. "evening": golden hour at ×20, so about four minutes of
+## flight bring sunset, dusk with the club lights coming on, and the first stars (estimate of a fun pace).
+const FLOWING := {evening = {preset = "golden_hour", time_scale = 20.0}}
 
 ## The interactive route's choice (app_root sets it from the saved preference before Home and Fly build their
 ## worlds). The direct route never reads preferences, so automation keeps its own arguments only.
@@ -62,8 +66,20 @@ static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dic
 		return str(opts[key]) if opts.has(key) else OS.get_environment(env)
 	var preset: String = get.call("time_of_day", "OPENRC_TIME_OF_DAY")
 	var clock: String = get.call("time", "OPENRC_TIME")
-	if preset.is_empty() and clock.is_empty() and PRESETS.has(session_preset):
-		preset = session_preset
+	var scale_text: String = get.call("time_scale", "OPENRC_TIME_SCALE")
+	var time_scale := 0.0
+	if not scale_text.is_empty():
+		if not scale_text.is_valid_float() or float(scale_text) < 0.0 or float(scale_text) > 3600.0:
+			push_warning("Bad --time_scale '%s' (0–3600); time stays frozen" % scale_text)
+		else:
+			time_scale = float(scale_text)
+	if preset.is_empty() and clock.is_empty():
+		if FLOWING.has(session_preset):
+			preset = FLOWING[session_preset].preset
+			if scale_text.is_empty():
+				time_scale = FLOWING[session_preset].time_scale
+		elif PRESETS.has(session_preset):
+			preset = session_preset
 	if preset.is_empty() and clock.is_empty():
 		return {time_of_day = false}
 	var when := REFERENCE.duplicate()
@@ -87,7 +103,7 @@ static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dic
 			push_warning("Bad --time '%s' (HH:MM); using the fixed sun" % clock)
 			return {time_of_day = false}
 		when.hour = int(hm[0]) + int(hm[1]) / 60.0
-		return {time_of_day = true, preset = "", when = when}
+		return {time_of_day = true, preset = "", when = when, time_scale = time_scale}
 	if not PRESETS.has(preset):
 		push_warning("Unknown time of day '%s' (%s); using the fixed sun" % [preset, ", ".join(PRESETS.keys())])
 		return {time_of_day = false}
@@ -96,7 +112,7 @@ static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dic
 		when.month = p.month
 		when.day = p.day
 	when.hour = solve_hour(when, p.event, float(p.get("sun_elevation_deg", 0.0)))
-	return {time_of_day = true, preset = preset, when = when}
+	return {time_of_day = true, preset = preset, when = when, time_scale = time_scale}
 
 
 ## Sun elevation (apparent, degrees) at a local hour on `when`'s date and place.

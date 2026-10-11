@@ -24,6 +24,7 @@ uniform float sun_radius = 0.0046251;              // rad: half of 0.53° (LIGHT
 uniform vec3 lobe_lin = vec3(0.0);
 uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
 uniform float lobe_k = 8.0;
+uniform float lobe_height = 1.5708;          // rad; the vertical e-folding of the lobe
 uniform float sun_disc = 1.0;                      // 0 when the light is the moon (FW-23)
 // FW-24 moon: a 0.52° disc lit on the side facing the sun, with faint earthshine; zero brightness = no moon.
 uniform vec3 moon_dir = vec3(0.0, -1.0, 0.0);
@@ -42,9 +43,16 @@ uniform float cirrus_strength : hint_range(0.0, 0.12) = 0.0; // maximum sky blen
 uniform float cirrus_coverage : hint_range(0.0, 1.0) = 0.34;
 uniform float silver_strength : hint_range(0.0, 1.0) = 0.0;
 
+// FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
+// `lobe_height` (radians): it hugs the horizon. Zero lobe_lin (the calibrated fixed sun) adds exactly nothing.
+vec3 lobe_term(vec3 d) {
+	float h = max(length(d.xz), 1e-4);
+	float az = max(dot(d.xz / h, normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);
+	return lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);
+}
+
 vec3 haze(vec3 d) {
-	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter
-		+ lobe_lin * pow(max(dot(d, lobe_dir), 0.0), lobe_k);
+	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(d);
 }
 
 // The moon's disc: the sphere's normal under each pixel decides lit or dark (the terminator follows the true sun).

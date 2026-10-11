@@ -70,18 +70,42 @@ func _initialize() -> void:
 
 	# Night kit on the Stik: red at −x (left), green at +x (right), landing light forward.
 	var airplane: Dictionary = AirplaneBuilder.build()
-	var b := AircraftLights.bounds(airplane.root) # before the kit: its sprite quads would widen the bounds
+	var stik_half := AircraftLights.span_half(AircraftLights.vertices(airplane.root)) # before the kit exists
 	var kit := AircraftLights.attach(airplane.root)
 	var left: Node3D = kit.get_node("nav_left")
 	var right: Node3D = kit.get_node("nav_right")
-	_check("nav lights at the wing tips", left.position.x < b.wing.position.x and right.position.x > b.wing.end.x
-		and absf(right.position.x - b.wing.end.x) < 0.05)
+	_check("nav lights at the wing tips", left.position.x < -stik_half and right.position.x > stik_half
+		and absf(right.position.x - stik_half) < 0.05)
 	_check("left red, right green", ((left as MeshInstance3D).mesh.material as ShaderMaterial).get_shader_parameter("light_color").r > 0.9
 		and ((right as MeshInstance3D).mesh.material as ShaderMaterial).get_shader_parameter("light_color").g > 0.9)
 	var landing: SpotLight3D = kit.get_node("landing_light")
 	_check("landing light points forward (−z) and a little down", (-landing.transform.basis.z).z < -0.9 and (-landing.transform.basis.z).y < 0.0)
 	_check("kit names never collide with the model's hinges", kit.find_children("*_hinge", "", true, false).is_empty())
 	airplane.root.free()
+
+	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
+	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID]:
+		var plane: Dictionary = AirplaneBuilder.build(id)
+		var pts := AircraftLights.vertices(plane.root)
+		var half := AircraftLights.span_half(pts)
+		var lines := AircraftLights.underwing_lines(AircraftLights.triangles(plane.root), half)
+		var ok := true
+		var detail := ""
+		for key: String in ["left", "right"]:
+			var line: PackedVector3Array = lines[key]
+			if line.size() != AircraftLights.STRIP_STATIONS:
+				ok = false
+				detail = "%s %s: %d stations" % [id, key, line.size()]
+			for k in range(1, line.size()):
+				if absf(line[k].y - line[k - 1].y) > 0.06 or absf(line[k].z - line[k - 1].z) > 0.15:
+					ok = false
+					detail = "%s %s: jump %s -> %s" % [id, key, line[k - 1], line[k]]
+		var dressed := AircraftLights.attach(plane.root)
+		ok = ok and dressed.get_node_or_null("strip_left") != null and dressed.get_node_or_null("strip_right") != null
+		_check("%s: smooth under-wing strips on both sides, every station" % id, ok, detail)
+		var tip_ok: bool = (dressed.get_node("nav_right") as Node3D).position.x > half and (dressed.get_node("nav_left") as Node3D).position.x < -half
+		_check("%s: nav lights at the real wing tips (span %.2f m)" % [id, 2.0 * half], tip_ok)
+		plane.root.free()
 
 	# Light on a point (FW-23 adaptation): on the flood's aim line it is I / conversion / d² × window; nothing outside.
 	var lights_data: Dictionary = loaded.lights

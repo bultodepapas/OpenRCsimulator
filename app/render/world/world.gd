@@ -40,6 +40,15 @@ const NIGHT_KIT_BELOW_SUN_DEG := 6.0
 
 ## Stars are only built once the sun is this low (above it the exposure leaves them invisible; saves the draw).
 const STARS_BELOW_SUN_DEG := 2.0
+## FW-61 time flows: the sky is re-evaluated every FLOW_STEP_SKY_S of sky time (at ×20, every 1.5 s of flight: the sun
+## moves ~0.1° per step, below what the eye notices). A session that starts below FLOW_AGX_BELOW_SUN_DEG keeps AgX
+## throughout, so the tonemapper never switches mid-flight (FW-26).
+const FLOW_STEP_SKY_S := 30.0
+const FLOW_AGX_BELOW_SUN_DEG := 10.0
+
+## Time-flow session: {} when frozen. Keys: when, time_scale, step, environment, sun, stars, lights_node, materials,
+## tonemapper, start_lst, latitude.
+static var _flow := {}
 
 
 ## Adds a WorldEnvironment, the field and the sun to `parent`.
@@ -53,10 +62,14 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		conditions = Conditions.resolve()
 	# FW-22/23: every material built below reads the chosen hour; no time = the calibrated fixed sun.
 	Atmosphere.state = SkyState.state(Ephemeris.sky(conditions.when)) if conditions.time_of_day else {}
-	# FW-31…34: at dusk the club lights come on, and the eye adapts to the lit runway (before any material reads the
-	# exposure).
+	var flowing: bool = conditions.time_of_day and float(conditions.get("time_scale", 0.0)) > 0.0
+	_flow = {}
+	if flowing:
+		var start_el: float = Atmosphere.state.sun_elevation_deg
+		Atmosphere.state.tonemapper = "agx" if start_el < FLOW_AGX_BELOW_SUN_DEG else "aces"
+	# FW-31…34: at dusk the club lights come on (with time flowing they are built at once and switched by the sun).
 	var lights := {}
-	if not Atmosphere.state.is_empty() and float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG:
+	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG):
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights
@@ -88,10 +101,20 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		parent.add_child(field_node)
 
 	var sun := Atmosphere.create_sun(parent) # the sky shader draws the sun disc from this light
-	if not Atmosphere.state.is_empty() and float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG:
-		parent.add_child(Stars.build(Atmosphere.state, float(conditions.when.latitude_deg))) # FW-24
+	var stars: Node3D = null
+	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
+		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg)) # FW-24
+		parent.add_child(stars)
+	var lights_node: Node3D = null
 	if not lights.is_empty():
-		parent.add_child(FieldLights.build(lights)) # FW-31…34: visual only
+		lights_node = FieldLights.build(lights) # FW-31…34: visual only
+		lights_node.visible = float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+		parent.add_child(lights_node)
+	if flowing:
+		_flow = {when = conditions.when.duplicate(), time_scale = float(conditions.time_scale), step = 0,
+			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
+			materials = haze_materials(parent), tonemapper = Atmosphere.state.tonemapper,
+			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg)}
 	return {environment = environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
 		conditions = conditions, sky = Atmosphere.state}
 
@@ -99,7 +122,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
 ## the model (Shadow.model_extent) so the kit never changes the pilot-aid shadow. Returns the kit or null.
 static func dress_aircraft(root: Node3D) -> Node3D:
-	if Atmosphere.state.is_empty() or float(Atmosphere.state.sun_elevation_deg) >= NIGHT_KIT_BELOW_SUN_DEG:
+	if Atmosphere.state.is_empty() or (_flow.is_empty() and float(Atmosphere.state.sun_elevation_deg) >= NIGHT_KIT_BELOW_SUN_DEG):
 		return null
 	return AircraftLights.attach(root)
 
@@ -133,6 +156,8 @@ static func ground_share(camera: Camera3D) -> float:
 static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
 		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
+	if not _flow.is_empty():
+		flow_to(clock_s)
 	if view_target is Vector3 and not Atmosphere.state.is_empty():
 		adapt(environment, view_target, clock_s, ground_share(camera))
 	return Atmosphere.update_clouds(environment, clock_s)
@@ -153,3 +178,69 @@ static func adapt(environment: Environment, target: Vector3, clock_s: float, sha
 		environment.tonemap_exposure = exp(_adapt_log)
 		Exposure.set_value(environment.tonemap_exposure)
 	return environment.tonemap_exposure
+
+
+## Every ShaderMaterial under `root` whose shader draws its own haze (uniform `haze_lin`): the ground, its surface
+## copies and the near grass. Time flow re-applies the haze, lobe and sun uniforms to them.
+static func haze_materials(root: Node) -> Array:
+	var found := []
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		stack.append_array(node.get_children())
+		var candidates := []
+		if node is GeometryInstance3D:
+			candidates.append((node as GeometryInstance3D).material_override)
+		var mesh: Mesh = null
+		if node is MeshInstance3D:
+			mesh = (node as MeshInstance3D).mesh
+		elif node is MultiMeshInstance3D and (node as MultiMeshInstance3D).multimesh != null:
+			mesh = (node as MultiMeshInstance3D).multimesh.mesh
+		if mesh != null:
+			for i in mesh.get_surface_count():
+				candidates.append(mesh.surface_get_material(i))
+		for m: Variant in candidates:
+			if m is ShaderMaterial and not found.has(m) and (m as ShaderMaterial).shader != null:
+				for u: Dictionary in (m as ShaderMaterial).shader.get_shader_uniform_list():
+					if u.name == "haze_lin":
+						found.append(m)
+						break
+	return found
+
+
+## FW-61: moves the sky to `clock_s` of simulation time (time flowing). Steps are quantised to FLOW_STEP_SKY_S of sky
+## time, so the same simulation time always gives the same sky. Returns true when a new step was applied.
+static func flow_to(clock_s: float) -> bool:
+	if _flow.is_empty():
+		return false
+	var step := floori(maxf(clock_s, 0.0) * float(_flow.time_scale) / FLOW_STEP_SKY_S)
+	if step == int(_flow.step):
+		return false
+	_flow.step = step
+	var when: Dictionary = _flow.when.duplicate()
+	when.hour = float(when.hour) + step * FLOW_STEP_SKY_S / 3600.0
+	var state := SkyState.state(Ephemeris.sky(when))
+	state.tonemapper = _flow.tonemapper
+	Atmosphere.state = state
+	var env: Environment = _flow.environment
+	Atmosphere.apply_state_to_sky(env.sky.sky_material)
+	Atmosphere.apply_state_to_environment(env)
+	Atmosphere.apply_light(_flow.sun)
+	for m: ShaderMaterial in _flow.materials:
+		Atmosphere._set_haze_uniforms(m)
+	if _flow.lights_node != null:
+		(_flow.lights_node as Node3D).visible = float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+	if _flow.stars != null:
+		var lat: float = _flow.latitude
+		(_flow.stars as Node3D).basis = Stars.equatorial_basis(state.lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()
+	if not is_equal_approx(env.tonemap_exposure, state.exposure) and _adapt_clock < 0.0:
+		env.tonemap_exposure = state.exposure # no view target adapts it (e.g. evidence views)
+		Exposure.set_value(state.exposure)
+	return true
+
+
+## The local sky time (hours) of the current time-flow step; -1 when time is frozen.
+static func flow_hour() -> float:
+	if _flow.is_empty():
+		return -1.0
+	return float(_flow.when.hour) + int(_flow.step) * FLOW_STEP_SKY_S / 3600.0
