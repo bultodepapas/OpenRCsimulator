@@ -1,0 +1,53 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok provenanced transport fixture accepted []
+ok invalid transport configuration 0 rejected 
+ok invalid transport configuration 1 rejected 
+ok invalid transport configuration 2 rejected 
+ok invalid transport configuration 3 rejected 
+ok invalid transport configuration 4 rejected 
+ok invalid transport configuration 5 rejected 
+ok fixed 0 m/s speed step matches exponential worst relative error 3.115152139666146e-08
+ok piece 0 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.074662 s; measured 0.074671 s
+ok piece 1 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.074662 s; measured 0.074671 s
+ok piece 2 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.075979 s; measured 0.076000 s
+ok fixed 15 m/s speed step matches exponential worst relative error 1.660719243708436e-07
+ok piece 0 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.049428 s; measured 0.049449 s
+ok piece 1 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.049428 s; measured 0.049449 s
+ok piece 2 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.050300 s; measured 0.050311 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok transport session trims and starts 
+ok reset settles each piece; public body/CSV remains 13 values 
+ok settled lag reproduces quasi-static loads exactly 
+ok stage wash state changes actual tail loads 
+ok real session loads see changing lag at all RK stages 
+ok nonsettled transport checkpoint accepted 
+ok mid-lag checkpoint replay is byte-exact 
+ok reset removes prior lag history 
+ok reset refuses transport layout mismatch without indexing pieces 
+ok reset refuses transport layout mismatch without indexing pieces 
+ok trace identifies continuous transport separately 
+ok engine stop leaves finite decaying wash 
+ok stopped-source residual still reaches tail loads 
+ok reverse flow cuts source and residual occupancy 
+ok zero-flow stopped source decays using finite floor 
+ok runway reset initializes settled transport 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok switch back to production drops continuous layout 
+ok production reset has no lag state 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok real body/wash coupling converges at fourth order with sampled inputs held errors [0.00000808920895, 0.00000045793757, 0.00000002714892]; ratios 17.66 16.87
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok jensen-das-ugly-stik-60 production keeps empty continuous state 
+ok gp-extra-300s-60 production keeps empty continuous state 
+ok p51d-mustang-120 production keeps empty continuous state 
+ok sebart-avanti-s-a200-p100rx production keeps empty continuous state 
+E0b5 transport: 38 checks, 0 failed

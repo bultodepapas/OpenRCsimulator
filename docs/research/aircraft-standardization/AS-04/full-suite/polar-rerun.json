@@ -1,0 +1,37 @@
+[
+  {
+    "name": "polar-freshness",
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu",
+      "--",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/app",
+      "--script",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/research/flight-robustness/d8b-r2/make_candidates.gd",
+      "--",
+      "--check"
+    ],
+    "ok": true,
+    "exit_code": 0
+  },
+  {
+    "name": "polar-cli",
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu",
+      "--",
+      "env",
+      "OPENRC_TEST_GODOT=/home/bulto/.cache/openrc-as-continuation-20261011/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "XDG_DATA_HOME=/home/bulto/.cache/openrc-as-continuation-20261011/.tools/as-regression-userdata",
+      "python3",
+      "/home/bulto/.cache/openrc-as-continuation-20261011/app/tests/test_pullup_cli.py"
+    ],
+    "ok": true,
+    "exit_code": 0
+  }
+]

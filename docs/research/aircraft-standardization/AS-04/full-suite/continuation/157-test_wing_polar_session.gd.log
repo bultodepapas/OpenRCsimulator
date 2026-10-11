@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Synthetic spin: p/r at 4 s = 4.70335007641365/1.10076709846262, at 8 s = 0.07329301812816/0.32436572430961 (not physical acceptance)
+D8b-R2 session: 8 checks, 0 failed

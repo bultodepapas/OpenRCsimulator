@@ -23,7 +23,7 @@ ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:|^FAIL(?:\b|:)", re.MULTILINE)
 def manifest(repo: Path) -> dict[str, str]:
     return {str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted((repo / "app").rglob("*"))
-            if p.is_file() and not {".godot", "captures"}.intersection(p.parts)
+            if p.is_file() and not {".godot", "captures", "__pycache__"}.intersection(p.parts)
             and p.suffix not in {".uid", ".import"}}
 
 

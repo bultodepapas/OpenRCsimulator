@@ -1,0 +1,2 @@
+== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)
+stale: research/avanti-s/av06/derivation.md (run research/avanti-s/av06/derive_physics.py)

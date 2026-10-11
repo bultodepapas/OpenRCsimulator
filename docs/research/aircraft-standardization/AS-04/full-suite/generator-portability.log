@@ -1,0 +1,13 @@
+['python', 'research/extra-300/ex05/derive_physics.py']
+wrote app\data\aircraft\gp_extra_300s_60.json and research\extra-300\ex05\derivation.md
+mass 3.364 kg, CG 30.0 % MAC, SM 12.5 % MAC, stall 10.3 m/s, start 17 m/s
+
+['python', 'research/p51/p51-05/derive_physics.py']
+wrote app\data\aircraft\p51d_mustang_120.json and research\p51\p51-05\derivation.md
+mass 21.500 kg, CG 27.0 % MAC, SM 7.2 % MAC, stall 15.7 m/s, start 25 m/s, static 4951 rpm, thrust 24.0 kgf
+
+['python', 'research/avanti-s/av06/derive_physics.py']
+wrote app\data\aircraft\sebart_avanti_s_a200.json and research\avanti-s\av06\derivation.md
+mass 11.756 kg, SM 8.5 % MAC, stall 17.8 m/s, start 29 m/s, Vmax 73.4 m/s, J [0.621, 2.44, 2.968]
+
+PASS: all 8 aircraft files remain byte-identical; reports regenerated with portable paths.

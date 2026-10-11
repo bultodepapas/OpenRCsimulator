@@ -1,0 +1,2 @@
+== frame-time logger writes its report (LANDSCAPE-PLAN L0e; headless numbers are plumbing, not performance)
+frame-time report: 218 frames, p50 6.88 <= p95 7.37 <= p99 7.48 ms

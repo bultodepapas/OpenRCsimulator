@@ -12,7 +12,7 @@ const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
 const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
 const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
-const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
+const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; explicit scenery-off remains a no-op.
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63

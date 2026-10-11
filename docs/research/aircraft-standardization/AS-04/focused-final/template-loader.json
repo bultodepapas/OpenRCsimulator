@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-data\\schema\\loader_probe.gd",
+    "--",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-template-manifest.json"
+  ],
+  "exit_code": 0,
+  "template_sha256": "2f1064561499de56312f12a98cf91e7f07c872fb0e2337de0899ad101e8a3f37",
+  "results": [
+    {
+      "errors": [],
+      "index": 0,
+      "ok": true
+    }
+  ]
+}

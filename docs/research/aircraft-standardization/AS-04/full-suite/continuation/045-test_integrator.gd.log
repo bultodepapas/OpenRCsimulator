@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   free fall: ½gt² after 10 s err 5.286437954055145e-12 m
+ok   tilted fall stays vertical drift 3.2376299394153163e-12 m
+ok   constant force: ½at² err -3.836930773104541e-13 m
+ok   spin 60 s: energy conserved worst rel 3.480865527503368e-12
+ok   spin 60 s: world angular momentum conserved worst rel 9.50327010917384e-11
+ok   quaternion stays unit 
+ok   stress case really flips 
+ok   4th-order convergence errors 5.236970999078494e-07 3.3002987009922435e-08 2.0708714743022938e-09, ratios 15.9 15.9
+ok   speed ≥ 20× real time at 240 Hz 365× (2400 steps in 0.027 s, 11.4 µs/step)
+9 checks, 0 failed

@@ -1,6 +1,6 @@
 # Aircraft standardization evidence
 
-**Status: AS-00–03 implemented; AS-04/05 verification in progress, 2026-10-11.**
+**Status: AS-00–05 delivered, 2026-10-11.** Software verification passed with the documented reruns; physical calibration and tight performance qualification remain open.
 
 The owner-requested root [plan](../../../AIRCRAFT_STANDARDIZATION_PLAN.md) records scope, ownership, risks and acceptance. The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries.
 
@@ -17,5 +17,7 @@ The owner-requested root [plan](../../../AIRCRAFT_STANDARDIZATION_PLAN.md) recor
 | [AS-04 verification](AS-04/README.md) | Exact same-platform model/flight comparison, lifecycle and measured load/tick cost |
 | [Final contract checks](AS-04/focused-final/README.md) | Live schema/loader agreement, 1,906 contract checks and 170 actual-model hinge checks |
 | [Models, flights and packaging](AS-04/model-and-flight/README.md) | Five model/clearance contracts, four real-app trimmed flights, exported schema/data availability |
+| [Complete regression coverage](AS-04/full-suite/README.md) | 195 GDScript tests and 27 integration sections resolved; failures, fixes, reruns and exact snapshot boundaries |
+| [AS-05 delivery](AS-05/README.md) | Final results, reusable authoring commands, remaining measurement/coordination gates and ownership |
 
-No aircraft force equation or calibration change is intended. Source/version identity changes deliberately; measured aircraft mass properties, low-Reynolds-number data and physical ground/flight validation remain open. Unsupported features are rejected, not inferred from hardware names.
+No aircraft force equation or numeric calibration changed. Source/version identity changes deliberately; measured aircraft mass properties, low-Reynolds-number data and physical ground/flight validation remain open. Unsupported features are rejected, not inferred from hardware names.

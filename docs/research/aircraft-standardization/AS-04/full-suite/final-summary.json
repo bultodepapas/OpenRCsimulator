@@ -1,0 +1,37 @@
+{
+  "status": "all suite checks resolved after documented fixes and additive reruns",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "linux_engine_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "uninterrupted_app_test_success": false,
+  "official_prefix_gd_passed": 32,
+  "continuation_gd_cases": 163,
+  "unique_gd_tests_resolved": 195,
+  "official_tail_sections_resolved": 27,
+  "initial_continuation_passed": 186,
+  "initial_continuation_failed": 4,
+  "initial_failures": [
+    "test_replay_policy.gd",
+    "tail-10: D8b-R2: synthetic polar fixtures and explicit experimental flight route",
+    "tail-18: Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)",
+    "tail-26: E5a: generated Extra taildragger contacts, P-51 review and session refinement"
+  ],
+  "resolution_evidence": [
+    "replay-policy-restored-git.log",
+    "polar-rerun.json",
+    "generator-portability-rerun.json"
+  ],
+  "original_manifest_gate": false,
+  "application_source_bytes_unchanged": true,
+  "only_added_application_files": [
+    "app/tests/__pycache__/check_atmosphere_trace.cpython-312.pyc",
+    "app/tests/__pycache__/check_trimmed_flight.cpython-312.pyc",
+    "app/tests/__pycache__/check_wind_trace.cpython-312.pyc",
+    "app/tests/__pycache__/test_atmosphere_cli.cpython-312.pyc"
+  ],
+  "manifest_correction": "Exclude generated Python __pycache__ entries; raw before/after manifests remain unchanged in continuation/summary.json.",
+  "late_research_changes": [
+    "AS-02/polar-candidate-parity.json",
+    "generator-portability-overlay.json"
+  ],
+  "app_source_file_count": 535
+}

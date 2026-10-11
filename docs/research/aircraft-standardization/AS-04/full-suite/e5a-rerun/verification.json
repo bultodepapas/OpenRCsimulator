@@ -1,0 +1,37 @@
+{
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "input_sha256": {
+    "app/data/aircraft/gp_extra_300s_60.json": "13643a9c2fc121490ca9293619839556f4a37992cff2fea7161b54ca5692fff5",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "987ca85cfc10388683fe024a0d3dd3ee26421bfafaf928b459b9604674c4c3da",
+    "app/data/aircraft/p51d_mustang_120.json": "2a2bb105a7f8dd5e316cd26ef1fad15e417f0d1aa406afa6b32562911265697b",
+    "app/data/field_loader.gd": "3dd8e1b3d227176c54e937243cdd35ceb5d7144bcfddf7baf99a4d6c996d9b48",
+    "app/data/fields/default.json": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+    "app/data/ground/surface_friction.json": "79f04e7c703ee48afee27d995ba6cda9c789778e13289a57bfd5c051ba8a8b94",
+    "app/physics/aircraft_data.gd": "a67fcc8292f0c70e5cfd46d61e3cfd8e3cc1f3065b0a51767edce17d715b5796",
+    "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+    "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/sim/flight_session.gd": "7f770daf337cb729eb75c2e073e1477cd8cedd3899022c2465cdb9b63ea7f2d3",
+    "app/sim/simulation.gd": "d08db56afee2486d4f3768ea0a1c3d93123088d48e430517769ccb73f5ef2d10",
+    "assets/aircraft/extra-300s-60/geometry.json": "37e6487ebaefe82cb4566ffa96a0902ad3a85cf839204eaed0d261473a3430f1",
+    "assets/aircraft/p51d-mustang-120/geometry.json": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+    "research/extra-300/ex05/derive_physics.py": "a8227992a75ccb3f55720b466572af279f47eb7164aaff09381f9a2c18acc9c1",
+    "research/ground-contact/e5a/checks.gd": "b4f72b8c6ea0c30aecaf24363148ec33e877421a11d986d8c64ccfc3eda13a0f",
+    "research/ground-contact/e5a/session.gd": "7f97f1227f7d05c3bbf7ef02bf2a088a70e1c7ff09b32e828acec6df92eafd56",
+    "research/ground-contact/e5a/verify.py": "28c92d126939c54f277953144032aea31ff579690a58a8aaec5d9ba35ffd9d76"
+  },
+  "ok": true,
+  "physical_acceptance": false,
+  "results": {
+    "checks.gd": {
+      "checks": 21,
+      "exit_code": 0,
+      "failures": 0
+    },
+    "session.gd": {
+      "checks": 63,
+      "exit_code": 0,
+      "failures": 0
+    }
+  },
+  "source_commit": "d486ec2d5d535cff9744e186f2e6a086b565dc0c"
+}

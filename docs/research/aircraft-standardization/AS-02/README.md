@@ -13,6 +13,8 @@ For a v1 input, the helper preserves every original numeric leaf exactly, moving
 
 Across the eight files, all 2,815 original numeric leaves are identical, eight CLadot leaves move to their reference-only path, 286 compatibility-default numeric leaves are made explicit, and the comparison finds zero differences.
 
+The full-suite freshness check also identified three generated D8b-R2 research polar candidates whose donor is the Stik file. Regenerating them through their existing `make_candidates.gd` pipeline carries the donor's v2 contract into these artifacts without editing their synthetic polar curves. [Candidate parity](polar-candidate-parity.json) preserves all 1,023 original numeric leaves (341 per candidate) exactly, with 108 explicit default leaves added. They remain research-only, with no production polar selection or physical calibration claim. The retained historical D8b-R2 reports describe their original inputs; new candidate hashes and rerun evidence are recorded under AS-04.
+
 `balance.firewall`, glow `peak_power` and `peak_power_rpm`, and turbine `fuel_flow` remain at their existing paths with their provenance. They are reference or telemetry values, not active forces or aircraft-mass changes in the current model. Existing `fuel_flow` does not decrement mass. See the [AS-00 physics audit](../AS-00/physics-audit.md) for behavior and source scope.
 
 ## Existing capability boundary
@@ -38,6 +40,8 @@ This matrix describes the migration baseline. The concurrently integrated GP whe
 `research/aircraft-standardization/migrate.py` exposes `upgrade(raw)` and `legacy_input(raw)`. `upgrade` returns a deep-copied v2 object and is idempotent for valid v2 data. `legacy_input` provides the historical v1 layout for derivation and mutation tools, including reversing the CLadot path and fixed rotation string without dropping numeric values.
 
 Extra, P-51 and Avanti continue to derive their own physics; each now converts any copied Stik source to a legacy view and upgrades the completed result before writing. The Ugly Stik physics file is authored rather than generated. The electric configurations are authored synthetic fixtures, so the migration stages them directly; there is no separate electric generator.
+
+Generated report paths use POSIX separators explicitly, so Windows generation and Linux freshness checks agree. The final portability correction changed report headers only; all eight aircraft JSON byte hashes stayed unchanged ([evidence](../AS-04/full-suite/generator-portability.log)).
 
 For an authoring starting point, use [openrc-aircraft-v2.template.json](../../../../research/aircraft-standardization/template/openrc-aircraft-v2.template.json) as a shape example only. It is a structural copy of the experimental Stik; every quantity is classified as borrowed and its source note identifies the donor evidence kind and provenance. Replace its ID, values, sources, frame notes and capability choices with evidence and behavior for the new configuration; it is not a validated model and is intentionally absent from the migration allowlist.
 

@@ -1,6 +1,6 @@
 # Aircraft standardization plan
 
-**Status: AS-00–03 complete; AS-04/05 verification and delivery in progress, 2026-10-11.** Revision 2. The complete initial plan preceded code changes. Owner: aircraft standardization lead, physics line. Prefix: AS-. This root location is requested by the project owner.
+**Status: AS-00–05 delivered, 2026-10-11; physical calibration and tight performance qualification remain open as documented.** Revision 3. The complete initial plan preceded code changes. Owner: aircraft standardization lead, physics line. Prefix: AS-. This root location is requested by the project owner. Final [results and remaining gates](docs/research/aircraft-standardization/AS-05/README.md).
 
 ## Objective and scope
 
@@ -60,8 +60,8 @@ At audit start these external paths were already dirty. A local baseline copy pr
 | AS-01 | `AIRCRAFT_CONTRACT.md`, field/consumer inventory, capability matrix and v2 schema/runtime preflight | All supported modules represented; unknown/null/type/unit/branch contradictions rejected; v1 compatibility explicit | Complete; closed v2 preflight/schema, 148-path register and conditional-module semantics |
 | AS-02 | Four aircraft and electric fixture migration through source pipelines | Reproducible outputs; value/evidence comparison; no undocumented numerical delta | Complete; 8 files, 2,815 original numeric leaves preserved, zero differences; three generator pipelines reproducible |
 | AS-03 | Lifecycle/consumer alignment and reusable authoring template | IDs, controls, animation, inactive systems, trim/reset/reload/checkpoint and source identity tests | Complete; catalog identity/version guard, template, exact 8-aircraft lifecycle comparison and 170 hinge checks |
-| AS-04 | In-engine flight/propulsion/ground/damage/regression/performance matrix | Retained Godot logs, comparison records and source hashes; no golden rerecording | Pending |
-| AS-05 | Reviewed delivery, audit comparison, concise add/tune guide, gaps and results | Fresh-copy integrity where paths/generated outputs change; final diff/ownership review; documentation indexed | Pending |
+| AS-04 | In-engine flight/propulsion/ground/damage/regression/performance matrix | Retained Godot logs, comparison records and source hashes; no golden rerecording | Complete: 195 GDScript tests and 27 integration sections resolved through the official run plus documented continuation/reruns; exact model/trajectory, four real flights, model/hinge and packaging checks passed. Timing measured; ≤5% qualification inconclusive. |
+| AS-05 | Reviewed delivery, audit comparison, concise add/tune guide, gaps and results | Fresh-copy integrity where paths/generated outputs change; final diff/ownership review; documentation indexed | Complete: fresh-copy manifests, cross-platform generator freshness, reviewed template/guide, sources and explicit follow-up ownership in the delivery report |
 
 ## Measurable acceptance
 

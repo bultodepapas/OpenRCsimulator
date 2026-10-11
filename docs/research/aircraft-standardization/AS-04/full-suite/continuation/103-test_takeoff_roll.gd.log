@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   runway start
+ok   record: propeller wash is OFF for the Stik (no slipstream data); E0b may change this roll
+ok   6-DOF: every anchor releases and the airplane lifts off within 4 s, no fault or crash  lift-off t 2.254 s, x 21.68 m, V 20.38 m/s, pitch 2.89°, lateral drift -0.42 m
+info x  1.0 m: 6-DOF 4.325 m/s (pitch -1.59°), 1-D fixed 4.324 (0.02 %), 1-D with 6-DOF pitch 4.323 (0.06 %)
+info x  2.0 m: 6-DOF 6.374 m/s (pitch -1.39°), 1-D fixed 6.371 (0.04 %), 1-D with 6-DOF pitch 6.373 (0.01 %)
+info x  5.0 m: 6-DOF 10.289 m/s (pitch -0.75°), 1-D fixed 10.271 (0.17 %), 1-D with 6-DOF pitch 10.290 (0.01 %)
+info x 10.0 m: 6-DOF 14.391 m/s (pitch +0.18°), 1-D fixed 14.296 (0.66 %), 1-D with 6-DOF pitch 14.394 (0.02 %)
+info x 15.0 m: 6-DOF 17.328 m/s (pitch +0.86°), 1-D fixed 17.096 (1.34 %), 1-D with 6-DOF pitch 17.334 (0.03 %)
+info x 20.0 m: 6-DOF 19.681 m/s (pitch +1.89°), 1-D fixed 19.261 (2.13 %), 1-D with 6-DOF pitch 19.699 (0.09 %)
+ok   V(x) at the rest attitude (x ≤ 5 m) within 0.5 % of the 1-D integral  worst 0.174 %
+ok   V(x) up to 20 m within 3 % of the 1-D integral (rotation adds lift)  worst 2.13 %
+ok   lift-off distance 21.68 m within 10 % of the 1-D distance to 20.38 m/s (23.08 m)
+ok   the 1-D integral with the 6-DOF's pitch history matches within 0.2 % (difference = rotation; detects a 10 % rolling error)  worst 0.091 %
+7 checks, 0 failed

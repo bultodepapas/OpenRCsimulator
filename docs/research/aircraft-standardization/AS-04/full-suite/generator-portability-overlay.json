@@ -1,0 +1,32 @@
+[
+  {
+    "path": "research/extra-300/ex05/derive_physics.py",
+    "before": "bd5b3e65c97ad63758b13a9019bc38359f343cbb91d62a6e08847acbf04ee8dc",
+    "after": "a8227992a75ccb3f55720b466572af279f47eb7164aaff09381f9a2c18acc9c1"
+  },
+  {
+    "path": "research/extra-300/ex05/derivation.md",
+    "before": "5936641f4f0af27e30e277a1527c34d0addc419ff262b0414f9c338906c11f43",
+    "after": "54486ee599a10190dfa88c57ebf7db50419466fb2c49cfdfeb10af8afc0eb1a7"
+  },
+  {
+    "path": "research/p51/p51-05/derive_physics.py",
+    "before": "15179dc3ea7dcb750e6132eb2467e504976eda69151474b069bc14aaf73a41db",
+    "after": "0d7e024dba3bd3ee3dd95a43fdf8ee6c7a030333eca8a7ff951866e3cc6d69bb"
+  },
+  {
+    "path": "research/p51/p51-05/derivation.md",
+    "before": "d0132f90679bc3a031d77f43e228aa94192237cfde5a2c1aebb605fcbe1dd759",
+    "after": "72067b7931a2d55a8988ea479bde5fd25a3c7331f62fef396368d78cc04297e0"
+  },
+  {
+    "path": "research/avanti-s/av06/derive_physics.py",
+    "before": "f1bae365d2a41469c3134aa3c63ffe6bf7d9c2731f06fdcb3e5a0d157c1a985a",
+    "after": "05f9f665f068798334b7a5b1311d69ea91a4a6962fb2ba6a94ce279f1cf0ffe2"
+  },
+  {
+    "path": "research/avanti-s/av06/derivation.md",
+    "before": "7af2386abbf6a9f448f68e326a60bb8eac736ee8c546ba17f79b656d1934df44",
+    "after": "4d3fd50326e88e66fce690722b38e483ea162cae6351896d626fd59e898b1a43"
+  }
+]

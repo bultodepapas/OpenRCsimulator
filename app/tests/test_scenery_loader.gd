@@ -111,11 +111,20 @@ func _layout_current() -> void:
 
 
 func _switch() -> void:
-	_check("scenery is off by default (Gate SC)", not Scenery.enabled())
+	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
+	var previous_quality := OS.get_environment("OPENRC_SCENERY_QUALITY")
+	OS.unset_environment("OPENRC_SCENERY")
+	_check("scenery is on by default (SC-02a)", Scenery.enabled())
+	OS.set_environment("OPENRC_SCENERY", "off")
+	_check("OPENRC_SCENERY=off turns it off", not Scenery.enabled())
 	OS.set_environment("OPENRC_SCENERY", "on")
 	_check("OPENRC_SCENERY=on turns it on", Scenery.enabled())
 	OS.set_environment("OPENRC_SCENERY_QUALITY", "low")
 	_check("OPENRC_SCENERY_QUALITY is read", Scenery.options().quality == "low")
 	OS.unset_environment("OPENRC_SCENERY")
 	OS.unset_environment("OPENRC_SCENERY_QUALITY")
-	_check("and off again without it", not Scenery.enabled())
+	_check("and on again without it", Scenery.enabled())
+	if not previous_scenery.is_empty():
+		OS.set_environment("OPENRC_SCENERY", previous_scenery)
+	if not previous_quality.is_empty():
+		OS.set_environment("OPENRC_SCENERY_QUALITY", previous_quality)
