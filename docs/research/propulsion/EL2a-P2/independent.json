@@ -1,0 +1,1082 @@
+{
+  "format": "openrc-el2a-p2-independent-scalar-evidence-v1",
+  "status": "independent synthetic scalar checks; no aircraft, motor, or battery calibration",
+  "ok": true,
+  "python": "3.12.3",
+  "python_dependencies": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "godot": {
+    "command": [
+      "/home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "4.7.2.stable.official.ed1daf0bf\n",
+    "stderr": "",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "nonzero_exit_allowed_for_exact_version_only": false
+  },
+  "app_path": "/home/bulto/openrc-el2a-p2/candidate/app",
+  "independent_references": {
+    "el1d_scalar": {
+      "kt_nm_per_a": 0.01193662073189215,
+      "coupled_factor_s_per_kg_m2": 10256.410256410256,
+      "q_intercept_nm": 1.0026761414789405,
+      "q_slope_nms": 0.0023747152416172916,
+      "decay_rate_per_s": 24.35605376017735,
+      "steady_relative_speed_rad_s": 422.23005264246814,
+      "smooth_endpoint": {
+        "omega_rad_s": 387.0169298697595,
+        "body_rate_x_rad_s": -9.175423246743987,
+        "bus_energy_j": 15.799014577646625,
+        "copper_energy_j": 8.192507767100185,
+        "rotational_loss_energy_j": 0.3241292402629808,
+        "shaft_work_j": 7.282377570283449
+      },
+      "smooth_reference_method": "SciPy DOP853 on scalar equations, checked against analytic exponential",
+      "smooth_reference_rhs": [
+        "Q = kt * ((duty*V - kt*Omega)/R - I0)",
+        "Omega_dot = (Jlocked/(Jrotor*Jcarrier))*Q",
+        "w_dot = -(Jrotor/Jlocked)*Omega_dot from Hdot=0",
+        "Ebus_dot = V*duty*I; Ecopper_dot=R*I^2; Erot_dot=kt*I0*Omega; Eshaft_dot=Q*Omega"
+      ],
+      "stop_time_s": 0.3675663404700058,
+      "stop_rhs": "Omega_dot = -(kt*I0)*Jlocked/(Jrotor*Jcarrier); t_stop=Omega0/(-Omega_dot)",
+      "stop_final_body_rate_x_rad_s": 1.125,
+      "solve_ivp_evaluations": 1202
+    },
+    "el2a_battery": {
+      "auxiliary_only": {
+        "initial_charge_c": 9.0,
+        "capacity_c": 180.0,
+        "initial_soc": 0.05,
+        "initial_ocv_v": 10.13,
+        "event_time_s": 0.6923076923076923,
+        "initial_omega_rad_s": 157.07963267948966,
+        "final_omega_rad_s": 72.32256239386493,
+        "final_rpm": 690.6295981233374,
+        "final_body_rate_x_rad_s": 2.1189267571406183,
+        "stop_time_s": 1.2830485721416167,
+        "momentum_x_kg_m2_s": 0.015707963267948967,
+        "final_charge_c": 0.0,
+        "final_soc": 0.0,
+        "chemical_energy_removed_j": 90.585,
+        "terminal_energy_j": 90.11699999999999,
+        "pack_heat_j": 0.468,
+        "energy_balance_residual_j": 3.497202527569243e-15,
+        "points": [
+          {
+            "hz": 120,
+            "ticks_to_event": 84,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.7,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.07692307692307665,
+            "endpoint_omega_rad_s": 71.38081716846911,
+            "endpoint_body_rate_x_rad_s": 2.142470387775514
+          },
+          {
+            "hz": 240,
+            "ticks_to_event": 167,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.6958333333333333,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.1538461538461533,
+            "endpoint_omega_rad_s": 71.89092916555852,
+            "endpoint_body_rate_x_rad_s": 2.129717587848279
+          },
+          {
+            "hz": 480,
+            "ticks_to_event": 333,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.69375,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.3076923076923066,
+            "endpoint_omega_rad_s": 72.14598516410322,
+            "endpoint_body_rate_x_rad_s": 2.123341187884661
+          },
+          {
+            "hz": 960,
+            "ticks_to_event": 665,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.6927083333333334,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.6153846153846132,
+            "endpoint_omega_rad_s": 72.27351316337557,
+            "endpoint_body_rate_x_rad_s": 2.1201529879028524
+          }
+        ],
+        "equation": "Cdot=-Iaux; t*=C0/Iaux; Echem=integral_C*^C0 OCV(C/Ccapacity)dC; H=Rpack*Iaux^2*t*; Eterminal=Echem-H"
+      },
+      "smooth": {
+        "initial_charge_c": 3060.0,
+        "capacity_c": 3600.0,
+        "final_time_s": 0.5,
+        "endpoint": {
+          "omega_rad_s": 714.5737397156753,
+          "body_rate_x_rad_s": -17.364343492891855,
+          "remaining_charge_c": 3055.5536366803217,
+          "soc": 0.8487648990778671,
+          "terminal_energy_j": 52.4221806291017,
+          "pack_heat_j": 2.1956264603862836,
+          "chemical_energy_removed_j": 54.61780708943974,
+          "shaft_work_j": 24.873011937698177,
+          "kinetic_energy_j": 24.893011937698226,
+          "momentum_x_kg_m2_s": 0.002000000000000099
+        },
+        "budgets": {
+          "momentum_drift_kg_m2_s": 9.8879238130678e-17,
+          "battery_energy_residual_j": -4.8250292650209303e-11,
+          "mechanical_work_residual_j": 4.973799150320701e-14
+        },
+        "branch_margins": {
+          "minimum_motor_current_a": 1.0016497524078398,
+          "minimum_shaft_torque_nm": 1.969246879390981e-05,
+          "minimum_remaining_charge_c": 3055.5536366803217,
+          "minimum_soc": 0.8487648990778671
+        },
+        "method": "SciPy 1.11.4 DOP853, independently written scalar source, axial rotor and pack equations",
+        "rhs": [
+          "Im=max((d*(OCV(C/Ccap)-Rpack*Iaux)-rpm/Kv)/(Rm+d^2*Rpack),0)",
+          "Ipack=d*Im+Iaux; Vbus=OCV-Rpack*Ipack",
+          "Qsource=kt*(Im-I0); Omegadot=Jlocked/(Jrotor*Jcarrier)*Qsource",
+          "body_rate_dot=-(Jrotor/Jlocked)*Omegadot from constant axial H",
+          "Cdot=-Ipack; Eterminal_dot=Vbus*Ipack; Hpack_dot=Rpack*Ipack^2"
+        ],
+        "solver_evaluations": 7502,
+        "solver_rtol": 2e-13,
+        "solver_atol": [
+          2e-13,
+          2e-13,
+          2e-11,
+          2e-11,
+          2e-11,
+          2e-11
+        ],
+        "solver_max_step_s": 0.001,
+        "dense_branch_check_points": 201
+      }
+    }
+  },
+  "checks": {
+    "el1d_scalar": {
+      "smooth": {
+        "points": [
+          {
+            "hz": 120,
+            "steps": 12,
+            "final_omega_rad_s": 387.015492816693,
+            "reference_error": {
+              "omega_rad_s": 0.0014370530665246406,
+              "body_rate_rad_s": 3.592632665672113e-05,
+              "bus_energy_j": 5.986406482527684e-05,
+              "copper_energy_j": 0.00030998950078497955,
+              "rotational_loss_energy_j": 7.042831162151764e-07,
+              "shaft_work_j": 0.00037055784871942166
+            },
+            "relative_momentum_error_kg_m2_s": 1.9949319973733282e-17,
+            "port_energy_closure_error_j": 2.6645352591003757e-15,
+            "kinetic_change_j": 7.28232334440721,
+            "coupled_shaft_work_j": 7.28200701243473,
+            "kinetic_work_closure_error_j": 0.00031633197248037703,
+            "maximum_quaternion_norm_error": 0.0
+          },
+          {
+            "hz": 240,
+            "steps": 24,
+            "final_omega_rad_s": 387.016847363731,
+            "reference_error": {
+              "omega_rad_s": 8.250602849102506e-05,
+              "body_rate_rad_s": 2.0626507168941544e-06,
+              "bus_energy_j": 3.4369964261316e-06,
+              "copper_energy_j": 1.8132709314500062e-05,
+              "rotational_loss_energy_j": 4.043525220209787e-08,
+              "shaft_work_j": 2.16101409895586e-05
+            },
+            "relative_momentum_error_kg_m2_s": 9.974659986866641e-18,
+            "port_energy_closure_error_j": 7.105427357601002e-15,
+            "kinetic_change_j": 7.282374456988871,
+            "coupled_shaft_work_j": 7.28235596014246,
+            "kinetic_work_closure_error_j": 1.849684641097582e-05,
+            "maximum_quaternion_norm_error": 3.3306690738754696e-16
+          },
+          {
+            "hz": 480,
+            "steps": 48,
+            "final_omega_rad_s": 387.016924927016,
+            "reference_error": {
+              "omega_rad_s": 4.942743487390544e-06,
+              "body_rate_rad_s": 1.2356860779050294e-07,
+              "bus_energy_j": 2.0590242577611662e-07,
+              "copper_energy_j": 1.096175365589147e-06,
+              "rotational_loss_energy_j": 2.422382183731031e-09,
+              "shaft_work_j": 1.3045001896472286e-06
+            },
+            "relative_momentum_error_kg_m2_s": 0.0,
+            "port_energy_closure_error_j": 2.6645352591003757e-14,
+            "kinetic_change_j": 7.282377383773211,
+            "coupled_shaft_work_j": 7.28237626578326,
+            "kinetic_work_closure_error_j": 1.1179899512825386e-06,
+            "maximum_quaternion_norm_error": 0.0
+          },
+          {
+            "hz": 960,
+            "steps": 96,
+            "final_omega_rad_s": 387.016929567307,
+            "reference_error": {
+              "omega_rad_s": 3.0245251991800615e-07,
+              "body_rate_rad_s": 7.5613169059352e-09,
+              "bus_energy_j": 1.2599425502912709e-08,
+              "copper_energy_j": 6.737428570602333e-08,
+              "rotational_loss_energy_j": 1.4822920668677853e-10,
+              "shaft_work_j": 8.012194907536241e-08
+            },
+            "relative_momentum_error_kg_m2_s": 0.0,
+            "port_energy_closure_error_j": 1.865174681370263e-14,
+            "kinetic_change_j": 7.2823775588706505,
+            "coupled_shaft_work_j": 7.2823774901615,
+            "kinetic_work_closure_error_j": 6.870915036927272e-08,
+            "maximum_quaternion_norm_error": 4.440892098500626e-16
+          }
+        ],
+        "omega_error_rad_s": [
+          0.0014370530665246406,
+          8.250602849102506e-05,
+          4.942743487390544e-06,
+          3.0245251991800615e-07
+        ],
+        "observed_order": [
+          4.122469990410063,
+          4.061115594745647,
+          4.030531451323116
+        ],
+        "thresholds": {
+          "momentum_abs_kg_m2_s": 1e-13,
+          "port_energy_abs_j": 2e-12,
+          "kinetic_work_abs_j": 0.0004,
+          "coarsest_omega_abs_rad_s": 0.002,
+          "observed_order": [
+            3.8,
+            4.2
+          ]
+        }
+      },
+      "stop": {
+        "points": [
+          {
+            "hz": 120,
+            "steps_to_event": 45,
+            "event_time_s": 0.367566340470506,
+            "event_time_error_s": 5.002109837448643e-13,
+            "relative_momentum_error_kg_m2_s": 9.540979117872439e-18,
+            "body_rate_error_rad_s": 0.0
+          },
+          {
+            "hz": 240,
+            "steps_to_event": 89,
+            "event_time_s": 0.367566340470005,
+            "event_time_error_s": -7.771561172376096e-16,
+            "relative_momentum_error_kg_m2_s": -8.673617379884035e-19,
+            "body_rate_error_rad_s": 0.0
+          },
+          {
+            "hz": 480,
+            "steps_to_event": 177,
+            "event_time_s": 0.367566340470004,
+            "event_time_error_s": -1.7763568394002505e-15,
+            "relative_momentum_error_kg_m2_s": -2.0816681711721685e-17,
+            "body_rate_error_rad_s": 0.0
+          },
+          {
+            "hz": 960,
+            "steps_to_event": 353,
+            "event_time_s": 0.367566340470003,
+            "event_time_error_s": -2.831068712794149e-15,
+            "relative_momentum_error_kg_m2_s": -4.0766001685454967e-17,
+            "body_rate_error_rad_s": -9.992007221626409e-15
+          }
+        ],
+        "cross_rate_spread_s": 5.030420524576584e-13,
+        "thresholds": {
+          "event_time_abs_s": 1e-09,
+          "cross_rate_spread_s": 5e-12,
+          "projection_momentum_abs_kg_m2_s": 2e-13
+        }
+      }
+    },
+    "el2a_battery": {
+      "auxiliary_only": {
+        "points": [
+          {
+            "hz": 120,
+            "ticks_to_event": 84,
+            "event_time_error_s": 6.661338147750939e-16,
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_charge_residual_c": 0.0,
+            "fixed_tick_endpoint_s": 0.7,
+            "final_tick_duration_s": 0.000641025641025861,
+            "final_tick_fraction": 0.0769230769231033,
+            "final_rpm_error": -4.206412995699793e-12,
+            "body_rate_error_rad_s": 0.023543630634901724,
+            "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+            "terminal_energy_error_j": 1.1368683772161603e-13,
+            "pack_heat_error_j": 0.0,
+            "battery_energy_residual_j": -1.09801057135428e-13,
+            "event_count": 1
+          },
+          {
+            "hz": 240,
+            "ticks_to_event": 167,
+            "event_time_error_s": 5.007105841059456e-13,
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_charge_residual_c": -6.49999845614424e-12,
+            "fixed_tick_endpoint_s": 0.695833333333332,
+            "final_tick_duration_s": 0.000641025641526016,
+            "final_tick_fraction": 0.153846153966244,
+            "final_rpm_error": -4.774847184307873e-12,
+            "body_rate_error_rad_s": 0.010790830707661847,
+            "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+            "terminal_energy_error_j": 6.491518433904275e-11,
+            "pack_heat_error_j": 3.4094949086238557e-13,
+            "battery_energy_residual_j": -6.52095599740221e-11,
+            "event_count": 1
+          },
+          {
+            "hz": 480,
+            "ticks_to_event": 333,
+            "event_time_error_s": -4.3298697960381105e-15,
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_charge_residual_c": 0.0,
+            "fixed_tick_endpoint_s": 0.693749999999998,
+            "final_tick_duration_s": 0.000641025641021642,
+            "final_tick_fraction": 0.307692307690388,
+            "final_rpm_error": -4.433786671143025e-12,
+            "body_rate_error_rad_s": 0.004414430744031694,
+            "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+            "terminal_energy_error_j": -2.8421709430404007e-13,
+            "pack_heat_error_j": 9.992007221626409e-16,
+            "battery_energy_residual_j": 2.58237875527811e-13,
+            "event_count": 1
+          },
+          {
+            "hz": 960,
+            "ticks_to_event": 665,
+            "event_time_error_s": 5.037081862724335e-13,
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_charge_residual_c": -6.49999845614424e-12,
+            "fixed_tick_endpoint_s": 0.692708333333341,
+            "final_tick_duration_s": 0.000641025641529569,
+            "final_tick_fraction": 0.615384615868386,
+            "final_rpm_error": 3.979039320256561e-11,
+            "body_rate_error_rad_s": 0.001226230762241709,
+            "momentum_drift_kg_m2_s": 4.3368086899420177e-16,
+            "terminal_energy_error_j": 6.410516562027624e-11,
+            "pack_heat_error_j": 3.3795188869589765e-13,
+            "battery_energy_residual_j": -6.44826414486488e-11,
+            "event_count": 1
+          }
+        ],
+        "expected": {
+          "initial_charge_c": 9.0,
+          "capacity_c": 180.0,
+          "initial_soc": 0.05,
+          "initial_ocv_v": 10.13,
+          "event_time_s": 0.6923076923076923,
+          "initial_omega_rad_s": 157.07963267948966,
+          "final_omega_rad_s": 72.32256239386493,
+          "final_rpm": 690.6295981233374,
+          "final_body_rate_x_rad_s": 2.1189267571406183,
+          "stop_time_s": 1.2830485721416167,
+          "momentum_x_kg_m2_s": 0.015707963267948967,
+          "final_charge_c": 0.0,
+          "final_soc": 0.0,
+          "chemical_energy_removed_j": 90.585,
+          "terminal_energy_j": 90.11699999999999,
+          "pack_heat_j": 0.468,
+          "energy_balance_residual_j": 3.497202527569243e-15,
+          "points": [
+            {
+              "hz": 120,
+              "ticks_to_event": 84,
+              "event_time_s": 0.6923076923076923,
+              "fixed_tick_endpoint_s": 0.7,
+              "final_tick_duration_s": 0.0006410256410256387,
+              "final_tick_fraction": 0.07692307692307665,
+              "endpoint_omega_rad_s": 71.38081716846911,
+              "endpoint_body_rate_x_rad_s": 2.142470387775514
+            },
+            {
+              "hz": 240,
+              "ticks_to_event": 167,
+              "event_time_s": 0.6923076923076923,
+              "fixed_tick_endpoint_s": 0.6958333333333333,
+              "final_tick_duration_s": 0.0006410256410256387,
+              "final_tick_fraction": 0.1538461538461533,
+              "endpoint_omega_rad_s": 71.89092916555852,
+              "endpoint_body_rate_x_rad_s": 2.129717587848279
+            },
+            {
+              "hz": 480,
+              "ticks_to_event": 333,
+              "event_time_s": 0.6923076923076923,
+              "fixed_tick_endpoint_s": 0.69375,
+              "final_tick_duration_s": 0.0006410256410256387,
+              "final_tick_fraction": 0.3076923076923066,
+              "endpoint_omega_rad_s": 72.14598516410322,
+              "endpoint_body_rate_x_rad_s": 2.123341187884661
+            },
+            {
+              "hz": 960,
+              "ticks_to_event": 665,
+              "event_time_s": 0.6923076923076923,
+              "fixed_tick_endpoint_s": 0.6927083333333334,
+              "final_tick_duration_s": 0.0006410256410256387,
+              "final_tick_fraction": 0.6153846153846132,
+              "endpoint_omega_rad_s": 72.27351316337557,
+              "endpoint_body_rate_x_rad_s": 2.1201529879028524
+            }
+          ],
+          "equation": "Cdot=-Iaux; t*=C0/Iaux; Echem=integral_C*^C0 OCV(C/Ccapacity)dC; H=Rpack*Iaux^2*t*; Eterminal=Echem-H"
+        }
+      },
+      "smooth": {
+        "points": [
+          {
+            "hz": 120,
+            "steps": 60,
+            "final_time_s": 0.500000000000001,
+            "reference_error": {
+              "omega_rad_s": -1.3322543281901744e-06,
+              "body_rate_x_rad_s": 3.330635678366889e-08,
+              "remaining_charge_c": 7.608377927681431e-09,
+              "soc": 2.1148638396084607e-12,
+              "terminal_energy_j": -5.770971350216314e-05,
+              "pack_heat_j": 5.774266887659252e-05
+            },
+            "absolute_momentum_drift_kg_m2_s": 1.9949319973733282e-17,
+            "chemical_energy_residual_j": -1.264527416111605e-07
+          },
+          {
+            "hz": 240,
+            "steps": 120,
+            "final_time_s": 0.499999999999999,
+            "reference_error": {
+              "omega_rad_s": -7.70683072914835e-08,
+              "body_rate_x_rad_s": 1.926753867564912e-09,
+              "remaining_charge_c": 4.383764462545514e-10,
+              "soc": 1.2090328738167955e-13,
+              "terminal_energy_j": -3.3943269031055934e-06,
+              "pack_heat_j": 3.396356136331491e-06
+            },
+            "absolute_momentum_drift_kg_m2_s": 1.1015494072452725e-16,
+            "chemical_energy_residual_j": -7.461663731334056e-09
+          },
+          {
+            "hz": 480,
+            "steps": 240,
+            "final_time_s": 0.499999999999999,
+            "reference_error": {
+              "omega_rad_s": -4.634330252883956e-09,
+              "body_rate_x_rad_s": 1.1585399306568434e-10,
+              "remaining_charge_c": 1.8189894035458565e-11,
+              "soc": 5.88418203051333e-15,
+              "terminal_energy_j": -2.057661063759042e-07,
+              "pack_heat_j": 2.0589174631879814e-07
+            },
+            "absolute_momentum_drift_kg_m2_s": 1.9949319973733282e-17,
+            "chemical_energy_residual_j": -3.9693670572660267e-10
+          },
+          {
+            "hz": 960,
+            "steps": 480,
+            "final_time_s": 0.499999999999999,
+            "reference_error": {
+              "omega_rad_s": -2.843307811417617e-10,
+              "body_rate_x_rad_s": 7.055689366097795e-12,
+              "remaining_charge_c": -1.8189894035458565e-12,
+              "soc": -1.1102230246251565e-15,
+              "terminal_energy_j": -1.2664706616760668e-08,
+              "pack_heat_j": 1.2672516369605091e-08
+            },
+            "absolute_momentum_drift_kg_m2_s": 5.984795992119984e-17,
+            "chemical_energy_residual_j": -3.370637102761975e-11
+          }
+        ],
+        "absolute_error_budgets": {
+          "omega_rad_s": 0.002,
+          "body_rate_x_rad_s": 5e-05,
+          "remaining_charge_c": 0.002,
+          "soc": 1e-06,
+          "terminal_energy_j": 0.002,
+          "pack_heat_j": 0.002
+        },
+        "observed_orders_diagnostic_only": {
+          "omega_rad_s": [
+            4.111588005542772,
+            4.0557049416250965,
+            4.0267186614193875
+          ],
+          "body_rate_x_rad_s": [
+            4.111553361433056,
+            4.055792612256375,
+            4.037376913107454
+          ],
+          "remaining_charge_c": [
+            4.117346720131832,
+            4.590961241342599,
+            3.3219280948873626
+          ],
+          "soc": [
+            4.12863940454021,
+            4.360867784153708,
+            2.4059923596758366
+          ],
+          "terminal_energy_j": [
+            4.087616748094966,
+            4.044048248239002,
+            4.022119800344457
+          ],
+          "pack_heat_j": [
+            4.087578140170242,
+            4.044029843223827,
+            4.022111064492051
+          ]
+        },
+        "expected": {
+          "initial_charge_c": 3060.0,
+          "capacity_c": 3600.0,
+          "final_time_s": 0.5,
+          "endpoint": {
+            "omega_rad_s": 714.5737397156753,
+            "body_rate_x_rad_s": -17.364343492891855,
+            "remaining_charge_c": 3055.5536366803217,
+            "soc": 0.8487648990778671,
+            "terminal_energy_j": 52.4221806291017,
+            "pack_heat_j": 2.1956264603862836,
+            "chemical_energy_removed_j": 54.61780708943974,
+            "shaft_work_j": 24.873011937698177,
+            "kinetic_energy_j": 24.893011937698226,
+            "momentum_x_kg_m2_s": 0.002000000000000099
+          },
+          "budgets": {
+            "momentum_drift_kg_m2_s": 9.8879238130678e-17,
+            "battery_energy_residual_j": -4.8250292650209303e-11,
+            "mechanical_work_residual_j": 4.973799150320701e-14
+          },
+          "branch_margins": {
+            "minimum_motor_current_a": 1.0016497524078398,
+            "minimum_shaft_torque_nm": 1.969246879390981e-05,
+            "minimum_remaining_charge_c": 3055.5536366803217,
+            "minimum_soc": 0.8487648990778671
+          },
+          "method": "SciPy 1.11.4 DOP853, independently written scalar source, axial rotor and pack equations",
+          "rhs": [
+            "Im=max((d*(OCV(C/Ccap)-Rpack*Iaux)-rpm/Kv)/(Rm+d^2*Rpack),0)",
+            "Ipack=d*Im+Iaux; Vbus=OCV-Rpack*Ipack",
+            "Qsource=kt*(Im-I0); Omegadot=Jlocked/(Jrotor*Jcarrier)*Qsource",
+            "body_rate_dot=-(Jrotor/Jlocked)*Omegadot from constant axial H",
+            "Cdot=-Ipack; Eterminal_dot=Vbus*Ipack; Hpack_dot=Rpack*Ipack^2"
+          ],
+          "solver_evaluations": 7502,
+          "solver_rtol": 2e-13,
+          "solver_atol": [
+            2e-13,
+            2e-13,
+            2e-11,
+            2e-11,
+            2e-11,
+            2e-11
+          ],
+          "solver_max_step_s": 0.001,
+          "dense_branch_check_points": 201
+        }
+      }
+    }
+  },
+  "probe_runs": {
+    "el1d_scalar": {
+      "command": [
+        "/home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/home/bulto/openrc-el2a-p2/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/propulsion/el1/scalar_probe.gd"
+      ],
+      "returncode": 0,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nEL1D_SCALAR_JSON:{\"fixture\":{\"axis_body\":[1.0,0.0,0.0],\"bus_voltage_v\":6.0,\"carrier_inertia_kg_m2\":0.0039,\"duty\":0.85,\"locked_inertia_kg_m2\":0.004,\"motor\":{\"kv_rpm_per_volt\":800.0,\"no_load_current_a\":1.0,\"resistance_ohm\":0.06},\"relative_rotor_inertia_kg_m2\":0.0001,\"smooth_horizon_s\":0.1,\"smooth_initial_omega_rad_s\":20.0,\"stop_initial_omega_rad_s\":45.0},\"smooth\":[{\"bus_energy_j\":15.7989547135818,\"copper_energy_j\":8.19281775660097,\"dt_s\":0.00833333333333333,\"final_body_rate_x_rad_s\":-9.17538732041733,\"final_omega_rad_s\":387.015492816693,\"final_quaternion\":[0.950973416810435,-0.30927263137867,0.0,0.0],\"final_rpm\":3695.72572409536,\"hz\":120,\"kinetic_energy_j\":7.30232334440721,\"momentum_x_kg_m2_s\":0.00200000000000002,\"ok\":true,\"rotational_loss_energy_j\":0.324129944546097,\"shaft_work_j\":7.28200701243473,\"steps\":12,\"time_s\":0.1},{\"bus_energy_j\":15.7990111406502,\"copper_energy_j\":8.1925258998095,\"dt_s\":0.00416666666666667,\"final_body_rate_x_rad_s\":-9.17542118409327,\"final_omega_rad_s\":387.016847363731,\"final_quaternion\":[0.950973627504541,-0.309271983520742,0.0,0.0],\"final_rpm\":3695.73865906676,\"hz\":240,\"kinetic_energy_j\":7.30237445698887,\"momentum_x_kg_m2_s\":0.00200000000000001,\"ok\":true,\"rotational_loss_energy_j\":0.324129280698233,\"shaft_work_j\":7.28235596014246,\"steps\":24,\"time_s\":0.1},{\"bus_energy_j\":15.7990143717442,\"copper_energy_j\":8.19250886327555,\"dt_s\":0.00208333333333333,\"final_body_rate_x_rad_s\":-9.17542312317538,\"final_omega_rad_s\":387.016924927016,\"final_quaternion\":[0.950973639660874,-0.309271946141499,0.0,0.0],\"final_rpm\":3695.73939974157,\"hz\":480,\"kinetic_energy_j\":7.30237738377321,\"momentum_x_kg_m2_s\":0.002,\"ok\":true,\"rotational_loss_energy_j\":0.324129242685363,\"shaft_work_j\":7.28237626578326,\"steps\":48,\"time_s\":0.1},{\"bus_energy_j\":15.7990145650472,\"copper_energy_j\":8.19250783447447,\"dt_s\":0.00104166666666667,\"final_body_rate_x_rad_s\":-9.17542323918267,\"final_omega_rad_s\":387.016929567307,\"final_quaternion\":[0.950973640390985,-0.309271943896495,0.0,0.0],\"final_rpm\":3695.73944405309,\"hz\":960,\"kinetic_energy_j\":7.30237755887065,\"momentum_x_kg_m2_s\":0.002,\"ok\":true,\"rotational_loss_energy_j\":0.32412924041121,\"shaft_work_j\":7.2823774901615,\"steps\":96,\"time_s\":0.1}],\"stop\":[{\"dt_s\":0.00833333333333333,\"event_time_s\":0.367566340470506,\"final_body_rate_x_rad_s\":1.125,\"final_rpm\":0.0,\"hz\":120,\"momentum_x_kg_m2_s\":0.00450000000000001,\"ok\":true,\"steps_to_event\":45},{\"dt_s\":0.00416666666666667,\"event_time_s\":0.367566340470005,\"final_body_rate_x_rad_s\":1.125,\"final_rpm\":0.0,\"hz\":240,\"momentum_x_kg_m2_s\":0.0045,\"ok\":true,\"steps_to_event\":89},{\"dt_s\":0.00208333333333333,\"event_time_s\":0.367566340470004,\"final_body_rate_x_rad_s\":1.125,\"final_rpm\":0.0,\"hz\":480,\"momentum_x_kg_m2_s\":0.00449999999999998,\"ok\":true,\"steps_to_event\":177},{\"dt_s\":0.00104166666666667,\"event_time_s\":0.367566340470003,\"final_body_rate_x_rad_s\":1.12499999999999,\"final_rpm\":0.0,\"hz\":960,\"momentum_x_kg_m2_s\":0.00449999999999996,\"ok\":true,\"steps_to_event\":353}]}\n",
+      "stderr": "",
+      "raw": {
+        "fixture": {
+          "axis_body": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "bus_voltage_v": 6.0,
+          "carrier_inertia_kg_m2": 0.0039,
+          "duty": 0.85,
+          "locked_inertia_kg_m2": 0.004,
+          "motor": {
+            "kv_rpm_per_volt": 800.0,
+            "no_load_current_a": 1.0,
+            "resistance_ohm": 0.06
+          },
+          "relative_rotor_inertia_kg_m2": 0.0001,
+          "smooth_horizon_s": 0.1,
+          "smooth_initial_omega_rad_s": 20.0,
+          "stop_initial_omega_rad_s": 45.0
+        },
+        "smooth": [
+          {
+            "bus_energy_j": 15.7989547135818,
+            "copper_energy_j": 8.19281775660097,
+            "dt_s": 0.00833333333333333,
+            "final_body_rate_x_rad_s": -9.17538732041733,
+            "final_omega_rad_s": 387.015492816693,
+            "final_quaternion": [
+              0.950973416810435,
+              -0.30927263137867,
+              0.0,
+              0.0
+            ],
+            "final_rpm": 3695.72572409536,
+            "hz": 120,
+            "kinetic_energy_j": 7.30232334440721,
+            "momentum_x_kg_m2_s": 0.00200000000000002,
+            "ok": true,
+            "rotational_loss_energy_j": 0.324129944546097,
+            "shaft_work_j": 7.28200701243473,
+            "steps": 12,
+            "time_s": 0.1
+          },
+          {
+            "bus_energy_j": 15.7990111406502,
+            "copper_energy_j": 8.1925258998095,
+            "dt_s": 0.00416666666666667,
+            "final_body_rate_x_rad_s": -9.17542118409327,
+            "final_omega_rad_s": 387.016847363731,
+            "final_quaternion": [
+              0.950973627504541,
+              -0.309271983520742,
+              0.0,
+              0.0
+            ],
+            "final_rpm": 3695.73865906676,
+            "hz": 240,
+            "kinetic_energy_j": 7.30237445698887,
+            "momentum_x_kg_m2_s": 0.00200000000000001,
+            "ok": true,
+            "rotational_loss_energy_j": 0.324129280698233,
+            "shaft_work_j": 7.28235596014246,
+            "steps": 24,
+            "time_s": 0.1
+          },
+          {
+            "bus_energy_j": 15.7990143717442,
+            "copper_energy_j": 8.19250886327555,
+            "dt_s": 0.00208333333333333,
+            "final_body_rate_x_rad_s": -9.17542312317538,
+            "final_omega_rad_s": 387.016924927016,
+            "final_quaternion": [
+              0.950973639660874,
+              -0.309271946141499,
+              0.0,
+              0.0
+            ],
+            "final_rpm": 3695.73939974157,
+            "hz": 480,
+            "kinetic_energy_j": 7.30237738377321,
+            "momentum_x_kg_m2_s": 0.002,
+            "ok": true,
+            "rotational_loss_energy_j": 0.324129242685363,
+            "shaft_work_j": 7.28237626578326,
+            "steps": 48,
+            "time_s": 0.1
+          },
+          {
+            "bus_energy_j": 15.7990145650472,
+            "copper_energy_j": 8.19250783447447,
+            "dt_s": 0.00104166666666667,
+            "final_body_rate_x_rad_s": -9.17542323918267,
+            "final_omega_rad_s": 387.016929567307,
+            "final_quaternion": [
+              0.950973640390985,
+              -0.309271943896495,
+              0.0,
+              0.0
+            ],
+            "final_rpm": 3695.73944405309,
+            "hz": 960,
+            "kinetic_energy_j": 7.30237755887065,
+            "momentum_x_kg_m2_s": 0.002,
+            "ok": true,
+            "rotational_loss_energy_j": 0.32412924041121,
+            "shaft_work_j": 7.2823774901615,
+            "steps": 96,
+            "time_s": 0.1
+          }
+        ],
+        "stop": [
+          {
+            "dt_s": 0.00833333333333333,
+            "event_time_s": 0.367566340470506,
+            "final_body_rate_x_rad_s": 1.125,
+            "final_rpm": 0.0,
+            "hz": 120,
+            "momentum_x_kg_m2_s": 0.00450000000000001,
+            "ok": true,
+            "steps_to_event": 45
+          },
+          {
+            "dt_s": 0.00416666666666667,
+            "event_time_s": 0.367566340470005,
+            "final_body_rate_x_rad_s": 1.125,
+            "final_rpm": 0.0,
+            "hz": 240,
+            "momentum_x_kg_m2_s": 0.0045,
+            "ok": true,
+            "steps_to_event": 89
+          },
+          {
+            "dt_s": 0.00208333333333333,
+            "event_time_s": 0.367566340470004,
+            "final_body_rate_x_rad_s": 1.125,
+            "final_rpm": 0.0,
+            "hz": 480,
+            "momentum_x_kg_m2_s": 0.00449999999999998,
+            "ok": true,
+            "steps_to_event": 177
+          },
+          {
+            "dt_s": 0.00104166666666667,
+            "event_time_s": 0.367566340470003,
+            "final_body_rate_x_rad_s": 1.12499999999999,
+            "final_rpm": 0.0,
+            "hz": 960,
+            "momentum_x_kg_m2_s": 0.00449999999999996,
+            "ok": true,
+            "steps_to_event": 353
+          }
+        ]
+      }
+    },
+    "el2a_battery": {
+      "command": [
+        "/home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "/home/bulto/openrc-el2a-p2/candidate/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/propulsion/el2/scalar_probe.gd"
+      ],
+      "returncode": 0,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nEL2_BATTERY_JSON:{\"auxiliary_only\":[{\"battery_energy_residual_j\":-0.000000000000109801057135428,\"event_charge_residual_c\":0.0,\"event_count\":1,\"event_kind\":\"battery_exhausted\",\"event_time_error_bound_s\":0.000000000000499999998002099,\"event_time_s\":0.692307692307693,\"final_body_rate_x_rad_s\":2.14247038777552,\"final_omega_rad_s\":71.3808171684687,\"final_rpm\":681.636593658037,\"final_tick_duration_s\":0.000641025641025861,\"final_tick_fraction\":0.0769230769231033,\"final_time_s\":0.7,\"hz\":120,\"momentum_x_kg_m2_s\":0.0157079632679489,\"ok\":true,\"pack_heat_j\":0.468,\"post_event_motor_current_a\":0.0,\"post_event_pack_current_a\":0.0,\"post_event_pack_heat_j\":0.468,\"post_event_remaining_charge_c\":0.0,\"post_event_shaft_torque_nm\":-0.0119366207318922,\"post_event_terminal_energy_j\":90.1170000000001,\"remaining_charge_c\":0.0,\"soc\":0.0,\"source_enabled\":false,\"stop_events\":0,\"terminal_energy_j\":90.1170000000001,\"ticks_to_event\":84},{\"battery_energy_residual_j\":-0.0000000000652095599740221,\"event_charge_residual_c\":-0.00000000000649999845614424,\"event_count\":1,\"event_kind\":\"battery_exhausted\",\"event_time_error_bound_s\":0.000000000000499999998002099,\"event_time_s\":0.692307692308193,\"final_body_rate_x_rad_s\":2.12971758784828,\"final_omega_rad_s\":71.8909291655581,\"final_rpm\":686.507804410072,\"final_tick_duration_s\":0.000641025641526016,\"final_tick_fraction\":0.153846153966244,\"final_time_s\":0.695833333333332,\"hz\":240,\"momentum_x_kg_m2_s\":0.0157079632679489,\"ok\":true,\"pack_heat_j\":0.468000000000341,\"post_event_motor_current_a\":0.0,\"post_event_pack_current_a\":0.0,\"post_event_pack_heat_j\":0.468000000000341,\"post_event_remaining_charge_c\":0.0,\"post_event_shaft_torque_nm\":-0.0119366207318922,\"post_event_terminal_energy_j\":90.1170000000649,\"remaining_charge_c\":0.0,\"soc\":0.0,\"source_enabled\":false,\"stop_events\":0,\"terminal_energy_j\":90.1170000000649,\"ticks_to_event\":167},{\"battery_energy_residual_j\":0.000000000000258237875527811,\"event_charge_residual_c\":0.0,\"event_count\":1,\"event_kind\":\"battery_exhausted\",\"event_time_error_bound_s\":0.000000000000499999998002099,\"event_time_s\":0.692307692307688,\"final_body_rate_x_rad_s\":2.12334118788465,\"final_omega_rad_s\":72.1459851641028,\"final_rpm\":688.94340978609,\"final_tick_duration_s\":0.000641025641021642,\"final_tick_fraction\":0.307692307690388,\"final_time_s\":0.693749999999998,\"hz\":480,\"momentum_x_kg_m2_s\":0.0157079632679489,\"ok\":true,\"pack_heat_j\":0.468000000000001,\"post_event_motor_current_a\":0.0,\"post_event_pack_current_a\":0.0,\"post_event_pack_heat_j\":0.468000000000001,\"post_event_remaining_charge_c\":0.0,\"post_event_shaft_torque_nm\":-0.0119366207318922,\"post_event_terminal_energy_j\":90.1169999999997,\"remaining_charge_c\":0.0,\"soc\":0.0,\"source_enabled\":false,\"stop_events\":0,\"terminal_energy_j\":90.1169999999997,\"ticks_to_event\":333},{\"battery_energy_residual_j\":-0.0000000000644826414486488,\"event_charge_residual_c\":-0.00000000000649999845614424,\"event_count\":1,\"event_kind\":\"battery_exhausted\",\"event_time_error_bound_s\":0.000000000000499999998002099,\"event_time_s\":0.692307692308196,\"final_body_rate_x_rad_s\":2.12015298790286,\"final_omega_rad_s\":72.2735131633798,\"final_rpm\":690.161212474143,\"final_tick_duration_s\":0.000641025641529569,\"final_tick_fraction\":0.615384615868386,\"final_time_s\":0.692708333333341,\"hz\":960,\"momentum_x_kg_m2_s\":0.0157079632679494,\"ok\":true,\"pack_heat_j\":0.468000000000338,\"post_event_motor_current_a\":0.0,\"post_event_pack_current_a\":0.0,\"post_event_pack_heat_j\":0.468000000000338,\"post_event_remaining_charge_c\":0.0,\"post_event_shaft_torque_nm\":-0.0119366207318922,\"post_event_terminal_energy_j\":90.1170000000641,\"remaining_charge_c\":0.0,\"soc\":0.0,\"source_enabled\":false,\"stop_events\":0,\"terminal_energy_j\":90.1170000000641,\"ticks_to_event\":665}],\"fixture\":{\"aux_event_initial_soc\":0.05,\"aux_event_pack\":{\"auxiliary_current_a\":13.0,\"capacity_ah\":0.05,\"ocv_points\":[[0.0,10.0],[1.0,12.6]],\"resistance_ohm\":0.004},\"aux_event_rpm\":1500.0,\"axis_body\":[1.0,0.0,0.0],\"carrier_inertia_kg_m2\":0.0039,\"locked_inertia_kg_m2\":0.004,\"motor\":{\"kv_rpm_per_volt\":800.0,\"no_load_current_a\":1.0,\"resistance_ohm\":0.06},\"rates_hz\":[120,240,480,960],\"relative_rotor_inertia_kg_m2\":0.0001,\"smooth_duty\":0.7,\"smooth_horizon_s\":0.5,\"smooth_initial_omega_rad_s\":20.0,\"smooth_initial_soc\":0.85,\"smooth_pack\":{\"auxiliary_current_a\":0.25,\"capacity_ah\":1.0,\"ocv_points\":[[0.0,10.5],[1.0,12.6]],\"resistance_ohm\":0.012}},\"smooth\":[{\"exhaustion_events\":0,\"final_body_rate_x_rad_s\":-17.3643434595855,\"final_omega_rad_s\":714.573738383421,\"final_time_s\":0.500000000000001,\"hz\":120,\"maximum_soc\":0.85,\"minimum_motor_current_a\":1.00164866799111,\"minimum_pack_current_a\":0.95115406759378,\"minimum_shaft_torque_nm\":0.0000196795245227359,\"minimum_soc\":0.848764899068362,\"momentum_x_kg_m2_s\":0.00200000000000002,\"motor_current_positive_throughout\":true,\"ocv_knot_crossings\":0,\"ok\":true,\"pack_heat_j\":2.19568420305516,\"remaining_charge_c\":3055.55363668793,\"soc\":0.848764899079982,\"steps\":60,\"stop_events\":0,\"terminal_energy_j\":52.4221229193882},{\"exhaustion_events\":0,\"final_body_rate_x_rad_s\":-17.3643434909651,\"final_omega_rad_s\":714.573739638607,\"final_time_s\":0.499999999999999,\"hz\":240,\"maximum_soc\":0.85,\"minimum_motor_current_a\":1.00164962168687,\"minimum_pack_current_a\":0.951154735180811,\"minimum_shaft_torque_nm\":0.0000196909084273084,\"minimum_soc\":0.848764899076719,\"momentum_x_kg_m2_s\":0.00200000000000011,\"motor_current_positive_throughout\":true,\"ocv_knot_crossings\":0,\"ok\":true,\"pack_heat_j\":2.19562985674242,\"remaining_charge_c\":3055.55363668076,\"soc\":0.848764899077988,\"steps\":120,\"stop_events\":0,\"terminal_energy_j\":52.4221772347748},{\"exhaustion_events\":0,\"final_body_rate_x_rad_s\":-17.364343492776,\"final_omega_rad_s\":714.573739711041,\"final_time_s\":0.499999999999999,\"hz\":480,\"maximum_soc\":0.85,\"minimum_motor_current_a\":1.0016497363603,\"minimum_pack_current_a\":0.95115481545221,\"minimum_shaft_torque_nm\":0.0000196922772405066,\"minimum_soc\":0.848764899077725,\"momentum_x_kg_m2_s\":0.00200000000000002,\"motor_current_positive_throughout\":true,\"ocv_knot_crossings\":0,\"ok\":true,\"pack_heat_j\":2.19562666627803,\"remaining_charge_c\":3055.55363668034,\"soc\":0.848764899077873,\"steps\":240,\"stop_events\":0,\"terminal_energy_j\":52.4221804233356},{\"exhaustion_events\":0,\"final_body_rate_x_rad_s\":-17.3643434928848,\"final_omega_rad_s\":714.573739715391,\"final_time_s\":0.499999999999999,\"hz\":960,\"maximum_soc\":0.85,\"minimum_motor_current_a\":1.00164975041999,\"minimum_pack_current_a\":0.95115482529399,\"minimum_shaft_torque_nm\":0.0000196924450656544,\"minimum_soc\":0.848764899077848,\"momentum_x_kg_m2_s\":0.00200000000000006,\"motor_current_positive_throughout\":true,\"ocv_knot_crossings\":0,\"ok\":true,\"pack_heat_j\":2.1956264730588,\"remaining_charge_c\":3055.55363668032,\"soc\":0.848764899077866,\"steps\":480,\"stop_events\":0,\"terminal_energy_j\":52.422180616437}]}\n",
+      "stderr": "",
+      "raw": {
+        "auxiliary_only": [
+          {
+            "battery_energy_residual_j": -1.09801057135428e-13,
+            "event_charge_residual_c": 0.0,
+            "event_count": 1,
+            "event_kind": "battery_exhausted",
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_time_s": 0.692307692307693,
+            "final_body_rate_x_rad_s": 2.14247038777552,
+            "final_omega_rad_s": 71.3808171684687,
+            "final_rpm": 681.636593658037,
+            "final_tick_duration_s": 0.000641025641025861,
+            "final_tick_fraction": 0.0769230769231033,
+            "final_time_s": 0.7,
+            "hz": 120,
+            "momentum_x_kg_m2_s": 0.0157079632679489,
+            "ok": true,
+            "pack_heat_j": 0.468,
+            "post_event_motor_current_a": 0.0,
+            "post_event_pack_current_a": 0.0,
+            "post_event_pack_heat_j": 0.468,
+            "post_event_remaining_charge_c": 0.0,
+            "post_event_shaft_torque_nm": -0.0119366207318922,
+            "post_event_terminal_energy_j": 90.1170000000001,
+            "remaining_charge_c": 0.0,
+            "soc": 0.0,
+            "source_enabled": false,
+            "stop_events": 0,
+            "terminal_energy_j": 90.1170000000001,
+            "ticks_to_event": 84
+          },
+          {
+            "battery_energy_residual_j": -6.52095599740221e-11,
+            "event_charge_residual_c": -6.49999845614424e-12,
+            "event_count": 1,
+            "event_kind": "battery_exhausted",
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_time_s": 0.692307692308193,
+            "final_body_rate_x_rad_s": 2.12971758784828,
+            "final_omega_rad_s": 71.8909291655581,
+            "final_rpm": 686.507804410072,
+            "final_tick_duration_s": 0.000641025641526016,
+            "final_tick_fraction": 0.153846153966244,
+            "final_time_s": 0.695833333333332,
+            "hz": 240,
+            "momentum_x_kg_m2_s": 0.0157079632679489,
+            "ok": true,
+            "pack_heat_j": 0.468000000000341,
+            "post_event_motor_current_a": 0.0,
+            "post_event_pack_current_a": 0.0,
+            "post_event_pack_heat_j": 0.468000000000341,
+            "post_event_remaining_charge_c": 0.0,
+            "post_event_shaft_torque_nm": -0.0119366207318922,
+            "post_event_terminal_energy_j": 90.1170000000649,
+            "remaining_charge_c": 0.0,
+            "soc": 0.0,
+            "source_enabled": false,
+            "stop_events": 0,
+            "terminal_energy_j": 90.1170000000649,
+            "ticks_to_event": 167
+          },
+          {
+            "battery_energy_residual_j": 2.58237875527811e-13,
+            "event_charge_residual_c": 0.0,
+            "event_count": 1,
+            "event_kind": "battery_exhausted",
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_time_s": 0.692307692307688,
+            "final_body_rate_x_rad_s": 2.12334118788465,
+            "final_omega_rad_s": 72.1459851641028,
+            "final_rpm": 688.94340978609,
+            "final_tick_duration_s": 0.000641025641021642,
+            "final_tick_fraction": 0.307692307690388,
+            "final_time_s": 0.693749999999998,
+            "hz": 480,
+            "momentum_x_kg_m2_s": 0.0157079632679489,
+            "ok": true,
+            "pack_heat_j": 0.468000000000001,
+            "post_event_motor_current_a": 0.0,
+            "post_event_pack_current_a": 0.0,
+            "post_event_pack_heat_j": 0.468000000000001,
+            "post_event_remaining_charge_c": 0.0,
+            "post_event_shaft_torque_nm": -0.0119366207318922,
+            "post_event_terminal_energy_j": 90.1169999999997,
+            "remaining_charge_c": 0.0,
+            "soc": 0.0,
+            "source_enabled": false,
+            "stop_events": 0,
+            "terminal_energy_j": 90.1169999999997,
+            "ticks_to_event": 333
+          },
+          {
+            "battery_energy_residual_j": -6.44826414486488e-11,
+            "event_charge_residual_c": -6.49999845614424e-12,
+            "event_count": 1,
+            "event_kind": "battery_exhausted",
+            "event_time_error_bound_s": 4.99999998002099e-13,
+            "event_time_s": 0.692307692308196,
+            "final_body_rate_x_rad_s": 2.12015298790286,
+            "final_omega_rad_s": 72.2735131633798,
+            "final_rpm": 690.161212474143,
+            "final_tick_duration_s": 0.000641025641529569,
+            "final_tick_fraction": 0.615384615868386,
+            "final_time_s": 0.692708333333341,
+            "hz": 960,
+            "momentum_x_kg_m2_s": 0.0157079632679494,
+            "ok": true,
+            "pack_heat_j": 0.468000000000338,
+            "post_event_motor_current_a": 0.0,
+            "post_event_pack_current_a": 0.0,
+            "post_event_pack_heat_j": 0.468000000000338,
+            "post_event_remaining_charge_c": 0.0,
+            "post_event_shaft_torque_nm": -0.0119366207318922,
+            "post_event_terminal_energy_j": 90.1170000000641,
+            "remaining_charge_c": 0.0,
+            "soc": 0.0,
+            "source_enabled": false,
+            "stop_events": 0,
+            "terminal_energy_j": 90.1170000000641,
+            "ticks_to_event": 665
+          }
+        ],
+        "fixture": {
+          "aux_event_initial_soc": 0.05,
+          "aux_event_pack": {
+            "auxiliary_current_a": 13.0,
+            "capacity_ah": 0.05,
+            "ocv_points": [
+              [
+                0.0,
+                10.0
+              ],
+              [
+                1.0,
+                12.6
+              ]
+            ],
+            "resistance_ohm": 0.004
+          },
+          "aux_event_rpm": 1500.0,
+          "axis_body": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "carrier_inertia_kg_m2": 0.0039,
+          "locked_inertia_kg_m2": 0.004,
+          "motor": {
+            "kv_rpm_per_volt": 800.0,
+            "no_load_current_a": 1.0,
+            "resistance_ohm": 0.06
+          },
+          "rates_hz": [
+            120,
+            240,
+            480,
+            960
+          ],
+          "relative_rotor_inertia_kg_m2": 0.0001,
+          "smooth_duty": 0.7,
+          "smooth_horizon_s": 0.5,
+          "smooth_initial_omega_rad_s": 20.0,
+          "smooth_initial_soc": 0.85,
+          "smooth_pack": {
+            "auxiliary_current_a": 0.25,
+            "capacity_ah": 1.0,
+            "ocv_points": [
+              [
+                0.0,
+                10.5
+              ],
+              [
+                1.0,
+                12.6
+              ]
+            ],
+            "resistance_ohm": 0.012
+          }
+        },
+        "smooth": [
+          {
+            "exhaustion_events": 0,
+            "final_body_rate_x_rad_s": -17.3643434595855,
+            "final_omega_rad_s": 714.573738383421,
+            "final_time_s": 0.500000000000001,
+            "hz": 120,
+            "maximum_soc": 0.85,
+            "minimum_motor_current_a": 1.00164866799111,
+            "minimum_pack_current_a": 0.95115406759378,
+            "minimum_shaft_torque_nm": 1.96795245227359e-05,
+            "minimum_soc": 0.848764899068362,
+            "momentum_x_kg_m2_s": 0.00200000000000002,
+            "motor_current_positive_throughout": true,
+            "ocv_knot_crossings": 0,
+            "ok": true,
+            "pack_heat_j": 2.19568420305516,
+            "remaining_charge_c": 3055.55363668793,
+            "soc": 0.848764899079982,
+            "steps": 60,
+            "stop_events": 0,
+            "terminal_energy_j": 52.4221229193882
+          },
+          {
+            "exhaustion_events": 0,
+            "final_body_rate_x_rad_s": -17.3643434909651,
+            "final_omega_rad_s": 714.573739638607,
+            "final_time_s": 0.499999999999999,
+            "hz": 240,
+            "maximum_soc": 0.85,
+            "minimum_motor_current_a": 1.00164962168687,
+            "minimum_pack_current_a": 0.951154735180811,
+            "minimum_shaft_torque_nm": 1.96909084273084e-05,
+            "minimum_soc": 0.848764899076719,
+            "momentum_x_kg_m2_s": 0.00200000000000011,
+            "motor_current_positive_throughout": true,
+            "ocv_knot_crossings": 0,
+            "ok": true,
+            "pack_heat_j": 2.19562985674242,
+            "remaining_charge_c": 3055.55363668076,
+            "soc": 0.848764899077988,
+            "steps": 120,
+            "stop_events": 0,
+            "terminal_energy_j": 52.4221772347748
+          },
+          {
+            "exhaustion_events": 0,
+            "final_body_rate_x_rad_s": -17.364343492776,
+            "final_omega_rad_s": 714.573739711041,
+            "final_time_s": 0.499999999999999,
+            "hz": 480,
+            "maximum_soc": 0.85,
+            "minimum_motor_current_a": 1.0016497363603,
+            "minimum_pack_current_a": 0.95115481545221,
+            "minimum_shaft_torque_nm": 1.96922772405066e-05,
+            "minimum_soc": 0.848764899077725,
+            "momentum_x_kg_m2_s": 0.00200000000000002,
+            "motor_current_positive_throughout": true,
+            "ocv_knot_crossings": 0,
+            "ok": true,
+            "pack_heat_j": 2.19562666627803,
+            "remaining_charge_c": 3055.55363668034,
+            "soc": 0.848764899077873,
+            "steps": 240,
+            "stop_events": 0,
+            "terminal_energy_j": 52.4221804233356
+          },
+          {
+            "exhaustion_events": 0,
+            "final_body_rate_x_rad_s": -17.3643434928848,
+            "final_omega_rad_s": 714.573739715391,
+            "final_time_s": 0.499999999999999,
+            "hz": 960,
+            "maximum_soc": 0.85,
+            "minimum_motor_current_a": 1.00164975041999,
+            "minimum_pack_current_a": 0.95115482529399,
+            "minimum_shaft_torque_nm": 1.96924450656544e-05,
+            "minimum_soc": 0.848764899077848,
+            "momentum_x_kg_m2_s": 0.00200000000000006,
+            "motor_current_positive_throughout": true,
+            "ocv_knot_crossings": 0,
+            "ok": true,
+            "pack_heat_j": 2.1956264730588,
+            "remaining_charge_c": 3055.55363668032,
+            "soc": 0.848764899077866,
+            "steps": 480,
+            "stop_events": 0,
+            "terminal_energy_j": 52.422180616437
+          }
+        ]
+      }
+    }
+  },
+  "hashes": {
+    "production_sources_sha256": {
+      "physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+      "physics/electric_motor.gd": "f9be10cfb2b9b1d07697aa747a391e7ae20664d424685e68223d79dde2dd06e2",
+      "physics/electric_stop.gd": "b86a0c87fb305e926f1074b49cedda22618af560614e830091f34dde1c7476ef",
+      "physics/electric_supply.gd": "d859c1982a464114d41d03c52bcaf1aa7b064ca272eee958373ef84d6f59cb73",
+      "physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+      "physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+      "physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+      "physics/rotor_coupling.gd": "8fe7b7eecc1151d50de78e11b598c5083a6c39bab4b268ba8fb4a3151f96d5ae"
+    },
+    "probes_sha256": {
+      "research/propulsion/el1/scalar_probe.gd": "87c9d7bf2e330ebecbb779bb8d797bd889af728b79a53b2e6cd5ab1f8d7945c0",
+      "research/propulsion/el2/scalar_probe.gd": "468d86080ba5acaf7b61b8e8b126e524b20c8f2946282839169ba59d319fe7d5"
+    },
+    "verifiers_sha256": {
+      "research/propulsion/el1/verify_scalar.py": "7e98cec10c89dd638f4865e7b6cc6f4e066fd67a5a1fe59d725e78c555773833",
+      "research/propulsion/el2/verify_battery.py": "954bfacbfd8d2cd6615b135f9f08dbd60e9141ce655c436ab5fc4fb4d383a4e4",
+      "research/propulsion/el2a-p2/verify_independent.py": "d5bed812da96751f2365dff2de16a66a94866786aceda9c94f5b130ed3c8f0df"
+    },
+    "requirements_sha256": "b4852aa3d386190cca2e0c540575c6d858219d5702680aa761a6533fc33629ed"
+  },
+  "limitations": [
+    "EL1d and EL2a expected values and acceptance tolerances are computed by the existing pinned research verifiers.",
+    "The fixtures are synthetic scalar motor, rotor, and battery cases; they do not establish aircraft or hardware calibration.",
+    "The EL2a auxiliary-only reference is an exact constant-current final-tick case; the smooth reference is an independent SciPy DOP853 integration."
+  ]
+}

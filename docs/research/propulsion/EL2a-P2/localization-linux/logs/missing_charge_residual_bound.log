@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00104165625 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00104166666667 root=0.00104165625 analytic charge-energy integral
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.004166625 upper residual and time both bounded
+FAIL: battery d=1 I=1000.0 dt=0.00416666666667 root=0.004166625 analytic charge-energy integral
+FAIL: battery d=2 I=1000.0 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=2.0 root=0.74 analytic charge-energy integral
+FAIL: battery d=2 I=1000.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=2.0 root=1.6 analytic charge-energy integral
+FAIL: battery d=2 I=1000.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=2 I=1000.0 dt=2.0 root=1.99998 analytic charge-energy integral
+FAIL: battery d=3 I=30.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=3 I=30.0 dt=2.0 root=1.99998 analytic charge-energy integral
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.74 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=2.0 root=0.74 analytic charge-energy integral
+FAIL: battery d=3 I=1000.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=2.0 root=1.6 analytic charge-energy integral
+FAIL: battery d=3 I=1000.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=3 I=1000.0 dt=2.0 root=1.99998 analytic charge-energy integral
+FAIL: battery d=4 I=30.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=2.0 root=1.6 analytic charge-energy integral
+FAIL: battery d=4 I=30.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=4 I=30.0 dt=2.0 root=1.99998 analytic charge-energy integral
+FAIL: battery d=4 I=1000.0 dt=2.0 root=1.6 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=2.0 root=1.6 analytic charge-energy integral
+FAIL: battery d=4 I=1000.0 dt=2.0 root=1.99998 upper residual and time both bounded
+FAIL: battery d=4 I=1000.0 dt=2.0 root=1.99998 analytic charge-energy integral
+FAIL: unresolved residual never becomes an accepted battery event
+FAIL: unresolved residual fails for the localization bound
+EL2a-P2 event localization: 2946 checks, 28 failed; max linear calls=17, nonlinear=155

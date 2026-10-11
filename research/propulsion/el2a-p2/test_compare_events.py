@@ -64,7 +64,7 @@ def make_row(case_id: str, contract: tuple[str, list[str], int], smoke: bool) ->
     elif case_id == "battery-powered-smoke-4s":
         initial_charge, engine_running, throttle = 0.2, True, 1.0
     else:
-        initial_charge, engine_running, throttle = 11520.0, True, 0.5
+        initial_charge, engine_running, throttle = 10944.0, True, 0.5
 
     final_charge = -1.0 if mode == "fixed_voltage" else (
         0.0 if required_events and "battery_exhausted" in required_events else max(initial_charge, 1.0)
@@ -81,8 +81,10 @@ def make_row(case_id: str, contract: tuple[str, list[str], int], smoke: bool) ->
         "end_time_s": ticks / TICK_HZ,
         "initial_charge_c": initial_charge,
         "final_charge_c": final_charge,
+        "final_rotor_rpm": 0.0 if mode == "fixed_voltage" else 900.0,
         "engine_running": engine_running,
         "initial_throttle": throttle,
+        "cut_after_ticks": 120 if case_id == "fixed-voltage-rotor-stop" else -1,
         "all_finite": True,
         "seed_checkpoint_file": case_id + "-seed.bin",
         "seed_checkpoint_bytes": 32,
@@ -110,11 +112,8 @@ class EventProbeValidationTests(unittest.TestCase):
         self.assertEqual(set(decoded), set(SMOKE_CONTRACT))
 
     def test_case_mode_requirements_and_missing_events_are_rejected(self) -> None:
-        for case_id, (expected_mode, required, _) in FULL_CONTRACT.items():
-            if case_id == "battery-no-event-4s":
-                wrong_mode = "battery"
-            else:
-                wrong_mode = "no_event"
+        for case_id, (_, required, _) in FULL_CONTRACT.items():
+            wrong_mode = "battery" if case_id == "battery-no-event-4s" else "no_event"
             for field, wrong_value in (("mode", wrong_mode), ("required_events", [] if required else ["rotor_stop"])):
                 with self.subTest(case=case_id, field=field):
                     report = make_probe()
@@ -191,6 +190,18 @@ class ComparisonRegressionTests(unittest.TestCase):
             self.assertEqual(result["case_count"], len(FULL_CONTRACT))
 
     def test_same_size_native_checkpoint_corruption_breaks_replay(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            reports, run_dirs = make_comparison_fixture(Path(temp))
+            for run_dir in run_dirs["candidate"]:
+                path = run_dir / "battery-no-event-4s-endpoint.bin"
+                damaged = bytearray(path.read_bytes())
+                damaged[-1] ^= 0x01
+                path.write_bytes(damaged)
+            result = compare_events.compare_runs(reports, run_dirs, smoke=False)
+            no_event = next(row for row in result["cases"] if row["id"] == "battery-no-event-4s")
+            self.assertEqual(result["status"], "failed")
+            self.assertFalse(no_event["native_no_event_endpoint_bytes_identical"])
+
         with tempfile.TemporaryDirectory() as temp:
             reports, run_dirs = make_comparison_fixture(Path(temp))
             path = run_dirs["baseline"][1] / "battery-powered-4s-endpoint.bin"

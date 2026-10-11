@@ -2,7 +2,7 @@
 
 Date: 2026-10-11
 
-**Status:** The comparison runner and whole-session probe are ready; one-case smoke passed. The repeated full comparison has not been run.
+**Status:** Complete. Six final paired rounds pass all six cases, replay, layout and state-tolerance checks.
 
 Step ID: EL2a-P2
 
@@ -14,11 +14,13 @@ Step ID: EL2a-P2
 
 The runner checks repeated seed and endpoint checkpoint bytes and event-state replay within each implementation. For the no-event control, baseline and candidate seed and endpoint native checkpoint bytes must match exactly. Event comparisons require the same event types and containing ticks, then bound absolute state differences: body components and wash velocity `1e-8`, rotor speed `1e-5 RPM`, remaining charge `1e-8 C`, terminal energy and pack heat `1e-6 J`. Charge must reach exactly zero, accepted rotor speed must stay nonnegative, and sampled state must remain finite.
 
-## Smoke evidence
+## Recorded comparison
 
-One smoke round passed for the 4S powered battery case against baseline revision `5f85109ada405071864ee1c3c5c2a97ecaa4bc84`, using Godot `4.7.2.stable.official.ed1daf0bf` (SHA-256 `8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e`). The event was observed at tick 1; seed checkpoint bytes matched across builds, and all measured event-state differences were within the declared limits. The single-round smoke does not establish replay repeatability. A later static hardening added strict continuous-state layout checks; the current runner needs a smoke after substantial timing work is cleared. The durable local smoke report is `/home/bulto/openrc-el2a-p2/event-tool-smoke-20261011-02/comparison.json`.
+[Final comparison](performance/comparison.json) uses baseline revision `5f85109ada405071864ee1c3c5c2a97ecaa4bc84` and Godot `4.7.2.stable.official.ed1daf0bf` on an AMD Ryzen 9 5900X under WSL2. Six alternating AB/BA rounds give six samples per event and implementation. All twelve complete probe reports pass the final strict validator; their logs and native checkpoint bytes are retained under [performance/runs](performance/runs/). See the [result table and limitations](README.md#performance).
 
-This single-case smoke validates runner wiring only. Its timing samples are not a performance result. Run the full comparison only after the production snapshot is fixed and the parent has cleared substantial timings:
+The [snapshot manifest](performance/source-manifest.json) hashes every copied app file, including non-executable artifacts. Its ten changed paths comprise five intentional source/test changes, four baseline-only Python cache files and one generated, untracked baseline-only test `.uid`. The latter artifacts are not runtime changes. Event trial maps and normal flight results are qualified separately.
+
+Reproduce the comparison on a fixed production snapshot with no concurrent test or rendering workloads:
 
 ```sh
 python3 research/propulsion/el2a-p2/compare_events.py \
@@ -26,7 +28,7 @@ python3 research/propulsion/el2a-p2/compare_events.py \
   --candidate-app /path/to/candidate/app \
   --godot /path/to/pinned/Godot_v4.7.2-stable_linux.x86_64 \
   --out /absolute/durable/path/el2a-p2-event-comparison \
-  --rounds 5
+  --rounds 6
 ```
 
 Use the same pinned engine for both snapshots and a fresh absolute output path. The runner rejects baseline revisions other than the pinned baseline by default, records source hashes and run order, and preserves logs, JSON reports, checkpoint bytes and isolated app snapshots under `--out`.

@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: chronological event order with rotor-first tie
+FAIL: shared events use one canonical timestamp
+FAIL: chronological event order with rotor-first tie
+FAIL: shared events use one canonical timestamp
+FAIL: chronological event order with rotor-first tie
+FAIL: shared events use one canonical timestamp
+FAIL: post-disconnect near-coincident rotor is ordered first
+FAIL: post-disconnect near-coincident roots share timestamp
+EL2a-P2 event localization: 2946 checks, 8 failed; max linear calls=20, nonlinear=155

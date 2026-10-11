@@ -1,0 +1,370 @@
+{
+	"event_state": "accepted full-step endpoint at the containing tick; root floats are intentionally not exposed",
+	"event_timing": "wall microseconds around only the fixed simulation tick containing an accepted event",
+	"failures": [],
+	"format": "el2a-p2-whole-session-event-probe-v1",
+	"rows": [
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_4s_battery.json",
+			"all_finite": true,
+			"cut_after_ticks": -1,
+			"dynamic_battery": true,
+			"end_time_s": 0.120833333333333,
+			"endpoint_checkpoint_bytes": 1436,
+			"endpoint_checkpoint_file": "battery-powered-4s-endpoint.bin",
+			"engine_running": true,
+			"event_types": [
+				"battery_exhausted"
+			],
+			"event_wall_samples_usec": {
+				"battery_exhausted": 12733
+			},
+			"events": [
+				{
+					"body_state": [
+						60.0039149515736,
+						-38.6865391960924,
+						-30.000066825582,
+						14.9913905629869,
+						-0.0524789433848341,
+						1.11151531897392,
+						0.706582644317557,
+						-0.0292380217406501,
+						0.0232115779714731,
+						0.706645121317608,
+						-0.136914939866886,
+						-0.00173310539030194,
+						-0.00852756817205338
+					],
+					"charge_index": 1,
+					"containing_tick_time_s": 0.0875,
+					"continuous_state": [
+						5789.0156872991,
+						0.0,
+						42.3901908586211,
+						5.61314247508291
+					],
+					"event_tick_wall_usec": 12733,
+					"pack_heat_j": 5.61314247508291,
+					"remaining_charge_c": 0.0,
+					"rotor_index": 0,
+					"rotor_rpm": 5789.0156872991,
+					"terminal_energy_j": 42.3901908586211,
+					"tick": 21,
+					"type": "battery_exhausted"
+				}
+			],
+			"failure": "",
+			"final_charge_c": 0.0,
+			"final_electrical_mode": "exhausted",
+			"final_rotor_rpm": 5662.97531008095,
+			"id": "battery-powered-4s",
+			"initial_charge_c": 4.0,
+			"initial_throttle": 1.0,
+			"mode": "battery",
+			"ok": true,
+			"required_events": [
+				"battery_exhausted"
+			],
+			"seed_checkpoint_bytes": 1436,
+			"seed_checkpoint_file": "battery-powered-4s-seed.bin",
+			"tick_hz": 240,
+			"ticks": 29
+		},
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_4s_battery.json",
+			"all_finite": true,
+			"cut_after_ticks": -1,
+			"dynamic_battery": true,
+			"end_time_s": 1.2875,
+			"endpoint_checkpoint_bytes": 1436,
+			"endpoint_checkpoint_file": "battery-coast-4s-endpoint.bin",
+			"engine_running": false,
+			"event_types": [
+				"battery_exhausted"
+			],
+			"event_wall_samples_usec": {
+				"battery_exhausted": 12943
+			},
+			"events": [
+				{
+					"body_state": [
+						59.8704175587524,
+						-21.628749764442,
+						-29.8493407286575,
+						14.1316896628393,
+						0.000573763736635559,
+						1.11800002544933,
+						0.694280812494336,
+						0.011550877081687,
+						0.0479998271587682,
+						0.718008876848732,
+						0.0666846327724271,
+						-0.0451767377879348,
+						0.056193022132932
+					],
+					"charge_index": 1,
+					"containing_tick_time_s": 1.25416666666667,
+					"continuous_state": [
+						3541.28866277697,
+						0.0,
+						2.99851302083566,
+						0.00150000000000117
+					],
+					"event_tick_wall_usec": 12943,
+					"pack_heat_j": 0.00150000000000117,
+					"remaining_charge_c": 0.0,
+					"rotor_index": 0,
+					"rotor_rpm": 3541.28866277697,
+					"terminal_energy_j": 2.99851302083566,
+					"tick": 301,
+					"type": "battery_exhausted"
+				}
+			],
+			"failure": "",
+			"final_charge_c": 0.0,
+			"final_electrical_mode": "exhausted",
+			"final_rotor_rpm": 3521.62617263972,
+			"id": "battery-coast-4s",
+			"initial_charge_c": 0.25,
+			"initial_throttle": 0.0,
+			"mode": "battery",
+			"ok": true,
+			"required_events": [
+				"battery_exhausted"
+			],
+			"seed_checkpoint_bytes": 1436,
+			"seed_checkpoint_file": "battery-coast-4s-seed.bin",
+			"tick_hz": 240,
+			"ticks": 309
+		},
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_6s_battery.json",
+			"all_finite": true,
+			"cut_after_ticks": -1,
+			"dynamic_battery": true,
+			"end_time_s": 0.1375,
+			"endpoint_checkpoint_bytes": 1436,
+			"endpoint_checkpoint_file": "battery-powered-6s-endpoint.bin",
+			"engine_running": true,
+			"event_types": [
+				"battery_exhausted"
+			],
+			"event_wall_samples_usec": {
+				"battery_exhausted": 22015
+			},
+			"events": [
+				{
+					"body_state": [
+						60.0047022254675,
+						-38.4363077453054,
+						-30.0000756841735,
+						14.9921022997995,
+						-0.0539406594314353,
+						1.11115884840342,
+						0.706609588424559,
+						-0.0300646781841136,
+						0.0223659889875877,
+						0.70661076075076,
+						-0.130127980276781,
+						-0.000935521505918172,
+						-0.011551666495155
+					],
+					"charge_index": 1,
+					"containing_tick_time_s": 0.104166666666667,
+					"continuous_state": [
+						5688.57043594555,
+						0.0,
+						40.6334192830592,
+						2.56919889878322
+					],
+					"event_tick_wall_usec": 22015,
+					"pack_heat_j": 2.56919889878322,
+					"remaining_charge_c": 0.0,
+					"rotor_index": 0,
+					"rotor_rpm": 5688.57043594555,
+					"terminal_energy_j": 40.6334192830592,
+					"tick": 25,
+					"type": "battery_exhausted"
+				}
+			],
+			"failure": "",
+			"final_charge_c": 0.0,
+			"final_electrical_mode": "exhausted",
+			"final_rotor_rpm": 5588.52107626367,
+			"id": "battery-powered-6s",
+			"initial_charge_c": 2.4,
+			"initial_throttle": 1.0,
+			"mode": "battery",
+			"ok": true,
+			"required_events": [
+				"battery_exhausted"
+			],
+			"seed_checkpoint_bytes": 1436,
+			"seed_checkpoint_file": "battery-powered-6s-seed.bin",
+			"tick_hz": 240,
+			"ticks": 33
+		},
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_6s_battery.json",
+			"all_finite": true,
+			"cut_after_ticks": -1,
+			"dynamic_battery": true,
+			"end_time_s": 1.70416666666667,
+			"endpoint_checkpoint_bytes": 1436,
+			"endpoint_checkpoint_file": "battery-coast-6s-endpoint.bin",
+			"engine_running": false,
+			"event_types": [
+				"battery_exhausted"
+			],
+			"event_wall_samples_usec": {
+				"battery_exhausted": 13020
+			},
+			"events": [
+				{
+					"body_state": [
+						59.5558242439603,
+						-15.7634932234158,
+						-29.6088319406274,
+						13.8786013861765,
+						0.0393784153819338,
+						1.10969816492607,
+						0.680287225201934,
+						0.0366975272876179,
+						0.0566527195304552,
+						0.729830837994553,
+						0.0773833916521966,
+						-0.0622541560907001,
+						0.0931724357199996
+					],
+					"charge_index": 1,
+					"containing_tick_time_s": 1.67083333333333,
+					"continuous_state": [
+						3269.71498234782,
+						0.0,
+						4.49834090909353,
+						0.001687500000001
+					],
+					"event_tick_wall_usec": 13020,
+					"pack_heat_j": 0.001687500000001,
+					"remaining_charge_c": 0.0,
+					"rotor_index": 0,
+					"rotor_rpm": 3269.71498234782,
+					"terminal_energy_j": 4.49834090909353,
+					"tick": 401,
+					"type": "battery_exhausted"
+				}
+			],
+			"failure": "",
+			"final_charge_c": 0.0,
+			"final_electrical_mode": "exhausted",
+			"final_rotor_rpm": 3254.36703851379,
+			"id": "battery-coast-6s",
+			"initial_charge_c": 0.25,
+			"initial_throttle": 0.0,
+			"mode": "battery",
+			"ok": true,
+			"required_events": [
+				"battery_exhausted"
+			],
+			"seed_checkpoint_bytes": 1436,
+			"seed_checkpoint_file": "battery-coast-6s-seed.bin",
+			"tick_hz": 240,
+			"ticks": 409
+		},
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_4s.json",
+			"all_finite": true,
+			"cut_after_ticks": 120,
+			"dynamic_battery": false,
+			"end_time_s": 14.2583333333333,
+			"endpoint_checkpoint_bytes": 1404,
+			"endpoint_checkpoint_file": "fixed-voltage-rotor-stop-endpoint.bin",
+			"engine_running": true,
+			"event_types": [
+				"rotor_stop"
+			],
+			"event_wall_samples_usec": {
+				"rotor_stop": 11610
+			},
+			"events": [
+				{
+					"body_state": [
+						-22.8175618566434,
+						104.975782076198,
+						-1.06863536389,
+						18.0005016567166,
+						0.142891335052361,
+						1.00949065137072,
+						-0.397092004886169,
+						-0.0301969872010073,
+						0.35817418648565,
+						0.844462748589189,
+						0.114748860911921,
+						0.243259596422493,
+						0.34332260337905
+					],
+					"charge_index": -1,
+					"containing_tick_time_s": 14.225,
+					"continuous_state": [
+						0.0
+					],
+					"event_tick_wall_usec": 11610,
+					"pack_heat_j": 0.0,
+					"remaining_charge_c": -1.0,
+					"rotor_index": 0,
+					"rotor_rpm": 0.0,
+					"terminal_energy_j": 0.0,
+					"tick": 3414,
+					"type": "rotor_stop"
+				}
+			],
+			"failure": "",
+			"final_charge_c": -1.0,
+			"final_electrical_mode": "",
+			"final_rotor_rpm": 0.0,
+			"id": "fixed-voltage-rotor-stop",
+			"initial_charge_c": -1.0,
+			"initial_throttle": 1.0,
+			"mode": "fixed_voltage",
+			"ok": true,
+			"required_events": [
+				"rotor_stop"
+			],
+			"seed_checkpoint_bytes": 1404,
+			"seed_checkpoint_file": "fixed-voltage-rotor-stop-seed.bin",
+			"tick_hz": 240,
+			"ticks": 3422
+		},
+		{
+			"aircraft_path": "res://data/aircraft/synthetic_stik_electric_4s_battery.json",
+			"all_finite": true,
+			"cut_after_ticks": -1,
+			"dynamic_battery": true,
+			"end_time_s": 1.0,
+			"endpoint_checkpoint_bytes": 1436,
+			"endpoint_checkpoint_file": "battery-no-event-4s-endpoint.bin",
+			"engine_running": true,
+			"event_types": [],
+			"event_wall_samples_usec": {},
+			"events": [],
+			"failure": "",
+			"final_charge_c": 10935.7157771655,
+			"final_electrical_mode": "drive",
+			"final_rotor_rpm": 5569.09704209326,
+			"id": "battery-no-event-4s",
+			"initial_charge_c": 10944.0,
+			"initial_throttle": 0.5,
+			"mode": "no_event",
+			"ok": true,
+			"required_events": [],
+			"seed_checkpoint_bytes": 1436,
+			"seed_checkpoint_file": "battery-no-event-4s-seed.bin",
+			"tick_hz": 240,
+			"ticks": 240
+		}
+	],
+	"session_start": "FlightSession.setup trimmed airborne start; one fresh FlightSession per case",
+	"smoke": false,
+	"tick_hz": 240
+}

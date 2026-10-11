@@ -1,0 +1,68 @@
+{
+  "format": "openrc-el2a-p2-localization-v1",
+  "ok": true,
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "source_sha256": {
+    "physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "physics/electric_stop.gd": "b86a0c87fb305e926f1074b49cedda22618af560614e830091f34dde1c7476ef",
+    "physics/electric_battery_step.gd": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044"
+  },
+  "tests_sha256": {
+    "test_electric_event_localization.gd": "6d2411f19009cc65e0183e518f2038f1a4c24fee134715a708a21424edfdfe1e",
+    "test_electric_stop.gd": "63cdd864700bffa1ceee7abf1dff00e8f26c7b6f2c77b470e8131374673c656d",
+    "test_electric_battery_step.gd": "2504a691c05cc8109a0471e68788299a803d5d35d356586a557b7a9b9c2065f0"
+  },
+  "positive": {
+    "test_electric_event_localization.gd": {
+      "exit_code": 0,
+      "checks": 2946
+    },
+    "test_electric_stop.gd": {
+      "exit_code": 0,
+      "checks": 37
+    },
+    "test_electric_battery_step.gd": {
+      "exit_code": 0,
+      "checks": 63
+    }
+  },
+  "mutations": [
+    {
+      "name": "pure_bisection_cost",
+      "exit_code": 1,
+      "expected_failure": "linear battery crossings avoid dozens of RK restarts",
+      "failures": 1,
+      "log": "logs/pure_bisection_cost.log"
+    },
+    {
+      "name": "missing_charge_residual_bound",
+      "exit_code": 1,
+      "expected_failure": "unresolved residual never becomes an accepted battery event",
+      "failures": 28,
+      "log": "logs/missing_charge_residual_bound.log"
+    },
+    {
+      "name": "missing_time_bound",
+      "exit_code": 1,
+      "expected_failure": "upper residual and time both bounded",
+      "failures": 377,
+      "log": "logs/missing_time_bound.log"
+    },
+    {
+      "name": "missing_bisection_safeguard",
+      "exit_code": 1,
+      "expected_failure": "completes",
+      "failures": 133,
+      "log": "logs/missing_bisection_safeguard.log"
+    },
+    {
+      "name": "missing_coincident_order",
+      "exit_code": 1,
+      "expected_failure": "chronological event order with rotor-first tie",
+      "failures": 8,
+      "log": "logs/missing_coincident_order.log"
+    }
+  ],
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "restored": true
+}
