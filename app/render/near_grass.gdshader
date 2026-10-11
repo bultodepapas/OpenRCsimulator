@@ -15,6 +15,7 @@ uniform float sun_scatter = 0.0;
 uniform vec3 lobe_lin = vec3(0.0);
 uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
 uniform float lobe_k = 8.0;
+uniform float lobe_height = 1.5708;          // rad; the vertical e-folding of the lobe
 uniform float beta = 0.00017;
 uniform float cloud_coverage = 0.35;
 uniform float cloud_scale = 6.0;
@@ -43,6 +44,14 @@ void vertex() {
 	world_pos = VERTEX;
 }
 
+// FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
+// `lobe_height` (radians): it hugs the horizon. Zero lobe_lin (the calibrated fixed sun) adds exactly nothing.
+vec3 lobe_term(vec3 d) {
+	float h = max(length(d.xz), 1e-4);
+	float az = max(dot(d.xz / h, normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);
+	return lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);
+}
+
 void fragment() {
 	// Override after the renderer's back-face flip: grass roots receive the same upward lighting as the ground.
 	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
@@ -59,8 +68,7 @@ void fragment() {
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
 	float d = length(to_frag);
 	vec3 v = to_frag / max(d, 1e-3);
-	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter
-		+ lobe_lin * pow(max(dot(v, lobe_dir), 0.0), lobe_k);
+	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(v);
 	FOG = vec4(haze, 1.0 - exp(-beta * d));
 }
 

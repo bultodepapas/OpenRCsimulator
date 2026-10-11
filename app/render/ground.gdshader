@@ -40,6 +40,7 @@ uniform float sun_scatter = 0.0;
 uniform vec3 lobe_lin = vec3(0.0);
 uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
 uniform float lobe_k = 8.0;
+uniform float lobe_height = 1.5708;          // rad; the vertical e-folding of the lobe
 uniform float beta = 0.00017;
 uniform float rim_start = 4800.0;
 uniform float rim_end = 6000.0;
@@ -154,6 +155,14 @@ void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
+// FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
+// `lobe_height` (radians): it hugs the horizon. Zero lobe_lin (the calibrated fixed sun) adds exactly nothing.
+vec3 lobe_term(vec3 d) {
+	float h = max(length(d.xz), 1e-4);
+	float az = max(dot(d.xz / h, normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);
+	return lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);
+}
+
 void fragment() {
 	vec3 col = rough_grass_colour(world_pos.xz);
 	float dist_pilot = distance(world_pos.xz, pilot_xz);
@@ -188,8 +197,7 @@ void fragment() {
 	ROUGHNESS = 1.0;
 	METALLIC = 0.0;
 	SPECULAR = 0.0;
-	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter
-		+ lobe_lin * pow(max(dot(v, lobe_dir), 0.0), lobe_k);
+	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(v);
 	float rim = rim_angular
 		? 1.0 - smoothstep(1.0 / rim_end, 1.0 / rim_start, 1.0 / max(d, 1e-3))
 		: smoothstep(rim_start, rim_end, d);

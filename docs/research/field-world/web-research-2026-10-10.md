@@ -24,3 +24,17 @@
 ## Not found
 
 No forum thread or issue reproduces the radiance double exposure; RCGroups threads did not surface in search. Both stay open questions rather than claims.
+
+## Dusk and night II
+
+| Question | Source | Finding | Consequence |
+| --- | --- | --- | --- |
+| Twilight brightness | AMS Glossary: [civil](https://glossary.ametsoc.org/wiki/civil-twilight/), [nautical](https://glossary.ametsoc.org/wiki/nautical-twilight/), [astronomical](https://glossary.ametsoc.org/wiki/astronomical-twilight/) | Clear sky ≈ 400–585 lux at sunset, 2–3.5 lux at −6°, 0.008 lux at −12°, 6·10⁻⁴ lux at −18° | FW-60 checks the sky table against these ratios |
+| Belt of Venus / Earth's shadow | [Atmospheric Optics](https://atoptics.co.uk/blog/earths-shadow), [Sky & Telescope](https://skyandtelescope.org/astronomy-news/observing-news/uncovering-secrets-of-earths-shadow/) | Pink anti-twilight arch above a grey-blue shadow band opposite the sun, brightest just after sunset, gone ~15 min later | Our table's anti-sun horizon already darkens and reddens in that window; a vertical band is a later refinement |
+| Town sky glow | [NPS light pollution](https://www.nps.gov/subjects/nightskies/lightpollution.htm), [Physics Today](https://physicstoday.aip.org/features/lighting-and-astronomy), [Garstang (Cambridge)](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/34A6B55A2C39D27317FC75BAA5C06BF2/S0252921100003705a.pdf/light_pollution_modeling.pdf) | Walker's law: sky glow ∝ population × distance^−2.5 | FW-63 |
+| Colour grading in Compatibility | [Environment (official)](https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html) | `adjustment_*` (saturation, LUT) is Forward+/Mobile only | Scotopic grade cannot use adjustments (FW-65) |
+| Full-screen post-processing | [Advanced post-processing (official)](https://docs.godotengine.org/en/stable/tutorials/shaders/advanced_postprocessing.html) | Quad + screen/depth texture; Compatibility support not stated | FW-65 starts with a probe |
+| Glow in Compatibility | [Renderers (official)](https://docs.godotengine.org/en/4.6/tutorials/rendering/renderers.html), [Environment and post-processing 4.7 (official)](https://docs.godotengine.org/en/4.7/tutorials/3d/environment_and_post_processing.html) | Glow exists in Compatibility with fewer controls | FW-64 tries a high-threshold glow at night only |
+| What sim pilots dislike at night | MSFS forums: [soft/blurry lights](https://forums.flightsimulator.com/t/night-lighting-in-msfs-overly-soft-and-blurry/375257?page=2), [too bright, fx too large](https://forums.flightsimulator.com/t/2024-runway-lighting-papis-threshold-far-too-bright-and-fx-too-large/732889), [horizon glowing at midnight](https://forums.flightsimulator.com/t/night-lighting-sunlight-glowing-over-horizon-at-midnight/301058?page=2) | Oversized bloom, omnidirectional and over-visible lights, nights that never get dark | Flux-conserving sprites (kept), directional flood heads and restrained glow (FW-64), dark astronomical night (kept) |
+| RC night kits | [Flite Test: LED strips](https://www.flitetest.com/articles/light-up-the-night-with-cheap-led-strips), [Flite Test: DIY LEDs](https://flitetest.com/articles/diy-led-lights-for-night-flying-or-fun), [Apprentice night build](https://xinhaidude.com/2015/09/21/night-flying-with-led-lights-on-the-e-flite-apprentice-s-15e/) | Red/green along the wings, white inside the fuselage, LEDs facing the foam make the airframe glow, an extra strip for head-on approaches | FW-62 under-wing strips |
+

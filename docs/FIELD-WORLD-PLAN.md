@@ -175,6 +175,20 @@ Every item is visual only, deterministic, sourced and measured against readabili
 | FW-56 | **Real sky for the owner's field:** latitude/longitude of their club → correct sun, moon and stars | Pairs with L17 | Conditions preset |
 | FW-57 | **Night event day:** more cars, floodlights, a food truck, music from the pavilion | SC parking-lot idea "fun-fly day" | Scenery preset |
 
+### Phase FW-F: Dusk and night II (planned 2026-10-10 after [research](research/field-world/web-research-2026-10-10.md#dusk-and-night-ii))
+
+Research basis: AMS twilight illuminance (civil −6° ≈ 2–3.5 lux, nautical −12° ≈ 0.008 lux, astronomical −18° ≈ 6·10⁻⁴ lux); Walker's law for town sky glow (∝ population × distance^−2.5); flight-sim forum complaints (oversized bloom, lights visible from every direction and too far, nights that never get dark); RC night practice (tip colours, under-wing strips, lit airframes); Compatibility has no colour adjustments and no auto-exposure.
+
+| ID | Step | Proof | Status |
+| --- | --- | --- | --- |
+| FW-60 | **Twilight check:** sky-table illuminance against the AMS values at 0°, −6°, −12°, −18° | Ratios within a factor of 3 of the AMS bands, recorded in evidence | — |
+| FW-61 | **Time flows:** an optional time scale (`--time_scale=`, Home "Evening, time passing" = golden hour ×20). The sky, haze, fog, light, ambient and exposure are re-evaluated every 30 s of sky time on simulation time; floods switch on below a 3° sun; stars and kit are built at the start and their physical brightness decides when they show. One tonemapper per session (AgX if the session starts below a 10° sun) so the look never jumps | Deterministic steps (same sim time, same state); a scripted run from golden hour reaches night with lights on; default and frozen presets unchanged | — |
+| FW-62 | **Under-wing LED strips** from the wing mesh's own vertices (the lowest surface along the span), cyan, so colour seen means the belly is seen | Strip within 1 cm below the sampled underside for the four catalog aircraft; no model file touched | — |
+| FW-63 | **Town sky glow** (Walker's law) toward the nearest town: a warm horizon dome drawn by the sky and the ground's fog alike (L2 rule) | Glow ∝ population × d^−2.5 within 1e-6; invisible by day; captures at night | — |
+| FW-64 | **Directional lamps and restrained bloom:** flood heads glare only inside their beam; Compatibility glow at night with a high threshold, so only lamps bloom, small (forum complaint: oversized halos) | Head brightness falls outside the cone (test); glow off by day; byte-repeat captures | — |
+| FW-65 | **Scotopic grade, per pixel** below a luminance threshold, sparing lamps and lit ground (Compatibility has no adjustments: needs a screen-texture probe first) | Probe report; deferred if the screen texture is not reliable in Compatibility | — |
+| FW-66 | **Flown night check:** scripted dusk-to-night flight captures from the pilot's eye and a contact sheet | Evidence images; Gate FW-N input | — |
+
 ## 6. Ownership and coordination
 
 | Track | What this plan asks | What it promises |

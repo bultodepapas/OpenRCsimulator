@@ -262,3 +262,6 @@ msgstr "Noche, luna llena"
 
 msgid "Night, no moon"
 msgstr "Noche sin luna"
+
+msgid "Evening, time passing"
+msgstr "Atardecer, el tiempo pasa"

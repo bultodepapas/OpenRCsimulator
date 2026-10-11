@@ -75,6 +75,7 @@ static func row(elevation_deg: float) -> Dictionary:
 	for key: String in ["zenith", "haze", "lobe", "sun", "cloud"]:
 		out[key] = _v(a[key]).lerp(_v(b[key]), f)
 	out.lobe_k = lerpf(float(a.lobe_k), float(b.lobe_k), f)
+	out.lobe_height_deg = lerpf(float(a.get("lobe_height_deg", 90.0)), float(b.get("lobe_height_deg", 90.0)), f)
 	return out
 
 
@@ -193,6 +194,7 @@ static func state(sky: Dictionary) -> Dictionary:
 		lobe_lin = lobe,
 		lobe_dir = direction(lobe_az, 0.0),
 		lobe_k = m.lobe_k if lobe_from_moon else s.lobe_k,
+		lobe_height = deg_to_rad(m.lobe_height_deg if lobe_from_moon else s.lobe_height_deg),
 		cloud_lin = cloud,
 		ambient_lin = ambient,
 		exposure = float(a.exposure) * gain,
