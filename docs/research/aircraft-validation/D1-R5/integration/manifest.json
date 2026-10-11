@@ -1,0 +1,160 @@
+{
+  "format": "openrc-d1-r5-integration v1",
+  "date": "2026-10-09",
+  "baseline_commit": "d61d268d857b07f891dcaf6dbca44552128e5dec",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "focused": {
+    "checks": 168,
+    "failures": 0,
+    "exit_code": 0,
+    "warnings_added": 0
+  },
+  "baseline_negative_control": {
+    "baseline_commit": "d61d268d857b07f891dcaf6dbca44552128e5dec",
+    "loader_sha256": "80d872cbe37d1fe5617c67ce5e094e6f56efce2bae54c3a87ce90d61ae2b6254",
+    "test_sha256": "1f1ea72c399808c72f85de211a44d08deba0b6b63c39d9918c22695c76666b6a",
+    "checks": 168,
+    "failures": 86,
+    "exit_code": 1
+  },
+  "app_before": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "gdscript_test_programs": 125
+  },
+  "app_after": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "gdscript_test_programs": 126
+  },
+  "matching_wash_swirl_fps_fingerprints": [
+    [
+      "30",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+    ],
+    [
+      "60",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+    ],
+    [
+      "144",
+      "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+    ],
+    [
+      "30",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+    ],
+    [
+      "60",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+    ],
+    [
+      "144",
+      "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+    ]
+  ],
+  "exact_fleet_load_pairs": 96,
+  "solver_fault_refusals": 12,
+  "wrong_map_escapes_in_negative_control": 4,
+  "resource_validation": {
+    "ok": true,
+    "counts": {
+      "total": 430,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 430,
+      "info": 0
+    },
+    "node_config": {
+      "ran": true,
+      "counts": {
+        "warnings": 0,
+        "hints": 0
+      },
+      "hints": [],
+      "physics_layers": {
+        "2d": {
+          "layers": []
+        },
+        "3d": {
+          "layers": []
+        },
+        "finding_count": 0,
+        "findings": [],
+        "truncated": false
+      }
+    }
+  },
+  "scene_smoke": {
+    "ok": true,
+    "counts": {
+      "scenes": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 285,
+      "findings": 0
+    }
+  },
+  "source_sha256": {
+    "app/data/aircraft/gp_extra_300s_60.json": "e7042567dad826f4398505a94198385547223ea8ad15bc38593dd577f3de9b01",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "fc8e02234c1ed872e7ed5ed9e2cbddbe1c816834f18ad722e3735eaeb27f1e44",
+    "app/data/aircraft/p51d_mustang_120.json": "5cbaf4f5a1fcd603a5b49e1692663dd399cad2e4faf6f245e7f3750a2c0e345a",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "4d0f72c269b998f9dfa6385c70d7ed1165bea18e7b5c5e5e31a39c0d4392be67",
+    "app/physics/aero.gd": "f7604aaffb59318ca0503e2d34cbbcfab05693ba5c09d0d224b057cdc0f9a03b",
+    "app/physics/air_data.gd": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+    "app/physics/aircraft_data.gd": "95f8886a4a6d309ad5f749acc7ef98e4cf21b62615703c606dc94c8f68571348",
+    "app/physics/dynamics.gd": "cefed3b9c495c916406cbc36ef478bbe63377c443b9bbad71de7baad8e442339",
+    "app/physics/flight_modes.gd": "790382bb94076f7f56b1ead36bbf04b8de1870a58363259f9b7333d49326ba0b",
+    "app/physics/ground_contact.gd": "ee47f1324453a863fa2218c2e3c49e4ce503e5dc08683173e0d6dca515a0447e",
+    "app/physics/ground_start.gd": "4f2ddf1035026560b5d73b9071b9530e72ba876e608a50e8a59a808e51b7be7f",
+    "app/physics/ground_surfaces.gd": "4e99b2b3a904a64ef6062ddca07a72fdd9309b55c6ea2bba938756dff35ece99",
+    "app/physics/hull_crossing.gd": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650",
+    "app/physics/impact_snapshot.gd": "558e9f222cb7ad662cb058375276aa96c4eb63f2f31d9a3d82389d3e2cd4b59a",
+    "app/physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+    "app/physics/linearize.gd": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+    "app/physics/math3d.gd": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+    "app/physics/propulsion.gd": "93c12b2d1979f69c925b041288eff2f2c1f9a119b6f416f6b1efab7912b5ef63",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/slipstream.gd": "d2ae873172cff0766099b60c9b8022413f74bc56ba7e1d44d00264d63da058a2",
+    "app/physics/swirl_loads.gd": "7902801114baf7eba180cddd4343b4a5596d8cd23381096d3ed459efb4294d21",
+    "app/physics/trim.gd": "4cd18572701f8264d284ff0dd481ac13d69a97d7d90ec6e5ec6ca991f1b3dce6",
+    "app/physics/turbine.gd": "4b4be85bcd8a619e57e5c9b266ba21701e17a107371d337076bf10d1cc266573",
+    "app/physics/wash_transport.gd": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+    "app/project.godot": "0979f182e90d2f4770d8eae6be125371a9d7b5bcf615d33b331219ca67b4dbde",
+    "app/sim/flight_session.gd": "7e018f241b442b2a5a46210e8f2b4c46e497350d1b1d8b13f3d8cbc098966891",
+    "app/sim/landing_maneuver.gd": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
+    "app/sim/maneuvers.gd": "2e63c2c8360f15c0fd84e7839e904a16bf976454a81e833de113890d9063d126",
+    "app/sim/recorder.gd": "030f6ea290e6c3520a497198cea31149ced75aeea583896c44410b23e3358174",
+    "app/sim/scenarios.gd": "eee359b165e1123f43b70d85fc01ac543882a72a68e7ea04581132d4a078c32e",
+    "app/sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+    "app/sim/simulation.gd": "11eda8c124b6c03ed6b74e171ef927e648daccfc8505f00ee8121c09c609b4d7",
+    "app/sim/trace.gd": "eaeed774489c49a4c2e1cfdeb175ee37d9ba04e7ea80303e2f1e6da95fd94cd9",
+    "app/tests/test_induced_integrity.gd": "1f1ea72c399808c72f85de211a44d08deba0b6b63c39d9918c22695c76666b6a",
+    "app/tests/test_induced_integrity.gd.uid": "b3150c8b50857f79057adedff8b52a181467c9591d7113b9c5eaf67e12024af5",
+    "app/tests/test_strip_induced.gd": "64f8a40f676bb9b9d71a5a91cdaed0fcc8bcf7b12be60068d8619e9af16df4a5",
+    "research/aircraft-data/d1-r5/fault_probe.gd": "b2e692ca1f3180d4b6016a4b4a3a72c77570d7f94de4f0af974cd2a2530cc01e",
+    "research/aircraft-data/d1-r5/verify.py": "8fd5ce8cea8c874e259cf64e7c7fab132767df43a93b32f5811f28d60fda4aa5",
+    "research/aircraft-data/data2b/compare.gd": "054e97e70e65f0a1ea2a1faf2c3579210843ed738928312b20627114856a9d46"
+  },
+  "evidence_sha256": {
+    "README.md": "d0f63b6f1486fff0068300456b093ee4c7d1ea95aa2f004f678ef86ba1b8b78d",
+    "app.log": "5e88d028efc44b95a7da7115fc499afeea8e42c44938df9c06ecec9e3cd4c10e",
+    "baseline-app.log": "69f7253dfe8e534cf5e9eb1dcc6f6dce18cc1763cd4dc14415805cf0ba291a1b",
+    "finite_wrong_map.log": "e6dcea8916d19b9c33673fa0b602fec63ffc6c71615393be058acda338d1ca42",
+    "focused-diagnostics.json": "6dd105f1508550af28bda70e77099ee183ec6f15acaa3e2e078bbe4261d12382",
+    "focused.log": "4a2792cb1b22734c858d2861bc75fee2cf427f57f9fa70e23700916f0b4b6d5a",
+    "infinity.log": "e6dcea8916d19b9c33673fa0b602fec63ffc6c71615393be058acda338d1ca42",
+    "lint-after.json": "ff03607e660418d16ad16e4cfa793e1675432642a264a7cd580d26450eb06069",
+    "lint-before.json": "6d0bc41ae05ce8dfacb2d382e7cb4965dff50211e7281be6ad47b44fcec75d90",
+    "missing_residual.log": "fca2433d9ebdf48e1f5bd24d095c501ca24f7d9bdc8f403369fdb08f98c5602e",
+    "nan.log": "e6dcea8916d19b9c33673fa0b602fec63ffc6c71615393be058acda338d1ca42",
+    "pairs.log": "4205eec420af1bfaeac627811535af8cdd3a47312272ac4f049fff10834861f0",
+    "reproduction-diagnostics.json": "13be40e7df652989b0ee9e96ed292186150d0b0975985ee77dc5bcbc2c1608b3",
+    "reproduction-source.json": "91a1549ddae7303d2e32ce1efd93834837fd164aff107d548aa2fd634fa741c3",
+    "reproduction.log": "3bd9d82b77a4aa7fade46cb32ba2bc14874ac7745727763d6b9d38eb4ca41511",
+    "scenes.json": "a25d361143639eb3d9ccd84e7c7079e1bc22922926af85898ccb78edef109ade",
+    "validation.json": "6ff3b9a511d539a92c5314d652ff8a23b001fdcf103642622f974e8cb3248a80",
+    "verification.json": "5d31019876346269e3eda196e81bf6a650f63cc72e4b403ca434d836772f1fc5"
+  }
+}

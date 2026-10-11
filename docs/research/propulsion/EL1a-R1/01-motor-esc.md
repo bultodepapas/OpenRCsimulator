@@ -1,0 +1,46 @@
+# EL1a-R1 — Motor and ESC investigations
+
+2026-10-10 · **Status:** primary-source review complete; exact SPMXAE70E current-path behavior and installed motor constants remain unmeasured. Scope: decisions for EL1b–EL5. Sources were accessed on 2026-10-10. Read with the [electric propulsion plan](../../../ELECTRIC-PROPULSION-PLAN.md).
+
+## 01 — What do `Kv`, `R`, and `I0` mean for a three-phase motor?
+
+**Decision question.** Can nameplate `Kv`, phase resistance, or ESC telemetry be copied directly into the scalar DC-equivalent motor law?
+
+**Verified findings.** The EL1a equations are a useful equivalent-port model, but common BLDC measurements use other conventions. Infineon defines winding resistance per phase, measures line-to-line resistance, then divides by two for its per-phase parameter; its back-EMF example defines line-neutral RMS volts per 1,000 rpm from measured line-to-line peak voltage. That conversion depends on the waveform and motor convention. A separate measured BLDC identification study instead estimates terminal line-to-line resistance and line-to-line back EMF directly. These are not automatically EL1a's equivalent motor-port `R` and `Kv`. Motor current ratings may also mean continuous per-phase RMS current, which is not the kernel's equivalent motor current or battery current. [M1] [M2]
+
+**Inference and EL change.** In EL1b, define `R` as the resistance in the declared DC-equivalent motor-port law, and record how raw winding measurements, connection, temperature, and any ESC/wire loss map to it. Fit `Kv` using measured speed and voltage with the waveform convention stated; do not derive it from a line-line RMS value without conversion. Record `I0` with its voltage, RPM, temperature, and test setup: a single `I0` is a lumped approximation, while measured friction can vary with speed and regime. The 2020 propulsion study explicitly relates no-load current at a stated voltage to viscous damping and models both copper resistance and magnet flux as temperature-dependent. [M3]
+
+**Acceptance measurement.** On the exact motor, measure low-ohm phase-pair resistance at recorded winding temperature; open-circuit back-EMF at multiple measured speeds; and no-load bus current/RPM at multiple operating points with the selected ESC. Fit only the effective convention actually observed, then compare held-out current against EL5's ±10% target and torque against a tolerance declared before fitting. Separate motor-only constants from motor-plus-ESC fits. Still unknown: Timber SPM-1012 winding topology, effective `R`, `I0`, and temperature range.
+
+## 02 — Is throttle command the ESC duty and current in EL1a?
+
+**Decision question.** Can pilot throttle percentage be passed as duty `d`, with `Ibus=d·Im`, and can the ESC's 70 A label supply a current limit?
+
+**Verified findings.** Experimental BLDC literature distinguishes the controller's command from the ESC's three-phase switching output. A measured propulsion study found `Vout≈d·Vin` useful as an averaged approximation for its tested multicopter ESC, while separately accounting for MOSFET conduction, switching, and controller losses. It does not establish that mapping for the Spektrum aircraft ESC. Another measured motor/ESC/propeller study applied a duty step to an EMAX 2300 Kv system: motor current responded faster than RPM, and its identified transfer function retained substantial transient error. This supports keeping electrical current and shaft-speed dynamics distinct; it does not provide an Avian ramp. [M3] [M4]
+
+**Inference and EL change.** Keep EL1a's `duty` as *effective averaged motor-port duty*, not radio pulse width, stick fraction, or RPM demand. EL1b/EL1c should preserve separate names for pilot/receiver command and effective ESC duty; `Ibus=d·Im` remains an ideal converter relation. The exact SPMXAE70E listing gives 70 A and 3S–6S, but no current convention, cooling condition, derating curve, or clamp behavior [M7]. Treat 70 A as reference metadata until measured or documented current limiting exists. Do not add a generic speed lag to EL1d: the coupled shaft inertia already produces RPM response; model a separate ESC ramp only after identifying its exact configuration.
+
+**Acceptance measurement.** With the SPMXAE70E, log input pulse, bus voltage/current, motor RPM, thrust/torque, and temperatures during a throttle sweep and low/high steps. On a scope, verify phase switching and estimate averaged effective duty; do not infer it from transmitter percentage. Repeat by ESC mode and pack voltage, then check held-out RPM/current/torque against declared EL5 tolerances. Still unknown: the Avian's command-to-duty curve, PWM frequency, current convention behind 70 A, and transient/thermal limits.
+
+## 03 — What does zero throttle mean on the selected Avian 70 A?
+
+**Decision question.** Is “off/coast,” active freewheeling, braking, or regeneration a single zero-throttle behavior for SPMXAE70E?
+
+**Verified findings.** The exact EFL105250B manual identifies SPMXAE70E and documents optional thrust reverse: it must be configured, uses `Brake Type: Reverse`, and requires Smart Throttle for reversing; conventional PWM is documented for normal operation only. The Spektrum Avian SmartLink guide linked from the exact ESC product page says its generic Avian settings distinguish disabled brake (freewheel at zero), normal/proportional braking, start-up mode, and active freewheeling. It says active freewheeling can improve throttle linearity or smoothness, but does not describe its current path or establish regeneration. Crucially, the guide's per-model tables omit SPMXAE70E, so those settings/defaults are not verified for this 70 A unit. [M5] [M6] [M7]
+
+**Inference and EL change.** Keep EL1's open-circuit, no-battery-current coast as an explicit approximation, and mark the Timber “brake off” setting as unverified until the actual ESC is read back. Zero command is not proof that motor phases are open or that battery current is zero. TI documents a different motor-driver topology where a spinning motor in coast can send current through MOSFET body diodes into the supply; this is a general warning, not evidence about Avian. Do not equate active freewheel, a braking label, reverse rotation, or rotor deceleration with energy returned to the pack. EL3 should model these only as separately identified modes with an explicit destination for braking energy. [M8]
+
+**Acceptance measurement.** Read back firmware and settings on the installed SPMXAE70E. At matched RPM, measure phase current, battery voltage/current, shaft torque, and RPM decay for disabled brake, each supported brake setting, and active-freewheel settings. Call a case regenerative only if synchronized battery measurements show negative pack power beyond sensor uncertainty. Still unknown: SPMXAE70E-specific setting table/defaults, whether its active-freewheel option is exposed, and the braking energy path.
+
+## Sources
+
+All sources were read on 2026-10-10. Manufacturer and study findings above are limited to the cited motor/ESC topology and configuration.
+
+- **M1.** Infineon, *Basic Motor Parameters and the Configuration*, AN2023-10, v1.0 (2023), §§2–3.4, pp. 3–10. [PDF](https://www.infineon.com/dgdl/Infineon-Basic_Motor_Parameters_and_the_Configuration-ApplicationNotes-v01_00-EN.pdf?fileId=8ac78c8c8caa022e018cee2157f0686d)
+- **M2.** Jimenez-Gonzalez et al., “Parameter Identification of BLDC Motor Using Electromechanical Tests and Recursive Least-Squares Algorithm: Experimental Validation,” *Actuators* 10(7), 143 (2021), §§2–4. [Article](https://www.mdpi.com/2076-0825/10/7/143)
+- **M3.** Jeong et al., “Improvement of Electric Propulsion System Model for Performance Analysis of Large-Size Multicopter UAVs,” *Applied Sciences* 10(22), 8080 (2020), §§4.3–4.4, 6.2.2. [Article](https://www.mdpi.com/2076-3417/10/22/8080)
+- **M4.** Mayorga-Macías et al., “Low-Cost Experimental Methodology for the Dynamic Model Approximation of Multirotor Actuators,” *International Journal of Aerospace Engineering* (2020), §§1.1–1.2, 3–4. Wiley article record/full text and Crossref metadata checked 2026-10-10; no correction/retraction notice or `update-to` relation was found. [Article](https://doi.org/10.1155/2020/9263961)
+- **M5.** Horizon Hobby, *Turbo Timber Evolution 1.5m EFL105250B Manual* (2023), pp. 2–3, 17. [Manual](https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dwb7e67f91/Manuals/EFL105250B-Manual_EN.pdf)
+- **M6.** Spektrum, *Avian SmartLink App ESC Update and Programming App Instructions* (2020), pp. 2, 5–8. [PDF](https://www.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw92e4fe8d/Manuals/Spektrum-SmartLink-Avian-Programmer-and-Update-Instructions.pdf)
+- **M7.** Spektrum, *Avian 70-Amp Smart Lite Brushless ESC SPMXAE70E product page* (accessed 2026-10-10). [Product listing](https://www.spektrumrc.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html)
+- **M8.** Texas Instruments, *System Design Considerations for High-Power Motor Driver Applications*, SLVAF66 (2021), §7.1.3, p. 21. [Application report](https://www.ti.com/lit/an/slvaf66/slvaf66.pdf). Its coast-current example is topology-specific and is not an Avian specification.

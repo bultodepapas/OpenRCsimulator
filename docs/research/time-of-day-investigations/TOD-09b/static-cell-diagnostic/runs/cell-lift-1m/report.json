@@ -1,0 +1,63 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_samples_ms": [
+		0.282
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "8cf257502facbfff57e8017be4a07ff706e8ba088b1b35f69c2a70077a43f979",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "df5d530bad204533253e58d76a0ffb65a8e82128649e465b22ff5a47a282a8f9",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					309,
+					122,
+					309
+				],
+				"differing_pixels": 2,
+				"max_channel_delta_8bit": 11
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "diagnostic",
+	"diagnostic_scenery_visibility": {
+		"cell_lift_m": 1.0,
+		"hidden_nodes": [],
+		"mode": ""
+	},
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/home/bulto/OpenRCsimulator/docs/research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/runs/cell-lift-1m/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"static_cell_geometry_comparison": {
+		"arrays_bytes_compared": 12488904,
+		"compared_meshes": 48,
+		"first_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a",
+		"mismatched": [],
+		"ok": true,
+		"second_sha256": "6fb5d5dddc97084fbbbece7e3097d4152ead6fc3b0f220d8c78dd9a84f62383a"
+	},
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

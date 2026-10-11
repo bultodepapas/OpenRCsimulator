@@ -1,0 +1,18 @@
+{
+  "base_head": "6973e42",
+  "capture_set": "fixed",
+  "format": "openrc-wind-ui-source-manifest v1",
+  "source_sha256": {
+    "app_root.gd": "8ddc4b90d3404c97dc7f383b6980c8cc70994fee459bb923009b7fb7643399de",
+    "app_state/preferences.gd": "c9b24e41d5a789ca2ce9d0e459e75ad46ae3b7e4959c3279de83314051633e22",
+    "i18n/es.po": "c43e8427e9e1fa2cbae338c7820fa41c6342a91712ac27ef80658641e86ea4ff",
+    "main.gd": "c09cc00c03fc0a062d1831bf601c1800ceedfa07f28c28e47c02dc63e807170e",
+    "physics/wind_config.gd": "f3385ff8e6b31f830b621d8fb095179e5e5c0e34241189beb2ac4c6735f98f4a",
+    "physics/wind_field.gd": "aca8ea105a9690cb7a23f09c12862a2294ccb0dd6ba84183e56f92bfa068e885",
+    "render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "sim/flight_session.gd": "a44325dd87ed10d1b8ba887403656da96152d4a296b9e072f1a27e5812d93b2f",
+    "ui/home.gd": "415d79ae60015b3c8c295492248f4a09ba9b1aac0175c537d6c640628770497f",
+    "ui/weather_dialog.gd": "4bec8b3933bc00e65c4121b8d70c3778fbc3144e7bfa03ea2778738c804e964c"
+  },
+  "working_tree": "shared wind implementation, uncommitted at capture time"
+}

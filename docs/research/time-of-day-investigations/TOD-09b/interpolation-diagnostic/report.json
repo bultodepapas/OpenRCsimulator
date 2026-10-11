@@ -1,0 +1,19 @@
+{
+  "scope": "Initial capture harness: paused physical ticks but render pose resampled Engine interpolation fraction",
+  "differing_pixels": 47,
+  "bbox_xyxy_exclusive": [
+    102,
+    40,
+    117,
+    48
+  ],
+  "resolution": [
+    960,
+    540
+  ],
+  "fix": "Pin flight._visual_pose from explicit physical state for every image comparison; require unchanged aircraft transform and exact image equality. Production interpolation behavior is unchanged.",
+  "image_sha256": {
+    "00-legacy-in-place.png": "6409b3ca821e128e29dad6c8570127b434fae4620466c0196efdb6adfa68eb6e",
+    "00-legacy-fresh.png": "826151c7acb4c2397821aada1a2f2d23cab60263f065d6f256cb7e3cd207b24c"
+  }
+}

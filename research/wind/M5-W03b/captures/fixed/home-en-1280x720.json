@@ -1,0 +1,747 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "flight": {},
+  "format": "openrc-wind-ui-capture v1",
+  "image": "home-en-1280x720.png",
+  "image_check": {
+    "nonuniform_samples": 227992,
+    "not_blank": true,
+    "sample_stride_px": 2,
+    "samples": 230400,
+    "unique_colors": 11229
+  },
+  "language": "en",
+  "layout": {
+    "container_overlap_count": 0,
+    "control_count": 69,
+    "controls": [
+      {
+        "class": "Control",
+        "name": "Home",
+        "rect": [
+          0.0,
+          0.0,
+          1280.0,
+          720.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "Sidebar",
+        "rect": [
+          0.0,
+          0.0,
+          455.0,
+          720.0
+        ]
+      },
+      {
+        "class": "VBoxContainer",
+        "name": "@VBoxContainer@19",
+        "rect": [
+          40.0,
+          36.0,
+          375.0,
+          660.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@20",
+        "rect": [
+          40.0,
+          36.0,
+          375.0,
+          50.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@23",
+        "rect": [
+          40.0,
+          86.0,
+          375.0,
+          23.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@22",
+        "rect": [
+          40.0,
+          86.0,
+          58.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@21",
+        "rect": [
+          48.0,
+          88.0,
+          42.0,
+          18.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "Version",
+        "rect": [
+          108.0,
+          86.0,
+          146.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@24",
+        "rect": [
+          40.0,
+          109.0,
+          375.0,
+          31.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@28",
+        "rect": [
+          40.0,
+          140.0,
+          375.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@25",
+        "rect": [
+          40.0,
+          151.0,
+          158.0,
+          18.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "AircraftCount",
+        "rect": [
+          206.0,
+          148.0,
+          105.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "PreviousAircraft",
+        "rect": [
+          319.0,
+          140.0,
+          44.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@26",
+        "rect": [
+          319.0,
+          140.0,
+          44.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "NextAircraft",
+        "rect": [
+          371.0,
+          140.0,
+          44.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@27",
+        "rect": [
+          371.0,
+          140.0,
+          44.0,
+          40.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@29",
+        "rect": [
+          40.0,
+          180.0,
+          375.0,
+          8.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "AircraftCard",
+        "rect": [
+          40.0,
+          188.0,
+          375.0,
+          209.0
+        ]
+      },
+      {
+        "class": "VBoxContainer",
+        "name": "@VBoxContainer@32",
+        "rect": [
+          58.0,
+          198.800003051758,
+          339.0,
+          187.399993896484
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "AircraftName",
+        "rect": [
+          58.0,
+          198.800003051758,
+          339.0,
+          31.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "AircraftSummary",
+        "rect": [
+          58.0,
+          233.800003051758,
+          339.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "AircraftStatus",
+        "rect": [
+          58.0,
+          260.799987792969,
+          339.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@30",
+        "rect": [
+          58.0,
+          287.799987792969,
+          339.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@31",
+        "rect": [
+          58.0,
+          314.799987792969,
+          339.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "StartChoice",
+        "rect": [
+          58.0,
+          341.799987792969,
+          339.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@33",
+        "rect": [
+          40.0,
+          397.0,
+          375.0,
+          18.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@34",
+        "rect": [
+          40.0,
+          415.0,
+          375.0,
+          66.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Fly",
+        "rect": [
+          40.0,
+          415.0,
+          193.0,
+          66.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Weather",
+        "rect": [
+          245.0,
+          415.0,
+          170.0,
+          66.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@35",
+        "rect": [
+          40.0,
+          481.0,
+          375.0,
+          12.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@36",
+        "rect": [
+          40.0,
+          493.0,
+          375.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Language",
+        "rect": [
+          40.0,
+          493.0,
+          167.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Help",
+        "rect": [
+          219.0,
+          493.0,
+          92.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Button",
+        "name": "Quit",
+        "rect": [
+          323.0,
+          493.0,
+          92.0,
+          44.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@38",
+        "rect": [
+          40.0,
+          537.0,
+          375.0,
+          32.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@39",
+        "rect": [
+          40.0,
+          569.0,
+          375.0,
+          18.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@40",
+        "rect": [
+          40.0,
+          587.0,
+          375.0,
+          8.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@41",
+        "rect": [
+          40.0,
+          595.0,
+          375.0,
+          23.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@42",
+        "rect": [
+          40.0,
+          618.0,
+          375.0,
+          10.0
+        ]
+      },
+      {
+        "class": "GridContainer",
+        "name": "@GridContainer@71",
+        "rect": [
+          40.0,
+          628.0,
+          375.0,
+          68.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@49",
+        "rect": [
+          40.0,
+          628.0,
+          135.0,
+          30.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@47",
+        "rect": [
+          40.0,
+          628.0,
+          68.0,
+          30.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@44",
+        "rect": [
+          40.0,
+          628.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@43",
+        "rect": [
+          48.0,
+          630.0,
+          16.0,
+          25.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@46",
+        "rect": [
+          76.0,
+          628.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@45",
+        "rect": [
+          84.0,
+          630.0,
+          16.0,
+          25.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@48",
+        "rect": [
+          118.0,
+          631.0,
+          29.0,
+          23.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@56",
+        "rect": [
+          193.0,
+          628.0,
+          141.0,
+          30.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@54",
+        "rect": [
+          193.0,
+          628.0,
+          68.0,
+          30.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@51",
+        "rect": [
+          193.0,
+          628.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@50",
+        "rect": [
+          201.0,
+          630.0,
+          16.0,
+          25.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@53",
+        "rect": [
+          229.0,
+          628.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Control",
+        "name": "@Control@52",
+        "rect": [
+          237.0,
+          630.0,
+          16.0,
+          25.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@55",
+        "rect": [
+          271.0,
+          631.0,
+          39.0,
+          23.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@63",
+        "rect": [
+          40.0,
+          666.0,
+          135.0,
+          30.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@61",
+        "rect": [
+          40.0,
+          666.0,
+          68.0,
+          30.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@58",
+        "rect": [
+          40.0,
+          666.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@57",
+        "rect": [
+          48.0,
+          669.0,
+          16.0,
+          22.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@60",
+        "rect": [
+          76.0,
+          666.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@59",
+        "rect": [
+          84.0,
+          669.0,
+          16.0,
+          22.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@62",
+        "rect": [
+          118.0,
+          669.0,
+          57.0,
+          23.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@70",
+        "rect": [
+          193.0,
+          666.0,
+          141.0,
+          30.0
+        ]
+      },
+      {
+        "class": "HBoxContainer",
+        "name": "@HBoxContainer@68",
+        "rect": [
+          193.0,
+          666.0,
+          68.0,
+          30.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@65",
+        "rect": [
+          193.0,
+          666.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@64",
+        "rect": [
+          201.0,
+          669.0,
+          16.0,
+          22.0
+        ]
+      },
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@67",
+        "rect": [
+          229.0,
+          666.0,
+          32.0,
+          30.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@66",
+        "rect": [
+          237.0,
+          669.0,
+          16.0,
+          22.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@69",
+        "rect": [
+          271.0,
+          669.0,
+          63.0,
+          23.0
+        ]
+      },
+      {
+        "class": "TextureRect",
+        "name": "@TextureRect@18",
+        "rect": [
+          440.0,
+          0.0,
+          32.0,
+          720.0
+        ]
+      }
+    ],
+    "findings": [],
+    "offscreen_count": 0,
+    "ok": true,
+    "target": "Home",
+    "zero_size_count": 0
+  },
+  "producer": "research/wind/M5-W03b/capture.gd",
+  "renderer": "gl_compatibility",
+  "screen": "home",
+  "selected_dialog_preset": "",
+  "sha256": "730496f2252522496c233656a8952a5fac01a0ecfe137ffce5235df952a7a36c",
+  "size": [
+    1280,
+    720
+  ],
+  "source_sha256": {
+    "app_root.gd": "8ddc4b90d3404c97dc7f383b6980c8cc70994fee459bb923009b7fb7643399de",
+    "app_state/preferences.gd": "c9b24e41d5a789ca2ce9d0e459e75ad46ae3b7e4959c3279de83314051633e22",
+    "i18n/es.po": "c43e8427e9e1fa2cbae338c7820fa41c6342a91712ac27ef80658641e86ea4ff",
+    "main.gd": "c09cc00c03fc0a062d1831bf601c1800ceedfa07f28c28e47c02dc63e807170e",
+    "physics/wind_config.gd": "f3385ff8e6b31f830b621d8fb095179e5e5c0e34241189beb2ac4c6735f98f4a",
+    "physics/wind_field.gd": "aca8ea105a9690cb7a23f09c12862a2294ccb0dd6ba84183e56f92bfa068e885",
+    "render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "sim/flight_session.gd": "a44325dd87ed10d1b8ba887403656da96152d4a296b9e072f1a27e5812d93b2f",
+    "ui/home.gd": "415d79ae60015b3c8c295492248f4a09ba9b1aac0175c537d6c640628770497f",
+    "ui/weather_dialog.gd": "4bec8b3933bc00e65c4121b8d70c3778fbc3144e7bfa03ea2778738c804e964c"
+  },
+  "weather_config": {
+    "format": "openrc-weather v1",
+    "from_deg": 0.0,
+    "gust_delay_s": 2.0,
+    "gust_duration_s": 4.0,
+    "gust_mps": 0.0,
+    "gust_period_s": 12.0,
+    "gust_up_mps": 0.0,
+    "speed_mps": 0.0
+  },
+  "weather_preset": "calm"
+}

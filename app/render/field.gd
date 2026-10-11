@@ -1,6 +1,7 @@
-# L5: render only validated openrc-field v1 data. No camera, atmosphere, aircraft or simulation.
+# L5: render only validated openrc-field v1 data. No camera, aircraft or simulation state.
 extends RefCounted
 
+const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
@@ -16,11 +17,12 @@ const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03}
 const GROUND_SUBDIVISIONS := 63
 
 
-static func build(field: Dictionary) -> Node3D:
+static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	var result: Node3D = Node3D.new()
 	result.name = "Field"
 	# L9c: one ground pass for contained flat rectangles; retain legacy geometry for other valid fields.
-	var grass: ShaderMaterial = Ground.grass_material()
+	var grass: ShaderMaterial = Ground.grass_material(lighting)
+	var materials: Array[ShaderMaterial] = [grass]
 	var station := Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	grass.set_shader_parameter("pilot_xz", Vector2(station.x, station.z)) # Phase 2: the macro tone is pinned here
 	var consolidated: bool = Ground.configure_surfaces(grass, field.surfaces)
@@ -46,10 +48,15 @@ static func build(field: Dictionary) -> Node3D:
 		var half := Vector2(surface.length_east_west, surface.width_north_south) / 2.0
 		mesh_instance.material_override = grass if surface.type == "rough" \
 			else Ground.surface_material(grass, surface.type, Vector2(mesh_instance.position.x, mesh_instance.position.z), half)
+		if not materials.has(mesh_instance.material_override):
+			materials.append(mesh_instance.material_override as ShaderMaterial)
 		result.add_child(mesh_instance)
 	for object_data: Dictionary in field.objects:
 		result.add_child(Treeline.build(object_data, field.pilot))
-	result.add_child(NearGrass.build(field, grass))
+	var near_grass: Node3D = NearGrass.build(field, grass)
+	result.add_child(near_grass)
+	if near_grass.has_meta("lighting_material"):
+		materials.append(near_grass.get_meta("lighting_material") as ShaderMaterial)
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.type == "pilot_station":
 			result.add_child(PilotStation.build(cue))
@@ -58,6 +65,39 @@ static func build(field: Dictionary) -> Node3D:
 		else:
 			result.add_child(Windsock.build(cue))
 	if not field.get("flight_cues", []).is_empty():
-		result.add_child(FlightCueShadows.build(field.flight_cues))
-	Scenery.attach(result, field)
+		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
+	Scenery.attach(result, field, lighting)
+	result.set_meta("lighting_materials", materials)
+	result.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return result
+
+
+## Prepare shadow geometry before a checkpoint can commit physical state. Materials are retained by this field.
+static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictionary:
+	if not field_node.has_meta("lighting_materials"):
+		return {ok = false}
+	var changed: bool = field_node.get_meta("lighting_snapshot") != lighting
+	var scenery: Dictionary = Scenery.prepare_lighting(field_node, lighting) if changed else {ok = true}
+	return {ok = scenery.ok, changed = changed, lighting = lighting.duplicate(true), scenery = scenery}
+
+
+## No await: publish one snapshot across all cached consumers while retaining scene/resource ownership.
+static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
+	if not prepared.changed:
+		return false
+	if not Scenery.commit_lighting(field_node, prepared.scenery):
+		return false
+	var lighting: Dictionary = prepared.lighting
+	for mat: ShaderMaterial in field_node.get_meta("lighting_materials"):
+		Atmosphere.update_ground_material(mat, lighting)
+	var cues: MeshInstance3D = field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
+	if cues != null and cues.mesh.get_surface_count() > 0:
+		var material: StandardMaterial3D = cues.mesh.surface_get_material(0) as StandardMaterial3D
+		material.albedo_color = Color.BLACK if lighting.has("solar") else Color.WHITE
+	field_node.set_meta("lighting_snapshot", lighting.duplicate(true))
+	return true
+
+
+static func update_lighting(field_node: Node3D, lighting: Dictionary) -> bool:
+	var prepared: Dictionary = prepare_lighting(field_node, lighting)
+	return commit_lighting(field_node, prepared) if prepared.ok else false

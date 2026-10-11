@@ -1,0 +1,79 @@
+{
+  "format": "openrc-tod-check-summary v1",
+  "date": "2026-10-10",
+  "baseline_commit": "7fe3d84f869172df5992c7602ddd40f045a0c044",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "focused": {
+    "config_checks": 75,
+    "solar_checks": 42,
+    "render_checks": 203,
+    "session_checks": 9,
+    "cli_tests": 5,
+    "failures": 0
+  },
+  "linter": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "diagnostics_unchanged": true
+  },
+  "smoke": {
+    "counts": {
+      "scenes": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "warnings": 317,
+      "findings": 0
+    },
+    "scenes": [
+      {
+        "scene": "res://app_root.tscn",
+        "ok": true,
+        "fuzz_event_count": 40
+      },
+      {
+        "scene": "res://main.tscn",
+        "ok": true,
+        "fuzz_event_count": 40
+      },
+      {
+        "scene": "res://tests/fixtures/atmosphere_field.tscn",
+        "ok": true,
+        "fuzz_event_count": 40
+      }
+    ]
+  },
+  "full_suite": {
+    "baseline_exit": 0,
+    "post_change": "all blocks pass across interrupted initial run and successful remainder",
+    "initial_exit": 143,
+    "initial_completed_gdscript_programs": 148,
+    "resume_from": "M5-ATM: independent atmosphere, EAS and environment replay checks",
+    "remainder_exit": 0,
+    "logs": {
+      "baseline-test.log.gz": {
+        "compressed_sha256": "1e92ed59f06d3d9a13026dfce2c074b865d78041b6d8a807104f02c757a6ef54",
+        "text_sha256": "eb6b7fa47d543ffa6de27ce9848ab915018333d5d135e2049d02c7f3330f1c2e"
+      },
+      "post-change-partial.log.gz": {
+        "compressed_sha256": "7a9945ab8b44a607519f3dc8e8fad05b59731209d0ee47fde8f7bcf343d36c1a",
+        "text_sha256": "c5a41836f35224a6959e72a81a115bfe438f7ca842153809a6765d1910e0e998"
+      },
+      "post-change-remainder.log.gz": {
+        "compressed_sha256": "3f3df2eb169f6d7e16e1a739f255a81df67b48196e2777a6b32af2fdd99fdd02",
+        "text_sha256": "e94a95dc5a61082ed8f5bf17c4af1bc0c06edf92011247bde59b511b0fcb0f2a"
+      }
+    },
+    "test_script_sha256": "39c62afe78a0f009439f7842e972d51c760642d5d9d5c20c3a389472c6cffce7"
+  }
+}

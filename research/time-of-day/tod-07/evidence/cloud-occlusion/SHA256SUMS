@@ -1,0 +1,10 @@
+ac2faf3c012017e34d9fa61530c7390f3dffa6073e90bacfc50b89c9c17a5485  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/analysis.json
+e064ebe4082577e9084bfb235e37c142444ab9cc9dd91389134f2d3be27a1e94  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/below-sun-sun-off.png
+4f97edeb20a51fdf6b634f09500b36a8ebc5e91949fc6c296426b6e0bb5336a8  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/below-sun-sun-on.png
+0c685243cc8175f6531014271e9cf1a9e1e6dbaea066e34fb757db1977009412  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/high-cloud-0-sun-off.png
+3a706e0f4b8ff07acd363149c170d7268cea0d12871aa9862cd390d202ac6796  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/high-cloud-0-sun-on.png
+e0841e06012b7e9b1a847a7f59b4d3dfe0b2a0e1d82b1780bdb4a2cb0d8da08d  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/high-cloud-1-sun-off.png
+13e1e0edcbe82d210d2438964de44db0e63e5b98b2eb6ef212408e2f7c5dc405  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/high-cloud-1-sun-on.png
+606daab641dac12abc7f38b989bce5fba0abe8cc2fbe362998c196b4a3638839  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/evidence/cloud-occlusion/probe.json
+0d095b4a23c5d46e2c39fd089f4ead10224f8f3b8e7f04dea544bde712d421a1  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/probe_cloud_occlusion.gd
+f2bf0d23ea742afb46cd0e3a00e1400ce5351b7ee1a16ef14a4857a57989c2a1  /home/bulto/OpenRCsimulator/research/time-of-day/tod-07/analyze_cloud_occlusion.py

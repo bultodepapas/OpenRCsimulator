@@ -1,0 +1,78 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "below_horizon_control": {
+    "image_size": [
+      1280,
+      720
+    ],
+    "max_rgb_channel_delta": 0,
+    "roi_box_xyxy": [
+      620,
+      340,
+      661,
+      381
+    ],
+    "roi_pixel_count": 1681,
+    "sun_lin_delta_changed_pixels": 0,
+    "sun_lin_delta_max_rec709_code_luma_0_255": 0.0,
+    "sun_lin_delta_mean_rec709_code_luma_0_255": 0.0,
+    "sun_off": "below-sun-sun-off.png",
+    "sun_off_mean_rec709_code_luma_0_255": 100.24863093396787,
+    "sun_on": "below-sun-sun-on.png",
+    "sun_on_mean_rec709_code_luma_0_255": 100.24863093396787
+  },
+  "checks": {
+    "all_pass": true,
+    "below_horizon_control_has_exactly_zero_rgb_change": true,
+    "clear_sun_roi_has_positive_solar_delta": true,
+    "overcast_reduces_solar_delta_by_at_least_99_percent": true
+  },
+  "clear_cloud_coverage_0": {
+    "image_size": [
+      1280,
+      720
+    ],
+    "max_rgb_channel_delta": 214,
+    "roi_box_xyxy": [
+      620,
+      340,
+      661,
+      381
+    ],
+    "roi_pixel_count": 1681,
+    "sun_lin_delta_changed_pixels": 1681,
+    "sun_lin_delta_max_rec709_code_luma_0_255": 174.67219999999998,
+    "sun_lin_delta_mean_rec709_code_luma_0_255": 85.85366627007734,
+    "sun_off": "high-cloud-0-sun-off.png",
+    "sun_off_mean_rec709_code_luma_0_255": 80.70373825104105,
+    "sun_on": "high-cloud-0-sun-on.png",
+    "sun_on_mean_rec709_code_luma_0_255": 166.55740452111837
+  },
+  "format": "openrc-tod-07-cloud-occlusion-analysis v1",
+  "method": "Centered 41x41 sRGB capture patch; compare rendered sun_lin on/off with other test uniforms fixed. Rec.709 code luma is an image-code metric, not physical radiance.",
+  "overcast_cloud_coverage_1": {
+    "image_size": [
+      1280,
+      720
+    ],
+    "max_rgb_channel_delta": 1,
+    "roi_box_xyxy": [
+      620,
+      340,
+      661,
+      381
+    ],
+    "roi_pixel_count": 1681,
+    "sun_lin_delta_changed_pixels": 30,
+    "sun_lin_delta_max_rec709_code_luma_0_255": 0.7152000000000385,
+    "sun_lin_delta_mean_rec709_code_luma_0_255": 0.0051353955978583644,
+    "sun_off": "high-cloud-1-sun-off.png",
+    "sun_off_mean_rec709_code_luma_0_255": 218.2578207019631,
+    "sun_on": "high-cloud-1-sun-on.png",
+    "sun_on_mean_rec709_code_luma_0_255": 218.26295609756096
+  },
+  "overcast_to_clear_sun_delta_ratio": 5.981568197336505e-05,
+  "probe_sha256": "606daab641dac12abc7f38b989bce5fba0abe8cc2fbe362998c196b4a3638839",
+  "renderer": "gl_compatibility",
+  "roi_half_size_px": 20
+}

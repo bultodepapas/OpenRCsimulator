@@ -1,0 +1,111 @@
+{
+  "format": "openrc-turbulence-native-check v1",
+  "godot": "4.7.2",
+  "duration_s": 3,
+  "reports": [
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 2.8630672943563695e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 14,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "source",
+      "numeric_sha256": "faca8cc9c448ab62c326c4514c8f68a1d556ba77a8ca571bae66981ef87a07b5"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 2.8630672943563695e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 14,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "jensen-das-ugly-stik-60",
+      "route": "linux",
+      "numeric_sha256": "faca8cc9c448ab62c326c4514c8f68a1d556ba77a8ca571bae66981ef87a07b5"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 3.1604947992036614e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "gp-extra-300s-60",
+      "route": "source",
+      "numeric_sha256": "5da984b8dd98c5cbdfe6883e3ebc4f6502f1119b31d2b6cd0d8ac42da5bbb572"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 3.1604947992036614e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "gp-extra-300s-60",
+      "route": "linux",
+      "numeric_sha256": "5da984b8dd98c5cbdfe6883e3ebc4f6502f1119b31d2b6cd0d8ac42da5bbb572"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 4.095863559427926e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "p51d-mustang-120",
+      "route": "source",
+      "numeric_sha256": "15fc4273dbf0b98107696a18631e5a6a8b441f40baf938bc46810c222997ec85"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 4.095863559427926e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "p51d-mustang-120",
+      "route": "linux",
+      "numeric_sha256": "15fc4273dbf0b98107696a18631e5a6a8b441f40baf938bc46810c222997ec85"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 4.516825669043101e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "route": "source",
+      "numeric_sha256": "d9ceac3086feb9d22cdd9e65c35ba346eda2b6ec4b769d2b51c7951d48d68f94"
+    },
+    {
+      "rows": 721,
+      "first_tick": 0,
+      "last_tick": 720,
+      "max_wind_error_mps": 4.998714775439339e-10,
+      "max_speed_error_mps": 4.516825669043101e-08,
+      "max_turbulence_error_mps": 4.998710334547241e-10,
+      "turbulence_aux_index": 4,
+      "recording_start_rng_state": 4854362591652544791,
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "route": "linux",
+      "numeric_sha256": "d9ceac3086feb9d22cdd9e65c35ba346eda2b6ec4b769d2b51c7951d48d68f94"
+    }
+  ]
+}

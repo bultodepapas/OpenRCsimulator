@@ -1,0 +1,273 @@
+{
+  "created_utc": "2026-10-10T22:44:34.140200+00:00",
+  "demos": {
+    "4s": {
+      "dataset": "app/data/aircraft/synthetic_stik_electric_4s.json",
+      "dataset_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "fixed_fps": {
+        "144": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "144",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=4s"
+          ],
+          "flight_sha256": "e636411ca829ad349490339bb688ed225fd6c76600838275325aa433584858d7",
+          "log": "/tmp/openrc-el-product/4s-fixed-144.log",
+          "ticks": 480
+        },
+        "30": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "30",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=4s"
+          ],
+          "flight_sha256": "e636411ca829ad349490339bb688ed225fd6c76600838275325aa433584858d7",
+          "log": "/tmp/openrc-el-product/4s-fixed-30.log",
+          "ticks": 480
+        },
+        "60": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "60",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=4s"
+          ],
+          "flight_sha256": "e636411ca829ad349490339bb688ed225fd6c76600838275325aa433584858d7",
+          "log": "/tmp/openrc-el-product/4s-fixed-60.log",
+          "ticks": 480
+        }
+      },
+      "flight_sha256_equal_at_30_60_144": true,
+      "main_scene_input": {
+        "checks": 19,
+        "command": [
+          "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/bulto/OpenRCsimulator/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_electric_input.gd",
+          "--",
+          "--electric-demo=4s"
+        ],
+        "log": "/tmp/openrc-el-product/4s-main-input.log",
+        "status": "passed"
+      }
+    },
+    "6s": {
+      "dataset": "app/data/aircraft/synthetic_stik_electric_6s.json",
+      "dataset_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "fixed_fps": {
+        "144": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "144",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=6s"
+          ],
+          "flight_sha256": "07f49cb96a851d9d07fe9027a6ad8498cc148753600ee159e25efd888098239d",
+          "log": "/tmp/openrc-el-product/6s-fixed-144.log",
+          "ticks": 480
+        },
+        "30": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "30",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=6s"
+          ],
+          "flight_sha256": "07f49cb96a851d9d07fe9027a6ad8498cc148753600ee159e25efd888098239d",
+          "log": "/tmp/openrc-el-product/6s-fixed-30.log",
+          "ticks": 480
+        },
+        "60": {
+          "command": [
+            "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+            "--headless",
+            "--path",
+            "/home/bulto/OpenRCsimulator/app",
+            "--audio-driver",
+            "Dummy",
+            "--fixed-fps",
+            "60",
+            "--script",
+            "res://tests/run_fixed_step.gd",
+            "--",
+            "--electric-demo=6s"
+          ],
+          "flight_sha256": "07f49cb96a851d9d07fe9027a6ad8498cc148753600ee159e25efd888098239d",
+          "log": "/tmp/openrc-el-product/6s-fixed-60.log",
+          "ticks": 480
+        }
+      },
+      "flight_sha256_equal_at_30_60_144": true,
+      "main_scene_input": {
+        "checks": 19,
+        "command": [
+          "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+          "--headless",
+          "--path",
+          "/home/bulto/OpenRCsimulator/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_electric_input.gd",
+          "--",
+          "--electric-demo=6s"
+        ],
+        "log": "/tmp/openrc-el-product/6s-main-input.log",
+        "status": "passed"
+      }
+    }
+  },
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "engine_path": "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "export_template": "/home/bulto/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64",
+  "format": "openrc-el1e-product-proof v1",
+  "invalid_demo_controls": [
+    {
+      "exit_code": 31,
+      "options": [
+        "--electric-demo=3s"
+      ]
+    },
+    {
+      "exit_code": 31,
+      "options": [
+        "--electric-demo=4s",
+        "--aircraft=gp-extra-300s-60"
+      ]
+    },
+    {
+      "exit_code": 31,
+      "options": [
+        "--electric-demo=6s",
+        "--scripted"
+      ]
+    }
+  ],
+  "linux_package": {
+    "binary": "/tmp/openrc-el-product/linux-package/openrc-electric.x86_64",
+    "binary_sha256": "1f3a824c2431e43c09b5e0c7910a8cd21299cb19d06e234a6a8df65ed021cf38",
+    "binary_size_bytes": 76172192,
+    "embedded_pck": "preset option binary_format/embed_pck=true",
+    "export_command": [
+      "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/OpenRCsimulator/app",
+      "--export-release",
+      "Linux",
+      "/tmp/openrc-el-product/linux-package/openrc-electric.x86_64"
+    ],
+    "export_log": "/tmp/openrc-el-product/linux-export.log",
+    "export_output_tail": [
+      "[  98% ] \u001b[90m\u001b[1msavepack\u001b[22m | Storing File: res://.godot/uid_cache.bin\u001b[39m\u001b[0m",
+      "[  98% ] \u001b[90m\u001b[1msavepack\u001b[22m | Storing File: res://project.binary\u001b[39m\u001b[0m",
+      "\u001b[92m[ DONE ]\u001b[39m \u001b[1msavepack\u001b[22m",
+      "\u001b[0m",
+      "WARNING: build_info: OPENRC_BUILD_* not set (export by hand?): the build says \"export-manual\"",
+      "     at: push_warning (core/variant/variant_utility.cpp:1033)",
+      "     GDScript backtrace (most recent call first):",
+      "         [0] _export_begin (res://addons/build_info/export_plugin.gd:18)"
+    ],
+    "runs_from_empty_cwd": true,
+    "traces": {
+      "4s": {
+        "aircraft_input_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+        "command": [
+          "/tmp/openrc-el-product/linux-package/openrc-electric.x86_64",
+          "--headless",
+          "--",
+          "--electric-demo=4s",
+          "--trace=/tmp/openrc-el-product/linux-4s.csv",
+          "--t=0.2"
+        ],
+        "electrical_columns": [
+          "drive_duty",
+          "motor_current_a",
+          "drive_bus_current_a"
+        ],
+        "empty_cwd": "/tmp/openrc-el-product/empty-cwd-4s",
+        "first_tick": 0,
+        "format": "openrc-trace v7",
+        "last_tick": 48,
+        "log": "/tmp/openrc-el-product/linux-4s.log",
+        "propulsion_model": "electric-fixed-bus-coupled-stop-v1",
+        "rows": 49,
+        "shaft_integrator": "coupled-rk4",
+        "trace": "/tmp/openrc-el-product/linux-4s.csv"
+      },
+      "6s": {
+        "aircraft_input_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+        "command": [
+          "/tmp/openrc-el-product/linux-package/openrc-electric.x86_64",
+          "--headless",
+          "--",
+          "--electric-demo=6s",
+          "--trace=/tmp/openrc-el-product/linux-6s.csv",
+          "--t=0.2"
+        ],
+        "electrical_columns": [
+          "drive_duty",
+          "motor_current_a",
+          "drive_bus_current_a"
+        ],
+        "empty_cwd": "/tmp/openrc-el-product/empty-cwd-6s",
+        "first_tick": 0,
+        "format": "openrc-trace v7",
+        "last_tick": 48,
+        "log": "/tmp/openrc-el-product/linux-6s.log",
+        "propulsion_model": "electric-fixed-bus-coupled-stop-v1",
+        "rows": 49,
+        "shaft_integrator": "coupled-rk4",
+        "trace": "/tmp/openrc-el-product/linux-6s.csv"
+      }
+    }
+  },
+  "status": "passed"
+}

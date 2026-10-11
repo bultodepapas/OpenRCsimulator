@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-10",
+  "tested_app_tree": "963e2db73d5404b99301708d2192a93aadb2804b",
+  "godot": "4.7.2-stable",
+  "clean_checkout": {
+    "os": "Ubuntu under WSL",
+    "autocrlf": false
+  },
+  "checks": [
+    {
+      "command": "bash app/test.sh",
+      "exit": 0,
+      "scripts_parsed": 344,
+      "functional_gd_suites": 174,
+      "acceptance_gates": "all passed",
+      "e5b": {
+        "checks": 125,
+        "failures": 0
+      },
+      "observed_nonfatal_warning": "test_ui_help.gd reported an ObjectDB instance leak at process exit; the test passed."
+    },
+    {
+      "command": "bash research/test-tools.sh",
+      "exit": 0,
+      "offline_suites": 12,
+      "test_cases": 214
+    },
+    {
+      "os": "Windows",
+      "native_import": "passed",
+      "gd_suites": [
+        "test_ui_field_world_time_of_day.gd",
+        "test_ui_time_of_day.gd",
+        "test_world_flow.gd"
+      ],
+      "exit": 0,
+      "world_flow_checks": 25
+    }
+  ],
+  "capture_manifest": "captures.json",
+  "limits": "Software regression and fixed-view render evidence; pilot acceptance and performance qualification remain with their owning plans."
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "binary_sha256": "ff735cc263cdbd79273f15ab86b9a1396caddf08267bbf3988193b2e7c7664ec",
+  "rows": 85,
+  "edit_tick": 144,
+  "initial_mode": "legacy",
+  "selected_config": {
+    "date": "2026-03-20",
+    "format": "openrc-lighting v1",
+    "latitude_deg": 0.0,
+    "local_seconds": 457,
+    "location_name": "Reference field (synthetic)",
+    "longitude_deg": 0.0,
+    "mode": "astronomical",
+    "utc_offset_minutes": 0
+  },
+  "route": "Home \u2192 Fly \u2192 record \u2192 Pause \u2192 Time of day \u2192 Night \u2192 Apply \u2192 Continue \u2192 stop recording"
+}

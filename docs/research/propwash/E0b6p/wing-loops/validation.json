@@ -1,0 +1,142 @@
+{
+  "format": "openrc-wing-loop-validation v1",
+  "status": "pass",
+  "decision": "retain combined candidate in research; do not adopt",
+  "full_app_suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "test_scripts": 125,
+    "sections": 153,
+    "log_sha256": "752bfa74502e385dd0892bc6b54de437fedf5fef6b23bdc6668beaf30b060c5f",
+    "source_revision": "4b92dd00e6fd72c07511a5292e4a62bc36bb991b",
+    "scope": "Unmodified production application; candidate was not adopted. No golden/data changes."
+  },
+  "runs": [
+    {
+      "folder": "prepared1",
+      "backend": "prepared",
+      "exact_direct_loads": 1216,
+      "exact_flight_boundaries": 7230,
+      "exact_manufactured_scalars": 25600,
+      "rejected_report_controls": 10,
+      "rejected_aero_mutations": [
+        {
+          "name": "shifted_map_column",
+          "assertion_failures": 258,
+          "rejected": true,
+          "report_sha256": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd"
+        },
+        {
+          "name": "reversed_left_aileron",
+          "assertion_failures": 1016,
+          "rejected": true,
+          "report_sha256": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419"
+        }
+      ]
+    },
+    {
+      "folder": "prepared2",
+      "backend": "prepared",
+      "exact_direct_loads": 1216,
+      "exact_flight_boundaries": 7230,
+      "exact_manufactured_scalars": 25600,
+      "rejected_report_controls": 10,
+      "rejected_aero_mutations": [
+        {
+          "name": "shifted_map_column",
+          "assertion_failures": 258,
+          "rejected": true,
+          "report_sha256": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd"
+        },
+        {
+          "name": "reversed_left_aileron",
+          "assertion_failures": 1016,
+          "rejected": true,
+          "report_sha256": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419"
+        }
+      ]
+    },
+    {
+      "folder": "gd1",
+      "backend": "gd",
+      "exact_direct_loads": 1216,
+      "exact_flight_boundaries": 7230,
+      "exact_manufactured_scalars": 25600,
+      "rejected_report_controls": 7,
+      "rejected_aero_mutations": [
+        {
+          "name": "shifted_map_column",
+          "assertion_failures": 258,
+          "rejected": true,
+          "report_sha256": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd"
+        },
+        {
+          "name": "reversed_left_aileron",
+          "assertion_failures": 1016,
+          "rejected": true,
+          "report_sha256": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419"
+        }
+      ]
+    }
+  ],
+  "source_app_input_count": 617,
+  "source_app_unchanged": true,
+  "timing_runs_sequential": true,
+  "prepared_repeated_trajectory_hashes_match": true,
+  "lint_counts": {
+    "before": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "after": {
+      "total": 12,
+      "errors": 0,
+      "warnings": 12,
+      "parse_errors": 0
+    },
+    "staged": {
+      "total": 13,
+      "errors": 0,
+      "warnings": 13,
+      "parse_errors": 0
+    }
+  },
+  "lint_notes": "Source retains 12 existing warnings. GD disposable profile adds one guarded optional native-adapter path warning inherited from stage-sharing; the guard is false in this backend. Zero errors.",
+  "artifacts_sha256": {
+    "baseline-app-tests.log.gz": "704d40cfd0e3db14c03ab78947f28fff49e456e9ecdfcfdaa8be05371153bca0",
+    "gd1/candidate.patch": "532d17236c45e65c9bc2c5ae1f52ea96cef9f6ca1e6c1022c7d073f92606285a",
+    "gd1/evidence.json": "fe8bf64bf651a197a8ad1c0a9c74ad397d2afe5fbba3e7945719ecf5acec507a",
+    "gd1/mutation-reversed_left_aileron.json": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419",
+    "gd1/mutation-reversed_left_aileron.log": "ea78d54f63b223dbce0f27d8089b8ccc9042ee253fd034d561a192499d1287b9",
+    "gd1/mutation-shifted_map_column.json": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd",
+    "gd1/mutation-shifted_map_column.log": "0d1c077fc47c336a2171094cb243df00bff446332bf65124d6072f17d8d51077",
+    "gd1/profile.json": "95f67acc172277d47b11ffe1192e05450dcd02ce77fbea04d4be0a9f1f9417d7",
+    "gd1/profile.log": "a0b90ebf1f39be39f687cb1cedd61a43975f688c6e30d96bb8159a0ddf933f8d",
+    "gd1/verify.json": "c7048574c1c4554708fcc9785a2c0beb3ec3db8789f59e0cf998506f40f9a650",
+    "gd1/verify.log": "986657676b74742d2b5b98b42d32a825d295c3700132b875436d908b51328ca0",
+    "prepared1/candidate.patch": "532d17236c45e65c9bc2c5ae1f52ea96cef9f6ca1e6c1022c7d073f92606285a",
+    "prepared1/evidence.json": "5852ca06c6392a7212015f9dd493499e8d82d446c529735bc1df99d2d464f1c5",
+    "prepared1/mutation-reversed_left_aileron.json": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419",
+    "prepared1/mutation-reversed_left_aileron.log": "ea78d54f63b223dbce0f27d8089b8ccc9042ee253fd034d561a192499d1287b9",
+    "prepared1/mutation-shifted_map_column.json": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd",
+    "prepared1/mutation-shifted_map_column.log": "0d1c077fc47c336a2171094cb243df00bff446332bf65124d6072f17d8d51077",
+    "prepared1/profile.json": "23c0b07d2ff01fb9fa2ac1b197a488cdad25b2c721fbaa9f0a5a8484838fd516",
+    "prepared1/profile.log": "94643921cb09b90f90325f95443f1689311ce30339ed6fccbc734fcaa150e44c",
+    "prepared1/verify.json": "183c0257c78596af206867c367c3dd8fd3400d032cf864aeaa82e4569010d4d3",
+    "prepared1/verify.log": "986657676b74742d2b5b98b42d32a825d295c3700132b875436d908b51328ca0",
+    "prepared2/candidate.patch": "532d17236c45e65c9bc2c5ae1f52ea96cef9f6ca1e6c1022c7d073f92606285a",
+    "prepared2/evidence.json": "3d173a70051c50796e16670d3d9a4fd42a01bbff6851a27941aaa7064c04fffc",
+    "prepared2/mutation-reversed_left_aileron.json": "f14732a894f1bfde5c246f1906474744514db6360c2235e7d1b1e0a4350fc419",
+    "prepared2/mutation-reversed_left_aileron.log": "ea78d54f63b223dbce0f27d8089b8ccc9042ee253fd034d561a192499d1287b9",
+    "prepared2/mutation-shifted_map_column.json": "dcf53de240247e2656de237d2d4b402a87edce0348fdcdbb537952273dcb62fd",
+    "prepared2/mutation-shifted_map_column.log": "0d1c077fc47c336a2171094cb243df00bff446332bf65124d6072f17d8d51077",
+    "prepared2/profile.json": "09c6feb3c1e864de0e570a6cc7d025cfe7f866ac7731121f6c44d1c97748c329",
+    "prepared2/profile.log": "2314a05b3592f19b9b7604f170f1b979f9c2dd54e23dbb31e9f9b5b90fddad31",
+    "prepared2/verify.json": "6a3f4d3d62a5a2ee711654a6b6f1d496ef766f9f49ce6a2fc0eb88a6d378e2a2",
+    "prepared2/verify.log": "986657676b74742d2b5b98b42d32a825d295c3700132b875436d908b51328ca0"
+  },
+  "retained_report_replay": "exact summaries and rejection controls for all three runs",
+  "local_links_checked": 545
+}

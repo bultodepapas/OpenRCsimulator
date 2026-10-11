@@ -113,6 +113,7 @@ static func build(field: Dictionary, ground: ShaderMaterial) -> Node3D:
 	ShaderClock.register() # standalone field builds must work without main.gd's environment setup
 	var material: ShaderMaterial = ShaderMaterial.new()
 	material.shader = SHADER
+	result.set_meta("lighting_material", material)
 	for uniform: Dictionary in SHADER.get_shader_uniform_list():
 		var parameter: StringName = StringName(uniform.name)
 		if parameter == &"fade_start_m" or parameter == &"fade_end_m":

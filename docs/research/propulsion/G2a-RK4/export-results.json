@@ -1,0 +1,12 @@
+{
+  "format": "openrc-coupled-shaft-export-check v1",
+  "command": "app/export.sh",
+  "exit_code": 0,
+  "log_sha256": "207142cb1b78a5304c7eaaffbe6af74ed289066f916cd867c39252f65a37e5a1",
+  "packages": [
+    "e41aa7d8b4364b8d5c3f3cb1c5dafc599292a568091455e5d9fba2004690a680  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-linux-x86_64.zip",
+    "c5843baef3eac20a2e97ad174cf6a2c9846b70f36a87299a58bf4b94c622ef44  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-macos-universal.zip",
+    "241878bff317652e2e22cfc8db6cec037e9fe77fa58c2e37c05545a460cec4ce  openrc-simulator-v0.1.0-rc6-15-g9a4eabd-dirty-windows-x86_64.zip"
+  ],
+  "scope": "Linux executed; Windows/macOS export, structural and resource checks only; native target acceptance remains open"
+}

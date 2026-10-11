@@ -1,0 +1,110 @@
+{
+  "format": "openrc-coupled-shaft-native-check v1",
+  "duration_s": 3,
+  "aircraft": "p51d-mustang-120",
+  "shaft_integrator": "coupled-rk4",
+  "reports": [
+    {
+      "case": "calm",
+      "route": "source",
+      "proof": {
+        "trim_check": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)"
+      },
+      "numeric_sha256": "9a974020cc35a3089904b3f79e1176688536cceebd63f2b9625d9643a380e014"
+    },
+    {
+      "case": "calm",
+      "route": "linux",
+      "proof": {
+        "trim_check": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)"
+      },
+      "numeric_sha256": "9a974020cc35a3089904b3f79e1176688536cceebd63f2b9625d9643a380e014"
+    },
+    {
+      "case": "hot-high",
+      "route": "source",
+      "proof": {
+        "format": "openrc-trace v6",
+        "metadata_schema": "openrc-flight-meta v5",
+        "rows": 721,
+        "first_tick": 0,
+        "last_tick": 720,
+        "rho_kgm3": 0.9439353096847437,
+        "density_ratio": 0.7705594364773417,
+        "engine_charge_ratio": 0.754410799788835,
+        "density_altitude_m": 2634.5338157095093,
+        "max_atmosphere_state_error": 0.0,
+        "max_atmosphere_row_error": 4.906723916064948e-10,
+        "max_eas_error_mps": 4.474571824175655e-10,
+        "max_wind_error_mps": 0.0,
+        "max_speed_error_mps": 7.172573646130331e-09
+      },
+      "numeric_sha256": "a4b4f4765eee67798e5516029cd669e10823f5fd3c3aa056eef058b1a712069e"
+    },
+    {
+      "case": "hot-high",
+      "route": "linux",
+      "proof": {
+        "format": "openrc-trace v6",
+        "metadata_schema": "openrc-flight-meta v5",
+        "rows": 721,
+        "first_tick": 0,
+        "last_tick": 720,
+        "rho_kgm3": 0.9439353096847437,
+        "density_ratio": 0.7705594364773417,
+        "engine_charge_ratio": 0.754410799788835,
+        "density_altitude_m": 2634.5338157095093,
+        "max_atmosphere_state_error": 0.0,
+        "max_atmosphere_row_error": 4.906723916064948e-10,
+        "max_eas_error_mps": 4.474571824175655e-10,
+        "max_wind_error_mps": 0.0,
+        "max_speed_error_mps": 7.172573646130331e-09
+      },
+      "numeric_sha256": "a4b4f4765eee67798e5516029cd669e10823f5fd3c3aa056eef058b1a712069e"
+    },
+    {
+      "case": "mixed",
+      "route": "source",
+      "proof": {
+        "format": "openrc-trace v6",
+        "metadata_schema": "openrc-flight-meta v5",
+        "rows": 721,
+        "first_tick": 0,
+        "last_tick": 720,
+        "rho_kgm3": 1.0561155088483771,
+        "density_ratio": 0.8621351092639813,
+        "engine_charge_ratio": 0.8488094176757142,
+        "density_altitude_m": 1518.9402186868201,
+        "max_atmosphere_state_error": 0.0,
+        "max_atmosphere_row_error": 3.242858204188792e-10,
+        "max_eas_error_mps": 9.332339345746732e-10,
+        "max_wind_error_mps": 4.99511210172443e-10,
+        "max_speed_error_mps": 3.5325388836326965e-08,
+        "max_turbulence_error_mps": 4.995328317658476e-10
+      },
+      "numeric_sha256": "7f312979284d0fcdfdfb79fcbc107f22e81b3d92b8a4286d5983c0fbce77c057"
+    },
+    {
+      "case": "mixed",
+      "route": "linux",
+      "proof": {
+        "format": "openrc-trace v6",
+        "metadata_schema": "openrc-flight-meta v5",
+        "rows": 721,
+        "first_tick": 0,
+        "last_tick": 720,
+        "rho_kgm3": 1.0561155088483771,
+        "density_ratio": 0.8621351092639813,
+        "engine_charge_ratio": 0.8488094176757142,
+        "density_altitude_m": 1518.9402186868201,
+        "max_atmosphere_state_error": 0.0,
+        "max_atmosphere_row_error": 3.242858204188792e-10,
+        "max_eas_error_mps": 9.332339345746732e-10,
+        "max_wind_error_mps": 4.99511210172443e-10,
+        "max_speed_error_mps": 3.5325388836326965e-08,
+        "max_turbulence_error_mps": 4.995328317658476e-10
+      },
+      "numeric_sha256": "7f312979284d0fcdfdfb79fcbc107f22e81b3d92b8a4286d5983c0fbce77c057"
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "evidence_scope": "software-only verification using synthetic authored fixtures; not measured battery or physical-flight validation",
+  "flights": {
+    "4s_battery-chop": {
+      "aircraft_input_sha256": "1c842689c08a1811c1582805a03bd49fc66e9f5cf12496ec37aac179ca25152b",
+      "altitude_change_m": -23.530445970000002,
+      "final_soc": 0.9395455,
+      "final_speed_mps": 14.984866492,
+      "heading_change_deg": 7.79055223900113,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 24.268835496999998,
+      "max_drive_power_residual_w": 1.88958892977098e-08,
+      "max_energy_ledger_residual_j": 9.528508712719486e-05,
+      "max_pack_current_a": 31.733183342,
+      "max_pack_power_residual_w": 6.457228565182049e-07,
+      "max_rpm": 5217.385902431,
+      "min_altitude_m": 125.731164503,
+      "min_ocv_v": 16.5098184,
+      "rows": 7201,
+      "soc_drop": 0.010454499999999922,
+      "trace_sha256": "f240a90ad0b5ef2e4e99613d54b20ac77862fd823a4284ac6f57db8cbd552771"
+    },
+    "4s_battery-climb": {
+      "aircraft_input_sha256": "1c842689c08a1811c1582805a03bd49fc66e9f5cf12496ec37aac179ca25152b",
+      "altitude_change_m": 66.95444337199999,
+      "final_soc": 0.90819535,
+      "final_speed_mps": 16.95453551,
+      "heading_change_deg": -32.36883558199875,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 66.95444337199999,
+      "max_drive_power_residual_w": 1.8652031030796934e-08,
+      "max_energy_ledger_residual_j": 9.518978868072736e-05,
+      "max_pack_current_a": 30.577713968,
+      "max_pack_power_residual_w": 7.231336489610385e-07,
+      "max_rpm": 6848.551073896,
+      "min_altitude_m": 149.999987548,
+      "min_ocv_v": 16.359337679,
+      "rows": 7201,
+      "soc_drop": 0.04180465,
+      "trace_sha256": "cfa60ac7f443d9a0b32399cbd2b05c39108203bc41296f9e7e5f31f82818ab8f"
+    },
+    "4s_battery-level": {
+      "aircraft_input_sha256": "1c842689c08a1811c1582805a03bd49fc66e9f5cf12496ec37aac179ca25152b",
+      "altitude_change_m": -0.5293499740000129,
+      "final_soc": 0.935255593,
+      "final_speed_mps": 15.035382752,
+      "heading_change_deg": 9.658014240000426,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 0.5293499740000129,
+      "max_drive_power_residual_w": 1.147606099038967e-08,
+      "max_energy_ledger_residual_j": 9.531552673536225e-05,
+      "max_pack_current_a": 5.694170151,
+      "max_pack_power_residual_w": 4.3951400785502415e-07,
+      "max_rpm": 5174.245356016,
+      "min_altitude_m": 149.470650026,
+      "min_ocv_v": 16.489226848,
+      "rows": 7201,
+      "soc_drop": 0.014744406999999904,
+      "trace_sha256": "4bb9bdbc8b0a7bc30dee8372222aacdc4882e6c9eca2cd20345ec351640d2a0e"
+    },
+    "4s_battery-turn": {
+      "aircraft_input_sha256": "1c842689c08a1811c1582805a03bd49fc66e9f5cf12496ec37aac179ca25152b",
+      "altitude_change_m": 1.9830337330000134,
+      "final_soc": 0.927560974,
+      "final_speed_mps": 17.263160077,
+      "heading_change_deg": 355.7823575559995,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 1.9830337330000134,
+      "max_drive_power_residual_w": 1.3119745290168794e-08,
+      "max_energy_ledger_residual_j": 9.514824978396064e-05,
+      "max_pack_current_a": 14.368522811,
+      "max_pack_power_residual_w": 5.609188535871112e-07,
+      "max_rpm": 5951.810489689,
+      "min_altitude_m": 150.0,
+      "min_ocv_v": 16.452292674,
+      "rows": 7201,
+      "soc_drop": 0.022439025999999918,
+      "trace_sha256": "2034a0734e21eb72ec790219b208a6c54e5f11e9c97e91a476b7da6b301fc67b"
+    },
+    "6s_battery-chop": {
+      "aircraft_input_sha256": "99b30bee10bd4c6a21079b37b2284bc1daa61e8cb4a3f333374a14225c04bc83",
+      "altitude_change_m": -23.597866206000006,
+      "final_soc": 0.938758991,
+      "final_speed_mps": 14.980756955,
+      "heading_change_deg": 9.264369307999829,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 24.329032798,
+      "max_drive_power_residual_w": 2.5753138288564514e-08,
+      "max_energy_ledger_residual_j": 9.81817022704945e-05,
+      "max_pack_current_a": 40.89951012,
+      "max_pack_power_residual_w": 6.921482622601616e-07,
+      "max_rpm": 5197.607703211,
+      "min_altitude_m": 125.670967202,
+      "min_ocv_v": 24.759064736,
+      "rows": 7201,
+      "soc_drop": 0.011241008999999913,
+      "trace_sha256": "2d34e037eb7c93c9ffc21a9ad88fd105f60b4d879c191453ad1f3f980ac1fd3b"
+    },
+    "6s_battery-climb": {
+      "aircraft_input_sha256": "99b30bee10bd4c6a21079b37b2284bc1daa61e8cb4a3f333374a14225c04bc83",
+      "altitude_change_m": 63.20015690700001,
+      "final_soc": 0.912379912,
+      "final_speed_mps": 16.736004989,
+      "heading_change_deg": -32.283848919001144,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 63.20015690700001,
+      "max_drive_power_residual_w": 1.7783975181373535e-08,
+      "max_energy_ledger_residual_j": 9.815682324187947e-05,
+      "max_pack_current_a": 27.525605617,
+      "max_pack_power_residual_w": 7.747991830342471e-07,
+      "max_rpm": 6742.4370227,
+      "min_altitude_m": 149.999988151,
+      "min_ocv_v": 24.569135365,
+      "rows": 7201,
+      "soc_drop": 0.03762008799999994,
+      "trace_sha256": "c556dda3e79a1ac63814a1ef10c642c6f0b626366af4f999c3225ec90b9ff933"
+    },
+    "6s_battery-level": {
+      "aircraft_input_sha256": "99b30bee10bd4c6a21079b37b2284bc1daa61e8cb4a3f333374a14225c04bc83",
+      "altitude_change_m": -0.7354250950000107,
+      "final_soc": 0.934441161,
+      "final_speed_mps": 15.062289406,
+      "heading_change_deg": 12.509922634001441,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 0.7354250950000107,
+      "max_drive_power_residual_w": 1.4818922977610782e-08,
+      "max_energy_ledger_residual_j": 9.816151339236967e-05,
+      "max_pack_current_a": 4.133859784,
+      "max_pack_power_residual_w": 4.876816179777421e-07,
+      "max_rpm": 5174.245356439,
+      "min_altitude_m": 149.264574905,
+      "min_ocv_v": 24.727976362,
+      "rows": 7201,
+      "soc_drop": 0.015558838999999991,
+      "trace_sha256": "2bc425173cfca38b37bc17f4e5cef1769dce23c5d71359e84329ab9613a78016"
+    },
+    "6s_battery-turn": {
+      "aircraft_input_sha256": "99b30bee10bd4c6a21079b37b2284bc1daa61e8cb4a3f333374a14225c04bc83",
+      "altitude_change_m": -1.288108899000008,
+      "final_soc": 0.928479847,
+      "final_speed_mps": 17.149159277,
+      "heading_change_deg": 359.64633221600025,
+      "initial_soc": 0.95,
+      "max_abs_altitude_deviation_m": 1.288108899000008,
+      "max_drive_power_residual_w": 1.5572737765978673e-08,
+      "max_energy_ledger_residual_j": 9.815567500481848e-05,
+      "max_pack_current_a": 12.470690119,
+      "max_pack_power_residual_w": 5.84434179273785e-07,
+      "max_rpm": 5856.470931957,
+      "min_altitude_m": 148.711891101,
+      "min_ocv_v": 24.685054902,
+      "rows": 7201,
+      "soc_drop": 0.021520152999999986,
+      "trace_sha256": "3bd32c61469a3bf418dcd369358de4d32c7b0b94cbbe445d98760fb276a9cf4d"
+    }
+  },
+  "format": "openrc-electric-battery-flight-verification v1",
+  "level_altitude_band_m": 10.0,
+  "negative_control_types": {
+    "finite_charge_ledger": 8,
+    "finite_current": 8,
+    "finite_heat": 8,
+    "finite_ocv": 8,
+    "finite_sag": 8,
+    "finite_soc": 8
+  },
+  "negative_controls": 48,
+  "refinement": {
+    "4s_battery": {
+      "body_convergence": "decreasing",
+      "charge_convergence": "nonmonotone or plateau observed; tolerances remain the acceptance gate",
+      "energy_convergence": "nonmonotone or plateau observed; tolerances remain the acceptance gate",
+      "errors": {
+        "120": {
+          "body_components": {
+            "body_rate_radps": 6.481204983801656e-07,
+            "position_m": 1.609725188700395e-07,
+            "quaternion": 5.1820268989061224e-08,
+            "velocity_mps": 9.191246270745523e-07
+          },
+          "body_max_absolute": 9.191246270745523e-07,
+          "continuous_components": {
+            "pack_heat_j": 6.58736332148635e-09,
+            "remaining_charge_c": 1.3596945791505277e-08,
+            "shaft_rpm": 1.0502533768885769e-05,
+            "terminal_energy_j": 2.1856895671135135e-07
+          }
+        },
+        "1920": {
+          "body_components": {
+            "body_rate_radps": 0.0,
+            "position_m": 0.0,
+            "quaternion": 0.0,
+            "velocity_mps": 0.0
+          },
+          "body_max_absolute": 0.0,
+          "continuous_components": {
+            "pack_heat_j": 0.0,
+            "remaining_charge_c": 0.0,
+            "shaft_rpm": 0.0,
+            "terminal_energy_j": 0.0
+          }
+        },
+        "240": {
+          "body_components": {
+            "body_rate_radps": 1.603773474309969e-07,
+            "position_m": 3.9944012542036944e-08,
+            "quaternion": 1.2845290536106502e-08,
+            "velocity_mps": 2.271683925414436e-07
+          },
+          "body_max_absolute": 2.271683925414436e-07,
+          "continuous_components": {
+            "pack_heat_j": 9.584020244091107e-10,
+            "remaining_charge_c": 2.2737367544323206e-09,
+            "shaft_rpm": 1.7379079508828e-07,
+            "terminal_energy_j": 3.682121985093545e-08
+          }
+        },
+        "480": {
+          "body_components": {
+            "body_rate_radps": 3.8076213780893764e-08,
+            "position_m": 9.445756177228759e-09,
+            "quaternion": 3.0406127754512013e-09,
+            "velocity_mps": 5.416201021013478e-08
+          },
+          "body_max_absolute": 5.416201021013478e-08,
+          "continuous_components": {
+            "pack_heat_j": 1.3573413504275322e-09,
+            "remaining_charge_c": 3.1086528906598687e-09,
+            "shaft_rpm": 1.3708377082366496e-06,
+            "terminal_energy_j": 5.0013284180749906e-08
+          }
+        },
+        "960": {
+          "body_components": {
+            "body_rate_radps": 7.634492006462767e-09,
+            "position_m": 1.9003323359356727e-09,
+            "quaternion": 6.112711101180501e-10,
+            "velocity_mps": 1.0822300833268628e-08
+          },
+          "body_max_absolute": 1.0822300833268628e-08,
+          "continuous_components": {
+            "pack_heat_j": 4.228728478494759e-12,
+            "remaining_charge_c": 2.7284841053187847e-11,
+            "shaft_rpm": 4.585854185279459e-08,
+            "terminal_energy_j": 1.5288037502614316e-10
+          }
+        }
+      },
+      "heat_convergence": "nonmonotone or plateau observed; tolerances remain the acceptance gate",
+      "limits": {
+        "body_rate_radps": 2e-06,
+        "pack_heat_j": 2e-06,
+        "position_m": 2e-06,
+        "quaternion": 2e-07,
+        "remaining_charge_c": 2e-07,
+        "shaft_rpm": 0.0001,
+        "terminal_energy_j": 2e-05,
+        "velocity_mps": 2e-06
+      }
+    },
+    "6s_battery": {
+      "body_convergence": "decreasing",
+      "charge_convergence": "decreasing",
+      "energy_convergence": "decreasing",
+      "errors": {
+        "120": {
+          "body_components": {
+            "body_rate_radps": 5.402030545005598e-07,
+            "position_m": 1.795294508610823e-07,
+            "quaternion": 5.048521792630489e-08,
+            "velocity_mps": 7.997444144702825e-07
+          },
+          "body_max_absolute": 7.997444144702825e-07,
+          "continuous_components": {
+            "pack_heat_j": 4.7275444670091815e-09,
+            "remaining_charge_c": 2.2382664610631764e-09,
+            "shaft_rpm": 6.169832886371296e-06,
+            "terminal_energy_j": 5.1217767804701e-08
+          }
+        },
+        "1920": {
+          "body_components": {
+            "body_rate_radps": 0.0,
+            "position_m": 0.0,
+            "quaternion": 0.0,
+            "velocity_mps": 0.0
+          },
+          "body_max_absolute": 0.0,
+          "continuous_components": {
+            "pack_heat_j": 0.0,
+            "remaining_charge_c": 0.0,
+            "shaft_rpm": 0.0,
+            "terminal_energy_j": 0.0
+          }
+        },
+        "240": {
+          "body_components": {
+            "body_rate_radps": 1.3352686106891248e-07,
+            "position_m": 4.446275170266745e-08,
+            "quaternion": 1.2489755851080586e-08,
+            "velocity_mps": 1.9774076043255207e-07
+          },
+          "body_max_absolute": 1.9774076043255207e-07,
+          "continuous_components": {
+            "pack_heat_j": 4.6323356261979143e-10,
+            "remaining_charge_c": 5.047695594839752e-10,
+            "shaft_rpm": 9.63455022429116e-07,
+            "terminal_energy_j": 1.2419320682965918e-08
+          }
+        },
+        "480": {
+          "body_components": {
+            "body_rate_radps": 3.178594558395087e-08,
+            "position_m": 1.0585381460259669e-08,
+            "quaternion": 2.972236293891095e-09,
+            "velocity_mps": 4.709518153234171e-08
+          },
+          "body_max_absolute": 4.709518153234171e-08,
+          "continuous_components": {
+            "pack_heat_j": 2.146305355665845e-10,
+            "remaining_charge_c": 4.192770575173199e-10,
+            "shaft_rpm": 2.5414010451640934e-07,
+            "terminal_energy_j": 1.0625782920214988e-08
+          }
+        },
+        "960": {
+          "body_components": {
+            "body_rate_radps": 6.363749954080289e-09,
+            "position_m": 2.1221921997494064e-09,
+            "quaternion": 5.961186336223001e-10,
+            "velocity_mps": 9.41644651142326e-09
+          },
+          "body_max_absolute": 9.41644651142326e-09,
+          "continuous_components": {
+            "pack_heat_j": 5.288280924276023e-11,
+            "remaining_charge_c": 1.3096723705530167e-10,
+            "shaft_rpm": 1.5189471014309675e-08,
+            "terminal_energy_j": 2.81607981378329e-09
+          }
+        }
+      },
+      "heat_convergence": "decreasing",
+      "limits": {
+        "body_rate_radps": 2e-06,
+        "pack_heat_j": 2e-06,
+        "position_m": 2e-06,
+        "quaternion": 2e-07,
+        "remaining_charge_c": 2e-07,
+        "shaft_rpm": 0.0001,
+        "terminal_energy_j": 2e-05,
+        "velocity_mps": 2e-06
+      }
+    }
+  }
+}

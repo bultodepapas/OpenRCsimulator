@@ -1,0 +1,172 @@
+{
+  "format": "openrc-electric-flight-verification v1",
+  "flights": {
+    "4s-level": {
+      "trace_sha256": "55528a3cb06a8a0a3a0637576516ac9a20c7515adc259a13cfc36ce412205fe6",
+      "aircraft_input_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "rows": 7201,
+      "altitude_change_m": -7.000011237323633e-09,
+      "heading_change_deg": 2.279975888086483e-07,
+      "min_rpm": 5174.245356423,
+      "max_current_a": 12.108525741,
+      "max_power_residual_w": 7.400004164992424e-09
+    },
+    "4s-turn": {
+      "trace_sha256": "40712bdf60721143d2618d471b898ddb355b6a12540e02a8d248bf3a0cf5d923",
+      "aircraft_input_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "rows": 7201,
+      "altitude_change_m": 1.119256460999992,
+      "heading_change_deg": 357.02455022600043,
+      "min_rpm": 5174.245356439,
+      "max_current_a": 26.690420628,
+      "max_power_residual_w": 8.400007800446474e-09
+    },
+    "4s-climb": {
+      "trace_sha256": "6c682425e1bf976148b7cd3244f4bedcb9921f81812adc5dd2e5e96a5f3d150f",
+      "aircraft_input_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "rows": 7201,
+      "altitude_change_m": 65.872900246,
+      "heading_change_deg": -32.309613625006364,
+      "min_rpm": 5174.245356439,
+      "max_current_a": 48.563216153,
+      "max_power_residual_w": 8.600039791417657e-09
+    },
+    "4s-chop": {
+      "trace_sha256": "9304a5c26ae2c0494f81a6b6e4ecd86c31c855ffdd5535e9ae3a955de7c1d81f",
+      "aircraft_input_sha256": "80ee03c81260f4933158a8d1f2c394745d030f1ed5130f1897b4bc9fac3f3460",
+      "rows": 7201,
+      "altitude_change_m": -23.409090028999998,
+      "heading_change_deg": 7.702504108000426,
+      "min_rpm": 1148.42315482,
+      "max_current_a": 73.920009671,
+      "max_power_residual_w": 8.400036222155904e-09
+    },
+    "6s-level": {
+      "trace_sha256": "ac1a2d80065f05454a69242e6511525fde89958ee6d3ed93ac2e9216d5c3243a",
+      "aircraft_input_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "rows": 7201,
+      "altitude_change_m": -1.0999997357430402e-08,
+      "heading_change_deg": 3.069967533519957e-07,
+      "min_rpm": 5174.245356404,
+      "max_current_a": 7.05426287,
+      "max_power_residual_w": 1.0200025712947536e-08
+    },
+    "6s-turn": {
+      "trace_sha256": "9de7676db9055327eef59ae8626ec4a2be80df59208ec6ac6d79f926d5b75a7d",
+      "aircraft_input_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "rows": 7201,
+      "altitude_change_m": -2.2900005479999948,
+      "heading_change_deg": 361.11079400300144,
+      "min_rpm": 5174.245356522,
+      "max_current_a": 19.426582659,
+      "max_power_residual_w": 1.2399993920553243e-08
+    },
+    "6s-climb": {
+      "trace_sha256": "7e8603bb3f78e62ff6d32eab6f3899f8856a6b1a755a0fe4d0dae1428a279b14",
+      "aircraft_input_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "rows": 7201,
+      "altitude_change_m": 60.797302062,
+      "heading_change_deg": -32.03301529200755,
+      "min_rpm": 5174.245356522,
+      "max_current_a": 37.985009544,
+      "max_power_residual_w": 1.2399993920553243e-08
+    },
+    "6s-chop": {
+      "trace_sha256": "c76c47826b4e9d92b051b1b24a9fab2b06a18d340ac4f0713d78b338fd041701",
+      "aircraft_input_sha256": "ffe8c6667c582c4e12355c9cd8803f7ea09fc563d57aee08247fd72a48986e06",
+      "rows": 7201,
+      "altitude_change_m": -23.453314461999994,
+      "heading_change_deg": 9.154096279998612,
+      "min_rpm": 1053.019799458,
+      "max_current_a": 78.685400429,
+      "max_power_residual_w": 1.219999035129149e-08
+    }
+  },
+  "refinement": {
+    "4s": {
+      "120": {
+        "body_max_absolute": 8.782017164588041e-07,
+        "components": {
+          "position_m": 1.569248411215085e-07,
+          "velocity_mps": 8.782017164588041e-07,
+          "quaternion": 4.99859143902881e-08,
+          "body_rate_radps": 6.139964755648257e-07
+        },
+        "rpm_absolute": 4.987130523659289e-06
+      },
+      "240": {
+        "body_max_absolute": 2.172141080336587e-07,
+        "components": {
+          "position_m": 3.87852878702688e-08,
+          "velocity_mps": 2.172141080336587e-07,
+          "quaternion": 1.2347369762050198e-08,
+          "body_rate_radps": 1.5166556587486654e-07
+        },
+        "rpm_absolute": 2.309987394255586e-06
+      },
+      "480": {
+        "body_max_absolute": 5.170581962588017e-08,
+        "components": {
+          "position_m": 9.254847554984735e-09,
+          "velocity_mps": 5.170581962588017e-08,
+          "quaternion": 2.945603250897877e-09,
+          "body_rate_radps": 3.6148293549448374e-08
+        },
+        "rpm_absolute": 4.4053194869775325e-08
+      },
+      "960": {
+        "body_max_absolute": 1.0351131285446513e-08,
+        "components": {
+          "position_m": 1.8434604953654343e-09,
+          "velocity_mps": 1.0351131285446513e-08,
+          "quaternion": 5.870050834300145e-10,
+          "body_rate_radps": 7.215692382142591e-09
+        },
+        "rpm_absolute": 2.113938535330817e-07
+      }
+    },
+    "6s": {
+      "120": {
+        "body_max_absolute": 7.511307928975697e-07,
+        "components": {
+          "position_m": 1.744908786349697e-07,
+          "velocity_mps": 7.511307928975697e-07,
+          "quaternion": 4.818783832030715e-08,
+          "body_rate_radps": 5.016535361002106e-07
+        },
+        "rpm_absolute": 4.716731382359285e-06
+      },
+      "240": {
+        "body_max_absolute": 1.8572387250337385e-07,
+        "components": {
+          "position_m": 4.3215919731665053e-08,
+          "velocity_mps": 1.8572387250337385e-07,
+          "quaternion": 1.1920675849208529e-08,
+          "body_rate_radps": 1.2399457527487862e-07
+        },
+        "rpm_absolute": 6.003938324283808e-07
+      },
+      "480": {
+        "body_max_absolute": 4.423639299311333e-08,
+        "components": {
+          "position_m": 1.0287351415172452e-08,
+          "velocity_mps": 4.423639299311333e-08,
+          "quaternion": 2.836074715351078e-09,
+          "body_rate_radps": 2.9512866733805154e-08
+        },
+        "rpm_absolute": 1.971093297470361e-07
+      },
+      "960": {
+        "body_max_absolute": 8.848992871790529e-09,
+        "components": {
+          "position_m": 2.055827508229413e-09,
+          "velocity_mps": 8.848992871790529e-09,
+          "quaternion": 5.667438844614292e-10,
+          "body_rate_radps": 5.90056553530921e-09
+        },
+        "rpm_absolute": 5.207402864471078e-08
+      }
+    }
+  },
+  "negative_controls": 32
+}

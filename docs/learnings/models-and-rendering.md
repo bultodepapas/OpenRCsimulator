@@ -1,6 +1,6 @@
 # Models and rendering
 
-**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-08; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-10; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Aircraft models and references
 
@@ -24,13 +24,19 @@
 
 ## Rendering and visual evidence
 
+- **A clock's restart selection is different from its current instant.** Rate edits preserve fractional ticks; explicit time selections reset them and establish the restart value. Validate each serialized transition against its predecessor, bind its frequency to the physics timestep, and reject unsupported histories before restoring physical state. A valid per-record config hash cannot detect a hidden time jump. ([TOD-09c1](../research/time-of-day-investigations/TOD-09c1/README.md))
+
+- **Freeze the render pose as well as simulation ticks for pixel comparisons.** A paused tick does not freeze `Engine.get_physics_interpolation_fraction()`. Resampling between fresh-build and in-place captures changed 47 aircraft pixels while the field matched. Pin an explicit physical pose, assert the aircraft transform stays unchanged, and retain exact pixel equality; do not mask the mismatch or increase tolerance. ([TOD-09b diagnostic](../research/time-of-day-investigations/TOD-09b/README.md#capture-oracle-diagnostic)) For fresh-build comparisons, also match resource-allocation context: identical static mesh arrays received different opaque draw order after rebuilding in one process. Independent startup processes preserve exact assertions without changing the camera or masking pixels. ([Mesh-context controls](../research/time-of-day-investigations/TOD-09b/static-cell-diagnostic/README.md#follow-up-mesh-allocation-context))
+
 - **Audit a DCC rig before treating its hierarchy as a runtime contract.** The Timber source stores metre-scale Blender transforms beside millimetre CAD metadata, a posed root, driver-controlled hinges, and fixed motor mounts under the propeller's parent. Record each representation's units and rest frame; separate fixed and rotating children before wiring simulator poses. Static inspection identifies these risks but does not replace an evaluated export/import check. ([TT-00](../research/timber-integration/TT-00/README.md))
 
 - **Probe the pinned renderer instead of generalizing from tutorials or another backend.** Small tests against the project's Godot version and Compatibility renderer have exposed differences in per-instance uniforms, shader bounds, color handling, and particle behavior. A probe establishes only the behavior it actually exercises. ([VQ-00](../research/visual-quality-round2/README.md), [SM-PLAN](../research/smoke-investigations/README.md))
 
 - **Match sky and spatial fog in linear color.** In Compatibility, sky-shader `COLOR` is interpreted as sRGB and decoded after `sky()`, while spatial `FOG` and engine fog operate in linear space. Do atmospheric math in linear values and encode the sky result so the decoded value matches the fog; direct assignment can create a visible horizon seam. ([L1/L2 investigation](../research/landscape-investigations/02-atmosphere-aerial-perspective.md), [sky shader](../../app/render/sky.gdshader))
 
-- **Keep a CPU copy of shader globals sent at runtime.** Godot's global-shader-parameter readback methods are editor-only; in a real renderer they log errors and return null, while headless probes can appear to work. Diagnostics and captures should report the values the application sent instead of relying on a misleading readback. ([ShaderClock](../../app/render/shader_clock.gd), [L0d](../LANDSCAPE-PLAN.md))
+- **Check darkness through every lighting path.** A dark background does not prove dark ambient or metallic reflections: the pinned Compatibility probe retained daytime radiance for several INCREMENTAL frames. Unshaded grey contact decals can also brighten a nearly black surface despite being called shadows. Initialise radiance before exposing a new scene and make night contact cues darkening-only. ([TOD-01](../research/time-of-day-investigations/TOD-01/README.md), [TOD-04](../research/time-of-day-investigations/TOD-04/README.md))
+
+- **Keep a CPU copy of shader globals sent at runtime.** Godot's global-shader-parameter readback methods are editor-only; in a real renderer they log errors and return null, while headless probes can appear to work. Diagnostics and captures should report the values the application sent instead of relying on a misleading readback. ([ShaderClock](../../app/render/shader_clock.gd), [L0d](../LANDSCAPE-PLAN.md)) Detached material construction may still write those globals. Preserve and restore the live values during preparation, then test rejected restores at a nonzero cloud/animation time; building outside the tree alone does not establish atomicity. ([TOD-08a](../research/time-of-day-investigations/TOD-08a/README.md))
 
 - **Bounds must include shader motion and transparent padding.** Automatic mesh bounds describe undeformed geometry, so vertex-shader displacement can be culled unless `custom_aabb` covers its full range. For tree cards, endpoint bending can shift the interpolated trunk root; use a root-preserving transform and include padded card extents in culling bounds. ([VQ-00](../research/visual-quality-round2/godot-probe/README.md), [L15b](../research/visual-quality-implementation/L15b/README.md))
 

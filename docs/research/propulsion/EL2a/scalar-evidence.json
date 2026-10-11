@@ -1,0 +1,486 @@
+{
+  "format": "openrc-el2a-battery-evidence-v1",
+  "status": "synthetic numerical qualification; no aircraft or pack calibration",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "python_versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4"
+  },
+  "fixture": {
+    "aux_event_initial_soc": 0.05,
+    "aux_event_pack": {
+      "auxiliary_current_a": 13.0,
+      "capacity_ah": 0.05,
+      "ocv_points": [
+        [
+          0.0,
+          10.0
+        ],
+        [
+          1.0,
+          12.6
+        ]
+      ],
+      "resistance_ohm": 0.004
+    },
+    "aux_event_rpm": 1500.0,
+    "axis_body": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "carrier_inertia_kg_m2": 0.0039,
+    "locked_inertia_kg_m2": 0.004,
+    "motor": {
+      "kv_rpm_per_volt": 800.0,
+      "no_load_current_a": 1.0,
+      "resistance_ohm": 0.06
+    },
+    "rates_hz": [
+      120,
+      240,
+      480,
+      960
+    ],
+    "relative_rotor_inertia_kg_m2": 0.0001,
+    "smooth_duty": 0.7,
+    "smooth_horizon_s": 0.5,
+    "smooth_initial_omega_rad_s": 20.0,
+    "smooth_initial_soc": 0.85,
+    "smooth_pack": {
+      "auxiliary_current_a": 0.25,
+      "capacity_ah": 1.0,
+      "ocv_points": [
+        [
+          0.0,
+          10.5
+        ],
+        [
+          1.0,
+          12.6
+        ]
+      ],
+      "resistance_ohm": 0.012
+    }
+  },
+  "independent_reference": {
+    "auxiliary_only": {
+      "initial_charge_c": 9.0,
+      "capacity_c": 180.0,
+      "initial_soc": 0.05,
+      "initial_ocv_v": 10.13,
+      "event_time_s": 0.6923076923076923,
+      "initial_omega_rad_s": 157.07963267948966,
+      "final_omega_rad_s": 72.32256239386493,
+      "final_rpm": 690.6295981233374,
+      "final_body_rate_x_rad_s": 2.1189267571406183,
+      "stop_time_s": 1.2830485721416167,
+      "momentum_x_kg_m2_s": 0.015707963267948967,
+      "final_charge_c": 0.0,
+      "final_soc": 0.0,
+      "chemical_energy_removed_j": 90.585,
+      "terminal_energy_j": 90.11699999999999,
+      "pack_heat_j": 0.468,
+      "energy_balance_residual_j": 3.497202527569243e-15,
+      "points": [
+        {
+          "hz": 120,
+          "ticks_to_event": 84,
+          "event_time_s": 0.6923076923076923,
+          "fixed_tick_endpoint_s": 0.7,
+          "final_tick_duration_s": 0.0006410256410256387,
+          "final_tick_fraction": 0.07692307692307665,
+          "endpoint_omega_rad_s": 71.38081716846911,
+          "endpoint_body_rate_x_rad_s": 2.142470387775514
+        },
+        {
+          "hz": 240,
+          "ticks_to_event": 167,
+          "event_time_s": 0.6923076923076923,
+          "fixed_tick_endpoint_s": 0.6958333333333333,
+          "final_tick_duration_s": 0.0006410256410256387,
+          "final_tick_fraction": 0.1538461538461533,
+          "endpoint_omega_rad_s": 71.89092916555852,
+          "endpoint_body_rate_x_rad_s": 2.129717587848279
+        },
+        {
+          "hz": 480,
+          "ticks_to_event": 333,
+          "event_time_s": 0.6923076923076923,
+          "fixed_tick_endpoint_s": 0.69375,
+          "final_tick_duration_s": 0.0006410256410256387,
+          "final_tick_fraction": 0.3076923076923066,
+          "endpoint_omega_rad_s": 72.14598516410322,
+          "endpoint_body_rate_x_rad_s": 2.123341187884661
+        },
+        {
+          "hz": 960,
+          "ticks_to_event": 665,
+          "event_time_s": 0.6923076923076923,
+          "fixed_tick_endpoint_s": 0.6927083333333334,
+          "final_tick_duration_s": 0.0006410256410256387,
+          "final_tick_fraction": 0.6153846153846132,
+          "endpoint_omega_rad_s": 72.27351316337557,
+          "endpoint_body_rate_x_rad_s": 2.1201529879028524
+        }
+      ],
+      "equation": "Cdot=-Iaux; t*=C0/Iaux; Echem=integral_C*^C0 OCV(C/Ccapacity)dC; H=Rpack*Iaux^2*t*; Eterminal=Echem-H"
+    },
+    "smooth": {
+      "initial_charge_c": 3060.0,
+      "capacity_c": 3600.0,
+      "final_time_s": 0.5,
+      "endpoint": {
+        "omega_rad_s": 714.5737397156753,
+        "body_rate_x_rad_s": -17.36434349289185,
+        "remaining_charge_c": 3055.5536366803217,
+        "soc": 0.8487648990778671,
+        "terminal_energy_j": 52.42218062910169,
+        "pack_heat_j": 2.1956264603862827,
+        "chemical_energy_removed_j": 54.61780708943974,
+        "shaft_work_j": 24.873011937698173,
+        "kinetic_energy_j": 24.893011937698226,
+        "momentum_x_kg_m2_s": 0.002000000000000113
+      },
+      "budgets": {
+        "momentum_drift_kg_m2_s": 1.1275702593849246e-16,
+        "battery_energy_residual_j": -4.82351936170744e-11,
+        "mechanical_work_residual_j": 5.3290705182007514e-14
+      },
+      "branch_margins": {
+        "minimum_motor_current_a": 1.0016497524078398,
+        "minimum_shaft_torque_nm": 1.969246879390981e-05,
+        "minimum_remaining_charge_c": 3055.5536366803217,
+        "minimum_soc": 0.8487648990778671
+      },
+      "method": "SciPy 1.11.4 DOP853, independently written scalar source, axial rotor and pack equations",
+      "rhs": [
+        "Im=max((d*(OCV(C/Ccap)-Rpack*Iaux)-rpm/Kv)/(Rm+d^2*Rpack),0)",
+        "Ipack=d*Im+Iaux; Vbus=OCV-Rpack*Ipack",
+        "Qsource=kt*(Im-I0); Omegadot=Jlocked/(Jrotor*Jcarrier)*Qsource",
+        "body_rate_dot=-(Jrotor/Jlocked)*Omegadot from constant axial H",
+        "Cdot=-Ipack; Eterminal_dot=Vbus*Ipack; Hpack_dot=Rpack*Ipack^2"
+      ],
+      "solver_evaluations": 7502,
+      "solver_rtol": 2e-13,
+      "solver_atol": [
+        2e-13,
+        2e-13,
+        2e-11,
+        2e-11,
+        2e-11,
+        2e-11
+      ],
+      "solver_max_step_s": 0.001,
+      "dense_branch_check_points": 201
+    }
+  },
+  "checks": {
+    "auxiliary_only": {
+      "points": [
+        {
+          "hz": 120,
+          "ticks_to_event": 84,
+          "event_time_error_s": 5.967448757360216e-13,
+          "event_time_error_bound_s": 9.70127624067008e-13,
+          "event_charge_residual_c": -7.75766603733352e-12,
+          "fixed_tick_endpoint_s": 0.7,
+          "final_tick_duration_s": 0.000641025641622606,
+          "final_tick_fraction": 0.0769230769947127,
+          "final_rpm_error": -4.206412995699793e-12,
+          "body_rate_error_rad_s": 0.023543630634901724,
+          "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+          "terminal_energy_error_j": 7.73070496506989e-11,
+          "pack_heat_error_j": 4.0295544678770057e-13,
+          "battery_energy_residual_j": -7.76781416966799e-11,
+          "event_count": 1
+        },
+        {
+          "hz": 240,
+          "ticks_to_event": 167,
+          "event_time_error_s": 5.95745675013859e-13,
+          "event_time_error_bound_s": 9.70127624067008e-13,
+          "event_charge_residual_c": -7.7409294252373e-12,
+          "fixed_tick_endpoint_s": 0.695833333333332,
+          "final_tick_duration_s": 0.000641025641621384,
+          "final_tick_fraction": 0.153846153989132,
+          "final_rpm_error": -4.774847184307873e-12,
+          "body_rate_error_rad_s": 0.010790830707661847,
+          "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+          "terminal_energy_error_j": 7.720757366769249e-11,
+          "pack_heat_error_j": 4.0495384823202585e-13,
+          "battery_energy_residual_j": -7.76232966792634e-11,
+          "event_count": 1
+        },
+        {
+          "hz": 480,
+          "ticks_to_event": 333,
+          "event_time_error_s": 5.947464742916964e-13,
+          "event_time_error_bound_s": 9.70127624067008e-13,
+          "event_charge_residual_c": -7.79029271646969e-12,
+          "fixed_tick_endpoint_s": 0.693749999999998,
+          "final_tick_duration_s": 0.000641025641620829,
+          "final_tick_fraction": 0.307692307977998,
+          "final_rpm_error": -4.433786671143025e-12,
+          "body_rate_error_rad_s": 0.004414430744031694,
+          "momentum_drift_kg_m2_s": -6.591949208711867e-17,
+          "terminal_energy_error_j": 7.720757366769249e-11,
+          "pack_heat_error_j": 4.059530489541885e-13,
+          "battery_energy_residual_j": -7.76386732681544e-11,
+          "event_count": 1
+        },
+        {
+          "hz": 960,
+          "ticks_to_event": 665,
+          "event_time_error_s": 6.047384815133228e-13,
+          "event_time_error_bound_s": 9.70127624067008e-13,
+          "event_charge_residual_c": -7.81497436208589e-12,
+          "fixed_tick_endpoint_s": 0.692708333333341,
+          "final_tick_duration_s": 0.00064102564163071,
+          "final_tick_fraction": 0.615384615965482,
+          "final_rpm_error": 3.979039320256561e-11,
+          "body_rate_error_rad_s": 0.001226230762241709,
+          "momentum_drift_kg_m2_s": 4.3368086899420177e-16,
+          "terminal_energy_error_j": 7.720757366769249e-11,
+          "pack_heat_error_j": 4.0695224967635113e-13,
+          "battery_energy_residual_j": -7.76250175249515e-11,
+          "event_count": 1
+        }
+      ],
+      "expected": {
+        "initial_charge_c": 9.0,
+        "capacity_c": 180.0,
+        "initial_soc": 0.05,
+        "initial_ocv_v": 10.13,
+        "event_time_s": 0.6923076923076923,
+        "initial_omega_rad_s": 157.07963267948966,
+        "final_omega_rad_s": 72.32256239386493,
+        "final_rpm": 690.6295981233374,
+        "final_body_rate_x_rad_s": 2.1189267571406183,
+        "stop_time_s": 1.2830485721416167,
+        "momentum_x_kg_m2_s": 0.015707963267948967,
+        "final_charge_c": 0.0,
+        "final_soc": 0.0,
+        "chemical_energy_removed_j": 90.585,
+        "terminal_energy_j": 90.11699999999999,
+        "pack_heat_j": 0.468,
+        "energy_balance_residual_j": 3.497202527569243e-15,
+        "points": [
+          {
+            "hz": 120,
+            "ticks_to_event": 84,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.7,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.07692307692307665,
+            "endpoint_omega_rad_s": 71.38081716846911,
+            "endpoint_body_rate_x_rad_s": 2.142470387775514
+          },
+          {
+            "hz": 240,
+            "ticks_to_event": 167,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.6958333333333333,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.1538461538461533,
+            "endpoint_omega_rad_s": 71.89092916555852,
+            "endpoint_body_rate_x_rad_s": 2.129717587848279
+          },
+          {
+            "hz": 480,
+            "ticks_to_event": 333,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.69375,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.3076923076923066,
+            "endpoint_omega_rad_s": 72.14598516410322,
+            "endpoint_body_rate_x_rad_s": 2.123341187884661
+          },
+          {
+            "hz": 960,
+            "ticks_to_event": 665,
+            "event_time_s": 0.6923076923076923,
+            "fixed_tick_endpoint_s": 0.6927083333333334,
+            "final_tick_duration_s": 0.0006410256410256387,
+            "final_tick_fraction": 0.6153846153846132,
+            "endpoint_omega_rad_s": 72.27351316337557,
+            "endpoint_body_rate_x_rad_s": 2.1201529879028524
+          }
+        ],
+        "equation": "Cdot=-Iaux; t*=C0/Iaux; Echem=integral_C*^C0 OCV(C/Ccapacity)dC; H=Rpack*Iaux^2*t*; Eterminal=Echem-H"
+      }
+    },
+    "smooth": {
+      "points": [
+        {
+          "hz": 120,
+          "steps": 60,
+          "final_time_s": 0.500000000000001,
+          "reference_error": {
+            "omega_rad_s": -1.3322543281901744e-06,
+            "body_rate_x_rad_s": 3.330635323095521e-08,
+            "remaining_charge_c": 7.608377927681431e-09,
+            "soc": 2.1148638396084607e-12,
+            "terminal_energy_j": -5.7709713487952286e-05,
+            "pack_heat_j": 5.7742668877480696e-05
+          },
+          "absolute_momentum_drift_kg_m2_s": 1.9949319973733282e-17,
+          "chemical_energy_residual_j": -1.264527416111605e-07
+        },
+        {
+          "hz": 240,
+          "steps": 120,
+          "final_time_s": 0.499999999999999,
+          "reference_error": {
+            "omega_rad_s": -7.70683072914835e-08,
+            "body_rate_x_rad_s": 1.9267503148512333e-09,
+            "remaining_charge_c": 4.383764462545514e-10,
+            "soc": 1.2090328738167955e-13,
+            "terminal_energy_j": -3.3943268888947387e-06,
+            "pack_heat_j": 3.3963561372196693e-06
+          },
+          "absolute_momentum_drift_kg_m2_s": 1.1015494072452725e-16,
+          "chemical_energy_residual_j": -7.461663731334056e-09
+        },
+        {
+          "hz": 480,
+          "steps": 240,
+          "final_time_s": 0.499999999999999,
+          "reference_error": {
+            "omega_rad_s": -4.634330252883956e-09,
+            "body_rate_x_rad_s": 1.1585044035200553e-10,
+            "remaining_charge_c": 1.8189894035458565e-11,
+            "soc": 5.88418203051333e-15,
+            "terminal_energy_j": -2.0576609216504949e-07,
+            "pack_heat_j": 2.0589174720697656e-07
+          },
+          "absolute_momentum_drift_kg_m2_s": 1.9949319973733282e-17,
+          "chemical_energy_residual_j": -3.9693670572660267e-10
+        },
+        {
+          "hz": 960,
+          "steps": 480,
+          "final_time_s": 0.499999999999999,
+          "reference_error": {
+            "omega_rad_s": -2.843307811417617e-10,
+            "body_rate_x_rad_s": 7.052136652418994e-12,
+            "remaining_charge_c": -1.8189894035458565e-12,
+            "soc": -1.1102230246251565e-15,
+            "terminal_energy_j": -1.2664692405905953e-08,
+            "pack_heat_j": 1.2672517257783511e-08
+          },
+          "absolute_momentum_drift_kg_m2_s": 5.984795992119984e-17,
+          "chemical_energy_residual_j": -3.370637102761975e-11
+        }
+      ],
+      "absolute_error_budgets": {
+        "omega_rad_s": 0.002,
+        "body_rate_x_rad_s": 5e-05,
+        "remaining_charge_c": 0.002,
+        "soc": 1e-06,
+        "terminal_energy_j": 0.002,
+        "pack_heat_j": 0.002
+      },
+      "observed_orders_diagnostic_only": {
+        "omega_rad_s": [
+          4.111588005542772,
+          4.0557049416250965,
+          4.0267186614193875
+        ],
+        "body_rate_x_rad_s": [
+          4.111555867711073,
+          4.055834193645968,
+          4.038059287048875
+        ],
+        "remaining_charge_c": [
+          4.117346720131832,
+          4.590961241342599,
+          3.3219280948873626
+        ],
+        "soc": [
+          4.12863940454021,
+          4.360867784153708,
+          2.4059923596758366
+        ],
+        "terminal_energy_j": [
+          4.0876167537797645,
+          4.044048341836006,
+          4.022121319532193
+        ],
+        "pack_heat_j": [
+          4.087578139815155,
+          4.044029837377589,
+          4.02211096960143
+        ]
+      },
+      "expected": {
+        "initial_charge_c": 3060.0,
+        "capacity_c": 3600.0,
+        "final_time_s": 0.5,
+        "endpoint": {
+          "omega_rad_s": 714.5737397156753,
+          "body_rate_x_rad_s": -17.36434349289185,
+          "remaining_charge_c": 3055.5536366803217,
+          "soc": 0.8487648990778671,
+          "terminal_energy_j": 52.42218062910169,
+          "pack_heat_j": 2.1956264603862827,
+          "chemical_energy_removed_j": 54.61780708943974,
+          "shaft_work_j": 24.873011937698173,
+          "kinetic_energy_j": 24.893011937698226,
+          "momentum_x_kg_m2_s": 0.002000000000000113
+        },
+        "budgets": {
+          "momentum_drift_kg_m2_s": 1.1275702593849246e-16,
+          "battery_energy_residual_j": -4.82351936170744e-11,
+          "mechanical_work_residual_j": 5.3290705182007514e-14
+        },
+        "branch_margins": {
+          "minimum_motor_current_a": 1.0016497524078398,
+          "minimum_shaft_torque_nm": 1.969246879390981e-05,
+          "minimum_remaining_charge_c": 3055.5536366803217,
+          "minimum_soc": 0.8487648990778671
+        },
+        "method": "SciPy 1.11.4 DOP853, independently written scalar source, axial rotor and pack equations",
+        "rhs": [
+          "Im=max((d*(OCV(C/Ccap)-Rpack*Iaux)-rpm/Kv)/(Rm+d^2*Rpack),0)",
+          "Ipack=d*Im+Iaux; Vbus=OCV-Rpack*Ipack",
+          "Qsource=kt*(Im-I0); Omegadot=Jlocked/(Jrotor*Jcarrier)*Qsource",
+          "body_rate_dot=-(Jrotor/Jlocked)*Omegadot from constant axial H",
+          "Cdot=-Ipack; Eterminal_dot=Vbus*Ipack; Hpack_dot=Rpack*Ipack^2"
+        ],
+        "solver_evaluations": 7502,
+        "solver_rtol": 2e-13,
+        "solver_atol": [
+          2e-13,
+          2e-13,
+          2e-11,
+          2e-11,
+          2e-11,
+          2e-11
+        ],
+        "solver_max_step_s": 0.001,
+        "dense_branch_check_points": 201
+      }
+    }
+  },
+  "independence": {
+    "expected_values": "closed-form linear-OCV charge/energy oracle and SciPy DOP853 scalar equations",
+    "production_observation": "Godot EL2 battery event step and coupled principal-axis rotor trajectory",
+    "production_sha256": {
+      "physics/electric_battery_step.gd": "7d42ec652b1ab00f1fc335b92407740dde8b61eaf7fa058272fd10ef8d369997",
+      "physics/electric_supply.gd": "a824da4ac685702f0d165381fb0e29c7e9aecb535ed9025303989ecd720d216a",
+      "physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+      "physics/rotor_coupling.gd": "e893d4707feeb119a727ff050366fc077c7f35ddb7316303576f2ad3b5e05126",
+      "physics/integrator.gd": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311"
+    },
+    "probe_sha256": "a3c1097e81e30680b2adede0587ba240d6f37ce557c5deed8e83fa739f604f21",
+    "verifier_sha256": "55f90d6db69b87d8bcaa1890938b229e653ddac607c94d6792241f46d48874d2"
+  },
+  "limitations": [
+    "Synthetic single-segment OCV and direct-drive motor parameters; no measured pack or motor claim.",
+    "Rotor/body oracle is one principal axis with no propeller load or external moment.",
+    "The smooth fixture stays on positive motor current and does not cross an OCV knot or stop/exhaustion event.",
+    "Aux-only final-tick event is exact for constant auxiliary current; it does not validate a BMS cutoff or weakest-cell model."
+  ],
+  "ok": true
+}

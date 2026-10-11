@@ -1,0 +1,108 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "flight": {
+    "ground_speed_mps": 19.8299521238522,
+    "hud_text": "airspeed  14.0 m/s   altitude  29.6 m   AoA  +4.5°   throttle  28%\nground speed 19.8 m/s  wind 6.0 m/s from 270°  up +1.5 m/s",
+    "simulation_time_s": 4.0,
+    "tas_mps": 14.0351783172225,
+    "ticks": 960,
+    "weather_config": {
+      "format": "openrc-weather v1",
+      "from_deg": 270.0,
+      "gust_delay_s": 2.0,
+      "gust_duration_s": 4.0,
+      "gust_mps": 3.0,
+      "gust_period_s": 12.0,
+      "gust_up_mps": 1.5,
+      "speed_mps": 3.0
+    },
+    "wind_ned_mps": [
+      0.0,
+      6.0,
+      -1.5
+    ]
+  },
+  "format": "openrc-wind-ui-capture v1",
+  "image": "flight-gusty-en-1280x720.png",
+  "image_check": {
+    "nonuniform_samples": 230370,
+    "not_blank": true,
+    "sample_stride_px": 2,
+    "samples": 230400,
+    "unique_colors": 7299
+  },
+  "language": "en",
+  "layout": {
+    "container_overlap_count": 0,
+    "control_count": 3,
+    "controls": [
+      {
+        "class": "PanelContainer",
+        "name": "@PanelContainer@89",
+        "rect": [
+          8.0,
+          8.0,
+          490.0,
+          233.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@88",
+        "rect": [
+          18.0,
+          16.0,
+          470.0,
+          217.0
+        ]
+      },
+      {
+        "class": "Label",
+        "name": "@Label@91",
+        "rect": [
+          12.0,
+          656.0,
+          676.0,
+          64.0
+        ]
+      }
+    ],
+    "findings": [],
+    "offscreen_count": 0,
+    "ok": true,
+    "target": "Main",
+    "zero_size_count": 0
+  },
+  "producer": "research/wind/M5-W03b/capture.gd",
+  "renderer": "gl_compatibility",
+  "screen": "flight",
+  "selected_dialog_preset": "",
+  "sha256": "718fd22f7cfccd33c16cf2ac95b0cef2d0785424e7299ef5a9dca7d145e46646",
+  "size": [
+    1280,
+    720
+  ],
+  "source_sha256": {
+    "app_root.gd": "8ddc4b90d3404c97dc7f383b6980c8cc70994fee459bb923009b7fb7643399de",
+    "app_state/preferences.gd": "c9b24e41d5a789ca2ce9d0e459e75ad46ae3b7e4959c3279de83314051633e22",
+    "i18n/es.po": "c43e8427e9e1fa2cbae338c7820fa41c6342a91712ac27ef80658641e86ea4ff",
+    "main.gd": "c09cc00c03fc0a062d1831bf601c1800ceedfa07f28c28e47c02dc63e807170e",
+    "physics/wind_config.gd": "f3385ff8e6b31f830b621d8fb095179e5e5c0e34241189beb2ac4c6735f98f4a",
+    "physics/wind_field.gd": "aca8ea105a9690cb7a23f09c12862a2294ccb0dd6ba84183e56f92bfa068e885",
+    "render/hud.gd": "8dc055c14aa2137e0cadc8d4a79fa223a09a9c7df43e182b62c344688177523d",
+    "sim/flight_session.gd": "a44325dd87ed10d1b8ba887403656da96152d4a296b9e072f1a27e5812d93b2f",
+    "ui/home.gd": "415d79ae60015b3c8c295492248f4a09ba9b1aac0175c537d6c640628770497f",
+    "ui/weather_dialog.gd": "4bec8b3933bc00e65c4121b8d70c3778fbc3144e7bfa03ea2778738c804e964c"
+  },
+  "weather_config": {
+    "format": "openrc-weather v1",
+    "from_deg": 270.0,
+    "gust_delay_s": 2.0,
+    "gust_duration_s": 4.0,
+    "gust_mps": 3.0,
+    "gust_period_s": 12.0,
+    "gust_up_mps": 1.5,
+    "speed_mps": 3.0
+  },
+  "weather_preset": "gusty"
+}

@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data loads, trims, and the field's surfaces apply  trimmed 
+info mass 21.50 kg, 1-g stall (CL_max 1.02) 15.7 m/s
+info parked: pitch 14.3°, 3 wheels down; static rpm 4952, idle 1400
+ok   parked: sits on all three wheels at its three-point attitude (12-15°)  14.3°
+ok   static full-throttle rpm 4700-5600 (research: 4-blade 26x12 on a DA-120, 5000-5400)  4952 rpm
+info idle: 18.8 N of thrust, 5.7 m rolled in 10 s, 1.07 m/s
+ok   idle on the grass runway, stick back: at most a slow creep (below 1.5 m/s after 10 s), no crash  1.07 m/s
+info takeoff without rudder: heading -30.5° after 3 s, crashed ''
+ok   takeoff run without rudder swings LEFT (torque, slipstream swirl, P-factor, gyro)  -30.5°
+info takeoff: liftoff 4.0 s, 36 m, 22.0 m/s (Vs 15.7); tail up 2.4 s; max heading error 7.3°, runway offset 2.9 m, bank 0.2°, max right rudder 0.47
+ok   takeoff with rudder: no crash, airborne within 10 s   4.0 s
+ok   ground roll 15-60 m (research: 20-50 m class estimate; Top Flite review ~60 ft for a smaller model)  36 m
+ok   lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  22.0 m/s
+ok   the pilot needs right rudder (> 20 %) and keeps the heading within 10° and on the 12 m strip  rudder 0.47, 7.3°, 2.9 m
+info landing: touchdown 19.9 m/s, sink 1.15 m/s, 13 m past the threshold; bounced true; rollout to 0.0 m/s 155 m past touchdown; heading error max 3.8°; crashed ''
+ok   approach and flare: touchdown in the first half of the runway below 1.2 m/s sink, no crash  sink 1.15 m/s at 13 m
+ok   rollout without brakes: stops within 200 m, heading held within 15° (no ground loop), no crash  0.0 m/s, 155 m, 3.8°
+11 checks, 0 failed

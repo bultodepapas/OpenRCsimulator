@@ -1,0 +1,107 @@
+{
+  "method": "Camera3D rays through pixel centers; Geometry3D.ray_intersects_triangle against static-cell surface vertices transformed to world coordinates; sorted by world distance",
+  "camera_near_m": 0.1,
+  "camera_far_m": 21000,
+  "resolution": [
+    960,
+    540
+  ],
+  "note": "Pixel-center intersections do not reproduce individual MSAA samples or measure stored depth values",
+  "hits": [
+    {
+      "hits": [
+        {
+          "cell": "cell_6_-6",
+          "color": "(0.2706, 0.4353, 0.1922, 1.0)",
+          "distance": 285.7275390625,
+          "hit": "(-150.134, 1.277558, -243.1046)",
+          "rid": 1215475744815,
+          "triangle": 3135
+        },
+        {
+          "cell": "cell_6_-6",
+          "color": "(0.2706, 0.4353, 0.1922, 1.0)",
+          "distance": 286.82196044921875,
+          "hit": "(-150.7091, 1.27594, -244.0357)",
+          "rid": 1215475744815,
+          "triangle": 3145
+        }
+      ],
+      "pixel": "(121.5, 311.5)"
+    },
+    {
+      "hits": [
+        {
+          "cell": "cell_6_-6",
+          "color": "(0.2706, 0.4353, 0.1922, 1.0)",
+          "distance": 285.66961669921875,
+          "hit": "(-150.09, 0.860039, -243.0625)",
+          "rid": 1215475744815,
+          "triangle": 3136
+        },
+        {
+          "cell": "cell_6_-2",
+          "color": "(0.2627, 0.4275, 0.1882, 1.0)",
+          "distance": 285.863525390625,
+          "hit": "(-150.1919, 0.859469, -243.2275)",
+          "rid": 1224065679408,
+          "triangle": 12
+        },
+        {
+          "cell": "cell_6_-2",
+          "color": "(0.2627, 0.4275, 0.1882, 1.0)",
+          "distance": 286.0842590332031,
+          "hit": "(-150.3079, 0.85882, -243.4154)",
+          "rid": 1224065679408,
+          "triangle": 13
+        },
+        {
+          "cell": "cell_6_-6",
+          "color": "(0.2706, 0.4353, 0.1922, 1.0)",
+          "distance": 286.7748107910156,
+          "hit": "(-150.6707, 0.856789, -244.0029)",
+          "rid": 1215475744815,
+          "triangle": 3145
+        }
+      ],
+      "pixel": "(121.5, 312.5)"
+    },
+    {
+      "hits": [
+        {
+          "cell": "cell_6_-2",
+          "color": "(0.2667, 0.4353, 0.1882, 1.0)",
+          "distance": 244.51161193847656,
+          "hit": "(40.09139, 0.866471, -241.201)",
+          "rid": 1224065679408,
+          "triangle": 4041
+        },
+        {
+          "cell": "cell_6_1",
+          "color": "(0.2392, 0.4118, 0.1765, 1.0)",
+          "distance": 244.52554321289062,
+          "hit": "(40.09367, 0.866424, -241.2147)",
+          "rid": 1232655614001,
+          "triangle": 11
+        },
+        {
+          "cell": "cell_6_-2",
+          "color": "(0.2667, 0.4353, 0.1882, 1.0)",
+          "distance": 244.93907165527344,
+          "hit": "(40.16148, 0.865014, -241.6227)",
+          "rid": 1224065679408,
+          "triangle": 4053
+        },
+        {
+          "cell": "cell_6_1",
+          "color": "(0.2392, 0.4118, 0.1765, 1.0)",
+          "distance": 245.30459594726562,
+          "hit": "(40.22141, 0.863768, -241.9832)",
+          "rid": 1232655614001,
+          "triangle": 15
+        }
+      ],
+      "pixel": "(576.5, 312.5)"
+    }
+  ]
+}

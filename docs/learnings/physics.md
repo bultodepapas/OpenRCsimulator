@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-08. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), and electric propulsion (EL), recorded from 2026-10-06 to 2026-10-11. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -18,15 +18,25 @@ Touchdown damping should rise continuously from zero compression and join the fu
 
 A refinement ratio near two can come from a wheel bouncing across the ground-contact branch, not from a defect in the smooth tyre law. Inspect the motion and contact state, establish whether the test is in a smooth or switched regime, and compare against the expected integration order before changing a band. Quasi-static limits are useful oracles only when the test approaches the assumptions behind them. ([E2](../research/ground-friction-e2.md), [H11](../research/simulation-state/H11/README.md))
 
+The whole session can also converge near first order during control transients while every wheel remains loaded: sampled servos and engine updates precede RK4. Compare constant-control contact trials with the complete session at three tick rates before attributing a millimetre-scale difference to the contact law. ([E5a](../research/ground-contact/E5a/README.md))
+
 ### Every coupled continuous state needs the same integration stages
 
 Updating a continuous wake or other lag once per tick while integrating the body with RK4 creates a split, lower-order system. Put coupled continuous variables in the integrator workspace and evaluate them at each RK stage; use a nonautonomous analytic oracle because ordinary autonomous flight traces will not reveal a solver that freezes stage time. Sampled controls and discrete modes still need explicit update boundaries. ([H8a](../research/simulation-state/H8a/README.md), [E0b5](../research/propwash/E0b5/README.md))
+
+An adaptive reference solver needs independent qualification too. Dense output samples do not bound internal event steps, and a root at a shared step endpoint can be reported twice. Verify final time/status, step refinement, event identity/direction and re-arm behavior before treating its output as an oracle; preserve the raw event counterexample. ([EL1a-R2 tool probes](../research/propulsion/EL1a-R2/04-verification-tools.md#11--how-should-an-independent-solver-verify-the-fixed-step-implementation))
+
+### A unilateral rotor stop is a coupled constraint
+
+A combustion cutoff that suppresses deceleration below 1 RPM prevents an electric rotor from reaching its actual rest boundary. Localize the crossing, define the trial continuation and preserve momentum when projecting the tiny residual. At relative rest, include the body's angular acceleration in static-friction/breakaway decisions: body-driven forward spin still needs moving-side bearing loss even with the electrical source off. Scalar rotor tests alone miss that case. ([EL1d](../research/propulsion/EL1d/README.md))
 
 ### A checkpoint is the complete physics boundary
 
 Body position and attitude alone do not define a resumable simulation. Include the previous rigid-body state, auxiliary lags, engine mode, sampled inputs, tick and timestep, configuration, mass properties, and stop condition; restore and roll them back together after a failed tick. JSON is useful diagnostic data but is not a bit-exact checkpoint, and recorded tolerance metadata must never loosen code-owned acceptance limits. ([H8](../research/simulation-state/H8/README.md), [H9](../research/simulation-state/H9/README.md), [C7-R2](../research/trace-integrity/C7-R2/README.md))
 
 Checkpoint producers and consumers should share acceptance rules. Verify restoration by advancing a compatible fresh owner, not only by comparing serialized fields: an omitted fixed timestep can leave an accepted snapshot unable to advance. Validate derived caches before committing rollback history; finite positive-definite inertia can still have a nonfinite numerical inverse. ([H8-R1](../research/simulation-state/H8-R1/README.md))
+
+Native configuration identity includes dictionary key types. In Godot 4.7.2, refactoring `{kind = value}` into `{"kind": value}` changed `StringName` keys to `String` keys and invalidated an existing checkpoint hash despite identical body motion and JSON data. Preserve native model bytes as well as semantic values during loader refactors; EL2a guards both fixed-voltage routes against their prior complete checkpoint hashes. ([EL2a](../research/propulsion/EL2a/README.md), [legacy hashes](../research/propulsion/EL2a/legacy-checkpoints.json))
 
 ### Exact equivalence and physical correctness are separate claims
 
@@ -45,6 +55,10 @@ Keep aircraft tyre coefficients with the aircraft and let each field's surface s
 ### Judge wheel support along gravity on the full resting facet
 
 For rigid gear at rest, find the lower facet of the contacts' convex hull, project the center of gravity along that facet's normal, and measure its margin to the whole coplanar facet boundary. A body-axis projection misjudges taildraggers at their nose-up resting attitude, while testing each triangle separately can give a centered square-layout center zero margin along its diagonals. ([D1-R3](../research/aircraft-validation/D1-R3/README.md))
+
+Use those ground-projected reaction shares when splitting spring stiffness to preserve equal vertical sag. Splitting by body longitudinal arms can still produce a balanced equilibrium, but at a different attitude: the existing P-51 settles 0.68° above its wheel-bottom geometric pose, whereas the Extra's projected-arm split preserves that pose. ([E5a](../research/ground-contact/E5a/README.md))
+
+Define the attitude and contact event before using a nose-over oracle. A tail-up `d/h` predicts main-contact pitch-moment reversal; first tail lift starts from the larger three-point ratio. For compliant fixed-point contacts, the force lever includes penetration and differs from CG height above the nominal plane. Approach the rigid limit with stiffness, timestep and loading-rate checks; a sudden drag patch is a separate transient experiment. ([E5b](../research/ground-contact/E5b/README.md))
 
 ### Stiction needs per-wheel memory and an energy-safe release rule
 
@@ -106,6 +120,12 @@ Tail effectiveness depends on the distributed axial and swirl velocity over the 
 
 When adding propwash to a tail model, evaluate washed and free loads with the same tail law, pressure arm, rate contribution, and sampled wing lift; otherwise the increment subtracts a different baseline. Verify the held downwash state through the real session path, since a helper-only test can miss disconnected state wiring. E0b3a's shared angular downwash is explicitly a quasi-steady approximation, and its manufactured fixtures do not calibrate Stik propwash. ([E0b3a](../research/propwash/E0b3a/README.md))
 
+### Keep electrical current measurement planes explicit
+
+An ideal averaged ESC's battery current is duty times its DC-equivalent motor current. In the EL1a half-duty hand fixture, confusing the two doubles inferred battery input from 90 W to 180 W; an isolated mutation is rejected by both arithmetic and energy checks. Record the current plane and Kv units before fitting motor constants or integrating battery charge. Raw brushless phase RMS current and phase-pair resistance also need an explicit equivalent-port convention. A controller's current rating does not establish a current-limit law. ([EL1a equations and rejecting evidence](../research/propulsion/EL1a/README.md))
+
+Total pack current also includes any BEC/receiver/servo draw referred to the pack side; a different-voltage BEC output current cannot be added directly. A same-family manual may omit the exact ESC: the EL1a-R1 Avian review found no 70 A model in the generic setting tables, and the Timber transmitter alarm was distinct from its ESC cutoff. Record firmware/settings and measurement boundaries before treating family behavior as a calibrated preset. ([EL1a-R1, motor/ESC](../research/propulsion/EL1a-R1/01-motor-esc.md), [battery and LVC](../research/propulsion/EL1a-R1/02-battery.md))
+
 ## Data and performance
 
 ### Validate data before conversion and at the session boundary
@@ -146,9 +166,13 @@ A generator's local `--check` protects nothing if CI never runs it. For multi-st
 
 Component timings help locate a hot path, but they do not predict an evolving flight's full-tick cost or the gain in every regime. Measure through decoding, adapters, and the language boundary, across aircraft and realistic trajectories; report the target machine, run conditions, spread and percentile definition. For attribution, use exclusive timer buckets, assert that timers and expected calls ran, keep the original batch length, alternate instrumented and control runs, and retain raw samples instead of subtracting noisy observer costs. Shared-host numbers in the H and Gate P reports are historical observations, not a current release guarantee, and a Linux-only native probe does not establish other platforms. ([H4/H5](../research/simulation-state/H4-H5/README.md), [H15](../research/simulation-state/H15/README.md), [Gate P](../research/simulation-state/Gate-P/README.md), [E0b6p attribution](../research/propwash/E0b6p/attribution/README.md))
 
+Reject missing elapsed timers and changed workload metadata before normalizing a profile. Treating a missing component as zero silently moves its cost into the residual, even when the buckets still sum to the total. Check required timer keys against call counters and test a deleted timer as a negative control. ([Prepared-path attribution](../research/propwash/E0b6p/prepared-cost/README.md)) For optional branches, cross-check timed calls against independent branch counts: deleting an entire parent/child timer group can otherwise look like a branch that never ran. Review nested argument evaluation too; an RK callback timer around `f.call(axpy(...))` includes the `axpy` work. ([Nested attribution](../research/propwash/E0b6p/dynamics-cost/README.md))
+
 ### Remove calls and allocations before adding a native dependency
 
 Measured GDScript hot paths often spend substantial time on helper calls, temporary arrays and dictionary lookups rather than arithmetic. Scalarize only behind a frozen, sensitive oracle that preserves operation order, and remeasure the complete trajectory: an exact local speedup may still miss the whole-tick budget. A native port also has binding and model-decoding costs, platform-build obligations, and must retain the GDScript oracle until its full path is accepted. ([H12](../research/simulation-state/H12/README.md), [H13](../research/simulation-state/H13/README.md), [E0b6p native evidence](../research/propwash/E0b6p/native/README.md))
+
+Keep dictionary-read hoisting and loop-index rewrites separable when evaluating a candidate. Exact outputs and fewer source expressions do not establish a speedup: a faster helper can coexist with slower other paths and inconsistent whole-flight gains. Preserve the rejected candidate and raw paired samples so the next experiment can isolate the useful change. ([Wing-loop experiment](../research/propwash/E0b6p/wing-loops/README.md))
 
 ### A prepared model needs an explicit ownership boundary
 

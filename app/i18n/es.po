@@ -59,6 +59,207 @@ msgstr "Acelerador"
 msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."
 
+msgid "Weather"
+msgstr "Viento"
+
+msgid "Reference air"
+msgstr "Aire de referencia"
+
+msgid "Thin air"
+msgstr "Aire poco denso"
+
+msgid "Custom air"
+msgstr "Aire personalizado"
+
+msgid "Turbulence"
+msgstr "Turbulencia"
+
+msgid "Calm"
+msgstr "Calma"
+
+msgid "%s m/s from %03.0f°"
+msgstr "%s m/s desde %03.0f°"
+
+msgid "gust %s m/s"
+msgstr "racha %s m/s"
+
+msgid "up %s m/s"
+msgstr "ascenso %s m/s"
+
+msgid "%s m/s · %03.0f°"
+msgstr "%s m/s · %03.0f°"
+
+msgid "Gust %s m/s"
+msgstr "Racha %s m/s"
+
+msgid "Updraft %s m/s"
+msgstr "Corriente ascendente %s m/s"
+
+msgid "Downdraft %s m/s"
+msgstr "Corriente descendente %s m/s"
+
+msgid "Uniform wind with smooth repeating gusts."
+msgstr "Viento uniforme con rachas suaves y periódicas."
+
+msgid "Wind is uniform across the field; optional turbulence changes smoothly over time."
+msgstr "El viento es uniforme en todo el campo; la turbulencia opcional cambia suavemente con el tiempo."
+
+msgid "Flight conditions"
+msgstr "Condiciones de vuelo"
+
+msgid "Uniform wind and smooth repeating gusts. No turbulence or spatial variation."
+msgstr "Viento uniforme y rachas suaves y periódicas. Sin turbulencia ni variación espacial."
+
+msgid "Uniform wind and repeating gusts with optional seeded turbulence."
+msgstr "Viento uniforme y rachas periódicas con turbulencia opcional con semilla."
+
+msgid "Seeded turbulence changes smoothly over time. RMS sets strength by direction; tau controls how quickly it changes."
+msgstr "La turbulencia con semilla cambia suavemente con el tiempo. RMS indica la intensidad por dirección; tau controla su rapidez."
+
+msgid "Uniform wind and repeating gusts, with optional seeded turbulence."
+msgstr "Viento uniforme y rachas periódicas, con turbulencia opcional con semilla."
+
+msgid "Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density."
+msgstr "El viento uniforme, las rachas periódicas y la turbulencia son opcionales. La atmósfera del campo define la densidad modelada del aire."
+
+msgid "Reference air · fixed density 1.225 kg/m³"
+msgstr "Aire de referencia · densidad fija de 1,225 kg/m³"
+
+msgid "Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m"
+msgstr "Campo %s m · %s °C · QNH %s hPa · HR %s%% · densidad %s kg/m³ · altitud de densidad %s m"
+
+msgid "Enable turbulence"
+msgstr "Activar turbulencia"
+
+msgid "Wind & Gusts"
+msgstr "Viento y rachas"
+
+msgid "Atmosphere"
+msgstr "Atmósfera"
+
+msgid "Field atmosphere is uniform for the flight. Reference air uses a fixed 1.225 kg/m³ baseline."
+msgstr "La atmósfera del campo es uniforme durante el vuelo. El aire de referencia usa una densidad fija de 1,225 kg/m³."
+
+msgid "Atmosphere mode"
+msgstr "Modo de atmósfera"
+
+msgid "Custom field conditions"
+msgstr "Condiciones de campo personalizadas"
+
+msgid "Reference air keeps the modeled density at 1.225 kg/m³."
+msgstr "El aire de referencia mantiene la densidad modelada en 1,225 kg/m³."
+
+msgid "Custom field conditions set the modeled air density for this flight."
+msgstr "Las condiciones de campo personalizadas definen la densidad modelada del aire durante este vuelo."
+
+msgid "Air density: %s kg/m³ · density altitude: %s m"
+msgstr "Densidad del aire: %s kg/m³ · altitud de densidad: %s m"
+
+msgid "EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m"
+msgstr "EAS %.1f m/s  aire %.3f kg/m³  altitud de densidad %.0f m"
+
+msgid "Density preview is unavailable until all field values are valid."
+msgstr "La vista previa de densidad estará disponible cuando todos los valores del campo sean válidos."
+
+msgid "Preset"
+msgstr "Preajuste"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Steady breeze"
+msgstr "Brisa constante"
+
+msgid "Crosswind"
+msgstr "Viento cruzado"
+
+msgid "Gusty"
+msgstr "Racheado"
+
+msgid "Updraft"
+msgstr "Corriente ascendente"
+
+msgid "ground speed %.1f m/s  wind %.1f m/s from %s  up %+.1f m/s"
+msgstr "vel. suelo %.1f m/s  viento %.1f m/s desde %s  ascend. %+.1f m/s"
+
+msgid "Wind speed (0–15 m/s)"
+msgstr "Velocidad del viento (0–15 m/s)"
+
+msgid "Direction FROM (0–360°)"
+msgstr "Dirección DESDE (0–360°)"
+
+msgid "Horizontal gust peak (0–8 m/s)"
+msgstr "Pico de racha horizontal (0–8 m/s)"
+
+msgid "Vertical gust, up (−8 to 8 m/s)"
+msgstr "Racha vertical, hacia arriba (−8 a 8 m/s)"
+
+msgid "Gust duration (0.5–20 s)"
+msgstr "Duración de la racha (0.5–20 s)"
+
+msgid "Gust period (0.5–120 s)"
+msgstr "Periodo de la racha (0.5–120 s)"
+
+msgid "Field elevation (−500 to 4000 m)"
+msgstr "Elevación del campo (−500 a 4000 m)"
+
+msgid "Temperature (−20 to 45 °C)"
+msgstr "Temperatura (−20 a 45 °C)"
+
+msgid "QNH (870 to 1085 hPa)"
+msgstr "QNH (870 a 1085 hPa)"
+
+msgid "Relative humidity (0 to 100%)"
+msgstr "Humedad relativa (0 a 100%)"
+
+msgid "North RMS (0–3 m/s)"
+msgstr "RMS norte (0–3 m/s)"
+
+msgid "East RMS (0–3 m/s)"
+msgstr "RMS este (0–3 m/s)"
+
+msgid "Up RMS (0–3 m/s)"
+msgstr "RMS ascendente (0–3 m/s)"
+
+msgid "Correlation time tau (0.2–30 s)"
+msgstr "Tiempo de correlación tau (0,2–30 s)"
+
+msgid "Seed (0–4294967295)"
+msgstr "Semilla (0–4294967295)"
+
+msgid "Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s"
+msgstr "RMS de turbulencia N/E/arriba: %s / %s / %s m/s; tau %s s; semilla %s"
+
+msgid "Turbulence practice"
+msgstr "Práctica de turbulencia"
+
+msgid "Hot and high"
+msgstr "Calor y altitud"
+
+msgid "Cool dense air"
+msgstr "Aire frío y denso"
+
+msgid "Enter valid numbers within the shown limits; gust period must be at least its duration."
+msgstr "Introduce números válidos dentro de los límites indicados; el periodo debe ser al menos igual a la duración."
+
+msgid "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
+msgstr "Introduce valores dentro de los límites indicados; el periodo debe ser al menos igual a la duración. La semilla solo puede contener dígitos."
+
+msgid "Check field elevation, temperature, QNH and humidity against the displayed limits."
+msgstr "Revisa la elevación, temperatura, QNH y humedad según los límites indicados."
+
+msgid "Flights start in the air. Wind is uniform across the field; smooth gusts repeat on a timer. No turbulence or spatial variation. Wheel landings are experimental; a crash restarts the flight."
+msgstr "El vuelo empieza en el aire. Viento uniforme y rachas suaves periódicas, sin turbulencia ni variación espacial. Los aterrizajes son experimentales; un accidente reinicia el vuelo."
+
+msgid "Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart."
+msgstr "El vuelo empieza en el aire. Configura viento, rachas, turbulencia y atmósfera del campo. Aterrizar es experimental; un choque reinicia."
+
 msgid "PAUSED"
 msgstr "PAUSA"
 
@@ -112,9 +313,6 @@ msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
 
 msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it."
 msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra."
-
-msgid "Flights start in the air. Wheel landings are experimental; a crash restarts the flight. No wind yet."
-msgstr "El vuelo empieza en el aire. Los aterrizajes son experimentales; un accidente reinicia el vuelo. Todavía no hay viento."
 
 msgid "Pause menu (in the radio calibration: cancel it)"
 msgstr "Menú de pausa (en la calibración: cancelarla)"
@@ -239,20 +437,125 @@ msgstr "Motor al ralentí en pista. Rodaje experimental."
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
 
+msgid "Could not update Home lighting; the previous view remains active."
+msgstr "No se pudo actualizar la iluminación de Inicio; se conserva la vista anterior."
+
+msgid "Time of day"
+msgstr "Hora del día"
+
+msgid "Choose the lighting for this flight. Apply updates the paused flight and its future restarts."
+msgstr "Elige la iluminación para este vuelo. Aplicar actualiza el vuelo en pausa y sus futuros reinicios."
+
+msgid "Could not apply lighting. The flight remains paused; check the values and try again."
+msgstr "No se pudo aplicar la iluminación. El vuelo sigue en pausa; revisa los valores e inténtalo de nuevo."
+
+msgid "Lighting model"
+msgstr "Modelo de iluminación"
+
+msgid "Time preset"
+msgstr "Preajuste de hora"
+
+msgid "Local time"
+msgstr "Hora local"
+
+msgid "Date (YYYY-MM-DD)"
+msgstr "Fecha (YYYY-MM-DD)"
+
+msgid "UTC offset (minutes)"
+msgstr "Desfase UTC (minutos)"
+
+msgid "Latitude (degrees)"
+msgstr "Latitud (grados)"
+
+msgid "Longitude (degrees)"
+msgstr "Longitud (grados)"
+
+msgid "Location name"
+msgstr "Nombre de ubicación"
+
+msgid "Date and location (advanced)"
+msgstr "Fecha y ubicación (avanzado)"
+
+msgid "Legacy daylight"
+msgstr "Luz diurna clásica"
+
+msgid "Astronomical time"
+msgstr "Hora astronómica"
+
+msgid "Dawn"
+msgstr "Amanecer"
+
+msgid "Noon"
+msgstr "Mediodía"
+
+msgid "Sunset"
+msgstr "Atardecer"
+
+msgid "Night"
+msgstr "Noche"
+
+msgid "Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used."
+msgstr "La fecha, la hora y el desfase UTC son explícitos. La hora seleccionada permanece fija durante el vuelo; no se usa la hora del sistema."
+
+msgid "Legacy daylight keeps the original fixed daylight look; choose astronomical time to use the selected local time."
+msgstr "La luz diurna clásica conserva el aspecto fijo original; elige la hora astronómica para usar la hora local seleccionada."
+
+msgid "The Sun is more than 6° below the horizon. There are no aircraft or field lights, so the airplane may be difficult to see."
+msgstr "El Sol está a más de 6° bajo el horizonte. No hay luces en el avión ni en el campo, así que puede ser difícil ver el avión."
+
+msgid "Check the time, date, UTC offset and location. Apply will not save invalid lighting."
+msgstr "Revisa la hora, la fecha, el desfase UTC y la ubicación. Aplicar no guardará una iluminación no válida."
+
+msgid "Daylight"
+msgstr "Luz diurna"
+
+msgid "Civil twilight"
+msgstr "Crepúsculo civil"
+
+msgid "Nautical twilight"
+msgstr "Crepúsculo náutico"
+
+msgid "Astronomical twilight"
+msgstr "Crepúsculo astronómico"
+
+msgid "Local time %s"
+msgstr "Hora local %s"
+
+msgid "%s · Local time %s · %s · %s · %s"
+msgstr "%s · hora local %s · %s · %s · %s"
+
+msgid "Check the time, date and location to preview the lighting phase."
+msgstr "Revisa la hora, la fecha y la ubicación para ver la fase de iluminación."
+
+msgid "Check the time, date and location."
+msgstr "Revisa la hora, la fecha y la ubicación."
+
+msgid "Fix the time and location before choosing a preset."
+msgstr "Corrige la hora y la ubicación antes de elegir un preajuste."
+
+msgid "This preset is unavailable for the current date and location."
+msgstr "Este preajuste no está disponible para la fecha y ubicación actuales."
+
+msgid "Enter a local time as HH:MM or HH:MM:SS."
+msgstr "Introduce la hora local como HH:MM o HH:MM:SS."
+
+msgid "Lighting phase unavailable."
+msgstr "Fase de iluminación no disponible."
+
+msgid "Invalid saved time-of-day settings; using legacy daylight."
+msgstr "Los ajustes guardados de hora del día no son válidos; se usará la luz diurna clásica."
+
+msgid "Flights start in the air. Wheel landings are experimental; a crash restarts the flight. No wind yet."
+msgstr "El vuelo empieza en el aire. Los aterrizajes son experimentales; un accidente reinicia el vuelo. Todavía no hay viento."
+
 msgid "Time of day: %s"
 msgstr "Hora del día: %s"
 
 msgid "Day"
 msgstr "Día"
 
-msgid "Dawn"
-msgstr "Amanecer"
-
 msgid "Golden hour"
 msgstr "Hora dorada"
-
-msgid "Sunset"
-msgstr "Atardecer"
 
 msgid "Blue hour"
 msgstr "Hora azul"
@@ -265,3 +568,6 @@ msgstr "Noche sin luna"
 
 msgid "Evening, time passing"
 msgstr "Atardecer, el tiempo pasa"
+
+msgid "End this flight to change its time-of-day settings."
+msgstr "Finaliza este vuelo para cambiar sus ajustes de hora del día."

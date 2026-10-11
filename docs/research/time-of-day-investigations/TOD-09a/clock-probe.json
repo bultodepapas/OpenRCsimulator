@@ -1,0 +1,223 @@
+{
+	"costs": {
+		"clock_and_lighting": {
+			"max_us": 221,
+			"p50_us": 80,
+			"p95_us": 116,
+			"p99_us": 147
+		},
+		"clock_only": {
+			"max_us": 275,
+			"p50_us": 54,
+			"p95_us": 93,
+			"p99_us": 116
+		}
+	},
+	"engine": "4.7.2-stable (official)",
+	"format": "openrc-tod09a-clock-probe v1",
+	"hourly": [
+		{
+			"date": "2026-12-31",
+			"elevation_deg": -66.95226169202344,
+			"local_seconds": 86399,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 0
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -63.15408757516933,
+			"local_seconds": 3599,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 864000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -53.46591781294296,
+			"local_seconds": 7199,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 1728000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -41.304016092312466,
+			"local_seconds": 10799,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 2592000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -28.141156739675175,
+			"local_seconds": 14399,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 3456000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -14.542941162826372,
+			"local_seconds": 17999,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 4320000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -0.7708229527289497,
+			"local_seconds": 21599,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.00017447934942725157,
+			"tick": 5184000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 13.010385379700486,
+			"local_seconds": 25199,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.7113506597379514,
+			"tick": 6048000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 26.64029941689723,
+			"local_seconds": 28799,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.7854976385264514,
+			"tick": 6912000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 39.87551173879896,
+			"local_seconds": 32399,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.8965673463801049,
+			"tick": 7776000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 52.204328041355105,
+			"local_seconds": 35999,
+			"subsecond_ticks": 0,
+			"sun_energy": 1.0072264944703464,
+			"tick": 8640000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 62.30958818824669,
+			"local_seconds": 39599,
+			"subsecond_ticks": 0,
+			"sun_energy": 1.0851440972581283,
+			"tick": 9504000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 66.99060944384689,
+			"local_seconds": 43199,
+			"subsecond_ticks": 0,
+			"sun_energy": 1.1131662689444282,
+			"tick": 10368000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 63.21766668456546,
+			"local_seconds": 46799,
+			"subsecond_ticks": 0,
+			"sun_energy": 1.0910634947853606,
+			"tick": 11232000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 53.53381479308037,
+			"local_seconds": 50399,
+			"subsecond_ticks": 0,
+			"sun_energy": 1.0184894745864104,
+			"tick": 12096000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 41.3696983491981,
+			"local_seconds": 53999,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.9101386291156808,
+			"tick": 12960000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 28.203386639791425,
+			"local_seconds": 57599,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.7972259501141953,
+			"tick": 13824000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 14.60145277816042,
+			"local_seconds": 61199,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.7168261503102392,
+			"tick": 14688000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": 0.8253393264309661,
+			"local_seconds": 64799,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.10370505182138184,
+			"tick": 15552000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -12.960459561436943,
+			"local_seconds": 68399,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 16416000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -26.596176076268797,
+			"local_seconds": 71999,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 17280000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -39.83963948531693,
+			"local_seconds": 75599,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 18144000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -52.18191656636231,
+			"local_seconds": 79199,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 19008000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -62.31174261308598,
+			"local_seconds": 82799,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 19872000
+		},
+		{
+			"date": "2027-01-01",
+			"elevation_deg": -67.03072772183269,
+			"local_seconds": 86399,
+			"subsecond_ticks": 0,
+			"sun_energy": 0.0,
+			"tick": 20736000
+		}
+	],
+	"pure_cpu_only": true,
+	"renderer_measured": false,
+	"samples_per_case": 5000
+}

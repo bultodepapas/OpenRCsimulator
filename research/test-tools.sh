@@ -11,6 +11,7 @@ for test in \
   validation/rpm-step/test_uncertainty.py \
   validation/ground-video/test_reduce.py \
   validation/roll-video/test_reduce.py \
+  propwash/e0b7/test_reduce.py \
   radio-latency/test_reduce.py \
   propulsion/uiuc-import/test_import.py \
   propulsion/range-audit/test_audit.py \

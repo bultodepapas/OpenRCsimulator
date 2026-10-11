@@ -31,8 +31,14 @@ def main():
         (args.output / (name + ".log")).write_text(log)
         assert result.returncode == expected, (name, result.returncode, log)
         assert "ERROR:" not in log, (name, log)
+        if name == "pairs":
+            pairs = [json.loads(line) for line in log.splitlines() if line.startswith('{')]
+            assert len(pairs) == 4 and len({row["aircraft"] for row in pairs}) == 4, log
+            assert all(row["exact_pairs"] == 24 and len(row["rows"]) == 24 for row in pairs), log
+        elif name != "missing_residual":
+            assert log.count("refused=true") == 4, log
         if name == "missing_residual":
-            assert log.count("refused=false") == 4, log
+            assert log.count("refused=false escaped=true") == 4, log
         records.append({"name": name, "exit": result.returncode})
 
     with tempfile.TemporaryDirectory(prefix="openrc-d1-r5-faults-") as temp:
@@ -55,7 +61,7 @@ def main():
         mutant = temp / "missing_residual.gd"
         mutant.write_text(source.replace(RESIDUAL, "").replace(marker, "\te_map.fill(1.0)\n" + marker))
         run("missing_residual", ROOT / "research/aircraft-data/d1-r5/fault_probe.gd",
-            {"OPENRC_INDUCED_LOADER": str(mutant)}, expected=1)
+            {"OPENRC_INDUCED_LOADER": str(mutant), "OPENRC_INDUCED_WRONG_MAP": "1"}, expected=1)
     assert args.loader.read_text() == source, "loader changed during verification"
     report = {"baseline_sha256": hashlib.sha256(before).hexdigest(),
               "loader_sha256": hashlib.sha256(source.encode()).hexdigest(),

@@ -52,7 +52,7 @@ static func enabled() -> bool:
 
 
 ## Called by render/field.gd after it built the field. No-op when the switch is off.
-static func attach(field_node: Node3D, field: Dictionary) -> void:
+static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}) -> void:
 	var opts := options()
 	if not opts.enabled:
 		return
@@ -61,7 +61,7 @@ static func attach(field_node: Node3D, field: Dictionary) -> void:
 		for e: String in loaded.errors:
 			push_error("scenery: " + e)
 		return
-	field_node.add_child(build(field, loaded.scenery, opts))
+	field_node.add_child(build(field, loaded.scenery, opts, lighting))
 
 
 static func opaque_material() -> StandardMaterial3D:
@@ -110,7 +110,7 @@ static func _placement_xf(n: float, e: float, heading_deg: float) -> Transform3D
 	return Transform3D(Basis(Vector3.UP, -deg_to_rad(heading_deg)), Frames.ned_to_render([n, e, 0.0]))
 
 
-static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> Node3D:
+static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	var t0 := Time.get_ticks_usec()
 	var root := Node3D.new()
 	root.name = "Scenery"
@@ -118,10 +118,13 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 	var quality: String = opts.quality if QUALITIES.has(opts.quality) else "high"
 	var opaque := opaque_material()
 	var shade := shadow_material()
-	var sun := Atmosphere.sun_direction()
+	var sun := Atmosphere.sun_direction(lighting)
+	var shadow_strength: float = Atmosphere.shadow_strength(lighting)
+	shade.albedo_color.a = shadow_strength
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
 	var shadow_cells := {}
+	var shadow_groups: Dictionary = {}
 	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0, theme = theme, quality = quality}
 	var motion_parent := Node3D.new()
 	motion_parent.name = "Motion"
@@ -156,9 +159,14 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 					stats.instances += 1
 					var mode: Variant = spec.get("shadow", false)
 					if mode != false and Vector2(pl.north, pl.east).distance_to(pilot) <= SHADOW_RANGE_M:
-						GroundFeatures.contact_shadow(_kit(shadow_cells, _cell(pl.north, pl.east)), xf, spec.size,
-							"solid" if mode == true else str(mode), sun)
-						stats.shadows += 1
+						var shadow_cell: Vector2i = _cell(pl.north, pl.east)
+						if not shadow_groups.has(shadow_cell):
+							shadow_groups[shadow_cell] = []
+						var shadow_mode: String = "solid" if mode == true else str(mode)
+						shadow_groups[shadow_cell].append({transform = xf, size = spec.size, mode = shadow_mode})
+						if shadow_strength > 0.0:
+							GroundFeatures.contact_shadow(_kit(shadow_cells, shadow_cell), xf, spec.size, shadow_mode, sun)
+							stats.shadows += 1
 			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
 				for pl: Dictionary in group.placements:
 					var model_id := str(Models.FLEET.find_key(str(pl.aircraft)))
@@ -209,15 +217,17 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 		mi.mesh = kit.to_mesh(opaque)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
-	var skeys := shadow_cells.keys()
+	var shadow_nodes: Dictionary = {}
+	var skeys: Array = shadow_groups.keys()
 	skeys.sort()
 	for key: Vector2i in skeys:
-		var kit: MeshKit = shadow_cells[key]
+		var kit: MeshKit = shadow_cells[key] if shadow_cells.has(key) else MeshKit.new()
 		var mi := MeshInstance3D.new()
-		mi.name = "shadows_%d_%d" % [key.x, key.y]
+		mi.name = _shadow_batch_name(key)
 		mi.mesh = kit.to_mesh(shade)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
+		shadow_nodes[key] = mi
 	if opts.get("audio", false):
 		root.add_child(Ambience.player())
 	if opts.get("birds", false):
@@ -227,7 +237,113 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary) -> N
 	stats.cells = keys.size()
 	stats.build_ms = (Time.get_ticks_usec() - t0) / 1000.0
 	root.set_meta("stats", stats)
+	root.set_meta("directional_shadow_material", shade)
+	root.set_meta("directional_shadow_groups", shadow_groups)
+	root.set_meta("directional_shadow_nodes", shadow_nodes)
+	root.set_meta("directional_shadow_signature", _shadow_signature(sun, shadow_strength))
+	root.set_meta("directional_shadow_strength", shadow_strength)
 	return root
+
+
+## Prepare scene-local scenery shadows from their retained source placements. No live scene resources are changed here,
+## so callers can prepare all visual state before restoring physics or committing a checkpoint.
+static func prepare_lighting(field_node: Node3D, lighting: Dictionary) -> Dictionary:
+	var started: int = Time.get_ticks_usec()
+	var root: Node3D = _find_scenery(field_node)
+	if root == null or not root.has_meta("directional_shadow_nodes"):
+		return {ok = true, changed = false, no_op = true, prepare_ms = 0.0, batches = []}
+	var material: StandardMaterial3D = root.get_meta("directional_shadow_material") as StandardMaterial3D
+	var nodes: Dictionary = root.get_meta("directional_shadow_nodes")
+	var groups: Dictionary = root.get_meta("directional_shadow_groups")
+	var sun: Vector3 = Atmosphere.sun_direction(lighting)
+	var strength: float = Atmosphere.shadow_strength(lighting)
+	var signature: Dictionary = _shadow_signature(sun, strength)
+	var geometry_changed: bool = signature != root.get_meta("directional_shadow_signature", {})
+	var strength_changed: bool = strength != float(root.get_meta("directional_shadow_strength", 1.0))
+	var prepared_batches: Array[Dictionary] = []
+	var triangles: int = 0
+	if geometry_changed:
+		var keys: Array = nodes.keys()
+		keys.sort()
+		for key: Vector2i in keys:
+			var kit := MeshKit.new()
+			if strength > 0.0:
+				for source: Dictionary in groups.get(key, []):
+					GroundFeatures.contact_shadow(kit, source.transform, source.size, source.mode, sun)
+			triangles += kit.triangle_count()
+			prepared_batches.append({node = nodes[key], mesh = kit.to_mesh(material)})
+	return {
+		ok = true,
+		changed = geometry_changed or strength_changed,
+		no_op = false,
+		root = root,
+		material = material,
+		strength = strength,
+		base_signature = root.get_meta("directional_shadow_signature", {}),
+		base_strength = float(root.get_meta("directional_shadow_strength", 1.0)),
+		signature = signature,
+		batches = prepared_batches,
+		geometry_changed = geometry_changed,
+		triangles = triangles,
+		prepare_ms = float(Time.get_ticks_usec() - started) / 1000.0,
+	}
+
+
+## Commit a prepared scenery-lighting update. The existing shadow material and per-cell nodes stay stable; only their
+## alpha and ArrayMesh resources change. Returns false only if the prepared field no longer owns that scenery root.
+static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
+	if not bool(prepared.get("ok", false)):
+		return false
+	if bool(prepared.get("no_op", false)):
+		return true
+	var root: Node3D = prepared.get("root") as Node3D
+	if not is_instance_valid(root) or _find_scenery(field_node) != root:
+		return false
+	if root.get_meta("directional_shadow_signature", {}) != prepared.get("base_signature", {}):
+		return false
+	if float(root.get_meta("directional_shadow_strength", 1.0)) != float(prepared.get("base_strength", 1.0)):
+		return false
+	var material: StandardMaterial3D = prepared.get("material") as StandardMaterial3D
+	if not is_instance_valid(material) or root.get_meta("directional_shadow_material", null) != material:
+		return false
+	var replacements: Array = prepared.get("batches", [])
+	for replacement: Dictionary in replacements:
+		var node: MeshInstance3D = replacement.get("node") as MeshInstance3D
+		var mesh: ArrayMesh = replacement.get("mesh") as ArrayMesh
+		if not is_instance_valid(node) or node.get_parent() != root or not is_instance_valid(mesh):
+			return false
+	var tint: Color = material.albedo_color
+	tint.a = float(prepared.get("strength", tint.a))
+	material.albedo_color = tint
+	for replacement: Dictionary in replacements:
+		var node: MeshInstance3D = replacement.get("node") as MeshInstance3D
+		node.mesh = replacement.get("mesh") as ArrayMesh
+	root.set_meta("directional_shadow_signature", prepared.get("signature", {}))
+	root.set_meta("directional_shadow_strength", float(prepared.get("strength", tint.a)))
+	return true
+
+
+## Convenience for live time-of-day changes that do not need a separate atomic prepare/commit boundary.
+static func update_lighting(field_node: Node3D, lighting: Dictionary) -> bool:
+	var prepared: Dictionary = prepare_lighting(field_node, lighting)
+	return commit_lighting(field_node, prepared)
+
+
+static func _find_scenery(field_node: Node3D) -> Node3D:
+	if field_node == null:
+		return null
+	if field_node.name == "Scenery" and field_node.has_meta("directional_shadow_nodes"):
+		return field_node
+	return field_node.get_node_or_null("Scenery") as Node3D
+
+
+static func _shadow_batch_name(cell: Vector2i) -> String:
+	return "shadows_%d_%d" % [cell.x, cell.y]
+
+
+static func _shadow_signature(sun: Vector3, strength: float) -> Dictionary:
+	var visible: bool = strength > 0.0
+	return {cast = GroundFeatures.shadow_cast(sun) if visible else Vector2.ZERO, visible = visible}
 
 
 static func _xz(ne: Vector2) -> Vector2:

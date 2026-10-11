@@ -644,21 +644,6 @@
         0.0
       ],
       [
-        0.0186,
-        -0.16,
-        -0.268825
-      ],
-      [
-        0.0186,
-        0.16,
-        -0.268825
-      ],
-      [
-        0.9526,
-        0.0,
-        -0.0896
-      ],
-      [
         1.05,
         0.0,
         -0.0008
@@ -686,7 +671,7 @@
     ],
     "unit": "m",
     "kind": "measured",
-    "source": "Points that hit the ground first (le frame) from assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology): wing tip LE/TE, spinner tip, main wheel bottoms (track estimated there), tail wheel bottom, rudder bottom TE, stab tips, fin top, canopy top. Replaced by gear contact in E1/E2"
+    "source": "Body crash points (le frame) from assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology): wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."
   },
   "plausibility": {
     "mass_range": {
@@ -1250,6 +1235,128 @@
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: spinner axis relative to the inventory CG; [x_aft, y_right, z_up] from the CG"
       }
+    }
+  },
+  "landing_gear": {
+    "description": "E5a: fixed main wheels and rudder-linked tail wheel using E1/E2 point spring-damper/tyre contacts. Provisional mechanics; no caster, brakes or stiction anchors. Wheel-circle contact geometry remains E6a.",
+    "contacts": [
+      {
+        "name": "main_left",
+        "position": {
+          "value": [
+            0.0186,
+            -0.16,
+            -0.268825
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
+        },
+        "stiffness": {
+          "value": 673.706077,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
+        },
+        "damping": {
+          "value": 16.492048,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
+        },
+        "max_compression": {
+          "value": 0.08,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+        }
+      },
+      {
+        "name": "main_right",
+        "position": {
+          "value": [
+            0.0186,
+            0.16,
+            -0.268825
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
+        },
+        "stiffness": {
+          "value": 673.706077,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
+        },
+        "damping": {
+          "value": 16.492048,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
+        },
+        "max_compression": {
+          "value": 0.08,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+        }
+      },
+      {
+        "name": "tail",
+        "position": {
+          "value": [
+            0.9526,
+            0.0,
+            -0.0896
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
+        },
+        "stiffness": {
+          "value": 222.245679,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
+        },
+        "damping": {
+          "value": 9.472313,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
+        },
+        "max_compression": {
+          "value": 0.05,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+        },
+        "max_steering": {
+          "value": -25.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "E5a: provisional +/-25 deg rudder-linked tail wheel, as the P-51 fixture. Negative coefficient: positive right-yaw command steers the aft wheel left, forcing the tail left and nose right. No caster or measured linkage ratio."
+        }
+      }
+    ],
+    "rolling_resistance": {
+      "value": 0.04,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "E5a: reuse Stik E2 reference C_rr for similarly sized model wheels; Extra 69.85 mm mains and 25.4 mm tail are not separately calibrated. Field factors apply per contact."
+    },
+    "side_friction": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."
+    },
+    "peak_slip_angle": {
+      "value": 6.0,
+      "unit": "deg",
+      "kind": "borrowed",
+      "source": "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."
     }
   }
 }

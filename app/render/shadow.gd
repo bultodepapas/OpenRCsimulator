@@ -78,9 +78,9 @@ static func _relative(root: Node3D, node: Node3D) -> Transform3D:
 	return t
 
 
-static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP) -> void:
+static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, length: float, along := Vector3.UP, strength: float = 1.0) -> void:
 	shadow.transform = footprint(b, pos, span, length, along)
-	(shadow.material_override as StandardMaterial3D).albedo_color.a = alpha(pos.y)
+	(shadow.material_override as StandardMaterial3D).albedo_color.a = alpha(pos.y) * clampf(strength, 0.0, 1.0)
 
 
 ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).

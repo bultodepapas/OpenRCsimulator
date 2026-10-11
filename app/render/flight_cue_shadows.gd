@@ -13,7 +13,7 @@ const CIRCLE_SEGMENTS: int = 12
 const CONTACT_COLOR: Color = Color(0.08, 0.08, 0.08, 1.0)
 
 
-static func build(cues: Array) -> MeshInstance3D:
+static func build(cues: Array, dark_only: bool = false) -> MeshInstance3D:
 	var shadow: MeshInstance3D = MeshInstance3D.new()
 	shadow.name = "FlightCueShadows"
 	shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -41,6 +41,9 @@ static func build(cues: Array) -> MeshInstance3D:
 		shadow.mesh = ArrayMesh.new()
 		return shadow
 	var material: StandardMaterial3D = _material()
+	if dark_only:
+		# Unshaded grey would brighten a black night field; black alpha can only darken it.
+		material.albedo_color = Color.BLACK
 	surface.set_material(material)
 	shadow.mesh = surface.commit()
 	return shadow

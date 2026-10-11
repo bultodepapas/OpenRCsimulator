@@ -1,0 +1,116 @@
+{
+  "format": "openrc-electric-research-documentation v1",
+  "date": "2026-10-10",
+  "scope": "EL1a-R2 research, revision 3 plan, and isolated tools; no integrated-flight or physical validation",
+  "repository_head_at_check": "b2b358ac94d8f3a4d2ea572201b3e3a6b322072a",
+  "ok": true,
+  "questions": [
+    {
+      "number": "01",
+      "question": "Who owns the 240 Hz clock, and what happens during a hitch?"
+    },
+    {
+      "number": "02",
+      "question": "Which values stay double precision at Godot boundaries?"
+    },
+    {
+      "number": "03",
+      "question": "When does profiling justify native code for electric flight?"
+    },
+    {
+      "number": "04",
+      "question": "Can the electric branch be strict in both schema and loader?"
+    },
+    {
+      "number": "05",
+      "question": "Which state may be shared by multiple aircraft sessions?"
+    },
+    {
+      "number": "06",
+      "question": "What makes an electric checkpoint identifiable and restorable?"
+    },
+    {
+      "number": "07",
+      "question": "When is an algebraic motor current accurate enough?"
+    },
+    {
+      "number": "08",
+      "question": "How should rotor momentum, body rate, and motor work be counted?"
+    },
+    {
+      "number": "09",
+      "question": "Should propulsion and battery curves stay linear or become PCHIP?"
+    },
+    {
+      "number": "10",
+      "question": "What makes a headless or exported electric test credible?"
+    },
+    {
+      "number": "11",
+      "question": "How should an independent solver verify the fixed-step implementation?"
+    },
+    {
+      "number": "12",
+      "question": "Can a successful fit still leave the powertrain unidentified?"
+    }
+  ],
+  "local_links_checked": 108,
+  "external_url_inventory": [
+    "https://anthonylloyd.github.io/public/interp/pchip/A_method_for_constructing_local_monotone_picewise_cubic_interpolants_fritsch1984.pdf",
+    "https://docs.godotengine.org/en/4.7/classes/class_%40globalscope.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_dictionary.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_engine.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_fileaccess.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_float.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_json.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_node.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_packedfloat64array.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_resource.html",
+    "https://docs.godotengine.org/en/4.7/classes/class_vector3.html",
+    "https://docs.godotengine.org/en/4.7/tutorials/editor/command_line_tutorial.html",
+    "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_projects.html",
+    "https://docs.godotengine.org/en/4.7/tutorials/performance/cpu_optimization.html",
+    "https://docs.godotengine.org/en/4.7/tutorials/physics/large_world_coordinates.html",
+    "https://docs.scipy.org/doc/scipy-1.11.4/reference/generated/scipy.integrate.solve_ivp.html",
+    "https://docs.scipy.org/doc/scipy-1.11.4/reference/generated/scipy.interpolate.PchipInterpolator.html",
+    "https://docs.scipy.org/doc/scipy-1.11.4/reference/generated/scipy.optimize.least_squares.html",
+    "https://doi.org/10.1137/0717021",
+    "https://engineering.purdue.edu/ME588/LectureNotes/Unit9--DCMotorGearing.pdf",
+    "https://github.com/godotengine/godot/blob/4.7-stable/core/io/json.cpp",
+    "https://inc.ucsd.edu/mplab/75/media/DC.pdf",
+    "https://json-schema.org/draft/2020-12/json-schema-core",
+    "https://json-schema.org/draft/2020-12/json-schema-validation",
+    "https://m-selig.ae.illinois.edu/props/volume-4/propDB-volume-4.html",
+    "https://ntrs.nasa.gov/citations/20210017459",
+    "https://numpy.org/doc/1.26/reference/generated/numpy.linalg.svd.html",
+    "https://www.apcprop.com/technical-information/performance-data/"
+  ],
+  "external_url_inventory_note": "Link inventory; the individual reports identify inspected primary sources and source scope. This check does not fetch external pages.",
+  "checks": [
+    "Twelve numbered investigations 01–12",
+    "Local files, Markdown headings and source line anchors resolve",
+    "Scoped git diff --check and new-file whitespace/conflict checks",
+    "Python AST parses",
+    "Tool proof matches probe SHA and protected EL1a hashes",
+    "Report file fingerprints recorded"
+  ],
+  "files_sha256": {
+    "docs/research/propulsion/EL1a-R2/01-godot-runtime.md": "b6eda2b7bf3758eb898644199ceb9893207358b634f646e87ce0fe51de63b527",
+    "docs/research/propulsion/EL1a-R2/02-data-state.md": "ffa43215cb36e51032b5a86aed4241d0d326abf01a3a462c1028c5026be43df1",
+    "docs/research/propulsion/EL1a-R2/03-numerical-physics.md": "d874545dd834bf892e62678f611b5bf18ff970c8692aef082e1a61fb726b354a",
+    "docs/research/propulsion/EL1a-R2/04-verification-tools.md": "0393c66bbcb1d59c2395d2d5562fd9e60410ced2e3f70f4098556d44f88a6a22",
+    "docs/research/propulsion/EL1a-R2/README.md": "17e766fb05c5355f30664d2c52912ba42739a311d1cadc64246da951899df765",
+    "docs/ELECTRIC-PROPULSION-PLAN.md": "dd3d913de146de375d23b0c835b99bf80dcc877fe0270b7deb10b12813c9ccc7",
+    "docs/research/propulsion/EL1a-R2/tools-proof.json": "9a353114917056535b7fe2dc7bfd9297f69583ce4b32543320bbd11a0ced1543",
+    "research/propulsion/el1a-r2/probe_tools.py": "6fb850dda62b962f94be2cb6e73908d19250a6bb35fabdca32706a0fe541b8aa",
+    "research/propulsion/el1a-r2/requirements.txt": "3c6cbb7d3faf547223ab36d0d8b6d68847f5b92ded4b4302a206b288537fab89",
+    "docs/research/README.md": "42062341494dd093e4947d1aab84e36c6f4449a3f573cec35b973ed0930ba7d9",
+    "docs/learnings/physics.md": "859ae12c4b7884902e2f6532369f240c6e02559ace811887cd27f0b23d635d20"
+  },
+  "electric_files_unchanged_sha256": {
+    "app/physics/electric_motor.gd": "9fc0bbdf613d23e5826e2e6aed440d915efb431b2d9bf33ac103e7014cc8782b",
+    "app/tests/test_electric_motor.gd": "ef0cc4f377875cce3038281bc7601e734e9088a1c8e8055738ae3efe7bbaf394"
+  },
+  "full_app_regression_run": false,
+  "export_run": false
+}

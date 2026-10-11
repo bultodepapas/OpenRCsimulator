@@ -102,6 +102,24 @@ if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract f
 echo "== C7-R1: trace completion, finite samples and failure exits"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 
+echo "== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_weather_cli.py"
+
+echo "== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_turbulence_cli.py"
+
+echo "== M5-ATM: independent atmosphere, EAS and environment replay checks"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_cli.py"
+
+echo "== TOD-09a: independent Gregorian clock fixtures stay current"
+python3 "$HERE/../research/time-of-day/tod-09a/calendar_oracles.py" --check
+
+echo "== TOD-05/07: selected time, visual context and unchanged flight physics"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_time_of_day_cli.py"
+
+echo "== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_shaft_cli.py"
+
 echo "== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)"
 TRACE="$(mktemp --suffix=.csv)"
 run -- --trace="$TRACE" --t=3 > /dev/null 2>&1
@@ -189,3 +207,13 @@ python3 "$HERE/../research/propwash/e0b5/check_frames.py" --godot "$GODOT"
 
 echo "== E0b6p: distributed swirl at 30/60/144 fps"
 python3 "$HERE/../research/propwash/e0b6p/check_frames.py" --godot "$GODOT"
+
+echo "== E5a: generated Extra taildragger contacts, P-51 review and session refinement"
+E5A_WORK="$(mktemp -d)"
+python3 "$HERE/../research/ground-contact/e5a/verify.py" --godot "$GODOT" --out "$E5A_WORK/results"
+rm -rf "$E5A_WORK"
+
+echo "== E5b: tail-up pitch threshold, rigid tail lift and synthetic resistance patches"
+E5B_WORK="$(mktemp -d)"
+python3 "$HERE/../research/ground-contact/e5b/verify.py" --godot "$GODOT" --out "$E5B_WORK/results"
+rm -rf "$E5B_WORK"

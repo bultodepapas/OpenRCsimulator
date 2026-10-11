@@ -1,0 +1,943 @@
+{
+	"case_count": 68,
+	"checks": 68,
+	"failed": 0,
+	"failures": 0,
+	"fixture_note": "Validated research fixtures; not aircraft calibration.",
+	"format": "openrc-e0b6p-prepared-model-lifecycle v1",
+	"godot": "4.7.2-stable (official)",
+	"native_calls": 80,
+	"passed": 68,
+	"results": [
+		{
+			"detail": "[]",
+			"kind": "check",
+			"label": "combined_raw fixture validates",
+			"passed": true
+		},
+		{
+			"detail": "[]",
+			"kind": "check",
+			"label": "classic-tail fixture validates",
+			"passed": true
+		},
+		{
+			"detail": "[]",
+			"kind": "check",
+			"label": "combined_raw fixture validates",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "before prepare",
+			"passed": true
+		},
+		{
+			"detail": "[&\"area\", &\"position\", &\"lift_slope\", &\"control_effectiveness\", &\"incidence\"]",
+			"kind": "check",
+			"label": "classic-tail fixture omits free-slope branch",
+			"passed": true
+		},
+		{
+			"detail": "1",
+			"kind": "check",
+			"label": "combined_raw prepare returns positive generation",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw baseline",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "combined_raw wrong token",
+			"passed": true
+		},
+		{
+			"detail": "elevator=0.11 rudder=-0.09",
+			"kind": "check",
+			"label": "combined_raw finite nonzero elevator/rudder",
+			"passed": true
+		},
+		{
+			"detail": "[0.05687246207594, 1.13863557387412, -0.05701715645907, 0.2004220131362, -0.0401191554015, -0.8451662710977]",
+			"kind": "check",
+			"label": "combined_raw baseline loads nonzero",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.05559746474736192,
+				1.1387768896635102,
+				-0.05671632828327557,
+				0.2003812685355169,
+				-0.039920481736133995,
+				-0.8453342825297577
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.05559746474736192,
+				1.1387768896635102,
+				-0.05671632828327557,
+				0.2003812685355169,
+				-0.039920481736133995,
+				-0.8453342825297577
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed state",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.030194882885237313,
+				0.29766428024887787,
+				-0.04431073183336144,
+				0.15659535080516476,
+				-0.029622243387132395,
+				-0.22076468711159447
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.030194882885237313,
+				0.29766428024887787,
+				-0.04431073183336144,
+				0.15659535080516476,
+				-0.029622243387132395,
+				-0.22076468711159447
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed velocity",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.055217375346602836,
+				1.1342709172609935,
+				-0.07714500334239209,
+				0.20142571792323186,
+				-0.05468674331581902,
+				-0.8433963783101514
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.055217375346602836,
+				1.1342709172609935,
+				-0.07714500334239209,
+				0.20142571792323186,
+				-0.05468674331581902,
+				-0.8433963783101514
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed elevator",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.0029311064824432244,
+				1.1726667753487512,
+				-0.04872841264582729,
+				0.20209419872624315,
+				-0.031150936128029758,
+				-0.8703493601889244
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.0029311064824432244,
+				1.1726667753487512,
+				-0.04872841264582729,
+				0.20209419872624315,
+				-0.031150936128029758,
+				-0.8703493601889244
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed rudder",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.028734177917639585,
+				0.8818356745945032,
+				-0.04349150814923087,
+				0.1504987664411462,
+				-0.030940800665754643,
+				-0.6547781192940456
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.028734177917639585,
+				0.8818356745945032,
+				-0.04349150814923087,
+				0.1504987664411462,
+				-0.030940800665754643,
+				-0.6547781192940456
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed thrust/torque",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.058997481161726595,
+				1.1431427023416105,
+				-0.05570995963539169,
+				0.1989555896188649,
+				-0.039205701044739236,
+				-0.8484202099953565
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.058997481161726595,
+				1.1431427023416105,
+				-0.05570995963539169,
+				0.1989555896188649,
+				-0.039205701044739236,
+				-0.8484202099953565
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed density",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.041797833573886965,
+				0.8368285542930267,
+				-0.041904175228952435,
+				0.14729810603986102,
+				-0.029485162403510123,
+				-0.6211462956260179
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.041797833573886965,
+				0.8368285542930267,
+				-0.041904175228952435,
+				0.14729810603986102,
+				-0.029485162403510123,
+				-0.6211462956260179
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed fade",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.05316547301933956,
+				1.1277335777402009,
+				-0.0957956504745754,
+				0.2026927808002773,
+				-0.06820885807320742,
+				-0.8399310334345851
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.05316547301933956,
+				1.1277335777402009,
+				-0.0957956504745754,
+				0.2026927808002773,
+				-0.06820885807320742,
+				-0.8399310334345851
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed held CL",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.052776513911294023,
+				1.1202242776121523,
+				-0.07386060981136713,
+				0.20009825511358495,
+				-0.05226030841916729,
+				-0.8316259883043411
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.052776513911294023,
+				1.1202242776121523,
+				-0.07386060981136713,
+				0.20009825511358495,
+				-0.05226030841916729,
+				-0.8316259883043411
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "combined_raw changed transported wash",
+			"passed": true
+		},
+		{
+			"detail": "2",
+			"kind": "check",
+			"label": "classic_tail prepare returns positive generation",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.021491491310119362,
+				1.1257569776757768,
+				-0.0625040971152601,
+				0.139539622500782,
+				-0.04568454017970904,
+				-0.8416825363073167
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.021491491310119362,
+				1.1257569776757768,
+				-0.0625040971152601,
+				0.139539622500782,
+				-0.04568454017970904,
+				-0.8416825363073167
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail baseline",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "classic_tail wrong token",
+			"passed": true
+		},
+		{
+			"detail": "elevator=0.11 rudder=-0.09",
+			"kind": "check",
+			"label": "classic_tail finite nonzero elevator/rudder",
+			"passed": true
+		},
+		{
+			"detail": "[0.02149149131012, 1.12575697767578, -0.06250409711526, 0.13953962250078, -0.04568454017971, -0.84168253630732]",
+			"kind": "check",
+			"label": "classic_tail baseline loads nonzero",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.020890753360951666,
+				1.125909937024295,
+				-0.06218469325704562,
+				0.13950442172541322,
+				-0.04544171882492428,
+				-0.8418110715494703
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.020890753360951666,
+				1.125909937024295,
+				-0.06218469325704562,
+				0.13950442172541322,
+				-0.04544171882492428,
+				-0.8418110715494703
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed state",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.0055464541670707775,
+				0.28532148963901127,
+				-0.05307923350709208,
+				0.0969719558520212,
+				-0.03756679921528577,
+				-0.21967865464898348
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.0055464541670707775,
+				0.28532148963901127,
+				-0.05307923350709208,
+				0.0969719558520212,
+				-0.03756679921528577,
+				-0.21967865464898348
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed velocity",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.024420357630145925,
+				1.1091162217076875,
+				0.1368084055430509,
+				0.12006308204773301,
+				0.09795413519312082,
+				-0.8318870477203308
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.024420357630145925,
+				1.1091162217076875,
+				0.1368084055430509,
+				0.12006308204773301,
+				0.09795413519312082,
+				-0.8318870477203308
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed elevator",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.03244986428338197,
+				1.1597881791504094,
+				-0.05421535330202097,
+				0.14121180809082082,
+				-0.03671632090624142,
+				-0.8668656253985447
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.03244986428338197,
+				1.1597881791504094,
+				-0.05421535330202097,
+				0.14121180809082082,
+				-0.03671632090624142,
+				-0.8668656253985447
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed rudder",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.00898374250238325,
+				0.8713220654015941,
+				-0.04926410357360242,
+				0.10547303991440714,
+				-0.03599847924365447,
+				-0.6512854768251027
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.00898374250238325,
+				0.8713220654015941,
+				-0.04926410357360242,
+				0.10547303991440714,
+				-0.03599847924365447,
+				-0.6512854768251027
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed thrust/torque",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.02338274712116189,
+				1.1302503089087084,
+				-0.060104580085944784,
+				0.13877139074539815,
+				-0.04399528423074871,
+				-0.8448822629355517
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.02338274712116189,
+				1.1302503089087084,
+				-0.060104580085944784,
+				0.13877139074539815,
+				-0.04399528423074871,
+				-0.8448822629355517
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed density",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.015794951444786518,
+				0.8273635619062938,
+				-0.045936746072661044,
+				0.10255321653671931,
+				-0.03357538495135243,
+				-0.6185859604186303
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.015794951444786518,
+				0.8273635619062938,
+				-0.045936746072661044,
+				0.10255321653671931,
+				-0.03357538495135243,
+				-0.6185859604186303
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed fade",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.021491491310119362,
+				1.1257569776757768,
+				-0.0625040971152601,
+				0.139539622500782,
+				-0.04568454017970904,
+				-0.8416825363073167
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.021491491310119362,
+				1.1257569776757768,
+				-0.0625040971152601,
+				0.139539622500782,
+				-0.04568454017970904,
+				-0.8416825363073167
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed held CL",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.013215065766249947,
+				1.1072395030721363,
+				-0.09727691385856795,
+				0.13987044653536423,
+				-0.07092563182649159,
+				-0.8282165522049805
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.013215065766249947,
+				1.1072395030721363,
+				-0.09727691385856795,
+				0.13987044653536423,
+				-0.07092563182649159,
+				-0.8282165522049805
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "classic_tail changed transported wash",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "old replacement baseline",
+			"passed": true
+		},
+		{
+			"detail": "3 -> 4",
+			"kind": "check",
+			"label": "valid replacement advances generation",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "replacement invalidates old token",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.2668016360287759,
+				2.608839437965533,
+				-0.12775317008576303,
+				0.4630533330341246,
+				-0.08775681224434312,
+				-1.933142065298666
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.2668016360287759,
+				2.608839437965533,
+				-0.12775317008576303,
+				0.4630533330341246,
+				-0.08775681224434312,
+				-1.933142065298666
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "replacement equals new stateless loads",
+			"passed": true
+		},
+		{
+			"detail": "old=[0.05687246207594, 1.13863557387412, -0.05701715645907, 0.2004220131362, -0.0401191554015, -0.8451662710977] new=[0.26680163602878, 2.60883943796553, -0.12775317008576, 0.46305333303412, -0.08775681224434, -1.93314206529867]",
+			"kind": "check",
+			"label": "valid replacement changes loads",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "post-prepare edits leave snapshot unchanged",
+			"passed": true
+		},
+		{
+			"detail": "prepared=[0.05687246207594, 1.13863557387412, -0.05701715645907, 0.2004220131362, -0.0401191554015, -0.8451662710977] mutated_raw=[-0.00381972020671, -0.01960302167743, -0.01403107126398, -0.00169694799973, -0.01009509573227, 0.01460442998346]",
+			"kind": "check",
+			"label": "source edits affect stateless loads",
+			"passed": true
+		},
+		{
+			"detail": "5 -> 6",
+			"kind": "check",
+			"label": "explicit reprepare advances generation",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "reprepare invalidates old token",
+			"passed": true
+		},
+		{
+			"actual": [
+				-0.0038197202067100492,
+				-0.019603021677434034,
+				-0.014031071263983822,
+				-0.0016969479997321845,
+				-0.01009509573227243,
+				0.014604429983463606
+			],
+			"exact_bytes": true,
+			"expected": [
+				-0.0038197202067100492,
+				-0.019603021677434034,
+				-0.014031071263983822,
+				-0.0016969479997321845,
+				-0.01009509573227243,
+				0.014604429983463606
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "reprepare reflects source edits",
+			"passed": true
+		},
+		{
+			"detail": "[-0.00381972020671, -0.01960302167743, -0.01403107126398, -0.00169694799973, -0.01009509573227, 0.01460442998346]",
+			"kind": "check",
+			"label": "reprepared loads change",
+			"passed": true
+		},
+		{
+			"detail": "0",
+			"kind": "check",
+			"label": "malformed model prepare returns zero",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "invalid prepare clears previous snapshot",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "refusal probes start from valid finite6 call",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "state wrong length",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "state nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "velocity wrong length",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "velocity nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "elevator nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "rudder nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "thrust/torque wrong length",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "thrust/torque nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "density nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "density nonpositive",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "fade nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "fade above one",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "held CL nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "transport wrong size",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "transport nonfinite",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "explicit clear invalidates token",
+			"passed": true
+		},
+		{
+			"detail": "OpenRCPreparedWake",
+			"kind": "check",
+			"label": "second backend object instantiates",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "first object keeps its own model",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.2668016360287759,
+				2.608839437965533,
+				-0.12775317008576303,
+				0.4630533330341246,
+				-0.08775681224434312,
+				-1.933142065298666
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.2668016360287759,
+				2.608839437965533,
+				-0.12775317008576303,
+				0.4630533330341246,
+				-0.08775681224434312,
+				-1.933142065298666
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "second object keeps its own model",
+			"passed": true
+		},
+		{
+			"actual": [],
+			"actual_type": "PackedFloat64Array",
+			"empty_array": true,
+			"kind": "refusal",
+			"label": "peer clear invalidates peer token",
+			"passed": true
+		},
+		{
+			"actual": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"exact_bytes": true,
+			"expected": [
+				0.056872462075944555,
+				1.1386355738741183,
+				-0.05701715645906642,
+				0.20042201313620434,
+				-0.04011915540149738,
+				-0.8451662710976964
+			],
+			"finite6": true,
+			"kind": "finite6",
+			"label": "peer clear leaves first object prepared",
+			"passed": true
+		}
+	]
+}

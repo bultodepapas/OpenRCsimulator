@@ -1,0 +1,22 @@
+{
+  "buck_liquid_water_saturation_minus20c_pa": 125.58408951511785,
+  "dry_gas_constant_runtime_rounded": 287.05287,
+  "dry_gas_constant_standard_exact_ratio": 287.052874247044,
+  "isa_1000m_geometric": {
+    "density_kgm3": 1.1116596592243382,
+    "geometric_altitude_m": 1000.0,
+    "geopotential_altitude_m": 999.8427120469674,
+    "pressure_pa": 89876.27776177823,
+    "temperature_k": 281.6510223716947
+  },
+  "scope": "equation cross-checks; not physical weather validation",
+  "sea_level_20C_50pct_rh": {
+    "cipm_2007_rho_kgm3": 1.1993138954744933,
+    "dry_air_density_kgm3": 1.1902123230703694,
+    "engine_charge_ratio": 0.971601896383975,
+    "relative_error_vs_cipm_percent": -0.038353058242268645,
+    "rho_kgm3": 1.1988539219176544,
+    "vapor_pressure_pa": 1169.1699892250094
+  },
+  "water_vapor_gas_constant_from_cipm_R_and_Mv": 461.52332908508777
+}

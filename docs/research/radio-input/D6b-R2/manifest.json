@@ -1,0 +1,205 @@
+{
+  "format": "openrc-d6b-r2-integration v1",
+  "date": "2026-10-09",
+  "parent_commit": "d61d268d857b07f891dcaf6dbca44552128e5dec",
+  "baseline_context": "Current working tree already includes the verified D1-R5 integration; prior changes preserved.",
+  "prior_suite_manifest": "docs/research/aircraft-validation/D1-R5/integration/manifest.json",
+  "prior_suite_manifest_sha256": "04f68987f4cd48af464556b234da155bfbbee5b1a12cd079d95c9c0a368b01cc",
+  "full_suite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "gdscript_test_programs": 127,
+    "matching_prior_wash_swirl_fps_hashes": [
+      [
+        "30",
+        "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+      ],
+      [
+        "60",
+        "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+      ],
+      [
+        "144",
+        "65891b63732af074cc6bf0b191cf3edbbe3d6ad65769cf1c5349993628395bd5"
+      ],
+      [
+        "30",
+        "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+      ],
+      [
+        "60",
+        "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+      ],
+      [
+        "144",
+        "f261504bf322738fe9d09d1bcd27145bc6b6a85c970fc2cc1ca9080e3cd4e8e3"
+      ]
+    ]
+  },
+  "focused_results": {
+    "test_rc_input": {
+      "exit_code": 0,
+      "summaries": [
+        "41 checks, 0 failed"
+      ],
+      "passed_assertions": 0
+    },
+    "test_rc_axis_history": {
+      "exit_code": 0,
+      "summaries": [
+        "F3b: 9252 checks, 0 failed; all 1024 axis-history combinations"
+      ],
+      "passed_assertions": 0
+    },
+    "test_rc_calibration": {
+      "exit_code": 0,
+      "summaries": [
+        "19 checks, 0 failed"
+      ],
+      "passed_assertions": 0
+    },
+    "test_rc_profile_validation": {
+      "exit_code": 0,
+      "summaries": [
+        "D6b-R1: 720 checks, 0 failed"
+      ],
+      "passed_assertions": 0
+    },
+    "test_e2e_radio": {
+      "exit_code": 0,
+      "summaries": [],
+      "passed_assertions": 38
+    },
+    "test_latency_patch": {
+      "exit_code": 0,
+      "summaries": [
+        "F6a: 533 checks, 0 failed; 240 same-tick marker updates and exact checkpoint pairs"
+      ],
+      "passed_assertions": 0
+    },
+    "test_ui_input": {
+      "exit_code": 0,
+      "summaries": [],
+      "passed_assertions": 17
+    }
+  },
+  "regression": {
+    "control": {
+      "checks": 365,
+      "failures": 0,
+      "exit_code": 0,
+      "expected_failure": null
+    },
+    "baseline": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "cached_history": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "missing_profile_reset": {
+      "checks": 365,
+      "failures": 181,
+      "exit_code": 1,
+      "expected_failure": "stale pre-profile event cannot arm"
+    },
+    "missing_connection_reset": {
+      "checks": 365,
+      "failures": 18,
+      "exit_code": 1,
+      "expected_failure": "direct device replacement cannot reuse low evidence"
+    },
+    "nonfinite_evidence": {
+      "checks": 365,
+      "failures": 45,
+      "exit_code": 1,
+      "expected_failure": "nonfinite event is not low-throttle evidence"
+    },
+    "latched_evidence": {
+      "checks": 365,
+      "failures": 18,
+      "exit_code": 1,
+      "expected_failure": "later high event replaces low evidence"
+    },
+    "missing_current_low": {
+      "checks": 365,
+      "failures": 36,
+      "exit_code": 1,
+      "expected_failure": "low event with high current poll remains safe"
+    },
+    "cleared_history": {
+      "checks": 365,
+      "failures": 19,
+      "exit_code": 1,
+      "expected_failure": "calibration retains raw values and connection history"
+    }
+  },
+  "cost": {
+    "summary": "cost/summary.json",
+    "runs": 12,
+    "observational_only": true
+  },
+  "source_sha256": {
+    "app/input/rc_input.gd": "a777c4124d842e2cd072cb48fa8b1c30a5948cb8cc4f3cf10c298f1657961a17",
+    "app/input/rc_calibration.gd": "c8e8685f0766d92fb2ba4f2364abfefa7a987fdbc4c65d56338f25618e750408",
+    "app/input/latency_patch.gd": "0f31207ca926e96c599a73927fc118d3af502594f5b00784878e5efe7d8c0863",
+    "app/tests/test_rc_rearm.gd": "259417d50ad58cae6a0706352e9b778c6dee2099998d2d6dce4c614b35be5090",
+    "app/tests/test_rc_rearm.gd.uid": "fde27d2012f4a541d9ed9e4a447dee6c38ba0ec89192f4d4531f7f9b41763889",
+    "app/tests/test_rc_input.gd": "545cfa24a13176b22bdbffdc6f6960219ce117c058968617955e3646cd243cdc",
+    "app/tests/test_rc_axis_history.gd": "957b4c0fb691388bbc8de968fae3fa8b70ea4384d9583bf275bb10593cb6731b",
+    "app/tests/test_e2e_radio.gd": "71e90bc3f26e73d2b7eed8760c34104de93309a690c716286dd4304bd1b37269",
+    "app/tests/test_latency_patch.gd": "0b05d8eccbcf879786794f81ac265b169014920821a34ac764b6969310caf35a",
+    "app/tests/bench_radio_events.gd": "717af11825631f1177f18dabdfc294709bc546cc630acae33f053943afa27238",
+    "app/sim/flight_session.gd": "7e018f241b442b2a5a46210e8f2b4c46e497350d1b1d8b13f3d8cbc098966891",
+    "research/input/d6b-r2/verify.py": "2b9a3af002b6a3014c633ee41029079e312c29538eb5494ccbb4c16ba369654c"
+  },
+  "evidence_sha256": {
+    "README.md": "e1a896e0cf37af6f11eefce8858942dc86e77714d7112d49931d26419e9f0d57",
+    "baseline.log": "cde276b8b5ebd913f1ef44d5295669d71eedf9d368b54fe068299fe62fc97521",
+    "before-source.json": "de1b944154caae59bdb0dcfa3d5cfabf67a575ec303a2c7066109f14753decb6",
+    "cached_history.log": "cde276b8b5ebd913f1ef44d5295669d71eedf9d368b54fe068299fe62fc97521",
+    "change.patch": "c4c32283be1aa249d2b8902e2849225acad8ccb26bb4a77015803e52377f6c37",
+    "cleared_history.log": "2b2fa7e3d3e21e7988f8b953ee9b48624a038bc14d718190aa8d779ffea2e011",
+    "control.log": "387db5dc27b3f7b1badefbf4e072720b253f716f58a07c1e342de4d03dfcc1cc",
+    "cost/README.md": "a197a271b0236ab3f7af86a06962abc32448f3619d8d0571c3c80bab8bf18a88",
+    "cost/preflight.log": "bdba8b734b5be917b9971a89fd831384e4c39f550ffc9b468f2c603be85935c7",
+    "cost/run-01-original-armed.log": "3305ffb2f0a32b0c3a3fe4072fce36422c4225f78c193648533f69048c83c890",
+    "cost/run-02-current-armed.log": "358746cc5b7115c8f291291af083e8dc2f437bf51123de4934b79e90f0a1d984",
+    "cost/run-03-original-safe.log": "a24974721d41ceeae07d4da39c695c68d546cfda596a51a8bf597b1d4e0e2594",
+    "cost/run-04-current-safe.log": "17cadaee7f5fdbc4302271f298c51ef94be7bc1f5ad07e25ce0d7730687e38d1",
+    "cost/run-05-original-armed.log": "3cff83baefa05ceded7ccdc8381ec147a622e6437e65beaa3a98581ce44e137d",
+    "cost/run-06-current-armed.log": "1147f8d87233265e0eb11805b0a7dce917a560f04a9de008e7ccbb4f1be3a94a",
+    "cost/run-07-original-safe.log": "7b4c6a3631f5e876514e80c551ade6a6f43f21cd46d4843d29667d61fa3460fa",
+    "cost/run-08-current-safe.log": "85c4f7aa949cfca3d9ed2400b5f53dc6f5f86707f59a41757fe3b2f9f8d78cb3",
+    "cost/run-09-original-armed.log": "121a84cb097823318ce86ad10ef5ae4d9b543599e7a69afa0c36165388da2f30",
+    "cost/run-10-current-armed.log": "ad7850fee6e4c4d6490dd7e4d2b90619313d04f73dbaf0ce36b6a6c8a572b6e8",
+    "cost/run-11-original-safe.log": "98308d4171cce2704d4f59c7b2d01df099600e4fdf38a4f1ca630a7dc8a905ae",
+    "cost/run-12-current-safe.log": "7773678fc7d836cf2163995e7b7c8d4e113f3d33343881df37b8f65ee58dce10",
+    "cost/runs.json": "1f54674bc775c2bd7f87c376e46d0fed0a447d7b957239cc7ef476d59e55c84c",
+    "cost/summary.json": "9e25943524da2ece49081cf0cd1e68b6f9290baffa6e67e3de67e5edef5c7f09",
+    "focused-diagnostics.json": "8e95cfc80fb850a0cce6ea1d9df381867f5d7bd68a31f53da401b3eb9e5d62bb",
+    "focused-results.json": "cf8e04357238a74560dfc3d66c1cf48e2eb6bc91104aee62ea869f93ddc2195d",
+    "focused.log": "387db5dc27b3f7b1badefbf4e072720b253f716f58a07c1e342de4d03dfcc1cc",
+    "latched_evidence.log": "176ab7733e0ac31aa066731d4bf5a2221aecdebfb7cce5ac1bd53a93910d7ac6",
+    "lint-after.json": "b420123a34ee93029b9d7934c5fe8aefb0c2700af079ba18bff7435e3521e150",
+    "lint-before.json": "ff03607e660418d16ad16e4cfa793e1675432642a264a7cd580d26450eb06069",
+    "missing_connection_reset.log": "5ee300daa9be90ef235fd496b60b95dbbd279855d9f427dc8dd55f5ca39f314c",
+    "missing_current_low.log": "c5f1cb7d8c1a6be34117126b52736a739951b362af2cb7e1249a3563d9690934",
+    "missing_profile_reset.log": "cde276b8b5ebd913f1ef44d5295669d71eedf9d368b54fe068299fe62fc97521",
+    "nonfinite_evidence.log": "64c17d30897de250813dff68dd63d002d327b8437a0b3e29677f8fb2a44d9ee1",
+    "suite.log": "dfd8b61ca579e6bba653317d2cba7c271e4e62e101fe8db79108dd91dcd8f74c",
+    "test_e2e_radio.log": "48fa2f673a6064c735821c98a7cce8d7262f13d71063d04677e98193a45bcb68",
+    "test_latency_patch.log": "5ed83cdf106df1803604e373994350efe39a5d4e0033303ef1e6d4598d1ff7af",
+    "test_rc_axis_history.log": "b3812716e96b179770d34d65d100f8a980db367d1137b4aa370a5a5827b3ba22",
+    "test_rc_calibration.log": "9953fb790af01c2bc5701ba977dce7dab608c4b1f4319df748c9c6863cf2aa9e",
+    "test_rc_input.log": "e5566776686b4187c06c00a31b90f2852a377ecbd9d576bb209e85f20727260a",
+    "test_rc_profile_validation.log": "5329dd6a7be6cc16d72a1820c483aa6056095ad8d6944a47bf60aca18a66c10b",
+    "test_ui_input.log": "f7efd328e4cd8886206ff08fa6ce38af960cb492b9beb91a05e6755ac69d52f2",
+    "verification.json": "5b47390ba25ac94d6f2ca3a30e08fb0069c74cc99584d12098ece29789dce22e"
+  }
+}

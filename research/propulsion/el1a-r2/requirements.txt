@@ -1,0 +1,3 @@
+# Isolated research probes only; not application/runtime dependencies.
+numpy==1.26.4
+scipy==1.11.4

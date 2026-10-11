@@ -1,0 +1,385 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"capture_update_cpu_cost": {
+		"count": 11,
+		"max": 4.797,
+		"median": 0.625,
+		"p95": 4.384
+	},
+	"capture_update_cpu_samples_ms": [
+		0.359,
+		4.384,
+		1.03,
+		0.642,
+		0.478,
+		0.491,
+		1.113,
+		0.513,
+		0.625,
+		0.563,
+		4.797
+	],
+	"captures": [
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": false,
+			"fresh_png": "00-legacy-fresh.png",
+			"fresh_sha256": "0f81c2d4f540f6c99e8a60518fb1476d7a76b4dd5aabcbb6647dccb2f3f3dccc",
+			"id": "00-legacy",
+			"in_place_png": "00-legacy-in-place.png",
+			"in_place_sha256": "3ebf07c04c71feec5ceca5959adc1f668fc38cbc84a8d360002729a7e8a8bf99",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "noon-fresh.png",
+			"fresh_sha256": "826fc765010d206cea0515850634fec68965be5746ed3eab393ebf4529aa6080",
+			"id": "noon",
+			"in_place_png": "noon-in-place.png",
+			"in_place_sha256": "4be318b39708fae0ab314dce84ce7f4195a0ff9c887f7da0fcf549d98e52bbd4",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 3
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 89.95804267040504
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": true,
+			"field_changed": true,
+			"fresh_png": "night-fresh.png",
+			"fresh_sha256": "f0db57c2ddf0f4fd9c5a21e171cae775de92de41bf0a270aa5ed3b0161d0554e",
+			"id": "night",
+			"in_place_png": "night-in-place.png",
+			"in_place_sha256": "f0db57c2ddf0f4fd9c5a21e171cae775de92de41bf0a270aa5ed3b0161d0554e",
+			"pixel_difference": {},
+			"save_ok": true,
+			"solar_elevation_deg": -89.76044611708167
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "dawn-fresh.png",
+			"fresh_sha256": "8ed73307f493de7c2a72d1c03c602d9592a510eeb04c1c3d7edf8e762aa8ae0e",
+			"id": "dawn",
+			"in_place_png": "dawn-in-place.png",
+			"in_place_sha256": "43c110b9b43db7c527528a7eec0150b2e5e8e6bd426d651b01730bc55868e656",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -6.0019712434086285
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunrise-60-fresh.png",
+			"fresh_sha256": "00a932e32938bc1da91c753cba385a9999e0e5a521ad31c2afc6ade28f268a84",
+			"id": "sunrise-60",
+			"in_place_png": "sunrise-60-in-place.png",
+			"in_place_sha256": "83da211bd285edcfb24f92d9a2fa4046786d9934cfd972143efbc44c83b2d8d2",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -1.0801469435443716
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunset-60-fresh.png",
+			"fresh_sha256": "1513473e43d702f3c04c5dd5a13402227145e6595212a5c10e7358f2334ee8f2",
+			"id": "sunset-60",
+			"in_place_png": "sunset-60-in-place.png",
+			"in_place_sha256": "a8352e4e12b677f96e4dc0db102c41d0035a9afc95c8d8afe050e39433163ed9",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					121,
+					312
+				],
+				"differing_pixels": 2,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -0.5821087797943011
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunrise+0-fresh.png",
+			"fresh_sha256": "946d59c18c057ac8a3107d927611d160c56a000ed8ba5b1a2c6770093e7e51cd",
+			"id": "sunrise+0",
+			"in_place_png": "sunrise+0-in-place.png",
+			"in_place_sha256": "d8cb22bcefd816ad41b72b6b9721b26f0517de99b6b399dfc9875baa2ca39b57",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -0.8300965422180064
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunset+0-fresh.png",
+			"fresh_sha256": "982312a2c61355f72c265ba79a63843853a412acab7bbbf5c471561d0db5c067",
+			"id": "sunset+0",
+			"in_place_png": "sunset+0-in-place.png",
+			"in_place_sha256": "37664e68ef5d865664017f3a27b3b3705bd747e5037e2c94730956e43364ccea",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -0.8321600112895982
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunrise+60-fresh.png",
+			"fresh_sha256": "a4095e895779418f7bfd1f51857d939b6713d5506d15036a0d147988e77aa417",
+			"id": "sunrise+60",
+			"in_place_png": "sunrise+60-in-place.png",
+			"in_place_sha256": "54cf0188222fbdf8016245a3d5ced6370b6a4bbacab24daea3de42e0bc3f7674",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					121,
+					312
+				],
+				"differing_pixels": 2,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -0.5800461345889371
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "sunset+60-fresh.png",
+			"fresh_sha256": "fe26a42a9bc32face4f56375ac75e725935229bd3dd5e8fc6a04bfe6817eb967",
+			"id": "sunset+60",
+			"in_place_png": "sunset+60-in-place.png",
+			"in_place_sha256": "c5412ef7a9d749c5250b62417102eb6893af10b66481a6d2c87debe030c163c7",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 1
+			},
+			"save_ok": true,
+			"solar_elevation_deg": -1.0822112405759419
+		},
+		{
+			"aircraft_transform_stable": true,
+			"capture_converged": true,
+			"exact_pixel_match": false,
+			"field_changed": true,
+			"fresh_png": "99-legacy-again-fresh.png",
+			"fresh_sha256": "0f81c2d4f540f6c99e8a60518fb1476d7a76b4dd5aabcbb6647dccb2f3f3dccc",
+			"id": "99-legacy-again",
+			"in_place_png": "99-legacy-again-in-place.png",
+			"in_place_sha256": "3ebf07c04c71feec5ceca5959adc1f668fc38cbc84a8d360002729a7e8a8bf99",
+			"pixel_difference": {
+				"bounds_xyxy": [
+					121,
+					311,
+					576,
+					312
+				],
+				"differing_pixels": 3,
+				"max_channel_delta_8bit": 4
+			},
+			"save_ok": true,
+			"solar_elevation_deg": 45.0
+		}
+	],
+	"cloud_time_s": 0.0,
+	"code_revision": "v0.1.0-rc6-20-ge3fc5b0-dirty",
+	"display": "Linux",
+	"format": "openrc-tod09b-render-probe v1",
+	"idle_frame_cost": {
+		"count": 24,
+		"max": 466.462,
+		"median": 424.728,
+		"p95": 448.961
+	},
+	"idle_frame_intervals_ms": [
+		407.086,
+		415.303,
+		415.367,
+		431.411,
+		409.941,
+		406.074,
+		415.514,
+		416.414,
+		446.418,
+		438.866,
+		431.94,
+		447.793,
+		466.462,
+		465.315,
+		425.971,
+		439.06,
+		423.765,
+		425.371,
+		424.728,
+		409.05,
+		433.242,
+		423.595,
+		448.961,
+		423.616
+	],
+	"noop_field_changed": false,
+	"noop_field_is_noop": true,
+	"ok": false,
+	"performance_claim": false,
+	"performance_limit": "Xvfb renderer costs are exploratory, not target-GPU acceptance.",
+	"renderer": "gl_compatibility",
+	"report_path": "/home/bulto/OpenRCsimulator/docs/research/time-of-day-investigations/TOD-09b/render-on/report.json",
+	"resolution": [
+		960,
+		540
+	],
+	"scenery_enabled": true,
+	"synthetic_solar_update_cpu_cost": {
+		"count": 24,
+		"max": 9.293,
+		"median": 4.989,
+		"p95": 5.957
+	},
+	"synthetic_solar_update_cpu_samples_ms": [
+		4.6,
+		5.022,
+		4.614,
+		5.64,
+		4.634,
+		4.459,
+		5.173,
+		5.197,
+		5.957,
+		5.387,
+		5.316,
+		4.8,
+		4.549,
+		4.907,
+		4.989,
+		5.74,
+		5.112,
+		4.566,
+		9.293,
+		4.53,
+		9.243,
+		5.427,
+		4.352,
+		4.604
+	],
+	"synthetic_solar_update_frame_cost": {
+		"count": 24,
+		"max": 541.147,
+		"median": 477.54,
+		"p95": 508.203
+	},
+	"synthetic_solar_update_frame_intervals_ms": [
+		455.528,
+		451.96,
+		455.068,
+		504.729,
+		508.203,
+		452.208,
+		506.17,
+		485.074,
+		541.147,
+		492.333,
+		476.476,
+		484.791,
+		477.54,
+		466.247,
+		484.166,
+		472.572,
+		462.796,
+		488.278,
+		490.218,
+		519.741,
+		474.386,
+		471.616,
+		497.279,
+		473.567
+	],
+	"synthetic_update_cadence": {
+		"meaning": "synthetic one-second solar steps; not production cadence or target-GPU acceptance",
+		"simulated_seconds_between_updates": 1,
+		"wall_clock_delay": false
+	}
+}

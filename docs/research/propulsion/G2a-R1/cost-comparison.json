@@ -1,0 +1,72 @@
+{
+  "format": "openrc-stage-cost-comparison v1",
+  "baseline_commit": "a03503655788b479547da160de024545b4b9e7bb",
+  "benchmark_sha256": "58bc9a36249258cb806919f69b2dea2c533e70cade810d4e7b9d2ef7e8a61aed",
+  "scope": "serial matched simulation-step batch means, not tick tails or renderer",
+  "pairs": [
+    {
+      "weather": "calm",
+      "fixture": "trim",
+      "integrator": "split",
+      "baseline_usec": 524.7916666666666,
+      "candidate_usec": 529.1791666666667,
+      "change_percent": 0.8360460500198563
+    },
+    {
+      "weather": "calm",
+      "fixture": "trim",
+      "integrator": "coupled-rk4",
+      "baseline_usec": 1345.4291666666666,
+      "candidate_usec": 730.1416666666667,
+      "change_percent": -45.731690321861365
+    },
+    {
+      "weather": "calm",
+      "fixture": "punch",
+      "integrator": "split",
+      "baseline_usec": 503.87916666666666,
+      "candidate_usec": 502.2125,
+      "change_percent": -0.33076713167012883
+    },
+    {
+      "weather": "calm",
+      "fixture": "punch",
+      "integrator": "coupled-rk4",
+      "baseline_usec": 1308.4125,
+      "candidate_usec": 761.1875,
+      "change_percent": -41.82358392326579
+    },
+    {
+      "weather": "hot-high",
+      "fixture": "trim",
+      "integrator": "split",
+      "baseline_usec": 513.3625,
+      "candidate_usec": 531.9166666666666,
+      "change_percent": 3.614242697249348
+    },
+    {
+      "weather": "hot-high",
+      "fixture": "trim",
+      "integrator": "coupled-rk4",
+      "baseline_usec": 1313.8875,
+      "candidate_usec": 765.0791666666667,
+      "change_percent": -41.76981159599534
+    },
+    {
+      "weather": "hot-high",
+      "fixture": "punch",
+      "integrator": "split",
+      "baseline_usec": 830.6166666666667,
+      "candidate_usec": 517.9666666666667,
+      "change_percent": -37.640708710395884
+    },
+    {
+      "weather": "hot-high",
+      "fixture": "punch",
+      "integrator": "coupled-rk4",
+      "baseline_usec": 1390.275,
+      "candidate_usec": 755.3125,
+      "change_percent": -45.671719623815434
+    }
+  ]
+}

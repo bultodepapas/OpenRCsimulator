@@ -15,6 +15,10 @@ const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
+const VisualTimeline = preload("res://environment/visual_timeline.gd")
+const VisualCheckpoint = preload("res://app_state/visual_checkpoint.gd")
+const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
@@ -42,8 +46,53 @@ var session: Node
 var recorder: RefCounted
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
+var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
+var weather_config: Dictionary = {}
+## TOD: immutable selection for this flight; no preference reads on the direct route.
+var lighting_config: Dictionary = {}
+var _lighting: Dictionary = {}
+var _visual_timeline: Dictionary = {}
+var _visual_context_status: String = "present"
+var _field_world_lighting: bool = false
+var _world_environment: WorldEnvironment
+var _sun: DirectionalLight3D
+var _field_node: Node3D
+
+
+## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
+func _weather_options(options: Dictionary) -> Dictionary:
+	var raw: Variant = weather_config.duplicate(true) if not weather_config.is_empty() else FlightSession.WeatherConfig.defaults()
+	if options.has("weather") and options.has("weather-file"):
+		return {ok = false, config = {}, errors = PackedStringArray(["choose --weather or --weather-file, not both"])}
+	if options.has("weather"):
+		if typeof(options.weather) != TYPE_STRING:
+			return {ok = false, config = {}, errors = PackedStringArray(["--weather needs a preset ID"])}
+		raw = FlightSession.WeatherConfig.preset(options.weather)
+		if raw.is_empty():
+			return {ok = false, config = {}, errors = PackedStringArray(["unknown weather preset '%s'" % options.weather])}
+	if options.has("weather-file"):
+		if typeof(options["weather-file"]) != TYPE_STRING or not FileAccess.file_exists(options["weather-file"]):
+			return {ok = false, config = {}, errors = PackedStringArray(["--weather-file needs an existing JSON file"])}
+		var parser: JSON = JSON.new()
+		if parser.parse(FileAccess.get_file_as_string(options["weather-file"])) != OK:
+			return {ok = false, config = {}, errors = PackedStringArray(["weather JSON is invalid: " + parser.get_error_message()])}
+		raw = parser.data
+	var mappings: Dictionary = {"wind-speed": "speed_mps", "wind-from": "from_deg", "gust-speed": "gust_mps", "gust-up": "gust_up_mps", "gust-duration": "gust_duration_s", "gust-period": "gust_period_s", "gust-delay": "gust_delay_s"}
+	for key: String in mappings:
+		if not options.has(key):
+			continue
+		if not raw is Dictionary or typeof(options[key]) != TYPE_STRING or not str(options[key]).is_valid_float():
+			return {ok = false, config = {}, errors = PackedStringArray(["--%s needs a finite number" % key])}
+		raw[mappings[key]] = str(options[key]).to_float()
+	return FlightSession.WeatherConfig.validate(raw)
+
+
+func _render_wind(time_s: float) -> Vector3:
+	if _scripted or session == null:
+		return Vector3.ZERO
+	return Frames.ned_to_render(Array(session.wind_at(time_s)))
 var interactive_start: bool = false
 var startup_error: String = ""
 var _airplane: Dictionary
@@ -93,6 +142,22 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	# The field-world route owns --date when paired with its time selection.
+	var lighting_args: Dictionary = args.duplicate()
+	if (args.has("time_of_day") or args.has("time")) and not (args.has("time-of-day") or args.has("lighting") or args.has("lighting-config")):
+		lighting_args.erase("date")
+	var selected_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if lighting_config.is_empty() else lighting_config) if interactive_start else LightingConfig.from_args(lighting_args)
+	if not selected_light.ok:
+		startup_error = "; ".join(selected_light.errors)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr("lighting: " + startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	lighting_config = selected_light.config.duplicate(true)
+	_lighting = TimeOfDayLighting.snapshot(lighting_config)
+	_visual_timeline = VisualTimeline.create(lighting_config).timeline
 	var latency_options: Dictionary = LatencyPatch.options(args)
 	if not latency_options.ok:
 		printerr(latency_options.error)
@@ -155,6 +220,13 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(1)
 		return
+	_electric_demo = str(args.get("electric-demo", ""))
+	if args.has("electric-demo") and (_electric_demo not in ["4s", "6s", "4s-battery", "6s-battery"] or aircraft_id != Catalog.DEFAULT_ID or _scripted):
+		printerr("electric demo requires 4s, 6s, 4s-battery or 6s-battery, the default visual airframe, and a physics flight")
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	_auto_zoom = str(args.get("autozoom", "1")) != "0"
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
@@ -176,9 +248,35 @@ func _ready() -> void:
 			return
 	session = FlightSession.new()
 	session.physics_enabled = not _scripted
-	session.setup(Catalog.entry(aircraft_id).data)
+	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
+		printerr("shaft integrator refused: ", session.shaft_error if not _scripted else "requires a physics flight")
+		session.free() # refused before add_child(): this owner would otherwise remain orphaned
+		session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
+	var physics_path: String = str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_")
+	session.setup(physics_path)
+	if args.has("shaft-integrator") and not session.is_flyable():
+		printerr("shaft integrator refused: ", session.pause_reason)
+		session.free()
+		session = null
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
 	session.start_choice = start_choice
+	var conditions: Dictionary = _weather_options(args)
+	if not conditions.ok or not session.setup_weather(conditions.config):
+		startup_error = "; ".join(conditions.errors) if not conditions.ok else session.weather_error
+		if not interactive_start:
+			printerr("weather refused: ", startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	_update_cg_model()
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
@@ -189,9 +287,9 @@ func _ready() -> void:
 		latency_patch.axis = latency_options.axis
 		latency_patch.threshold = latency_options.threshold
 		add_child(latency_patch)
-	recorder = Recorder.new(session.sim)
+	recorder = Recorder.new(session.sim, session.electrical_state)
 	session.resetting.connect(_on_resetting)
-	if session.aircraft.ok and not _scripted:
+	if session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root)
 	session.reset()
 	if interactive_start and not session.is_flyable():
@@ -253,7 +351,7 @@ func _process(delta: float) -> void:
 	var visual_clock_s: float = session.sim.time()
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
-	World.update(_env, visual_clock_s, Vector3.ZERO, _last_render_pose.get("pos"), _camera) # clouds ≤ once per cloud_update_s; eye adapts to the view
+	World.update(_env, visual_clock_s, _render_wind(visual_clock_s), _last_render_pose.get("pos"), _camera) # deterministic wind and field-world adaptation
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -291,11 +389,30 @@ func _update_hud() -> void:
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
 	else:
 		var s: PackedFloat64Array = session.sim.state
-		var air := Air.compute(s, M.v3(0.0, 0.0, 0.0))
+		var air: Dictionary = session.air_data(s)
 		lines.append(Hud.flight_line(air.V, -s[RB.POS + 2], rad_to_deg(air.alpha), session.sim.inputs[3]))
+		if not session.weather_is_calm():
+			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
+			lines.append(_weather_hud_line(s, wind))
+	if not _scripted and session.aircraft.ok and not session.atmosphere_is_reference():
+		var field_air: Dictionary = session.atmosphere_configuration()
+		var true_speed: float = session.air_data(session.sim.state).V
+		lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [true_speed * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
 	if _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	_hud.text = "\n".join(lines)
+
+
+## Ground speed is horizontal NED speed. A vertical-only air current has no compass bearing.
+func _weather_hud_line(s: PackedFloat64Array, wind: PackedFloat64Array) -> String:
+	var horizontal: float = M.sqrt_(wind[0] * wind[0] + wind[1] * wind[1])
+	var bearing: String = "--"
+	if horizontal > 0.0:
+		bearing = "%03.0f°" % fposmod(rad_to_deg(M.atan2_(-wind[1], -wind[0])), 360.0)
+	var q: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+	var velocity: PackedFloat64Array = M.q_rotate(q, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
+	var ground_speed: float = M.sqrt_(velocity[0] * velocity[0] + velocity[1] * velocity[1])
+	return tr("ground speed %.1f m/s  wind %.1f m/s from %s  up %+.1f m/s") % [ground_speed, horizontal, bearing, -wind[2]]
 
 
 func _status() -> String:
@@ -310,6 +427,12 @@ func _status() -> String:
 	var trims: Dictionary = session.trims
 	var speed := sqrt(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
 	var line := "sim %5.2f s  alt %5.1f m  speed %5.1f m/s  engine %5.0f rpm" % [sim.time(), -s[RB.POS + 2], speed, sim.aux[0]]
+	if not _electric_demo.is_empty():
+		line = "Synthetic electric test airframe (%s)\n" % _electric_demo.to_upper() + line
+		if session.battery_is_dynamic():
+			var battery: Dictionary = session.electrical_state()
+			if battery.get("ok", false):
+				line = "Battery %.1f%% | %.2f V | %.1f A%s\n" % [100.0 * battery.soc, battery.bus_voltage_v, battery.pack_current_a, " | depleted" if battery.exhausted else ""] + line
 	line += "\ntrims: ail %+.3f  elev %+.3f  rud %+.3f" % [trims.roll, trims.pitch, trims.yaw]
 	line += "\n" + session.radio.describe()
 	if session.calibration != null:
@@ -401,6 +524,107 @@ func set_overlays_visible(on: bool) -> void:
 			n.visible = on
 
 
+## TOD-08a: paired technical replay checkpoint; native Variant encoding preserves physics bits.
+## This is not a live-input save game or a rendered trace player.
+func checkpoint() -> Dictionary:
+	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field":
+		return {}
+	var selection: Dictionary = VisualTimeline.evaluate(_visual_timeline, session.sim.tick)
+	if not selection.ok or selection.config != lighting_config:
+		return {} # refuse an unrecorded visual edit
+	var saved: Dictionary = VisualCheckpoint.make(session.checkpoint(), _visual_timeline, _field_identity())
+	return saved.checkpoint if saved.ok else {}
+
+
+## Validate both halves and prepare detached shadow geometry before the physics owner commits.
+## No await: an invalid record cannot change the live world, recording or simulation.
+func restore_checkpoint(candidate: Variant) -> Dictionary:
+	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
+		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
+	var decoded: Dictionary = VisualCheckpoint.read(candidate, _field_identity())
+	if not decoded.ok:
+		return decoded
+	# TOD-09c1 defines progressing records before the live controller consumes them.
+	# Refuse even a stopped v2 history: its restart selection and fractional phase
+	# cannot be represented by this controller's fixed-time reset path yet.
+	if decoded.timeline.format != VisualTimeline.FORMAT:
+		return {ok = false, errors = ["progressing visual checkpoints require the solar progression controller"]}
+	var staged: Dictionary = _prepare_checkpoint_lighting(decoded.config)
+	if not staged.ok:
+		return {ok = false, errors = ["could not prepare checkpoint lighting"]}
+	if not session.restore_checkpoint(decoded.physics):
+		return {ok = false, errors = ["physics checkpoint is invalid or incompatible"]}
+	if not _commit_lighting(staged, decoded.config):
+		return {ok = false, physics_restored = true, errors = ["physics restored, but visual scene changed during restoration"]}
+	_visual_timeline = decoded.timeline.duplicate(true)
+	_visual_context_status = decoded.context_status
+	_prop_angle = 0.0 # propeller phase was never part of the physical checkpoint contract
+	if _engine_audio != null:
+		_engine_audio.stream_paused = true
+	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	_note = "Checkpoint restored; visual context: " + _visual_context_status
+	return {ok = true, context_status = _visual_context_status, errors = []}
+
+
+## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.
+func apply_lighting_config(raw: Variant) -> Dictionary:
+	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
+		return {ok = false, changed = false, errors = ["lighting edit requires a ready production flight"]}
+	if not session.sim.paused:
+		return {ok = false, changed = false, errors = ["pause the flight before editing lighting"]}
+	var checked: Dictionary = LightingConfig.validate(raw)
+	if not checked.ok:
+		return {ok = false, changed = false, errors = checked.errors}
+	if checked.config == lighting_config:
+		return {ok = true, changed = false, errors = []}
+	var edited: Dictionary = VisualTimeline.append_config_edit(_visual_timeline, session.sim.tick, checked.config)
+	if not edited.ok:
+		return {ok = false, changed = false, errors = edited.errors}
+	var staged: Dictionary = _prepare_checkpoint_lighting(checked.config)
+	if not staged.ok:
+		return {ok = false, changed = false, errors = ["could not prepare lighting"]}
+	# Prepare the prior context without publishing it until the scene update succeeds.
+	var initial_context: String = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
+	if not _commit_lighting(staged, checked.config):
+		return {ok = false, changed = false, errors = ["visual scene changed during lighting edit"]}
+	if recorder.recording and not recorder.trace.meta.has("visual_context"):
+		recorder.trace.meta.visual_context = initial_context
+	_visual_timeline = edited.timeline
+	if recorder.recording:
+		recorder.trace.meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
+	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	return {ok = true, changed = true, errors = []}
+
+
+## TOD-09b: publish in place; no await or physical-session mutation here.
+func _commit_lighting(staged: Dictionary, config: Dictionary) -> bool:
+	var updated: bool = FieldBuilder.commit_lighting(_field_node, staged.field)
+	if staged.field.changed and not updated:
+		return false
+	Atmosphere.update_environment(_env, staged.lighting)
+	Atmosphere.update_sun(_sun, staged.lighting)
+	lighting_config = config.duplicate(true)
+	_lighting = staged.lighting
+	var current_time: float = session.sim.time()
+	ShaderClock.update(current_time, _render_wind(current_time))
+	Atmosphere.update_clouds(_env, current_time)
+	return true
+
+
+func _field_identity() -> String:
+	var hashing: HashingContext = HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(var_to_bytes(field))
+	return hashing.finish().hex_encode()
+
+
+## Prepare the only replaceable geometry before publishing; the field, Sun and Environment retain ownership.
+func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
+	var snapshot: Dictionary = TimeOfDayLighting.snapshot(config)
+	var prepared_field: Dictionary = FieldBuilder.prepare_lighting(_field_node, snapshot)
+	return {ok = prepared_field.ok, field = prepared_field, lighting = snapshot}
+
+
 ## The session's trace header plus which build flew it (UI-04a): the exported smoke test compares app_build with
 ## the ZIP name. "development" when running from the source tree.
 func _trace_meta() -> Dictionary:
@@ -408,11 +632,20 @@ func _trace_meta() -> Dictionary:
 	var build := BuildInfo.current()
 	meta.app_build = build.describe if build.source == "export" else "development"
 	meta.app_version = build.parsed.semver if build.source == "export" else build.version + " (development)"
+	if _visual_context_status != "present":
+		meta.visual_context_status = _visual_context_status
+	if _visual_context_status != "present" or not _visual_timeline.events.is_empty():
+		meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
+	if lighting_config.get("mode", "legacy") != "legacy" or _visual_context_status != "present" or not _visual_timeline.events.is_empty():
+		# Self-contained optional header, copied/frozen by Recorder; CSV columns and physics identity stay unchanged.
+		meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
 	return meta
 
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_visual_timeline = VisualTimeline.create(lighting_config).timeline
+	_visual_context_status = "present"
 	_t = 0.0
 	if recorder.recording:
 		recorder.stop()
@@ -444,7 +677,12 @@ func _view_name() -> String:
 
 
 func _build_world() -> void:
-	_env = World.build(self, field, _build_field).environment # FW-02: environment, field seam, sun
+	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
+	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot)
+	_field_world_lighting = bool(built.conditions.time_of_day)
+	_env = built.environment
+	_world_environment = built.world_environment
+	_sun = built.sun
 
 	_airplane = AirplaneBuilder.build(aircraft_id)
 	add_child(_airplane.root)
@@ -458,7 +696,8 @@ func _build_world() -> void:
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	add_child(FieldBuilder.build(field))
+	_field_node = FieldBuilder.build(field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {})
+	add_child(_field_node)
 
 
 ## Hides every field object (today: the treeline) for a background-only capture. False when there is none.
@@ -482,8 +721,11 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.transform = Frames.root_transform(pose.basis, pose.pos, _cg_model)
 	_airplane.propeller.rotation.z = prop_angle
 	AirplaneBuilder.apply_surfaces(_airplane, Commands.hinge_rotations(c, session.throws_deg()))
-	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible
-	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, Atmosphere.shadow_direction() if _shadow_mode == "sun" else Vector3.UP)
+	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
+	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0
+	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
+	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
+	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
 	if is_nan(_look.x):
 		PilotCamera.aim(_camera, pose.pos, _airplane.root.transform, _inspect, _extent.x if _auto_zoom else 0.0)
 	else:
@@ -528,7 +770,8 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
-	World.update(_env, t if _scripted else sim.time(), Vector3.ZERO, pose.pos, _camera)
+	var clock_s: float = t if _scripted else sim.time()
+	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
@@ -536,14 +779,18 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	var err := get_viewport().get_texture().get_image().save_png(out)
 	# Render counters of the captured frame (L0): deterministic for a fixed view, so landscape budgets are testable.
 	var manifest_err := _write_manifest(out, err)
-	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
-	var sun_visible := not _camera.is_position_behind(_camera.global_position + Atmosphere.sun_direction() * 1000.0)
+	var sun_px := _camera.unproject_position(_camera.global_position + Atmosphere.disc_direction(_lighting) * 1000.0)
+	var sun_visible: bool = Atmosphere.light_energy(_lighting) > 0.0 and not _camera.is_position_behind(_camera.global_position + Atmosphere.disc_direction(_lighting) * 1000.0)
 	# L3: where the sun shadow of the airplane's CG falls on the ground (along the light, onto y = 0), on screen.
 	var cg: Vector3 = pose.pos
-	var sd := Atmosphere.sun_direction()
-	var shadow_point: Vector3 = cg - sd * (cg.y / sd.y)
+	var sd := Atmosphere.sun_direction(_lighting)
+	var shadow_available: bool = sd.y > 0.00001 and Atmosphere.shadow_strength(_lighting) > 0.0
+	# Match the visible footprint's low-angle bound instead of logging an unbounded physical projection.
+	var projection_direction: Vector3 = sd
+	projection_direction.y = maxf(projection_direction.y, 0.05)
+	var shadow_point: Vector3 = cg - projection_direction * (cg.y / projection_direction.y) if shadow_available else Vector3(cg.x, 0.0, cg.z)
 	var shadow_px := _camera.unproject_position(shadow_point)
-	var shadow_seen := not _camera.is_position_behind(shadow_point)
+	var shadow_seen: bool = shadow_available and not _camera.is_position_behind(shadow_point)
 	var below_px := _camera.unproject_position(Vector3(cg.x, 0.0, cg.z)) # straight below: where a vertical shadow would be
 	print("saved %s (error %d) draw_calls=%d primitives=%d sun_px=%s sim_clock=%s shadow_px=%s below_px=%s" % [out, err,
 		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
@@ -698,13 +945,13 @@ func capture_evidence() -> Dictionary:
 	var position: Vector3 = _last_render_pose.get("pos", Vector3.ZERO)
 	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
 	return {
-		format = "openrc-visual-evidence v1", provenance = VisualEvidence.provenance(),
+		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
 		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},
 		visual_pose = str(args.get("visual_pose", "")), visual_distance_m = float(args.get("visual_distance", 0.0)),
 		visual_elevation_deg = float(args.get("visual_elevation", VisualEvidence.DEFAULT_ELEVATION_DEG)),
 		visual_azimuth_deg = float(args.get("visual_azimuth", VisualEvidence.DEFAULT_AZIMUTH_DEG)),
-		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction()), energy = Atmosphere.light_energy(), color = str(Spec.ATMOSPHERE.sun_color)},
+		light = {direction = VisualEvidence.vector(Atmosphere.sun_direction(_lighting)), energy = Atmosphere.light_energy(_lighting), color = str(_lighting.sun_color)},
 		route = "synthetic-inspection" if not _visual_pose.is_empty() else ("scripted-circle" if _scripted else "physics-fixed"),
 		preset = "current-default", backend = RenderingServer.get_current_rendering_method(),
 		pose = VisualEvidence.transform(Transform3D(basis, position)), coordinate_frame = "render: east/up/south; metres",
