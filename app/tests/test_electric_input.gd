@@ -121,6 +121,7 @@ func _run(demo: String) -> void:
 		and aircraft.get("ok", false) and PROPULSION.is_electric(propulsion), path)
 	_check("direct route starts on keyboard", not _session.get("radio").connected and _panel_has("input: keyboard"))
 	_check("trimmed electric flight is runnable", _session.call("is_flyable") and not sim.get("paused"))
+	_check("electric demo does not attach combustion audio", _main.get("_engine_audio") == null)
 	if not aircraft.get("ok", false) or not PROPULSION.is_electric(propulsion):
 		quit(1)
 		return
@@ -192,6 +193,14 @@ func _run(demo: String) -> void:
 		and absf(float(_session.get("commands").throttle) - float(start.get("throttle", NAN))) < 1e-12
 		and absf(float(sim.get("aux")[0]) - float(start.get("rpm", NAN))) < 0.01)
 	_check("reset keeps keyboard selection", not radio.get("connected") and _panel_has("input: keyboard"))
+	Input.joy_connection_changed.emit(FAKE_DEVICE, true)
+	await _settle()
+	_check("reconnect with retained high throttle remains SAFE", radio.get("connected") and not radio.get("armed")
+		and float(_session.call("electrical_state").duty) == 0.0 and float(_session.call("electrical_state").battery_current_a) == 0.0)
+	_motion(2, -1.0)
+	await _settle()
+	_check("reconnected radio requires and accepts a fresh low event", radio.get("armed"))
+	Input.joy_connection_changed.emit(FAKE_DEVICE, false)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(profile_path))
 	print("EL1e electric input %s: %d checks, %d failed" % [demo, _checks, _failures])
 	quit(1 if _failures > 0 else 0)

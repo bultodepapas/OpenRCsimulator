@@ -111,7 +111,7 @@ def main() -> int:
             main_output = run(main_command, ROOT, main_log, timeout=60)
             expected_marker = f"EL1e electric input {demo}:"
             if expected_marker not in main_output or not re.search(
-                    rf"(?m)^{re.escape(expected_marker)} \d+ checks, 0 failed$", main_output):
+                    rf"(?m)^{re.escape(expected_marker)} 19 checks, 0 failed$", main_output):
                 raise RuntimeError(f"main-scene input checks did not complete successfully; see {main_log}")
             result["main_scene_input"] = {
                 "command": main_command,
@@ -143,6 +143,21 @@ def main() -> int:
             result["flight_sha256_equal_at_30_60_144"] = True
             summary["demos"][demo] = result
             write_summary(summary_path, summary)
+
+        summary["invalid_demo_controls"] = []
+        for index, options in enumerate((("--electric-demo=3s",),
+                                         ("--electric-demo=4s", "--aircraft=gp-extra-300s-60"),
+                                         ("--electric-demo=6s", "--scripted"))):
+            refused_trace = out / f"refused-demo-{index}.csv"
+            refused_trace.unlink(missing_ok=True)
+            command = [engine, "--headless", "--path", str(APP), "--", *options,
+                       f"--trace={refused_trace}", "--t=0.2"]
+            refused = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=60)
+            output = refused.stdout + refused.stderr
+            (out / f"refused-demo-{index}.log").write_text(output)
+            if refused.returncode == 0 or refused_trace.exists() or "electric demo requires" not in output or ENGINE_ERROR.search(output):
+                raise RuntimeError(f"invalid electric demo was not refused cleanly: {options}")
+            summary["invalid_demo_controls"].append({"options": list(options), "exit_code": refused.returncode})
 
         binary = package_dir / "openrc-electric.x86_64"
         export_command = [engine, "--headless", "--path", str(APP), "--export-release", "Linux", str(binary)]

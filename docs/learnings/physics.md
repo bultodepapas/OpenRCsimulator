@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-09. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), and propwash (E0b), recorded from 2026-10-06 to 2026-10-10. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -25,6 +25,10 @@ The whole session can also converge near first order during control transients w
 Updating a continuous wake or other lag once per tick while integrating the body with RK4 creates a split, lower-order system. Put coupled continuous variables in the integrator workspace and evaluate them at each RK stage; use a nonautonomous analytic oracle because ordinary autonomous flight traces will not reveal a solver that freezes stage time. Sampled controls and discrete modes still need explicit update boundaries. ([H8a](../research/simulation-state/H8a/README.md), [E0b5](../research/propwash/E0b5/README.md))
 
 An adaptive reference solver needs independent qualification too. Dense output samples do not bound internal event steps, and a root at a shared step endpoint can be reported twice. Verify final time/status, step refinement, event identity/direction and re-arm behavior before treating its output as an oracle; preserve the raw event counterexample. ([EL1a-R2 tool probes](../research/propulsion/EL1a-R2/04-verification-tools.md#11--how-should-an-independent-solver-verify-the-fixed-step-implementation))
+
+### A unilateral rotor stop is a coupled constraint
+
+A combustion cutoff that suppresses deceleration below 1 RPM prevents an electric rotor from reaching its actual rest boundary. Localize the crossing, define the trial continuation and preserve momentum when projecting the tiny residual. At relative rest, include the body's angular acceleration in static-friction/breakaway decisions: body-driven forward spin still needs moving-side bearing loss even with the electrical source off. Scalar rotor tests alone miss that case. ([EL1d](../research/propulsion/EL1d/README.md))
 
 ### A checkpoint is the complete physics boundary
 

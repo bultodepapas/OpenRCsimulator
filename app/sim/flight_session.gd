@@ -78,7 +78,10 @@ func _electric_step_supported(model: Dictionary) -> bool:
 	var carrier: float = 1.0 - float(prop.rotor_inertia) * M.dot(Propulsion.axis(prop),
 		RB.inertia_mul(RB.inertia_inverse(model.inertia), Propulsion.axis(prop)))
 	var kt: float = 60.0 / (TAU * float(prop.motor.kv_rpm_per_volt))
-	var ratio: float = sim.dt() * kt * kt / (float(prop.motor.resistance_ohm) * float(prop.rotor_inertia) * carrier)
+	var denominator: float = float(prop.motor.resistance_ohm) * float(prop.rotor_inertia) * carrier
+	if not is_finite(denominator) or denominator <= 0.0:
+		return false
+	var ratio: float = sim.dt() * kt * kt / denominator
 	return is_finite(ratio) and ratio >= 0.0 and ratio <= ELECTRIC_MAX_STEP_RATIO
 
 
@@ -1104,6 +1107,10 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 				rate = required / float(prop.rotor_inertia) * 60.0 / TAU
 			elif drive - required < -friction:
 				return {ok = false} # unsupported reverse breakaway, not an invented stop torque
+			else:
+				# Body acceleration can initiate forward relative spin even with the source off.
+				# Use moving-side bearing loss; the isolated motor's rest clamp is not valid here.
+				rate = (drive - friction) / float(prop.rotor_inertia) * 60.0 / TAU
 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
 		M.v3(external[3], external[4], external[5]), sim.inertia, RB.inertia_inverse(sim.inertia),
 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
