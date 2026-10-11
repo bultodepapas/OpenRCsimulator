@@ -44,6 +44,8 @@ Focused checks passed: supply kernel **95**, battery data **67** (including the 
 
 The scalar oracle uses independently derived principal-axis rotor/body and battery equations, analytic auxiliary-only exhaustion and pinned SciPy DOP853. Its source-off event timing error is below 6.1e−13 s across 120/240/480/960 Hz. The real-session 0.5 s transient compares those rates against 1920 Hz with separate body/RPM/charge/energy/heat budgets. Small high-rate charge/energy errors approach roundoff; the report records convergence diagnostics without claiming fourth order for the whole sampled flight system.
 
+[Powered exhaustion](powered.md) adds eight real-session near-empty/full-duty cases across the same four rates. Exact chemical work closes within 4.48e−10 J; unmodified and instrumented sessions have byte-identical complete checkpoints. The experiment also exposes a tens-of-milliseconds exhaustion-tick cost, which is reported separately from ordinary warm batches.
+
 Schema/runtime comparison passes **1,863 cases** (142 accepted controls, 20 runtime-only physical checks), plus the eight-aircraft structural preflight. [Schema log](schema.log). The [product proof](product-proof.json) passes **38** main-scene input checks across both battery routes, equal full-state hashes at 30/60/144 FPS, three invalid CLI controls, and both datasets in a Linux export run from empty working directories (49 v8 rows each). A [fresh clone](clean-checkout.json), without the original editor cache, passes import and all 67 data/103 session checks.
 
 Reproduce from the repository root:
@@ -53,6 +55,7 @@ Reproduce from the repository root:
 python3 research/aircraft-data/schema/test_contract.py
 python3 research/propulsion/el2/verify_battery.py --godot "$(app/get-godot.sh)" --app app --output /tmp/el2-scalar.json
 python3 research/propulsion/el2/verify_flights.py --godot "$(app/get-godot.sh)" --directory /tmp/el2-flights
+python3 research/propulsion/el2/powered/reproduce_and_compare.py --godot "$(app/get-godot.sh)"
 python3 research/propulsion/el1/product_check.py --battery --out /tmp/el2-product
 app/test.sh
 ```
