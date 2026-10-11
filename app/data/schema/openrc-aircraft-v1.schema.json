@@ -1230,6 +1230,30 @@
             }
           },
           "additionalProperties": true
+        },
+        "wing_polar": {
+          "type": "object",
+          "required": [
+            "method",
+            "basis",
+            "positive",
+            "negative"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "tabulated-wing-v1"
+            },
+            "basis": {
+              "const": "finite-wing-strip-reference"
+            },
+            "positive": {
+              "$ref": "#/$defs/wingPolarSamples"
+            },
+            "negative": {
+              "$ref": "#/$defs/wingPolarSamples"
+            }
+          }
         }
       },
       "additionalProperties": true
@@ -3917,6 +3941,45 @@
         }
       },
       "additionalProperties": false
+    },
+    "wingPolarSamples": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 256,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90
+          }
+        },
+        "unit": {
+          "const": "deg, 1, 1, 1"
+        },
+        "kind": {
+          "enum": [
+            "manual",
+            "measured",
+            "borrowed",
+            "estimated",
+            "derived"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "pattern": "[^\\u0001-\\u0020]"
+        }
+      },
+      "$comment": "Flat four-column rows: angle magnitude, lift magnitude, profile drag, attached fraction. Runtime enforces groups of four, column ranges, ordering, C1 boundaries and induced reference consistency."
     }
   }
 }

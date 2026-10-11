@@ -1,0 +1,975 @@
+{
+  "format": "openrc-d8b-r2b-common-time-comparison-v1",
+  "case_id": "v25_abrupt_positive_trim",
+  "baseline_label": "intermediate",
+  "current_label": "intermediate-480-v25-abrupt",
+  "baseline_physics_hz": 240,
+  "current_physics_hz": 480,
+  "common_time_grid_hz": 240,
+  "common_sample_count": 1201,
+  "max_timestamp_mismatch_s": 0.0,
+  "finite_numeric_comparisons": 190959,
+  "nonfinite_or_missing_numeric_comparisons": 0,
+  "baseline_case_complete": true,
+  "current_case_complete": true,
+  "baseline_case_finite": true,
+  "current_case_finite": true,
+  "analysis_tool_sha256": "cb199f918b57b7718b73d9a7ea2ad560a1ad58bcecaa45d9c68d07e6510e4c74",
+  "interpretation": "Matched boundary samples only; this reports differences and does not estimate RK4 order or physical validity.",
+  "metrics": {
+    "aero_fx_n": {
+      "max_abs_delta": 0.15039056887943225,
+      "rms_delta": 0.02748139361585497,
+      "final_common_time_abs_delta": 0.0027125224612944976,
+      "sample_count": 1201
+    },
+    "aero_fy_n": {
+      "max_abs_delta": 0.009114038604272179,
+      "rms_delta": 0.0029804753537985527,
+      "final_common_time_abs_delta": 0.00013693191330943488,
+      "sample_count": 1201
+    },
+    "aero_fz_n": {
+      "max_abs_delta": 0.7421951638575734,
+      "rms_delta": 0.1518683855949553,
+      "final_common_time_abs_delta": 0.009694560604970093,
+      "sample_count": 1201
+    },
+    "aero_mx_nm": {
+      "max_abs_delta": 0.002549749308463134,
+      "rms_delta": 0.0004600010427953707,
+      "final_common_time_abs_delta": 8.204036663578274e-05,
+      "sample_count": 1201
+    },
+    "aero_my_nm": {
+      "max_abs_delta": 0.10325740628549296,
+      "rms_delta": 0.02087144963288877,
+      "final_common_time_abs_delta": 0.00016702664503642772,
+      "sample_count": 1201
+    },
+    "aero_mz_nm": {
+      "max_abs_delta": 0.004053767787373264,
+      "rms_delta": 0.001095282129124648,
+      "final_common_time_abs_delta": 8.234765474762762e-06,
+      "sample_count": 1201
+    },
+    "airspeed_mps": {
+      "max_abs_delta": 0.010872365012858154,
+      "rms_delta": 0.006836473363050989,
+      "final_common_time_abs_delta": 0.0030525685974964745,
+      "sample_count": 1201
+    },
+    "alpha_deg": {
+      "max_abs_delta": 0.04815353954399182,
+      "rms_delta": 0.012568470093794706,
+      "final_common_time_abs_delta": 0.00011124916391900413,
+      "sample_count": 1201
+    },
+    "alpha_rad": {
+      "max_abs_delta": 0.0008404378115319522,
+      "rms_delta": 0.00021936118507515797,
+      "final_common_time_abs_delta": 1.9416642004774828e-06,
+      "sample_count": 1201
+    },
+    "beta_deg": {
+      "max_abs_delta": 0.00720149388715885,
+      "rms_delta": 0.0025630036449378153,
+      "final_common_time_abs_delta": 1.7953342388299376e-06,
+      "sample_count": 1201
+    },
+    "beta_rad": {
+      "max_abs_delta": 0.00012568977939316633,
+      "rms_delta": 4.473285234478063e-05,
+      "final_common_time_abs_delta": 3.1334493641281547e-08,
+      "sample_count": 1201
+    },
+    "cross_track_m": {
+      "max_abs_delta": 0.002825480311251738,
+      "rms_delta": 0.0018366686199569676,
+      "final_common_time_abs_delta": 6.354773034900063e-06,
+      "sample_count": 1201
+    },
+    "down_m": {
+      "max_abs_delta": 0.03610549097442117,
+      "rms_delta": 0.022183748324638503,
+      "final_common_time_abs_delta": 0.03610549097442117,
+      "sample_count": 1201
+    },
+    "east_m": {
+      "max_abs_delta": 0.04204876653384915,
+      "rms_delta": 0.02975689423695038,
+      "final_common_time_abs_delta": 0.01944056477624656,
+      "sample_count": 1201
+    },
+    "gyro_delta_pdot_radps2": {
+      "max_abs_delta": 0.0004981351015807545,
+      "rms_delta": 0.00012020152000824127,
+      "final_common_time_abs_delta": 3.542942336037802e-07,
+      "sample_count": 1201
+    },
+    "gyro_delta_qdot_radps2": {
+      "max_abs_delta": 0.0005903771640181077,
+      "rms_delta": 0.00023182915257798233,
+      "final_common_time_abs_delta": 1.4842768484837551e-05,
+      "sample_count": 1201
+    },
+    "gyro_delta_rdot_radps2": {
+      "max_abs_delta": 0.007242986636016635,
+      "rms_delta": 0.0017187861974231253,
+      "final_common_time_abs_delta": 1.3911465520655142e-05,
+      "sample_count": 1201
+    },
+    "normal_load_factor_aero": {
+      "max_abs_delta": 0.026232691524079144,
+      "rms_delta": 0.005367747872225272,
+      "final_common_time_abs_delta": 0.00034265167734304214,
+      "sample_count": 1201
+    },
+    "normal_load_factor_total": {
+      "max_abs_delta": 0.026232691524079144,
+      "rms_delta": 0.005367747872225272,
+      "final_common_time_abs_delta": 0.00034265167734304214,
+      "sample_count": 1201
+    },
+    "north_m": {
+      "max_abs_delta": 0.002825480311251738,
+      "rms_delta": 0.0018366686199569637,
+      "final_common_time_abs_delta": 6.354773034900063e-06,
+      "sample_count": 1201
+    },
+    "p_radps": {
+      "max_abs_delta": 0.000854615606795936,
+      "rms_delta": 0.00023111819752147085,
+      "final_common_time_abs_delta": 3.447429596600826e-05,
+      "sample_count": 1201
+    },
+    "prop_fx_n": {
+      "max_abs_delta": 0.012320309650924344,
+      "rms_delta": 0.0068383457611187505,
+      "final_common_time_abs_delta": 0.0031389041129012973,
+      "sample_count": 1201
+    },
+    "prop_fy_n": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "prop_fz_n": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "prop_mx_nm": {
+      "max_abs_delta": 0.00024122840700457893,
+      "rms_delta": 0.0001486630387434359,
+      "final_common_time_abs_delta": 9.53847781039116e-05,
+      "sample_count": 1201
+    },
+    "prop_my_nm": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "prop_mz_nm": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "q_radps": {
+      "max_abs_delta": 0.01125742753034964,
+      "rms_delta": 0.002671376349001957,
+      "final_common_time_abs_delta": 2.167555774906793e-05,
+      "sample_count": 1201
+    },
+    "qbar_pa": {
+      "max_abs_delta": 0.27664294352700836,
+      "rms_delta": 0.19959181732929301,
+      "final_common_time_abs_delta": 0.13388482785012457,
+      "sample_count": 1201
+    },
+    "qw": {
+      "max_abs_delta": 0.0006911738563612491,
+      "rms_delta": 0.00035131177981991685,
+      "final_common_time_abs_delta": 1.4512234495389631e-05,
+      "sample_count": 1201
+    },
+    "qx": {
+      "max_abs_delta": 0.0008369442694679541,
+      "rms_delta": 0.00029988610589853703,
+      "final_common_time_abs_delta": 5.9026099734627024e-05,
+      "sample_count": 1201
+    },
+    "qy": {
+      "max_abs_delta": 0.0008797948927815047,
+      "rms_delta": 0.00028665614564402965,
+      "final_common_time_abs_delta": 0.0001220446592621327,
+      "sample_count": 1201
+    },
+    "qz": {
+      "max_abs_delta": 0.000750899749722922,
+      "rms_delta": 0.0003554568839818615,
+      "final_common_time_abs_delta": 0.00011882546160146834,
+      "sample_count": 1201
+    },
+    "r_radps": {
+      "max_abs_delta": 0.0007098339453378427,
+      "rms_delta": 0.0002844144119107943,
+      "final_common_time_abs_delta": 1.84756570887519e-05,
+      "sample_count": 1201
+    },
+    "raw_pitch": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "raw_roll": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "raw_throttle": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "raw_yaw": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "rotor_hx_kgm2ps": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "rotor_hy_kgm2ps": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "rotor_hz_kgm2ps": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "rpm": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_aileron_left_deg": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_aileron_right_deg": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_elevator_deg": {
+      "max_abs_delta": 6.750155989720952e-14,
+      "rms_delta": 1.0773684878102285e-14,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_pitch_normalized": {
+      "max_abs_delta": 3.3306690738754696e-15,
+      "rms_delta": 5.35466735219465e-16,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_roll_normalized": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_rudder_deg": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "servo_yaw_normalized": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "shaped_pitch": {
+      "max_abs_delta": 3.2751579226442118e-15,
+      "rms_delta": 5.580989230165072e-16,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "shaped_roll": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "shaped_throttle": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "shaped_yaw": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "total_fx_n": {
+      "max_abs_delta": 0.15553217028465127,
+      "rms_delta": 0.030107653902774593,
+      "final_common_time_abs_delta": 0.005851426574196239,
+      "sample_count": 1201
+    },
+    "total_fy_n": {
+      "max_abs_delta": 0.009114038604272179,
+      "rms_delta": 0.0029804753537985527,
+      "final_common_time_abs_delta": 0.00013693191330943488,
+      "sample_count": 1201
+    },
+    "total_fz_n": {
+      "max_abs_delta": 0.7421951638575734,
+      "rms_delta": 0.1518683855949553,
+      "final_common_time_abs_delta": 0.009694560604970093,
+      "sample_count": 1201
+    },
+    "total_mx_nm": {
+      "max_abs_delta": 0.0024681849842598247,
+      "rms_delta": 0.00042751813150632416,
+      "final_common_time_abs_delta": 1.334441146812887e-05,
+      "sample_count": 1201
+    },
+    "total_my_nm": {
+      "max_abs_delta": 0.10325740628549296,
+      "rms_delta": 0.02087144963288877,
+      "final_common_time_abs_delta": 0.00016702664503642772,
+      "sample_count": 1201
+    },
+    "total_mz_nm": {
+      "max_abs_delta": 0.004053767787373264,
+      "rms_delta": 0.001095282129124648,
+      "final_common_time_abs_delta": 8.234765474762762e-06,
+      "sample_count": 1201
+    },
+    "trim_pitch": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "trim_roll": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "trim_yaw": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "trimmed_pitch": {
+      "max_abs_delta": 3.3306690738754696e-15,
+      "rms_delta": 5.35466735219465e-16,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "trimmed_roll": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "trimmed_yaw": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "u_mps": {
+      "max_abs_delta": 0.011733402060873033,
+      "rms_delta": 0.006919799069420704,
+      "final_common_time_abs_delta": 0.0030525751782519706,
+      "sample_count": 1201
+    },
+    "v_mps": {
+      "max_abs_delta": 0.0027694232301044286,
+      "rms_delta": 0.0009437474510926034,
+      "final_common_time_abs_delta": 1.974469483750907e-05,
+      "sample_count": 1201
+    },
+    "w_mps": {
+      "max_abs_delta": 0.020582833254779498,
+      "rms_delta": 0.0048773734657428635,
+      "final_common_time_abs_delta": 6.636192265129653e-05,
+      "sample_count": 1201
+    },
+    "wing_local_blend": {
+      "max_abs_delta": 0.014351844604810982,
+      "rms_delta": 0.0016668956784895558,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.0.alpha_effective_rad": {
+      "max_abs_delta": 0.0004907840845325973,
+      "rms_delta": 0.00012880432386122112,
+      "final_common_time_abs_delta": 9.725172178314066e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.0.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008358990949797473,
+      "rms_delta": 0.00021996022847621614,
+      "final_common_time_abs_delta": 1.5744320741202522e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.0.cd": {
+      "max_abs_delta": 0.0004997825788987942,
+      "rms_delta": 6.94072994424917e-05,
+      "final_common_time_abs_delta": 1.5431225466183696e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.0.cl": {
+      "max_abs_delta": 0.002984828387315286,
+      "rms_delta": 0.0007805534807112276,
+      "final_common_time_abs_delta": 5.914611109894552e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.0.drag_n": {
+      "max_abs_delta": 0.013225203405946573,
+      "rms_delta": 0.001971160193165939,
+      "final_common_time_abs_delta": 0.00046399882814762705,
+      "sample_count": 1201
+    },
+    "wing_strip.0.force_body_n.0": {
+      "max_abs_delta": 0.020062373942605793,
+      "rms_delta": 0.0038839096883647186,
+      "final_common_time_abs_delta": 0.00046152834899482187,
+      "sample_count": 1201
+    },
+    "wing_strip.0.force_body_n.1": {
+      "max_abs_delta": 0.0005401608503552702,
+      "rms_delta": 9.692318438217947e-05,
+      "final_common_time_abs_delta": 2.8212172278642422e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.0.force_body_n.2": {
+      "max_abs_delta": 0.0844048888164064,
+      "rms_delta": 0.019274664254166712,
+      "final_common_time_abs_delta": 0.001089520055151283,
+      "sample_count": 1201
+    },
+    "wing_strip.0.lift_n": {
+      "max_abs_delta": 0.08474790594694781,
+      "rms_delta": 0.01928983876651134,
+      "final_common_time_abs_delta": 0.0010869498454360027,
+      "sample_count": 1201
+    },
+    "wing_strip.0.moment_body_nm.0": {
+      "max_abs_delta": 0.0536064148987343,
+      "rms_delta": 0.012242994465571038,
+      "final_common_time_abs_delta": 0.0006920427202272705,
+      "sample_count": 1201
+    },
+    "wing_strip.0.moment_body_nm.1": {
+      "max_abs_delta": 0.0014043661759824133,
+      "rms_delta": 0.00027187367818553047,
+      "final_common_time_abs_delta": 3.230698442963087e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.0.moment_body_nm.2": {
+      "max_abs_delta": 0.012739607453554735,
+      "rms_delta": 0.0024662826521115976,
+      "final_common_time_abs_delta": 0.00029307050161153647,
+      "sample_count": 1201
+    },
+    "wing_strip.0.speed_mps": {
+      "max_abs_delta": 0.01070001276501742,
+      "rms_delta": 0.006863499435920235,
+      "final_common_time_abs_delta": 0.003065676968411424,
+      "sample_count": 1201
+    },
+    "wing_strip.0.stall_weight": {
+      "max_abs_delta": 0.0013494645176659326,
+      "rms_delta": 0.00017361220057378186,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.0.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.1.alpha_effective_rad": {
+      "max_abs_delta": 0.0006112346209217606,
+      "rms_delta": 0.00015990828501046285,
+      "final_common_time_abs_delta": 1.2844212711850874e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.1.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008409369533926153,
+      "rms_delta": 0.00022031651177448455,
+      "final_common_time_abs_delta": 1.7216159430458004e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.1.cd": {
+      "max_abs_delta": 0.0005683428149942382,
+      "rms_delta": 8.726403827895323e-05,
+      "final_common_time_abs_delta": 1.7826696197681402e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.1.cl": {
+      "max_abs_delta": 0.003717378996865195,
+      "rms_delta": 0.0009578835690318272,
+      "final_common_time_abs_delta": 7.811535036136852e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.1.drag_n": {
+      "max_abs_delta": 0.014988687478826979,
+      "rms_delta": 0.0023908880403654565,
+      "final_common_time_abs_delta": 0.0004566723967682762,
+      "sample_count": 1201
+    },
+    "wing_strip.1.force_body_n.0": {
+      "max_abs_delta": 0.022458611742629975,
+      "rms_delta": 0.004418274984493012,
+      "final_common_time_abs_delta": 0.0004511271765048619,
+      "sample_count": 1201
+    },
+    "wing_strip.1.force_body_n.1": {
+      "max_abs_delta": 0.0006264049139116448,
+      "rms_delta": 0.00011326157731914243,
+      "final_common_time_abs_delta": 2.7781651173314215e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.1.force_body_n.2": {
+      "max_abs_delta": 0.10482280973518598,
+      "rms_delta": 0.023559703427350753,
+      "final_common_time_abs_delta": 0.001412714433194573,
+      "sample_count": 1201
+    },
+    "wing_strip.1.lift_n": {
+      "max_abs_delta": 0.10515060218160954,
+      "rms_delta": 0.023576748109524065,
+      "final_common_time_abs_delta": 0.0014092399733653949,
+      "sample_count": 1201
+    },
+    "wing_strip.1.moment_body_nm.0": {
+      "max_abs_delta": 0.039948805150732625,
+      "rms_delta": 0.008980497976612484,
+      "final_common_time_abs_delta": 0.0005384386706053235,
+      "sample_count": 1201
+    },
+    "wing_strip.1.moment_body_nm.1": {
+      "max_abs_delta": 0.0015721028219840977,
+      "rms_delta": 0.00030927924891451094,
+      "final_common_time_abs_delta": 3.157890235536143e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.1.moment_body_nm.2": {
+      "max_abs_delta": 0.008556731073942059,
+      "rms_delta": 0.0016833627690918385,
+      "final_common_time_abs_delta": 0.00017187945424823603,
+      "sample_count": 1201
+    },
+    "wing_strip.1.speed_mps": {
+      "max_abs_delta": 0.010855068527199307,
+      "rms_delta": 0.006863626523854039,
+      "final_common_time_abs_delta": 0.003061022329802654,
+      "sample_count": 1201
+    },
+    "wing_strip.1.stall_weight": {
+      "max_abs_delta": 0.001353893638104342,
+      "rms_delta": 0.00017451437984632179,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.1.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.2.alpha_effective_rad": {
+      "max_abs_delta": 0.00065279738215758,
+      "rms_delta": 0.00017022809548510157,
+      "final_common_time_abs_delta": 1.4535879796599704e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.2.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008459923626568527,
+      "rms_delta": 0.0002207062740134907,
+      "final_common_time_abs_delta": 1.869107398675936e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.2.cd": {
+      "max_abs_delta": 0.0005936123589922876,
+      "rms_delta": 9.464485530685095e-05,
+      "final_common_time_abs_delta": 1.8920713922704335e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.2.cl": {
+      "max_abs_delta": 0.0039701535131986265,
+      "rms_delta": 0.001016694674171614,
+      "final_common_time_abs_delta": 8.840365451706633e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.2.drag_n": {
+      "max_abs_delta": 0.015603440859654594,
+      "rms_delta": 0.0025658206604380596,
+      "final_common_time_abs_delta": 0.0004532486523367574,
+      "sample_count": 1201
+    },
+    "wing_strip.2.force_body_n.0": {
+      "max_abs_delta": 0.023077848584668548,
+      "rms_delta": 0.004563209018263866,
+      "final_common_time_abs_delta": 0.0004445493088112151,
+      "sample_count": 1201
+    },
+    "wing_strip.2.force_body_n.1": {
+      "max_abs_delta": 0.0006574920689244729,
+      "rms_delta": 0.00011951801294733209,
+      "final_common_time_abs_delta": 2.7591914364723247e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.2.force_body_n.2": {
+      "max_abs_delta": 0.11161471848641114,
+      "rms_delta": 0.024950865774174043,
+      "final_common_time_abs_delta": 0.00156469149945071,
+      "sample_count": 1201
+    },
+    "wing_strip.2.lift_n": {
+      "max_abs_delta": 0.1118825337138496,
+      "rms_delta": 0.024962017812383767,
+      "final_common_time_abs_delta": 0.001560317107584197,
+      "sample_count": 1201
+    },
+    "wing_strip.2.moment_body_nm.0": {
+      "max_abs_delta": 0.01418736952034072,
+      "rms_delta": 0.0031732835663668127,
+      "final_common_time_abs_delta": 0.00019890896383090162,
+      "sample_count": 1201
+    },
+    "wing_strip.2.moment_body_nm.1": {
+      "max_abs_delta": 0.0016154494009268244,
+      "rms_delta": 0.00031942463127847124,
+      "final_common_time_abs_delta": 3.1118451616768406e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.2.moment_body_nm.2": {
+      "max_abs_delta": 0.0029308867702529107,
+      "rms_delta": 0.000579527545319512,
+      "final_common_time_abs_delta": 5.645776221901988e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.2.speed_mps": {
+      "max_abs_delta": 0.011012417378807982,
+      "rms_delta": 0.006864424263696102,
+      "final_common_time_abs_delta": 0.0030563836275447898,
+      "sample_count": 1201
+    },
+    "wing_strip.2.stall_weight": {
+      "max_abs_delta": 0.0013575126086636802,
+      "rms_delta": 0.0001755521417939816,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.2.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.3.alpha_effective_rad": {
+      "max_abs_delta": 0.0006558758142116289,
+      "rms_delta": 0.00017048490814233297,
+      "final_common_time_abs_delta": 1.5432752159611407e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.3.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008510653740407964,
+      "rms_delta": 0.00022112945986032216,
+      "final_common_time_abs_delta": 2.0169055126263366e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.3.cd": {
+      "max_abs_delta": 0.0005806304822343206,
+      "rms_delta": 9.364885969860956e-05,
+      "final_common_time_abs_delta": 2.0158555637944664e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.3.cl": {
+      "max_abs_delta": 0.00398887578165219,
+      "rms_delta": 0.0010193174048915197,
+      "final_common_time_abs_delta": 9.385821217955392e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.3.drag_n": {
+      "max_abs_delta": 0.015136144340360147,
+      "rms_delta": 0.0025404589580079436,
+      "final_common_time_abs_delta": 0.0004518424631303475,
+      "sample_count": 1201
+    },
+    "wing_strip.3.force_body_n.0": {
+      "max_abs_delta": 0.023143124612408972,
+      "rms_delta": 0.004588884808559861,
+      "final_common_time_abs_delta": 0.0004405504098192736,
+      "sample_count": 1201
+    },
+    "wing_strip.3.force_body_n.1": {
+      "max_abs_delta": 0.0006505768398333139,
+      "rms_delta": 0.00011883249474511851,
+      "final_common_time_abs_delta": 2.752464600616622e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.3.force_body_n.2": {
+      "max_abs_delta": 0.11176949145545478,
+      "rms_delta": 0.02497357658521152,
+      "final_common_time_abs_delta": 0.001592137033238572,
+      "sample_count": 1201
+    },
+    "wing_strip.3.lift_n": {
+      "max_abs_delta": 0.11204507481318515,
+      "rms_delta": 0.024989104141357507,
+      "final_common_time_abs_delta": 0.001586855307915691,
+      "sample_count": 1201
+    },
+    "wing_strip.3.moment_body_nm.0": {
+      "max_abs_delta": 0.014182460701158917,
+      "rms_delta": 0.0031671256561780444,
+      "final_common_time_abs_delta": 0.00020200873069931014,
+      "sample_count": 1201
+    },
+    "wing_strip.3.moment_body_nm.1": {
+      "max_abs_delta": 0.001620018722868627,
+      "rms_delta": 0.00032122193659919035,
+      "final_common_time_abs_delta": 3.0838528687349154e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.3.moment_body_nm.2": {
+      "max_abs_delta": 0.0029391768257759354,
+      "rms_delta": 0.0005827883706871026,
+      "final_common_time_abs_delta": 5.594990204704775e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.3.speed_mps": {
+      "max_abs_delta": 0.011170550187785011,
+      "rms_delta": 0.006865892744023498,
+      "final_common_time_abs_delta": 0.0030517608840554544,
+      "sample_count": 1201
+    },
+    "wing_strip.3.stall_weight": {
+      "max_abs_delta": 0.001315805820241156,
+      "rms_delta": 0.00017129167532833057,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.3.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.4.alpha_effective_rad": {
+      "max_abs_delta": 0.0006198344267339118,
+      "rms_delta": 0.00016062568412785914,
+      "final_common_time_abs_delta": 1.5349676677600785e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.4.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008561560388975348,
+      "rms_delta": 0.00022158599991941992,
+      "final_common_time_abs_delta": 2.1650093507853815e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.4.cd": {
+      "max_abs_delta": 0.0005549133581275734,
+      "rms_delta": 8.64750740553749e-05,
+      "final_common_time_abs_delta": 2.050274291107157e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.4.cl": {
+      "max_abs_delta": 0.0037696809058359593,
+      "rms_delta": 0.0009624450576663725,
+      "final_common_time_abs_delta": 9.335296748069766e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.4.drag_n": {
+      "max_abs_delta": 0.014436861218562136,
+      "rms_delta": 0.0023713260747294314,
+      "final_common_time_abs_delta": 0.00045154790977841586,
+      "sample_count": 1201
+    },
+    "wing_strip.4.force_body_n.0": {
+      "max_abs_delta": 0.022624468187987468,
+      "rms_delta": 0.004441603905977055,
+      "final_common_time_abs_delta": 0.00043797981782089934,
+      "sample_count": 1201
+    },
+    "wing_strip.4.force_body_n.1": {
+      "max_abs_delta": 0.0006169673608756518,
+      "rms_delta": 0.0001125108818078902,
+      "final_common_time_abs_delta": 2.7527453439375738e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.4.force_body_n.2": {
+      "max_abs_delta": 0.10520980409096126,
+      "rms_delta": 0.0235430171610452,
+      "final_common_time_abs_delta": 0.0015574241654592313,
+      "sample_count": 1201
+    },
+    "wing_strip.4.lift_n": {
+      "max_abs_delta": 0.10553603919870724,
+      "rms_delta": 0.02356374679754739,
+      "final_common_time_abs_delta": 0.0015512330832745391,
+      "sample_count": 1201
+    },
+    "wing_strip.4.moment_body_nm.0": {
+      "max_abs_delta": 0.04007359697391788,
+      "rms_delta": 0.008965620156806289,
+      "final_common_time_abs_delta": 0.0005931859148664564,
+      "sample_count": 1201
+    },
+    "wing_strip.4.moment_body_nm.1": {
+      "max_abs_delta": 0.001583712773159135,
+      "rms_delta": 0.0003109122734183941,
+      "final_common_time_abs_delta": 3.0658587247461844e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.4.moment_body_nm.2": {
+      "max_abs_delta": 0.008619922379623168,
+      "rms_delta": 0.001692251088177259,
+      "final_common_time_abs_delta": 0.00016687031058970625,
+      "sample_count": 1201
+    },
+    "wing_strip.4.speed_mps": {
+      "max_abs_delta": 0.011328940839753443,
+      "rms_delta": 0.00686803185625524,
+      "final_common_time_abs_delta": 0.0030471541216741116,
+      "sample_count": 1201
+    },
+    "wing_strip.4.stall_weight": {
+      "max_abs_delta": 0.001319902173559151,
+      "rms_delta": 0.00017270443544773064,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.4.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.5.alpha_effective_rad": {
+      "max_abs_delta": 0.0005020833231850902,
+      "rms_delta": 0.00012974685221785846,
+      "final_common_time_abs_delta": 1.301706534903032e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.5.alpha_geometric_rad": {
+      "max_abs_delta": 0.0008612644086645194,
+      "rms_delta": 0.00022207581097575258,
+      "final_common_time_abs_delta": 2.31341797333009e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.5.cd": {
+      "max_abs_delta": 0.0004887363368176051,
+      "rms_delta": 6.923204468613937e-05,
+      "final_common_time_abs_delta": 1.942382379729879e-07,
+      "sample_count": 1201
+    },
+    "wing_strip.5.cl": {
+      "max_abs_delta": 0.0030535475845099302,
+      "rms_delta": 0.0007855936317332085,
+      "final_common_time_abs_delta": 7.916659769097167e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.5.drag_n": {
+      "max_abs_delta": 0.012676568957554313,
+      "rms_delta": 0.001971777780800887,
+      "final_common_time_abs_delta": 0.00045523885315956747,
+      "sample_count": 1201
+    },
+    "wing_strip.5.force_body_n.0": {
+      "max_abs_delta": 0.020335282772098173,
+      "rms_delta": 0.003899978305194754,
+      "final_common_time_abs_delta": 0.00044171264785131115,
+      "sample_count": 1201
+    },
+    "wing_strip.5.force_body_n.1": {
+      "max_abs_delta": 0.0005318156630972834,
+      "rms_delta": 9.646451910823417e-05,
+      "final_common_time_abs_delta": 2.7777429153739985e-06,
+      "sample_count": 1201
+    },
+    "wing_strip.5.force_body_n.2": {
+      "max_abs_delta": 0.08484440037751106,
+      "rms_delta": 0.019228170504666558,
+      "final_common_time_abs_delta": 0.0013076511051020034,
+      "sample_count": 1201
+    },
+    "wing_strip.5.lift_n": {
+      "max_abs_delta": 0.08519854253678183,
+      "rms_delta": 0.019244484538730164,
+      "final_common_time_abs_delta": 0.001300499132928401,
+      "sample_count": 1201
+    },
+    "wing_strip.5.moment_body_nm.0": {
+      "max_abs_delta": 0.053867287140006326,
+      "rms_delta": 0.012206244527584323,
+      "final_common_time_abs_delta": 0.0008301640097356788,
+      "sample_count": 1201
+    },
+    "wing_strip.5.moment_body_nm.1": {
+      "max_abs_delta": 0.0014234697940468666,
+      "rms_delta": 0.00027299848136363276,
+      "final_common_time_abs_delta": 3.091988534958956e-05,
+      "sample_count": 1201
+    },
+    "wing_strip.5.moment_body_nm.2": {
+      "max_abs_delta": 0.012912904560282379,
+      "rms_delta": 0.0024764862237986653,
+      "final_common_time_abs_delta": 0.0002804875313855426,
+      "sample_count": 1201
+    },
+    "wing_strip.5.speed_mps": {
+      "max_abs_delta": 0.011487697624627202,
+      "rms_delta": 0.006870841294958938,
+      "final_common_time_abs_delta": 0.003042563362662065,
+      "sample_count": 1201
+    },
+    "wing_strip.5.stall_weight": {
+      "max_abs_delta": 0.0013231887811179233,
+      "rms_delta": 0.00017425041098058792,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    },
+    "wing_strip.5.y_m": {
+      "max_abs_delta": 0.0,
+      "rms_delta": 0.0,
+      "final_common_time_abs_delta": 0.0,
+      "sample_count": 1201
+    }
+  }
+}

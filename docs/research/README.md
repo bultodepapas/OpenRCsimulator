@@ -51,6 +51,8 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 
 ### Flight model and simulation
 
+[D8b-R2: high-speed Ugly Stik pull-up](flight-robustness/D8b-R2/README.md): keyboard/session reproduction, post-stall roll-feedback sweep, gyro/inertia ablations and timestep refinement. The [revision 3 repair plan](../UGLY-STIK-PULLUP-PLAN.md) incorporates [18 source-based investigations and four numerical investigations](flight-robustness/D8b-R2/research-index.md), plus an [optional polar implementation, 70-flight matrix and verification](flight-robustness/D8b-R2/implementation/README.md). Production polar selection and aircraft-specific validation remain open.
+
 Modal reference dashboard: [VAL-3](validation/VAL-3/README.md) provides strict US120/25e reference files, current Godot mode samples, estimated diagnostic bands, explicit unknown tuning history/uncertainty and a stale-output check. Actual Clp mutation and synthetic classification tests remain separate from aircraft validation.
 
 Metamorphic flight checks: [VAL-4](validation/VAL-4/README.md) exercises symmetry, Froude scaling and passive energy through actual session ticks, including servo/downwash timing. Three source mutations are rejected in disposable app copies; the shared simulation is unchanged.

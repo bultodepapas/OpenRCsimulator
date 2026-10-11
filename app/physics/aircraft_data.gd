@@ -15,6 +15,7 @@ const RB := preload("res://physics/rigid_body.gd")
 
 const FORMAT := "openrc-aircraft v1"
 const Aero := preload("res://physics/aero.gd")
+const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
@@ -200,6 +201,11 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		if not _induced_map(envelope, surfaces, aero, area, span, chords):
 			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
+	if errors.is_empty() and aero_node.has("wing_polar"):
+		var polar := _wing_polar(errors, aero_node.wing_polar, envelope, aero)
+		if not polar.is_empty():
+			envelope.wing_polar = polar
+			warnings.append("Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed")
 	var prop := _propulsion(errors, raw.get("propulsion"))
 	var hull := _crash_hull(errors, raw.get("crash_hull"))
 	var controls := _controls(errors, raw.get("controls"))
@@ -1280,6 +1286,39 @@ static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary
 	if not errors.is_empty():
 		return {}
 	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+
+
+## D8b-R2d: a closed, optional branch; legacy aircraft and their exact arithmetic remain unchanged.
+static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dictionary, aero: Dictionary) -> Dictionary:
+	var path := "aero.wing_polar"
+	var raw := _dictionary(errors, path, node)
+	_reject_unknown_keys(errors, path, raw, ["method", "basis", "positive", "negative"])
+	if raw.get("method") != WingPolar.METHOD or raw.get("basis") != "finite-wing-strip-reference":
+		errors.append(path + ": expected tabulated-wing-v1 and finite-wing-strip-reference basis")
+	if not envelope.has("induced_map"):
+		errors.append(path + ": requires a calibrated local wing map")
+	if not errors.is_empty():
+		return {}
+	var slope: float = float(envelope.strip_slope)*_row_mean(envelope.induced_map, envelope.station_ys.size())
+	var offset := 0.0
+	for value: float in envelope.strip_cl0:
+		offset += value / float(envelope.strip_cl0.size())
+	var polar := {slope = slope, offset = offset, cd0 = aero.CD0, cd90 = envelope.CD90}
+	for name in ["positive", "negative"]:
+		var quantity: Variant = raw.get(name)
+		if typeof(quantity) != TYPE_DICTIONARY or typeof(quantity.get("value")) != TYPE_ARRAY:
+			errors.append(path + "." + name + ": expected a quantity with flat four-column samples")
+			continue
+		var count: int = quantity.value.size()
+		if count < 16 or count > 256 or count % 4 != 0:
+			errors.append(path + "." + name + ": expected 4..64 four-column rows")
+			continue
+		var samples: Variant = _electric_q(errors, path + "." + name, quantity, "deg, 1, 1, 1", 0.0, 90.0, count)
+		if not errors.is_empty() or samples == null:
+			continue
+		polar[name] = WingPolar.prepare(samples, 1.0 if name == "positive" else -1.0,
+			slope, offset, aero.CD0, envelope.CD90, errors, path + "." + name)
+	return polar if errors.is_empty() else {}
 
 
 ## Stall start (rad, magnitude) on one side (sign +1 / −1) such that the blended lift's extreme equals `target`.

@@ -1,0 +1,42 @@
+# D8b-R2 isolated polar mutation check
+
+Pinned Godot 4.7.2. The 111-check positive control passed before either mutation.
+Mutations ran only in a temporary copy of app; no repository app source was changed.
+Temporary copy: C:\Users\bulto\AppData\Local\Temp\openrc-wing-polar-mutation-45c8e1d1d4b146448a188202aa7f6c78
+
+- Baseline: exit 0; D8b-R2 polar: 111 checks, 0 failed
+- Forced negative profile CD: exit 1; rejected=True; expected nonnegative-drag invariant failure.
+- Blank-source loader bypass: exit 1; rejected=True; expected empty source failure.
+
+Baseline log:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D8b-R2 polar: 111 checks, 0 failed
+
+Negative-CD mutation log:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL C1 knot 1.0/0/1
+FAIL knot 1.0/1/1
+FAIL knot 1.0/2/1
+FAIL knot 1.0/3/1
+FAIL knot 1.0/4/1
+FAIL knot 1.0/5/1
+FAIL C1 knot 1.0/6/1
+FAIL C1 knot -1.0/0/1
+FAIL knot -1.0/1/1
+FAIL knot -1.0/2/1
+FAIL knot -1.0/3/1
+FAIL knot -1.0/4/1
+FAIL knot -1.0/5/1
+FAIL C1 knot -1.0/6/1
+FAIL all table intervals preserve sample bounds
+FAIL full angle range finite, nonnegative drag and bounded retention
+FAIL wing force+moment power passive with fixed surfaces
+D8b-R2 polar: 111 checks, 17 failed
+
+Blank-source mutation log:
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL empty source
+D8b-R2 polar: 111 checks, 1 failed

@@ -1,0 +1,19 @@
+4.7.2.stable.official.ed1daf0bf
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+source inventory: 20 parts, mass 2.88505829104375 kg, CG LE [0.1209, 0.0, 0.0] m
+source inertia [Jxx,Jyy,Jzz,Jxy,Jxz,Jyz] kg m^2: [0.11540678010017, 0.38708561399355, 0.48410759044528, -0.00954, 0.0072395, 0.00045525693736]
+control throws { "aileron": 20.0, "elevator": 20.0, "rudder": 25.0 } deg (kinds ["estimated", "estimated", "estimated"]); full-throw time 0.14 s (estimated)
+D8b-R2c: 41 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D8b-R2 polar: 111 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Synthetic spin: p/r at 4 s = 4.70335007641365/1.10076709846262, at 8 s = 0.07329301812816/0.32436572430961 (not physical acceptance)
+D8b-R2 session: 8 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+3 synthetic polar candidates verified; NONE selected for production

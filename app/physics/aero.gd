@@ -10,6 +10,7 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const WingPolar := preload("res://physics/wing_polar.gd")
 
 ## Equal-area elements per wing side (numerical resolution, not an aircraft parameter).
 const WING_STATIONS_PER_SIDE := 3
@@ -231,7 +232,7 @@ static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> flo
 ## oracle's order (including the + 0.0 arm terms, which turn -0.0 into +0.0); test_aero_flow.gd compares bytes.
 ## downwash_cl: E0a2b's lagged wing CL for the tail's downwash (FlightSession aux); NAN = the instantaneous wing CL.
 static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
-		downwash_cl := NAN) -> PackedFloat64Array:
+		downwash_cl := NAN, strip_diagnostics: Variant = null) -> PackedFloat64Array:
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
 	var r: float = s[RB.RATE+2]
@@ -292,6 +293,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", cla)
 	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
+	var polar: Dictionary = env.get("wing_polar", {})
 	for i in stations:
 		var y: float = ys[i]
 		var arm_y: float = ay + y
@@ -312,9 +314,19 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			base = cl0 + cla * effective
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		var cd: float = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+		if not polar.is_empty():
+			var sample := WingPolar.evaluate(effective, base, polar)
+			cl = sample[0]
+			weight = 1.0-sample[2]
+			cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
 		wing_cl += cl / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
 		if speed < 1e-10:
+			if strip_diagnostics != null:
+				strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
+					alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
+					stall_weight = weight, cl = cl, cd = cd, speed_mps = speed, lift_n = 0.0, drag_n = 0.0,
+					force_body_n = PackedFloat64Array([0., 0., 0.]), moment_body_nm = PackedFloat64Array([0., 0., 0.])})
 			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
 		var plane_speed := M.sqrt_(f0*f0 + f2*f2)
 		var force_scale: float = drag_q*speed*station_area*cd
@@ -331,6 +343,14 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += arm_y * fz - az * fy
 		my_sum += az * fx - ax * fz
 		mz_sum += ax * fy - arm_y * fx
+		if strip_diagnostics != null:
+			strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
+				alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
+				stall_weight = weight, cl = cl, cd = cd, speed_mps = speed,
+				lift_n = lift_q * plane_speed * plane_speed * station_area * cl,
+				drag_n = -drag_q * speed * speed * station_area * cd,
+				force_body_n = PackedFloat64Array([fx, fy, fz]),
+				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax * fz, ax * fy - arm_y * fx])})
 	var tail_limit: float = surfaces.tail_local_limit
 	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit
 	var tail_cd0: float = surfaces.tail_CD0
@@ -384,6 +404,18 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		my_sum += tz * fx - tx * fz
 		mz_sum += tx * fy - ty * fx
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
+
+
+## D8b-R2b: opt-in diagnostics from the actual strip evaluation, never a second aerodynamic law.
+## Rows describe the LOCAL wing before the global/local blend and exclude tail/propulsion/gyro.
+## alpha_geometric_rad includes control/incidence offsets, alpha_effective_rad is induced attached flow.
+static func wing_strip_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
+		downwash_cl := NAN) -> Array:
+	var rows: Array = []
+	if model.get("envelope", {}).is_empty() or not model.envelope.has("station_ys"):
+		return rows
+	_local_loads(s, air, d, model, rho, downwash_cl, rows)
+	return rows
 
 
 ## One tail surface's load about the CG with the law of _local_loads, on `area` (m2), its arm moved by `shift` and
@@ -573,6 +605,7 @@ static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dic
 	var n1: float = env.n1
 	var n_span: float = env.n2 - env.n1
 	var wing_cl := 0.0
+	var polar: Dictionary = env.get("wing_polar", {})
 	for i in stations:
 		var effective: float = angles[i]
 		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
@@ -586,6 +619,8 @@ static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dic
 		else:
 			base = float(a.CL0) + float(a.CLa) * effective
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+		if not polar.is_empty():
+			cl = WingPolar.evaluate(effective, base, polar)[0]
 		wing_cl += cl / stations
 	return wing_cl
 

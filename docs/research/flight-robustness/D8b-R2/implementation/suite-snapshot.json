@@ -1,0 +1,28 @@
+{
+  "snapshot": "/home/bulto/.cache/openrc-checks/d8b-final-YgFN37",
+  "line_endings": "normalized to LF for source comparison",
+  "app_files_sha256": {
+    "app/data/schema/openrc-aircraft-v1.schema.json": "a9bd289bc6d1ddcaa4469b5d6b41a5f87fc5900b93248ad596fe34dd90c04bb9",
+    "app/main.gd": "9753613f279aa50c97697b97224e528c8de1ee6df518585d5abf6a59020f01f4",
+    "app/physics/aero.gd": "2751aa6cc44d7375cd5689abccff6594367088651db135fc3d3d59ff1f0e5345",
+    "app/physics/aircraft_data.gd": "9d5670eed4837e371cf8ae2c986a89d4fa22d0c4b5139d5e749431c98351c9e5",
+    "app/physics/wing_polar.gd": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+    "app/physics/wing_polar.gd.uid": "c8cf48ffc52321ca3d75dedd5f5fdaa52c62e7e429c9c8bbe2c98b51327a3563",
+    "app/sim/flight_session.gd": "2e6e0ec1b56b0c47428ab57ad6d8864907505b80376b99c1e758aa0ec32acae5",
+    "app/test.sh": "679dbfd86c07d3ba7be53827cfe5ca8550a1ff0056a68df643a862395f4d8849",
+    "app/tests/test_pullup_cli.py": "adbb3d00a85048b9830302a994c805e3de0bebe58979108abfa5e91e18ba5525",
+    "app/tests/test_pullup_invariants.gd": "6066eadfc5532121eb2c56262f6d7d66da1e6b296ea992053d17ee4377de0f9e",
+    "app/tests/test_pullup_invariants.gd.uid": "8976316a5a410d9f9ed7fa541dd0c14a64fe96d0c33390e396b7975124e73575",
+    "app/tests/test_wing_polar.gd": "08976c59a05c30449b24ed567f93d2afde090a6fd2fc68351fc1f724e8150a11",
+    "app/tests/test_wing_polar.gd.uid": "fff57d44e6ffa9b97649e9f6a559e9eba644390716258ff3901807d3d003fc38",
+    "app/tests/test_wing_polar_session.gd": "6f72415025a89a9420be771322b961be83a97876c3e55439557f9f9499d7e1fd",
+    "app/tests/test_wing_polar_session.gd.uid": "d6169d82ae13a7c79bd6dcfa0091ec1bb82ae831844b662976d82b2bbe448388",
+    "app/tests/wing_polar_fixture.gd": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b",
+    "app/tests/wing_polar_fixture.gd.uid": "f3ba744459e423fd6c39bbc8325596b247c30a32ad493675675f0d8e9db1d715"
+  },
+  "final_differences": {
+    "app/data/schema/openrc-aircraft-v1.schema.json": "Only equivalent numeric exponent spelling; JSON values identical",
+    "app/main.gd": "Two provenance-neutral experimental status literals; native CLI reverified",
+    "app/tests/test_pullup_cli.py": "Updated expected status literal; native CLI reverified"
+  }
+}
