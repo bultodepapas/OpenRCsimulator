@@ -145,9 +145,10 @@ func _constant_deceleration_and_projection() -> void:
 		near("tilted projection conserves momentum axis %d" % axis_index,
 			after_momentum[axis_index], before_momentum[axis_index], 1e-8)
 	check("projection fixture uses a tilted shaft axis", rotor_axis[0] > 0.0 and rotor_axis[1] > 0.0)
-	check("localized residual is transferred into body rate",
-		absf(result.state[RB.RATE] - projection_input[RB.RATE]) > 1e-7
-			or absf(result.state[RB.RATE + 1] - projection_input[RB.RATE + 1]) > 1e-7)
+	# An exact interpolated root needs no correction; nonzero residuals are checked
+	# by the momentum equality above, not by requiring bisection roundoff.
+	check("projection receives a bounded upper-side residual",
+		projection_input[RPM_INDEX] <= 0.0 and absf(projection_input[RPM_INDEX]) <= Stop.RPM_TOL)
 	check("crossing work is bounded", callback_calls < 1000)
 
 

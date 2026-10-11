@@ -4,15 +4,19 @@
 extends RefCounted
 
 const RK: Script = preload("res://physics/integrator.gd")
+const Bracket: Script = preload("res://physics/event_bracket.gd")
 const TIME_TOL: float = 1e-12
 const RPM_TOL: float = 1e-7
 const MAX_SEGMENTS: int = 128
+const MAX_ROOT_TRIALS: int = 128
+const MAX_DT_S: float = 60.0
 
 
 static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		first: PackedFloat64Array, index: int, project: Callable) -> Dictionary:
 	if index < 13 or index >= s.size() or not _finite(s, s.size()) or s[index] < 0.0 \
-			or not is_finite(time_s) or not is_finite(dt) or dt <= 0.0 or not is_finite(time_s + dt) \
+			or not is_finite(time_s) or not is_finite(dt) or dt <= 0.0 or dt > MAX_DT_S or not is_finite(time_s + dt) \
+			or not derivative.is_valid() or not project.is_valid() \
 			or (not first.is_empty() and not _finite(first, s.size())):
 		return {ok = false}
 	var state: PackedFloat64Array = s.duplicate()
@@ -37,24 +41,12 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 			initial = PackedFloat64Array()
 			continue
 		if candidate[index] <= 0.0 and state[index] > 0.0 and probe.max_rate <= 0.0:
-			var lo: float = 0.0
-			var hi: float = step
-			var at: PackedFloat64Array = candidate
-			var crossing: float = hi
-			for iteration: int in 60:
-				crossing = 0.5 * (lo + hi)
-				var located: Dictionary = _trial(state, time_s + elapsed, crossing, derivative, initial, index)
-				if not located.ok:
-					return {ok = false}
-				at = located.state
-				if absf(at[index]) <= RPM_TOL and hi - lo <= TIME_TOL:
-					break
-				if at[index] > 0.0:
-					lo = crossing
-				else:
-					hi = crossing
-			if absf(at[index]) > RPM_TOL or crossing <= 0.0:
+			var crossing_result: Dictionary = _locate_crossing(state, time_s + elapsed, step,
+				derivative, initial, index, candidate)
+			if not crossing_result.ok:
 				return {ok = false}
+			var at: PackedFloat64Array = crossing_result.state
+			var crossing: float = crossing_result.offset_s
 			state = project.call(at, index)
 			if not _finite(state, s.size()) or state[index] != 0.0:
 				return {ok = false}
@@ -74,6 +66,38 @@ static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative:
 			return {ok = true, state = state, events = events}
 		step = dt - elapsed
 		initial = PackedFloat64Array()
+	return {ok = false}
+
+
+## The upper side remains nonpositive; projection only follows a bounded time AND RPM error.
+static func _locate_crossing(start: PackedFloat64Array, time_s: float, dt: float,
+		derivative: Callable, first: PackedFloat64Array, index: int,
+		high_state: PackedFloat64Array) -> Dictionary:
+	var lo: float = 0.0
+	var hi: float = dt
+	var low_rpm: float = start[index]
+	var high: PackedFloat64Array = high_state
+	var bisect: bool = false
+	for iteration: int in MAX_ROOT_TRIALS:
+		if hi - lo <= TIME_TOL and high[index] <= 0.0 and absf(high[index]) <= RPM_TOL:
+			return {ok = true, state = high, offset_s = hi}
+		var old_width: float = hi - lo
+		var mid: float = Bracket.propose(lo, hi, low_rpm, high[index], TIME_TOL, bisect)
+		if not is_finite(mid):
+			break
+		var located: Dictionary = _trial(start, time_s, mid, derivative, first, index)
+		if not located.ok:
+			return {ok = false}
+		var rpm: float = located.state[index]
+		if rpm > 0.0:
+			lo = mid
+			low_rpm = rpm
+		else:
+			hi = mid
+			high = located.state
+		bisect = not bisect and hi - lo > 0.5 * old_width
+	if hi - lo <= TIME_TOL and high[index] <= 0.0 and absf(high[index]) <= RPM_TOL:
+		return {ok = true, state = high, offset_s = hi}
 	return {ok = false}
 
 

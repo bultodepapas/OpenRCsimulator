@@ -3,6 +3,7 @@
 extends RefCounted
 
 const Stop: Script = preload("res://physics/electric_stop.gd")
+const Bracket: Script = preload("res://physics/event_bracket.gd")
 
 const BODY_RATE_INDEX: int = 10
 const BODY_STATE_SIZE: int = 13
@@ -12,13 +13,14 @@ const LEFT_LIMIT_CHARGE_C: float = 1e-30
 const MAX_DT_S: float = 60.0
 const MAX_SEGMENTS: int = 128
 const MAX_REFINEMENTS: int = 64
-const MAX_BISECTIONS: int = 128
+const MAX_ROOT_TRIALS: int = 128
 
 
 ## Advance a coupled state containing shaft RPM and remaining pack charge in coulombs.
 ## `derivative(state, time_s)` owns source evaluation and the charge/energy/loss rates.
 ## `project_rotor(state, rpm_index)` must preserve all state fields except body rates and RPM.
 ## Returns chronological `{type, time_s}` events; the rotor event comes first at a shared time.
+## `time_error_bound_s` bounds the local root bracket, not absolute-clock float rounding.
 static func advance(s: PackedFloat64Array, time_s: float, dt: float, derivative: Callable,
 		first: PackedFloat64Array, rpm_index: int, charge_index: int,
 		project_rotor: Callable) -> Dictionary:
@@ -121,16 +123,19 @@ static func _locate_battery_crossing(start: PackedFloat64Array, time_s: float, d
 		project_rotor: Callable, high_trial: Dictionary) -> Dictionary:
 	var lo: float = 0.0
 	var hi: float = dt
+	var low_charge: float = start[charge_index]
+	var bisect: bool = false
 	var high_state: PackedFloat64Array = high_trial.state
 	var high_times: PackedFloat64Array = high_trial.rotor_times
 	if high_state[charge_index] > 0.0:
 		return {ok = false, message = "battery crossing probe did not reach zero"}
-	for iteration: int in MAX_BISECTIONS:
+	for iteration: int in MAX_ROOT_TRIALS:
 		if hi - lo <= TIME_TOL and absf(high_state[charge_index]) <= CHARGE_TOL_C:
 			return {ok = true, state = high_state, rotor_times = high_times,
 				offset_s = hi, time_error_s = hi - lo}
-		var mid: float = lo + 0.5 * (hi - lo)
-		if mid <= lo or mid >= hi:
+		var old_width: float = hi - lo
+		var mid: float = Bracket.propose(lo, hi, low_charge, high_state[charge_index], TIME_TOL, bisect)
+		if not is_finite(mid):
 			break
 		var located: Dictionary = _stop_trial(start, time_s, mid, derivative, first,
 			rpm_index, charge_index, project_rotor, true)
@@ -139,10 +144,13 @@ static func _locate_battery_crossing(start: PackedFloat64Array, time_s: float, d
 		var q: float = located.state[charge_index]
 		if q > 0.0:
 			lo = mid
+			low_charge = q
 		else:
 			hi = mid
 			high_state = located.state
 			high_times = located.rotor_times
+		# Force one halving after an interpolation that made insufficient bracket progress.
+		bisect = not bisect and hi - lo > 0.5 * old_width
 		if hi - lo <= TIME_TOL and absf(high_state[charge_index]) <= CHARGE_TOL_C:
 			return {ok = true, state = high_state, rotor_times = high_times,
 				offset_s = hi, time_error_s = hi - lo}
@@ -242,6 +250,12 @@ static func _append_rotor_events(events: Array[Dictionary], times: PackedFloat64
 		var event_time: float = at
 		if is_finite(shared_time) and absf(event_time - shared_time) <= TIME_TOL:
 			event_time = shared_time
+		elif not events.is_empty() and events[-1].type == "battery_exhausted" \
+				and absf(event_time - float(events[-1].time_s)) <= TIME_TOL:
+			# A root just after disconnect can be the same numerical boundary. Preserve
+			# rotor-first ordering even when this root belongs to the exhausted remainder.
+			events.insert(events.size() - 1, {"type": "rotor_stop", "time_s": float(events[-1].time_s)})
+			continue
 		events.append({"type": "rotor_stop", "time_s": event_time})
 
 
