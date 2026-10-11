@@ -1,0 +1,70 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-el2a-e1/envelope-linux-final/cases/4s_stall_480.csv (9601 rows)
+{
+	"actual_duration_s": 20.0,
+	"completed": true,
+	"crash": "",
+	"criteria": {
+		"above_35_m_recovery_floor": true,
+		"altitude_loss_below_80_m": true,
+		"battery_not_exhausted": true,
+		"complete_v8_trace": true,
+		"exact_planned_tick_count": true,
+		"no_crash": true,
+		"no_simulation_fault": true,
+		"not_paused": true,
+		"positive_alpha_reached_model_a2": true,
+		"recovered_within_10_s": true,
+		"stable_for_final_1_s": true
+	},
+	"duration_s": 20.0,
+	"error": "",
+	"expected_ticks": 9600,
+	"fault": "",
+	"format": "openrc-el2a-e1-case v1",
+	"hz": 480,
+	"maneuver": "stall",
+	"metrics": {
+		"altitude_lost_m": 21.886222087212303,
+		"battery_exhausted": false,
+		"entry_speed_mps": 13.311175492959523,
+		"entry_speed_vs": 1.4,
+		"final_alpha_deg": 5.756298742191743,
+		"final_altitude_m": 128.44842014754065,
+		"final_bank_deg": 0.2031921607788678,
+		"final_climb_rate_mps": -0.9867322247011717,
+		"final_speed_mps": 13.350703622547892,
+		"initial_battery_soc": 0.95,
+		"max_alpha_deg": 18.352418618961565,
+		"minimum_altitude_after_stall_m": 128.44842014754065,
+		"minimum_speed_mps": 11.818107057869454,
+		"profile": "1.4Vs power-off accelerated pull-up to alpha a2, unload and power-on recovery",
+		"recovery_detected": true,
+		"recovery_latency_s": 3.3125,
+		"recovery_time_s": 3.8270833333333334,
+		"stable_final_s": 17.175000000000185,
+		"stall_alpha_a2_deg": 18.128395990332454,
+		"stall_altitude_m": 150.33464223475295,
+		"stall_detected": true,
+		"stall_time_s": 0.5145833333333333,
+		"start_altitude_m": 150.0,
+		"vs1g_mps": 9.507982494971088
+	},
+	"pack": "4s",
+	"passed": true,
+	"pause_reason": "",
+	"planned_duration_s": 20.0,
+	"simulation_hz": 480,
+	"ticks": 9600,
+	"trace": {
+		"continuous": true,
+		"expected_rows": 9601,
+		"format_v8": true,
+		"gaps": [],
+		"path": "/home/bulto/openrc-el2a-e1/envelope-linux-final/cases/4s_stall_480.csv",
+		"row_count": 9601,
+		"save_ok": true
+	}
+}

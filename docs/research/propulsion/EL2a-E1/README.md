@@ -1,7 +1,10 @@
 # EL2a-E1 — electric runway startup and flight envelope
 
-**Status:** qualification in progress (2026-10-11). Synthetic software evidence;
+**Status:** software qualified (2026-10-11). Synthetic software evidence;
 physical validation and Gate P remain open.
+
+[Verification manifest](verification.json) records final source/artifact hashes,
+commands and completion counts. [Ready-to-use commit message](commit-message.txt).
 
 ## Runtime correction
 
@@ -38,6 +41,8 @@ completion count and clean engine logs. It rejects two executable defects:
 restoring the old combustion idle search and inventing an electric idle of
 1 RPM. Original source bytes are restored before the final positive rerun.
 Both platforms pass 177 checks, both defect controls and the restored rerun.
+Reports and engine logs: [Windows](runway-windows/report.json),
+[Linux](runway-linux/report.json).
 
 ## Maneuver qualification
 
@@ -54,6 +59,68 @@ minimum longitudinal wheel margin of −0.136 m. Lateral margin remained above
 scenario moves the approach starting position 2 m farther along the runway
 for both packs and both rates. No aircraft or control-law parameter is fitted
 to conceal that result.
+
+[Original approach metrics](original-landing-metrics.json) are explicitly
+labelled exploratory summaries and carry their local CSV fingerprints.
+
+The final matrix has twelve cases per platform: two packs, three maneuvers and
+two rates (240/480 Hz). Each platform checks 106,572 CSV rows. The profiles are:
+
+| Maneuver | Duration | Pilot and positive outcome |
+| --- | --- | --- |
+| Takeoff | 8 s | Stopped rotor at the threshold; full throttle, neutral surfaces; liftoff before the runway end, heading error <15° throughout the roll and liftoff confirmation, wheel paths ≥0.5 m inside lateral runway edges, terminal wheel-clear dwell ≥0.5 s |
+| Stall/recovery | 20 s | Start at 150 m and 1.4 estimated one-g stall speeds; power-off accelerated pull-up until positive alpha reaches model `a2`; unload for 0.75 s, then powered recovery; recover within 10 s, lose <80 m, remain above 35 m, and finish with ≥1 s stable flight |
+| Landing | 46 s | Existing 12 m/s, 6 m approach pilot, with the declared +2 m start shift; every wheel path stays ≥0.5 m inside the runway after first touchdown, every contact sink <1.2 m/s; stop and hold ≥2 s, <2 mm drift and <0.02 m/s terminal speed |
+
+"Stable" recovery means speed ≥1.2 estimated one-g stall speeds, absolute alpha
+<8°, bank <20° and climb between −5 and +8 m/s. This is an accelerated-stall
+excursion/recovery test, not a measurement of one-g stall speed. Acceptance
+bands are software regression limits, not physical aircraft specifications.
+
+Representative 240 Hz results (Windows; Linux agrees to roundoff):
+
+| Measurement | 4S | 6S |
+| --- | ---: | ---: |
+| Liftoff time / distance | 3.588 s / 35.270 m | 4.288 s / 43.883 m |
+| Liftoff speed | 19.475 m/s | 19.157 m/s |
+| Peak stall alpha | 18.346° | 18.312° |
+| Recovery latency / altitude loss | 3.313 s / 21.875 m | 3.321 s / 20.097 m |
+| Touchdown beyond threshold | 1.868 m | 2.737 m |
+| Maximum contact sink | 0.445 m/s | 0.451 m/s |
+| Minimum wheel/runway margin | 1.864 m | 2.733 m |
+| Stop time from approach start | 20.896 s | 20.958 s |
+
+The largest 240→480 Hz differences are 2.084 ms in liftoff/recovery/stop timing,
+0.040 m in liftoff distance, 0.006° in peak stall alpha and 0.011 m in recovery
+altitude loss. The largest energy-ledger residual is 9.85e-5 J against the
+unchanged 2e-3 J limit. Two resolutions establish the declared consistency
+bands; they do not establish an asymptotic convergence order.
+The smallest lateral wheel margin through the takeoff roll and liftoff
+confirmation is 2.132 m, above the declared 0.5 m floor.
+
+Final reports: [Windows matrix](envelope-windows/report.json),
+[Linux matrix](envelope-linux/report.json). They include every criterion,
+refinement difference/limit, CSV SHA-256, source/fixture hashes and electrical
+residuals. Engine logs are retained beside each report.
+
+## Regression and delivery
+
+The isolated `app/test.sh` run completed 180 GDScript test suites and 72 Python
+cases, plus the existing model/trace/golden/FPS/contact gates, without engine
+errors. The new 177-check runway suite is part of that run. The final E5b gate
+completed all 125 checks. [Full log](full-suite.log).
+
+The offline tool suite also passes, including twelve new trace-verifier tests
+with truncated/duplicate/mistimed/nonfinite/configuration/electrical corruption
+controls and electrically self-consistent but incorrect runway initial states.
+[Offline log](offline-tools.log). The tests are registered in
+`research/test-tools.sh`; no old golden was re-recorded.
+
+The baseline clone was `38847b4`; only the two runtime hunks and the new runway
+test were overlaid for the full app run. All 388 copied app `.gd`/`.json` and
+`project.godot` files match the delivered app after line-ending normalization.
+The shared workspace's separate consolidation process committed part of the
+research during execution; this task did not stage or create a commit.
 
 ## Reproduce and interpret
 

@@ -1,0 +1,62 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: C:\DEVELOPMENT\OpenRCsimulator\.tools\el2a-e1-envelope-windows-final\cases/6s_takeoff_240.csv (1921 rows)
+{
+	"actual_duration_s": 8.0,
+	"completed": true,
+	"crash": "",
+	"criteria": {
+		"battery_not_exhausted": true,
+		"complete_v8_trace": true,
+		"exact_planned_tick_count": true,
+		"heading_before_liftoff_under_15_deg": true,
+		"liftoff_before_runway_end": true,
+		"liftoff_heading_error_under_15_deg": true,
+		"no_crash": true,
+		"no_simulation_fault": true,
+		"not_paused": true,
+		"runway_start_solved": true,
+		"sustained_wheel_clearance_at_least_0_5_s": true,
+		"wheel_path_before_liftoff_inside_lateral_margin": true
+	},
+	"duration_s": 8.0,
+	"error": "",
+	"expected_ticks": 1920,
+	"fault": "",
+	"format": "openrc-el2a-e1-case v1",
+	"hz": 240,
+	"maneuver": "takeoff",
+	"metrics": {
+		"battery_exhausted": false,
+		"battery_soc": 0.9262748215984647,
+		"final_speed_mps": 14.820184541420657,
+		"initial_battery_soc": 0.95,
+		"initial_speed_mps": 0.0,
+		"liftoff_detected": true,
+		"liftoff_distance_m": 43.88260231109511,
+		"liftoff_heading_error_deg": 4.851932411261162,
+		"liftoff_speed_mps": 19.156738411873985,
+		"liftoff_time_s": 4.2875,
+		"max_heading_error_before_liftoff_deg": 5.1892632201808135,
+		"max_speed_mps": 20.530195584605774,
+		"minimum_lateral_margin_before_liftoff_m": 2.138701952249228,
+		"vs1g_mps": 9.507982494971088,
+		"wheel_clear_s": 3.7166666666667463
+	},
+	"pack": "6s",
+	"passed": true,
+	"pause_reason": "",
+	"planned_duration_s": 8.0,
+	"simulation_hz": 240,
+	"ticks": 1920,
+	"trace": {
+		"continuous": true,
+		"expected_rows": 1921,
+		"format_v8": true,
+		"gaps": [],
+		"path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-e1-envelope-windows-final\\cases/6s_takeoff_240.csv",
+		"row_count": 1921,
+		"save_ok": true
+	}
+}

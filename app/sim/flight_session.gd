@@ -905,7 +905,8 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	engine_running = true
 	sim.inputs = _inputs()
 	var prop: Dictionary = aircraft.model.propulsion
-	var rpm: float = Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
+	# An enabled electric source at zero duty is at relative rest, not a combustion idle.
+	var rpm: float = 0.0 if Propulsion.is_electric(prop) else Propulsion.steady_rpm(0.0, 0.0, prop, air_density(), engine_charge_ratio())
 	var aux := PackedFloat64Array([rpm, sim.inputs[0], sim.inputs[1], sim.inputs[2]])
 	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO + 2],
 		rpm, air_density(), sim.gravity, _initial_wind())
@@ -1422,6 +1423,8 @@ func trace_meta() -> Dictionary:
 		"level flight (engine running)" if start.get("mode", "level") == "level" else "power-off glide", float(start.get("V", NAN))]
 	if str(_launch_metadata.get("launch_choice", "airborne")) == "runway":
 		scenario = "runway threshold on field '%s' (idle engine, static equilibrium; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
+		if Propulsion.is_electric(prop):
+			scenario = "runway threshold on field '%s' (electric source enabled, zero duty, rotor at rest; experimental)" % str(_launch_metadata.get("launch_field_id", ""))
 	elif str(_launch_metadata.get("launch_choice", "")) == "failed":
 		scenario = "start refused: " + str(_launch_metadata.get("launch_error", "unknown start error"))
 	elif str(_launch_metadata.get("launch_kind", "")) == "checkpoint_restore":
