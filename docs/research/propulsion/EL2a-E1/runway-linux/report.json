@@ -1,0 +1,64 @@
+{
+  "format": "openrc-el2a-e1-runway-v1",
+  "ok": true,
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "source_sha256": {
+    "sim/flight_session.gd": "ad6138a55e68f2ac97430d3a306d55767387ab928a4055ee02de0bd241e76f3c",
+    "tests/test_electric_runway.gd": "03e58d97f1e9f17fd5006e9bf20b9a31631c0bda8c3b9496878b9b3b75d04cf3"
+  },
+  "mutations": [
+    {
+      "name": "combustion_idle_search",
+      "exit_code": 1,
+      "failures": [
+        "FAIL: 4s battery=false east=true runway succeeds",
+        "FAIL: 4s battery=false east=false runway succeeds",
+        "FAIL: 4s battery=true east=true runway succeeds",
+        "FAIL: 4s battery=true east=false runway succeeds",
+        "FAIL: 6s battery=false east=true runway succeeds",
+        "FAIL: 6s battery=false east=false runway succeeds",
+        "FAIL: 6s battery=true east=true runway succeeds",
+        "FAIL: 6s battery=true east=false runway succeeds"
+      ]
+    },
+    {
+      "name": "invented_electric_idle",
+      "exit_code": 1,
+      "failures": [
+        "FAIL: 4s battery=false east=true source enabled with zero duty and exact rest",
+        "FAIL: 4s battery=false east=true holds the parked pose and rotor",
+        "FAIL: 4s battery=false east=true repeat runway resets source to rest",
+        "FAIL: 4s battery=false east=false source enabled with zero duty and exact rest",
+        "FAIL: 4s battery=false east=false holds the parked pose and rotor",
+        "FAIL: 4s battery=false east=false repeat runway resets source to rest",
+        "FAIL: 4s battery=true east=true source enabled with zero duty and exact rest",
+        "FAIL: 4s battery=true east=true holds the parked pose and rotor",
+        "FAIL: 4s battery=true east=true repeat runway resets source to rest",
+        "FAIL: 4s battery=true east=false source enabled with zero duty and exact rest",
+        "FAIL: 4s battery=true east=false holds the parked pose and rotor",
+        "FAIL: 4s battery=true east=false repeat runway resets source to rest",
+        "FAIL: 6s battery=false east=true source enabled with zero duty and exact rest",
+        "FAIL: 6s battery=false east=true holds the parked pose and rotor",
+        "FAIL: 6s battery=false east=true repeat runway resets source to rest",
+        "FAIL: 6s battery=false east=false source enabled with zero duty and exact rest",
+        "FAIL: 6s battery=false east=false holds the parked pose and rotor",
+        "FAIL: 6s battery=false east=false repeat runway resets source to rest",
+        "FAIL: 6s battery=true east=true source enabled with zero duty and exact rest",
+        "FAIL: 6s battery=true east=true holds the parked pose and rotor",
+        "FAIL: 6s battery=true east=true repeat runway resets source to rest",
+        "FAIL: 6s battery=true east=false source enabled with zero duty and exact rest",
+        "FAIL: 6s battery=true east=false holds the parked pose and rotor",
+        "FAIL: 6s battery=true east=false repeat runway resets source to rest"
+      ]
+    }
+  ],
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "positive": {
+    "exit_code": 0,
+    "checks": 177
+  },
+  "restored": {
+    "exit_code": 0,
+    "checks": 177
+  }
+}

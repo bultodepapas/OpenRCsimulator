@@ -1,0 +1,51 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=false east=true source enabled with zero duty and exact rest
+FAIL: 4s battery=false east=true holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=false east=true repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=false east=false source enabled with zero duty and exact rest
+FAIL: 4s battery=false east=false holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=false east=false repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=true east=true source enabled with zero duty and exact rest
+FAIL: 4s battery=true east=true holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=true east=true repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=true east=false source enabled with zero duty and exact rest
+FAIL: 4s battery=true east=false holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 4s battery=true east=false repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=false east=true source enabled with zero duty and exact rest
+FAIL: 6s battery=false east=true holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=false east=true repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=false east=false source enabled with zero duty and exact rest
+FAIL: 6s battery=false east=false holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=false east=false repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=true east=true source enabled with zero duty and exact rest
+FAIL: 6s battery=true east=true holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=true east=true repeat runway resets source to rest
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=true east=false source enabled with zero duty and exact rest
+FAIL: 6s battery=true east=false holds the parked pose and rotor
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FAIL: 6s battery=true east=false repeat runway resets source to rest
+EL2a-E1 electric runway: 177 checks, 24 failed
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity

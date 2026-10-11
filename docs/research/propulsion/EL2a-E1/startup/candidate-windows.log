@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FIELD ok=true id=default
+THRESHOLD { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FIXTURE 4s flyable=true model=synthetic_stik_electric_4s_battery anchors=3
+SET_FIELD true
+IDLE_EQUILIBRIUM 4s rpm=nan operating={ &"ok": false, &"status": "unbracketed", &"message": "no stable electric torque equilibrium in the bounded RPM search", &"rpm": nan, &"residual": nan, &"stability_slope": nan, &"lower_rpm": 1.0, &"upper_rpm": 433953177.6, &"unstable_roots": 0 }
+PUBLIC_RUNWAY 4s ok=true start_error= fault= tick=0 z=-0.23908852764076 rpm=0.0 launch={ "selected_start_choice": "airborne", "launch_choice": "runway", "launch_kind": "runway_threshold", "launch_field_id": "default", "launch_state": "[15.0,-47.0,-0.23908852764075803,0.0,0.0,0.0,0.7071026554391591,0.002415506342369103,-0.0024155063423691122,0.707102655439159,0.0,0.0,0.0]", "launch_aux": "[0.0,0.020526016195830367,0.26283648493491807,0.026386599355536874]", "launch_ground_anchors": "[15.18,-47.09586115433354,1.0,14.82,-47.09586115433354,1.0,15.0,-46.74484748367133,1.0]", "launch_engine_running": "true", "launch_error": "" }
+ZERO_DUTY 4s route=public advanced=true fault= rpm=0.0 motor_a=0.0 pack_a=0.2 charge_drop_c=0.10000000002037 energy_j=1.65539791666667 heat_j=0.0006
+STARTUP_0.5S 4s route=public advanced=true fault= rpm=8068.19492192527 speed_mps=1.45091166304483 moved_m=0.20963478869423 motor_a=58.6345756658353 bus_a=58.8345756658353 charge_c=10898.5127415563 soc=0.9460514532601 terminal_j=618.983696964513 heat_j=133.854242303979
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+FIXTURE 6s flyable=true model=synthetic_stik_electric_6s_battery anchors=3
+SET_FIELD true
+IDLE_EQUILIBRIUM 6s rpm=nan operating={ &"ok": false, &"status": "unbracketed", &"message": "no stable electric torque equilibrium in the bounded RPM search", &"rpm": nan, &"residual": nan, &"stability_slope": nan, &"lower_rpm": 1.0, &"upper_rpm": 325494374.4, &"unstable_roots": 0 }
+PUBLIC_RUNWAY 6s ok=true start_error= fault= tick=0 z=-0.23908852764076 rpm=0.0 launch={ "selected_start_choice": "airborne", "launch_choice": "runway", "launch_kind": "runway_threshold", "launch_field_id": "default", "launch_state": "[15.0,-47.0,-0.23908852764075803,0.0,0.0,0.0,0.7071026554391591,0.002415506342369103,-0.0024155063423691122,0.707102655439159,0.0,0.0,0.0]", "launch_aux": "[0.0,0.020526016195830353,0.26283648493491807,0.02638659935553687]", "launch_ground_anchors": "[15.18,-47.09586115433354,1.0,14.82,-47.09586115433354,1.0,15.0,-46.74484748367133,1.0]", "launch_engine_running": "true", "launch_error": "" }
+ZERO_DUTY 6s route=public advanced=true fault= rpm=0.0 motor_a=0.0 pack_a=0.15 charge_drop_c=0.07499999996071 energy_j=1.86249119318182 heat_j=0.00050625
+STARTUP_0.5S 6s route=public advanced=true fault= rpm=7901.32513149419 speed_mps=1.59399480984078 moved_m=0.25229546957389 motor_a=27.3138258630911 bus_a=27.4638258630911 charge_c=7494.43267474806 soc=0.94626675186213 terminal_j=636.267309504631 heat_j=97.787673972767
+JSON_RESULT C:\DEVELOPMENT\OpenRCsimulator\docs/research/propulsion/EL2a-E1/startup/candidate-windows.json

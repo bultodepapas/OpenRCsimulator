@@ -54,7 +54,7 @@
     "offline_tools": "bash research/test-tools.sh",
     "localization": "python research/propulsion/el2a-p2/verify_localization.py --godot <pinned-engine> --app <snapshot>/app --out <fresh-output>",
     "references": "<pinned-scipy-env>/bin/python research/propulsion/el2a-p2/verify_independent.py --godot <pinned-engine> --app <candidate>/app --out <fresh-json>",
-    "flights": "python3 research/propulsion/el2/verify_flights.py --godot <pinned-engine> --app <snapshot>/app --out <fresh-output>",
+    "flights": "python3 research/propulsion/el2/verify_flights.py --godot <pinned-engine> --app <snapshot>/app --directory <fresh-output>",
     "flight_comparison": "python3 research/propulsion/el2a-p1/compare_flights.py <baseline-flights> <candidate-flights> --out <fresh-json>",
     "performance": "python3 research/propulsion/el2a-p2/compare_events.py --baseline-app <baseline>/app --candidate-app <candidate>/app --godot <pinned-engine> --out <fresh-output> --rounds 6"
   },

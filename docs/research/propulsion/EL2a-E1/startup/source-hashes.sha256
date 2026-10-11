@@ -1,0 +1,13 @@
+# SHA-256; paths are relative to the repository root unless absolute.
+# Baseline/candidate source hashes establish the exact code and fixture copies used.
+c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643  .tools/Godot_v4.7.2-stable_win64_console.exe
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-el2a-p2/baseline/.tools/Godot_v4.7.2-stable_linux.x86_64
+7779ef68306c9c186b374de55ce7810b10f28c614ed4ce9d88e219dc723a6431  .tools/el2a_e1_probe.gd
+1d72a8189d3186027422c69b2c36f12832bbd5c7db53282e766e68c9a16a5cd4  app/sim/flight_session.gd
+ad6138a55e68f2ac97430d3a306d55767387ab928a4055ee02de0bd241e76f3c  .tools/el2a-e1-dev/app/sim/flight_session.gd
+8c9818e153fe32d4d53bf935431894646421ca3c137e57fc22b91a8b6cdd62ac  app/physics/propulsion.gd
+8c9818e153fe32d4d53bf935431894646421ca3c137e57fc22b91a8b6cdd62ac  .tools/el2a-e1-dev/app/physics/propulsion.gd
+657c64afc6bb71713a0607526087395f083000f2e168d0990dd8880ab370316c  app/data/aircraft/synthetic_stik_electric_4s_battery.json
+657c64afc6bb71713a0607526087395f083000f2e168d0990dd8880ab370316c  .tools/el2a-e1-dev/app/data/aircraft/synthetic_stik_electric_4s_battery.json
+3891507e55afeed55725557027a0b9b0b9e0e700f9ef0f2069b57905ff6a910f  app/data/aircraft/synthetic_stik_electric_6s_battery.json
+3891507e55afeed55725557027a0b9b0b9e0e700f9ef0f2069b57905ff6a910f  .tools/el2a-e1-dev/app/data/aircraft/synthetic_stik_electric_6s_battery.json

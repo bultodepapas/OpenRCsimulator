@@ -1,0 +1,105 @@
+{
+	"engine": {
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"hex": 263938,
+		"status": "stable",
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"timestamp": 0,
+		"string": "4.7.2-stable (official)"
+	},
+	"field_id": "default",
+	"threshold": {
+		"ok": true,
+		"north": 15.0,
+		"east": -47.0,
+		"heading": 1.5707963267948966,
+		"message": ""
+	},
+	"fixtures": {
+		"4s": {
+			"fixture": "synthetic_stik_electric_4s_battery",
+			"flyable": true,
+			"model_id": "synthetic_stik_electric_4s_battery",
+			"anchor_count": 3,
+			"set_field": true,
+			"zero_duty_equilibrium_status": "unbracketed",
+			"zero_duty_equilibrium_ok": false,
+			"zero_duty_steady_rpm_finite": false,
+			"zero_duty_steady_rpm": null,
+			"public_runway_reset_ok": false,
+			"public_runway_start_error": "",
+			"public_runway_fault": "",
+			"manual_zero_rpm_runway_ok": true,
+			"manual_zero_rpm_runway_fault": "",
+			"route_used": "manual",
+			"zero_duty_0_5s": {
+				"advanced": true,
+				"fault": "",
+				"rpm": 0.0,
+				"motor_current_a": 0.0,
+				"pack_current_a": 0.2,
+				"charge_drop_c": 0.10000000002037268,
+				"remaining_charge_c": 10943.89999999998,
+				"terminal_energy_j": 1.6553979166666664,
+				"pack_heat_j": 0.0006000000000000012
+			},
+			"startup_0_5s": {
+				"advanced": true,
+				"fault": "",
+				"rpm": 8068.19492192527,
+				"speed_mps": 1.4509116630448282,
+				"moved_m": 0.209634788694233,
+				"motor_current_a": 58.6345756658353,
+				"pack_current_a": 58.8345756658353,
+				"remaining_charge_c": 10898.512741556331,
+				"soc": 0.9460514532600982,
+				"terminal_energy_j": 618.9836969645125,
+				"pack_heat_j": 133.85424230397948
+			}
+		},
+		"6s": {
+			"fixture": "synthetic_stik_electric_6s_battery",
+			"flyable": true,
+			"model_id": "synthetic_stik_electric_6s_battery",
+			"anchor_count": 3,
+			"set_field": true,
+			"zero_duty_equilibrium_status": "unbracketed",
+			"zero_duty_equilibrium_ok": false,
+			"zero_duty_steady_rpm_finite": false,
+			"zero_duty_steady_rpm": null,
+			"public_runway_reset_ok": false,
+			"public_runway_start_error": "",
+			"public_runway_fault": "",
+			"manual_zero_rpm_runway_ok": true,
+			"manual_zero_rpm_runway_fault": "",
+			"route_used": "manual",
+			"zero_duty_0_5s": {
+				"advanced": true,
+				"fault": "",
+				"rpm": 0.0,
+				"motor_current_a": 0.0,
+				"pack_current_a": 0.15,
+				"charge_drop_c": 0.07499999996070983,
+				"remaining_charge_c": 7523.92500000004,
+				"terminal_energy_j": 1.8624911931818195,
+				"pack_heat_j": 0.0005062499999999992
+			},
+			"startup_0_5s": {
+				"advanced": true,
+				"fault": "",
+				"rpm": 7901.32513149419,
+				"speed_mps": 1.5939948098407848,
+				"moved_m": 0.2522954695738851,
+				"motor_current_a": 27.31382586309109,
+				"pack_current_a": 27.46382586309109,
+				"remaining_charge_c": 7494.432674748061,
+				"soc": 0.9462667518621288,
+				"terminal_energy_j": 636.2673095046309,
+				"pack_heat_j": 97.78767397276702
+			}
+		}
+	}
+}
