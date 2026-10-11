@@ -147,6 +147,8 @@ def main() -> int:
     if version != "4.7.2.stable.official.ed1daf0bf":
         raise RuntimeError(f"unexpected Godot version: {version}")
     REPRO = args.out.resolve() if args.out else Path(tempfile.mkdtemp(prefix="openrc-el2-powered-"))
+    if REPRO.is_relative_to(source):
+        raise ValueError("output must be outside the source app to avoid recursive copying")
     if REPRO.exists() and any(REPRO.iterdir()):
         raise FileExistsError(f"output directory must be empty: {REPRO}")
     REPRO.mkdir(parents=True, exist_ok=True)
