@@ -61,6 +61,18 @@ static func derivative(state: PackedFloat64Array, model: Dictionary, d: Dictiona
 static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, wind_ned: PackedFloat64Array, downwash_cl := NAN, transported_dv := PackedFloat64Array()) -> Dictionary:
 	var air := Air.compute(state, wind_ned, rho)
+	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv)
+
+
+## Share one stage's air data with the shaft solve. `air` must be Air.compute for this
+## exact state, wind and density; never reuse it across RK stages or simulation ticks.
+static func loads_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
+		rho: float, air: Dictionary, downwash_cl := NAN, transported_dv := PackedFloat64Array()) -> PackedFloat64Array:
+	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv).loads
+
+
+static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
+		rho: float, air: Dictionary, downwash_cl: float, transported_dv: PackedFloat64Array) -> Dictionary:
 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl)
 	var propulsion_loads := Propulsion.loads(air.v_air, rpm, model.propulsion, rho)
 	var total := aero_loads.duplicate()

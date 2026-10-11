@@ -19,6 +19,13 @@ static func evaluate(rpm: float, duty: float, bus_voltage_v: float, motor: Dicti
 	var idle_current: float = motor.no_load_current_a
 	if kv <= 0.0 or resistance <= 0.0 or idle_current < 0.0:
 		return _failure("motor requires Kv > 0, R > 0 and I0 >= 0")
+	return _evaluate_validated(rpm, duty, bus_voltage_v, kv, resistance, idle_current, enabled)
+
+
+## Internal scalar kernel. Callers must have checked the finite Kv/R/I0 domains in this call.
+## Supply shares its stricter motor validation; no cache or unchecked public entry is used.
+static func _evaluate_validated(rpm: float, duty: float, bus_voltage_v: float, kv: float,
+		resistance: float, idle_current: float, enabled: bool) -> Dictionary:
 	if not is_finite(rpm) or rpm < 0.0 or not is_finite(duty) or duty < 0.0 or duty > 1.0 \
 			or not is_finite(bus_voltage_v) or bus_voltage_v < 0.0:
 		return _failure("motor requires finite rpm >= 0, duty in [0,1] and bus voltage >= 0")
@@ -40,21 +47,33 @@ static func evaluate(rpm: float, duty: float, bus_voltage_v: float, motor: Dicti
 		loss_torque = minf(loss_torque, electromagnetic_torque)
 	var torque: float = electromagnetic_torque - loss_torque
 	var battery_current: float = effective_duty * current
+	var motor_voltage: float = command_voltage if current > 0.0 else back_emf
+	var shaft_power: float = torque * omega
+	var bus_power: float = bus_voltage_v * battery_current
+	var copper_loss: float = (current * resistance) * current
+	var rotational_loss: float = loss_torque * omega
 	var result: Dictionary = {
 		ok = true,
 		mode = "drive" if current > 0.0 else ("coast" if rpm > 0.0 else "stopped"),
 		duty = effective_duty,
 		command_voltage_v = command_voltage,
-		motor_voltage_v = command_voltage if current > 0.0 else back_emf,
+		motor_voltage_v = motor_voltage,
 		back_emf_v = back_emf,
 		motor_current_a = current,
 		battery_current_a = battery_current,
 		shaft_torque_nm = torque,
-		shaft_power_w = torque * omega,
-		bus_power_w = bus_voltage_v * battery_current,
-		copper_loss_w = (current * resistance) * current,
-		rotational_loss_w = loss_torque * omega,
+		shaft_power_w = shaft_power,
+		bus_power_w = bus_power,
+		copper_loss_w = copper_loss,
+		rotational_loss_w = rotational_loss,
 	}
+	# Scalar success guard avoids reflective Dictionary iteration in every RK stage.
+	# Keep the diagnostic slow path below to preserve the first offending field/message.
+	if is_finite(command_voltage) and is_finite(motor_voltage) and is_finite(back_emf) \
+			and is_finite(current) and is_finite(battery_current) and is_finite(torque) \
+			and is_finite(shaft_power) and is_finite(bus_power) and is_finite(copper_loss) \
+			and is_finite(rotational_loss):
+		return result
 	# Finite inputs can overflow, including in the zero-speed torque path. Never return a valid NaN/Inf.
 	for key: String in result:
 		if typeof(result[key]) == TYPE_FLOAT and not is_finite(float(result[key])):

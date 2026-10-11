@@ -15,6 +15,7 @@ for test in \
   radio-latency/test_reduce.py \
   propulsion/uiuc-import/test_import.py \
   propulsion/range-audit/test_audit.py \
+  propulsion/el2a-p1/test_compare.py \
   validation/metamorphic/test_runner.py; do
   echo "== $test"
   timeout 120 python3 "$ROOT/research/$test"
