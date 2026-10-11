@@ -13,15 +13,15 @@ An open-source airplane simulator for your USB radio, gamepad or keyboard.</p>
 
 ## Download and fly
 
-**Published alpha: [v0.1.0-rc6](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc6).** Pick your computer below. The ZIP contains the simulator; you do not need to install Godot or build anything.
+**Published alpha: [v0.1.0-rc7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc7).** Pick your computer below. The ZIP contains the simulator; you do not need to install Godot or build anything.
 
 <p align="center">
-  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc6/openrc-simulator-v0.1.0-rc6-windows-x86_64.zip"><img src="docs/media/download-windows.svg" width="240" alt="Download for Windows — x86_64 ZIP"></a>
-  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc6/openrc-simulator-v0.1.0-rc6-macos-universal.zip"><img src="docs/media/download-macos.svg" width="240" alt="Download for macOS — Apple Silicon and Intel ZIP"></a>
-  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc6/openrc-simulator-v0.1.0-rc6-linux-x86_64.zip"><img src="docs/media/download-linux.svg" width="240" alt="Download for Linux — x86_64 ZIP"></a>
+  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc7/openrc-simulator-v0.1.0-rc7-windows-x86_64.zip"><img src="docs/media/download-windows.svg" width="240" alt="Download for Windows — x86_64 ZIP"></a>
+  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc7/openrc-simulator-v0.1.0-rc7-macos-universal.zip"><img src="docs/media/download-macos.svg" width="240" alt="Download for macOS — Apple Silicon and Intel ZIP"></a>
+  <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc7/openrc-simulator-v0.1.0-rc7-linux-x86_64.zip"><img src="docs/media/download-linux.svg" width="240" alt="Download for Linux — x86_64 ZIP"></a>
 </p>
 
-[All releases & release notes](https://github.com/bultodepapas/OpenRCsimulator/releases) · [First-launch help](docs/FIRST-LAUNCH.md#2-first-launch) · [SHA256 checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc6/SHA256SUMS)
+[All releases & release notes](https://github.com/bultodepapas/OpenRCsimulator/releases) · [First-launch help](docs/FIRST-LAUNCH.md#2-first-launch) · [SHA256 checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.0-rc7/SHA256SUMS)
 
 These are unsigned test builds. If your operating system blocks the first launch, follow the platform instructions in the [first-launch guide](docs/FIRST-LAUNCH.md). Linux needs OpenGL 3.3 graphics; its executable is `openrc-simulator.x86_64`.
 
@@ -116,7 +116,7 @@ The models have automated software checks; they have **not been validated agains
 
 The alpha includes six-axis flight, stalls and spins, propeller torque, gyroscopic effects, servos, engine sound, wheel contact and experimental landings. Pilot view, auto-zoom and the ground-shadow aid help you follow the airplane. A hull strike or numerical fault triggers crash recovery; trees and field props remain visual scenery without collisions.
 
-**Coming in rc7 / available from source:** an experimental Stik runway start, adjustable wind and gusts, seeded turbulence, temperature/pressure/humidity settings, and selectable daylight, dusk and night. Home’s **Weather** and **Time of day** controls let you change the conditions; **Evening, time passing** advances the visual sky during flight. Night flying adds moonlight, stars, field lamps and an experimental aircraft light kit. The default is airborne flight in Day with calm/reference weather.
+**New in rc7:** an experimental Stik runway start, adjustable wind and gusts, seeded turbulence, temperature/pressure/humidity settings, and selectable daylight, dusk and night. Home’s **Weather** and **Time of day** controls let you change the conditions; **Evening, time passing** advances the visual sky during flight. Night flying adds moonlight, stars, field lamps and an experimental aircraft light kit. The default is airborne flight in Day with calm/reference weather.
 
 Practice presets are authored conditions, not measured weather at your club. Takeoff/landing behavior, night readability and real-hardware performance still need pilot testing. See the [release notes](docs/releases/) for exactly what is included in each download.
 

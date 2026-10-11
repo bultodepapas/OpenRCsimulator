@@ -75,7 +75,7 @@ Ownership registry, reconciled 2026-10-08. Current step status lives in the link
 | **Atmosphere** | [ATMOSPHERE-PLAN](ATMOSPHERE-PLAN.md) (en) | M5-ATM-1…4 | Shared density, trim, propulsion and wind/UI state | `app/physics/atmosphere.gd`, shared trim/propulsion/session/trace, weather v3 UI, atmosphere tests | [atmosphere/](research/atmosphere/M5-ATM-2/README.md) |
 | **Player guide** | [FIRST-LAUNCH.md](FIRST-LAUNCH.md) (en) | none | PT1g, Gate 2 | — | — |
 | **Desktop delivery** | [DESKTOP-DELIVERY-PLAN](DESKTOP-DELIVERY-PLAN.md) (en, rev 3) | DT-00…13, Gate DT | UI-07/09a/09b; visual acceptance; native OS evidence | `docs/research/desktop-delivery-investigations/`; proposed `tools/desktop/`, `packaging/`, `research/desktop-delivery/`, `app/tests/test_desktop_*`; export/CI/UI changes coordinated with owners | [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md), [DT-00-R2: 12 Apple Silicon studies](research/desktop-delivery-investigations/DT-00-R2/README.md) |
-| **Releases** | [releases/](releases/) | tags `v*` | PT1f/PT1h | `docs/releases/` | [PT1h](research/release-readiness/PT1h/README.md) |
+| **Releases** | [releases/](releases/) | tags `v*` | PT1f/PT1h | `docs/releases/` | [PT1h](research/release-readiness/PT1h/README.md), [rc7 verification](research/release-readiness/PT1-rc7/README.md) |
 | **Tooling record** | [GODOT-SKILLS.md](GODOT-SKILLS.md) (legacy es) + [installation manifest](godot-skills-installation.json) | none | — | — | — |
 | **Archive** | [archive/](archive/README.md) (historical plan revisions); [bake-off spec](../prototypes/stage0/SPEC.md) and [comparison](../prototypes/stage0/COMPARISON.md); [RESEARCH.md](../RESEARCH.md) | — | — | — | — |
 
