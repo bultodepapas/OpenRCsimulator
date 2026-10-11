@@ -252,6 +252,8 @@ static func environment() -> Environment:
 		env.ambient_light_color = Color(amb.x, amb.y, amb.z).linear_to_srgb()
 		env.ambient_light_energy = 1.0
 		env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
+		if state.get("tonemapper", "aces") == "agx":
+			env.tonemap_mode = Environment.TONE_MAPPER_AGX # FW-26: night only (sky_state.gd AGX_BELOW_SUN_DEG)
 	return env
 
 

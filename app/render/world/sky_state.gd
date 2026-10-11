@@ -31,6 +31,10 @@ const MOON_DISC := 0.6
 ## and field lights carry the scene (estimates, tuned on captures).
 const ADAPT_POWER := 0.84
 const ADAPT_MAX_GAIN := 1.5e5
+## Below this sun elevation the tonemapper is AgX (FW-26): Godot's AgX (allenwp curve: sigmoid toe, Reinhard-like
+## shoulder) has no black point, unlike its ACES fit, which renders linear values under ~0.002 black, and it rolls off
+## floodlights instead of clipping them. Day keeps ACES, chosen for readability by measurement in L1b.
+const AGX_BELOW_SUN_DEG := -1.0
 
 ## Ambient light. Godot 4.7.2 Compatibility renders the sky's radiance cubemap already multiplied by the exposure
 ## (drivers/gles3/shaders/sky.glsl, cubemap pass), and scene.glsl decodes it as ambient and multiplies by the
@@ -201,4 +205,5 @@ static func state(sky: Dictionary) -> Dictionary:
 		moon_lin = _lin(Color(0.98, 0.96, 0.92)) * (MOON_DISC * _lum(_lin(a.zenith)) * moon_phase_flux(sky.moon.phase_angle_deg)) \
 			if moon_el > -1.0 else Vector3.ZERO,
 		lst_deg = sky.lst_deg,
+		tonemapper = "agx" if sun_el < AGX_BELOW_SUN_DEG else "aces",
 	}

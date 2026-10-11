@@ -19,6 +19,7 @@ const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Conditions := preload("res://render/world/conditions.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 
@@ -73,6 +74,7 @@ static func wants_direct_flight(args: PackedStringArray) -> bool:
 
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	Conditions.session_preset = preferences.get("time_of_day", "day") # FW-27: Home's backdrop and Fly use it
 	home_scene = HomeScene.new(aircraft, field_path) # the chosen airplane over our field, still: no simulation runs behind Home
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
@@ -81,6 +83,8 @@ func show_home() -> void:
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
+	home.set_time_of_day(Conditions.session_preset)
+	home.time_requested.connect(set_time_of_day)
 	home.fly_requested.connect(start_flight)
 	home.aircraft_requested.connect(set_aircraft)
 	home.start_requested.connect(set_start_choice)
@@ -113,6 +117,25 @@ func set_aircraft(id: String) -> void:
 		preferences.start_choice = "airborne"
 	if home_scene != null:
 		home_scene.show_aircraft(id)
+	var err := Preferences.save_to(preferences_path, preferences)
+	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+
+
+## Applies a time of day at once (the backdrop is rebuilt under the same Home) and remembers it, like the language.
+func set_time_of_day(preset: String) -> void:
+	if home == null or not Conditions.HOME_CHOICES.has(preset):
+		return
+	preferences.time_of_day = preset
+	Conditions.session_preset = preset
+	home.set_time_of_day(preset)
+	if home_scene != null:
+		var old := home_scene
+		home_scene = HomeScene.new(preferences.get("aircraft", Preferences.DEFAULTS.aircraft), field_path)
+		remove_child(old)
+		old.queue_free()
+		add_child(home_scene)
+		move_child(home_scene, home.get_index()) # keep the menu drawn and focused above the backdrop
+		home_scene.camera.make_current()
 	var err := Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 

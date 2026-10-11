@@ -4,7 +4,7 @@
 
 ## What was done
 
-- **Data (FW-31):** `openrc-field-lights v1`, every value `{value, unit, kind, source}`. Two 8 m LED floods (30,000 cd, 60°, 5,000 K) behind the pilot line aimed at the runway, a floodlit windsock (after FAA L-807), solar stakes along both runway edges every 20 m, green stakes across both ends (artistic borrowing), and a red lamp on the pilot station (red keeps dark adaptation). The loader refuses 11 kinds of malformed files, including more than four floods.
+- **Data (FW-31):** `openrc-field-lights v1`, every value `{value, unit, kind, source}`. Two 8 m club LED floods (12,000 cd, 60°, 5,000 K; first 30,000 cd, a stadium-class value that clipped the lit ground) behind the pilot line aimed at the runway, a floodlit windsock (after FAA L-807), solar stakes along both runway edges every 20 m, green stakes across both ends (artistic borrowing), and a red lamp on the pilot station (red keeps dark adaptation). The loader refuses 11 kinds of malformed files, including more than four floods.
 - **Floods (FW-34):** shadowless `SpotLight3D`s (energy = cd / 10⁵ lux), poles and glowing heads. Compatibility lights at most 8 spots per mesh and the ground is one mesh: floods (3) plus the landing light stay inside it, so the analytic light pools (FW-32) were not needed yet.
 - **Points (FW-33):** one sprite shader for every lamp: physical core size and radiance, a minimum on-screen size with flux conservation (a light vanishes by day and blazes at night, as real ones do), a display cap that keeps saturated hues from clipping to white, flashing on `sim_clock`, and output encoded for the engine's ALBEDO linearisation.
 - **Night kit (FW-35):** fitted from dusk to any catalog aircraft from its own bounds (no model file or node touched): red left / green right tip lights, white tail light, white tip strobes double-flashing each second, and a forward landing light. Belly strips were tried and dropped: the bounds include wheels and propeller, so a strip floated below the gear. They need per-model anchors (D-8).
@@ -12,7 +12,7 @@
 
 ## Results
 
-- Captures: floods light the runway and windsock; the exposure adapts to 8 % of the lit field's illuminance (moonless night 90,000 → 12,893), so the lit area reads while stars and the moonlit sky stay visible. The ground directly under the floods still clips in the close-up (tuning for Gate FW-N).
+- Captures: floods light the runway and windsock; with the view-based adaptation and AgX at night ([FW-23](../FW-23/README.md)) the lit ground keeps its texture in the close-up, the Home airplane under the lights reads in its colours, and the pilot's sky keeps the moon and stars.
 - The kit's tip lights read as red and green points from the pilot's eye at 30 m once held at 4 px; before the display cap and encoding fix they were white or invisible.
 - `World.build` builds none of this in the legacy mode or at noon (tested).
 

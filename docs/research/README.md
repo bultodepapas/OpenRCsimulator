@@ -198,6 +198,7 @@ Plan: [SCENERY-PLAN](../SCENERY-PLAN.md).
 
 | Topic | Read first | Then |
 | --- | --- | --- |
+| Official docs and forums checked for the night work (auto-exposure, light limits, AgX, Purkinje, FAA turbine lights, RC night kits) | [web research 2026-10-10](field-world/web-research-2026-10-10.md) | — |
 | One composer, parity harness | [FW-02](field-world/FW-02/README.md) | [tools/world](../../tools/world/README.md) |
 | Sun, moon, sidereal time | [FW-20](field-world/FW-20/README.md) | Meeus test cases in `app/tests/test_world_ephemeris.gd` |
 | Physical twilight sky, haze lobe, light and adaptation | [FW-23](field-world/FW-23/README.md) | `tools/world/sky_table.py` |

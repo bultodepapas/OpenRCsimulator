@@ -11,7 +11,7 @@ extends RefCounted
 
 const SPRITE_SHADER := preload("res://render/world/light_sprite.gdshader")
 const Spec := preload("res://spec.gd")
-const Atmosphere := preload("res://render/atmosphere.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 
 ## LED luminance as scene-linear radiance (estimate: ~3× a sunlit white surface, ~10⁴–10⁵ cd/m²).
 const LED_RADIANCE := 2.5
@@ -52,6 +52,7 @@ static func bounds(root: Node3D) -> Dictionary:
 ## A self-luminous point (render/world/light_sprite.gdshader) with the current exposure.
 static func sprite(name: String, color: Color, position: Vector3, size_m: float, radiance := LED_RADIANCE,
 		flash := Vector4(1.0, 0.0, 0.0, 0.0), min_px := NAV_MIN_PX, display_cap := NAV_DISPLAY_CAP) -> MeshInstance3D:
+	Exposure.register() # before the shader compiles
 	var material := ShaderMaterial.new()
 	material.shader = SPRITE_SHADER
 	material.set_shader_parameter("light_color", color)
@@ -61,7 +62,6 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 	material.set_shader_parameter("flash", flash)
 	material.set_shader_parameter("min_px", min_px)
 	material.set_shader_parameter("display_cap", display_cap)
-	material.set_shader_parameter("exposure", Atmosphere.state.get("exposure", Spec.ATMOSPHERE.exposure))
 	var quad := QuadMesh.new()
 	quad.size = Vector2.ONE
 	quad.material = material

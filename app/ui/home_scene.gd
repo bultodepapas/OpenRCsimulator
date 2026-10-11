@@ -64,7 +64,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	camera.look_at_from_position(camera.position, camera.position + look, Vector3.UP)
 	camera.current = true
 
-	World.update(env, CLOCK)
+	World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), camera) # FW-23: the eye adapts to the view
 
 
 func _composition_position(offset_ned: Array) -> Vector3:

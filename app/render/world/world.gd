@@ -5,6 +5,8 @@
 extends RefCounted
 
 const Atmosphere := preload("res://render/atmosphere.gd")
+const Spec := preload("res://spec.gd")
+const Frames := preload("res://render/frames.gd")
 const FieldBuilder := preload("res://render/field.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Conditions := preload("res://render/world/conditions.gd")
@@ -13,14 +15,26 @@ const SkyState := preload("res://render/world/sky_state.gd")
 const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 
 ## The club switches its field lights on at dusk (FW-31…34): sun below this elevation in time-of-day mode.
 const FIELD_LIGHTS_BELOW_SUN_DEG := 3.0
-## Weight of the floodlit runway in the eye's adaptation: one exposure serves the whole view, and the pilot mostly
-## looks at the sky, where the lit area is a small share of the field of view (estimate, from captures: at full
-## weight the moonlit sky and the airplane went black; at 0.08 the lit runway reads without clipping and the sky keeps
-## its moon and stars).
-const ARTIFICIAL_ADAPTATION_WEIGHT := 0.08
+## Eye adaptation to what the camera looks at (FW-23): the exposure follows the light falling on the view target (the
+## airplane) in log space, fast toward light and slow back to dark, on simulation time so pauses and replays hold it.
+## Rates are game estimates (real dark adaptation takes minutes). A first call, a restart or a jump > MAX_STEP_S snaps.
+const ADAPT_TO_LIGHT_PER_S := 2.0
+const ADAPT_TO_DARK_PER_S := 0.35
+const ADAPT_MAX_STEP_S := 5.0
+## Exposure changes below this (log) are not pushed to the renderer.
+const ADAPT_PUSH_LOG := 0.02
+## Share of the lit ground's light that counts when the ground fills the whole view (estimate, from captures: the
+## floodlit ground clipped while the eye followed a dark airplane). Scaled by the screen share below the horizon.
+const ADAPT_GROUND_WEIGHT := 0.5
+
+static var _lights := {}
+static var _ground_light := 0.0 # floods' light on the runway centre (scene units), computed once per build
+static var _adapt_clock := -1.0
+static var _adapt_log := 0.0
 ## The night kit is fitted from dusk (FW-35): sun below this elevation in time-of-day mode.
 const NIGHT_KIT_BELOW_SUN_DEG := 6.0
 
@@ -46,11 +60,18 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights
-			var centre := runway_centre(field)
-			Atmosphere.state = SkyState.adapt(Atmosphere.state,
-				ARTIFICIAL_ADAPTATION_WEIGHT * FieldLights.illuminance_at(lights, centre.x, centre.y))
 		else:
 			push_warning("field lights refused, flying without them: " + "; ".join(loaded.errors))
+	_lights = lights
+	_ground_light = 0.0
+	if not lights.is_empty():
+		for surface: Dictionary in field.get("surfaces", []):
+			if surface.get("id", "") == field.get("runway", ""):
+				_ground_light = FieldLights.illuminance_point(lights,
+					Frames.ned_to_render([float(surface.center_north), float(surface.center_east), -0.5]))
+	_adapt_clock = -1.0 # the first update() with a view target snaps the adaptation
+	if not Atmosphere.state.is_empty():
+		Exposure.set_value(Atmosphere.state.exposure)
 	var world_environment := WorldEnvironment.new()
 	var environment := Atmosphere.environment()
 	world_environment.environment = environment
@@ -75,15 +96,6 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		conditions = conditions, sky = Atmosphere.state}
 
 
-## The runway's centre (north, east) from openrc-field data; the pilot station when there is no runway.
-static func runway_centre(field: Dictionary) -> Vector2:
-	for surface: Dictionary in field.get("surfaces", []):
-		if surface.get("id", "") == field.get("runway", ""):
-			return Vector2(float(surface.center_north), float(surface.center_east))
-	var pilot: Dictionary = field.get("pilot", {})
-	return Vector2(float(pilot.get("north", 0.0)), float(pilot.get("east", 0.0)))
-
-
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
 ## the model (Shadow.model_extent) so the kit never changes the pilot-aid shadow. Returns the kit or null.
 static func dress_aircraft(root: Node3D) -> Node3D:
@@ -92,8 +104,52 @@ static func dress_aircraft(root: Node3D) -> Node3D:
 	return AircraftLights.attach(root)
 
 
+## The exposure an eye adapted to `target` (render space) would use: the hour's sky and light, the floods' light on
+## the target, and the lit ground in proportion to the view's share below the horizon (`ground_share`, 0–1). The
+## calibrated fixed sun (no time chosen) keeps its constant exposure.
+static func view_exposure(target: Vector3, ground_share := 0.0) -> float:
+	if Atmosphere.state.is_empty():
+		return float(Spec.ATMOSPHERE.exposure)
+	var extra := 0.0
+	if not _lights.is_empty():
+		extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
+	return float(SkyState.adapt(Atmosphere.state, extra).exposure)
+
+
+## Share of a camera's picture below the horizon (0 looking well above it, 1 looking well below), from its pitch and
+## vertical field of view.
+static func ground_share(camera: Camera3D) -> float:
+	if camera == null:
+		return 0.0
+	# Home builds its world before entering the tree: the local transform is the global one there (child of the root).
+	var forward := -(camera.global_transform.basis.z if camera.is_inside_tree() else camera.transform.basis.z)
+	var pitch := asin(clampf(forward.y, -1.0, 1.0))
+	return clampf(0.5 + tan(-pitch) / (2.0 * tan(deg_to_rad(camera.fov) / 2.0)), 0.0, 1.0)
+
+
 ## Advances the world's visual clock: the shader clock every call, the cloud drift at most once per
-## Spec.ATMOSPHERE.cloud_update_s. Returns true when the sky was re-rendered.
-static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO) -> bool:
+## Spec.ATMOSPHERE.cloud_update_s, and, in time-of-day mode with a `view_target`, the eye's adaptation.
+## Returns true when the sky was re-rendered.
+static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
+		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
+	if view_target is Vector3 and not Atmosphere.state.is_empty():
+		adapt(environment, view_target, clock_s, ground_share(camera))
 	return Atmosphere.update_clouds(environment, clock_s)
+
+
+## Moves the exposure toward view_exposure(target) (see ADAPT_*). Returns the exposure now in use.
+static func adapt(environment: Environment, target: Vector3, clock_s: float, share := 0.0) -> float:
+	var goal := log(view_exposure(target, share))
+	var dt := clock_s - _adapt_clock
+	var snap := _adapt_clock < 0.0 or dt < 0.0 or dt > ADAPT_MAX_STEP_S
+	if snap:
+		_adapt_log = goal
+	else:
+		var rate := ADAPT_TO_LIGHT_PER_S if goal < _adapt_log else ADAPT_TO_DARK_PER_S
+		_adapt_log = goal + (_adapt_log - goal) * exp(-rate * dt)
+	_adapt_clock = clock_s
+	if snap or absf(log(environment.tonemap_exposure) - _adapt_log) > ADAPT_PUSH_LOG:
+		environment.tonemap_exposure = exp(_adapt_log)
+		Exposure.set_value(environment.tonemap_exposure)
+	return environment.tonemap_exposure

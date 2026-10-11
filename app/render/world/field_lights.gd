@@ -8,7 +8,7 @@ extends RefCounted
 
 const Frames := preload("res://render/frames.gd")
 const Spec := preload("res://spec.gd")
-const Atmosphere := preload("res://render/atmosphere.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 const SPRITE_SHADER := preload("res://render/world/light_sprite.gdshader")
 
 const DEFAULT_PATH := "res://data/fields/lights.json"
@@ -157,6 +157,7 @@ static func lamp_radiance(intensity_cd: float, size_m: float, conversion: float)
 
 
 static func _sprite_material(color: Color, radiance: float, size_m: float, min_px: float, display_cap: float) -> ShaderMaterial:
+	Exposure.register() # before the shader compiles
 	var m := ShaderMaterial.new()
 	m.shader = SPRITE_SHADER
 	m.set_shader_parameter("light_color", color)
@@ -165,7 +166,6 @@ static func _sprite_material(color: Color, radiance: float, size_m: float, min_p
 	m.set_shader_parameter("min_px", min_px)
 	m.set_shader_parameter("display_cap", display_cap)
 	m.set_shader_parameter("rad_per_px", deg_to_rad(Spec.CAMERA.fov_deg) / 720.0)
-	m.set_shader_parameter("exposure", Atmosphere.state.get("exposure", Spec.ATMOSPHERE.exposure))
 	return m
 
 
@@ -173,24 +173,20 @@ static func _render(north: float, east: float, up: float) -> Vector3:
 	return Frames.ned_to_render([north, east, -up])
 
 
-## Horizontal illuminance (scene units) the floods put on a ground point (NED north, east): inverse square, the cosine
-## of incidence, the cone and Godot's range window. Used to adapt the exposure to a lit field.
-static func illuminance_at(lights: Dictionary, north: float, east: float) -> float:
+## Illuminance (scene units) the floods put on a surface facing them at a render-space point: inverse square, cone
+## and range window, no cosine. What the eye meets when it looks at the airplane under the lights (FW-23 adaptation).
+static func illuminance_point(lights: Dictionary, point: Vector3) -> float:
 	var total := 0.0
-	var point := _render(north, east, 0.0)
-	for fx: Dictionary in lights.fixtures:
+	for fx: Dictionary in lights.get("fixtures", []):
 		if fx.type != "flood":
 			continue
 		var pos := _render(fx.north, fx.east, fx.height)
 		var aim := (_render(fx.aim_north, fx.aim_east, float(fx.get("aim_height", 0.0))) - pos).normalized()
 		var to_point := point - pos
 		var d := to_point.length()
-		if d <= 0.0 or d >= float(fx.range):
+		if d <= 0.0 or d >= float(fx.range) or rad_to_deg(aim.angle_to(to_point)) > float(fx.beam_half_angle):
 			continue
-		if rad_to_deg(aim.angle_to(to_point)) > float(fx.beam_half_angle):
-			continue
-		var window := pow(maxf(1.0 - pow(d / float(fx.range), 4.0), 0.0), 2.0)
-		total += float(fx.intensity) / float(lights.conversion) * maxf(-to_point.normalized().y, 0.0) / (d * d) * window
+		total += float(fx.intensity) / float(lights.conversion) / (d * d) * pow(maxf(1.0 - pow(d / float(fx.range), 4.0), 0.0), 2.0)
 	return total
 
 

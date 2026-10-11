@@ -2,7 +2,7 @@
 # No time chosen (the default) keeps the calibrated fixed 45° sun of Spec.ATMOSPHERE: every existing capture, golden
 # file and readability baseline stays byte-identical (decision D-4 until Gate FW-U).
 #
-# Choosing a time (precedence: command line, then environment):
+# Choosing a time (precedence: command line, then environment, then the Home choice in `session_preset`):
 #   --time_of_day=<preset> | OPENRC_TIME_OF_DAY   one of PRESETS below
 #   --time=HH:MM           | OPENRC_TIME          local clock time on --date
 #   --date=YYYY-MM-DD      | OPENRC_DATE          default REFERENCE date
@@ -33,6 +33,23 @@ const PRESETS := {
 }
 
 
+## The Home choices (FW-27), in the order the Home button cycles; "day" is the calibrated fixed sun.
+const HOME_CHOICES: Array[String] = ["day", "dawn", "golden_hour", "sunset", "blue_hour", "night", "night_dark"]
+## English labels of the Home choices (translated by the interface).
+const HOME_LABELS := {day = "Day", dawn = "Dawn", golden_hour = "Golden hour", sunset = "Sunset",
+	blue_hour = "Blue hour", night = "Night, full moon", night_dark = "Night, no moon"}
+
+## The interactive route's choice (app_root sets it from the saved preference before Home and Fly build their
+## worlds). The direct route never reads preferences, so automation keeps its own arguments only.
+static var session_preset := ""
+
+
+## The next Home choice after `preset` (wraps; unknown values restart at "day").
+static func next_home_choice(preset: String) -> String:
+	var i := HOME_CHOICES.find(preset)
+	return HOME_CHOICES[(i + 1) % HOME_CHOICES.size()]
+
+
 ## The conditions for this run: {time_of_day: false} (legacy fixed sun), or {time_of_day: true, preset, when}, where
 ## `when` is the Ephemeris.sky() input. Unknown values warn and fall back to the legacy sky.
 static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dictionary:
@@ -45,6 +62,8 @@ static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dic
 		return str(opts[key]) if opts.has(key) else OS.get_environment(env)
 	var preset: String = get.call("time_of_day", "OPENRC_TIME_OF_DAY")
 	var clock: String = get.call("time", "OPENRC_TIME")
+	if preset.is_empty() and clock.is_empty() and PRESETS.has(session_preset):
+		preset = session_preset
 	if preset.is_empty() and clock.is_empty():
 		return {time_of_day = false}
 	var when := REFERENCE.duplicate()

@@ -107,6 +107,8 @@ func _initialize() -> void:
 	_check("moonless night hits the adaptation limit", is_equal_approx(dark.state.gain, SkyState.ADAPT_MAX_GAIN))
 	_check("moon disc drawn when up, not when down", (night.state.moon_lin as Vector3).length() > 0.0)
 	_check("sun disc off while the moon lights", night.state.sun_disc == 0.0 and noon.state.sun_disc == 1.0)
+	_check("AgX at night and in the blue hour, ACES by day and at sunset (L1b calibration)",
+		night.state.tonemapper == "agx" and blue.state.tonemapper == "agx" and noon.state.tonemapper == "aces" and sunset.state.tonemapper == "aces")
 
 	# Bounded planar shadow at a low sun.
 	Atmosphere.state = sunset.state
