@@ -32,6 +32,8 @@
 
 - **A first-visible video frame is an interval observation.** Subtracting two first-frame indices retains up to one acquisition frame of timing ambiguity in either direction even with exact picks. Carry annotation/cadence bounds through median and nearest-rank p95 with ranks allowed to change; these are not confidence intervals and do not shrink with trial count. A nominal median below a timing budget can still have bounds crossing it. [F6b](../research/radio-input/F6b/README.md).
 
+- **A fixed-viewport UI only looks finished at its design resolution.** Home was always captured at 1280×720, which hid that `project.godot` sets no stretch mode: at 1920×1080 the same 440 px column and type sizes float in empty space, and the Spanish strings move the rows because spacers follow text height. Capture every new screen at a second resolution and in the second language before calling it done. [UI-20 audit](../research/menu-investigations/UI-20/README.md).
+
 ## Preferences and localization
 
 - **Translation occurs at draw time.** `Label.text` retains the source string; inspect `atr(text)` for the displayed translation. Rebuild dynamic phrases on translation changes and test actual layout in both languages. Set the default locale explicitly: the OS locale otherwise changes a fresh launch. [UI-01d tests](../../app/tests/test_ui_language.gd), [UI-05 tests](../../app/tests/test_ui_aircraft.gd).
