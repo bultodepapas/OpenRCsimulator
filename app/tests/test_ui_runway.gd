@@ -152,7 +152,7 @@ func _home_fly_roundtrip_and_radio() -> void:
 	_check("Pause Restart retains runway", app.get("pause_menu") == null and session.get("start_choice") == RUNWAY
 		and not session.get("sim").get("paused"))
 
-	# Trigger a real ground crash, then shorten only its hold to one tick so recovery remains quick and deterministic.
+	# CR-22a: a real ground crash persists, then R reconstructs the selected runway start.
 	var sim: Node = session.get("sim") as Node
 	var impact: PackedFloat64Array = sim.get("state").duplicate()
 	impact[RB.POS + 2] = 0.1
@@ -160,11 +160,8 @@ func _home_fly_roundtrip_and_radio() -> void:
 	sim.set("previous", impact.duplicate())
 	await _physics_frames(4)
 	_check("ground contact enters the crash hold", not session.get("crash").is_empty())
-	if not session.get("crash").is_empty():
-		var crash: Dictionary = session.get("crash")
-		crash.ticks_left = 1
-		session.set("crash", crash)
-		await _physics_frames(2)
+	await ui.tap(KEY_R)
+	await _physics_frames(2)
 	_check("crash recovery restarts on runway", session.get("crash").is_empty() and session.get("start_choice") == RUNWAY
 			and session.get("start_error") == "" and session.call("trace_meta").get("launch_choice") == RUNWAY)
 

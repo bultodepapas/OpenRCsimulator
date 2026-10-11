@@ -115,7 +115,17 @@ func _roll_6dof(session: Node, rest: PackedFloat64Array) -> Dictionary:
 ## rpm follows the throttle lag (Propulsion.rpm_step) exactly. Returns { v_at (per MARK), x_at_lof }.
 func _roll_1d(model: Dictionary, rest: PackedFloat64Array, d: Dictionary, rpm0: float, hist_x: PackedFloat64Array,
 		hist_pitch: PackedFloat64Array, v_lof: float) -> Dictionary:
-	var c_rr: float = model.landing_gear.rolling_resistance * RUNWAY_ROLLING
+	# GP-04: ideal rolling wheels store 0.5*(I/R²)*v². The independent point-mass
+	# oracle must accelerate that equivalent mass as well as the fuselage.
+	var effective_mass: float = model.mass_kg
+	var c_rr := 0.0
+	var total_anchor_k := 0.0
+	for contact: Dictionary in model.landing_gear.contacts:
+		total_anchor_k += contact.anchor_stiffness
+	for contact: Dictionary in model.landing_gear.contacts:
+		effective_mass += contact.wheel_inertia / (contact.wheel_radius * contact.wheel_radius)
+		var share: float = contact.anchor_stiffness / total_anchor_k # independently derived static load share
+		c_rr += share * model.landing_gear.rolling_resistance * (1.0 + (RUNWAY_ROLLING - 1.0) * sqrt(model.landing_gear.rolling_reference_radius / contact.wheel_radius))
 	var rest_euler := M.q_to_euler(PackedFloat64Array([rest[RB.ATT], rest[RB.ATT + 1], rest[RB.ATT + 2], rest[RB.ATT + 3]]))
 	var accel := func(x: float, v: float, rpm: float) -> float:
 		var pitch: float = rest_euler[1] if hist_x.is_empty() else _interp(hist_x, hist_pitch, x)
@@ -129,7 +139,7 @@ func _roll_1d(model: Dictionary, rest: PackedFloat64Array, d: Dictionary, rpm0: 
 		var l := Dynamics.loads(s, model, d, rpm, Air.RHO_SEA_LEVEL, PackedFloat64Array([0.0, 0.0, 0.0]))
 		var fw := M.q_rotate(q, M.v3(l[0], l[1], l[2]))
 		var n: float = maxf(0.0, model.mass_kg * G + fw[2])
-		return (fw[1] - c_rr * n) / model.mass_kg
+		return (fw[1] - c_rr * n) / effective_mass
 	var x := 0.0
 	var v := 0.0
 	var rpm := rpm0

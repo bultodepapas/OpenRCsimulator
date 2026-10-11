@@ -7,6 +7,12 @@
    "kind": "manual",
    "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.1: 200 cm"
   },
+  "coefficient_reference_length": {
+   "value": 0.351137,
+   "unit": "m",
+   "kind": "derived",
+   "source": "Preserve the checked-in AV-06 v1 serialized reference.mean_chord scalar exactly for trajectory parity. AV-06 coefficient derivation continues to use unrounded geometric S/b = 0.35113750000000005 m, which differs by 0.0000005 m from the serialized value. The explicit serialized scalar preserves the existing output; it is not a measured chord or geometric MAC."
+  },
   "dry_mass": {
    "value": 10.5,
    "unit": "kg",

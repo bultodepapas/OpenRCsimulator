@@ -116,6 +116,8 @@ A load blend can be continuous while its derivatives change sharply, so lineariz
 
 Visual model coordinates may include a datum offset that the physics adapter removes. Copying a rendered shaft location directly into a force application point can invent a thrust moment; document the transform and test the physics location in its own coordinate frame. ([E0b2](../research/propwash/E0b2/README.md))
 
+Apply that transform before trusting an old discrepancy note: the Stik's visual main axle at Z=0.100 m becomes x=0.215 m after subtracting its −0.115 m LE datum, agreeing longitudinally with physics. The separate 5 mm wheel-bottom height difference remains real. Resolve each component in one common frame instead of treating the original warning as proof that every coordinate is wrong. ([AS-00 Stik review](../research/aircraft-standardization/AS-00/ugly-stik-reference.md))
+
 ### Normalize source points without inventing coverage
 
 A UIUC tunnel file ends with a backward J step followed by repeated rows: removing only trailing duplicates still leaves a nonmonotone table. Compare decimal values before float64 conversion, reject conflicting repeats and coordinate collisions, then sort while retaining source lines. A nominal run label is not a measured RPM range, and catalogue diameter is not necessarily the coefficient-reference diameter. ([G1a1](../research/propulsion/G1a1/README.md))
@@ -157,6 +159,12 @@ Replay acceptance needs the same care: `maxf` can replace a NaN error with a lat
 ### Match a companion schema against accepted inputs too
 
 A schema can reject every malformed fixture and still reject valid runtime inputs. Compare both directions through the production file loader: optional absence, null, empty objects and string trimming have different contracts. Godot's ASCII source trimming and Python's Unicode whitespace rules differ, so a generic `\S` can change accepted data. Keep physically inconsistent but structurally valid cases to show which checks remain runtime-only. ([DATA-4a](../research/aircraft-validation/DATA-4a/README.md))
+
+Close configuration objects under an explicit new version, while preserving deliberately named historical experiments. An accepted coefficient is not proof of a force consumer: classify reference-only values, forbid fields from inactive branches, and compare normalized models plus every recorded state byte during migration. Keep serialization precision separate from derivation arithmetic; pinning a rounded output inside intermediate equations can change otherwise untouched coefficients. ([AS-01 contract](../../AIRCRAFT_CONTRACT.md), [AS-02 migration](../research/aircraft-standardization/AS-02/README.md))
+
+### Include wheel state in contact oracles
+
+When adding wheel rotation to an existing contact model, include `I/R²` in acceleration oracles and preserve the aircraft coefficient's existing wheel-size basis. A global size correction can double-count an earlier RC-scale adjustment. Require small tire slip before acquiring a static anchor, and compare ground scenarios separately from exact airborne parity. ([GP-02/05](../research/ground-physics/GP-05/README.md))
 
 ### Keep reference provenance and freshness executable
 

@@ -92,15 +92,20 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_check("physics: R restarts at 30 m", _alt() > 29.5, "%.1f m" % _alt())
-	# D9d: put the airplane on the ground: it crashes (impact shown), then restarts by itself after 1.5 s.
+	# CR-22a: the real app keeps its wreck until the existing R key restarts flight.
 	var near: PackedFloat64Array = _main.session.sim.state
 	near[2] = 0.1
 	_main.session.sim.state = near
 	_main.session.sim.previous = near
 	await create_timer(0.2).timeout
-	_check("physics: ground contact → CRASH shown", "CRASH" in (_main._panel as Label).text, _row("PAUSED"))
+	_check("physics: ground contact → impact and wreck shown", "Impact" in (_main._panel as Label).text and _main._crash_director.active, (_main._panel as Label).text)
 	await create_timer(1.6).timeout
-	_check("physics: restarts by itself after the crash", _alt() > 29.5 and not ("CRASH" in (_main._panel as Label).text), "%.1f m" % _alt())
+	_check("physics: wreck persists until explicit restart", not _main.session.crash.is_empty() and _main.session.sim.paused)
+	_key(KEY_R, true)
+	_key(KEY_R, false)
+	await process_frame
+	await process_frame
+	_check("physics: R restores flight after a crash", _alt() > 29.5 and not _main._crash_director.active, "%.1f m" % _alt())
 
 	# L0d: every frame, shaders get the session's simulation time wrapped to [0, 1024) s (checked at three ticks).
 	var ShaderClock := load("res://render/shader_clock.gd")

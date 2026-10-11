@@ -1,6 +1,6 @@
 # Crash and damage investigations
 
-**Status:** research index, 2026-10-06. **Serves:** [CRASH-DAMAGE-PLAN](../../CRASH-DAMAGE-PLAN.md) (CR- steps). This folder records research and proposals; it does not certify crash realism.
+**Status:** research and implementation index, 2026-10-11. **Serves:** [CRASH-DAMAGE-PLAN](../../CRASH-DAMAGE-PLAN.md) (CR- steps). This folder records research, proposals and bounded presentation evidence; it does not certify crash realism.
 
 ## Reports
 
@@ -30,3 +30,5 @@ The current research has gaps and source-quality limits documented in each repor
 [CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. [CR-01b](CR-01b/README.md) verifies crossing reconstruction along the existing pose interpolation, numerical unknown cases and unchanged flight traces. Component labels and crossing-time kinematics remain CR-01; the rendered handoff is covered by CR-01c below.
 
 [CR-01c](CR-01c/README.md) records the production-scene crossing-pose handoff, fallback behavior, lifecycle checks and paired rendered evidence.
+
+The owner-prioritized 2026-10-11 presentation extension is documented in [CR-22a](CR-22a/README.md): production scenarios, flight parity, VFX/fire, native audio mix, budget, reset, licenses and remaining limitations. Supporting modules: [CR-02a audio](CR-02a/README.md), [CR-08a severity](CR-08a/severity.md), [CR-09a wreck](CR-09a/README.md), and [ownership coordination](CR-09a/coordination.md). The CR-08a bins are explicitly uncalibrated; CR-07 physical threshold acceptance remains open.

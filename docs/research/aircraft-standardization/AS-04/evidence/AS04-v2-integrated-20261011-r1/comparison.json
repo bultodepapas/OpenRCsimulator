@@ -1,0 +1,2154 @@
+{
+  "format": "openrc-as04-comparison-v1",
+  "baseline_engine": "4.7.2-stable (official)",
+  "candidate_engine": "4.7.2-stable (official)",
+  "physics_ticks_per_second": 240,
+  "cases": [
+    {
+      "key": "gp-extra-300s-60",
+      "kind": "catalog",
+      "baseline_model_id": "gp-extra-300s-60",
+      "candidate_model_id": "gp-extra-300s-60",
+      "baseline_start_speed_mps": 17.0,
+      "candidate_start_speed_mps": 17.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "prescribed_fuel",
+          "flaps": "not_simulated",
+          "gear": "fixed_taildragger",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "b24b14c98d34af92edf4c94e56973cd20cb8380a84806fae9d99fd1f80b5a373",
+        "candidate_data_sha256": "e47ccf28eae249e1454a00e4dfade0fc045ddab70b2c622d2d3c0986cd3644a5"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 16,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[13].size",
+        "$.inventory[17].size",
+        "$.inventory[1].size",
+        "$.inventory[20].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.629614
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.629614
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[13].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[17].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[20].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "jensen-das-ugly-stik-60",
+      "kind": "catalog",
+      "baseline_model_id": "jensen-das-ugly-stik-60",
+      "candidate_model_id": "jensen-das-ugly-stik-60",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "prescribed_fuel",
+          "flaps": "not_simulated",
+          "gear": "fixed_tricycle",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "f228d95f6ecb32057d360e91e1c5c4f8f2ffbbd9dd0d4baa48bc45086f4a5e5e",
+        "candidate_data_sha256": "a19c2812b13c454f6dc8e2ac2bb217d4513eb1e7c5cfebc8afe42ffae1a3b5d3"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 17,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[11].size",
+        "$.inventory[18].size",
+        "$.inventory[1].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[5].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering",
+        "$.start"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.9724
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.9724
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[5].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[11].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.start",
+          "baseline": "<missing>",
+          "candidate": {
+            "level_speed": {
+              "value": 15.0
+            }
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": null,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": null,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "p51d-mustang-120",
+      "kind": "catalog",
+      "baseline_model_id": "p51d-mustang-120",
+      "candidate_model_id": "p51d-mustang-120",
+      "baseline_start_speed_mps": 25.0,
+      "candidate_start_speed_mps": 25.0,
+      "baseline_sample_count": 241,
+      "candidate_sample_count": 241,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "prescribed_fuel",
+          "flaps": "not_simulated",
+          "gear": "locked_down_taildragger",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "19ba53f42d7da0acd93ce0165e80b93b26328e021a6a87f061f0b02cf592f0fe",
+        "candidate_data_sha256": "7b6c2373331c31524d5a356f2ee15342aeedef3eca3a014f4cf57b35fff34d46"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 16,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[14].size",
+        "$.inventory[15].size",
+        "$.inventory[17].size",
+        "$.inventory[24].size",
+        "$.inventory[27].size",
+        "$.inventory[4].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.402689
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.402689
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[14].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[15].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[17].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[24].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[27].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "sebart-avanti-s-a200-p100rx",
+      "kind": "catalog",
+      "baseline_model_id": "sebart-avanti-s-a200-p100rx",
+      "candidate_model_id": "sebart-avanti-s-a200-p100rx",
+      "baseline_start_speed_mps": 29.0,
+      "candidate_start_speed_mps": 29.0,
+      "baseline_sample_count": 481,
+      "candidate_sample_count": 481,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "prescribed_fuel",
+          "flaps": "not_simulated",
+          "gear": "locked_up",
+          "propulsion_layout": "single_centerline_jet"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "4e1bba952c5f22805dae52c831561798da5e48b4724da9f8e89edeb6313dafbb",
+        "candidate_data_sha256": "b5c12e18d38de4c8a1ebb898b414fff1c63989071901931e8408ae57e94b7c61"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 15,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[16].size",
+        "$.inventory[18].size",
+        "$.inventory[20].size",
+        "$.inventory[22].size",
+        "$.inventory[23].size",
+        "$.inventory[24].size",
+        "$.inventory[25].size",
+        "$.inventory[26].size",
+        "$.inventory[30].size",
+        "$.inventory[31].size",
+        "$.inventory[32].size",
+        "$.inventory[33].size"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.659165
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.659165
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[16].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[20].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[22].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[23].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[24].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[25].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[26].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[30].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[31].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[32].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[33].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_4s",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_4s",
+      "candidate_model_id": "synthetic_stik_electric_4s",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "fixed_voltage",
+          "flaps": "not_simulated",
+          "gear": "fixed_tricycle",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "a6ab38905d5c63840d3bc968640ab64ee3490888831e556140fe5042870c68a4",
+        "candidate_data_sha256": "a52065749650d258b26688fa02c1bc4655890dea1c36f9250918076cd6063321"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 17,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[11].size",
+        "$.inventory[18].size",
+        "$.inventory[1].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[5].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering",
+        "$.start"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.9724
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.9724
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[5].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[11].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.start",
+          "baseline": "<missing>",
+          "candidate": {
+            "level_speed": {
+              "value": 15.0
+            }
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_4s_battery",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_4s_battery",
+      "candidate_model_id": "synthetic_stik_electric_4s_battery",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "ocv_resistance",
+          "flaps": "not_simulated",
+          "gear": "fixed_tricycle",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "8ae12bf9d417f105c599a7fd9a5756bbf75b56ac280e09cf2c7c0bc74abbae1c",
+        "candidate_data_sha256": "60266d2f297bf4af9c6b2cb36227b6c3e1a77707f53b4e16fb58a054f8ff75f3"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 17,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[11].size",
+        "$.inventory[18].size",
+        "$.inventory[1].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[5].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering",
+        "$.start"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.9724
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.9724
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[5].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[11].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.start",
+          "baseline": "<missing>",
+          "candidate": {
+            "level_speed": {
+              "value": 15.0
+            }
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_6s",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_6s",
+      "candidate_model_id": "synthetic_stik_electric_6s",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "fixed_voltage",
+          "flaps": "not_simulated",
+          "gear": "fixed_tricycle",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "da1735ca8d37b70dde6299558dad79175ae52ebbe8cee8b9a4c3ebda4e9ab9d2",
+        "candidate_data_sha256": "14988e14806b2d631b6f7b847cc62d06a16c86f7ce95941304441aea6d50ae6d"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 17,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[11].size",
+        "$.inventory[18].size",
+        "$.inventory[1].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[5].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering",
+        "$.start"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.9724
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.9724
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[5].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[11].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.start",
+          "baseline": "<missing>",
+          "candidate": {
+            "level_speed": {
+              "value": 15.0
+            }
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    },
+    {
+      "key": "synthetic_stik_electric_6s_battery",
+      "kind": "electric",
+      "baseline_model_id": "synthetic_stik_electric_6s_battery",
+      "candidate_model_id": "synthetic_stik_electric_6s_battery",
+      "baseline_start_speed_mps": 15.0,
+      "candidate_start_speed_mps": 15.0,
+      "baseline_sample_count": 121,
+      "candidate_sample_count": 121,
+      "model_numeric_equal": true,
+      "model_metadata": {
+        "baseline_capabilities": {},
+        "candidate_capabilities": {
+          "controls": "conventional",
+          "damage": "terminal_hull",
+          "energy": "ocv_resistance",
+          "flaps": "not_simulated",
+          "gear": "fixed_tricycle",
+          "propulsion_layout": "single_tractor"
+        },
+        "baseline_convention_id": "",
+        "candidate_convention_id": "openrc-le-frd-v1",
+        "baseline_data_sha256": "98e586d9056e22f581e4ba74fd5a4c00fe752fe32bbf532abc00cf7d18f909d5",
+        "candidate_data_sha256": "200f37df03c5a821494c78b7f5fb97ac8e6400696e6b584f79458e217bfdd715"
+      },
+      "raw_numeric_equal": false,
+      "raw_numeric_difference_count": 17,
+      "raw_numeric_changed_paths": [
+        "$.aero.coefficients.CLadot",
+        "$.aero.reference_coefficients",
+        "$.capabilities",
+        "$.inventory[10].size",
+        "$.inventory[11].size",
+        "$.inventory[18].size",
+        "$.inventory[1].size",
+        "$.inventory[3].size",
+        "$.inventory[4].size",
+        "$.inventory[5].size",
+        "$.inventory[6].size",
+        "$.inventory[7].size",
+        "$.inventory[8].size",
+        "$.inventory[9].size",
+        "$.landing_gear.contacts[0].max_steering",
+        "$.landing_gear.contacts[1].max_steering",
+        "$.start"
+      ],
+      "raw_numeric_differences": [
+        {
+          "path": "$.aero.coefficients.CLadot",
+          "baseline": {
+            "value": 1.9724
+          },
+          "candidate": "<missing>"
+        },
+        {
+          "path": "$.aero.reference_coefficients",
+          "baseline": "<missing>",
+          "candidate": {
+            "CLadot": {
+              "value": 1.9724
+            }
+          }
+        },
+        {
+          "path": "$.capabilities",
+          "baseline": "<missing>",
+          "candidate": {}
+        },
+        {
+          "path": "$.inventory[1].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[3].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[4].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[5].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[6].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[7].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[8].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[9].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[10].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[11].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.inventory[18].size",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[0].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.landing_gear.contacts[1].max_steering",
+          "baseline": "<missing>",
+          "candidate": {
+            "value": 0.0
+          }
+        },
+        {
+          "path": "$.start",
+          "baseline": "<missing>",
+          "candidate": {
+            "level_speed": {
+              "value": 15.0
+            }
+          }
+        }
+      ],
+      "samples_equal": true,
+      "sample_mismatches": [],
+      "baseline_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      },
+      "candidate_lifecycle": {
+        "reset_matches_initial": true,
+        "checkpoint_restore_pauses": true,
+        "checkpoint_replay_matches": true,
+        "prior_checkpoint_rejected_atomically": true,
+        "malformed_reload_rollback": true
+      }
+    }
+  ],
+  "failures": [
+    "candidate_r1: app source changed while the probe was running",
+    "candidate: source manifest changed between alternating measurement runs"
+  ],
+  "comparison_policy": "exact numeric normalized models and exact per-tick float64 array bytes on the same engine/platform; source hashes are provenance only",
+  "raw_numeric_policy": "source numeric differences are reported for review, not treated as runtime parity failures",
+  "timing_policy": "descriptive same-host measurements only; no hard tick deadline or timing-based pass/fail threshold",
+  "performance": {
+    "method": "alternating Godot process order by round; aggregate seven warm AircraftData.load_file() timings and post-warmup Simulation.step() timings per case",
+    "run_order": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ]
+    ],
+    "steady_tick_warmup_discarded": 20,
+    "timing_policy": "descriptive only; no host-independent deadline or timing-based pass/fail threshold",
+    "aircraft": [
+      {
+        "key": "gp-extra-300s-60",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 16174,
+            "p95_us": 17052,
+            "min_us": 13306,
+            "max_us": 17052
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 305,
+            "p95_us": 409,
+            "min_us": 198,
+            "max_us": 648
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 20833,
+            "p95_us": 22662,
+            "min_us": 14001,
+            "max_us": 22662
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 328,
+            "p95_us": 390,
+            "min_us": 199,
+            "max_us": 719
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.2880549029306294,
+          "steady_tick": 1.0754098360655737
+        }
+      },
+      {
+        "key": "jensen-das-ugly-stik-60",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 15986,
+            "p95_us": 19124,
+            "min_us": 12178,
+            "max_us": 19124
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 420,
+            "p95_us": 528,
+            "min_us": 270,
+            "max_us": 981
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 19229,
+            "p95_us": 21780,
+            "min_us": 17405,
+            "max_us": 21780
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 441,
+            "p95_us": 694,
+            "min_us": 274,
+            "max_us": 5444
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.202865006881021,
+          "steady_tick": 1.05
+        }
+      },
+      {
+        "key": "p51d-mustang-120",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 17888,
+            "p95_us": 20259,
+            "min_us": 12076,
+            "max_us": 20259
+          },
+          "steady_tick_us": {
+            "sample_count": 440,
+            "p50_us": 564,
+            "p95_us": 708,
+            "min_us": 374,
+            "max_us": 991
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 21297,
+            "p95_us": 25256,
+            "min_us": 17616,
+            "max_us": 25256
+          },
+          "steady_tick_us": {
+            "sample_count": 440,
+            "p50_us": 595,
+            "p95_us": 686,
+            "min_us": 371,
+            "max_us": 970
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.190574686940966,
+          "steady_tick": 1.0549645390070923
+        }
+      },
+      {
+        "key": "sebart-avanti-s-a200-p100rx",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 16492,
+            "p95_us": 17948,
+            "min_us": 11072,
+            "max_us": 17948
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 374,
+            "p95_us": 571,
+            "min_us": 227,
+            "max_us": 782
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 21099,
+            "p95_us": 24452,
+            "min_us": 19150,
+            "max_us": 24452
+          },
+          "steady_tick_us": {
+            "sample_count": 920,
+            "p50_us": 386,
+            "p95_us": 568,
+            "min_us": 227,
+            "max_us": 986
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.2793475624545234,
+          "steady_tick": 1.032085561497326
+        }
+      },
+      {
+        "key": "synthetic_stik_electric_4s",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 14812,
+            "p95_us": 16574,
+            "min_us": 13007,
+            "max_us": 16574
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 776,
+            "p95_us": 1126,
+            "min_us": 487,
+            "max_us": 1400
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 18469,
+            "p95_us": 20836,
+            "min_us": 14068,
+            "max_us": 20836
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 601,
+            "p95_us": 881,
+            "min_us": 485,
+            "max_us": 1089
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.2468944099378882,
+          "steady_tick": 0.7744845360824743
+        }
+      },
+      {
+        "key": "synthetic_stik_electric_4s_battery",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 15419,
+            "p95_us": 16630,
+            "min_us": 11897,
+            "max_us": 16630
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 785,
+            "p95_us": 1034,
+            "min_us": 575,
+            "max_us": 1059
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 19077,
+            "p95_us": 21364,
+            "min_us": 16490,
+            "max_us": 21364
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 915,
+            "p95_us": 1096,
+            "min_us": 587,
+            "max_us": 1421
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.2372397691160257,
+          "steady_tick": 1.1656050955414012
+        }
+      },
+      {
+        "key": "synthetic_stik_electric_6s",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 16255,
+            "p95_us": 18984,
+            "min_us": 14316,
+            "max_us": 18984
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 781,
+            "p95_us": 1058,
+            "min_us": 512,
+            "max_us": 1495
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 17461,
+            "p95_us": 20356,
+            "min_us": 13939,
+            "max_us": 20356
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 758,
+            "p95_us": 891,
+            "min_us": 496,
+            "max_us": 949
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.0741925561365733,
+          "steady_tick": 0.970550576184379
+        }
+      },
+      {
+        "key": "synthetic_stik_electric_6s_battery",
+        "baseline": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 14949,
+            "p95_us": 17552,
+            "min_us": 11119,
+            "max_us": 17552
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 883,
+            "p95_us": 1044,
+            "min_us": 587,
+            "max_us": 1529
+          }
+        },
+        "candidate": {
+          "load_validation_us": {
+            "sample_count": 14,
+            "p50_us": 20122,
+            "p95_us": 21602,
+            "min_us": 15051,
+            "max_us": 21602
+          },
+          "steady_tick_us": {
+            "sample_count": 200,
+            "p50_us": 860,
+            "p95_us": 1047,
+            "min_us": 578,
+            "max_us": 1323
+          }
+        },
+        "candidate_over_baseline_p50_ratio": {
+          "load_validation": 1.3460432135928824,
+          "steady_tick": 0.9739524348810872
+        }
+      }
+    ]
+  },
+  "baseline_source_manifest_sha256": "ec0f0ca2df96abe701ab290b60ef6cb8eedfee8abb2321fcb46e61e75a1bd421",
+  "candidate_source_manifest_sha256": "29d7c7fd4e692082a7c4096e7791c7b0b2348d5ce0f657926715cb1e64347850",
+  "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "driver_sha256": "18bebd1ea0bc643189d63f750d1bba6e3a793dc9c4c912641a28e78965fed9e9"
+}

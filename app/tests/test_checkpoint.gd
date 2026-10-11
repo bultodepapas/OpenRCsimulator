@@ -12,10 +12,10 @@ var failures := 0
 
 class ResetFailureFlight extends "res://sim/flight_session.gd":
 	var reject_reset := false
-	func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, t: float) -> Dictionary:
 		if reject_reset:
-			return PackedFloat64Array([NAN, 0, 0, 0, 0, 0])
-		return super._loads(s, t)
+			return {}
+		return super._wheel_evaluate(s, values, t)
 
 
 func check(label: String, ok: bool) -> void:

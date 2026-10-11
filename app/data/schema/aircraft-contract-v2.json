@@ -1,0 +1,1005 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OpenRC aircraft v2 runtime structural contract",
+  "description": "Small runtime vocabulary for closed object shapes, quantities, selectors and supported capability relations. Numeric ranges remain in the generated schema and AircraftData physical derivation. Runtime-coupled invariants are implemented in AircraftContract; static counterparts are mirrored in the generated schema where possible.",
+  "spec_version": 1,
+  "format": "openrc-aircraft v2",
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": [
+      "conventional"
+    ],
+    "gear": [
+      "fixed_tricycle",
+      "fixed_taildragger",
+      "locked_down_taildragger",
+      "locked_up"
+    ],
+    "propulsion_layout": [
+      "single_tractor",
+      "single_centerline_jet"
+    ],
+    "energy": [
+      "prescribed_fuel",
+      "fixed_voltage",
+      "ocv_resistance"
+    ],
+    "damage": [
+      "terminal_hull"
+    ],
+    "flaps": [
+      "not_simulated"
+    ]
+  },
+  "object_rules": [
+    {
+      "path": "/",
+      "required": [
+        "format",
+        "id",
+        "frames",
+        "convention_id",
+        "capabilities",
+        "reference",
+        "start",
+        "balance",
+        "inventory",
+        "crash_hull",
+        "plausibility",
+        "controls",
+        "aero",
+        "propulsion"
+      ],
+      "allowed": [
+        "format",
+        "id",
+        "description",
+        "frames",
+        "convention_id",
+        "capabilities",
+        "reference",
+        "start",
+        "balance",
+        "inventory",
+        "crash_hull",
+        "landing_gear",
+        "plausibility",
+        "controls",
+        "aero",
+        "propulsion"
+      ]
+    },
+    {
+      "path": "/frames",
+      "required": [
+        "le_frame",
+        "body"
+      ],
+      "allowed": [
+        "le_frame",
+        "body"
+      ]
+    },
+    {
+      "path": "/capabilities",
+      "required": [
+        "controls",
+        "gear",
+        "propulsion_layout",
+        "energy",
+        "damage",
+        "flaps"
+      ],
+      "allowed": [
+        "controls",
+        "gear",
+        "propulsion_layout",
+        "energy",
+        "damage",
+        "flaps"
+      ]
+    },
+    {
+      "path": "/reference",
+      "when": {
+        "path": "/reference/planform",
+        "equals": "rectangular"
+      },
+      "required": [
+        "wing_area",
+        "wing_span",
+        "mean_chord",
+        "aero_reference_point",
+        "planform"
+      ],
+      "allowed": [
+        "wing_area",
+        "wing_span",
+        "mean_chord",
+        "aero_reference_point",
+        "planform"
+      ]
+    },
+    {
+      "path": "/reference",
+      "when": {
+        "path": "/reference/planform",
+        "equals": "tapered"
+      },
+      "required": [
+        "wing_area",
+        "wing_span",
+        "mean_chord",
+        "aero_reference_point",
+        "planform",
+        "root_chord",
+        "tip_chord"
+      ],
+      "allowed": [
+        "wing_area",
+        "wing_span",
+        "mean_chord",
+        "aero_reference_point",
+        "planform",
+        "root_chord",
+        "tip_chord"
+      ]
+    },
+    {
+      "path": "/start",
+      "required": [
+        "level_speed"
+      ],
+      "allowed": [
+        "level_speed"
+      ]
+    },
+    {
+      "path": "/balance",
+      "required": [
+        "plan_cg",
+        "firewall",
+        "cg_tolerance"
+      ],
+      "allowed": [
+        "plan_cg",
+        "firewall",
+        "configuration",
+        "cg_tolerance"
+      ]
+    },
+    {
+      "path": "/inventory/*",
+      "required": [
+        "name",
+        "mass",
+        "position",
+        "size"
+      ],
+      "allowed": [
+        "name",
+        "mass",
+        "position",
+        "size"
+      ]
+    },
+    {
+      "path": "/plausibility",
+      "required": [
+        "mass_range",
+        "inertia_reference"
+      ],
+      "allowed": [
+        "mass_range",
+        "inertia_reference"
+      ]
+    },
+    {
+      "path": "/controls",
+      "required": [
+        "max_throw",
+        "servo_full_throw_time"
+      ],
+      "allowed": [
+        "max_throw",
+        "servo_full_throw_time"
+      ]
+    },
+    {
+      "path": "/controls/max_throw",
+      "required": [
+        "aileron",
+        "elevator",
+        "rudder"
+      ],
+      "allowed": [
+        "aileron",
+        "aileron_down",
+        "elevator",
+        "rudder"
+      ]
+    },
+    {
+      "path": "/aero",
+      "required": [
+        "conventions",
+        "coefficients",
+        "reference_coefficients",
+        "envelope",
+        "surfaces"
+      ],
+      "allowed": [
+        "source",
+        "conventions",
+        "coefficients",
+        "reference_coefficients",
+        "envelope",
+        "surfaces",
+        "wing_polar"
+      ]
+    },
+    {
+      "path": "/aero/conventions",
+      "required": [
+        "alpha_beta",
+        "rates",
+        "elevator",
+        "aileron",
+        "rudder",
+        "drag",
+        "axes"
+      ],
+      "allowed": [
+        "alpha_beta",
+        "rates",
+        "elevator",
+        "aileron",
+        "rudder",
+        "drag",
+        "axes"
+      ]
+    },
+    {
+      "path": "/aero/coefficients",
+      "required": [
+        "CL0",
+        "CLa",
+        "CLq",
+        "CLde",
+        "CLda_each",
+        "CD0",
+        "CL_minD",
+        "k_induced",
+        "CDda_each",
+        "CDdr",
+        "CDde",
+        "CYb",
+        "CYp",
+        "CYr",
+        "CYdr",
+        "Clb",
+        "Clp",
+        "Clr",
+        "Clda_right",
+        "Clda_left",
+        "Cldr",
+        "Cm0",
+        "Cma",
+        "Cmq",
+        "Cmde",
+        "Cmda_each",
+        "Cnb",
+        "Cnp",
+        "Cnr",
+        "Cnda_right",
+        "Cnda_left",
+        "Cndr"
+      ],
+      "allowed": [
+        "CL0",
+        "CLa",
+        "CLq",
+        "CLde",
+        "CLda_each",
+        "CD0",
+        "CL_minD",
+        "k_induced",
+        "CDda_each",
+        "CDdr",
+        "CDde",
+        "CYb",
+        "CYp",
+        "CYr",
+        "CYdr",
+        "Clb",
+        "Clp",
+        "Clr",
+        "Clda_right",
+        "Clda_left",
+        "Cldr",
+        "Cm0",
+        "Cma",
+        "Cmq",
+        "Cmde",
+        "Cmda_each",
+        "Cnb",
+        "Cnp",
+        "Cnr",
+        "Cnda_right",
+        "Cnda_left",
+        "Cndr"
+      ]
+    },
+    {
+      "path": "/aero/reference_coefficients",
+      "required": [
+        "CLadot"
+      ],
+      "allowed": [
+        "CLadot"
+      ]
+    },
+    {
+      "path": "/aero/envelope",
+      "required": [
+        "CL_max",
+        "CL_min",
+        "stall_blend_width",
+        "CD90",
+        "sideslip_blend"
+      ],
+      "allowed": [
+        "CL_max",
+        "CL_min",
+        "stall_blend_width",
+        "CD90",
+        "sideslip_blend"
+      ]
+    },
+    {
+      "path": "/aero/surfaces",
+      "required": [
+        "wing_aileron_effectiveness",
+        "attached_limit",
+        "tail_local_limit",
+        "tail_stall_end",
+        "tail_CD0",
+        "tail_k",
+        "tail_CD90",
+        "horizontal",
+        "vertical"
+      ],
+      "allowed": [
+        "wing_aileron_effectiveness",
+        "wing_station_incidence",
+        "attached_limit",
+        "tail_local_limit",
+        "tail_stall_end",
+        "tail_CD0",
+        "tail_k",
+        "tail_CD90",
+        "horizontal",
+        "vertical"
+      ]
+    },
+    {
+      "path": "/aero/surfaces/horizontal",
+      "required": [
+        "area",
+        "position",
+        "lift_slope",
+        "control_effectiveness",
+        "incidence"
+      ],
+      "allowed": [
+        "area",
+        "position",
+        "lift_slope",
+        "control_effectiveness",
+        "incidence",
+        "downwash_gradient"
+      ]
+    },
+    {
+      "path": "/aero/surfaces/vertical",
+      "required": [
+        "area",
+        "position",
+        "lift_slope",
+        "control_effectiveness",
+        "incidence"
+      ],
+      "allowed": [
+        "area",
+        "position",
+        "lift_slope",
+        "control_effectiveness",
+        "incidence"
+      ]
+    },
+    {
+      "path": "/aero/wing_polar",
+      "required": [
+        "method",
+        "basis",
+        "positive",
+        "negative"
+      ],
+      "allowed": [
+        "method",
+        "basis",
+        "positive",
+        "negative"
+      ]
+    },
+    {
+      "path": "/landing_gear",
+      "required": [
+        "contacts",
+        "rolling_resistance",
+        "side_friction",
+        "peak_slip_angle"
+      ],
+      "allowed": [
+        "description",
+        "contacts",
+        "rolling_resistance",
+        "side_friction",
+        "peak_slip_angle",
+        "breakaway_factor"
+      ]
+    },
+    {
+      "path": "/landing_gear/contacts/*",
+      "required": [
+        "name",
+        "position",
+        "stiffness",
+        "damping",
+        "max_compression",
+        "max_steering"
+      ],
+      "allowed": [
+        "name",
+        "position",
+        "stiffness",
+        "damping",
+        "max_compression",
+        "max_steering"
+      ]
+    },
+    {
+      "path": "/propulsion",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "glow_prop"
+      },
+      "required": [
+        "kind",
+        "engine",
+        "propeller"
+      ],
+      "allowed": [
+        "kind",
+        "description",
+        "engine",
+        "propeller"
+      ]
+    },
+    {
+      "path": "/propulsion",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "turbine"
+      },
+      "required": [
+        "kind",
+        "engine",
+        "thrust_line_offset",
+        "intake_offset"
+      ],
+      "allowed": [
+        "kind",
+        "description",
+        "engine",
+        "thrust_line_offset",
+        "intake_offset",
+        "thrust_angles"
+      ]
+    },
+    {
+      "path": "/propulsion",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "electric_prop"
+      },
+      "required": [
+        "kind",
+        "motor",
+        "battery",
+        "esc",
+        "propeller"
+      ],
+      "allowed": [
+        "kind",
+        "motor",
+        "battery",
+        "esc",
+        "propeller"
+      ]
+    },
+    {
+      "path": "/propulsion/engine",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "glow_prop"
+      },
+      "required": [
+        "max_rpm_static",
+        "idle_rpm",
+        "lag_time_constant",
+        "peak_power",
+        "peak_power_rpm"
+      ],
+      "allowed": [
+        "name",
+        "max_rpm_static",
+        "idle_rpm",
+        "lag_time_constant",
+        "peak_power",
+        "peak_power_rpm",
+        "shaft"
+      ]
+    },
+    {
+      "path": "/propulsion/engine",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "turbine"
+      },
+      "required": [
+        "idle_rpm",
+        "max_rpm",
+        "static_thrust",
+        "mass_flow",
+        "fuel_flow",
+        "throttle_map",
+        "accel_limit",
+        "decel_limit",
+        "installed_factor",
+        "governor_tau",
+        "rotor_inertia",
+        "rotor_sense"
+      ],
+      "allowed": [
+        "name",
+        "idle_rpm",
+        "max_rpm",
+        "static_thrust",
+        "mass_flow",
+        "fuel_flow",
+        "throttle_map",
+        "accel_limit",
+        "decel_limit",
+        "installed_factor",
+        "governor_tau",
+        "rotor_inertia",
+        "rotor_sense",
+        "ram_flow",
+        "ram_jet"
+      ]
+    },
+    {
+      "path": "/propulsion/engine/shaft",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "glow_prop"
+      },
+      "required": [
+        "power_curve",
+        "friction_torque",
+        "idle_power",
+        "peak_indicated_power"
+      ],
+      "allowed": [
+        "power_curve",
+        "friction_torque",
+        "idle_power",
+        "peak_indicated_power"
+      ]
+    },
+    {
+      "path": "/propulsion/propeller",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "glow_prop"
+      },
+      "required": [
+        "diameter",
+        "rotation",
+        "ct_table",
+        "cp_table",
+        "rotating_inertia",
+        "thrust_line_offset"
+      ],
+      "allowed": [
+        "name",
+        "diameter",
+        "rotation",
+        "ct_table",
+        "cp_table",
+        "rotating_inertia",
+        "thrust_line_offset",
+        "thrust_angles",
+        "normal_force",
+        "pfactor_moment",
+        "slipstream"
+      ]
+    },
+    {
+      "path": "/propulsion/propeller",
+      "when": {
+        "path": "/propulsion/kind",
+        "equals": "electric_prop"
+      },
+      "required": [
+        "diameter",
+        "thrust_line_offset",
+        "rotating_inertia",
+        "ct_table",
+        "cp_table"
+      ],
+      "allowed": [
+        "name",
+        "diameter",
+        "thrust_line_offset",
+        "rotating_inertia",
+        "ct_table",
+        "cp_table",
+        "thrust_angles"
+      ]
+    },
+    {
+      "path": "/propulsion/propeller/slipstream",
+      "required": [
+        "hub",
+        "wash_factor",
+        "swirl_factor",
+        "vertical_drift",
+        "pieces"
+      ],
+      "allowed": [
+        "hub",
+        "wash_factor",
+        "swirl_factor",
+        "vertical_drift",
+        "pieces",
+        "transport_speed_floor",
+        "edge_fraction",
+        "reverse_fade"
+      ]
+    },
+    {
+      "path": "/propulsion/propeller/slipstream/pieces/*",
+      "required": [
+        "surface",
+        "area",
+        "root",
+        "span_dir",
+        "span"
+      ],
+      "allowed": [
+        "surface",
+        "area",
+        "root",
+        "span_dir",
+        "span",
+        "chords",
+        "profile"
+      ]
+    },
+    {
+      "path": "/propulsion/motor",
+      "required": [
+        "kv_rpm_per_volt",
+        "resistance_ohm",
+        "resistance_scope",
+        "no_load_current_a",
+        "no_load_context"
+      ],
+      "allowed": [
+        "kv_rpm_per_volt",
+        "resistance_ohm",
+        "resistance_scope",
+        "no_load_current_a",
+        "no_load_context"
+      ]
+    },
+    {
+      "path": "/propulsion/motor/no_load_context",
+      "required": [
+        "voltage_v",
+        "rpm",
+        "temperature_c"
+      ],
+      "allowed": [
+        "voltage_v",
+        "rpm",
+        "temperature_c"
+      ]
+    },
+    {
+      "path": "/propulsion/battery",
+      "when": {
+        "path": "/propulsion/battery/kind",
+        "equals": "fixed_voltage"
+      },
+      "required": [
+        "kind",
+        "voltage_v"
+      ],
+      "allowed": [
+        "kind",
+        "voltage_v"
+      ]
+    },
+    {
+      "path": "/propulsion/battery",
+      "when": {
+        "path": "/propulsion/battery/kind",
+        "equals": "ocv_resistance"
+      },
+      "required": [
+        "kind",
+        "capacity_ah",
+        "resistance_ohm",
+        "auxiliary_current_a",
+        "initial_soc",
+        "ocv_points"
+      ],
+      "allowed": [
+        "kind",
+        "capacity_ah",
+        "resistance_ohm",
+        "auxiliary_current_a",
+        "initial_soc",
+        "ocv_points"
+      ]
+    },
+    {
+      "path": "/propulsion/battery/ocv_points/*",
+      "required": [
+        "soc",
+        "voltage"
+      ],
+      "allowed": [
+        "soc",
+        "voltage"
+      ]
+    },
+    {
+      "path": "/propulsion/esc",
+      "required": [
+        "kind",
+        "command_mapping"
+      ],
+      "allowed": [
+        "kind",
+        "command_mapping"
+      ]
+    }
+  ],
+  "quantity_paths": [
+    "/reference/*",
+    "/start/level_speed",
+    "/balance/*",
+    "/inventory/*/mass",
+    "/inventory/*/position",
+    "/inventory/*/size",
+    "/crash_hull",
+    "/plausibility/*",
+    "/controls/max_throw/*",
+    "/controls/servo_full_throw_time",
+    "/aero/coefficients/*",
+    "/aero/reference_coefficients/*",
+    "/aero/envelope/*",
+    "/aero/surfaces/*",
+    "/aero/surfaces/*/*",
+    "/aero/wing_polar/positive",
+    "/aero/wing_polar/negative",
+    "/landing_gear/rolling_resistance",
+    "/landing_gear/side_friction",
+    "/landing_gear/peak_slip_angle",
+    "/landing_gear/breakaway_factor",
+    "/landing_gear/contacts/*/position",
+    "/landing_gear/contacts/*/stiffness",
+    "/landing_gear/contacts/*/damping",
+    "/landing_gear/contacts/*/max_compression",
+    "/landing_gear/contacts/*/max_steering",
+    "/propulsion/engine/*",
+    "/propulsion/engine/shaft/*",
+    "/propulsion/propeller/*",
+    "/propulsion/propeller/slipstream/*",
+    "/propulsion/propeller/slipstream/pieces/*/*",
+    "/propulsion/thrust_line_offset",
+    "/propulsion/intake_offset",
+    "/propulsion/thrust_angles",
+    "/propulsion/motor/*",
+    "/propulsion/motor/no_load_context/*",
+    "/propulsion/battery/*",
+    "/propulsion/battery/ocv_points/*/*"
+  ],
+  "array_rules": [
+    {
+      "path": "/inventory",
+      "min_items": 1
+    },
+    {
+      "path": "/landing_gear/contacts",
+      "min_items": 3
+    },
+    {
+      "path": "/propulsion/propeller/slipstream/pieces",
+      "min_items": 1
+    },
+    {
+      "path": "/propulsion/battery/ocv_points",
+      "min_items": 2
+    }
+  ],
+  "string_rules": [
+    {
+      "path": "/id",
+      "nonempty": true
+    },
+    {
+      "path": "/description",
+      "nonempty": true
+    },
+    {
+      "path": "/frames/*",
+      "nonempty": true
+    },
+    {
+      "path": "/balance/configuration",
+      "nonempty": true
+    },
+    {
+      "path": "/aero/source",
+      "nonempty": true
+    },
+    {
+      "path": "/aero/conventions/*",
+      "nonempty": true
+    },
+    {
+      "path": "/aero/wing_polar/method",
+      "nonempty": true
+    },
+    {
+      "path": "/aero/wing_polar/basis",
+      "nonempty": true
+    },
+    {
+      "path": "/inventory/*/name",
+      "nonempty": true
+    },
+    {
+      "path": "/landing_gear/description",
+      "nonempty": true
+    },
+    {
+      "path": "/landing_gear/contacts/*/name",
+      "nonempty": true
+    },
+    {
+      "path": "/propulsion/description",
+      "nonempty": true
+    },
+    {
+      "path": "/propulsion/engine/name",
+      "nonempty": true
+    },
+    {
+      "path": "/propulsion/propeller/name",
+      "nonempty": true
+    }
+  ],
+  "enum_paths": [
+    {
+      "path": "/format",
+      "values": [
+        "openrc-aircraft v2"
+      ]
+    },
+    {
+      "path": "/convention_id",
+      "values": [
+        "openrc-le-frd-v1"
+      ]
+    },
+    {
+      "path": "/reference/planform",
+      "values": [
+        "rectangular",
+        "tapered"
+      ]
+    },
+    {
+      "path": "/propulsion/kind",
+      "values": [
+        "glow_prop",
+        "turbine",
+        "electric_prop"
+      ]
+    },
+    {
+      "path": "/propulsion/battery/kind",
+      "values": [
+        "fixed_voltage",
+        "ocv_resistance"
+      ]
+    },
+    {
+      "path": "/capabilities/controls",
+      "values": [
+        "conventional"
+      ]
+    },
+    {
+      "path": "/capabilities/gear",
+      "values": [
+        "fixed_tricycle",
+        "fixed_taildragger",
+        "locked_down_taildragger",
+        "locked_up"
+      ]
+    },
+    {
+      "path": "/capabilities/propulsion_layout",
+      "values": [
+        "single_tractor",
+        "single_centerline_jet"
+      ]
+    },
+    {
+      "path": "/capabilities/energy",
+      "values": [
+        "prescribed_fuel",
+        "fixed_voltage",
+        "ocv_resistance"
+      ]
+    },
+    {
+      "path": "/capabilities/damage",
+      "values": [
+        "terminal_hull"
+      ]
+    },
+    {
+      "path": "/capabilities/flaps",
+      "values": [
+        "not_simulated"
+      ]
+    },
+    {
+      "path": "/propulsion/propeller/slipstream/pieces/*/surface",
+      "values": [
+        "horizontal",
+        "vertical"
+      ]
+    },
+    {
+      "path": "/propulsion/motor/resistance_scope",
+      "values": [
+        "motor_winding_equivalent"
+      ]
+    }
+  ],
+  "literal_paths": [
+    {
+      "path": "/propulsion/propeller/rotation",
+      "value": "clockwise_from_rear"
+    }
+  ]
+}

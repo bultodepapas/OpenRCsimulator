@@ -1,5 +1,5 @@
 {
-  "format": "openrc-aircraft v1",
+  "format": "openrc-aircraft v2",
   "id": "p51d-mustang-120",
   "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4, cross-checked against NACA flight data (neutral point, zero-lift angle, rigging) and RC-class data (built weight, throws, propeller and engine anchors); flown through its envelope by tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
   "frames": {
@@ -220,6 +220,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "on the model's firewall"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -268,6 +278,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "behind the model's firewall"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -287,6 +307,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "same as the tank"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -306,6 +336,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "below the tank, as far forward as the cowl allows"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -325,6 +365,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -344,6 +394,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "under the cockpit floor"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -450,6 +510,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "aft of the cockpit"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -469,6 +539,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "behind the model's firewall"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -517,6 +597,16 @@
         "unit": "m",
         "kind": "measured",
         "source": "geometry.json tail axle"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -710,6 +800,16 @@
         "unit": "m",
         "kind": "measured",
         "source": "pilot block in geometry.json"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -787,6 +887,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "spread along the fuselage"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -1003,12 +1113,6 @@
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: Helmbold wing x cos2(dihedral) + downwashed tail"
-      },
-      "CLadot": {
-        "value": 1.402689,
-        "unit": "1/rad",
-        "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
       },
       "CLq": {
         "value": 5.450601,
@@ -1316,6 +1420,14 @@
           "source": "symmetric fin; engine side thrust not modelled"
         }
       }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 1.402689,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/p51/p51-05/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
+      }
     }
   },
   "propulsion": {
@@ -1459,7 +1571,7 @@
         "kind": "estimated",
         "source": "26 in (source.json)"
       },
-      "rotation": "clockwise seen from behind (standard tractor): the reaction torque rolls the airplane left",
+      "rotation": "clockwise_from_rear",
       "ct_table": {
         "value": [
           [
@@ -2032,7 +2144,8 @@
           }
         ]
       }
-    }
+    },
+    "kind": "glow_prop"
   },
   "landing_gear": {
     "description": "P51-12: taildragger, two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces). Retracts are not simulated: the gear stays down.",
@@ -2066,6 +2179,12 @@
           "unit": "m",
           "kind": "estimated",
           "source": "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"
+        },
+        "max_steering": {
+          "value": 0,
+          "unit": "deg",
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
         }
       },
       {
@@ -2097,6 +2216,12 @@
           "unit": "m",
           "kind": "estimated",
           "source": "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"
+        },
+        "max_steering": {
+          "value": 0,
+          "unit": "deg",
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
         }
       },
       {
@@ -2155,5 +2280,14 @@
       "kind": "borrowed",
       "source": "JSBSim FGLGear default Pacejka initial slope (as the Stik, E2)"
     }
+  },
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "conventional",
+    "gear": "locked_down_taildragger",
+    "propulsion_layout": "single_tractor",
+    "energy": "prescribed_fuel",
+    "damage": "terminal_hull",
+    "flaps": "not_simulated"
   }
 }

@@ -45,12 +45,13 @@ jobs:
         with:
           path: .tools
           key: godot-${{ hashFiles('app/get-godot.sh') }}
-      - name: Aircraft v1 structural contract and loader agreement (DATA-4a)
+      - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
         run: |
           python3 -m venv "$RUNNER_TEMP/aircraft-schema-venv"
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/check.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/test_contract.py
+          "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-standardization/test_schema_v2.py --godot "$(app/get-godot.sh)"
       - name: Generated geometry and physics data match their sources
         run: |
           python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check

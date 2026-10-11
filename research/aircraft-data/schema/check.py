@@ -12,6 +12,7 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = ROOT / 'app/data/schema/openrc-aircraft-v1.schema.json'
+SCHEMA_V2 = ROOT / 'app/data/schema/openrc-aircraft-v2.schema.json'
 FLEET = ROOT / 'app/data/aircraft'
 
 
@@ -58,14 +59,19 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('files', type=Path, nargs='*', help='default: every fleet aircraft JSON')
     args = parser.parse_args(argv)
-    contract = validator()
+    contracts = {}
     files = args.files or sorted(FLEET.glob('*.json'))
     if not files:
         parser.error('no aircraft files found')
     failed = 0
     for path in files:
         try:
-            errors = problems(read_json(path), contract)
+            data = read_json(path)
+            version = data.get('format') if isinstance(data, dict) else None
+            schema_path = SCHEMA_V2 if version == 'openrc-aircraft v2' else SCHEMA
+            if schema_path not in contracts:
+                contracts[schema_path] = validator(schema_path)
+            errors = problems(data, contracts[schema_path])
         except (OSError, ValueError) as error:
             errors = [str(error)]
         if errors:

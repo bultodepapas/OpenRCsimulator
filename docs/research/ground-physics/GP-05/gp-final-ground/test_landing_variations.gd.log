@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   variant 0 completes without crash/fault 
+ok   offset/bank entry has safe wheel contact and containment sink 0.394, margin 2.435
+ok   offset/bank entry stops and holds with engine idling 
+landing variation: {"margin_m":2.43514003383312,"sink_mps":0.393583457997726,"stop_east_m":43.2035648393999,"touchdown_east_m":-47.5642564851096,"variant":0}
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   variant 1 completes without crash/fault 
+ok   offset/bank entry has safe wheel contact and containment sink 0.393, margin 2.486
+ok   offset/bank entry stops and holds with engine idling 
+landing variation: {"margin_m":2.48554244811919,"sink_mps":0.393017695317922,"stop_east_m":-43.2843531528008,"touchdown_east_m":47.5141521987922,"variant":1}
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   variant 2 completes without crash/fault 
+ok   late approach is rejected: leaves runway despite eventually stopping margin -0.744 m, stop east 50.492 m
+landing variation: {"margin_m":-0.744234461581016,"sink_mps":0.393471715430055,"stop_east_m":50.4921558560571,"touchdown_east_m":-32.4880364954351,"variant":2}
+9 checks, 0 failed

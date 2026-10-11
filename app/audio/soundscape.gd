@@ -2,11 +2,15 @@
 extends Node3D
 
 const Model = preload("res://audio/soundscape_model.gd")
+const Wildlife = preload("res://audio/wildlife.gd")
 const PATH: String = "res://assets/audio/soundscape/"
 const BUS: StringName = &"OpenRC Soundscape"
 const AMBIENCE_BUS: StringName = &"OpenRC Environment"
 const AIRCRAFT_BUS: StringName = &"OpenRC Aircraft"
-const MAX_VOICES: int = 12
+const MAX_VOICES: int = 14
+const EVENT_FIRST: int = 9
+const EVENT_COUNT: int = 3
+const CRICKET_FIRST: int = 12
 var voices: Array[AudioStreamPlayer3D] = []
 var trees: Array[Vector3] = []
 var canopies: Array[AABB] = []
@@ -15,9 +19,13 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var kind: String = "glow_prop"
 var gain: float = 0.0
 var clock_s: float = 0.0
-var bird_wait: float = 2.0
-var last_bird: int = -1
-var next_bird_voice: int = 0
+var wildlife := Wildlife.new()
+var wildlife_clips: Dictionary = {}
+var wildlife_presence: Dictionary = {bird = 0.0, crow = 0.0, owl = 0.0, dog = 0.0, cricket = 0.0}
+var event_species: Array[String] = ["bird", "bird", "bird"]
+var event_levels: Array[float] = [1.0, 1.0, 1.0]
+var dog_anchors: Array[Vector3] = []
+var cricket_anchors: Array[Vector3] = []
 var screened: float = 0.0
 var _screen_clock: float = 0.0
 var _screen_goal: float = 0.0
@@ -50,6 +58,25 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		_voice("Bird%d" % i, "", AMBIENCE_BUS, 70.0)
 	for i: int in 6:
 		birds.append(load(PATH + "birds_%02d.wav" % (i + 1)) as AudioStreamWAV)
+	for i: int in 4:
+		birds.append(load(PATH + "wildlife/bird_%02d.wav" % (i + 1)) as AudioStreamWAV)
+	wildlife_clips.bird = birds
+	for species: String in ["crow", "owl", "dog"]:
+		var clips: Array[AudioStreamWAV] = []
+		for i: int in 3:
+			clips.append(load(PATH + "wildlife/%s_%02d.wav" % [species, i + 1]) as AudioStreamWAV)
+		wildlife_clips[species] = clips
+	var lengths: Dictionary = {}
+	for species: String in wildlife_clips:
+		var values: Array[float] = []
+		for clip: AudioStreamWAV in wildlife_clips[species]:
+			values.append(clip.get_length())
+		lengths[species] = values
+	wildlife.configure(lengths, seed_value ^ 0xA005)
+	for i: int in 2:
+		_voice("Crickets%d" % i, "wildlife/cricket_%02d" % (i + 1), AMBIENCE_BUS, 40.0)
+		voices[CRICKET_FIRST + i].global_position = cricket_anchors[i]
+	assert(voices.size() == MAX_VOICES)
 	_levels.resize(voices.size())
 
 
@@ -101,6 +128,9 @@ func _find_trees(field: Dictionary) -> void:
 	var cells: Dictionary = {}
 	var pilot: Dictionary = field.get("pilot", {})
 	var centre: Vector3 = Vector3(float(pilot.get("east", 0.0)), -float(pilot.get("down", 0.0)), -float(pilot.get("north", 0.0)))
+	# Authored off-field dog locations; fixed in world space, never attached to the listener.
+	dog_anchors = [centre + Vector3(-150.0, 1.0, 90.0), centre + Vector3(190.0, 1.0, -120.0)]
+	cricket_anchors = [centre + Vector3(-22.0, 0.35, 16.0), centre + Vector3(30.0, 0.35, -18.0)]
 	for object: Dictionary in field.get("objects", []):
 		if object.get("type", "") != "treeline":
 			continue
@@ -129,9 +159,9 @@ func reset_observer() -> void:
 	_levels.fill(0.0)
 	for i: int in voices.size():
 		voices[i].volume_db = -80.0
-		if i >= 9:
+		if i >= EVENT_FIRST and i < EVENT_FIRST + EVENT_COUNT:
 			voices[i].stop()
-	bird_wait = rng.randf_range(2.0, 5.0)
+	wildlife.reset()
 
 
 func update_sound(snapshot: Dictionary, delta: float) -> void:
@@ -197,10 +227,25 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 			voices[5 + i].global_position = trees[(i * 2) % trees.size()]
 			var variation: float = 0.75 + 0.25 * sin(clock_s * (0.31 + i * 0.07) + i * 1.7)
 			_level(5 + i, float(t.foliage) * variation * duck, dt)
-	if not paused:
-		_schedule_birds(float(t.bird_activity), dt)
-	for i: int in range(9, 12):
-		_level(i, 0.30 * float(t.bird_activity) * duck, dt)
+	var activity: Dictionary = Wildlife.activity(snapshot)
+	for species: String in wildlife_presence:
+		wildlife_presence[species] = lerpf(float(wildlife_presence[species]), float(activity[species]), 1.0 - exp(-dt / 4.0))
+	var disturbed: bool = false
+	if float(t.motor_gain) > 0.20 and float(snapshot.get("airspeed", 0.0)) > 12.0:
+		for perch: Vector3 in trees:
+			if source.distance_squared_to(perch) < 35.0 * 35.0:
+				disturbed = true
+				break
+	var event: Dictionary = wildlife.advance(snapshot, dt, trees.size(), disturbed)
+	if not event.is_empty():
+		_play_wildlife(event)
+	for i: int in EVENT_COUNT:
+		var species: String = event_species[i]
+		var base: float = {bird = 0.26, crow = 0.21, owl = 0.30, dog = 0.26}[species]
+		_level(EVENT_FIRST + i, base * minf(1.0, float(wildlife_presence[species])) * event_levels[i] * duck, dt)
+	for i: int in 2:
+		var breathing: float = 0.78 + 0.22 * sin(clock_s * (0.11 + 0.03 * i) + 2.2 * i)
+		_level(CRICKET_FIRST + i, 0.11 * float(wildlife_presence.cricket) * breathing * duck, dt)
 	last_update_usec = Time.get_ticks_usec() - started
 	peak_update_usec = maxi(peak_update_usec, last_update_usec)
 
@@ -214,23 +259,17 @@ func _pitch(index: int, target: float, dt: float) -> void:
 	voices[index].pitch_scale = lerpf(voices[index].pitch_scale, clampf(target, 0.1, 4.0), 1.0 - exp(-dt / 0.04))
 
 
-func _schedule_birds(activity: float, dt: float) -> void:
-	if trees.is_empty() or activity < 0.02:
-		return
-	bird_wait -= dt * activity
-	if bird_wait > 0.0:
-		return
-	var phrase: int = rng.randi_range(0, birds.size() - (2 if last_bird >= 0 else 1))
-	if phrase >= last_bird and last_bird >= 0:
-		phrase += 1
-	last_bird = phrase
-	var voice: AudioStreamPlayer3D = voices[9 + next_bird_voice]
-	next_bird_voice = (next_bird_voice + 1) % 3
-	voice.global_position = trees[rng.randi_range(0, trees.size() - 1)]
-	voice.stream = birds[phrase]
-	voice.pitch_scale = rng.randf_range(0.94, 1.06)
+func _play_wildlife(event: Dictionary) -> void:
+	var slot: int = int(event.slot)
+	var species: String = str(event.species)
+	var voice: AudioStreamPlayer3D = voices[EVENT_FIRST + slot]
+	event_species[slot] = species
+	event_levels[slot] = float(event.level)
+	voice.global_position = dog_anchors[int(event.perch)] if species == "dog" else trees[int(event.perch)]
+	voice.unit_size = 95.0 if species == "dog" else (85.0 if species == "owl" else 70.0)
+	voice.stream = wildlife_clips[species][int(event.variant)]
+	voice.pitch_scale = float(event.pitch)
 	voice.play()
-	bird_wait = rng.randf_range(3.5, 11.0)
 
 
 func output_bus() -> StringName:

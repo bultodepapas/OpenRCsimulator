@@ -40,7 +40,7 @@ static func threshold(field: Dictionary, east_bound := true, lineup := LINEUP) -
 ## residual, message }. Requires a structurally valid AircraftData model and GroundSurfaces table.
 static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float, east: float, heading: float,
 		d: Dictionary, steer: float, rpm: float, rho: float, g: float,
-		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> Dictionary:
+		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false) -> Dictionary:
 	if wind_ned.size() != 3:
 		return _fail("runway start needs three NED wind components")
 	for value: float in wind_ned:
@@ -68,7 +68,7 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	var pose := PackedFloat64Array([north, east, -(lowest - float(gear.static_sag)), 0.0, 0.0, heading])
 	var rest_residual := func(x: PackedFloat64Array) -> PackedFloat64Array:
 		var p := PackedFloat64Array([north, east, x[0], x[1], x[2], heading])
-		var a := _accelerations(_state(p), model, inv, gear, surfaces, d, steer, 0.0, rho, g, free, false, wind_ned)
+		var a := _accelerations(_state(p), model, inv, gear, surfaces, d, steer, 0.0, rho, g, free, false, wind_ned, enhanced)
 		# World-frame vertical acceleration and angular accelerations about north and east.
 		var q := _quat(p)
 		var lin := M.q_rotate(q, M.v3(a[0], a[1], a[2]))
@@ -81,20 +81,20 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	pose[3] = rest.x[1]
 	pose[4] = rest.x[2]
 	var rest_state := _state(pose)
-	var anchors := Ground.anchor_step(rest_state, gear, steer, surfaces, free)
+	var anchors := Ground.anchor_step(rest_state, gear, steer, surfaces, free, enhanced)
 	for i in gear.contacts.size():
 		if anchors[i * Ground.ANCHOR_STRIDE + 2] != 1.0:
 			return _fail("contact %d does not touch the ground at rest" % i)
 	# Stage 2: engine idling, anchors fixed; all six pose values.
 	var idle_residual := func(x: PackedFloat64Array) -> PackedFloat64Array:
-		return _accelerations(_state(x), model, inv, gear, surfaces, d, steer, rpm, rho, g, anchors, true, wind_ned)
+		return _accelerations(_state(x), model, inv, gear, surfaces, d, steer, rpm, rho, g, anchors, true, wind_ned, enhanced)
 	var idle := _newton(idle_residual, pose)
 	if not idle.ok:
 		return _fail("idling pose did not converge (residual %s)" % String.num_scientific(idle.residual))
 	var state := _state(idle.x)
 	if not _finite_size(state, 13) or not _finite_size(rest_state, 13) or not _finite_size(anchors, free.size()):
 		return _fail("nonfinite runway start state or anchors")
-	if Ground.anchor_step(state, gear, steer, surfaces, anchors) != anchors:
+	if Ground.anchor_step(state, gear, steer, surfaces, anchors, enhanced) != anchors:
 		return _fail("idle thrust exceeds the wheels' static hold: the airplane would roll")
 	return { ok = true, state = state, anchors = anchors, rest_state = rest_state, iterations = rest.iterations + idle.iterations,
 		residual = idle.residual, message = "" }
@@ -105,11 +105,14 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: PackedFloat64Array, gear: Dictionary,
 		surfaces: PackedFloat64Array, d: Dictionary, steer: float, rpm: float, rho: float, g: float,
 		anchors: PackedFloat64Array, engine: bool,
-		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> PackedFloat64Array:
+		wind_ned: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]), enhanced := false) -> PackedFloat64Array:
 	var loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	if engine or wind_ned[0] != 0.0 or wind_ned[1] != 0.0 or wind_ned[2] != 0.0:
 		loads = Dynamics.loads(s, model, d, rpm if engine else 0.0, rho, wind_ned)
-	var ground := Ground.loads(s, gear, steer, surfaces, anchors)
+	var wheels := PackedFloat64Array()
+	if enhanced:
+		wheels.resize(gear.contacts.size())
+	var ground := Ground.loads(s, gear, steer, surfaces, anchors, wheels)
 	for i in ground.size():
 		loads[i] += ground[i]
 	var derivative := RB.derivative(s, model.mass_kg, model.inertia, inv, M.v3(loads[0], loads[1], loads[2]),

@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PACK_PROBE_PRESENT data/schema/aircraft-contract-v2.json
+PACK_PROBE_PRESENT data/schema/openrc-aircraft-v2.schema.json
+PACK_PROBE_PRESENT data/aircraft/jensen_ugly_stik_60.json
+PACK_PROBE_PRESENT data/aircraft/gp_extra_300s_60.json
+PACK_PROBE_PRESENT data/aircraft/p51d_mustang_120.json
+PACK_PROBE_PRESENT data/aircraft/sebart_avanti_s_a200.json
+PACK_PROBE_PRESENT data/aircraft/synthetic_stik_electric_4s.json
+PACK_PROBE_PRESENT data/aircraft/synthetic_stik_electric_4s_battery.json
+PACK_PROBE_PRESENT data/aircraft/synthetic_stik_electric_6s.json
+PACK_PROBE_PRESENT data/aircraft/synthetic_stik_electric_6s_battery.json
+PACK_PROBE_SUMMARY required=10 failures=0

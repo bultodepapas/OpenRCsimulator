@@ -6,10 +6,12 @@ const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const GroundGear := preload("res://render/ground_gear.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const CrashDirector = preload("res://render/crash/director.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -108,7 +110,9 @@ var _prop_angle := 0.0
 var _scripted := false
 var _engine_audio: AudioStreamPlayer3D
 var _soundscape_audio: FlightAudio
-var _engine_phase := 0.0
+## Technical fixtures can retain the original diagnostic freeze route.
+var crash_effects_enabled := true
+var _crash_director: CrashDirector
 var _cg_model := Vector3.ZERO
 var _env: Environment
 ## Landscape review view (L0): (azimuth, elevation) in degrees from the pilot's eye, or (NAN, NAN) to follow the airplane.
@@ -274,7 +278,7 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
-	session.setup(physics_path)
+	session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
 	if not _experimental_aircraft_path.is_empty():
 		var candidate_model: Dictionary = session.aircraft.get("model", {}) if session.aircraft.get("ok", false) else {}
 		var candidate_envelope: Dictionary = candidate_model.get("envelope", {})
@@ -319,8 +323,9 @@ func _ready() -> void:
 	recorder = Recorder.new(session.sim, session.electrical_state)
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
-		_engine_audio = EngineSound.create(_airplane.root)
+		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
 	session.reset()
+	GroundGear.attach(_airplane, session)
 	if not _experimental_aircraft_path.is_empty() and (not session.is_flyable() or not session.surface_error.is_empty()):
 		var candidate_flight_error: String = session.start_error if not session.start_error.is_empty() else session.pause_reason
 		if candidate_flight_error.is_empty():
@@ -357,6 +362,12 @@ func _ready() -> void:
 			_engine_audio = _soundscape_audio.soundscape.voices[0] # retain legacy combustion/turbine inspection interface
 	elif str(args.get("soundscape", "on")) == "off":
 		FlightAudio.silence_legacy_ambience(self)
+	if crash_effects_enabled and not _scripted and not args.has("capture") and str(args.get("crash-effects", "on")) != "off":
+		_crash_director = CrashDirector.new()
+		_crash_director.name = "CrashDirector"
+		add_child(_crash_director)
+		_crash_director.configure(self, physics_path, str(args.get("soundscape", "on")) != "off")
+		session.crash_auto_restart = false
 	if bool(frametime_options.enabled):
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
@@ -419,10 +430,16 @@ func _process(delta: float) -> void:
 	if _engine_audio != null and _soundscape_audio == null:
 		_engine_audio.stream_paused = frozen
 		if not frozen:
-			_engine_phase = EngineSound.update(_engine_audio, _engine_phase, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
+			EngineSound.update(_engine_audio, 0.0, sim.aux[0], session.aircraft.model.propulsion.max_rpm)
 	var surfaces: Dictionary = session.surfaces()
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_render_pose(_current_pose(), surfaces, _prop_angle)
+	if _crash_director != null:
+		_crash_director.update(dt)
+		if _crash_director.active and is_nan(_look.x):
+			_crash_director.aim(_camera, _inspect)
+		if _crash_director.active:
+			_panel.text = _crash_director.description()
 	_update_hud()
 
 
@@ -433,6 +450,9 @@ func _update_cg_model() -> void:
 
 
 func _update_hud() -> void:
+	if _crash_director != null and _crash_director.active:
+		_hud.text = ""
+		return
 	var lines := PackedStringArray()
 	if _scripted or not session.aircraft.ok:
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
@@ -491,7 +511,9 @@ func _status() -> String:
 		if session.calibration.error != "":
 			line += "\n  " + session.calibration.error
 		line += "\n  axes " + " ".join(Array(session.radio.axes).map(func(v): return "%+.2f" % v))
-	if sim.paused:
+	if _crash_director != null and _crash_director.active:
+		line += "\n" + _crash_director.description()
+	elif sim.paused:
 		line += "\nPAUSED%s  [P] resume" % ("" if session.pause_reason == "" else " (%s)" % session.pause_reason)
 	if recorder.recording:
 		line += "\nREC %.1f s  [T] stop and save" % recorder.seconds()
@@ -701,10 +723,8 @@ func _on_resetting() -> void:
 	if recorder.recording:
 		recorder.stop()
 	if _engine_audio != null and _soundscape_audio == null and _engine_audio.playing:
-		# A new flight: drop the ~0.19 s of queued sound from the old one (clear_buffer() fails while playing).
-		_engine_audio.stop()
-		_engine_audio.play()
-		_engine_phase = 0.0
+		# A new flight: discard the prior flight's audio queue and oscillator state.
+		EngineSound.restart(_engine_audio)
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,

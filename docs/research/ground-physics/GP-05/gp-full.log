@@ -1,0 +1,104 @@
+== import resource dependencies
+== L6b offline tree placement matches committed positions
+{
+  "seed_near": 610602,
+  "seed_far": 610607,
+  "near_count": 480,
+  "far_count": 1200,
+  "near_positions_sha256": "9b42b61ff36e5df25ef0245702e4d75965ea805f81de56a1c353fd1f0c722875",
+  "far_positions_sha256": "7c8ee96a60c22241ea1f58f0fdadcba6c010e540c6d9f0fe82b7bbe10d9b442c",
+  "positions_sha256": "772d1207da670718c575c20e5b6246d8d2e6e7cdf70e006e006642c9e95ff2f3",
+  "clusters": [
+    {
+      "sector": 0,
+      "north_m": 878.75,
+      "east_m": 240.5,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 1,
+      "north_m": 567.0,
+      "east_m": 1256.5,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 2,
+      "north_m": -143.25,
+      "east_m": 1084.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 3,
+      "north_m": -954.25,
+      "east_m": 512.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 4,
+      "north_m": -1323.25,
+      "east_m": -29.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 5,
+      "north_m": -620.75,
+      "east_m": -1012.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 6,
+      "north_m": 438.75,
+      "east_m": -551.25,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 7,
+      "north_m": 929.5,
+      "east_m": -92.25,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 6,
+      "north_m": 777.5,
+      "east_m": -1177.0,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 3,
+      "north_m": -1187.5,
+      "east_m": 760.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 0,
+      "north_m": 1162.0,
+      "east_m": 369.75,
+      "count": 100,
+      "radius_m": 55.0
+    },
+    {
+      "sector": 5,
+      "north_m": -428.0,
+      "east_m": -811.0,
+      "count": 100,
+      "radius_m": 55.0
+    }
+  ]
+}
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.128s
+
+OK
+== L11a offline grass placement matches committed offsets
+/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/fields/grass.json differs from the deterministic L11a recipe

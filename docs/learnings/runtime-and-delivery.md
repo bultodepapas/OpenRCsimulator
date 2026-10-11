@@ -50,7 +50,7 @@
 
 ## Clean builds and desktop evidence
 
-- **Local CI is not a fresh checkout.** `act` copied ignored/untracked folders, hiding a missing capture directory that failed on GitHub. System Pillow also masked a missing CI dependency. Create output directories explicitly, use the pinned isolated visual environment, and verify generated/imported assets from a fresh checkout. [VQ-01a](../research/visual-quality-implementation/VQ-01a/README.md), [capture runner](../../app/capture.sh).
+- **Local CI is not a fresh checkout.** `act` copied ignored/untracked folders, hiding a missing capture directory that failed on GitHub. System Pillow also masked a missing CI dependency. Create output directories explicitly, use the pinned isolated visual environment, and verify generated/imported assets from a fresh checkout. [VQ-01a](../research/visual-quality-implementation/VQ-01a/README.md), [capture runner](../../app/capture.sh). A disposable validation snapshot also needs a valid Git HEAD for build-identity tests; freeze generators and their inputs together with generated app data, or a mixed snapshot can falsely report stale artifacts. [CR-22a](../research/crash-damage-investigations/CR-22a/README.md).
 
 - **Generated media can silently become imported assets.** Capture PNGs accumulated a second copy under `.godot/`. Create `.gdignore` in output directories before import, keep manifests and compact comparisons, and bound full-frame/log retention. A local clone can also retain Git alternates despite `--no-hardlinks`; use `--dissociate` if its parent snapshot will be removed. [L4b](../research/visual-quality-implementation/L4b/README.md), [SC-25](../research/scenery-implementation/SC-25/README.md).
 

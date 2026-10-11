@@ -306,7 +306,7 @@ def generate(output: Path) -> dict[str, object]:
         "sample_rate_hz": RATE,
         "channels": 1,
         "sample_format": "signed 16-bit PCM little-endian",
-        "peak_policy": "Per-source peak <= 0.46; runtime bus uses a -1.0 dBFS hard limiter.",
+        "peak_policy": "Per-source peak <= 0.46; runtime bus uses a -1.25 dBFS hard limiter.",
         "runtime_synthesis": False,
         "assets": records,
     }

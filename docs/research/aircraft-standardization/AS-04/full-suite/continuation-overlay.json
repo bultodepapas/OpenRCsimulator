@@ -1,0 +1,35 @@
+{
+  "method": "Ext4 mirror of fresh-clone source, fresh import, late AS refusal and diagnostic fixes only; GP source kept at frozen baseline",
+  "files": [
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "before": "37001261ada39ce62c7d4796381391f6a2c111942544c1ee8fd8ea26fa767a76",
+      "after": "d48f91038d43a23305535cb269755a08117ead5b07f73a7e4c57d1c7e064afa6"
+    },
+    {
+      "path": "app/data/schema/openrc-aircraft-v2.schema.json",
+      "before": "6a0f0bbd4f205220c5fbf6dd587da5d97aecefbc9e6eca506b5fea697f8fa365",
+      "after": "b2f7c67cd60133decbcb748ae927c0cbcbd32e0dc515b71844e4c3f180af76ad"
+    },
+    {
+      "path": "app/tests/test_electric_battery_data.gd",
+      "before": "476d1b3c8f4b747285fe7bb5431a9714dd2289b8e1211191865862365017b0d3",
+      "after": "3d8c0a60fa4aadd517363df319af9c47226e880f335f50ce613c78c9239735a6"
+    },
+    {
+      "path": "research/aircraft-standardization/build_schema.py",
+      "before": "ee8fede71b767f4c2d89bafca03f1333f48bf91bd1fa5c41e34623f1b8047533",
+      "after": "715282905b62318d0b754d12f6973d2b2a7b1c616b17e8831e1c6b92a6b13462"
+    },
+    {
+      "path": "research/propulsion/range-audit/audit.py",
+      "before": "c6f65a49238df47bc3b1cb8c7f90398066d66bd1a4b03df651d024e5b263fc4f",
+      "after": "81b8719709b0bdd5d8cd1d4fa83dbfbe232962b41ae7d0e493a48a8f90ca8bfd"
+    },
+    {
+      "path": "research/propulsion/range-audit/test_audit.py",
+      "before": "07658186a6f7633a7a2e0db4d32976825c923d16454a499f45ea6bb52406a75d",
+      "after": "73ca7fac3a15c40860f617222e8071e0e2dbae70c3bfd5bf6359581f18476fa3"
+    }
+  ]
+}

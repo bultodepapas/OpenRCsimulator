@@ -1,8 +1,23 @@
 # Crash, damage and destruction plan
 
-2026-10-08 · revision 5 · **Status: CR-00 and CR-01a/b/c diagnostics, crossing reconstruction and rendered handoff verified. CR-01 reference-aircraft labels and crossing-time kinematics remain open. Report 03 (material and structure thresholds) is pending under CR-07.** Step-ID prefix **CR-**, gate **Gate CR**. Brief: [prompt](prompts/CRASH-DAMAGE-ROADMAP-PROMPT.md). Research: [crash-damage-investigations/](research/crash-damage-investigations/README.md) (01, 02, 04, 05; 03 pending). Evidence: [`research/crash-damage/`](../research/crash-damage/).
+2026-10-11 · revision 6 · **Status: CR-01 diagnostics retained; experimental crash presentation implemented under CR-02a/03a/08a/09a/19a/22a and native-qualified. All 193 isolated GDScript regressions and remaining behavioral checks passed in phases; generated-file snapshot caveats prevent a single clean full-suite claim. Physical structure thresholds, flyable damage and Gate CR acceptance remain open.** Step-ID prefix **CR-**, gate **Gate CR**. Brief: [prompt](prompts/CRASH-DAMAGE-ROADMAP-PROMPT.md). Research: [crash-damage-investigations/](research/crash-damage-investigations/README.md). Evidence: [`research/crash-damage/`](../research/crash-damage/).
 
-**Long-term goal:** explain crash outcomes from observed contacts and validated airframe evidence. The next step is narrower: identify the triggering contact and show its available kinematics. It does not diagnose pilot error, classify structural damage, or establish material strength.
+## Owner-prioritized implementation, 2026-10-11
+
+The owner's explicit crash-system request supersedes the older presentation scheduling restrictions below. These bounded extensions use provisional presentation estimates; they do not complete the parent steps' physical, replay, propagation-delay or human acceptance contracts. The older phase tables remain the roadmap for those contracts. No aircraft coefficients, float64 integration, generated geometry or healthy-flight state change.
+
+| ID | Delivered scope | Evidence / status |
+| --- | --- | --- |
+| CR-02a | Eight spatial sample voices, impacts/cracks/tears/scrape tails/engine rundown/fire, native limiter capture; original MIT assets | [Audio](research/crash-damage-investigations/CR-02a/README.md); focused native and Dummy checks pass |
+| CR-03a | Bounded Compatibility particles, sparks, impact dust and surface marks | [Integration](research/crash-damage-investigations/CR-22a/README.md); native scenarios/budget passed |
+| CR-08a | Pure mass/speed/angle/surface/component severity estimate; explicitly uncalibrated | [Estimator](research/crash-damage-investigations/CR-08a/severity.md); 44 focused checks |
+| CR-09a | Shared-mesh aircraft copy, staged/contact-driven breakup, bounded CCD debris, secondary contacts, sleep/reset | [Wreck](research/crash-damage-investigations/CR-09a/README.md); 135 focused checks and native fleet integration passed |
+| CR-19a | Persistent wreck, 16 ground marks, inspection view and explicit restart | [Integration](research/crash-damage-investigations/CR-22a/README.md); native lifecycle and menu tests passed |
+| CR-22a | Fuel/hot-turbine/estimated-rupture-gated fire, smoke, wind and light; fleet integration and budget qualification | [Report](research/crash-damage-investigations/CR-22a/README.md); four native scenarios, audio mix and budget passed |
+
+Ordinary interactive flight enables this presentation. `-- --crash-effects=off` retains the previous CR-01 frozen image and timed restart. Trace, scripted and capture routes retain their prior behavior. C0–C2 labels currently affect presentation only: the existing terminal detector still ends the flight. CR-07 material research, damaged-flight aerodynamics/mass, actual tank rupture/fuel burn, terrain excavation, obstacles and crash replay remain open. MIT original audio and verified CC0 textures are accepted for this extension; the older CR-02 CC0-only selection rule does not describe these original assets.
+
+**Long-term goal:** explain crash outcomes from observed contacts and validated airframe evidence. The current extension adds provisional severity and wreck presentation to CR-01 diagnostics. It does not diagnose pilot error or establish material strength.
 
 **Owns:** `docs/CRASH-DAMAGE-PLAN.md`, `docs/research/crash-damage-investigations/`, `research/crash-damage/`, and, when their steps start, `app/render/crash/` (presentation), `app/assets/audio/crash/` (sounds with `sources.json`) and `app/tests/test_crash_*.gd`. **Shared through interfaces:** simulation-side steps (`app/physics/impact.gd`, `app/physics/structure.gd`, `FlightSession`) are built by the physics line under these CR IDs; visual sections are added by each aircraft's model team; the crash report lives in `app/ui/` with the menu track.
 

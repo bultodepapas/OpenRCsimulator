@@ -1,4 +1,5 @@
 import csv
+import importlib.util
 import io
 import json
 import math
@@ -10,6 +11,11 @@ import unittest
 
 import audit as A
 from check_trimmed_flight import INPUT_HASH_CONVENTION, SEMANTIC_HASH_CONVENTION
+
+MIGRATION_PATH = A.ROOT / 'research/aircraft-standardization/migrate.py'
+MIGRATION_SPEC = importlib.util.spec_from_file_location('aircraft_standardization_migrate', MIGRATION_PATH)
+MIGRATION = importlib.util.module_from_spec(MIGRATION_SPEC)
+MIGRATION_SPEC.loader.exec_module(MIGRATION)
 
 
 def q(value, unit='1'):
@@ -31,8 +37,9 @@ def sample(tick=0, u=.5, rpm=60, **kwargs):
 
 def trace(data, samples, **changes):
     first = samples[0]
+    aircraft_format = json.loads(data)['format']
     meta = {'format': 'openrc-trace v3', 'metadata_schema': 'openrc-flight-meta v2',
-            'aircraft_input_format': 'openrc-aircraft v1', 'aircraft_input_hash_convention': INPUT_HASH_CONVENTION,
+            'aircraft_input_format': aircraft_format, 'aircraft_input_hash_convention': INPUT_HASH_CONVENTION,
             'aircraft_input_sha256': A.digest(data), 'aircraft_semantic_sha256': 'a'*64,
             'aircraft_semantic_hash_convention': SEMANTIC_HASH_CONVENTION,
             'propulsion_model': 'propeller-rpm-lag-v1', 'engine_rpm_semantics': 'propeller shaft rpm',
@@ -193,6 +200,54 @@ class AuditTests(unittest.TestCase):
         data = model(); data['propulsion']['kind'] = 'turbine'
         with self.assertRaises(ValueError):
             A.propeller(data)
+
+    def test_real_v2_fleet_matches_legacy_propeller_audit(self):
+        v2_bytes = (A.ROOT / 'app/data/aircraft/jensen_ugly_stik_60.json').read_bytes()
+        v2_data = A.decode(v2_bytes)
+        self.assertEqual(v2_data['format'], 'openrc-aircraft v2')
+        v1_data = MIGRATION.legacy_input(v2_data)
+        self.assertEqual(v1_data['format'], 'openrc-aircraft v1')
+        v1_bytes = json.dumps(v1_data, indent=2, ensure_ascii=False).encode('utf-8')
+
+        self.assertEqual(A.propeller(v2_data), A.propeller(v1_data))
+        samples = [sample(), sample(1)]
+        v2_trace = trace(v2_bytes, samples)
+        v1_trace = trace(v1_bytes, samples)
+        self.assertIn(b'# aircraft_input_format: openrc-aircraft v2\n', v2_trace)
+        v2_report = A.audit(v2_trace, v2_bytes, ticks=1, still_air=True)
+        v1_report = A.audit(v1_trace, v1_bytes, ticks=1, still_air=True)
+        for key in ('diameter_m', 'shaft_axis_body_frd', 'table_domains', 'initial_state_point',
+                    'counts', 'first_occurrence', 'active_j_range'):
+            self.assertEqual(v2_report[key], v1_report[key], key)
+        self.assertNotEqual(v2_report['aircraft_input_sha256'], v1_report['aircraft_input_sha256'])
+        wrong_hash_trace = trace(v2_bytes, samples, aircraft_input_sha256='b' * 64)
+        with self.assertRaisesRegex(ValueError, 'input bytes do not match'):
+            A.audit(wrong_hash_trace, v2_bytes, ticks=1, still_air=True)
+
+    def test_unsupported_aircraft_versions_rejected(self):
+        for version in ('openrc-aircraft v0', 'openrc-aircraft v3', 'openrc-aircraft v2.1', None):
+            data = model()
+            data['format'] = version
+            with self.subTest(version=version), self.assertRaisesRegex(ValueError, 'expected openrc-aircraft'):
+                A.propeller(data)
+        v2_without_kind = model()
+        v2_without_kind['format'] = 'openrc-aircraft v2'
+        with self.assertRaisesRegex(ValueError, 'glow_prop'):
+            A.propeller(v2_without_kind)
+        v2_electric = model()
+        v2_electric['format'] = 'openrc-aircraft v2'
+        v2_electric['propulsion']['kind'] = 'electric_prop'
+        with self.assertRaisesRegex(ValueError, 'glow_prop'):
+            A.propeller(v2_electric)
+
+    def test_trace_aircraft_format_must_match_exact_input(self):
+        v2 = model()
+        v2['format'] = 'openrc-aircraft v2'
+        v2['propulsion']['kind'] = 'glow_prop'
+        data = json.dumps(v2).encode()
+        with self.assertRaisesRegex(ValueError, 'format disagrees'):
+            A.audit(trace(data, self.samples, aircraft_input_format='openrc-aircraft v1'),
+                    data, ticks=1, still_air=True)
 
     def test_coverage_contract(self):
         for key, value in [('aircraft_input_sha256', 'b'*64), ('relationship', 'validated'), ('tables', {})]:

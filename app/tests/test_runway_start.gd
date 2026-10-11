@@ -74,7 +74,7 @@ func _initialize() -> void:
 		if i + 1 == roundi(1.0 / session.sim.dt()):
 			one_second = s.duplicate()
 			_check("after 1 s: |v| < 1e-6 m/s", worst_v < 1e-6, "max %s m/s" % String.num_scientific(worst_v))
-			var n_sum := _normal_sum(one_second, gear)
+			var n_sum := _normal_sum(one_second, gear, session.ground_surfaces)
 			var weight: float = model.mass_kg * G
 			var t_down: float = n_sum - weight
 			_check("after 1 s: ΣN = m·g within 0.3 %% (the idle thrust, tilted by the nose-down lean, adds %.4f N)" % t_down,
@@ -96,7 +96,7 @@ func _initialize() -> void:
 func _physics_checks(session: Node, model: Dictionary, gear: Dictionary, solved: PackedFloat64Array, anchors: PackedFloat64Array, spot: Dictionary) -> void:
 	var rows := _rows(solved)
 	var thrust: float = Propulsion.thrust_torque(PackedFloat64Array([0.0, 0.0, 0.0]), session.sim.aux[0], model.propulsion, Air.RHO_SEA_LEVEL)[0]
-	var ground := Ground.loads(solved, gear, session.sim.aux[3], session.ground_surfaces, anchors)
+	var ground := Ground.loads(solved, gear, session.sim.aux[3], session.ground_surfaces, anchors, session.sim.continuous.slice(session.wheel_index()))
 	# Horizontal balance in NED: thrust along body x plus the ground's tangential force.
 	var gn: float = rows[0][0] * ground[0] + rows[0][1] * ground[1] + rows[0][2] * ground[2]
 	var ge: float = rows[1][0] * ground[0] + rows[1][1] * ground[1] + rows[1][2] * ground[2]
@@ -109,7 +109,7 @@ func _physics_checks(session: Node, model: Dictionary, gear: Dictionary, solved:
 	for c in gear.contacts:
 		sum_k += c.anchor_stiffness
 	var rest := GroundStart.solve(model, session.ground_surfaces, spot.north, spot.east, spot.heading,
-		session._deflections(session.sim.aux), session.sim.aux[3], session.sim.aux[0], Air.RHO_SEA_LEVEL, G)
+		session._deflections(session.sim.aux), session.sim.aux[3], session.sim.aux[0], Air.RHO_SEA_LEVEL, G, PackedFloat64Array([0.0, 0.0, 0.0]), true)
 	# Each wheel's ground point leans past its anchor by about T/Σk (the springs act at the wheels, not at the CG).
 	var lean := INF
 	var lean_max := 0.0
@@ -148,12 +148,14 @@ func _physics_checks(session: Node, model: Dictionary, gear: Dictionary, solved:
 	# N_m + N_n = W − T_Z ; x_m·N_m + x_n·N_n + friction_moment + thrust_moment = 0
 	var vertical: float = weight - t_z
 	var nose_expect: float = (-(friction_moment + thrust_moment) - x_m * vertical) / (xs[2] - x_m)
-	var comp := Ground.compressions(solved, gear)
+	var comp := Ground.compressions(solved, gear, session.ground_surfaces)
 	var nose: float = gear.contacts[2].stiffness * comp[2]
 	_check("nose load %.4f N matches the world side-view moment balance %.4f N within 0.5 %%" % [nose, nose_expect], absf(nose - nose_expect) < 0.005 * nose_expect)
-	var pitch_down: float = -M.q_to_euler(PackedFloat64Array([solved[RB.ATT], solved[RB.ATT + 1], solved[RB.ATT + 2], solved[RB.ATT + 3]]))[1]
-	_check("vertical balance: ΣN = m·g + T·sin(nose-down %.2f°) within 1e-9 N (ΣN/m·g = %.4f)" % [rad_to_deg(pitch_down), _normal_sum(solved, gear) / weight],
-		absf(_normal_sum(solved, gear) - vertical) < 1e-9)
+	# On micro-relief, normals and anchor forces are tilted. Compare total upward support,
+	# not the sum of scalar normal magnitudes, with the independent vertical weight/thrust balance.
+	var support_up: float = -(rows[2][0] * ground[0] + rows[2][1] * ground[1] + rows[2][2] * ground[2])
+	_check("terrain-projected ground support balances weight and vertical thrust within 1e-9 N",
+		absf(support_up - vertical) < 1e-9, "support %.9f N, expected %.9f N" % [support_up, vertical])
 
 
 func _refusals(field: Dictionary) -> void:
@@ -170,8 +172,8 @@ func _refusals(field: Dictionary) -> void:
 		other.queue_free()
 
 
-func _normal_sum(s: PackedFloat64Array, gear: Dictionary) -> float:
-	var comp := Ground.compressions(s, gear)
+func _normal_sum(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> float:
+	var comp := Ground.compressions(s, gear, surfaces)
 	var n := 0.0
 	for i in comp.size():
 		if comp[i] > 0.0:

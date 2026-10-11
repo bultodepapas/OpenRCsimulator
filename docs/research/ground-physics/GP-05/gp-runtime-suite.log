@@ -1,0 +1,16 @@
+== H7: exact one-ulp math sensitivity and golden branch signatures
+H7: exact next-float-up sin_/atan2_ perturbations replay all four air goldens
+H6: same-machine SHA-256 trajectories match isolated direct-built-in call-site copies
+maximum component error / (golden tolerance / 1000) = 0.00133227
+adjacent-float full-stall branch fixture crossed: 0.99002646 -> 1
+controlled branch-path mutation detected in actual golden replay(s): glide_15, pull_throttle, roll_15, rudder_doublet
+mutation state error stayed below tolerance/1000 (worst ratio 5.55112e-05)
+== L5: invalid field files fail before Home or flight can start
+test_headless_invalid_fields_fail_both_routes (__main__.FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 123.444s
+
+OK
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+.tools/gp-work/app/gp-runtime-suite.sh: line 15: LOG: unbound variable

@@ -1,5 +1,5 @@
 {
-  "format": "openrc-aircraft v1",
+  "format": "openrc-aircraft v2",
   "id": "synthetic_stik_electric_4s",
   "description": "Synthetic electric propulsion demo configuration based on the existing Ugly Stik geometry and original inventory mass distribution. It is not a real electric conversion, a validated aircraft, or a Timber dataset.",
   "frames": {
@@ -113,6 +113,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "side-mounted"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -161,6 +171,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -180,6 +200,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "estimated from the plan side view layout"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -199,6 +229,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "plan: 'fuel tank & battery compartment' F1-F2"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -218,6 +258,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "same as tank"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -237,6 +287,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "plan: tank & battery compartment"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -256,6 +316,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "plan: receiver compartment F2-F3"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -275,6 +345,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "plan: hardwood servo rails behind F3"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -294,6 +374,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "centre of wing"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -313,6 +403,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "plan: nylon bearings at F1"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -506,6 +606,16 @@
         "unit": "m",
         "kind": "estimated",
         "source": "spread along the fuselage"
+      },
+      "size": {
+        "value": [
+          0,
+          0,
+          0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
       }
     },
     {
@@ -617,6 +727,12 @@
           "unit": "m",
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        },
+        "max_steering": {
+          "value": 0,
+          "unit": "deg",
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
         }
       },
       {
@@ -648,6 +764,12 @@
           "unit": "m",
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+        },
+        "max_steering": {
+          "value": 0,
+          "unit": "deg",
+          "kind": "derived",
+          "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
         }
       },
       {
@@ -817,12 +939,6 @@
       },
       "CLa": {
         "value": 4.58,
-        "unit": "1/rad",
-        "kind": "borrowed",
-        "source": "OpenFlightSim UltraStick25e"
-      },
-      "CLadot": {
-        "value": 1.9724,
         "unit": "1/rad",
         "kind": "borrowed",
         "source": "OpenFlightSim UltraStick25e"
@@ -1129,6 +1245,14 @@
           "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
         }
       }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 1.9724,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e"
+      }
     }
   },
   "propulsion": {
@@ -1300,6 +1424,23 @@
         "kind": "derived",
         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
       }
+    }
+  },
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "conventional",
+    "gear": "fixed_tricycle",
+    "propulsion_layout": "single_tractor",
+    "energy": "fixed_voltage",
+    "damage": "terminal_hull",
+    "flaps": "not_simulated"
+  },
+  "start": {
+    "level_speed": {
+      "value": 15.0,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "AS-02 compatibility default: preserves the v1 loader's 15 m/s default for this existing Stik-derived configuration"
     }
   }
 }

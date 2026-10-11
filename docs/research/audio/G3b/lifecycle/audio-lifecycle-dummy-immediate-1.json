@@ -1,0 +1,28 @@
+{
+	"audio_driver_requested": "Dummy",
+	"audio_driver_runtime": "Dummy",
+	"counts_before_free": {
+		"node_count": 5,
+		"object_count": 1504,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"counts_immediately_after_free": {
+		"node_count": 3,
+		"object_count": 1499,
+		"orphan_node_count": 0,
+		"resource_count": 5
+	},
+	"cycles_completed": 1,
+	"cycles_requested": 1,
+	"exited_before_mixer_drain": true,
+	"fps_requested": 30,
+	"interpretation": "Intentional immediate-quit diagnostic; pending playback/source weak refs are expected until the mixer processes stop fades.",
+	"playback_alive_without_source_observations": 0,
+	"probe": "g3b-audio-lifecycle-stress",
+	"status": "ok",
+	"weakrefs_alive_immediately": {
+		"playbacks": 1,
+		"sources": 1
+	}
+}

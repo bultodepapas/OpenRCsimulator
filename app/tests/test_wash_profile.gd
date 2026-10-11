@@ -19,6 +19,9 @@ static func geometry_quantity(value: Variant, unit: String) -> Dictionary:
 static func combined_raw() -> Dictionary:
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/jensen_ugly_stik_60.json"))
 	var geometry: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/stik_wash_profile.json"))
+	# Geometry artifact bookkeeping is not an aircraft slipstream parameter.
+	for key: String in ["format", "test_only", "generator", "source_geometry"]:
+		geometry.erase(key)
 	geometry.hub = geometry_quantity(geometry.hub, "m")
 	for piece: Dictionary in geometry.pieces:
 		for field: String in ["root", "span_dir", "span", "area", "profile"]:

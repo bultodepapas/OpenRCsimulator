@@ -1,0 +1,363 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   legacy calm defaults remain v1
+ok   turbulence practice preset is valid v2
+ok   preset carries NED RMS, tau, and integer seed
+ok   non-integral v2 seed is rejected
+ok   out-of-range turbulence RMS is rejected
+ok   fresh preferences keep v1 weather defaults
+ok   legacy weather preferences save
+ok   legacy v1 weather stays in outer schema 1
+ok   v2 weather saves through preferences
+ok   v2 weather reloads through preferences
+ok   v2 weather uses outer schema 2 for old-reader protection
+ok   future preferences read valid v2 weather as read-only
+ok   future v2 preferences cannot be overwritten
+ok   two-tab dialog fits the 1024×720 base layout
+ok   Wind & Gusts starts selected with all existing controls
+ok   initial legacy config displays turbulence off with zero RMS
+ok   legacy dialog exposes default tau and seed without migrating
+ok   untouched Apply preserves legacy v1 weather
+ok   wind-only edit updates wind and stays v1
+ok   Enable fills the authored practice RMS values
+ok   active-tab focus ring excludes hidden wind fields
+ok   keyboard focus scrolls the turbulence body to the seed field
+ok   cancel discards turbulence draft and returns Home focus
+ok   positive RMS activates turbulence
+ok   Apply saves v2 turbulence values and exact uint32 seed
+ok   Home summary shows turbulence settings
+ok   seed accepts only ASCII digits and rejects a sign
+ok   tau bounds reject invalid edits without committing
+ok   restoring exact seed and tau values applies cleanly
+ok   Turbulence practice is appended after existing presets
+ok   preset Apply commits the validated v2 practice config
+ok   high-precision v2 fixture saves
+ok   precise fields display shortest round-tripping decimals
+ok   untouched high-precision v2 values survive Apply exactly
+ok   Spanish localizes both tabs, turbulence labels, and preset
+ok   Spanish localizes the RMS field label
+ok   future-v2 fixture writes
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema applies v2 changes to this session
+ok   future v2 schema save failure appears on Home
+ok   future v2 preferences stay byte-for-byte unchanged
+ok   flight-handoff v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _on_fly (res://ui/home.gd:441)
+ok   Home-to-Fly passes v2 weather to the session
+ok   Home-to-Fly remembers v2 settings
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ok   direct-route v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] setup (res://render/crash/crash_audio.gd:58)
+       [2] configure (res://render/crash/director.gd:36)
+       [3] _ready (res://main.gd:367)
+       [4] start_flight (res://app_root.gd:204)
+       [5] _ready (res://app_root.gd:79)
+       [6] _direct_route_ignores_v2_preferences (res://tests/test_ui_turbulence.gd:277)
+       [7] _run (res://tests/test_ui_turbulence.gd:36)
+       [8] _home_to_flight_v2 (res://tests/test_ui_turbulence.gd:265)
+       [9] _close (res://tests/test_ui_turbulence.gd:317)
+       [10] settle (res://tests/ui_driver.gd:55)
+ok   direct route keeps calm weather and leaves v2 preferences intact
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:174)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Player is inactive. Call play() before requesting get_stream_playback().
+   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)
+   GDScript backtrace (most recent call first):
+       [0] reset (res://render/crash/crash_audio.gd:183)
+       [1] shutdown (res://render/crash/crash_audio.gd:192)
+       [2] _exit_tree (res://render/crash/crash_audio.gd:266)
+       [3] _close (res://tests/test_ui_turbulence.gd:315)
+       [4] settle (res://tests/ui_driver.gd:55)
+all UI turbulence checks passed

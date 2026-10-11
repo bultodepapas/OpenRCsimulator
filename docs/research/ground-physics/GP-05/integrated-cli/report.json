@@ -1,0 +1,22 @@
+[
+  {
+    "test": "test_trace_acceptance.py",
+    "exit_code": 0,
+    "seconds": 105.85899999999674
+  },
+  {
+    "test": "test_pullup_cli.py",
+    "exit_code": 1,
+    "seconds": 37.96899999999732
+  },
+  {
+    "test": "test_turbulence_cli.py",
+    "exit_code": 1,
+    "seconds": 14.25
+  },
+  {
+    "test": "test_time_of_day_cli.py",
+    "exit_code": 0,
+    "seconds": 124.48399999999674
+  }
+]

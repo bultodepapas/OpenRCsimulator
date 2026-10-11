@@ -1,0 +1,960 @@
+{
+  "results": [
+    {
+      "test": "test_aero.gd",
+      "ok": true,
+      "seconds": 0.64
+    },
+    {
+      "test": "test_aero_flow.gd",
+      "ok": true,
+      "seconds": 2.8
+    },
+    {
+      "test": "test_air_data.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_air_density.gd",
+      "ok": true,
+      "seconds": 0.23
+    },
+    {
+      "test": "test_aircraft_catalog.gd",
+      "ok": false,
+      "seconds": 3.69
+    },
+    {
+      "test": "test_aircraft_data.gd",
+      "ok": true,
+      "seconds": 1.12
+    },
+    {
+      "test": "test_atmosphere.gd",
+      "ok": true,
+      "seconds": 0.63
+    },
+    {
+      "test": "test_atmosphere_flight.gd",
+      "ok": false,
+      "seconds": 3.82
+    },
+    {
+      "test": "test_attached_flow.gd",
+      "ok": true,
+      "seconds": 1.51
+    },
+    {
+      "test": "test_avanti_handling.gd",
+      "ok": true,
+      "seconds": 7.13
+    },
+    {
+      "test": "test_build_info.gd",
+      "ok": true,
+      "seconds": 0.38
+    },
+    {
+      "test": "test_checkpoint.gd",
+      "ok": true,
+      "seconds": 1.48
+    },
+    {
+      "test": "test_checkpoint_integrity.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_contact_policy.gd",
+      "ok": true,
+      "seconds": 6.74
+    },
+    {
+      "test": "test_continuous_state.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_controls.gd",
+      "ok": true,
+      "seconds": 1.86
+    },
+    {
+      "test": "test_controls_reference.gd",
+      "ok": true,
+      "seconds": 0.24
+    },
+    {
+      "test": "test_crash.gd",
+      "ok": true,
+      "seconds": 2.81
+    },
+    {
+      "test": "test_crash_audio.gd",
+      "ok": false,
+      "seconds": 0.36
+    },
+    {
+      "test": "test_crash_effects.gd",
+      "ok": true,
+      "seconds": 0.35
+    },
+    {
+      "test": "test_crash_pose.gd",
+      "ok": true,
+      "seconds": 5.48
+    },
+    {
+      "test": "test_crash_severity.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_crash_snapshot.gd",
+      "ok": true,
+      "seconds": 0.8
+    },
+    {
+      "test": "test_crash_wreck.gd",
+      "ok": false,
+      "seconds": 39.81
+    },
+    {
+      "test": "test_damping_regimes.gd",
+      "ok": true,
+      "seconds": 0.77
+    },
+    {
+      "test": "test_downwash_lag.gd",
+      "ok": true,
+      "seconds": 2.82
+    },
+    {
+      "test": "test_dynamics.gd",
+      "ok": true,
+      "seconds": 0.73
+    },
+    {
+      "test": "test_e2e_input.gd",
+      "ok": false,
+      "seconds": 11.13
+    },
+    {
+      "test": "test_e2e_radio.gd",
+      "ok": false,
+      "seconds": 4.24
+    },
+    {
+      "test": "test_electric_battery_data.gd",
+      "ok": true,
+      "seconds": 0.83
+    },
+    {
+      "test": "test_electric_battery_session.gd",
+      "ok": true,
+      "seconds": 28.14
+    },
+    {
+      "test": "test_electric_battery_step.gd",
+      "ok": true,
+      "seconds": 0.37
+    },
+    {
+      "test": "test_electric_data.gd",
+      "ok": true,
+      "seconds": 0.72
+    },
+    {
+      "test": "test_electric_dynamics.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_electric_event_localization.gd",
+      "ok": true,
+      "seconds": 0.8
+    },
+    {
+      "test": "test_electric_input.gd",
+      "ok": true,
+      "seconds": 1.57
+    },
+    {
+      "test": "test_electric_motor.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_electric_motor_compact.gd",
+      "ok": true,
+      "seconds": 0.35
+    },
+    {
+      "test": "test_electric_propulsion.gd",
+      "ok": true,
+      "seconds": 1.6
+    },
+    {
+      "test": "test_electric_runway.gd",
+      "ok": true,
+      "seconds": 22.54
+    },
+    {
+      "test": "test_electric_session.gd",
+      "ok": true,
+      "seconds": 10.54
+    },
+    {
+      "test": "test_electric_stop.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_electric_supply.gd",
+      "ok": true,
+      "seconds": 0.35
+    },
+    {
+      "test": "test_engine_audio.gd",
+      "ok": true,
+      "seconds": 6.51
+    },
+    {
+      "test": "test_engine_sound.gd",
+      "ok": true,
+      "seconds": 0.32
+    },
+    {
+      "test": "test_engine_voice.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_envelope.gd",
+      "ok": true,
+      "seconds": 3.23
+    },
+    {
+      "test": "test_envelope_integrity.gd",
+      "ok": true,
+      "seconds": 1.32
+    },
+    {
+      "test": "test_extra_handling.gd",
+      "ok": true,
+      "seconds": 5.62
+    },
+    {
+      "test": "test_far_forest.gd",
+      "ok": true,
+      "seconds": 0.74
+    },
+    {
+      "test": "test_field_integration.gd",
+      "ok": false,
+      "seconds": 8.1
+    },
+    {
+      "test": "test_field_loader.gd",
+      "ok": true,
+      "seconds": 1.14
+    },
+    {
+      "test": "test_field_projected_shadows.gd",
+      "ok": true,
+      "seconds": 2.02
+    },
+    {
+      "test": "test_field_surfaces.gd",
+      "ok": true,
+      "seconds": 4.41
+    },
+    {
+      "test": "test_flight_cue_shadows.gd",
+      "ok": true,
+      "seconds": 0.31
+    },
+    {
+      "test": "test_flightline_barrier.gd",
+      "ok": true,
+      "seconds": 0.31
+    },
+    {
+      "test": "test_flightline_barrier_data.gd",
+      "ok": true,
+      "seconds": 0.32
+    },
+    {
+      "test": "test_frame_samples.gd",
+      "ok": true,
+      "seconds": 0.36
+    },
+    {
+      "test": "test_frames.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_golden.gd",
+      "ok": true,
+      "seconds": 2.06
+    },
+    {
+      "test": "test_ground_contact.gd",
+      "ok": true,
+      "seconds": 1.77
+    },
+    {
+      "test": "test_ground_friction.gd",
+      "ok": true,
+      "seconds": 12.24
+    },
+    {
+      "test": "test_ground_start_integrity.gd",
+      "ok": true,
+      "seconds": 1.11
+    },
+    {
+      "test": "test_ground_stiction.gd",
+      "ok": true,
+      "seconds": 13.16
+    },
+    {
+      "test": "test_ground_surfaces.gd",
+      "ok": true,
+      "seconds": 4.63
+    },
+    {
+      "test": "test_gyro.gd",
+      "ok": true,
+      "seconds": 2.07
+    },
+    {
+      "test": "test_handling.gd",
+      "ok": true,
+      "seconds": 3.5
+    },
+    {
+      "test": "test_horizon.gd",
+      "ok": true,
+      "seconds": 1.31
+    },
+    {
+      "test": "test_hull_crossing.gd",
+      "ok": true,
+      "seconds": 0.98
+    },
+    {
+      "test": "test_induced_integrity.gd",
+      "ok": true,
+      "seconds": 1.09
+    },
+    {
+      "test": "test_input_report.gd",
+      "ok": true,
+      "seconds": 0.36
+    },
+    {
+      "test": "test_input_report_cli.gd",
+      "ok": true,
+      "seconds": 18.93
+    },
+    {
+      "test": "test_input_report_e2e.gd",
+      "ok": true,
+      "seconds": 1.56
+    },
+    {
+      "test": "test_integrator.gd",
+      "ok": true,
+      "seconds": 1.39
+    },
+    {
+      "test": "test_landing_maneuver.gd",
+      "ok": true,
+      "seconds": 52.94
+    },
+    {
+      "test": "test_landing_variations.gd",
+      "ok": true,
+      "seconds": 27.13
+    },
+    {
+      "test": "test_latency_patch.gd",
+      "ok": true,
+      "seconds": 1.98
+    },
+    {
+      "test": "test_latency_patch_cli.gd",
+      "ok": false,
+      "seconds": 41.6
+    },
+    {
+      "test": "test_latency_patch_route.gd",
+      "ok": false,
+      "seconds": 4.19
+    },
+    {
+      "test": "test_math3d.gd",
+      "ok": true,
+      "seconds": 0.35
+    },
+    {
+      "test": "test_modes.gd",
+      "ok": true,
+      "seconds": 1.33
+    },
+    {
+      "test": "test_near_grass.gd",
+      "ok": true,
+      "seconds": 5.41
+    },
+    {
+      "test": "test_p51_envelope.gd",
+      "ok": true,
+      "seconds": 17.61
+    },
+    {
+      "test": "test_p51_ground.gd",
+      "ok": true,
+      "seconds": 10.97
+    },
+    {
+      "test": "test_p51_handling.gd",
+      "ok": true,
+      "seconds": 12.03
+    },
+    {
+      "test": "test_physical_envelope.gd",
+      "ok": true,
+      "seconds": 1.82
+    },
+    {
+      "test": "test_pilot_aids.gd",
+      "ok": true,
+      "seconds": 3.49
+    },
+    {
+      "test": "test_pilot_station.gd",
+      "ok": true,
+      "seconds": 2.93
+    },
+    {
+      "test": "test_pilot_station_data.gd",
+      "ok": true,
+      "seconds": 0.51
+    },
+    {
+      "test": "test_projected_shadow.gd",
+      "ok": true,
+      "seconds": 3.14
+    },
+    {
+      "test": "test_propeller_wake.gd",
+      "ok": true,
+      "seconds": 1.42
+    },
+    {
+      "test": "test_propulsion.gd",
+      "ok": true,
+      "seconds": 0.85
+    },
+    {
+      "test": "test_propulsion_scalar.gd",
+      "ok": true,
+      "seconds": 2.05
+    },
+    {
+      "test": "test_pullup_invariants.gd",
+      "ok": true,
+      "seconds": 0.77
+    },
+    {
+      "test": "test_rc_axis_history.gd",
+      "ok": true,
+      "seconds": 0.36
+    },
+    {
+      "test": "test_rc_calibration.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_rc_input.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_rc_profile_validation.gd",
+      "ok": true,
+      "seconds": 1.62
+    },
+    {
+      "test": "test_rc_rearm.gd",
+      "ok": true,
+      "seconds": 0.32
+    },
+    {
+      "test": "test_replay_integrity.gd",
+      "ok": true,
+      "seconds": 5.97
+    },
+    {
+      "test": "test_replay_policy.gd",
+      "ok": true,
+      "seconds": 4.25
+    },
+    {
+      "test": "test_rigid_body.gd",
+      "ok": true,
+      "seconds": 0.74
+    },
+    {
+      "test": "test_rk_stage_time.gd",
+      "ok": true,
+      "seconds": 0.36
+    },
+    {
+      "test": "test_rotor_coupling.gd",
+      "ok": true,
+      "seconds": 0.81
+    },
+    {
+      "test": "test_rudder_authority.gd",
+      "ok": true,
+      "seconds": 5.75
+    },
+    {
+      "test": "test_runway_checkpoint_metadata.gd",
+      "ok": true,
+      "seconds": 1.3
+    },
+    {
+      "test": "test_runway_start.gd",
+      "ok": true,
+      "seconds": 2.54
+    },
+    {
+      "test": "test_scenery_ambience.gd",
+      "ok": true,
+      "seconds": 1.77
+    },
+    {
+      "test": "test_scenery_build.gd",
+      "ok": true,
+      "seconds": 2.16
+    },
+    {
+      "test": "test_scenery_loader.gd",
+      "ok": false,
+      "seconds": 0.84
+    },
+    {
+      "test": "test_scenery_scenario.gd",
+      "ok": true,
+      "seconds": 2.53
+    },
+    {
+      "test": "test_scenery_trace.gd",
+      "ok": true,
+      "seconds": 7.52
+    },
+    {
+      "test": "test_servo.gd",
+      "ok": true,
+      "seconds": 1.02
+    },
+    {
+      "test": "test_session_guards.gd",
+      "ok": true,
+      "seconds": 1.01
+    },
+    {
+      "test": "test_shader_clock.gd",
+      "ok": true,
+      "seconds": 0.25
+    },
+    {
+      "test": "test_shaft_coupled.gd",
+      "ok": true,
+      "seconds": 2.28
+    },
+    {
+      "test": "test_shaft_data.gd",
+      "ok": true,
+      "seconds": 2.44
+    },
+    {
+      "test": "test_shaft_equilibrium.gd",
+      "ok": true,
+      "seconds": 0.73
+    },
+    {
+      "test": "test_shaft_refinement.gd",
+      "ok": true,
+      "seconds": 2.74
+    },
+    {
+      "test": "test_simulation.gd",
+      "ok": true,
+      "seconds": 0.53
+    },
+    {
+      "test": "test_slipstream_downwash.gd",
+      "ok": true,
+      "seconds": 1.47
+    },
+    {
+      "test": "test_slipstream_scalar.gd",
+      "ok": true,
+      "seconds": 1.94
+    },
+    {
+      "test": "test_soundscape.gd",
+      "ok": true,
+      "seconds": 0.53
+    },
+    {
+      "test": "test_spin.gd",
+      "ok": true,
+      "seconds": 2.51
+    },
+    {
+      "test": "test_stall_solver.gd",
+      "ok": true,
+      "seconds": 2.46
+    },
+    {
+      "test": "test_start_choice.gd",
+      "ok": true,
+      "seconds": 1.21
+    },
+    {
+      "test": "test_strip_induced.gd",
+      "ok": true,
+      "seconds": 18.16
+    },
+    {
+      "test": "test_swirl_accuracy.gd",
+      "ok": true,
+      "seconds": 2.71
+    },
+    {
+      "test": "test_swirl_optimization.gd",
+      "ok": true,
+      "seconds": 1.62
+    },
+    {
+      "test": "test_swirl_torque.gd",
+      "ok": true,
+      "seconds": 0.8
+    },
+    {
+      "test": "test_tail_downwash.gd",
+      "ok": true,
+      "seconds": 0.45
+    },
+    {
+      "test": "test_takeoff_roll.gd",
+      "ok": true,
+      "seconds": 6.83
+    },
+    {
+      "test": "test_time_of_day_checkpoint.gd",
+      "ok": false,
+      "seconds": 3.85
+    },
+    {
+      "test": "test_time_of_day_checkpoint_v2.gd",
+      "ok": true,
+      "seconds": 0.43
+    },
+    {
+      "test": "test_time_of_day_clock.gd",
+      "ok": true,
+      "seconds": 0.53
+    },
+    {
+      "test": "test_time_of_day_config.gd",
+      "ok": false,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_time_of_day_edit.gd",
+      "ok": false,
+      "seconds": 7.1
+    },
+    {
+      "test": "test_time_of_day_render.gd",
+      "ok": true,
+      "seconds": 1.28
+    },
+    {
+      "test": "test_time_of_day_render_update.gd",
+      "ok": true,
+      "seconds": 4.92
+    },
+    {
+      "test": "test_time_of_day_scenery_update.gd",
+      "ok": true,
+      "seconds": 1.2
+    },
+    {
+      "test": "test_time_of_day_session.gd",
+      "ok": false,
+      "seconds": 4.34
+    },
+    {
+      "test": "test_time_of_day_solar.gd",
+      "ok": false,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_time_of_day_timeline.gd",
+      "ok": true,
+      "seconds": 0.45
+    },
+    {
+      "test": "test_touchdown.gd",
+      "ok": true,
+      "seconds": 1.36
+    },
+    {
+      "test": "test_trace.gd",
+      "ok": true,
+      "seconds": 1.09
+    },
+    {
+      "test": "test_trace_metadata.gd",
+      "ok": true,
+      "seconds": 1.33
+    },
+    {
+      "test": "test_tree_assets.gd",
+      "ok": true,
+      "seconds": 0.43
+    },
+    {
+      "test": "test_tree_wind.gd",
+      "ok": true,
+      "seconds": 0.44
+    },
+    {
+      "test": "test_treeline.gd",
+      "ok": false,
+      "seconds": 5.35
+    },
+    {
+      "test": "test_treeline_data.gd",
+      "ok": true,
+      "seconds": 0.45
+    },
+    {
+      "test": "test_trim.gd",
+      "ok": true,
+      "seconds": 1.86
+    },
+    {
+      "test": "test_trim_density.gd",
+      "ok": true,
+      "seconds": 0.84
+    },
+    {
+      "test": "test_trim_integrity.gd",
+      "ok": true,
+      "seconds": 0.74
+    },
+    {
+      "test": "test_turbine.gd",
+      "ok": true,
+      "seconds": 0.63
+    },
+    {
+      "test": "test_turbulence_flight.gd",
+      "ok": false,
+      "seconds": 2.44
+    },
+    {
+      "test": "test_ui_aircraft.gd",
+      "ok": false,
+      "seconds": 5.44
+    },
+    {
+      "test": "test_ui_atmosphere.gd",
+      "ok": false,
+      "seconds": 9.04
+    },
+    {
+      "test": "test_ui_field_world_time_of_day.gd",
+      "ok": false,
+      "seconds": 5.67
+    },
+    {
+      "test": "test_ui_flight_capture.gd",
+      "ok": false,
+      "seconds": 4.03
+    },
+    {
+      "test": "test_ui_help.gd",
+      "ok": false,
+      "seconds": 10.38
+    },
+    {
+      "test": "test_ui_home.gd",
+      "ok": false,
+      "seconds": 4.08
+    },
+    {
+      "test": "test_ui_input.gd",
+      "ok": true,
+      "seconds": 2.39
+    },
+    {
+      "test": "test_ui_language.gd",
+      "ok": false,
+      "seconds": 5.49
+    },
+    {
+      "test": "test_ui_pause.gd",
+      "ok": false,
+      "seconds": 20.83
+    },
+    {
+      "test": "test_ui_runway.gd",
+      "ok": false,
+      "seconds": 12.9
+    },
+    {
+      "test": "test_ui_screen_stack.gd",
+      "ok": false,
+      "seconds": 11.81
+    },
+    {
+      "test": "test_ui_time_of_day.gd",
+      "ok": false,
+      "seconds": 11.18
+    },
+    {
+      "test": "test_ui_time_of_day_pause.gd",
+      "ok": false,
+      "seconds": 6.81
+    },
+    {
+      "test": "test_ui_turbulence.gd",
+      "ok": false,
+      "seconds": 7.16
+    },
+    {
+      "test": "test_ui_weather.gd",
+      "ok": false,
+      "seconds": 7.47
+    },
+    {
+      "test": "test_ui_weather_sliders.gd",
+      "ok": true,
+      "seconds": 3.12
+    },
+    {
+      "test": "test_visual_checkpoint.gd",
+      "ok": true,
+      "seconds": 0.34
+    },
+    {
+      "test": "test_visual_evidence.gd",
+      "ok": true,
+      "seconds": 0.43
+    },
+    {
+      "test": "test_visual_timeline.gd",
+      "ok": true,
+      "seconds": 0.45
+    },
+    {
+      "test": "test_wash_profile.gd",
+      "ok": true,
+      "seconds": 1.2
+    },
+    {
+      "test": "test_wash_transport.gd",
+      "ok": true,
+      "seconds": 1.99
+    },
+    {
+      "test": "test_wind_field.gd",
+      "ok": true,
+      "seconds": 0.35
+    },
+    {
+      "test": "test_wind_flight.gd",
+      "ok": true,
+      "seconds": 3.72
+    },
+    {
+      "test": "test_wind_hud.gd",
+      "ok": true,
+      "seconds": 2.7
+    },
+    {
+      "test": "test_wind_trace.gd",
+      "ok": true,
+      "seconds": 1.43
+    },
+    {
+      "test": "test_wind_turbulence.gd",
+      "ok": true,
+      "seconds": 1.32
+    },
+    {
+      "test": "test_windsock.gd",
+      "ok": true,
+      "seconds": 1.67
+    },
+    {
+      "test": "test_windsock_data.gd",
+      "ok": true,
+      "seconds": 0.33
+    },
+    {
+      "test": "test_wing_polar.gd",
+      "ok": true,
+      "seconds": 0.99
+    },
+    {
+      "test": "test_wing_polar_session.gd",
+      "ok": true,
+      "seconds": 2.45
+    },
+    {
+      "test": "test_world_ephemeris.gd",
+      "ok": true,
+      "seconds": 0.38
+    },
+    {
+      "test": "test_world_field_lights.gd",
+      "ok": true,
+      "seconds": 4.53
+    },
+    {
+      "test": "test_world_flow.gd",
+      "ok": true,
+      "seconds": 3.11
+    },
+    {
+      "test": "test_world_sky.gd",
+      "ok": true,
+      "seconds": 0.46
+    },
+    {
+      "test": "test_world_stars.gd",
+      "ok": true,
+      "seconds": 0.44
+    },
+    {
+      "test": "test_yaw_damping.gd",
+      "ok": true,
+      "seconds": 0.43
+    }
+  ],
+  "seconds": 764.31
+}

@@ -1,6 +1,7 @@
 """Independent fixture mutations, derived from v1 files and loader contracts."""
 from copy import deepcopy
 from dataclasses import dataclass
+import importlib.util
 
 from check import FLEET, ROOT, read_json
 
@@ -32,7 +33,13 @@ def quantities(node, path=()):
 
 
 def build_cases():
-    fleet = {path.stem: read_json(path) for path in sorted(FLEET.glob('*.json'))}
+    # DATA-4 pins historical v1 acceptance (including permissive metadata and
+    # optional/null defaults). AS has a separate strict v2 agreement corpus.
+    spec = importlib.util.spec_from_file_location(
+        'aircraft_standardization_migration', ROOT / 'research/aircraft-standardization/migrate.py')
+    migration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(migration)
+    fleet = {path.stem: migration.legacy_input(read_json(path)) for path in sorted(FLEET.glob('*.json'))}
     # Existing E0b3b geometry, with the same uncalibrated test settings as
     # test_wash_profile.gd. Exercise the opt-in branch without enabling flight data.
     smooth = deepcopy(fleet['jensen_ugly_stik_60'])

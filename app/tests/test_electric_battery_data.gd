@@ -104,11 +104,11 @@ func _initialize() -> void:
 	_check_fixed_voltage(FIXED_6S, 22.2, 400.0 * 22.2)
 
 	_rejects("unknown battery field", BATTERY_4S,
-		func(data: Dictionary) -> void: data.propulsion.battery.cell_count = 4, "unsupported field")
+		func(data: Dictionary) -> void: data.propulsion.battery.cell_count = 4, "/propulsion/battery/cell_count: unknown field")
 	_rejects("mixed fixed-voltage field", BATTERY_4S,
-		func(data: Dictionary) -> void: data.propulsion.battery.voltage_v = {value = 14.8, unit = "V", kind = "estimated", source = "EL2a mixed-field test"}, "unsupported field")
+		func(data: Dictionary) -> void: data.propulsion.battery.voltage_v = {value = 14.8, unit = "V", kind = "estimated", source = "EL2a mixed-field test"}, "/propulsion/battery/voltage_v: unknown field")
 	_rejects("unknown OCV point field", BATTERY_4S,
-		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[0].temperature_c = 25.0, "unsupported field")
+		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[0].temperature_c = 25.0, "/propulsion/battery/ocv_points/0/temperature_c: unknown field")
 	_rejects("zero capacity", BATTERY_4S,
 		func(data: Dictionary) -> void: data.propulsion.battery.capacity_ah.value = 0.0, "capacity_ah")
 	_rejects("negative pack resistance", BATTERY_4S,
@@ -126,7 +126,7 @@ func _initialize() -> void:
 	_rejects("wrong SOC unit", BATTERY_4S,
 		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[0].soc.unit = "percent", "ocv_points[0].soc")
 	_rejects("empty OCV provenance", BATTERY_4S,
-		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[1].voltage.source = " \t", "ocv_points[1].voltage")
+		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[1].voltage.source = " \t", "/propulsion/battery/ocv_points/1/voltage/source")
 	_rejects("missing OCV endpoint", BATTERY_4S,
 		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points[1].soc.value = 0.9, "last SOC knot")
 	_rejects("first OCV endpoint is not zero", BATTERY_4S,
@@ -136,7 +136,7 @@ func _initialize() -> void:
 	_rejects("decreasing OCV curve", BATTERY_4S,
 		func(data: Dictionary) -> void: _set_three_points(data, [0.0, 12.0, 0.5, 16.0, 1.0, 15.0]), "nondecreasing")
 	_rejects("too few OCV points", BATTERY_4S,
-		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points.resize(1), "at least two")
+		func(data: Dictionary) -> void: data.propulsion.battery.ocv_points.resize(1), "/propulsion/battery/ocv_points: must contain at least 2")
 	_rejects("minimum-OCV auxiliary load is infeasible", BATTERY_4S,
 		func(data: Dictionary) -> void: data.propulsion.battery.resistance_ohm.value = 60.0, "feasible bus")
 	_rejects("finite inputs whose auxiliary sag overflows", BATTERY_4S,

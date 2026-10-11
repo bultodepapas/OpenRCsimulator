@@ -106,6 +106,8 @@ func status_text(session: Node) -> String:
 	if not session.is_flyable():
 		return tr("This flight cannot continue: %s") % session.pause_reason
 	if not session.crash.is_empty():
+		if not session.crash_auto_restart:
+			return tr("Crashed. Continue to inspect the wreck, or restart the flight.")
 		return tr("Crashed. The flight restarts by itself after you continue.")
 	match session.pause_reason:
 		"":

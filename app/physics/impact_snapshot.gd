@@ -63,11 +63,11 @@ static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Ar
 
 ## A gear contact position is its undeformed reference. Its rigid-point velocity is NOT the
 ## deforming wheel's contact velocity; leave kinematics unknown instead of inventing that rate.
-static func gear_limit(s: PackedFloat64Array, tick: int, gear: Dictionary) -> Snapshot:
+static func gear_limit(s: PackedFloat64Array, tick: int, gear: Dictionary, surfaces := PackedFloat64Array()) -> Snapshot:
 	var out: Snapshot = _start(s, tick, "gear_limit")
-	if gear.is_empty() or -s[RB.POS + 2] > gear.reach:
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Ground.Wheels.Terrain.max_height(surfaces):
 		return out
-	var compressions: PackedFloat64Array = Ground.compressions(s, gear)
+	var compressions: PackedFloat64Array = Ground.compressions(s, gear, surfaces)
 	for i in compressions.size():
 		var contact: Dictionary = gear.contacts[i]
 		if compressions[i] > contact.max_compression:

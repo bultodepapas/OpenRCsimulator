@@ -1,0 +1,61 @@
+{
+	"cases": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"body_aux_loads_inputs_sha256": "6b1529a839800b6a81da3f53025b7c7c7d2293b6b4e1ca9aaa486ee6a916df05",
+			"minimum_altitude_m": 29.3472906137601,
+			"ticks": 1200,
+			"windy": false
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"body_aux_loads_inputs_sha256": "2e4f0539aa54d03e0de6a6cc4b288927418935782be0e121cd1a6b522c8782fb",
+			"minimum_altitude_m": 29.34729061354,
+			"ticks": 1200,
+			"windy": true
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"body_aux_loads_inputs_sha256": "9c5c5ab6a3ac374797d935c43fdbef70e7f6540e2aba78d3e22c1513c8e3b861",
+			"minimum_altitude_m": 26.4604013676082,
+			"ticks": 1200,
+			"windy": false
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"body_aux_loads_inputs_sha256": "e15756efec21dccf478fa9d3e25c588c121ba840a4448315bdb1bf1e2e4a3cbf",
+			"minimum_altitude_m": 26.4604013655148,
+			"ticks": 1200,
+			"windy": true
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"body_aux_loads_inputs_sha256": "ab1ecfc49a3b8ab48bebd3a315ec3ad9c08c1e937410cbc5c78037bbae45f483",
+			"minimum_altitude_m": 26.9406905005344,
+			"ticks": 1200,
+			"windy": false
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"body_aux_loads_inputs_sha256": "07ab33a2e457b2d1054d72a074aa7b11b15122e5729590c335a574862bf7a98d",
+			"minimum_altitude_m": 26.9406905001881,
+			"ticks": 1200,
+			"windy": true
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"body_aux_loads_inputs_sha256": "3311bce65b0eead4ddc9160c23b25969203e93190a7baa8c405f9d68a4c08df1",
+			"minimum_altitude_m": 22.9272786865007,
+			"ticks": 1200,
+			"windy": false
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"body_aux_loads_inputs_sha256": "265db035fbe71ed8962650d936f47481c930714b22ca7acfb880ffb900be5f40",
+			"minimum_altitude_m": 22.9272786843,
+			"ticks": 1200,
+			"windy": true
+		}
+	],
+	"engine": "4.7.2-stable (official)"
+}

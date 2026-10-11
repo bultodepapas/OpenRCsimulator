@@ -1,0 +1,76 @@
+{
+  "format": "openrc-as04-focused-final-v1",
+  "date": "2026-10-11",
+  "godot": {
+    "path": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "commands": [
+    "python research/aircraft-standardization/test_schema_v2.py --app app --godot .tools/Godot_v4.7.2-stable_win64_console.exe --report docs/research/aircraft-standardization/AS-01/schema-v2-loader-agreement.json",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_aircraft_contract.gd",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_aircraft_render_contract.gd"
+  ],
+  "results": {
+    "v2_schema_loader": {
+      "cases": 62,
+      "schema_loader_agreements": 60,
+      "positive_fleet": 8,
+      "combustion_masks": 18,
+      "turbine_masks": 8,
+      "legacy_v1": 2,
+      "runtime_only_coupled_cases": 2,
+      "failures": [],
+      "exit_code": 0
+    },
+    "aircraft_contract": {
+      "checks": 1906,
+      "failures": 0,
+      "exit_code": 0
+    },
+    "gear_topology": {
+      "all_zero_steering_positive": true,
+      "inverted_capability_schema_pass": true,
+      "public_loader_rejected": true
+    },
+    "aircraft_render_contract": {
+      "checks": 170,
+      "failures": 0,
+      "exit_code": 0
+    },
+    "propeller_range_audit": {
+      "tests": 23,
+      "failures": 0,
+      "exit_code": 0
+    }
+  },
+  "artifacts": [
+    "docs/research/aircraft-standardization/AS-01/schema-v2-loader-agreement.json",
+    "docs/research/aircraft-standardization/AS-01/schema-v2-loader-agreement.log",
+    "docs/research/aircraft-standardization/AS-04/focused-final/test_aircraft_contract.log",
+    "docs/research/aircraft-standardization/AS-04/focused-final/test_aircraft_render_contract.log",
+    "docs/research/aircraft-standardization/AS-04/focused-final/range-audit-v2-compatibility.md",
+    "docs/research/aircraft-standardization/AS-04/focused-final/range-audit-v2-compatibility.log"
+  ],
+  "source_sha256": {
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "app/physics/aircraft_data.gd": "c8a0990962b83d31d8efbe1123f347944768832e3c3374f2978176e83da9d350",
+    "app/physics/aircraft_contract.gd": "7C04C454A757711B717FBADE8F56C1DFC9F72E4AE3DA325AECC1D32C0A1F0EBC",
+    "app/physics/wheel_profiles.gd": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5",
+    "app/sim/flight_session.gd": "e92208bc254c0159427ca9da0b5532311ccb23ad44754b7077891502c6b07bc0",
+    "app/data/ground/wheel_profiles.json": "91fc52dc3269180113d8880aad10fae538c3b7d55ab37808eabfcfa6f4c8420d",
+    "app/data/schema/aircraft-contract-v2.json": "08e69d0c370b7730f225ff412937a155762d3f45085ff385b121423ced5ba6f9",
+    "app/data/schema/openrc-aircraft-v2.schema.json": "1141f9683492ee99feb991c6ab44a37b899eecc6cc02d11d86982359db7b64d9",
+    "app/app_state/aircraft_catalog.gd": "b1362914c9219a7023c07a4c9147cce5825c08c5b98f63d5c8f1f66d009ea35f",
+    "app/render/airplane.gd": "85d511f88314d9cb24c6d4cc970ac29914f1f50775b56c5f2a82107a2bc135c2",
+    "app/input/commands.gd": "f40eba787a585744cf0079fe87e07b4a09193b72838e513346572b02e724d4e9",
+    "app/physics/aero.gd": "b1a9d96a357281ca1c02bc5e87ad452d2445e8e799f1a750d69de51d0e33521b",
+    "app/tests/test_aircraft_contract.gd": "4CDCAA77EF374C3D4ED989A1DD3A4D7F2B1F511C148FCC99BF5F74FD6B01641C",
+    "app/tests/test_aircraft_render_contract.gd": "d2b5a078e1ee7f20e31d90cb4e03ea8827ed3afb20a3c88952192d4788543004",
+    "research/aircraft-standardization/test_schema_v2.py": "317D0B1926C0DAABC7663A1388B0DE6834A486E2F3EDA6555CD578C324291634",
+    "AIRCRAFT_CONTRACT.md": "A57637B3FD857F610D1790D5423B56B4EDC22436EE6A9A7F554460A86DAC1A8E",
+    "research/propulsion/range-audit/audit.py": "A068F8D01788FB24E0DF14E67B9F2EDC04CC242A64A18D1D10C832E22D57D264",
+    "research/propulsion/range-audit/test_audit.py": "3526190281908358D83F211CA0B653D9CAFF02ACFFBAF6220ECCDD9C1B4AFB9A",
+    "research/propulsion/range-audit/README.md": "F27A7D65E94890BA65E89C16E23FBA0D64875C12C4DA7950F904F843639FD5E3"
+  }
+}

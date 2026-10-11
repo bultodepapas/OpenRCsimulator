@@ -1,0 +1,824 @@
+{
+  "format": "openrc-as04-paired-comparison-v1",
+  "run_id": "AS04-paired-p51-24-20261011-r1",
+  "ok": true,
+  "failures": [],
+  "run_info": {
+    "run_id": "AS04-paired-p51-24-20261011-r1",
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "engine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "driver": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+    "driver_sha256": "0b48b199c2f7633e561a765de5e16753ff99e618b77d5e4a27675fc79f924cce",
+    "wrapper_sha256": "ab0d201a729184e9819e70c4c91c9787fba15b06ff42fe09b7eb6c929d38a07b",
+    "started_utc": "2026-10-11T22:30:53.700597+00:00",
+    "method": "explicit AircraftData.legacy_v1_input clone; 24 ABBA-paired 120-tick batches per selected aircraft after a 120-tick warmup; reset and input preparation outside individual Simulation.step timers",
+    "selected_case": "p51d-mustang-120",
+    "pair_count": 24,
+    "timing_policy": "descriptive only; no threshold; prior cross-process measurements do not establish regression",
+    "host_context_policy": "record visible Godot processes immediately before and after each engine phase; this is residual-variability context, not a CPU/load measurement"
+  },
+  "self_check": {
+    "label": "self_check",
+    "mode": "check",
+    "only": "p51d-mustang-120",
+    "pair_count": 24,
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+      "--",
+      "--mode=check",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-standardization/AS-04/evidence/AS04-paired-p51-24-20261011-r1/self_check.json",
+      "--pairs=24",
+      "--only=p51d-mustang-120"
+    ],
+    "elapsed_seconds": 0.86,
+    "timeout_seconds": 180,
+    "timed_out": false,
+    "return_code": 0,
+    "engine_errors": [],
+    "source_unchanged_during_run": true,
+    "host_processes_before": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 315.28125,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": []
+      }
+    },
+    "host_processes_after": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 316.140625,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": []
+      }
+    },
+    "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-p51-24-20261011-r1\\self_check.json",
+    "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-p51-24-20261011-r1\\self_check.log"
+  },
+  "source_manifest_sha256": "643aa1a0b8d934dff6bbd9f339c62c4529482b0122123a731c60c66ec8a4970e",
+  "cases": [
+    {
+      "key": "p51d-mustang-120",
+      "kind": "catalog",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 24,
+        "median": 0.9861253532039012,
+        "p10": 0.8036929057337221,
+        "p90": 1.1251141552511414,
+        "min": 0.7535387177352206,
+        "max": 1.1340996168582376,
+        "mad": 0.08607046846185945
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 24,
+        "median": 0.9716008228412809,
+        "p10": 0.8021844660194175,
+        "p90": 1.2350597609561753,
+        "min": 0.689873417721519,
+        "max": 1.3688760806916427,
+        "mad": 0.10239850562223884
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 620,
+            "mean_us": 390.025,
+            "min_us": 357,
+            "p50_us": 370.0,
+            "p95_us": 481,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 897,
+            "mean_us": 441.925,
+            "min_us": 367,
+            "p50_us": 404.5,
+            "p95_us": 609,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9147095179233622,
+          "p95_ratio_v2_over_legacy": 0.7898193760262726
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1031,
+            "mean_us": 502.73333333333335,
+            "min_us": 369,
+            "p50_us": 465.5,
+            "p95_us": 715,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 752,
+            "mean_us": 480.06666666666666,
+            "min_us": 365,
+            "p50_us": 430.5,
+            "p95_us": 647,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.08130081300813,
+          "p95_ratio_v2_over_legacy": 1.1051004636785162
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1009,
+            "mean_us": 537.6333333333333,
+            "min_us": 374,
+            "p50_us": 528.5,
+            "p95_us": 662,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 859,
+            "mean_us": 492.95,
+            "min_us": 367,
+            "p50_us": 467.5,
+            "p95_us": 664,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1304812834224598,
+          "p95_ratio_v2_over_legacy": 0.9969879518072289
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 804,
+            "mean_us": 479.7,
+            "min_us": 371,
+            "p50_us": 444.0,
+            "p95_us": 661,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1438,
+            "mean_us": 497.05,
+            "min_us": 361,
+            "p50_us": 443.0,
+            "p95_us": 824,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.002257336343115,
+          "p95_ratio_v2_over_legacy": 0.8021844660194175
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 716,
+            "mean_us": 480.10833333333335,
+            "min_us": 367,
+            "p50_us": 423.5,
+            "p95_us": 660,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1104,
+            "mean_us": 476.4166666666667,
+            "min_us": 371,
+            "p50_us": 424.0,
+            "p95_us": 711,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9988207547169812,
+          "p95_ratio_v2_over_legacy": 0.9282700421940928
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 792,
+            "mean_us": 449.71666666666664,
+            "min_us": 368,
+            "p50_us": 410.0,
+            "p95_us": 632,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 884,
+            "mean_us": 498.98333333333335,
+            "min_us": 368,
+            "p50_us": 455.5,
+            "p95_us": 698,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9001097694840834,
+          "p95_ratio_v2_over_legacy": 0.9054441260744985
+        },
+        {
+          "pair": 7,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 881,
+            "mean_us": 412.68333333333334,
+            "min_us": 363,
+            "p50_us": 390.0,
+            "p95_us": 511,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 668,
+            "mean_us": 437.05833333333334,
+            "min_us": 372,
+            "p50_us": 405.0,
+            "p95_us": 583,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9629629629629629,
+          "p95_ratio_v2_over_legacy": 0.8765008576329331
+        },
+        {
+          "pair": 8,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 681,
+            "mean_us": 429.69166666666666,
+            "min_us": 361,
+            "p50_us": 391.5,
+            "p95_us": 604,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 612,
+            "mean_us": 406.2416666666667,
+            "min_us": 364,
+            "p50_us": 389.0,
+            "p95_us": 489,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.006426735218509,
+          "p95_ratio_v2_over_legacy": 1.2351738241308794
+        },
+        {
+          "pair": 9,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 904,
+            "mean_us": 468.275,
+            "min_us": 372,
+            "p50_us": 433.5,
+            "p95_us": 669,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1480,
+            "mean_us": 487.39166666666665,
+            "min_us": 365,
+            "p50_us": 434.0,
+            "p95_us": 703,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9988479262672811,
+          "p95_ratio_v2_over_legacy": 0.9516358463726885
+        },
+        {
+          "pair": 10,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 721,
+            "mean_us": 477.51666666666665,
+            "min_us": 365,
+            "p50_us": 432.0,
+            "p95_us": 648,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 867,
+            "mean_us": 513.6833333333333,
+            "min_us": 370,
+            "p50_us": 501.0,
+            "p95_us": 673,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.8622754491017964,
+          "p95_ratio_v2_over_legacy": 0.962852897473997
+        },
+        {
+          "pair": 11,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1526,
+            "mean_us": 582.7,
+            "min_us": 381,
+            "p50_us": 543.0,
+            "p95_us": 950,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1082,
+            "mean_us": 511.7416666666667,
+            "min_us": 367,
+            "p50_us": 489.0,
+            "p95_us": 694,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1104294478527608,
+          "p95_ratio_v2_over_legacy": 1.3688760806916427
+        },
+        {
+          "pair": 12,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 839,
+            "mean_us": 437.175,
+            "min_us": 367,
+            "p50_us": 403.5,
+            "p95_us": 597,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 749,
+            "mean_us": 528.775,
+            "min_us": 372,
+            "p50_us": 531.0,
+            "p95_us": 616,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.7598870056497176,
+          "p95_ratio_v2_over_legacy": 0.9691558441558441
+        },
+        {
+          "pair": 13,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 683,
+            "mean_us": 417.3666666666667,
+            "min_us": 363,
+            "p50_us": 394.0,
+            "p95_us": 545,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1114,
+            "mean_us": 524.4916666666667,
+            "min_us": 367,
+            "p50_us": 474.5,
+            "p95_us": 790,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.8303477344573235,
+          "p95_ratio_v2_over_legacy": 0.689873417721519
+        },
+        {
+          "pair": 14,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1275,
+            "mean_us": 541.6916666666667,
+            "min_us": 369,
+            "p50_us": 550.5,
+            "p95_us": 661,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 892,
+            "mean_us": 538.7166666666667,
+            "min_us": 373,
+            "p50_us": 525.5,
+            "p95_us": 729,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0475737392959086,
+          "p95_ratio_v2_over_legacy": 0.906721536351166
+        },
+        {
+          "pair": 15,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1451,
+            "mean_us": 624.7083333333334,
+            "min_us": 381,
+            "p50_us": 616.0,
+            "p95_us": 930,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1430,
+            "mean_us": 585.4333333333333,
+            "min_us": 393,
+            "p50_us": 547.5,
+            "p95_us": 753,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1251141552511414,
+          "p95_ratio_v2_over_legacy": 1.2350597609561753
+        },
+        {
+          "pair": 16,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 876,
+            "mean_us": 454.9,
+            "min_us": 363,
+            "p50_us": 413.5,
+            "p95_us": 637,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1146,
+            "mean_us": 522.425,
+            "min_us": 368,
+            "p50_us": 514.5,
+            "p95_us": 720,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.8036929057337221,
+          "p95_ratio_v2_over_legacy": 0.8847222222222222
+        },
+        {
+          "pair": 17,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 858,
+            "mean_us": 481.7583333333333,
+            "min_us": 365,
+            "p50_us": 452.5,
+            "p95_us": 673,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1145,
+            "mean_us": 549.7916666666666,
+            "min_us": 375,
+            "p50_us": 600.5,
+            "p95_us": 671,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.7535387177352206,
+          "p95_ratio_v2_over_legacy": 1.0029806259314455
+        },
+        {
+          "pair": 18,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 731,
+            "mean_us": 482.73333333333335,
+            "min_us": 366,
+            "p50_us": 444.0,
+            "p95_us": 643,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1022,
+            "mean_us": 436.21666666666664,
+            "min_us": 366,
+            "p50_us": 391.5,
+            "p95_us": 599,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1340996168582376,
+          "p95_ratio_v2_over_legacy": 1.0734557595993321
+        },
+        {
+          "pair": 19,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 837,
+            "mean_us": 463.35,
+            "min_us": 363,
+            "p50_us": 407.5,
+            "p95_us": 653,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 821,
+            "mean_us": 426.98333333333335,
+            "min_us": 364,
+            "p50_us": 390.0,
+            "p95_us": 589,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.044871794871795,
+          "p95_ratio_v2_over_legacy": 1.1086587436332767
+        },
+        {
+          "pair": 20,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 796,
+            "mean_us": 464.31666666666666,
+            "min_us": 363,
+            "p50_us": 406.5,
+            "p95_us": 651,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 689,
+            "mean_us": 411.425,
+            "min_us": 363,
+            "p50_us": 383.5,
+            "p95_us": 553,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.059973924380704,
+          "p95_ratio_v2_over_legacy": 1.1772151898734178
+        },
+        {
+          "pair": 21,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 850,
+            "mean_us": 443.875,
+            "min_us": 365,
+            "p50_us": 403.0,
+            "p95_us": 638,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 819,
+            "mean_us": 465.28333333333336,
+            "min_us": 369,
+            "p50_us": 414.0,
+            "p95_us": 655,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9734299516908212,
+          "p95_ratio_v2_over_legacy": 0.9740458015267176
+        },
+        {
+          "pair": 22,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1230,
+            "mean_us": 503.94166666666666,
+            "min_us": 370,
+            "p50_us": 441.0,
+            "p95_us": 829,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1349,
+            "mean_us": 532.6083333333333,
+            "min_us": 375,
+            "p50_us": 490.0,
+            "p95_us": 738,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9,
+          "p95_ratio_v2_over_legacy": 1.1233062330623307
+        },
+        {
+          "pair": 23,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1173,
+            "mean_us": 512.8916666666667,
+            "min_us": 367,
+            "p50_us": 469.0,
+            "p95_us": 764,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 844,
+            "mean_us": 508.575,
+            "min_us": 372,
+            "p50_us": 483.5,
+            "p95_us": 711,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9700103412616339,
+          "p95_ratio_v2_over_legacy": 1.0745428973277074
+        },
+        {
+          "pair": 24,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 728,
+            "mean_us": 416.1166666666667,
+            "min_us": 362,
+            "p50_us": 390.0,
+            "p95_us": 553,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 902,
+            "mean_us": 478.05,
+            "min_us": 365,
+            "p50_us": 451.0,
+            "p95_us": 685,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.8647450110864745,
+          "p95_ratio_v2_over_legacy": 0.8072992700729927
+        }
+      ]
+    }
+  ],
+  "measurement_policy": "same-process paired ratios and spread are descriptive; model and every end-of-batch simulation byte boundary are exact acceptance checks",
+  "benchmark_run": {
+    "label": "benchmark",
+    "mode": "bench",
+    "only": "p51d-mustang-120",
+    "pair_count": 24,
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+      "--",
+      "--mode=bench",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-standardization/AS-04/evidence/AS04-paired-p51-24-20261011-r1/benchmark.json",
+      "--pairs=24",
+      "--only=p51d-mustang-120"
+    ],
+    "elapsed_seconds": 3.863,
+    "timeout_seconds": 180,
+    "timed_out": false,
+    "return_code": 0,
+    "engine_errors": [],
+    "source_unchanged_during_run": true,
+    "host_processes_before": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 316.265625,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": []
+      }
+    },
+    "host_processes_after": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 317.1875,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": []
+      }
+    },
+    "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-p51-24-20261011-r1\\benchmark.json",
+    "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-p51-24-20261011-r1\\benchmark.log"
+  }
+}

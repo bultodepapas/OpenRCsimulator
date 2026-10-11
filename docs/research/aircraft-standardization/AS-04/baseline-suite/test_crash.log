@@ -1,0 +1,118 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   level at 0.30 m: clear of the ground  
+ok   level at 0.20 m: the wheels touch, which is not a hull crash  
+ok   level at 0.10 m: the gear is pushed past its travel  
+ok   level at 0.05 m: the belly touches  
+ok   inverted at 0.35 m: clear  
+ok   inverted at 0.20 m: the fin touches  
+ok   knife edge at 0.70 m: the down wing tip touches  
+ok   knife edge at 0.85 m: clear  
+ok   vertical dive at 0.30 m: the spinner touches  
+CRASH at 11.4 m/s (sink 10.1 m/s, airframe contact (hull point 2), point speed 11.0 m/s at detected tick) - restarting
+CRASH at 11.9 m/s (sink 6.3 m/s, airframe contact (hull point 3), point speed 15.0 m/s at detected tick) - restarting
+CRASH at 16.8 m/s (sink 10.3 m/s, airframe contact (hull point 5), point speed 13.6 m/s at detected tick) - restarting
+CRASH at 17.4 m/s (sink 10.1 m/s, airframe contact (hull point 2), point speed 19.4 m/s at detected tick) - restarting
+CRASH at 21.9 m/s (sink 7.7 m/s, airframe contact (hull point 1), point speed 19.6 m/s at detected tick) - restarting
+CRASH at 16.3 m/s (sink 13.0 m/s, airframe contact (hull point 3), point speed 16.8 m/s at detected tick) - restarting
+CRASH at 12.2 m/s (sink 7.6 m/s, airframe contact (hull point 3), point speed 12.7 m/s at detected tick) - restarting
+CRASH at 13.9 m/s (sink 4.0 m/s, airframe contact (hull point 2), point speed 13.2 m/s at detected tick) - restarting
+CRASH at 7.9 m/s (sink 7.7 m/s, airframe contact (hull point 7), point speed 8.9 m/s at detected tick) - restarting
+CRASH at 22.3 m/s (sink 10.4 m/s, airframe contact (hull point 1), point speed 21.9 m/s at detected tick) - restarting
+CRASH at 15.3 m/s (sink 8.9 m/s, airframe contact (hull point 7), point speed 9.9 m/s at detected tick) - restarting
+CRASH at 10.9 m/s (sink 3.9 m/s, airframe contact (hull point 7), point speed 10.0 m/s at detected tick) - restarting
+CRASH at 16.4 m/s (sink 13.0 m/s, airframe contact (hull point 2), point speed 18.0 m/s at detected tick) - restarting
+CRASH at 18.5 m/s (sink 13.3 m/s, airframe contact (hull point 5), point speed 16.2 m/s at detected tick) - restarting
+CRASH at 13.2 m/s (sink 5.5 m/s, airframe contact (hull point 3), point speed 13.0 m/s at detected tick) - restarting
+CRASH at 14.2 m/s (sink 5.4 m/s, airframe contact (hull point 4), point speed 12.6 m/s at detected tick) - restarting
+CRASH at 19.3 m/s (sink 6.5 m/s, airframe contact (hull point 1), point speed 16.7 m/s at detected tick) - restarting
+CRASH at 12.8 m/s (sink 8.0 m/s, airframe contact (hull point 3), point speed 13.4 m/s at detected tick) - restarting
+CRASH at 9.8 m/s (sink 6.1 m/s, airframe contact (hull point 3), point speed 10.5 m/s at detected tick) - restarting
+CRASH at 18.1 m/s (sink 6.6 m/s, airframe contact (hull point 5), point speed 12.4 m/s at detected tick) - restarting
+CRASH at 14.4 m/s (sink 7.0 m/s, airframe contact (hull point 5), point speed 13.6 m/s at detected tick) - restarting
+CRASH at 8.6 m/s (sink 5.2 m/s, airframe contact (hull point 3), point speed 8.2 m/s at detected tick) - restarting
+CRASH at 11.1 m/s (sink 8.8 m/s, airframe contact (hull point 2), point speed 10.3 m/s at detected tick) - restarting
+CRASH at 14.7 m/s (sink 5.8 m/s, airframe contact (hull point 3), point speed 13.1 m/s at detected tick) - restarting
+CRASH at 16.2 m/s (sink 11.8 m/s, airframe contact (hull point 4), point speed 16.3 m/s at detected tick) - restarting
+CRASH at 21.0 m/s (sink 10.8 m/s, airframe contact (hull point 5), point speed 15.2 m/s at detected tick) - restarting
+CRASH at 22.9 m/s (sink 13.3 m/s, airframe contact (hull point 6), point speed 22.5 m/s at detected tick) - restarting
+CRASH at 19.8 m/s (sink 11.4 m/s, airframe contact (hull point 3), point speed 19.0 m/s at detected tick) - restarting
+CRASH at 22.5 m/s (sink 10.1 m/s, airframe contact (hull point 2), point speed 20.9 m/s at detected tick) - restarting
+CRASH at 21.4 m/s (sink 13.1 m/s, airframe contact (hull point 1), point speed 23.8 m/s at detected tick) - restarting
+CRASH at 18.7 m/s (sink 10.7 m/s, airframe contact (hull point 2), point speed 20.2 m/s at detected tick) - restarting
+CRASH at 15.7 m/s (sink 6.9 m/s, airframe contact (hull point 2), point speed 16.2 m/s at detected tick) - restarting
+CRASH at 11.6 m/s (sink 10.3 m/s, airframe contact (hull point 1), point speed 11.8 m/s at detected tick) - restarting
+CRASH at 13.4 m/s (sink 9.0 m/s, airframe contact (hull point 1), point speed 15.3 m/s at detected tick) - restarting
+CRASH at 13.4 m/s (sink 11.2 m/s, airframe contact (hull point 4), point speed 12.4 m/s at detected tick) - restarting
+CRASH at 13.6 m/s (sink 13.0 m/s, airframe contact (hull point 7), point speed 14.7 m/s at detected tick) - restarting
+CRASH at 15.3 m/s (sink 11.6 m/s, airframe contact (hull point 2), point speed 15.3 m/s at detected tick) - restarting
+CRASH at 12.2 m/s (sink 10.9 m/s, airframe contact (hull point 3), point speed 12.2 m/s at detected tick) - restarting
+CRASH at 14.6 m/s (sink 11.1 m/s, airframe contact (hull point 1), point speed 15.9 m/s at detected tick) - restarting
+CRASH at 12.0 m/s (sink 9.8 m/s, landing gear travel limit (nose)) - restarting
+CRASH at 14.5 m/s (sink 7.3 m/s, airframe contact (hull point 3), point speed 14.5 m/s at detected tick) - restarting
+CRASH at 20.1 m/s (sink 11.9 m/s, airframe contact (hull point 1), point speed 20.6 m/s at detected tick) - restarting
+CRASH at 11.3 m/s (sink 6.0 m/s, airframe contact (hull point 2), point speed 14.5 m/s at detected tick) - restarting
+CRASH at 15.1 m/s (sink 13.7 m/s, airframe contact (hull point 7), point speed 13.9 m/s at detected tick) - restarting
+CRASH at 17.9 m/s (sink 5.8 m/s, airframe contact (hull point 2), point speed 14.6 m/s at detected tick) - restarting
+CRASH at 20.3 m/s (sink 11.6 m/s, airframe contact (hull point 5), point speed 17.2 m/s at detected tick) - restarting
+CRASH at 11.7 m/s (sink 6.9 m/s, airframe contact (hull point 1), point speed 10.5 m/s at detected tick) - restarting
+CRASH at 18.4 m/s (sink 8.6 m/s, airframe contact (hull point 2), point speed 21.7 m/s at detected tick) - restarting
+CRASH at 19.8 m/s (sink 14.6 m/s, airframe contact (hull point 1), point speed 19.3 m/s at detected tick) - restarting
+CRASH at 19.2 m/s (sink 7.2 m/s, airframe contact (hull point 2), point speed 18.8 m/s at detected tick) - restarting
+CRASH at 15.6 m/s (sink 13.7 m/s, airframe contact (hull point 1), point speed 12.6 m/s at detected tick) - restarting
+CRASH at 21.2 m/s (sink 9.6 m/s, airframe contact (hull point 3), point speed 21.8 m/s at detected tick) - restarting
+CRASH at 19.1 m/s (sink 8.2 m/s, airframe contact (hull point 2), point speed 16.6 m/s at detected tick) - restarting
+CRASH at 13.1 m/s (sink 9.9 m/s, airframe contact (hull point 3), point speed 13.4 m/s at detected tick) - restarting
+CRASH at 15.0 m/s (sink 14.3 m/s, airframe contact (hull point 2), point speed 14.9 m/s at detected tick) - restarting
+CRASH at 24.1 m/s (sink 12.0 m/s, airframe contact (hull point 1), point speed 24.0 m/s at detected tick) - restarting
+CRASH at 21.5 m/s (sink 11.1 m/s, airframe contact (hull point 2), point speed 22.7 m/s at detected tick) - restarting
+CRASH at 8.3 m/s (sink 6.6 m/s, airframe contact (hull point 3), point speed 9.8 m/s at detected tick) - restarting
+CRASH at 18.2 m/s (sink 7.8 m/s, airframe contact (hull point 3), point speed 19.2 m/s at detected tick) - restarting
+CRASH at 14.8 m/s (sink 14.3 m/s, airframe contact (hull point 1), point speed 15.9 m/s at detected tick) - restarting
+CRASH at 15.2 m/s (sink 10.6 m/s, airframe contact (hull point 4), point speed 12.9 m/s at detected tick) - restarting
+CRASH at 13.9 m/s (sink 8.4 m/s, airframe contact (hull point 3), point speed 14.1 m/s at detected tick) - restarting
+CRASH at 20.6 m/s (sink 11.8 m/s, airframe contact (hull point 3), point speed 21.0 m/s at detected tick) - restarting
+CRASH at 17.7 m/s (sink 12.3 m/s, airframe contact (hull point 3), point speed 18.1 m/s at detected tick) - restarting
+CRASH at 17.9 m/s (sink 10.0 m/s, airframe contact (hull point 3), point speed 16.5 m/s at detected tick) - restarting
+CRASH at 11.4 m/s (sink 11.1 m/s, airframe contact (hull point 1), point speed 14.0 m/s at detected tick) - restarting
+CRASH at 10.3 m/s (sink 6.3 m/s, airframe contact (hull point 3), point speed 13.0 m/s at detected tick) - restarting
+CRASH at 11.7 m/s (sink 6.6 m/s, airframe contact (hull point 7), point speed 14.9 m/s at detected tick) - restarting
+CRASH at 5.8 m/s (sink 5.1 m/s, airframe contact (hull point 6), point speed 5.3 m/s at detected tick) - restarting
+CRASH at 9.4 m/s (sink 7.1 m/s, airframe contact (hull point 1), point speed 10.4 m/s at detected tick) - restarting
+CRASH at 13.8 m/s (sink 5.2 m/s, airframe contact (hull point 1), point speed 11.6 m/s at detected tick) - restarting
+CRASH at 15.0 m/s (sink 10.5 m/s, airframe contact (hull point 1), point speed 14.4 m/s at detected tick) - restarting
+CRASH at 9.6 m/s (sink 5.6 m/s, airframe contact (hull point 5), point speed 10.7 m/s at detected tick) - restarting
+CRASH at 20.1 m/s (sink 12.8 m/s, airframe contact (hull point 3), point speed 20.3 m/s at detected tick) - restarting
+CRASH at 9.2 m/s (sink 4.3 m/s, airframe contact (hull point 7), point speed 10.5 m/s at detected tick) - restarting
+CRASH at 8.8 m/s (sink 7.1 m/s, airframe contact (hull point 3), point speed 9.3 m/s at detected tick) - restarting
+CRASH at 18.8 m/s (sink 14.7 m/s, airframe contact (hull point 6), point speed 16.3 m/s at detected tick) - restarting
+CRASH at 21.4 m/s (sink 7.4 m/s, airframe contact (hull point 1), point speed 24.1 m/s at detected tick) - restarting
+CRASH at 10.1 m/s (sink 8.9 m/s, airframe contact (hull point 1), point speed 10.0 m/s at detected tick) - restarting
+CRASH at 13.3 m/s (sink 8.3 m/s, airframe contact (hull point 1), point speed 14.7 m/s at detected tick) - restarting
+CRASH at 24.0 m/s (sink 3.6 m/s, airframe contact (hull point 2), point speed 25.5 m/s at detected tick) - restarting
+CRASH at 15.4 m/s (sink 10.5 m/s, airframe contact (hull point 1), point speed 16.9 m/s at detected tick) - restarting
+CRASH at 16.5 m/s (sink 12.1 m/s, airframe contact (hull point 4), point speed 16.4 m/s at detected tick) - restarting
+CRASH at 7.9 m/s (sink 6.3 m/s, airframe contact (hull point 7), point speed 7.0 m/s at detected tick) - restarting
+CRASH at 17.5 m/s (sink 13.2 m/s, airframe contact (hull point 2), point speed 18.1 m/s at detected tick) - restarting
+CRASH at 10.3 m/s (sink 8.9 m/s, airframe contact (hull point 2), point speed 9.8 m/s at detected tick) - restarting
+CRASH at 12.2 m/s (sink 6.8 m/s, airframe contact (hull point 2), point speed 11.7 m/s at detected tick) - restarting
+CRASH at 16.3 m/s (sink 5.2 m/s, airframe contact (hull point 3), point speed 17.8 m/s at detected tick) - restarting
+CRASH at 27.5 m/s (sink 16.9 m/s, airframe contact (hull point 3), point speed 27.2 m/s at detected tick) - restarting
+CRASH at 19.2 m/s (sink 11.3 m/s, airframe contact (hull point 6), point speed 15.4 m/s at detected tick) - restarting
+CRASH at 11.7 m/s (sink 4.6 m/s, airframe contact (hull point 7), point speed 10.1 m/s at detected tick) - restarting
+CRASH at 12.8 m/s (sink 5.9 m/s, airframe contact (hull point 2), point speed 14.6 m/s at detected tick) - restarting
+CRASH at 12.1 m/s (sink 8.5 m/s, airframe contact (hull point 2), point speed 10.2 m/s at detected tick) - restarting
+CRASH at 20.3 m/s (sink 9.3 m/s, airframe contact (hull point 1), point speed 20.2 m/s at detected tick) - restarting
+CRASH at 20.6 m/s (sink 11.4 m/s, airframe contact (hull point 7), point speed 22.3 m/s at detected tick) - restarting
+CRASH at 10.2 m/s (sink 9.5 m/s, airframe contact (hull point 1), point speed 9.6 m/s at detected tick) - restarting
+CRASH at 12.4 m/s (sink 6.5 m/s, airframe contact (hull point 2), point speed 11.9 m/s at detected tick) - restarting
+CRASH at 15.4 m/s (sink 11.3 m/s, airframe contact (hull point 4), point speed 13.2 m/s at detected tick) - restarting
+CRASH at 18.3 m/s (sink 13.0 m/s, airframe contact (hull point 2), point speed 18.1 m/s at detected tick) - restarting
+CRASH at 14.4 m/s (sink 11.5 m/s, airframe contact (hull point 4), point speed 14.9 m/s at detected tick) - restarting
+ok   100 random crashes: detected, impact finite and shown, then restart at the trimmed start  
+CRASH at 10.0 m/s (sink 0.0 m/s, landing gear travel limit (main_left)) - restarting
+ok   crash freeze = 1.5 s (360 ticks)  360 ticks
+CRASH at 10.0 m/s (sink 0.0 m/s, landing gear travel limit (main_left)) - restarting
+ok   R during the freeze restarts at once  
+12 checks, 0 failed

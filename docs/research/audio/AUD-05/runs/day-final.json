@@ -1,0 +1,161 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "100",
+		"fps": "60",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/aud05-day-final",
+		"resume-focus": true,
+		"wildlife-review": true
+	},
+	"audio_sources_sha256": {
+		"adapter": "0dfe9dbf814c4fab89b0f09086e7197e57c23e22e137df20734984f49ee894da",
+		"mixer": "aec009ff2d14e192fccc363d1e829a1770e9e9d4ab0019a97c196841a533970f",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b",
+		"wildlife": "e2ea89d0019da4b224d08bc4c352704fe1d6471fb1443756b28f32c2adcf78a4"
+	},
+	"captured_seconds": 100.0,
+	"discarded_frames": 0,
+	"display": "Windows",
+	"distance_max_m": 1461.16552734375,
+	"distance_min_m": 66.4478988647461,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 5,
+			"wall_s": 0.0024
+		}
+	],
+	"final_pause_reason": "",
+	"final_paused": false,
+	"final_tick": 23996,
+	"focus_resumes": 0,
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 4800000,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -1.00000029002274,
+	"pilot_distance_min_m": 66.4478988647461,
+	"pilot_doppler_max": 1.02184404362312,
+	"pilot_doppler_min": 0.957821256717253,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 60,
+	"rms_dbfs": -40.1164673976024,
+	"soundscape_update_max_us": 978,
+	"soundscape_update_p95_us": 184,
+	"voices": 14,
+	"wav_saved": true,
+	"wildlife_activity": {
+		"bird": 0.999999999986076,
+		"cricket": 0.0,
+		"crow": 0.999999999986076,
+		"dog": 0.999999999986076,
+		"owl": 0.0
+	},
+	"wildlife_events": [
+		{
+			"answering": false,
+			"level": 0.814753830432892,
+			"perch": 1,
+			"pitch": 0.946300983428955,
+			"serial": 1,
+			"slot": 0,
+			"species": "bird",
+			"variant": 9,
+			"wall_s": 5.988834
+		},
+		{
+			"answering": false,
+			"level": 0.919011116027832,
+			"perch": 5,
+			"pitch": 0.976586222648621,
+			"serial": 2,
+			"slot": 0,
+			"species": "bird",
+			"variant": 3,
+			"wall_s": 20.620852
+		},
+		{
+			"answering": false,
+			"level": 0.960732579231262,
+			"perch": 1,
+			"pitch": 1.03636527061462,
+			"serial": 3,
+			"slot": 0,
+			"species": "crow",
+			"variant": 2,
+			"wall_s": 24.070829
+		},
+		{
+			"answering": false,
+			"level": 0.959421873092651,
+			"perch": 0,
+			"pitch": 1.00626027584076,
+			"serial": 4,
+			"slot": 0,
+			"species": "dog",
+			"variant": 2,
+			"wall_s": 38.253486
+		},
+		{
+			"answering": false,
+			"level": 0.815140724182129,
+			"perch": 1,
+			"pitch": 0.96566241979599,
+			"serial": 5,
+			"slot": 0,
+			"species": "bird",
+			"variant": 6,
+			"wall_s": 42.236431
+		},
+		{
+			"answering": false,
+			"level": 0.860010206699371,
+			"perch": 1,
+			"pitch": 1.01000201702118,
+			"serial": 6,
+			"slot": 0,
+			"species": "bird",
+			"variant": 4,
+			"wall_s": 61.035655
+		},
+		{
+			"answering": false,
+			"level": 0.807957351207733,
+			"perch": 5,
+			"pitch": 0.95317006111145,
+			"serial": 7,
+			"slot": 0,
+			"species": "bird",
+			"variant": 6,
+			"wall_s": 77.558558
+		},
+		{
+			"answering": false,
+			"level": 0.959774136543274,
+			"perch": 5,
+			"pitch": 1.00079584121704,
+			"serial": 8,
+			"slot": 0,
+			"species": "crow",
+			"variant": 0,
+			"wall_s": 89.826425
+		},
+		{
+			"answering": false,
+			"level": 0.982606291770935,
+			"perch": 7,
+			"pitch": 1.0025360584259,
+			"serial": 9,
+			"slot": 0,
+			"species": "bird",
+			"variant": 1,
+			"wall_s": 93.526114
+		}
+	]
+}

@@ -1,0 +1,1058 @@
+{
+	"aerodynamics": "full session",
+	"engine": "4.7.2-stable (official)",
+	"scenarios": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 0.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.239154602332803,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000398991271,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.237543460150522,
+					"body_speed_mps": 2.89304742342528,
+					"contacts": 3,
+					"east_m": -44.4837160978144,
+					"north_m": 15.0069695928123,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 1.05686348323196,
+					"yaw_rate_radps": -0.0209608796765116
+				},
+				{
+					"altitude_m": 0.237749445051099,
+					"body_speed_mps": 8.20231396155709,
+					"contacts": 3,
+					"east_m": -41.7260174150624,
+					"north_m": 15.0424315253725,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 1.06616682411381,
+					"yaw_rate_radps": -0.0674356018982773
+				},
+				{
+					"altitude_m": 0.236940300463084,
+					"body_speed_mps": 13.258426515436,
+					"contacts": 3,
+					"east_m": -36.3387152186233,
+					"north_m": 15.2415859395367,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 1.15991232271943,
+					"yaw_rate_radps": -0.0602572273620931
+				},
+				{
+					"altitude_m": 0.236221486372046,
+					"body_speed_mps": 17.6065416337186,
+					"contacts": 3,
+					"east_m": -28.6074947632555,
+					"north_m": 15.744823250045,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 1.18432636077052,
+					"yaw_rate_radps": -0.0275912931944187
+				},
+				{
+					"altitude_m": 0.235712971385786,
+					"body_speed_mps": 21.2310700649826,
+					"contacts": 3,
+					"east_m": -18.902244233394,
+					"north_m": 16.5506201343679,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 1.21480541116492,
+					"yaw_rate_radps": -0.0151866249279957
+				},
+				{
+					"altitude_m": 0.235331558090376,
+					"body_speed_mps": 24.0599850402627,
+					"contacts": 3,
+					"east_m": -7.59242634123943,
+					"north_m": 17.5993147573044,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 1.23709307752639,
+					"yaw_rate_radps": -0.00867074685255282
+				},
+				{
+					"altitude_m": 0.235319662063242,
+					"body_speed_mps": 26.0883561347412,
+					"contacts": 3,
+					"east_m": 4.91353900832694,
+					"north_m": 18.8330284269482,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 1.2447844605856,
+					"yaw_rate_radps": -0.00901036037667696
+				},
+				{
+					"altitude_m": 0.23542925094608,
+					"body_speed_mps": 27.5214099215796,
+					"contacts": 3,
+					"east_m": 18.2662182237121,
+					"north_m": 20.2063682639981,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 1.20530227325568,
+					"yaw_rate_radps": -0.0051779962092118
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 5.0,
+			"final_time_s": 1.42083333333333,
+			"outcome": "CRASH at 11.7 m/s (sink 0.1 m/s, airframe contact (hull point 2), point speed 12.0 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.239154602332803,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000398991271,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.23759889470982,
+					"body_speed_mps": 2.87207919112237,
+					"contacts": 3,
+					"east_m": -44.4872841634492,
+					"north_m": 15.0122389833826,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 1.06476313890671,
+					"yaw_rate_radps": -0.251942313483679
+				},
+				{
+					"altitude_m": 0.239694062013689,
+					"body_speed_mps": 8.02979317942979,
+					"contacts": 3,
+					"east_m": -41.7987678540891,
+					"north_m": 15.3906051253618,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.939020146250427,
+					"yaw_rate_radps": -0.814990781919213
+				},
+				{
+					"altitude_m": 0.241958474474193,
+					"body_speed_mps": 11.6700999754732,
+					"contacts": 2,
+					"east_m": -37.8900916166179,
+					"north_m": 16.9171527860843,
+					"time_s": 1.42083333333333,
+					"wheel_load_over_weight": 1.46386503086058,
+					"yaw_rate_radps": -0.558854097190308
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 0.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.238817030901789,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00034830761309,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.230968187551473,
+					"body_speed_mps": 1.99795505304534,
+					"contacts": 3,
+					"east_m": -44.6556165651412,
+					"north_m": 0.0105365764459703,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 1.23141036643349,
+					"yaw_rate_radps": -0.0728448652738336
+				},
+				{
+					"altitude_m": 0.232554571255907,
+					"body_speed_mps": 6.24251765149859,
+					"contacts": 3,
+					"east_m": -42.626440748579,
+					"north_m": 0.0697622335299545,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 1.26863730118473,
+					"yaw_rate_radps": -0.163033338412132
+				},
+				{
+					"altitude_m": 0.226557447755445,
+					"body_speed_mps": 9.94252421215151,
+					"contacts": 3,
+					"east_m": -38.5635742124059,
+					"north_m": 0.481291736775332,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 1.80484103126637,
+					"yaw_rate_radps": -0.264617391145831
+				},
+				{
+					"altitude_m": 0.219309951672604,
+					"body_speed_mps": 12.5903588419737,
+					"contacts": 3,
+					"east_m": -33.0003585201265,
+					"north_m": 1.6618908192445,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 1.97681422120656,
+					"yaw_rate_radps": -0.167809143408727
+				},
+				{
+					"altitude_m": 0.201813067757695,
+					"body_speed_mps": 13.6123370999033,
+					"contacts": 3,
+					"east_m": -26.6890840845506,
+					"north_m": 3.68036329310762,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 2.77256761738266,
+					"yaw_rate_radps": -0.1099815562951
+				},
+				{
+					"altitude_m": 0.200186985416945,
+					"body_speed_mps": 13.892639853607,
+					"contacts": 3,
+					"east_m": -20.3104908722715,
+					"north_m": 6.28970611003788,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 3.25837482909396,
+					"yaw_rate_radps": -0.0401931297435466
+				},
+				{
+					"altitude_m": 0.200476763622555,
+					"body_speed_mps": 14.4664727713959,
+					"contacts": 3,
+					"east_m": -14.0129039164797,
+					"north_m": 9.39120626376472,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 3.08387235976508,
+					"yaw_rate_radps": 0.0837615998268997
+				},
+				{
+					"altitude_m": 0.240650817320698,
+					"body_speed_mps": 18.3484910370772,
+					"contacts": 3,
+					"east_m": -6.84545986895155,
+					"north_m": 13.281374814876,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 0.897136097384674,
+					"yaw_rate_radps": -0.0733083815486402
+				}
+			],
+			"surface": "rough"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 5.0,
+			"final_time_s": 1.43333333333333,
+			"outcome": "CRASH at 9.0 m/s (sink 0.0 m/s, airframe contact (hull point 2), point speed 9.8 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.238817030901789,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00034830761309,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.230833368647852,
+					"body_speed_mps": 1.95253387113895,
+					"contacts": 3,
+					"east_m": -44.6662660593469,
+					"north_m": 0.00406878611439658,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 1.25073462900701,
+					"yaw_rate_radps": -0.272665656925841
+				},
+				{
+					"altitude_m": 0.232715996071566,
+					"body_speed_mps": 6.03869616461471,
+					"contacts": 3,
+					"east_m": -42.7111054420574,
+					"north_m": 0.277523483297126,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 1.24762411985155,
+					"yaw_rate_radps": -0.658082364350393
+				},
+				{
+					"altitude_m": 0.240557706750621,
+					"body_speed_mps": 9.04668133064583,
+					"contacts": 2,
+					"east_m": -39.650915634485,
+					"north_m": 1.50429476193572,
+					"time_s": 1.43333333333333,
+					"wheel_load_over_weight": 1.52559687670494,
+					"yaw_rate_radps": -1.09869667916619
+				}
+			],
+			"surface": "rough"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 0.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.201913908480366,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000851224021,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.206059014265798,
+					"body_speed_mps": 2.45239126892958,
+					"contacts": 3,
+					"east_m": -44.5691790130614,
+					"north_m": 15.0070413157372,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.790371726942331,
+					"yaw_rate_radps": 0.00264782179638674
+				},
+				{
+					"altitude_m": 0.212495207523775,
+					"body_speed_mps": 7.12442990970627,
+					"contacts": 3,
+					"east_m": -42.1972009701857,
+					"north_m": 15.0089085085176,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.494850289746597,
+					"yaw_rate_radps": 0.0575964988104105
+				},
+				{
+					"altitude_m": 0.225250462332143,
+					"body_speed_mps": 11.8371888258656,
+					"contacts": 2,
+					"east_m": -37.4460494579919,
+					"north_m": 14.9472974622353,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.446989778151233,
+					"yaw_rate_radps": -0.0277272523226165
+				},
+				{
+					"altitude_m": 0.229872650874362,
+					"body_speed_mps": 16.1395584936023,
+					"contacts": 2,
+					"east_m": -30.436084311317,
+					"north_m": 14.7714932017005,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.342173154068751,
+					"yaw_rate_radps": -0.025347888174433
+				},
+				{
+					"altitude_m": 0.23119332920353,
+					"body_speed_mps": 19.9667902342575,
+					"contacts": 2,
+					"east_m": -21.3895691332579,
+					"north_m": 14.6188273448147,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 0.447169241415727,
+					"yaw_rate_radps": -0.00141905262594392
+				},
+				{
+					"altitude_m": 0.233200612835877,
+					"body_speed_mps": 23.269278826463,
+					"contacts": 2,
+					"east_m": -10.5544736446324,
+					"north_m": 14.5049348101353,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 0.377960351085116,
+					"yaw_rate_radps": -0.00998743751480245
+				},
+				{
+					"altitude_m": 0.234078328892968,
+					"body_speed_mps": 25.8967761603979,
+					"contacts": 2,
+					"east_m": 1.76435787342164,
+					"north_m": 14.435569742055,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 0.327962151683874,
+					"yaw_rate_radps": -0.0108287204878676
+				},
+				{
+					"altitude_m": 0.23400461876101,
+					"body_speed_mps": 27.922106580205,
+					"contacts": 2,
+					"east_m": 15.2406668858533,
+					"north_m": 14.4171235787874,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 0.373065828789207,
+					"yaw_rate_radps": -0.00692487997687984
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 5.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.201913908480366,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000851224021,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.206282083192379,
+					"body_speed_mps": 2.43142103821365,
+					"contacts": 3,
+					"east_m": -44.5724142963604,
+					"north_m": 14.9985609174569,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.783350253466828,
+					"yaw_rate_radps": -0.172717657793072
+				},
+				{
+					"altitude_m": 0.215018824287938,
+					"body_speed_mps": 6.99474945470526,
+					"contacts": 2,
+					"east_m": -42.2382938681844,
+					"north_m": 15.168827282547,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.373659198087719,
+					"yaw_rate_radps": -0.933947935885512
+				},
+				{
+					"altitude_m": 0.242162166928043,
+					"body_speed_mps": 10.9592859403043,
+					"contacts": 1,
+					"east_m": -37.8081139654686,
+					"north_m": 16.2231361569095,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.271783039720809,
+					"yaw_rate_radps": -0.651129664373377
+				},
+				{
+					"altitude_m": 0.246067642710404,
+					"body_speed_mps": 13.8481919368594,
+					"contacts": 1,
+					"east_m": -32.6036868753604,
+					"north_m": 19.4410852801844,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.0314476592679562,
+					"yaw_rate_radps": 0.0527429190824735
+				},
+				{
+					"altitude_m": 0.213828381640163,
+					"body_speed_mps": 16.3635022324892,
+					"contacts": 2,
+					"east_m": -26.8781760636814,
+					"north_m": 24.5797469750495,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 1.18081826032311,
+					"yaw_rate_radps": -0.659353551926242
+				},
+				{
+					"altitude_m": 0.216105622254078,
+					"body_speed_mps": 18.8587986747511,
+					"contacts": 2,
+					"east_m": -21.3208744545099,
+					"north_m": 31.4285013277867,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 1.06821027254381,
+					"yaw_rate_radps": -0.130308529202782
+				},
+				{
+					"altitude_m": 0.231439401531828,
+					"body_speed_mps": 20.826989766809,
+					"contacts": 2,
+					"east_m": -15.907472572011,
+					"north_m": 39.6792610243592,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 0.344278581055767,
+					"yaw_rate_radps": 0.157392947733967
+				},
+				{
+					"altitude_m": 0.236779532005071,
+					"body_speed_mps": 22.2246456914196,
+					"contacts": 1,
+					"east_m": -10.7397043574462,
+					"north_m": 49.0690691696038,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 0.151067395507864,
+					"yaw_rate_radps": 0.130751842320199
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 0.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.199530566647264,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00018178713955,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.204112048863483,
+					"body_speed_mps": 1.72060815190086,
+					"contacts": 3,
+					"east_m": -44.7277687579361,
+					"north_m": 0.00640406081146718,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.843318526968579,
+					"yaw_rate_radps": -0.0182451859693415
+				},
+				{
+					"altitude_m": 0.20937665670135,
+					"body_speed_mps": 5.78443198014094,
+					"contacts": 2,
+					"east_m": -42.8878433013592,
+					"north_m": 0.0373970861874975,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.521360649550669,
+					"yaw_rate_radps": -0.0736247877564514
+				},
+				{
+					"altitude_m": 0.222841090672492,
+					"body_speed_mps": 10.050187441898,
+					"contacts": 2,
+					"east_m": -38.9276687052559,
+					"north_m": 0.229889964751476,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.484294614277256,
+					"yaw_rate_radps": -0.213908681929478
+				},
+				{
+					"altitude_m": 0.21584602212313,
+					"body_speed_mps": 13.3936659720501,
+					"contacts": 2,
+					"east_m": -33.0569428092544,
+					"north_m": 0.962480579543293,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 1.19284355587947,
+					"yaw_rate_radps": -0.195996655232534
+				},
+				{
+					"altitude_m": 0.210700056956051,
+					"body_speed_mps": 15.7300639503884,
+					"contacts": 2,
+					"east_m": -25.9436395730273,
+					"north_m": 2.60926479260864,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 1.73517421334043,
+					"yaw_rate_radps": -0.0395811809405256
+				},
+				{
+					"altitude_m": 0.219457547421851,
+					"body_speed_mps": 18.0107875089185,
+					"contacts": 2,
+					"east_m": -17.8421049876036,
+					"north_m": 4.86629696091425,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 0.863755169877855,
+					"yaw_rate_radps": -0.0279110676453539
+				},
+				{
+					"altitude_m": 0.221629034044429,
+					"body_speed_mps": 20.6314281675874,
+					"contacts": 2,
+					"east_m": -8.56651059934805,
+					"north_m": 7.60824450631474,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 0.941010045142421,
+					"yaw_rate_radps": -0.0239964604761364
+				},
+				{
+					"altitude_m": 0.241420490931911,
+					"body_speed_mps": 23.3893052414105,
+					"contacts": 1,
+					"east_m": 1.89183247199238,
+					"north_m": 10.8648076027714,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 0.0438882260086101,
+					"yaw_rate_radps": -0.0169149127923074
+				}
+			],
+			"surface": "rough"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 5.0,
+			"final_time_s": 1.95416666666667,
+			"outcome": "CRASH at 10.3 m/s (sink -0.0 m/s, airframe contact (hull point 2), point speed 10.1 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.199530566647264,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00018178713955,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.204712470648759,
+					"body_speed_mps": 1.71460026261764,
+					"contacts": 3,
+					"east_m": -44.7259491244937,
+					"north_m": -0.00592722122747801,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.8285360024042,
+					"yaw_rate_radps": -0.555627884671752
+				},
+				{
+					"altitude_m": 0.211212861295022,
+					"body_speed_mps": 5.6533446442727,
+					"contacts": 2,
+					"east_m": -42.9760788548202,
+					"north_m": 0.437630668273327,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.638705170365062,
+					"yaw_rate_radps": -1.67154007846284
+				},
+				{
+					"altitude_m": 0.224778890934321,
+					"body_speed_mps": 8.90569625473608,
+					"contacts": 2,
+					"east_m": -39.9268251728111,
+					"north_m": 2.50594298905882,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.733763109575535,
+					"yaw_rate_radps": -0.551437382158731
+				},
+				{
+					"altitude_m": 0.206152446704523,
+					"body_speed_mps": 10.2558539458811,
+					"contacts": 2,
+					"east_m": -37.700512434409,
+					"north_m": 6.18177743570563,
+					"time_s": 1.95416666666667,
+					"wheel_load_over_weight": 1.55899798526876,
+					"yaw_rate_radps": 0.130005964729192
+				}
+			],
+			"surface": "rough"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 0.0,
+			"final_time_s": 3.60416666666667,
+			"outcome": "CRASH at 17.2 m/s (sink -0.0 m/s, airframe contact (hull point 6), point speed 16.8 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.36770446968963,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000890356193,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.37063840670304,
+					"body_speed_mps": 0.748727052444032,
+					"contacts": 3,
+					"east_m": -44.8724984036409,
+					"north_m": 14.9996629480648,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.907929816601823,
+					"yaw_rate_radps": -0.00815102932939127
+				},
+				{
+					"altitude_m": 0.373067926695903,
+					"body_speed_mps": 3.04316532363498,
+					"contacts": 3,
+					"east_m": -43.984254911995,
+					"north_m": 14.9982049961343,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.811532872398647,
+					"yaw_rate_radps": -0.109531361403405
+				},
+				{
+					"altitude_m": 0.377581705161775,
+					"body_speed_mps": 6.37578193283477,
+					"contacts": 3,
+					"east_m": -41.6572160306549,
+					"north_m": 15.0967625198448,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.61446255400166,
+					"yaw_rate_radps": -0.542992442719483
+				},
+				{
+					"altitude_m": 0.39064276388605,
+					"body_speed_mps": 9.8452288861334,
+					"contacts": 2,
+					"east_m": -37.7004885125709,
+					"north_m": 15.9734682051372,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.54405270310583,
+					"yaw_rate_radps": -0.708718025031779
+				},
+				{
+					"altitude_m": 0.400835252939706,
+					"body_speed_mps": 13.0813037082082,
+					"contacts": 2,
+					"east_m": -32.5655679386251,
+					"north_m": 18.5232795023492,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 0.463334358343136,
+					"yaw_rate_radps": -0.718829893801829
+				},
+				{
+					"altitude_m": 0.408255106074286,
+					"body_speed_mps": 15.9324504816666,
+					"contacts": 2,
+					"east_m": -26.8097909336202,
+					"north_m": 22.9670776044916,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 0.462585354571277,
+					"yaw_rate_radps": -0.369696578197426
+				},
+				{
+					"altitude_m": 0.416397314477003,
+					"body_speed_mps": 17.3180053131343,
+					"contacts": 2,
+					"east_m": -21.1835788213647,
+					"north_m": 29.2039183717235,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 1.8313408060089,
+					"yaw_rate_radps": -0.168709891357657
+				},
+				{
+					"altitude_m": 0.412453660414783,
+					"body_speed_mps": 17.1880186099933,
+					"contacts": 2,
+					"east_m": -20.196301689261,
+					"north_m": 30.7076717941454,
+					"time_s": 3.60416666666667,
+					"wheel_load_over_weight": 2.1171895155054,
+					"yaw_rate_radps": -0.0141489618449793
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 5.0,
+			"final_time_s": 3.59583333333333,
+			"outcome": "CRASH at 15.8 m/s (sink 1.0 m/s, airframe contact (hull point 6), point speed 15.1 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.36770446968963,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 15.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00000890356193,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.37044097085641,
+					"body_speed_mps": 0.751695460917456,
+					"contacts": 3,
+					"east_m": -44.8713259021542,
+					"north_m": 14.9976107450393,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.913641528564647,
+					"yaw_rate_radps": -0.00944274875962726
+				},
+				{
+					"altitude_m": 0.372578477048704,
+					"body_speed_mps": 3.04145550374987,
+					"contacts": 3,
+					"east_m": -43.9824020366067,
+					"north_m": 14.999263051799,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.823733281243303,
+					"yaw_rate_radps": -0.0344486859860887
+				},
+				{
+					"altitude_m": 0.377101907031599,
+					"body_speed_mps": 6.37813304530355,
+					"contacts": 3,
+					"east_m": -41.6549004107336,
+					"north_m": 15.031851201954,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.627357753439519,
+					"yaw_rate_radps": -0.143516090489178
+				},
+				{
+					"altitude_m": 0.398495186036854,
+					"body_speed_mps": 9.98159586513591,
+					"contacts": 2,
+					"east_m": -37.5693993887391,
+					"north_m": 15.2648753359178,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.412929808571314,
+					"yaw_rate_radps": -0.678191382282095
+				},
+				{
+					"altitude_m": 0.41841095150258,
+					"body_speed_mps": 12.7351699069154,
+					"contacts": 2,
+					"east_m": -31.9455174009006,
+					"north_m": 16.4785281310899,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 0.90562942167656,
+					"yaw_rate_radps": -1.52693042412825
+				},
+				{
+					"altitude_m": 0.406843669259249,
+					"body_speed_mps": 14.2219992843628,
+					"contacts": 1,
+					"east_m": -26.0714109666853,
+					"north_m": 19.7179999398036,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 0.102430600501158,
+					"yaw_rate_radps": -0.584586783744962
+				},
+				{
+					"altitude_m": 0.492942566518752,
+					"body_speed_mps": 15.7121630867593,
+					"contacts": 1,
+					"east_m": -20.6539990720061,
+					"north_m": 24.8231122116234,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 0.673320707475323,
+					"yaw_rate_radps": 0.153973220825021
+				},
+				{
+					"altitude_m": 0.42534458441078,
+					"body_speed_mps": 15.7776841238332,
+					"contacts": 2,
+					"east_m": -19.69875392417,
+					"north_m": 25.9983309936788,
+					"time_s": 3.59583333333333,
+					"wheel_load_over_weight": 2.65848622557322,
+					"yaw_rate_radps": 0.0458017022886449
+				}
+			],
+			"surface": "runway"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": false,
+			"crosswind_mps": 0.0,
+			"final_time_s": 4.0,
+			"outcome": "",
+			"samples": [
+				{
+					"altitude_m": 0.368337636658042,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00027838941596,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.371981459003042,
+					"body_speed_mps": 0.224087498665553,
+					"contacts": 3,
+					"east_m": -44.9676992474965,
+					"north_m": -0.0000975222885258802,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.918757123962586,
+					"yaw_rate_radps": -0.0112407387010003
+				},
+				{
+					"altitude_m": 0.372439727677227,
+					"body_speed_mps": 1.89353884269915,
+					"contacts": 3,
+					"east_m": -44.5083664429138,
+					"north_m": -0.0121722829747062,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.88308725947426,
+					"yaw_rate_radps": -0.0734798770350465
+				},
+				{
+					"altitude_m": 0.374994299124694,
+					"body_speed_mps": 4.77373007383331,
+					"contacts": 3,
+					"east_m": -42.873257837269,
+					"north_m": 0.056192312913304,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.795757877301042,
+					"yaw_rate_radps": -0.472813961782513
+				},
+				{
+					"altitude_m": 0.400937960579829,
+					"body_speed_mps": 8.01584399227386,
+					"contacts": 2,
+					"east_m": -39.7628723771722,
+					"north_m": 0.744296521347481,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.585833046162997,
+					"yaw_rate_radps": -0.874922961141961
+				},
+				{
+					"altitude_m": 0.420684924303536,
+					"body_speed_mps": 10.6126125428944,
+					"contacts": 2,
+					"east_m": -35.7134381279102,
+					"north_m": 3.09866632205485,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 0.94076274554808,
+					"yaw_rate_radps": -1.02664036759203
+				},
+				{
+					"altitude_m": 0.415126018482072,
+					"body_speed_mps": 12.3293477892116,
+					"contacts": 2,
+					"east_m": -32.0561719140907,
+					"north_m": 7.50495487566163,
+					"time_s": 3.0,
+					"wheel_load_over_weight": 1.24026094106103,
+					"yaw_rate_radps": -0.829821679202461
+				},
+				{
+					"altitude_m": 0.399730677263975,
+					"body_speed_mps": 14.5461230538863,
+					"contacts": 2,
+					"east_m": -29.6906444222839,
+					"north_m": 13.7177744417199,
+					"time_s": 3.5,
+					"wheel_load_over_weight": 0.310206368432077,
+					"yaw_rate_radps": -0.537427137516957
+				},
+				{
+					"altitude_m": 0.414418985715876,
+					"body_speed_mps": 17.2072481854045,
+					"contacts": 2,
+					"east_m": -28.5622787997279,
+					"north_m": 21.5715612601838,
+					"time_s": 4.0,
+					"wheel_load_over_weight": 0.569468658543239,
+					"yaw_rate_radps": 0.0358672554609986
+				}
+			],
+			"surface": "rough"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"controls": "full throttle; zero roll/pitch/yaw; no stabilizing pilot",
+			"crashed": true,
+			"crosswind_mps": 5.0,
+			"final_time_s": 2.56666666666667,
+			"outcome": "CRASH at 10.1 m/s (sink 0.0 m/s, airframe contact (hull point 6), point speed 9.5 m/s at detected tick) - [R] restart",
+			"samples": [
+				{
+					"altitude_m": 0.368337636658042,
+					"body_speed_mps": 0.0,
+					"contacts": 3,
+					"east_m": -45.0,
+					"north_m": 0.0,
+					"time_s": 0.0,
+					"wheel_load_over_weight": 1.00027838941596,
+					"yaw_rate_radps": 0.0
+				},
+				{
+					"altitude_m": 0.371835742159905,
+					"body_speed_mps": 0.227551649936842,
+					"contacts": 3,
+					"east_m": -44.9671338591781,
+					"north_m": -0.00682319578971449,
+					"time_s": 0.5,
+					"wheel_load_over_weight": 0.923106296798223,
+					"yaw_rate_radps": -0.0236839390900973
+				},
+				{
+					"altitude_m": 0.372132605513382,
+					"body_speed_mps": 1.88623004894796,
+					"contacts": 3,
+					"east_m": -44.5068609859841,
+					"north_m": -0.0152680687641742,
+					"time_s": 1.0,
+					"wheel_load_over_weight": 0.891138751465778,
+					"yaw_rate_radps": -0.0321220231198332
+				},
+				{
+					"altitude_m": 0.37658667304675,
+					"body_speed_mps": 4.75049568570639,
+					"contacts": 3,
+					"east_m": -42.8804815062066,
+					"north_m": 0.0373236205898707,
+					"time_s": 1.5,
+					"wheel_load_over_weight": 0.737733235647734,
+					"yaw_rate_radps": -0.153737948655072
+				},
+				{
+					"altitude_m": 0.402741871555917,
+					"body_speed_mps": 8.05630116687838,
+					"contacts": 2,
+					"east_m": -39.6937825539398,
+					"north_m": 0.317672505395362,
+					"time_s": 2.0,
+					"wheel_load_over_weight": 0.842426170955635,
+					"yaw_rate_radps": -0.68621005228541
+				},
+				{
+					"altitude_m": 0.422016147272929,
+					"body_speed_mps": 10.1339464460022,
+					"contacts": 2,
+					"east_m": -35.2497758763898,
+					"north_m": 1.70345176127092,
+					"time_s": 2.5,
+					"wheel_load_over_weight": 1.36022047127445,
+					"yaw_rate_radps": -1.38324278546362
+				},
+				{
+					"altitude_m": 0.418161364193417,
+					"body_speed_mps": 10.0934669563826,
+					"contacts": 2,
+					"east_m": -34.664065060208,
+					"north_m": 2.0405509631037,
+					"time_s": 2.56666666666667,
+					"wheel_load_over_weight": 2.12853297682703,
+					"yaw_rate_radps": -1.30322138084533
+				}
+			],
+			"surface": "rough"
+		}
+	]
+}

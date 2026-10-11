@@ -171,12 +171,20 @@ func _runway(config: Dictionary) -> void:
 
 func _failure_recovery(config: Dictionary) -> void:
 	var s: Session = flight(PATHS[0],Config.defaults())
+	var sea_level_start: PackedByteArray = var_to_bytes(s.start)
 	var extreme: Dictionary = Config.upgrade_atmosphere(config,{field_elevation_m=4000.0,temperature_c=45.0,qnh_hpa=870.0,relative_humidity_pct=100.0})
 	check("valid extreme field accepted at launch boundary",s.setup_weather(extreme))
+	check("atmosphere change parks the old reference start",s.sim.paused and not s.is_flyable() and s.checkpoint().is_empty())
 	s.reset()
-	check("unflyable atmosphere refuses old sea-level trim",not s.is_flyable() and not s.can_resume() and s.sim.paused and not s.start_error.is_empty())
-	check("reset remains parked and cannot produce misleading checkpoint",s.sim.tick==0 and s.checkpoint().is_empty())
-	check("reference settings can recover a failed atmospheric start",s.setup_weather(Config.defaults()))
+	var extreme_checkpoint: Dictionary = s.checkpoint()
+	check("reset recomputes a fresh trim for the extreme density",
+		s.is_flyable() and s.can_resume() and not s.sim.paused and s.start_error.is_empty()
+		and s.air_density() < 0.6 and absf(s.air_data(s.sim.state).V - s.start.V) < 1e-10
+		and var_to_bytes(s.start) != sea_level_start)
+	check("extreme-field checkpoint records the accepted atmosphere",
+		s.sim.tick == 0 and extreme_checkpoint.format == "openrc-flight-checkpoint v3"
+		and extreme_checkpoint.weather_config == extreme)
+	check("reference settings can recover from the re-trimmed extreme start",s.setup_weather(Config.defaults()))
 	s.reset()
-	check("failed trim recovers to a valid reference flight",s.is_flyable() and s.air_density()==1.225 and absf(s.air_data(s.sim.state).V-15.0)<1e-10)
+	check("reference reset restores a valid sea-level flight",s.is_flyable() and s.air_density()==1.225 and absf(s.air_data(s.sim.state).V-15.0)<1e-10)
 	s.free()

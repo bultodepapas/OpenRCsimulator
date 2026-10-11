@@ -29,6 +29,14 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 
 ## Entry points per track
 
+### Ground physics
+
+[GP-00–05](ground-physics/README.md): per-wheel grass terrain, wheel spin and suspension, aircraft profiles, trace/replay integration and measured numerical acceptance. The root [ground physics plan](../../GROUND_PHYSICS_PLAN.md) records the pre-implementation research, ownership and remaining physical/performance gates.
+
+### Aircraft standardization
+
+[AS-00–05](aircraft-standardization/README.md): four-aircraft audit, v2 contract and schema, explicit module capabilities, source migration, authoring template and in-engine verification. The root [standardization plan](../../AIRCRAFT_STANDARDIZATION_PLAN.md) owns this foundation before aircraft feature expansion.
+
 ### Turbo Timber Evolution
 
 [TT-00](timber-integration/TT-00/README.md): external Blender/CAD package inventory, reproducible STL and Blender DNA audits, official aircraft/import references and current code seams. The independent [Timber Integration Plan](../TIMBER-INTEGRATION-PLAN.md) owns TT- steps, the curated GLB pipeline, electric-flight prerequisites and later flap/ground validation.

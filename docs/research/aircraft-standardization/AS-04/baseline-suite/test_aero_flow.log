@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H4 local flow: 10000 byte-exact comparisons, 0 failed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H12 local loads: 10001 byte-exact comparisons (7305 stalled, 2000 zero-flow), 0 failed

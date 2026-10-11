@@ -186,6 +186,8 @@ func _session_lag(model: Dictionary) -> void:
 	flight.input_enabled = false
 	# Inject validated synthetic wash into an already settled session: no aircraft/configuration is shipped.
 	flight.aircraft.model = model
+	# Model replacement changes the continuous-state layout (profiled wheels vs this in-memory fixture).
+	flight.sim.continuous = flight._settled_continuous(flight.sim.state, flight.sim.aux)
 	var s: PackedFloat64Array = _state(15.0, 0.03)
 	var aux: PackedFloat64Array = flight.sim.aux.duplicate()
 	var index: int = flight.downwash_index()

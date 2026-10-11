@@ -1,0 +1,1663 @@
+{
+  "format": "openrc-as04-paired-comparison-v1",
+  "run_id": "AS04-paired-metadata-20261011-r1",
+  "ok": true,
+  "failures": [],
+  "run_info": {
+    "run_id": "AS04-paired-metadata-20261011-r1",
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "engine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "driver": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+    "driver_sha256": "b15c100e8e993b848a9fd7a9ba71bee42dd651aeb990c0b743f094ee688680d0",
+    "wrapper_sha256": "6e3ee6400265aec2e66aebba84b8371847106c72165d2663d1aad597e346237a",
+    "started_utc": "2026-10-11T22:28:23.855425+00:00",
+    "method": "explicit AircraftData.legacy_v1_input clone; six ABBA-paired 120-tick batches per aircraft after a 120-tick warmup; reset and input preparation outside individual Simulation.step timers",
+    "timing_policy": "descriptive only; no threshold; prior cross-process measurements do not establish regression",
+    "host_context_policy": "record visible Godot processes immediately before and after each engine phase; this is residual-variability context, not a CPU/load measurement"
+  },
+  "self_check": {
+    "label": "self_check",
+    "mode": "check",
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+      "--",
+      "--mode=check",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-standardization/AS-04/evidence/AS04-paired-metadata-20261011-r1/self_check.json"
+    ],
+    "elapsed_seconds": 8.821,
+    "timeout_seconds": 180,
+    "timed_out": false,
+    "return_code": 0,
+    "engine_errors": [],
+    "source_unchanged_during_run": true,
+    "host_processes_before": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 289.40625,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": [
+          {
+            "pid": "75369",
+            "command": "timeout"
+          },
+          {
+            "pid": "75370",
+            "command": "Godot_v4.7.2-stable_linux.x86_64"
+          }
+        ]
+      }
+    },
+    "host_processes_after": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 291.328125,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": [
+          {
+            "pid": "75369",
+            "command": "timeout"
+          },
+          {
+            "pid": "75370",
+            "command": "Godot_v4.7.2-stable_linux.x86_64"
+          }
+        ]
+      }
+    },
+    "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-metadata-20261011-r1\\self_check.json",
+    "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-metadata-20261011-r1\\self_check.log"
+  },
+  "source_manifest_sha256": "643aa1a0b8d934dff6bbd9f339c62c4529482b0122123a731c60c66ec8a4970e",
+  "cases": [
+    {
+      "key": "jensen-das-ugly-stik-60",
+      "kind": "catalog",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9999868718164155,
+        "p10": 0.9748201438848921,
+        "p90": 1.0108695652173914,
+        "min": 0.9748201438848921,
+        "max": 1.0108695652173914,
+        "mad": 0.009137947692649084
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.0155167053746137,
+        "p10": 0.7550505050505051,
+        "p90": 1.1794117647058824,
+        "min": 0.7550505050505051,
+        "max": 1.1794117647058824,
+        "mad": 0.140049392032091
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 448,
+            "mean_us": 295.75,
+            "min_us": 270,
+            "p50_us": 278.5,
+            "p95_us": 421,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 485,
+            "mean_us": 292.1666666666667,
+            "min_us": 270,
+            "p50_us": 278.0,
+            "p95_us": 372,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0017985611510791,
+          "p95_ratio_v2_over_legacy": 1.131720430107527
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 442,
+            "mean_us": 313.4583333333333,
+            "min_us": 266,
+            "p50_us": 285.0,
+            "p95_us": 377,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 526,
+            "mean_us": 336.09166666666664,
+            "min_us": 266,
+            "p50_us": 290.0,
+            "p95_us": 483,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9827586206896551,
+          "p95_ratio_v2_over_legacy": 0.7805383022774327
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 518,
+            "mean_us": 298.8,
+            "min_us": 267,
+            "p50_us": 279.0,
+            "p95_us": 401,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 414,
+            "mean_us": 284.10833333333335,
+            "min_us": 263,
+            "p50_us": 276.0,
+            "p95_us": 340,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0108695652173914,
+          "p95_ratio_v2_over_legacy": 1.1794117647058824
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 423,
+            "mean_us": 277.60833333333335,
+            "min_us": 264,
+            "p50_us": 273.0,
+            "p95_us": 304,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 398,
+            "mean_us": 276.025,
+            "min_us": 264,
+            "p50_us": 271.0,
+            "p95_us": 298,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.007380073800738,
+          "p95_ratio_v2_over_legacy": 1.0201342281879195
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 489,
+            "mean_us": 289.225,
+            "min_us": 263,
+            "p50_us": 273.5,
+            "p95_us": 371,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 561,
+            "mean_us": 288.40833333333336,
+            "min_us": 266,
+            "p50_us": 274.0,
+            "p95_us": 367,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9981751824817519,
+          "p95_ratio_v2_over_legacy": 1.0108991825613078
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 464,
+            "mean_us": 277.05,
+            "min_us": 262,
+            "p50_us": 271.0,
+            "p95_us": 299,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 443,
+            "mean_us": 296.65833333333336,
+            "min_us": 264,
+            "p50_us": 278.0,
+            "p95_us": 396,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9748201438848921,
+          "p95_ratio_v2_over_legacy": 0.7550505050505051
+        }
+      ]
+    },
+    {
+      "key": "gp-extra-300s-60",
+      "kind": "catalog",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9938904241259161,
+        "p10": 0.711864406779661,
+        "p90": 1.0251141552511416,
+        "min": 0.711864406779661,
+        "max": 1.0251141552511416,
+        "mad": 0.018666653499654684
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.8545500240395123,
+        "p10": 0.6914893617021277,
+        "p90": 1.0656370656370657,
+        "min": 0.6914893617021277,
+        "max": 1.0656370656370657,
+        "mad": 0.12465055910543132
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1019,
+            "mean_us": 232.9,
+            "min_us": 195,
+            "p50_us": 210.0,
+            "p95_us": 322,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 812,
+            "mean_us": 295.84166666666664,
+            "min_us": 199,
+            "p50_us": 295.0,
+            "p95_us": 448,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.711864406779661,
+          "p95_ratio_v2_over_legacy": 0.71875
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 741,
+            "mean_us": 234.85833333333332,
+            "min_us": 197,
+            "p50_us": 214.0,
+            "p95_us": 303,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 353,
+            "mean_us": 246.225,
+            "min_us": 196,
+            "p50_us": 226.5,
+            "p95_us": 313,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9448123620309051,
+          "p95_ratio_v2_over_legacy": 0.9680511182108626
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 430,
+            "mean_us": 243.36666666666667,
+            "min_us": 196,
+            "p50_us": 224.5,
+            "p95_us": 325,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 678,
+            "mean_us": 260.84166666666664,
+            "min_us": 195,
+            "p50_us": 219.0,
+            "p95_us": 470,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0251141552511416,
+          "p95_ratio_v2_over_legacy": 0.6914893617021277
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 342,
+            "mean_us": 211.65833333333333,
+            "min_us": 194,
+            "p50_us": 203.0,
+            "p95_us": 260,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 701,
+            "mean_us": 229.75,
+            "min_us": 195,
+            "p50_us": 205.0,
+            "p95_us": 334,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9902439024390244,
+          "p95_ratio_v2_over_legacy": 0.7784431137724551
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 325,
+            "mean_us": 210.50833333333333,
+            "min_us": 194,
+            "p50_us": 202.5,
+            "p95_us": 255,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 312,
+            "mean_us": 212.35,
+            "min_us": 194,
+            "p50_us": 203.0,
+            "p95_us": 274,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9975369458128078,
+          "p95_ratio_v2_over_legacy": 0.9306569343065694
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 344,
+            "mean_us": 215.675,
+            "min_us": 194,
+            "p50_us": 204.0,
+            "p95_us": 276,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 340,
+            "mean_us": 210.4,
+            "min_us": 193,
+            "p50_us": 204.0,
+            "p95_us": 259,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0,
+          "p95_ratio_v2_over_legacy": 1.0656370656370657
+        }
+      ]
+    },
+    {
+      "key": "p51d-mustang-120",
+      "kind": "catalog",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.2021603123917375,
+        "p10": 0.821505376344086,
+        "p90": 1.4203821656050954,
+        "min": 0.821505376344086,
+        "max": 1.4203821656050954,
+        "mad": 0.1488576437958231
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.259935149156939,
+        "p10": 0.7656012176560122,
+        "p90": 1.6555323590814197,
+        "min": 0.7656012176560122,
+        "max": 1.6555323590814197,
+        "mad": 0.1970382061454023
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 3190,
+            "mean_us": 585.4166666666666,
+            "min_us": 376,
+            "p50_us": 557.5,
+            "p95_us": 809,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 695,
+            "mean_us": 423.525,
+            "min_us": 358,
+            "p50_us": 392.5,
+            "p95_us": 591,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.4203821656050954,
+          "p95_ratio_v2_over_legacy": 1.3688663282571911
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1372,
+            "mean_us": 541.7666666666667,
+            "min_us": 371,
+            "p50_us": 496.0,
+            "p95_us": 793,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 681,
+            "mean_us": 403.975,
+            "min_us": 368,
+            "p50_us": 387.0,
+            "p95_us": 479,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.2816537467700257,
+          "p95_ratio_v2_over_legacy": 1.6555323590814197
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1106,
+            "mean_us": 523.7,
+            "min_us": 371,
+            "p50_us": 493.0,
+            "p95_us": 752,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 959,
+            "mean_us": 441.64166666666665,
+            "min_us": 367,
+            "p50_us": 410.5,
+            "p95_us": 600,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.2009744214372715,
+          "p95_ratio_v2_over_legacy": 1.2533333333333334
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 927,
+            "mean_us": 487.0,
+            "min_us": 376,
+            "p50_us": 467.5,
+            "p95_us": 651,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 594,
+            "mean_us": 407.48333333333335,
+            "min_us": 369,
+            "p50_us": 388.5,
+            "p95_us": 514,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.2033462033462032,
+          "p95_ratio_v2_over_legacy": 1.2665369649805447
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1666,
+            "mean_us": 564.2,
+            "min_us": 368,
+            "p50_us": 545.0,
+            "p95_us": 928,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 3047,
+            "mean_us": 631.8833333333333,
+            "min_us": 376,
+            "p50_us": 586.5,
+            "p95_us": 952,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9292412617220801,
+          "p95_ratio_v2_over_legacy": 0.9747899159663865
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 592,
+            "mean_us": 399.56666666666666,
+            "min_us": 360,
+            "p50_us": 382.0,
+            "p95_us": 503,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1291,
+            "mean_us": 488.6666666666667,
+            "min_us": 370,
+            "p50_us": 465.0,
+            "p95_us": 657,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.821505376344086,
+          "p95_ratio_v2_over_legacy": 0.7656012176560122
+        }
+      ]
+    },
+    {
+      "key": "sebart-avanti-s-a200-p100rx",
+      "kind": "catalog",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9989035087719298,
+        "p10": 0.9868421052631579,
+        "p90": 1.4231578947368422,
+        "min": 0.9868421052631579,
+        "max": 1.4231578947368422,
+        "mad": 0.011975962633857362
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.0060514955288313,
+        "p10": 0.8590604026845637,
+        "p90": 1.3012658227848102,
+        "min": 0.8590604026845637,
+        "max": 1.3012658227848102,
+        "mad": 0.134283027038535
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 432,
+            "mean_us": 258.7916666666667,
+            "min_us": 225,
+            "p50_us": 236.0,
+            "p95_us": 375,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 383,
+            "mean_us": 238.38333333333333,
+            "min_us": 223,
+            "p50_us": 230.0,
+            "p95_us": 300,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0260869565217392,
+          "p95_ratio_v2_over_legacy": 1.25
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 373,
+            "mean_us": 238.08333333333334,
+            "min_us": 223,
+            "p50_us": 229.5,
+            "p95_us": 295,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 613,
+            "mean_us": 236.76666666666668,
+            "min_us": 219,
+            "p50_us": 228.0,
+            "p95_us": 276,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.006578947368421,
+          "p95_ratio_v2_over_legacy": 1.068840579710145
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 369,
+            "mean_us": 232.43333333333334,
+            "min_us": 219,
+            "p50_us": 225.0,
+            "p95_us": 266,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 333,
+            "mean_us": 234.34166666666667,
+            "min_us": 222,
+            "p50_us": 228.0,
+            "p95_us": 282,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9868421052631579,
+          "p95_ratio_v2_over_legacy": 0.9432624113475178
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 334,
+            "mean_us": 228.79166666666666,
+            "min_us": 221,
+            "p50_us": 226.0,
+            "p95_us": 245,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 304,
+            "mean_us": 233.8,
+            "min_us": 222,
+            "p50_us": 228.0,
+            "p95_us": 277,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9912280701754386,
+          "p95_ratio_v2_over_legacy": 0.8844765342960289
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 705,
+            "mean_us": 333.80833333333334,
+            "min_us": 227,
+            "p50_us": 338.0,
+            "p95_us": 514,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 751,
+            "mean_us": 267.68333333333334,
+            "min_us": 219,
+            "p50_us": 237.5,
+            "p95_us": 395,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.4231578947368422,
+          "p95_ratio_v2_over_legacy": 1.3012658227848102
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 318,
+            "mean_us": 231.99166666666667,
+            "min_us": 220,
+            "p50_us": 228.0,
+            "p95_us": 256,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 374,
+            "mean_us": 241.675,
+            "min_us": 222,
+            "p50_us": 231.0,
+            "p95_us": 298,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.987012987012987,
+          "p95_ratio_v2_over_legacy": 0.8590604026845637
+        }
+      ]
+    },
+    {
+      "key": "synthetic_stik_electric_4s",
+      "kind": "electric",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.005154770932204,
+        "p10": 0.8670936749399519,
+        "p90": 1.1500399042298484,
+        "min": 0.8670936749399519,
+        "max": 1.1500399042298484,
+        "mad": 0.015420195277988713
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.0771987977360595,
+        "p10": 0.8963133640552995,
+        "p90": 1.4548802946593002,
+        "min": 0.8963133640552995,
+        "max": 1.4548802946593002,
+        "mad": 0.17475238293766437
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 880,
+            "mean_us": 513.8833333333333,
+            "min_us": 461,
+            "p50_us": 489.5,
+            "p95_us": 656,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 744,
+            "mean_us": 494.6166666666667,
+            "min_us": 463,
+            "p50_us": 479.0,
+            "p95_us": 577,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0219206680584552,
+          "p95_ratio_v2_over_legacy": 1.1369150779896013
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1226,
+            "mean_us": 528.3166666666667,
+            "min_us": 466,
+            "p50_us": 484.0,
+            "p95_us": 790,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 676,
+            "mean_us": 490.65,
+            "min_us": 466,
+            "p50_us": 482.0,
+            "p95_us": 543,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.004149377593361,
+          "p95_ratio_v2_over_legacy": 1.4548802946593002
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 2122,
+            "mean_us": 777.4083333333333,
+            "min_us": 479,
+            "p50_us": 720.5,
+            "p95_us": 1301,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1427,
+            "mean_us": 695.025,
+            "min_us": 487,
+            "p50_us": 626.5,
+            "p95_us": 1026,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1500399042298484,
+          "p95_ratio_v2_over_legacy": 1.2680311890838207
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 795,
+            "mean_us": 519.5666666666667,
+            "min_us": 470,
+            "p50_us": 500.0,
+            "p95_us": 646,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 909,
+            "mean_us": 538.0166666666667,
+            "min_us": 469,
+            "p50_us": 504.5,
+            "p95_us": 711,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9910802775024777,
+          "p95_ratio_v2_over_legacy": 0.9085794655414908
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 690,
+            "mean_us": 504.2083333333333,
+            "min_us": 472,
+            "p50_us": 490.0,
+            "p95_us": 582,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 719,
+            "mean_us": 500.225,
+            "min_us": 469,
+            "p50_us": 487.0,
+            "p95_us": 572,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0061601642710472,
+          "p95_ratio_v2_over_legacy": 1.0174825174825175
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1126,
+            "mean_us": 588.1583333333333,
+            "min_us": 475,
+            "p50_us": 541.5,
+            "p95_us": 778,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1292,
+            "mean_us": 647.375,
+            "min_us": 477,
+            "p50_us": 624.5,
+            "p95_us": 868,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.8670936749399519,
+          "p95_ratio_v2_over_legacy": 0.8963133640552995
+        }
+      ]
+    },
+    {
+      "key": "synthetic_stik_electric_6s",
+      "kind": "electric",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 1.0018584084214996,
+        "p10": 0.7313019390581718,
+        "p90": 1.1256181998021761,
+        "min": 0.7313019390581718,
+        "max": 1.1256181998021761,
+        "mad": 0.06309348877689397
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9226962316314572,
+        "p10": 0.6344359626802375,
+        "p90": 1.266355140186916,
+        "min": 0.6344359626802375,
+        "max": 1.266355140186916,
+        "mad": 0.0705288378419815
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1106,
+            "mean_us": 580.375,
+            "min_us": 472,
+            "p50_us": 528.5,
+            "p95_us": 831,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 929,
+            "mean_us": 568.7666666666667,
+            "min_us": 472,
+            "p50_us": 525.5,
+            "p95_us": 856,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.005708848715509,
+          "p95_ratio_v2_over_legacy": 0.9707943925233645
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1093,
+            "mean_us": 568.4416666666667,
+            "min_us": 482,
+            "p50_us": 528.0,
+            "p95_us": 748,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 2746,
+            "mean_us": 764.3666666666667,
+            "min_us": 499,
+            "p50_us": 722.0,
+            "p95_us": 1179,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.7313019390581718,
+          "p95_ratio_v2_over_legacy": 0.6344359626802375
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 957,
+            "mean_us": 598.4916666666667,
+            "min_us": 478,
+            "p50_us": 548.5,
+            "p95_us": 839,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1028,
+            "mean_us": 646.7916666666666,
+            "min_us": 476,
+            "p50_us": 574.5,
+            "p95_us": 961,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9547432550043516,
+          "p95_ratio_v2_over_legacy": 0.8730489073881373
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 893,
+            "mean_us": 613.95,
+            "min_us": 483,
+            "p50_us": 581.0,
+            "p95_us": 816,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1260,
+            "mean_us": 593.3416666666667,
+            "min_us": 474,
+            "p50_us": 537.5,
+            "p95_us": 933,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0809302325581396,
+          "p95_ratio_v2_over_legacy": 0.8745980707395499
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 892,
+            "mean_us": 615.3166666666667,
+            "min_us": 493,
+            "p50_us": 569.0,
+            "p95_us": 813,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 828,
+            "mean_us": 528.775,
+            "min_us": 467,
+            "p50_us": 505.5,
+            "p95_us": 642,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.1256181998021761,
+          "p95_ratio_v2_over_legacy": 1.266355140186916
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 975,
+            "mean_us": 525.9416666666667,
+            "min_us": 467,
+            "p50_us": 501.0,
+            "p95_us": 647,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 710,
+            "mean_us": 523.95,
+            "min_us": 470,
+            "p50_us": 502.0,
+            "p95_us": 638,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.99800796812749,
+          "p95_ratio_v2_over_legacy": 1.0141065830721003
+        }
+      ]
+    },
+    {
+      "key": "synthetic_stik_electric_4s_battery",
+      "kind": "electric",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.994907362714885,
+        "p10": 0.9441384736428009,
+        "p90": 1.0081366965012204,
+        "min": 0.9441384736428009,
+        "max": 1.0081366965012204,
+        "mad": 0.012615216969231291
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9771914347823469,
+        "p10": 0.8838992332968236,
+        "p90": 1.1361702127659574,
+        "min": 0.8838992332968236,
+        "max": 1.1361702127659574,
+        "mad": 0.06118315126123158
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 887,
+            "mean_us": 617.0,
+            "min_us": 553,
+            "p50_us": 577.5,
+            "p95_us": 801,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 959,
+            "mean_us": 604.1083333333333,
+            "min_us": 559,
+            "p50_us": 585.5,
+            "p95_us": 705,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.986336464560205,
+          "p95_ratio_v2_over_legacy": 1.1361702127659574
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 767,
+            "mean_us": 594.7333333333333,
+            "min_us": 557,
+            "p50_us": 577.0,
+            "p95_us": 684,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 773,
+            "mean_us": 585.85,
+            "min_us": 555,
+            "p50_us": 575.0,
+            "p95_us": 649,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0034782608695652,
+          "p95_ratio_v2_over_legacy": 1.0539291217257318
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 889,
+            "mean_us": 598.5583333333333,
+            "min_us": 559,
+            "p50_us": 583.0,
+            "p95_us": 688,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 958,
+            "mean_us": 597.95,
+            "min_us": 557,
+            "p50_us": 579.0,
+            "p95_us": 682,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0069084628670122,
+          "p95_ratio_v2_over_legacy": 1.0087976539589443
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1024,
+            "mean_us": 633.725,
+            "min_us": 559,
+            "p50_us": 600.0,
+            "p95_us": 807,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1084,
+            "mean_us": 675.1333333333333,
+            "min_us": 565,
+            "p50_us": 635.5,
+            "p95_us": 913,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9441384736428009,
+          "p95_ratio_v2_over_legacy": 0.8838992332968236
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1052,
+            "mean_us": 668.125,
+            "min_us": 569,
+            "p50_us": 619.5,
+            "p95_us": 912,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1227,
+            "mean_us": 668.0583333333333,
+            "min_us": 559,
+            "p50_us": 614.5,
+            "p95_us": 979,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0081366965012204,
+          "p95_ratio_v2_over_legacy": 0.9315628192032687
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1095,
+            "mean_us": 693.9333333333333,
+            "min_us": 567,
+            "p50_us": 634.5,
+            "p95_us": 921,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1589,
+            "mean_us": 717.8666666666667,
+            "min_us": 579,
+            "p50_us": 657.5,
+            "p95_us": 974,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9650190114068441,
+          "p95_ratio_v2_over_legacy": 0.9455852156057495
+        }
+      ]
+    },
+    {
+      "key": "synthetic_stik_electric_6s_battery",
+      "kind": "electric",
+      "loaded_model_equal": true,
+      "initial_state_equal": true,
+      "warmup_state_equal": true,
+      "paired_p50_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9982803082728557,
+        "p10": 0.9574119574119574,
+        "p90": 1.0129870129870129,
+        "min": 0.9574119574119574,
+        "max": 1.0129870129870129,
+        "mad": 0.011027229726084053
+      },
+      "paired_p95_ratio_v2_over_legacy": {
+        "count": 6,
+        "median": 0.9844898019316453,
+        "p10": 0.7172264355362947,
+        "p90": 1.1342494714587739,
+        "min": 0.7172264355362947,
+        "max": 1.1342494714587739,
+        "mad": 0.10829589802791273
+      },
+      "pairs": [
+        {
+          "pair": 1,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 941,
+            "mean_us": 600.5083333333333,
+            "min_us": 559,
+            "p50_us": 580.0,
+            "p95_us": 687,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 793,
+            "mean_us": 591.45,
+            "min_us": 558,
+            "p50_us": 581.0,
+            "p95_us": 659,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9982788296041308,
+          "p95_ratio_v2_over_legacy": 1.0424886191198786
+        },
+        {
+          "pair": 2,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 829,
+            "mean_us": 598.3166666666667,
+            "min_us": 561,
+            "p50_us": 585.0,
+            "p95_us": 676,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 922,
+            "mean_us": 586.825,
+            "min_us": 559,
+            "p50_us": 577.5,
+            "p95_us": 643,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.0129870129870129,
+          "p95_ratio_v2_over_legacy": 1.0513219284603421
+        },
+        {
+          "pair": 3,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 910,
+            "mean_us": 598.3083333333333,
+            "min_us": 558,
+            "p50_us": 581.0,
+            "p95_us": 668,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 955,
+            "mean_us": 600.4,
+            "min_us": 563,
+            "p50_us": 582.0,
+            "p95_us": 721,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9982817869415808,
+          "p95_ratio_v2_over_legacy": 0.926490984743412
+        },
+        {
+          "pair": 4,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 867,
+            "mean_us": 598.8666666666667,
+            "min_us": 556,
+            "p50_us": 582.5,
+            "p95_us": 676,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 964,
+            "mean_us": 626.975,
+            "min_us": 555,
+            "p50_us": 591.5,
+            "p95_us": 815,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9847844463229078,
+          "p95_ratio_v2_over_legacy": 0.8294478527607362
+        },
+        {
+          "pair": 5,
+          "order": [
+            "v2",
+            "legacy_v1"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 857,
+            "mean_us": 594.5333333333333,
+            "min_us": 565,
+            "p50_us": 584.5,
+            "p95_us": 662,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 1385,
+            "mean_us": 657.8583333333333,
+            "min_us": 557,
+            "p50_us": 610.5,
+            "p95_us": 923,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 0.9574119574119574,
+          "p95_ratio_v2_over_legacy": 0.7172264355362947
+        },
+        {
+          "pair": 6,
+          "order": [
+            "legacy_v1",
+            "v2"
+          ],
+          "state_equal_after_batch": true,
+          "v2_tick_us": {
+            "max_us": 1188,
+            "mean_us": 728.975,
+            "min_us": 567,
+            "p50_us": 662.5,
+            "p95_us": 1073,
+            "sample_count": 120
+          },
+          "legacy_v1_tick_us": {
+            "max_us": 2788,
+            "mean_us": 719.9416666666667,
+            "min_us": 574,
+            "p50_us": 658.0,
+            "p95_us": 946,
+            "sample_count": 120
+          },
+          "p50_ratio_v2_over_legacy": 1.006838905775076,
+          "p95_ratio_v2_over_legacy": 1.1342494714587739
+        }
+      ]
+    }
+  ],
+  "measurement_policy": "same-process paired ratios and spread are descriptive; model and every end-of-batch simulation byte boundary are exact acceptance checks",
+  "benchmark_run": {
+    "label": "benchmark",
+    "mode": "bench",
+    "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-integration\\app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\paired_metadata_bench.gd",
+      "--",
+      "--mode=bench",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-standardization/AS-04/evidence/AS04-paired-metadata-20261011-r1/benchmark.json"
+    ],
+    "elapsed_seconds": 14.977,
+    "timeout_seconds": 180,
+    "timed_out": false,
+    "return_code": 0,
+    "engine_errors": [],
+    "source_unchanged_during_run": true,
+    "host_processes_before": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 291.484375,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": [
+          {
+            "pid": "75369",
+            "command": "timeout"
+          },
+          {
+            "pid": "75370",
+            "command": "Godot_v4.7.2-stable_linux.x86_64"
+          }
+        ]
+      }
+    },
+    "host_processes_after": {
+      "windows": {
+        "available": true,
+        "godot_processes": [
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64",
+            "Id": 84968,
+            "CPU": 294.328125,
+            "StartTime": "/Date(1791752546916)/"
+          },
+          {
+            "ProcessName": "Godot_v4.7.2-stable_win64_console",
+            "Id": 95832,
+            "CPU": 0.03125,
+            "StartTime": "/Date(1791752546893)/"
+          }
+        ]
+      },
+      "wsl_ubuntu": {
+        "available": true,
+        "godot_processes": [
+          {
+            "pid": "75427",
+            "command": "timeout"
+          },
+          {
+            "pid": "75428",
+            "command": "Godot_v4.7.2-stable_linux.x86_64"
+          }
+        ]
+      }
+    },
+    "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-metadata-20261011-r1\\benchmark.json",
+    "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-paired-metadata-20261011-r1\\benchmark.log"
+  }
+}

@@ -1,0 +1,15 @@
+Command: python research/propulsion/range-audit/test_audit.py
+Result:
+.......................
+----------------------------------------------------------------------
+Ran 23 tests in 0.484s
+
+OK
+
+Command: git diff --check -- research/propulsion/range-audit/audit.py research/propulsion/range-audit/test_audit.py research/propulsion/range-audit/README.md
+Result: passed (no whitespace errors)
+
+SHA-256 (after test run):
+A068F8D01788FB24E0DF14E67B9F2EDC04CC242A64A18D1D10C832E22D57D264  research/propulsion/range-audit/audit.py
+3526190281908358D83F211CA0B653D9CAFF02ACFFBAF6220ECCDD9C1B4AFB9A  research/propulsion/range-audit/test_audit.py
+F27A7D65E94890BA65E89C16E23FBA0D64875C12C4DA7950F904F843639FD5E3  research/propulsion/range-audit/README.md

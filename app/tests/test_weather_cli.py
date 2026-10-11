@@ -45,6 +45,26 @@ class WeatherCLI(unittest.TestCase):
         self.assertEqual(result['rows'], 721)
         self.assertLess(result['max_speed_error_mps'], 1e-6)
 
+    def test_v6_wheel_metadata_is_validated_and_legacy_weather_metadata_stays_strict(self):
+        lines = self.valid.read_text().splitlines()
+        metadata = {line[2:].partition(': ')[0]: line[2:].partition(': ')[2]
+                    for line in lines if line.startswith('# ')}
+        self.assertEqual(metadata.get('metadata_schema'), 'openrc-flight-meta v6')
+        self.assertIn('wheel_state_layout', metadata)
+        mutations = (
+            ('legacy schema with wheel suffix', 'metadata_schema', 'openrc-flight-meta v3'),
+            ('malformed wheel layout', 'wheel_state_layout', '[]'),
+        )
+        for label, key, value in mutations:
+            with self.subTest(mutation=label):
+                path = self.directory / 'mutated-wheel-metadata.csv'
+                path.write_text('\n'.join(
+                    '# %s: %s' % (key, value) if line.startswith('# ' + key + ': ') else line
+                    for line in lines
+                ) + '\n', encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    check(path)
+
     def test_real_vertical_and_steady(self):
         for preset in ('updraft', 'steady'):
             with self.subTest(preset=preset):

@@ -116,8 +116,11 @@ func _prepare_weather() -> void:
 		_turbulence_index = index
 		_columns.append_array(TURBULENCE_COLUMNS)
 	if _weather.has_atmosphere():
+		var supported_metadata_schema: bool = meta.get("metadata_schema") == "openrc-flight-meta v5" \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v6" \
+				and meta.get("wheel_state_model") == "relative-wheel-rim-speed-rk4-v1")
 		if meta.get("atmosphere_model") != "uniform-field-qnh-isa-buck-liquid-v1" \
-				or meta.get("metadata_schema") != "openrc-flight-meta v5" or typeof(meta.get("atmosphere_state")) != TYPE_STRING:
+				or not supported_metadata_schema or typeof(meta.get("atmosphere_state")) != TYPE_STRING:
 			_invalid_weather = true
 			return
 		var air: Variant = JSON.parse_string(meta.atmosphere_state)
@@ -146,8 +149,7 @@ func _prepare_shaft_metadata() -> void:
 	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW]:
 		return
 	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
-			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1" \
-			or meta.get("continuous_layout") != (Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"):
+			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1":
 		_invalid_weather = true
 		return
 	var values: Variant = JSON.parse_string(str(meta.get("recording_start_continuous", "null")))
@@ -155,8 +157,60 @@ func _prepare_shaft_metadata() -> void:
 	if not values is Array or values.is_empty() or not sampled is Array or sampled.size() != 4:
 		_invalid_weather = true
 		return
-	var shaft_index: int = values.size() - (4 if _battery else 1)
+	var wheel_count: int = 0
+	var wheel_first_index: int = -1
+	var has_wheel_metadata: bool = meta.has("wheel_state_model") or meta.has("wheel_state_layout") \
+		or meta.has("wheel_profile_status") or meta.has("wheel_profile_sha256") or meta.has("wheel_profile_input_sha256")
+	var base_layout: String = Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"
+	if has_wheel_metadata:
+		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
+		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
+		if meta.get("metadata_schema") != "openrc-flight-meta v6" \
+				or meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
+				or meta.get("wheel_profile_status") != "applied" \
+				or not _is_sha256(str(meta.get("wheel_profile_sha256", ""))) \
+				or not _is_sha256(str(meta.get("wheel_profile_input_sha256", ""))) \
+				or meta.get("wheel_profile_hash_convention") != "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes" \
+				or not layout is Array or layout.is_empty() or not launch is Array or launch.size() != values.size():
+			_invalid_weather = true
+			return
+		wheel_count = layout.size()
+		wheel_first_index = values.size() - wheel_count
+		var contacts := {}
+		for i: int in wheel_count:
+			var entry: Variant = layout[i]
+			if not entry is Dictionary or typeof(entry.get("index")) not in [TYPE_INT, TYPE_FLOAT] \
+					or not is_finite(float(entry.index)) or float(entry.index) != float(int(entry.index)) \
+					or int(entry.index) != wheel_first_index + i or typeof(entry.get("contact")) != TYPE_STRING \
+					or str(entry.contact).is_empty() or contacts.has(entry.contact) or entry.get("unit") != "m/s rim speed":
+				_invalid_weather = true
+				return
+			contacts[entry.contact] = true
+		for value: Variant in launch:
+			if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+				_invalid_weather = true
+				return
+		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
+		if not brakes is Array or brakes.size() != wheel_count:
+			_invalid_weather = true
+			return
+		for i: int in wheel_count:
+			var brake: Variant = brakes[i]
+			var torque: Variant = brake.get("max_torque_nm") if brake is Dictionary else null
+			if not brake is Dictionary or brake.get("contact") != layout[i].contact \
+					or brake.get("availability") not in ["available", "none", "unspecified"] \
+					or typeof(torque) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(torque)) or float(torque) < 0.0 \
+					or (float(torque) > 0.0 and brake.availability != "available"):
+				_invalid_weather = true
+				return
+	if str(meta.get("continuous_layout", "")) != base_layout + ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else ""):
+		_invalid_weather = true
+		return
+	var shaft_index: int = values.size() - (4 if _battery else 1) - wheel_count
 	if shaft_index < 0 or (meta.get("propwash_model") == "tail-slipstream-axial-transport-v1") != (shaft_index > 0):
+		_invalid_weather = true
+		return
+	if has_wheel_metadata and wheel_first_index != shaft_index + 1 + (3 if _battery else 0):
 		_invalid_weather = true
 		return
 	for value: Variant in values:
@@ -194,6 +248,15 @@ func _prepare_shaft_metadata() -> void:
 	_coupled_shaft = true
 	_coupled_start_rpm = values[shaft_index]
 	_weather_meta = meta.duplicate(true)
+
+
+func _is_sha256(value: String) -> bool:
+	if value.length() != 64:
+		return false
+	for character: String in value:
+		if not "0123456789abcdef".contains(character):
+			return false
+	return true
 
 
 ## Additional battery channels share the endpoint timestamp and carry their own charge budget.

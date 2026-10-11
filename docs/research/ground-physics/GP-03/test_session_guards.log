@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   untrimmable fixture was written
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   untrimmable reload is rejected  reload failed; previous aircraft and flight retained: trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   rejected reload preserves the active model
+ok   rejected reload preserves start and trims
+ok   rejected reload preserves current and previous state
+ok   rejected reload preserves tick and pause status
+ok   session exposes a runtime fault and pauses
+ok   session resume cannot bypass a runtime fault
+trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   untrimmable initial aircraft has no accepted start
+ok   untrimmable initial aircraft stays paused
+ok   initial failure states the trim problem  trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   resume cannot bypass an invalid initial trim
+ok   direct stepping cannot bypass an invalid initial trim
+ok   invalid initial start is inert instead of a thrown flight
+ok   simulation accepts a valid initial state
+ok   nonfinite loads pause at the last valid state
+ok   nonfinite loads expose a readable fault  step rejected: aircraft returned nonfinite or malformed loads
+ok   numerical fault cannot be resumed without a valid reset
+ok   explicit valid reset clears the simulation fault
+ok   nonfinite k2 loads roll back the full tick  calls 2, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k3 loads roll back the full tick  calls 3, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k4 loads roll back the full tick  calls 4, step rejected: RK stage loads are nonfinite or malformed
+ok   a tick evaluates the loads 4 times (H2: k1 reuses the tick's loads)  4
+ok   nonfinite auxiliary state rolls back and pauses
+ok   nonfinite pre-step auxiliary output rolls back and pauses
+ok   nonfinite current state restores the last valid state
+ok   degenerate quaternion reset is rejected
+ok   rejected quaternion reset retains valid state and pauses
+ok   nonfinite quaternion reset is rejected
+ok   nonfinite quaternion keeps the last valid state
+ok   inverted flight and high angular rates are not faulted by themselves
+ok   valid mass and inertia changes after reset use current values  u 15.008333333, p 0.004166667
+32 checks, 0 failed

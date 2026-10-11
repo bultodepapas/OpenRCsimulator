@@ -1,0 +1,169 @@
+{
+	"accepted_input_tape": [
+		{
+			"end": 240,
+			"input": [
+				0.0,
+				0.0,
+				0.0,
+				0.45
+			]
+		},
+		{
+			"end": 480,
+			"input": [
+				0.06,
+				-0.03,
+				0.0,
+				0.6
+			]
+		},
+		{
+			"end": 720,
+			"input": [
+				-0.06,
+				0.04,
+				0.02,
+				0.53
+			]
+		},
+		{
+			"end": 960,
+			"input": [
+				0.03,
+				0.0,
+				-0.02,
+				0.68
+			]
+		},
+		{
+			"end": 1200,
+			"input": [
+				0.0,
+				0.0,
+				0.0,
+				0.5
+			]
+		}
+	],
+	"audio_modules_sha256": {
+		"flight_audio.gd": "0dfe9dbf814c4fab89b0f09086e7197e57c23e22e137df20734984f49ee894da",
+		"soundscape.gd": "aec009ff2d14e192fccc363d1e829a1770e9e9d4ab0019a97c196841a533970f",
+		"soundscape_model.gd": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b"
+	},
+	"checkpoint_encoding": "var_to_bytes(FlightSession.checkpoint()) exact Variant bytes",
+	"checks": 16,
+	"engine": "4.7.2-stable (official)",
+	"expected_pairs": 4,
+	"failures": [],
+	"format": "openrc-audio-simulation-parity v1",
+	"headless": true,
+	"passed_pairs": 4,
+	"pause_samples_per_pair": 24,
+	"physics_hz": 240,
+	"project_route": "C:/DEVELOPMENT/OpenRCsimulator/app/main.tscn",
+	"runs": [
+		{
+			"accepted_ticks_compared": 1200,
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"audio_rng_advanced_during_configure": true,
+			"checkpoint_hash_off_after_tape": "2889528adf2f54b73e88d5617e222a4a4b4a8c357478dc1c1681613e12d4c5e6",
+			"checkpoint_hash_on_after_tape": "2889528adf2f54b73e88d5617e222a4a4b4a8c357478dc1c1681613e12d4c5e6",
+			"configure_read_only": true,
+			"electric_demo": "",
+			"error": "",
+			"full_checkpoint_equal_each_step": true,
+			"max_update_usec_observed": 212,
+			"ok": true,
+			"paired_simulated_seconds_total": 10.0,
+			"pause_samples": 24,
+			"post_reset_checkpoint_hash_off": "83b92da06528e9555eeb13316679fdf1cec6d8a18b00e39ac45adebd45df4b38",
+			"post_reset_checkpoint_hash_on": "83b92da06528e9555eeb13316679fdf1cec6d8a18b00e39ac45adebd45df4b38",
+			"propulsion_kind": "glow_prop",
+			"restart_audio_read_only": true,
+			"restart_checkpoint_equal": true,
+			"simulated_seconds_per_run": 5.0,
+			"snapshot_read_only_checks": 1200,
+			"turbulence_rng_advanced_identically": true,
+			"update_read_only_checks": 1200
+		},
+		{
+			"accepted_ticks_compared": 1200,
+			"aircraft_id": "gp-extra-300s-60",
+			"audio_rng_advanced_during_configure": true,
+			"checkpoint_hash_off_after_tape": "cfee359aadc9662b8384c9651143d1c9bafdcaed9e5ca3e6c36e757b8a385169",
+			"checkpoint_hash_on_after_tape": "cfee359aadc9662b8384c9651143d1c9bafdcaed9e5ca3e6c36e757b8a385169",
+			"configure_read_only": true,
+			"electric_demo": "",
+			"error": "",
+			"full_checkpoint_equal_each_step": true,
+			"max_update_usec_observed": 390,
+			"ok": true,
+			"paired_simulated_seconds_total": 10.0,
+			"pause_samples": 24,
+			"post_reset_checkpoint_hash_off": "f45f9d1f0ca6036a4a5e0e0153ccbd7204364f8266d15a3edf9dbddf3c40f7ce",
+			"post_reset_checkpoint_hash_on": "f45f9d1f0ca6036a4a5e0e0153ccbd7204364f8266d15a3edf9dbddf3c40f7ce",
+			"propulsion_kind": "glow_prop",
+			"restart_audio_read_only": true,
+			"restart_checkpoint_equal": true,
+			"simulated_seconds_per_run": 5.0,
+			"snapshot_read_only_checks": 1200,
+			"turbulence_rng_advanced_identically": true,
+			"update_read_only_checks": 1200
+		},
+		{
+			"accepted_ticks_compared": 1200,
+			"aircraft_id": "p51d-mustang-120",
+			"audio_rng_advanced_during_configure": true,
+			"checkpoint_hash_off_after_tape": "7a4404cbe6d719003c0b4646d57492d12ee7a4ed2c68027099b57ba3d74f7d6a",
+			"checkpoint_hash_on_after_tape": "7a4404cbe6d719003c0b4646d57492d12ee7a4ed2c68027099b57ba3d74f7d6a",
+			"configure_read_only": true,
+			"electric_demo": "",
+			"error": "",
+			"full_checkpoint_equal_each_step": true,
+			"max_update_usec_observed": 296,
+			"ok": true,
+			"paired_simulated_seconds_total": 10.0,
+			"pause_samples": 24,
+			"post_reset_checkpoint_hash_off": "fb86782aa1df15d5648bbd05d740cd5b054c629038df5e04890e1a9dfe1a8e72",
+			"post_reset_checkpoint_hash_on": "fb86782aa1df15d5648bbd05d740cd5b054c629038df5e04890e1a9dfe1a8e72",
+			"propulsion_kind": "glow_prop",
+			"restart_audio_read_only": true,
+			"restart_checkpoint_equal": true,
+			"simulated_seconds_per_run": 5.0,
+			"snapshot_read_only_checks": 1200,
+			"turbulence_rng_advanced_identically": true,
+			"update_read_only_checks": 1200
+		},
+		{
+			"accepted_ticks_compared": 1200,
+			"aircraft_id": "sebart-avanti-s-a200-p100rx",
+			"audio_rng_advanced_during_configure": true,
+			"checkpoint_hash_off_after_tape": "9b4b24d082095f5b1e491d8b37ead9c9df339fc30d2cf420442dcf300665f42b",
+			"checkpoint_hash_on_after_tape": "9b4b24d082095f5b1e491d8b37ead9c9df339fc30d2cf420442dcf300665f42b",
+			"configure_read_only": true,
+			"electric_demo": "",
+			"error": "",
+			"full_checkpoint_equal_each_step": true,
+			"max_update_usec_observed": 1295,
+			"ok": true,
+			"paired_simulated_seconds_total": 10.0,
+			"pause_samples": 24,
+			"post_reset_checkpoint_hash_off": "41b1409c43ef85a7cc1f10663dfa2a70cfe2064780bff2c3bfc393096a108c29",
+			"post_reset_checkpoint_hash_on": "41b1409c43ef85a7cc1f10663dfa2a70cfe2064780bff2c3bfc393096a108c29",
+			"propulsion_kind": "turbine",
+			"restart_audio_read_only": true,
+			"restart_checkpoint_equal": true,
+			"simulated_seconds_per_run": 5.0,
+			"snapshot_read_only_checks": 1200,
+			"turbulence_rng_advanced_identically": true,
+			"update_read_only_checks": 1200
+		}
+	],
+	"scope": "simulation parity only; no acoustic, latency, speaker, or human acceptance",
+	"simulated_seconds_per_run": 5.0,
+	"status": "pass",
+	"tested_at_utc": "2026-10-11 21:46:56",
+	"ticks_per_pair_run": 1200,
+	"weather": "turbulent"
+}

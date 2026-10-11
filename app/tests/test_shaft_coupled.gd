@@ -95,7 +95,8 @@ func _torque_closure(flight: Node, label: String) -> void:
 	var sim: Node = flight.sim
 	var state: PackedFloat64Array = sim.state.duplicate()
 	var continuous: PackedFloat64Array = sim.continuous.duplicate()
-	var rpm: float = continuous[-1]
+	var shaft_index: int = flight._rotor_index()
+	var rpm: float = continuous[shaft_index]
 	var time_s: float = sim.time()
 	var loads: PackedFloat64Array = flight._coupled_loads(state, continuous, time_s)
 	var h: PackedFloat64Array = flight._coupled_rotor(state, continuous, time_s)
@@ -115,7 +116,7 @@ func _torque_closure(flight: Node, label: String) -> void:
 	var prop_torque: float = Prop.prop_torque(rpm, axial_speed, prop, flight.air_density())
 	var applied_shaft_torque: float = engine - prop_torque
 	var body_alpha: PackedFloat64Array = derivative.slice(RB.RATE, RB.RATE + 3)
-	var lhs: float = float(prop.rotor_inertia) * (shaft[-1] * TAU / 60.0 + M.dot(axis, body_alpha))
+	var lhs: float = float(prop.rotor_inertia) * (shaft[shaft_index] * TAU / 60.0 + M.dot(axis, body_alpha))
 	var error: float = absf(lhs - applied_shaft_torque)
 	_check(label, is_finite(lhs) and is_finite(applied_shaft_torque) and error < 2e-7 * maxf(1.0, absf(applied_shaft_torque)),
 		"I*(Omega_dot + axis·body_alpha)=Q_engine-Q_prop; residual " + String.num_scientific(error) + " N·m")
@@ -147,9 +148,9 @@ func _mode_and_legacy_paths() -> void:
 
 func _coupling_physics() -> void:
 	var flight: Node = _coupled_fixture()
-	_check("P-51 coupled mode starts with one continuous RPM state", flight != null and flight.is_flyable()
-		and flight.shaft_is_coupled() and flight.sim.continuous.size() == 1
-		and flight.sim.continuous[-1] == flight.sim.aux[0])
+	_check("P-51 coupled state keeps RPM before appended wheel speeds", flight != null and flight.is_flyable()
+		and flight.shaft_is_coupled() and flight.sim.continuous.size() == flight._rotor_index() + 1 + flight.wheel_count()
+		and flight.sim.continuous[flight._rotor_index()] == flight.sim.aux[0])
 	if flight == null:
 		return
 	var prop: Dictionary = flight.aircraft.model.propulsion
@@ -164,19 +165,21 @@ func _coupling_physics() -> void:
 	var body: PackedFloat64Array = flight.sim.state.duplicate()
 	var at_time: float = flight.sim.time()
 	var coupled_loads: PackedFloat64Array = flight._coupled_loads(body, z, at_time)
-	var prefix: PackedFloat64Array = z.slice(0, z.size() - 1)
+	var prefix: PackedFloat64Array = z.slice(0, flight._rotor_index())
 	var lag: int = flight.downwash_index()
 	var downwash: float = flight.sim.aux[lag] if lag >= 0 and lag < flight.sim.aux.size() else NAN
 	var external: PackedFloat64Array = Dynamics.loads(body, flight.aircraft.model, flight._deflections(flight.sim.aux),
 		rpm, flight.air_density(), flight.wind_at(at_time), downwash, prefix)
-	var ground: PackedFloat64Array = Ground.loads(body, flight.aircraft.model.landing_gear,
+	var ground_result: Dictionary = Ground.evaluate(body, flight.aircraft.model.landing_gear,
 		flight.sim.aux[Flight.AUX_SERVO + 2], flight.ground_surfaces,
-		flight.sim.aux.slice(Flight.AUX_ANCHORS, Flight.AUX_ANCHORS + flight.anchor_count() * Ground.ANCHOR_STRIDE))
+		flight.sim.aux.slice(Flight.AUX_ANCHORS, Flight.AUX_ANCHORS + flight.anchor_count() * Ground.ANCHOR_STRIDE),
+		z.slice(flight.wheel_index(), flight.wheel_index() + flight.wheel_count()), 0.0, false)
+	var ground: PackedFloat64Array = ground_result.get("loads", PackedFloat64Array())
 	for i: int in ground.size():
 		external[i] += ground[i]
 	var response: PackedFloat64Array = flight._coupled_derivative(body, z, at_time)
 	var axis: PackedFloat64Array = Prop.axis(prop)
-	var relative_spin_accel: float = response[-1] * TAU / 60.0
+	var relative_spin_accel: float = response[flight._rotor_index()] * TAU / 60.0
 	var added_moment: PackedFloat64Array = M.sub(coupled_loads.slice(3, 6), external.slice(3, 6))
 	var expected_reaction: PackedFloat64Array = M.scale(axis, -float(prop.rotor_inertia) * relative_spin_accel)
 	var reaction_error: float = 0.0
@@ -198,7 +201,8 @@ func _stage_local_integration() -> void:
 		return
 	var prop: Dictionary = flight.aircraft.model.propulsion
 	var start_rpm: float = float(prop.idle_rpm) + 40.0
-	flight.sim.continuous[-1] = start_rpm
+	var shaft_index: int = flight._rotor_index()
+	flight.sim.continuous[shaft_index] = start_rpm
 	flight.sim.aux[0] = start_rpm
 	flight.sim.inputs[3] = 1.0
 	flight.engine_running = true
@@ -211,7 +215,7 @@ func _stage_local_integration() -> void:
 	var real_rotor: Callable = flight.sim.continuous_rotor_momentum
 	flight.sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = real_evaluate.call(s, z, t)
-		stages.append({rpm = z[-1], time = t, z = z.duplicate(), loads = result.get("loads", null)})
+		stages.append({rpm = z[shaft_index], time = t, z = z.duplicate(), loads = result.get("loads", null)})
 		return result
 	flight.sim.continuous_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		legacy_calls.loads += 1
@@ -248,7 +252,7 @@ func _stage_local_integration() -> void:
 		"stage rpm %s; times %s; legacy calls %s" % [str(rpms),
 		str(stages.map(func(stage: Dictionary) -> float: return float(stage.time))), str(legacy_calls)])
 	_check("endpoint projection mirrors continuous RPM into sampled telemetry",
-		flight.sim.continuous[-1] > start_rpm and flight.sim.aux[0] == flight.sim.continuous[-1])
+		flight.sim.continuous[shaft_index] > start_rpm and flight.sim.aux[0] == flight.sim.continuous[shaft_index])
 	flight.free()
 
 

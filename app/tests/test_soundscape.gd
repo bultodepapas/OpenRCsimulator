@@ -43,7 +43,7 @@ func _run() -> void:
 		var rig: Variant = SoundscapeScript.new()
 		root.add_child(rig)
 		rig.configure(field, kinds[index], 93017 + index)
-		_check("%s configures exactly 12 voices" % kinds[index], rig.voices.size() == 12, "voices=%d" % rig.voices.size())
+		_check("%s configures exactly 14 bounded voices" % kinds[index], rig.voices.size() == 14, "voices=%d" % rig.voices.size())
 		_check("%s adds three dedicated buses" % kinds[index], AudioServer.bus_count == buses_before + 3,
 			"before=%d after=%d" % [buses_before, AudioServer.bus_count])
 		var output_bus: StringName = rig.output_bus()
@@ -58,12 +58,12 @@ func _run() -> void:
 		var configured_motor: AudioStreamWAV = rig.voices[0].stream as AudioStreamWAV
 		_check("propulsion kind loads its matching original motor source",
 			configured_motor != null and expected_motor != null and configured_motor.data == expected_motor.data)
-		var decoded_birds: bool = rig.birds.size() == 6
+		var decoded_birds: bool = rig.birds.size() == 10
 		for bird: AudioStreamWAV in rig.birds:
 			decoded_birds = decoded_birds and bird != null and bird.data.size() > 0
-		_check("six bird phrases decode as usable WAV streams", decoded_birds)
+		_check("ten bird phrases decode as usable WAV streams", decoded_birds)
 		var pcm_loops: bool = true
-		for voice_index: int in range(9):
+		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
 			var loop: AudioStreamWAV = rig.voices[voice_index].stream as AudioStreamWAV
 			pcm_loops = pcm_loops and loop.format == AudioStreamWAV.FORMAT_16_BITS
 			pcm_loops = pcm_loops and loop.loop_end == roundi(loop.get_length() * loop.mix_rate)
@@ -75,24 +75,25 @@ func _run() -> void:
 		var bird_snapshot: Dictionary = _flight_snapshot()
 		bird_snapshot.sun_elevation = 45.0
 		bird_snapshot.wind_speed = 0.0
+		bird_snapshot.source = Vector3(500.0, 50.0, 500.0) # no flyby disturbance at the test perches
 		var phrases: Array[int] = []
 		var all_phrases_known: bool = true
 		for step: int in range(1200):
-			var due: bool = float(rig.bird_wait) <= 0.1 + 0.000001
-			var slot: int = int(rig.next_bird_voice)
+			var serial_before: int = rig.wildlife.serial
 			rig.update_sound(bird_snapshot, 0.1)
-			if due:
+			if rig.wildlife.serial > serial_before and rig.wildlife.last_event.species == "bird":
+				var slot: int = rig.wildlife.last_event.slot
 				var phrase: int = rig.birds.find(rig.voices[9 + slot].stream)
 				all_phrases_known = all_phrases_known and phrase >= 0
 				if phrase >= 0:
 					phrases.append(phrase)
-		_check("bird scheduling emits several decoded phrases via update_sound", phrases.size() >= 7,
+		_check("bird scheduling emits several decoded phrases via update_sound", phrases.size() >= 5,
 			"scheduled=%d" % phrases.size())
 		var no_adjacent_repeat: bool = true
 		for phrase_index: int in range(1, phrases.size()):
 			no_adjacent_repeat = no_adjacent_repeat and phrases[phrase_index] != phrases[phrase_index - 1]
 		_check("successive bird calls use different phrases", no_adjacent_repeat, str(phrases))
-		_check("every scheduled bird voice uses one of the six loaded phrases", all_phrases_known)
+		_check("every scheduled songbird uses one of the ten loaded phrases", all_phrases_known)
 
 		# Pause and resume must ramp the scene mix while retaining player state.
 		var active: Dictionary = _flight_snapshot()
@@ -146,7 +147,18 @@ func _run() -> void:
 		rig.update_sound(moving, 0.016)
 		_check("first update after reset has no stale Doppler spike", absf(float(rig.last_doppler) - 1.0) < 0.000001,
 			"ratio=%.6f" % float(rig.last_doppler))
-		_check("voice budget stays bounded after repeated scheduler updates", rig.voices.size() == 12)
+		_check("voice budget stays bounded after repeated scheduler updates", rig.voices.size() == 14)
+		_check("reset retains both looping cricket colonies", rig.voices[12].playing and rig.voices[13].playing)
+		var warm_night: Dictionary = active.duplicate()
+		warm_night.sun_elevation = -20.0
+		warm_night.temperature_c = 20.0
+		warm_night.wind_speed = 0.0
+		for step: int in 100:
+			rig.update_sound(warm_night, 0.1)
+		var night_level: float = rig.voices[12].volume_db
+		_check("warm night fades in both cricket patches", night_level > -40.0 and rig.voices[13].volume_db > -40.0)
+		rig.update_sound(active, 0.1)
+		_check("day change fades crickets instead of switching them abruptly", absf(rig.voices[12].volume_db - night_level) < 2.0)
 
 		if not global_rng_checked:
 			var observed_global: Array[int] = []

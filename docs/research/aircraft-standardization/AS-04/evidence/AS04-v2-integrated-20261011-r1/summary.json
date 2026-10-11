@@ -1,0 +1,22 @@
+{
+  "run_id": "AS04-v2-integrated-20261011-r1",
+  "ok": false,
+  "failures": [
+    "candidate_r1: app source changed while the probe was running",
+    "candidate: source manifest changed between alternating measurement runs"
+  ],
+  "evidence": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-v2-integrated-20261011-r1",
+  "alternating_runs": 2,
+  "baseline_elapsed_seconds": [
+    8.613,
+    8.434
+  ],
+  "candidate_elapsed_seconds": [
+    8.767,
+    8.922
+  ],
+  "cases_compared": 8,
+  "model_numeric_equal_cases": 8,
+  "flight_trace_equal_cases": 8,
+  "comparator_self_test": "pass: detected one deliberate numeric model and state-byte change"
+}

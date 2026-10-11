@@ -1,0 +1,11 @@
+{
+  "run_id": "AS04-pre-migration-20261011-r2",
+  "ok": true,
+  "failures": [],
+  "evidence": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\aircraft-standardization\\AS-04\\evidence\\AS04-pre-migration-20261011-r2",
+  "baseline_seconds": 7.842,
+  "candidate_seconds": 8.393,
+  "cases_compared": 8,
+  "model_numeric_equal_cases": 8,
+  "flight_trace_equal_cases": 8
+}

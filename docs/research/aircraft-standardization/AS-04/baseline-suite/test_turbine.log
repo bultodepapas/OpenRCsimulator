@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   loader accepts a complete turbine block  []
+ok   loader refuses: propeller keys on a turbine  
+ok   loader refuses: throttle map not ending at max_rpm  
+ok   loader refuses: rpm not increasing in a table  
+ok   loader refuses: wrong table unit  
+ok   loader refuses: rotor sense not ±1  
+ok   loader refuses: idle above max  
+ok   loader refuses an unknown propulsion kind  ["propulsion.kind: \'rocket\' is not \'glow_prop\', \'turbine\', or \'electric_prop\'"]
+ok   throttle 0 → idle, 1 → max, 0.5 → linear map  
+ok   Propulsion.steady_rpm dispatches to the turbine  
+ok   static installed thrust at max = 0.9 × 100 N  90.000000 N
+ok   ram drag at 50 m/s = ṁ·u = 0.2 × 50 N  80.000000 N
+ok   idle thrust turns into drag at speed (ram drag > idle gross)  -0.600 N
+ok   half density halves thrust and ram drag  
+ok   stopped shaft: no thrust  
+ok   ram recovery at 70 m/s: ṁ0(1 + u²/193000)(sqrt(V_j0² + 3u²) − u)  81.2205 N (plain law 76.0000 N)
+ok   ram recovery leaves the static thrust unchanged  
+ok   loads: thrust on body +x, no side/vertical force, no roll torque  
+ok   loads: thrust line 5 cm above the CG pitches nose down by 4.5 N·m  My -4.500000
+ok   inlet normal force −ṁ·w on body z, nose-up moment ṁ·w·0.3 m  Fz -0.7987 N, My -4.2604 N·m
+ok   axial ram drag in the loads = ṁ·u  
+ok   spool-up idle → 95 % max on the acceleration limit: 3.417 s  3.4167 s
+ok   spool-up never overshoots the demand  150000.000 rpm
+ok   spool-down to within 5 % of idle on the deceleration limit: 1.742 s  1.7458 s
+ok   spool-down settles on idle, not below  40000.000
+ok   spool split 240/480 Hz within 0.5 % of the rpm range  worst 0.0 rpm
+ok   rotor momentum −I·ω along x (counter-clockwise)  -1.57080 N·m·s
+27 checks, 0 failed

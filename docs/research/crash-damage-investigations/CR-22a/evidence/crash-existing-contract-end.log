@@ -1,0 +1,2122 @@
+== test_replay_policy.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H9 round-trip: { &"ok": true, &"message": "worst error: position 3.552713678800501e-15 m, velocity 1.7763568394002505e-15 m/s, attitude 6.938893903907228e-18, rate 2.220446049250313e-16 rad/s; auxiliary/discrete ok", &"worst": { &"pos": 0.0, &"vel": 0.0, &"att": 0.0, &"rate": 0.0, &"rpm": 0.0, &"servo": 0.0, &"anchor": 0.0, &"downwash": 0.0 } }
+H9 replay policy: 50 checks, 0 failed
+== test_rigid_body.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+15 checks, 0 failed
+== test_rk_stage_time.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok uncached kernel stage times
+ok cached k1 avoids duplicate evaluation
+ok autonomous kernel retains exact arithmetic
+ok simulation uses absolute stage times
+ok aux advances once and stays frozen
+ok sampled inputs stay fixed across stages
+ok trace loads retain k1 timing
+ok stage 2 fault rolls back body, aux, inputs and trace loads
+ok stage 2 fault pauses without emitting a completed tick
+ok stage 2 fault remains sticky
+ok stage 3 fault rolls back body, aux, inputs and trace loads
+ok stage 3 fault pauses without emitting a completed tick
+ok stage 3 fault remains sticky
+ok stage 4 fault rolls back body, aux, inputs and trace loads
+ok stage 4 fault pauses without emitting a completed tick
+ok stage 4 fault remains sticky
+ok coupled solve at 4 Hz completes
+ok coupled solve at 8 Hz completes
+ok coupled solve at 16 Hz completes
+ok coupled nonautonomous solution converges at fourth order
+ok coupled solve at 240 Hz completes
+ok 240 Hz coupled solution error below 1e-10
+H8a errors=[0.00004332374651, 0.00000290739641, 0.00000018869979] ratios=14.9012175856148,15.4075229395434 error_240hz=3.865380238110561e-12
+22 checks, 0 failed
+== test_rotor_coupling.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok tilted fixed-axis simultaneous response is finite 
+ok rotor-only absolute axial acceleration balances motor torque 
+ok instantaneous work equals external moment power plus relative shaft motor power 
+ok zero net torque and body moment create no extra steady reaction 
+ok spin-up and spin-down react in opposite directions 
+ok invalid axial rotor inertia refused 
+ok invalid axial rotor inertia refused 
+ok invalid axial rotor inertia refused 
+ok invalid axial rotor inertia refused 
+ok rotor exceeding carrier locked inertia is refused 
+ok malformed body vector refused before indexing 
+ok nonunit shaft direction refused 
+ok negative relative spin refused 
+ok free internal-motor fixture resets 
+ok 10-second internal spin-up advances all requested ticks 
+ok inertial total angular momentum is conserved during internal spin-up 3.3555939935603344e-14 N·m·s
+ok kinetic energy increase matches integrated shaft work 2.19824158875781e-14 J
+G2 rotor coupling: 17 checks, 0 failed
+== test_rudder_authority.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   right-first reference doublet completes without a simulation fault 
+ok   right-first reference doublet records every tick 721 rows, expected 721; sim tick 720
+ok   right-first reference doublet state, loads and commands stay finite βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s
+ok   right-first doublet moves the real rudder both ways δr right 24.34°, left -25.00°
+ok   right-first doublet yaws in both commanded directions right-phase r 55.15°/s, left-phase r -88.82°/s
+ok   reference doublet |β| peak ≤25° (estimated screen) βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s
+ok   reference doublet |r| peak ≤120°/s (estimated screen) βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s
+ok   |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen) βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s
+RUDDER_REFERENCE 15 m/s, 240 Hz: βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   restoring the audited borrowed Cndr makes the reference test reject the old authority legacy Cndr -0.18110; βpk 36.26° RMS 19.83°, rpk 152.82°/s RMS 71.94°/s, ppk 59.57°/s, αpk 9.24°, rollpk 22.73°, altitude 27.27–30.02 m (Δpk 2.73 m), rpm pk 5169, r@3s -47.14°/s, rfinal -47.14°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   left-first reverse doublet completes without a simulation fault 
+ok   left-first reverse doublet records every tick 721 rows, expected 721; sim tick 720
+ok   left-first reverse doublet state, loads and commands stay finite βpk 21.22° RMS 10.53°, rpk 89.15°/s RMS 42.56°/s, ppk 56.65°/s, αpk 6.46°, rollpk 20.73°, altitude 29.12–30.19 m (Δpk 0.88 m), rpm pk 5174, r@3s 10.01°/s, rfinal 10.01°/s
+ok   left-first doublet produces left then right yaw response δr left -25.00°, right 24.34°; phase r -56.36°/s then 86.36°/s
+ok   mirrored reference doublet respects the same authority/recovery screens βpk 21.22° RMS 10.53°, rpk 89.15°/s RMS 42.56°/s, ppk 56.65°/s, αpk 6.46°, rollpk 20.73°, altitude 29.12–30.19 m (Δpk 0.88 m), rpm pk 5174, r@3s 10.01°/s, rfinal 10.01°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   reference doublet at 480 Hz completes without a simulation fault 
+ok   reference doublet at 480 Hz records every tick 1441 rows, expected 1441; sim tick 1440
+ok   reference doublet at 480 Hz state, loads and commands stay finite βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.43°/s, ppk 56.54°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.28°/s, rfinal -12.28°/s
+ok   dt/2 converges: β peak ≤0.25°, r peak ≤1°/s, final r ≤0.5°/s apart Δβ 0.000°, Δrpk 0.001°/s, Δrfinal 0.107°/s; 240 Hz [βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.42°/s, ppk 56.49°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.17°/s, rfinal -12.17°/s]; 480 Hz [βpk 20.77° RMS 10.51°, rpk 91.78°/s RMS 42.43°/s, ppk 56.54°/s, αpk 6.21°, rollpk 17.64°, altitude 28.91–30.03 m (Δpk 1.09 m), rpm pk 5174, r@3s -12.28°/s, rfinal -12.28°/s]
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   full rudder held for 2 s remains finite in both directions 2 direction cases
+ok   retrimming glide at 15 m/s with rudder pulses remains finite in both directions 2 direction cases; engine rpm pk 0
+ok   amplitude/duration/speed sweep stays finite in both rudder directions 14 cases; βpk 19.32° RMS 7.63°, rpk 56.36°/s RMS 23.97°/s, αpk 7.64°, speed 11.96–20.00 m/s
+RUDDER_SWEEP finite-only: 14 cases, βpk 19.32° RMS 7.63°, rpk 56.36°/s RMS 23.97°/s, αpk 7.64°, speed 11.96–20.00 m/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard D reaches right rudder and right yaw βpk 17.58° RMS 10.99°, rpk 54.01°/s RMS 35.87°/s, ppk 55.92°/s, αpk 5.71°, rollpk 17.21°, altitude 30.00–30.04 m (Δpk 0.04 m), rpm pk 5174, r@3s unavailable, rfinal -9.15°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   injected keyboard A reaches left rudder and left yaw βpk 17.30° RMS 10.78°, rpk 55.07°/s RMS 36.21°/s, ppk 55.81°/s, αpk 6.35°, rollpk 17.84°, altitude 30.00–30.12 m (Δpk 0.12 m), rpm pk 5174, r@3s unavailable, rfinal 10.59°/s
+ok   traces shorter than 3 s leave the 3 s recovery sample unavailable keyboard trace duration 0.75 s; r@3s remains unavailable
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003d|Fake EdgeTX (default profile)
+failsafe: radio disconnected
+ok   simulated radio path reaches right rudder with finite flight data βpk 18.36° RMS 12.16°, rpk 55.09°/s RMS 37.36°/s, ppk 57.84°/s, αpk 6.29°, rollpk 18.95°, altitude 29.99–30.00 m (Δpk 0.01 m), rpm pk 5096, r@3s unavailable, rfinal -19.76°/s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: rudder-authority|1234:003e|Test Gamepad (gamepad profile)
+failsafe: radio disconnected
+ok   simulated gamepad path reaches left rudder with finite flight data βpk 12.82° RMS 8.53°, rpk 38.35°/s RMS 26.67°/s, ppk 39.53°/s, αpk 5.63°, rollpk 12.53°, altitude 30.00–30.02 m (Δpk 0.02 m), rpm pk 5174, r@3s unavailable, rfinal 25.04°/s
+26 checks, 0 failed
+== test_runway_checkpoint_metadata.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+UI-06a-R1: 14 checks, 0 failed
+== test_runway_start.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   threshold: west end + 3 m, runway centre line, heading east  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   west-bound threshold: east end − 3 m, heading west
+ok   a field without a runway has no threshold
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik session on the field
+ok   runway start solves and resets
+ok   every wheel starts stuck, engine idling at closed throttle
+ok   anchors hold the idle thrust: Σ horizontal = 0 within 1e-9 N  thrust 2.6019 N, ground north 7.340047864529131e-05 N, east -2.600866 N
+ok   solve converged (residual < 1e-11 in 6 iterations) and is the session's start
+ok   each wheel leans past its anchor by ≈ T/Σk = 2.446 mm (within 5 %)  2.4008–2.4664 mm
+ok   nose load 10.0919 N matches the world side-view moment balance 10.0922 N within 0.5 %
+ok   vertical balance: ΣN = m·g + T·sin(nose-down 1.60°) within 1e-9 N (ΣN/m·g = 1.0026)
+ok   after 1 s: |v| < 1e-6 m/s  max 3.679720326660228e-14 m/s
+ok   after 1 s: ΣN = m·g within 0.3 % (the idle thrust, tilted by the nose-down lean, adds 0.0728 N)  28.36554 N vs 28.29276 N
+ok   after 1 s: attitude within 0.1° of the solve  0°
+ok   10 s at idle: |v| and |ω| < 1e-6 throughout, moved < 1 µm, anchors unchanged  v 3.679720326660228e-14, ω 8.709133436521411e-14, 0 m
+ok   west-bound runway start solves
+runway start needs valid aircraft data, trim, and stiction gear
+ok   gp-extra-300s-60 (no stiction data) is refused and keeps its normal flying start
+runway start needs valid aircraft data, trim, and stiction gear
+ok   p51d-mustang-120 (no stiction data) is refused and keeps its normal flying start
+19 checks, 0 failed
+== test_scenery_ambience.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   one loop is RATE × LOOP_S samples
+ok   the same seed gives the same samples
+ok   another seed gives other samples
+ok   normalised to −6 dBFS (peak 16384)
+ok   a bed, not silence nor noise blast (RMS 0.084 FS)
+ok   the loop point is seamless (step 78 ≤ the largest of 2000 neighbouring steps, 427)
+ok   a looping 16-bit mono stream
+ok   the player is quiet and pausable
+all scenery ambience checks passed
+== test_scenery_build.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   switch off: the field has no Scenery node
+ok   switch off: the field owns the contiguous L7 ground independently of scenery
+     stats: { &"instances": 128, &"skipped": 0, &"shadows": 78, &"motion": 5, &"flowers": 2970, &"fleet": 4, &"theme": "temperate", &"quality": "high", &"timing_ms": { "instances": 37.241, "fleet": 9.561, "patch": 0.131, "track": 0.211, "hedge": 14.092, "fence": 3.473, "flowers": 7.677, "meshes": 15.875 }, &"cells": 48, &"build_ms": 88.428 }
+ok   instances built (> 120)
+ok   the parked fleet: 4 aircraft
+ok   moving parts: 4 rotors + 1 flag
+ok   contact shadows for the near props
+ok   wildflowers placed
+ok   compact cells (≤ 64 merged meshes)
+ok   one surface per cell (one shared material)
+     triangles: 138387, build 88.4 ms
+ok   triangles within the scenery budget (250000)
+ok   build time under 400 ms on this CPU
+ok   two builds are byte-identical (no RNG, no clock)
+ok   pit_shelter size 28.85 × 3.48 × 5.91 m matches the catalog (29.0, 3.45, 5.8)
+ok   pit_shelter has evidence (kind and source)
+ok   pavilion size 10.00 × 4.65 × 9.70 m matches the catalog (10.0, 4.6, 9.6)
+ok   pavilion has evidence (kind and source)
+ok   shed size 3.40 × 2.85 × 2.80 m matches the catalog (3.4, 3.0, 2.9)
+ok   shed has evidence (kind and source)
+ok   picnic_table size 1.80 × 0.79 × 1.55 m matches the catalog (1.8, 0.76, 1.6)
+ok   picnic_table has evidence (kind and source)
+ok   bench size 1.80 × 0.85 × 0.50 m matches the catalog (1.8, 0.85, 0.5)
+ok   bench has evidence (kind and source)
+ok   flagpole size 0.50 × 8.09 × 0.50 m matches the catalog (0.5, 8.1, 0.5)
+ok   flagpole has evidence (kind and source)
+ok   club_sign size 2.50 × 2.20 × 0.12 m matches the catalog (2.5, 2.2, 0.14)
+ok   club_sign has evidence (kind and source)
+ok   round_bale size 1.21 × 1.20 × 1.17 m matches the catalog (1.2, 1.2, 1.2)
+ok   round_bale has evidence (kind and source)
+ok   bale_stack size 2.44 × 1.82 × 2.40 m matches the catalog (2.5, 1.85, 2.4)
+ok   bale_stack has evidence (kind and source)
+ok   shade_tree size 7.18 × 9.33 × 7.48 m matches the catalog (8.0, 10.5, 8.0)
+ok   shade_tree has evidence (kind and source)
+ok   bush size 1.58 × 0.85 × 1.50 m matches the catalog (1.6, 0.85, 1.6)
+ok   bush has evidence (kind and source)
+ok   flower_clump size 0.58 × 0.42 × 0.64 m matches the catalog (0.62, 0.42, 0.62)
+ok   flower_clump has evidence (kind and source)
+ok   person_standing size 0.61 × 1.70 × 0.30 m matches the catalog (0.6, 1.78, 0.35)
+ok   person_standing has evidence (kind and source)
+ok   person_sitting size 0.56 × 1.36 × 0.74 m matches the catalog (0.55, 1.3, 0.75)
+ok   person_sitting has evidence (kind and source)
+ok   person_pilot size 0.57 × 1.70 × 0.51 m matches the catalog (0.6, 1.78, 0.45)
+ok   person_pilot has evidence (kind and source)
+ok   barn size 10.70 × 7.30 × 14.70 m matches the catalog (10.8, 7.5, 14.8)
+ok   barn has evidence (kind and source)
+ok   silo size 5.40 × 14.90 × 5.49 m matches the catalog (5.6, 15.0, 5.6)
+ok   silo has evidence (kind and source)
+ok   farmhouse size 9.80 × 7.40 × 7.80 m matches the catalog (10.0, 7.2, 8.0)
+ok   farmhouse has evidence (kind and source)
+ok   tractor size 2.35 × 2.33 × 3.51 m matches the catalog (2.35, 2.35, 3.6)
+ok   tractor has evidence (kind and source)
+ok   turbine size 6.40 × 81.60 × 11.00 m matches the catalog (6.4, 81.6, 11.0)
+ok   turbine has evidence (kind and source)
+ok   pylon size 16.12 × 30.03 × 6.18 m matches the catalog (17.0, 30.0, 6.0)
+ok   pylon has evidence (kind and source)
+ok   church size 8.60 × 32.00 × 23.40 m matches the catalog (9.0, 32.0, 25.0)
+ok   church has evidence (kind and source)
+ok   village_house size 8.44 × 7.60 × 9.27 m matches the catalog (9.0, 8.0, 11.0)
+ok   village_house has evidence (kind and source)
+ok   model car_sedan loads
+ok   model car_sedan is 1.88 × 1.38 × 4.38 m (catalog (1.88, 1.41, 4.4))
+ok   model car_sedan rests on the ground
+ok   model car_sedan normals are unit length
+ok   model car_hatch loads
+ok   model car_hatch is 2.13 × 1.48 × 4.30 m (catalog (2.13, 1.49, 4.3))
+ok   model car_hatch rests on the ground
+ok   model car_hatch normals are unit length
+ok   model car_suv loads
+ok   model car_suv is 2.36 × 1.71 × 4.68 m (catalog (2.36, 1.71, 4.7))
+ok   model car_suv rests on the ground
+ok   model car_suv normals are unit length
+ok   model car_sport loads
+ok   model car_sport is 1.85 × 1.23 × 4.30 m (catalog (1.96, 1.25, 4.3))
+ok   model car_sport rests on the ground
+ok   model car_sport normals are unit length
+ok   model cow loads
+ok   model cow is 0.59 × 1.35 × 2.40 m (catalog (0.59, 1.35, 2.4))
+ok   model cow rests on the ground
+ok   model cow normals are unit length
+ok   model sheep loads
+ok   model sheep is 0.49 × 0.96 × 1.30 m (catalog (0.49, 0.96, 1.3))
+ok   model sheep rests on the ground
+ok   model sheep normals are unit length
+ok   model fleet_stik loads
+ok   model fleet_stik is 1.51 × 0.44 × 1.32 m (catalog (1.52, 0.44, 1.33))
+ok   model fleet_stik rests on the ground
+ok   model fleet_stik normals are unit length
+ok   model fleet_extra loads
+ok   model fleet_extra is 1.62 × 0.55 × 1.38 m (catalog (1.62, 0.55, 1.39))
+ok   model fleet_extra rests on the ground
+ok   model fleet_extra normals are unit length
+ok   model fleet_p51 loads
+ok   model fleet_p51 is 2.82 × 0.91 × 2.45 m (catalog (2.82, 0.95, 2.46))
+ok   model fleet_p51 rests on the ground
+ok   model fleet_p51 normals are unit length
+ok   model fleet_avanti loads
+ok   model fleet_avanti is 2.00 × 0.63 × 2.22 m (catalog (2.0, 0.63, 2.22))
+ok   model fleet_avanti rests on the ground
+ok   model fleet_avanti normals are unit length
+ok   car_sedan marks its paint for per-car colours
+ok   car_hatch marks its paint for per-car colours
+ok   car_suv marks its paint for per-car colours
+ok   car_sport marks its paint for per-car colours
+ok   all 74317 cell triangles wind clockwise toward their normal (Godot front faces)
+ok   tiers: low < balanced < high instances
+ok   tiers: low keeps no ornamental flowers
+ok   tiers: every landmark survives low (rotors and flag)
+ok   tiers: balanced keeps a fixed half of the flowers
+ok   themes recolour vegetation
+ok   summer is paler and drier (lower saturation)
+ok   a themed build reports its theme
+all scenery build checks passed
+== test_scenery_loader.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   committed default.json validates against the default field
+ok   it has groups
+ok   load_from reads the same file
+ok   a missing file is refused
+ok   refused: unknown format
+ok   refused: another field's data
+ok   refused: unknown theme
+ok   refused: unknown prefab
+ok   refused: collides = true (L14 owns collisions)
+ok   refused: duplicate group id
+ok   refused: no groups
+ok   refused: wrong unit
+ok   refused: unknown evidence kind
+ok   refused: missing source
+ok   refused: a non-numeric coordinate
+ok   refused: a prop on the runway
+ok   refused: pits too close to the safety line
+ok   refused: pits too close to the take-off path (BMFA)
+ok   refused: parking too close
+ok   refused: a tall prop in the flight box
+ok   refused: above the approach surface
+ok   refused: a landmark closer than 1 km
+ok   refused: a landmark beyond 5 km (SC-01 depth rule)
+ok   refused: a prop on a treeline tree
+ok   refused: an unknown fence style
+ok   refused: an unknown track surface
+ok   refused: flowers on the runway
+ok   refused: a fleet aircraft without a baked model
+ok   scenery is off by default (Gate SC)
+ok   OPENRC_SCENERY=on turns it on
+ok   OPENRC_SCENERY_QUALITY is read
+ok   and off again without it
+ok   app/data/scenery/default.json matches tools/scenery/place.py
+all scenery loader checks passed
+== test_scenery_scenario.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   the field has a runway threshold
+ok   the runway start solves (E3b2)
+ok   still while idling (max 0.00000000000004 m/s)
+ok   lifts off between 4 and 8 s (5.43 s)
+ok   airborne and climbing at 12 s (42.6 m)
+ok   runway heading held within 5° (1.15°)
+ok   every phase flown
+all scenery scenario checks passed
+== test_scenery_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   app ran with scenery off
+ok   app ran with scenery on
+ok   traces have rows
+ok   trace rows are identical with scenery on and off
+all scenery trace checks passed
+== test_servo.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+6 checks, 0 failed
+== test_session_guards.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   untrimmable fixture was written
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   untrimmable reload is rejected  reload failed; previous aircraft and flight retained: trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   rejected reload preserves the active model
+ok   rejected reload preserves start and trims
+ok   rejected reload preserves current and previous state
+ok   rejected reload preserves tick and pause status
+ok   session exposes a runtime fault and pauses
+ok   session resume cannot bypass a runtime fault
+trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   untrimmable initial aircraft has no accepted start
+ok   untrimmable initial aircraft stays paused
+ok   initial failure states the trim problem  trim: needs 5.3° of elevator, more than the 1.0° throw
+ok   resume cannot bypass an invalid initial trim
+ok   direct stepping cannot bypass an invalid initial trim
+ok   invalid initial start is inert instead of a thrown flight
+ok   simulation accepts a valid initial state
+ok   nonfinite loads pause at the last valid state
+ok   nonfinite loads expose a readable fault  step rejected: aircraft returned nonfinite or malformed loads
+ok   numerical fault cannot be resumed without a valid reset
+ok   explicit valid reset clears the simulation fault
+ok   nonfinite k2 loads roll back the full tick  calls 2, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k3 loads roll back the full tick  calls 3, step rejected: RK stage loads are nonfinite or malformed
+ok   nonfinite k4 loads roll back the full tick  calls 4, step rejected: RK stage loads are nonfinite or malformed
+ok   a tick evaluates the loads 4 times (H2: k1 reuses the tick's loads)  4
+ok   nonfinite auxiliary state rolls back and pauses
+ok   nonfinite pre-step auxiliary output rolls back and pauses
+ok   nonfinite current state restores the last valid state
+ok   degenerate quaternion reset is rejected
+ok   rejected quaternion reset retains valid state and pauses
+ok   nonfinite quaternion reset is rejected
+ok   nonfinite quaternion keeps the last valid state
+ok   inverted flight and high angular rates are not faulted by themselves
+ok   valid mass and inertia changes after reset use current values  u 15.008333333, p 0.004166667
+32 checks, 0 failed
+== test_shader_clock.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+7 checks, 0 failed
+== test_shaft_coupled.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coupled target is the positive-inertia P-51 shaft model
+ok split remains the default integrator
+ok P-51 accepts explicit split mode
+ok default P-51 and explicit split trajectories stay byte-identical
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok no-shaft Stik refuses coupled-rk4
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok rejected mode leaves no-shaft flight trajectory unchanged
+ok P-51 coupled mode starts with one continuous RPM state
+ok high-throttle punch starts the relative rotor accelerating
+ok first-punch relative-spin reaction is added once over external loads — reaction residual 6.661338147750939e-16 N·m
+ok running torque, body coupling and friction close algebraically — I*(Omega_dot + axis·body_alpha)=Q_engine-Q_prop; residual 1.7763568394002505e-15 N·m
+ok engine-off closure includes mechanical friction once — I*(Omega_dot + axis·body_alpha)=Q_engine-Q_prop; residual 1.1102230246251565e-16 N·m
+ok stage-local fixture resets cleanly
+ok coupled RK4 performs four joint evaluations with stage loads at k1–k4 times and RPM — stage rpm [1440.0, 1449.56113236399, 1449.5812228818, 1459.16261674699]; times [0.0, 0.00208333333333, 0.00208333333333, 0.00416666666667]; legacy calls { &"loads": 0, &"derivative": 0, &"rotor": 0 }
+ok endpoint projection mirrors continuous RPM into sampled telemetry
+ok unset joint callback uses each legacy stage callback four times without fault — { &"loads": 4, &"derivative": 4, &"rotor": 4 }
+ok legacy callback fallback remains bit-identical to joint evaluation
+ok stage shaft rate uses explicit wind time and remains pure
+ok P-51 test-only transported wash fixture validates — []
+ok transported wash precedes RPM in the continuous layout
+ok RK stages transport wash and solve RPM together
+ok coupled traces retain schema and identify the shaft integrator
+ok coupled checkpoint records a distinct v4 integrator identity
+ok coupled transported-wash checkpoint restores exactly
+ok coupled transported-wash replay is bit-exact
+ok bad checkpoint RPM mirror is rejected atomically
+ok bad checkpoint continuous layout is rejected atomically
+ok bad checkpoint negative RPM is rejected atomically
+ok split session refuses coupled checkpoint without mutation
+ok stage failure rolls every committed dynamic field back and emits no tick — step rejected: RK joint stage evaluation is nonfinite or malformed
+ok gyro failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok derivative failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok missing_field failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_float32 failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_width failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_type failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok projection failure rolls every committed dynamic field back and emits no tick — step rejected: continuous auxiliary projection is nonfinite or malformed
+ok malformed float32 joint payload rejects reset atomically and emits no tick — reset rejected: aircraft returned nonfinite or malformed loads
+ok coupled recording freezes its integration identity
+ok trace refuses a false initial continuous RPM mirror
+ok P-51 test-only transported wash fixture validates — []
+ok coupled trace accepts finite negative wash increments with positive RPM
+ok compatible restore completes a tick-zero mode draft
+ok restored mode draft advances without a pending-reset fault
+G2 coupled shaft: 43 checks, 0 failed
+== test_shaft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data invalid: propulsion.engine.shaft.power_curve: invalid evidence kind or empty source
+D1-R2: 117 checks, 0 failed
+== test_shaft_equilibrium.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+G2-R1: 46 checks, 0 failed
+== test_shaft_refinement.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coupled-rk4 smooth full-session RPM refinement: errors [0.0000013002691, 0.00000007950575, 0.00000000491264] rpm, ratios [16.354402722567, 16.1839303897066]
+ok split smooth full-session RPM refinement: errors [0.95313562730053, 0.45801419538157, 0.21300730263101] rpm, ratios [2.08101765602807, 2.15022766695925]
+G2 refinement: 2 checks, 0 failed
+== test_simulation.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_slipstream_downwash.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok loader accepts explicit downwash + slipstream []
+ok tail helper matches existing local tail in 300 held-lag/rate/stall cases worst 3.907985046680551e-14
+ok zero added velocity gives exactly zero increment 
+ok free tail removes energy including rotational work 
+ok elevator derivative uses free slope times elevator tau 
+ok static powered elevator has nose-up/nose-down differential authority 
+ok static powered rudder retains opposite signed yaw authority 
+ok scalar washed-minus-free loads match the tested tail law worst 0; 900 immersed pieces
+ok NAN solves instantaneous wing CL exactly 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok real session feeds held lag to both aero and wash 
+ok lag plumbing test is not vacuous 
+ok absent configuration leaves Dynamics byte-identical 
+ok standalone absent/stopped wash returns exactly zero 
+ok zero wash factors give exactly zero increment despite held lag 
+ok production Stik remains unconfigured 
+E0b3a: 15 checks, 0 failed
+== test_slipstream_scalar.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+H13 slipstream: 10001 byte-exact comparisons (1 aircraft, 6083 washed, 1429 static air, 448 stopped), 0 failed
+== test_soundscape.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Doppler raises pitch for an approaching source — ratio=1.0619
+ok   Doppler lowers pitch for a receding source — ratio=0.9449
+ok   co-moving source and listener have no relative Doppler shift — ratio=1.000000
+ok   stationary source and listener have neutral Doppler — ratio=1.000000
+ok   occlusion is zero without a canopy or with an off-axis box
+ok   one intersected canopy screens one third of the high-frequency path
+ok   occlusion counts segment intersections and caps at three canopies
+ok   four blades double blade-passing frequency at equal shaft RPM
+ok   wind raises low wind, high wind and foliage targets
+ok   bird activity follows daylight and fades to zero at night
+ok   strong wind suppresses bird activity
+ok   stopped engine is silent while its windmilling prop remains audible — motor=0.000 prop=0.061
+ok   turbine has motor sound without a propeller layer — motor=0.904 prop=0.000
+ok   default field decodes for the soundscape fixture — []
+ok   decoded field has tree positions before trimming
+ok   glow_prop configures exactly 14 bounded voices — voices=14
+ok   glow_prop adds three dedicated buses — before=1 after=4
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=11
+ok   successive bird calls use different phrases — [5, 2, 3, 8, 9, 5, 3, 4, 0, 3, 2]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -11.1→-13.1 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-80.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-37.5 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   soundscape leaves the global random sequence untouched — expected=[510986264, 3491425032, 206504417, 2464457385, 127283640, 2593470517, 2686650995, 859030056] observed=[510986264, 3491425032, 206504417, 2464457385, 127283640, 2593470517, 2686650995, 859030056]
+ok   glow_prop node removal restores the audio bus count — expected=1 actual=1
+ok   glow_prop node removal leaves no dedicated buses
+ok   electric_prop configures exactly 14 bounded voices — voices=14
+ok   electric_prop adds three dedicated buses — before=1 after=4
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=9
+ok   successive bird calls use different phrases — [2, 0, 3, 5, 3, 2, 8, 6, 5]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -19.1→-21.1 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-80.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-45.5 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   electric_prop node removal restores the audio bus count — expected=1 actual=1
+ok   electric_prop node removal leaves no dedicated buses
+ok   turbine configures exactly 14 bounded voices — voices=14
+ok   turbine adds three dedicated buses — before=1 after=4
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=9
+ok   successive bird calls use different phrases — [1, 7, 9, 2, 9, 3, 5, 2, 4]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -13.2→-15.2 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-80.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-39.6 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   turbine node removal restores the audio bus count — expected=1 actual=1
+ok   turbine node removal leaves no dedicated buses
+85 checks, 0 failed
+== test_spin.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stalled (α 16°), no rotation: no stall roll or yaw moment  { &"CL": 0.61681504435107, &"CD": 0.14002031093278, &"CY": 0.0, &"Cl": 0.0, &"Cm": -0.22833887603416, &"Cn": 0.0 }
+ok   α 5°: roll damping = the linear oracle's (attached flow at every strip)  -0.451322 vs -0.451322 (Clp -0.4496)
+ok   α 13.5° (stall break): roll damping turns positive → autorotation  0.640
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   symmetric airplane: stalls (α > 20°) without rolling (< 0.5°)  α max 22°, roll max 0.00°
+ok   inventory airplane (Jxy -0.0095): asymmetry produces more roll than symmetric inertia  roll max 180°
+ok   cross-controlled stall sustains right autorotation over 2.5–4 s (>1 rad/s engineering screen)  2.93 rad/s
+ok   autorotation descends (potential energy feeds rotation)  14.4 m/s
+ok   standard recovery (opposite rudder, forward stick, 0.9 s): rotation stopped and stays stopped from 6 s  
+8 checks, 0 failed
+== test_stall_solver.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DATA-2: 571 checks, 0 failed
+== test_start_choice.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+runway start: runway start needs finite position, heading, controls, rpm, density and gravity
+UI-06a: 34 checks, 0 failed
+== test_strip_induced.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   elliptic AR 50: CLα 6.0260 reaches Prandtl's lifting line 6.0415 within 0.5 %
+ok   elliptic AR 5: CLα 4.0920 matches the independent Weissinger 4.0920
+ok   AR 5 rectangular, 3 strips per side: CLα 4.3171, Clp -0.4814 match the independent Weissinger 4.3171, -0.4814
+ok   AR 5 rectangular, 5 strips per side: CLα 4.1699, Clp -0.4494 match the independent Weissinger 4.1699, -0.4494
+ok   AR 5 rectangular, 8 strips per side: CLα 4.0789, Clp -0.4274 match the independent Weissinger 4.0789, -0.4274
+ok   jensen-das-ugly-stik-60: local wing + tail CLα = aero.CLa 4.5800 (a0 6.082/rad)
+ok   jensen-das-ugly-stik-60: local CL at α 0 = aero.CL0 0.1068  0.106800000
+ok   jensen-das-ugly-stik-60: section slope a0 6.08 within 0.75–1.10 × 2π
+ok   jensen-das-ugly-stik-60: the map is mirror-symmetric
+ok   gp-extra-300s-60: local wing + tail CLα = aero.CLa 4.4506 (a0 5.406/rad)
+ok   gp-extra-300s-60: local CL at α 0 = aero.CL0 -0.0059  -0.005905000
+ok   gp-extra-300s-60: section slope a0 5.41 within 0.75–1.10 × 2π
+ok   gp-extra-300s-60: the map is mirror-symmetric
+ok   p51d-mustang-120: local wing + tail CLα = aero.CLa 4.3377 (a0 5.140/rad)
+ok   p51d-mustang-120: local CL at α 0 = aero.CL0 0.1216  0.121565000
+ok   p51d-mustang-120: section slope a0 5.14 within 0.75–1.10 × 2π
+ok   p51d-mustang-120: the map is mirror-symmetric
+ok   sebart-avanti-s-a200-p100rx: local wing + tail CLα = aero.CLa 4.6302 (a0 5.581/rad)
+ok   sebart-avanti-s-a200-p100rx: local CL at α 0 = aero.CL0 0.0000  0.000000000
+ok   sebart-avanti-s-a200-p100rx: section slope a0 5.58 within 0.75–1.10 × 2π
+ok   sebart-avanti-s-a200-p100rx: the map is mirror-symmetric
+21 checks, 0 failed
+== test_swirl_accuracy.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6 swirl accuracy: independent composite-midpoint reference; 128 samples/profile interval
+Swirl delta tolerance: 0.1% of force/moment norm or 1e-4 N / 1e-4 N m, whichever is larger.
+The fixture is synthetic and uncalibrated; total dense-load residual is reported separately from swirl-delta error.
+ok validated combined E0b3b fixture, swirl=0.0 []
+ok validated combined E0b3b fixture, swirl=0.4 []
+ok validated combined E0b3b fixture, swirl=1.0 []
+ok static swirl=0.4 loads/reference finite 
+ok static swirl=0.4 distributed swirl delta within 0.1% plus floor force 9.872974429443923e-07 / 0.001033464061611473 N; moment 1.6453085080582823e-06 / 0.000773921646782327 N m
+E0b6 case static swirl=0.4: centroid baseline residual F=9.078421629863048e-07 N M=6.547685153000256e-07 N m; total dense residual F=1.2190473870903375e-06 N M=1.714283687274942e-06 N m
+ok static axial centroid residual stays under 0.25% relative force 0.000075 percent, moment 0.000076 percent
+ok static swirl=1.0 loads/reference finite 
+ok static swirl=1.0 distributed swirl delta within 0.1% plus floor force 0.00020113657380967873 / 0.0024304025922977355 N; moment 0.00014483497070310686 / 0.0017975910107251255 N m
+E0b6 case static swirl=1.0: centroid baseline residual F=9.078421629863048e-07 N M=6.547685153000256e-07 N m; total dense residual F=0.00020203924077491657 N M=0.00014548967713765102 N m
+ok static axial centroid residual stays under 0.25% relative force 0.000075 percent, moment 0.000076 percent
+ok forward15_alpha3_rates swirl=0.4 loads/reference finite 
+ok forward15_alpha3_rates swirl=0.4 distributed swirl delta within 0.1% plus floor force 6.11608878334851e-07 / 0.0014548653014334375 N; moment 2.0648716142432726e-06 / 0.001103646654963459 N m
+E0b6 case forward15_alpha3_rates swirl=0.4: centroid baseline residual F=3.6623089472788414e-07 N M=0.0007662860285914229 N m; total dense residual F=7.647961093520737e-07 N M=0.0007642471782393287 N m
+ok forward15_alpha3_rates axial centroid residual stays under 0.25% relative force 0.000060 percent, moment 0.196212 percent
+ok forward15_alpha3_rates swirl=1.0 loads/reference finite 
+ok forward15_alpha3_rates swirl=1.0 distributed swirl delta within 0.1% plus floor force 2.5082519772256182e-05 / 0.0037111735117545744 N; moment 1.9228267807693996e-05 / 0.0028026361043562396 N m
+E0b6 case forward15_alpha3_rates swirl=1.0: centroid baseline residual F=3.6623089472788414e-07 N M=0.0007662860285914229 N m; total dense residual F=2.473993829483342e-05 N M=0.0007595480250875474 N m
+ok forward15_alpha3_rates axial centroid residual stays under 0.25% relative force 0.000060 percent, moment 0.196212 percent
+ok stall15_alpha15 swirl=0.4 loads/reference finite 
+ok stall15_alpha15 swirl=0.4 distributed swirl delta within 0.1% plus floor force 2.8617693864166795e-07 / 0.0010781175884327367 N; moment 2.1561528194207182e-07 / 0.0007973196970878867 N m
+E0b6 case stall15_alpha15 swirl=0.4: centroid baseline residual F=6.882216593284984e-06 N M=4.958625939847916e-06 N m; total dense residual F=6.875411789942315e-06 N M=4.953700429886097e-06 N m
+ok stall15_alpha15 axial centroid residual stays under 0.25% relative force 0.004126 percent, moment 0.012825 percent
+ok stall15_alpha15 swirl=1.0 loads/reference finite 
+ok stall15_alpha15 swirl=1.0 distributed swirl delta within 0.1% plus floor force 5.256667229040776e-06 / 0.0027567478416445188 N; moment 3.913680036185745e-06 / 0.0020283486892690326 N m
+E0b6 case stall15_alpha15 swirl=1.0: centroid baseline residual F=6.882216593284984e-06 N M=4.958625939847916e-06 N m; total dense residual F=8.54046909927956e-06 N M=6.12262770646798e-06 N m
+ok stall15_alpha15 axial centroid residual stays under 0.25% relative force 0.004126 percent, moment 0.012825 percent
+ok sideslip_displaced_core swirl=0.4 loads/reference finite 
+ok sideslip_displaced_core swirl=0.4 distributed swirl delta within 0.1% plus floor force 0.00014481205762551595 / 0.0007923785271131074 N; moment 0.00010424427356348998 / 0.0006129116716488269 N m
+E0b6 case sideslip_displaced_core swirl=0.4: centroid baseline residual F=1.4251242120326341e-07 N M=1.0200560909832493e-07 N m; total dense residual F=0.00014495117706466812 N M=0.00010434614320306528 N m
+ok sideslip_displaced_core swirl=1.0 loads/reference finite 
+ok sideslip_displaced_core swirl=1.0 distributed swirl delta within 0.1% plus floor force 0.00032386724582325046 / 0.00196168196086575 N; moment 0.00023332090833926025 / 0.0015134978106232577 N m
+E0b6 case sideslip_displaced_core swirl=1.0: centroid baseline residual F=1.4251242120326341e-07 N M=1.0200560909832493e-07 N m; total dense residual F=0.0003240068494319113 N M=0.00023342246070106936 N m
+ok sideslip_displaced_edge swirl=0.4 loads/reference finite 
+ok sideslip_displaced_edge swirl=0.4 distributed swirl delta within 0.1% plus floor force 4.569433001627603e-06 / 0.00012136567614498847 N; moment 3.3718051750159796e-06 / 0.0001501130904564928 N m
+E0b6 case sideslip_displaced_edge swirl=0.4: centroid baseline residual F=1.5927418186887431e-06 N M=3.7403421720641417e-07 N m; total dense residual F=5.306659772000311e-06 N M=3.736603692472155e-06 N m
+ok sideslip_displaced_edge swirl=1.0 loads/reference finite 
+ok sideslip_displaced_edge swirl=1.0 distributed swirl delta within 0.1% plus floor force 1.0051488533179662e-05 / 0.0003828262994746876 N; moment 7.587808303319864e-06 / 0.00039832782537963874 N m
+E0b6 case sideslip_displaced_edge swirl=1.0: centroid baseline residual F=1.5927418186887431e-06 N M=3.7403421720641417e-07 N m; total dense residual F=1.0623592119148976e-05 N M=7.936727816355949e-06 N m
+ok reverse_fade_midpoint swirl=0.4 loads/reference finite 
+ok reverse_fade_midpoint swirl=0.4 distributed swirl delta within 0.1% plus floor force 5.871524306326587e-07 / 0.0005112536901446078 N; moment 9.023158311315523e-07 / 0.0003821005607159427 N m
+E0b6 case reverse_fade_midpoint swirl=0.4: centroid baseline residual F=1.563203499283364e-08 N M=3.777753406972173e-09 N m; total dense residual F=5.730835537979792e-07 N M=9.024521765201078e-07 N m
+ok reverse_fade_midpoint swirl=1.0 loads/reference finite 
+ok reverse_fade_midpoint swirl=1.0 distributed swirl delta within 0.1% plus floor force 1.551098707537706e-05 / 0.0009034104589754877 N; moment 1.1551976118928367e-05 / 0.0006732828345783116 N m
+E0b6 case reverse_fade_midpoint swirl=1.0: centroid baseline residual F=1.563203499283364e-08 N M=3.777753406972173e-09 N m; total dense residual F=1.5515858510046985e-05 N M=1.1555379254784877e-05 N m
+ok midpoint reference refines from 128 to 256 samples force 2.491434316066039e-06 / 0.003711174062102721 N; moment 4.094282756636118e-06 / 0.0028026358205285205 N m
+ok isolated neutral fin swirl yaws nose left yaw delta -1.613194553064844 N m
+ok isolated neutral symmetric stabilizer swirls right roll delta 0.18191760157084153 N m
+ok swirl correction approaches the exact zero-factor baseline combined force/moment delta 6.355733185601441e-08
+ok near-zero swirl correction scales continuously norms at 1e-5 and 2e-5: 6.3557336344155e-05, 0.00012711468173452008
+ok finite, continuous swirl through the regularized core radius core-radius force 3.0592544577834784 N moment 2.272905769893778 N m
+ok outer wake edge tapers isolated fin swirl continuously inside norms [0.0003460524422, 0.00004634210075, 0.00000747220375]; edge 0; outside 0 N/N m
+ok reverse fade midpoint and smooth endpoints stay finite/continuous mid fade delta F=0.9511153711307583 N M=0.7055682168111945 N m; cutoff delta F=0 N M=0 N m
+E0b6 swirl accuracy: 41 checks, 0 failed
+== test_swirl_optimization.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p optimized swirl equivalence: 200 deterministic cases, seed 2601007
+ok 200 cases include default and held downwash CL default=100 held=100
+ok 200 cases include both horizontal tail-law modes free_slope/downwash=150 classic/no-free_slope=50
+ok active smooth geometry crosses the regularized vortex core 72 cases
+ok active smooth geometry crosses the inner occupancy edge 94 cases
+ok active smooth geometry crosses the outer occupancy edge 105 cases
+ok forward and reverse fade regimes are all sampled full=140 partial=16 cutoff=44
+ok optimized helper matches frozen helper within abs+relative 1e-10 0 mismatches; worst none
+E0b6p equivalence worst absolute error=0, worst error/tolerance=0 (none)
+E0b6p equivalence coverage: core=72 inner=94 outer=105 reverse(full/partial/cutoff)=140/16/44 CL(default/held)=100/100 tail_law(downwash/classic)=150/50
+E0b6p optimized swirl equivalence: 7 checks, 0 failed
+== test_swirl_torque.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok provenanced swirl fixture accepted
+ok signed strength linear in shaft torque at 0 m/s
+ok density similarity at fixed Ct/Cp and rpm at 0 m/s
+ok nominal far-wake flux includes solid core deficit at 0 m/s
+ok ideal contracted cylinder preserves disc mass at 0 m/s
+ok attenuated local speed further changes diagnostic flux at 0 m/s
+ok signed strength linear in shaft torque at 5 m/s
+ok density similarity at fixed Ct/Cp and rpm at 5 m/s
+ok nominal far-wake flux includes solid core deficit at 5 m/s
+ok ideal contracted cylinder preserves disc mass at 5 m/s
+ok attenuated local speed further changes diagnostic flux at 5 m/s
+ok signed strength linear in shaft torque at 15 m/s
+ok density similarity at fixed Ct/Cp and rpm at 15 m/s
+ok nominal far-wake flux includes solid core deficit at 15 m/s
+ok ideal contracted cylinder preserves disc mass at 15 m/s
+ok attenuated local speed further changes diagnostic flux at 15 m/s
+ok signed strength linear in shaft torque at 25 m/s
+ok density similarity at fixed Ct/Cp and rpm at 25 m/s
+ok nominal far-wake flux includes solid core deficit at 25 m/s
+ok ideal contracted cylinder preserves disc mass at 25 m/s
+ok attenuated local speed further changes diagnostic flux at 25 m/s
+ok swirl speed-floor join is continuous
+ok zero torque gives exactly zero strength
+E0b6 torque: 23 checks, 0 failed
+== test_tail_downwash.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   derived free slope = lift_slope/(1 − dε/dα) = 3.2228, τ = control_effectiveness·(1 − dε/dα) = 0.6375
+ok   no rates, α −2…6°, elevator ±0.05 rad: lift identical to the former law (static CLα, Cmα, Cmde kept)  worst relative 6.517698126959528e-16
+ok   no rates: pitching moment within 2 % of the former law (only the tail drag's arm differs)  worst 1.56 %
+ok   α 8°: local drag 4.36 N closer to the oracle's 4.17 N than the former law's 4.71 N
+ok   α 10°: local drag 5.29 N closer to the oracle's 5.16 N than the former law's 5.79 N
+ok   the tail's pitch-rate moment grows by 1/(1 − dε/dα) = 1.8416 within 5 % (lift part exact; tail drag and lift tilt add the rest)  ratio 1.78117
+ok   elevator τ 0.637 within 0.45–0.75 and within 20 % of thin-airfoil flap theory for the Stik's elevator (0.545)
+ok   α 14° (wing partly stalled): the tail's angle 10.01° = α − k_ε·CL_wing + i_free (10.01°), above the linear-downwash 8.80° (stall break)
+8 checks, 0 failed
+== test_takeoff_roll.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   runway start
+ok   record: propeller wash is OFF for the Stik (no slipstream data); E0b may change this roll
+ok   6-DOF: every anchor releases and the airplane lifts off within 4 s, no fault or crash  lift-off t 2.254 s, x 21.68 m, V 20.38 m/s, pitch 2.89°, lateral drift -0.42 m
+info x  1.0 m: 6-DOF 4.325 m/s (pitch -1.59°), 1-D fixed 4.324 (0.02 %), 1-D with 6-DOF pitch 4.323 (0.06 %)
+info x  2.0 m: 6-DOF 6.374 m/s (pitch -1.39°), 1-D fixed 6.371 (0.04 %), 1-D with 6-DOF pitch 6.373 (0.01 %)
+info x  5.0 m: 6-DOF 10.289 m/s (pitch -0.75°), 1-D fixed 10.271 (0.17 %), 1-D with 6-DOF pitch 10.290 (0.01 %)
+info x 10.0 m: 6-DOF 14.391 m/s (pitch +0.18°), 1-D fixed 14.296 (0.66 %), 1-D with 6-DOF pitch 14.394 (0.02 %)
+info x 15.0 m: 6-DOF 17.328 m/s (pitch +0.86°), 1-D fixed 17.096 (1.34 %), 1-D with 6-DOF pitch 17.334 (0.03 %)
+info x 20.0 m: 6-DOF 19.681 m/s (pitch +1.89°), 1-D fixed 19.261 (2.13 %), 1-D with 6-DOF pitch 19.699 (0.09 %)
+ok   V(x) at the rest attitude (x ≤ 5 m) within 0.5 % of the 1-D integral  worst 0.174 %
+ok   V(x) up to 20 m within 3 % of the 1-D integral (rotation adds lift)  worst 2.13 %
+ok   lift-off distance 21.68 m within 10 % of the 1-D distance to 20.38 m/s (23.08 m)
+ok   the 1-D integral with the 6-DOF's pitch history matches within 0.2 % (difference = rotation; detects a 10 % rolling error)  worst 0.091 %
+7 checks, 0 failed
+== test_time_of_day_checkpoint.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+TOD-08a Main: 48 checks, 0 failed
+== test_time_of_day_checkpoint_v2.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+36 checks, 0 failed
+== test_time_of_day_clock.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TOD-09a solar clock: 1656 checks, 0 failed
+== test_time_of_day_config.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+75 checks, 0 failed
+== test_time_of_day_edit.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit.csv (1 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-steady.csv (2 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-turbulent.csv (2 rows)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-hot-high.csv (2 rows)
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/test-time-of-day-edit-p51-coupled.csv (2 rows)
+TOD-08b Main lighting edit: 57 checks, 0 failed
+== test_time_of_day_render.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+203 checks, 0 failed
+== test_time_of_day_render_update.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field fixture loads
+ok   noon preset resolves
+ok   night preset resolves
+ok   dawn preset resolves
+ok   sunset preset resolves
+ok   fallback field owns a cloned runway material
+ok   actual rough, cloned runway and near-grass materials are bound
+ok   separate fields own separate lighting materials
+ok   initial legacy Environment values
+ok   initial legacy sky uniforms match a fresh build
+ok   initial legacy Sun light values match a fresh build
+ok   initial legacy bound material count matches a fresh build
+ok   initial legacy every rough, surface and near-grass uniform matches a fresh build
+ok   initial legacy fresh build did not move the cloud clock
+ok   noon staging succeeds
+ok   noon staging leaves field resources untouched
+ok   noon staging leaves the previous snapshot published
+ok   noon staged field commit reports change
+ok   noon preserves scene, material and non-shadow mesh identities
+ok   noon preserves Environment, Sky, sky material and Sun identity
+ok   noon preserves the cloud clock
+ok   noon Environment values
+ok   noon sky uniforms match a fresh build
+ok   noon Sun light values match a fresh build
+ok   noon bound material count matches a fresh build
+ok   noon every rough, surface and near-grass uniform matches a fresh build
+ok   noon fresh build did not move the cloud clock
+ok   noon leaves a second field's lighting unchanged
+ok   noon replaces only bounded scenery shadow meshes
+ok   night convenience update reports change
+ok   night preserves scene, material and non-shadow mesh identities
+ok   night preserves Environment, Sky, sky material and Sun identity
+ok   night preserves the cloud clock
+ok   night Environment values
+ok   night sky uniforms match a fresh build
+ok   night Sun light values match a fresh build
+ok   night bound material count matches a fresh build
+ok   night every rough, surface and near-grass uniform matches a fresh build
+ok   night fresh build did not move the cloud clock
+ok   night leaves a second field's lighting unchanged
+ok   night replaces only bounded scenery shadow meshes
+ok   night ground has no direct solar radiance
+ok   night scenery shadow meshes are empty
+ok   same night snapshot is a field no-op
+ok   dawn staging succeeds
+ok   dawn staging leaves field resources untouched
+ok   dawn staging leaves the previous snapshot published
+ok   dawn staged field commit reports change
+ok   dawn preserves scene, material and non-shadow mesh identities
+ok   dawn preserves Environment, Sky, sky material and Sun identity
+ok   dawn preserves the cloud clock
+ok   dawn Environment values
+ok   dawn sky uniforms match a fresh build
+ok   dawn Sun light values match a fresh build
+ok   dawn bound material count matches a fresh build
+ok   dawn every rough, surface and near-grass uniform matches a fresh build
+ok   dawn fresh build did not move the cloud clock
+ok   dawn leaves a second field's lighting unchanged
+ok   dawn replaces only bounded scenery shadow meshes
+ok   dusk staging succeeds
+ok   dusk staging leaves field resources untouched
+ok   dusk staging leaves the previous snapshot published
+ok   dusk staged field commit reports change
+ok   dusk preserves scene, material and non-shadow mesh identities
+ok   dusk preserves Environment, Sky, sky material and Sun identity
+ok   dusk preserves the cloud clock
+ok   dusk Environment values
+ok   dusk sky uniforms match a fresh build
+ok   dusk Sun light values match a fresh build
+ok   dusk bound material count matches a fresh build
+ok   dusk every rough, surface and near-grass uniform matches a fresh build
+ok   dusk fresh build did not move the cloud clock
+ok   dusk leaves a second field's lighting unchanged
+ok   dusk replaces only bounded scenery shadow meshes
+ok   legacy-again staging succeeds
+ok   legacy-again staging leaves field resources untouched
+ok   legacy-again staging leaves the previous snapshot published
+ok   legacy-again staged field commit reports change
+ok   legacy-again preserves scene, material and non-shadow mesh identities
+ok   legacy-again preserves Environment, Sky, sky material and Sun identity
+ok   legacy-again preserves the cloud clock
+ok   legacy-again Environment values
+ok   legacy-again sky uniforms match a fresh build
+ok   legacy-again Sun light values match a fresh build
+ok   legacy-again bound material count matches a fresh build
+ok   legacy-again every rough, surface and near-grass uniform matches a fresh build
+ok   legacy-again fresh build did not move the cloud clock
+ok   legacy-again leaves a second field's lighting unchanged
+ok   legacy-again replaces only bounded scenery shadow meshes
+ok   legacy recovers its exact original material values
+ok   all ground material resources retained
+ok   Sun and lighting resources do not alias another scene
+ok   global atmosphere defaults remain unchanged
+ok   scenery hook follows its configured opt-in state
+TOD-09b render update: 94 checks, 0 failed; scenery=false
+== test_time_of_day_scenery_update.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fixture has retained nearby shadow batches
+ok   day to night prepares one replacement per retained shadow batch
+ok   prepare leaves live alpha and shadow geometry untouched
+ok   night commit succeeds
+ok   night clears mesh surfaces and material alpha in place
+ok   night keeps shadow node and material identity
+ok   night keeps static scenery mesh resources
+     scenery night update: prepare 0.085 ms, commit 0.135 ms, 25 cells, 0 triangles
+ok   zero-strength solar direction changes create no mesh replacements
+ok   night no-op commit preserves empty mesh resources
+ok   night to dawn prepares projected shadows
+ok   night to dawn commit succeeds
+     scenery dawn projection: prepare 3.329 ms, commit 0.173 ms, 25 cells, 1401 triangles
+ok   dawn mesh hash equals a fresh build
+ok   dawn preserves static geometry, batch nodes and material
+ok   dawn to noon update succeeds
+ok   stale prepared snapshot is refused
+ok   stale refusal leaves the newer noon state untouched
+ok   noon mesh hash equals a fresh build
+ok   cross-scene prepared state is refused
+ok   cross-scene refusal mutates neither field
+ok   no scenery child is a safe no-op
+ok   noon to night update succeeds
+ok   night mesh hash equals a fresh build
+ok   night to legacy reversal succeeds
+ok   legacy mesh hash equals a fresh build
+ok   final identity remains stable
+25 scenery lighting checks, 0 failed
+== test_time_of_day_session.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+9 checks, 0 failed
+WARNING: 20 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_time_of_day_solar.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+42 checks, 0 failed
+== test_time_of_day_timeline.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TOD-09c1 visual timeline: 55 checks, 0 failed
+== test_touchdown.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info main_left: k 560 N/m, c 18.6 N·s/m, onset 9.2 mm
+info main_right: k 560 N/m, c 18.6 N·s/m, onset 9.2 mm
+info nose: k 440 N/m, c 16.5 N·s/m, onset 8.8 mm
+ok   onsets are 50 % of the static compressions: Σ k·δ_onset = 0.50·m·g  0.500000 m·g
+ok   touchdown at 2 m/s sink: force 1 nm into contact ≤ 1e-5 N (the E1 law jumped by c·v = 37.2 N)  8.682153668862893e-06 N
+ok   the ramp joins the gear's damping continuously and with zero slope (C¹) at its end  step 0, relative slope 0.00010000000181455766
+ok   every wheel at or beyond its onset: loads equal the E1 law byte for byte (2000 states)  2000/2000
+ok   settled on its wheels, 0.8 × each rest compression is still beyond its onset (smallest ratio ≥ 1)  1.590; rest [18.4, 18.4, 17.6] mm
+info sink 0.5 m/s: E1b peak 53.3 N, largest tick-to-tick force step 13.9 N, rebound e 0.314; E1 50.6 N, 20.1 N, e 0.279
+ok   sink 0.5 m/s: no energy gain in a tick (≤ 1e-6 J)  -1.971230073394281e-06 J
+ok   sink 0.5 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 4.99920352270769e-06, E1 0.0001296229005454991
+info sink 1.0 m/s: E1b peak 76.8 N, largest tick-to-tick force step 35.0 N, rebound e 0.304; E1 72.8 N, 39.4 N, e 0.279
+ok   sink 1.0 m/s: no energy gain in a tick (≤ 1e-6 J)  -4.785585129951642e-06 J
+ok   sink 1.0 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 3.861189774386625e-05, E1 0.00029825913255146497
+info sink 2.0 m/s: E1b peak 131.2 N, largest tick-to-tick force step 94.6 N, rebound e 0.323; E1 128.2 N, 112.6 N, e 0.313
+ok   sink 2.0 m/s: no energy gain in a tick (≤ 1e-6 J)  -8.565239387969825e-06 J
+ok   sink 2.0 m/s: 240 vs 480 Hz within the budget 0.0002 and below the E1 law's  E1b 0.00017631500819154794, E1 0.00044793019973866227
+ok   restitution 0.25–0.5 at every sink (wire gear on rubber tyres, estimated)  [0.31384447873674, 0.30436959063822, 0.32278830156202]
+12 checks, 0 failed
+== test_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+19 checks, 0 failed
+== test_trace_metadata.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+C7-R2 / DATA-3: 171 checks, 0 failed
+== test_tree_assets.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   catalog loads and validates
+ok   catalog format is openrc-tree-assets v1
+ok   catalog covers exactly the three baked species
+ok   catalog atlas is 1024 square with 512 tiles
+ok   catalog alpha cutoff is 0.5
+ok   catalog includes CommonTree_1
+ok   CommonTree_1 uses its canonical atlas slot
+ok   CommonTree_1 has a positive frame size and 0.5 m pivot
+ok   CommonTree_1 catalog entry has no runtime scene reference
+ok   catalog includes CommonTree_3
+ok   CommonTree_3 uses its canonical atlas slot
+ok   CommonTree_3 has a positive frame size and 0.5 m pivot
+ok   CommonTree_3 catalog entry has no runtime scene reference
+ok   catalog includes Pine_1
+ok   Pine_1 uses its canonical atlas slot
+ok   Pine_1 has a positive frame size and 0.5 m pivot
+ok   Pine_1 catalog entry has no runtime scene reference
+ok   atlas loads as a texture
+ok   atlas dimensions match catalog
+ok   atlas import has mipmaps
+ok   CommonTree_1 atlas tile contains transparent pixels
+ok   CommonTree_1 atlas tile contains opaque pixels
+ok   CommonTree_3 atlas tile contains transparent pixels
+ok   CommonTree_3 atlas tile contains opaque pixels
+ok   Pine_1 atlas tile contains transparent pixels
+ok   Pine_1 atlas tile contains opaque pixels
+ok   CommonTree_1 card mesh builds
+ok   CommonTree_1 card has exactly one surface
+ok   CommonTree_1 three crossed quads have six triangles
+ok   CommonTree_1 card frame is centered on its catalog pivot
+ok   CommonTree_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_1 bounds include all three rotated planes
+ok   CommonTree_1 card repeats full tile UVs with half-texel inset
+ok   CommonTree_1 card material uses lit alpha scissor at 0.5
+ok   CommonTree_1 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_1 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_1 card mesh and material are per-call resources
+ok   CommonTree_3 card mesh builds
+ok   CommonTree_3 card has exactly one surface
+ok   CommonTree_3 three crossed quads have six triangles
+ok   CommonTree_3 card frame is centered on its catalog pivot
+ok   CommonTree_3 lowest sampled opaque atlas row maps to ground within one texel
+ok   CommonTree_3 bounds include all three rotated planes
+ok   CommonTree_3 card repeats full tile UVs with half-texel inset
+ok   CommonTree_3 card material uses lit alpha scissor at 0.5
+ok   CommonTree_3 card material is two-sided, nonmetallic and fully rough
+ok   CommonTree_3 card material uses anisotropic mip filtering and the atlas
+ok   CommonTree_3 card mesh and material are per-call resources
+ok   Pine_1 card mesh builds
+ok   Pine_1 card has exactly one surface
+ok   Pine_1 three crossed quads have six triangles
+ok   Pine_1 card frame is centered on its catalog pivot
+ok   Pine_1 lowest sampled opaque atlas row maps to ground within one texel
+ok   Pine_1 bounds include all three rotated planes
+ok   Pine_1 card repeats full tile UVs with half-texel inset
+ok   Pine_1 card material uses lit alpha scissor at 0.5
+ok   Pine_1 card material is two-sided, nonmetallic and fully rough
+ok   Pine_1 card material uses anisotropic mip filtering and the atlas
+ok   Pine_1 card mesh and material are per-call resources
+ok   unknown card ID fails without a fallback
+60 checks, 0 failed
+== test_tree_wind.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+L15b wind bounds: 122643 checks, 0 failed; maximum chord 0.288530m
+== test_treeline.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+L7 tree runtime: 28626 checks, 0 failed; species [565, 586, 529]
+== test_treeline_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+116 checks, 0 failed
+== test_trim.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Gaussian elimination solves a known system 8.881784197001252e-16
+ok   level 15 m/s trims (six axes, with throttle) trimmed
+ok   trim alpha 4.26° ± 0.5° 4.26°
+ok   thrust ≈ drag ≈ 3 N 3.129 N at throttle 0.284 (5174 rpm)
+ok   up elevator trim (borrowed Cm0 < 0) pitch trim 0.263
+ok   prop torque trimmed out with small aileron/rudder roll trim 0.0205, yaw trim 0.0264, beta -0.169°
+ok   converged tightly residual 1.1365471290758677e-13 in 4 iterations
+ok   level flight holds ±1 m for 30 s Δalt -0.0000 m
+ok   no spiral: heading holds within 1° for 30 s Δheading -0.0000°
+ok   25 m/s: less alpha, more throttle alpha 0.69°, throttle 0.681
+ok   glide 15 m/s trims trimmed
+ok   glide ratio ≈ 9.1 L/D 9.11, glide angle -6.26°
+ok   glide: no lateral trim needed 
+ok   5 m/s is impossible and says why singular or nonfinite Jacobian (no trim near this condition)
+14 checks, 0 failed
+== test_trim_density.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+M5-ATM-2 trim density: 35 checks, 0 failed
+== test_trim_integrity.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D4-R2 trim integrity: 700 checks, 0 failed
+== test_turbine.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   loader accepts a complete turbine block  []
+ok   loader refuses: propeller keys on a turbine  
+ok   loader refuses: throttle map not ending at max_rpm  
+ok   loader refuses: rpm not increasing in a table  
+ok   loader refuses: wrong table unit  
+ok   loader refuses: rotor sense not ±1  
+ok   loader refuses: idle above max  
+ok   loader refuses an unknown propulsion kind  ["propulsion.kind: \'rocket\' is not \'glow_prop\', \'turbine\', or \'electric_prop\'"]
+ok   throttle 0 → idle, 1 → max, 0.5 → linear map  
+ok   Propulsion.steady_rpm dispatches to the turbine  
+ok   static installed thrust at max = 0.9 × 100 N  90.000000 N
+ok   ram drag at 50 m/s = ṁ·u = 0.2 × 50 N  80.000000 N
+ok   idle thrust turns into drag at speed (ram drag > idle gross)  -0.600 N
+ok   half density halves thrust and ram drag  
+ok   stopped shaft: no thrust  
+ok   ram recovery at 70 m/s: ṁ0(1 + u²/193000)(sqrt(V_j0² + 3u²) − u)  81.2205 N (plain law 76.0000 N)
+ok   ram recovery leaves the static thrust unchanged  
+ok   loads: thrust on body +x, no side/vertical force, no roll torque  
+ok   loads: thrust line 5 cm above the CG pitches nose down by 4.5 N·m  My -4.500000
+ok   inlet normal force −ṁ·w on body z, nose-up moment ṁ·w·0.3 m  Fz -0.7987 N, My -4.2604 N·m
+ok   axial ram drag in the loads = ṁ·u  
+ok   spool-up idle → 95 % max on the acceleration limit: 3.417 s  3.4167 s
+ok   spool-up never overshoots the demand  150000.000 rpm
+ok   spool-down to within 5 % of idle on the deceleration limit: 1.742 s  1.7458 s
+ok   spool-down settles on idle, not below  40000.000
+ok   spool split 240/480 Hz within 0.5 % of the rpm range  worst 0.0 rpm
+ok   rotor momentum −I·ω along x (counter-clockwise)  -1.57080 N·m·s
+27 checks, 0 failed
+== test_turbulence_flight.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+M5-W04a turbulence flight: 157 checks, 0 failed
+== test_ui_aircraft.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default: the Ugly Stik on the card and in the backdrop
+ok   default: Fly enabled and focused, counter 1 of 4
+ok   Right from Fly -> next aircraft arrow
+ok   Enter on the arrow: the Extra on the card, in the backdrop and saved
+ok   Extra: Fly enabled, its status says experimental
+ok   choosing never starts a flight
+ok   P-51: shown, experimental, Fly enabled
+ok   Avanti: shown, experimental, Fly enabled
+ok   Avanti: the backdrop shows it, focus stays on the arrow
+ok   choosing the Avanti never starts a flight
+ok   next wraps around to the Ugly Stik
+ok   previous arrow goes back to the Avanti
+ok   Spanish: counter and status translated
+ok   restart: the saved Avanti comes back, Fly enabled
+ok   Fly with the Extra: one flight, Extra model and Extra physics
+ok   unknown saved aircraft -> default
+ok   saved aircraft of the wrong type -> default
+all UI aircraft checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_atmosphere.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   v1 preferences retain outer schema 1
+ok   v2 preferences retain outer schema 2
+ok   v3 atmosphere preferences use outer schema 3 and reload exactly
+ok   v1 fixture saves
+ok   opening Atmosphere leaves v1 weather unmodified
+ok   untouched Atmosphere Apply keeps v1 and outer schema 1
+ok   wind-only edit remains v1 and outer schema 1
+ok   v2 fixture saves
+ok   opening Atmosphere leaves v2 weather unmodified
+ok   untouched Atmosphere Apply keeps v2 and outer schema 2
+ok   wind-only edit remains v2 and outer schema 2
+ok   legacy atmosphere fixture saves
+ok   third tab shows Reference without upgrading legacy weather
+ok   reference preview comes from the shared kernel
+ok   dialog panel stays inside 800×600
+ok   Atmosphere focus follows the scroll body at 800×600
+ok   wind validation keeps its existing message
+ok   turbulence validation keeps its existing message
+ok   out-of-range atmosphere input stays in the draft
+ok   custom preview matches the atmosphere kernel
+ok   Apply promotes edited field conditions to v3
+ok   Home shows the density summary and complete field tooltip
+ok   editing turbulence on v3 keeps atmosphere and v3 format
+ok   Reference mode retains the saved custom field values
+ok   Reference mode keeps v3 and the inactive custom values
+ok   Esc discards the atmosphere draft
+ok   Hot and high preset is a v3 atmosphere draft
+ok   Hot and high preset commits
+ok   Cool dense preset is appended after the existing six presets
+ok   Cool dense preset commits
+ok   float64 atmosphere fixture saves
+ok   atmosphere fields display round-tripping decimals
+ok   untouched v3 Apply preserves all atmosphere float64 values
+ok   future schema v3 fixture writes
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future v3 weather applies for this session
+ok   future v3 save failure appears on Home and preserves the file
+ok   v3 Home-to-flight fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home-to-Fly passes v3 configuration to the session
+ok   active flight field uses the kernel density
+ok   custom-density flight trims at the requested 15 m/s TAS
+ok   Home-to-Fly remembers v3 in outer schema 3
+ok   Spanish UI fixture saves
+ok   Spanish translates Atmosphere mode and field controls
+ok   Spanish Home summarizes thin air
+ok   Spanish flight HUD atmosphere line is translated
+ok   Spanish atmosphere validation uses field-specific copy
+ok   Spanish Help includes field atmosphere and fits the existing page
+all UI atmosphere checks passed
+== test_ui_field_world_time_of_day.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no preferences -> day
+ok   invalid time midnight -> day
+ok   invalid time 3 -> day
+ok   invalid time true -> day
+ok   invalid time noon -> day
+ok   time choice round-trips
+ok   the button cycles every choice and wraps to day
+ok   choice day is day, a solvable preset or a flowing start
+ok   choice dawn is day, a solvable preset or a flowing start
+ok   choice golden_hour is day, a solvable preset or a flowing start
+ok   choice sunset is day, a solvable preset or a flowing start
+ok   choice blue_hour is day, a solvable preset or a flowing start
+ok   choice evening is day, a solvable preset or a flowing start
+ok   choice night is day, a solvable preset or a flowing start
+ok   choice night_dark is day, a solvable preset or a flowing start
+ok   session choice applies without arguments
+ok   arguments win over the session choice
+ok   day keeps the fixed sun
+ok   Home shows the saved choice
+ok   the backdrop is night: stars and field lights
+ok   the button advances and wraps to day
+ok   day backdrop: calibrated fixed sun, no stars
+ok   one backdrop, drawn under the menu
+ok   Home keeps the keyboard focus
+ok   choice saved at once
+ok   Spanish label
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly uses the chosen hour
+ok   the flight has the dusk field lights
+all UI time-of-day checks passed
+== test_ui_flight_capture.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   test preferences save
+ok   interactive app starts on Home
+ok   Home Fly is the focused real button
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home Fly creates the flight
+ok   Home and HomeScene leave the viewport
+ok   exactly one Camera3D remains under the viewport
+ok   exactly one WorldEnvironment remains under the viewport
+ok   aircraft shadow mask owns an isolated 3D world
+ok   flight camera is active
+ok   fixed capture state is exactly 360 simulation ticks
+ok   fixed capture state is exactly 1.5 simulation seconds
+ok   disabled simulation stays frozen without showing the pause state
+all UI flight capture checks passed
+== test_ui_help.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   headless (no layout): QWERTY names
+ok   AZERTY: physical A, W, Z print Q, Z, W
+ok   Russian: physical A, W print Ф, Ц
+ok   named keys get names, arrows are drawn
+ok   named keys are translated
+ok   Home: Help reachable by keyboard
+ok   Enter opens Help, focus on Close
+ok   Help shows every key of the shared table (20)
+ok   about: development build, Godot, licence
+ok   Help scrolls to keyboard focus
+ok   English Help fits without scrolling (582 <= 600 px)
+ok   Esc closes Help, focus back on Help
+ok   Esc in Help did not start or quit anything
+ok   Help: every text translated to Spanish
+ok   about in Spanish
+ok   Spanish Help fits without scrolling (582 <= 600 px)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause: Help reachable
+ok   Help over the pause menu swallows flight keys
+ok   Esc closes Help, the pause menu stays
+ok   Esc again continues the flight
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   first flight: the hint shows, three items
+ok   the hint takes no keyboard focus
+ok   flight keys fly under the hint
+ok   paused time does not use the hint up
+ok   after 0.5 s flown it goes and is remembered
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   next flight: no hint
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route: no hint, no settings
+all UI help checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_home.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default start choice
+all UI home checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_input.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   precondition: the engine binds joypad events to ui_* (10 found)
+ok   focus starts on Fly
+ok   precondition: unisolated, the elevator stick moves the focus
+ok   isolation removed 10 joypad events, none left
+ok   axis 1 = +1 does not move the focus
+ok   axis 1 = -1 does not move the focus
+ok   axis 0 = +1 does not move the focus
+ok   axis 0 = -1 does not move the focus
+ok   button 11 does not move the focus
+ok   button 12 does not move the focus
+ok   button 13 does not move the focus
+ok   button 14 does not move the focus
+ok   button 3 does not move the focus
+ok   no radio event activated Fly
+ok   the flight still reads the raw axis (0.75)
+ok   keyboard still navigates: Down -> Language
+ok   app_root isolates joypads at startup
+all UI input checks passed
+== test_ui_language.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   Spanish catalog: 188 texts, none untranslated
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+ok   English by default, even on a Spanish OS
+ok   language button names the language in itself
+ok   Enter on Language -> Spanish at once
+ok   dynamic texts rebuilt in Spanish
+ok   focus stays on Language
+ok   every translatable Home text has a Spanish translation
+ok   choice saved
+ok   next start remembers Spanish
+ok   and cycles back to English
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight: English, no settings file created
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight ignores a saved Spanish preference and leaves the file alone
+all UI language checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_pause.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flying with engine sound
+ok   Esc opens the pause menu, focus on Continue
+ok   the session is held and paused
+ok   simulation frozen (tick 110)
+ok   propeller frozen
+ok   engine sound paused and silent (-200.0 dB)
+ok   Down navigates the menu -> Restart
+ok   navigation keys never reach the flight commands
+ok   R, T and P do nothing behind the menu
+ok   Esc again: back to the flight
+ok   flying again: ticks, sound
+ok   a key held through Continue does not fly
+ok   pressed again after release, it flies
+CRASH at 15.0 m/s (sink 0.0 m/s, airframe contact (hull point 2), point speed 14.6 m/s at detected tick) - [R] restart
+ok   crash shown
+ok   menu explains the crash
+ok   crash countdown frozen under the menu (360 ticks left)
+ok   Continue does not fly through the crash
+ok   wreck persists after Continue until explicit restart
+ok   menu Restart clears the wreck and resumes flight
+ok   focus lost -> paused with the menu open
+ok   Enter on Continue resumes
+ok   Esc in the calibration wizard cancels it, no menu
+ok   fault: Continue disabled, focus on Restart, reason shown
+ok   fault: Continue refused, menu stays
+ok   Restart: a fresh trimmed flight
+ok   End flight reachable by keyboard
+trace saved: /home/bulto/openrc-crash-validation-20261011/.validation-user-data/godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-11T22-10-32.csv (73 rows)
+ok   End flight saved the trace
+ok   back on Home, flight freed
+ok   focus on Fly again
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   failed save: still in the flight, the menu explains
+ok   End again: Home, without the trace
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   5 cycles: same node count on Home every time [260.0, 260.0, 260.0, 260.0, 260.0, 260.0]
+ok   5 cycles: no session, engine sound or pause menu left
+all UI pause checks passed
+== test_ui_runway.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no preferences -> airborne start
+ok   write old preferences without a start choice
+ok   old schema-1 preferences without start choice -> airborne
+ok   write invalid start preference taxi
+ok   invalid start preference taxi -> airborne
+ok   write invalid start preference 7
+ok   invalid start preference 7 -> airborne
+ok   write invalid start preference true
+ok   invalid start preference true -> airborne
+ok   runway preference is valid for the Stik
+ok   runway preference for the Extra is sanitized
+ok   future schema reads a valid runway choice and stays read-only
+ok   future schema refuses save without changing its bytes
+ok   save failure is reported for a path below an existing file
+ok   seed preferences with the first-flight hint suppressed
+ok   Home defaults to air; the Stik can choose runway
+ok   Home starts focused on Fly
+ok   Up from Fly focuses the start selector
+ok   a real Enter event selects runway
+ok   changing start choice does not save it
+ok   radio axis cannot navigate Home or change the start
+ok   Extra disables runway and sanitizes the selected choice
+ok   aircraft change persists the sanitized start
+ok   returning to Stik does not restore unsupported runway
+ok   runway can be selected again on the supported Stik
+ok   selection is still not persisted before Fly
+ok   Down from the selector returns focus to Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly creates one flight and removes Home
+ok   Fly saves the selected runway choice
+ok   main and session receive the selected choice
+ok   runway launch succeeded without fallback
+ok   trace metadata identifies the launch choice
+ok   R restarts on runway
+ok   pause navigation reaches Restart
+ok   Pause Restart retains runway
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 1), point speed 0.0 m/s at detected tick) - [R] restart
+ok   ground contact enters the crash hold
+ok   crash recovery restarts on runway
+ok   pause navigation reaches End
+ok   flight -> Home preserves runway and saves no active session
+ok   Home focus returns to Fly
+ok   fake radio still cannot move Home focus or selection
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home -> flight again uses runway
+radio connected: ui-runway-fake|1209:4f54|Fake EdgeTX (default profile)
+ok   fake radio connects while preserving runway launch
+ok   fake radio throttle low arms the transmitter
+ok   radio roll reaches flight controls with solved trim
+ok   radio throttle reaches full power after arming
+ok   P resumes a manually controlled runway flight
+failsafe: radio disconnected
+ok   manual radio flight can end back at Home
+ok   write Spanish airborne preferences
+ok   saved Spanish Home defaults to airborne
+ok   Spanish Home focuses the start selector
+ok   real Spanish Home event selects runway without saving
+ok   Down returns focus to Fly after choosing runway
+ok   rejected runway launch leaves Home active and no session behind
+ok   rejection clears Fly latch and keeps Fly usable
+ok   rejection displays a Spanish reason
+ok   rejected start does not save or overwrite the preference file
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly can be retried after rejection
+ok   retry starts the selected runway choice
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future preferences still show valid runway choice
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   future-schema settings do not block the flight
+ok   failed save reason stays on the flight
+ok   failed save reason remains visible on returned Home
+ok   future preference bytes are preserved after failed save
+ok   alternate field fixture is valid
+ok   write runway preference for alternate-field probe
+ok   runway is disabled outside the existing default field
+ok   write runway preference before aircraft sanitization
+ok   changing to gp-extra-300s-60 sanitizes runway
+ok   changing to p51d-mustang-120 sanitizes runway
+ok   changing to sebart-avanti-s-a200-p100rx sanitizes runway
+ok   switching back to the Stik does not restore runway
+all UI runway checks passed
+== test_ui_screen_stack.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Home is the only screen
+ok   duplicate screen is rejected without attaching it
+ok   an attached screen cannot be registered under another ID
+ok   nonblocking overlays stay outside navigation
+ok   a modal refuses repeated or lower-screen actions
+ok   Help keeps keyboard focus inside its surface (0)
+ok   Help keeps keyboard focus inside its surface (1)
+ok   Help keeps keyboard focus inside its surface (2)
+ok   Help keeps keyboard focus inside its surface (3)
+ok   Help keeps keyboard focus inside its surface (4)
+ok   Help keeps keyboard focus inside its surface (5)
+ok   Help keeps keyboard focus inside its surface (6)
+ok   Help keeps keyboard focus inside its surface (7)
+ok   clicking covered Fly leaves Home and Help intact
+ok   Help restores the opener
+ok   rebuilt lower controls do not break focus return
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly removes every menu (0)
+ok   nested Help blocks flight actions and keeps the session frozen (0)
+ok   closing Help keeps Pause and its hold (0)
+ok   End returns to one Home without node growth (0, 259 nodes)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly removes every menu (1)
+ok   nested Help blocks flight actions and keeps the session frozen (1)
+ok   closing Help keeps Pause and its hold (1)
+ok   End returns to one Home without node growth (1, 259 nodes)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly removes every menu (2)
+ok   nested Help blocks flight actions and keeps the session frozen (2)
+ok   closing Help keeps Pause and its hold (2)
+ok   End returns to one Home without node growth (2, 259 nodes)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly removes every menu (3)
+ok   nested Help blocks flight actions and keeps the session frozen (3)
+ok   closing Help keeps Pause and its hold (3)
+ok   End returns to one Home without node growth (3, 259 nodes)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly removes every menu (4)
+ok   nested Help blocks flight actions and keeps the session frozen (4)
+ok   closing Help keeps Pause and its hold (4)
+ok   End returns to one Home without node growth (4, 259 nodes)
+all UI screen stack checks passed
+== test_ui_time_of_day.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   schema 1 migration fixture saves
+ok   schema 1 receives legacy lighting defaults
+ok   schema 1 remains weather-derived when lighting is untouched
+ok   schema 2 migration fixture saves
+ok   schema 2 receives legacy lighting defaults
+ok   schema 2 remains weather-derived when lighting is untouched
+ok   schema 3 migration fixture saves
+ok   schema 3 receives legacy lighting defaults
+ok   schema 3 remains weather-derived when lighting is untouched
+ok   invalid lighting fixture saves
+ok   invalid lighting falls back to legacy daylight and retains weather
+settings: invalid time-of-day settings; using legacy daylight
+ok   Home visibly reports invalid saved lighting
+ok   float64 coordinate fixture saves as schema 4
+ok   opening and reading untouched coordinates preserves their exact float64 values
+ok   Cancel leaves the stored coordinate selection untouched
+ok   legacy v1 weather fixture saves unchanged
+ok   Home begins with the legacy daylight selection
+ok   existing dialog keeps its weather signal and adds a fourth tab
+ok   time slider spans every whole minute and typed field supports seconds
+ok   radio axes cannot move menu focus
+ok   initial weather object remains the original v1 schema
+ok   Noon preset builds a validated astronomical draft
+ok   night limitation is hidden for the daylight preset
+ok   night limitation appears when solar elevation falls below −6°
+ok   night limitation hides again when the selected solar elevation is above −6°
+ok   preset selection does not touch saved lighting or weather
+ok   cancel leaves both preferences unchanged
+ok   slider selects an exact whole minute
+ok   typed seconds and advanced fixed location round-trip
+ok   an invalid date blocks preset selection with an inline message
+ok   invalid fixed date blocks Apply and keeps both saved objects unchanged
+ok   Apply saves fixed solar selection as schema 4 without changing legacy weather
+ok   Home keeps a compact phase and local-time summary while the tooltip shows full context
+ok   preset remains a draft before Apply
+ok   Apply commits the Noon preset and preserves weather
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home to flight passes the selected lighting snapshot
+ok   End flight returns Home to the configured start time
+ok   failed Home rebuild retains the previous view and reports the failure
+ok   future schema fixture saves
+settings: settings from a newer version (schema 5): read where valid, never overwritten
+ok   schema 5 reads valid lighting and remains read-only
+ok   future schema Apply takes effect in memory
+ok   future schema settings stay byte-for-byte unchanged and the failure is visible
+ok   four-tab dialog fits inside an 800×600 viewport
+ok   Spanish translates the time tab, mode, date and night limitation
+all UI time-of-day checks passed
+== test_ui_time_of_day_pause.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   interactive route starts on Home
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause menu offers a dedicated Time of day action
+ok   Down reaches Restart
+ok   next Down reaches Time of day
+ok   time editor opens over the still-paused flight
+ok   option popups use native windows only when supported
+ok   radio axes cannot move focus in the pause editor
+ok   en modal fits 800×600
+ok   es modal fits 800×600
+ok   en modal fits 1280×720
+ok   es modal fits 1280×720
+ok   Spanish modal title and actions are translated
+ok   keyboard focus scrolls the advanced location field into view at 800×600
+ok   time preset produces a valid draft
+ok   Esc cancels without resuming or changing lighting
+ok   Cancel restores focus to the pause action
+ok   invalid local time leaves the editor open with an error
+ok   flight staging errors also keep the modal open
+ok   Esc after an error still only cancels the draft
+ok   preset popup route starts on the lighting control
+ok   Tab reaches the time preset
+ok   Enter opens the time preset list
+ok   Esc closes the preset list and keeps the editor paused
+ok   a second Esc cancels the editor but keeps Pause open
+ok   Down keys navigate the open preset list
+ok   Enter applies the selected preset to the draft
+ok   preset mode change refreshes the keyboard focus chain
+ok   valid Apply changes lighting and leaves the pause menu held
+ok   Apply preserves tick, state and live controls
+ok   interactive Apply saves the configured start light
+ok   Apply returns focus to Time of day
+ok   Restart reuses the applied start lighting
+ok   End flight returns Home with the accepted selection
+ok   direct-route sentinel fixture opens
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   time preset produces a valid draft
+ok   direct CLI route applies lighting without Home
+ok   direct route does not read or write the preference file
+all TOD-08b pause UI checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_turbulence.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   legacy calm defaults remain v1
+ok   turbulence practice preset is valid v2
+ok   preset carries NED RMS, tau, and integer seed
+ok   non-integral v2 seed is rejected
+ok   out-of-range turbulence RMS is rejected
+ok   fresh preferences keep v1 weather defaults
+ok   legacy weather preferences save
+ok   legacy v1 weather stays in outer schema 1
+ok   v2 weather saves through preferences
+ok   v2 weather reloads through preferences
+ok   v2 weather uses outer schema 2 for old-reader protection
+ok   future preferences read valid v2 weather as read-only
+ok   future v2 preferences cannot be overwritten
+ok   two-tab dialog fits the 1024×720 base layout
+ok   Wind & Gusts starts selected with all existing controls
+ok   initial legacy config displays turbulence off with zero RMS
+ok   legacy dialog exposes default tau and seed without migrating
+ok   untouched Apply preserves legacy v1 weather
+ok   wind-only edit updates wind and stays v1
+ok   Enable fills the authored practice RMS values
+ok   active-tab focus ring excludes hidden wind fields
+ok   keyboard focus scrolls the turbulence body to the seed field
+ok   cancel discards turbulence draft and returns Home focus
+ok   positive RMS activates turbulence
+ok   Apply saves v2 turbulence values and exact uint32 seed
+ok   Home summary shows turbulence settings
+ok   seed accepts only ASCII digits and rejects a sign
+ok   tau bounds reject invalid edits without committing
+ok   restoring exact seed and tau values applies cleanly
+ok   Turbulence practice is appended after existing presets
+ok   preset Apply commits the validated v2 practice config
+ok   high-precision v2 fixture saves
+ok   precise fields display shortest round-tripping decimals
+ok   untouched high-precision v2 values survive Apply exactly
+ok   Spanish localizes both tabs, turbulence labels, and preset
+ok   Spanish localizes the RMS field label
+ok   future-v2 fixture writes
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema applies v2 changes to this session
+ok   future v2 schema save failure appears on Home
+ok   future v2 preferences stay byte-for-byte unchanged
+ok   flight-handoff v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home-to-Fly passes v2 weather to the session
+ok   Home-to-Fly remembers v2 settings
+ok   direct-route v2 fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route keeps calm weather and leaves v2 preferences intact
+all UI turbulence checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_weather.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   schema-1 defaults include a complete calm weather config
+ok   nested defaults are detached between loads
+ok   old schema-1 file without weather remains readable
+ok   invalid saved weather falls back to calm
+ok   saving an invalid weather object is rejected
+ok   valid weather saves and reloads
+ok   future schema reads valid weather but becomes read-only
+ok   future schema settings are never overwritten
+ok   precision fixture valid
+ok   Home presents a weather button next to Fly
+ok   Tab from Fly reaches Weather without stealing aircraft arrow navigation
+ok   Weather is keyboard reachable next to Fly
+ok   radio axis cannot move Home focus
+ok   Enter opens a modal draft
+ok   weather dialog panel fits the 1280×720 base layout
+ok   all six requested weather fields are available
+ok   speed_mps field round-trips the complete float64
+ok   from_deg field round-trips the complete float64
+ok   gust_mps field round-trips the complete float64
+ok   gust_up_mps field round-trips the complete float64
+ok   gust_duration_s field round-trips the complete float64
+ok   gust_period_s field round-trips the complete float64
+ok   gust delay stays hidden from the form
+ok   radio axis cannot move modal focus
+ok   Esc cancels and returns focus to Weather
+ok   cancel leaves the original persisted config untouched
+ok   reopen begins from the committed precision values
+ok   out-of-range edit displays an error and stays in the draft
+ok   invalid draft does not change the committed config
+ok   Apply preserves every unedited value and hidden gust delay
+ok   Apply returns focus and closes the modal
+ok   preset fills the draft without changing saved preferences
+ok   Apply commits the chosen preset
+ok   Spanish localizes Home and the modal preset list
+ok   Spanish modal has no untranslated focusable or instructional text
+ok   future-schema UI fixture saves
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future schema Apply takes effect for this session
+ok   future schema save failure is visible on Home
+ok   future schema Apply leaves the original file byte-for-byte unchanged
+ok   non-calm Home-to-Fly fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   successful Fly passes the chosen config to main before adding the flight
+ok   session received the same weather configuration
+ok   successful Fly remembers the weather config
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct route keeps the calm default
+ok   direct route leaves stored non-calm preference bytes alone
+all UI weather checks passed
+WARNING: 22 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+== test_ui_weather_sliders.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   precision weather fixture saves
+ok   numeric wind sliders preserve the six line-edit controls
+ok   turbulence sliders omit the integer seed
+ok   Atmosphere has one linked slider for each custom field
+ok   wind slider uses its displayed range and precision
+ok   exact typed wind values do not snap to slider steps
+ok   untouched sliders preserve the entire source config
+ok   slider drag updates the paired exact-value field
+ok   Escape discards slider changes
+ok   valid precise text moves the thumb without quantizing the value field
+ok   Apply saves the precise text value rather than the slider step
+ok   dialog and paired controls fit the 800×600 viewport
+ok   slider focus advances to its precise line edit
+ok   wind slider receives keyboard focus
+ok   radio axis cannot move focus from a slider
+ok   arrow key changes only the focused wind slider
+ok   turbulence slider is in the tab focus ring
+ok   RMS slider updates its text and enables turbulence
+ok   seed remains a precise integer field without a slider
+ok   reference atmosphere sliders are inactive until custom mode
+ok   temperature slider updates the field and kernel preview
+ok   last atmosphere slider follows focus inside the 800×600 scroll body
+ok   last atmosphere slider advances to its exact line edit
+ok   humidity slider updates the visible value field
+ok   Spanish 800×600 tab 0 panel, slider and unit fit the viewport
+ok   Spanish 800×600 tab 1 panel, slider and unit fit the viewport
+ok   Spanish 800×600 tab 2 panel, slider and unit fit the viewport
+ok   Escape cancels edits from every tab
+all UI weather slider checks passed
+== test_visual_checkpoint.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+40 checks, 0 failed
+== test_visual_evidence.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+visual evidence: 97 checks, 0 failed
+== test_visual_timeline.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+53 checks, 0 failed
+== test_wash_profile.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok profile fixture passes provenance and geometry validation []
+ok 13 invalid profiles/mode combinations are refused 
+ok full coverage preserves polygon area: horizontal 
+ok full coverage preserves polygon area: horizontal 
+ok full coverage preserves polygon area: vertical 
+ok 72 weighted integrals agree with independent dense integration 0.00000000980108
+ok weighted area and centroid stay within geometry bounds 
+ok outer tangency has vanishing load derivative [0.0004495447817, 0.00015919895091]
+ok outer boundary returns exact zero 
+ok reverse cutoff removes every load component 
+ok stopped propeller is exact zero 
+ok zero wash coefficients preserve exact zero 
+ok reverse fade endpoints have continuous loads and matching slopes 
+ok static elevator produces differential pitch 
+ok static rudder produces opposite yaw signs 
+ok mirrored horizontal profiles cancel roll in axial wash 
+ok full-angle/rate sweep is finite 
+ok scalar loads agree with independent helper composition 0.0
+ok horizontal coverage height does not move aerodynamic pressure arm 
+ok default Stik remains unconfigured 
+E0b3b: 20 checks, 0 failed
+== test_wash_transport.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok provenanced transport fixture accepted []
+ok invalid transport configuration 0 rejected 
+ok invalid transport configuration 1 rejected 
+ok invalid transport configuration 2 rejected 
+ok invalid transport configuration 3 rejected 
+ok invalid transport configuration 4 rejected 
+ok invalid transport configuration 5 rejected 
+ok fixed 0 m/s speed step matches exponential worst relative error 3.115152139666146e-08
+ok piece 0 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.074662 s; measured 0.074671 s
+ok piece 1 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.074662 s; measured 0.074671 s
+ok piece 2 at 0 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.075979 s; measured 0.076000 s
+ok fixed 15 m/s speed step matches exponential worst relative error 1.660719243708436e-07
+ok piece 0 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.049428 s; measured 0.049449 s
+ok piece 1 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.049428 s; measured 0.049449 s
+ok piece 2 at 15 m/s reaches 63.2% at distance/disc-speed ±5% tau 0.050300 s; measured 0.050311 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok transport session trims and starts 
+ok reset settles each piece; public body/CSV remains 13 values 
+ok settled lag reproduces quasi-static loads exactly 
+ok stage wash state changes actual tail loads 
+ok real session loads see changing lag at all RK stages 
+ok nonsettled transport checkpoint accepted 
+ok mid-lag checkpoint replay is byte-exact 
+ok reset removes prior lag history 
+ok reset refuses transport layout mismatch without indexing pieces 
+ok reset refuses transport layout mismatch without indexing pieces 
+ok trace identifies continuous transport separately 
+ok engine stop leaves finite decaying wash 
+ok stopped-source residual still reaches tail loads 
+ok reverse flow cuts source and residual occupancy 
+ok zero-flow stopped source decays using finite floor 
+ok runway reset initializes settled transport 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok switch back to production drops continuous layout 
+ok production reset has no lag state 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok real body/wash coupling converges at fourth order with sampled inputs held errors [0.00000808920895, 0.00000045793757, 0.00000002714892]; ratios 17.66 16.87
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok jensen-das-ugly-stik-60 production keeps empty continuous state 
+ok gp-extra-300s-60 production keeps empty continuous state 
+ok p51d-mustang-120 production keeps empty continuous state 
+ok sebart-avanti-s-a200-p100rx production keeps empty continuous state 
+E0b5 transport: 38 checks, 0 failed
+== test_wildlife.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   daylight enables birds and crows while suppressing owls and crickets
+ok   warm night enables owls, dogs and crickets, but not birds or crows
+ok   cold night temperature gates crickets off
+ok   strong wind suppresses wildlife activity
+ok   20-minute day run emits birds, crows and dogs but no owls — { "bird": 98, "crow": 23, "dog": 10 }
+ok   20-minute night run emits owls and dogs but no birds or crows — { "owl": 21, "dog": 4 }
+ok   forest calls require at least one perch; dogs remain independent — { "dog": 11 }
+ok   same seed reproduces the complete event sequence — events=131
+ok   different seed changes the event sequence — same=131 different=134
+ok   event mix never occupies more than two logical wildlife voices — day=1 night=1
+ok   day events have valid species, variant, slot, perch, pitch and serial fields
+ok   night events have valid species, variant, slot, perch, pitch and serial fields
+ok   day calls do not immediately repeat a species variant
+ok   night calls do not immediately repeat a species variant
+ok   no-perch run contains only well-formed independent dog calls
+ok   pause returns no wildlife events
+ok   pause freezes RNG, timers, voices, gap and pending reply — serial=4
+ok   pause also preserves event serial and last event
+ok   two occupied slots block a third simultaneous wildlife call — active=2 event={  }
+ok   answering call moves to a different perch — { &"species": "bird", &"variant": 1, &"slot": 0, &"perch": 3, &"pitch": 1.0047150850296, &"level": 0.97970247268677, &"answering": true, &"serial": 1 }
+ok   disturbance keeps forest calls quiet through the six-second fright window — fright=0.100
+ok   eligible bird calls resume after the quiet window expires — fright=0.000000 event={ &"species": "bird", &"variant": 1, &"slot": 0, &"perch": 3, &"pitch": 1.03299760818481, &"level": 0.8732442855835, &"answering": false, &"serial": 1 }
+ok   long delta schedules at most one call and does not catch up in a burst — first=crow second={  } gap=3.34
+ok   reset clears all logical voice tails and pending reply
+ok   reset clears fright and restarts the inter-event gap
+ok   wildlife variation leaves the global RNG untouched — expected=[906324239, 295789656, 2725774471, 68738009, 3558238588, 3447924954, 2647842921, 1127531711] observed=[906324239, 295789656, 2725774471, 68738009, 3558238588, 3447924954, 2647842921, 1127531711]
+26 checks, 0 failed
+== test_wind_field.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+wind field: 57 checks, 0 failed
+== test_wind_flight.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   res://data/aircraft/jensen_ugly_stik_60.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/jensen_ugly_stik_60.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/jensen_ugly_stik_60.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/gp_extra_300s_60.json
+ok   configured session remains flyable: res://data/aircraft/gp_extra_300s_60.json
+ok   res://data/aircraft/gp_extra_300s_60.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/gp_extra_300s_60.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/gp_extra_300s_60.json world position differs by W·t  max NED error 0.000000000001 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   res://data/aircraft/p51d_mustang_120.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/p51d_mustang_120.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/p51d_mustang_120.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+ok   configured session remains flyable: res://data/aircraft/sebart_avanti_s_a200.json
+ok   configured session remains flyable: res://data/aircraft/sebart_avanti_s_a200.json
+ok   res://data/aircraft/sebart_avanti_s_a200.json reset adds R^T·W while preserving trimmed TAS  body-velocity 0.000000000000 m/s, air-state 0.000000000000
+ok   res://data/aircraft/sebart_avanti_s_a200.json 240 ticks preserve air-relative flight, loads and auxiliary state  air 0.000000000000, attitude 0.000000000000, rates 0.000000000000, aux 0.000000000000, wash 0.000000000000, loads 0.000000000000
+ok   res://data/aircraft/sebart_avanti_s_a200.json world position differs by W·t  max NED error 0.000000000000 m at 1.000000 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   default ground field loads for windy runway  []
+ok   wind-aware runway static solve succeeds
+ok   same-state session loads equal Dynamics(wind, lag, wash) plus ground contacts  total [-0.7200886315248, 0.05107545513471, -28.2789458056474, -0.00000000000004, 0.00330264089654, -0.00000000000042]; wind aircraft delta 0.249091446 N
+ok   wind changes aircraft loads while wheel loads remain ground-relative  wind does not enter Ground.loads; local TAS 1.5000 m/s
+ok   mild wind runway equilibrium has negligible residual acceleration  linear 0.000000000000 m/s², angular 0.000000000001 rad/s²
+ok   wind-on Stik runway idle hold stays parked for 10 seconds  drift 0.000000000000 m, ground speed 0.000000000000 m/s, fault ''
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   real session load callback sees k1/k2/k3/k4 absolute stage times  [0.0, 0.00208333333333, 0.00208333333333, 0.00416666666667]
+ok   gust changes between RK stages and both midpoint samples agree  stage gust north components [0.0, -0.00027798956396, -0.00027798956396, -0.00237497136586]
+ok   manufactured-cosine field builds  []
+ok   RK4 resolves a partial integral of the 3 m/s cosine gust  absolute errors at 30/60/120 Hz: ["1.3830925582603015e-07", "8.635863357753237e-09", "5.396094682197372e-10"] m
+ok   manufactured forcing converges at fourth order under rate doubling  absolute errors ["1.3830925582603015e-07", "8.635863357753237e-09", "5.396094682197372e-10"] m; ratios ["16.015683678211136", "16.003913693813434"]
+ok   configured session remains flyable: res://data/aircraft/p51d_mustang_120.json
+ok   P-51 shaft pre-step uses air-relative inflow, not ground speed  air axial 24.977108 m/s, ground axial 19.982126 m/s; rpm 3545.839532281 vs wrong-input 3543.069788877
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   reset returns gust sampling and default air query to stage time zero  pre-reset t 0.350000 s, gust 2.000000 m/s; post-reset t 0.0 s
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   invalid weather at reset boundary is rejected atomically  'gust_period_s' must be in [0.5, 120.0]; gust_period_s must be greater than or equal to gust_duration_s
+ok   live weather change after tick zero is refused without state mutation  weather changes require a new flight or reset boundary
+ok   non-calm complete session checkpoint has version 2 and the authored weather  openrc-flight-checkpoint v2
+ok   invalid checkpoint weather is rejected with owner state intact  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   changed checkpoint fingerprint is rejected atomically  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   wind checkpoint rollback and recorded control tail replay byte-exactly  restore true, tick 160
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   fresh calm destination refuses altered weather fingerprint without partial restore  { "format": "openrc-weather v1", "speed_mps": 0.0, "from_deg": 0.0, "gust_mps": 0.0, "gust_up_mps": 0.0, "gust_duration_s": 4.0, "gust_period_s": 12.0, "gust_delay_s": 2.0 }
+ok   fresh calm destination refuses malformed weather checkpoint atomically  { "format": "openrc-weather v1", "speed_mps": 0.0, "from_deg": 0.0, "gust_mps": 0.0, "gust_up_mps": 0.0, "gust_duration_s": 4.0, "gust_period_s": 12.0, "gust_delay_s": 2.0 }
+ok   fresh calm session adopts valid wind checkpoint identity  { "format": "openrc-weather v1", "speed_mps": 1.5, "from_deg": 270.0, "gust_mps": 1.0, "gust_up_mps": 0.5, "gust_duration_s": 0.5, "gust_period_s": 1.5, "gust_delay_s": 0.2 }
+ok   fresh cross-session wind replay continues byte-exactly  tick 160 expected source tail 160
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   configured session remains flyable: res://data/aircraft/jensen_ugly_stik_60.json
+ok   default calm checkpoint retains version 1
+wind flight: 51 checks, 0 failed
+== test_wind_hud.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+wind HUD: 9 checks, 0 failed
+== test_wind_trace.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+wind trace: 29 checks, 0 failed
+== test_wind_turbulence.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+OU axis 0: mean 0.00101225 RMS 1.01678464 ac1 0.96241908 expected 0.96078944
+OU axis 1: mean 0.01671517 RMS 0.98502564 ac1 0.95960543 expected 0.96078944
+OU axis 2: mean 0.01546129 RMS 0.99670776 ac1 0.96090234 expected 0.96078944
+OU cross covariances: NE -0.02125151 ND -0.00503496 ED 0.01124457
+wind turbulence kernel: 29 checks, 0 failed
+== test_windsock.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+16 checks, 0 failed
+== test_windsock_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+121 checks, 0 failed
+== test_wing_polar.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+D8b-R2 polar: 111 checks, 0 failed
+== test_wing_polar_session.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Synthetic spin: p/r at 4 s = 4.70335007641365/1.10076709846262, at 8 s = 0.07329301812816/0.32436572430961 (not physical acceptance)
+D8b-R2 session: 8 checks, 0 failed
+== test_world_ephemeris.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+28 checks, 0 failed
+== test_world_field_lights.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+44 checks, 0 failed
+== test_world_flow.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Bad --time_scale '-3' (0–3600); time stays frozen
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] resolve (res://render/world/conditions.gd:73)
+         [1] _initialize (res://tests/test_world_flow.gd:32)
+25 checks, 0 failed
+== test_world_sky.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark); using the fixed sun
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] resolve (res://render/world/conditions.gd:108)
+         [1] _initialize (res://tests/test_world_sky.gd:50)
+WARNING: Bad --time '25h' (HH:MM); using the fixed sun
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] resolve (res://render/world/conditions.gd:103)
+         [1] _initialize (res://tests/test_world_sky.gd:51)
+38 checks, 0 failed
+== test_world_stars.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+13 checks, 0 failed
+== test_yaw_damping.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info Stik-consistent Cnr: fin −2(l_v/b)·Cnβ_fin -0.1179 + wing profile -0.0141 = -0.1320; oracle Cnr -0.1319
+ok   D11g: the oracle's Cnr -0.1319 within 2 % of the Stik-consistent value
+info α  0.0: local Cnr -0.1343 (fin -0.1185, rest -0.0158), local Cnβ 0.1233, ×1.02 of the oracle Cnr
+info α  2.0: local Cnr -0.1333 (fin -0.1184, rest -0.0149), local Cnβ 0.1234, ×1.01 of the oracle Cnr
+info α  4.0: local Cnr -0.1321 (fin -0.1182, rest -0.0139), local Cnβ 0.1236, ×1.00 of the oracle Cnr
+info α  6.0: local Cnr -0.1308 (fin -0.1179, rest -0.0129), local Cnβ 0.1237, ×0.99 of the oracle Cnr
+info α  8.0: local Cnr -0.1294 (fin -0.1174, rest -0.0120), local Cnβ 0.1239, ×0.98 of the oracle Cnr
+info α 10.0: local Cnr -0.1279 (fin -0.1167, rest -0.0112), local Cnβ 0.1240, ×0.97 of the oracle Cnr
+info α 11.0: local Cnr -0.1271 (fin -0.1163, rest -0.0108), local Cnβ 0.1241, ×0.96 of the oracle Cnr
+ok   fin: local yaw-rate damping = −2·(l_v/b)·Cnβ_fin = -0.1179 within 2 % at α 0–11° (consistent velocity, force, arm)  worst 1.34 %
+ok   local Cnβ within 3 % of the data's fin-derived Cnβ 0.1214 at α 0–11°  worst 2.16 %
+ok   local Cnr within 7 % of the Stik-consistent value -0.1320 at α 0–11° (wing polar per strip: see the D11f report)  worst 3.67 %
+4 checks, 0 failed
+== H7: exact one-ulp math sensitivity and golden branch signatures
+H7: exact next-float-up sin_/atan2_ perturbations replay all four air goldens
+H6: same-machine SHA-256 trajectories match isolated direct-built-in call-site copies
+maximum component error / (golden tolerance / 1000) = 0.00133227
+adjacent-float full-stall branch fixture crossed: 0.99002646 -> 1
+controlled branch-path mutation detected in actual golden replay(s): glide_15, pull_throttle, roll_15, rudder_doublet
+mutation state error stayed below tolerance/1000 (worst ratio 5.55112e-05)
+== L5: invalid field files fail before Home or flight can start
+test_headless_invalid_fields_fail_both_routes (__main__.FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 11.412s
+
+OK
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+807 checks, 0 failed
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m
+verify_extra: 123 checks, 0 failures
+== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)
+P-51 appearance source/runtime: identical
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+verify_p51: 248 checks, 0 failed
+== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)
+verify_p51_clearance: 12 checks, 0 failed (27089 ms)
+== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)
+PASS 137 checks
+== C7-R1: trace completion, finite samples and failure exits
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 54.737s
+
+OK
+== D8b-R2: synthetic polar fixtures and explicit experimental flight route
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+3 synthetic polar candidates verified; NONE selected for production
+...
+----------------------------------------------------------------------
+Ran 3 tests in 21.286s
+
+OK
+== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls
+......
+----------------------------------------------------------------------
+Ran 6 tests in 30.710s
+
+OK
+== M5-W04a: seeded turbulence trace oracle and complete-state FPS independence
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 27.674s
+
+OK
+== M5-ATM: independent atmosphere, EAS and environment replay checks
+......
+----------------------------------------------------------------------
+Ran 6 tests in 33.885s
+
+OK
+== TOD-09a: independent Gregorian clock fixtures stay current
+184 independent calendar cases verified
+== TOD-05/07: selected time, visual context and unchanged flight physics
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 68.561s
+
+OK
+== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 34.859s
+
+OK
+== app: headless --trace starts in trimmed level flight (default Ugly Stik, then the Extra, the P-51 and the Avanti by catalog ID)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)
+stale: app/data/aircraft/sebart_avanti_s_a200.json, research/avanti-s/av06/derivation.md (run research/avanti-s/av06/derive_physics.py)

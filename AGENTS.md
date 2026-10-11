@@ -37,7 +37,7 @@ The simulator is the **Godot 4.7 app in `app/`** (Gate 1, 2026-10-05). `prototyp
 | Archived three.js build (Node 24, see `.nvmrc`) | `cd prototypes/stage0/three && npm ci && npm test && npm run capture && npm run e2e` |
 
 Rules for the Godot app:
-- Physics data lives in `app/data/aircraft/*.json` (format `openrc-aircraft v1`): every value carries `{value, unit, kind, source}`. The loader refuses invalid data, and the app then refuses to fly.
+- Physics data lives in `app/data/aircraft/*.json` (format `openrc-aircraft v2`; [contract](AIRCRAFT_CONTRACT.md)): every physical quantity carries `{value, unit, kind, source}`. Capabilities and conditional modules are explicit; invalid data cannot fly. V1 is an explicit historical-research path, not a new-aircraft format.
 - Simulation code (`sim/`, `physics/`) keeps state in 64-bit GDScript `float`s, never `Vector3`/`Basis`/`Quaternion`/`Transform3D` (32-bit). `app/test.sh` enforces this.
 - Don't name constants after built-in classes (`Panel`, `Label`, …): it causes parse errors, which hang headless runs.
 
@@ -57,6 +57,7 @@ Parallel work (2026-10-05; registry reconciled 2026-10-08): several developers/a
 - Before moving or renaming files, grep the whole repo for the old paths. After changing `.gitignore`, paths or generated outputs, verify from a fresh `git clone`: `act` copies untracked folders and hides missing-directory bugs. Never leave a deliberately broken file in the working tree: run mutation checks on a copy.
 
 Working agreement:
+- Aircraft standardization (AS-00…05): follow [AIRCRAFT_STANDARDIZATION_PLAN.md](AIRCRAFT_STANDARDIZATION_PLAN.md). The lead owns the new contract/schema and bounded loader/source migrations; ground, crash, audio and model teams retain their existing paths. Complete the standardization before aircraft feature expansion.
 - One small step per change, following the step IDs in ROADMAP.md.
 - Every change states its proof (test, capture, trace or measurement) in the commit message.
 - Guessed numbers are labeled with their source and evidence kind.

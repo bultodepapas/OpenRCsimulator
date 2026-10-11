@@ -38,6 +38,7 @@ func _run() -> void:
 	report.passed = okay
 	print(JSON.stringify(report))
 	if legacy and scene._engine_audio != null:
+		scene.set_process(false)
 		scene._engine_audio.stop()
 		scene._engine_audio.stream = null
 		await create_timer(0.2).timeout

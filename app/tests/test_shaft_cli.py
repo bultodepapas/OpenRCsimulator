@@ -51,8 +51,17 @@ class ShaftCLI(unittest.TestCase):
         self.assertEqual(metadata['propulsion_model'], 'propeller-shaft-coupled-rk4-v1')
         self.assertEqual(metadata['shaft_integrator'], 'coupled-rk4')
         self.assertEqual(len(table) - 1, 61)
-        self.assertAlmostEqual(json.loads(metadata['recording_start_continuous'])[-1],
+        wheel_layout = json.loads(metadata['wheel_state_layout'])
+        self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v6')
+        self.assertEqual(metadata['wheel_state_model'], 'relative-wheel-rim-speed-rk4-v1')
+        battery_slots = 3 if metadata['continuous_layout'].startswith(
+            'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, remaining charge C,') else 0
+        shaft_index = wheel_layout[0]['index'] - battery_slots - 1
+        self.assertGreaterEqual(shaft_index, 0)
+        self.assertAlmostEqual(json.loads(metadata['recording_start_continuous'])[shaft_index],
                                json.loads(metadata['recording_start_aux'])[0], places=10)
+        self.assertEqual(wheel_layout[-1]['index'] + 1,
+                         len(json.loads(metadata['recording_start_continuous'])))
 
     def test_explicit_split_preserves_default_rows(self):
         rows = []
@@ -95,11 +104,35 @@ class ShaftCLI(unittest.TestCase):
             ('air-negative', ['--weather=hot-high'], lambda p: check_air(p, 0.25)),
         ]:
             source = self.trace(name, options)
-            for key, value in [('shaft_integrator', 'split'), ('rotor_coupling', 'unknown'),
-                               ('propulsion_model', 'propeller-shaft-balance-v1'),
-                               ('recording_start_continuous', '[-1]'),
-                               ('recording_start_continuous', '[true]'),
-                               ('recording_start_continuous', '[123]')]:
+            _, metadata, _ = _read_parts(source)
+            wheel_layout = json.loads(metadata['wheel_state_layout'])
+            wheel_brakes = json.loads(metadata['wheel_brakes'])
+            duplicate_indices = [dict(entry) for entry in wheel_layout]
+            duplicate_indices[1]['index'] = duplicate_indices[0]['index']
+            wrong_contact_brakes = [dict(brake) for brake in wheel_brakes]
+            wrong_contact_brakes[0]['contact'] = 'unexpected-contact'
+            mutations = [
+                ('shaft_integrator', 'split'), ('rotor_coupling', 'unknown'),
+                ('propulsion_model', 'propeller-shaft-balance-v1'),
+                ('recording_start_continuous', '[-1]'),
+                ('recording_start_continuous', '[true]'),
+                ('recording_start_continuous', '[123]'),
+                ('metadata_schema', 'openrc-flight-meta v5'),
+                ('wheel_state_model', 'relative-wheel-rim-speed-euler-v1'),
+                ('wheel_state_layout', '[]'),
+                ('wheel_state_layout', json.dumps(duplicate_indices)),
+                ('wheel_profile_status', 'missing'),
+                ('wheel_profile_sha256', 'not-a-sha256'),
+                ('wheel_profile_input_sha256', 'A' * 64),
+                ('wheel_profile_hash_convention', 'sha256 of unspecified JSON'),
+                ('launch_continuous', '[]'),
+                ('launch_continuous', '[NaN]'),
+                ('wheel_brakes', json.dumps(wrong_contact_brakes)),
+                ('continuous_layout', metadata['continuous_layout'].replace(
+                    'wheel rim speeds in m/s, landing-gear contact order, appended continuous tail',
+                    'wheels somewhere in the state')),
+            ]
+            for key, value in mutations:
                 with self.subTest(trace=name, key=key, value=value):
                     changed = self.directory / 'corrupted.csv'
                     _rewrite_trace(source, changed, {key: value})
@@ -134,6 +167,97 @@ class ShaftCLI(unittest.TestCase):
         metadata['propwash_model'] = 'tail-slipstream-increment-v1'
         with self.assertRaises(ValueError):
             check_coupled_metadata(metadata)
+
+    @staticmethod
+    def wheel_metadata(*, shaft=True, battery=False):
+        contacts = ['main_left', 'main_right']
+        wash_count = 1 if shaft else 0
+        shaft_slots = 1 if shaft else 0
+        battery_slots = 3 if battery else 0
+        first_wheel = wash_count + shaft_slots + battery_slots
+        continuous = [-0.25, 1234.0, 3600.0, 120.0, 4.0] if battery else (
+            [-0.25, 1234.0] if shaft else [])
+        continuous.extend([0.2, -0.1])
+        base_layout = (
+            'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, '
+            'remaining charge C, terminal energy J, pack heat J; RK4 coupled' if battery else
+            'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled'
+            if shaft else 'none'
+        )
+        metadata = {
+            'metadata_schema': 'openrc-flight-meta v6',
+            'propulsion_model': ('electric-ocv-resistance-coupled-events-v1' if battery else
+                                 'propeller-shaft-coupled-rk4-v1' if shaft else 'propeller-rpm-lag-v1'),
+            'propwash_model': 'tail-slipstream-axial-transport-v1' if shaft else 'none',
+            'shaft_integrator': 'coupled-rk4' if shaft else None,
+            'rotor_coupling': 'relative-spin-locked-inertia-reaction-v1' if shaft else None,
+            'continuous_layout': base_layout + '; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail',
+            'recording_start_aux': '[1234.0, 0, 0, 0]',
+            'recording_start_continuous': json.dumps(continuous),
+            'launch_continuous': json.dumps(continuous),
+            'wheel_state_model': 'relative-wheel-rim-speed-rk4-v1',
+            'wheel_state_layout': json.dumps([
+                {'index': first_wheel + index, 'contact': contact, 'unit': 'm/s rim speed'}
+                for index, contact in enumerate(contacts)
+            ]),
+            'wheel_profile_status': 'applied',
+            'wheel_profile_sha256': 'a' * 64,
+            'wheel_profile_input_sha256': 'b' * 64,
+            'wheel_profile_hash_convention': (
+                'profile_sha256 is canonical JSON for the selected aircraft profile; '
+                'input_sha256 is SHA-256 of exact wheel_profiles.json bytes'),
+            'wheel_brakes': json.dumps([
+                {'contact': contact, 'availability': 'none', 'max_torque_nm': 0.0}
+                for contact in contacts
+            ]),
+        }
+        if not shaft:
+            metadata.pop('shaft_integrator')
+            metadata.pop('rotor_coupling')
+        return metadata
+
+    def test_wheeled_v6_states_follow_shaft_and_battery_prefixes(self):
+        shaft = self.wheel_metadata()
+        check_coupled_metadata(shaft)
+        battery = self.wheel_metadata(battery=True)
+        check_coupled_metadata(battery)
+        self.assertEqual(json.loads(battery['recording_start_continuous'])[1],
+                         json.loads(battery['recording_start_aux'])[0])
+
+    def test_wheeled_v6_without_shaft_keeps_legacy_nonshaft_contract(self):
+        metadata = self.wheel_metadata(shaft=False)
+        metadata['continuous_layout'] = 'none; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail'
+        check_coupled_metadata(metadata)
+
+    def test_malformed_wheel_tail_is_rejected(self):
+        good = self.wheel_metadata()
+        bad_cases = []
+        for key, value in [
+            ('wheel_state_layout', json.dumps([
+                {'index': 1, 'contact': 'main_left', 'unit': 'm/s rim speed'},
+                {'index': 3, 'contact': 'main_right', 'unit': 'm/s rim speed'},
+            ])),
+            ('wheel_state_layout', json.dumps([
+                {'index': 2, 'contact': 'main_left', 'unit': 'm/s'},
+                {'index': 3, 'contact': 'main_right', 'unit': 'm/s rim speed'},
+            ])),
+            ('recording_start_continuous', '[-0.25, 1234.0, NaN, -0.1]'),
+            ('launch_continuous', '[-0.25, 1234.0, 0.2]'),
+            ('wheel_brakes', '[{"contact":"main_left","availability":"none","max_torque_nm":NaN}]'),
+        ]:
+            changed = dict(good)
+            changed[key] = value
+            bad_cases.append((key, changed))
+        omitted = dict(good)
+        omitted.pop('wheel_profile_input_sha256')
+        bad_cases.append(('missing wheel_profile_input_sha256', omitted))
+        oversized = dict(good)
+        oversized['recording_start_continuous'] = json.dumps([-0.25, 1234.0, 10 ** 400, -0.1])
+        bad_cases.append(('oversized wheel speed', oversized))
+        for key, changed in bad_cases:
+            with self.subTest(key=key):
+                with self.assertRaises(ValueError):
+                    check_coupled_metadata(changed)
 
 
 if __name__ == '__main__':

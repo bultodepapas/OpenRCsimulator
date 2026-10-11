@@ -1,0 +1,30 @@
+{
+  "jensen-das-ugly-stik-60": {
+    "identical": true,
+    "excluded_metadata": "created_utc only",
+    "sha256_before": "b893338a30238de8288ba983a57abe5ab9cc793aab4ab563c27da3de1ffaccd7",
+    "sha256_after": "b893338a30238de8288ba983a57abe5ab9cc793aab4ab563c27da3de1ffaccd7",
+    "bytes": 307085
+  },
+  "gp-extra-300s-60": {
+    "identical": true,
+    "excluded_metadata": "created_utc only",
+    "sha256_before": "e44b0b8499d35a04455dfbe40871645a3225be4a23fc3aa4dc3949aba33d4987",
+    "sha256_after": "e44b0b8499d35a04455dfbe40871645a3225be4a23fc3aa4dc3949aba33d4987",
+    "bytes": 307356
+  },
+  "p51d-mustang-120": {
+    "identical": true,
+    "excluded_metadata": "created_utc only",
+    "sha256_before": "2cf79b150f5d01e01795786eab31d8535b895b7bd6b5fcc23850d4558bba7f39",
+    "sha256_after": "2cf79b150f5d01e01795786eab31d8535b895b7bd6b5fcc23850d4558bba7f39",
+    "bytes": 304642
+  },
+  "sebart-avanti-s-a200-p100rx": {
+    "identical": true,
+    "excluded_metadata": "created_utc only",
+    "sha256_before": "7a0940792dafcd0680b1507a30bffffc65c33e8ea47230fd5029d2607279a1e3",
+    "sha256_after": "7a0940792dafcd0680b1507a30bffffc65c33e8ea47230fd5029d2607279a1e3",
+    "bytes": 304405
+  }
+}

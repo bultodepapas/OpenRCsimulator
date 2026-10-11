@@ -1,0 +1,126 @@
+{
+	"cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+	"engine": "4.7.2-stable (official)",
+	"host": "Windows",
+	"stages": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"regime": "fixed state, wheels in grass contact",
+			"stats": {
+				"median_us": 18,
+				"p95_us": 23,
+				"samples": 2000
+			}
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"regime": "fixed state, wheels in grass contact",
+			"stats": {
+				"median_us": 9,
+				"p95_us": 17,
+				"samples": 2000
+			}
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"regime": "fixed state, wheels in grass contact",
+			"stats": {
+				"median_us": 15,
+				"p95_us": 19,
+				"samples": 2000
+			}
+		}
+	],
+	"ticks": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"regime": "airborne",
+			"stats": {
+				"median_us": 454,
+				"p95_us": 678,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"regime": "idle_runway",
+			"stats": {
+				"median_us": 549,
+				"p95_us": 691,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"regime": "takeoff",
+			"stats": {
+				"median_us": 569,
+				"p95_us": 768,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"regime": "airborne",
+			"stats": {
+				"median_us": 216,
+				"p95_us": 337,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"regime": "idle_runway",
+			"stats": {
+				"median_us": 404,
+				"p95_us": 617,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"regime": "takeoff",
+			"stats": {
+				"median_us": 488,
+				"p95_us": 1488,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"regime": "airborne",
+			"stats": {
+				"median_us": 527,
+				"p95_us": 770,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"regime": "idle_runway",
+			"stats": {
+				"median_us": 530,
+				"p95_us": 875,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"regime": "takeoff",
+			"stats": {
+				"median_us": 542,
+				"p95_us": 779,
+				"samples": 1000
+			}
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"regime": "airborne",
+			"stats": {
+				"median_us": 239,
+				"p95_us": 393,
+				"samples": 1000
+			}
+		}
+	]
+}

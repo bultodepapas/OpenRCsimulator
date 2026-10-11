@@ -1,0 +1,124 @@
+{
+  "status": "passed",
+  "date": "2026-10-11",
+  "engine": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "archive_sha512": "83decd58fdf67b9d657958a1ae6bf1929c20785315a81effe245874cdc57acb709bf868e00778a96984338c1b29dafdb453c6847747694621c6ecf5da2259993"
+  },
+  "model_contracts": [
+    {
+      "script": "verify_model.gd",
+      "checks": 807,
+      "failed": 0,
+      "log": "verify_model.log"
+    },
+    {
+      "script": "verify_extra.gd",
+      "checks": 123,
+      "failed": 0,
+      "log": "verify_extra.log"
+    },
+    {
+      "script": "verify_p51.gd",
+      "checks": 248,
+      "failed": 0,
+      "log": "verify_p51.log"
+    },
+    {
+      "script": "verify_p51_clearance.gd",
+      "checks": 12,
+      "failed": 0,
+      "log": "verify_p51_clearance.log"
+    },
+    {
+      "script": "verify_avanti.gd",
+      "checks": 137,
+      "failed": 0,
+      "log": "verify_avanti.log"
+    }
+  ],
+  "trimmed_flights": [
+    {
+      "catalog_id": "jensen-das-ugly-stik-60",
+      "speed_m_s": 15,
+      "duration_s": 3,
+      "hz": 240,
+      "samples": 721,
+      "finite": true,
+      "altitude_start_m": 30,
+      "altitude_end_m": 30,
+      "trace": "trace-jensen-das-ugly-stik-60.csv",
+      "checker": "check-jensen-das-ugly-stik-60.log"
+    },
+    {
+      "catalog_id": "gp-extra-300s-60",
+      "speed_m_s": 17,
+      "duration_s": 3,
+      "hz": 240,
+      "samples": 721,
+      "finite": true,
+      "altitude_start_m": 30,
+      "altitude_end_m": 30,
+      "trace": "trace-gp-extra-300s-60.csv",
+      "checker": "check-gp-extra-300s-60.log"
+    },
+    {
+      "catalog_id": "p51d-mustang-120",
+      "speed_m_s": 25,
+      "duration_s": 3,
+      "hz": 240,
+      "samples": 721,
+      "finite": true,
+      "altitude_start_m": 30,
+      "altitude_end_m": 30,
+      "trace": "trace-p51d-mustang-120.csv",
+      "checker": "check-p51d-mustang-120.log"
+    },
+    {
+      "catalog_id": "sebart-avanti-s-a200-p100rx",
+      "speed_m_s": 29,
+      "duration_s": 3,
+      "hz": 240,
+      "samples": 721,
+      "finite": true,
+      "altitude_start_m": 30,
+      "altitude_end_m": 30,
+      "trace": "trace-sebart-avanti-s-a200-p100rx.csv",
+      "checker": "check-sebart-avanti-s-a200-p100rx.log"
+    }
+  ],
+  "pack": {
+    "path": ".tools/as-integration/openrc-as04-windows.pck",
+    "bytes": 13921356,
+    "sha256": "94e84a1a84b635b1462686c1c9ce0e981959b55abe279456100232271f7933d7",
+    "pack_only": true,
+    "templates_downloaded": false,
+    "probe_required_entries": 10,
+    "probe_failures": 0,
+    "live_schema_sha256": "1141f9683492ee99feb991c6ab44a37b899eecc6cc02d11d86982359db7b64d9",
+    "packed_schema_matches_live": true,
+    "logs": [
+      "export-pack.log",
+      "pack-probe.log",
+      "pack-schema-hash.log"
+    ]
+  },
+  "source_snapshot": {
+    "before_file_count": 1031,
+    "after_file_count": 1031,
+    "added": [],
+    "removed": [],
+    "changed": [
+      {
+        "path": "app/data/schema/openrc-aircraft-v2.schema.json",
+        "before_sha256": "13499359411506bf781031e5bf335e39a2ab219e41ede31fb03c8cd86640710f",
+        "after_sha256": "1141f9683492ee99feb991c6ab44a37b899eecc6cc02d11d86982359db7b64d9"
+      }
+    ]
+  },
+  "nonfatal_warnings": [
+    "Ugly Stik data warning: Jyy 0.3871 kg m^2 is 2.11 times the scaled UltraStick25e comparison value.",
+    "Manual PCK export: OPENRC_BUILD_* unset, build-info label export-manual."
+  ],
+  "scope_limit": "The full app/test.sh suite and release-platform smoke tests are outside this check."
+}

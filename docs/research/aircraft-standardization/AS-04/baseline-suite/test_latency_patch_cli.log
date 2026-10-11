@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL no engine errors: ["--latency-patch"]
+FAIL no engine errors: ["--latency-patch", "--latency-axis=9", "--latency-threshold=0.5"]
+F6a CLI: 26 checks, 2 failed

@@ -1,0 +1,100 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 actual hull crash has an available crossing
+ok   jensen-das-ugly-stik-60 rendered CG and attitude use crossing
+ok   jensen-das-ugly-stik-60 model origin preserves crossing CG
+ok   jensen-das-ugly-stik-60 rendered hull point lies on ground plane
+ok   jensen-das-ugly-stik-60 shadow uses crossing pose
+ok   jensen-das-ugly-stik-60 camera targets crossing CG inspect=false
+ok   jensen-das-ugly-stik-60 camera targets crossing CG inspect=true
+ok   jensen-das-ugly-stik-60 rendering preserves simulation state
+ok   jensen-das-ugly-stik-60 menu hold freezes countdown and pose
+ok   jensen-das-ugly-stik-60 Continue cannot resume an active crash
+ok   jensen-das-ugly-stik-60 pose remains through final held tick
+ok   jensen-das-ugly-stik-60 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 unavailable crossing uses detected pose
+ok   jensen-das-ugly-stik-60 absent crossing uses detected pose
+ok   jensen-das-ugly-stik-60 missing snapshot uses current tick pose
+ok   jensen-das-ugly-stik-60 checkpoint restore clears crash pose
+ok   jensen-das-ugly-stik-60 synthetic pose precedence unchanged
+ok   jensen-das-ugly-stik-60 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   jensen-das-ugly-stik-60 manual-reset precondition is active crossing
+ok   jensen-das-ugly-stik-60 manual reset restores ordinary pose
+ok   jensen-das-ugly-stik-60 ordinary pose retains interpolation
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 actual hull crash has an available crossing
+ok   gp-extra-300s-60 rendered CG and attitude use crossing
+ok   gp-extra-300s-60 model origin preserves crossing CG
+ok   gp-extra-300s-60 rendered hull point lies on ground plane
+ok   gp-extra-300s-60 shadow uses crossing pose
+ok   gp-extra-300s-60 camera targets crossing CG inspect=false
+ok   gp-extra-300s-60 camera targets crossing CG inspect=true
+ok   gp-extra-300s-60 rendering preserves simulation state
+ok   gp-extra-300s-60 menu hold freezes countdown and pose
+ok   gp-extra-300s-60 Continue cannot resume an active crash
+ok   gp-extra-300s-60 pose remains through final held tick
+ok   gp-extra-300s-60 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 unavailable crossing uses detected pose
+ok   gp-extra-300s-60 absent crossing uses detected pose
+ok   gp-extra-300s-60 missing snapshot uses current tick pose
+ok   gp-extra-300s-60 checkpoint restore clears crash pose
+ok   gp-extra-300s-60 synthetic pose precedence unchanged
+ok   gp-extra-300s-60 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   gp-extra-300s-60 manual-reset precondition is active crossing
+ok   gp-extra-300s-60 manual reset restores ordinary pose
+ok   gp-extra-300s-60 ordinary pose retains interpolation
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 actual hull crash has an available crossing
+ok   p51d-mustang-120 rendered CG and attitude use crossing
+ok   p51d-mustang-120 model origin preserves crossing CG
+ok   p51d-mustang-120 rendered hull point lies on ground plane
+ok   p51d-mustang-120 shadow uses crossing pose
+ok   p51d-mustang-120 camera targets crossing CG inspect=false
+ok   p51d-mustang-120 camera targets crossing CG inspect=true
+ok   p51d-mustang-120 rendering preserves simulation state
+ok   p51d-mustang-120 menu hold freezes countdown and pose
+ok   p51d-mustang-120 Continue cannot resume an active crash
+ok   p51d-mustang-120 pose remains through final held tick
+ok   p51d-mustang-120 automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 unavailable crossing uses detected pose
+ok   p51d-mustang-120 absent crossing uses detected pose
+ok   p51d-mustang-120 missing snapshot uses current tick pose
+ok   p51d-mustang-120 checkpoint restore clears crash pose
+ok   p51d-mustang-120 synthetic pose precedence unchanged
+ok   p51d-mustang-120 scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.1 m/s at detected tick) - restarting
+ok   p51d-mustang-120 manual-reset precondition is active crossing
+ok   p51d-mustang-120 manual reset restores ordinary pose
+ok   p51d-mustang-120 ordinary pose retains interpolation
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx actual hull crash has an available crossing
+ok   sebart-avanti-s-a200-p100rx rendered CG and attitude use crossing
+ok   sebart-avanti-s-a200-p100rx model origin preserves crossing CG
+ok   sebart-avanti-s-a200-p100rx rendered hull point lies on ground plane
+ok   sebart-avanti-s-a200-p100rx shadow uses crossing pose
+ok   sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=false
+ok   sebart-avanti-s-a200-p100rx camera targets crossing CG inspect=true
+ok   sebart-avanti-s-a200-p100rx rendering preserves simulation state
+ok   sebart-avanti-s-a200-p100rx menu hold freezes countdown and pose
+ok   sebart-avanti-s-a200-p100rx Continue cannot resume an active crash
+ok   sebart-avanti-s-a200-p100rx pose remains through final held tick
+ok   sebart-avanti-s-a200-p100rx automatic restart clears crossing pose
+CRASH at 8.5 m/s (sink 72.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx unavailable crossing uses detected pose
+ok   sebart-avanti-s-a200-p100rx absent crossing uses detected pose
+ok   sebart-avanti-s-a200-p100rx missing snapshot uses current tick pose
+ok   sebart-avanti-s-a200-p100rx checkpoint restore clears crash pose
+ok   sebart-avanti-s-a200-p100rx synthetic pose precedence unchanged
+ok   sebart-avanti-s-a200-p100rx scripted pose precedence unchanged
+CRASH at 8.5 m/s (sink 1296.0 m/s, airframe contact (hull point 2), point speed 8.3 m/s at detected tick) - restarting
+ok   sebart-avanti-s-a200-p100rx manual-reset precondition is active crossing
+ok   sebart-avanti-s-a200-p100rx manual reset restores ordinary pose
+ok   sebart-avanti-s-a200-p100rx ordinary pose retains interpolation
+84 checks, 0 failed

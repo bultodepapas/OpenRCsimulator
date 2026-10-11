@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from check_trimmed_flight import check_coupled_metadata
 
 APP = Path(__file__).resolve().parents[1]
 CHECKER = APP / 'tests/check_trimmed_flight.py'
@@ -48,7 +49,7 @@ class TraceAcceptance(unittest.TestCase):
         stream.write('\n'.join(meta) + '\n')
         csv.writer(stream).writerows(table)
         path = self.directory / 'candidate.csv'
-        path.write_text(stream.getvalue())
+        path.write_text(stream.getvalue(), newline="")
         return subprocess.run([sys.executable, str(CHECKER), str(path), '--duration=3', *options],
                               capture_output=True, text=True, timeout=10)
 
@@ -62,6 +63,18 @@ class TraceAcceptance(unittest.TestCase):
         result = self.checker()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('720 ticks', result.stdout)
+
+    def test_checkpoint_wheel_state_keeps_unknown_launch_explicit(self):
+        metadata = dict(line[2:].split(': ', 1) for line in self.meta)
+        check_coupled_metadata(metadata)
+        metadata['launch_continuous'] = '[]'
+        with self.assertRaises(ValueError):
+            check_coupled_metadata(metadata)
+        metadata.update(launch_kind='checkpoint_restore', launch_choice='unknown')
+        check_coupled_metadata(metadata)
+        metadata['recording_start_continuous'] = '[]'
+        with self.assertRaises(ValueError):
+            check_coupled_metadata(metadata)
 
     def test_active_aircraft_metadata(self):
         cases = [
@@ -81,8 +94,8 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['propulsion_model'], propulsion)
                 self.assertEqual(metadata['propwash_model'], propwash)
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
-                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2')
-                self.assertEqual(metadata['aircraft_input_format'], 'openrc-aircraft v1')
+                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v2' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
+                self.assertEqual(metadata['aircraft_input_format'], json.loads(source.read_text())['format'])
                 self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
                 features = json.loads(metadata['propulsion_features'])
                 self.assertEqual(features['propeller_normal_force'], crossflow)
@@ -145,8 +158,9 @@ class TraceAcceptance(unittest.TestCase):
         self.rejected(options=('--aircraft-input', str(saved)))
 
     def test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes(self):
-        legacy = [line for line in self.meta if not line.startswith('# aircraft_input_')]
-        legacy = [line.replace('# metadata_schema: openrc-flight-meta v2',
+        legacy = [line for line in self.meta if not line.startswith(('# aircraft_input_', '# wheel_', '# recording_start_continuous:', '# launch_continuous:'))]
+        legacy = ['# continuous_layout: none' if line.startswith('# continuous_layout:') else line for line in legacy]
+        legacy = [line.replace('# metadata_schema: openrc-flight-meta v6',
                                '# metadata_schema: openrc-flight-meta v1')
                   .replace('# aircraft_semantic_sha256:', '# aircraft_data_sha256:')
                   .replace('# aircraft_semantic_hash_convention:', '# aircraft_data_hash_convention:')

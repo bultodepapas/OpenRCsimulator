@@ -28,7 +28,8 @@ func _reject(label: String, table: Variant) -> void:
 
 
 func _initialize() -> void:
-	_raw = JSON.parse_string(FileAccess.get_file_as_string(P51))
+	# Preserve the historical D1-R2 dotted diagnostics; catalog positives remain v2.
+	_raw = AD.legacy_v1_input(JSON.parse_string(FileAccess.get_file_as_string(P51)))
 	var original: Dictionary = _raw.propulsion.engine.shaft.power_curve
 	for entry in Catalog.ENTRIES:
 		var result: Dictionary = AD.load_file(entry.data)

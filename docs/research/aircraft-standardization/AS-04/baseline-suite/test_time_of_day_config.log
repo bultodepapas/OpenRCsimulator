@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _check_cli (res://tests/test_time_of_day_config.gd:119)
+       [1] _initialize (res://tests/test_time_of_day_config.gd:21)
+FAIL JSON-parsed integer-valued numbers normalize through validate ["lighting config must be an object"]
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'Dictionary'.
+   at: _check_cli (res://tests/test_time_of_day_config.gd:124)
+   GDScript backtrace (most recent call first):
+       [0] _check_cli (res://tests/test_time_of_day_config.gd:124)
+       [1] _initialize (res://tests/test_time_of_day_config.gd:21)
+72 checks, 1 failed
