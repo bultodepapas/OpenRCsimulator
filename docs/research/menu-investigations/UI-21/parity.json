@@ -1,0 +1,140 @@
+{
+  "format": "openrc-ui21-parity v1",
+  "captures": [
+    {
+      "image": "home-en-1280x720.png",
+      "before_sha256": "4c599ff5cc6388f3c03b320924dc5cd252b8c5229e67da91d2e18232e85e79bc",
+      "after_sha256": "4c599ff5cc6388f3c03b320924dc5cd252b8c5229e67da91d2e18232e85e79bc",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "help-en-1280x720.png",
+      "before_sha256": "086bf9d99a72a9bd505e38b01a8c6f0bedac83ae0a3de68d751323832ff6ba33",
+      "after_sha256": "086bf9d99a72a9bd505e38b01a8c6f0bedac83ae0a3de68d751323832ff6ba33",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "pause-en-1280x720.png",
+      "before_sha256": "7c07ecac86e6c35576392614758a74bb8c8b99dc593203c078c813de02f06d7d",
+      "after_sha256": "7c07ecac86e6c35576392614758a74bb8c8b99dc593203c078c813de02f06d7d",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "home-es-1280x720.png",
+      "before_sha256": "accdbd6a85e3e34ed67d8a0ad8e6e4617d26ffe03b5ea995d1ab1ba15586f5a1",
+      "after_sha256": "accdbd6a85e3e34ed67d8a0ad8e6e4617d26ffe03b5ea995d1ab1ba15586f5a1",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "help-es-1280x720.png",
+      "before_sha256": "c1c4293c0df3344d0c68c715637fae27c05798f7913e434b48b9a2a77e8f2ce8",
+      "after_sha256": "c1c4293c0df3344d0c68c715637fae27c05798f7913e434b48b9a2a77e8f2ce8",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "pause-es-1280x720.png",
+      "before_sha256": "f418fc8a166d154270618ff06219d002ea8a42eaa8e16ae0894d42037ed5b8f9",
+      "after_sha256": "f418fc8a166d154270618ff06219d002ea8a42eaa8e16ae0894d42037ed5b8f9",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "home-en-1920x1080.png",
+      "before_sha256": "aec23a0d4238a8925c2927454c6936a8e5301fee67858bb4eccdef42991bd7c8",
+      "after_sha256": "aec23a0d4238a8925c2927454c6936a8e5301fee67858bb4eccdef42991bd7c8",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "home-es-1920x1080.png",
+      "before_sha256": "91375433d67cf35406c08db02724722a9b82fb40dd31c2a8b4b48776e5a7d33e",
+      "after_sha256": "91375433d67cf35406c08db02724722a9b82fb40dd31c2a8b4b48776e5a7d33e",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-en-1280x720-wind.png",
+      "before_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "after_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-en-1280x720-turbulence.png",
+      "before_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "after_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-en-1280x720-atmosphere.png",
+      "before_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "after_sha256": "7c70ebec5ddf2b6e8928f845bb8e04a19cae03e5c2e41f3ad7fb536fa7f4a679",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-es-1280x720-wind.png",
+      "before_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "after_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-es-1280x720-turbulence.png",
+      "before_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "after_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "weather-es-1280x720-atmosphere.png",
+      "before_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "after_sha256": "7ce938afdb4ec9794a64a87008d3f9901fe5be317e89e0ef2db73f544045f85c",
+      "identical": true,
+      "initial_pose_background": false
+    },
+    {
+      "image": "tod-en-1280x720.png",
+      "before_sha256": "810f32e6abf9beaa06a9b133133b0a9de2df72ae1518f92d547c1e4a3b8bbbb3",
+      "after_sha256": "810f32e6abf9beaa06a9b133133b0a9de2df72ae1518f92d547c1e4a3b8bbbb3",
+      "identical": true,
+      "initial_pose_background": true
+    },
+    {
+      "image": "tod-es-1280x720.png",
+      "before_sha256": "4d7ce9429e0af7869bdb0ada04c6ce0986305e3640859b7023a805418752f999",
+      "after_sha256": "4d7ce9429e0af7869bdb0ada04c6ce0986305e3640859b7023a805418752f999",
+      "identical": true,
+      "initial_pose_background": true
+    }
+  ],
+  "capture_pairs": 16,
+  "identical_pairs": 16,
+  "trace": {
+    "identical_except_created_utc": true,
+    "samples": 721,
+    "canonical_sha256": "ea7ee1b79d456c296ad06b8f63a44c710cc603ee8954bcc01d49b85b4ceb3b76",
+    "before_sha256": "8a9f96bc8d3c4b94e6511a8c45b6a4b5d0dc9a5118c927496dbba719ecdc3ac7",
+    "after_sha256": "9775ea40da38166acdcad87befc93307c62334779853090e77548fd9e78f192d",
+    "direct_route_wrote_settings": false
+  },
+  "after_source_sha256": {
+    "app/app_root.gd": "f922f8ec0162ff72409ce0c7ea55e3840472ecfd3f36f952e935e3b3a73dc583",
+    "app/tests/test_ui_screen_stack.gd": "ee7e449ac778d490d9ba1fa024e44d467fbe5b725a3af8fae7bb3da7e310306d",
+    "app/ui/screen.gd": "b272cc36e3ab97becfad3e86721c008e09f661b77619bb66cee4f24e3038611e",
+    "app/ui/screen_stack.gd": "3ca8ec8f07e372c8c4ecf6176a4368bf7f2cefaa2f0e44a2f5e61a94e47e1c0f",
+    "app/ui/widgets.gd": "b6a8c94ee1d0e28f6ffaa560bb9c0bd3be969310959ba15dce4ccd1f2831ed5d",
+    "app/ui/home.gd": "57aa3148063715acf826ebd0ab330a1b70e25095fcadd4fed69750e55fe0aab6",
+    "app/ui/pause_menu.gd": "6885772c6545c48f1fe5b96dbfdf15ff382fb5d8bdac4ae9ee5c116f831375dc",
+    "app/ui/help_screen.gd": "454f1c40b36281a8d9ff9a8ecc6ac0152c237349641bf6f9d75301ef29f5c3f5",
+    "app/ui/weather_dialog.gd": "1cfdd35560be09e93761cb4a625bf48ba6a1c0600d58fca993aa8d091a0ee766",
+    "app/ui/time_of_day_dialog.gd": "3c9a2acb26a8ba6fa5478fd44f7907851d42e8e1d451bafca90885b449c44f28"
+  },
+  "performance_claim": false
+}

@@ -1,0 +1,29 @@
+$ C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\.tools\el2a-p3-parity-windows\baseline\app --script C:\DEVELOPMENT\OpenRCsimulator\research\propulsion\el2a-p1\bench.gd -- --out=C:\DEVELOPMENT\OpenRCsimulator\.tools\el2a-p3-parity-windows\timings\round-01\baseline\benchmark.json --batches=4
+# timeout_s=900
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_4s / powered / median 567.5125 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_4s / coast / median 585.175 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_6s / powered / median 783.441666666667 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_6s / coast / median 694.970833333333 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_4s_battery / powered / median 718.383333333333 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_4s_battery / coast / median 746.35 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_6s_battery / powered / median 705.375 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench synthetic_stik_electric_6s_battery / coast / median 868.3 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench jensen_ugly_stik_60 / powered / median 299.233333333333 µs/tick / ok=true
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+EL2a-P1 bench jensen_ugly_stik_60 / coast / median 289.070833333333 µs/tick / ok=true
+EL2a-P1 bench p51d_mustang_120 / powered / median 516.720833333333 µs/tick / ok=true
+EL2a-P1 bench p51d_mustang_120 / coast / median 218.066666666667 µs/tick / ok=true
+wrote C:\DEVELOPMENT\OpenRCsimulator\.tools\el2a-p3-parity-windows\timings\round-01\baseline\benchmark.json
+EL2a-P1 performance probe: 12 cases, 0 failures

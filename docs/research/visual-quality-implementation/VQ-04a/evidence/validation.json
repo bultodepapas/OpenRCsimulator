@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "godot": "4.7.2 official ed1daf0bf",
+  "native_renderer": "gl_compatibility",
+  "new_aircraft_assertions": 34,
+  "new_field_assertions": 53,
+  "pilot_aid_assertions": 22,
+  "crash_pose_assertions": 84,
+  "app_test_coverage": "All app/test.sh stages, resumed at corrected test_ui_flight_capture after isolating viewport camera counts",
+  "suite_tail_exit_code": 0,
+  "native_home_fly_captures": "passed, one gameplay camera and environment",
+  "final_shared_main_parse_exit_code": 0,
+  "trace_rows_per_aircraft": 721,
+  "performance_budget_pass": true,
+  "all_other_developer_changes_preserved": true,
+  "shutdown_diagnostics": "See README limitations; same audio playback reference observed in frozen baseline and candidate"
+}

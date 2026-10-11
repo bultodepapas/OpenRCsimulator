@@ -51,6 +51,10 @@ The audit is a fixed evidence snapshot. [ROADMAP](../../ROADMAP.md#execution-ord
 
 ### Flight model and simulation
 
+Responsive audio: [G3b](audio/G3b/README.md) qualifies the engine generator's latency, efficient wavetable synthesis, accepted-tick observation and pause/reset lifecycle. Software audio measurements remain separate from physical sound calibration and propagation.
+
+Immersive audio: [AUD-01 sources/licenses](audio/AUD-01/sources.md), [AUD-02 original source library](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), and [AUD-04 gameplay qualification](audio/AUD-04/README.md) cover the dynamic field and aircraft mix, speaker feedback, exact simulation parity, exported assets and measured budgets.
+
 [D8b-R2: high-speed Ugly Stik pull-up](flight-robustness/D8b-R2/README.md): keyboard/session reproduction, post-stall roll-feedback sweep, gyro/inertia ablations and timestep refinement. The [revision 3 repair plan](../UGLY-STIK-PULLUP-PLAN.md) incorporates [18 source-based investigations and four numerical investigations](flight-robustness/D8b-R2/research-index.md), plus an [optional polar implementation, 70-flight matrix and verification](flight-robustness/D8b-R2/implementation/README.md). Production polar selection and aircraft-specific validation remain open.
 
 Modal reference dashboard: [VAL-3](validation/VAL-3/README.md) provides strict US120/25e reference files, current Godot mode samples, estimated diagnostic bands, explicit unknown tuning history/uncertainty and a stale-output check. Actual Clp mutation and synthetic classification tests remain separate from aircraft validation.
@@ -212,6 +216,7 @@ Experimental Stik runway delivery: [UI-06a session and trace contract](menu-inve
 | Phased improvement proposal (2026-10-07): ground colour and anti-tiling, tree shading, field surfaces, horizon, sky, near field | [landscape-improvement-2026-10-07/](landscape-improvement-2026-10-07/README.md) | Reports 01–04 inside; measured problems in [scenery 05](scenery-investigations/05-landscape-image-review.md); Phases 0–4 [implemented and measured](landscape-improvement-2026-10-07/implementation/README.md) |
 | L9c / improvement Phase 4 follow-up: field surfaces in the ground pass | [L9c evidence](visual-quality-implementation/L9c/README.md) | Bounded rectangle batch, custom-field fallback, edge/priority/repeat checks, unchanged physics/readability; shimmer acceptance open |
 | L9c-R1: stripe sampling reference | [L9c-R1 evidence](visual-quality-implementation/L9c-R1/README.md) | Stripe-only camera-motion error, 8×/16× references, fixed world-space inset, repeat and raw/zero-detail controls; bounded regression verified |
+| L9e: filtered turf microstructure | [L9e evidence](visual-quality-implementation/L9e/README.md) | Original packed blade/slope data, Compatibility filtering, fixed before/after views, native GPU budget and unchanged simulation |
 | L10a: calm windsock scale cue | [L10a evidence](visual-quality-implementation/L10a/README.md) | Sourced dimensions, validated optional field cue, calm cloth geometry, repeated/scenery captures, unchanged physics and exported-pack verification |
 | L10b: pilot station | [L10b evidence](visual-quality-implementation/L10b/README.md) | Bounded optional cue, open-rear geometry, grass exclusion, clear pilot threshold views, repeat/scenery captures and isolated regression |
 | L7 / improvement Phase 5: far forest, continuous visual hills and visibility presets | [L7 evidence](visual-quality-implementation/L7/README.md) | Integer profile, preserved near-tree identities, topology, capture A/B, readability and pack checks |

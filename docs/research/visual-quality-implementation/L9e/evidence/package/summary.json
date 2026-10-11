@@ -1,0 +1,8 @@
+{
+  "candidate_pack_bytes": 5680868,
+  "baseline_pack_bytes": 3094260,
+  "candidate_sha256": "9b6a5f6325d2578db74fd361a1720dbb11f69a1271abfb6f9b5dd5e03ff40def",
+  "empty_root_runtime": "Godot 4.7.2 Linux Compatibility llvmpipe loaded Windows resource pack",
+  "source_pack_png_parity": 15,
+  "pack_delta_bytes": 2586608
+}

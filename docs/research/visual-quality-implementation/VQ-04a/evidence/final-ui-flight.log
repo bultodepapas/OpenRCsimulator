@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+saved C:\DEVELOPMENT\OpenRCsimulator\.tools\vq04a\final-smoke/ui-flight.png (error 0) scene=flight start=airborne camera3d=1 worldenvironment=1 transition_usec=1337296 (diagnostic only; cache unknown)
+WARNING: 14 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

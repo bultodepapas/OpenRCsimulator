@@ -1,0 +1,353 @@
+{
+  "captures": [
+    {
+      "captures": [
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/e6ac833ed25d670a51a3abac2e4641e5f07fb37fc9671a21d0dca34a9dcc6025.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "e6ac833ed25d670a51a3abac2e4641e5f07fb37fc9671a21d0dca34a9dcc6025",
+          "state": "off",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "motion_00-off.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/41187cd8a96d4fa7bd92c9430c3fd23629b0d023de962b2ba44189ac8d47fdfe.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "41187cd8a96d4fa7bd92c9430c3fd23629b0d023de962b2ba44189ac8d47fdfe",
+          "state": "on",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_00-on.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -15.0
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/41187cd8a96d4fa7bd92c9430c3fd23629b0d023de962b2ba44189ac8d47fdfe.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "41187cd8a96d4fa7bd92c9430c3fd23629b0d023de962b2ba44189ac8d47fdfe",
+          "state": "on_repeat",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -15.0
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_00-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -15.0
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_00",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -15.0
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.979999542236328
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/4c39f12fcd2c318ec377c6dc8a0f98d6550d3f8a8d20607e018ed2ffd8641b01.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "4c39f12fcd2c318ec377c6dc8a0f98d6550d3f8a8d20607e018ed2ffd8641b01",
+          "state": "off",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.979999542236328
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "motion_01-off.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.979999542236328
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/4eb93dbea77c7b0cebf682cb5db29db5bda2a4b911db352848ac2b9d44e14f7e.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "4eb93dbea77c7b0cebf682cb5db29db5bda2a4b911db352848ac2b9d44e14f7e",
+          "state": "on",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.979999542236328
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_01-on.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.979999542236328
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/4eb93dbea77c7b0cebf682cb5db29db5bda2a4b911db352848ac2b9d44e14f7e.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "4eb93dbea77c7b0cebf682cb5db29db5bda2a4b911db352848ac2b9d44e14f7e",
+          "state": "on_repeat",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.979999542236328
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_01-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -14.979999542236328
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_01",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -14.979999542236328
+      ]
+    },
+    {
+      "captures": [
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.960000038146973
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/05765225b6e91e9cac86f7908b2aed35127f615f0bb8ab1214df0ea78039b22f.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 0.0,
+          "sha256": "05765225b6e91e9cac86f7908b2aed35127f615f0bb8ab1214df0ea78039b22f",
+          "state": "off",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.960000038146973
+          ],
+          "turf_detail_strength": 0.0,
+          "producer_image": "motion_02-off.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.960000038146973
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/aead22dd351fb3064b190ae10f7d206d6f5508082d1964f28a8bc9b0e2be0908.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "aead22dd351fb3064b190ae10f7d206d6f5508082d1964f28a8bc9b0e2be0908",
+          "state": "on",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.960000038146973
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_02-on.png"
+        },
+        {
+          "draw_calls": 1,
+          "eye_render_m": [
+            58.0,
+            1.2000000476837158,
+            -14.960000038146973
+          ],
+          "fov_deg": 40.0,
+          "image": "../frames/aead22dd351fb3064b190ae10f7d206d6f5508082d1964f28a8bc9b0e2be0908.png",
+          "objects": 1,
+          "primitives": 84960,
+          "requested_turf_detail_strength": 1.0,
+          "sha256": "aead22dd351fb3064b190ae10f7d206d6f5508082d1964f28a8bc9b0e2be0908",
+          "state": "on_repeat",
+          "target_render_m": [
+            -50.0,
+            0.20000000298023224,
+            -14.960000038146973
+          ],
+          "turf_detail_strength": 1.0,
+          "producer_image": "motion_02-on_repeat.png"
+        }
+      ],
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -14.960000038146973
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_02",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -14.960000038146973
+      ]
+    }
+  ],
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_id": "default",
+  "field_path": "res://data/fields/default.json",
+  "field_sha256": "c575b9df1ac59eb74f45ba71720d58ff90fc3dfa966812c657360e9f332715ea",
+  "filter_reference_crop": [
+    320,
+    560,
+    640,
+    96
+  ],
+  "format": "openrc-l9e-turf-capture v1",
+  "ground_builder_sha256": "efdc948112e4cb19204ae8145fac7043446aff18c8561a51661414eef0a10de5",
+  "ground_shader_sha256": "a8f9219caa8d4a3918a99a6b4faa35cadb1ecf509619f151e1ca166f8acdf185",
+  "legacy_baseline": false,
+  "mode": "motion",
+  "night": false,
+  "night_config": {},
+  "poses": [
+    {
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -15.0
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_00",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -15.0
+      ]
+    },
+    {
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -14.979999542236328
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_01",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -14.979999542236328
+      ]
+    },
+    {
+      "eye_render_m": [
+        58.0,
+        1.2000000476837158,
+        -14.960000038146973
+      ],
+      "fov_deg": 40.0,
+      "id": "motion_02",
+      "relative_to": "runway center; pose and FOV from tools/ground/capture_surfaces.gd",
+      "target_render_m": [
+        -50.0,
+        0.20000000298023224,
+        -14.960000038146973
+      ]
+    }
+  ],
+  "renderer_adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "renderer_driver": "opengl3",
+  "renderer_method": "gl_compatibility",
+  "root_window_viewport": [
+    1280,
+    720
+  ],
+  "shader_time_s": 0.0,
+  "shader_wind_render": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "turf_material_count": 1,
+  "turf_uniform": "turf_detail_strength",
+  "turf_uniform_ablation_strength": 0.0,
+  "turf_uniform_present": true,
+  "turf_uniform_production_strength": 1.0,
+  "turf_uniform_shader_default": 0.0,
+  "viewport": [
+    640,
+    96
+  ],
+  "viewport_msaa_3d": 2,
+  "vsync": "disabled",
+  "archival_note": "PNG bytes unchanged; image paths deduplicated. Original manifest retained as producer-manifest.json.gz."
+}

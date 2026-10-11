@@ -1,7 +1,8 @@
 # Pause-only time-of-day editor (TOD-08b). Apply is committed by the flight owner; this dialog never resumes it.
 extends CanvasLayer
 
-const UiTheme := preload("res://ui/ui_theme.gd")
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 
@@ -27,25 +28,11 @@ func _init(initial_config: Variant = null) -> void:
 	layer = LAYER
 	var initial: Variant = initial_config if initial_config != null else TimeOfDay.defaults()
 
-	var screen: Control = Control.new()
-	screen.name = "Modal"
-	screen.theme = UiTheme.build()
-	screen.mouse_filter = Control.MOUSE_FILTER_STOP
-	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(screen)
-	var dim: ColorRect = ColorRect.new()
-	dim.name = "Dim"
-	dim.color = Color(0.0, 0.0, 0.0, 0.68)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(dim)
-	var center: CenterContainer = CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.offset_left = 16.0
-	center.offset_top = 16.0
-	center.offset_right = -16.0
-	center.offset_bottom = -16.0
-	screen.add_child(center)
+	var screen := Screen.mount(self, "Modal")
+	screen.dismiss_option_popup_first = true
+	screen.close_requested.connect(_on_cancel)
+	screen.dim(0.68, "Dim")
+	var center: CenterContainer = screen.center(16.0)
 	dialog_panel = PanelContainer.new()
 	dialog_panel.name = "TimeOfDayPanel"
 	dialog_panel.theme_type_variation = "Sidebar"
@@ -83,9 +70,7 @@ func _init(initial_config: Variant = null) -> void:
 	error_label.visible = false
 	error_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.62))
 	column.add_child(error_label)
-	var actions: HBoxContainer = HBoxContainer.new()
-	actions.alignment = BoxContainer.ALIGNMENT_END
-	actions.add_theme_constant_override("separation", 12)
+	var actions := Widgets.button_row()
 	cancel_button = Button.new()
 	cancel_button.name = "Cancel"
 	cancel_button.text = "Cancel"
@@ -189,30 +174,5 @@ func _on_cancel() -> void:
 	cancelled.emit()
 
 
-func _input(event: InputEvent) -> void:
-	if not (event is InputEventKey) or not event.pressed or event.echo \
-		or event.physical_keycode != KEY_ESCAPE:
-		return
-	var focused: Control = get_viewport().gui_get_focus_owner()
-	if focused is OptionButton:
-		var popup: PopupMenu = (focused as OptionButton).get_popup()
-		if popup.visible:
-			popup.hide()
-			get_viewport().set_input_as_handled()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		get_viewport().set_input_as_handled()
-		if event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE:
-			cancelled.emit() # Esc cancels this draft; the pause menu remains open underneath.
-
-
 static func _label(text: String, variation: String, wrap_text: bool = false) -> Label:
-	var label_control: Label = Label.new()
-	label_control.text = text
-	label_control.theme_type_variation = variation
-	label_control.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	if wrap_text:
-		label_control.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	return label_control
+	return Widgets.label(text, variation, wrap_text, false)

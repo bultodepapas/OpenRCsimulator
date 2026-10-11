@@ -1,0 +1,19 @@
+{
+  "full_app_suite_exit_code": 0,
+  "completed_final_section": "E5b",
+  "suite_sections": 220,
+  "generator_windows_check": true,
+  "generator_linux_check": true,
+  "generator_sha256": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+  "native_shader_and_capture_log_errors": 0,
+  "final_profiles_manual_render_loop": true,
+  "late_harness_fix": "Explicit one-draw offscreen stepping; automatic rendering disabled to avoid desktop occlusion stalls",
+  "source_scope": "Frozen candidate for full suite; final shader rendered natively; shared integration snapshot imported and rendered separately",
+  "owned_runtime_paths": [
+    "app/render/ground.gd",
+    "app/render/ground.gdshader",
+    "app/render/turf_detail.gdshaderinc",
+    "app/assets/landscape/turf/"
+  ],
+  "concurrent_work_preserved": true
+}

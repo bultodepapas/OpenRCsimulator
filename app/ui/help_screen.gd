@@ -4,7 +4,8 @@
 # identity of UI-04a. While open it swallows every key the GUI leaves (like the pause menu). English source strings.
 extends CanvasLayer
 
-const UiTheme := preload("res://ui/ui_theme.gd")
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -17,24 +18,16 @@ const REPOSITORY := "github.com/bultodepapas/OpenRCsimulator"
 var close_button: Button
 var about_label: Label
 var field_conditions_label: Label
-var _return_focus: Control
 
 
 func _init(return_focus: Control = null) -> void:
 	name = "Help"
 	layer = LAYER
-	_return_focus = return_focus
-	var screen := Control.new()
-	screen.theme = UiTheme.build()
-	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(screen)
-	var dim := ColorRect.new()
-	dim.color = Color(0.0, 0.0, 0.0, 0.55)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(center)
+	var screen := Screen.mount(self)
+	screen.return_focus = return_focus
+	screen.close_requested.connect(close)
+	screen.dim(0.55)
+	var center: CenterContainer = screen.center()
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = "Sidebar"
 	center.add_child(panel)
@@ -117,16 +110,9 @@ static func about_text(build: Dictionary) -> String:
 
 
 func close() -> void:
-	if _return_focus != null and is_instance_valid(_return_focus) and _return_focus.is_inside_tree():
-		_return_focus.grab_focus()
 	closed.emit()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		get_viewport().set_input_as_handled() # Esc may free this screen; nothing reaches the menus or the flight below
-		if event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE:
-			close()
+	if is_inside_tree(): # standalone use; the stack restores managed focus after enabling the lower screen
+		get_child(0).close()
 
 
 func _key_table(rows: Array) -> GridContainer:
@@ -149,9 +135,7 @@ func _key_table(rows: Array) -> GridContainer:
 
 
 static func _gap(height: int) -> Control:
-	var c := Control.new()
-	c.custom_minimum_size.y = height
-	return c
+	return Widgets.gap(height)
 
 
 static func _column(parent: Control) -> VBoxContainer:
@@ -163,10 +147,7 @@ static func _column(parent: Control) -> VBoxContainer:
 
 
 static func _text(text: String, variation: String, wrap := false) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.theme_type_variation = variation
+	var control := Widgets.label(text, variation, wrap)
 	if wrap:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size.x = 400
-	return l
+		control.custom_minimum_size.x = 400
+	return control

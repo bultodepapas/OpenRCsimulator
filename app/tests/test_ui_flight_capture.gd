@@ -53,6 +53,8 @@ func _run() -> void:
 		app.queue_free()
 		quit(1)
 		return
+	_check("aircraft shadow mask owns an isolated 3D world",
+		_shadow_viewports_own_world(flight, root.get_viewport().find_world_3d()))
 	_check("flight camera is active", root.get_viewport().get_camera_3d() == flight.get("_camera"))
 	var session: Node = flight.get("session")
 	var sim: Node = session.get("sim")
@@ -74,12 +76,26 @@ func _run() -> void:
 
 
 func _count_nodes(parent: Node, type_name: String) -> int:
+	if parent is SubViewport:
+		return 0 # Shadow masks own isolated rendering worlds; their cameras/environments are not gameplay nodes.
 	var count: int = 0
 	for child in parent.get_children():
 		if child.is_class(type_name):
 			count += 1
 		count += _count_nodes(child, type_name)
 	return count
+
+
+func _shadow_viewports_own_world(parent: Node, gameplay_world: World3D) -> bool:
+	var shadow_viewports: Array[Node] = parent.find_children("Silhouette256", "SubViewport", true, false)
+	if shadow_viewports.is_empty() or gameplay_world == null:
+		return false
+	for node: Node in shadow_viewports:
+		var shadow_viewport := node as SubViewport
+		var shadow_world: World3D = shadow_viewport.find_world_3d()
+		if not shadow_viewport.own_world_3d or shadow_world == null or shadow_world == gameplay_world:
+			return false
+	return true
 
 
 func _count_named_nodes(parent: Node, target_name: String) -> int:

@@ -1,0 +1,24 @@
+{
+  "baseline_commit": "b5febac",
+  "regression": {
+    "command": "app/test.sh",
+    "platform": "WSL Linux isolated git clone",
+    "exit_code": 0,
+    "runtime_changes": [
+      "render/sky.gdshader",
+      "render/cloud_relief.gdshaderinc",
+      "render/cloud_relief.gdshaderinc.uid"
+    ],
+    "script_test_files": 180,
+    "script_errors": 0,
+    "shader_errors": 0,
+    "log_sha256": "c41a14ac7dc176f1cc6bd95a81e9a8dc4b3528ac4f92e875e2c6d4b2f99ea8eb",
+    "fixed_step_30_60_144_state_sha256": "8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc"
+  },
+  "runtime_sha256": {
+    "render/sky.gdshader": "e9af514c416d4edf158d8aa97c4a91de1a3234a249d1c15ae557a13f2ad5f334",
+    "render/cloud_relief.gdshaderinc": "b9cf41a405bfa90c52e1fea790388b499ee741bd6e390a1e77619e062935ddd3",
+    "render/cloud_relief.gdshaderinc.uid": "e63c68399b74f15a9445d0baf0cb0a533428b58b1adf6933652d8206c5155c63"
+  },
+  "merged_worktree_smoke": "Native import and actual app capture passed; unfinished parallel changes excluded from regression and paired profiling."
+}

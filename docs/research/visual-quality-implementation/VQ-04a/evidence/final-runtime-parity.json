@@ -1,0 +1,54 @@
+{
+  "p51d-mustang-120-club.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-flightline.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-pilot.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-high-mask.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-high.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-inverted-mask.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-inverted.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-knife-mask.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-knife.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-low-mask.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-low.png": {
+    "pixels": 2,
+    "max_channel_delta": 1
+  },
+  "p51d-mustang-120-pass-mask.png": {
+    "pixels": 0,
+    "max_channel_delta": 0
+  },
+  "p51d-mustang-120-pass.png": {
+    "pixels": 7,
+    "max_channel_delta": 1
+  }
+}

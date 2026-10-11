@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+round=1 order=direct/cache direct_us=87164 cache_us=134239 ratio=1.5401
+round=2 order=cache/direct direct_us=70779 cache_us=126616 ratio=1.7889
+round=3 order=direct/cache direct_us=68089 cache_us=137296 ratio=2.0164
+round=4 order=cache/direct direct_us=76520 cache_us=146407 ratio=1.9133
+checksum=121755.655430735

@@ -1,0 +1,87 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"arguments": {
+		"audio-seed": "4102026",
+		"duration": "20",
+		"fps": "60",
+		"out": "C:/DEVELOPMENT/OpenRCsimulator/.tools/audio-pcm-scenery",
+		"scenery": "on",
+		"weather": "gusty"
+	},
+	"audio_sources_sha256": {
+		"adapter": "1ac78e5b90583bc21d631085010051317c4b35bca0c7d735b9e4113098da7a8e",
+		"mixer": "360d59c83490a231eb3360310ede6d752f0c0d2c8f1fcebc7f040e3fecf558ab",
+		"model": "88759e00821b8e0374aac1417f385c5988f6d7ffc93880a47ea7f62a3f6c645b"
+	},
+	"captured_seconds": 20.0,
+	"discarded_frames": 0,
+	"display": "headless",
+	"distance_max_m": 171.056259155273,
+	"distance_min_m": 2.49999594688416,
+	"driver": "WASAPI",
+	"driver_latency_estimate_s": 0.00999999977648258,
+	"events": [
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 0,
+			"tick": 2,
+			"wall_s": 0.001476
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 1,
+			"tick": 974,
+			"wall_s": 4.008
+		},
+		{
+			"paused": false,
+			"rpm": 11147.057689572,
+			"stage": 2,
+			"tick": 1694,
+			"wall_s": 7.007975
+		},
+		{
+			"paused": true,
+			"rpm": 2818.94944137963,
+			"stage": 3,
+			"tick": 2414,
+			"wall_s": 10.007713
+		},
+		{
+			"paused": false,
+			"rpm": 2818.94944137963,
+			"stage": 4,
+			"tick": 2414,
+			"wall_s": 11.006253
+		},
+		{
+			"paused": false,
+			"rpm": 2800.0063568294,
+			"stage": 5,
+			"tick": 2894,
+			"wall_s": 13.00923
+		},
+		{
+			"paused": false,
+			"rpm": 5174.24535652844,
+			"stage": 6,
+			"tick": 0,
+			"wall_s": 15.009031
+		}
+	],
+	"format": "openrc-audio-gameplay-v1",
+	"frames": 960000,
+	"godot": "4.7.2-stable (official)",
+	"mix_rate": 48000,
+	"note": "Actual physics flight with automated controls. Mixer capture is not speaker listening, acoustic validation, or device latency measurement.",
+	"peak_dbfs": -5.82146791927836,
+	"project_path": "C:/DEVELOPMENT/OpenRCsimulator/app/",
+	"requested_fps": 60,
+	"rms_dbfs": -19.7315591229071,
+	"soundscape_update_max_us": 1735,
+	"soundscape_update_p95_us": 193,
+	"voices": 12,
+	"wav_saved": true
+}

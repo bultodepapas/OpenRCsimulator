@@ -1,0 +1,15 @@
+{
+  "main.gd": "8e0dd4209db0c15f42c834dc34083f44035e321608812633c095ae5c264f740e",
+  "ui/home_scene.gd": "1e3de28d078360df9318033d66c49203b94e57bac2fbf41f22c091e533a6e898",
+  "render/field.gd": "b04e1993be5179b39c60e54e560a5fc88b0fd063a66d8fd9fec7f33c4e1c8cc0",
+  "render/shadow.gd": "fffbb8516d1a79618efacedfc584efe8a9f3e0ab782460089b92f7dde8ad6fbd",
+  "render/projected_shadow.gd": "1af9868d0f484a48ca2f47bd7a4993857bd6d88d3c99ef85317a042d607802b0",
+  "render/field_projected_shadows.gd": "ab1d025bc47c5144780556e347aecb7e565a91659081d563d834db91ff8f70dc",
+  "render/projected_shadow_mask.gdshader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+  "render/projected_shadow_receiver.gdshader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+  "tests/test_projected_shadow.gd": "6ecec86cecebdcd37e84c2a097b1d69d2a579b3cb00653aa8f13d71e56ce47c8",
+  "tests/test_field_projected_shadows.gd": "cb257981e1c2199a8ca4c8ce85a83e401c0a2ab8f3b82a7c985f278ab780e89b",
+  "tests/test_field_integration.gd": "5543a3661457467ecd33fbd050eef4d4eee162f56bddcd0066a2c5cc26f9b60d",
+  "tests/test_ui_flight_capture.gd": "b6f62d3fddea314f31cdd8e8b9ffc8b4ea3e9d9b82864034b35f4476b8e45277",
+  "tests/capture_ui.gd": "9e2edb0d5f6bcea52fab3f7dfc9280d135c9672dbb8e6480a5fc13973c86c139"
+}

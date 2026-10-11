@@ -1,0 +1,37 @@
+{
+  "trace": {
+    "samples": 721,
+    "differences": [
+      [
+        32,
+        "# created_utc: 2026-10-11T20:32:52",
+        "# created_utc: 2026-10-11T20:32:56"
+      ]
+    ]
+  },
+  "day": {
+    "changed_pixels": 26778,
+    "max_increase": 14
+  },
+  "sunrise": {
+    "changed_pixels": 26148,
+    "max_increase": 20
+  },
+  "moon": {
+    "changed_pixels": 21501,
+    "max_increase": 10
+  },
+  "dark": {
+    "changed_pixels": 108,
+    "max_increase": 1
+  },
+  "precise-night": {
+    "changed_pixels": 0,
+    "max_increase": 0
+  },
+  "pack": {
+    "sha256": "655a7728fe988ec1289ca2b81461ef9057e19ae5082aa1c5684df48f1ce6727f",
+    "bytes": 3096140,
+    "day_pixel_parity": true
+  }
+}

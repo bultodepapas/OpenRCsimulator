@@ -1,0 +1,57 @@
+{
+  "format": "openrc-el2a-p3-envelope-parity-v1",
+  "ok": true,
+  "baseline_report_sha256": "2262b49dcc5b2d1b57fa5e20dce1456558b0423f3149df13b91ff8c403b83932",
+  "candidate_report_sha256": "6a3a46124932c803768914370b2446954ca0d409cd767ced31f118d13eadbdd3",
+  "cases": {
+    "4s_landing_240": {
+      "rows": 11041,
+      "trace_sha256_excluding_created_utc": "bc9e44c1fafeb685c37a538514c1b16f5bdd8843f8838a5cdaa039e3034f5a52"
+    },
+    "4s_landing_480": {
+      "rows": 22081,
+      "trace_sha256_excluding_created_utc": "ee2e45772ec2a4aa8968f84e39b99fadbc36b47a1c42176556d1f6e67e7313ea"
+    },
+    "4s_stall_240": {
+      "rows": 4801,
+      "trace_sha256_excluding_created_utc": "b3be2c78dec31af9b2e9e8503deda0f82b026cceb5b34a72550ea545dadb702f"
+    },
+    "4s_stall_480": {
+      "rows": 9601,
+      "trace_sha256_excluding_created_utc": "6f88ffd43887824fc54d4689945bed5b1c277ae5b28fb4295434858bda5eb8d2"
+    },
+    "4s_takeoff_240": {
+      "rows": 1921,
+      "trace_sha256_excluding_created_utc": "2c3635be8662a7b70b1899400e0c90dc2753dd1e69ec934eba36175e51d58999"
+    },
+    "4s_takeoff_480": {
+      "rows": 3841,
+      "trace_sha256_excluding_created_utc": "accfb2fc620e64377d3b327d2eaf10f0aa375bcd6e3e47ca7e96aac2e16fac96"
+    },
+    "6s_landing_240": {
+      "rows": 11041,
+      "trace_sha256_excluding_created_utc": "7a412402688b69099c430cdaaf5dd4e03a5beafc7a94028caee4a88e8da39830"
+    },
+    "6s_landing_480": {
+      "rows": 22081,
+      "trace_sha256_excluding_created_utc": "18281ff09e3c18aca996129bbb660ed2435995e179ad03d2b47d78cf0113c9a5"
+    },
+    "6s_stall_240": {
+      "rows": 4801,
+      "trace_sha256_excluding_created_utc": "b217712e59d1b8e8a0724baad5363ca77a2debc657f6381880c8d94f25f5ed30"
+    },
+    "6s_stall_480": {
+      "rows": 9601,
+      "trace_sha256_excluding_created_utc": "ba5333fe528d6d299b5023dc2d1dd445c5fff2bf866f077dc617c53f720db751"
+    },
+    "6s_takeoff_240": {
+      "rows": 1921,
+      "trace_sha256_excluding_created_utc": "4d3478563806e40de4d668b9ac5721f4cdaf4a049351627980c011c9c3673e5a"
+    },
+    "6s_takeoff_480": {
+      "rows": 3841,
+      "trace_sha256_excluding_created_utc": "da2d2019ae1915c602a733ea195e57e9bab024cb81f1471bec1bb10a609d4764"
+    }
+  },
+  "checked_rows": 106572
+}

@@ -1,0 +1,52 @@
+profile-aircraft-0-baseline-attempt1 passed
+profile-aircraft-1-candidate-attempt1 passed
+profile-aircraft-2-candidate-attempt1 passed
+Discarded contended profiling run; retrying after other work
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+profile-aircraft-2-candidate-attempt2 passed
+profile-aircraft-3-baseline-attempt1 passed
+Discarded contended profiling run; retrying after other work
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+profile-aircraft-3-baseline-attempt2 passed
+profile-aircraft-4-baseline-attempt1 passed
+profile-aircraft-5-candidate-attempt1 passed
+Discarded contended profiling run; retrying after other work
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+profile-aircraft-5-candidate-attempt2 passed
+profile-field-0-baseline-attempt1 passed
+profile-field-1-candidate-attempt1 passed
+Discarded contended profiling run; retrying after other work
+Waiting for other Godot GPU work before profiling
+profile-field-1-candidate-attempt2 passed
+profile-field-2-candidate-attempt1 passed
+profile-field-3-baseline-attempt1 passed
+profile-field-4-baseline-attempt1 passed
+profile-field-5-candidate-attempt1 passed
+trace-baseline-jensen-das-ugly-stik-60 passed
+trace-candidate-jensen-das-ugly-stik-60 passed
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 207, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 198, in main
+    assert before.read_bytes() == after.read_bytes(), f"trace changed: {aircraft}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: trace changed: jensen-das-ugly-stik-60

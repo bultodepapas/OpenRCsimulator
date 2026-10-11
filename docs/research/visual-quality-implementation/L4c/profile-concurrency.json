@@ -1,0 +1,11 @@
+{
+  "observed_utc_minute": "2026-10-11 20:47 UTC (approximate)",
+  "other_track": "VQ-04a",
+  "process_ids": [
+    63660,
+    103804
+  ],
+  "observed_command_arguments": "--path C:/DEVELOPMENT/OpenRCsimulator/.tools/vq04a/evidence-final3/candidate/app --audio-driver Dummy --rendering-method gl_compatibility --script res://vq04a_capture.gd -- --field=on --scenery=on --scenery_audio=off --out=C:/DEVELOPMENT/OpenRCsimulator/.tools/vq04a/evidence-final3/repeat-field",
+  "our_active_run": "1920-1-after",
+  "action": "Preserved the other track processes; retained samples and qualified attribution. Follow-up audit found only L4c processes. No complete activity history exists."
+}

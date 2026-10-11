@@ -1,0 +1,5 @@
+refactor(ui): centralize screen lifecycle and menu navigation (UI-21)
+
+Preserve Home/CanvasLayer contracts, synchronous launch rollback and named session holds.
+Proof: app/test.sh, unchanged UI tests, 16/16 exact paired captures, 721 matching flight samples
+(creation timestamp excluded), and five Home/Fly/End cycles returning to 234 nodes.

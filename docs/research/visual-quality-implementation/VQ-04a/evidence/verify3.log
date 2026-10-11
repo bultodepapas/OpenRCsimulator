@@ -1,0 +1,42 @@
+baseline-import passed
+candidate-import passed
+gpu-probe passed
+baseline-captures passed
+candidate-captures passed
+repeat-captures passed
+C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py:114: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  pixels = list(difference.getdata())
+baseline-field passed
+candidate-field passed
+repeat-field passed
+route-baseline-sun passed
+route-candidate-sun passed
+route-baseline-off passed
+route-candidate-off passed
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+Waiting for other Godot GPU work before profiling
+profile-aircraft-0-baseline passed
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 189, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\vq04a_verify.py", line 153, in main
+    assert not other_renderers(), "Another Godot GPU run overlapped profiling; repeat the evidence run"
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Another Godot GPU run overlapped profiling; repeat the evidence run

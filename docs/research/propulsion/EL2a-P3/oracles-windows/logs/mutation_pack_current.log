@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: seed 00000 evaluate dynamics result
+FAIL: seed 00000 evaluate_available dynamics result
+FAIL: seed 00001 evaluate dynamics result
+FAIL: seed 00001 evaluate_available dynamics result
+FAIL: seed 00002 evaluate dynamics result
+EL2a-P1 electric source oracle: 40106 byte comparisons, 19981 failures
+first mismatch: seed 00000 evaluate dynamics result

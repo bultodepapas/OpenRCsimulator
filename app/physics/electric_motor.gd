@@ -25,7 +25,7 @@ static func evaluate(rpm: float, duty: float, bus_voltage_v: float, motor: Dicti
 ## Internal scalar kernel. Callers must have checked the finite Kv/R/I0 domains in this call.
 ## Supply shares its stricter motor validation; no cache or unchecked public entry is used.
 static func _evaluate_validated(rpm: float, duty: float, bus_voltage_v: float, kv: float,
-		resistance: float, idle_current: float, enabled: bool) -> Dictionary:
+		resistance: float, idle_current: float, enabled: bool, compact: bool = false) -> Dictionary:
 	if not is_finite(rpm) or rpm < 0.0 or not is_finite(duty) or duty < 0.0 or duty > 1.0 \
 			or not is_finite(bus_voltage_v) or bus_voltage_v < 0.0:
 		return _failure("motor requires finite rpm >= 0, duty in [0,1] and bus voltage >= 0")
@@ -52,9 +52,19 @@ static func _evaluate_validated(rpm: float, duty: float, bus_voltage_v: float, k
 	var bus_power: float = bus_voltage_v * battery_current
 	var copper_loss: float = (current * resistance) * current
 	var rotational_loss: float = loss_torque * omega
+	var mode: String = "drive" if current > 0.0 else ("coast" if rpm > 0.0 else "stopped")
+	# Scalar success guard avoids reflective Dictionary iteration in every RK stage.
+	# Compact callers need only these values; invalid arithmetic still takes the full diagnostic path.
+	var finite_outputs: bool = is_finite(command_voltage) and is_finite(motor_voltage) and is_finite(back_emf) \
+			and is_finite(current) and is_finite(battery_current) and is_finite(torque) \
+			and is_finite(shaft_power) and is_finite(bus_power) and is_finite(copper_loss) \
+			and is_finite(rotational_loss)
+	if compact and finite_outputs:
+		return {ok = true, mode = mode, shaft_torque_nm = torque,
+			motor_current_a = current, battery_current_a = battery_current}
 	var result: Dictionary = {
 		ok = true,
-		mode = "drive" if current > 0.0 else ("coast" if rpm > 0.0 else "stopped"),
+		mode = mode,
 		duty = effective_duty,
 		command_voltage_v = command_voltage,
 		motor_voltage_v = motor_voltage,
@@ -67,12 +77,8 @@ static func _evaluate_validated(rpm: float, duty: float, bus_voltage_v: float, k
 		copper_loss_w = copper_loss,
 		rotational_loss_w = rotational_loss,
 	}
-	# Scalar success guard avoids reflective Dictionary iteration in every RK stage.
 	# Keep the diagnostic slow path below to preserve the first offending field/message.
-	if is_finite(command_voltage) and is_finite(motor_voltage) and is_finite(back_emf) \
-			and is_finite(current) and is_finite(battery_current) and is_finite(torque) \
-			and is_finite(shaft_power) and is_finite(bus_power) and is_finite(copper_loss) \
-			and is_finite(rotational_loss):
+	if finite_outputs:
 		return result
 	# Finite inputs can overflow, including in the zero-speed torque path. Never return a valid NaN/Inf.
 	for key: String in result:

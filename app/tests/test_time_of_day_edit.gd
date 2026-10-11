@@ -400,6 +400,13 @@ func _check_weather_csv_case(case_id: String, weather_id: String, aircraft: Stri
 
 
 func _release_engine_audio(flight: TestFlight) -> void:
+	if flight._soundscape_audio != null:
+		# The inspection alias now belongs to the complete scene-local soundscape.
+		flight._soundscape_audio.free()
+		flight._soundscape_audio = null
+		flight._engine_audio = null
+		await create_timer(0.2).timeout
+		return
 	if flight._engine_audio == null:
 		return
 	var player: AudioStreamPlayer3D = flight._engine_audio

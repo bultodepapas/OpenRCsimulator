@@ -5,8 +5,9 @@
 # Built in code with containers, so it reflows instead of using absolute positions. Texts are English source
 # strings: Labels and Buttons translate themselves when the locale changes (res://i18n/*.po); sentences built at
 # runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED. Proper names are never translated.
-extends Control
+extends "res://ui/screen.gd"
 
+const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
@@ -66,6 +67,7 @@ var _fly_sent := false
 
 func _init() -> void:
 	name = "Home"
+	kind = Kind.SIDEBAR
 	theme = UiTheme.build() # on this screen's top Control: Window.theme would not reach CanvasLayers
 	var sidebar_style: StyleBoxFlat = theme.get_stylebox("panel", "Sidebar") as StyleBoxFlat
 	sidebar_style.content_margin_top = 36
@@ -79,7 +81,7 @@ func _init() -> void:
 	sidebar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	add_child(sidebar)
-	add_child(_fade())
+	fade(SIDEBAR_WIDTH)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 0)
 	sidebar.add_child(column)
@@ -439,39 +441,12 @@ func _on_fly() -> void:
 	fly_requested.emit()
 
 
-## The column's edge fades into the scene instead of cutting it with a hard line.
-func _fade() -> TextureRect:
-	var g := Gradient.new()
-	g.colors = PackedColorArray([UiTheme.SIDEBAR, Color(UiTheme.SIDEBAR, 0.0)])
-	var tex := GradientTexture2D.new()
-	tex.gradient = g
-	tex.width = 64
-	tex.height = 4
-	var rect := TextureRect.new()
-	rect.texture = tex
-	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rect.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	rect.offset_left = SIDEBAR_WIDTH
-	rect.offset_right = SIDEBAR_WIDTH + 32
-	return rect
-
-
 static func _label(text: String, variation: String, translate := true) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.theme_type_variation = variation
-	if not translate:
-		l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	return l
+	return Widgets.label(text, variation, false, translate)
 
 
 static func _button(text: String, variation: String) -> Button:
-	var b := Button.new()
-	b.text = text
-	b.theme_type_variation = variation
-	return b
+	return Widgets.button(text, variation)
 
 
 ## A small square button with a drawn arrow (the default font has no arrow glyphs, see ui/key_cap.gd).
@@ -487,9 +462,7 @@ static func _arrow_button(button_name: String, direction: String) -> Button:
 
 
 static func _gap(height: int) -> Control:
-	var c := Control.new()
-	c.custom_minimum_size.y = height
-	return c
+	return Widgets.gap(height)
 
 
 static func _spacer() -> Control:

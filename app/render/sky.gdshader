@@ -12,6 +12,8 @@
 shader_type sky;
 render_mode use_debanding;
 #include "res://render/cloud_field.gdshaderinc"
+#include "res://render/cloud_relief.gdshaderinc"
+uniform float cloud_relief_strength : hint_range(0.0, 1.0) = 1.0;
 
 uniform vec3 zenith_lin = vec3(0.076, 0.138, 0.287);
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846); // fog_light_color.srgb_to_linear() * fog_light_energy
@@ -93,9 +95,17 @@ void sky() {
 	if (EYEDIR.y > 0.0 && cloud_coverage > 0.0) {
 		vec2 deck = EYEDIR.xz / max(EYEDIR.y, 0.02);                    // flat layer
 		vec2 cells = mod(deck * cloud_scale + cloud_offset, float(CLOUD_FIELD_PERIOD));
-		density = cloud_density(cells, cloud_seed, cloud_coverage, cluster_strength)
-			* smoothstep(0.03, 0.25, EYEDIR.y);                           // thin out into the horizon haze
-		col = mix(col, cloud_lin * mix(1.0, 0.82, density), density);   // darker cores
+		float body = cloud_density(cells, cloud_seed, cloud_coverage, cluster_strength);
+		density = body * smoothstep(0.03, 0.25, EYEDIR.y); // thin out into the horizon haze
+		vec3 cloud_color = cloud_lin * mix(1.0, 0.82, density);
+		// Background-only detail preserves the calibrated IBL. Fade relief before
+		// the deck becomes subpixel at the horizon; coverage itself is unchanged.
+		float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y);
+		if (!AT_CUBEMAP_PASS && relief_weight > 0.0 && density > 0.0) {
+			vec3 relief = cloud_relief(cells, body, EYEDIR, sun_dir, cloud_lin, cloud_seed, cloud_coverage, cluster_strength);
+			cloud_color = mix(cloud_color, relief, relief_weight);
+		}
+		col = mix(col, cloud_color, density);
 
 		// A higher, very thin deck: noise stretched along the horizon, with an exact 64-cell period.
 		if (cirrus_strength > 0.0) {

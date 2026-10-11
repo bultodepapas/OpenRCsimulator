@@ -1,0 +1,121 @@
+{
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "source_commit": "b5febac82b6bc2708ef2442c557bf3061d38ac5c",
+  "tests": [
+    {
+      "test": "test_ui_aircraft.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "968df80f55480a25865a688fdcba3d1e75339140e5a4f0e6fa7ec700f2770fa2",
+      "log": "native-windows/test_ui_aircraft.gd.log"
+    },
+    {
+      "test": "test_ui_atmosphere.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "f7d4182f6abe55d8b934a59541b6a172336586a04180c4c10f5370306456ca3c",
+      "log": "native-windows/test_ui_atmosphere.gd.log"
+    },
+    {
+      "test": "test_ui_field_world_time_of_day.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "6db087551a1d523de36f7becc597cd47b844f3ebab2e7f81ac69cae52547623c",
+      "log": "native-windows/test_ui_field_world_time_of_day.gd.log"
+    },
+    {
+      "test": "test_ui_flight_capture.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "9875be15b3e0a2f57dbc1eac892a3a84721d6bb06bbb7ee82f07f5848a1e7986",
+      "log": "native-windows/test_ui_flight_capture.gd.log"
+    },
+    {
+      "test": "test_ui_help.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "5889382ea2a5c5046714f9c0c18622a6c199fcb4b86d6c3dc21ea3b6eacd7669",
+      "log": "native-windows/test_ui_help.gd.log"
+    },
+    {
+      "test": "test_ui_home.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "adce92e03cc108462f9fa9d9773c3d6f5820c12e0389acc69866c3ffa048aeff",
+      "log": "native-windows/test_ui_home.gd.log"
+    },
+    {
+      "test": "test_ui_input.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "3f77dec2b0cab1d1f86622088bcff1930149cb7d109da6ab4b3d5591671fa0bd",
+      "log": "native-windows/test_ui_input.gd.log"
+    },
+    {
+      "test": "test_ui_language.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "5961548eb0172465df66e833b6f24cb1fe14d366cf4c8a7b97385ec3176eee1d",
+      "log": "native-windows/test_ui_language.gd.log"
+    },
+    {
+      "test": "test_ui_pause.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "25546234bd312803f5d539e406a369feaa5ed3ce00cafef183545c0773e48193",
+      "log": "native-windows/test_ui_pause.gd.log"
+    },
+    {
+      "test": "test_ui_runway.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "714b86ecfb328b36375be0f03b3530bd6988eaca8b41e0657adafd3ac4f5cc73",
+      "log": "native-windows/test_ui_runway.gd.log"
+    },
+    {
+      "test": "test_ui_screen_stack.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "bf7663dd6ba919f1929f250a2a38d76ff16ed4c4651afed453a274354a371a99",
+      "log": "native-windows/test_ui_screen_stack.gd.log"
+    },
+    {
+      "test": "test_ui_time_of_day.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "01687e3b4ae015dabb60c6ad61e377a0b23a710624ff9dd48f9c9d0771f050fe",
+      "log": "native-windows/test_ui_time_of_day.gd.log"
+    },
+    {
+      "test": "test_ui_time_of_day_pause.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "398486a41ac21573e1831cbe683c22629c4482e91b34e2f233425ba5ba9cc168",
+      "log": "native-windows/test_ui_time_of_day_pause.gd.log"
+    },
+    {
+      "test": "test_ui_turbulence.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "0ca49db2df583ab0902b781b59d89ee401acc207ddda7711403464b8a40ec7c6",
+      "log": "native-windows/test_ui_turbulence.gd.log"
+    },
+    {
+      "test": "test_ui_weather.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "80139cd7f435b8106fce27991e086758fe4ff403562776176a9d6d429e0d8284",
+      "log": "native-windows/test_ui_weather.gd.log"
+    },
+    {
+      "test": "test_ui_weather_sliders.gd",
+      "passed": true,
+      "exit_code": 0,
+      "log_sha256": "b86191c1ab768ffe94ce19154db82b62489f996eed40233812ae685d6c9de99b",
+      "log": "native-windows/test_ui_weather_sliders.gd.log"
+    }
+  ],
+  "app_source": "shared checkout plus UI-21",
+  "headless": true,
+  "performance_claim": false
+}

@@ -22,6 +22,9 @@ echo "== L11a offline grass placement matches committed offsets"
 python3 "$HERE/../tools/grass/place.py" --check
 python3 "$HERE/../tools/grass/test_place.py"
 
+echo "== L9e packed turf data matches its deterministic generator"
+python3 "$HERE/../tools/ground/turf_generate.py" --check
+
 echo "== L7 offline hill profile matches committed heights"
 python3 "$HERE/../tools/terrain/gen_terrain.py" --check
 

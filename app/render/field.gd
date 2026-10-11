@@ -9,6 +9,7 @@ const NearGrass = preload("res://render/near_grass.gd")
 const Horizon = preload("res://render/horizon.gd")
 const PilotStation = preload("res://render/pilot_station.gd")
 const FlightlineBarrier = preload("res://render/flightline_barrier.gd")
+const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
 const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SCENERY-PLAN: no-op unless --scenery=on / OPENRC_SCENERY=on
@@ -67,6 +68,7 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	if not field.get("flight_cues", []).is_empty():
 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
 	Scenery.attach(result, field, lighting)
+	FieldProjectedShadows.attach(result, field, lighting)
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return result
@@ -94,6 +96,7 @@ static func commit_lighting(field_node: Node3D, prepared: Dictionary) -> bool:
 	if cues != null and cues.mesh.get_surface_count() > 0:
 		var material: StandardMaterial3D = cues.mesh.surface_get_material(0) as StandardMaterial3D
 		material.albedo_color = Color.BLACK if lighting.has("solar") else Color.WHITE
+	FieldProjectedShadows.apply_lighting(field_node, lighting)
 	field_node.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return true
 

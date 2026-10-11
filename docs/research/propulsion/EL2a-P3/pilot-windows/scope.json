@@ -1,0 +1,6 @@
+{
+  "performance_acceptance": false,
+  "reason": "Concurrent UI-track WSL suite and large inconsistent control timings; excluded from speedup claims.",
+  "exact_trajectory_and_event_parity": true,
+  "note": "Pilot snapshots also differ in unrelated concurrent UI files; inspect source-manifest.json."
+}

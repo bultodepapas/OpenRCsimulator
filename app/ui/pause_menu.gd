@@ -4,7 +4,8 @@
 # behind it; Esc goes back to the flight. Texts are English source strings (res://i18n/*.po).
 extends CanvasLayer
 
-const UiTheme := preload("res://ui/ui_theme.gd")
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
 
 signal continue_requested
 signal restart_requested
@@ -31,22 +32,17 @@ var _session: Node
 func _init(can_end := true) -> void:
 	name = "PauseMenu"
 	layer = LAYER
-	var screen := Control.new()
-	screen.name = "Screen"
-	screen.theme = UiTheme.build()
-	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(screen)
-	var dim := ColorRect.new()
-	dim.color = Color(0.0, 0.0, 0.0, 0.25) # the frozen flight stays readable: the airplane is what was paused
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(dim)
+	var screen := Screen.mount(self, "Screen")
+	screen.kind = Screen.Kind.SIDEBAR
+	screen.close_requested.connect(func() -> void: continue_requested.emit())
+	screen.dim(0.25) # keep the frozen pilot view readable
 	# A column on the left, like Home: the airplane, centred by the pilot camera, stays in view.
 	var panel := PanelContainer.new()
 	panel.theme_type_variation = "Sidebar"
 	panel.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	panel.custom_minimum_size.x = WIDTH
 	screen.add_child(panel)
-	screen.add_child(_fade())
+	screen.fade(WIDTH)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -127,20 +123,8 @@ func set_note(text: String) -> void:
 	note_label.visible = text != ""
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		# Handled first: Esc may close (free) this menu, and nothing may reach the flight's shortcuts while it is open.
-		get_viewport().set_input_as_handled()
-		if event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE:
-			continue_requested.emit() # Esc: back to the flight (refused by the session when it cannot fly)
-
-
 func _button(text: String, variation: String, node_name: String) -> Button:
-	var b := Button.new()
-	b.name = node_name
-	b.text = text
-	b.theme_type_variation = variation
-	return b
+	return Widgets.button(text, variation, node_name)
 
 
 func _wrapped_label() -> Label:
@@ -152,26 +136,5 @@ func _wrapped_label() -> Label:
 	return l
 
 
-## The column's edge fades into the scene (as on Home).
-func _fade() -> TextureRect:
-	var g := Gradient.new()
-	g.colors = PackedColorArray([UiTheme.SIDEBAR, Color(UiTheme.SIDEBAR, 0.0)])
-	var tex := GradientTexture2D.new()
-	tex.gradient = g
-	tex.width = 64
-	tex.height = 4
-	var rect := TextureRect.new()
-	rect.texture = tex
-	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rect.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	rect.offset_left = WIDTH
-	rect.offset_right = WIDTH + 32
-	return rect
-
-
 static func _gap(height: int) -> Control:
-	var c := Control.new()
-	c.custom_minimum_size.y = height
-	return c
+	return Widgets.gap(height)

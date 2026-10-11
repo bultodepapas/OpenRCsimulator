@@ -1,0 +1,131 @@
+{
+  "format": "openrc-el2a-p1-oracle-verification v1",
+  "started_utc": "2026-10-11T20:03:29.565610+00:00",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "app_source": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-dev\\app",
+  "workspace_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\workspace\\app",
+  "timeout_seconds": 120,
+  "status": "passed",
+  "excluded_from_app_snapshot": [
+    ".godot",
+    "captures",
+    ".DS_Store"
+  ],
+  "evidence_notes": [
+    "A subnormal-capacity overflow fixture was rejected before reaching the SOC-rate guard on this runtime.",
+    "The retained guard fixture uses normal finite capacity/current/voltage scales; only the derived SOC rate overflows."
+  ],
+  "positive_runs": {
+    "rotor": {
+      "script": "res://../research/propulsion/el2a-p1/rotor_oracle.gd",
+      "exit_code": 0,
+      "summary": {
+        "count": 10020,
+        "failures": 0,
+        "seed": 1831565813,
+        "samples": 10000
+      },
+      "expected_count": 10020,
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\positive_rotor.log"
+    },
+    "source": {
+      "script": "res://../research/propulsion/el2a-p1/source_oracle.gd",
+      "exit_code": 0,
+      "summary": {
+        "count": 40106,
+        "failures": 0
+      },
+      "expected_count": 40106,
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\positive_source.log"
+    },
+    "app": {
+      "script": "res://tests/test_electric_dynamics.gd",
+      "exit_code": 0,
+      "summary": {
+        "count": 74,
+        "failures": 0
+      },
+      "expected_count": 74,
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\positive_app.log"
+    }
+  },
+  "mutations": [
+    {
+      "name": "rotor reaction sign inverted",
+      "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\workspace\\app\\physics\\rotor_coupling.gd",
+      "sha256_before": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+      "sha256_mutated": "81b58647bc0c5feeabe581d46963247eaf70f0863b50f4f6300f4aa44d3a00f2",
+      "oracle": "res://../research/propulsion/el2a-p1/rotor_oracle.gd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\mutation_rotor_sign.log",
+      "expected_evidence": "first failure: seeded valid sample 0",
+      "exit_code": 1,
+      "summary": {
+        "count": 21,
+        "failures": 1,
+        "seed": 1831565813,
+        "samples": 10000
+      },
+      "rejected_as_expected": true,
+      "sha256_after_restore": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+      "restored": true
+    },
+    {
+      "name": "compact pack current sign inverted",
+      "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\workspace\\app\\physics\\electric_supply.gd",
+      "sha256_before": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "sha256_mutated": "644971c23516b4dd601d64656cad98e2c7e3ce6dc20813680128c0cf30abcfb2",
+      "oracle": "res://../research/propulsion/el2a-p1/source_oracle.gd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\mutation_pack_current.log",
+      "expected_evidence": "first mismatch: seed 00000 evaluate dynamics result",
+      "exit_code": 1,
+      "summary": {
+        "count": 40106,
+        "failures": 19981
+      },
+      "rejected_as_expected": true,
+      "sha256_after_restore": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "restored": true
+    },
+    {
+      "name": "scalar SOC-rate finite guard removed",
+      "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\workspace\\app\\physics\\electric_supply.gd",
+      "sha256_before": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "sha256_mutated": "b7642fc7586645f7fcf97fbfe81157f3da999b4c2ad76a442f4999d3f069c62b",
+      "oracle": "res://../research/propulsion/el2a-p1/source_oracle.gd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\el2a-p3-oracles-windows-final\\logs\\mutation_soc_rate_guard.log",
+      "expected_evidence": "first mismatch: invalid SOC-rate overflow evaluate public result",
+      "exit_code": 1,
+      "summary": {
+        "count": 40106,
+        "failures": 4
+      },
+      "rejected_as_expected": true,
+      "sha256_after_restore": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "restored": true
+    }
+  ],
+  "source_hashes": {
+    "app/physics/rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+    "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+    "app/tests/test_electric_dynamics.gd": "19c4ef407cc22e1548fd3eedff70835f2bbea4511c3b795c41bbc778546c588b",
+    "research/propulsion/el2a-p1/rotor_oracle.gd": "1bd43d2f04e15ec760ee76849afe2ab15b68bb7f5ca5cc9e0aed5a64edbb5ee0",
+    "research/propulsion/el2a-p1/source_oracle.gd": "286183164a18d5c3dda5538d7606a9a75df57667917a529970cdd7d59d05c405",
+    "research/propulsion/el2a-p1/frozen_electric_motor.gd": "1f346e9752389d68f774d6ba5532577312d5e07f7626f7da0341ac8791497289",
+    "research/propulsion/el2a-p1/frozen_electric_supply.gd": "1af0a26de86a825a91c414283e57f8358a1079c823ceecfcc30a1d1ac59c9ff3"
+  },
+  "snapshot_hashes": {
+    "physics\\rotor_coupling.gd": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+    "physics\\electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977"
+  },
+  "restored_hashes": {
+    "physics\\rotor_coupling.gd": {
+      "sha256": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+      "matches_snapshot": true
+    },
+    "physics\\electric_supply.gd": {
+      "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+      "matches_snapshot": true
+    }
+  },
+  "finished_utc": "2026-10-11T20:03:40.730277+00:00"
+}

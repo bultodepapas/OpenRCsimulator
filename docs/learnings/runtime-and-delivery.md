@@ -1,6 +1,6 @@
 # Runtime, input and delivery lessons
 
-**Status:** curated reference. Evidence comes from the 2026-10-05–08 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Evidence comes from the 2026-10-05–11 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
 
 ## Godot execution and test isolation
 
@@ -22,9 +22,13 @@
 
 - **Pause spans simulation, presentation and input.** Freezing ticks originally left the propeller turning and the engine audible. Disabling the entire session would also lose radio events needed for arming. Coordinate pause explicitly, including audio playback readiness, while retaining the required input path. [UI-02/03 tests](../../app/tests/test_ui_pause.gd), [menu investigations](../research/menu-investigations/README.md).
 
+- **Audio queue duration does not describe the driver's consumption burst.** Godot's Dummy driver consumes 4096 output frames at once regardless of its latency setting, so a 50 ms target underruns there while a native device passes. Measure the driver period, reserve its burst, and qualify native response separately. Keep playback identity in the adapter; ensure a playback with a raw source pointer retains that source through asynchronous mixer retirement. Weak-reference tests must establish both survival and release without a cycle. [G3b measurements and lifecycle controls](../research/audio/G3b/README.md).
+
+- **Audio import format is part of the playback contract.** Godot's default WAV compression can turn PCM bytes into QOA data. A loop endpoint is a sample-frame position, so compressed byte length cannot define it. Pin the intended import format, derive endpoints from duration and rate, and verify the exported resource from an empty project. Source-file tests alone missed this mismatch. [AUD-03](../research/audio/AUD-03/README.md), [pack check](../../tools/audio/check_pack.gd).
+
 - **A launch choice is a reset recipe, not just an initial pose.** A one-shot runway reset left R, crash recovery and trace headers describing an airborne flight. Keep the choice in the session, reconstruct equilibrium and wheel anchors after each restart or valid reload, and retain launch identity separately from the recording-start snapshot. Preflight a reload before emitting reset signals, or a rejected candidate can close a valid recording. [UI-06a evidence](../research/menu-investigations/UI-06a/README.md). A physics-only checkpoint cannot establish the source flight’s launch history: invalidate inherited launch metadata on restoration, while retaining the exact recording boundary. [UI-06a-R1](../research/menu-investigations/UI-06a-R1/README.md).
 
-- **GUI focus does not guarantee event consumption.** Enter/Space on a focused button reached flight `_unhandled_input`, and opening a pause menu during a focus notification hit a locked scene tree. Consume leftover menu keys and defer tree changes. Test focus loss through `SceneTree.notification()`: propagating only from the root does not reproduce key release. [UI-02/03 tests](../../app/tests/test_ui_pause.gd).
+- **GUI focus does not guarantee event consumption.** Enter/Space on a focused button reached flight `_unhandled_input`, and opening a pause menu during a focus notification hit a locked scene tree. Consume leftover menu keys and defer tree changes. Test focus loss through `SceneTree.notification()`: propagating only from the root does not reproduce key release. [UI-02/03 tests](../../app/tests/test_ui_pause.gd). Use recursive Control focus/mouse policies to suspend lower screens: they cover descendants rebuilt while a modal is open without overwriting each widget's own policy. The Input singleton remains live, so keep the session hold and held-key mask as separate responsibilities. [UI-21](../research/menu-investigations/UI-21/README.md).
 
 - **Validate saved calibration independently of the wizard.** Old or edited profiles bypass wizard checks. Require unique integer axes, finite endpoints, ordered centers and typed device identity before changing live state; rejected writes must preserve existing profiles. A throttle center may equal an endpoint because its normalization does not use the center. [D6b-R1](../research/radio-input/D6b-R1/README.md).
 

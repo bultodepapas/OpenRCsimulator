@@ -1,0 +1,18 @@
+Native verbose capture output excerpt. The process stdout was not redirected at run time; this file preserves the recorded result and leak lines, not the complete stdout log.
+
+Command:
+Godot_v4.7.2-stable_win64_console.exe --path .tools/vq04a/evidence-final3/baseline/app --verbose --rendering-method gl_compatibility --audio-driver Dummy --script res://tests/capture_ui.gd -- --screen=flight --aircraft=p51d-mustang-120 --size=1280x720 --out=C:/DEVELOPMENT/OpenRCsimulator/.tools/vq04a/leak-capture/baseline.png
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+saved C:/DEVELOPMENT/OpenRCsimulator/.tools/vq04a/leak-capture/baseline.png (error 0) scene=flight start=airborne camera3d=1 worldenvironment=1 transition_usec=1245576 (diagnostic only; cache unknown)
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Leaked instance: AudioStreamGeneratorPlayback:9223372152584014345 - Reference count: 1
+Hint: Leaked instances typically happen when nodes are removed from the scene tree (with `remove_child()`) but not freed (with `free()` or `queue_free()`).
+Orphan StringName: Master (static: 0, total: 2)
+StringName: 1 unclaimed string names at exit.
+WARNING: 1 ObjectDB instance was leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+Exit code: 0
