@@ -30,6 +30,8 @@ def main() -> None:
     app, godot, out = args.app.resolve(), args.godot.resolve(), args.out.resolve()
     if not (app / "project.godot").is_file() or not godot.is_file():
         parser.error("existing app and pinned Godot executable are required")
+    if not all((app / name).is_file() for name in (SOURCE, TEST)):
+        parser.error("runway source and test must exist before creating output")
     if out == app or app in out.parents:
         parser.error("output must be outside the source app")
     out.mkdir(parents=True, exist_ok=False)
@@ -42,7 +44,12 @@ def main() -> None:
     env = dict(os.environ, XDG_DATA_HOME=str(out / "runtime"), XDG_CONFIG_HOME=str(out / "config"))
     report = {"format": "openrc-el2a-e1-runway-v1", "ok": False,
               "godot_sha256": sha(godot.read_bytes()),
+              "verifier_sha256": sha(Path(__file__).read_bytes()),
               "source_sha256": {SOURCE: sha(original), TEST: sha((workspace / TEST).read_bytes())},
+              "app_source_sha256": {p.relative_to(workspace).as_posix(): sha(p.read_bytes())
+                                    for p in sorted(workspace.rglob("*")) if p.is_file()
+                                    and ".godot" not in p.relative_to(workspace).parts
+                                    and (p.suffix in (".gd", ".json") or p.name == "project.godot")},
               "mutations": []}
 
     def run(name: str, arguments: list[str]) -> tuple[int, str]:
@@ -65,7 +72,7 @@ def main() -> None:
 
     try:
         rc, version = run("version", ["--version"])
-        if rc not in (0, 1) or version.strip() != "4.7.2.stable.official.ed1daf0bf":
+        if rc != 0 or version.strip() != "4.7.2.stable.official.ed1daf0bf":
             raise AssertionError("pinned Godot version was not confirmed")
         report["godot_version"] = version.strip()
         rc, _ = run("import", ["--headless", "--path", str(workspace), "--editor", "--import"])

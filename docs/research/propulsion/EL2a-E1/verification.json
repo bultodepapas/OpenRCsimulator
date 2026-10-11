@@ -1,0 +1,123 @@
+{
+  "format": "openrc-el2a-e1-verification-v1",
+  "date": "2026-10-11",
+  "ok": true,
+  "scope": "synthetic software qualification; physical validation and Gate P open",
+  "baseline_commit": "38847b4f8d65af8c1fb2424b2f7eda3e007e950d",
+  "observed_shared_head": "c625f6ac90680182415b7279a6ca5e26a920f030",
+  "source_sha256": {
+    "app/sim/flight_session.gd": "ad6138a55e68f2ac97430d3a306d55767387ab928a4055ee02de0bd241e76f3c",
+    "app/tests/test_electric_runway.gd": "03e58d97f1e9f17fd5006e9bf20b9a31631c0bda8c3b9496878b9b3b75d04cf3",
+    "research/test-tools.sh": "f4ff30ba36079f628ac92e928223baadc1eaf9a55205f7b87be9523cc145aa82",
+    "research/propulsion/el2a-e1/test_trace_checks.py": "61295b0511f0a03eb6385d682a5267a3113b3e554511e77465ffe19edd9cb147",
+    "research/propulsion/el2a-e1/trace_checks.py": "a4f7480bf8ac6efff38698f779706fcc7d4b903c6306cd130e47eefb2c83d299",
+    "research/propulsion/el2a-e1/verify_envelope.py": "2f01d6065fcd0f6efd147edba3256388cb622258a4153b75e032e1215f31112d",
+    "research/propulsion/el2a-e1/verify_runway.py": "5d6d8b2c84fde2be9009c35ed2c9bc264a7903d5b8f31bccd30ba9d82f9e49ae",
+    "research/propulsion/el2a-e1/envelope.gd": "36b2c146902c315a87831cc277aac9c65479ef607871ccde3d378a521f7d8df3",
+    "research/propulsion/el2a-e1/startup_probe.gd": "7779ef68306c9c186b374de55ce7810b10f28c614ed4ce9d88e219dc723a6431",
+    "research/propulsion/el2/verify_flights.py": "3b539855beaf802e7d9b0c7b72c982cf3c13cd49daeb0480c20ea3a02eb3b304"
+  },
+  "runway": {
+    "platforms": [
+      "windows",
+      "linux"
+    ],
+    "checks_per_positive_run": 177,
+    "actual_defects_per_platform": 2,
+    "restored_positive_rerun": true
+  },
+  "envelope": {
+    "windows": {
+      "cases": 12,
+      "checked_rows": 106572,
+      "max_energy_ledger_residual_j": 9.846258075185688e-05,
+      "minimum_takeoff_lateral_margin_m": 2.1320073334815284,
+      "max_refinement_fraction_of_limit": 0.08368650685397938
+    },
+    "linux": {
+      "cases": 12,
+      "checked_rows": 106572,
+      "max_energy_ledger_residual_j": 9.846258075185688e-05,
+      "minimum_takeoff_lateral_margin_m": 2.1320073334815284,
+      "max_refinement_fraction_of_limit": 0.08368650685397938
+    }
+  },
+  "full_app": {
+    "script_suites": 180,
+    "python_cases": 72,
+    "engine_errors": 0,
+    "final_e5b_checks": 125,
+    "normalized_source_parity_files": 388,
+    "source_overlay": [
+      "app/sim/flight_session.gd",
+      "app/tests/test_electric_runway.gd"
+    ]
+  },
+  "offline_tools": {
+    "cases": 242,
+    "trace_checker_tests": 12
+  },
+  "commands": {
+    "full_app": "XDG_DATA_HOME=<isolated-data> XDG_CONFIG_HOME=<isolated-config> bash app/test.sh",
+    "offline_tools": "bash research/test-tools.sh",
+    "runway": "python3 research/propulsion/el2a-e1/verify_runway.py --app <app> --godot <pinned-engine> --out <fresh-output>",
+    "envelope": "python3 research/propulsion/el2a-e1/verify_envelope.py --app <app> --godot <pinned-engine> --out <fresh-output>"
+  },
+  "artifact_sha256": {
+    "envelope-linux/logs/4s_landing_240.log": "3f568fb5076d517d6ad34819ea0049d27115ac59f701479606eddeca350791dd",
+    "envelope-linux/logs/4s_landing_480.log": "0cb805549269c7290768f1cfc013b5f6a043fe5df70400588f5153c078488afd",
+    "envelope-linux/logs/4s_stall_240.log": "eabaa90218f35387edbdb8e824e040256a293fe4a81f74ba1ae18f18a70a6ea5",
+    "envelope-linux/logs/4s_stall_480.log": "0e516a435b122058ce963bbed4ac2c9cb0378ccf370b5ef25d525a487d1fbac0",
+    "envelope-linux/logs/4s_takeoff_240.log": "a8ae7712708eaf8d3797fd374a56773e67eef3e4185da65f333ddea8063661bb",
+    "envelope-linux/logs/4s_takeoff_480.log": "3a914cf9a4fd86731a6d0c7a09f28e297160afd8717dd11fa8201161b57553fe",
+    "envelope-linux/logs/6s_landing_240.log": "f3a9fc1dd8fcf8a6e213914b32e8335bd6ae42e80bc3ba4b94afd1a8eb36005e",
+    "envelope-linux/logs/6s_landing_480.log": "9b973304d168f1df18aa1fb1425d489222732ac183d2b8bf92bb1ab75e46a860",
+    "envelope-linux/logs/6s_stall_240.log": "1f9a84ca66b00a8ce4160740f28dcdb6a1d79c29a7f2c277253843975a9811ed",
+    "envelope-linux/logs/6s_stall_480.log": "1e6d4d3eec411599697804056645d19153d9b688d4a5abd4d8815e76a51a315d",
+    "envelope-linux/logs/6s_takeoff_240.log": "c893b4238bb883b3c510ceecfe4405719f8029ad0daa9f1c97653eb88e77a01d",
+    "envelope-linux/logs/6s_takeoff_480.log": "40b8343de3abd1d330ae38db5c6c2298d1620aa5fd1b6e983f9914782a7b3a6e",
+    "envelope-linux/logs/import.log": "0c6c06c195684c8249e32d0dc1fcbf12a5d51d7542bfe96b01c8aca360743e84",
+    "envelope-linux/logs/version.log": "edff16c1721dd4ae989cadf29a01f574ae8d51b118221f664725bd6980bbba5d",
+    "envelope-linux/report.json": "f55a122e3433573f049c075641eb2ecc858625ac1ea2a183ef64bc77a945a17d",
+    "envelope-windows/logs/4s_landing_240.log": "96bbde8560528f19d4737e3cfdfbe57652fb967065780ad57673ef0b44f76589",
+    "envelope-windows/logs/4s_landing_480.log": "6d1aa4bd1a0043f08f0c53342c1da79ae09e068045a90b85298b05f8fb8db8cd",
+    "envelope-windows/logs/4s_stall_240.log": "f1d0fae5ecc80c2b4f0c0a8ee981a7eb31e13f01d538f26c547648e2ac663e84",
+    "envelope-windows/logs/4s_stall_480.log": "ee110a851cc14c060c097f2b4b51e8f0bc35b667927062baa361fca517c448ff",
+    "envelope-windows/logs/4s_takeoff_240.log": "365b4d62cfb30f39c751e42e099cf7fcea6002cdd5832073d508d361c2936fd0",
+    "envelope-windows/logs/4s_takeoff_480.log": "43fde5eb1cd36acb68c0d5c3a9a97fc69d4ea0c9730cd312e38069fd27a47180",
+    "envelope-windows/logs/6s_landing_240.log": "bd49e4b083e9c376304eb647a533ff6d833981cb2d0c390ec909667cba30fb7a",
+    "envelope-windows/logs/6s_landing_480.log": "28990498ff019df730ee174fd771fb6f0eeb91f29c50ae4f32b25b368d13319b",
+    "envelope-windows/logs/6s_stall_240.log": "a6fc419a88fa424d21c886b423951771212b32df3e653c02cd4cec9575087049",
+    "envelope-windows/logs/6s_stall_480.log": "4bfe0443e511fd69a2378f27849a10d717e29f0a786a24ab71534fe1f21864b7",
+    "envelope-windows/logs/6s_takeoff_240.log": "94067cdc100c44262d52b0ac0f2867982736aa9a0d0b81813f7364616f95c9b5",
+    "envelope-windows/logs/6s_takeoff_480.log": "984f8965364715d24af0627576748515cb213dfc7a75738965b722d69895f1cd",
+    "envelope-windows/logs/import.log": "3e2c0de9d06876b95d050f360cd1b43e9ba3dabeb0ea5ec267023786911ce8a4",
+    "envelope-windows/logs/version.log": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498",
+    "envelope-windows/report.json": "2262b49dcc5b2d1b57fa5e20dce1456558b0423f3149df13b91ff8c403b83932",
+    "full-suite.log": "2b02f82cd9d293483a983f173ebb7030c90c61806869a89c96bff0787c9a38e8",
+    "offline-tools.log": "3309b5c0f2f1600984b2f181827838a394124a4de2615d6fd13b53010f5cdbf7",
+    "original-landing-metrics.json": "3dfafcf01a0bf04b5ef1e968759926c19b9cd0e0cb5b9beb2ea86ebc41084df1",
+    "runway-linux/logs/combustion_idle_search.log": "c38c930c19f4ae2159772be04c56c084c552dd2ca1b1cb1ab46506111b6a8889",
+    "runway-linux/logs/import.log": "0c6c06c195684c8249e32d0dc1fcbf12a5d51d7542bfe96b01c8aca360743e84",
+    "runway-linux/logs/invented_electric_idle.log": "7e327444ce4673d7cd0a70a701238a50c4bd25d3df75d54a0ac8a967eede2398",
+    "runway-linux/logs/positive.log": "e828c1f4bb399fa9f3d36cf312b5e7bcfbc153a82e0518741a834083b159b64e",
+    "runway-linux/logs/restored.log": "e828c1f4bb399fa9f3d36cf312b5e7bcfbc153a82e0518741a834083b159b64e",
+    "runway-linux/logs/version.log": "edff16c1721dd4ae989cadf29a01f574ae8d51b118221f664725bd6980bbba5d",
+    "runway-linux/report.json": "c0f8689bacd86d3f89a29394ca91c17a91ad7f88564307320c064dbbc9168f22",
+    "runway-windows/logs/combustion_idle_search.log": "0226f707fd66d58cf2b34e368b3d47d65f1f55473378b8f7be43dd550bbb3cf6",
+    "runway-windows/logs/import.log": "3e2c0de9d06876b95d050f360cd1b43e9ba3dabeb0ea5ec267023786911ce8a4",
+    "runway-windows/logs/invented_electric_idle.log": "8550b8acbe72179798ccefd0510d030a0982c255b1a6b41769049d7bd087a309",
+    "runway-windows/logs/positive.log": "4a87e141310353bb2bbce365b9f53995f644a25ea420679fad0ceffe414da35d",
+    "runway-windows/logs/restored.log": "4a87e141310353bb2bbce365b9f53995f644a25ea420679fad0ceffe414da35d",
+    "runway-windows/logs/version.log": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498",
+    "runway-windows/report.json": "31c582d3be26a5a98095b2ad686102164c789be886f7c037d6b566646d4cffa4",
+    "startup/baseline-windows.json": "9c6e7b38c0ec59e9121c3aef11197ddc2c0d2a6c7efd9dc0a3aef14fef3218ef",
+    "startup/baseline-windows.log": "cdcea26c383caf85b4c064133ab88c9c082726ccb5a89fdbfc054e74f6aacf55",
+    "startup/baseline-wsl.json": "9c6e7b38c0ec59e9121c3aef11197ddc2c0d2a6c7efd9dc0a3aef14fef3218ef",
+    "startup/baseline-wsl.log": "4416e69d0fd843d5dab584715dd2f104f6850d91def9a4dd5329b924ef687f4d",
+    "startup/candidate-windows.json": "a5a08b864ef24f40e7483c8fb23ed134351e1cef3f0edde93587690c1abd599f",
+    "startup/candidate-windows.log": "54b6aa23281cf3594e791c6a61565c4da56670002db59ead023f427446fc377e",
+    "startup/candidate-wsl.json": "a5a08b864ef24f40e7483c8fb23ed134351e1cef3f0edde93587690c1abd599f",
+    "startup/candidate-wsl.log": "3d6bd743a3e23d3e9e5f54a525550b3b683aba7f5c49f1f86b965f3304689892"
+  }
+}

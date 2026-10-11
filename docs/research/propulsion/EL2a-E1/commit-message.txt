@@ -1,0 +1,17 @@
+EL2a-E1: start electric runway flights at rotor rest and qualify the maneuver envelope
+
+Initialize the generic runway helper's electric source at zero RPM instead of
+asking for a combustion idle equilibrium. Describe the actual launch state in
+trace metadata. Preserve combustion behavior, datasets, goldens and the catalog.
+
+Proof: 177 runway checks, two real startup defects and restored positive runs
+on Windows/Linux; twelve 4S/6S takeoff, accelerated-stall/recovery and landing
+cases at 240/480 Hz per platform, 106,572 independently checked CSV samples,
+charge/energy accounting and fixed refinement bands. Whole-roll heading and
+lateral wheel margins, terminal recovery and stopped landing are explicit gates.
+Full app regression: 180 GDScript suites, 72 Python cases, model/golden/FPS gates
+and final E5b 125 checks, no engine errors. Offline tools: 242 tests, including
+twelve trace-verifier tests. Sources, logs, findings and reproduction commands:
+docs/research/propulsion/EL2a-E1/README.md.
+
+Synthetic software qualification only; physical validation and Gate P remain open.
