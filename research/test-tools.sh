@@ -17,6 +17,7 @@ for test in \
   propulsion/range-audit/test_audit.py \
   propulsion/el2a-p1/test_compare.py \
   propulsion/el2a-p2/test_compare_events.py \
+  propulsion/el2a-e1/test_trace_checks.py \
   validation/metamorphic/test_runner.py; do
   echo "== $test"
   timeout 120 python3 "$ROOT/research/$test"
