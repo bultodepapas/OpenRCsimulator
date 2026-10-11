@@ -1,0 +1,63 @@
+{
+  "format": "openrc-el2a-p1-verification-v1",
+  "recorded_utc": "2026-10-11T16:02:21.342980+00:00",
+  "baseline_revision": "e64d367eba4be867e6dbff3deffe0336e706126c",
+  "scope": "software preservation and paired performance; not physical or Gate P acceptance",
+  "app_source_manifest": "source-manifest.json",
+  "app_source_hashes_rechecked": 808,
+  "full_app_suites": {
+    "baseline": {
+      "command": "bash app/test.sh",
+      "working_directory": "/home/bulto/openrc-el2a-p1/baseline",
+      "environment": {
+        "XDG_DATA_HOME": "/home/bulto/openrc-el2a-p1/runtime-baseline",
+        "XDG_CONFIG_HOME": "/home/bulto/openrc-el2a-p1/config-baseline"
+      },
+      "exit_code": 0,
+      "gdscript_test_programs": 177,
+      "log": "baseline-app.log",
+      "log_sha256": "7a886a4a92e1b13adf93ff209b63cb3e06d9d77a56b8d29a34d3a2fef8e5a9fe"
+    },
+    "candidate": {
+      "command": "bash app/test.sh",
+      "working_directory": "/home/bulto/openrc-el2a-p1/candidate",
+      "environment": {
+        "XDG_DATA_HOME": "/home/bulto/openrc-el2a-p1/runtime-candidate",
+        "XDG_CONFIG_HOME": "/home/bulto/openrc-el2a-p1/config-candidate"
+      },
+      "exit_code": 0,
+      "gdscript_test_programs": 178,
+      "log": "candidate-app.log",
+      "log_sha256": "f276704886e13059155c2c68789d55d3fc26530296aeb9e58292712b8e40ef10"
+    }
+  },
+  "offline_tools": {
+    "command": "bash research/test-tools.sh",
+    "exit_code": 0,
+    "test_programs": 13,
+    "log": "offline-tools.log",
+    "log_sha256": "e1607849930a2dbabe292ae72020abd227ad6302cceb50ae3094b0b54ea207af"
+  },
+  "research_files_sha256": {
+    "audit_sources.py": "d899fc93b9a89fb1077717e81cf8f35da3e1216227b440e4fae8a77fd7b3737a",
+    "bench.gd": "e4f20853eb31bb1db74b227c95f4975f5968edc7830e18b2c155968fca3fd1d0",
+    "compare.py": "50b3b9911efe0865d61d103543a60dff93494ff3890bcf0cdd0528872a73cc79",
+    "compare_flights.py": "5f71e7199b8f9c3693821f481995758b60b75c3ad7d6c78ea621152132b60065",
+    "frozen_electric_motor.gd": "1f346e9752389d68f774d6ba5532577312d5e07f7626f7da0341ac8791497289",
+    "frozen_electric_supply.gd": "1af0a26de86a825a91c414283e57f8358a1079c823ceecfcc30a1d1ac59c9ff3",
+    "README.md": "946aab39ae6a257f4b8ab7613352363f6a50d1d34b0ac348600d8ecfaec19913",
+    "rotor_oracle.gd": "1bd43d2f04e15ec760ee76849afe2ab15b68bb7f5ca5cc9e0aed5a64edbb5ee0",
+    "source_oracle.gd": "286183164a18d5c3dda5538d7606a9a75df57667917a529970cdd7d59d05c405",
+    "test_compare.py": "ab2a651c4048e0636ca0852d35fcd0949e1525c02811d24af54759bcb4344245",
+    "verify_oracles.py": "837e2db962cb469ec568ba4bfff09ea34fd5d1d1b45cd5bba9dd1f7bc82c4083"
+  },
+  "checks": {
+    "windows_oracles": "oracles-windows/report.json",
+    "linux_oracles": "oracles-linux/report.json",
+    "flight_parity": "flight-parity.json",
+    "baseline_independent_flights": "flights-baseline/verified.json",
+    "candidate_independent_flights": "flights-candidate/verified.json",
+    "paired_performance": "comparison.json",
+    "source_audit": "source-audit.json"
+  }
+}

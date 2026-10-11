@@ -90,7 +90,7 @@ static func has_dynamic_battery(prop: Dictionary) -> bool:
 ## SOC omitted: initial-charge operating point for trim only. Flight passes its stage SOC.
 ## available_at_zero is the connected left limit used only during exhaustion localization.
 static func electric_source_state(rpm: float, duty: float, prop: Dictionary, enabled: bool = true,
-		soc: Variant = null, available_at_zero: bool = false) -> Dictionary:
+		soc: Variant = null, available_at_zero: bool = false, dynamics_only: bool = false) -> Dictionary:
 	if not is_electric(prop):
 		return {ok = false, message = "source is not electric_prop"}
 	var motor_value: Variant = prop.get("motor", {})
@@ -110,6 +110,8 @@ static func electric_source_state(rpm: float, duty: float, prop: Dictionary, ena
 		for key: String in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:
 			pack[key] = battery.get(key)
 		var charge_fraction: Variant = battery.get("initial_soc") if soc == null else soc
+		if dynamics_only:
+			return ElectricSupply.evaluate_dynamics(rpm, duty, charge_fraction, pack, motor, enabled, available_at_zero)
 		var point: Dictionary = ElectricSupply.evaluate_available(rpm, duty, charge_fraction, pack, motor, enabled) if available_at_zero else ElectricSupply.evaluate(rpm, duty, charge_fraction, pack, motor, enabled)
 		if not point.get("ok", false):
 			return point

@@ -6,6 +6,8 @@
 extends RefCounted
 
 const Electric: Script = preload("res://physics/electric_motor.gd")
+const PACK_KEYS: Array[String] = ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]
+const MOTOR_KEYS: Array[String] = ["kv_rpm_per_volt", "resistance_ohm", "no_load_current_a"]
 
 
 ## Evaluate one algebraic supply point. Inputs and returned rates are SI, except SOC and Ah.
@@ -24,8 +26,15 @@ static func evaluate_available(rpm: Variant, duty: Variant, soc: Variant, pack: 
 	return _evaluate(rpm, duty, soc, pack, motor, enabled, true)
 
 
+## Stage-local result: identical validation/arithmetic, without building endpoint telemetry.
+## No validated data or evaluation survives this call; mutable definitions remain checked.
+static func evaluate_dynamics(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, motor: Variant,
+		enabled: Variant = true, available_at_zero: bool = false) -> Dictionary:
+	return _evaluate(rpm, duty, soc, pack, motor, enabled, available_at_zero, true)
+
+
 static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, motor: Variant,
-		enabled: Variant, available_at_zero: bool) -> Dictionary:
+		enabled: Variant, available_at_zero: bool, dynamics_only: bool = false) -> Dictionary:
 	if not _is_number(rpm) or not is_finite(float(rpm)) or float(rpm) < 0.0:
 		return _failure("rpm must be a finite number >= 0")
 	if not _is_number(duty) or not is_finite(float(duty)) or float(duty) < 0.0 or float(duty) > 1.0:
@@ -53,12 +62,14 @@ static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, 
 		return _failure("OCV interpolation did not produce a finite positive voltage")
 
 	if soc_value == 0.0 and not available_at_zero:
-		var exhausted_source: Dictionary = Electric.evaluate(rpm_value, requested_duty, 0.0, motor, false)
+		var exhausted_source: Dictionary = Electric._evaluate_validated(rpm_value, requested_duty, 0.0,
+			motor_validation.kv_rpm_per_volt, motor_validation.resistance_ohm,
+			motor_validation.no_load_current_a, false)
 		if not exhausted_source.ok:
 			return _failure("source evaluation failed: " + str(exhausted_source.message))
 		return _assemble_result("exhausted", rpm_value, requested_duty, 0.0, soc_value, ocv,
 			capacity_ah, pack_resistance_ohm, auxiliary_demand_a, 0.0, 0.0, 0.0, 0.0,
-			exhausted_source)
+			exhausted_source, dynamics_only)
 
 	var effective_duty: float = requested_duty if enabled else 0.0
 	var back_emf_v: float = rpm_value / float(motor_validation.kv_rpm_per_volt)
@@ -89,7 +100,9 @@ static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, 
 			or not is_finite(bus_voltage_v) or bus_voltage_v <= 0.0:
 		return _failure("battery sag leaves no positive feasible bus voltage")
 
-	var source: Dictionary = Electric.evaluate(rpm_value, requested_duty, bus_voltage_v, motor, enabled)
+	var source: Dictionary = Electric._evaluate_validated(rpm_value, requested_duty, bus_voltage_v,
+		motor_validation.kv_rpm_per_volt, motor_validation.resistance_ohm,
+		motor_validation.no_load_current_a, enabled)
 	if not source.ok:
 		return _failure("source evaluation failed: " + str(source.message))
 	var source_motor_current_a: float = float(source.motor_current_a)
@@ -102,18 +115,18 @@ static func _evaluate(rpm: Variant, duty: Variant, soc: Variant, pack: Variant, 
 
 	return _assemble_result(str(source.mode), rpm_value, requested_duty, effective_duty, soc_value, ocv,
 		capacity_ah, pack_resistance_ohm, auxiliary_demand_a, source_motor_current_a,
-		source_bus_current_a, auxiliary_demand_a, bus_voltage_v, source)
+		source_bus_current_a, auxiliary_demand_a, bus_voltage_v, source, dynamics_only)
 
 
 static func _validate_pack(raw_pack: Variant) -> Dictionary:
 	if typeof(raw_pack) != TYPE_DICTIONARY:
 		return _failure("pack must be a dictionary")
 	var pack: Dictionary = raw_pack
-	for key: String in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:
+	for key: String in PACK_KEYS:
 		if not pack.has(key):
 			return _failure("pack is missing " + key)
 	for key: Variant in pack:
-		if key not in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:
+		if key not in PACK_KEYS:
 			return _failure("pack has unsupported field " + str(key))
 
 	var raw_points: Variant = pack.get("ocv_points")
@@ -168,18 +181,19 @@ static func _validate_motor(raw_motor: Variant) -> Dictionary:
 	if typeof(raw_motor) != TYPE_DICTIONARY:
 		return _failure("motor must be a dictionary")
 	var motor: Dictionary = raw_motor
-	for key: String in ["kv_rpm_per_volt", "resistance_ohm", "no_load_current_a"]:
+	for key: String in MOTOR_KEYS:
 		if not motor.has(key) or not _is_number(motor.get(key)) or not is_finite(float(motor.get(key))):
 			return _failure("motor needs finite numeric " + key)
 	for key: Variant in motor:
-		if key not in ["kv_rpm_per_volt", "resistance_ohm", "no_load_current_a"]:
+		if key not in MOTOR_KEYS:
 			return _failure("motor has unsupported field " + str(key))
 	var kv: float = float(motor.kv_rpm_per_volt)
 	var resistance: float = float(motor.resistance_ohm)
 	var no_load_current: float = float(motor.no_load_current_a)
 	if kv <= 0.0 or resistance <= 0.0 or no_load_current < 0.0:
 		return _failure("motor requires Kv > 0, R > 0 and I0 >= 0")
-	return {"ok": true, "message": "", "kv_rpm_per_volt": kv, "resistance_ohm": resistance}
+	return {"ok": true, "message": "", "kv_rpm_per_volt": kv, "resistance_ohm": resistance,
+		"no_load_current_a": no_load_current}
 
 
 static func _interpolate_ocv(points: PackedFloat64Array, soc: float) -> float:
@@ -199,7 +213,8 @@ static func _interpolate_ocv(points: PackedFloat64Array, soc: float) -> float:
 static func _assemble_result(mode: String, rpm: float, requested_duty: float, effective_duty: float,
 		soc: float, ocv: float, capacity_ah: float, pack_resistance_ohm: float,
 		auxiliary_demand_a: float, motor_current_a: float, motor_bus_current_a: float,
-		auxiliary_current_a: float, bus_voltage_v: float, source: Dictionary) -> Dictionary:
+		auxiliary_current_a: float, bus_voltage_v: float, source: Dictionary,
+		dynamics_only: bool = false) -> Dictionary:
 	var pack_current_a: float = motor_bus_current_a + auxiliary_current_a
 	var soc_rate_per_s: float = -pack_current_a / (3600.0 * capacity_ah)
 	var pack_terminal_power_w: float = bus_voltage_v * pack_current_a
@@ -207,6 +222,15 @@ static func _assemble_result(mode: String, rpm: float, requested_duty: float, ef
 		if pack_resistance_ohm > 0.0 else 0.0
 	var pack_open_circuit_power_w: float = ocv * pack_current_a
 	var power_balance_residual_w: float = pack_open_circuit_power_w - pack_terminal_power_w - pack_loss_w
+	# Every other result scalar was validated on entry or by the motor. Check all newly
+	# computed diagnostics even on the compact path, so overflow still refuses the tick.
+	var finite_result: bool = is_finite(pack_current_a) and is_finite(soc_rate_per_s) \
+			and is_finite(pack_terminal_power_w) and is_finite(pack_loss_w) \
+			and is_finite(pack_open_circuit_power_w) and is_finite(power_balance_residual_w)
+	if dynamics_only and finite_result:
+		return {"ok": true, "shaft_torque_nm": float(source.shaft_torque_nm),
+			"motor_current_a": motor_current_a, "pack_current_a": pack_current_a,
+			"pack_terminal_power_w": pack_terminal_power_w, "pack_loss_w": pack_loss_w}
 	var result: Dictionary = {
 		"ok": true,
 		"mode": mode,
@@ -235,6 +259,8 @@ static func _assemble_result(mode: String, rpm: float, requested_duty: float, ef
 		"pack_power_balance_residual_w": power_balance_residual_w,
 		"source": source,
 	}
+	if finite_result:
+		return result
 	for key: Variant in result:
 		if typeof(result[key]) == TYPE_FLOAT and not is_finite(float(result[key])):
 			return _failure("battery evaluation overflow: " + str(key))
@@ -242,7 +268,7 @@ static func _assemble_result(mode: String, rpm: float, requested_duty: float, ef
 
 
 static func _is_number(value: Variant) -> bool:
-	return typeof(value) in [TYPE_INT, TYPE_FLOAT]
+	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
 
 
 static func _failure(message: String) -> Dictionary:

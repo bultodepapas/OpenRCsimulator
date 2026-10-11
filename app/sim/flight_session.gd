@@ -1089,13 +1089,13 @@ func _battery_values_valid(values: PackedFloat64Array, trial: bool = false) -> b
 		and values[at + 1] >= 0.0 and values[at + 2] >= 0.0
 
 
-func _battery_point(rpm: float, values: PackedFloat64Array) -> Dictionary:
+func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool = false) -> Dictionary:
 	if not _battery_values_valid(values, true):
 		return {ok = false}
 	var charge: float = values[_rotor_index() + 1]
 	var prop: Dictionary = aircraft.model.propulsion
 	var soc: float = maxf(0.0, charge / (3600.0 * float(prop.battery.capacity_ah)))
-	return Propulsion.electric_source_state(rpm, sim.inputs[3], prop, engine_running, soc, charge < 0.0)
+	return Propulsion.electric_source_state(rpm, sim.inputs[3], prop, engine_running, soc, charge < 0.0, dynamics_only)
 
 
 func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
@@ -1131,7 +1131,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	var battery_point: Dictionary = {}
 	var rate: float
 	if battery_is_dynamic():
-		battery_point = _battery_point(rpm, values)
+		battery_point = _battery_point(rpm, values, true)
 		if not battery_point.get("ok", false):
 			return {ok = false}
 		var load_torque: float = Propulsion.prop_torque(rpm, M.dot(air.v_air, Propulsion.axis(prop)), prop, air_density())
@@ -1143,8 +1143,8 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		return {ok = false}
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
-	var external: PackedFloat64Array = Dynamics.loads(s, aircraft.model, _deflections(a), rpm,
-		air_density(), wind_at(time_s), a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()))
+	var external: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
+		air_density(), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()))
 	var ground: PackedFloat64Array = Ground.loads(s, aircraft.model.landing_gear, a[AUX_SERVO + 2], ground_surfaces,
 		a.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE))
 	for i: int in ground.size():
@@ -1186,6 +1186,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	for i: int in 3:
 		external[3 + i] += response.reaction[i]
 	response.loads = external
+	response.air = air
 	response.rpm_rate = response.spin_acceleration * 60.0 / TAU
 	if not battery_point.is_empty():
 		response.battery = battery_point
@@ -1214,9 +1215,11 @@ func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	var result: Dictionary = _coupled_response(s, values, time_s)
 	if not result.ok:
 		return {}
-	var air: Dictionary = air_data(s, time_s)
-	var extra: PackedFloat64Array = WashTransport.derivative(air.v_air, _coupled_rpm(values),
-		aircraft.model.propulsion, air_density(), values.slice(0, _rotor_index())) if _rotor_index() > 0 else PackedFloat64Array()
+	var extra: PackedFloat64Array = PackedFloat64Array()
+	if _rotor_index() > 0:
+		var air: Dictionary = result.air
+		extra = WashTransport.derivative(air.v_air, _coupled_rpm(values),
+			aircraft.model.propulsion, air_density(), values.slice(0, _rotor_index()))
 	extra.append(result.rpm_rate)
 	_append_battery_rates(extra, result)
 	return {loads = result.loads, derivative = extra, rotor_momentum = _coupled_rotor(s, values, time_s)}

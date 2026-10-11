@@ -1,0 +1,40 @@
+{
+  "format": "openrc-el2a-p1-flight-parity-v1",
+  "flights": {
+    "4s_battery-level": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "5d806e1fffbbf94f9c7ee9c9cbb28fad34bd0def303eb8fda65d34f332dd4c39"
+    },
+    "4s_battery-turn": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "6a504987b49b6d546c9e6bfcbab27d5fa78c3114f93609fe52024cc77eb38b70"
+    },
+    "4s_battery-climb": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "16b90cc6c226001b49e53ba3f057b7b5650153f4300211e2479cde89d318c97e"
+    },
+    "4s_battery-chop": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "2583a96ff9dddae457aa6c590bd671cf176b087f3adaf3577a0671bb0e3cf28c"
+    },
+    "6s_battery-level": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "7f1aa05cf479446c52bfddf783b6c65c7947e02cc828b54ac767ba18499e5374"
+    },
+    "6s_battery-turn": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "19648e18a1ac97820a5d6cc11bf9aef5a5477ccf958347ee1ea48309d2df38c5"
+    },
+    "6s_battery-climb": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "3a3f99df4d9f010fdf2e68abc0b13caf489d8234106ef02222afc629147950f8"
+    },
+    "6s_battery-chop": {
+      "rows": 7201,
+      "trace_sha256_excluding_created_utc": "d9740b1378e00b058e92858811cbef2bc56423506201601ae74b8db73b7b0d10"
+    }
+  },
+  "ok": true,
+  "flight_identical": true,
+  "refinement_identical": true
+}
